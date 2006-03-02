@@ -897,6 +897,16 @@ NSRect screenFrame()
 	return appController;
 }
 
++ (void) addCLUT: (NSString*) filename dictionary: (NSMutableDictionary*) clutValues
+{
+	if( [[NSBundle mainBundle] pathForResource:filename ofType:@"plist"])
+		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile: [[NSBundle mainBundle] pathForResource:filename ofType:@"plist"]] forKey: filename];
+	else
+	{
+		NSLog(@"CLUT plist not found: %@", filename);
+	}
+}
+
 + (void) addConvolutionFilter: (short) size :(short*) vals :(NSString*) name :(NSMutableDictionary*) convValues
 {
 	long				i;
@@ -953,8 +963,12 @@ static BOOL initialized = NO;
 
  + (void) initialize
 {
+	@try
+	{
 	if ( self == [AppController class] && initialized == NO)
 	{
+		
+		
 		initialized = YES;
 		
 		long	i;
@@ -1303,28 +1317,28 @@ static BOOL initialized = NO;
 			[clutValues setObject:aCLUTFilter forKey:@"B/W Inverse"];
 		}
 		
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"VR Muscles-Bones" ofType:@"plist"]] forKey:@"VR Muscles-Bones"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"VR Bones" ofType:@"plist"]] forKey:@"VR Bones"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"VR Red Vessels" ofType:@"plist"]] forKey:@"VR Red Vessels"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"BlackBody" ofType:@"plist"]] forKey:@"BlackBody"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Flow" ofType:@"plist"]] forKey:@"Flow"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"GEcolor" ofType:@"plist"]] forKey:@"GEColor"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Spectrum" ofType:@"plist"]] forKey:@"Spectrum"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"NIH" ofType:@"plist"]] forKey:@"NIH"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"HotIron" ofType:@"plist"]] forKey:@"HotIron"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"GrayRainbow" ofType:@"plist"]] forKey:@"GrayRainbow"];
+		[AppController addCLUT: @"VR Muscles-Bones"  dictionary: clutValues];
+		[AppController addCLUT: @"VR Bones"  dictionary: clutValues];
+		[AppController addCLUT: @"VR Red Vessels"  dictionary: clutValues];
+		[AppController addCLUT: @"BlackBody"  dictionary: clutValues];	
+		[AppController addCLUT: @"Flow"  dictionary: clutValues];		
+		[AppController addCLUT: @"GEcolor"  dictionary: clutValues];	
+		[AppController addCLUT: @"Spectrum"  dictionary: clutValues];	
+		[AppController addCLUT: @"NIH"  dictionary: clutValues];	
+		[AppController addCLUT: @"HotIron"  dictionary: clutValues];	
+		[AppController addCLUT: @"GrayRainbow"  dictionary: clutValues];	
 	
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"UCLA" ofType:@"plist"]] forKey:@"UCLA"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Stern" ofType:@"plist"]] forKey:@"Stern"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Ratio" ofType:@"plist"]] forKey:@"Ratio"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Rainbow3" ofType:@"plist"]] forKey:@"Rainbow3"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Rainbow2" ofType:@"plist"]] forKey:@"Rainbow2"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Rainbow" ofType:@"plist"]] forKey:@"Rainbow"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ired" ofType:@"plist"]] forKey:@"ired"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Hue1" ofType:@"plist"]] forKey:@"Hue1"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Hue2" ofType:@"plist"]] forKey:@"Hue2"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"HotMetal" ofType:@"plist"]] forKey:@"HotMetal"];
-		[clutValues setObject:[NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"HotGreen" ofType:@"plist"]] forKey:@"HotGreen"];
+		[AppController addCLUT: @"UCLA"  dictionary: clutValues];			
+		[AppController addCLUT: @"Stern"  dictionary: clutValues];		
+		[AppController addCLUT: @"Ratio"  dictionary: clutValues];		
+		[AppController addCLUT: @"Rainbow3"  dictionary: clutValues];		
+		[AppController addCLUT: @"Rainbow2"  dictionary: clutValues];		
+		[AppController addCLUT: @"Rainbow"  dictionary: clutValues];	
+		[AppController addCLUT: @"ired"  dictionary: clutValues];		
+		[AppController addCLUT: @"Hue1"  dictionary: clutValues];		
+		[AppController addCLUT: @"Hue2"  dictionary: clutValues];		
+		[AppController addCLUT: @"HotMetal"  dictionary: clutValues];	
+		[AppController addCLUT: @"HotGreen"  dictionary: clutValues];	
 
 		[defaultValues setObject:clutValues forKey:@"CLUT"];
 		
@@ -1657,7 +1671,11 @@ static BOOL initialized = NO;
 		reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 			[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
-
+	}
+	}
+	@catch( NSException *ne)
+	{
+		NSLog(@"exception: %@", [ne description]);
 	}
 }
 
@@ -2469,7 +2487,7 @@ static BOOL initialized = NO;
 									 @"OK", @"Cancel", nil);
 		if (NSOKButton == button)
 		{
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"intrad.hcuge.ch—telechargement <http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/>"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/"]];
 		}
 	}
 }
