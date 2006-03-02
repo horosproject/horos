@@ -1,0 +1,116 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                alwaysSyncMenu = id; 
+                changeFont = id; 
+                flipHorizontal = id; 
+                flipVertical = id; 
+                roiLoadFromXMLFiles = id; 
+                sliderAction = id; 
+                sliderAction2DMPR = id; 
+                sliderRGBFactor = id; 
+            }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {CLASS = DarkWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = KFSplitView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {kfDelegate = id; }; 
+            SUPERCLASS = NSSplitView; 
+        }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {
+            ACTIONS = {showViews = id; }; 
+            CLASS = OrthogonalMPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                originalView = OrthogonalMPRView; 
+                xReslicedView = OrthogonalMPRView; 
+                yReslicedView = OrthogonalMPRView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+            }; 
+            CLASS = OrthogonalMPRPETCTController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = OrthogonalMPRController; 
+        }, 
+        {
+            CLASS = OrthogonalMPRPETCTView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = OrthogonalMPRView; 
+        }, 
+        {
+            ACTIONS = {
+                blendingMode = id; 
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+                changeBlendingFactor = id; 
+                changeTool = id; 
+                customizeViewerToolBar = id; 
+                endExportDICOMFileSettings = id; 
+                flipHorizontalOriginal = id; 
+                flipHorizontalX = id; 
+                flipHorizontalY = id; 
+                flipVerticalOriginal = id; 
+                flipVerticalX = id; 
+                flipVerticalY = id; 
+            }; 
+            CLASS = OrthogonalMPRPETCTViewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                CTController = OrthogonalMPRPETCTController; 
+                OpacityPopup = NSPopUpButton; 
+                PETCTController = OrthogonalMPRPETCTController; 
+                PETController = OrthogonalMPRPETCTController; 
+                WLWWView = NSView; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                blendingToolView = NSView; 
+                clutPopup = NSPopUpButton; 
+                dcmExportWindow = NSWindow; 
+                dcmFormat = NSMatrix; 
+                dcmSelection = NSMatrix; 
+                dcmSeriesName = NSTextField; 
+                modalitySplitView = KFSplitView; 
+                originalSplitView = KFSplitView; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                wlwwPopup = NSPopUpButton; 
+                xReslicedSplitView = KFSplitView; 
+                yReslicedSplitView = KFSplitView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {
+            ACTIONS = {changeTool = id; customizeViewerToolBar = id; }; 
+            CLASS = OrthogonalMPRViewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                controller = OrthogonalMPRController; 
+                splitView = NSSplitView; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

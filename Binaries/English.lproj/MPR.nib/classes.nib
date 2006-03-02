@@ -1,0 +1,127 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {renderButton = id; selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {
+            ACTIONS = {switchActor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                endQuicktimeSettings = id; 
+                endQuicktimeVRSettings = id; 
+                exportQuicktime3D = id; 
+            }; 
+            CLASS = MIPView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                VRFrames = NSMatrix; 
+                VRquality = NSMatrix; 
+                export3DVRWindow = NSWindow; 
+                export3DWindow = NSWindow; 
+                framesSlider = NSSlider; 
+                quality = NSMatrix; 
+                rotation = NSMatrix; 
+            }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {
+            ACTIONS = {
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                nextPlane = id; 
+                selectPlane = id; 
+                setDefaultTool = id; 
+                slider2DAction = id; 
+                sliderAction = id; 
+            }; 
+            CLASS = MPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                ThickSlabView = NSView; 
+                WLWWView = NSView; 
+                Xslider = NSSlider; 
+                Yslider = NSSlider; 
+                Zslider = NSSlider; 
+                addCLUTWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                axesView = NSView; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                selectedPlaneMatrix = NSMatrix; 
+                toolsView = NSView; 
+                view = MPRView; 
+                viewSlider = NSSlider; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = Window3DController; 
+        }, 
+        {
+            ACTIONS = {
+                endQuicktimeSettings = id; 
+                endQuicktimeVRSettings = id; 
+                exportQuicktime3D = id; 
+                rotateSpeed = id; 
+                selectPlane = id; 
+                setThickSlab = id; 
+                setThickSlabMode = id; 
+                switchActor = id; 
+                switchRotate = id; 
+            }; 
+            CLASS = MPRView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                VRFrames = NSMatrix; 
+                export3DVRWindow = NSWindow; 
+                export3DWindow = NSWindow; 
+                framesSlider = NSSlider; 
+                rotation = NSMatrix; 
+                selectedPlane = PreviewView; 
+                sliderThickSlab = NSSlider; 
+                textThickSlab = NSTextField; 
+            }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {CLASS = PreviewView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {
+            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            CLASS = Window3DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                fromset = NSTextField; 
+                setWLWWWindow = NSWindow; 
+                toset = NSTextField; 
+                wlset = NSTextField; 
+                wwset = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

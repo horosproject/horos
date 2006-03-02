@@ -1,0 +1,39 @@
+{
+    IBClasses = (
+        {CLASS = CalendarTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            ACTIONS = {newCalendar = id; setActivated = id; }; 
+            CLASS = OSIRoutingPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                calendarTable = NSTableView; 
+                routesController = id; 
+                routingActivated = NSButton; 
+                ruleWindow = NSWindow; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }, 
+        {
+            ACTIONS = {editRoute = id; newRoute = id; }; 
+            CLASS = RoutingArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {routingTable = NSTableView; ruleWindow = NSWindow; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = RulesController; LANGUAGE = ObjC; SUPERCLASS = NSArrayController; }
+    ); 
+    IBVersion = 1; 
+}

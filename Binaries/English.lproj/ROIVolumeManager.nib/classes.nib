@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = ROIVolumeManagerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                columnBlue = NSTableColumn; 
+                columnDisplay = NSTableColumn; 
+                columnGreen = NSTableColumn; 
+                columnName = NSTableColumn; 
+                columnOpacity = NSTableColumn; 
+                columnRed = NSTableColumn; 
+                columnVolume = NSTableColumn; 
+                controllerAlias = NSObjectController; 
+                roiVolumesController = NSArrayController; 
+                tableView = NSTableView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

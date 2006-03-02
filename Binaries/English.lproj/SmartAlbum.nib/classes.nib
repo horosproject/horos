@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {newAlbum = id; }; 
+            CLASS = SmartWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {albumNameField = NSTextField; filterBox = NSBox; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

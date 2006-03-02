@@ -1,0 +1,35 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                algorithmGetHelp = id; 
+                changeAlgorithm = id; 
+                changeROItype = id; 
+                compute = id; 
+            }; 
+            CLASS = ITKSegmentation3DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                algorithmPopup = NSPopUpButton; 
+                computeButton = NSButton; 
+                growingMode = NSMatrix; 
+                newName = NSTextField; 
+                numberOfPointsSlider = NSSlider; 
+                outputROIType = NSMatrix; 
+                outputResult = NSMatrix; 
+                parametersBox = NSBox; 
+                params = NSForm; 
+                pixelsSet = NSMatrix; 
+                pixelsValue = NSMatrix; 
+                resultsBox = NSBox; 
+                roiResolution = NSSlider; 
+                startingPointPixelPosition = NSTextField; 
+                startingPointValue = NSTextField; 
+                startingPointWorldPosition = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

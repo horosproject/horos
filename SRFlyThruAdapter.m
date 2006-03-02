@@ -1,0 +1,47 @@
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+
+
+
+#import "SRFlyThruAdapter.h"
+#import "SRController.h"
+//#import "SRView.h"
+
+@implementation SRFlyThruAdapter
+- (id) initWithSRController: (SRController*) aSRController
+{
+	[super initWithWindow3DController: aSRController];
+	return self;
+}
+
+- (Camera*) getCurrentCamera
+{
+	Camera *cam = [[controller view] camera];
+	[cam setPreviewImage: [[[controller view] nsimage:TRUE] autorelease]];
+	return cam;
+}
+
+- (void) setCurrentViewToCamera:(Camera*) cam
+{
+	[[(SRController*)controller view] setCamera: cam];
+	[[(SRController*)controller view] setNeedsDisplay:YES];
+}
+
+- (NSImage*) getCurrentCameraImage: (BOOL) notUsed
+{
+	return [[[controller view] nsimageQuicktime] autorelease];
+}
+
+@end

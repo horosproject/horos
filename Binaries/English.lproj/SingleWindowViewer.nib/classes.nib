@@ -1,0 +1,222 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {renderButton = id; selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                alwaysSyncMenu = id; 
+                changeFont = id; 
+                flipHorizontal = id; 
+                flipVertical = id; 
+                sliderAction = id; 
+                sliderAction2DMPR = id; 
+                sliderRGBFactor = id; 
+            }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {
+            ACTIONS = {calibrate = id; setBlendingFactor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FusionDrawer; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = MyPopUpButton; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {matrix = NSMatrix; }; 
+            SUPERCLASS = NSButtonCell; 
+        }, 
+        {
+            ACTIONS = {renderButton = id; }; 
+            CLASS = OpacityTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = SeriesView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = StudyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {
+                ApplyCLUT = id; 
+                ApplyOpacity = id; 
+                LODsliderAction = id; 
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                setDefaultTool = id; 
+            }; 
+            CLASS = VRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                LODSlider = NSSlider; 
+                LODView = NSView; 
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                WLWWView = NSView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                blendingTypeWindow = NSWindow; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                view = VRView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                AddOpacity = id; 
+                ConvertToBWMenu = id; 
+                ConvertToRGBMenu = id; 
+                MIPViewer = id; 
+                MPR2DViewer = id; 
+                MPRViewer = id; 
+                MoviePlayStop = id; 
+                PlayStop = id; 
+                SRViewer = id; 
+                VRViewer = id; 
+                blendingMode = id; 
+                blendingSlider = id; 
+                changeMatrixSize = id; 
+                computeSum = id; 
+                convMatrixAction = id; 
+                endBlendingType = id; 
+                endCLUT = id; 
+                endConv = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endQuicktime = id; 
+                endThicknessInterval = id; 
+                export2PACS = id; 
+                exportJPEG = id; 
+                loadSerie = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                popFusionAction = id; 
+                roiPropagate = id; 
+                roiPropagateSetup = id; 
+                roiSetPixels = id; 
+                roiSetPixelsSetup = id; 
+                setDefaultTool = id; 
+                setROITool = id; 
+                sliderFusionAction = id; 
+                speedSliderAction = id; 
+                subtractCurrent = id; 
+                subtractStepper = id; 
+                subtractSwitch = id; 
+                updateImage = id; 
+            }; 
+            CLASS = ViewerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                ConvView = NSView; 
+                FusionView = NSView; 
+                InOutROI = NSMatrix; 
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                RGBFactorsView = NSView; 
+                ReconstructionRoi = NSPopUpButton; 
+                ReconstructionView = NSView; 
+                ThickIntervalWindow = NSWindow; 
+                WLWWView = NSView; 
+                XOffset = NSTextField; 
+                YOffset = NSTextField; 
+                addCLUTWindow = NSWindow; 
+                addConvWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                blendingPercentage = NSTextField; 
+                blendingPlugins = NSPopUpButton; 
+                blendingSlider = NSSlider; 
+                blendingTypeBlue = NSButton; 
+                blendingTypeGreen = NSButton; 
+                blendingTypeMultiply = NSButton; 
+                blendingTypeRGB = NSButton; 
+                blendingTypeRed = NSButton; 
+                blendingTypeSubtract = NSButton; 
+                blendingTypeWindow = NSWindow; 
+                checkMaxValue = NSButton; 
+                checkMinValue = NSButton; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                convMatrix = NSMatrix; 
+                convPopup = NSPopUpButton; 
+                customInterval = NSTextField; 
+                customXSpacing = NSTextField; 
+                customYSpacing = NSTextField; 
+                imageView = DCMView; 
+                matrixName = NSTextField; 
+                matrixNorm = NSTextField; 
+                maxValueText = NSTextField; 
+                minValueText = NSTextField; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                newValueText = NSTextField; 
+                popFusion = NSPopUpButton; 
+                popupRoi = NSPopUpButton; 
+                quicktimeMode = NSMatrix; 
+                quicktimeWindow = NSWindow; 
+                roiPropaDest = NSTextField; 
+                roiPropaDim = NSMatrix; 
+                roiPropaMode = NSMatrix; 
+                roiPropaWindow = NSWindow; 
+                roiSetPixWindow = NSWindow; 
+                seriePopup = NSPopUpButton; 
+                serieView = NSView; 
+                sizeMatrix = NSMatrix; 
+                slider = NSSlider; 
+                sliderFusion = NSSlider; 
+                speedSlider = NSSlider; 
+                speedText = NSTextField; 
+                speedView = NSView; 
+                stacksFusion = NSTextField; 
+                studyView = id; 
+                subtractIm = NSTextField; 
+                subtractOnOff = NSButton; 
+                subtractView = NSView; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

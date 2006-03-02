@@ -1,0 +1,33 @@
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+#import <PreferencePanes/PreferencePanes.h>
+
+
+@interface OSILocationsPreferencePanePref : NSPreferencePane 
+{
+	IBOutlet NSPopUpButton *characterSetPopup;
+	IBOutlet NSTableView *serverTable, *osirixServerTable;
+	NSString  *stringEncoding;
+	NSMutableArray *serverList, *osirixServerList;
+}
+
+- (void) mainViewDidLoad;
+- (IBAction) newServer:(id)sender;
+- (IBAction) osirixNewServer:(id)sender;
+- (void) deleteSelectedRow:(id)sender;
+- (IBAction) setStringEncoding:(id)sender;
+- (IBAction)setTransferSyntax:(id)sender;
+
+@end

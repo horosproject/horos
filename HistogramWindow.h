@@ -1,0 +1,39 @@
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+
+
+
+#import <AppKit/AppKit.h>
+#import "ROI.h"
+#import "HistoView.h"
+
+#define HISTOSIZE 512
+
+@interface HistoWindow : NSWindowController {
+	
+	ROI						*curROI;
+	
+	float					*data, histoData[ HISTOSIZE], maxValue, minValue;
+	long					dataSize;
+	
+	IBOutlet HistoView		*histo;
+	IBOutlet NSSlider		*binSlider;
+	IBOutlet NSTextField	*binText, *maxText;
+}
+
+- (id) initWithROI: (ROI*) iroi;
+- (ROI*) curROI;
+- (IBAction) changeBin: (id) sender;
+@end

@@ -1,0 +1,35 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                deleteSelectedRow = id; 
+                newServer = id; 
+                osirixNewServer = id; 
+                setStringEncoding = id; 
+                setTransferSyntax = id; 
+            }; 
+            CLASS = OSILocationsPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                characterSetPopup = NSPopUpButton; 
+                osirixServerTable = NSTableView; 
+                serverTable = NSTableView; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }, 
+        {CLASS = ServerTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
+    ); 
+    IBVersion = 1; 
+}

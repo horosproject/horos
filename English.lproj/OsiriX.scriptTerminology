@@ -1,0 +1,21 @@
+{
+    Commands = {
+        DeleteSelected = {Description = "Delete selected series"; Name = DeleteSelected; }; 
+        OpenViewerForSelected = {
+            Description = "Open a 2D viewer window for selected series"; 
+            Name = OpenViewerForSelected; 
+        }; 
+        SelectImageFile = {
+            Arguments = {FileName = {Description = "The path"; Name = from; }; }; 
+            Description = "Open a file, add it to the database and then select it"; 
+            Name = SelectImageFile; 
+        }; 
+		DownloadURLFile = {
+            Arguments = {URL = {Description = "The URL path"; Name = from; }; }; 
+            Description = "Get a file from a URL, add it to the database and then select it"; 
+            Name = DownloadURLFile; 
+        }; 
+    }; 
+    Description = "OsiriX specific classes"; 
+    Name = "OsiriX suite"; 
+}

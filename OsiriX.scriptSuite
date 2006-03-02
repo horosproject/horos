@@ -1,0 +1,25 @@
+{
+    AppleEventCode = OSIR; 
+
+    Commands = {
+        DeleteSelected = {
+            AppleEventCode = dele; 
+            CommandClass = OsiriXScripts; 
+        }; 
+        OpenViewerForSelected = {
+            AppleEventCode = view; 
+            CommandClass = OsiriXScripts; 
+        }; 
+        SelectImageFile = {
+            AppleEventCode = cimp; 
+            Arguments = {FileName = {AppleEventCode = impt; Type = NSString; }; }; 
+            CommandClass = OsiriXScripts; 
+        }; 
+		DownloadURLFile = {
+            AppleEventCode = dufi; 
+            Arguments = {URL = {AppleEventCode = impt; Type = NSString; }; }; 
+            CommandClass = OsiriXScripts; 
+        }; 
+    }; 
+    Name = OsiriX; 
+}

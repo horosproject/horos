@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {burn = id; setCDName = id; }; 
+            CLASS = BurnerWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                burnButton = NSButton; 
+                filesTableView = NSTableView; 
+                nameField = NSTextField; 
+                sizeField = NSTextField; 
+                statusField = NSTextField; 
+                window = NSWindow; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

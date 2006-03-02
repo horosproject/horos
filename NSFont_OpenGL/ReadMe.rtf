@@ -1,0 +1,55 @@
+{\rtf1\mac\ansicpg10000\cocoartf100
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww10260\viewh12900\viewkind0
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f0\fs36 \cf0 \ul Introduction\ulnone \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\fs24 \cf0 The files NSFont_OpenGL.h and NSFont_OpenGL.m add a category to NSFont, which allows easy OpenGL display list creation of bitmaps based on the receiver's font.\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\fs36 \cf0 \ul Example
+\fs24 \ulnone \
+Using the new method is easy; if myFont is an NSFont created by normal methods, and displayListBase is the value returned from a call to glGenLists(), then you can create display lists for the printable ASCII character set by doing:\
+\
+[ myFont makeGLDisplayListFirst:' ' count:95 base:displayListBase ];\
+\
+This creates a set of display lists, starting at displayListBase, with 95 characters starting with the space.  Returns TRUE if all went well, FALSE otherwise.\
+\
+
+\fs36 \ul Logging
+\fs24 \ulnone \
+By default, if any errors are encountered, NSLog() will be used to note what happened.  If you wish to disable the logging of errors, use\
+\
+[ NSFont setOpenGLLogging:NO ];\
+\
+to disable logging.  This is done class-wide since most debug issues are either wanted or not, instead of being wanted in only some cases.\
+\
+
+\fs36 \ul Copyright & License\ulnone \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\fs24 \cf0 This program is Copyright \'a9 2002 Bryan L Blackburn.  All rights reserved.\
+\
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\
+\
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\
+\
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\
+\
+3. Neither the names Bryan L Blackburn, Withay.com, nor the names of any contributors may be used to endorse or promote products derived from this software without specific prior written permission.\
+\
+THIS SOFTWARE IS PROVIDED BY BRYAN L BLACKBURN ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\fs36 \cf0 \ul Contact\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\fs24 \cf0 \ulnone Any questions, comments, bug reports, etc, can be directed to the author, Bryan Blackburn at:\
+Email:	blb@pobox.com\
+Web:	http://www.withay.com/\
+}

@@ -1,0 +1,36 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                setCheckUpdates = id; 
+                setParser = id; 
+                setReader = id; 
+                setTransitionType = id; 
+                setUseDCMTK = id; 
+                setUseTransistion = id; 
+            }; 
+            CLASS = OSIGeneralPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                CheckUpdatesOnOff = NSButton; 
+                DcmTkJpegOnOff = NSButton; 
+                parserMatrix = NSMatrix; 
+                readerMatrix = NSMatrix; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }
+    ); 
+    IBVersion = 1; 
+}

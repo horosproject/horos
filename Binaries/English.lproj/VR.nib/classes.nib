@@ -1,0 +1,216 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {renderButton = id; selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = DarkWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {"" = id; switchActor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                ApplyCLUT = id; 
+                LODsliderAction = id; 
+                blendingSlider = id; 
+                endNameWLWW = id; 
+                setDefaultTool = id; 
+                sliderAction = id; 
+            }; 
+            CLASS = MIPController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                LODSlider = NSSlider; 
+                LODView = NSView; 
+                WLWWView = NSView; 
+                addCLUTWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                newName = NSTextField; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                view = MIPView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {endNameWLWW = id; setDefaultTool = id; sliderAction = id; }; 
+            CLASS = MPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                WLWWView = NSView; 
+                Xslider = NSSlider; 
+                Yslider = NSSlider; 
+                Zslider = NSSlider; 
+                addWLWWWindow = NSWindow; 
+                axesView = NSView; 
+                newName = NSTextField; 
+                toolsView = NSView; 
+                view = MPRView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {renderButton = id; }; 
+            CLASS = OpacityTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                ApplyCLUT = id; 
+                ApplyOpacity = id; 
+                LODsliderAction = id; 
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                clutAction = id; 
+                editShadingValues = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endShadingEditing = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                resetShading = id; 
+                setDefaultTool = id; 
+                setEngine = id; 
+                setMode = id; 
+            }; 
+            CLASS = VRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                LODSlider = NSSlider; 
+                LODView = NSView; 
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                WLWWView = NSView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                enginePopup = NSPopUpButton; 
+                engineView = NSView; 
+                modeMatrix = NSMatrix; 
+                modeView = NSView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                perspectiveView = NSView; 
+                scissorStateView = NSView; 
+                shadingCheck = NSButton; 
+                shadingEditWindow = NSWindow; 
+                shadingForm = NSForm; 
+                shadingValues = NSTextField; 
+                shadingView = NSView; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                view = VRView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = Window3DController; 
+        }, 
+        {
+            ACTIONS = {
+                IBPropagate3DPointsSettings = id; 
+                IBSetSelected3DPointColor = id; 
+                IBSetSelected3DPointRadius = id; 
+                bestRendering = id; 
+                endDCMExportSettings = id; 
+                endQuicktimeSettings = id; 
+                endQuicktimeVRSettings = id; 
+                export2iPhoto = id; 
+                exportDICOMFile = id; 
+                exportJPEG = id; 
+                exportQuicktime = id; 
+                exportTIFF = id; 
+                resetImage = id; 
+                resizeWindow = id; 
+                saView = id; 
+                save3DPointsDefaultProperties = id; 
+                scissorStateButtons = id; 
+                sendMail = id; 
+                setCurrentdcmExport = id; 
+                setRenderMode = id; 
+                switchOrientationWidget = id; 
+                switchProjection = id; 
+                switchShading = id; 
+                switchToSeriesRadio = id; 
+            }; 
+            CLASS = VRView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                VRFrames = NSMatrix; 
+                VRquality = NSMatrix; 
+                controller = VRController; 
+                dcmBox = NSBox; 
+                dcmExportMode = NSMatrix; 
+                dcmSeriesName = NSTextField; 
+                dcmframesSlider = NSSlider; 
+                dcmorientation = NSMatrix; 
+                dcmquality = NSMatrix; 
+                dcmrotation = NSMatrix; 
+                export3DVRWindow = NSWindow; 
+                export3DWindow = NSWindow; 
+                exportDCMWindow = NSWindow; 
+                framesSlider = NSSlider; 
+                orientation = NSMatrix; 
+                point3DColorWell = NSColorWell; 
+                point3DInfoPanel = NSPanel; 
+                point3DPropagateToAll = NSButton; 
+                point3DRadiusSlider = NSSlider; 
+                point3DSetDefault = NSButton; 
+                projection = NSMatrix; 
+                quality = NSMatrix; 
+                rotation = NSMatrix; 
+                scissorStateMatrix = NSMatrix; 
+            }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {
+            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            CLASS = Window3DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                fromset = NSTextField; 
+                setWLWWWindow = NSWindow; 
+                toset = NSTextField; 
+                wlset = NSTextField; 
+                wwset = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

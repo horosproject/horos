@@ -1,0 +1,27 @@
+/* Localized DisplayNames for your custom metadata attributes */
+/* The form is:  "myMetadataKey" = "My Metadata Key";    */
+/* The name on the left is the name defined in schema.xml */
+/* The name on the right is what the user will see */
+
+"com_rossetantoine_osiriX_PatientsName" = "Patient's Name";
+"com_rossetantoine_osiriX_PatientID" = "Patient ID";
+"com_rossetantoine_osiriX_StudyDescription" = "Study Description";
+"com_rossetantoine_osiriX_PatientsSex" = "Patient's Sex";
+"com_rossetantoine_osiriX_PatientsAge" = "Patient's Age";
+"com_rossetantoine_osiriX_PatientsBirthDate" = "Patient's date of birth";
+"com_rossetantoine_osiriX_StudyID" = "Study ID";
+"com_rossetantoine_osiriX_StudyDate" = "Study Date";
+"com_rossetantoine_osiriX_StudyInstanceUID" = "Study UID";
+"com_rossetantoine_osiriX_SeriesDescription" = "Series Description";
+"com_rossetantoine_osiriX_SeriesInstanceUID" = "Series UID";
+"com_rossetantoine_osiriX_SeriesNumber"	= "Series Number";
+"com_rossetantoine_osiriX_SeriesDate" = "Series Date";
+"com_rossetantoine_osiriX_AcquisitionDate" = "Acquisition Date";
+"com_rossetantoine_osiriX_InstanceNumber" = "Instance Number";
+"com_rossetantoine_osiriX_SOPInstanceUID" = "SOP Instance UID";
+"com_rossetantoine_osiriX_InstitutionName" = "Institution";
+"com_rossetantoine_osiriX_Modality" = "Modality";
+"com_rossetantoine_osiriX_TransferSyntax" = "Transfer Syntax";
+"com_rossetantoine_osiriX_ReferringPhysiciansName" = "Referring Physician's Name";
+"com_rossetantoine_osiriX_PerformingPhysiciansName" = "Performing Physician's Name";
+

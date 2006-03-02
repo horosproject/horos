@@ -1,0 +1,160 @@
+// !$*UTF8*$!
+{
+	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Development;
+		activeBuildStyle = 06F27B30FFEEEFEF11CA0E56 /* Development */;
+		activeExecutable = AB8EE86509AB159D00F4090C /* Executable */;
+		activeTarget = 8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */;
+		breakpoints = (
+			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */,
+			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */,
+		);
+		breakpointsGroup = AB8EE88509AB15B700F4090C /* XCBreakpointsBucket */;
+		codeSenseManager = AB465F4C09A32E06005A2766 /* Code sense */;
+		executables = (
+			AB8EE86509AB159D00F4090C /* Executable */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					131,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					243,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 162212771;
+			PBXWorkspaceStateSaveDate = 162212771;
+		};
+		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */ = {
+		activeExec = 0;
+	};
+	AB465F4B09A32E06005A2766 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	AB465F4C09A32E06005A2766 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	AB8EE86509AB159D00F4090C /* Executable */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = AB8EE86609AB159D00F4090C /* OsiriX.app */;
+		libgmallocEnabled = 0;
+		name = Executable;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+	};
+	AB8EE86609AB159D00F4090C /* OsiriX.app */ = {
+		isa = PBXFileReference;
+		explicitFileType = wrapper.application;
+		name = OsiriX.app;
+		path = /Users/rossetantoine/osirix/build/Development/OsiriX.app;
+		sourceTree = "<absolute>";
+	};
+	AB8EE88509AB15B700F4090C /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Project Breakpoints";
+		objects = (
+			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */,
+			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */,
+		);
+	};
+	AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		functionName = "-mainViewDidLoad";
+		hitCount = 2;
+		lineNumber = 100;
+		modificationTime = 162212696.960887;
+		state = 1;
+	};
+	AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		functionName = "-setReportMode:";
+		hitCount = 1;
+		lineNumber = 173;
+		modificationTime = 162212682.60664;
+		state = 1;
+	};
+	F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 910}}";
+			sepNavSelRange = "{627, 10}";
+			sepNavVisRect = "{{0, 0}, {1206, 569}}";
+			sepNavWindowFrame = "{{557, 116}, {1245, 698}}";
+		};
+	};
+	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1206, 4746}}";
+			sepNavSelRange = "{3702, 17}";
+			sepNavVisRect = "{{0, 1333}, {1206, 569}}";
+			sepNavWindowFrame = "{{37, 51}, {1245, 698}}";
+		};
+	};
+}

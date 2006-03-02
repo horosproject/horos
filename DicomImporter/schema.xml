@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<schema version="1.0" xmlns="http://www.apple.com/metadata"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xsi:schemaLocation="http://www.apple.com/metadata file:///System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Resources/MetadataSchema.xsd">
+    <note>
+        Custom attributes that this metadata importer supports.  Below
+	is an example of a multivalued string attribute.  Other types
+	are CFNumber, CFDate, CFBoolean and CFData.		      
+    </note>
+    <attributes>
+        <attribute name="com_rossetantoine_osiriX_PatientsName"  type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_PatientID"  type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_PatientsSex" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_PatientsAge" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_PatientsBirthDate" type="CFDate"/>
+		
+		<attribute name="com_rossetantoine_osiriX_StudyDescription" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_StudyID" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_StudyDate" type="CFDate"/>
+		<attribute name="com_rossetantoine_osiriX_StudyInstanceUID" type="CFString"/>
+		
+		<attribute name="com_rossetantoine_osiriX_SeriesDescription" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_SeriesInstanceUID" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_SeriesNumber" type="CFNumber"/>
+		<attribute name="com_rossetantoine_osiriX_SeriesDate" type="CFDate"/>
+		
+		<attribute name="com_rossetantoine_osiriX_AcquisitionDate" type="CFDate"/>
+		<attribute name="com_rossetantoine_osiriX_InstanceNumber" type="CFNumber"/>
+		<attribute name="com_rossetantoine_osiriX_SOPInstanceUID" type="CFString"/>
+		
+		<attribute name="com_rossetantoine_osiriX_InstitutionName" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_Modality" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_TransferSyntax" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_ReferringPhysiciansName" type="CFString"/>
+		<attribute name="com_rossetantoine_osiriX_PerformingPhysiciansName" type="CFString"/>
+		
+		
+		
+    </attributes>
+
+    <types>
+        <type name="public.dcm">
+            <note>
+		The keys that this metadata importer handles.
+            </note>
+            <allattrs>
+	    com_rossetantoine_osiriX_PatientsName
+		com_rossetantoine_osiriX_PatientID
+		com_rossetantoine_osiriX_PatientsSex
+		com_rossetantoine_osiriX_PatientsAge
+		com_rossetantoine_osiriX_PatientsBirthDate
+		com_rossetantoine_osiriX_StudyDescription
+		com_rossetantoine_osiriX_StudyID
+		com_rossetantoine_osiriX_StudyDate
+		com_rossetantoine_osiriX_StudyInstanceUID
+		com_rossetantoine_osiriX_SeriesDescription
+		com_rossetantoine_osiriX_SeriesInstanceUID
+		com_rossetantoine_osiriX_SeriesNumber
+		com_rossetantoine_osiriX_SeriesDate
+		com_rossetantoine_osiriX_AcquisitionDate
+		com_rossetantoine_osiriX_InstanceNumber
+		com_rossetantoine_osiriX_SOPInstanceUID
+		com_rossetantoine_osiriX_InstitutionName
+		com_rossetantoine_osiriX_Modality
+		com_rossetantoine_osiriX_TransferSyntax
+		com_rossetantoine_osiriX_ReferringPhysiciansName
+		com_rossetantoine_osiriX_PerformingPhysiciansName
+            </allattrs>
+            <displayattrs>
+	    com_rossetantoine_osiriX_PatientsName
+		com_rossetantoine_osiriX_PatientID
+		com_rossetantoine_osiriX_PatientsSex
+		com_rossetantoine_osiriX_PatientsAge
+		com_rossetantoine_osiriX_PatientsBirthDate
+		com_rossetantoine_osiriX_StudyDescription
+		com_rossetantoine_osiriX_StudyID
+		com_rossetantoine_osiriX_StudyDate
+		com_rossetantoine_osiriX_StudyInstanceUID
+		com_rossetantoine_osiriX_SeriesDescription
+		com_rossetantoine_osiriX_SeriesInstanceUID
+		com_rossetantoine_osiriX_SeriesNumber
+		com_rossetantoine_osiriX_SeriesDate
+		com_rossetantoine_osiriX_AcquisitionDate
+		com_rossetantoine_osiriX_InstanceNumber
+		com_rossetantoine_osiriX_SOPInstanceUID
+		com_rossetantoine_osiriX_InstitutionName
+		com_rossetantoine_osiriX_Modality
+		com_rossetantoine_osiriX_TransferSyntax
+		com_rossetantoine_osiriX_ReferringPhysiciansName
+		com_rossetantoine_osiriX_PerformingPhysiciansName
+            </displayattrs>
+        </type>
+		<type name="public.data">
+		</type>		
+    </types>
+</schema>
+

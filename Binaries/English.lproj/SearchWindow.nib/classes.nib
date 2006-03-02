@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {search = id; }; 
+            CLASS = SearchWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SmartWindowController; 
+        }, 
+        {
+            ACTIONS = {addSubview = id; newAlbum = id; removeSubview = id; }; 
+            CLASS = SmartWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {albumNameField = NSTextField; filterBox = NSBox; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

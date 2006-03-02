@@ -1,0 +1,58 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                databaseCleaning = id; 
+                setAutoComments = id; 
+                setCopyDatabaseMode = id; 
+                setCopyDatabaseOnOff = id; 
+                setDisplayPatientName = id; 
+                setLocalizerOnOff = id; 
+                setLocation = id; 
+                setLocationURL = id; 
+                setMultipleScreens = id; 
+                setReportMode = id; 
+                setSeriesOrder = id; 
+            }; 
+            CLASS = OSIDatabasePreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                columnsDisplay = NSMatrix; 
+                commentsAutoFill = NSButton; 
+                commentsElement = NSTextField; 
+                commentsGroup = NSTextField; 
+                copyDatabaseModeMatrix = NSMatrix; 
+                copyDatabaseOnOffButton = NSButton; 
+                freeSpace = NSButton; 
+                freeSpaceSize = NSPopUpButton; 
+                freeSpaceType = NSMatrix; 
+                localizerOnOffButton = NSButton; 
+                locationMatrix = NSMatrix; 
+                locationURLField = NSTextField; 
+                multipleScreensMatrix = NSMatrix; 
+                older = NSButton; 
+                olderThanOpened = NSPopUpButton; 
+                olderThanProduced = NSPopUpButton; 
+                olderType = NSMatrix; 
+                reportsMode = NSMatrix; 
+                reportsPluginsMenu = NSPopUpButton; 
+                scrollView = NSScrollView; 
+                seriesOrderMatrix = NSMatrix; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }
+    ); 
+    IBVersion = 1; 
+}

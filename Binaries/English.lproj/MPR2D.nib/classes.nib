@@ -1,0 +1,169 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {renderButton = id; selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {
+                flipHorizontal = id; 
+                flipVertical = id; 
+                sliderAction = id; 
+                sliderAction2DMPR = id; 
+            }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {
+            ACTIONS = {switchActor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                ApplyOpacity = id; 
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endQuicktime = id; 
+                export2iPhoto = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                setDefaultTool = id; 
+                updateImage = id; 
+            }; 
+            CLASS = MPR2DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                ThickSlabView = NSView; 
+                WLWWView = NSView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                axesView = NSView; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                iPhotoView = NSView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                originalView = PreviewView; 
+                quicktimeFrames = NSTextField; 
+                quicktimeMode = NSMatrix; 
+                quicktimeRotation = NSMatrix; 
+                quicktimeRotationView = NSMatrix; 
+                quicktimeWindow = NSWindow; 
+                slider = NSSlider; 
+                toolsView = NSView; 
+                view = MPR2DView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = Window3DController; 
+        }, 
+        {
+            ACTIONS = {axView = id; setThickSlab = id; setThickSlabGap = id; setThickSlabMode = id; }; 
+            CLASS = MPR2DView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                OpacityPopup = NSPopUpButton; 
+                finalView = PreviewView; 
+                finalViewBlending = PreviewView; 
+                perpendicularView = PreviewView; 
+                sliderThickSlab = NSSlider; 
+                textThickSlab = NSTextField; 
+            }; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {
+            ACTIONS = {
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                setDefaultTool = id; 
+                sliderAction = id; 
+            }; 
+            CLASS = MPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                WLWWView = NSView; 
+                Xslider = NSSlider; 
+                Yslider = NSSlider; 
+                Zslider = NSSlider; 
+                addCLUTWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                axesView = NSView; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                toolsView = NSView; 
+                view = MPRView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {switchActor = id; }; 
+            CLASS = MPRView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {bax = NSButton; bcor = NSButton; bsag = NSButton; }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {
+            ACTIONS = {renderButton = id; }; 
+            CLASS = OpacityTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = PreviewView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {
+            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            CLASS = Window3DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                fromset = NSTextField; 
+                setWLWWWindow = NSWindow; 
+                toset = NSTextField; 
+                wlset = NSTextField; 
+                wwset = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

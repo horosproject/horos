@@ -1,0 +1,154 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                ReBuildDatabase = id; 
+                addSmartAlbum = id; 
+                addURLToDatabase = id; 
+                addURLToDatabaseEnd = id; 
+                albumButtons = id; 
+                anonymizeDICOM = id; 
+                autoCleanDatabaseDate = id; 
+                autoCleanDatabaseFreeSpace = id; 
+                bonjourServiceClicked = id; 
+                burnDICOM = id; 
+                createDatabase = id; 
+                customIntervalNow = id; 
+                customize = id; 
+                delItem = id; 
+                endCustomInterval = id; 
+                endSelectServer = id; 
+                executeFilterDB = id; 
+                export2PACS = id; 
+                exportDICOMFile = id; 
+                importRawData = id; 
+                matrixDisplayIcons = id; 
+                matrixPressed = id; 
+                opendDatabase = id; 
+                previewPerformAnimation = id; 
+                previewSliderAction = id; 
+                queryDICOM = id; 
+                reloadSendLog = id; 
+                search = id; 
+                selectFilesAndFoldersToAdd = id; 
+                sendiDisk = id; 
+                sendiPod = id; 
+                setImageTiling = id; 
+                setSearchType = id; 
+                setSendTransferSyntax = id; 
+                setTimeIntervalType = id; 
+                showDatabase = id; 
+                showhide = id; 
+                smartAlbumHelpButton = id; 
+                storeSCPComplete = id; 
+                toggleBonjourSharing = id; 
+                viewerDICOM = id; 
+            }; 
+            CLASS = BrowserController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                DICOMSendTool = NSMatrix; 
+                albumDrawer = NSDrawer; 
+                albumTable = NSTableView; 
+                animationCheck = NSButton; 
+                animationSlider = NSSlider; 
+                bonjourPassword = NSTextField; 
+                bonjourPasswordCheck = NSButton; 
+                bonjourPasswordWindow = NSWindow; 
+                bonjourServiceName = NSTextField; 
+                bonjourServicesList = NSTableView; 
+                bonjourSharingCheck = NSButton; 
+                bonjourSourcesBox = NSBox; 
+                customEnd = NSDatePicker; 
+                customEnd2 = NSDatePicker; 
+                customStart = NSDatePicker; 
+                customStart2 = NSDatePicker; 
+                customTimeIntervalWindow = NSWindow; 
+                databaseDescription = NSTextField; 
+                databaseOutline = MyOutlineView; 
+                destinationServer = id; 
+                editSmartAlbum = NSWindow; 
+                editSmartAlbumName = NSTextField; 
+                editSmartAlbumQuery = NSTextField; 
+                imageTileMenu = NSMenu; 
+                imageView = PreviewView; 
+                keyImageMatrix = NSMatrix; 
+                logViewSplit = NSSplitView; 
+                mainWindow = NSWindow; 
+                newAlbum = NSWindow; 
+                newAlbumName = NSTextField; 
+                noImages = NSTextField; 
+                oMatrix = NSMatrix; 
+                password = NSTextField; 
+                rdAccessory = NSView; 
+                rdOffsetForm = NSForm; 
+                rdPatientForm = NSForm; 
+                rdPixelForm = NSForm; 
+                rdPixelTypeMatrix = NSMatrix; 
+                rdVoxelForm = NSForm; 
+                searchField = NSSearchField; 
+                searchView = NSView; 
+                segmentedAlbumButton = NSSegmentedControl; 
+                sendLogTable = NSTableView; 
+                serverList = NSComboBox; 
+                serverWindow = NSWindow; 
+                sourcesSplitView = NSSplitView; 
+                splitViewHorz = NSSplitView; 
+                splitViewVert = NSSplitView; 
+                syntaxList = NSComboBox; 
+                timeIntervalView = NSView; 
+                urlString = NSTextField; 
+                urlWindow = NSWindow; 
+                working = NSProgressIndicator; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = LogTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {togglePlayState = id; updateStiffness = id; }; 
+            CLASS = MPRView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {Xslider = NSSlider; Yslider = NSSlider; Zslider = NSSlider; }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            ACTIONS = {
+                abort = id; 
+                advancedQuery = id; 
+                controlAction = id; 
+                query = id; 
+                retrieve = id; 
+                setQueryKey = id; 
+                verify = id; 
+            }; 
+            CLASS = QueryController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                advancedQueryWindow = id; 
+                filterBox = id; 
+                logScrollView = NSScrollView; 
+                logTable = NSTableView; 
+                outlineView = NSTableView; 
+                progressIndicator = NSProgressIndicator; 
+                queryDateField = id; 
+                queryKeyField = id; 
+                searchField = id; 
+                servers = NSTableView; 
+                statusField = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {nothing = id; }; 
+            CLASS = QueryLogController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

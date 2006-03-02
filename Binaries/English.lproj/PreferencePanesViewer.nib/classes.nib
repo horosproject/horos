@@ -1,0 +1,50 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {starterField = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = HelpButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
+        {CLASS = NSPreferencesModule; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {selectPane = id; }; 
+            CLASS = PreferencePaneController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {destView = NSView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                addHeaderClicked = id; 
+                cancelClicked = id; 
+                headerDetailLevelChanged = id; 
+                highlightThreadClicked = id; 
+                loadURLsClicked = id; 
+                okClicked = id; 
+                removeHeaderClicked = id; 
+                showPresenceClicked = id; 
+                springLoadedThreadsClicked = id; 
+                threadHighlightColorChanged = id; 
+            }; 
+            CLASS = ViewerPreferences; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_highlightThreadCheckbox" = id; 
+                "_threadHighlightColorWell" = id; 
+                addHeaderButton = id; 
+                customHeaderPanel = id; 
+                customHeaderTable = id; 
+                headerDetailPopup = id; 
+                loadURLsSwitch = id; 
+                newHeaderField = id; 
+                preferencesView = id; 
+                removeHeaderButton = id; 
+                showPresenceSwitch = id; 
+            }; 
+            SUPERCLASS = NSPreferencesModule; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,44 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                helpstorescp = id; 
+                setAE = id; 
+                setAnonymizeListenerOnOff = id; 
+                setDeleteFileMode = id; 
+                setExtraStoreSCP = id; 
+                setListenerOnOff = id; 
+                setTransferSyntaxMode = id; 
+                setUseStoreSCP = id; 
+            }; 
+            CLASS = OSIListenerPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                aeForm = NSForm; 
+                aeTitleField = NSFormCell; 
+                deleteFileModeMatrix = NSMatrix; 
+                extrastorescp = NSTextField; 
+                listenerOnOffAnonymize = NSButton; 
+                listenerOnOffButton = NSButton; 
+                portField = NSFormCell; 
+                transferSyntaxBox = NSBox; 
+                transferSyntaxModeMatrix = NSMatrix; 
+                useStoreSCPModeMatrix = NSMatrix; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }
+    ); 
+    IBVersion = 1; 
+}

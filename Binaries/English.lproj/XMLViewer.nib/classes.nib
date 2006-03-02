@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                collapseAllItems = id; 
+                deepCollapseAllItems = id; 
+                deepExpandAllItems = id; 
+                expandAllItems = id; 
+            }; 
+            CLASS = XMLController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {table = NSOutlineView; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

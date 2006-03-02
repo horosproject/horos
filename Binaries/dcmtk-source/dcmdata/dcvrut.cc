@@ -1,0 +1,149 @@
+/*
+ *
+ *  Copyright (C) 1998-2005, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Implementation of class DcmUnlimitedText
+ *           Value Representation UT is defined in Correction Proposal 101
+ *
+ *  Last Update:      $Author: lpysher $
+ *  Update Date:      $Date: 2006/03/01 20:15:22 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcvrut.h"
+
+
+// ********************************
+
+
+DcmUnlimitedText::DcmUnlimitedText(const DcmTag &tag,
+                                   const Uint32 len)
+  : DcmCharString(tag, len)
+{
+    maxLength = DCM_UndefinedLength;
+}
+
+
+DcmUnlimitedText::DcmUnlimitedText(const DcmUnlimitedText &old)
+  : DcmCharString(old)
+{
+}
+
+
+DcmUnlimitedText::~DcmUnlimitedText()
+{
+}
+
+
+DcmUnlimitedText &DcmUnlimitedText::operator=(const DcmUnlimitedText &obj)
+{
+    DcmCharString::operator=(obj);
+    return *this;
+}
+
+
+// ********************************
+
+
+DcmEVR DcmUnlimitedText::ident() const
+{
+    return EVR_UT;
+}
+
+
+unsigned long DcmUnlimitedText::getVM()
+{
+    /* value multiplicity is 1 for non-empty string, 0 otherwise */
+    return (getRealLength() > 0) ? 1 : 0;
+}
+
+
+// ********************************
+
+
+OFCondition DcmUnlimitedText::getOFString(OFString &strValue,
+                                          const unsigned long /*pos*/,
+                                          OFBool normalize)
+{
+    /* treat backslash as a normal character */
+    return getOFStringArray(strValue, normalize);
+}
+
+
+OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
+                                               OFBool normalize)
+{
+    /* get string value without handling the "\" as a delimiter */
+    OFCondition l_error = getStringValue(strValue);
+    // leading spaces are significant and backslash is normal character
+    if (l_error.good() && normalize)
+        normalizeString(strValue, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    return l_error;
+}
+
+
+/*
+** CVS/RCS Log:
+** $Log: dcvrut.cc,v $
+** Revision 1.1  2006/03/01 20:15:22  lpysher
+** Added dcmtkt ocvs not in xcode  and fixed bug with multiple monitors
+**
+** Revision 1.10  2005/12/08 15:42:10  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.9  2004/01/16 13:45:06  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.8  2002/12/06 13:01:52  joergr
+** Fixed bug in Unlimited Text (UT) class: the backslash character was treated
+** as a component separator which is wrong according to the DICOM standard.
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.7  2002/04/25 10:35:29  joergr
+** Added/modified getOFStringArray() implementation.
+**
+** Revision 1.6  2001/09/25 17:20:03  meichel
+** Adapted dcmdata to class OFCondition
+**
+** Revision 1.5  2001/06/01 15:49:22  meichel
+** Updated copyright header
+**
+** Revision 1.4  2000/03/08 16:26:53  meichel
+** Updated copyright header.
+**
+** Revision 1.3  1999/03/31 09:26:04  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.2  1998/11/12 16:48:32  meichel
+** Implemented operator= for all classes derived from DcmObject.
+**
+** Revision 1.1  1998/01/19 13:19:50  hewett
+** Initial version.
+**
+*/

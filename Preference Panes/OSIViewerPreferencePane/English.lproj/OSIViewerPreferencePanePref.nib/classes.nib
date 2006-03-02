@@ -1,0 +1,56 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                setAlbumName = id; 
+                setAutoHideMatrixState = id; 
+                setBestRendering = id; 
+                setExportSize = id; 
+                setMax3DTexture = id; 
+                setMax3DTextureShading = id; 
+                setMultipleScreens = id; 
+                setNoInterpolation = id; 
+                setOpenViewerBut = id; 
+                setReverseScrollWheel = id; 
+                setSaveLoadROI = id; 
+                setToolbarMatrix = id; 
+                setWindowSizeViewer = id; 
+            }; 
+            CLASS = OSIViewerPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                autoHideMatrix = NSButton; 
+                bestRenderingSlider = NSSlider; 
+                bestRenderingString = NSTextField; 
+                checkSaveLoadROI = NSButton; 
+                iPhotoAlbumName = NSTextField; 
+                max3DTextureSlider = NSSlider; 
+                max3DTextureSliderShading = NSSlider; 
+                max3DTextureString = NSTextField; 
+                max3DTextureStringShading = NSTextField; 
+                multipleScreensMatrix = NSMatrix; 
+                noInterpolationCheck = NSButton; 
+                openViewerCheck = NSButton; 
+                recommandations = NSTextField; 
+                reverseScrollWheelCheck = NSButton; 
+                sizeMatrix = NSMatrix; 
+                toolbarPanelMatrix = NSMatrix; 
+                windowSizeMatrix = NSMatrix; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }
+    ); 
+    IBVersion = 1; 
+}

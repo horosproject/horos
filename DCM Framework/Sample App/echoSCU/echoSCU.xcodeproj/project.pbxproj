@@ -1,0 +1,1246 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7E16B333078370CC0090D75E /* storeSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = BF794D30077924FE00DF64EB /* storeSCU.m */; };
+		7E40BE6B0785B9DA00806344 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		7E40BE6C0785B9DD00806344 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		7E40BE6D0785B9E300806344 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		7E40BE6E0785B9ED00806344 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		7E4E71E20770F41C00856B65 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		7E4E71E30770F41C00856B65 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		7E4E71E40770F41C00856B65 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		7E52D385078F336C001FEA64 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		7E52D386078F336C001FEA64 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		7E52D387078F336C001FEA64 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		7E52D388078F336C001FEA64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		7E52D38C078F3381001FEA64 /* dicomDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E52D38B078F3381001FEA64 /* dicomDump.m */; };
+		7E52D38D078F3478001FEA64 /* dicomDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E52D38B078F3381001FEA64 /* dicomDump.m */; };
+		7E52D3C4078F36D5001FEA64 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		7E52D3C5078F36D5001FEA64 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		7E52D3C6078F36D5001FEA64 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		7E52D3C7078F36D5001FEA64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		7E52D3CC078F3839001FEA64 /* moveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E52D3CA078F36E4001FEA64 /* moveSCU.m */; };
+		7E52D40A078F3DB0001FEA64 /* moveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E52D3CA078F36E4001FEA64 /* moveSCU.m */; };
+		7E55DE6E0785B6410036946F /* dicomDecompress.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E55DE6D0785B6410036946F /* dicomDecompress.m */; };
+		7EDA16AA0788984300CEAE48 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		7EDA16AB0788984300CEAE48 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		7EDA16AC0788984300CEAE48 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		7EDA16AD0788984300CEAE48 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		7EDA16BB0788993400CEAE48 /* findSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA16BA0788993400CEAE48 /* findSCU.m */; };
+		8DD76F9A0486AA7600D96B5E /* echoSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* echoSCU.m */; settings = {ATTRIBUTES = (); }; };
+		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		8DD76F9F0486AA7600D96B5E /* echoSCU.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859EA3029092ED04C91782 /* echoSCU.1 */; };
+		BF7251C5077E44C3001AA3D5 /* storeSCP.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7251C4077E44C3001AA3D5 /* storeSCP.m */; };
+		BF72527D077E64B1001AA3D5 /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		BF72527E077E64B1001AA3D5 /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		BF72527F077E64B1001AA3D5 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		BF725280077E64B1001AA3D5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		BF794DDA0779261900DF64EB /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71DF0770F41C00856B65 /* OmniBase.framework */; };
+		BF794DDB0779261900DF64EB /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E00770F41C00856B65 /* OmniNetworking.framework */; };
+		BF794DDC0779261900DF64EB /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E4E71E10770F41C00856B65 /* OsiriX.framework */; };
+		BF794DDD0779261900DF64EB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA4F0018CE4811CA2923 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		014CEA500018CE4811CA2923 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F9F0486AA7600D96B5E /* echoSCU.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* echoSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = echoSCU.m; sourceTree = "<group>"; };
+		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32A70AAB03705E1F00C91783 /* echoSCU_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = echoSCU_Prefix.pch; sourceTree = "<group>"; };
+		7E4E71DF0770F41C00856B65 /* OmniBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OmniBase.framework; path = ../../../Binaries/OmniBase.framework; sourceTree = SOURCE_ROOT; };
+		7E4E71E00770F41C00856B65 /* OmniNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OmniNetworking.framework; path = ../../../Binaries/OmniNetworking.framework; sourceTree = SOURCE_ROOT; };
+		7E4E71E10770F41C00856B65 /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OsiriX.framework; path = ../../../build/OsiriX.framework; sourceTree = SOURCE_ROOT; };
+		7E52D2B2078F3340001FEA64 /* dicomDump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dicomDump; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E52D38B078F3381001FEA64 /* dicomDump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dicomDump.m; sourceTree = "<group>"; };
+		7E52D3C2078F36AB001FEA64 /* moveSCU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = moveSCU; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E52D3CA078F36E4001FEA64 /* moveSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = moveSCU.m; sourceTree = "<group>"; };
+		7E55DE630785B5DE0036946F /* dicomDecompress */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dicomDecompress; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E55DE6D0785B6410036946F /* dicomDecompress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = dicomDecompress.m; sourceTree = "<group>"; };
+		7EDA15D50788983500CEAE48 /* findSCU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = findSCU; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EDA16BA0788993400CEAE48 /* findSCU.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = findSCU.m; sourceTree = "<group>"; };
+		8DD76FA10486AA7600D96B5E /* echoSCU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = echoSCU; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF7251A9077E445E001AA3D5 /* storeSCP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = storeSCP; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF7251C4077E44C3001AA3D5 /* storeSCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = storeSCP.m; sourceTree = "<group>"; };
+		BF794D2C077924BF00DF64EB /* storeSCU */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = storeSCU; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF794D30077924FE00DF64EB /* storeSCU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = storeSCU.m; sourceTree = "<group>"; };
+		C6859EA3029092ED04C91782 /* echoSCU.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = echoSCU.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7E52D2B0078F3340001FEA64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E52D385078F336C001FEA64 /* OmniBase.framework in Frameworks */,
+				7E52D386078F336C001FEA64 /* OmniNetworking.framework in Frameworks */,
+				7E52D387078F336C001FEA64 /* OsiriX.framework in Frameworks */,
+				7E52D388078F336C001FEA64 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E52D3C0078F36AB001FEA64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E52D3C4078F36D5001FEA64 /* OmniBase.framework in Frameworks */,
+				7E52D3C5078F36D5001FEA64 /* OmniNetworking.framework in Frameworks */,
+				7E52D3C6078F36D5001FEA64 /* OsiriX.framework in Frameworks */,
+				7E52D3C7078F36D5001FEA64 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E55DE610785B5DE0036946F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E40BE6D0785B9E300806344 /* OmniNetworking.framework in Frameworks */,
+				7E40BE6E0785B9ED00806344 /* OmniBase.framework in Frameworks */,
+				7E40BE6B0785B9DA00806344 /* Foundation.framework in Frameworks */,
+				7E40BE6C0785B9DD00806344 /* OsiriX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7EDA15D30788983500CEAE48 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EDA16AA0788984300CEAE48 /* OmniBase.framework in Frameworks */,
+				7EDA16AB0788984300CEAE48 /* OmniNetworking.framework in Frameworks */,
+				7EDA16AC0788984300CEAE48 /* OsiriX.framework in Frameworks */,
+				7EDA16AD0788984300CEAE48 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				7E4E71E20770F41C00856B65 /* OmniBase.framework in Frameworks */,
+				7E4E71E30770F41C00856B65 /* OmniNetworking.framework in Frameworks */,
+				7E4E71E40770F41C00856B65 /* OsiriX.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7251A7077E445E001AA3D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF72527D077E64B1001AA3D5 /* OmniBase.framework in Frameworks */,
+				BF72527E077E64B1001AA3D5 /* OmniNetworking.framework in Frameworks */,
+				BF72527F077E64B1001AA3D5 /* OsiriX.framework in Frameworks */,
+				BF725280077E64B1001AA3D5 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF794D2A077924BF00DF64EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF794DDA0779261900DF64EB /* OmniBase.framework in Frameworks */,
+				BF794DDB0779261900DF64EB /* OmniNetworking.framework in Frameworks */,
+				BF794DDC0779261900DF64EB /* OsiriX.framework in Frameworks */,
+				BF794DDD0779261900DF64EB /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* echoSCU */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859EA2029092E104C91782 /* Documentation */,
+				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = echoSCU;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7E52D3CA078F36E4001FEA64 /* moveSCU.m */,
+				7E52D38B078F3381001FEA64 /* dicomDump.m */,
+				7EDA16BA0788993400CEAE48 /* findSCU.m */,
+				7E55DE6D0785B6410036946F /* dicomDecompress.m */,
+				BF7251C4077E44C3001AA3D5 /* storeSCP.m */,
+				BF794D30077924FE00DF64EB /* storeSCU.m */,
+				32A70AAB03705E1F00C91783 /* echoSCU_Prefix.pch */,
+				08FB7796FE84155DC02AAC07 /* echoSCU.m */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				7E4E71DF0770F41C00856B65 /* OmniBase.framework */,
+				7E4E71E00770F41C00856B65 /* OmniNetworking.framework */,
+				7E4E71E10770F41C00856B65 /* OsiriX.framework */,
+				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FA10486AA7600D96B5E /* echoSCU */,
+				BF794D2C077924BF00DF64EB /* storeSCU */,
+				BF7251A9077E445E001AA3D5 /* storeSCP */,
+				7E55DE630785B5DE0036946F /* dicomDecompress */,
+				7EDA15D50788983500CEAE48 /* findSCU */,
+				7E52D2B2078F3340001FEA64 /* dicomDump */,
+				7E52D3C2078F36AB001FEA64 /* moveSCU */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859EA2029092E104C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859EA3029092ED04C91782 /* echoSCU.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7E52D2B1078F3340001FEA64 /* dicomDump */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FEC087588BF007FFD6F /* Build configuration list for PBXNativeTarget "dicomDump" */;
+			buildPhases = (
+				7E52D2AF078F3340001FEA64 /* Sources */,
+				7E52D2B0078F3340001FEA64 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDump;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = dicomDump;
+			productName = dicomDump;
+			productReference = 7E52D2B2078F3340001FEA64 /* dicomDump */;
+			productType = "com.apple.product-type.tool";
+		};
+		7E52D3C1078F36AB001FEA64 /* moveSCU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FF0087588BF007FFD6F /* Build configuration list for PBXNativeTarget "moveSCU" */;
+			buildPhases = (
+				7E52D3BF078F36AB001FEA64 /* Sources */,
+				7E52D3C0078F36AB001FEA64 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = moveSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = moveSCU;
+			productName = moveSCU;
+			productReference = 7E52D3C2078F36AB001FEA64 /* moveSCU */;
+			productType = "com.apple.product-type.tool";
+		};
+		7E55DE620785B5DE0036946F /* dicomDecompress */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FE4087588BF007FFD6F /* Build configuration list for PBXNativeTarget "dicomDecompress" */;
+			buildPhases = (
+				7E55DE600785B5DE0036946F /* Sources */,
+				7E55DE610785B5DE0036946F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDecompress;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = dicomDecompress;
+			productName = dicomDecompress;
+			productReference = 7E55DE630785B5DE0036946F /* dicomDecompress */;
+			productType = "com.apple.product-type.tool";
+		};
+		7EDA15D40788983500CEAE48 /* findSCU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FE8087588BF007FFD6F /* Build configuration list for PBXNativeTarget "findSCU" */;
+			buildPhases = (
+				7EDA15D20788983500CEAE48 /* Sources */,
+				7EDA15D30788983500CEAE48 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = findSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = findSCU;
+			productName = findSCU;
+			productReference = 7EDA15D50788983500CEAE48 /* findSCU */;
+			productType = "com.apple.product-type.tool";
+		};
+		8DD76F960486AA7600D96B5E /* echoSCU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FD8087588BF007FFD6F /* Build configuration list for PBXNativeTarget "echoSCU" */;
+			buildPhases = (
+				8DD76F990486AA7600D96B5E /* Sources */,
+				8DD76F9B0486AA7600D96B5E /* Frameworks */,
+				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = echoSCU;
+			};
+			dependencies = (
+			);
+			name = echoSCU;
+			productInstallPath = "$(HOME)/bin";
+			productName = echoSCU;
+			productReference = 8DD76FA10486AA7600D96B5E /* echoSCU */;
+			productType = "com.apple.product-type.tool";
+		};
+		BF7251A8077E445E001AA3D5 /* storeSCP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FE0087588BF007FFD6F /* Build configuration list for PBXNativeTarget "storeSCP" */;
+			buildPhases = (
+				BF7251A6077E445E001AA3D5 /* Sources */,
+				BF7251A7077E445E001AA3D5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCP;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = storeSCP;
+			productName = storeSCP;
+			productReference = BF7251A9077E445E001AA3D5 /* storeSCP */;
+			productType = "com.apple.product-type.tool";
+		};
+		BF794D2B077924BF00DF64EB /* storeSCU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FDC087588BF007FFD6F /* Build configuration list for PBXNativeTarget "storeSCU" */;
+			buildPhases = (
+				BF794D29077924BF00DF64EB /* Sources */,
+				BF794D2A077924BF00DF64EB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			dependencies = (
+			);
+			name = storeSCU;
+			productName = storeSCU;
+			productReference = BF794D2C077924BF00DF64EB /* storeSCU */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = CE3E1FF4087588BF007FFD6F /* Build configuration list for PBXProject "echoSCU" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA4F0018CE4811CA2923 /* Development */,
+				014CEA500018CE4811CA2923 /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* echoSCU */;
+			projectDirPath = "";
+			targets = (
+				8DD76F960486AA7600D96B5E /* echoSCU */,
+				BF794D2B077924BF00DF64EB /* storeSCU */,
+				BF7251A8077E445E001AA3D5 /* storeSCP */,
+				7E55DE620785B5DE0036946F /* dicomDecompress */,
+				7EDA15D40788983500CEAE48 /* findSCU */,
+				7E52D2B1078F3340001FEA64 /* dicomDump */,
+				7E52D3C1078F36AB001FEA64 /* moveSCU */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7E52D2AF078F3340001FEA64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E52D38D078F3478001FEA64 /* dicomDump.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E52D3BF078F36AB001FEA64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E52D40A078F3DB0001FEA64 /* moveSCU.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E55DE600785B5DE0036946F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E55DE6E0785B6410036946F /* dicomDecompress.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7EDA15D20788983500CEAE48 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7EDA16BB0788993400CEAE48 /* findSCU.m in Sources */,
+				7E52D38C078F3381001FEA64 /* dicomDump.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DD76F990486AA7600D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DD76F9A0486AA7600D96B5E /* echoSCU.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF7251A6077E445E001AA3D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF7251C5077E44C3001AA3D5 /* storeSCP.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF794D29077924BF00DF64EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E16B333078370CC0090D75E /* storeSCU.m in Sources */,
+				7E52D3CC078F3839001FEA64 /* moveSCU.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CE3E1FD9087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				PRODUCT_NAME = echoSCU;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FDA087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = echoSCU;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FDB087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = echoSCU;
+			};
+			name = Default;
+		};
+		CE3E1FDD087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FDE087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FDF087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FE1087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCP;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FE2087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCP;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FE3087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = storeSCP;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FE5087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDecompress;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FE6087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDecompress;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FE7087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDecompress;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FE9087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = findSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FEA087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = findSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FEB087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = findSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FED087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDump;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FEE087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDump;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FEF087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = dicomDump;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FF1087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					../../../Binaries,
+					../../../Build,
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = moveSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		CE3E1FF2087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = moveSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FF3087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = echoSCU_Prefix.pch;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = moveSCU;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		CE3E1FF5087588BF007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		CE3E1FF6087588BF007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		CE3E1FF7087588BF007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE3E1FD8087588BF007FFD6F /* Build configuration list for PBXNativeTarget "echoSCU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FD9087588BF007FFD6F /* Development */,
+				CE3E1FDA087588BF007FFD6F /* Deployment */,
+				CE3E1FDB087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FDC087588BF007FFD6F /* Build configuration list for PBXNativeTarget "storeSCU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FDD087588BF007FFD6F /* Development */,
+				CE3E1FDE087588BF007FFD6F /* Deployment */,
+				CE3E1FDF087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FE0087588BF007FFD6F /* Build configuration list for PBXNativeTarget "storeSCP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FE1087588BF007FFD6F /* Development */,
+				CE3E1FE2087588BF007FFD6F /* Deployment */,
+				CE3E1FE3087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FE4087588BF007FFD6F /* Build configuration list for PBXNativeTarget "dicomDecompress" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FE5087588BF007FFD6F /* Development */,
+				CE3E1FE6087588BF007FFD6F /* Deployment */,
+				CE3E1FE7087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FE8087588BF007FFD6F /* Build configuration list for PBXNativeTarget "findSCU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FE9087588BF007FFD6F /* Development */,
+				CE3E1FEA087588BF007FFD6F /* Deployment */,
+				CE3E1FEB087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FEC087588BF007FFD6F /* Build configuration list for PBXNativeTarget "dicomDump" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FED087588BF007FFD6F /* Development */,
+				CE3E1FEE087588BF007FFD6F /* Deployment */,
+				CE3E1FEF087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FF0087588BF007FFD6F /* Build configuration list for PBXNativeTarget "moveSCU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FF1087588BF007FFD6F /* Development */,
+				CE3E1FF2087588BF007FFD6F /* Deployment */,
+				CE3E1FF3087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FF4087588BF007FFD6F /* Build configuration list for PBXProject "echoSCU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FF5087588BF007FFD6F /* Development */,
+				CE3E1FF6087588BF007FFD6F /* Deployment */,
+				CE3E1FF7087588BF007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

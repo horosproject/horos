@@ -1,0 +1,41 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = NSPreferencePane; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_firstKeyView" = id; 
+                "_initialKeyView" = id; 
+                "_lastKeyView" = id; 
+                "_window" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                chooseSupplementaryBurnPath = id; 
+                setBurnOsirixApplication = id; 
+                setBurnSupplementaryFolder = id; 
+                setDicomdirMode = id; 
+                setMountOnOff = id; 
+                setStillMovieMode = id; 
+                setUnmountOnOff = id; 
+            }; 
+            CLASS = OSICDPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                burnOsirixCheck = id; 
+                burnSupplementaryFolderCheck = id; 
+                dicomdirModeMatrix = NSButton; 
+                mountOnOffButton = NSButton; 
+                preferenceController = id; 
+                stillMovieModeMatrix = NSButton; 
+                supplementaryFolderPath = id; 
+                unmountOnOffButton = NSButton; 
+            }; 
+            SUPERCLASS = NSPreferencePane; 
+        }
+    ); 
+    IBVersion = 1; 
+}

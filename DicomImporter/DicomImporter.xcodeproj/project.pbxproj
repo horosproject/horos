@@ -1,0 +1,423 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */; };
+		8D576312048677EA00EA77CD /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB77B6FE84183AC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
+		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
+		BF12BE1B073BF971008C31F2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF12BE15073BF971008C31F2 /* Foundation.framework */; };
+		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
+		C88FB7D8067446EC006EBB30 /* schema.xml in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7D7067446EC006EBB30 /* schema.xml */; };
+		C88FB7E40674480E006EBB30 /* schema.strings in Resources */ = {isa = PBXBuildFile; fileRef = C88FB7E30674480E006EBB30 /* schema.strings */; };
+		CE2367310770ECBE007C27AB /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23672B0770ECBE007C27AB /* OsiriX.framework */; };
+		CE2367560770ED5F007C27AB /* OmniBase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2367500770ED5F007C27AB /* OmniBase.framework */; };
+		CE2367700770ED63007C27AB /* OmniNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE23676A0770ED63007C27AB /* OmniNetworking.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA3F0018CDD111CA2923 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+			};
+			name = Development;
+		};
+		014CEA400018CDD111CA2923 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		08FB77B6FE84183AC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetMetadataForFile.m; sourceTree = "<group>"; };
+		8D576316048677EA00EA77CD /* DicomImporter.mdimporter */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DicomImporter.mdimporter; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BF12BE15073BF971008C31F2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		C88FB7D7067446EC006EBB30 /* schema.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = schema.xml; sourceTree = "<group>"; };
+		C88FB7DB0674470F006EBB30 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/schema.strings; sourceTree = "<group>"; };
+		CE23672B0770ECBE007C27AB /* OsiriX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OsiriX.framework; path = ../build/OsiriX.framework; sourceTree = SOURCE_ROOT; };
+		CE2367500770ED5F007C27AB /* OmniBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OmniBase.framework; path = ../Binaries/OmniBase.framework; sourceTree = SOURCE_ROOT; };
+		CE23676A0770ED63007C27AB /* OmniNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OmniNetworking.framework; path = ../Binaries/OmniNetworking.framework; sourceTree = SOURCE_ROOT; };
+		CEC0E1A80750D6BD00554B2C /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = nameDictionary.plist; path = "../DCM Framework/nameDictionary.plist"; sourceTree = SOURCE_ROOT; };
+		CEC0E1AD0750D6BD00554B2C /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = tagDictionary.plist; path = "../DCM Framework/tagDictionary.plist"; sourceTree = SOURCE_ROOT; };
+		CEC0E1CC0750D6F200554B2C /* DCM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DCM.h; path = "../DCM Framework/DCM.h"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D576313048677EA00EA77CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */,
+				C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */,
+				BF12BE1B073BF971008C31F2 /* Foundation.framework in Frameworks */,
+				CE2367310770ECBE007C27AB /* OsiriX.framework in Frameworks */,
+				CE2367560770ED5F007C27AB /* OmniBase.framework in Frameworks */,
+				CE2367700770ED63007C27AB /* OmniNetworking.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* DicomImporter */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+			);
+			name = DicomImporter;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				CE23676A0770ED63007C27AB /* OmniNetworking.framework */,
+				CE2367500770ED5F007C27AB /* OmniBase.framework */,
+				CE23672B0770ECBE007C27AB /* OsiriX.framework */,
+				BF12BE15073BF971008C31F2 /* Foundation.framework */,
+				C86B05260671AA6E00DD9006 /* CoreServices.framework */,
+				0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CEC0E1A80750D6BD00554B2C /* nameDictionary.plist */,
+				CEC0E1AD0750D6BD00554B2C /* tagDictionary.plist */,
+				C88FB7E30674480E006EBB30 /* schema.strings */,
+				C88FB7D7067446EC006EBB30 /* schema.xml */,
+				8D576317048677EA00EA77CD /* Info.plist */,
+				8D5B49A704867FD3000E48DA /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				2C05A19B06CAA52B00D84F6F /* GetMetadataForFile.m */,
+				08FB77B6FE84183AC02AAC07 /* main.c */,
+				CEC0E1CC0750D6F200554B2C /* DCM.h */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D576316048677EA00EA77CD /* DicomImporter.mdimporter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8D57630E048677EA00EA77CD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8D57630D048677EA00EA77CD /* DicomImporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE3E1FA9087588AD007FFD6F /* Build configuration list for PBXNativeTarget "DicomImporter" */;
+			buildPhases = (
+				8D57630E048677EA00EA77CD /* Headers */,
+				8D57630F048677EA00EA77CD /* Resources */,
+				8D576311048677EA00EA77CD /* Sources */,
+				8D576313048677EA00EA77CD /* Frameworks */,
+				8D576315048677EA00EA77CD /* Rez */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					../build,
+					../Binaries,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/MDImporters";
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = DicomImporter;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = mdimporter;
+				ZERO_LINK = NO;
+			};
+			dependencies = (
+			);
+			name = DicomImporter;
+			productInstallPath = "$(HOME)/Library/MDImporters";
+			productName = DicomImporter;
+			productReference = 8D576316048677EA00EA77CD /* DicomImporter.mdimporter */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = CE3E1FAD087588AD007FFD6F /* Build configuration list for PBXProject "DicomImporter" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA3F0018CDD111CA2923 /* Development */,
+				014CEA400018CDD111CA2923 /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* DicomImporter */;
+			projectDirPath = "";
+			targets = (
+				8D57630D048677EA00EA77CD /* DicomImporter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D57630F048677EA00EA77CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */,
+				C88FB7D8067446EC006EBB30 /* schema.xml in Resources */,
+				C88FB7E40674480E006EBB30 /* schema.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8D576315048677EA00EA77CD /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D576311048677EA00EA77CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D576312048677EA00EA77CD /* main.c in Sources */,
+				2C05A19C06CAA52B00D84F6F /* GetMetadataForFile.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8D5B49A704867FD3000E48DA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C88FB7E30674480E006EBB30 /* schema.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C88FB7DB0674470F006EBB30 /* English */,
+			);
+			name = schema.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CE3E1FAA087588AD007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					../build,
+					../Binaries,
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/MDImporters";
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = Bundle;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = DicomImporter;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = mdimporter;
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		CE3E1FAB087588AD007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					../build,
+					../Binaries,
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/MDImporters";
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = DicomImporter;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = mdimporter;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		CE3E1FAC087588AD007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					../build,
+					../Binaries,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/MDImporters";
+				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = DicomImporter;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = mdimporter;
+				ZERO_LINK = NO;
+			};
+			name = Default;
+		};
+		CE3E1FAE087588AD007FFD6F /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		CE3E1FAF087588AD007FFD6F /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		CE3E1FB0087588AD007FFD6F /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE3E1FA9087588AD007FFD6F /* Build configuration list for PBXNativeTarget "DicomImporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FAA087588AD007FFD6F /* Development */,
+				CE3E1FAB087588AD007FFD6F /* Deployment */,
+				CE3E1FAC087588AD007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE3E1FAD087588AD007FFD6F /* Build configuration list for PBXProject "DicomImporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3E1FAE087588AD007FFD6F /* Development */,
+				CE3E1FAF087588AD007FFD6F /* Deployment */,
+				CE3E1FB0087588AD007FFD6F /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

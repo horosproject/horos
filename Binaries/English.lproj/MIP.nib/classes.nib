@@ -1,0 +1,124 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {renderButton = id; selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {
+            ACTIONS = {"" = id; switchActor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                ApplyCLUT = id; 
+                LODsliderAction = id; 
+                MoviePlayStop = id; 
+                blendingSlider = id; 
+                clutAction = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                setDefaultTool = id; 
+            }; 
+            CLASS = MIPController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                BlendingView = NSView; 
+                LODSlider = NSSlider; 
+                LODView = NSView; 
+                WLWWView = NSView; 
+                addCLUTWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                blendingPercentage = NSTextField; 
+                blendingSlider = NSSlider; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
+                newName = NSTextField; 
+                perspectiveView = NSView; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                view = MIPView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = Window3DController; 
+        }, 
+        {
+            ACTIONS = {
+                endDCMExportSettings = id; 
+                endQuicktimeSettings = id; 
+                endQuicktimeVRSettings = id; 
+                exportQuicktime3D = id; 
+                switchProjection = id; 
+            }; 
+            CLASS = MIPView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                VRFrames = NSMatrix; 
+                VRquality = NSMatrix; 
+                dcmExportMode = NSMatrix; 
+                dcmframesSlider = NSSlider; 
+                dcmquality = NSMatrix; 
+                dcmrotation = NSMatrix; 
+                export3DVRWindow = NSWindow; 
+                export3DWindow = NSWindow; 
+                exportDCMWindow = NSWindow; 
+                framesSlider = NSSlider; 
+                quality = NSMatrix; 
+                rotation = NSMatrix; 
+            }; 
+            SUPERCLASS = VTKView; 
+        }, 
+        {
+            ACTIONS = {endNameWLWW = id; setDefaultTool = id; sliderAction = id; }; 
+            CLASS = MPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                WLWWView = NSView; 
+                Xslider = NSSlider; 
+                Yslider = NSSlider; 
+                Zslider = NSSlider; 
+                addWLWWWindow = NSWindow; 
+                axesView = NSView; 
+                newName = NSTextField; 
+                toolsView = NSView; 
+                view = MPRView; 
+                wl = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = MPRView; LANGUAGE = ObjC; SUPERCLASS = VTKView; }, 
+        {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {
+            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            CLASS = Window3DController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                fromset = NSTextField; 
+                setWLWWWindow = NSWindow; 
+                toset = NSTextField; 
+                wlset = NSTextField; 
+                wwset = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
+    ); 
+    IBVersion = 1; 
+}

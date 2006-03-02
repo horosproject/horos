@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {done = id; dontShowAgain = id; }; 
+            CLASS = Survey; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                comments = NSTextField; 
+                plugin = NSMatrix; 
+                usage = NSMatrix; 
+                what = NSMatrix; 
+                where = NSMatrix; 
+                who = NSMatrix; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

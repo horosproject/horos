@@ -1,0 +1,34 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            CLASS = OSADictionaryView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_containmentBrowser" = NSBrowser; 
+                "_contentView" = WebView; 
+                "_inheritanceBrowser" = NSBrowser; 
+                "_outlineView" = NSOutlineView; 
+                "_splitView" = OSASplitView; 
+                "_suiteBrowser" = NSBrowser; 
+                "_tabView" = NSTabView; 
+                "_tableView" = NSTableView; 
+            }; 
+            SUPERCLASS = OSASplitView; 
+        }, 
+        {CLASS = OSASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {
+            ACTIONS = {changeBrushSize = id; changeMode = id; }; 
+            CLASS = PaletteController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                modeControl = NSSegmentedControl; 
+                sizeSlider = NSSlider; 
+                sliderTextValue = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

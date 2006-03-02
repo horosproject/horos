@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {endSelectServer = id; selectServer = id; }; 
+            CLASS = SendController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                DICOMSendTool = NSMatrix; 
+                keyImageMatrix = NSMatrix; 
+                numberImagesTextField = NSTextField; 
+                serverList = NSComboBox; 
+                syntaxListOffis = NSPopUpButton; 
+                syntaxListOsiriX = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

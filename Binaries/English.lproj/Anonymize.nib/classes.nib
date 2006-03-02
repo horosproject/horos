@@ -1,0 +1,26 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {anonymize = id; matrixAction = id; }; 
+            CLASS = AnonymizerWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                accessoryView = NSView; 
+                firstColumnValues = NSMatrix; 
+                secondColumnValues = NSMatrix; 
+                tagMatrixfirstColumn = NSMatrix; 
+                tagMatrixsecondColumn = NSMatrix; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = ButtonAndTextCell; LANGUAGE = ObjC; SUPERCLASS = NSButtonCell; }, 
+        {
+            CLASS = ButtonAndTextField; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textField = NSTextField; }; 
+            SUPERCLASS = NSButton; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
