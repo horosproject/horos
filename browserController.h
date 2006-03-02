@@ -310,6 +310,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (long) currentBonjourService;
 - (void) resetToLocalDatabase;
 - (void) createContextualMenu;
+- (NSBox*) bonjourSourcesBox;
 
 //DB plugins
 - (void)executeFilterDB:(id)sender;

@@ -97,4 +97,10 @@ NSRect screenFrame();
 
 - ( NSMenuItem *)	syncSeriesMenuItem;
 
+#pragma mark-
+#pragma mark Geneva University Hospital (HUG) specific function
+- (BOOL) isHUG;
+- (void) HUGVerifyComPACSPlugin;
+- (void) HUGHideBonjourFeatur;
+
 @end

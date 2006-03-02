@@ -1784,22 +1784,27 @@ static BOOL initialized = NO;
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
-	NSArray	*names = [[NSHost currentHost] names];
-	
-	for( i = 0; i < [names count]; i++)
+//	NSArray	*names = [[NSHost currentHost] names];
+//	
+//	for( i = 0; i < [names count]; i++)
+//	{
+//		if([[[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8] isEqualToString: @"hcuge.ch"])
+//		{
+//			if( [plugins valueForKey:@"ComPACS"] == 0)
+//			{
+//				int button = NSRunAlertPanel(@"OsiriX HUG PACS", @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.", @"OK", @"Cancel", nil);
+//				if (NSOKButton == button)
+//				{
+//					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/"]];
+//				}
+//			}
+//			i = [names count];
+//		}
+//	}
+	if([self isHUG])
 	{
-		if([[[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8] isEqualToString: @"hcuge.ch"])
-		{
-			if( [plugins valueForKey:@"ComPACS"] == 0)
-			{
-				int button = NSRunAlertPanel(@"OsiriX HUG PACS", @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.", @"OK", @"Cancel", nil);
-				if (NSOKButton == button)
-				{
-					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/"]];
-				}
-			}
-			i = [names count];
-		}
+		[self HUGHideBonjourFeature];
+		[self HUGVerifyComPACSPlugin];
 	}
 	/// *****************************
 	/// *****************************
@@ -2448,5 +2453,51 @@ static BOOL initialized = NO;
 - ( NSMenuItem *)	syncSeriesMenuItem{
 	return syncSeriesMenuItem;
 }
+
+#pragma mark-
+#pragma mark Geneva University Hospital (HUG) specific function
+
+// Test if the computer is in the HUG (domain name == hcuge.ch)
+- (BOOL) isHUG
+{
+	BOOL isHcugeCh = NO;
+
+	NSArray	*names = [[NSHost currentHost] names];
+	int i;
+	for( i = 0; i < [names count] && !isHcugeCh; i++)
+	{
+		NSString *domainName = [[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8];
+		if([domainName isEqualToString: @"hcuge.ch"]
+			&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"]) // Joris' IP
+		{
+			isHcugeCh = YES;
+		}
+	}
+
+	return isHcugeCh;
+}
+
+// Test ComPACS
+- (void) HUGVerifyComPACSPlugin
+{	
+	if( [plugins valueForKey:@"ComPACS"] == 0)
+	{
+		int button = NSRunAlertPanel(@"OsiriX HUG PACS",
+									 @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.",
+									 @"OK", @"Cancel", nil);
+		if (NSOKButton == button)
+		{
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"intrad.hcuge.ch—telechargement <http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/>"]];
+		}
+	}
+}
+
+// Hide the Bonjour Panel in the side drawer
+- (void) HUGHideBonjourFeature
+{
+	[[browserController bonjourSourcesBox] setHidden:YES];
+	[[browserController bonjourSourcesBox] setNeedsDisplay:YES];
+}
+
 
 @end
