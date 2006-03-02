@@ -2305,6 +2305,7 @@ public:
 		}
 		else if( tool == tBoneRemoval)
 		{
+			[controller prepareUndo];
 			// clicked point (2D coordinate)
 			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
