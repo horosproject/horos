@@ -231,6 +231,7 @@
 			if ( [[roi name] isEqualToString: [iROI name]] ) {
 				[roi setColor: [iROI color]];
 				[roi setThickness: [iROI thickness]];
+				[roi setOpacity: [iROI opacity]];
 				if ( newName ) [roi setName: newName];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:roi userInfo: 0L];
 			}
