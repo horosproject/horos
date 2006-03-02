@@ -253,7 +253,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 		if( files2Send != 0L && [files2Send count] > 0)
 		{
-		// DONT REMOVE THESE LINES - THANX ANTOINE
+			// DONT REMOVE THESE LINES - THANX ANTOINE
 			if( [plugins valueForKey:@"ComPACS"] != 0)
 			{
 				long result = [[plugins objectForKey:@"ComPACS"] prepareFilter: 0L];

@@ -1147,7 +1147,7 @@ extern NSString * documentsDirectory();
 			if( data)
 			{
 				[dcmSequence setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing] :[[view finalView] pixelSpacing]];
+				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing]/ [[view finalView] scaleValue] :[[view finalView] pixelSpacing]/ [[view finalView] scaleValue]];
 				[[view finalView] getWLWW:&cwl :&cww];
 				[dcmSequence setDefaultWWWL: (long) cww : (long) cwl];
 				
@@ -1184,7 +1184,7 @@ extern NSString * documentsDirectory();
 			[exportDCM setSeriesNumber:5400];
 			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 			
-			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] :[[view finalView] pixelSpacing]];
+			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] / [[view finalView] scaleValue] :[[view finalView] pixelSpacing] / [[view finalView] scaleValue]];
 			
 			[[view finalView] getWLWW:&cwl :&cww];
 			[exportDCM setDefaultWWWL: (long) cww : (long) cwl];
