@@ -30,8 +30,10 @@
                 aeTitleField = NSFormCell; 
                 deleteFileModeMatrix = NSMatrix; 
                 extrastorescp = NSTextField; 
+                ipField = NSFormCell; 
                 listenerOnOffAnonymize = NSButton; 
                 listenerOnOffButton = NSButton; 
+                nameField = NSFormCell; 
                 portField = NSFormCell; 
                 transferSyntaxBox = NSBox; 
                 transferSyntaxModeMatrix = NSMatrix; 

@@ -25,6 +25,8 @@
 	IBOutlet NSMatrix *useStoreSCPModeMatrix;
 	IBOutlet NSFormCell *aeTitleField;
 	IBOutlet NSFormCell *portField;
+	IBOutlet NSFormCell *ipField;
+	IBOutlet NSFormCell *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSTextField *extrastorescp;
 }

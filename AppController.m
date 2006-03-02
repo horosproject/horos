@@ -36,7 +36,6 @@ MODIFICATION HISTORY
   
 ****************************************************************/
 
-
 #if __ppc__
 //#import <ILCrashReporter/ILCrashReporter.h>
 #endif

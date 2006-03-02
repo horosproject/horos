@@ -190,17 +190,25 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>AB34B71609AA11120057FE0E</string>
+				<string>AB3551B309B74DB300F0C358</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>OSIListenerPreferencePanePref.m</string>
+				<string>OSIListenerPreferencePanePref.h</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>AB34B71709AA11120057FE0E</string>
+						<string>AB3551B409B74DB300F0C358</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>OSIListenerPreferencePanePref.m</string>
+						<string>OSIListenerPreferencePanePref.h</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>AB3551B609B74DB300F0C358</string>
+						<key>history</key>
+						<array>
+							<string>AB3551B509B74DB300F0C358</string>
+						</array>
 					</dict>
 					<key>SplitCount</key>
 					<string>1</string>
@@ -215,7 +223,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>300 63 1245 815 0 0 1440 878 </string>
+				<string>15 58 1245 815 0 0 1440 878 </string>
 			</dict>
 		</dict>
 	</array>
@@ -290,6 +298,7 @@
 							<array>
 								<string>089C166AFE841209C02AAC07</string>
 								<string>08FB77AFFE84173DC02AAC07</string>
+								<string>089C167CFE841241C02AAC07</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -297,8 +306,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
-									<integer>1</integer>
+									<integer>9</integer>
+									<integer>5</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -322,7 +331,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>127 60 1114 668 0 0 1440 878 </string>
+						<string>238 155 1114 668 0 0 1440 878 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -333,18 +342,35 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string>OSIListenerPreferencePanePref.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
+										<key>PBXProjectModuleLabel</key>
+										<string>OSIListenerPreferencePanePref.m</string>
+										<key>_historyCapacity</key>
+										<integer>0</integer>
+										<key>bookmark</key>
+										<string>AB3551B209B74DB300F0C358</string>
+										<key>history</key>
+										<array>
+											<string>AB35516009B74B1B00F0C358</string>
+											<string>AB3551B109B74DB300F0C358</string>
+										</array>
+										<key>prevStack</key>
+										<array>
+											<string>AB35516209B74B1B00F0C358</string>
+										</array>
 									</dict>
 									<key>SplitCount</key>
 									<string>1</string>
@@ -357,7 +383,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {906, 622}}</string>
 								<key>RubberWindowFrame</key>
-								<string>127 60 1114 668 0 0 1440 878 </string>
+								<string>238 155 1114 668 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -377,7 +403,7 @@
 								<key>Frame</key>
 								<string>{{0, 627}, {906, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>127 60 1114 668 0 0 1440 878 </string>
+								<string>238 155 1114 668 0 0 1440 878 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -401,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB34B6E709AA0E9A0057FE0E</string>
+				<string>AB35516409B74B1B00F0C358</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB34B6E809AA0E9A0057FE0E</string>
+				<string>AB35516509B74B1B00F0C358</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -537,18 +563,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>AB34B72409AA11120057FE0E</string>
-		<string>AB34B72509AA11120057FE0E</string>
-		<string>AB34B72209AA11120057FE0E</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>AB34B72109AA11120057FE0E</string>
-		<string>AB34B71609AA11120057FE0E</string>
 		<string>AB34B71909AA11120057FE0E</string>
-		<string>/Users/rossetantoine/osirix/Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>AB3551B309B74DB300F0C358</string>
+		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>127 60 1114 668 0 0 1440 878 </string>
+	<string>238 155 1114 668 0 0 1440 878 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -569,7 +590,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>OSIListenerPreferencePanePref.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -586,6 +607,8 @@
 							<string>218pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -625,7 +648,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>AB34B71909AA11120057FE0E</string>
-				<string>AB34B71A09AA11120057FE0E</string>
+				<string>AB35516809B74B3800F0C358</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -947,8 +970,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {367, 168}}</string>
-											<string>{{0, 173}, {367, 270}}</string>
+											<string>{{0, 0}, {491, 168}}</string>
+											<string>{{0, 173}, {491, 270}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -997,9 +1020,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>AB34B73009AA11AE0057FE0E</string>
+				<string>AB35519409B74BED00F0C358</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>AB34B73109AA11AE0057FE0E</string>
+				<string>AB35519509B74BED00F0C358</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
@@ -1008,7 +1031,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

@@ -14,6 +14,25 @@
 
 #import "OSIListenerPreferencePanePref.h"
 
+
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+char *GetPrivateIP()
+{
+	struct			hostent *h;
+	char			hostname[100];
+	gethostname(hostname, 99);
+	if ((h=gethostbyname(hostname)) == NULL)
+	{
+        perror("Error: ");
+        return "(Error locating Private IP Address)";
+    }
+	
+    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+}
+
 @implementation OSIListenerPreferencePanePref
 - (void) dealloc
 {
@@ -35,8 +54,17 @@
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
+	
 	//setup GUI
+	
+	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+	char			hostname[100];
+	gethostname(hostname, 99);
+	NSString *name = [NSString stringWithCString:hostname];
+
+	[ipField setStringValue: ip];
+	[nameField setStringValue: name];
+	
 	if( [defaults stringForKey:@"STORESCPEXTRA"])
 		[extrastorescp setStringValue:[defaults stringForKey:@"STORESCPEXTRA"]];
 	[aeTitleField setStringValue:[defaults stringForKey:@"AETITLE"]];
