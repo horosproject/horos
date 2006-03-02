@@ -1784,23 +1784,6 @@ static BOOL initialized = NO;
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
-//	NSArray	*names = [[NSHost currentHost] names];
-//	
-//	for( i = 0; i < [names count]; i++)
-//	{
-//		if([[[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8] isEqualToString: @"hcuge.ch"])
-//		{
-//			if( [plugins valueForKey:@"ComPACS"] == 0)
-//			{
-//				int button = NSRunAlertPanel(@"OsiriX HUG PACS", @"Si vous voulez telecharger des images du PACS, vous devez installer le plugin ComPACS.", @"OK", @"Cancel", nil);
-//				if (NSOKButton == button)
-//				{
-//					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://intrad.hcuge.ch/intra/dim/uin/ressources/telechargement/"]];
-//				}
-//			}
-//			i = [names count];
-//		}
-//	}
 	if([self isHUG])
 	{
 		[self HUGHideBonjourFeature];
