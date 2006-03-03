@@ -2433,8 +2433,9 @@ public:
 			float opacitySum = 0.0;
 
 //			NSLog(@"stackMax : %d", stackMax);
-			for( x = 0; (x < stackMax) && (!boneFound); x++)
+			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=1.2); x++)
 			{
+				//NSLog(@"opacitySum : %f", opacitySum);
 				n = (direction)? x : (stackMax-1)-x;
 				
 				float currentPoint[3], planeVector[3];
@@ -2554,7 +2555,7 @@ public:
 						//NSLog(@"value : %f", currentPointValue);
 						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);	
 						boneFound = currentPointValue >= 350;
-						boneFound = boneFound && (opacitySum<=1.1); // take bones only if (nearly) visible
+						boneFound = boneFound && (opacitySum<=1.2); // take bones only if (nearly) visible
 					}
 					
 					if(boneFound)

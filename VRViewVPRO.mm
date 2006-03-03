@@ -2160,8 +2160,10 @@ public:
 	
 			long x, n;
 			BOOL boneFound = NO;
+			float opacitySum = 0.0;
+
 //			NSLog(@"stackMax : %d", stackMax);
-			for( x = 0; (x < stackMax) && (!boneFound); x++)
+			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=1.2); x++)
 			{
 				n = (direction)? x : (stackMax-1)-x;
 				
@@ -2280,7 +2282,9 @@ public:
 
 						currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
 						//NSLog(@"value : %f", currentPointValue);
+						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);
 						boneFound = currentPointValue >= 350;
+						boneFound = boneFound && (opacitySum<=1.2); // take bones only if (nearly) visible
 					}
 					
 					if(boneFound)
