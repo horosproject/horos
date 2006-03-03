@@ -53,7 +53,7 @@ enum
 	tCamera3D,					//	18
 	t2DPoint,					//	19
 	tPlain,						//	20
-	tBoneRemoval				//	21
+	tBonesRemoval				//	21
 };
 
 

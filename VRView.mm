@@ -2303,7 +2303,7 @@ public:
 				}
 			}
 		}
-		else if( tool == tBoneRemoval)
+		else if( tool == tBonesRemoval)
 		{
 			// enable Undo
 			[controller prepareUndo];
@@ -5473,6 +5473,8 @@ public:
 	else if (tool == t3DRotate)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tCross)
+		c = [NSCursor crosshairCursor];
+	else if (tool == tBonesRemoval)
 		c = [NSCursor crosshairCursor];
 	else	
 		c = [NSCursor arrowCursor];
