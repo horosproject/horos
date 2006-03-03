@@ -40,6 +40,7 @@
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
 #define OFFSET16 1500
+#define BONEVALUE 300
 
 extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
 extern BrowserController *browserWindow;
@@ -2282,8 +2283,10 @@ public:
 
 						currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
 						//NSLog(@"value : %f", currentPointValue);
+
 						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);
-						boneFound = currentPointValue >= 350;
+						boneFound = currentPointValue >= BONEVALUE;
+						
 						boneFound = boneFound && (opacitySum<=1.2); // take bones only if (nearly) visible
 					}
 					
@@ -2304,7 +2307,7 @@ public:
 															:-1						// slice = -1 means 3D region growing
 															:seedPoint				// startingPoint
 															:1						// algorithmNumber, 1 = threshold connected with low & up threshold
-															:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:350],
+															:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:BONEVALUE],
 																						[NSNumber numberWithFloat:2000],nil]// algo parameters
 															:0						// setIn
 															:0.0					// inValue
