@@ -2457,21 +2457,26 @@ static BOOL initialized = NO;
 #pragma mark-
 #pragma mark Geneva University Hospital (HUG) specific function
 
+static BOOL isHcugeCh = NO, testDone = NO;
+
 // Test if the computer is in the HUG (domain name == hcuge.ch)
 + (BOOL) isHUG
 {
-	BOOL isHcugeCh = NO;
-
-	NSArray	*names = [[NSHost currentHost] names];
-	int i;
-	for( i = 0; i < [names count] && !isHcugeCh; i++)
+	if( testDone == NO)
 	{
-		NSString *domainName = [[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8];
-		if([domainName isEqualToString: @"hcuge.ch"]
-			&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"]) // Joris' IP
+		NSArray	*names = [[NSHost currentHost] names];
+		int i;
+		for( i = 0; i < [names count] && !isHcugeCh; i++)
 		{
-			isHcugeCh = YES;
+			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8];
+			if([domainName isEqualToString: @"hcuge.ch"]
+				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"]) // Joris' IP
+			{
+				isHcugeCh = YES;
+			}
 		}
+		
+		testDone = YES;
 	}
 
 	return isHcugeCh;
