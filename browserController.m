@@ -759,11 +759,11 @@ static BOOL FORCEREBUILD = NO;
 
 										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 										[album setValue:name forKey:@"name"];
-
-										[self saveDatabase: currentDatabasePath];
-
-										[albumTable reloadData];
-
+//
+//										[self saveDatabase: currentDatabasePath];	Too slow, this will be done at the end of this function
+//
+//										[albumTable reloadData];	WARNING ! You are not in the main thread.... You cannot modify the GUI, this will be done in outlineViewRefresh
+//
 										[context unlock];
 									}
 									
@@ -774,7 +774,8 @@ static BOOL FORCEREBUILD = NO;
 										//NSLog(@"this is not a smart album");
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
-										[self outlineViewRefresh];
+										
+//										[self outlineViewRefresh];	WARNING ! You are not in the main thread.... You cannot modify the GUI. This will be done later
 									}
 								}
 							}

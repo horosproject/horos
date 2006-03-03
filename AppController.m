@@ -1801,7 +1801,7 @@ static BOOL initialized = NO;
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
-	if([self isHUG])
+	if([AppController isHUG])
 	{
 		[self HUGDisableBonjourFeature];
 		[self HUGVerifyComPACSPlugin];
@@ -2458,7 +2458,7 @@ static BOOL initialized = NO;
 #pragma mark Geneva University Hospital (HUG) specific function
 
 // Test if the computer is in the HUG (domain name == hcuge.ch)
-- (BOOL) isHUG
++ (BOOL) isHUG
 {
 	BOOL isHcugeCh = NO;
 

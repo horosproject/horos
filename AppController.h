@@ -99,7 +99,7 @@ NSRect screenFrame();
 
 #pragma mark-
 #pragma mark Geneva University Hospital (HUG) specific function
-- (BOOL) isHUG;
++ (BOOL) isHUG;
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
 @end
