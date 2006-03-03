@@ -9250,8 +9250,13 @@ static BOOL needToRezoom;
 
 - (IBAction)toggleBonjourSharing:(id) sender
 {
+	[self setBonjourSharingEnabled:([sender state] == NSOnState)];
+}
+
+- (void) setBonjourSharingEnabled:(BOOL) boo
+{
 	[self setServiceName: [bonjourServiceName stringValue]];
-	[bonjourPublisher toggleSharing:([sender state] == NSOnState)];
+	[bonjourPublisher toggleSharing:boo];
 }
 
 - (void) bonjourWillPublish
@@ -9326,6 +9331,26 @@ static BOOL needToRezoom;
 - (NSBox*) bonjourSourcesBox
 {
 	return bonjourSourcesBox;
+}
+
+- (NSTextField*) bonjourServiceName
+{
+	return bonjourServiceName;
+}
+
+- (NSTextField*) bonjourPasswordTextField
+{
+	return bonjourPassword;
+}
+
+- (NSButton*) bonjourSharingCheck
+{
+	return bonjourSharingCheck;
+}
+
+- (NSButton*) bonjourPasswordCheck;
+{
+	return bonjourPasswordCheck;
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

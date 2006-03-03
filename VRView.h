@@ -219,7 +219,7 @@ typedef char* vtkMyCallbackVR;
 	vtkPlaneWidget				*planeWidget;
 	vtkOrientationMarkerWidget	*orientationWidget;
 	vtkBoxWidget				*croppingBox;
-	
+	double						initialCroppingBoxBounds[6];
 	// MAPPERS
 	
 	vtkFixedPointVolumeRayCastMapper			*volumeMapper;

@@ -4239,7 +4239,7 @@ public:
 	cropcallback->setBlendingVolume( 0L);
 	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
 	
-
+	//volume->GetBounds(initialCroppingBoxBounds);
 	
 	textWLWW = vtkTextActor::New();
 	sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);

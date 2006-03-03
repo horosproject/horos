@@ -1803,7 +1803,7 @@ static BOOL initialized = NO;
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
 	if([self isHUG])
 	{
-		[self HUGHideBonjourFeature];
+		[self HUGDisableBonjourFeature];
 		[self HUGVerifyComPACSPlugin];
 	}
 	/// *****************************
@@ -2493,9 +2493,18 @@ static BOOL initialized = NO;
 }
 
 // Hide the Bonjour Panel in the side drawer
-- (void) HUGHideBonjourFeature
+- (void) HUGDisableBonjourFeature
 {
-	[[browserController bonjourSourcesBox] setHidden:YES];
+	// disable Bonjour
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"bonjourSharing"];
+	[browserController setBonjourSharingEnabled:NO];
+	// change the GUI
+	[[browserController bonjourSharingCheck] setState:NSOffState];
+	[[browserController bonjourSharingCheck] setEnabled:NO];
+	[[browserController bonjourServiceName] setStringValue:@""];
+	[[browserController bonjourServiceName] setEnabled:NO];
+	[[browserController bonjourPasswordCheck] setEnabled:NO];
+	[[browserController bonjourPasswordTextField] setEnabled:NO];
 	[[browserController bonjourSourcesBox] setNeedsDisplay:YES];
 }
 

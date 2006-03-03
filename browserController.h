@@ -297,6 +297,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (BOOL) isCurrentDatabaseBonjour;
 - (void)setServiceName:(NSString*) title;
 - (IBAction)toggleBonjourSharing:(id) sender;
+- (void) setBonjourSharingEnabled:(BOOL) boo;
 - (void) bonjourWillPublish;
 - (void) bonjourDidStop;
 - (IBAction) bonjourServiceClicked:(id)sender;
@@ -311,6 +312,10 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (void) resetToLocalDatabase;
 - (void) createContextualMenu;
 - (NSBox*) bonjourSourcesBox;
+- (NSTextField*) bonjourServiceName;
+- (NSTextField*) bonjourPasswordTextField;
+- (NSButton*) bonjourSharingCheck;
+- (NSButton*) bonjourPasswordCheck;
 
 //DB plugins
 - (void)executeFilterDB:(id)sender;
