@@ -4777,7 +4777,7 @@ extern NSString * documentsDirectory();
 				}
 				else
 				{
-					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController];
+					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
 					for( i = 1; i < maxMovieIndex; i++)
 					{
 						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];

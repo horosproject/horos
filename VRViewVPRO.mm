@@ -29,6 +29,12 @@
 #import "BrowserController.h"
 #import "DICOMExport.h"
 
+#define id Id
+#include "itkImage.h"
+#include "itkImportImageFilter.h"
+#undef id
+#import "ITKSegmentation3D.h"
+#import "ITKBrushROIFilter.h"
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
@@ -2028,6 +2034,308 @@ public:
 			}
 			
 			[self setNeedsDisplay:YES];
+		}
+		else if( tool == tBonesRemoval)
+		{
+			// clicked point (2D coordinate)
+			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			
+			// world point
+			double	*worldPointClicked;
+			aRenderer->SetDisplayPoint( mouseLocStart.x, mouseLocStart.y, 0);
+			aRenderer->DisplayToWorld();
+			worldPointClicked = aRenderer->GetWorldPoint();
+			
+			worldPointClicked[0] /= factor;
+			worldPointClicked[1] /= factor;
+			worldPointClicked[2] /= factor;
+					
+			// transform matrix
+			vtkMatrix4x4 *ActorMatrix = volume->GetUserMatrix();
+			vtkTransform *Transform = vtkTransform::New();
+			Transform->SetMatrix(ActorMatrix);
+			Transform->Push();
+			
+			// camera view plane normal
+			double cameraViewPlaneNormal[3];
+			aCamera->GetViewPlaneNormal(cameraViewPlaneNormal);
+			// camera position
+			double cameraPosition[3];
+			aCamera->GetPosition(cameraPosition);
+			cameraPosition[0] /= factor;
+			cameraPosition[1] /= factor;
+			cameraPosition[2] /= factor;
+			
+			float o[9];
+			[firstObject orientation: o];
+			
+			double cameraProjObj[3];
+			cameraProjObj[0] =	cameraViewPlaneNormal[0] * o[0]
+								+ cameraViewPlaneNormal[1] * o[1]
+								+ cameraViewPlaneNormal[2] * o[2];
+			cameraProjObj[1] =	cameraViewPlaneNormal[0] * o[3]
+								+ cameraViewPlaneNormal[1] * o[4]
+								+ cameraViewPlaneNormal[2] * o[5];
+			cameraProjObj[2] =	cameraViewPlaneNormal[0] * o[6]
+								+ cameraViewPlaneNormal[1] * o[7]
+								+ cameraViewPlaneNormal[2] * o[8];
+			
+			long stackOrientation, stackMax;
+			if( fabs(cameraProjObj[0]) > fabs(cameraProjObj[1]) && fabs(cameraProjObj[0]) > fabs(cameraProjObj[2]))
+			{
+				stackOrientation = 0; //NSLog(@"X Stack");
+				stackMax = [firstObject pwidth];
+			}
+			else if( fabs(cameraProjObj[1]) > fabs(cameraProjObj[0]) && fabs(cameraProjObj[1]) > fabs(cameraProjObj[2]))
+			{
+				stackOrientation = 1; //NSLog(@"Y Stack");
+				stackMax = [firstObject pheight];
+			}
+			else
+			{
+				stackOrientation = 2; //NSLog(@"Z Stack");
+				stackMax = [pixList count];
+			}
+					
+			if(aCamera->GetParallelProjection())
+			{				
+				cameraPosition[0] = worldPointClicked[0] + cameraViewPlaneNormal[0];
+				cameraPosition[1] = worldPointClicked[1] + cameraViewPlaneNormal[1];
+				cameraPosition[2] = worldPointClicked[2] + cameraViewPlaneNormal[2];
+			}
+			
+			// the two points defining the line going through the volume
+			float	point1[3], point2[3];
+			point1[0] = cameraPosition[0];
+			point1[1] = cameraPosition[1];
+			point1[2] = cameraPosition[2];
+				// Go beyond the object...
+			point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
+			point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
+			point2[2] = cameraPosition[2] + (worldPointClicked[2] - cameraPosition[2])*5000.;		
+	
+//			NSLog( @"Start Pt : x=%f, y=%f, z=%f"	, point1[0], point1[1], point1[2]);
+//			NSLog( @"End Pt : x=%f, y=%f, z=%f"		, point2[0], point2[1], point2[2]);
+	
+			// volume position
+			double volumePosition[3];
+			volume->GetPosition(volumePosition);
+			NSLog( @"volumePosition : %f, %f, %f" , volumePosition[0], volumePosition[1], volumePosition[2]);
+			volumePosition[0] /= factor;
+			volumePosition[1] /= factor;
+			volumePosition[2] /= factor;
+
+			float point1ToVolume[3];
+			point1ToVolume[0] = fabs(volumePosition[0]-point1[0]);
+			point1ToVolume[1] = fabs(volumePosition[1]-point1[1]);
+			point1ToVolume[2] = fabs(volumePosition[2]-point1[2]);
+			
+			float point1ToNextPosition[3];
+			switch(stackOrientation)
+			{
+				case 0:
+					point1ToNextPosition[0] = fabs(volumePosition[0] + [firstObject pixelSpacingX] - point1[0]);
+					point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
+					point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+				break;
+				case 1:
+					point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
+					point1ToNextPosition[1] = fabs(volumePosition[1] + [firstObject pixelSpacingY] - point1[1]);
+					point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+				break;
+				case 2:
+					point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
+					point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
+					point1ToNextPosition[2] = fabs(volumePosition[2] + [firstObject sliceInterval] - point1[2]);	
+				break;
+			}
+				
+			float distancePoint1ToVolume, distancePoint1ToNextPosition;
+			distancePoint1ToVolume = sqrt(point1ToVolume[0]*point1ToVolume[0]+point1ToVolume[1]*point1ToVolume[1]+point1ToVolume[2]*point1ToVolume[2]);
+			distancePoint1ToNextPosition = sqrt(point1ToNextPosition[0]*point1ToNextPosition[0]
+												+point1ToNextPosition[1]*point1ToNextPosition[1]
+												+point1ToNextPosition[2]*point1ToNextPosition[2]);
+			
+			BOOL direction = distancePoint1ToVolume < distancePoint1ToNextPosition;
+	
+			long x, n;
+			BOOL boneFound = NO;
+//			NSLog(@"stackMax : %d", stackMax);
+			for( x = 0; (x < stackMax) && (!boneFound); x++)
+			{
+				n = (direction)? x : (stackMax-1)-x;
+				
+				float currentPoint[3], planeVector[3];
+				switch(stackOrientation)
+				{
+					case 0:
+						currentPoint[0] = n * [firstObject pixelSpacingX];
+						currentPoint[1] = 0;
+						currentPoint[2] = 0;
+													
+						planeVector[0] = o[0];
+						planeVector[1] = o[1];
+						planeVector[2] = o[2];
+					break;
+					
+					case 1:
+						currentPoint[0] = 0;
+						currentPoint[1] = n * [firstObject pixelSpacingY];
+						currentPoint[2] = 0;
+						
+						planeVector[0] = o[3];
+						planeVector[1] = o[4];
+						planeVector[2] = o[5];
+					break;
+					
+					case 2:
+						currentPoint[0] = 0;
+						currentPoint[1] = 0;
+						currentPoint[2] = n * [firstObject sliceInterval];
+						
+						planeVector[0] = o[6];
+						planeVector[1] = o[7];
+						planeVector[2] = o[8];
+					break;
+				}
+					
+				currentPoint[0] += volumePosition[0];
+				currentPoint[1] += volumePosition[1];
+				currentPoint[2] += volumePosition[2];
+				
+				Transform->TransformPoint(currentPoint,currentPoint);
+				
+				float resultPt[3];
+					
+				if( intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt))
+				{
+					// Convert this 3D point to 2D point projected in the plane
+					float tempPoint3D[3];
+					
+					Transform->Inverse();
+					Transform->TransformPoint(resultPt,tempPoint3D);
+					Transform->Inverse();
+					
+					tempPoint3D[0] -= volumePosition[0];
+					tempPoint3D[1] -= volumePosition[1];
+					tempPoint3D[2] -= volumePosition[2];
+					
+					tempPoint3D[0] /= [firstObject pixelSpacingX];
+					tempPoint3D[1] /= [firstObject pixelSpacingY];
+					tempPoint3D[2] /= [firstObject sliceInterval];
+					
+					// convert to long
+					long ptInt[3];
+					ptInt[0] = (long) (tempPoint3D[0] + 0.5);
+					ptInt[1] = (long) (tempPoint3D[1] + 0.5);
+					ptInt[2] = (long) (tempPoint3D[2] + 0.5);
+
+					if(needToFlip) 
+					{
+						ptInt[2] = [pixList count] - ptInt[2] -1;
+					}
+					
+					//NSLog(@"pt : %d, %d, %d", ptInt[0], ptInt[1], ptInt[2]);
+					
+					long currentSliceNumber, xPosition, yPosition;
+					DCMPix *currentDCMPix;
+					float *imageBuffer;
+					float currentPointValue;
+					
+//					switch(stackOrientation)
+//					{
+//						case 0:	
+//							currentSliceNumber = ptInt[0];
+//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+//							imageBuffer = [currentDCMPix fImage];
+//							xPosition = ptInt[1];
+//							yPosition = ptInt[2];
+//						break;
+//						
+//						case 1:
+//							currentSliceNumber = ptInt[1];
+//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+//							imageBuffer = [currentDCMPix fImage];
+//							xPosition = ptInt[0];
+//							yPosition = ptInt[2];
+//						break;
+//						
+//						case 2:
+//							currentSliceNumber = ptInt[2];
+//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+//							imageBuffer = [currentDCMPix fImage];
+//							xPosition = ptInt[0];
+//							yPosition = ptInt[1];
+//						break;
+//					}
+							
+					currentSliceNumber = ptInt[2];
+					if (currentSliceNumber>=0 && currentSliceNumber<[pixList count])
+					{
+						currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+						imageBuffer = [currentDCMPix fImage];
+						xPosition = ptInt[0];
+						yPosition = ptInt[1];
+					
+
+						currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
+						//NSLog(@"value : %f", currentPointValue);
+						boneFound = currentPointValue >= 350;
+					}
+					
+					if(boneFound)
+					{
+//						NSLog(@"BONE FOUND!!");
+						
+						[[[[[self window] windowController] viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
+						
+						NSPoint seedPoint;
+						seedPoint.x = xPosition;
+						seedPoint.y = yPosition;
+						
+						ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[[[self window] windowController] viewer2D] pixList] :[[[[self window] windowController] viewer2D] volumePtr] :-1];
+						
+						[itkSegmentation regionGrowing3D	:[[[self window] windowController] viewer2D]	// source viewer
+															:nil					// destination viewer = nil means we don't want a new serie
+															:-1						// slice = -1 means 3D region growing
+															:seedPoint				// startingPoint
+															:1						// algorithmNumber, 1 = threshold connected with low & up threshold
+															:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:350],
+																						[NSNumber numberWithFloat:2000],nil]// algo parameters
+															:0						// setIn
+															:0.0					// inValue
+															:0						// setOut
+															:0.0					// outValue
+															:tPlain					// roiType
+															:0						// roiResolution
+															:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
+						
+						// find all ROIs with name = BoneRemoval
+						NSArray *producedROIs = [[[[self window] windowController] viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
+
+						// Dilatation
+						ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
+						int i;
+						for(i=0;i<[producedROIs count];i++)
+						{
+							ROI* currentROI = [producedROIs objectAtIndex:i];
+							[itkFilter dilate:currentROI withStructuringElementRadius:2];
+						}
+						
+						// Bone Removal
+						NSLog(@"Bone Removal");
+						[[[[self window] windowController] viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000];
+						
+						// Remove produced ROIs
+						[[[[self window] windowController] viewer2D] deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
+					}
+					else
+					{
+						//NSLog(@"bone not found.....");
+					}
+				}
+			}
+			Transform->Delete();
 		}
 		else [super mouseDown:theEvent];
 	}
@@ -4140,6 +4448,8 @@ public:
 	else if (tool == t3DRotate)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tCross)
+		c = [NSCursor crosshairCursor];
+	else if (tool == tBonesRemoval)
 		c = [NSCursor crosshairCursor];
 	else	
 		c = [NSCursor arrowCursor];

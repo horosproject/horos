@@ -8156,7 +8156,7 @@
 		CE5EABE50935E702006D85DD /* HotGreen.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC40935E702006D85DD /* HotGreen.plist */; };
 		CE646B1A0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
-		CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */; };
+		CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE677D1407A6BDDD003B3650 /* VRViewVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6B2E2108DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };

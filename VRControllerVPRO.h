@@ -56,7 +56,7 @@
 	BOOL					blending;
 	NSData					*blendingVolumeData;
     NSMutableArray			*blendingPixList;
-	ViewerController		*blendingController;
+	ViewerController		*viewer2D, *blendingController;
 		
 	NSTimeInterval			lastMovieTime;
     NSTimer					*movieTimer;
@@ -82,8 +82,9 @@
 -(void) load3DState;
 -(void) updateBlendingImage;
 -(ViewerController*) blendingController;
+-(ViewerController*) viewer2D;
 -(void) LODsliderAction:(id) sender;
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) file :(NSData*) vData :(ViewerController*) bC;
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (void) setupToolbar;
 -(void) setDefaultTool:(id) sender;
 -(NSMatrix*) toolsMatrix;

@@ -187,6 +187,11 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	return blendingController;
 }
 
+-(ViewerController*) viewer2D
+{
+	return viewer2D;
+}
+
 - (void) blendingSlider:(id) sender
 {
 	[view setBlendingFactor: [sender floatValue]];
@@ -312,7 +317,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 - (NSMutableArray*) pixList { return pixList[0];}
 - (NSArray*) fileList { return fileList;}
 
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
     unsigned long   i;
     short           err = 0;
@@ -399,6 +404,8 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
 		[self updateBlendingImage];
 	}
+	
+	viewer2D = vC;
 	
 	curWLWWMenu = NSLocalizedString(@"Other", 0L);
 	
