@@ -25,6 +25,7 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCMSequenceAttribute.h>
 #import "DCMObjectDBImport.h"
+#import "AppController.h"
 
 
 /************  Modifications *************************************************************************************
@@ -50,6 +51,7 @@ static BOOL COMMENTSAUTOFILL;
 static BOOL splitMultiEchoMR;
 static BOOL NOLOCALIZER;
 static BOOL combineProjectionSeries;
+static BOOL	CHECKFORLAVIM;
 static int COMMENTSGROUP;
 static int COMMENTSELEMENT;
 
@@ -162,6 +164,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		splitMultiEchoMR = [[NSUserDefaults standardUserDefaults] boolForKey:@"splitMultiEchoMR"];
 		NOLOCALIZER = [[NSUserDefaults standardUserDefaults] boolForKey: @"NOLOCALIZER"];
 		combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
+		
+		CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
 	}
 }
 
@@ -1256,53 +1260,82 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			encoding = NSISOLatin1StringEncoding;
 			
-			if (COMMENTSAUTOFILL)
+			if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 			{
-				NSString	*commentsField;
-				
-				theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
-				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+				if( COMMENTSAUTOFILL)
 				{
-					SElement *inGrOrModP = theGroupP;
+					NSString	*commentsField;
 					
-					int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP);
-					int theMaxElem = gArrGroup [theEnumGrNb].size;
-					int j;
-					
-					for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+					theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
+					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 					{
-						if( inGrOrModP->element == COMMENTSELEMENT)
+						SElement *inGrOrModP = theGroupP;
+						
+						int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP);
+						int theMaxElem = gArrGroup [theEnumGrNb].size;
+						int j;
+						
+						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
 						{
-							if( inGrOrModP->nb_val > 0)
+							if( inGrOrModP->element == COMMENTSELEMENT)
 							{
-								UValue_T *theValueP = inGrOrModP->value;
-								
-//								switch( inGrOrModP->vr)
-//								{
-//									case AE :
-//									case AS :
-//									case CS :
-//									case DA :
-//									case DS :
-//									case DT :
-//									case IS :
-//									case LO :
-//									case LT :
-//									case PN :
-//									case SH :
-//									case ST :
-//									case TM :
-//									case UI :
-//									case UN :
-//									case UT :
+								if( inGrOrModP->nb_val > 0)
+								{
+									UValue_T *theValueP = inGrOrModP->value;
+									
 									if( theValueP->a)
 									{
 										commentsField = [NSString stringWithCString:theValueP->a];
 										
 										[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 									}
-//									break;
-//								}
+								}
+							}
+						}
+					}
+				}
+				
+				if( CHECKFORLAVIM)
+				{
+					NSString	*album = 0L;
+					
+					theErr = Papy3GotoGroupNb (fileNb, 0x0040);
+					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+					{
+						SElement *inGrOrModP = theGroupP;
+						
+						int theEnumGrNb = Papy3ToEnumGroup( 0x0040);
+						int theMaxElem = gArrGroup [theEnumGrNb].size;
+						int j;
+						
+						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+						{
+							if( inGrOrModP->element == 0x0280)
+							{
+								if( inGrOrModP->nb_val > 0)
+								{
+									UValue_T *theValueP = inGrOrModP->value;
+									
+									if( theValueP->a)
+									{
+										album = [NSString stringWithCString:theValueP->a];
+										[dicomElements setObject:album forKey:@"album"];
+									}
+								}
+							}
+							
+							if( inGrOrModP->element == 0x1400)
+							{
+								if( inGrOrModP->nb_val > 0)
+								{
+									UValue_T *theValueP = inGrOrModP->value;
+									
+									if( theValueP->a)
+									{
+										album = [NSString stringWithCString:theValueP->a];
+										[dicomElements setObject:album forKey:@"album"];
+									}
+								}
 							}
 						}
 					}
@@ -1920,34 +1953,66 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return -1;			// failed
 }
 
--(short) decodeDICOMFileWithDCMFramework {
+-(short) decodeDICOMFileWithDCMFramework
+{
 	BOOL returnValue = -1;
 	long cardiacTime = -1;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	DCMObject *dcmObject;
 	
-	if (COMMENTSAUTOFILL)
+	if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 		dcmObject = [DCMObject objectWithContentsOfFile:filePath decodingPixelData:NO];
 	else
 		dcmObject = [DCMObjectDBImport objectWithContentsOfFile:filePath decodingPixelData:NO];
 	   
 	if (dcmObject) {
 
-		if (COMMENTSAUTOFILL)
+		if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
 		{
-			id			commentsField;
-			NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
-			
-			if (commentsField = [dcmObject attributeValueForKey: grel])
+			if( COMMENTSAUTOFILL)
 			{
-				if( [commentsField isKindOfClass: [NSString class]])
-					[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
+				id			commentsField;
+				NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
 				
-				if( [commentsField isKindOfClass: [NSNumber class]])
-					[dicomElements setObject:[commentsField stringValue] forKey:@"commentsAutoFill"];
+				if (commentsField = [dcmObject attributeValueForKey: grel])
+				{
+					if( [commentsField isKindOfClass: [NSString class]])
+						[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 					
-				if( [commentsField isKindOfClass: [NSCalendarDate class]])
-					[dicomElements setObject:[commentsField description] forKey:@"commentsAutoFill"];
+					if( [commentsField isKindOfClass: [NSNumber class]])
+						[dicomElements setObject:[commentsField stringValue] forKey:@"commentsAutoFill"];
+						
+					if( [commentsField isKindOfClass: [NSCalendarDate class]])
+						[dicomElements setObject:[commentsField description] forKey:@"commentsAutoFill"];
+				}
+			}
+			
+			////////// **** HUG SPECIFIC CODE - DO NOT REMOVE THANKS ! Antoine Rosset
+			
+			if( CHECKFORLAVIM)
+			{
+				//Le nom de l'étude peut se trouver dans plusieurs champs DICOM, suivant la modalité de l'examen.
+				//IRM :	0x0040:0x0280
+				//CT Philips :	0x0040:0x1400
+				//CT GE :	Pas encore défini
+				//Autres modalités :	A définir.
+				NSString			*field = 0L, *album = 0L;
+				
+				field = [dcmObject attributeValueForKey: @"0040,0280"];
+				if( field)
+				{
+					if( [[field substringToIndex:3] isEqualToString: @"LV"])
+						album = [field substringFromIndex:3];
+				}
+				
+				field = [dcmObject attributeValueForKey: @"0040,1400"];
+				if( field)
+				{
+					if( [[field substringToIndex:3] isEqualToString: @"LV"])
+						album = [field substringFromIndex:3];
+				}
+				
+				if( album) [dicomElements setObject:album forKey:@"album"];
 			}
 		}
 	
