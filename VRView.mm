@@ -4238,9 +4238,7 @@ public:
 	cropcallback = vtkMyCallbackVR::New();
 	cropcallback->setBlendingVolume( 0L);
 	croppingBox->AddObserver(vtkCommand::InteractionEvent, cropcallback);
-	
-	//volume->GetBounds(initialCroppingBoxBounds);
-	
+		
 	textWLWW = vtkTextActor::New();
 	sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
 	textWLWW->SetInput( WLWWString);
@@ -4353,6 +4351,13 @@ public:
 	Line2DText->GetTextProperty()->SetShadow( YES);
 	
 	aRenderer->AddActor2D( Line2DActor);
+	
+	//[VRView getCroppingBox: initialCroppingBoxBounds :volume :croppingBox];
+	
+//	croppingBox->GetProp3D()->GetBounds(initialCroppingBoxBounds);
+//	NSLog(@"initialCroppingBoxBounds : %f, %f, %f, %f, %f, %f", initialCroppingBoxBounds[0], initialCroppingBoxBounds[1], initialCroppingBoxBounds[2], initialCroppingBoxBounds[3], initialCroppingBoxBounds[4], initialCroppingBoxBounds[5]);
+//	volume->GetBounds(initialCroppingBoxBounds);
+//	NSLog(@"initialCroppingBoxBounds : %f, %f, %f, %f, %f, %f", initialCroppingBoxBounds[0], initialCroppingBoxBounds[1], initialCroppingBoxBounds[2], initialCroppingBoxBounds[3], initialCroppingBoxBounds[4], initialCroppingBoxBounds[5]);
 	
 	[self saView:self];
 	
@@ -5475,7 +5480,7 @@ public:
 	else if (tool == tCross)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tBonesRemoval)
-		c = [NSCursor crosshairCursor];
+		c = [NSCursor bonesRemovalCursor];
 	else	
 		c = [NSCursor arrowCursor];
 		

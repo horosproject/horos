@@ -614,6 +614,7 @@
 		A9DE953E085E0E910019992B /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
 		A9DE953F085E0E910019992B /* FlyThruStart.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9536085E0E910019992B /* FlyThruStart.tiff */; };
 		A9DE9540085E0E910019992B /* FlyThruVia.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9537085E0E910019992B /* FlyThruVia.tiff */; };
+		A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
 		A9E80EB009877429005121AA /* ROIVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E80E3E0986897C005121AA /* ROIVolume.h */; };
 		A9E80EB10987742A005121AA /* ROIVolume.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E80E3F0986897C005121AA /* ROIVolume.mm */; };
 		A9EDB2CF091A473E00EE86AF /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
@@ -9656,6 +9657,7 @@
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
 		A9DE9536085E0E910019992B /* FlyThruStart.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruStart.tiff; sourceTree = "<group>"; };
 		A9DE9537085E0E910019992B /* FlyThruVia.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruVia.tiff; sourceTree = "<group>"; };
+		A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BonesRemovalCursor.tif; sourceTree = "<group>"; };
 		A9E80E3E0986897C005121AA /* ROIVolume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIVolume.h; sourceTree = "<group>"; };
 		A9E80E3F0986897C005121AA /* ROIVolume.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolume.mm; sourceTree = "<group>"; };
 		A9EDB2CD091A473E00EE86AF /* KFSplitView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KFSplitView.h; sourceTree = "<group>"; };
@@ -15433,6 +15435,7 @@
 		BFD4BFEF06F2A96900EC9A90 /* Cursors */ = {
 			isa = PBXGroup;
 			children = (
+				A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */,
 				BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */,
 				BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */,
 				BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */,
@@ -23255,6 +23258,7 @@
 				A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */,
 				BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */,
 				BF1833D209AD833D0046C295 /* FlipVertical.tif in Resources */,
+				A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

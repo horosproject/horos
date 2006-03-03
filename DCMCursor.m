@@ -23,7 +23,7 @@ NSCursor *rotate3DCursor;
 NSCursor *rotate3DCameraCursor;
 NSCursor *stackCursor;
 NSCursor *contrastCursor;
-
+NSCursor *bonesRemovalCursor;
 
 @implementation NSCursor (DCMCursor)
 
@@ -65,6 +65,13 @@ NSCursor *contrastCursor;
 	
 	return contrastCursor;
 
+}
+
++ (id) bonesRemovalCursor
+{
+	if (!bonesRemovalCursor)
+		bonesRemovalCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"BonesRemovalCursor.tif"] hotSpot:NSMakePoint(7,7)];
+	return bonesRemovalCursor;
 }
 
 @end
