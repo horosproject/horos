@@ -27,7 +27,8 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 {
 	int		x,y;
 	int		xsqr;
-	int		radsqr = (width*width)/4;
+	int		inw = width-1;
+	int		radsqr = (inw*inw)/4;
 	int		rad = width/2;
 	
 	for(x = 0; x < rad; x++)
@@ -42,7 +43,6 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 				buf[ rad+x + (rad-y)*width] = val;
 				buf[ rad-x + (rad-y)*width] = val;
 			}
-			else break;
 		}
 	}
 }
@@ -106,9 +106,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	
 	unsigned char *kernel;
 	kernel = (unsigned char*) calloc( structuringElementRadius*structuringElementRadius, sizeof(unsigned char));
-	memset(kernel,0xFF,structuringElementRadius*structuringElementRadius);
-	draw_filled_circle(kernel, structuringElementRadius-1, 0x00);
-	
+	draw_filled_circle(kernel, structuringElementRadius, 0xFF);	
 	
 	vImage_Buffer	srcbuf, dstBuf;
 	vImage_Error err;
@@ -165,7 +163,8 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	
 	unsigned char *kernel;
 	kernel = (unsigned char*) calloc( structuringElementRadius*structuringElementRadius, sizeof(unsigned char));
-	draw_filled_circle(kernel, structuringElementRadius-1, 0xFF);
+	memset(kernel,0xff,structuringElementRadius*structuringElementRadius);
+	draw_filled_circle(kernel, structuringElementRadius, 0x0);
 	
 	vImage_Buffer	srcbuf, dstBuf;
 	vImage_Error err;
