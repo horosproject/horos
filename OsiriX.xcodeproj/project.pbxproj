@@ -1380,6 +1380,14 @@
 		BF76A5A806ACC70C00FABE42 /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
 		BF76A5A906ACC70C00FABE42 /* ButtonAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */; };
 		BF76A5AA06ACC70C00FABE42 /* ButtonAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */; };
+		BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
+		BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
+		BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
+		BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
+		BF7A838209B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
+		BF7A838309B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
+		BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
+		BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		BF8DE5E706507355005DB40E /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
 		BF8DE5E806507355005DB40E /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E106507355005DB40E /* SmartIcon.tif */; };
@@ -10060,6 +10068,10 @@
 		BF76A59806ACC6FD00FABE42 /* ButtonAndTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextField.m; sourceTree = "<group>"; };
 		BF76A5A506ACC70C00FABE42 /* ButtonAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonAndTextCell.h; sourceTree = "<group>"; };
 		BF76A5A606ACC70C00FABE42 /* ButtonAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonAndTextCell.m; sourceTree = "<group>"; };
+		BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMToNSString.h; sourceTree = "<group>"; };
+		BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMToNSString.m; sourceTree = "<group>"; };
+		BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStoreSCU.h; sourceTree = "<group>"; };
+		BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKStoreSCU.mm; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
 		BF8DE5E106507355005DB40E /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
@@ -13740,6 +13752,8 @@
 				7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */,
 				CE0936B80963D63800C6A2CA /* MatrixContextual.h */,
 				CE0936B90963D63800C6A2CA /* MatrixContextual.m */,
+				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
+				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -14154,6 +14168,8 @@
 				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */,
 				BF1745D208E0C7E200822756 /* LogWindowController.h */,
 				BF1745D308E0C7E200822756 /* LogWindowController.m */,
+				BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */,
+				BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -18843,6 +18859,8 @@
 				BFBF421309B6828D00545F5E /* oftypes.h in Headers */,
 				BFBF421409B6828D00545F5E /* ofuoset.h in Headers */,
 				BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
+				BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */,
+				BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20637,6 +20655,7 @@
 				BFBF496109B6828E00545F5E /* oftypes.h in Headers */,
 				BFBF496209B6828E00545F5E /* ofuoset.h in Headers */,
 				BFC9C2AD09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
+				BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22435,6 +22454,7 @@
 				BFBF45BA09B6828E00545F5E /* oftypes.h in Headers */,
 				BFBF45BB09B6828E00545F5E /* ofuoset.h in Headers */,
 				BFC9C2AB09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
+				BF7A838209B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24859,6 +24879,8 @@
 				BFBF420E09B6828D00545F5E /* ofthread.cc in Sources */,
 				BFBF421009B6828D00545F5E /* oftime.cc in Sources */,
 				BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
+				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
+				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25597,6 +25619,7 @@
 				BFBF495C09B6828E00545F5E /* ofthread.cc in Sources */,
 				BFBF495E09B6828E00545F5E /* oftime.cc in Sources */,
 				BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
+				BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26338,6 +26361,7 @@
 				BFBF45B509B6828E00545F5E /* ofthread.cc in Sources */,
 				BFBF45B709B6828E00545F5E /* oftime.cc in Sources */,
 				BFC9C2AC09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
+				BF7A838309B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

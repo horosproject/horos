@@ -26,6 +26,9 @@
 #import <OsiriX/DCMSequenceAttribute.h>
 #import "DCMObjectDBImport.h"
 #import "AppController.h"
+#import "DICOMToNSString.h"
+
+
 
 
 /************  Modifications *************************************************************************************
@@ -35,8 +38,22 @@
 *	20051225	LP	Fixed bug when parsing with DCMFramework Added width and height
 *	20060116	LP	Added NSUserDefaults for splitting series by Echo and combining CR,DR, RF series
 *
+*	20060303	LP	Moved character set encoding to a cataegory of NSString - DICOMToNSString - to allow conversion of 
+*					DICOM to NSStrings elsewher ein OsiriX
 *
 *******************************************************************************************************************/
+
+/*
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005/12/08 15:44:22 $
+ *  Source File:      $Source: /share/dicom/cvs-depot/dcmtk/dcmnet/apps/storescu.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Status:           $State: Exp $
+
+ * svn Log:
+ * $Log: DICOMToNSString.h,v $
+*/
+
 
 
 
@@ -1354,8 +1371,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					
 					characterSet = [NSString stringWithCString:val->a];
 					
-					if( [characterSet isEqualToString:@"ISO_IR 100"] == NO)
-					{
+					encoding = [NSString encodingForDICOMCharacterSet:characterSet];
+					
+//					if( [characterSet isEqualToString:@"ISO_IR 100"] == NO)
+//					{
 //						NSArray*	 test = [characterSet allAvailableEncodings];
 //						long i;
 //						for( i =0; i < [test count]; i++)
@@ -1365,7 +1384,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 					//	NSLog( characterSet);
 					//	NSLog( @"%d", encoding);
-						
+						/*
 						if( [characterSet isEqualToString:@"ISO_IR 127"]) encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
 						if( [characterSet isEqualToString:@"ISO_IR 101"]) encoding = NSISOLatin2StringEncoding;
 						if( [characterSet isEqualToString:@"ISO_IR 109"]) encoding = -2147483133;	//[characterSet numberFromLocalizedStringEncodingName :@"Western (ISO Latin 3)"];
@@ -1380,9 +1399,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						if( [characterSet isEqualToString:@"ISO_IR 13"]) encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (Mac OS)"];
 						if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
 						if( [characterSet isEqualToString:@"ISO_IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
+						*/
 					//	ISO -IR 166
 					//	NSLog( @"%d", encoding);
-					}
+//					}
 				}
 				
 				val = Papy3GetElement (theGroupP, papImageTypeGr, &nbVal, &itemType);
