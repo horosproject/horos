@@ -4740,17 +4740,14 @@ extern NSString * documentsDirectory();
 		[self SetThicknessInterval:sender];
 	}
 	else
-	{		
-	
+	{
 		ITKSegmentation3DController		*itk = [[ITKSegmentation3DController alloc] initWithViewer: self];
 		if( itk)
 		{
 			[itk showWindow:self];
 			[[itk window] makeKeyAndOrderFront:self];
 		}
-	
 	}
-	
 }
 
 -(IBAction) VRVPROViewer:(id) sender
@@ -8674,9 +8671,10 @@ NSMutableArray		*array;
 	NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
 	NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
 	i = 0;
-	while (subItem = [resizeEnumerator nextObject]) {
+	NSString	*titleMenu;
+	while (titleMenu = [resizeEnumerator nextObject]) {
 		int tag = i++;
-		item = [[NSMenuItem alloc] initWithTitle:subItem action: @selector(resizeWindow:) keyEquivalent:@""];
+		item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
 		[item setTag:tag];
 		[item setTarget:imageView];
 		[submenu addItem:item];

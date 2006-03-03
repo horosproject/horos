@@ -24,6 +24,25 @@
 
 @implementation ITKSegmentation3DController
 
++(id) segmentationControllerForViewer:(ViewerController*) v
+{
+	NSArray *winList = [NSApp windows];
+	long	x;
+	
+	for( x = 0; x < [winList count]; x++)
+	{
+		if( [[[[winList objectAtIndex:x] windowController] windowNibName] isEqualToString:@"ITKSegmentation"])
+		{
+			if( [[[winList objectAtIndex:x] windowController] viewer] == v)
+			{
+				return [[winList objectAtIndex:x] windowController];
+			}
+		}
+	}
+	
+	return 0L;
+}
+
 -(void) dealloc
 {
 	NSLog(@"ITKSegmentation3DController dealloc");
@@ -43,8 +62,24 @@
 	[self release];
 }
 
+- (NSPoint) startingPoint
+{
+	return startingPoint;
+}
+
+- (ViewerController*) viewer
+{
+	return viewer;
+}
+
 - (id) initWithViewer:(ViewerController*) v
 {
+	// Is it already available for this viewer??
+	id seg = [ITKSegmentation3DController segmentationControllerForViewer: v];
+	if( seg) return seg;
+	
+	// Else create a new one !
+
 	self = [super initWithWindowNibName:@"ITKSegmentation"];
 	
 	viewer = v;
@@ -92,6 +127,11 @@
                name: @"CloseViewerNotification"
              object: nil];
 	
+	[nc addObserver: self
+			selector: @selector(drawStartingPoint:)
+               name: @"PLUGINdrawObjects"
+             object: nil];
+	
 	return self;
 }
 
@@ -105,7 +145,38 @@
 	}
 }
 
--(void) mouseViewerDown:(NSNotification*) note
+- (void) drawStartingPoint:(NSNotification*) note
+{
+	if([note object] == [viewer imageView])
+	{
+		if( startingPoint.x != 0 && startingPoint.y != 0)
+		{
+			NSDictionary	*userInfo = [note userInfo];
+			
+			glColor3f (0.0f, 1.0f, 0.5f);
+			glLineWidth(2.0);
+			glBegin(GL_LINES);
+			
+			float crossx, crossy, scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];
+			
+			crossx = startingPoint.x - [[userInfo valueForKey:@"offsetx"] floatValue];
+			crossy = startingPoint.y - [[userInfo valueForKey:@"offsety"] floatValue];
+			
+			glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+			glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
+			glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+			glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
+			
+			glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+			glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+			glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+			glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+			glEnd();
+		}
+	}
+}
+
+- (void) mouseViewerDown:(NSNotification*) note
 {
 	if([note object] == viewer)
 	{

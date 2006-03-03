@@ -48,10 +48,11 @@
 				NSArray			*defaultsParameters;
 				NSArray			*urlHelp;
 }
++ (id) segmentationControllerForViewer:(ViewerController*) v;
 
 - (IBAction) compute:(id) sender;
 - (id) initWithViewer:(ViewerController*) v;
-
+- (ViewerController*) viewer;
 - (IBAction) changeAlgorithm: (id) sender;
 - (void) setNumberOfParameters: (int) n;
 - (IBAction) changeROItype: (id) sender;

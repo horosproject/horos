@@ -5275,7 +5275,14 @@ static long scrollMode;
 				
 				// Draw any Plugin objects
 				
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self];
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithFloat: scaleValue], @"scaleValue",
+																						[NSNumber numberWithFloat: [curDCM pwidth]/2.], @"offsetx",
+																						[NSNumber numberWithFloat: [curDCM pheight]/2.], @"offsety",
+																						[NSNumber numberWithFloat: [curDCM pixelSpacingX]], @"spacingX",
+																						[NSNumber numberWithFloat: [curDCM pixelSpacingY]], @"spacingY",
+																						0L];
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawObjects" object: self userInfo: userInfo];
 				
 				//**SLICE CUR FOR 3D MPR
 				if( stringID)

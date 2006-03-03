@@ -149,7 +149,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		
 		#define MAXPOINTSEXTRACT 100
 		
-		long roiResolution;
+		long roiResolution = 1;
 		
 		if( [tempArray count] > MAXPOINTSEXTRACT)
 		{
