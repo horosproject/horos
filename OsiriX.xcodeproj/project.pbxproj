@@ -2503,8 +2503,6 @@
 		BFBF421409B6828D00545F5E /* ofuoset.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6D09B6828B00545F5E /* ofuoset.h */; };
 		BFBF421509B6828D00545F5E /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB809B6827D00545F5E /* cfunix.h */; };
 		BFBF421609B6828D00545F5E /* osconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB909B6827D00545F5E /* osconfig.h */; };
-		BFBF421709B6828D00545F5E /* cmdlnarg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABB09B6827D00545F5E /* cmdlnarg.cc */; };
-		BFBF421809B6828D00545F5E /* cmdlnarg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3ABC09B6827D00545F5E /* cmdlnarg.h */; };
 		BFBF421909B6828D00545F5E /* dcbytstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABD09B6827D00545F5E /* dcbytstr.cc */; };
 		BFBF421A09B6828D00545F5E /* dcbytstr.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3ABE09B6827D00545F5E /* dcbytstr.h */; };
 		BFBF421B09B6828D00545F5E /* dcchrstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABF09B6827D00545F5E /* dcchrstr.cc */; };
@@ -22014,7 +22012,6 @@
 				A9D780AE09A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */,
 				BFBF421509B6828D00545F5E /* cfunix.h in Headers */,
 				BFBF421609B6828D00545F5E /* osconfig.h in Headers */,
-				BFBF421809B6828D00545F5E /* cmdlnarg.h in Headers */,
 				BFBF421A09B6828D00545F5E /* dcbytstr.h in Headers */,
 				BFBF421C09B6828D00545F5E /* dcchrstr.h in Headers */,
 				BFBF421E09B6828D00545F5E /* dccodec.h in Headers */,
@@ -25824,7 +25821,6 @@
 				A94D784F09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
 				ABEF7E7D09A21070006CEC3E /* Reports.m in Sources */,
 				A9D780AF09A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */,
-				BFBF421709B6828D00545F5E /* cmdlnarg.cc in Sources */,
 				BFBF421909B6828D00545F5E /* dcbytstr.cc in Sources */,
 				BFBF421B09B6828D00545F5E /* dcchrstr.cc in Sources */,
 				BFBF421D09B6828D00545F5E /* dccodec.cc in Sources */,
