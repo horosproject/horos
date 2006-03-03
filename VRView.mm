@@ -2610,7 +2610,8 @@ public:
 						for(i=0;i<[producedROIs count];i++)
 						{
 							ROI* currentROI = [producedROIs objectAtIndex:i];
-							[itkFilter dilate:currentROI withStructuringElementRadius:2];
+							[itkFilter dilate:currentROI withStructuringElementRadius: 8];
+							[itkFilter erode:currentROI withStructuringElementRadius: 6];
 						}
 						
 						// Bone Removal
