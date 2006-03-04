@@ -41,6 +41,7 @@
 
 #define OFFSET16 1500
 #define BONEVALUE 300
+#define BONEOPACITY 1.5
 
 extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
 extern BrowserController *browserWindow;
@@ -2164,7 +2165,7 @@ public:
 			float opacitySum = 0.0;
 
 //			NSLog(@"stackMax : %d", stackMax);
-			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=1.2); x++)
+			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=BONEOPACITY); x++)
 			{
 				n = (direction)? x : (stackMax-1)-x;
 				
@@ -2287,7 +2288,7 @@ public:
 						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);
 						boneFound = currentPointValue >= BONEVALUE;
 						
-						boneFound = boneFound && (opacitySum<=1.2); // take bones only if (nearly) visible
+						boneFound = boneFound && (opacitySum<=BONEOPACITY); // take bones only if (nearly) visible
 					}
 					
 					if(boneFound)
@@ -2326,7 +2327,7 @@ public:
 						for(i=0;i<[producedROIs count];i++)
 						{
 							ROI* currentROI = [producedROIs objectAtIndex:i];
-							[itkFilter dilate:currentROI withStructuringElementRadius: 8];
+							[itkFilter dilate:currentROI withStructuringElementRadius: 9];
 							[itkFilter erode:currentROI withStructuringElementRadius: 6];
 						}
 						

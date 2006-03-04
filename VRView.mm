@@ -66,6 +66,7 @@ Version 2.3
 
 #define OFFSET16 1500
 #define BONEVALUE 300
+#define BONEOPACITY 1.5
 
 extern BrowserController *browserWindow;
 
@@ -2433,7 +2434,7 @@ public:
 			float opacitySum = 0.0;
 
 //			NSLog(@"stackMax : %d", stackMax);
-			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=1.2); x++)
+			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=BONEOPACITY); x++)
 			{
 				//NSLog(@"opacitySum : %f", opacitySum);
 				n = (direction)? x : (stackMax-1)-x;
@@ -2514,33 +2515,6 @@ public:
 					DCMPix *currentDCMPix;
 					float *imageBuffer;
 					float currentPointValue;
-					
-//					switch(stackOrientation)
-//					{
-//						case 0:	
-//							currentSliceNumber = ptInt[0];
-//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
-//							imageBuffer = [currentDCMPix fImage];
-//							xPosition = ptInt[1];
-//							yPosition = ptInt[2];
-//						break;
-//						
-//						case 1:
-//							currentSliceNumber = ptInt[1];
-//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
-//							imageBuffer = [currentDCMPix fImage];
-//							xPosition = ptInt[0];
-//							yPosition = ptInt[2];
-//						break;
-//						
-//						case 2:
-//							currentSliceNumber = ptInt[2];
-//							currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
-//							imageBuffer = [currentDCMPix fImage];
-//							xPosition = ptInt[0];
-//							yPosition = ptInt[1];
-//						break;
-//					}
 
 					currentSliceNumber = ptInt[2];
 					if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pixList count])
@@ -2557,27 +2531,11 @@ public:
 						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);	
 						boneFound = currentPointValue >= BONEVALUE;
 						
-						boneFound = boneFound && (opacitySum<=1.2); // take bones only if (nearly) visible
+						boneFound = boneFound && (opacitySum <= BONEOPACITY); // take bones only if (nearly) visible
 					}
 					
 					if(boneFound)
 					{
-//						NSLog(@"BONE FOUND!!");
-//						// Create the new 2D Point ROI
-//						ROI *new2DPointROI = [[ROI alloc] initWithType	: t2DPoint
-//																		: [[pixList objectAtIndex:0] pixelSpacingX]
-//																		: [[pixList objectAtIndex:0] pixelSpacingY]
-//																		: NSMakePoint(	[[pixList objectAtIndex:0] originX],
-//																						[[pixList objectAtIndex:0] originY])];
-//						NSRect irect;
-//						irect.origin.x = xPosition;
-//						irect.origin.y = yPosition;
-//						irect.size.width = irect.size.height = 0;
-//						[new2DPointROI setROIRect:irect];
-//						[[[controller viewer2D] imageView] roiSet:new2DPointROI];
-//						// add the 2D Point ROI to the ROI list
-//						[[[[controller viewer2D] roiList] objectAtIndex: currentSliceNumber] addObject: new2DPointROI];
-						
 						[[[controller viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
 						
 						NSPoint seedPoint;
@@ -2603,23 +2561,37 @@ public:
 						
 						// find all ROIs with name = BoneRemoval
 						NSArray *producedROIs = [[controller viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
-
+						
 						// Dilatation
 						ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
 						int i;
 						for(i=0;i<[producedROIs count];i++)
 						{
 							ROI* currentROI = [producedROIs objectAtIndex:i];
-							[itkFilter dilate:currentROI withStructuringElementRadius: 8];
+							[itkFilter dilate:currentROI withStructuringElementRadius: 9];
 							[itkFilter erode:currentROI withStructuringElementRadius: 6];
 						}
 						
 						// Bone Removal
 						NSLog(@"Bone Removal");
-						[[controller viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000];
+						[[controller viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000 :NO];
 						
 						// Remove produced ROIs
 						[[controller viewer2D] deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
+						
+						// Update 3D image
+						if( textureMapper) 
+						{
+							// Force min/max recomputing
+							[self movieChangeSource: data];
+							//reader->Modified();
+						}
+						else
+						{
+							if( isRGB == NO)
+								vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
+						}
+						[self setNeedsDisplay:YES];
 					}
 					else
 					{
@@ -2973,7 +2945,7 @@ public:
 	
 	// Update everything..
 	ROIUPDATE = NO;
-	//[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
+	//[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];	<- This is slow
 	
 	cropcallback->Execute(croppingBox, 0, 0L);
 	

@@ -1637,7 +1637,7 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue];
 }
 
-- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
+- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) updateVolumeData
 {
 	long	i, x, y, z;
 	float   volume = 0;
@@ -1735,7 +1735,13 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+	if( updateVolumeData)
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+}
+
+- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
+{
+	[self roiSetPixels:aROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :YES];
 }
 
 -(void) updateVolumeData: (NSNotification*) note
