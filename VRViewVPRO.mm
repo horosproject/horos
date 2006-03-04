@@ -2273,7 +2273,7 @@ public:
 //					}
 							
 					currentSliceNumber = ptInt[2];
-					if (currentSliceNumber>=0 && currentSliceNumber<[pixList count])
+					if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pixList count])
 					{
 						currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
 						imageBuffer = [currentDCMPix fImage];
