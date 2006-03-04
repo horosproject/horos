@@ -2306,8 +2306,13 @@ public:
 		}
 		else if( tool == tBonesRemoval)
 		{
+			QDDisplayWaitCursor( true);
+			
+			NSLog( @"**** Bone Removal Start");
 			// enable Undo
 			[controller prepareUndo];
+			NSLog( @"**** Undo");
+			
 			// clicked point (2D coordinate)
 			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
@@ -2432,6 +2437,7 @@ public:
 			long x, n;
 			BOOL boneFound = NO;
 			float opacitySum = 0.0;
+			long currentSliceNumber, xPosition, yPosition;
 
 //			NSLog(@"stackMax : %d", stackMax);
 			for( x = 0; (x < stackMax) && (!boneFound) && (opacitySum<=BONEOPACITY); x++)
@@ -2511,7 +2517,6 @@ public:
 					
 					//NSLog(@"pt : %d, %d, %d", ptInt[0], ptInt[1], ptInt[2]);
 					
-					long currentSliceNumber, xPosition, yPosition;
 					DCMPix *currentDCMPix;
 					float *imageBuffer;
 					float currentPointValue;
@@ -2533,72 +2538,73 @@ public:
 						
 						boneFound = boneFound && (opacitySum <= BONEOPACITY); // take bones only if (nearly) visible
 					}
-					
-					if(boneFound)
-					{
-						[[[controller viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
-						
-						NSPoint seedPoint;
-						seedPoint.x = xPosition;
-						seedPoint.y = yPosition;
-						
-						ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[controller viewer2D] pixList] :[[controller viewer2D] volumePtr] :-1];
-						
-						[itkSegmentation regionGrowing3D	:[controller viewer2D]	// source viewer
-															:nil					// destination viewer = nil means we don't want a new serie
-															:-1						// slice = -1 means 3D region growing
-															:seedPoint				// startingPoint
-															:1						// algorithmNumber, 1 = threshold connected with low & up threshold
-															:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:BONEVALUE],
-																						[NSNumber numberWithFloat:2000],nil]// algo parameters
-															:0						// setIn
-															:0.0					// inValue
-															:0						// setOut
-															:0.0					// outValue
-															:tPlain					// roiType
-															:0						// roiResolution
-															:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
-						
-						// find all ROIs with name = BoneRemoval
-						NSArray *producedROIs = [[controller viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
-						
-						// Dilatation
-						ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
-						int i;
-						for(i=0;i<[producedROIs count];i++)
-						{
-							ROI* currentROI = [producedROIs objectAtIndex:i];
-							[itkFilter dilate:currentROI withStructuringElementRadius: 9];
-							[itkFilter erode:currentROI withStructuringElementRadius: 6];
-						}
-						
-						// Bone Removal
-						NSLog(@"Bone Removal");
-						[[controller viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000 :NO];
-						
-						// Remove produced ROIs
-						[[controller viewer2D] deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
-						
-						// Update 3D image
-						if( textureMapper) 
-						{
-							// Force min/max recomputing
-							[self movieChangeSource: data];
-							//reader->Modified();
-						}
-						else
-						{
-							if( isRGB == NO)
-								vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
-						}
-						[self setNeedsDisplay:YES];
-					}
-					else
-					{
-						//NSLog(@"bone not found.....");
-					}
 				}
 			}
+			NSLog( @"**** Bone Raycast");
+			
+			if(boneFound)
+			{
+				[[[controller viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
+				
+				NSPoint seedPoint;
+				seedPoint.x = xPosition;
+				seedPoint.y = yPosition;
+				
+				ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[controller viewer2D] pixList] :[[controller viewer2D] volumePtr] :-1];
+				
+				[itkSegmentation regionGrowing3D	:[controller viewer2D]	// source viewer
+													:nil					// destination viewer = nil means we don't want a new serie
+													:-1						// slice = -1 means 3D region growing
+													:seedPoint				// startingPoint
+													:1						// algorithmNumber, 1 = threshold connected with low & up threshold
+													:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:BONEVALUE],
+																				[NSNumber numberWithFloat:2000],nil]// algo parameters
+													:0						// setIn
+													:0.0					// inValue
+													:0						// setOut
+													:0.0					// outValue
+													:tPlain					// roiType
+													:0						// roiResolution
+													:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
+				
+				NSLog( @"**** Growing3D");
+				
+				// find all ROIs with name = BoneRemoval
+				NSArray *producedROIs = [[controller viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
+				
+				// Dilatation
+				ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
+				int i;
+				for(i=0;i<[producedROIs count];i++)
+				{
+					ROI* currentROI = [producedROIs objectAtIndex:i];
+					[itkFilter dilate:currentROI withStructuringElementRadius: 10];
+					[itkFilter erode:currentROI withStructuringElementRadius: 6];
+				}
+				NSLog( @"**** Dilate/Erode");
+				
+				// Bone Removal
+				[[controller viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000 :NO];
+				NSLog( @"**** Set Pixels");
+				
+				// Remove produced ROIs
+				[[controller viewer2D] deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
+				
+				// Update 3D image
+				if( textureMapper) 
+				{
+					// Force min/max recomputing
+					[self movieChangeSource: data];
+					//reader->Modified();
+				}
+				else
+				{
+					if( isRGB == NO)
+						vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
+				}
+				[self setNeedsDisplay:YES];
+			}
+			QDDisplayWaitCursor( false);
 			Transform->Delete();
 		}
 		else [super mouseDown:theEvent];

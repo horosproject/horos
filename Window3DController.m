@@ -593,7 +593,7 @@ static float oldsetww, oldsetwl;
         NSRect       contentRect;
         
         
-        StartingWindow = [NSApp keyWindow];
+        StartingWindow = [self window];
         windowStyle    = NSBorderlessWindowMask; 
         contentRect    = [[NSScreen mainScreen] frame];
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];

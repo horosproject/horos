@@ -2776,8 +2776,7 @@ static volatile BOOL someoneIsLoading = NO;
         unsigned int windowStyle;
         NSRect       contentRect;
         
-        
-        StartingWindow = [NSApp keyWindow];
+        StartingWindow = [self window];
         windowStyle    = NSBorderlessWindowMask; 
         contentRect    = [[NSScreen mainScreen] frame];
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];
@@ -2786,7 +2785,7 @@ static volatile BOOL someoneIsLoading = NO;
             NSLog(@"Window was created");			
             [FullScreenWindow setTitle: @"myWindow"];			
             [FullScreenWindow setReleasedWhenClosed: YES];   // was YES....
-            [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1]; //];
+            [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1];
             [FullScreenWindow setBackgroundColor:[NSColor blackColor]];
             
             contentView = [[self window] contentView];
