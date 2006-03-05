@@ -90,6 +90,205 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 @implementation ITKSegmentation3D
 
++ (unsigned char*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from to:(float) to viewer:(ViewerController*) srcViewer
+{
+	BOOL				found = YES, foundPlane = YES;
+	long				minX, minY, minZ, maxX, maxY, maxZ;
+	long				nminX, nminY, nminZ, nmaxX, nmaxY, nmaxZ;
+	long				x, y, z, s = w*h;
+	float				*srcPtrZ, *srcPtrY, *srcPtrX;
+	unsigned char		*rPtr, *rPtrZ, *rPtrY, *rPtrX;
+	
+	minX = seed[ 0]-1;		maxX = seed[ 0]+2;
+	minY = seed[ 1]-1;		maxY = seed[ 1]+2;
+	minZ = seed[ 2]-1;		maxZ = seed[ 2]+2;
+	
+	rPtr = (unsigned char*) calloc( w*h*depth, sizeof(unsigned char));
+	if( rPtr)
+	{
+		rPtr[ seed[ 0] + seed[ 1]*w + seed[ 2]*s] = 1;
+	
+		
+		found = NO;
+		while( found)
+		{
+			if( minX <= 0) minX = 1;	if( maxX >= w - 1)		maxX = w - 1;
+			if( minY <= 0) minY = 1;	if( maxY >= h - 1)		maxY = h - 1;
+			if( minZ <= 0) minZ = 1;	if( maxZ >= depth - 1)	maxZ = depth - 1;
+
+//			srcPtrZ = volume + minZ*s;
+//			rPtrZ = rPtr + minZ*s;
+			for( z = minZ; z < maxZ; z += maxZ-minZ-1)
+			{
+				rPtrZ = rPtr + z*s;
+				srcPtrZ = volume + z*s;
+				
+				foundPlane = NO;
+				while( foundPlane)
+				{
+					srcPtrY = srcPtrZ + minY*w;
+					rPtrY = rPtrZ + minY*w;
+					for( y = minY; y < maxY; y ++, srcPtrY+= w, rPtrY += w)
+					{
+						srcPtrX = srcPtrY + minX;
+						rPtrX = rPtrY + minX;
+						
+						x = maxX-minX;
+						while( x-- > 0)
+						{
+							if( *rPtrX == 1)
+							{
+								if( *(rPtrX+1) == 0) if(	*(srcPtrX+1) > from && 	*(srcPtrX+1) < to) {	*(rPtrX+1) = 1;}	else *(rPtrX+1) = 2;
+								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from && 	*(srcPtrX-1) < to) {	*(rPtrX-1) = 1;}	else *(rPtrX-1) = 2;
+								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from && 	*(srcPtrX+w) < to) {	*(rPtrX+w) = 1;}	else *(rPtrX+w) = 2;
+								if( *(rPtrX-w) == 0) if(	*(srcPtrX-w) > from && 	*(srcPtrX-w) < to) {	*(rPtrX-w) = 1;}	else *(rPtrX-w) = 2;
+								if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from && 	*(srcPtrX-s) < to) {	*(rPtrX-s) = 1;}	else *(rPtrX-s) = 2;
+								if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from && 	*(srcPtrX+s) < to) {	*(rPtrX+s) = 1;}	else *(rPtrX+s) = 2;
+								
+								found = YES;
+								foundPlane = YES;
+								*rPtrX = 0xFF;
+							}
+							rPtrX++;
+							srcPtrX++;
+						}
+					}
+				}
+			}
+			
+			// Should we grow the box?
+			if( found)
+			{
+				nminX	=	minX;		nmaxX	=	maxX;
+				nminY	=	minY;		nmaxY	=	maxY;
+				nminZ	=	minZ;		nmaxZ	=	maxZ;
+				
+				// Z plane
+				rPtrZ = rPtr + minZ*s + minY*w;
+				for( y = minY; y < maxY; y++, rPtrZ += w)
+				{
+					for( x = minX; x < maxX; x++)
+					{
+						if( rPtrZ[ x])
+						{
+							nminZ = minZ-1;
+							y = maxY;
+						}
+					}
+				}
+				
+				rPtrZ = rPtr + (maxZ-1)*s + minY*w;
+				for( y = minY; y < maxY; y++, rPtrZ += w)
+				{
+					for( x = minX; x < maxX; x++)
+					{
+						if( rPtrZ[ x])
+						{
+							nmaxZ = maxZ +1;
+							y = maxY;
+						}
+					}
+				}
+				
+				// X plane
+				
+				rPtrZ = rPtr + minX + minZ*s;
+				for( z = minZ; z < maxZ; z++, rPtrZ += s)
+				{
+					for( y = minY; y < maxY; y++)
+					{
+						if( rPtrZ[ y*w])
+						{
+							nminX = minX -1;
+							z = maxZ;
+						}
+					}
+				}
+				
+				rPtrZ = rPtr + maxX-1  + minZ*s;
+				for( z = minZ; z < maxZ; z++, rPtrZ += s)
+				{
+					for( y = minY; y < maxY; y++)
+					{
+						if( rPtrZ[ y*w])
+						{
+							nmaxX = maxX + 1;
+							z = maxZ;
+						}
+					}
+				}
+				
+				// Y plane
+				
+				rPtrZ = rPtr + minY*w + minZ*s;
+				for( z = minZ; z < maxZ; z++, rPtrZ += s)
+				{
+					for( x = minX; x < maxX; x++)
+					{
+						if( rPtrZ[ x])
+						{
+							nminY = minY - 1;
+							z = maxZ;
+						}
+					}
+				}
+				
+				rPtrZ = rPtr + (maxY-1)*w  + minZ*s;
+				for( z = minZ; z < maxZ; z++, rPtrZ += s)
+				{
+					for( x = minX; x < maxX; x++)
+					{
+						if( rPtrZ[ x])
+						{
+							nmaxY = maxY + 1;
+							z = maxZ;
+						}
+					}
+				}
+				
+				minX	=	nminX;		maxX	=	nmaxX;
+				minY	=	nminY;		maxY	=	nmaxY;
+				minZ	=	nminZ;		maxZ	=	nmaxZ;
+			}
+		}
+		
+		long i;
+		
+		
+		rPtrZ = rPtr;
+		for( i = 0; i < [[srcViewer pixList] count]; i++)
+		{
+			int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
+			int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
+			
+			ROI *theNewROI = [[ROI alloc]	initWithTexture:rPtrZ
+											textWidth:w
+											textHeight:h
+											textName: @"test"
+											positionX:0
+											positionY:0
+											spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
+											spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
+											imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
+			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+			{
+				[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+				[theNewROI setROIMode: ROI_selected];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+			}
+			[theNewROI release];
+			
+			rPtrZ+= w*h;
+		}
+		
+		free( rPtr);
+
+	}
+	
+	return 0L;
+}
+
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height 
 {
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
@@ -204,6 +403,27 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 //- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(float) loV :(float) upV :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
+//	{
+//	float loV, upV;
+//	float interval = [[parameters objectAtIndex:0] floatValue];
+//	float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
+//	loV = mouseValue - interval/2.0;
+//	upV = mouseValue + interval/2.0;
+//	long	seed[ 3];
+//	
+//	seed[ 0] = startingPoint.x;
+//	seed[ 1] = startingPoint.y;
+//	seed[ 2] = slice;
+//	[ITKSegmentation3D fastGrowingRegionWithVolume: [srcViewer volumePtr] width:[[[srcViewer pixList] objectAtIndex: 0] pwidth] height:[[[srcViewer pixList] objectAtIndex: 0] pheight] depth:[[srcViewer pixList] count] seedPoint:seed from:loV to:upV viewer:srcViewer];
+//
+//	return;
+//	}
+
+
+
+
+
+
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
 	
 	// Input image

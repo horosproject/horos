@@ -3445,8 +3445,6 @@
 		BFBF45BB09B6828E00545F5E /* ofuoset.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3E6D09B6828B00545F5E /* ofuoset.h */; };
 		BFBF45BC09B6828E00545F5E /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB809B6827D00545F5E /* cfunix.h */; };
 		BFBF45BD09B6828E00545F5E /* osconfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB909B6827D00545F5E /* osconfig.h */; };
-		BFBF45BE09B6828E00545F5E /* cmdlnarg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABB09B6827D00545F5E /* cmdlnarg.cc */; };
-		BFBF45BF09B6828E00545F5E /* cmdlnarg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3ABC09B6827D00545F5E /* cmdlnarg.h */; };
 		BFBF45C009B6828E00545F5E /* dcbytstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABD09B6827D00545F5E /* dcbytstr.cc */; };
 		BFBF45C109B6828E00545F5E /* dcbytstr.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3ABE09B6827D00545F5E /* dcbytstr.h */; };
 		BFBF45C209B6828E00545F5E /* dcchrstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABF09B6827D00545F5E /* dcchrstr.cc */; };
@@ -20234,7 +20232,6 @@
 				A9D780AC09A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */,
 				BFBF45BC09B6828E00545F5E /* cfunix.h in Headers */,
 				BFBF45BD09B6828E00545F5E /* osconfig.h in Headers */,
-				BFBF45BF09B6828E00545F5E /* cmdlnarg.h in Headers */,
 				BFBF45C109B6828E00545F5E /* dcbytstr.h in Headers */,
 				BFBF45C309B6828E00545F5E /* dcchrstr.h in Headers */,
 				BFBF45C509B6828E00545F5E /* dccodec.h in Headers */,
@@ -25105,7 +25102,6 @@
 				A94D785109A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
 				ABEF7E7B09A21070006CEC3E /* Reports.m in Sources */,
 				A9D780AD09A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */,
-				BFBF45BE09B6828E00545F5E /* cmdlnarg.cc in Sources */,
 				BFBF45C009B6828E00545F5E /* dcbytstr.cc in Sources */,
 				BFBF45C209B6828E00545F5E /* dcchrstr.cc in Sources */,
 				BFBF45C409B6828E00545F5E /* dccodec.cc in Sources */,
@@ -27262,7 +27258,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Deployment-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
