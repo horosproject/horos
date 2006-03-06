@@ -103,7 +103,6 @@ extern BOOL hasMacOSXTiger();
 #define ERRPATH @"/NOT READABLE/"
 
 enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
-NSString const *OsirixAddToDBNotification  = @"OsirixAddToDBNotification";
 
 
 BrowserController  *browserWindow = 0L;
@@ -804,7 +803,7 @@ static BOOL FORCEREBUILD = NO;
 		for( i = 0; i < [modifiedStudiesArray count]; i++) [[modifiedStudiesArray objectAtIndex: i] valueForKey:@"noFiles"];
 		
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:(NSString *)OsirixAddToDBNotification object: nil userInfo:userInfo];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 
 		
 		[curPatientUID release];
