@@ -2303,6 +2303,8 @@ public:
 													:0						// roiResolution
 													:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
 				
+				[itkSegmentation release];
+				
 				NSLog( @"**** Growing3D");
 				
 				// find all ROIs with name = BoneRemoval
@@ -2317,6 +2319,7 @@ public:
 					[itkFilter dilate:currentROI withStructuringElementRadius: 10];
 					[itkFilter erode:currentROI withStructuringElementRadius: 6];
 				}
+				[itkFilter release];
 				NSLog( @"**** Dilate/Erode");
 				
 				// Bone Removal

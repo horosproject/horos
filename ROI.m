@@ -284,9 +284,10 @@ GLenum glReportError (void)
 
 - (void) dealloc
 {
-	if (type==tPlain){
-		free(textureBuffer);
-	//	free(tempTextureBuffer);
+	NSLog( @"roi dealloc");
+	if (type==tPlain)
+	{
+		free( textureBuffer);
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	

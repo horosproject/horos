@@ -90,7 +90,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 @implementation ITKSegmentation3D
 
-+ (unsigned char*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from to:(float) to viewer:(ViewerController*) srcViewer
++ (unsigned char*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from viewer:(ViewerController*) srcViewer
 {
 	BOOL				found = YES, foundPlane = YES;
 	long				minX, minY, minZ, maxX, maxY, maxZ;
@@ -99,14 +99,18 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	float				*srcPtrZ, *srcPtrY, *srcPtrX;
 	unsigned char		*rPtr, *rPtrZ, *rPtrY, *rPtrX;
 	
+	if( seed[ 0] <= 1) seed[ 0] = 2;	if( seed[ 0] >= w - 2)		seed[ 0] = w - 3;
+	if( seed[ 1] <= 1) seed[ 1] = 2;	if( seed[ 1] >= h - 2)		seed[ 1] = h - 3;
+	if( seed[ 2] <= 1) seed[ 2] = 2;	if( seed[ 2] >= depth - 2)	seed[ 2] = depth - 3;
+	
 	minX = seed[ 0]-1;		maxX = seed[ 0]+2;
 	minY = seed[ 1]-1;		maxY = seed[ 1]+2;
 	minZ = seed[ 2];		maxZ = seed[ 2]+1;
-	
+
 	rPtr = (unsigned char*) calloc( w*h*depth, sizeof(unsigned char));
 	if( rPtr)
 	{
-		rPtr[ seed[ 0] + seed[ 1]*w + seed[ 2]*s] = 1;
+		rPtr[ seed[ 0]+1 + seed[ 1]*w + seed[ 2]*s] = 0xFE;
 		
 		while( found)
 		{
@@ -145,16 +149,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						x = maxX-minX;
 						while( x-- > 0)
 						{
-							if( *rPtrX == 1)
+							if( *rPtrX == 0xFE)
 							{
 								*rPtrX = 0xFF;
 								
-								if( *(rPtrX+1) == 0) if(	*(srcPtrX+1) > from && 	*(srcPtrX+1) < to) {	*(rPtrX+1) = 1;}	else *(rPtrX+1) = 2;
-								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from && 	*(srcPtrX-1) < to) {	*(rPtrX-1) = 1;}	else *(rPtrX-1) = 2;
-								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from && 	*(srcPtrX+w) < to) {	*(rPtrX+w) = 1;}	else *(rPtrX+w) = 2;
-								if( *(rPtrX-w) == 0) if(	*(srcPtrX-w) > from && 	*(srcPtrX-w) < to) {	*(rPtrX-w) = 1;}	else *(rPtrX-w) = 2;
-								if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from && 	*(srcPtrX-s) < to) {	*(rPtrX-s) = 1;}	else *(rPtrX-s) = 2;
-								if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from && 	*(srcPtrX+s) < to) {	*(rPtrX+s) = 1;}	else *(rPtrX+s) = 2;
+								if( *(rPtrX+1) == 0) if(	*(srcPtrX+1) > from) {	*(rPtrX+1) = 0xFE;}	else *(rPtrX+1) = 2;
+								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from) {	*(rPtrX-1) = 0xFE;}	else *(rPtrX-1) = 2;
+								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from) {	*(rPtrX+w) = 0xFE;}	else *(rPtrX+w) = 2;
+								if( *(rPtrX-w) == 0) if(	*(srcPtrX-w) > from) {	*(rPtrX-w) = 0xFE;}	else *(rPtrX-w) = 2;
+								if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from) {	*(rPtrX-s) = 0xFE;}	else *(rPtrX-s) = 2;
+								if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from) {	*(rPtrX+s) = 0xFE;}	else *(rPtrX+s) = 2;
 								
 								foundPlane = YES;
 							}
@@ -286,7 +290,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			ROI *theNewROI = [[ROI alloc]	initWithTexture:rPtrZ
 											textWidth:w
 											textHeight:h
-											textName: @"test"
+											textName: @"BoneRemovalAlgorithmROIUniqueName"
 											positionX:0
 											positionY:0
 											spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
@@ -305,7 +309,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		}
 		
 		free( rPtr);
-
 	}
 	
 	return 0L;

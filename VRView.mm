@@ -65,8 +65,8 @@ Version 2.3
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
 #define OFFSET16 1500
-#define BONEVALUE 300
-#define BONEOPACITY 1.5
+#define BONEVALUE 250
+#define BONEOPACITY 4.0
 
 extern BrowserController *browserWindow;
 
@@ -2550,6 +2550,26 @@ public:
 				seedPoint.x = xPosition;
 				seedPoint.y = yPosition;
 				
+				#define USEFAST 1
+				
+				#ifdef USEFAST
+				
+				long seed[ 3];
+				
+				seed[ 0] = (long) seedPoint.x;
+				seed[ 1] = (long) seedPoint.y;
+				seed[ 2] = currentSliceNumber;
+				
+				[ITKSegmentation3D fastGrowingRegionWithVolume:		[[controller viewer2D] volumePtr]
+														width:		[[[[controller viewer2D] pixList] objectAtIndex: 0] pwidth]
+														height:		[[[[controller viewer2D] pixList] objectAtIndex: 0] pheight]
+														depth:		[[[controller viewer2D] pixList] count]
+														seedPoint:	seed
+														from:		BONEVALUE
+														viewer:		[controller viewer2D]];
+				
+				#else
+				
 				ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[controller viewer2D] pixList] :[[controller viewer2D] volumePtr] :-1];
 				
 				[itkSegmentation regionGrowing3D	:[controller viewer2D]	// source viewer
@@ -2567,6 +2587,9 @@ public:
 													:0						// roiResolution
 													:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
 				
+				[itkSegmentation release];
+				#endif
+				
 				NSLog( @"**** Growing3D");
 				
 				// find all ROIs with name = BoneRemoval
@@ -2581,6 +2604,8 @@ public:
 					[itkFilter dilate:currentROI withStructuringElementRadius: 10];
 					[itkFilter erode:currentROI withStructuringElementRadius: 6];
 				}
+				[itkFilter release];
+				
 				NSLog( @"**** Dilate/Erode");
 				
 				// Bone Removal

@@ -1222,10 +1222,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			long			textHeight = [roi textureHeight];
 			long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
 			long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
-			unsigned char	*buf = [roi textureBuffer], testVal;
-			
-			if( outside) testVal = 0;
-			else testVal = 0xFF;
+			unsigned char	*buf = [roi textureBuffer];
 			
 			for( y = 0; y < height; y++)
 			{
@@ -1235,7 +1232,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					
 					if( x >= textureUpLeftCornerX && x < textureUpLeftCornerX + textWidth && y >= textureUpLeftCornerY && y < textureUpLeftCornerY + textHeight)
 					{
-						if( buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth] == testVal) doit = YES;
+						if( outside)
+						{
+							if( !buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth]) doit = YES;
+						}
+						else
+						{
+							if( buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth]) doit = YES;
+						}
 					}
 					else if( outside) doit = YES;
 					

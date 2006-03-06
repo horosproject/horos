@@ -9036,7 +9036,7 @@ NSMutableArray		*array;
 {
 	int x, i;
 	
-	NSMutableArray *rois = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray *rois = [NSMutableArray array];
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
