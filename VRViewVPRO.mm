@@ -40,8 +40,8 @@
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
 #define OFFSET16 1500
-#define BONEVALUE 300
-#define BONEOPACITY 1.5
+#define BONEVALUE 250
+#define BONEOPACITY 4.0
 
 extern int intersect3D_SegmentPlane( float *P0, float *P1, float *Pnormal, float *Ppoint, float* resultPt );
 extern BrowserController *browserWindow;
@@ -2260,31 +2260,57 @@ public:
 						imageBuffer = [currentDCMPix fImage];
 						xPosition = ptInt[0];
 						yPosition = ptInt[1];
-					
-
+						
 						currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
-						//NSLog(@"value : %f", currentPointValue);
-
-						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);
+						
+						float currentOpacity = currentPointValue;
+						
+						currentOpacity = currentOpacity - (wl - ww/2);
+						currentOpacity /= ww;
+						
+						if( currentOpacity < 0) currentOpacity = 0;
+						if( currentOpacity > 1.0) currentOpacity = 1.0;
+						
+				//		NSLog(@"value : %f opacity: %f", currentPointValue, opacityTransferFunction->GetValue( currentOpacity*255.0));
+						
+						opacitySum += opacityTransferFunction->GetValue( currentOpacity*255.0);
 						boneFound = currentPointValue >= BONEVALUE;
 						
 						boneFound = boneFound && (opacitySum<=BONEOPACITY); // take bones only if (nearly) visible
 					}
-					
-					
 				}
 			}
 			
 			NSLog( @"**** Bone Raycast");
 			if(boneFound)
 			{
-//						NSLog(@"BONE FOUND!!");
+				NSLog(@"BONE FOUND!!");
 				
 				[[[[[self window] windowController] viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
 				
 				NSPoint seedPoint;
 				seedPoint.x = xPosition;
 				seedPoint.y = yPosition;
+				
+				#define USEFAST 1
+				
+				#ifdef USEFAST
+				
+				long seed[ 3];
+				
+				seed[ 0] = (long) seedPoint.x;
+				seed[ 1] = (long) seedPoint.y;
+				seed[ 2] = currentSliceNumber;
+				
+				[ITKSegmentation3D fastGrowingRegionWithVolume:		[[[[self window] windowController] viewer2D] volumePtr]
+														width:		[[[[[[self window] windowController] viewer2D] pixList] objectAtIndex: 0] pwidth]
+														height:		[[[[[[self window] windowController] viewer2D] pixList] objectAtIndex: 0] pheight]
+														depth:		[[[[[self window] windowController] viewer2D] pixList] count]
+														seedPoint:	seed
+														from:		BONEVALUE
+														viewer:		[[[self window] windowController] viewer2D]];
+				
+				#else
 				
 				ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[[[self window] windowController] viewer2D] pixList] :[[[[self window] windowController] viewer2D] volumePtr] :-1];
 				
@@ -2304,6 +2330,7 @@ public:
 													:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
 				
 				[itkSegmentation release];
+				#endif
 				
 				NSLog( @"**** Growing3D");
 				
