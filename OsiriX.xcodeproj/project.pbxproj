@@ -147,9 +147,6 @@
 		3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
-		3A30D9B909BCCB67004743A7 /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3A30D9B809BCCB67004743A7 /* cerveau_icon.jpg */; };
-		3A30D9BA09BCCB67004743A7 /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3A30D9B809BCCB67004743A7 /* cerveau_icon.jpg */; };
-		3A30D9BB09BCCB67004743A7 /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3A30D9B809BCCB67004743A7 /* cerveau_icon.jpg */; };
 		4A16D0A40965E21800F82EC4 /* UnitTestingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */; };
 		4AEA0EF5096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
 		4AEA0EF7096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
@@ -9360,7 +9357,6 @@
 		3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGWindowController.h; sourceTree = "<group>"; };
 		3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MSRGWindowController.m; sourceTree = "<group>"; };
 		3A2D126709BC9B0C00CCBC80 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MSRGPanel.nib; sourceTree = "<group>"; };
-		3A30D9B809BCCB67004743A7 /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = cerveau_icon.jpg; path = ../../../../.Trash/cerveau_icon.jpg; sourceTree = SOURCE_ROOT; };
 		4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Testing (Cocoa).octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
@@ -13109,7 +13105,6 @@
 				CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */,
 				CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */,
 				7E49AE3A0988345000AEF594 /* DicomImporter.mdimporter */,
-				3A30D9B809BCCB67004743A7 /* cerveau_icon.jpg */,
 			);
 			name = Resources;
 			sourceTree = SOURCE_ROOT;
@@ -23314,7 +23309,6 @@
 				A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */,
 				3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
-				3A30D9B909BCCB67004743A7 /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23582,7 +23576,6 @@
 				BF1833D609AD833D0046C295 /* FlipVertical.tif in Resources */,
 				3A2D126309BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
-				3A30D9BB09BCCB67004743A7 /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23850,7 +23843,6 @@
 				BF1833D409AD833D0046C295 /* FlipVertical.tif in Resources */,
 				3A2D125F09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
-				3A30D9BA09BCCB67004743A7 /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26502,7 +26494,7 @@
 				3A2D126709BC9B0C00CCBC80 /* English */,
 			);
 			name = MSRGPanel.nib;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		7E0339FA07415E7D0025DDB4 /* BurnViewer.nib */ = {
 			isa = PBXVariantGroup;
