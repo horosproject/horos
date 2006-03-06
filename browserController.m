@@ -4111,18 +4111,22 @@ long                           i, subGroupCount = 1, position = 0;
 		{
 			[dcmPix computeWImage:YES :0 :0];
 			[previewPix addObject: dcmPix];
-			[dcmPix release];
+			
 			
 			if( [dcmPix getImage] == 0L)
 			{
 				NSLog(@"getImage == 0L");
 			}
 			
+			[dcmPix revert];	// <- Kill the raw data
+			
 			if (shouldDie == YES)
 			{
 				i = [files count];
 				NSLog(@"LoadPreview should die");
 			}
+			
+			[dcmPix release];
 		}
 		else
 		{					

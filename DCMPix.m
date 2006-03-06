@@ -7265,7 +7265,7 @@ float			iwl, iww;
 
 - (xNSImage*) getImage
 {
-    [self CheckLoad];
+//    [self CheckLoad];
     
 	if( image == 0L)
 	{

@@ -121,7 +121,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			
 			long addZ = maxZ-minZ-1;
 			if( addZ == 0) addZ++;
-
+			
 			for( z = minZ; z < maxZ; z += addZ)
 			{
 				foundPlane = YES;
@@ -147,6 +147,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						{
 							if( *rPtrX == 1)
 							{
+								*rPtrX = 0xFF;
+								
 								if( *(rPtrX+1) == 0) if(	*(srcPtrX+1) > from && 	*(srcPtrX+1) < to) {	*(rPtrX+1) = 1;}	else *(rPtrX+1) = 2;
 								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from && 	*(srcPtrX-1) < to) {	*(rPtrX-1) = 1;}	else *(rPtrX-1) = 2;
 								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from && 	*(srcPtrX+w) < to) {	*(rPtrX+w) = 1;}	else *(rPtrX+w) = 2;
@@ -154,9 +156,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 								if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from && 	*(srcPtrX-s) < to) {	*(rPtrX-s) = 1;}	else *(rPtrX-s) = 2;
 								if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from && 	*(srcPtrX+s) < to) {	*(rPtrX+s) = 1;}	else *(rPtrX+s) = 2;
 								
-								found = YES;
 								foundPlane = YES;
-								*rPtrX = 0xFF;
 							}
 							rPtrX++;
 							srcPtrX++;
@@ -166,6 +166,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					// Should we grow the box?
 					if( foundPlane)
 					{
+						found = YES;
+						
 						nminX	=	minX;		nmaxX	=	maxX;
 						nminY	=	minY;		nmaxY	=	maxY;
 						nminZ	=	minZ;		nmaxZ	=	maxZ;
@@ -423,25 +425,21 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 //- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(float) loV :(float) upV :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
-	{
-	float loV, upV;
-	float interval = [[parameters objectAtIndex:0] floatValue];
-	float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
-	loV = mouseValue - interval/2.0;
-	upV = mouseValue + interval/2.0;
-	long	seed[ 3];
-	
-	seed[ 0] = startingPoint.x;
-	seed[ 1] = startingPoint.y;
-	seed[ 2] = slice;
-	[ITKSegmentation3D fastGrowingRegionWithVolume: [srcViewer volumePtr] width:[[[srcViewer pixList] objectAtIndex: 0] pwidth] height:[[[srcViewer pixList] objectAtIndex: 0] pheight] depth:[[srcViewer pixList] count] seedPoint:seed from:loV to:upV viewer:srcViewer];
-
-	return;
-	}
-
-
-
-
+//	{
+//	float loV, upV;
+//	float interval = [[parameters objectAtIndex:0] floatValue];
+//	float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
+//	loV = mouseValue - interval/2.0;
+//	upV = mouseValue + interval/2.0;
+//	long	seed[ 3];
+//	
+//	seed[ 0] = startingPoint.x;
+//	seed[ 1] = startingPoint.y;
+//	seed[ 2] = slice;
+//	[ITKSegmentation3D fastGrowingRegionWithVolume: [srcViewer volumePtr] width:[[[srcViewer pixList] objectAtIndex: 0] pwidth] height:[[[srcViewer pixList] objectAtIndex: 0] pheight] depth:[[srcViewer pixList] count] seedPoint:seed from:loV to:upV viewer:srcViewer];
+//
+//	return;
+//	}
 
 
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
