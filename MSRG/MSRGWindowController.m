@@ -336,14 +336,16 @@ PURPOSE.
 		curRoiList= [[viewer roiList] objectAtIndex: i];
 		for( j = 0; j < [curRoiList count]; j++)
 		{
-			ROI* currentROI=[curRoiList objectAtIndex:i];
+			ROI* currentROI=[curRoiList objectAtIndex:j];
 			if ([[currentROI name] isEqualToString:@"FrameMarker"])
 			{
 				[curRoiList removeObjectAtIndex:j];
 			}
 		} 
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
 }
+
 -(void)createMarkerROIWithWidth:(int)w andHeight:(int)h atPosX:(int)x andY:(int)y
 {
 	int i,j;
