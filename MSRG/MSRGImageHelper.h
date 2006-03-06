@@ -12,7 +12,6 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.
 =========================================================================*/
 
-
 #ifndef __MSRGImageHelper_h
 #define __MSRGImageHelper_h
 //#include <vnl/vnl_vector.h>

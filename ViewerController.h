@@ -255,11 +255,11 @@
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
 // param forValue: this param defines the region to extract in the stack buffer
-- (void)addRoiFromFullStackBuffer:(int*)buff forSpecificValue:(int)value withColor:(RGBColor)aColor;
-- (void)addRoiFromFullStackBuffer:(int*)buff forSpecificValue:(int)value withColor:(RGBColor)aColor withName:(NSString*)name;
+- (void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor;
+- (void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
 //arg: Use this to extract all the rois from the
-- (void)addRoiFromFullStackBuffer:(int*)buff;
-- (void)addRoiFromFullStackBuffer:(int*)buff withName:(NSString*)name;
+- (void)addRoiFromFullStackBuffer:(unsigned char*)buff;
+- (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;

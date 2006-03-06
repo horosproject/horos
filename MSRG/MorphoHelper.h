@@ -13,7 +13,6 @@ PURPOSE.
 =========================================================================*/
 
 
-
 #ifndef __MorphoHelper_h
 #define __MorphoHelper_h
 #include "itkImage.h"
@@ -21,6 +20,7 @@ PURPOSE.
 #include "itkGrayscaleDilateImageFilter.h"
 #include "itkBinaryBallStructuringElement.h" 
 #include "itkSubtractImageFilter.h"
+#include "itkRelabelComponentImageFilter.h"
 #include "itkConnectedComponentImageFilter.h"
 
 using namespace std;

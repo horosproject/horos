@@ -132,6 +132,21 @@
 		183C86A008563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
 		2C71468106E08651005D574B /* HuVR.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2C71467F06E08651005D574B /* HuVR.nib */; };
 		2C71468206E08651005D574B /* HuVR.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2C71467F06E08651005D574B /* HuVR.nib */; };
+		3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
+		3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
+		3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
+		3A2D125D09BC9AF000CCBC80 /* MSRGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */; };
+		3A2D125E09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
+		3A2D125F09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
+		3A2D126009BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
+		3A2D126109BC9AF000CCBC80 /* MSRGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */; };
+		3A2D126209BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
+		3A2D126309BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
+		3A2D126409BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
+		3A2D126509BC9AF000CCBC80 /* MSRGWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */; };
+		3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
+		3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
+		3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		4A16D0A40965E21800F82EC4 /* UnitTestingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */; };
 		4AEA0EF5096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
 		4AEA0EF7096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
@@ -9337,6 +9352,11 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2C71468006E08651005D574B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/HuVR.nib; sourceTree = "<group>"; };
+		3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGMultiCriteriaHelper.h; sourceTree = "<group>"; };
+		3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = MSRGMultiCriteriaHelper.txx; sourceTree = "<group>"; };
+		3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGWindowController.h; sourceTree = "<group>"; };
+		3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MSRGWindowController.m; sourceTree = "<group>"; };
+		3A2D126709BC9B0C00CCBC80 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MSRGPanel.nib; sourceTree = "<group>"; };
 		4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Unit Testing (Cocoa).octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
@@ -13017,6 +13037,7 @@
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
+				3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */,
 				CE3BF8E5098543F20000D64F /* MIPPET.nib */,
 				CE3BF8E7098543F20000D64F /* PETCT.nib */,
 				CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */,
@@ -16806,6 +16827,10 @@
 		CE9762B908FABD1100E6F8B0 /* MSRG */ = {
 			isa = PBXGroup;
 			children = (
+				3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */,
+				3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */,
+				3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */,
+				3A2D125909BC9AF000CCBC80 /* MSRGWindowController.m */,
 				CE9762E208FABD3800E6F8B0 /* MSRGSegmentation.mm */,
 				CE9762E308FABD3800E6F8B0 /* MSRGSegmentation.h */,
 				CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */,
@@ -18859,6 +18884,8 @@
 				BFC9C2A909B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
 				BF7A835F09B8B8E70051F091 /* DICOMToNSString.h in Headers */,
 				BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
+				3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
+				3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20653,6 +20680,8 @@
 				BFBF496209B6828E00545F5E /* ofuoset.h in Headers */,
 				BFC9C2AD09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
 				BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
+				3A2D126209BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
+				3A2D126409BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22452,6 +22481,8 @@
 				BFBF45BB09B6828E00545F5E /* ofuoset.h in Headers */,
 				BFC9C2AB09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
 				BF7A838209B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
+				3A2D125E09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
+				3A2D126009BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23276,6 +23307,8 @@
 				BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */,
 				BF1833D209AD833D0046C295 /* FlipVertical.tif in Resources */,
 				A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */,
+				3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
+				3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23541,6 +23574,8 @@
 				A981599F09AC6B25003FF1FB /* bonesRemoval.tif in Resources */,
 				BF1833D509AD833D0046C295 /* FlipHorizontal.tif in Resources */,
 				BF1833D609AD833D0046C295 /* FlipVertical.tif in Resources */,
+				3A2D126309BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
+				3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23806,6 +23841,8 @@
 				A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */,
 				BF1833D309AD833D0046C295 /* FlipHorizontal.tif in Resources */,
 				BF1833D409AD833D0046C295 /* FlipVertical.tif in Resources */,
+				3A2D125F09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
+				3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24878,6 +24915,7 @@
 				BFC9C2AA09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
 				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
+				3A2D125D09BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25616,6 +25654,7 @@
 				BFBF495E09B6828E00545F5E /* oftime.cc in Sources */,
 				BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
+				3A2D126509BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26358,6 +26397,7 @@
 				BFBF45B709B6828E00545F5E /* oftime.cc in Sources */,
 				BFC9C2AC09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A838309B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
+				3A2D126109BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26446,6 +26486,14 @@
 				2C71468006E08651005D574B /* English */,
 			);
 			name = HuVR.nib;
+			sourceTree = "<group>";
+		};
+		3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3A2D126709BC9B0C00CCBC80 /* English */,
+			);
+			name = MSRGPanel.nib;
 			sourceTree = "<group>";
 		};
 		7E0339FA07415E7D0025DDB4 /* BurnViewer.nib */ = {

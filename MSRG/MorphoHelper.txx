@@ -13,7 +13,6 @@
 =========================================================================*/
 
 
-
 #ifndef _MorphoHelper_txx
 #define _MorphoHelper_txx
 #include "MorphoHelper.h"
@@ -83,14 +82,14 @@
        InputImagePointer dilateImage=MorphoHelper<TImage>::DilateImageByRadius(inputImage,radius);
 	return MorphoHelper<TImage>::ErodeImageByRadius(dilateImage,radius);
    }      
-   // attention label image travail en binaire donc des régions connexes avec des valeurs différentes sont par conséquent fusionnées. De plus la labelisation
-   // ne garantie pas une augmentation constante des zones labelisées. Utilser RelabelImageComponentFilter pour avoir des valeurs qui augmentent linéairement.   
 template <class TImage>  typename MorphoHelper<TImage>::InputImagePointer  MorphoHelper<TImage>::LabelImage(const ImageType* inputImage){
    typedef itk::ConnectedComponentImageFilter < ImageType, ImageType > ConnectedComponentImageFilterType;
    typename ConnectedComponentImageFilterType::Pointer labelFilter = ConnectedComponentImageFilterType::New ();
+   typedef itk::RelabelComponentImageFilter<ImageType, ImageType> RelabelImageComponentType;
+   typename RelabelImageComponentType::Pointer relabelFilter=RelabelImageComponentType::New();
    labelFilter->SetInput(inputImage);
-   // TODO use RelabelImageComponentFilter to set all 
-   labelFilter->Update();
-   return labelFilter->GetOutput();
+   relabelFilter->SetInput(labelFilter->GetOutput());
+   relabelFilter->Update();
+   return relabelFilter->GetOutput();
 }   
 #endif

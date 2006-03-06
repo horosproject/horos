@@ -758,7 +758,10 @@ GLenum glReportError (void)
 {
 	rect = irect;
 }
-
+- (NSRect) rect
+{
+return rect;
+}
 - (NSMutableArray*) points
 {
 	long i;
@@ -1770,6 +1773,7 @@ GLenum glReportError (void)
 	if( name != a)
 	{
 		[name release]; name = [a retain];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	}
 	
 	if( type == tText || type == t2DPoint)

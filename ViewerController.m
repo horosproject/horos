@@ -62,6 +62,7 @@ Version 2.4
 #import "ThickSlabController.h"
 #import "Mailer.h"
 #import "ITKSegmentation3DController.h"
+#import "MSRGWindowController.h"
 #import "iPhoto.h"
 #import "CurvedMPR.h"
 #import "SeriesView.h"
@@ -677,11 +678,18 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 		 free(aBuffer);
 	 }
 	 */
+	 MSRGWindowController *msrgController = [[MSRGWindowController alloc] initWithMarkerViewer:self andViewersList:viewersList];
+	 if( msrgController)
+		{
+			[msrgController showWindow:self];
+			[[msrgController window] makeKeyAndOrderFront:self];
+		}
+/*
 	MSRGSegmentation *msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
 	[msrgSeg startMSRGSegmentation];
-	
+	*/
 	[viewersList release];
-	   [msrgSeg release];
+	
 }
 - (IBAction) roiGetManager:(id) sender
 {
@@ -730,15 +738,15 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 }
 
 
--(void)addRoiFromFullStackBuffer:(int*)buff
+-(void)addRoiFromFullStackBuffer:(unsigned char*)buff
 {
 	[self addRoiFromFullStackBuffer:buff withName:@""];
 }
 
--(void)addRoiFromFullStackBuffer:(int*)buff withName:(NSString*)name
+-(void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name
 {
 	int i,j,k,l;
-	int tempValue;
+	unsigned char tempValue;
 	BOOL alreadyIn=NO;
 	
 	RGBColor aColor;
@@ -861,11 +869,11 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 	
 }
 
--(void)addRoiFromFullStackBuffer:(int*)buff forSpecificValue:(int)value withColor:(RGBColor)aColor
+-(void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor
 {
 	[self addRoiFromFullStackBuffer:buff forSpecificValue:value withColor:aColor withName:@""];
 }
--(void)addRoiFromFullStackBuffer:(int*)buff forSpecificValue:(int)value withColor:(RGBColor)aColor withName:(NSString*)name
+-(void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
 {
 	int i,j,k,l;
 	ROI		*theNewROI;

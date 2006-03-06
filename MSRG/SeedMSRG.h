@@ -25,7 +25,7 @@ public:
   // SeedMSRG position
   TImageIndex index;
   TPixel distance;
-  int label;
+  unsigned char label;
 
 public:
   SeedMSRG ();

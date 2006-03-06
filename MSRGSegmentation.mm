@@ -49,13 +49,15 @@ msrgOneCrit->Update();
 	{
 		criteriaViewerList=[list retain];
 		markerViewer=srcViewer;
-		NSLog(@"Number of criteria =%d",[criteriaViewerList count]);
+		numberOfCriteria=[criteriaViewerList count];
+		NSLog(@"Number of criteria =%d",numberOfCriteria);
+		width=0;height=0;depth=0;
 		//itkImage = [[ITK alloc] initWith: pix :volumeData :slice];
     }
     return self;
 }
 
--(BOOL) buildMarkerBufferWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth
+-(BOOL) buildMarkerBufferWithStackHeigth
 {
 	int i,j,k,l;
 	ROI* roi;
@@ -70,7 +72,7 @@ msrgOneCrit->Update();
 	sizeMarker[2] = depth;	
 	
 	// number / [[roi name] hash]
-	markerBuffer=(int*)malloc(height*width*depth*sizeof(int));
+	markerBuffer=(unsigned char*)malloc(height*width*depth*sizeof(unsigned char));
 	if (markerBuffer)
 	{
 		// clear markerBuffer
@@ -121,8 +123,9 @@ msrgOneCrit->Update();
 	return NO;
 }
 
--(BOOL) buildCriteriaBufferFor2DColorImageWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth
+-(BOOL) buildCriteriaBufferFor2DColorImageWithStackHeigt
 {
+/*
 	int i,j,numberOfCriteria=3;
 	long stackSize=height*width*3;
 	ViewerController* v;
@@ -152,15 +155,18 @@ msrgOneCrit->Update();
 				criteriaBufferChar[(long)(width*j+i+layerSize*2)]=srcPtr[(j*width+i)*4+2]; // BLUE
 		
 		return YES;
+		
 	}
 	
 	NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferFor2DColorImageWithStackHeigt !");
 	NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	*/
 	return NO;
 	
 }
--(BOOL) buildCriteriaBufferWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth
+-(BOOL) buildCriteriaBufferWithStackHeigth:(long)height stackWidth:(long)width stackDepth:(long)depth
 {
+/*
 	int i,j,numberOfCriteria=0;
 	long stackSize=height*width*depth;
 	ViewerController* v;
@@ -195,75 +201,186 @@ msrgOneCrit->Update();
 	
 	NSLog(@"Memory problem in : MSRGSegmentation/buildCriteriaBufferWithStackHeigt !");
 	NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
-	return NO;
+	
+	*/
+	
 }
 
-- (id) start3DMSRGSegmentationWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth {
+- (id) start3DMSRGSegmentationWithOneCriterion {
 	NSLog(@"-*- start3DMSRGSegmentation -*-");
-	// ITK Type
-	typedef itk::Image < float, 3 > OsiriXImageType;
-	typedef OsiriXImageType::Pointer ImagePointer;
-	typedef itk::Image < int, 3 > MarkerImageType;
+	// One criterion
+
+	typedef itk::Vector< float, 1 >   CriteriaPixelType;
+	typedef itk::Image < CriteriaPixelType, 3 > CriteriaImageType;
+	typedef CriteriaImageType::IndexType CriteriaIndexType;
+	CriteriaImageType::Pointer criteriaImage = CriteriaImageType::New();
+	CriteriaImageType::RegionType critRegion;
+	CriteriaImageType::SizeType  critSize;
+	
+	typedef itk::Image < unsigned char, 3 > MarkerImageType;
 	typedef MarkerImageType::Pointer MarkerImagePointer;
+	typedef MarkerImageType::SizeType MarkerSizeType;
+	MarkerSizeType size;
+	size[0]=width;size[1]=height;size[2]=depth;
 	
 	// II -  find tPlain ROI => fill the markerBuffer with the texture 
-	if ([self buildMarkerBufferWithStackHeigt:height stackWidth:width stackDepth:depth])
+	if ([self buildMarkerBufferWithStackHeigth])
 	{
 		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
-		ImagePointer internalImage = MSRGImageHelper < OsiriXImageType >::BuildImageWithArray ([markerViewer volumePtr], sizeMarker);
-		//MSRGImageHelper<MarkerImageType>::Display(m_Marker,"- Marker Image -");
+		// create the criteria image
+		critSize=size;
+		critRegion.SetSize( critSize );
+		criteriaImage->SetRegions( critRegion );
+		criteriaImage->Allocate();
 		
-		// III -  Criteria buffer
-		
-		if ([self buildCriteriaBufferWithStackHeigt:height stackWidth:width stackDepth:depth])
+		//recopy current stack as a vectorial image
+		long i,j,k;
+		CriteriaIndexType index;
+		CriteriaPixelType v;
+		float* imagePtr=[markerViewer volumePtr];
+		for (k=0;k<depth;k++)
 		{
-			ImagePointer CriteriaImage=MSRGImageHelper<OsiriXImageType>::BuildImageWithArray(criteriaBuffer,sizeCriteria);
-			//MSRGImageHelper<OsiriXImageType>::Display(CriteriaImage,"- Criteria Image -");	
-			//CriteriaImagePointer filteredCriteria=MSRGImageHelper<CriteriaImageType>::GaussianImageFilter(CriteriaImage,0.7,3);	
-			
-			switch (sizeCriteria[2])
-			{				
-				case 1: 
+			for(j=0;j<height;j++)
+			{
+				for(i=0;i<width;i++)
 				{
-					runMSRGWithNumberOfCriteria(1);
-					//MSRGImageHelper<MarkerImageType>::Display(m_Marker,"- Output Image -");
+					index[0]=i;index[1]=j;index[2]=k;
+					v[0]=imagePtr[i+j*width+k*(width*height)];
+					criteriaImage->SetPixel(index,v);
 				}
-					break;
-				case 2:
-				{
-					runMSRGWithNumberOfCriteria(2);
-				}
-					break;
-				case 3:
-				{
-					runMSRGWithNumberOfCriteria(3);
-				}
-					break;
-				case 4:
-				{
-					runMSRGWithNumberOfCriteria(4);
-				}
-					break;
-			}	
-			free(criteriaBuffer);
-			
+			}
 		}
-		[markerViewer addRoiFromFullStackBuffer:markerBuffer];
+				
+		// create the msrg filter
+		typedef itk::MSRGFilter<CriteriaImageType> MsrgFilterType;
+		MsrgFilterType::Pointer msrg=MsrgFilterType::New();
+		msrg->SetInput(criteriaImage);
+		msrg->SetMarker(m_Marker);
+		msrg->Update();
+		
+		// create ROIs from msrg output
+		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
 	
 }
 
-- (id) start2DMSRGSegmentationWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth {
-	NSLog(@"start start2DMSRGSegmentationWithStackHeigt ...");
-	NSRunAlertPanel(@"MSRG Problem", @"Sorry, but the MSRG is not available with one image ...", 
-					nil, nil, nil);
+- (id) start2DMSRGSegmentationWithOneCriterion {
+	NSLog(@"start start2DMSRGSegmentationWithOneCriterion ...");
+	typedef itk::Vector< float, 1 >   CriteriaPixelType;
+	typedef itk::Image < CriteriaPixelType, 2 > CriteriaImageType;
+	typedef CriteriaImageType::IndexType CriteriaIndexType;
+	CriteriaImageType::Pointer criteriaImage = CriteriaImageType::New();
+	CriteriaImageType::RegionType critRegion;
+	CriteriaImageType::SizeType  critSize;
+	
+	typedef itk::Image < unsigned char, 2 > MarkerImageType;
+	typedef MarkerImageType::Pointer MarkerImagePointer;
+	typedef MarkerImageType::SizeType MarkerSizeType;
+	MarkerSizeType size;
+	size[0]=width;size[1]=height;
+	
+	// II -  find tPlain ROI => fill the markerBuffer with the texture 
+	if ([self buildMarkerBufferWithStackHeigth])
+	{
+		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
+		// create the criteria image
+		critSize=size;
+		critRegion.SetSize( critSize );
+		criteriaImage->SetRegions( critRegion );
+		criteriaImage->Allocate();
+		
+		//recopy current stack as a vectorial image
+		long i,j;
+		CriteriaIndexType index;
+		CriteriaPixelType v;
+		float* imagePtr=[markerViewer volumePtr];
+	
+			for(j=0;j<height;j++)
+			{
+				for(i=0;i<width;i++)
+				{
+					index[0]=i;index[1]=j;
+					v[0]=imagePtr[i+j*width];
+					criteriaImage->SetPixel(index,v);
+				}
+			}
+		
+				
+		// create the msrg filter
+		typedef itk::MSRGFilter<CriteriaImageType> MsrgFilterType;
+		MsrgFilterType::Pointer msrg=MsrgFilterType::New();
+		msrg->SetInput(criteriaImage);
+		msrg->SetMarker(m_Marker);
+		msrg->Update();
+		
+		// create ROIs from msrg output
+		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
+		free(markerBuffer);
+	}
+
+}
+- (id) start2DMSRGSegmentationWithTwoCriteria {
+	NSLog(@"start start2DMSRGSegmentationWithTwoCriteria ...");
+	typedef itk::Vector< float, 2 >   CriteriaPixelType;
+	typedef itk::Image < CriteriaPixelType, 2 > CriteriaImageType;
+	typedef CriteriaImageType::IndexType CriteriaIndexType;
+	CriteriaImageType::Pointer criteriaImage = CriteriaImageType::New();
+	CriteriaImageType::RegionType critRegion;
+	CriteriaImageType::SizeType  critSize;
+	
+	typedef itk::Image < unsigned char, 2 > MarkerImageType;
+	typedef MarkerImageType::Pointer MarkerImagePointer;
+	typedef MarkerImageType::SizeType MarkerSizeType;
+	MarkerSizeType size;
+	size[0]=width;size[1]=height;
+	
+	// II -  find tPlain ROI => fill the markerBuffer with the texture 
+	if ([self buildMarkerBufferWithStackHeigth])
+	{
+		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
+		// create the criteria image
+		critSize=size;
+		critRegion.SetSize( critSize );
+		criteriaImage->SetRegions( critRegion );
+		criteriaImage->Allocate();
+		
+		//recopy current stack as a vectorial image
+		long i,j;
+		CriteriaIndexType index;
+		CriteriaPixelType v;
+	
+		float* imagePtr=[markerViewer volumePtr];
+		float* imageSecondPtr=[[criteriaViewerList objectAtIndex:0] volumePtr];
+			for(j=0;j<height;j++)
+			{
+				for(i=0;i<width;i++)
+				{
+					index[0]=i;index[1]=j;
+					v[0]=imagePtr[i+j*width];
+					v[1]=imageSecondPtr[i+j*width];
+					criteriaImage->SetPixel(index,v);
+				}
+			}
+		
+				
+		// create the msrg filter
+		typedef itk::MSRGFilter<CriteriaImageType> MsrgFilterType;
+		MsrgFilterType::Pointer msrg=MsrgFilterType::New();
+		msrg->SetInput(criteriaImage);
+		msrg->SetMarker(m_Marker);
+		msrg->Update();
+		
+		// create ROIs from msrg output
+		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
+		free(markerBuffer);
+	}
 
 }
 
-- (id) start2DColorMSRGSegmentationWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth {
+- (id) start2DColorMSRGSegmentation {
 	NSLog(@"start start2DColorMSRGSegmentationWithStackHeigt ... ");
-	
+	/*
 	typedef itk::Image < int, 2 > MarkerImageType;
 	typedef MarkerImageType::Pointer MarkerImagePointer;
 	
@@ -292,21 +409,27 @@ msrgOneCrit->Update();
 			[markerViewer addRoiFromFullStackBuffer:markerBuffer];
 			free(markerBuffer);
 			
-}
+	}
+	*/
 }
 
 - (id) startMSRGSegmentation
 {
 
 	DCMPix	*curPix = [[markerViewer pixList] objectAtIndex: [[markerViewer imageView] curImage]];
-	long height=[curPix pheight];
-	long width=[curPix pwidth];
-	long depth=[[markerViewer pixList] count];
+	height=[curPix pheight];
+	width=[curPix pwidth];
+	depth=[[markerViewer pixList] count];
+	// --- RGB ---
 	if ((depth==1) && [curPix isRGB])
-		[self start2DColorMSRGSegmentationWithStackHeigt:height stackWidth:width stackDepth:depth];
-	if ((depth==1) && ![curPix isRGB])
-		[self start2DMSRGSegmentationWithStackHeigt:height stackWidth:width stackDepth:depth];
+		[self start2DColorMSRGSegmentation];
+	// --- 2D ---	
+	if (depth==1 && ![curPix isRGB] && numberOfCriteria==0)
+		[self start2DMSRGSegmentationWithOneCriterion];
+	if (depth==1 && ![curPix isRGB] && numberOfCriteria==1)
+		[self start2DMSRGSegmentationWithTwoCriteria];
+	// --- 3D ---	
 	if ((depth>1) && ![curPix isRGB])
-		[self start3DMSRGSegmentationWithStackHeigt:height stackWidth:width stackDepth:depth];
+		[self start3DMSRGSegmentationWithOneCriterion];
 }
 @end

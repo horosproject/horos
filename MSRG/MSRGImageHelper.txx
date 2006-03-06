@@ -13,7 +13,6 @@
 =========================================================================*/
 
 
-
 #ifndef _MSRGImageHelper_txx
 #define _MSRGImageHelper_txx
 #include "MSRGImageHelper.h"

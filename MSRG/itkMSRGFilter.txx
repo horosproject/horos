@@ -1,7 +1,17 @@
-/***************************************************************************
-*              Copyright (C) 2004 by Arnaud GARCIA                        *
-*                   arnaud.garcia@sim.hcuge.ch                            *
-***************************************************************************/
+/*=========================================================================
+Program:   OsiriX
+
+Copyright (c) OsiriX Team
+All rights reserved.
+Distributed under GNU - GPL
+
+See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+This software is distributed WITHOUT ANY WARRANTY; without even
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+=========================================================================*/
+
 
 #ifndef __itkMSRGFilter_txx_
 #define __itkMSRGFilter_txx_
@@ -12,10 +22,12 @@
 #include "vnl/vnl_math.h"
 #include "itkConnectedComponentImageFilter.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
+#include "itkMinimumMaximumImageCalculator.h"
 #include "itkConstNeighborhoodIterator.h"
 #include "itkMeanCalculator.h"
 #include "itkCovarianceCalculator.h"
 #include "itkMahalanobisDistanceMembershipFunction.h"
+#include "itkSubtractImageFilter.h"
 #include "itkVector.h"
 #include "itkListSample.h"
 #include "itkProgressReporter.h"
@@ -25,56 +37,50 @@
 #include "MSRGImageHelper.h"
 #include "MorphoHelper.h"
 #include "itkMSRGFilter.h"
+//#include "itkImageFileWriter.h"
+
 using namespace std;
 namespace itk
 {
-	template < class TInputImage, class TOutputImage, class TCriteriaImage, unsigned int NbCriteria >
-    MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::MSRGFilter ()
+	template < class TInputImage > MSRGFilter < TInputImage >::MSRGFilter ()
 {
+		// default value
+		labelMarker=false;
 		// TODO initialiser m_Marker
 		//m_Upper = NumericTraits < InputImagePixelType >::max ();
 }
 
-template < class TInputImage, class TOutputImage, class TCriteriaImage, unsigned int NbCriteria >
-void MSRGFilter <
-TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::PrintSelf (std::ostream & os, Indent indent) const
+template < class TInputImage > void MSRGFilter < TInputImage >::PrintSelf (std::ostream & os, Indent indent) const
 {
     this->Superclass::PrintSelf (os, indent);
 }
 
-template < class TInputImage, class TOutputImage, class TCriteriaImage, unsigned int NbCriteria >
-void MSRGFilter <
-TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::GenerateInputRequestedRegion ()
+template < class TInputImage > void MSRGFilter < TInputImage >::GenerateInputRequestedRegion ()
 {
     Superclass::GenerateInputRequestedRegion ();
     if (this->GetInput ())
 	{
-		InputImagePointer image =
-		const_cast < InputImageType * >(this->GetInput ());
+		InputImagePointer image = const_cast < InputImageType * >(this->GetInput ());
 		image->SetRequestedRegionToLargestPossibleRegion ();
 	}
 }
 
-template < class TInputImage,class TOutputImage, class TCriteriaImage, unsigned int NbCriteria >
-void MSRGFilter <
-TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::EnlargeOutputRequestedRegion (DataObject * output)
+template < class TInputImage > void MSRGFilter < TInputImage >::EnlargeOutputRequestedRegion (DataObject * output)
 {
     Superclass::EnlargeOutputRequestedRegion (output);
     output->SetRequestedRegionToLargestPossibleRegion ();
 }
 
-template < class TInputImage, class TOutputImage, class TCriteriaImage, unsigned int NbCriteria >
-void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::GenerateData ()
+
+template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 {
 	std::cout << "Inside MSRG Algorithm ..." << std::endl;
-    InputImageConstPointer inputImage = this->GetInput ();
+    InputImageConstPointer m_Criteria = this->GetInput ();
     OutputImagePointer outputImage = this->GetOutput ();
-    
-    const unsigned int MarkerDimension=OutputImageType::ImageDimension;
-    const unsigned int CriteriaDimension=CriteriaImageType::ImageDimension;
+    //unsigned long outputImageDataSize = outputImage->GetPixelContainer()->Size();
 	
     // *************************************************************
-    // *                INIT        IMAGE                          *
+    // *                INIT        IMAGES                         *
     // *************************************************************  
 	
 	
@@ -82,90 +88,69 @@ void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::Gener
     OutputImageRegionType region = outputImage->GetRequestedRegion ();
     outputImage->SetBufferedRegion (region);
     outputImage->Allocate ();
-    outputImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
-	
+ 	
     // init status - 0 empty, 1 permanent, 2 in queue
-	
-	StatusImagePointer statusImage = StatusImageType::New ();
+	OutputImagePointer statusImage = OutputImageType::New ();
 	statusImage->SetRegions(region);
 	statusImage->Allocate();
-	statusImage->FillBuffer (NumericTraits < StatusImagePixelType >::Zero);
+	statusImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
+	
 	
     // *************************************************************
     // *                REGION INIT                                *
     // *************************************************************  
 	
-    // 1- Relabel marker image and find number of regions
-	//MSRGImageHelper<MarkerImageType>::Display(m_Marker,"INSIDE - MakerImage  -");
-	//m_Marker=MorphoHelper<MarkerImageType>::LabelImage(m_Marker);
-	
-	
+	OutputImagePointer relabelMarker;
+	// Do we need to relabel the image markers ?
+	if (labelMarker)
+	{
+		relabelMarker=MorphoHelper<OutputImageType>::LabelImage(m_Marker);
+		m_Marker=relabelMarker;
+	}
 	int NumberOfRegions=static_cast<int>(MSRGImageHelper<OutputImageType>::GetImageMax(m_Marker));
 	std::cout << "NumberOfRegions=" << NumberOfRegions << std::endl;
-    // 2- Extract internal zone for statistic init
-    
-	
-    // 3 -Statistic init process (sample extraction for all regions)
-	
-	// 3.1 Sample creation
 	
 	
-	typedef typename itk::Vector< CriteriaImagePixelType, NbCriteria > MeasurementVectorType;
-	typedef typename  itk::Statistics::ListSample< MeasurementVectorType > SampleType;	
+	// *************************************************************
+    // *                MEAN and COV EXTRACTION                    *
+    // *************************************************************  
+	
+	
+	typedef typename  itk::Statistics::ListSample< CriteriaImagePixelType > SampleType;
 	typedef typename SampleType::Pointer SamplePointerType;
 	SamplePointerType *SRGSample = new SamplePointerType[NumberOfRegions];
 	
 	for( int i=0; i<NumberOfRegions; i++ )
-	{
 		SRGSample[i]  = SampleType::New();
-		SRGSample[i]->SetMeasurementVectorSize( NbCriteria );
+	
+	typedef typename itk::ImageRegionConstIterator< OutputImageType > ConstOutputIteratorType;
+	typedef typename itk::ImageRegionConstIterator< InputImageType>  ConstCriteriaIteratorType;
+	ConstOutputIteratorType inputMarkerIt( m_Marker, m_Marker->GetRequestedRegion ()  );
+	ConstCriteriaIteratorType  inputCriteriaIt(  m_Criteria, m_Criteria->GetRequestedRegion() );
+	OutputImagePixelType label;
+	
+	// find samples for all regions...
+	for ( inputMarkerIt.GoToBegin(), inputCriteriaIt.GoToBegin(); !inputMarkerIt.IsAtEnd();
+		  ++inputMarkerIt, ++inputCriteriaIt)
+	{
+		label=inputMarkerIt.Get();
+		if (label!=0)
+			SRGSample[static_cast<int>(label)-1]->PushBack( inputCriteriaIt.Get() );
 	}
 	
-	typedef typename itk::ImageLinearConstIteratorWithIndex < OutputImageType > ConstIteratorType;
-	ConstIteratorType inputIt (m_Marker, m_Marker->GetRequestedRegion ());
-	inputIt.SetDirection (0);
-	OutputImagePixelType label;
-	IndexOutputType MarkerIndex;
-	IndexCriteriaType CriteriaIndex;
-	for (inputIt.GoToBegin (); !inputIt.IsAtEnd (); inputIt.NextLine ())
-	{
-		inputIt.GoToBeginOfLine ();
-		while (!inputIt.IsAtEndOfLine ())
-		{
-			
-			label=inputIt.Get ();
-			if (label!=0)
-			{
-				MarkerIndex=inputIt.GetIndex ();
-				
-				for(int i=0;i<MarkerDimension;i++)
-				{
-					CriteriaIndex[i]=MarkerIndex[i];
-					
-				}
-				CriteriaImagePixelType* buffVect=MSRGImageHelper<CriteriaImageType>::ExtractCriteriaVector(m_Criteria,CriteriaIndex,NbCriteria);
-				MeasurementVectorType mv(buffVect);
-				SRGSample[static_cast<int>(label)-1]->PushBack( mv );
-				
-			}
-			
-			++inputIt;
-		}
-	}  
-	// 3.2 statistic evaluation
 	// Mean
 	typedef typename itk::Statistics::MeanCalculator< SampleType > MeanAlgorithmType;
 	typedef typename MeanAlgorithmType::Pointer MeanPointerType;
-	MeanPointerType*meanAlgorithm = new MeanPointerType[NumberOfRegions];
+	MeanPointerType* meanAlgorithm = new MeanPointerType[NumberOfRegions];
 	for (int i=0;i<NumberOfRegions;i++){
 		meanAlgorithm[i] = MeanAlgorithmType::New();
 		meanAlgorithm[i]->SetInputSample( SRGSample[i]);
 		meanAlgorithm[i]->Update();	
 		std::cout << "Mean  Vector :" << *(meanAlgorithm[i]->GetOutput()) << std::endl;
-		
-		
 	}
+	
 	// Covariance
+	
 	typedef typename itk::Statistics::CovarianceCalculator< SampleType > CovarianceAlgorithmType;
 	typedef typename CovarianceAlgorithmType::Pointer CovariancePointerType;
 	CovariancePointerType *covarianceAlgorithm = new CovariancePointerType[NumberOfRegions];
@@ -175,30 +160,62 @@ void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::Gener
 		covarianceAlgorithm[i]->SetMean( meanAlgorithm[i]->GetOutput() );
 		covarianceAlgorithm[i]->Update();
 		std::cout << "Covariance Matrix :\n" << *(covarianceAlgorithm[i]->GetOutput()) << std::endl;
-		// if covariance matrix is =0 => set to identity, the evolution will be based only with the mean
-		// @TODO: A voir avec Corinne ....
-		vnl_matrix_fixed<double, NbCriteria, NbCriteria> mat=covarianceAlgorithm[i]->GetOutput()->GetVnlMatrix();
-		int indic=0;
-		for(int i=0;i<NbCriteria;i++)
-			for(int j=0;j<NbCriteria;j++)
-				if (mat[i][j]!=0)
-					indic=1;
-		if (indic==0)
-		{
-			//covarianceAlgorithm[i]->GetOutput()->SetIdentity();
-			//std::cout << " ! Covariance Matrix is set to Identity:\n" << *(covarianceAlgorithm[i]->GetOutput()) << std::endl;
-		}
-		
 	}
 	
-	typedef typename itk::Statistics::MahalanobisDistanceMembershipFunction< MeasurementVectorType > MahalanobisDistanceMembershipFunctionType;
-	typename MahalanobisDistanceMembershipFunctionType::Pointer MahalanobisDistance = MahalanobisDistanceMembershipFunctionType::New();
 	
-    // 4- Add seeds to queue
+    //  Extract only the rings of the regions 
+	// *************************************************************
+	// *               SEEDS EXTRACTION                            *
+	// *************************************************************  
+	
+	
+	// extract initial solution (user markers)
+	 OutputImagePointer erodMarker=MorphoHelper<OutputImageType>::ErodeImageByRadius(m_Marker,1);
+	 
+	 typedef typename itk::ImageRegionIterator< OutputImageType > OutputIteratorType;
+	 
+	 ConstOutputIteratorType erodMarkerIt( erodMarker, erodMarker->GetRequestedRegion ()  );
+	 OutputIteratorType outputImageIt1( outputImage, outputImage->GetRequestedRegion ()  );
+	
+	 for ( erodMarkerIt.GoToBegin(), outputImageIt1.GoToBegin(); !erodMarkerIt.IsAtEnd();
+	 	  ++outputImageIt1, ++erodMarkerIt)
+	 {
+		outputImageIt1.Set(erodMarkerIt.Get());
+	}
+	 /*
+	 OutputImagePixelType* importPointer = erodMarker->GetPixelContainer()->GetBufferPointer();
+	 OutputImagePixelType* bufferPointer = outputImage->GetPixelContainer()->GetBufferPointer();
+	 memcpy(bufferPointer, importPointer, outputImageDataSize*sizeof(OutputImagePixelType));
+	*/
+	// set status values to permanent 
+	
+	ConstOutputIteratorType outputImageIt( outputImage, outputImage->GetRequestedRegion ()  );
+	OutputIteratorType statusIt( statusImage, statusImage->GetRequestedRegion ()  );
+	for ( outputImageIt.GoToBegin(), statusIt.GoToBegin(); !outputImageIt.IsAtEnd();
+		  ++outputImageIt, ++statusIt)
+	{
+		if (outputImageIt.Get()!=0)
+			statusIt.Set(1); // permanent
+	}
+	
+	// remove these points from the initial markerImage, so we will just have the ring of the region => (the inputs seeds for the PQ)	
+	typedef typename itk::SubtractImageFilter<OutputImageType,OutputImageType,OutputImageType> SubtractFilterType;
+	typename SubtractFilterType::Pointer subtractFilter = SubtractFilterType::New();
+	subtractFilter->SetInput1(m_Marker);	
+	subtractFilter->SetInput2(outputImage);	
+	subtractFilter->Update();
+	m_Marker=subtractFilter->GetOutput();
+	
+	
 	// *************************************************************
 	// *                PRIORITY QUEUE INIT                        *
 	// *************************************************************  
-	IndexStatusType StatusIndex;
+	
+	
+	typedef typename itk::Statistics::MahalanobisDistanceMembershipFunction< CriteriaImagePixelType > MahalanobisDistanceMembershipFunctionType;
+	typename MahalanobisDistanceMembershipFunctionType::Pointer MahalanobisDistance = MahalanobisDistanceMembershipFunctionType::New();
+	typedef typename itk::ImageLinearConstIteratorWithIndex < OutputImageType > ConstIteratorWithIndexType;
+	ConstIteratorWithIndexType inputIt (m_Marker, m_Marker->GetRequestedRegion ());
 	typedef SeedMSRG < IndexOutputType, double > seedType;    
 	priority_queue < seedType, vector < seedType >, seedType > PQ;
 	seedType seed;
@@ -213,24 +230,21 @@ void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::Gener
 			{
 				seed.index = inputIt.GetIndex ();
 				seed.label = inputIt.Get ();
-				for(int i=0;i<MarkerDimension;i++)
-				{
-					CriteriaIndex[i]=seed.index[i];
-					StatusIndex[i]=seed.index[i];
-				}
-				CriteriaImagePixelType* buffVect=MSRGImageHelper<CriteriaImageType>::ExtractCriteriaVector(m_Criteria,CriteriaIndex,NbCriteria);
-				MeasurementVectorType mv(buffVect);
-				MahalanobisDistance->SetMean(*(meanAlgorithm[seed.label-1]->GetOutput()));
+				statusImage->SetPixel(seed.index,2); // in queue				
+				MahalanobisDistance->SetMean(*(meanAlgorithm[seed.label-1]->GetOutput()));				 
 				MahalanobisDistance->SetCovariance(covarianceAlgorithm[seed.label-1]->GetOutput()->GetVnlMatrix());
-				seed.distance=MahalanobisDistance->Evaluate(mv);
+				seed.distance=MahalanobisDistance->Evaluate(m_Criteria->GetPixel(seed.index));
 				PQ.push (seed);
 			}
 			++inputIt;
 		}
 	}  
+	
+	
 	// *************************************************************
 	// *                      MAIN                                 *
 	// *************************************************************  
+	
 	
 	typedef typename itk::ConstNeighborhoodIterator < OutputImageType > NeighborhoodIteratorType;
 	typename NeighborhoodIteratorType::RadiusType radius;
@@ -240,15 +254,15 @@ void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::Gener
 	seedType pi;
 	IndexOutputType piIndex, qiIndex;
 	bool boundary = false;
+	
 	while (!PQ.empty ())
 	{
-		
 		pi = PQ.top ();
 		PQ.pop ();
 		piIndex = pi.index;
 		statusImage->SetPixel (piIndex, 1);
 		outputImage->SetPixel (piIndex, pi.label);	// propagate label
-		m_Marker->SetPixel (piIndex, pi.label); // Also in marker image ...
+		//m_Marker->SetPixel (piIndex, pi.label);
 		it.SetLocation (piIndex);
 		for (unsigned i = 0; i < it.Size (); i++)
 		{
@@ -260,26 +274,22 @@ void MSRGFilter < TInputImage, TOutputImage, TCriteriaImage, NbCriteria >::Gener
 				{
 					seed.index = qiIndex;
 					seed.label = pi.label;
-					for(int i=0;i<MarkerDimension;i++)
-					{
-						CriteriaIndex[i]=seed.index[i];
-						StatusIndex[i]=seed.index[i];
-					}
-					statusImage->SetPixel (StatusIndex, 2);
-					// compute Mahalanobis ...
-					CriteriaImagePixelType* buffVect=MSRGImageHelper<CriteriaImageType>::ExtractCriteriaVector(m_Criteria,CriteriaIndex,NbCriteria);
-					MeasurementVectorType mv(buffVect);
+					statusImage->SetPixel (seed.index, 2);
 					MahalanobisDistance->SetMean(*(meanAlgorithm[seed.label-1]->GetOutput()));
 					MahalanobisDistance->SetCovariance(covarianceAlgorithm[seed.label-1]->GetOutput()->GetVnlMatrix());
-					seed.distance=MahalanobisDistance->Evaluate(mv);	
+					seed.distance=MahalanobisDistance->Evaluate(m_Criteria->GetPixel(seed.index));	
 					PQ.push (seed);					
 				}
 			}
 		}
 		
 	}
-	//MSRGImageHelper<OutputImageType>::Display(m_Marker,"End of process - CB  -");
-	
+	/*
+	typedef typename itk::ImageFileWriter < OutputImageType > WriterType;
+	typename WriterType::Pointer writer = WriterType::New ();
+	writer->SetFileName ("/Users/arg/Desktop/result.png");
+	writer->SetInput (outputImage);
+	writer->Update();*/
 }
 
 

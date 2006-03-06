@@ -1,0 +1,25 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                CreateDeleteMarkers = id; 
+                activateBoundingBox = id; 
+                frameThicknessChange = id; 
+                startMSRG = id; 
+            }; 
+            CLASS = MSRGWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                ActivateBoundingBoxButton = NSButton; 
+                AddMarkerFrameButton = NSButton; 
+                RadioMatrix = NSMatrix; 
+                SliderThickness = NSSlider; 
+                StartButton = NSButton; 
+                startEndText = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

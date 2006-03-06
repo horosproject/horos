@@ -149,6 +149,7 @@ enum
 
 // To create a Rectangular ROI (tROI) or an Oval ROI (tOval)
 - (void) setROIRect:(NSRect) rect;
+- (NSRect) rect;
 
 - (float*) dataValuesAsFloatPointer :(long*) no;
 

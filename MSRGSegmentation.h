@@ -27,14 +27,13 @@ PURPOSE.
 @interface MSRGSegmentation : NSObject {
 	NSMutableArray* criteriaViewerList;
 	ViewerController* markerViewer;
-	int* markerBuffer;
-	float* criteriaBuffer;
-	unsigned char* criteriaBufferChar;
+	unsigned char* markerBuffer;
 	int sizeMarker[3];
-	int sizeCriteria[3];
+	int numberOfCriteria;
+	int width,height,depth;
 }
 - (id) initWithViewerList:(NSMutableArray*)list currentViewer:(ViewerController*)srcViewer;
-- (id) start3DMSRGSegmentationWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth;
-- (id) start2DMSRGSegmentationWithStackHeigt:(long)height stackWidth:(long)width stackDepth:(long)depth;
+- (id) start3DMSRGSegmentationWithOneCriterion;
+- (id) start2DMSRGSegmentation;
 - (id) startMSRGSegmentation;
 @end

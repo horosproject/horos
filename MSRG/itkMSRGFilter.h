@@ -22,10 +22,8 @@ PURPOSE.
 
 namespace itk
   {
-
-
-  template < class TInputImage, class TOutputImage, class TCriteriaImage, unsigned int NbCriteria=1>
-  class ITK_EXPORT MSRGFilter: public ImageToImageFilter < TInputImage, TOutputImage >
+  template < class TInputImage >
+  class ITK_EXPORT MSRGFilter: public ImageToImageFilter < TInputImage, Image<unsigned char,::itk::GetImageDimension<TInputImage>::ImageDimension> >
     {
 
     public:
@@ -44,38 +42,28 @@ namespace itk
 
       // Images
       typedef TInputImage InputImageType;
-	  typedef TOutputImage OutputImageType;
-      typedef TCriteriaImage CriteriaImageType;
-      typedef Image<unsigned short, itkGetStaticConstMacro(ImageDimension)> StatusImageType;
-	
+      typedef Image<unsigned char, itkGetStaticConstMacro(ImageDimension)> OutputImageType;
+
       // Pointers
       typedef typename InputImageType::Pointer InputImagePointer;
       typedef typename InputImageType::ConstPointer InputImageConstPointer;
-      typedef typename CriteriaImageType::Pointer CriteriaImagePointer;
+      
       typedef typename OutputImageType::Pointer OutputImagePointer;
-	  typedef typename StatusImageType::Pointer StatusImagePointer;
-
+	
       // Regions
       typedef typename InputImageType::RegionType InputImageRegionType;
       typedef typename OutputImageType::RegionType OutputImageRegionType;
 
       // PixelType
-      typedef typename InputImageType::PixelType InputImagePixelType;
       typedef typename OutputImageType::PixelType OutputImagePixelType;
-      typedef typename StatusImageType::PixelType StatusImagePixelType;
-      typedef typename CriteriaImageType::PixelType CriteriaImagePixelType;
+      typedef typename InputImageType::PixelType CriteriaImagePixelType;
 
       // size index
-      typedef typename InputImageType::IndexType IndexType;
-      typedef typename CriteriaImageType::IndexType IndexCriteriaType;
-	  typedef typename OutputImageType::IndexType IndexOutputType;
-	  typedef typename StatusImageType::IndexType IndexStatusType;
-      
+      typedef typename InputImageType::IndexType IndexCriteriaType;
+      typedef typename OutputImageType::IndexType IndexOutputType;
+
       // size
-      typedef typename InputImageType::SizeType SizeType;
-      typedef typename CriteriaImageType::SizeType CriteriaSizeType;
-
-
+      typedef typename InputImageType::SizeType CriteriaSizeType;
       typedef ImageToImageFilter< InputImageType, OutputImageType > Superclass;
 
       void PrintSelf (std::ostream & os, Indent indent) const;
@@ -84,18 +72,18 @@ namespace itk
       {
         m_Marker=_marker;
       };
-      void SetCriteria(CriteriaImageType* _criteria)
+      
+      void LabelMarkerImage(bool operation)
       {
-        m_Criteria=_criteria;
-      };
+	 labelMarker=operation;
+      }
     protected:
       MSRGFilter ();
       ~MSRGFilter ()
       {}
       ;
       OutputImageType* m_Marker;
-      CriteriaImageType* m_Criteria;
-
+      bool labelMarker;
 
       // Override since the filter needs all the data for the algorithm
       void GenerateInputRequestedRegion ();
