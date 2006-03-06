@@ -49,6 +49,8 @@ Version 2.3
 #import "NetworkSendDataHandler.h"
 #import "PluginFilter.h"
 
+#import "DCMTKStoreSCU.h"
+
 
 extern NSMutableDictionary	*plugins, *pluginsDict;
 
@@ -284,9 +286,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			}
 			else
 			{
-				
-				[[_waitSendWindow progress] setIndeterminate: YES];
-				[_waitSendWindow setElapsedString:@"working..."];
+				[_waitSendWindow setCancel:YES];
+				//[[_waitSendWindow progress] setIndeterminate: YES];
+				//[_waitSendWindow setElapsedString:@"working..."];
 				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: files2Send];
 			}
 		}		
@@ -301,49 +303,60 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
 
 	NSMutableArray		*filesToSend = [files retain];
-	NSMutableArray		*tempFiles = [NSMutableArray array];
+	//NSMutableArray		*tempFiles = [NSMutableArray array];
 	//convert Syntax
 	NSEnumerator *enumerator = [filesToSend objectEnumerator];
 	NSString *path;
 	DCMTransferSyntax *ts;
+	NSString *transferSyntax;
 	//get Transfer Syntax and compression in indicated
 	int compression = DCMLosslessQuality;
 	switch ([self osirixTS]) {
 		case SendExplicitLittleEndian: 
 			ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+			transferSyntax = @"Explicit Little Endian";
 			break;
 		case SendJPEG2000Lossless:
 			ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
+			transferSyntax = @"JPEG 2000 Lossless";
 			break;
 		case SendJPEG2000Lossy10:
 			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
 			compression = DCMHighQuality;
+			transferSyntax = @"JPEG 2000 Lossy";
 			break;
 		case SendJPEG2000Lossy20:
 			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
 			compression = DCMMediumQuality;
+			transferSyntax = @"JPEG 2000 Lossy";
 			break;
 		case SendJPEG2000Lossy50:
 			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
 			compression =  DCMLowQuality;
+			transferSyntax = @"JPEG 2000 Lossy";
 			break;
 		case SendJPEGLossless: 
 			ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
+			transferSyntax = @"JPEG Lossless";
 			break;
 		case SendJPEGLossy9:
 			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
 			compression = DCMHighQuality;
+			transferSyntax = @"JPEG Lossy";
 			break;
 		case SendJPEGLossy8:
 			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
 			compression =  DCMMediumQuality;
+			transferSyntax = @"JPEG Lossy";
 			break;			
 		case SendJPEGLossy7:
 			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
 			compression =  DCMLowQuality;
+			transferSyntax = @"JPEG Lossy";
 			break;
 		case SendImplicitLittleEndian:
 			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+			transferSyntax = @"Implicit";
 	}
 
 	NSString *calledAET;
@@ -406,7 +419,18 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[params setObject:dataHandler forKey:@"receivedDataHandler"];
 	
 	DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
-
+	
+	/*
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+			calledAET:calledAET 
+			hostname:hostname 
+			port:[destPort intValue] 
+			filesToSend:(NSArray *)filesToSend
+			transferSyntax:(NSString *)transferSyntax
+			compression: 1.0
+			extraParameters:nil];
+	[storeSCU run:self];
+*/
 	[filesToSend release];
 	
 	[_waitSendWindow close];
@@ -419,6 +443,64 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 }
 
+- (void) sendDICOMFilesOffis:(NSMutableArray *)files
+{
+	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+	NSMutableArray		*filesToSend = [files retain];
+	
+	NSString *calledAET;
+	NSString *hostname;
+	NSString *destPort;
+	NSString *transferSyntax;
+		
+	
+	if ([[self server] isMemberOfClass: [NSNetService class]]){
+		calledAET = [[self server] name];
+		hostname = [[self server] hostName];
+		destPort = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]];
+
+	}
+	else{
+		calledAET = [[self server] objectForKey:@"AETitle"];
+		hostname = [[self server] objectForKey:@"Address"];
+		destPort = [[self server] objectForKey:@"Port"];
+	}		
+	
+
+	
+	switch(_offisTS)
+	{
+		case SendImplicitLittleEndian:		transferSyntax = @"Implicit";					break;
+		case SendExplicitLittleEndian:		transferSyntax = @"Explicit Little Endian";		break;
+		case SendExplicitBigEndian:			transferSyntax = @"Big Endian";					break;
+		case SendJPEGLossless:				transferSyntax = @"JPEG Lossless";				break;
+		case SendRLE:						transferSyntax = @"RLE";						break;
+		case SendJPEG2000Lossless:			transferSyntax = @"JPEG 2000 Lossless";			break;
+	}
+	
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+			calledAET:calledAET 
+			hostname:hostname 
+			port:[destPort intValue] 
+			filesToSend:(NSArray *)filesToSend
+			transferSyntax:(NSString *)transferSyntax
+			compression: 1.0
+			extraParameters:nil];
+	[storeSCU run:self];
+	
+		[filesToSend release];
+	
+	[_waitSendWindow close];
+	[_waitSendWindow release];
+	_waitSendWindow = 0L;
+	
+	[pool release];
+	//need to unlock to allow release of self after send complete
+	[_lock unlock];
+	
+}
+
+/*
 - (void) sendDICOMFilesOffis:(NSMutableArray *)files
 {
 	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
@@ -519,6 +601,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[_lock unlock];
 	
 }
+*/
 
 - (void) setSendMessageThread:(NSDictionary*) info
 {
