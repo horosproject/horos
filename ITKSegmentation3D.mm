@@ -95,37 +95,46 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	BOOL				found = YES, foundPlane = YES;
 	long				minX, minY, minZ, maxX, maxY, maxZ;
 	long				nminX, nminY, nminZ, nmaxX, nmaxY, nmaxZ;
-	long				x, y, z, s = w*h;
+	long				x, y, z, zz, s = w*h;
 	float				*srcPtrZ, *srcPtrY, *srcPtrX;
 	unsigned char		*rPtr, *rPtrZ, *rPtrY, *rPtrX;
 	
 	minX = seed[ 0]-1;		maxX = seed[ 0]+2;
 	minY = seed[ 1]-1;		maxY = seed[ 1]+2;
-	minZ = seed[ 2]-1;		maxZ = seed[ 2]+2;
+	minZ = seed[ 2];		maxZ = seed[ 2]+1;
 	
 	rPtr = (unsigned char*) calloc( w*h*depth, sizeof(unsigned char));
 	if( rPtr)
 	{
 		rPtr[ seed[ 0] + seed[ 1]*w + seed[ 2]*s] = 1;
-	
 		
-		found = NO;
 		while( found)
 		{
+			found = NO;
+			
 			if( minX <= 0) minX = 1;	if( maxX >= w - 1)		maxX = w - 1;
 			if( minY <= 0) minY = 1;	if( maxY >= h - 1)		maxY = h - 1;
 			if( minZ <= 0) minZ = 1;	if( maxZ >= depth - 1)	maxZ = depth - 1;
-
+			
 //			srcPtrZ = volume + minZ*s;
 //			rPtrZ = rPtr + minZ*s;
-			for( z = minZ; z < maxZ; z += maxZ-minZ-1)
+			
+			long addZ = maxZ-minZ-1;
+			if( addZ == 0) addZ++;
+
+			for( z = minZ; z < maxZ; z += addZ)
 			{
-				rPtrZ = rPtr + z*s;
-				srcPtrZ = volume + z*s;
-				
-				foundPlane = NO;
+				foundPlane = YES;
 				while( foundPlane)
 				{
+					if( minX <= 0) minX = 1;	if( maxX >= w - 1)		maxX = w - 1;
+					if( minY <= 0) minY = 1;	if( maxY >= h - 1)		maxY = h - 1;
+					if( minZ <= 0) minZ = 1;	if( maxZ >= depth - 1)	maxZ = depth - 1;
+					
+					rPtrZ = rPtr + z*s;
+					srcPtrZ = volume + z*s;
+
+					foundPlane = NO;
 					srcPtrY = srcPtrZ + minY*w;
 					rPtrY = rPtrZ + minY*w;
 					for( y = minY; y < maxY; y ++, srcPtrY+= w, rPtrY += w)
@@ -153,16 +162,83 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 							srcPtrX++;
 						}
 					}
+			
+					// Should we grow the box?
+					if( foundPlane)
+					{
+						nminX	=	minX;		nmaxX	=	maxX;
+						nminY	=	minY;		nmaxY	=	maxY;
+						nminZ	=	minZ;		nmaxZ	=	maxZ;
+						
+						// X plane
+						
+						rPtrZ = rPtr + minX + minZ*s;
+						for( zz = minZ; zz < maxZ; zz++, rPtrZ += s)
+						{
+							for( y = minY; y < maxY; y++)
+							{
+								if( rPtrZ[ y*w])
+								{
+									nminX = minX -1;
+									zz = maxZ;
+								}
+							}
+						}
+						
+						rPtrZ = rPtr + maxX-1  + minZ*s;
+						for( zz = minZ; zz < maxZ; zz++, rPtrZ += s)
+						{
+							for( y = minY; y < maxY; y++)
+							{
+								if( rPtrZ[ y*w])
+								{
+									nmaxX = maxX + 1;
+									zz = maxZ;
+								}
+							}
+						}
+						
+						// Y plane
+						
+						rPtrZ = rPtr + minY*w + minZ*s;
+						for( zz = minZ; zz < maxZ; zz++, rPtrZ += s)
+						{
+							for( x = minX; x < maxX; x++)
+							{
+								if( rPtrZ[ x])
+								{
+									nminY = minY - 1;
+									zz = maxZ;
+								}
+							}
+						}
+						
+						rPtrZ = rPtr + (maxY-1)*w  + minZ*s;
+						for( zz = minZ; zz < maxZ; zz++, rPtrZ += s)
+						{
+							for( x = minX; x < maxX; x++)
+							{
+								if( rPtrZ[ x])
+								{
+									nmaxY = maxY + 1;
+									zz = maxZ;
+								}
+							}
+						}
+						
+						minX	=	nminX;		maxX	=	nmaxX;
+						minY	=	nminY;		maxY	=	nmaxY;
+						minZ	=	nminZ;		maxZ	=	nmaxZ;
+					}
 				}
 			}
 			
-			// Should we grow the box?
 			if( found)
 			{
 				nminX	=	minX;		nmaxX	=	maxX;
 				nminY	=	minY;		nmaxY	=	maxY;
 				nminZ	=	minZ;		nmaxZ	=	maxZ;
-				
+
 				// Z plane
 				rPtrZ = rPtr + minZ*s + minY*w;
 				for( y = minY; y < maxY; y++, rPtrZ += w)
@@ -190,68 +266,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					}
 				}
 				
-				// X plane
-				
-				rPtrZ = rPtr + minX + minZ*s;
-				for( z = minZ; z < maxZ; z++, rPtrZ += s)
-				{
-					for( y = minY; y < maxY; y++)
-					{
-						if( rPtrZ[ y*w])
-						{
-							nminX = minX -1;
-							z = maxZ;
-						}
-					}
-				}
-				
-				rPtrZ = rPtr + maxX-1  + minZ*s;
-				for( z = minZ; z < maxZ; z++, rPtrZ += s)
-				{
-					for( y = minY; y < maxY; y++)
-					{
-						if( rPtrZ[ y*w])
-						{
-							nmaxX = maxX + 1;
-							z = maxZ;
-						}
-					}
-				}
-				
-				// Y plane
-				
-				rPtrZ = rPtr + minY*w + minZ*s;
-				for( z = minZ; z < maxZ; z++, rPtrZ += s)
-				{
-					for( x = minX; x < maxX; x++)
-					{
-						if( rPtrZ[ x])
-						{
-							nminY = minY - 1;
-							z = maxZ;
-						}
-					}
-				}
-				
-				rPtrZ = rPtr + (maxY-1)*w  + minZ*s;
-				for( z = minZ; z < maxZ; z++, rPtrZ += s)
-				{
-					for( x = minX; x < maxX; x++)
-					{
-						if( rPtrZ[ x])
-						{
-							nmaxY = maxY + 1;
-							z = maxZ;
-						}
-					}
-				}
-				
 				minX	=	nminX;		maxX	=	nmaxX;
 				minY	=	nminY;		maxY	=	nmaxY;
 				minZ	=	nminZ;		maxZ	=	nmaxZ;
 			}
 		}
-		
+
 		long i;
 		
 		
@@ -403,21 +423,21 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 //- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(float) loV :(float) upV :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
-//	{
-//	float loV, upV;
-//	float interval = [[parameters objectAtIndex:0] floatValue];
-//	float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
-//	loV = mouseValue - interval/2.0;
-//	upV = mouseValue + interval/2.0;
-//	long	seed[ 3];
-//	
-//	seed[ 0] = startingPoint.x;
-//	seed[ 1] = startingPoint.y;
-//	seed[ 2] = slice;
-//	[ITKSegmentation3D fastGrowingRegionWithVolume: [srcViewer volumePtr] width:[[[srcViewer pixList] objectAtIndex: 0] pwidth] height:[[[srcViewer pixList] objectAtIndex: 0] pheight] depth:[[srcViewer pixList] count] seedPoint:seed from:loV to:upV viewer:srcViewer];
-//
-//	return;
-//	}
+	{
+	float loV, upV;
+	float interval = [[parameters objectAtIndex:0] floatValue];
+	float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
+	loV = mouseValue - interval/2.0;
+	upV = mouseValue + interval/2.0;
+	long	seed[ 3];
+	
+	seed[ 0] = startingPoint.x;
+	seed[ 1] = startingPoint.y;
+	seed[ 2] = slice;
+	[ITKSegmentation3D fastGrowingRegionWithVolume: [srcViewer volumePtr] width:[[[srcViewer pixList] objectAtIndex: 0] pwidth] height:[[[srcViewer pixList] objectAtIndex: 0] pheight] depth:[[srcViewer pixList] count] seedPoint:seed from:loV to:upV viewer:srcViewer];
+
+	return;
+	}
 
 
 
