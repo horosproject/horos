@@ -284,7 +284,6 @@ GLenum glReportError (void)
 
 - (void) dealloc
 {
-	NSLog( @"roi dealloc");
 	if (type==tPlain)
 	{
 		free( textureBuffer);
@@ -2869,6 +2868,7 @@ GLenum glReportError (void)
 		
 		newBuffer -= textureHeight*(textureWidth+2*margin)+newWidth*margin; // beginning of the buffer
 		
+		if( textureBuffer) free( textureBuffer);
 		textureBuffer = newBuffer;
 		textureDownRightCornerX += margin;
 		textureDownRightCornerY += margin;
