@@ -1353,7 +1353,7 @@ NS_ENDHANDLER
 #endif
  
 	//get rid of temp folder
-//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
+	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
 	[paths release];
 	[pool release];
 }
