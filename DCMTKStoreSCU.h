@@ -18,8 +18,8 @@
 =========================================================================*/
 
 
-#import <Cocoa/Cocoa.h>\
-#undef verify
+#import <Cocoa/Cocoa.h>
+
 
 int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 
@@ -34,6 +34,13 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 	NSString *_transferSyntax;
 	float _compression;
 	NSArray *_filesToSend;
+	int _numberOfFiles;
+	int _numberSent;
+	int _numberErrors;
+	NSString *_patientName;
+	NSString *_studyDescription; 
+	id _logEntry;
+	
 	
 
 }
@@ -48,6 +55,9 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 			extraParameters:(NSDictionary *)extraParameters;
 			
 - (void)run:(id)sender;
+- (void)updateLogEntry:(id)sender;
+- (void)abort:(id)sender;
+- (void)save:(id)sender;
 
 
 
