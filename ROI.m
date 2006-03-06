@@ -2858,12 +2858,14 @@ GLenum glReportError (void)
 			newBuffer += newWidth; 
 		}
 		
+		unsigned char	*temptextureBuffer = textureBuffer;
+		
 		for(i=0; i<textureHeight; i++)
 		{
 			newBuffer += margin; // skip the left margin pixels
-			BlockMoveData(textureBuffer,newBuffer,textureWidth*sizeof(unsigned char));
+			BlockMoveData(temptextureBuffer,newBuffer,textureWidth*sizeof(unsigned char));
 			newBuffer += textureWidth+margin; // move to the next line, skipping the right margin pixels
-			textureBuffer += textureWidth; // move to the next line
+			temptextureBuffer += textureWidth; // move to the next line
 		}
 		
 		newBuffer -= textureHeight*(textureWidth+2*margin)+newWidth*margin; // beginning of the buffer
