@@ -1371,28 +1371,37 @@ static BOOL FORCEREBUILD = NO;
 	
 	if( DICOMDIRCDMODE == NO && isCurrentDatabaseBonjour == NO && currentDatabasePath != 0L)
 	{
-		NSManagedObjectModel *model = [self managedObjectModel];
-		NSManagedObjectContext *context = [self managedObjectContext];
-		NSError *error = nil;
-		long	i;
-		
-		[context lock];
-		
-		[context save: &error];
-		if (error)
+		@try
 		{
-			NSLog(@"error saving DB: %@", [[error userInfo] description]);
-			NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
-			retError = -1L;
+			NSManagedObjectModel *model = [self managedObjectModel];
+			NSManagedObjectContext *context = [self managedObjectContext];
+			NSError *error = nil;
+			long	i;
+			
+			[context lock];
+			
+			[context save: &error];
+			if (error)
+			{
+				NSLog(@"error saving DB: %@", [[error userInfo] description]);
+				NSLog( @"saveDatabase ERROR: %@", [error localizedDescription]);
+				retError = -1L;
+			}
+			[context unlock];
+			
+			if( path == 0L) path = currentDatabasePath;
+			
+			[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
+			
+			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
+			[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
 		}
-		[context unlock];
 		
-		if( path == 0L) path = currentDatabasePath;
-		
-		[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
-		
-		[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
-		[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
+		@catch( NSException *ne)
+		{
+			NSLog( [ne name]);
+			NSLog( [ne reason]);
+		}
 	}
 	
 	return retError;
