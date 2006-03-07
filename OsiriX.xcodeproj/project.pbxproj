@@ -589,6 +589,45 @@
 		A94D784F09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A94D784B09A0D58E0039F5A2 /* EndoscopyVRView.mm */; };
 		A94D785009A0D58E0039F5A2 /* EndoscopyVRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A94D784A09A0D58E0039F5A2 /* EndoscopyVRView.h */; };
 		A94D785109A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A94D784B09A0D58E0039F5A2 /* EndoscopyVRView.mm */; };
+		A9523D1A09BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0909BDB4880070CBD5 /* etkErrorAPI.hpp */; };
+		A9523D1C09BDB4890070CBD5 /* etkPlatform.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0B09BDB4880070CBD5 /* etkPlatform.hpp */; };
+		A9523D1D09BDB4890070CBD5 /* etkRegistration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D0C09BDB4890070CBD5 /* etkRegistration.cpp */; };
+		A9523D1E09BDB4890070CBD5 /* etkRegistration.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0D09BDB4890070CBD5 /* etkRegistration.hpp */; };
+		A9523D2009BDB4890070CBD5 /* etkMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1009BDB4890070CBD5 /* etkMatrix.cpp */; };
+		A9523D2109BDB4890070CBD5 /* etkMatrix.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1109BDB4890070CBD5 /* etkMatrix.hpp */; };
+		A9523D2209BDB4890070CBD5 /* etkQuartic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1209BDB4890070CBD5 /* etkQuartic.cpp */; };
+		A9523D2309BDB4890070CBD5 /* etkQuartic.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1309BDB4890070CBD5 /* etkQuartic.hpp */; };
+		A9523D2409BDB4890070CBD5 /* etkQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1409BDB4890070CBD5 /* etkQuaternion.cpp */; };
+		A9523D2509BDB4890070CBD5 /* etkQuaternion.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1509BDB4890070CBD5 /* etkQuaternion.hpp */; };
+		A9523D2609BDB4890070CBD5 /* etkError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1709BDB4890070CBD5 /* etkError.cpp */; };
+		A9523D2809BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0909BDB4880070CBD5 /* etkErrorAPI.hpp */; };
+		A9523D2A09BDB4890070CBD5 /* etkPlatform.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0B09BDB4880070CBD5 /* etkPlatform.hpp */; };
+		A9523D2B09BDB4890070CBD5 /* etkRegistration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D0C09BDB4890070CBD5 /* etkRegistration.cpp */; };
+		A9523D2C09BDB4890070CBD5 /* etkRegistration.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0D09BDB4890070CBD5 /* etkRegistration.hpp */; };
+		A9523D2E09BDB4890070CBD5 /* etkMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1009BDB4890070CBD5 /* etkMatrix.cpp */; };
+		A9523D2F09BDB4890070CBD5 /* etkMatrix.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1109BDB4890070CBD5 /* etkMatrix.hpp */; };
+		A9523D3009BDB4890070CBD5 /* etkQuartic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1209BDB4890070CBD5 /* etkQuartic.cpp */; };
+		A9523D3109BDB4890070CBD5 /* etkQuartic.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1309BDB4890070CBD5 /* etkQuartic.hpp */; };
+		A9523D3209BDB4890070CBD5 /* etkQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1409BDB4890070CBD5 /* etkQuaternion.cpp */; };
+		A9523D3309BDB4890070CBD5 /* etkQuaternion.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1509BDB4890070CBD5 /* etkQuaternion.hpp */; };
+		A9523D3409BDB4890070CBD5 /* etkError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1709BDB4890070CBD5 /* etkError.cpp */; };
+		A9523D3609BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0909BDB4880070CBD5 /* etkErrorAPI.hpp */; };
+		A9523D3809BDB4890070CBD5 /* etkPlatform.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0B09BDB4880070CBD5 /* etkPlatform.hpp */; };
+		A9523D3909BDB4890070CBD5 /* etkRegistration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D0C09BDB4890070CBD5 /* etkRegistration.cpp */; };
+		A9523D3A09BDB4890070CBD5 /* etkRegistration.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D0D09BDB4890070CBD5 /* etkRegistration.hpp */; };
+		A9523D3C09BDB4890070CBD5 /* etkMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1009BDB4890070CBD5 /* etkMatrix.cpp */; };
+		A9523D3D09BDB4890070CBD5 /* etkMatrix.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1109BDB4890070CBD5 /* etkMatrix.hpp */; };
+		A9523D3E09BDB4890070CBD5 /* etkQuartic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1209BDB4890070CBD5 /* etkQuartic.cpp */; };
+		A9523D3F09BDB4890070CBD5 /* etkQuartic.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1309BDB4890070CBD5 /* etkQuartic.hpp */; };
+		A9523D4009BDB4890070CBD5 /* etkQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1409BDB4890070CBD5 /* etkQuaternion.cpp */; };
+		A9523D4109BDB4890070CBD5 /* etkQuaternion.hpp in Headers */ = {isa = PBXBuildFile; fileRef = A9523D1509BDB4890070CBD5 /* etkQuaternion.hpp */; };
+		A9523D4209BDB4890070CBD5 /* etkError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A9523D1709BDB4890070CBD5 /* etkError.cpp */; };
+		A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */; };
+		A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
+		A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */; };
+		A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
+		A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */; };
+		A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
 		A981599F09AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
@@ -9669,6 +9708,20 @@
 		A932BBBB094DB1110085B58A /* EndoscopyMPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyMPRView.m; sourceTree = "<group>"; };
 		A94D784A09A0D58E0039F5A2 /* EndoscopyVRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyVRView.h; sourceTree = "<group>"; };
 		A94D784B09A0D58E0039F5A2 /* EndoscopyVRView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EndoscopyVRView.mm; sourceTree = "<group>"; };
+		A9523D0909BDB4880070CBD5 /* etkErrorAPI.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkErrorAPI.hpp; sourceTree = "<group>"; };
+		A9523D0B09BDB4880070CBD5 /* etkPlatform.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkPlatform.hpp; sourceTree = "<group>"; };
+		A9523D0C09BDB4890070CBD5 /* etkRegistration.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkRegistration.cpp; sourceTree = "<group>"; };
+		A9523D0D09BDB4890070CBD5 /* etkRegistration.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkRegistration.hpp; sourceTree = "<group>"; };
+		A9523D0E09BDB4890070CBD5 /* Main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Main.cpp; sourceTree = "<group>"; };
+		A9523D1009BDB4890070CBD5 /* etkMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkMatrix.cpp; sourceTree = "<group>"; };
+		A9523D1109BDB4890070CBD5 /* etkMatrix.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkMatrix.hpp; sourceTree = "<group>"; };
+		A9523D1209BDB4890070CBD5 /* etkQuartic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkQuartic.cpp; sourceTree = "<group>"; };
+		A9523D1309BDB4890070CBD5 /* etkQuartic.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkQuartic.hpp; sourceTree = "<group>"; };
+		A9523D1409BDB4890070CBD5 /* etkQuaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkQuaternion.cpp; sourceTree = "<group>"; };
+		A9523D1509BDB4890070CBD5 /* etkQuaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = etkQuaternion.hpp; sourceTree = "<group>"; };
+		A9523D1709BDB4890070CBD5 /* etkError.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkError.cpp; sourceTree = "<group>"; };
+		A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
+		A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A99B7E5008858D31004328C0 /* BonjourPublisher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourPublisher.h; sourceTree = "<group>"; };
 		A99B7E5108858D31004328C0 /* BonjourPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourPublisher.m; sourceTree = "<group>"; };
@@ -12919,6 +12972,7 @@
 				A9F6E4B108FEAEFC0060285A /* OrthogonalReslice */,
 				A9F6E4DF08FEAFF80060285A /* PET-CT */,
 				A90D665D094D7071000B425B /* Endoscopy */,
+				A9523D0709BDB4880070CBD5 /* HornRegistration */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -13502,6 +13556,51 @@
 				A94D784B09A0D58E0039F5A2 /* EndoscopyVRView.mm */,
 			);
 			name = Endoscopy;
+			sourceTree = "<group>";
+		};
+		A9523D0709BDB4880070CBD5 /* HornRegistration */ = {
+			isa = PBXGroup;
+			children = (
+				A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */,
+				A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */,
+				A9523D0809BDB4880070CBD5 /* API */,
+				A9523D0B09BDB4880070CBD5 /* etkPlatform.hpp */,
+				A9523D0C09BDB4890070CBD5 /* etkRegistration.cpp */,
+				A9523D0D09BDB4890070CBD5 /* etkRegistration.hpp */,
+				A9523D0E09BDB4890070CBD5 /* Main.cpp */,
+				A9523D0F09BDB4890070CBD5 /* Maths */,
+				A9523D1609BDB4890070CBD5 /* Unix */,
+			);
+			path = HornRegistration;
+			sourceTree = "<group>";
+		};
+		A9523D0809BDB4880070CBD5 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				A9523D0909BDB4880070CBD5 /* etkErrorAPI.hpp */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		A9523D0F09BDB4890070CBD5 /* Maths */ = {
+			isa = PBXGroup;
+			children = (
+				A9523D1009BDB4890070CBD5 /* etkMatrix.cpp */,
+				A9523D1109BDB4890070CBD5 /* etkMatrix.hpp */,
+				A9523D1209BDB4890070CBD5 /* etkQuartic.cpp */,
+				A9523D1309BDB4890070CBD5 /* etkQuartic.hpp */,
+				A9523D1409BDB4890070CBD5 /* etkQuaternion.cpp */,
+				A9523D1509BDB4890070CBD5 /* etkQuaternion.hpp */,
+			);
+			path = Maths;
+			sourceTree = "<group>";
+		};
+		A9523D1609BDB4890070CBD5 /* Unix */ = {
+			isa = PBXGroup;
+			children = (
+				A9523D1709BDB4890070CBD5 /* etkError.cpp */,
+			);
+			path = Unix;
 			sourceTree = "<group>";
 		};
 		A99B7E4F08858D0D004328C0 /* Bonjour */ = {
@@ -18891,6 +18990,13 @@
 				BF7A838009B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 				3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
 				3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
+				A9523D2809BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */,
+				A9523D2A09BDB4890070CBD5 /* etkPlatform.hpp in Headers */,
+				A9523D2C09BDB4890070CBD5 /* etkRegistration.hpp in Headers */,
+				A9523D2F09BDB4890070CBD5 /* etkMatrix.hpp in Headers */,
+				A9523D3109BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
+				A9523D3309BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
+				A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20687,6 +20793,13 @@
 				BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 				3A2D126209BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
 				3A2D126409BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
+				A9523D1A09BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */,
+				A9523D1C09BDB4890070CBD5 /* etkPlatform.hpp in Headers */,
+				A9523D1E09BDB4890070CBD5 /* etkRegistration.hpp in Headers */,
+				A9523D2109BDB4890070CBD5 /* etkMatrix.hpp in Headers */,
+				A9523D2309BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
+				A9523D2509BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
+				A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22488,6 +22601,13 @@
 				BF7A838209B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 				3A2D125E09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
 				3A2D126009BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
+				A9523D3609BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */,
+				A9523D3809BDB4890070CBD5 /* etkPlatform.hpp in Headers */,
+				A9523D3A09BDB4890070CBD5 /* etkRegistration.hpp in Headers */,
+				A9523D3D09BDB4890070CBD5 /* etkMatrix.hpp in Headers */,
+				A9523D3F09BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
+				A9523D4109BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
+				A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24924,6 +25044,12 @@
 				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
 				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 				3A2D125D09BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
+				A9523D2B09BDB4890070CBD5 /* etkRegistration.cpp in Sources */,
+				A9523D2E09BDB4890070CBD5 /* etkMatrix.cpp in Sources */,
+				A9523D3009BDB4890070CBD5 /* etkQuartic.cpp in Sources */,
+				A9523D3209BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
+				A9523D3409BDB4890070CBD5 /* etkError.cpp in Sources */,
+				A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25663,6 +25789,12 @@
 				BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 				3A2D126509BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
+				A9523D1D09BDB4890070CBD5 /* etkRegistration.cpp in Sources */,
+				A9523D2009BDB4890070CBD5 /* etkMatrix.cpp in Sources */,
+				A9523D2209BDB4890070CBD5 /* etkQuartic.cpp in Sources */,
+				A9523D2409BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
+				A9523D2609BDB4890070CBD5 /* etkError.cpp in Sources */,
+				A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26406,6 +26538,12 @@
 				BFC9C2AC09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
 				BF7A838309B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 				3A2D126109BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
+				A9523D3909BDB4890070CBD5 /* etkRegistration.cpp in Sources */,
+				A9523D3C09BDB4890070CBD5 /* etkMatrix.cpp in Sources */,
+				A9523D3E09BDB4890070CBD5 /* etkQuartic.cpp in Sources */,
+				A9523D4009BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
+				A9523D4209BDB4890070CBD5 /* etkError.cpp in Sources */,
+				A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

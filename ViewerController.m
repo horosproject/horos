@@ -77,6 +77,9 @@ Version 2.4
 #import "MSRGSegmentation.h"
 #import "ITKBrushROIFilter.h"
 
+
+#import "HornRegistration.h"
+
 @class VRPROController;
 
 extern	NSMutableDictionary		*plugins, *pluginsDict;
@@ -9422,8 +9425,29 @@ NSMutableArray		*array;
 #pragma mark Registration
 
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
-{
-	//[ITKRegistrationController computeRegistrationWithFixedViewer:self movingViewer:movingViewer slice:[[self imageView] curImage]];
+{	
+	NSLog(@" ***** test 1 : test Horn Registration API ***** ");
+	[HornRegistration test]; //test if the connection to the Horn Registration API is OK
+	NSLog(@" ***** test 2 : test cocoa wrapper ***** ");
+	double *m1, *m2, *m3, *m4;
+	m1 = (double*) malloc(3*sizeof(double)); m2 = (double*) malloc(3*sizeof(double)); m3 = (double*) malloc(3*sizeof(double)); m4 = (double*) malloc(3*sizeof(double));
+	m1[0] = 0.0; m1[1] = 0.0; m1[2] = 0.0;
+	m2[0] = 10.0; m2[1] = 0.0; m2[2] = 0.0;
+	m3[0] = 10.0; m3[1] = 10.0; m3[2] = 0.0;
+	m4[0] = 0.0; m4[1] = 10.0; m4[2] = 0.0;
+	double *s1, *s2, *s3, *s4;
+	s1 = (double*) malloc(3*sizeof(double)); s2 = (double*) malloc(3*sizeof(double)); s3 = (double*) malloc(3*sizeof(double)); s4 = (double*) malloc(3*sizeof(double));
+	s1[0] = 5.0; s1[1] = 0.0; s1[2] = 0.0;
+	s2[0] = 5.0; s2[1] = 10.0; s2[2] = 0.0;
+	s3[0] = 5.0; s3[1] = 10.0; s3[2] = 11.0;
+	s4[0] = 5.0; s4[1] = 0.0; s4[2] = 10.0;
+	
+	HornRegistration *hr = [[HornRegistration alloc] init];
+	
+	[hr addModelPoint: m1]; [hr addModelPoint: m2]; [hr addModelPoint: m3]; [hr addModelPoint: m4];
+	[hr addSensorPoint: s1]; [hr addSensorPoint: s2]; [hr addSensorPoint: s3]; [hr addSensorPoint: s4];
+
+	[hr compute];
 }
 
 @end
