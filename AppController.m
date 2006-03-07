@@ -2144,7 +2144,7 @@ static BOOL initialized = NO;
 	NSArray *viewers;
 	if ([[NSScreen screens] count] > 1)
 	{
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
+		if ([[NSUserDefaults standardUserDefaults] integerForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
 			return [NSArray arrayWithObject: [NSScreen mainScreen]];
 			
 		NSMutableArray *array = [NSMutableArray array];

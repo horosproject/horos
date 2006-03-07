@@ -377,7 +377,7 @@
 - (IBAction) resetImage:(id) sender;
 + (NSArray*) defaultROINames;
 + (void) setDefaultROINames: (NSArray*) names;
--(IBAction) endExportDICOMFileSettings:(id) sender;
+- (IBAction) endExportDICOMFileSettings:(id) sender;
 - (IBAction) keyImageCheckBox:(id) sender;
 - (IBAction) keyImageDisplayButton:(id) sender;
 - (void) adjustKeyImage;
@@ -414,5 +414,10 @@
 - (IBAction) dilateSelectedBrushROI: (id) sender;
 - (IBAction) closeSelectedBrushROIWithRadius: (id) sender;
 - (IBAction) closeSelectedBrushROI: (id) sender;
+
+#pragma mark-
+#pragma mark Registration
+
+- (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer;
 
 @end

@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 
 @class ViewerController;
@@ -23,7 +20,7 @@
 
 				ViewerController		*viewer, *resultsViewer;
 
-	// parramters
+	// parameters
 	IBOutlet	NSBox					*parametersBox;
 	IBOutlet	NSMatrix				*growingMode;
 	IBOutlet	NSPopUpButton			*algorithmPopup;

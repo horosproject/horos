@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus
@@ -33,5 +30,6 @@
 }
 
 - (id) initWithViewers: (ViewerController*) fixViewer :(ViewerController*) movingViewer :(long) s;
+- (void) computeRegistration;
 
 @end

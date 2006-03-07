@@ -3070,7 +3070,7 @@ static ViewerController *blendedwin = 0L;
 		break;
 		
 		case 7:		// 2D Registration
-		
+			[self computeRegistrationWithMovingViewer: blendedwin];
 		break;
 		
 		case 8:		// 3D Registration
@@ -9185,7 +9185,7 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
 	}
 	[filter release];
@@ -9243,7 +9243,7 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
 	}
 	[filter release];
@@ -9301,7 +9301,7 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
 	}
 	[filter release];
@@ -9360,7 +9360,7 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
 	}
 	[filter release];
@@ -9383,6 +9383,14 @@ NSMutableArray		*array;
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Open Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
+}
+
+#pragma mark-
+#pragma mark Registration
+
+- (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
+{
+	//[ITKRegistrationController computeRegistrationWithFixedViewer:self movingViewer:movingViewer slice:[[self imageView] curImage]];
 }
 
 @end
