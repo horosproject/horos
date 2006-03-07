@@ -2138,11 +2138,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"ProtocolName"] forKey:@"protocolName"];
 		*/	
 		NSString *instanceNumber;
-		NSLog(@"get Instance Number");
+//		NSLog(@"get Instance Number");
 		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"]) {
-			NSLog(@"imageID; %@", [dcmObject attributeValueWithName:@"InstanceNumber"]);
+//			NSLog(@"imageID; %@", [dcmObject attributeValueWithName:@"InstanceNumber"]);
 			int val = [imageID intValue];
-			NSLog(@"val: %d", val);
+//			NSLog(@"val: %d", val);
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];		
 		}
 		else

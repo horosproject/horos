@@ -1509,7 +1509,7 @@ static BOOL initialized = NO;
 		[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 		
 		// ** ReserveScreenForDB
-		[defaultValues setObject: @"YES" forKey: @"ReserveScreenForDB"];
+		[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 		
 		// ** SERIESORDER
 		[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
@@ -2096,7 +2096,6 @@ static BOOL initialized = NO;
 {
 	long				i;
 	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	
 	for( i = 0; i < [winList count]; i++)
 	{
@@ -2110,12 +2109,31 @@ static BOOL initialized = NO;
 	return 0L;
 }
 
+- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList
+{
+	long				i;
+	NSArray				*winList = [NSApp windows];
+	NSMutableArray		*viewersList = [NSMutableArray array];
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[winList objectAtIndex:i] windowController] respondsToSelector:@selector( pixList)])
+		{
+			if( [[[winList objectAtIndex:i] windowController] pixList] == pixList)
+			{
+				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			}
+		}
+	}
+	
+	return viewersList;
+}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 - (NSScreen *)dbScreen{
 	//return screen if there is a reserved DB Screen otherwise return nil;
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] == YES)
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] == 1)
 		return [dbWindow screen];
 	return nil;
 }
@@ -2126,6 +2144,9 @@ static BOOL initialized = NO;
 	NSArray *viewers;
 	if ([[NSScreen screens] count] > 1)
 	{
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
+			return [NSArray arrayWithObject: [NSScreen mainScreen]];
+			
 		NSMutableArray *array = [NSMutableArray array];
 		NSEnumerator *enumerator = [[NSScreen screens] objectEnumerator];
 		NSScreen *screen;
@@ -2136,12 +2157,9 @@ static BOOL initialized = NO;
 		}
 		//return array;
 		viewers =  array;
-		
-		
 	}
 	else
 		viewers =  [NSScreen screens] ; 
-	//return [NSScreen screens] ;
 	
 	
 	//once we have the list of viewers we need to arrange them left to right

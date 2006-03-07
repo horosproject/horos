@@ -186,7 +186,7 @@
 
 - (IBAction) setMultipleScreens: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"ReserveScreenForDB"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"ReserveScreenForDB"];
 }
 
 - (IBAction) setToolbarMatrix: (id) sender

@@ -11,9 +11,9 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					243,
+					993,
 					20,
-					48.1626,
+					48,
 					43,
 					43,
 					20,
@@ -28,8 +28,12 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 162212808;
-			PBXWorkspaceStateSaveDate = 162212808;
+			PBXPerProjectTemplateStateSaveDate = 163416191;
+			PBXWorkspaceStateSaveDate = 163416191;
+		};
+		perUserProjectItems = {
+			AB6FC1BE09BD8B2A002DA597 /* PBXTextBookmark */ = AB6FC1BE09BD8B2A002DA597 /* PBXTextBookmark */;
+			AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */ = AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
 		userBuildSettings = {
@@ -49,5 +53,32 @@
 	AB29966B09AB2BCA00F810FC /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	AB6FC1BE09BD8B2A002DA597 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
+		name = ReserveScreenForDB;
+		rLen = 18;
+		rLoc = 5823;
+		rType = 0;
+		vrLen = 1731;
+		vrLoc = 4849;
+	};
+	AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
+		name = ReserveScreenForDB;
+		rLen = 18;
+		rLoc = 5823;
+		rType = 0;
+		vrLen = 1731;
+		vrLoc = 4849;
+	};
+	F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1191, 3192}}";
+			sepNavSelRange = "{5823, 18}";
+			sepNavVisRect = "{{0, 2269}, {1191, 741}}";
+		};
 	};
 }

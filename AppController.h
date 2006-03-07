@@ -82,6 +82,7 @@ NSRect screenFrame();
 - (NSArray *)viewerScreens;
 -(void) restartSTORESCP;
 - (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList;
+- (NSArray*) FindRelatedViewers:(NSMutableArray*) pixList;
 - (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
 - (NSDictionary*) currentHangingProtocol;
 

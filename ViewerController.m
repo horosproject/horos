@@ -3384,6 +3384,13 @@ extern NSString * documentsDirectory();
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 	
+	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
+	if( [[appController FindRelatedViewers:pixList[0]] count] > 1)
+	{
+		NSLog( @"changeImageData not possible with other post-processing windows opened");
+		return;
+	}
+	
 	if( previousColumns != 1 || previousRows != 1)
 	{
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
