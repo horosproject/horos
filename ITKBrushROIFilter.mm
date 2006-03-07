@@ -122,6 +122,8 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	free( dstBuf.data);
 	free( kernel);
 	
+	[aROI reduceTextureIfPossible];
+	
 //	// buffer to ITK image
 //	ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
 //	// erosion filter
@@ -141,9 +143,6 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 //	// update the ROI
 //	unsigned char *erodedBuffer = inputROI->GetBufferPointer();
 //	BlockMoveData(erodedBuffer,buff,bufferWidth*bufferHeight*sizeof(char));
-	// update  the view
-	[aROI reduceTextureIfPossible];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:aROI userInfo: 0L];
 }
 
 - (void) dilate:(ROI*)aROI withStructuringElementRadius:(int)structuringElementRadius
@@ -180,6 +179,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	free( dstBuf.data);
 	free( kernel);
 	
+	[aROI reduceTextureIfPossible];
 	// buffer to ITK image : 2 s
 //	ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
 //	// dilatation filter
@@ -199,10 +199,6 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 //	// update the ROI
 //	unsigned char *erodedBuffer = inputROI->GetBufferPointer();
 //	BlockMoveData(erodedBuffer,buff,bufferWidth*bufferHeight*sizeof(char));
-	
-	// update  the view
-	[aROI reduceTextureIfPossible];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:aROI userInfo: 0L];
 }
 
 - (void) close:(ROI*)aROI withStructuringElementRadius:(int)structuringElementRadius

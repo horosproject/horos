@@ -9167,6 +9167,9 @@ NSMutableArray		*array;
 	{
 		// apply the filter on selected ROI only
 		[filter erode:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		// update  the view
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
 	}
 	else
 	{
@@ -9185,8 +9188,14 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		
 		[sched release];
+		
+		for ( i = 0; i < [roisWithSameName count]; i++ )
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
+		}
 	}
 	[filter release];
 	[wait close];
@@ -9225,6 +9234,9 @@ NSMutableArray		*array;
 	{
 		// apply the filter on selected ROI only
 		[filter dilate:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		// update  the view
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
 	}
 	else
 	{
@@ -9243,8 +9255,13 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
+		
+		for ( i = 0; i < [roisWithSameName count]; i++ )
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
+		}
 	}
 	[filter release];
 	[wait close];
@@ -9283,6 +9300,9 @@ NSMutableArray		*array;
 	{
 		// apply the filter on selected ROI only
 		[filter close:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		// update  the view
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
 	}
 	else
 	{
@@ -9301,8 +9321,13 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
+		
+		for ( i = 0; i < [roisWithSameName count]; i++ )
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
+		}
 	}
 	[filter release];
 	[wait close];
@@ -9342,6 +9367,9 @@ NSMutableArray		*array;
 	{
 		// apply the filter on selected ROI only
 		[filter open:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		// update  the view
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
 	}
 	else
 	{
@@ -9360,8 +9388,13 @@ NSMutableArray		*array;
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 		[sched release];
+		
+		for ( i = 0; i < [roisWithSameName count]; i++ )
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
+		}
 	}
 	[filter release];
 	[wait close];

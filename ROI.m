@@ -1362,9 +1362,9 @@ return rect;
 {
 	if( type != tPlain) return YES;
 	
-	long	x, y;
-	long	minX, maxX, minY, maxY;
-	BOOL	empty = YES;
+	long			x, y;
+	long			minX, maxX, minY, maxY;
+	unsigned char	*tempBuf = textureBuffer;
 	
 	minX = textureWidth;
 	maxX = 0;
@@ -1375,19 +1375,18 @@ return rect;
 	{
 		for( x = 0; x < textureWidth; x++)
 		{                      
-			if( textureBuffer[x + y * textureWidth] != 0)
+			if( *tempBuf++ != 0)
 			{
 				if( x < minX) minX = x;
 				if( x > maxX) maxX = x;
 				if( y < minY) minY = y;
 				if( y > maxY) maxY = y;
-				empty = NO;
 			}
 		}
 	}
 	
-	if( minX > maxX) return empty;
-	if( minY > maxY) return empty;
+	if( minX > maxX) return YES;
+	if( minY > maxY) return YES;
 	
 	#define CUTOFF 8
 	
@@ -1414,10 +1413,7 @@ return rect;
 		
 		for( y = 0 ; y < textureHeight ; y++)
 		{
-			for( x = 0 ; x < textureWidth ; x++)
-			{
-				textureBuffer[ x + (y * textureWidth)] = textureBuffer[ x+offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth];
-			}
+			BlockMoveData( textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureBuffer + (y * textureWidth), textureWidth);
 		}
 		
 		textureUpLeftCornerX += minX;
@@ -1426,7 +1422,7 @@ return rect;
 		textureDownRightCornerY = textureUpLeftCornerY + textureHeight-1;
 	}
 	
-	return empty;
+	return NO;
 }
 
 + (void) fillCircle:(unsigned char *) buf :(int) width :(unsigned char) val
