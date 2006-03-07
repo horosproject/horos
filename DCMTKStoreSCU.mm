@@ -83,6 +83,10 @@ END_EXTERN_C
 #include "djencode.h"  /* for dcmjpeg encoders */
 #include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#include "djrploss.h"
+#include "djrplol.h"
+#include "dcpixel.h"
+#include "dcrlerp.h"
 #endif
 
 #ifdef WITH_OPENSSL
@@ -137,6 +141,7 @@ static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;
+int opt_Quality = 90;
 
 #ifdef WITH_ZLIB
 static OFCmdUnsignedInt opt_compressionLevel = 0;
@@ -508,6 +513,63 @@ progressCallback(void * /*callbackData*/,
     }
 }
 
+static OFCondition decompressFile(const char *fname){
+	DcmFileFormat fileformat;
+	OFCondition cond = NULL;
+	cond = fileformat.loadFile(fname);
+	if (cond.good())
+	{
+	  DcmDataset *dataset = fileformat.getDataset();
+
+	  // decompress data set if compressed
+	  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+
+	  // check if everything went well
+	  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+	  {
+		cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+	  }
+	} 
+	return cond;
+}
+
+static OFCondition compressFile(const char *fname ){
+	DcmFileFormat fileformat;
+	OFCondition cond = NULL;
+	cond = fileformat.loadFile(fname);
+	if (cond.good())
+	{
+	  DcmDataset *dataset = fileformat.getDataset();
+	  DcmItem *metaInfo = fileformat.getMetaInfo();
+	  DcmRepresentationParameter *params;
+	  DJ_RPLossy lossyParams(opt_Quality);
+	  DcmRLERepresentationParameter rleParams;
+	  DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+	  if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+		params = &losslessParams;
+	  else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
+		params = &lossyParams; 
+	else if (opt_networkTransferSyntax == EXS_RLELossless)
+		params = &rleParams; 
+
+	  // this causes the lossless JPEG version of the dataset to be created
+	  dataset->chooseRepresentation(opt_networkTransferSyntax, params);
+
+	  // check if everything went well
+	  if (dataset->canWriteXfer(opt_networkTransferSyntax))
+	  {
+		// force the meta-header UIDs to be re-generated when storing the file 
+		// since the UIDs in the data set may have changed 
+		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+
+		// store in lossless JPEG format
+		fileformat.saveFile(fname, opt_networkTransferSyntax);
+	  }
+	} 
+	return cond;
+}
+
 static OFCondition
 storeSCU(T_ASC_Association * assoc, const char *fname)
     /*
@@ -580,19 +642,21 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
 	//we have a valid presentation ID,.Chaeck and see if file is consistent with it
 	DcmXfer preferredXfer(opt_networkTransferSyntax);
+	
 	presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
 	 if (presId != 0) {
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
 			// do nothing
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
-		// need to decompress file
+			decompressFile(fname);
 		}
 		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
-		// need to compress file
+			compressFile(fname);
 		}
-		else  {
+		else if (filexfer.getXfer() != opt_networkTransferSyntax){
 		// may need to convert encapsulated syntax
+			compressFile(fname);
 		}
 	 }
 	 printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
