@@ -376,7 +376,7 @@
 					
 					while( [sched numberOfDetachedThreads] > 0)
 					{
-						[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+						[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 					}
 					
 					[sched release];

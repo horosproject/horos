@@ -2533,7 +2533,12 @@ public:
 						currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
 						//NSLog(@"value : %f", currentPointValue);
 						
-						opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);	
+						int blendMode;
+						
+						if( volumeMapper) blendMode = volumeMapper->GetBlendMode();
+						if( textureMapper) blendMode = textureMapper->GetBlendMode();
+						
+						if( blendMode != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND) opacitySum += opacityTransferFunction->GetValue(currentPointValue+OFFSET16);	
 						boneFound = currentPointValue >= BONEVALUE;
 						
 						boneFound = boneFound && (opacitySum <= BONEOPACITY); // take bones only if (nearly) visible

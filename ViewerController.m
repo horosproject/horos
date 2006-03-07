@@ -9094,6 +9094,30 @@ NSMutableArray		*array;
 #pragma mark-
 #pragma mark Brush ROI Filters
 
+
+-(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
+{
+	NSEnumerator	*enumerator = [workUnits objectEnumerator];
+	NSDictionary	*object;
+	
+	while (object = [enumerator nextObject])
+	{
+		ITKBrushROIFilter	*filter = [object objectForKey:@"filter"];
+		
+		if( [[object valueForKey:@"action"] isEqualToString:@"close"])
+			[filter close: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		if( [[object valueForKey:@"action"] isEqualToString:@"open"])
+			[filter open: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		if( [[object valueForKey:@"action"] isEqualToString:@"dilate"])
+			[filter dilate: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+		
+		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
+			[filter erode: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+	}
+}
+
 - (ROI*) selectedROI
 {
 	ROI *selectedRoi = 0L;
@@ -9139,14 +9163,25 @@ NSMutableArray		*array;
 	}
 	else
 	{
-		// apply the filter on all the ROIs that have the same name as selected ROI
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
 		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		int i;
-		for (i=0;i<[roisWithSameName count];i++)
+		for ( i = 0; i < [roisWithSameName count]; i++ )
 		{
-			[filter erode:[roisWithSameName objectAtIndex:i] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"erode", @"action", filter, @"filter", 0L]];
 		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		[sched release];
 	}
+	[filter release];
 	[wait close];
 	[wait release];
 }
@@ -9186,14 +9221,25 @@ NSMutableArray		*array;
 	}
 	else
 	{
-		// apply the filter on all the ROIs that have the same name as selected ROI
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
 		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		int i;
-		for (i=0;i<[roisWithSameName count];i++)
+		for ( i = 0; i < [roisWithSameName count]; i++ )
 		{
-			[filter dilate:[roisWithSameName objectAtIndex:i] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"dilate", @"action", filter, @"filter", 0L]];
 		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		[sched release];
 	}
+	[filter release];
 	[wait close];
 	[wait release];
 }
@@ -9233,14 +9279,25 @@ NSMutableArray		*array;
 	}
 	else
 	{
-		// apply the filter on all the ROIs that have the same name as selected ROI
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
 		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		int i;
-		for (i=0;i<[roisWithSameName count];i++)
+		for ( i = 0; i < [roisWithSameName count]; i++ )
 		{
-			[filter close:[roisWithSameName objectAtIndex:i] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"close", @"action", filter, @"filter", 0L]];
 		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		[sched release];
 	}
+	[filter release];
 	[wait close];
 	[wait release];
 }
@@ -9281,14 +9338,25 @@ NSMutableArray		*array;
 	}
 	else
 	{
-		// apply the filter on all the ROIs that have the same name as selected ROI
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
 		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		int i;
-		for (i=0;i<[roisWithSameName count];i++)
+		for ( i = 0; i < [roisWithSameName count]; i++ )
 		{
-			[filter open:[roisWithSameName objectAtIndex:i] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"open", @"action", filter, @"filter", 0L]];
 		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		[sched release];
 	}
+	[filter release];
 	[wait close];
 	[wait release];
 }

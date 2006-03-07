@@ -30,7 +30,12 @@
 @class CurvedMPR;
 @class DICOMExport;
 
-@interface ViewerController : NSWindowController {
+#import "Schedulable.h"
+#import "Scheduler.h"
+#import "StaticScheduler.h"
+
+@interface ViewerController : NSWindowController  <Schedulable>
+{
 
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;
