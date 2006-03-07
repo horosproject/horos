@@ -139,12 +139,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					srcPtrZ = volume + z*s;
 
 					foundPlane = NO;
-					srcPtrY = srcPtrZ + minY*w;
-					rPtrY = rPtrZ + minY*w;
-					for( y = minY; y < maxY; y ++, srcPtrY+= w, rPtrY += w)
+					srcPtrY = srcPtrZ + minY*w  + minX;
+					rPtrY = rPtrZ + minY*w  + minX;
+					y = maxY-minY;
+					while( y-- > 0)
 					{
-						srcPtrX = srcPtrY + minX;
-						rPtrX = rPtrY + minX;
+						srcPtrX = srcPtrY;
+						rPtrX = rPtrY;
 						
 						x = maxX-minX;
 						while( x-- > 0)
@@ -157,16 +158,17 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 								if( *(rPtrX-1) == 0) if(	*(srcPtrX-1) > from) {	*(rPtrX-1) = 0xFE;}	else *(rPtrX-1) = 2;
 								if( *(rPtrX+w) == 0) if(	*(srcPtrX+w) > from) {	*(rPtrX+w) = 0xFE;}	else *(rPtrX+w) = 2;
 								if( *(rPtrX-w) == 0) if(	*(srcPtrX-w) > from) {	*(rPtrX-w) = 0xFE;}	else *(rPtrX-w) = 2;
-								if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from) {	*(rPtrX-s) = 0xFE;}	else *(rPtrX-s) = 2;
-								if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from) {	*(rPtrX+s) = 0xFE;}	else *(rPtrX+s) = 2;
 								
 								foundPlane = YES;
 							}
 							rPtrX++;
 							srcPtrX++;
 						}
+						
+						srcPtrY+= w;
+						rPtrY += w;
 					}
-			
+					
 					// Should we grow the box?
 					if( foundPlane)
 					{
@@ -174,7 +176,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						
 						nminX	=	minX;		nmaxX	=	maxX;
 						nminY	=	minY;		nmaxY	=	maxY;
-						nminZ	=	minZ;		nmaxZ	=	maxZ;
 						
 						// X plane
 						
@@ -234,15 +235,39 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 						
 						minX	=	nminX;		maxX	=	nmaxX;
 						minY	=	nminY;		maxY	=	nmaxY;
-						minZ	=	nminZ;		maxZ	=	nmaxZ;
 					}
+				}
+				
+				rPtrZ = rPtr + z*s;
+				srcPtrZ = volume + z*s;
+
+				srcPtrY = srcPtrZ + minY*w + minX;
+				rPtrY = rPtrZ + minY*w + minX;
+				y = maxY-minY;
+				while( y-- > 0)
+				{
+					srcPtrX = srcPtrY;
+					rPtrX = rPtrY;
+					
+					x = maxX-minX;
+					while( x-- > 0)
+					{
+						if( *rPtrX == 0xFF)
+						{
+							if( *(rPtrX-s) == 0) if(	*(srcPtrX-s) > from) {	*(rPtrX-s) = 0xFE;}	else *(rPtrX-s) = 2;
+							if( *(rPtrX+s) == 0) if(	*(srcPtrX+s) > from) {	*(rPtrX+s) = 0xFE;}	else *(rPtrX+s) = 2;
+						}
+						rPtrX++;
+						srcPtrX++;
+					}
+					
+					srcPtrY += w;
+					rPtrY += w;
 				}
 			}
 			
 			if( found)
 			{
-				nminX	=	minX;		nmaxX	=	maxX;
-				nminY	=	minY;		nmaxY	=	maxY;
 				nminZ	=	minZ;		nmaxZ	=	maxZ;
 
 				// Z plane
@@ -272,8 +297,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					}
 				}
 				
-				minX	=	nminX;		maxX	=	nmaxX;
-				minY	=	nminY;		maxY	=	nmaxY;
 				minZ	=	nminZ;		maxZ	=	nmaxZ;
 			}
 		}
