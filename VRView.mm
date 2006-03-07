@@ -3008,14 +3008,12 @@ public:
 	
 	while (object = [enumerator nextObject])
 	{
-//		[[[self window] windowController] applyScissor : object];
 		[controller applyScissor : object];
 	}
 }
 
 - (IBAction) undo:(id) sender
 {
-//	[[[self window] windowController] undo: sender];
 	[controller undo: sender];
 }
 
