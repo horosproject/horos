@@ -2171,6 +2171,10 @@ static long scrollMode;
 								case tROI:
 									roiName = [NSString stringWithString:@"Rectangle "];
 									break;
+									
+								case t2DPoint:
+									roiName = [NSString stringWithString:@"Point "];
+									break;
 							}
 							
 							if( roiName)
