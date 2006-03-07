@@ -614,6 +614,9 @@
 		A9B412D5089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9B412D6089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9B412D7089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
+		A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
+		A9C63A9D09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
+		A9C63A9E09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */; };
 		A9D780AC09A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
 		A9D780AD09A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9D780AE09A4D2A6004302DC /* ITKBrushROIFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */; };
@@ -9678,6 +9681,7 @@
 		A9B411EE0890498600913770 /* small_sharedAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedAlbum.tiff; sourceTree = "<group>"; };
 		A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tiff; sourceTree = "<group>"; };
 		A9B412D4089180A200913770 /* bonjour.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tiff; sourceTree = "<group>"; };
+		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
 		A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKBrushROIFilter.mm; sourceTree = "<group>"; };
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
@@ -13823,6 +13827,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */,
 				BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */,
 				BF1833D009AD833D0046C295 /* FlipVertical.tif */,
 				A981599E09AC6B25003FF1FB /* bonesRemoval.tif */,
@@ -23309,6 +23314,7 @@
 				A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */,
 				3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
+				A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23576,6 +23582,7 @@
 				BF1833D609AD833D0046C295 /* FlipVertical.tif in Resources */,
 				3A2D126309BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
+				A9C63A9E09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23843,6 +23850,7 @@
 				BF1833D409AD833D0046C295 /* FlipVertical.tif in Resources */,
 				3A2D125F09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
+				A9C63A9D09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
