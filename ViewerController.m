@@ -9426,7 +9426,7 @@ NSMutableArray		*array;
 
 - (NSMutableArray*) point2DList
 {
-	NSMutableArray * points2D = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray * points2D = [NSMutableArray array];
 	NSMutableArray * allROIs = [self roiList];
 	
 	ROI *curRoi;
