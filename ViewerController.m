@@ -9424,6 +9424,28 @@ NSMutableArray		*array;
 #pragma mark-
 #pragma mark Registration
 
+- (NSMutableArray*) point2DList
+{
+	NSMutableArray * points2D = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray * allROIs = [self roiList];
+	
+	ROI *curRoi;
+	int s,i;
+
+	for(s=0; s<[allROIs count]; s++)
+	{
+		for(i=0; i<[[allROIs objectAtIndex:s] count]; i++)
+		{
+			curRoi = (ROI*)[[allROIs objectAtIndex:s] objectAtIndex:i];
+			if([curRoi type] == t2DPoint)
+			{
+				[points2D addObject:curRoi];
+			}
+		}
+	}
+	return points2D;
+}
+
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
 {	
 	NSLog(@" ***** test 1 : test Horn Registration API ***** ");
@@ -9448,6 +9470,15 @@ NSMutableArray		*array;
 	[hr addSensorPoint: s1]; [hr addSensorPoint: s2]; [hr addSensorPoint: s3]; [hr addSensorPoint: s4];
 
 	[hr compute];
+
+NSLog(@" ***** Points 2D ***** ");
+	int i;
+	// find all the Point ROIs on this viewers (fixed)
+	NSMutableArray * modelPointROIs = [self point2DList];
+NSLog(@" [modelPointROIs count] : %d", [modelPointROIs count]);
+	// find all the Point ROIs on this viewers (fixed)
+	NSMutableArray * sensorPointROIs = [movingViewer point2DList];
+NSLog(@" [sensorPointROIs count] : %d", [sensorPointROIs count]);	
 }
 
 @end
