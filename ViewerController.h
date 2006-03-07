@@ -418,6 +418,7 @@
 #pragma mark-
 #pragma mark Registration
 
+- (NSMutableArray*) point2DList;
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer;
 
 @end
