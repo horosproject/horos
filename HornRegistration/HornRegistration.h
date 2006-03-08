@@ -11,6 +11,7 @@
 
 @interface HornRegistration : NSObject {
 	NSMutableArray	*modelPoints, *sensorPoints;
+	double *adRot, *adTrans;
 }
 
 + (void) test;
@@ -20,5 +21,8 @@
 - (void) addSensorPoint: (double*) point;
 - (short) numberOfPoint;
 - (void) compute;
+
+- (double*) rotation;
+- (double*) translation;
 
 @end

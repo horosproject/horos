@@ -90,6 +90,8 @@
 	if (self != nil) {
 		modelPoints = [[NSMutableArray alloc] initWithCapacity:0];
 		sensorPoints = [[NSMutableArray alloc] initWithCapacity:0];
+		double* adRot = NULL;
+		double* adTrans = NULL;
 	}
 	return self;
 }
@@ -98,6 +100,8 @@
 {
 	[modelPoints release];
 	[sensorPoints release];
+	if(adRot) free(adRot);
+	if(adTrans) free(adTrans);
 	[super dealloc];
 }
 
@@ -191,9 +195,6 @@
 			}
 			printf ("\n");
 		}
-		
-		double* adRot = NULL;
-		double* adTrans = NULL;
 
 		double dError = etkRegister (pReg, &adRot, &adTrans);
 
@@ -222,6 +223,16 @@
 			printf ("Error (RMS):\n\t%lf\n\n", dError);
 		}
 	}
+}
+
+- (double*) rotation
+{
+	return adRot;
+}
+
+- (double*) translation
+{
+	return adTrans;
 }
 
 @end

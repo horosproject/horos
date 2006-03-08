@@ -79,6 +79,7 @@ Version 2.4
 
 
 #import "HornRegistration.h"
+#import "ITKTransform.h"
 
 @class VRPROController;
 
@@ -9532,6 +9533,10 @@ NSMutableArray		*array;
 		{
 			// compute the registration
 			[hr compute];
+			
+			ITKTransform * transform = [[ITKTransform alloc] init]; //initWithDCMPix: (DCMPix *) pix
+			[transform computeAffineTransformWithRotation: [hr rotation] translation: [hr translation]];
+			[transform release];
 		}
 		[hr release];
 	}

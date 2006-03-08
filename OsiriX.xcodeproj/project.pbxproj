@@ -671,6 +671,12 @@
 		A9DE953E085E0E910019992B /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
 		A9DE953F085E0E910019992B /* FlyThruStart.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9536085E0E910019992B /* FlyThruStart.tiff */; };
 		A9DE9540085E0E910019992B /* FlyThruVia.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9537085E0E910019992B /* FlyThruVia.tiff */; };
+		A9E5AC8F09BF301F00F408B7 /* ITKTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */; };
+		A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E5AC8E09BF301F00F408B7 /* ITKTransform.mm */; };
+		A9E5AC9109BF301F00F408B7 /* ITKTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */; };
+		A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E5AC8E09BF301F00F408B7 /* ITKTransform.mm */; };
+		A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */; };
+		A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E5AC8E09BF301F00F408B7 /* ITKTransform.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9E7042709B89E1C00971B6E /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
 		A9E80EB009877429005121AA /* ROIVolume.h in Headers */ = {isa = PBXBuildFile; fileRef = A9E80E3E0986897C005121AA /* ROIVolume.h */; };
 		A9E80EB10987742A005121AA /* ROIVolume.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E80E3F0986897C005121AA /* ROIVolume.mm */; };
@@ -9744,6 +9750,8 @@
 		A9DE9535085E0E910019992B /* FlyThruEnd.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruEnd.tiff; sourceTree = "<group>"; };
 		A9DE9536085E0E910019992B /* FlyThruStart.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruStart.tiff; sourceTree = "<group>"; };
 		A9DE9537085E0E910019992B /* FlyThruVia.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThruVia.tiff; sourceTree = "<group>"; };
+		A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKTransform.h; sourceTree = "<group>"; };
+		A9E5AC8E09BF301F00F408B7 /* ITKTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ITKTransform.mm; sourceTree = "<group>"; };
 		A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BonesRemovalCursor.tif; sourceTree = "<group>"; };
 		A9E80E3E0986897C005121AA /* ROIVolume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIVolume.h; sourceTree = "<group>"; };
 		A9E80E3F0986897C005121AA /* ROIVolume.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolume.mm; sourceTree = "<group>"; };
@@ -15674,6 +15682,8 @@
 				CE1F010807321F9800DE5DE9 /* ITKRegistration.mm */,
 				A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */,
 				A9D780AB09A4D2A6004302DC /* ITKBrushROIFilter.mm */,
+				A9E5AC8D09BF301F00F408B7 /* ITKTransform.h */,
+				A9E5AC8E09BF301F00F408B7 /* ITKTransform.mm */,
 			);
 			name = ITK;
 			sourceTree = "<group>";
@@ -19001,6 +19011,7 @@
 				A9523D3109BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
 				A9523D3309BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */,
+				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20805,6 +20816,7 @@
 				A9523D2509BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */,
+				A9E5AC9109BF301F00F408B7 /* ITKTransform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22614,6 +22626,7 @@
 				A9523D4109BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */,
+				A9E5AC8F09BF301F00F408B7 /* ITKTransform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25056,6 +25069,7 @@
 				A9523D3209BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
 				A9523D3409BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
+				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25802,6 +25816,7 @@
 				A9523D2609BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */,
+				A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26552,6 +26567,7 @@
 				A9523D4209BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */,
+				A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
