@@ -513,11 +513,11 @@ progressCallback(void * /*callbackData*/,
     }
 }
 
-static OFBool decompressFile(const char *fname){
+static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
 	OFBool status = YES;
-	DcmFileFormat fileformat;
-	OFCondition cond = NULL;
-	cond = fileformat.loadFile(fname);
+	//DcmFileFormat fileformat;
+	OFCondition cond;
+	//cond = fileformat.loadFile(fname);
 	if (cond.good())
 	{
 	  DcmDataset *dataset = fileformat.getDataset();
@@ -528,6 +528,8 @@ static OFBool decompressFile(const char *fname){
 	  // check if everything went well
 	  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 	  {
+		fileformat.loadAllDataIntoMemory();
+		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 		cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
 		status =  (cond.good()) ? YES : NO;
 		
@@ -540,13 +542,15 @@ static OFBool decompressFile(const char *fname){
 	return status;
 }
 
-static OFBool compressFile(const char *fname ){
-	DcmFileFormat fileformat;
-	OFCondition cond = NULL;
-	cond = fileformat.loadFile(fname);
+static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
+	printf("compress %s\n", fname);
+	//DcmFileFormat fileformat;
+	OFCondition cond;
+	//cond = fileformat.loadFile(fname);
 	OFBool status = YES;
-	if (cond.good())
-	{
+	//if (cond.good())
+	//{
+	  printf("file loaded\n");
 	  DcmDataset *dataset = fileformat.getDataset();
 	  DcmItem *metaInfo = fileformat.getMetaInfo();
 	  DcmRepresentationParameter *params;
@@ -559,7 +563,8 @@ static OFBool compressFile(const char *fname ){
 		params = &lossyParams; 
 	else if (opt_networkTransferSyntax == EXS_RLELossless)
 		params = &rleParams; 
-
+		
+		printf("chooseRepresentation\n");
 	  // this causes the lossless JPEG version of the dataset to be created
 	  dataset->chooseRepresentation(opt_networkTransferSyntax, params);
 
@@ -572,14 +577,17 @@ static OFBool compressFile(const char *fname ){
 		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
 			// store in lossless JPEG format
+			printf("save file\n");
+			fileformat.loadAllDataIntoMemory();
+			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 			cond = fileformat.saveFile(fname, opt_networkTransferSyntax);
 			status =  (cond.good()) ? YES : NO;
 		}
 		else
 			status = NO;
-	} 
-	else
-		status = NO; 
+//	} 
+//	else
+//		status = NO; 
 	return status;
 }
 
@@ -652,26 +660,32 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	
 	/************* do on the fly conversion here*********************/
 	
-
+	printf("on the fly conversion\n");
 	//we have a valid presentation ID,.Chaeck and see if file is consistent with it
 	DcmXfer preferredXfer(opt_networkTransferSyntax);
 	OFBool status = YES;
 	presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
+	T_ASC_PresentationContext pc;
+	ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
+	DcmXfer propoesdTransfer(pc.acceptedTransferSyntax);
 	 if (presId != 0) {
-		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
+		printf("presID: %d\n", presId);
+		if (filexfer.isNotEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
 			// do nothing
 		}
-		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
-			status = decompressFile(fname);
+		else if (filexfer.isEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
+			status = decompressFile(dcmff, fname);
 		}
-		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
-			status = compressFile(fname);
+		else if (filexfer.isNotEncapsulated() && propoesdTransfer.isEncapsulated()) {
+			status = compressFile(dcmff, fname);
 		}
 		else if (filexfer.getXfer() != opt_networkTransferSyntax){
 		// may need to convert encapsulated syntax
-			status = compressFile(fname);
+			status = compressFile(dcmff, fname);
 		}
 	 }
+	 else
+		status = NO;
 	 printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
 	 //reload file after syntax change
 	if (status) {
