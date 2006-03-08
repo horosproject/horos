@@ -9415,6 +9415,7 @@ NSMutableArray		*array;
 		for(i=0; i<[[allROIs objectAtIndex:s] count]; i++)
 		{
 			curRoi = (ROI*)[[allROIs objectAtIndex:s] objectAtIndex:i];
+			[curRoi setPix: [[self pixList] objectAtIndex: s]];
 			if([curRoi type] == t2DPoint)
 			{
 				[points2D addObject:curRoi];
@@ -9456,6 +9457,10 @@ NSMutableArray		*array;
 	// find all the Point ROIs on the dragged viewer (moving)
 	NSMutableArray * sensorPointROIs = [movingViewer point2DList];
 	
+	// order the Points by name. Not necessary but useful for debugging.
+	[modelPointROIs sortUsingFunction:sortROIByName context:NULL];
+	[sensorPointROIs sortUsingFunction:sortROIByName context:NULL];
+		
 	int numberOfPoints = [modelPointROIs count];
 	// we need the same number of points
 	BOOL sameNumberOfPoints = ([sensorPointROIs count] == numberOfPoints);
@@ -9476,17 +9481,19 @@ NSMutableArray		*array;
 	
 	if (sameNumberOfPoints && enoughPoints)
 	{
-		//HornRegistration *hr = [[HornRegistration alloc] init];
+		HornRegistration *hr = [[HornRegistration alloc] init];
 		
 		int i,j,k; // 'for' indexes
 		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
 		{
-			modelName = [[modelPointROIs objectAtIndex:i] name];
+			ROI *curModelPoint2D = [modelPointROIs objectAtIndex:i];
+			modelName = [curModelPoint2D name];
 			foundAMatchingName = NO;
 			
 			for (j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
 			{
-				sensorName = [[sensorPointROIs objectAtIndex:j] name];
+				ROI *curSensorPoint2D = [sensorPointROIs objectAtIndex:j];
+				sensorName = [curSensorPoint2D name];
 			
 				for (k=0; k<[previousNames count]; k++)
 				{
@@ -9504,9 +9511,18 @@ NSMutableArray		*array;
 					
 					if(!triplets)
 					{
+						float modelLocation[3], sensorLocation[3];
+						[[curModelPoint2D pix]	convertPixX:	[[[curModelPoint2D points] objectAtIndex:0] x]
+												pixY:			[[[curModelPoint2D points] objectAtIndex:0] y]
+												toDICOMCoords:	modelLocation];
+						
+						[[curSensorPoint2D pix]	convertPixX:	[[[curSensorPoint2D points] objectAtIndex:0] x]
+												pixY:			[[[curSensorPoint2D points] objectAtIndex:0] y]
+												toDICOMCoords:	sensorLocation];
+						
 						// add the points to the registration method
-						//[hr addModelPoint: m1];
-						//[hr addSensorPoint: s1];
+						[hr addModelPointX: modelLocation[0] Y: modelLocation[1] Z: modelLocation[2]];
+						[hr addSensorPointX: sensorLocation[0] Y: sensorLocation[1] Z: sensorLocation[2]];
 					}
 				}
 			}
@@ -9515,9 +9531,9 @@ NSMutableArray		*array;
 		if(pointsNamesMatch2by2 && !triplets)
 		{
 			// compute the registration
-			
+			[hr compute];
 		}
-		//[hr release];
+		[hr release];
 	}
 	else
 	{
@@ -9555,7 +9571,8 @@ NSMutableArray		*array;
 								errorString,
 								NSLocalizedString(@"OK", nil), nil, nil);
 	}
-
+	
+	[previousNames release];
 }
 
 @end
