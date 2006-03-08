@@ -513,7 +513,8 @@ progressCallback(void * /*callbackData*/,
     }
 }
 
-static OFCondition decompressFile(const char *fname){
+static OFBool decompressFile(const char *fname){
+	OFBool status = YES;
 	DcmFileFormat fileformat;
 	OFCondition cond = NULL;
 	cond = fileformat.loadFile(fname);
@@ -528,15 +529,22 @@ static OFCondition decompressFile(const char *fname){
 	  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 	  {
 		cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+		status =  (cond.good()) ? YES : NO;
+		
 	  }
+	  else
+		status = NO;
 	} 
-	return cond;
+	else
+		status = NO;
+	return status;
 }
 
-static OFCondition compressFile(const char *fname ){
+static OFBool compressFile(const char *fname ){
 	DcmFileFormat fileformat;
 	OFCondition cond = NULL;
 	cond = fileformat.loadFile(fname);
+	OFBool status = YES;
 	if (cond.good())
 	{
 	  DcmDataset *dataset = fileformat.getDataset();
@@ -563,11 +571,16 @@ static OFCondition compressFile(const char *fname ){
 		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
 		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
-		// store in lossless JPEG format
-		fileformat.saveFile(fname, opt_networkTransferSyntax);
-	  }
+			// store in lossless JPEG format
+			cond = fileformat.saveFile(fname, opt_networkTransferSyntax);
+			status =  (cond.good()) ? YES : NO;
+		}
+		else
+			status = NO;
 	} 
-	return cond;
+	else
+		status = NO; 
+	return status;
 }
 
 static OFCondition
@@ -642,26 +655,30 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
 	//we have a valid presentation ID,.Chaeck and see if file is consistent with it
 	DcmXfer preferredXfer(opt_networkTransferSyntax);
-	
+	OFBool status = YES;
 	presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
 	 if (presId != 0) {
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
 			// do nothing
 		}
 		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
-			decompressFile(fname);
+			status = decompressFile(fname);
 		}
 		else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
-			compressFile(fname);
+			status = compressFile(fname);
 		}
 		else if (filexfer.getXfer() != opt_networkTransferSyntax){
 		// may need to convert encapsulated syntax
-			compressFile(fname);
+			status = compressFile(fname);
 		}
 	 }
 	 printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
-	
-	
+	 //reload file after syntax change
+	if (status) {
+		cond = 	dcmff.loadFile(fname);
+		filexfer = dcmff.getDataset()->getOriginalXfer();
+	}
+	 
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
     else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
