@@ -2601,15 +2601,10 @@ public:
 				NSArray *producedROIs = [[controller viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
 				
 				// Dilatation
-				ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
-				int i;
-				for(i=0;i<[producedROIs count];i++)
-				{
-					ROI* currentROI = [producedROIs objectAtIndex:i];
-					[itkFilter dilate:currentROI withStructuringElementRadius: 10];
-					[itkFilter erode:currentROI withStructuringElementRadius: 6];
-				}
-				[itkFilter release];
+				
+				[[controller viewer2D] applyMorphology: producedROIs action:@"dilate" radius: 10];
+				[[controller viewer2D] applyMorphology: producedROIs action:@"erode" radius: 6];
+
 				
 				NSLog( @"**** Dilate/Erode");
 				

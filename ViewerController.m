@@ -9113,19 +9113,50 @@ NSMutableArray		*array;
 	while (object = [enumerator nextObject])
 	{
 		ITKBrushROIFilter	*filter = [object objectForKey:@"filter"];
+		int radius = [[object objectForKey:@"radius"] intValue];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"close"])
-			[filter close: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[filter close: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"open"])
-			[filter open: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[filter open: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"dilate"])
-			[filter dilate: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[filter dilate: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
-			[filter erode: [object objectForKey:@"roi"] withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
+			[filter erode: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
 	}
+}
+
+- (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius
+{
+	// Create a scheduler
+	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+	[sched setDelegate: self];
+	
+	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
+	
+	// Create the work units.
+	long i;
+	NSMutableSet *unitsSet = [NSMutableSet set];
+	for ( i = 0; i < [rois count]; i++ )
+	{
+		[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rois objectAtIndex:i], @"roi", action, @"action", filter, @"filter", [NSNumber numberWithInt: radius], @"radius", 0L]];
+	}
+	
+	[sched performScheduleForWorkUnits:unitsSet];
+	
+	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	
+	[sched release];
+	
+	for ( i = 0; i < [rois count]; i++ )
+	{
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
+	}
+	
+	[filter release];
 }
 
 - (ROI*) selectedROI
@@ -9162,45 +9193,17 @@ NSMutableArray		*array;
 	ROI *selectedROI = [self selectedROI];
 
 	// do the erosion...
-	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
 	
 	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Erosion...",0L)];
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		// apply the filter on selected ROI only
-		[filter erode:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
-		
-		// update  the view
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"erode" radius: [structuringElementRadiusSlider intValue]];
 	}
 	else
 	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		long i;
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"erode", @"action", filter, @"filter", 0L]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-		
-		[sched release];
-		
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
-		}
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"erode" radius: [structuringElementRadiusSlider intValue]];
 	}
-	[filter release];
 	[wait close];
 	[wait release];
 }
@@ -9235,36 +9238,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		// apply the filter on selected ROI only
-		[filter dilate:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
-		
-		// update  the view
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"dilate" radius: [structuringElementRadiusSlider intValue]];
 	}
 	else
 	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		long i;
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"dilate", @"action", filter, @"filter", 0L]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-		[sched release];
-		
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
-		}
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"dilate" radius: [structuringElementRadiusSlider intValue]];
 	}
 	[filter release];
 	[wait close];
@@ -9301,36 +9279,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		// apply the filter on selected ROI only
-		[filter close:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
-		
-		// update  the view
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"close" radius: [structuringElementRadiusSlider intValue]];
 	}
 	else
 	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		long i;
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"close", @"action", filter, @"filter", 0L]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-		[sched release];
-		
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
-		}
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"close" radius: [structuringElementRadiusSlider intValue]];
 	}
 	[filter release];
 	[wait close];
@@ -9365,39 +9318,13 @@ NSMutableArray		*array;
 
 	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Opening...",0L)];
 	[wait showWindow:self];
-
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		// apply the filter on selected ROI only
-		[filter open:selectedROI withStructuringElementRadius:[structuringElementRadiusSlider intValue]];
-		
-		// update  the view
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:selectedROI userInfo: 0L];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"open" radius: [structuringElementRadiusSlider intValue]];
 	}
 	else
 	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		long i;
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		NSArray* roisWithSameName = [self roisWithName:[selectedROI name]];
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[unitsSet addObject: [NSDictionary dictionaryWithObjectsAndKeys: [roisWithSameName objectAtIndex:i], @"roi", @"open", @"action", filter, @"filter", 0L]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-		[sched release];
-		
-		for ( i = 0; i < [roisWithSameName count]; i++ )
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[roisWithSameName objectAtIndex:i] userInfo: 0L];
-		}
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"open" radius: [structuringElementRadiusSlider intValue]];
 	}
 	[filter release];
 	[wait close];
