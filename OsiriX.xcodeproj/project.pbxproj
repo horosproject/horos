@@ -8183,6 +8183,10 @@
 		CE54877A0989363200CF4C60 /* Brush.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tiff */; };
 		CE54877B0989363200CF4C60 /* Brush.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tiff */; };
 		CE54877C0989363200CF4C60 /* Brush.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tiff */; };
+		CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
+		CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
+		CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
+		CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
 		CE5EABC50935E702006D85DD /* UCLA.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBA0935E702006D85DD /* UCLA.plist */; };
 		CE5EABC60935E702006D85DD /* Stern.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBB0935E702006D85DD /* Stern.plist */; };
 		CE5EABC70935E702006D85DD /* Ratio.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBC0935E702006D85DD /* Ratio.plist */; };
@@ -12633,7 +12637,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -20800,6 +20804,7 @@
 				A9523D2309BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
 				A9523D2509BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
+				CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22608,6 +22613,7 @@
 				A9523D3F09BDB4890070CBD5 /* etkQuartic.hpp in Headers */,
 				A9523D4109BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
+				CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25795,6 +25801,7 @@
 				A9523D2409BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
 				A9523D2609BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
+				CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26544,6 +26551,7 @@
 				A9523D4009BDB4890070CBD5 /* etkQuaternion.cpp in Sources */,
 				A9523D4209BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
+				CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
