@@ -9478,7 +9478,9 @@ NSLog(@" ***** Points 2D ***** ");
 NSLog(@" [modelPointROIs count] : %d", [modelPointROIs count]);
 	// find all the Point ROIs on this viewers (fixed)
 	NSMutableArray * sensorPointROIs = [movingViewer point2DList];
-NSLog(@" [sensorPointROIs count] : %d", [sensorPointROIs count]);	
+NSLog(@" [sensorPointROIs count] : %d", [sensorPointROIs count]);
+
+	[hr release];
 }
 
 @end
