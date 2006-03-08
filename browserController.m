@@ -39,7 +39,7 @@ Version 2.3
 	20060116	LP	Fixed potential bug assigning image path when adding DICOMDIR to exported Files
 	20060128	LP	Changing routing Protocol
 	20060128	LP	Modified isDICOMFile to test with DCMFramework as last resort. some valid files not read by papyrus
-
+	20060308	RBR	Added test for RTSTRUCT in matrixNewIcon.  Write button icon indicating RTSTRUCT rather than error button.
 
 */
 
@@ -3979,84 +3979,77 @@ long        i;
 }
 
 -(void) matrixNewIcon:(long) index :(NSManagedObject*) curFile
-{
-	BOOL	showErrButton = YES;
-	
+{	
 	if( shouldDie == NO)
 	{
 		long		i = index;
 		
-		if( curFile)
-		{
-			NSImage *img;
-			
-			img = [[previewPix objectAtIndex: i] getImage];
-			
-			if( img != 0L)
-			{
-				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-				[cell setTransparent:NO];
-				[cell setEnabled:YES];
-				
-				[cell setFont:[NSFont systemFontOfSize:10]];
-				[cell setImagePosition: NSImageBelow];
-				[cell setAction: @selector(matrixPressed:)];
-				
-				NSString	*name = [curFile valueForKey:@"name"];
-				
-				if( [name length] > 15) name = [name substringToIndex: 15];
-				
-				if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"])
-				{
-					long count = [[curFile valueForKey:@"images"] count];
-					
-					if( count == 1)
-					{
-						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-						
-						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
-						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
-					}
-					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
-					
-				//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
-				}
-				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
-				{
-					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
-				}
-				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"])
-				{
-					[cell setTitle: name];
-					[oMatrix setToolTip:[curFile valueForKey:@"name"] forCell:cell];
-				}
-				
-				[cell setButtonType:NSPushOnPushOffButton];
-				[cell setImage: img];
-				
-				if( setDCMDone == NO && i >= [[oMatrix selectedCell] tag])
-				{
-					NSIndexSet  *index = [databaseOutline selectedRowIndexes];
-					if( [index count] >= 1)
-					{
-						NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
-						
-						[imageView setDCM:previewPix :[self imagesArray: aFile] :0L :[[oMatrix selectedCell] tag] :'i' :YES];	//
-						[imageView setStringID:@"previewDatabase"];
-						setDCMDone = YES;
-					}
-				}
-				
-				showErrButton = NO;
-			}
+		if( curFile == nil ) {
+			[oMatrix setNeedsDisplay:YES];
+			return;
 		}
+
+		DCMPix *pix = [previewPix objectAtIndex: i];
+		NSImage *img = [pix getImage];
+		NSString *modality = [[pix imageObj] valueForKey: @"modality"];
 		
-		if( showErrButton == YES)
-		{
+		if ( img || [modality isEqualToString: @"RTSTRUCT"] ) {
+			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+			[cell setTransparent:NO];
+			[cell setEnabled:YES];
+			
+			[cell setFont:[NSFont systemFontOfSize:10]];
+			[cell setImagePosition: NSImageBelow];
+			[cell setAction: @selector(matrixPressed:)];
+			
+			NSString	*name = [curFile valueForKey:@"name"];
+			
+			if( [name length] > 15) name = [name substringToIndex: 15];
+			
+			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
+				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
+			}
+			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
+				long count = [[curFile valueForKey:@"images"] count];
+				
+				if( count == 1) {
+					long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+					
+					if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
+					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
+				}
+				else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
+				
+				//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
+			}
+			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) {
+				[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
+			}
+			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"]) {
+				[cell setTitle: name];
+				[oMatrix setToolTip:[curFile valueForKey:@"name"] forCell:cell];
+			}
+			
+			[cell setButtonType:NSPushOnPushOffButton];
+			
+			[cell setImage: img];
+						
+			if( setDCMDone == NO && i >= [[oMatrix selectedCell] tag]) {
+				NSIndexSet  *index = [databaseOutline selectedRowIndexes];
+				if( [index count] >= 1) {
+					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
+					
+					[imageView setDCM:previewPix :[self imagesArray: aFile] :0L :[[oMatrix selectedCell] tag] :'i' :YES];	//
+					[imageView setStringID:@"previewDatabase"];
+					setDCMDone = YES;
+				}
+			}
+		}		
+		else {  // Show Error Button
 			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 			[cell setImage: nil];
 			[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
-			[cell setTitle: NSLocalizedString(@"File not readable", nil)];
+			[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
 			[cell setFont:[NSFont systemFontOfSize:10]];
 			[cell setTransparent:NO];
 			[cell setEnabled:NO];
