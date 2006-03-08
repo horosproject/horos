@@ -1224,43 +1224,82 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
 			unsigned char	*buf = [roi textureBuffer];
 			
-			for( y = 0; y < height; y++)
+			// *** INSIDE
+			
+			if( outside == NO)
 			{
-				for( x = 0; x < width; x++)
+				for( y = textureUpLeftCornerY; y < textureUpLeftCornerY + textHeight; y++)
 				{
-					BOOL doit = NO;
-					
-					if( x >= textureUpLeftCornerX && x < textureUpLeftCornerX + textWidth && y >= textureUpLeftCornerY && y < textureUpLeftCornerY + textHeight)
+					if( isRGB)
 					{
-						if( outside)
+						unsigned char *rgbPtr = (unsigned char*) (fImage + textureUpLeftCornerX + y*width);
+						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
 						{
-							if( !buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth]) doit = YES;
-						}
-						else
-						{
-							if( buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth]) doit = YES;
+							if( *buf++)
+							{
+								if( x >= 0 && x < width && y >= 0 && y < height)
+								{
+									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
+									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
+									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+								}
+							}
+							rgbPtr += 4;
 						}
 					}
-					else if( outside) doit = YES;
-					
-					if( doit)
+					else
 					{
-						long	xx = x;
-						long	yy = y;
-					
-						if( isRGB)
+						float *fTempImage = fImage + textureUpLeftCornerX + y*width;
+						for( x = textureUpLeftCornerX; x < textureUpLeftCornerX + textWidth; x++)
 						{
-							unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
-							
-							if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
-							if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
-							if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+							if( *buf++)
+							{
+								if( x >= 0 && x < width && y >= 0 && y < height)
+								{
+									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+								}
+							}
+							fTempImage++;
 						}
-						else
+					}
+				}
+			}
+			
+			// *** OUTSIDE
+			
+			else
+			{
+				for( y = 0; y < height; y++)
+				{
+					for( x = 0; x < width; x++)
+					{
+						BOOL doit = NO;
+						
+						if( x >= textureUpLeftCornerX && x < textureUpLeftCornerX + textWidth && y >= textureUpLeftCornerY && y < textureUpLeftCornerY + textHeight)
 						{
-							float	*fTempImage = &fImage[ (yy * width) + xx];
-							
-							if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+							if( !buf [ x - textureUpLeftCornerX + (y - textureUpLeftCornerY) * textWidth]) doit = YES;
+						} 
+						else doit = YES;
+						
+						if( doit)
+						{
+							long	xx = x;
+							long	yy = y;
+						
+							if( isRGB)
+							{
+								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
+								
+								if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
+								if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
+								if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+							}
+							else
+							{
+								float	*fTempImage = &fImage[ (yy * width) + xx];
+								
+								if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+							}
 						}
 					}
 				}

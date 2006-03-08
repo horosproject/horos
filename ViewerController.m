@@ -1553,6 +1553,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	if( selectedRoi == 0L)
 	{
 		[InOutROI setEnabled:NO];
+		[InOutROI selectCellWithTag:1];
 		
 		[[AllROIsRadio cellWithTag:1] setEnabled:NO];
 		[[AllROIsRadio cellWithTag:0] setEnabled:NO];
@@ -1660,10 +1661,17 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) updateVolumeData
 {
-	long	i, x, y, z;
-	float   volume = 0;
-	long	err = 0;
-	BOOL	done, proceed;
+	long			i, x, y, z;
+	float			volume = 0;
+	long			err = 0;
+	BOOL			done, proceed;
+	NSMutableArray	*roiToProceed = [NSMutableArray array];
+	NSNumber		*nsnewValue, *nsminValue, *nsmaxValue, *nsoutside;
+	
+	nsnewValue	= [NSNumber numberWithFloat: newValue];
+	nsminValue	= [NSNumber numberWithFloat: minValue];
+	nsmaxValue	= [NSNumber numberWithFloat: maxValue];
+	nsoutside	= [NSNumber numberWithBool: outside];
 	
 	WaitRendering *splash = [[WaitRendering alloc] init:@"Filtering..."];
 	[splash showWindow:self];
@@ -1687,7 +1695,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 				if( allRois == 2)
 				{
 					DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-					[curPix fillROI:0L :newValue :minValue :maxValue :YES :2 :-1];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					
 					done = YES;
 				}
 				else
@@ -1701,14 +1710,16 @@ int sortROIByName(id roi1, id roi2, void *context)
 								for( z = 0; z < maxMovieIndex; z++)
 								{
 									DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-									[curPix fillROI:[[roiList[y] objectAtIndex: x] objectAtIndex: i] :newValue :minValue :maxValue :outside :2 :-1];
+									[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+									
 									done = YES;
 								}
 							}
 							else
 							{
 								DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-								[curPix fillROI:[[roiList[y] objectAtIndex: x] objectAtIndex: i] :newValue :minValue :maxValue :outside :2 :-1];
+								[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+								
 								done = YES;
 							}
 						}
@@ -1722,18 +1733,39 @@ int sortROIByName(id roi1, id roi2, void *context)
 						for( z = 0; z < maxMovieIndex; z++)
 						{
 							DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-							[curPix fillROI:0L :newValue :minValue :maxValue :outside :2 :-1];
+							[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+
 						}
 					}
 					else
 					{
 						DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-				
-						[curPix fillROI:0L :newValue :minValue :maxValue :outside :2 :-1];
+						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 					}
 				}
 			}
 		}
+	}
+	
+	if( [roiToProceed count])
+	{
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
+		for ( i = 0; i < [roiToProceed count]; i++ )
+		{
+			[unitsSet addObject: [roiToProceed  objectAtIndex: i]];
+		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		
+		[sched release];
 	}
 	
 	[splash close];
@@ -1758,6 +1790,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 	if( updateVolumeData)
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+		
+	NSLog(@"endSetPixel");
 }
 
 - (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
@@ -9122,20 +9156,27 @@ NSMutableArray		*array;
 	
 	while (object = [enumerator nextObject])
 	{
-		ITKBrushROIFilter	*filter = [object objectForKey:@"filter"];
-		int radius = [[object objectForKey:@"radius"] intValue];
+		// ** Set Pixels
+		
+		if( [[object valueForKey:@"action"] isEqualToString:@"setPixel"])
+			[[object objectForKey:@"curPix"] fillROI:0L :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1];
+
+		if( [[object valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
+			[[object objectForKey:@"curPix"] fillROI:[object objectForKey:@"roi"] :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1];
+		
+		// ** Math Morphology
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"close"])
-			[filter close: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
+			[[object objectForKey:@"filter"] close: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"open"])
-			[filter open: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
+			[[object objectForKey:@"filter"] open: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"dilate"])
-			[filter dilate: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
+			[[object objectForKey:@"filter"] dilate: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
-			[filter erode: [object objectForKey:@"roi"] withStructuringElementRadius:radius];
+			[[object objectForKey:@"filter"] erode: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 	}
 }
 
