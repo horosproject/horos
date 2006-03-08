@@ -595,6 +595,16 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
     return theMovie;
 }
 
+// compares the names of 2 ROIs.
+// using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
+// use it with sortUsingFunction:context: to order an array of ROIs
+int sortROIByName(id roi1, id roi2, void *context)
+{
+    NSString *n1 = [roi1 name];
+    NSString *n2 = [roi2 name];
+    return [n1 compare:n2 options:NSNumericSearch];
+}
+
 @implementation ViewerController
 
 + (NSArray*) defaultROINames {
@@ -9375,39 +9385,136 @@ NSMutableArray		*array;
 
 - (void) computeRegistrationWithMovingViewer:(ViewerController*) movingViewer
 {	
-	NSLog(@" ***** test 1 : test Horn Registration API ***** ");
-	[HornRegistration test]; //test if the connection to the Horn Registration API is OK
-	NSLog(@" ***** test 2 : test cocoa wrapper ***** ");
-	double *m1, *m2, *m3, *m4;
-	m1 = (double*) malloc(3*sizeof(double)); m2 = (double*) malloc(3*sizeof(double)); m3 = (double*) malloc(3*sizeof(double)); m4 = (double*) malloc(3*sizeof(double));
-	m1[0] = 0.0; m1[1] = 0.0; m1[2] = 0.0;
-	m2[0] = 10.0; m2[1] = 0.0; m2[2] = 0.0;
-	m3[0] = 10.0; m3[1] = 10.0; m3[2] = 0.0;
-	m4[0] = 0.0; m4[1] = 10.0; m4[2] = 0.0;
-	double *s1, *s2, *s3, *s4;
-	s1 = (double*) malloc(3*sizeof(double)); s2 = (double*) malloc(3*sizeof(double)); s3 = (double*) malloc(3*sizeof(double)); s4 = (double*) malloc(3*sizeof(double));
-	s1[0] = 5.0; s1[1] = 0.0; s1[2] = 0.0;
-	s2[0] = 5.0; s2[1] = 10.0; s2[2] = 0.0;
-	s3[0] = 5.0; s3[1] = 10.0; s3[2] = 11.0;
-	s4[0] = 5.0; s4[1] = 0.0; s4[2] = 10.0;
-	
-	HornRegistration *hr = [[HornRegistration alloc] init];
-	
-	[hr addModelPoint: m1]; [hr addModelPoint: m2]; [hr addModelPoint: m3]; [hr addModelPoint: m4];
-	[hr addSensorPoint: s1]; [hr addSensorPoint: s2]; [hr addSensorPoint: s3]; [hr addSensorPoint: s4];
-
-	[hr compute];
-
-NSLog(@" ***** Points 2D ***** ");
-	int i;
-	// find all the Point ROIs on this viewers (fixed)
+//	NSLog(@" ***** test 1 : test Horn Registration API ***** ");
+//	[HornRegistration test]; //test if the connection to the Horn Registration API is OK
+//	NSLog(@" ***** test 2 : test cocoa wrapper ***** ");
+//	double *m1, *m2, *m3, *m4;
+//	m1 = (double*) malloc(3*sizeof(double)); m2 = (double*) malloc(3*sizeof(double)); m3 = (double*) malloc(3*sizeof(double)); m4 = (double*) malloc(3*sizeof(double));
+//	m1[0] = 0.0; m1[1] = 0.0; m1[2] = 0.0;
+//	m2[0] = 10.0; m2[1] = 0.0; m2[2] = 0.0;
+//	m3[0] = 10.0; m3[1] = 10.0; m3[2] = 0.0;
+//	m4[0] = 0.0; m4[1] = 10.0; m4[2] = 0.0;
+//	double *s1, *s2, *s3, *s4;
+//	s1 = (double*) malloc(3*sizeof(double)); s2 = (double*) malloc(3*sizeof(double)); s3 = (double*) malloc(3*sizeof(double)); s4 = (double*) malloc(3*sizeof(double));
+//	s1[0] = 5.0; s1[1] = 0.0; s1[2] = 0.0;
+//	s2[0] = 5.0; s2[1] = 10.0; s2[2] = 0.0;
+//	s3[0] = 5.0; s3[1] = 10.0; s3[2] = 11.0;
+//	s4[0] = 5.0; s4[1] = 0.0; s4[2] = 10.0;
+//	
+//	HornRegistration *hr = [[HornRegistration alloc] init];
+//	
+//	[hr addModelPoint: m1]; [hr addModelPoint: m2]; [hr addModelPoint: m3]; [hr addModelPoint: m4];
+//	[hr addSensorPoint: s1]; [hr addSensorPoint: s2]; [hr addSensorPoint: s3]; [hr addSensorPoint: s4];
+//
+//	[hr compute];
+//	[hr release];
+//
+//	NSLog(@" ***** Points 2D ***** ");
+	// find all the Point ROIs on this viewer (fixed)
 	NSMutableArray * modelPointROIs = [self point2DList];
-NSLog(@" [modelPointROIs count] : %d", [modelPointROIs count]);
-	// find all the Point ROIs on this viewers (fixed)
+	// find all the Point ROIs on the dragged viewer (moving)
 	NSMutableArray * sensorPointROIs = [movingViewer point2DList];
-NSLog(@" [sensorPointROIs count] : %d", [sensorPointROIs count]);
+	
+	int numberOfPoints = [modelPointROIs count];
+	// we need the same number of points
+	BOOL sameNumberOfPoints = ([sensorPointROIs count] == numberOfPoints);
+	// we need at least 3 points
+	BOOL enoughPoints = (numberOfPoints>=3);
+	// each point on the moving viewer needs a twin on the fixed viewer.
+	// two points are twin brothers if and only if they have the same name.
+	BOOL pointsNamesMatch2by2 = YES;
+	// triplets are illegal (since we don't know which point to map)
+	BOOL triplets = NO;
 
-	[hr release];
+	NSMutableArray *previousNames = [[NSMutableArray alloc] initWithCapacity:0];
+	
+	NSString *modelName, *sensorName;
+	NSMutableString *errorString = [NSMutableString stringWithString:@""];
+	
+	BOOL foundAMatchingName;
+	
+	if (sameNumberOfPoints && enoughPoints)
+	{
+		//HornRegistration *hr = [[HornRegistration alloc] init];
+		
+		int i,j,k; // 'for' indexes
+		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
+		{
+			modelName = [[modelPointROIs objectAtIndex:i] name];
+			foundAMatchingName = NO;
+			
+			for (j=0; j<[sensorPointROIs count] && !foundAMatchingName; j++)
+			{
+				sensorName = [[sensorPointROIs objectAtIndex:j] name];
+			
+				for (k=0; k<[previousNames count]; k++)
+				{
+					triplets = triplets || [modelName isEqualToString:[previousNames objectAtIndex:k]]
+										|| [sensorName isEqualToString:[previousNames objectAtIndex:k]];
+				}
+				
+				pointsNamesMatch2by2 = [sensorName isEqualToString:modelName];
+
+				if(pointsNamesMatch2by2)
+				{
+					foundAMatchingName = YES; // stop the research
+					[sensorPointROIs removeObjectAtIndex:j]; // to accelerate the research
+					[previousNames addObject:sensorName]; // to avoid triplets
+					
+					if(!triplets)
+					{
+						// add the points to the registration method
+						//[hr addModelPoint: m1];
+						//[hr addSensorPoint: s1];
+					}
+				}
+			}
+		}
+		
+		if(pointsNamesMatch2by2 && !triplets)
+		{
+			// compute the registration
+			
+		}
+		//[hr release];
+	}
+	else
+	{
+		if(!sameNumberOfPoints)
+		{
+			// warn user to set the same number of points on both viewers
+			[errorString appendString:NSLocalizedString(@"Needs same number of points on both viewers.",0L)];
+		}
+		
+		if(!enoughPoints)
+		{
+			// warn user to set at least 3 points on both viewers
+			if([errorString length]!=0) [errorString appendString:@"\n"];
+			[errorString appendString:NSLocalizedString(@"Needs at least 3 points on both viewers.",0L)];
+		}
+	}
+	
+	if(!pointsNamesMatch2by2)
+	{
+		// warn user
+		if([errorString length]!=0) [errorString appendString:@"\n"];
+		[errorString appendString:NSLocalizedString(@"Points names must match 2 by 2.",0L)];
+	}
+	
+	if(triplets)
+	{
+		// warn user
+		if([errorString length]!=0) [errorString appendString:@"\n"];
+		[errorString appendString:NSLocalizedString(@"Max. 2 points with the same name.",0L)];
+	}
+
+	if([errorString length]!=0)
+	{			
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Point-Based Registration Error", nil),
+								errorString,
+								NSLocalizedString(@"OK", nil), nil, nil);
+	}
+
 }
 
 @end

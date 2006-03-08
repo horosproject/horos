@@ -88,8 +88,8 @@
 {
 	self = [super init];
 	if (self != nil) {
-		modelPoints = [NSMutableArray arrayWithCapacity:0];
-		sensorPoints = [NSMutableArray arrayWithCapacity:0];
+		modelPoints = [[NSMutableArray alloc] initWithCapacity:0];
+		sensorPoints = [[NSMutableArray alloc] initWithCapacity:0];
 	}
 	return self;
 }
