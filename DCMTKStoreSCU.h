@@ -56,7 +56,7 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 			
 - (void)run:(id)sender;
 - (void)updateLogEntry:(id)sender;
-- (void)abort:(id)sender;
+- (void)abort;
 - (void)save:(id)sender;
 
 
