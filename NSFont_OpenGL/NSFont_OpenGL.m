@@ -54,8 +54,27 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 
 + (void) resetFont
 {
-	[imageArray release];
-	imageArray = 0L;
+	long i;
+	
+	if( imageArray)
+	{
+		for( i = 0; i < 256; i++)
+		{
+			free( charPtrArray[ i]);
+		}
+		[imageArray release];
+		imageArray = 0L;
+	}
+	
+	if( imageArrayPreview)
+	{
+		for( i = 0; i < 256; i++)
+		{
+			free( charPtrArrayPreview[ i]);
+		}
+		[imageArrayPreview release];
+		imageArrayPreview = 0L;
+	}
 }
 
 + (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font previewFont:(BOOL) preview
@@ -71,7 +90,7 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 	BOOL				retval;
 	NSBitmapImageRep	*bitmap;
 	NSMutableArray		*curArray;
-	long				*curSizeArray;
+	long				*curSizeArray, i;
 
 	if( preview) 
 	{
@@ -84,12 +103,16 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 		curSizeArray = charSizeArray;
 	}
 	
-	NSLog( @"font allocated");
+	NSLog( @"glFont created");
 	
-	curArray = [[NSMutableArray alloc] initWithCapacity:0];
+	for( i = 0; i < 256; i++)
+	{
+		if( preview) charPtrArrayPreview[ i] = 0;
+		else charPtrArray[ i] = 0;
+	}
 	
-//	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];	We cannot do this, because other glView already use this font.... 
-//	else [curArray removeAllObjects];
+	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];
+	else [curArray removeAllObjects];
 
 	blackColor = [ NSColor blackColor ];
 	attribDict = [ NSDictionary dictionaryWithObjectsAndKeys: font, NSFontAttributeName, [ NSColor whiteColor ], NSForegroundColorAttributeName, blackColor, NSBackgroundColorAttributeName, nil ];

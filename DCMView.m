@@ -6446,9 +6446,6 @@ BOOL	lowRes = NO;
 		temp += fontSizeArray[ cstr[ i]];
 		i++;
 	}
-	
-	NSLog( @"length: %d", temp);
-	
 	return temp;
 }
 
