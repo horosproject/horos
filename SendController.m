@@ -433,9 +433,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 */
 	[filesToSend release];
 	
-	[_waitSendWindow close];
-	[_waitSendWindow release];
-	_waitSendWindow = 0L;
+//	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+//	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+//	_waitSendWindow = 0L;				// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
@@ -490,9 +490,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 		[filesToSend release];
 	
-	[_waitSendWindow close];
-	[_waitSendWindow release];
-	_waitSendWindow = 0L;
+//	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+//	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+//	_waitSendWindow = 0L;				// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
@@ -607,12 +607,12 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 {
 	int count = [[info objectForKey:@"SendTotal"] intValue];
 	int numberSent = [[info objectForKey:@"NumberSent"] intValue];
-	//NSLog(@"setSendMessage:");
+
 	if( _waitSendWindow)
 	{
 		[_waitSendWindow incrementBy:1];
 		[[[_waitSendWindow window] contentView] setNeedsDisplay:YES];
-		//NSLog(@"Increment Send status");
+
 		if( numberSent >= count-1)
 		{
 			[_waitSendWindow close];

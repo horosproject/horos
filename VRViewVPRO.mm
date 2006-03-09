@@ -2271,7 +2271,8 @@ public:
 						if( currentOpacity < 0) currentOpacity = 0;
 						if( currentOpacity > 1.0) currentOpacity = 1.0;
 						
-						if( modeID != 1) opacitySum += opacityTransferFunction->GetValue( currentOpacity*255.0);
+						if( textureMapper->GetBlendMode() != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND) opacitySum += opacityTransferFunction->GetValue( currentOpacity*255.0);
+
 						boneFound = currentPointValue >= BONEVALUE;
 						
 						boneFound = boneFound && (opacitySum<=BONEOPACITY); // take bones only if (nearly) visible
