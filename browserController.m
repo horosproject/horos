@@ -40,6 +40,7 @@ Version 2.3
 	20060128	LP	Changing routing Protocol
 	20060128	LP	Modified isDICOMFile to test with DCMFramework as last resort. some valid files not read by papyrus
 	20060308	RBR	Added test for RTSTRUCT in matrixNewIcon.  Write button icon indicating RTSTRUCT rather than error button.
+	20060309	LP	added databaseWindow: to close all viewers
 
 */
 
@@ -9037,7 +9038,7 @@ static BOOL needToRezoom;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Database", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Close viewers and open Database window", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: DatabaseWindowToolbarItemIdentifier]];
-		[toolbarItem setTarget: nil];
+		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(databaseWindow:)];
     }
 	else
@@ -9541,6 +9542,15 @@ static BOOL needToRezoom;
 	   }
 	}
 	return selectedItems;
+}
+
+- (IBAction)databaseWindow:(id)sender{
+	NSEnumerator *enumerator = [[NSApp windows] objectEnumerator];
+	NSWindow *window;
+	while (window = [enumerator nextObject]) {
+		if (![window isEqual:[self window]])
+			[window close];
+	}
 }
 
 
