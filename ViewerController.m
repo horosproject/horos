@@ -9534,8 +9534,8 @@ NSMutableArray		*array;
 			// compute the registration
 			[hr compute];
 			
-			ITKTransform * transform = [[ITKTransform alloc] init]; //initWithDCMPix: (DCMPix *) pix
-			[transform computeAffineTransformWithRotation: [hr rotation] translation: [hr translation]];
+			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
+			[transform computeAffineTransformWithRotation: [hr rotation] translation: [hr translation] resampleOnViewer: self];
 			[transform release];
 		}
 		[hr release];

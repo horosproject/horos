@@ -14,13 +14,16 @@
 @class ITK;
 #endif
 
+#import "ViewerController.h"
+
 @interface ITKTransform : NSObject {
-	ITK		*itkImage;
-	DCMPix	*originalPix, *resultPix;
+	ITK						*itkImage;
+	ViewerController		*originalViewer, *resultViewer;
 }
 
-- (id) initWithDCMPix: (DCMPix *) pix;
-- (void) computeAffineTransformWithRotation: (double*)aRotation translation: (double*)aTranslation;
-- (void) computeAffineTransformWithParameters: (double*)theParameters;
+- (id) initWithViewer: (ViewerController *) viewer;
+- (void) computeAffineTransformWithRotation: (double*)aRotation translation: (double*)aTranslation resampleOnViewer:(ViewerController*)referenceViewer;
+- (void) computeAffineTransformWithParameters: (double*)theParameters resampleOnViewer:(ViewerController*)referenceViewer;
+- (void) createNewViewerWithBuffer:(float*)aBuffer resampleOnViewer:(ViewerController*)referenceViewer;
 
 @end
