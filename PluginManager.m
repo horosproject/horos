@@ -353,10 +353,6 @@ PluginManager			*pluginManager = 0L;
 						PluginFilter*	filter = [filterClass filter];
 						[preProcessPlugins addObject: filter];
 					}
-					else if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
-					{
-						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-					}
 					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
 					{
 						NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
@@ -366,6 +362,10 @@ PluginManager			*pluginManager = 0L;
 							//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
 							[fileFormatPlugins setObject:plugin forKey:fileFormat];
 						}
+					}
+					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
+					{
+						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}
 			}

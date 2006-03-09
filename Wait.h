@@ -22,7 +22,7 @@
 	IBOutlet NSTextField		 *text, *elapsed;
 	IBOutlet NSButton			 *abort;
 	
-	
+	id _target;
 	NSDate  *startTime;
 	BOOL	cancel, aborted, openSession;
 	NSModalSession session;
@@ -37,4 +37,5 @@
 - (IBAction) abortButton: (id) sender;
 - (void) setCancel :(BOOL) val;
 - (void) setElapsedString :(NSString*) str;
+- (void)setTarget:(id)target;
 @end

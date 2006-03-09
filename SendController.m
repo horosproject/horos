@@ -274,7 +274,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			//NSLog( @"Will send %d files", [files2Send count]);
 						
 			_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...",@"Sending files") :NO];
-			
+			[_waitSendWindow  setTarget:self];
 			[_waitSendWindow showWindow:self];
 			[[_waitSendWindow progress] setMaxValue:[files2Send count]];
 			
@@ -441,9 +441,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
-//	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
-//	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
-//	_waitSendWindow = 0L;				// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
@@ -494,6 +492,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			transferSyntax:(NSString *)transferSyntax
 			compression: 1.0
 			extraParameters:nil];
+	sendSCU = storeSCU;
 	[storeSCU run:self];
 	
 	[filesToSend release];
@@ -506,14 +505,18 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
-//	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
-//	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
-//	_waitSendWindow = 0L;				// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
+	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
 	[_lock unlock];
 	
+}
+
+- (void)closeSendPanel:(id)sender{
+	[_waitSendWindow close];			
+	[_waitSendWindow release];			
+	_waitSendWindow = 0L;	
 }
 
 /*
@@ -679,6 +682,11 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 }
 
 - (void)listenForAbort:(id)handler{
+	[sendSCU abort];
+}
+
+- (void)abort{
+	[self listenForAbort:nil];
 }
 
 

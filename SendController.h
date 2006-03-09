@@ -61,6 +61,8 @@ enum SendServerType { osirixServer, offisServer };
 	int _serverIndex;
 	int _osirixTS;
 	int _offisTS;
+	 
+	 id sendSCU;
 	
 	IBOutlet NSComboBox	*serverList;
 	IBOutlet NSMatrix	*DICOMSendTool;
@@ -96,6 +98,9 @@ enum SendServerType { osirixServer, offisServer };
 
 - (void)releaseSelfWhenDone:(id)sender;
 - (void)listenForAbort:(id)handler;
+- (void)abort;
+
+- (void)closeSendPanel:(id)sender;
 
 
 

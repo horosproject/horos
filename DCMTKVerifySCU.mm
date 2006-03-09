@@ -143,7 +143,7 @@ int
 runEcho(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters)
 {
     const char *     opt_peer                = NULL;
-    unsigned int  opt_port                = 104;
+    unsigned int     opt_port                = 104;
     const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
     const char *     opt_ourTitle            = APPLICATIONTITLE;
     OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;

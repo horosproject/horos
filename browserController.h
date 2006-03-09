@@ -341,6 +341,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 
 
 - (NSArray *)databaseSelection;
+- (IBAction)databaseWindow:(id)sender;
 
 /******Notifactions posted by browserController***********
 
