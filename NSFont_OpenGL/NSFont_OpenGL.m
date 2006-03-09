@@ -32,7 +32,7 @@
 #import "NSFont_OpenGL.h"
 
 @interface NSFont (withay_OpenGL_InternalMethods)
-- (BOOL) makeDisplayList:(GLint)listNum withImage:(NSBitmapImageRep *)theImage;
++ (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap;
 + (void) doOpenGLLog:(NSString *)format, ...;
 @end
 
@@ -41,7 +41,7 @@
 static  BOOL					openGLLoggingEnabled = YES;
 static  NSMutableArray			*imageArray = 0L, *imageArrayPreview = 0L;
 static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
-
+static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 
 
 /*
@@ -60,19 +60,18 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
 
 + (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font previewFont:(BOOL) preview
 {
-	GLint curListIndex;
-	NSColor *blackColor;
-	NSDictionary *attribDict;
-	NSString *currentChar;
-	unichar currentUnichar;
-	NSSize charSize;
-	NSRect charRect;
-	NSImage *theImage;
-	BOOL retval;
-	NSBitmapImageRep *bitmap;
-	
-	NSMutableArray  *curArray;
-	long *curSizeArray;
+	GLint				curListIndex;
+	NSColor				*blackColor;
+	NSDictionary		*attribDict;
+	NSString			*currentChar;
+	unichar				currentUnichar;
+	NSSize				charSize;
+	NSRect				charRect;
+	NSImage				*theImage;
+	BOOL				retval;
+	NSBitmapImageRep	*bitmap;
+	NSMutableArray		*curArray;
+	long				*curSizeArray;
 
 	if( preview) 
 	{
@@ -84,9 +83,13 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
 		curArray = imageArray;
 		curSizeArray = charSizeArray;
 	}
-
-	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];
-	else [curArray removeAllObjects];
+	
+	NSLog( @"font allocated");
+	
+	curArray = [[NSMutableArray alloc] initWithCapacity:0];
+	
+//	if( curArray == 0L) curArray = [[NSMutableArray alloc] initWithCapacity:0];	We cannot do this, because other glView already use this font.... 
+//	else [curArray removeAllObjects];
 
 	blackColor = [ NSColor blackColor ];
 	attribDict = [ NSDictionary dictionaryWithObjectsAndKeys: font, NSFontAttributeName, [ NSColor whiteColor ], NSForegroundColorAttributeName, blackColor, NSBackgroundColorAttributeName, nil ];
@@ -120,7 +123,8 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
 		[curArray addObject: bitmap];
 		[theImage release];
 			
-		//	NSLog( currentChar);
+		if( preview) charPtrArrayPreview[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
+		else charPtrArray[ currentUnichar] = [NSFont createCharacterWithImage:[curArray objectAtIndex: currentUnichar - first]];
 	}
 
 	if( preview) 
@@ -138,18 +142,18 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
  */
 - (BOOL) makeGLDisplayListFirst:(unichar)first count:(int)count base:(GLint)base :(long*) charSizeArrayIn :(BOOL) preview
 {
-   GLint curListIndex;
-   NSColor *blackColor;
-   NSDictionary *attribDict;
-   GLint dListNum;
-   NSString *currentChar;
-   unichar currentUnichar;
-   NSSize charSize;
-   NSRect charRect;
-   NSImage *theImage;
-   BOOL retval;
-  NSFont  *fontGL;
-  
+	GLint curListIndex;
+	NSColor *blackColor;
+	NSDictionary *attribDict;
+	GLint dListNum;
+	NSString *currentChar;
+	unichar currentUnichar;
+	NSSize charSize;
+	NSRect charRect;
+	NSImage *theImage;
+	BOOL retval;
+	NSFont  *fontGL;
+
 	NSMutableArray  *curArray;
 	long *curSizeArray;
 	
@@ -199,13 +203,14 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )
    {
-		charSizeArrayIn[ currentUnichar] = curSizeArray[ currentUnichar];	//charRect.size.width;
+		charSizeArrayIn[ currentUnichar] = curSizeArray[ currentUnichar];
 		
-		if( ![ self makeDisplayList:dListNum withImage:[curArray objectAtIndex: currentUnichar - first]])
-		{
-			retval = FALSE;
-            break;
-		}
+		NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
+		
+		glNewList( dListNum, GL_COMPILE );
+		if( preview) glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
+		else glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+		glEndList();
    }
 
    glPopClientAttrib();
@@ -218,26 +223,25 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
  * Create one display list based on the given image.  This assumes the image
  * uses 8-bit chunks to represent a sample
  */
-- (BOOL) makeDisplayList:(GLint)listNum withImage:(NSBitmapImageRep *)bitmap
++ (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap
 {
-   int bytesPerRow, pixelsHigh, pixelsWide, samplesPerPixel;
-   unsigned char *bitmapBytes;
-   int currentBit, byteValue;
-   unsigned char *newBuffer, *movingBuffer;
-   int rowIndex, colIndex;
+   int				bytesPerRow, pixelsHigh, pixelsWide, samplesPerPixel;
+   unsigned char	*bitmapBytes;
+   int				currentBit, byteValue;
+   unsigned char	*newBuffer, *movingBuffer;
+   int				rowIndex, colIndex;
 
-//   bitmap = [ NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0 ] ];
    pixelsHigh = [ bitmap pixelsHigh ];
    pixelsWide = [ bitmap pixelsWide ];
    bitmapBytes = [ bitmap bitmapData ];
    bytesPerRow = [ bitmap bytesPerRow ];
    samplesPerPixel = [ bitmap samplesPerPixel ];
+   
    newBuffer = calloc( ceil( (float) bytesPerRow / 8.0 ), pixelsHigh );
    if( newBuffer == NULL )
    {
-      [ NSFont doOpenGLLog:@"Failed to calloc() memory in "
-                           @"makeDisplayList:withImage:" ];
-      return FALSE;
+		NSLog(@"Failed to calloc() memory in");
+		return 0L;
    }
 
    movingBuffer = newBuffer;
@@ -252,8 +256,7 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
       byteValue = 0;
       for( colIndex = 0; colIndex < pixelsWide; colIndex++ )
       {
-         if( bitmapBytes[ rowIndex * bytesPerRow + colIndex * samplesPerPixel ] )
-            byteValue |= currentBit;
+         if( bitmapBytes[ rowIndex * bytesPerRow + colIndex * samplesPerPixel ] ) byteValue |= currentBit;
          currentBit >>= 1;
          if( currentBit == 0 )
          {
@@ -262,20 +265,11 @@ static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
             byteValue = 0;
          }
       }
-      /*
-       * Fill out the last byte; extra is ignored by OpenGL, but each row
-       * must start on a new byte
-       */
       if( currentBit != 0x80 )
          *movingBuffer++ = byteValue;
    }
-
-   glNewList( listNum, GL_COMPILE );
-   glBitmap( pixelsWide, pixelsHigh, 0, 0, pixelsWide, 0, newBuffer );
-   glEndList();
-   free( newBuffer );
-
-   return TRUE;
+	
+	return newBuffer;
 }
 
 

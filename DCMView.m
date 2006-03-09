@@ -3234,6 +3234,11 @@ static long scrollMode;
                name:  @"DCMNewFontColor" 
              object: nil];
 			 
+	[nc addObserver: self
+           selector: @selector(changeGLFontNotification:)
+               name:  @"changeGLFontNotification" 
+             object: nil];
+			
 			
     
     colorTransfer = NO;
@@ -6389,26 +6394,34 @@ BOOL	lowRes = NO;
 	if( [stringID isEqualToString:@"FinalView"] == YES) [self blendingPropagate];
 }
 
+- (void) changeGLFontNotification:(NSNotification*) note
+{
+	[[self openGLContext] makeCurrentContext];
+	
+	glDeleteLists (fontListGL, 150);
+	fontListGL = glGenLists (150);
+	
+	[fontGL release];
+
+	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
+	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
+	
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
+	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+	
+	[self setNeedsDisplay:YES];
+}
+
 - (void)changeFont:(id)sender
 {
-	glDeleteLists (fontListGL, 150);
     NSFont *oldFont = fontGL;
     NSFont *newFont = [sender convertFont:oldFont];
 	
 	[[NSUserDefaults standardUserDefaults] setObject: [newFont fontName] forKey: @"FONTNAME"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
-	NSLog(@"%2.2f", [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]);
-	NSLog(@"New Font");
-	
 	[NSFont resetFont];
 	
-//	fontListGL = glGenLists (95);
-	[fontGL release];
-	fontGL = [newFont retain];
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
-	[self setNeedsDisplay:YES];
-	
-	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: sender];
 }
 
 - (void)loadTextures
@@ -6433,10 +6446,14 @@ BOOL	lowRes = NO;
 		temp += fontSizeArray[ cstr[ i]];
 		i++;
 	}
+	
+	NSLog( @"length: %d", temp);
+	
 	return temp;
 }
 
-- (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font{
+- (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
+{
 	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
 	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
 	return [attrString size];
