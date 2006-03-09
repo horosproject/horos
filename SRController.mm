@@ -1279,8 +1279,10 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 	int i;
 	for(i=0; i<[roiVolumes count]; i++)
 	{
-		//[self displayROIVolumeAtIndex:i];
-		[self displayROIVolume:[roiVolumes objectAtIndex:i]];
+		if([[roiVolumes objectAtIndex:i] visible])
+		{
+			[self displayROIVolume:[roiVolumes objectAtIndex:i]];
+		}
 	}
 }
 
