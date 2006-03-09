@@ -75,6 +75,7 @@ AppController			*appController = 0L;
 
 NetworkListener			*storeSCP = 0L;
 
+NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 
 
 #if __ppc__
@@ -889,6 +890,8 @@ NSRect screenFrame()
 	//currentHangingProtocol = [[NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithInt:6], [NSNumber numberWithInt:6], nil] forKeys: [NSArray arrayWithObjects: @"Rows", @"Columns", nil]] retain];
 	currentHangingProtocol = nil;
 	appController = self;
+	
+	PapyrusLock = [[NSLock alloc] init];
 	
 	return self;
 }

@@ -46,6 +46,7 @@ NSString * convertDICOM( NSString *inputfile);
 NSString* filenameWithDate( NSString *inputfile);
 NSString* documentsDirectory();
 
+extern NSLock	*PapyrusLock;
 extern short		Altivec;
 extern NSMutableDictionary *fileFormatPlugins;
 
@@ -2268,6 +2269,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile] == NO) convertedDICOM = [convertDICOM( file) retain];
 	else convertedDICOM = [outputfile retain];
 	
+	[PapyrusLock lock];
+	
 	fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if (fileNb >= 0)
 	{
@@ -2293,6 +2296,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		Papy3FileClose (fileNb, TRUE);
 	}
 	else convertedDICOM = 0L;
+	
+	[PapyrusLock unlock];
 	
 	return data;
 }
@@ -3989,6 +3994,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
 
+	[PapyrusLock lock];
+
 	if( convertedDICOM)
 	{
 		fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
@@ -5516,10 +5523,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		if( clutRed) free( clutRed);
 		if( clutGreen) free( clutGreen);
 		if( clutBlue) free( clutBlue);
-	
+		
+		[PapyrusLock unlock];
 		return YES;
 	}
 	
+	[PapyrusLock unlock];
 	return NO;
 }
 
@@ -5535,12 +5544,14 @@ PapyShort       fileNb, theErr;
 	}
 	else
 	{
+		[PapyrusLock lock];
 		fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		if (fileNb < 0)
 		{
 			readable = NO;
 		}
 		else Papy3FileClose (fileNb, TRUE);
+		[PapyrusLock unlock];
     }
 	
     return readable;

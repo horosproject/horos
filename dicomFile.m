@@ -59,6 +59,8 @@
 
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSMutableDictionary *fileFormatPlugins;
+extern NSLock	*PapyrusLock;
+
 long gGlobaluniqueID = 0;
 
 
@@ -231,13 +233,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	BOOL            readable = YES;
 	PapyShort       fileNb, theErr;
 
-
+	[PapyrusLock lock];
 	fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
 	if (fileNb < 0)
 	{
 		readable = NO;
 	}
 	else Papy3FileClose (fileNb, TRUE);
+	
+	[PapyrusLock unlock];
 	
     return readable;
 }
@@ -1242,6 +1246,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if (!USEPAPYRUSDCMFILE)
 		return [self decodeDICOMFileWithDCMFramework];
 	
+	[PapyrusLock lock];
+	
 	int					itemType;
 	long				cardiacTime = -1;
 	short				x, theErr;
@@ -1898,6 +1904,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NSRange range = [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch];
 			if( range.location != NSNotFound)
 			{
+				[PapyrusLock unlock];
+				
 				return -1;
 			}
 		}
@@ -1951,6 +1959,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( name != 0L && studyID != 0L && serieID != 0L && imageID != 0L && width != 0 && height != 0)
 		{
+			[PapyrusLock unlock];
 			return 0;   // success
 		}
 	}
@@ -1966,10 +1975,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		if( forceConverted == NO)
 		{
+			[PapyrusLock unlock];
 			return [self getDicomFile: YES];
 		}
 	}
-		
+	
+	[PapyrusLock unlock];
 	return -1;			// failed
 }
 
