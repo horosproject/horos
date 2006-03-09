@@ -403,7 +403,7 @@
 #pragma mark-
 #pragma mark Brush ROI Filters
 
-- (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius;
+- (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
 
 - (ROI*) selectedROI;
 

@@ -2602,8 +2602,8 @@ public:
 				
 				// Dilatation
 				
-				[[controller viewer2D] applyMorphology: producedROIs action:@"dilate" radius: 10];
-				[[controller viewer2D] applyMorphology: producedROIs action:@"erode" radius: 6];
+				[[controller viewer2D] applyMorphology: producedROIs action:@"dilate" radius: 10 sendNotification:NO];
+				[[controller viewer2D] applyMorphology: producedROIs action:@"erode" radius: 6 sendNotification:NO];
 
 				
 				NSLog( @"**** Dilate/Erode");

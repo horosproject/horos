@@ -432,6 +432,14 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[storeSCU run:self];
 */
 	[filesToSend release];
+
+	NSMutableDictionary *info = [NSMutableDictionary dictionary];
+	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"SendTotal"];
+	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"NumberSent"];
+	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
+	[info setObject:calledAET forKey:@"CalledAET"];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
 //	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
 //	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
@@ -488,7 +496,15 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			extraParameters:nil];
 	[storeSCU run:self];
 	
-		[filesToSend release];
+	[filesToSend release];
+
+	NSMutableDictionary *info = [NSMutableDictionary dictionary];
+	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"SendTotal"];
+	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"NumberSent"];
+	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
+	[info setObject:calledAET forKey:@"CalledAET"];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
 //	[_waitSendWindow close];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH
 //	[_waitSendWindow release];			// WRONG !!!!! YOU CANNOT MODIFY THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!	CRASH

@@ -9181,7 +9181,7 @@ NSMutableArray		*array;
 	}
 }
 
-- (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius
+- (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
 {
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
@@ -9203,10 +9203,8 @@ NSMutableArray		*array;
 	
 	[sched release];
 	
-	for ( i = 0; i < [rois count]; i++ )
-	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
-	}
+	if( sendNotification)
+		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
 	
 	[filter release];
 }
@@ -9250,11 +9248,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"erode" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"erode" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	else
 	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"erode" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"erode" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	[wait close];
 	[wait release];
@@ -9290,11 +9288,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"dilate" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"dilate" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	else
 	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"dilate" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"dilate" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	[filter release];
 	[wait close];
@@ -9331,11 +9329,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"close" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"close" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	else
 	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"close" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"close" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	[filter release];
 	[wait close];
@@ -9372,11 +9370,11 @@ NSMutableArray		*array;
 	[wait showWindow:self];
 	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
 	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"open" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"open" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	else
 	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"open" radius: [structuringElementRadiusSlider intValue]];
+		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"open" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
 	}
 	[filter release];
 	[wait close];
