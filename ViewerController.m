@@ -3577,7 +3577,7 @@ extern NSString * documentsDirectory();
 	}
 	[imageView becomeMainWindow];
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES) [self ApplyCLUTString:@"PET"];
+	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString:@"PET"];
 	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
@@ -3961,7 +3961,7 @@ extern NSString * documentsDirectory();
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES)
+	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
 		[self ApplyCLUTString:@"PET"];
 		
