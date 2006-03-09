@@ -100,6 +100,8 @@ END_EXTERN_C
 
 #include "browserController.h"
 #import "DICOMToNSString.h"
+#import <OsiriX/DCMObject.h>
+#import <OsiriX/DCMTransferSyntax.h>
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
@@ -517,67 +519,88 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
 	OFBool status = YES;
 	//DcmFileFormat fileformat;
 	OFCondition cond;
-	//cond = fileformat.loadFile(fname);
-	if (cond.good())
-	{
-	  DcmDataset *dataset = fileformat.getDataset();
+	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+	//hopefully dcmtk willsupport jpeg2000 compressio and decompression in the future
+	if (filexfer.getXferID() == EXS_JPEG2000LosslessOnly || filexfer.getXferID() == EXS_JPEG2000) {
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else {
+		  DcmDataset *dataset = fileformat.getDataset();
 
-	  // decompress data set if compressed
-	  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+		  // decompress data set if compressed
+		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
 
-	  // check if everything went well
-	  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-	  {
-		fileformat.loadAllDataIntoMemory();
-		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-		cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
-		status =  (cond.good()) ? YES : NO;
-		
-	  }
-	  else
-		status = NO;
-	} 
-	else
-		status = NO;
+		  // check if everything went well
+		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+		  {
+			fileformat.loadAllDataIntoMemory();
+			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+			cond = fileformat.saveFile(fname, EXS_LittleEndianExplicit);
+			status =  (cond.good()) ? YES : NO;
+			
+		  }
+		  else
+			status = NO;
+
+	}
+
 	return status;
 }
 
 static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
-	printf("compress %s\n", fname);
-	//DcmFileFormat fileformat;
-	OFCondition cond;
-	//cond = fileformat.loadFile(fname);
-	OFBool status = YES;
-	//if (cond.good())
-	//{
-	  printf("file loaded\n");
-	  DcmDataset *dataset = fileformat.getDataset();
-	  DcmItem *metaInfo = fileformat.getMetaInfo();
-	  DcmRepresentationParameter *params;
-	  DJ_RPLossy lossyParams(opt_Quality);
-	  DcmRLERepresentationParameter rleParams;
-	  DJ_RPLossless losslessParams; // codec parameters, we use the defaults
-	  if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-		params = &losslessParams;
-	  else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-		params = &lossyParams; 
-	else if (opt_networkTransferSyntax == EXS_RLELossless)
-		params = &rleParams; 
-		
-		printf("chooseRepresentation\n");
-	  // this causes the lossless JPEG version of the dataset to be created
-	  dataset->chooseRepresentation(opt_networkTransferSyntax, params);
+	
 
-	  // check if everything went well
-	  if (dataset->canWriteXfer(opt_networkTransferSyntax))
-	  {
+	OFCondition cond;
+	OFBool status = YES;
+	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+	//hopefully dcmtk willsupport jpeg2000 compressio and compression in the future
+	if (filexfer.getXferID() == EXS_JPEG2000) {
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else if  (filexfer.getXferID() == EXS_JPEG2000LosslessOnly) {
+		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
+		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality:0 AET:@"OsiriX" atomically:YES];
+		[dcmObject release];
+	}
+	else {
+		
+		DcmDataset *dataset = fileformat.getDataset();
+		DcmItem *metaInfo = fileformat.getMetaInfo();
+		DcmRepresentationParameter *params;
+		DJ_RPLossy lossyParams(opt_Quality);
+		DcmRLERepresentationParameter rleParams;
+		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+		if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+		params = &losslessParams;
+		else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
+		params = &lossyParams; 
+		else if (opt_networkTransferSyntax == EXS_RLELossless)
+		params = &rleParams; 
+
+	
+		// this causes the lossless JPEG version of the dataset to be created
+		dataset->chooseRepresentation(opt_networkTransferSyntax, params);
+
+		// check if everything went well
+		if (dataset->canWriteXfer(opt_networkTransferSyntax))
+		{
 		// force the meta-header UIDs to be re-generated when storing the file 
 		// since the UIDs in the data set may have changed 
 		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
 		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
 			// store in lossless JPEG format
-			printf("save file\n");
+			
 			fileformat.loadAllDataIntoMemory();
 			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 			cond = fileformat.saveFile(fname, opt_networkTransferSyntax);
@@ -585,9 +608,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
 		}
 		else
 			status = NO;
-//	} 
-//	else
-//		status = NO; 
+	}
+
 	return status;
 }
 
@@ -1506,7 +1528,7 @@ NS_ENDHANDLER
 	[pool release];
 }
 
-- (void)abort:(id)sender{
+- (void)abort{
 	_shouldAbort = YES;
 }
 
