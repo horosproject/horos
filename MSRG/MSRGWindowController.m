@@ -14,7 +14,7 @@ PURPOSE.
 
 
 #import "MSRGWindowController.h"
-
+#define min(x,y) ((x<y)? x:y)
 @implementation MSRGWindowController
 - (id) initWithMarkerViewer:(ViewerController*) v andViewersList:(NSMutableArray*)list 
 {
@@ -23,10 +23,6 @@ PURPOSE.
 	viewer = v;
 	BoundingROIStart=0L;
 	BoundingROIEnd=0L;
-	/*
-	 msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
-	 [msrgSeg startMSRGSegmentation];
-	 */
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -48,9 +44,28 @@ PURPOSE.
 	return self;
 }
 
+- (void)awakeFromNib
+{
+	[self setThicknessParameters];
+}
+
+-(void)setThicknessParameters
+{
+	DCMPix	*curPix = [[viewer pixList] objectAtIndex: [[viewer imageView] curImage]];
+	int height=[curPix pheight];
+	int width=[curPix pwidth];
+	int minDim=min(height,width);
+	[SliderThickness setMinValue:1];
+	[SliderThickness setMaxValue:ceil(minDim/3)];
+	[SliderThickness setIntValue:ceil(minDim/10)];
+	NSLog(@"slider init with min=%d, max=%d currentPos=%d",1,(int)ceil(minDim/3),(int)ceil(minDim/10));
+}
 - (IBAction)startMSRG:(id)sender
 {
-	
+	/*
+	 msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
+	 [msrgSeg startMSRGSegmentation];
+	 */	
 }
 
 // if bounding box is activated check if there is always a rectangle ROI with name Bounding box
@@ -94,7 +109,7 @@ PURPOSE.
 -(BOOL)checkBoundingBoxROIPresentOnStack
 {
 	int nbImages=[[viewer pixList] count];
-	int i,j,begin,end;
+	int i,j;
 	NSMutableArray	*curRoiList;
 	BOOL isBoundingBox=NO;
 	for(i=0;i<nbImages;i++)
@@ -131,7 +146,8 @@ PURPOSE.
 		[ActivateBoundingBoxButton setState:NSOffState];
 		NSRunAlertPanel( NSLocalizedString( @"No bounding Volume", 0L), NSLocalizedString( @"Sorry, but there is just one ROI with name: Bounding Box on the stack", 0), nil, nil, nil);
 		
-	}
+	} 
+	
 	return isBoundingBox;
 }
 -(BOOL)checkBoundingBoxROIPresentOnCurrentSlice
@@ -152,13 +168,30 @@ PURPOSE.
 			NSPoint origin=rect.origin;
 			NSSize size=rect.size;
 			[startEndText setStringValue:[NSString stringWithFormat:@"Slice number:%d",i]];
-			NSLog([NSString stringWithFormat:@"Slice number:%d, (x=%d,y=%d,width=%d,height=%d)",i,(int)origin.x,(int)origin.y,(int)size.width,(int)size.height]);
 		}
 	}
 	if (!isBoundingBox)		
 	{
 		[ActivateBoundingBoxButton setState:NSOffState];
 		NSRunAlertPanel( NSLocalizedString( @"NO Bounding Box", 0L), NSLocalizedString( @"Sorry, but there is no ROI with name: Bounding Box on the current slice", 0), nil, nil, nil);
+		// create one
+		/*
+		 DCMPix	*curPix = [[viewer pixList] objectAtIndex: [[viewer imageView] curImage]];	
+		 ROI *theNewROI = [[ROI alloc] initWithType: tROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( [curPix originX], [curPix originY])];
+		 NSRect rect;
+		 rect.origin.x=0.0;
+		 rect.origin.y=0.0;
+		 
+		 rect.size.width=100;
+		 rect.size.height=100;
+		 
+		 [theNewROI setROIRect:rect];
+		 [theNewROI setName:@"Bounding Box"];
+		 
+		 [[[viewer roiList] objectAtIndex: [[viewer imageView] curImage]] addObject:theNewROI];	
+		 [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
+		 [theNewROI dealloc];
+		 */
 		
 	}
 	return isBoundingBox;
@@ -177,6 +210,27 @@ PURPOSE.
 		{
 			BOOL res=[self checkBoundingBoxROIPresentOnStack];
 		}
+		if (BoundingROIStart)
+		{
+			NSRect rect=[BoundingROIStart rect];
+			NSSize size=rect.size;
+			int minDim=min(size.width,size.height);
+			[SliderThickness setMinValue:1];
+			[SliderThickness setMaxValue:ceil(minDim/3)];
+			[SliderThickness setIntValue:ceil(minDim/10)];
+			NSLog(@"slider init with min=%d, max=%d currentPos=%d",1,(int)ceil(minDim/3),(int)ceil(minDim/10));
+		}
+	} else
+	{
+		[self setThicknessParameters];
+		if (BoundingROIStart)
+		{
+			NSLog(@"set BoundingROIStart to 0L");
+			BoundingROIStart=0L;
+		}
+		if (BoundingROIEnd)
+			BoundingROIEnd=0L;
+		
 	}
 	
 }
@@ -188,8 +242,7 @@ PURPOSE.
 	}
 }
 
-
-- (IBAction)CreateDeleteMarkers:(id)sender
+-(void)createFrameMarker
 {
 	// retrieve image dim
 	int nbImages=[[viewer pixList] count];
@@ -299,12 +352,12 @@ PURPOSE.
 					int heightBounding=(int)size.height;
 					int startBoundingX=(int)origin.x;
 					int startBoundingY=(int)origin.y;
-					[self createMarkerROIWithWidth:widthBounding andHeight:heightBounding atPosX:startBoundingX andY:startBoundingY];					
+					[self createMarkerROIAtSlice:[[viewer imageView] curImage] Width:widthBounding Height:heightBounding PosX:startBoundingX PosY:startBoundingY];					
 				}
 				else
 				{
 					// no bounding box so create a maker image with image size
-					[self createMarkerROIWithWidth:width andHeight:height atPosX:0 andY:0];
+					[self createMarkerROIAtSlice:[[viewer imageView] curImage] Width:width Height:height PosX:0 PosY:0];
 				}
 			}
 			else //3D
@@ -313,8 +366,26 @@ PURPOSE.
 				{
 					
 					// create a 3D marker image with bounding box size
+					NSRect rect=[BoundingROIStart rect];
+					NSPoint origin=rect.origin;
+					NSSize size=rect.size;
+					int widthBounding=(int)size.width;
+					int heightBounding=(int)size.height;
+					int startBoundingX=(int)origin.x;
+					int startBoundingY=(int)origin.y;
+					
+					for(i=begin;i<=end;i++)
+					{
+						[self createMarkerROIAtSlice:i Width:widthBounding Height:heightBounding PosX:startBoundingX PosY:startBoundingY];					
+						
+					}
 				} else {
 					// create a 3D marker image with stack size
+					for(i=0;i<nbImages;i++)
+					{
+						
+						[self createMarkerROIAtSlice:i Width:width Height:height PosX:0 PosY:0];
+					}
 				}
 				
 			}
@@ -325,6 +396,11 @@ PURPOSE.
 		[self cleanStackFromMarkerFrame];
 		
 	}
+	
+}
+- (IBAction)CreateDeleteMarkers:(id)sender
+{
+	[self createFrameMarker];
 }
 -(void) cleanStackFromMarkerFrame
 {
@@ -346,7 +422,7 @@ PURPOSE.
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateView" object:0L userInfo: 0L];
 }
 
--(void)createMarkerROIWithWidth:(int)w andHeight:(int)h atPosX:(int)x andY:(int)y
+-(void)createMarkerROIAtSlice:(int)slice Width:(int)w Height:(int)h PosX:(int)x PosY:(int)y
 {
 	int i,j;
 	DCMPix	*curPix = [[viewer pixList] objectAtIndex: [[viewer imageView] curImage]];	
@@ -368,7 +444,8 @@ PURPOSE.
 		for (j=0;j<thickness;j++)
 		{
 			buffer[i+j*w]=0xFF;
-			buffer[i+h*(w-1)-j*w]=0xFF;
+			buffer[w*h-j*w-1-i]=0xFF;
+			
 		}
 	}
 	ROI* theNewROI = [[[ROI alloc] initWithTexture:buffer  textWidth:w textHeight:h textName:@"FrameMarker"
@@ -376,12 +453,14 @@ PURPOSE.
 										  spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
 									   imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
 	free(buffer);
-	[[[viewer roiList] objectAtIndex: [[viewer imageView] curImage]] addObject:theNewROI];	
+	[[[viewer roiList] objectAtIndex: slice] addObject:theNewROI];	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
 }
 - (IBAction)frameThicknessChange:(id)sender
 {
-	
+	//first clean the stack
+	[self cleanStackFromMarkerFrame];
+	[self createFrameMarker];
 }
 
 -(void) dealloc
