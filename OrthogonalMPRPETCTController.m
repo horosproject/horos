@@ -323,9 +323,9 @@
 
 -(void) setBlendingFactor:(float) f
 {
-	[originalView superSetBlendingFactor:f];
-	[xReslicedView superSetBlendingFactor:f];
-	[yReslicedView superSetBlendingFactor:f];
+	[(OrthogonalMPRPETCTView*) originalView superSetBlendingFactor:f];
+	[(OrthogonalMPRPETCTView*) xReslicedView superSetBlendingFactor:f];
+	[(OrthogonalMPRPETCTView*) yReslicedView superSetBlendingFactor:f];
 	[viewer moveBlendingFactorSlider:f];
 }
 

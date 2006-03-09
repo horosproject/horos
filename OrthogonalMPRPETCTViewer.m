@@ -65,8 +65,6 @@ NSString * documentsDirectory();
 {
 	self = [super initWithWindowNibName:@"PETCT"];
 	[[self window] setDelegate:self];
-	[[self window] setShowsResizeIndicator:YES];
-	[[self window] performZoom:self];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
@@ -165,7 +163,10 @@ NSString * documentsDirectory();
                name: @"UpdateWLWWMenu"
              object: nil];
 	[nc postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: 0L];
-	
+
+	[[self window] setShowsResizeIndicator:YES];
+	[[self window] performZoom:self];
+
 	return self;
 }
 

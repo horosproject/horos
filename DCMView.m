@@ -981,8 +981,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void) dealloc
 {	
-	//NSLog(@"DCMView released");
-	
+	NSLog(@"DCMView released");
 	
 	[shortDateString release];
 	[localeDictionnary release];
@@ -4149,7 +4148,6 @@ static long scrollMode;
 {
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
-
 
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
