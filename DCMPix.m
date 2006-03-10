@@ -3453,6 +3453,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 		if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];
 		
+		if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
+		
 		if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
 		if (!cineRate)	cineRate = 1000/ [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
 		
@@ -4042,6 +4044,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}
 		}
 	}
+	
+	[PapyrusLock unlock];
 	
 	if (fileNb >= 0)
 	{
@@ -5405,9 +5409,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				err = Papy3GroupFree (&theGroupP, TRUE);
 			} // endif ...group 7FE0 read 
 		}
-
+		
+		[PapyrusLock lock];
+		
 		// close and free the file and the associated allocated memory 
 		Papy3FileClose (fileNb, TRUE);
+		
+		[PapyrusLock unlock];
 		
 		//***********
 		if( isRGB)
@@ -5524,11 +5532,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		if( clutGreen) free( clutGreen);
 		if( clutBlue) free( clutBlue);
 		
-		[PapyrusLock unlock];
+		
 		return YES;
 	}
 	
-	[PapyrusLock unlock];
 	return NO;
 }
 

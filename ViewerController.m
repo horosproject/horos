@@ -1764,7 +1764,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 		
 		[sched performScheduleForWorkUnits:unitsSet];
 		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 		
 		[sched release];
 	}
@@ -2600,7 +2600,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 }
 
 
-static volatile BOOL someoneIsLoading = NO;
+//static volatile BOOL someoneIsLoading = NO;
 
 -(void) setLoadingPause:(BOOL) lp
 {
@@ -2619,11 +2619,11 @@ static volatile BOOL someoneIsLoading = NO;
 	
 	loadingPercentage = 0;
 	
-	while(someoneIsLoading)
-	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
-	}
-    someoneIsLoading = YES;
+//	while(someoneIsLoading)
+//	{
+//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	}
+//    someoneIsLoading = YES;
 	
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
@@ -2653,7 +2653,7 @@ static volatile BOOL someoneIsLoading = NO;
 			
 			while(loadingPause)
 			{
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 			}
 		}
 	}
@@ -2672,7 +2672,7 @@ static volatile BOOL someoneIsLoading = NO;
 	loadingPercentage = 1;
 	
 	ThreadLoadImage = NO;
-	someoneIsLoading = NO;
+//	someoneIsLoading = NO;
 	NSLog(@"LOADING: All images loaded");
 	
 	if( stopThreadLoadImage == NO)
@@ -9199,7 +9199,7 @@ NSMutableArray		*array;
 	
 	[sched performScheduleForWorkUnits:unitsSet];
 	
-	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	[sched release];
 	

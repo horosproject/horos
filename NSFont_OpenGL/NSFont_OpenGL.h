@@ -49,7 +49,7 @@
 @interface NSFont (withay_OpenGL)
 
 + (void) setOpenGLLogging:(BOOL)logEnabled;
-+ (void) resetFont;
++ (void) resetFont: (BOOL) preview;
 + (void) initFontImage:(unichar)first count:(int)count font:(NSFont*) font previewFont:(BOOL) preview;
 - (BOOL) makeGLDisplayListFirst:(unichar)first count:(int)count base:(GLint)base :(long*) charSizeArrayIn :(BOOL) preview;
 + (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap;

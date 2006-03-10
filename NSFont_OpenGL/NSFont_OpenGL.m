@@ -52,28 +52,33 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
    openGLLoggingEnabled = logEnabled;
 }
 
-+ (void) resetFont
++ (void) resetFont: (BOOL) preview
 {
 	long i;
 	
-	if( imageArray)
+	if( preview == NO)
 	{
-		for( i = 0; i < 256; i++)
+		if( imageArray)
 		{
-			free( charPtrArray[ i]);
+			for( i = 0; i < 256; i++)
+			{
+				free( charPtrArray[ i]);
+			}
+			[imageArray release];
+			imageArray = 0L;
 		}
-		[imageArray release];
-		imageArray = 0L;
 	}
-	
-	if( imageArrayPreview)
+	else
 	{
-		for( i = 0; i < 256; i++)
+		if( imageArrayPreview)
 		{
-			free( charPtrArrayPreview[ i]);
+			for( i = 0; i < 256; i++)
+			{
+				free( charPtrArrayPreview[ i]);
+			}
+			[imageArrayPreview release];
+			imageArrayPreview = 0L;
 		}
-		[imageArrayPreview release];
-		imageArrayPreview = 0L;
 	}
 }
 
@@ -176,7 +181,7 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 	NSImage *theImage;
 	BOOL retval;
 	NSFont  *fontGL;
-
+	
 	NSMutableArray  *curArray;
 	long *curSizeArray;
 	

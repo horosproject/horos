@@ -6417,7 +6417,7 @@ BOOL	lowRes = NO;
 	
 	[[NSUserDefaults standardUserDefaults] setObject: [newFont fontName] forKey: @"FONTNAME"];
 	[[NSUserDefaults standardUserDefaults] setFloat: [newFont pointSize] forKey: @"FONTSIZE"];
-	[NSFont resetFont];
+	[NSFont resetFont: NO];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"changeGLFontNotification" object: sender];
 }
