@@ -2491,7 +2491,8 @@ static BOOL isHcugeCh = NO, testDone = NO;
 		{
 			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8];
 			if([domainName isEqualToString: @"hcuge.ch"]
-				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"]) // Joris' IP
+				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"]  // Joris' IP
+				&& ![[names objectAtIndex: i] isEqualToString: @"drdd-mc19.hcuge.ch"]) // ANR' IP
 			{
 				isHcugeCh = YES;
 			}
