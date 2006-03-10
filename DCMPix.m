@@ -1617,12 +1617,15 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
 		long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
 		unsigned char	*buf = [roi textureBuffer];
+		float			*fImageTemp;
 		
 		for( y = 0; y < textHeight; y++)
 		{
-			for( x = 0; x < textWidth; x++)
+			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
+			
+			for( x = 0; x < textWidth; x++, fImageTemp++)
 			{
-				if( buf [ x + y * textWidth] != 0)
+				if( *buf++ != 0)
 				{
 					long	xx = (x + textureUpLeftCornerX);
 					long	yy = (y + textureUpLeftCornerY);
@@ -1642,8 +1645,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						}
 						else
 						{
-							float	*curPix = &fImage[ (yy * width) + xx];
-							float	val = *curPix;
+							float	val = *fImageTemp;
 							
 							count++;
 							itotal += val;
@@ -1664,9 +1666,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			for( y = 0; y < textHeight; y++)
 			{
-				for( x = 0; x < textWidth; x++)
+				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
+				
+				for( x = 0; x < textWidth; x++, fImageTemp++)
 				{
-					if( buf [ x + y * textWidth] != 0)
+					if( *buf++ != 0)
 					{
 						long	xx = (x + textureUpLeftCornerX);
 						long	yy = (y + textureUpLeftCornerY);
@@ -1684,8 +1688,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 							}
 							else
 							{
-								float	*curPix = &fImage[ (yy * width) + xx];
-								float	val = *curPix;
+								float	val = *fImageTemp;
 								
 								float temp = imean - val;
 								temp *= temp;

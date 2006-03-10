@@ -4170,7 +4170,7 @@ long                           i, subGroupCount = 1, position = 0;
 		pos -= 17;
 	   
         pos /= (size.width + space.width*2);
-		if( pos == 0) pos = -1;
+		if( pos <= 0) pos = 1;
 		
         pos *= (size.width + space.width*2);
 		pos += 17;
@@ -4248,11 +4248,13 @@ long                           i, subGroupCount = 1, position = 0;
 
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview
 {
-	return YES;
+	if ([sender isEqual:splitViewVert]) return NO;
+	else return YES;
 }
 
 - (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMax ofSubviewAt:(int)offset
 {
+	
 	if ([sender isEqual:sourcesSplitView])
 	{
 		// minimum size of the top view (db, albums)
@@ -4267,7 +4269,11 @@ long                           i, subGroupCount = 1, position = 0;
 
 - (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMin ofSubviewAt:(int)offset
 {
-	if ([sender isEqual:sourcesSplitView])
+	if ([sender isEqual:splitViewVert])
+	{
+		return [sender bounds].size.width-200;
+	}
+	else if ([sender isEqual:sourcesSplitView])
 	{
 		// maximum size of the top view (db, album) = opposite of the minimum size of the bottom view (bonjour)
 		return [sender bounds].size.height-200;
