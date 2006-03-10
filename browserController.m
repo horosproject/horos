@@ -6196,8 +6196,8 @@ static BOOL needToRezoom;
 	
 	[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
 
-	[splitViewVert restoreDefault:@"SPLITVERT"];
-	[splitViewHorz restoreDefault:@"SPLITHORZ"];
+	[splitViewVert restoreDefault:@"SPLITVERT2"];
+	[splitViewHorz restoreDefault:@"SPLITHORZ2"];
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
 	
 	//remove LogView. Code no longer needed. LP
@@ -6242,8 +6242,8 @@ static BOOL needToRezoom;
 	[self syncReportsIfNecessary: previousBonjourIndex];
 	
 	[sourcesSplitView saveDefault:@"SPLITSOURCE"];
-    [splitViewVert saveDefault:@"SPLITVERT"];
-    [splitViewHorz saveDefault:@"SPLITHORZ"];
+    [splitViewVert saveDefault:@"SPLITVERT2"];
+    [splitViewHorz saveDefault:@"SPLITHORZ2"];
 	
 	if( [[databaseOutline sortDescriptors] count] >= 1)
 	{
