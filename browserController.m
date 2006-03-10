@@ -4163,17 +4163,18 @@ long                           i, subGroupCount = 1, position = 0;
         NSSize size = [oMatrix cellSize];
         NSSize space = [oMatrix intercellSpacing];
         NSRect frame = [[oMatrix enclosingScrollView] frame];
+		
         long pos = proposedPosition;
-		pos -= size.width/2;
-		 
-        pos -= frame.origin.x + frame.size.width - 26;
-       
+		
+		pos += size.width/2;
+		pos -= 17;
+	   
         pos /= (size.width + space.width*2);
 		if( pos == 0) pos = -1;
 		
         pos *= (size.width + space.width*2);
-        pos += frame.origin.x + frame.size.width - 26;
-        
+		pos += 17;
+		
         return (float) pos;
     }
 
@@ -4183,13 +4184,13 @@ long                           i, subGroupCount = 1, position = 0;
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
 
-	if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])
+	if( [note object] == [[splitViewVert subviews] objectAtIndex: 0])	// 1
 	{
 		NSSize size = [oMatrix cellSize];
         NSSize space = [oMatrix intercellSpacing];
-        NSRect frame = [[[splitViewVert subviews] objectAtIndex: 1] frame];
+        NSRect frame = [[[splitViewVert subviews] objectAtIndex: 0] frame];
 		
-		long preWidth = frame.size.width;
+		long preWidth = frame.size.width+1;
 		long width = frame.size.width;
 		long cellsize = (size.width + space.width*2);
 		
@@ -4202,7 +4203,7 @@ long                           i, subGroupCount = 1, position = 0;
 		if( width != preWidth)
 		{
 			frame.size.width = width;
-			[[[splitViewVert subviews] objectAtIndex: 1] setFrame: frame];
+			[[[splitViewVert subviews] objectAtIndex: 0] setFrame: frame];
 		}
 	}
 
@@ -4225,13 +4226,15 @@ long                           i, subGroupCount = 1, position = 0;
         COLUMN = newColumn;
         if( COLUMN == 0) { COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}
         
-		row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
+		row = ceil((float)[matrixViewArray count]/(float) newColumn);
+//		row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
 	//	minrow = 1 + (frame.size.height / (size.height + space.height*2));
 	//	if( row < minrow) row = minrow;
 		
         [oMatrix renewRows:row columns:newColumn];
         [oMatrix sizeToCells];
         
+		
         for( i = [previewPix count];i<row*COLUMN;i++)
         {
             NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
@@ -4250,7 +4253,7 @@ long                           i, subGroupCount = 1, position = 0;
 
 - (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMax ofSubviewAt:(int)offset
 {
-	if ([sender isEqual:sourcesSplitView] || [sender isEqual:logViewSplit])
+	if ([sender isEqual:sourcesSplitView])
 	{
 		// minimum size of the top view (db, albums)
 		return 200;
@@ -4264,7 +4267,7 @@ long                           i, subGroupCount = 1, position = 0;
 
 - (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMin ofSubviewAt:(int)offset
 {
-	if ([sender isEqual:sourcesSplitView] || [sender isEqual:logViewSplit])
+	if ([sender isEqual:sourcesSplitView])
 	{
 		// maximum size of the top view (db, album) = opposite of the minimum size of the bottom view (bonjour)
 		return [sender bounds].size.height-200;
@@ -6196,6 +6199,7 @@ static BOOL needToRezoom;
 	[splitViewVert restoreDefault:@"SPLITVERT"];
 	[splitViewHorz restoreDefault:@"SPLITHORZ"];
 	[sourcesSplitView restoreDefault:@"SPLITSOURCE"];
+	
 	//remove LogView. Code no longer needed. LP
 	//NSRect	frame = [[[logViewSplit subviews] objectAtIndex: 1] frame];
 	//frame.size.height = 0;

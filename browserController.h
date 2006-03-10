@@ -81,7 +81,6 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	
     long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert;
-	IBOutlet NSSplitView	*logViewSplit;
     
 	BOOL					setDCMDone, mountedVolume;
 	
