@@ -9561,6 +9561,7 @@ static BOOL needToRezoom;
 		if (![window isEqual:[self window]])
 			[window close];
 	}
+	[[self window] makeKeyAndOrderFront:sender];
 }
 
 

@@ -102,6 +102,7 @@ END_EXTERN_C
 #import "DICOMToNSString.h"
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMTransferSyntax.h>
+#import "SendController.h"
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
@@ -558,14 +559,15 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname ){
 	OFBool status = YES;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	//hopefully dcmtk willsupport jpeg2000 compressio and compression in the future
-	if (filexfer.getXferID() == EXS_JPEG2000) {
+	if (opt_networkTransferSyntax == EXS_JPEG2000) {
+		NSLog(@"Compress JPEG 2000 Lossy");
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax] quality:opt_Quality AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
-	else if  (filexfer.getXferID() == EXS_JPEG2000LosslessOnly) {
+	else if  (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly) {
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
@@ -842,7 +844,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			hostname:(NSString *)hostname 
 			port:(int)port 
 			filesToSend:(NSArray *)filesToSend
-			transferSyntax:(NSString *)transferSyntax
+			transferSyntax:(int)transferSyntax
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters{
 	
@@ -855,7 +857,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_hostname = [hostname retain];
 		_extraParameters = [extraParameters retain];
 		_shouldAbort = NO;
-		_transferSyntax = [transferSyntax retain];
+		_transferSyntax = transferSyntax;
 		_compression = compression;
 		_filesToSend = [filesToSend retain];
 		_numberOfFiles = [filesToSend count];
@@ -898,7 +900,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[_calledAET release];
 	[_hostname release];
 	[_extraParameters release];
-	[_transferSyntax release];
+	//[_transferSyntax release];
 	[_filesToSend release];
 	[_patientName release];
 	[_studyDescription release];
@@ -965,18 +967,67 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	  
 	*********************************/
 	
-	NSLog(@"get TS: %@", _transferSyntax);
-	if ([_transferSyntax isEqualToString:@"Explicit Little Endian"])		opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossless" ])		opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
-	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossy" ])			opt_networkTransferSyntax = EXS_JPEG2000;
-	else if ([_transferSyntax isEqualToString:@"JPEG Lossless"])			opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-	else if ([_transferSyntax isEqualToString:@"JPEG Lossy"])				opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;	
-	else if ([_transferSyntax isEqualToString:@"Implicit"])					opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-	else if ([_transferSyntax isEqualToString:@"RLE"])						opt_networkTransferSyntax = EXS_RLELossless;
-	else if ([_transferSyntax isEqualToString:@"Big Endian"])				opt_networkTransferSyntax = EXS_BigEndianExplicit;
+	//NSLog(@"get TS: %@", _transferSyntax);
+
+	switch (_transferSyntax) {
+		case SendExplicitLittleEndian:
+			opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+			break;
+		case SendJPEG2000Lossless:
+			opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+			break;
+		case SendJPEG2000Lossy10: 
+			opt_networkTransferSyntax = EXS_JPEG2000;
+			opt_Quality = 1;
+			break;
+		case SendJPEG2000Lossy20:
+			opt_networkTransferSyntax = EXS_JPEG2000;
+			opt_Quality = 2;
+			break;
+		case SendJPEG2000Lossy50:
+			opt_networkTransferSyntax = EXS_JPEG2000;
+			opt_Quality = 3;
+			break;
+		case SendJPEGLossless: 
+			opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+		case SendJPEGLossy9:
+			opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+			opt_Quality = 90;
+			break;
+		case SendJPEGLossy8:
+			opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+			opt_Quality = 80;
+			break;
+		case SendJPEGLossy7:
+			opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+			opt_Quality = 70;
+			break;
+		case SendImplicitLittleEndian:
+			opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+			break;
+		case SendRLE:
+			opt_networkTransferSyntax = EXS_RLELossless;
+			break;
+		case SendExplicitBigEndian:
+			opt_networkTransferSyntax = EXS_BigEndianExplicit;
+			break;
+		case SendBZip:
+			opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+			break;
+	}
+	/*
+	if ([_transferSyntax isEqualToString:@"Explicit Little Endian"])		
+	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossless" ])		
+	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossy" ])			
+	else if ([_transferSyntax isEqualToString:@"JPEG Lossless"])			
+	else if ([_transferSyntax isEqualToString:@"JPEG Lossy"])					
+	else if ([_transferSyntax isEqualToString:@"Implicit"])					
+	else if ([_transferSyntax isEqualToString:@"RLE"])						
+	else if ([_transferSyntax isEqualToString:@"Big Endian"])				
+	*/
 
 #ifdef WITH_ZLIB
-	if ([_transferSyntax isEqualToString:@"Deflated"])						opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+	//if ([_transferSyntax isEqualToString:@"Deflated"])						opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
 
 	//default should be False

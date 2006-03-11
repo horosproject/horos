@@ -473,7 +473,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	}		
 	
 
-	
+	/*
 	switch(_offisTS)
 	{
 		case SendImplicitLittleEndian:		transferSyntax = @"Implicit";					break;
@@ -483,13 +483,13 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		case SendRLE:						transferSyntax = @"RLE";						break;
 		case SendJPEG2000Lossless:			transferSyntax = @"JPEG 2000 Lossless";			break;
 	}
-	
+	*/
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 			calledAET:calledAET 
 			hostname:hostname 
 			port:[destPort intValue] 
 			filesToSend:(NSArray *)filesToSend
-			transferSyntax:(NSString *)transferSyntax
+			transferSyntax:_offisTS
 			compression: 1.0
 			extraParameters:nil];
 	sendSCU = storeSCU;

@@ -39,6 +39,7 @@ enum TransferSyntaxCodes
 	SendImplicitLittleEndian,
 	SendRLE,
 	SendExplicitBigEndian,
+	SendBZip,
 };
 
 
