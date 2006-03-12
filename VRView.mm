@@ -3113,9 +3113,9 @@ public:
 	{
 		blendingFactor = a;
 		
-		if( a <= 0)
+//		if( a <= 0)
 		{
-			a += 256;
+//			a += 256;
 			
 			for(i=0; i < 256; i++) 
 			{
@@ -3128,29 +3128,29 @@ public:
 				alpha[ i] = val / 255.;
 			}
 		}
-		else
-		{
-			if( a == 256)
-			{
-				for(i=0; i < 256; i++)
-				{
-					alpha[ i] = 1.0;
-				}
-			}
-			else
-			{
-				for(i=0; i < 256; i++) 
-				{
-					ii = i;
-					val = (256. * ii)/(256 - a);
-					
-					if( val > 255) val = 255;
-					if( val < 0) val = 0;
-					
-					alpha[ i] = val / 255.0;
-				}
-			}
-		}
+//		else
+//		{
+//			if( a == 256)
+//			{
+//				for(i=0; i < 256; i++)
+//				{
+//					alpha[ i] = 1.0;
+//				}
+//			}
+//			else
+//			{
+//				for(i=0; i < 256; i++) 
+//				{
+//					ii = i;
+//					val = (256. * ii)/(256 - a);
+//					
+//					if( val > 255) val = 255;
+//					if( val < 0) val = 0;
+//					
+//					alpha[ i] = val / 255.0;
+//				}
+//			}
+//		}
 		
 		blendingOpacityTransferFunction->BuildFunctionFromTable( OFFSET16 + blendingWl-blendingWw/2, OFFSET16 + blendingWl+blendingWw/2, 255, (double*) &alpha);
 		
