@@ -1307,7 +1307,7 @@ public:
 		[self setCursorForView: currentTool];
 		
 		blendingController = 0L;
-		blendingFactor = 32.;
+		blendingFactor = 128.;
 		blendingVolume = 0L;
 		exportDCM = 0L;
 		currentOpacityArray = 0L;
@@ -3105,14 +3105,23 @@ public:
 
 -(void) setBlendingFactor:(float) a
 {
-	long	i;
+	long	i, blendMode;
 	float   val, ii;
 	
 	
 	if( blendingController)
 	{
+		if( volumeMapper) blendMode = volumeMapper->GetBlendMode();
+		if( textureMapper) blendMode = textureMapper->GetBlendMode();
+		
 		blendingFactor = a;
 		
+		if(vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND)
+		{
+		
+		}
+		else
+		{
 //		if( a <= 0)
 		{
 //			a += 256;
@@ -3151,7 +3160,7 @@ public:
 //				}
 //			}
 //		}
-		
+		}
 		blendingOpacityTransferFunction->BuildFunctionFromTable( OFFSET16 + blendingWl-blendingWw/2, OFFSET16 + blendingWl+blendingWw/2, 255, (double*) &alpha);
 		
 		[self setNeedsDisplay: YES];
