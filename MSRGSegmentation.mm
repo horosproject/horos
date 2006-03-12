@@ -61,7 +61,69 @@ msrgOneCrit->Update();
     }
     return self;
 }
-
+-(BOOL) build2DMarkerBuffer
+{
+int i,j,k,l;
+	ROI* roi;
+	unsigned char* texture;
+	NSMutableDictionary *roiGlossary=[NSMutableDictionary dictionary];
+	int textureHeight, textureWidth;
+	int offset;
+	int val,cpt=0;
+	NSMutableArray* roiListForImage;
+	sizeMarker[0] = width;
+	sizeMarker[1] = height;
+	
+	// number / [[roi name] hash]
+	markerBuffer=(unsigned char*)malloc(height*width*sizeof(unsigned char));
+	if (markerBuffer)
+	{
+		// clear markerBuffer
+		for(i=0;i<width*height;i++)
+			markerBuffer[(long)i]=0;
+			i=0;
+			roiListForImage=[[markerViewer roiList] objectAtIndex: [[markerViewer imageView] curImage]];
+			for (j=0;j<[roiListForImage count];j++)
+			{
+				roi=[roiListForImage objectAtIndex:j];
+				if ([roi type]==tPlain)
+				{
+					texture=[roi textureBuffer];
+					textureWidth=[roi textureWidth];
+					textureHeight=[roi textureHeight];
+					offset=[roi textureUpLeftCornerX]+[roi textureUpLeftCornerY]*width;
+					//NSLog(@"textureWidth=%d, textureHeight=%d, textureUpLeftCornerX=%d, textureUpLeftCornerY=%d,textureDownRightCornerX=%d, textureDownRightCornerY=%d",[roi textureWidth],[roi textureHeight],[roi textureUpLeftCornerX],[roi textureUpLeftCornerY],[roi textureDownRightCornerX],[roi textureDownRightCornerY]);
+					for (k=0;k<textureHeight; k++)
+					{
+						for (l=0;l<textureWidth; l++)
+						{
+							//NSNumber* p=[NSNumber numberWithUnsignedChar:texture[(long)(l+k*textureWidth)]];
+							if (texture[(long)(l+k*textureWidth)]!=0)
+							{
+								NSString *key=[NSString stringWithFormat:@"%d",[[roi name] hash]];
+								if (![roiGlossary objectForKey:key])
+								{
+									cpt++;
+									[roiGlossary setObject:[[NSNumber numberWithInt:cpt] stringValue] forKey:key];
+								}
+								val=[[roiGlossary objectForKey:key] intValue];
+								markerBuffer[(long)(offset+l+k*width)]=val;
+							}/* no else because if rois are overlaped the else condition will erase them !
+							else
+								val=0;*/
+							
+						}
+					}
+				}
+			}
+		
+		return YES;
+	}
+	
+	NSLog(@"Memory problem in: MSRGSegmentation/buildMarkerWithStackHeigt !");
+	NSRunAlertPanel( NSLocalizedString( @"Memory Error", 0L), NSLocalizedString( @"Sorry, but there is not enough memory", 0), nil, nil, nil);
+	return NO;
+}
 -(BOOL) buildMarkerBufferWithStackHeigth
 {
 	int i,j,k,l;
@@ -85,7 +147,7 @@ msrgOneCrit->Update();
 			markerBuffer[(long)i]=0;
 		for(i=0;i<depth;i++)
 		{
-			roiListForImage=[[markerViewer roiList] objectAtIndex: i];
+			roiListForImage=[[markerViewer roiList] objectAtIndex:i];
 			for (j=0;j<[roiListForImage count];j++)
 			{
 				roi=[roiListForImage objectAtIndex:j];
@@ -316,7 +378,7 @@ msrgOneCrit->Update();
 	size[0]=width;size[1]=height;
 	
 	// II -  find tPlain ROI => fill the markerBuffer with the texture 
-	if ([self buildMarkerBufferWithStackHeigth])
+	if ([self build2DMarkerBuffer])
 	{
 		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
 		// create the criteria image
@@ -365,6 +427,7 @@ msrgOneCrit->Update();
 		msrg->Update();
 		
 		// create ROIs from msrg output
+		//TODO change this to addRoiToCurrentSlice !!
 		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
@@ -392,7 +455,7 @@ msrgOneCrit->Update();
 	size[0]=width;size[1]=height;
 	
 	// II -  find tPlain ROI => fill the markerBuffer with the texture 
-	if ([self buildMarkerBufferWithStackHeigth])
+	if ([self build2DMarkerBuffer])
 	{
 		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
 		// create the criteria image
@@ -473,7 +536,7 @@ msrgOneCrit->Update();
 	size[0]=width;size[1]=height;
 	
 	// II -  find tPlain ROI => fill the markerBuffer with the texture 
-	if ([self buildMarkerBufferWithStackHeigth])
+	if ([self build2DMarkerBuffer])
 	{
 		MarkerImagePointer m_Marker = MSRGImageHelper < MarkerImageType >::BuildImageWithArray (markerBuffer, sizeMarker);
 		// create the criteria image
@@ -486,16 +549,19 @@ msrgOneCrit->Update();
 		long i,j;
 		CriteriaIndexType index;
 		CriteriaPixelType v;
-		float* imagePtr=[markerViewer volumePtr];
+		//float* imagePtr=[markerViewer volumePtr];
 		
+		 DCMPix	*curPix = [[markerViewer pixList] objectAtIndex: [[markerViewer imageView] curImage]];
+	 unsigned char*  srcPtr = (unsigned char*) [curPix fImage];
+
 		for(j=0;j<height;j++)
 		{
 			for (i=0;i<width;i++)
 			{
 				index[0]=i;index[1]=j;
-				v[0]=imagePtr[(j*width+i)*4+0]; // RED
-				v[1]=imagePtr[(j*width+i)*4+1]; // GREEN 
-				v[2]=imagePtr[(j*width+i)*4+2]; // BLUE
+				v[0]=srcPtr[(j*width+i)*4+0]; // RED
+				v[1]=srcPtr[(j*width+i)*4+1]; // GREEN 
+				v[2]=srcPtr[(j*width+i)*4+2]; // BLUE
 				criteriaImage->SetPixel(index,v);
 			}
 		}

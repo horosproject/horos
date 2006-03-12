@@ -41,4 +41,5 @@ PURPOSE.
 - (id) initWithViewerList:(NSMutableArray*)list currentViewer:(ViewerController*)srcViewer boundingBoxOn:(BOOL)boundOn GrowIn3D:(BOOL)growing3D boundingRect:(NSRect)rectBounding boundingBeginZ:(int)bZstart boundingEndZ:(int)bEndZ;
 - (id) start3DMSRGSegmentationWithOneCriterion;
 - (id) startMSRGSegmentation;
+- (BOOL) build2DMarkerBuffer;
 @end
