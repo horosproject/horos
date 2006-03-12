@@ -392,7 +392,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 		[view setBlendingPixSource: blendingController];
 		
 		[blendingSlider setEnabled:YES];
-		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
+		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) 100.*([blendingSlider floatValue]) / 64.]];
 		
 		[self updateBlendingImage];
 	}

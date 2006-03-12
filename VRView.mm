@@ -1307,7 +1307,7 @@ public:
 		[self setCursorForView: currentTool];
 		
 		blendingController = 0L;
-		blendingFactor = 0.5;
+		blendingFactor = 32.;
 		blendingVolume = 0L;
 		exportDCM = 0L;
 		currentOpacityArray = 0L;
