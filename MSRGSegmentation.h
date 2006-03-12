@@ -31,9 +31,14 @@ PURPOSE.
 	int sizeMarker[3];
 	int numberOfCriteria;
 	int width,height,depth;
+	// bounding parameters
+	BOOL isBounding;
+	NSRect boundingRegion;
+	BOOL isGrow3D;
+	int boundingZstart;
+	int boundingZEnd;
 }
-- (id) initWithViewerList:(NSMutableArray*)list currentViewer:(ViewerController*)srcViewer;
+- (id) initWithViewerList:(NSMutableArray*)list currentViewer:(ViewerController*)srcViewer boundingBoxOn:(BOOL)boundOn GrowIn3D:(BOOL)growing3D boundingRect:(NSRect)rectBounding boundingBeginZ:(int)bZstart boundingEndZ:(int)bEndZ;
 - (id) start3DMSRGSegmentationWithOneCriterion;
-- (id) start2DMSRGSegmentation;
 - (id) startMSRGSegmentation;
 @end

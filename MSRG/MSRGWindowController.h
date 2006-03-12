@@ -17,6 +17,10 @@ PURPOSE.
 #import <Cocoa/Cocoa.h>
 #import "DCMView.h";
 #import "DCMPix.h"
+#import "ROI.h"
+#import "ViewerController.h"
+#import "MSRGSegmentation.h"
+
 #include <math.h>
 @class MSRGSegmentation;
 @class ViewerController;
@@ -37,6 +41,7 @@ PURPOSE.
 	ROI* BoundingROIStart;
 	ROI* BoundingROIEnd;
 	int begin,end;//for 3D ROI, FrameMarker ROI start at slice:begin to end 
+	NSMutableArray* viewersList;
 	
 }
 - (IBAction)startMSRG:(id)sender;
@@ -47,6 +52,7 @@ PURPOSE.
 -(void)createFrameMarker;
 - (id) initWithMarkerViewer:(ViewerController*) v andViewersList:(NSMutableArray*)list ;
 -(BOOL)checkBoundingBoxROIPresentOnCurrentSlice;
+-(BOOL)checkBoundingBoxROIPresentOnStack;
 -(void)createMarkerROIAtSlice:(int)slice Width:(int)w Height:(int)h PosX:(int)x PosY:(int)y;
 -(void) cleanStackFromMarkerFrame;
 @end

@@ -21,7 +21,9 @@ PURPOSE.
 	NSLog(@"int MSRGWindowController !");
 	self = [super initWithWindowNibName:@"MSRGPanel"];
 	viewer = v;
-	BoundingROIStart=0L;
+	viewersList=[list retain];
+	NSMutableArray*
+		BoundingROIStart=0L;
 	BoundingROIEnd=0L;
 	
 	NSNotificationCenter *nc;
@@ -62,10 +64,47 @@ PURPOSE.
 }
 - (IBAction)startMSRG:(id)sender
 {
-	/*
-	 msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:self];
-	 [msrgSeg startMSRGSegmentation];
-	 */	
+	// What kind of growing algorithm ? 2D/3D
+	
+	if ([[RadioMatrix selectedCell] tag]==0)
+	{
+		//2D
+		// Bounding Box ?
+		if ([ActivateBoundingBoxButton state]==NSOnState){
+			// Bounding Box
+				NSRect rect=[BoundingROIStart rect];
+				msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:YES GrowIn3D:NO boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
+		} else
+		{
+			// No Bounding Box
+			NSRect rect; // not needeed
+			msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:NO GrowIn3D:NO boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
+		}
+		
+	}
+	else
+	{
+		//3D
+		
+		// Bounding Box ?
+		if ([ActivateBoundingBoxButton state]==NSOnState){
+			// Bounding Box
+			NSRect rect=[BoundingROIStart rect];
+			msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:NO GrowIn3D:YES boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
+
+			
+		} else
+		{
+			// No Bounding Box
+			NSRect rect; // not needeed
+			msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:NO GrowIn3D:YES boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
+		}
+	}
+	
+	
+	
+	[msrgSeg startMSRGSegmentation];
+	
 }
 
 // if bounding box is activated check if there is always a rectangle ROI with name Bounding box
@@ -468,6 +507,7 @@ PURPOSE.
 	NSLog(@"MSRGWindowController dealloc");
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[viewersList release];
 	[msrgSeg release];
 	[super dealloc];
 }

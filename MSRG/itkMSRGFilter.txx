@@ -37,7 +37,6 @@ PURPOSE.
 #include "MSRGImageHelper.h"
 #include "MorphoHelper.h"
 #include "itkMSRGFilter.h"
-//#include "itkImageFileWriter.h"
 
 using namespace std;
 namespace itk
@@ -61,22 +60,28 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateInputReq
     if (this->GetInput ())
 	{
 		InputImagePointer image = const_cast < InputImageType * >(this->GetInput ());
-		image->SetRequestedRegionToLargestPossibleRegion ();
+		//image->SetRequestedRegionToLargestPossibleRegion ();
+	image->SetRequestedRegion( m_Marker->GetRequestedRegion());
 	}
 }
 
 template < class TInputImage > void MSRGFilter < TInputImage >::EnlargeOutputRequestedRegion (DataObject * output)
 {
     Superclass::EnlargeOutputRequestedRegion (output);
-    output->SetRequestedRegionToLargestPossibleRegion ();
+   // output->SetRequestedRegionToLargestPossibleRegion ();
+	this->GetOutput()->SetRequestedRegion( m_Marker->GetRequestedRegion() );
+
 }
 
 
 template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 {
 	std::cout << "Inside MSRG Algorithm ..." << std::endl;
+
+		
     InputImageConstPointer m_Criteria = this->GetInput ();
     OutputImagePointer outputImage = this->GetOutput ();
+	
     //unsigned long outputImageDataSize = outputImage->GetPixelContainer()->Size();
 	
     // *************************************************************
@@ -85,16 +90,17 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	
 	
     // Zero the output
-    OutputImageRegionType region = outputImage->GetRequestedRegion ();
+    OutputImageRegionType region = outputImage->GetLargestPossibleRegion ();
     outputImage->SetBufferedRegion (region);
     outputImage->Allocate ();
- 	
+ 	outputImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
+	
     // init status - 0 empty, 1 permanent, 2 in queue
 	OutputImagePointer statusImage = OutputImageType::New ();
 	statusImage->SetRegions(region);
 	statusImage->Allocate();
 	statusImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
-	
+	statusImage->SetRequestedRegion(m_Marker->GetRequestedRegion ());
 	
     // *************************************************************
     // *                REGION INIT                                *
@@ -107,6 +113,9 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 		relabelMarker=MorphoHelper<OutputImageType>::LabelImage(m_Marker);
 		m_Marker=relabelMarker;
 	}
+	// Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
+	m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+	
 	int NumberOfRegions=static_cast<int>(MSRGImageHelper<OutputImageType>::GetImageMax(m_Marker));
 	std::cout << "NumberOfRegions=" << NumberOfRegions << std::endl;
 	
@@ -139,6 +148,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	}
 	
 	// Mean
+	
 	typedef typename itk::Statistics::MeanCalculator< SampleType > MeanAlgorithmType;
 	typedef typename MeanAlgorithmType::Pointer MeanPointerType;
 	MeanPointerType* meanAlgorithm = new MeanPointerType[NumberOfRegions];
@@ -163,6 +173,9 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	}
 	
 	
+
+	
+	
     //  Extract only the rings of the regions 
 	// *************************************************************
 	// *               SEEDS EXTRACTION                            *
@@ -171,6 +184,11 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	
 	// extract initial solution (user markers)
 	 OutputImagePointer erodMarker=MorphoHelper<OutputImageType>::ErodeImageByRadius(m_Marker,1);
+	
+	  // Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
+		m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+    	erodMarker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+
 	 
 	 typedef typename itk::ImageRegionIterator< OutputImageType > OutputIteratorType;
 	 
@@ -198,6 +216,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 			statusIt.Set(1); // permanent
 	}
 	
+
 	// remove these points from the initial markerImage, so we will just have the ring of the region => (the inputs seeds for the PQ)	
 	typedef typename itk::SubtractImageFilter<OutputImageType,OutputImageType,OutputImageType> SubtractFilterType;
 	typename SubtractFilterType::Pointer subtractFilter = SubtractFilterType::New();
@@ -206,7 +225,10 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	subtractFilter->Update();
 	m_Marker=subtractFilter->GetOutput();
 	
-	
+	// Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
+		m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+    	outputImage->SetRequestedRegion(statusImage->GetRequestedRegion ());
+				
 	// *************************************************************
 	// *                PRIORITY QUEUE INIT                        *
 	// *************************************************************  
@@ -249,7 +271,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	typedef typename itk::ConstNeighborhoodIterator < OutputImageType > NeighborhoodIteratorType;
 	typename NeighborhoodIteratorType::RadiusType radius;
 	radius.Fill (1);
-	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetRequestedRegion ());
+	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetLargestPossibleRegion ());
 	OutputImagePixelType w;
 	seedType pi;
 	IndexOutputType piIndex, qiIndex;
@@ -262,7 +284,6 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 		piIndex = pi.index;
 		statusImage->SetPixel (piIndex, 1);
 		outputImage->SetPixel (piIndex, pi.label);	// propagate label
-		//m_Marker->SetPixel (piIndex, pi.label);
 		it.SetLocation (piIndex);
 		for (unsigned i = 0; i < it.Size (); i++)
 		{
@@ -284,12 +305,6 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 		}
 		
 	}
-	/*
-	typedef typename itk::ImageFileWriter < OutputImageType > WriterType;
-	typename WriterType::Pointer writer = WriterType::New ();
-	writer->SetFileName ("/Users/arg/Desktop/result.png");
-	writer->SetInput (outputImage);
-	writer->Update();*/
 }
 
 
