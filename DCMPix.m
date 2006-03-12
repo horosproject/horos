@@ -1664,6 +1664,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		{
 			idev = 0;
 			
+			*buf = [roi textureBuffer];
+			
 			for( y = 0; y < textHeight; y++)
 			{
 				fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
