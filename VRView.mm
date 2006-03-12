@@ -3116,7 +3116,7 @@ public:
 		
 		blendingFactor = a;
 		
-		if(vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND)
+		if( blendMode == vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND)
 		{
 		
 		}
