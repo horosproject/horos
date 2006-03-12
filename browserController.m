@@ -6807,8 +6807,8 @@ static BOOL needToRezoom;
 	BOOL			isDir = YES, routineActivated = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROUTINGACTIVATED"];
 	BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 	NSArray			*RoutingCalendarsArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"ROUTING CALENDARS"];
-	int				numNotReadAbleFiles = 0;
 	long			i;
+	
 	//NSLog(@"Scan folder START");
 	
 	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
@@ -7012,12 +7012,14 @@ static BOOL needToRezoom;
 	}
 	[checkIncomingLock unlock];
 	
+
+//	// inform user, that there are files in this folder
+//	if(numNotReadAbleFiles > 0)						NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//	{NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//		NSRunCriticalAlertPanel(NSLocalizedString(@"Import", nil), NSLocalizedString(@"There were some not readable files. These can be found in the NOTREADABLE Folder.", nil), NSLocalizedString(@"OK",nil),nil, nil);
+//	}NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
 	[pool release];
-	// inform user, that there are files in this folder
-	if(numNotReadAbleFiles > 0)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Import", nil), NSLocalizedString(@"There were some not readable files. These can be found in the NOTREADABLE Folder.", nil), NSLocalizedString(@"OK",nil),nil, nil);
-	}
 }
 
 -(void) checkIncoming:(id) sender
