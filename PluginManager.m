@@ -59,7 +59,7 @@ PluginManager			*pluginManager = 0L;
 						[item setTag:-1];		// Useful for fusionFilter
 						[item setAction:@selector(endBlendingType:)];
 					}
-					else if( [pluginType isEqualToString:@"Database"]){
+					else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"]){
 						[item setTarget:browserWindow];	//  browserWindow responds to DB plugins
 						[item setAction:@selector(executeFilterDB:)];
 					}
@@ -128,7 +128,7 @@ PluginManager			*pluginManager = 0L;
 					[item setTag:-1];		// Useful for fusionFilter
 					[item setAction:@selector(endBlendingType:)];
 				}
-				else if( [pluginType isEqualToString:@"Database"])
+				else if( [pluginType isEqualToString:@"Database"] || [pluginType isEqualToString:@"Report"])
 				{
 					[item setTarget:browserWindow];	//  browserWindow responds to DB plugins
 					[item setAction:@selector(executeFilterDB:)];

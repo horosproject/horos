@@ -55,7 +55,7 @@ Version 2.3
 
 - (void) buildPluginsMenu
 {
-	NSString	*appSupport = @"Library/Application Support/OsiriX/";
+	NSString	*appSupport = @"Library/Application Support/OsiriX/Plugins";
 	NSString	*appPath = [[NSBundle mainBundle] builtInPlugInsPath];
     NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
     NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
@@ -75,14 +75,17 @@ Version 2.3
 		
 		while ( name = [e nextObject] )
 		{
+			
 			if ( [[name pathExtension] isEqualToString:@"plugin"] )
 			{
 				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
-				if ( filterClass = [plugin principalClass] )
+				
+				if ( filterClass = [plugin principalClass])
 				{
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"])
 					{
 						[reportsPluginsMenu addItemWithTitle: [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
+						
 					}
 				}
 			}

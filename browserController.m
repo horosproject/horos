@@ -3175,6 +3175,7 @@ long        i;
 		
 		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] != 3)
 		{
+		
 			if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 			{
 				if( [item valueForKey:@"reportURL"])
@@ -3189,7 +3190,9 @@ long        i;
 					else [item setValue: 0L forKey:@"reportURL"];
 				}
 			}
+			
 		}
+		
 	}
 	else [cell setFont: [NSFont boldSystemFontOfSize:10]];
 	
