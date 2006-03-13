@@ -16,8 +16,9 @@
 #import "BrowserController.h"
 #import "BonjourPublisher.h"
 
-@interface BonjourBrowser : NSObject {
-
+@interface BonjourBrowser : NSObject
+{
+	NSLock				*lock;
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
     NSNetService		*serviceBeingResolved;
@@ -43,12 +44,13 @@
 	NSString			*FileModificationDate;
 	
 	volatile BOOL		resolved;
-	volatile BOOL		alreadyExecuting;
 }
 
 + (NSString*) bonjour2local: (NSString*) str;
 
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub;
+
+- (void) resolveServiceWithIndex:(int)index msg: (char*) msg;
 
 - (NSMutableArray*) services;
 - (NSString *) databaseFilePathForService:(NSString*) service;

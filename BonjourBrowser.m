@@ -54,6 +54,7 @@ volatile static BOOL threadIsRunning = NO;
 	{
 		long i;
 		
+		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
 		
@@ -76,7 +77,7 @@ volatile static BOOL threadIsRunning = NO;
 		BonjourDatabaseVersion = 0;
 		
 		resolved = YES;
-		alreadyExecuting = NO;
+//		alreadyExecuting = NO;
 		
 		setValueObject = 0L;
 		setValueValue = 0L;
@@ -610,7 +611,8 @@ volatile static BOOL threadIsRunning = NO;
 //    }
 //}
 
-- (void) resolveServiceWithIndex:(int)index msg: (void*) msg
+
+- (void) resolveServiceWithIndex:(int)index msg: (char*) msg
 {
 	serviceBeingResolvedIndex = index;
 	strcpy( messageToRemoteService, msg);
@@ -645,15 +647,36 @@ volatile static BOOL threadIsRunning = NO;
     }
 }
 
+- (void) resolveServiceThread:(NSDictionary*) object
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
+	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
+	
+	threadIsRunning = NO;
+	
+	[pool release];
+}
+
+- (BOOL) connectToServer:(long) index message:(NSString*) message
+{
+	threadIsRunning = YES;
+	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	
+	return resolved;
+}
+
+#pragma mark-
+#pragma mark Network functions
+
 - (BOOL) isBonjourDatabaseUpToDate: (int) index
 {
 	BOOL result;
 	
-	if( alreadyExecuting == YES) return YES;
-	
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[self resolveServiceWithIndex: index msg:"VERSI"];
 	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
@@ -662,34 +685,13 @@ volatile static BOOL threadIsRunning = NO;
 	if( localVersion == BonjourDatabaseVersion) result = YES;
 	else result = NO;
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
+	[lock unlock];
 	return result;
-}
-
-- (void) setBonjourDatabaseValueThread:(NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[self resolveServiceWithIndex: [object intValue] msg:"SETVA"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-		
-	[self resolveServiceWithIndex: [object intValue] msg:"VERSI"];
-	timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	localVersion = BonjourDatabaseVersion;
-	
-	threadIsRunning = NO;
-	
-	[pool release];
 }
 
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key
 {
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[setValueObject release];
 	[setValueValue release];
@@ -699,25 +701,12 @@ volatile static BOOL threadIsRunning = NO;
 	setValueValue = [value retain];
 	setValueKey = [key retain];
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(setBonjourDatabaseValueThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"SETVA"];
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
-}
-
-- (void) getFileModificationThread : (NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	[self connectToServer: index message:@"VERSI"];
+	localVersion = BonjourDatabaseVersion;
 	
-	[self resolveServiceWithIndex: [object intValue]  msg:"MFILE"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];};
-	
-	threadIsRunning = NO;
-	
-	[pool release];
+	[lock unlock];
 }
 
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index 
@@ -731,40 +720,21 @@ volatile static BOOL threadIsRunning = NO;
 		return [fattrs objectForKey:NSFileModificationDate];
 	}
 	
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[filePathToLoad release];
 	
 	filePathToLoad = [pathFile retain];
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(getFileModificationThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"MFILE"];
 	
 	if( resolved == YES)
 	{
 		modificationDate = [NSDate dateWithString: FileModificationDate];
 	}
-
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
 	
+	[lock unlock];
 	return modificationDate;
-}
-
-- (void) getFileThread:(NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-	[self resolveServiceWithIndex: [object intValue] msg:"RFILE"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	
-	threadIsRunning = NO;
-	
-	[pool release];
 }
 
 - (NSString*) getFile:(NSString*) pathFile index:(int) index 
@@ -780,99 +750,66 @@ volatile static BOOL threadIsRunning = NO;
 	
 	//
 	
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[filePathToLoad release];
 	filePathToLoad = [pathFile retain];
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(getFileThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"RFILE"];
 	
 	if( resolved == YES)
 	{
 		returnedFile = [BonjourBrowser bonjour2local: filePathToLoad];
 	}
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
+	[lock unlock];
 	
 	return returnedFile;
-}
-
-- (void) sendFileThread:(NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[self resolveServiceWithIndex: [object intValue] msg:"WFILE"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	
-	threadIsRunning = NO;
-	
-	[pool release];
 }
 
 - (BOOL) sendFile:(NSString*) pathFile index:(int) index 
 {
 	BOOL succeed = NO;
 	
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[filePathToLoad release];
 	
 	filePathToLoad = [pathFile retain];
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(sendFileThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"WFILE"];
 	
 	if( resolved == YES)
 	{
 		succeed = YES;
 	}
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
+	[lock unlock];
 	
 	return succeed;
 }
 
-
 - (NSString*) getDatabaseFile:(int) index
 {
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[dbFileName release];
 	dbFileName = 0L;
 	
 	isPasswordProtected = NO;
 	
-	[self resolveServiceWithIndex: index msg:"DBVER"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	
-	if( resolved == YES)
+	if( [self connectToServer: index message:@"DBVER"])
 	{
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
 			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", 0L), nil, nil, nil);
-			[interfaceOsiriX setBonjourDownloading: NO];
-			alreadyExecuting = NO;
+			[lock unlock];
 			return 0L;
 		}
 		
 		if( serviceBeingResolvedIndex != index)
 		{
-			[self resolveServiceWithIndex: index msg:"ISPWD"];
-			NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-			while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
+			[self connectToServer: index message:@"ISPWD"];
 		}
 		else
 		{
@@ -889,113 +826,60 @@ volatile static BOOL threadIsRunning = NO;
 				password = [[interfaceOsiriX askPassword] retain];
 				
 				wrongPassword = YES;
-				[self resolveServiceWithIndex: index msg:"PASWD"];
-				NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-				while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
+				[self connectToServer: index message:@"PASWD"];
 				
 				if( resolved == NO || wrongPassword == YES)
 				{
 					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Wrong password.", 0L), nil, nil, nil);
 					
-					[interfaceOsiriX setBonjourDownloading: NO];
-					alreadyExecuting = NO;
+					[lock unlock];
 					return 0L;
 				}
 			}
 			
-			[self resolveServiceWithIndex: index msg:"DATAB"];
-			NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-			while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-			
-			if( resolved == YES)
+			if( [self connectToServer: index message: @"DATAB"] == YES)
 			{
-				[self resolveServiceWithIndex: index msg:"VERSI"];
-				NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-				while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
+				[self connectToServer: index message: @"VERSI"];
 				
 				localVersion = BonjourDatabaseVersion;
 			}
 		}
 	}
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
+	[lock unlock];
+	
 	return dbFileName;
-}
-
-- (void) sendDICOMFileThread : (NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[self resolveServiceWithIndex: [object intValue] msg:"SENDD"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	
-	threadIsRunning = NO;
-	
-	[pool release];
 }
 
 - (BOOL) sendDICOMFile:(int) index path:(NSString*) ip
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: ip] == NO) return NO;
 	
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	alreadyExecuting = YES;	
-	[interfaceOsiriX setBonjourDownloading: YES];
+	[lock lock];
 	
 	[path release];
 	path = [ip retain];
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(sendDICOMFileThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"SENDD"];
 	
-	[interfaceOsiriX setBonjourDownloading: NO];
-	alreadyExecuting = NO;
+	[lock unlock];
+	
 	return YES;
-}
-
-- (void) getDICOMFileThread : (NSNumber*) object
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[self resolveServiceWithIndex: [object intValue] msg:"DICOM"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-	if( resolved == NO)
-	{
-		// Try again
-		NSLog(@"failed, but try again");
-		
-		[self resolveServiceWithIndex: [object intValue] msg:"DICOM"];
-		timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		if( resolved == NO) NSLog(@"failed...");
-	}
-	
-	threadIsRunning = NO;
-	
-	[pool release];
 }
 
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (long) noOfImages
 {
-	while( alreadyExecuting == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};		// [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	//
-	alreadyExecuting = YES;
-//	NSLog(@"IN");
-//	[interfaceOsiriX setBonjourDownloading: YES];
-
+	[lock lock];
+	
 	// Does this file already exist?
 	NSString	*uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[image valueForKey:@"path"] lastPathComponent], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
 	NSString	*dicomFileName = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
 	if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName])
 	{
-		//NSLog(@"OUT");
-		alreadyExecuting = NO;
+		[lock unlock];
 		return dicomFileName;
 	}
-
+	
 	[dicomFileNames release];
 	dicomFileNames = [[NSMutableArray alloc] initWithCapacity: 0];
 	
@@ -1042,17 +926,17 @@ volatile static BOOL threadIsRunning = NO;
 		
 	}while( size < FILESSIZE*noOfImages && i < [images count]);
 	
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(getDICOMFileThread:) toTarget:self withObject:[NSNumber numberWithInt: index]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	[self connectToServer: index message:@"DICOM"];
 	
-	alreadyExecuting = NO;
+	NSString	*returnString;
 	
-	if( [dicomFileNames count] == 0) return 0L;
+	if( [dicomFileNames count] == 0) returnString = 0L;
+	else if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) returnString =  0L;
+	else returnString = [NSString stringWithString: [dicomFileNames objectAtIndex: 0]];
 	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [dicomFileNames objectAtIndex: 0]] == NO) return 0L;
+	[lock unlock];
 	
-	return [dicomFileNames objectAtIndex: 0];
+	return returnString;
 }
 
 - (NSString *) databaseFilePathForService:(NSString*) name
@@ -1063,22 +947,4 @@ volatile static BOOL threadIsRunning = NO;
 	[filePath appendString:[name stringByAppendingString:@".sql"]];
 	return filePath;
 }
-
-// delegate of a NSFileManager
-
--(BOOL)fileManager:(NSFileManager *)manager shouldProceedAfterError:(NSDictionary *)errorDict
-{
-    int result;
-    result = NSRunAlertPanel(NSLocalizedString(@"OsiriX", nil), NSLocalizedString(@"File operation error:	%@ with file: %@", nil), NSLocalizedString(@"Proceed", nil), NSLocalizedString(@"Stop", nil), NULL, [errorDict objectForKey:@"Error"], [errorDict objectForKey:@"path"]);
-        
-    if (result == NSAlertDefaultReturn)
-        return YES;
-    else
-        return NO;
-}
-
-- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path
-{
-}
-
 @end

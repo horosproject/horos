@@ -54,7 +54,6 @@ extern NSString * documentsDirectory();
 
 - (void)toggleSharing:(BOOL)boo
 {
-
     uint16_t chosenPort;
     if(!listeningSocket) {
 
@@ -174,7 +173,7 @@ extern NSString * documentsDirectory();
 	{
 		// Waiting for incomming message (6 first bytes)
 		while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-
+		
 		if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 		{
 			//NSLog( @"[data bytes] = DATAB");
