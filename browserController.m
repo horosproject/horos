@@ -59,6 +59,7 @@ extern BOOL hasMacOSXTiger();
 #import "BrowserController.h"
 #import "viewerController.h"
 #import "PluginFilter.h"
+#import "ReportPluginFilter.h"
 #import "dicomFile.h"
 #import "NSSplitViewSave.h"
 #import "Papyrus3/Papyrus3.h"
@@ -3059,8 +3060,8 @@ long        i;
 			if( plugin)
 			{
 				PluginFilter* filter = [[plugin principalClass] filter];
-				
-				return [filter report: item action: @"dateReport"];
+				return [filter reportDateForStudy: item];
+				//return [filter report: item action: @"dateReport"];
 			}
 			return nil;
 		}
@@ -7063,8 +7064,8 @@ static BOOL needToRezoom;
 			if( plugin)
 			{
 				PluginFilter* filter = [[plugin principalClass] filter];
-				
-				[filter report: studySelected action: @"deleteReport"];
+				[filter deleteReportForStudy: studySelected];
+				//[filter report: studySelected action: @"deleteReport"];
 			}
 			else
 			{
@@ -7125,8 +7126,8 @@ static BOOL needToRezoom;
 			if( plugin)
 			{
 				PluginFilter* filter = [[plugin principalClass] filter];
-				
-				[filter report: studySelected action: @"openReport"];
+				[filter createReportForStudy: studySelected];
+				//[filter report: studySelected action: @"openReport"];
 			}
 			else
 			{
