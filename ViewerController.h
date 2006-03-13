@@ -264,7 +264,11 @@
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
 //arg: Use this to extract all the rois from the
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff;
+- (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff;
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
+- (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name;
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
+
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;

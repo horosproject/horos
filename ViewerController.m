@@ -757,6 +757,148 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[self addRoiFromFullStackBuffer:buff withName:@""];
 }
 
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff
+{
+	[self addPlainRoiToCurrentSliceFromBuffer:buff withName:@""];
+}
+
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name
+{
+int i,j,l;
+	unsigned char tempValue;
+	BOOL alreadyIn=NO;
+	
+	RGBColor aColor;
+	//float *r,*g,*b;
+	int nbColor=6;
+	int cpt=0;
+	
+	// color init
+	RGBColor rgbList[6];
+	aColor.red = (239./255.)*65535.;
+	aColor.green = (239./255.)*65535.;
+	aColor.blue = 37;
+	rgbList[0]=aColor;
+	
+	aColor.red = (239./255.)*65535.;
+	aColor.green =(10./255.)*65535.;
+	aColor.blue = (239./255.)*65535;
+	rgbList[1]=aColor;
+	
+	aColor.red = 65535;
+	aColor.green =0;
+	aColor.blue = 0;
+	rgbList[2]=aColor;
+	
+	aColor.red =0;
+	aColor.green = 0;
+	aColor.blue =65535;
+	rgbList[3]=aColor;
+	
+	aColor.red = 0;
+	aColor.green = 65535;
+	aColor.blue = 0;
+	rgbList[4]=aColor;
+	
+	aColor.red = 0;
+	aColor.green =(241./255.)*65535.;
+	aColor.blue = (220./255.)*65535.;
+	rgbList[5]=aColor;
+	
+	NSMutableArray* nbRegion=[NSMutableArray arrayWithCapacity:0];
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	long height=[curPix pheight];
+	long width=[curPix pwidth];
+		for(j=0;j<height;j++)
+		{
+			for(i=0;i<width;i++)
+			{
+				tempValue=buff[(long)(i+j*width)];
+				if (tempValue!=0)
+				{
+					alreadyIn=NO;
+					// check if the region has not been already added to the nbRegion Mutable Array
+					for(l=0;l<[nbRegion count];l++)
+						if ([[nbRegion objectAtIndex:l] intValue]==tempValue)
+							alreadyIn=YES;
+					if(!alreadyIn)
+						[nbRegion addObject:[NSNumber numberWithInt:tempValue]];
+				}
+			}
+		}
+	
+	for(l=0;l<[nbRegion count];l++)
+		[self	addPlainRoiToCurrentSliceFromBuffer:buff
+				forSpecificValue:[[nbRegion objectAtIndex:l] intValue]
+				withColor:rgbList[l % nbColor]
+				withName:name];
+	
+}
+-(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name
+{
+	int i,j,l;
+	ROI		*theNewROI;
+	DCMPix	*curPix = [[self pixList] objectAtIndex: [[self imageView] curImage]];
+	long height=[curPix pheight];
+    long width=[curPix pwidth];
+	int upLeftX,upLeftY,dRightX,dRightY;
+	int tWidth,tHeight;
+	unsigned char* textureBuffer;
+	BOOL findOne=false;
+
+		// 1- For a Slice find the texture dimension for the specific value (param: value)
+		findOne=NO;
+		upLeftX=width;upLeftY=height;dRightX=0;dRightY=0; // initialisation with opposite values
+		for(j=0;j<height;j++)
+			for(i=0;i<width;i++)
+			{
+				if (buff[(long)(i+j*width)]==value)
+				{
+					findOne=YES;
+					// boundary check
+					if(i<upLeftX)
+						upLeftX=i;
+					if(j<upLeftY)
+						upLeftY=j;
+					if (i>dRightX)
+						dRightX=i;
+					if (j>dRightY)
+						dRightY=j;
+				}
+			}
+				
+				// Create texture ...		
+				if (findOne)
+				{
+					tWidth=dRightX-upLeftX+1;
+					tHeight=dRightY-upLeftY+1;
+					textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
+					// clear texture
+					for (l=0;l<tWidth*tHeight;l++)       
+						textureBuffer[(long)l]=0;
+					
+					// fill in the texture
+					for(j=0;j<height;j++)
+						for(i=0;i<width;i++)
+							if (buff[(long)(i+j*width)]==value)
+								textureBuffer[(long)((i-upLeftX)+(j-upLeftY)*tWidth)]=0xFF;
+					
+					// 2- create a roi with the (initWithTexture) at slice k
+					name = ([name isEqualToString:@""])? [NSString stringWithFormat:@"area %d",value] : name;
+					theNewROI = [[[ROI alloc] initWithTexture:textureBuffer  textWidth:tWidth textHeight:tHeight textName:name
+													positionX:upLeftX positionY:upLeftY
+													 spacingX:[curPix pixelSpacingX]  spacingY:[curPix pixelSpacingY]
+												  imageOrigin:NSMakePoint( [curPix originX], [curPix originY])] autorelease];
+					free(textureBuffer);
+					[theNewROI setColor:aColor];
+					//	NSLog(@"New roi has been created name=%@, color.red=%d, color.green=%d, color.blue=%d",[theNewROI name], aColor.red, aColor.green, aColor.blue);
+					[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];
+					
+				}
+	
+}
+
 -(void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name
 {
 	int i,j,k,l;
