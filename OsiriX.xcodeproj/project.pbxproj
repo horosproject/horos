@@ -1425,6 +1425,12 @@
 		BF398B8C065B124700AD1F25 /* InArrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF398B8A065B124700AD1F25 /* InArrow.tif */; };
 		BF3BB380067808D5004F6E91 /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF3BB381067808D5004F6E91 /* DCMTransferSyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */; };
+		BF402F5509C5273C006D1B38 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF402F5309C5273C006D1B38 /* ReportPluginFilter.h */; };
+		BF402F5609C5273C006D1B38 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF402F5409C5273C006D1B38 /* ReportPluginFilter.m */; };
+		BF402F5709C5273C006D1B38 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF402F5309C5273C006D1B38 /* ReportPluginFilter.h */; };
+		BF402F5809C5273C006D1B38 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF402F5409C5273C006D1B38 /* ReportPluginFilter.m */; };
+		BF402F5909C5273C006D1B38 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF402F5309C5273C006D1B38 /* ReportPluginFilter.h */; };
+		BF402F5A09C5273C006D1B38 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF402F5409C5273C006D1B38 /* ReportPluginFilter.m */; };
 		BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
 		BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
@@ -10137,6 +10143,8 @@
 		BF398B8A065B124700AD1F25 /* InArrow.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = InArrow.tif; sourceTree = "<group>"; };
 		BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTransferSyntax.h; sourceTree = "<group>"; };
 		BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTransferSyntax.m; sourceTree = "<group>"; };
+		BF402F5309C5273C006D1B38 /* ReportPluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportPluginFilter.h; sourceTree = "<group>"; };
+		BF402F5409C5273C006D1B38 /* ReportPluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportPluginFilter.m; sourceTree = "<group>"; };
 		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
 		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
 		BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = "<group>"; };
@@ -13774,6 +13782,8 @@
 				AB2C24E10677861300A08910 /* PluginFilter.h */,
 				AB2C25200677873200A08910 /* PluginManager.m */,
 				AB2C25210677873200A08910 /* PluginManager.h */,
+				BF402F5309C5273C006D1B38 /* ReportPluginFilter.h */,
+				BF402F5409C5273C006D1B38 /* ReportPluginFilter.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
@@ -19012,6 +19022,7 @@
 				A9523D3309BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF402F5509C5273C006D1B38 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20817,6 +20828,7 @@
 				A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC9109BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF402F5909C5273C006D1B38 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22627,6 +22639,7 @@
 				A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC8F09BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF402F5709C5273C006D1B38 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25070,6 +25083,7 @@
 				A9523D3409BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF402F5609C5273C006D1B38 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25817,6 +25831,7 @@
 				A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF402F5A09C5273C006D1B38 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26568,6 +26583,7 @@
 				A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF402F5809C5273C006D1B38 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
