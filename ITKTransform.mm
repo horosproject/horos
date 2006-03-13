@@ -48,6 +48,14 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	// translation vector
 	parameters[9]=aTranslation[0]; parameters[10]=aTranslation[1]; parameters[11]=aTranslation[2];
+
+//	// rotation matrix
+//	parameters[0]=1.0; parameters[1]=0.0; parameters[2]=0.0;
+//	parameters[3]=0.0; parameters[4]=1.0; parameters[5]=0.0;
+//	parameters[6]=0.0; parameters[7]=0.0; parameters[8]=1.0;
+//	
+//	// translation vector
+//	parameters[9]=0.0; parameters[10]=0.0; parameters[11]=0.0;
 	
 	[self computeAffineTransformWithParameters: parameters resampleOnViewer:referenceViewer];
 	free(parameters);
@@ -61,9 +69,9 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	AffineTransformType::Pointer transform = AffineTransformType::New();
 	
 	ParametersType parameters(transform->GetNumberOfParameters());
-
-	int i;	
-	for(i=0; i<12; i++)
+	NSLog(@"transform->GetNumberOfParameters() : %d", transform->GetNumberOfParameters());
+	int i;
+	for(i=0; i<transform->GetNumberOfParameters(); i++)
 	{
 		parameters[i] = theParameters[i];
 		NSLog(@"parameters[%d], %f",i,parameters[i]);
@@ -83,21 +91,22 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	outputSpacing[2] = [referenceViewer computeInterval];
 	resample->SetOutputSpacing(outputSpacing);
 	
-	double outputOrigin[3];
-	outputOrigin[0] = [[[referenceViewer pixList] objectAtIndex: 0] originX];
-	outputOrigin[1] = [[[referenceViewer pixList] objectAtIndex: 0] originY];
-	outputOrigin[2] = [[[referenceViewer pixList] objectAtIndex: 0] originZ];	
+	double outputOrigin[3];	
+	outputOrigin[0] = [[[referenceViewer pixList] objectAtIndex: 0] originX];// - [[[originalViewer pixList] objectAtIndex: 0] originX];
+	outputOrigin[1] = [[[referenceViewer pixList] objectAtIndex: 0] originY];// - [[[originalViewer pixList] objectAtIndex: 0] originY];
+	outputOrigin[2] = [[[referenceViewer pixList] objectAtIndex: 0] originZ];// - [[[originalViewer pixList] objectAtIndex: 0] originZ];
 	resample->SetOutputOrigin(outputOrigin);
 	
 	ImageType::SizeType size;
 	size[0] = [[[referenceViewer pixList] objectAtIndex: 0] pwidth];
 	size[1] = [[[referenceViewer pixList] objectAtIndex: 0] pheight];
 	size[2] = [[referenceViewer pixList] count];
-		
+	resample->SetSize(size);
+
 	resample->Update();
 	
 	float* resultBuff = resample->GetOutput()->GetBufferPointer();
-
+		
 	[self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
 }
 
@@ -108,23 +117,26 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	float				*fVolumePtr;
 	
 //	// First calculate the amount of memory needed for the new serie
-	NSArray	*pixList = [referenceViewer pixList];		
+	NSArray	*pixList = [referenceViewer pixList];
+	///NSArray	*pixList = [originalViewer pixList];
 	DCMPix	*curPix;
 	long	mem = 0;
+	
+	NSLog(@"[pixList count] : %d", [pixList count]);
 	
 	for( i = 0; i < [pixList count]; i++)
 	{
 		curPix = [pixList objectAtIndex: i];
-		mem += [curPix pheight] * [curPix pwidth] * sizeof(float);		// each pixel contains either a 32-bit float or a 32-bit ARGB value
+		mem += [curPix pheight] * [curPix pwidth] * 4;		// each pixel contains either a 32-bit float or a 32-bit ARGB value
 	}
+	
 	NSLog(@"size : %d x %d x %d", [[pixList objectAtIndex:0] pwidth], [[pixList objectAtIndex:0] pheight], [pixList count]);
 	NSLog(@"mem : %d", mem);
 	
-	fVolumePtr = (float*) malloc(mem);	// ALWAYS use malloc for allocating memory !
-	if( fVolumePtr && aBuffer && NO) // '&& NO' because it doesn't work yet. Just a security...
+	fVolumePtr = (float*) malloc(mem);
+	if( fVolumePtr && aBuffer)//&& NO) // '&& NO' because it doesn't work yet. Just a security...
 	{
 		// Copy the source series in the new one !
-		//memcpy(fVolumePtr, aBuffer, mem);
 		BlockMoveData(aBuffer,fVolumePtr,mem);
 		NSLog(@"BlockMoveData OK");
 		
@@ -135,19 +147,56 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 		for( i = 0; i < [pixList count]; i++)
 		{
+			NSLog(@"i : %d", i);
+			//curPix = [[[originalViewer pixList] objectAtIndex: i] copy];
 			curPix = [[pixList objectAtIndex: i] copy];
-			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * 4 * i)];
+			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
+			
+//			curPix = [[DCMPix alloc] initwithdata	: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)
+//													: 32
+//													: [[pixList objectAtIndex: i] pwidth]
+//													: [[pixList objectAtIndex: i] pheight]
+//													: [[pixList objectAtIndex: i] pixelSpacingX]
+//													: [[pixList objectAtIndex: i] pixelSpacingY]
+//													: [[pixList objectAtIndex: i] originX]
+//													: [[pixList objectAtIndex: i] originY]
+//													: [[pixList objectAtIndex: i] originZ]];
+
 			[newPixList addObject: curPix];
 		}
 		
 		// We don't need to duplicate the DicomFile array, because it is identical!
+		// just make sure we have the same amout of DicomFile than DCMPix
+		NSMutableArray *newFileList = [NSMutableArray arrayWithCapacity:0];
+		if([pixList count]<=[[originalViewer fileList] count])
+		{
+			for( i = 0; i < [pixList count]; i++)
+			{
+				[newFileList addObject:[[originalViewer fileList] objectAtIndex:i]];
+			}
+		}
+		else
+		{
+//			for( i = 0; i < [[originalViewer fileList] count]; i++)
+//			{
+//				[newFileList addObject:[[originalViewer fileList] objectAtIndex:i]];
+//			}
+//			for( i = [[originalViewer fileList] count]; i < [pixList count]; i++)
+//			{
+//				[newFileList addObject:[[originalViewer fileList] objectAtIndex:[[originalViewer fileList] count]-1]];
+//			}
+			for( i = 0; i < [pixList count]; i++)
+			{
+				[newFileList addObject:[[originalViewer fileList] objectAtIndex:0]];
+			}
+		}
 		
 		// A 2D Viewer window needs 3 things:
 		// A mutable array composed of DCMPix objects
 		// A mutable array composed of DicomFile objects
 		// Number of DCMPix and DicomFile has to be EQUAL !
 		// NSData volumeData contains the images, represented in the DCMPix objects
-		new2DViewer = [originalViewer newWindow:newPixList :[originalViewer fileList] :volumeData];
+		new2DViewer = [originalViewer newWindow:newPixList :newFileList :volumeData];
 	}
 }
 

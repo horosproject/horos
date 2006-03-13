@@ -391,7 +391,7 @@ double etkRegister (etkRegistration* pRegistration,
   mmult (&matRot33, &matModelCentroid, &matTrans3);
 
   for (u = 0; u < 3; u++)
-    matTrans3.block [u] = adSensorCentroid [u] - matTrans3.block [u];
+    matTrans3.block [u] =  adSensorCentroid [u] - matTrans3.block [u];	//
 
   /// Compute error
 
