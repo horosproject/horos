@@ -428,7 +428,7 @@ int i,j,k,l;
 		
 		// create ROIs from msrg output
 		//TODO change this to addRoiToCurrentSlice !!
-		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
+		[markerViewer addPlainRoiToCurrentSliceFromBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
 	
@@ -507,7 +507,7 @@ int i,j,k,l;
 		msrg->Update();
 		
 		// create ROIs from msrg output
-		[markerViewer addRoiFromFullStackBuffer:msrg->GetOutput()->GetBufferPointer()];
+		[markerViewer addPlainRoiToCurrentSliceFromBuffer:msrg->GetOutput()->GetBufferPointer()];
 		free(markerBuffer);
 	}
 	
