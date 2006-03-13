@@ -37,6 +37,7 @@ PURPOSE.
 #include "MSRGImageHelper.h"
 #include "MorphoHelper.h"
 #include "itkMSRGFilter.h"
+//#include "itkImageFileWriter.h"
 
 using namespace std;
 namespace itk
@@ -61,28 +62,31 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateInputReq
 	{
 		InputImagePointer image = const_cast < InputImageType * >(this->GetInput ());
 		//image->SetRequestedRegionToLargestPossibleRegion ();
-	image->SetRequestedRegion( m_Marker->GetRequestedRegion());
+		image->SetRequestedRegion( m_Marker->GetRequestedRegion());
 	}
 }
 
 template < class TInputImage > void MSRGFilter < TInputImage >::EnlargeOutputRequestedRegion (DataObject * output)
 {
     Superclass::EnlargeOutputRequestedRegion (output);
-   // output->SetRequestedRegionToLargestPossibleRegion ();
+	// output->SetRequestedRegionToLargestPossibleRegion ();
 	this->GetOutput()->SetRequestedRegion( m_Marker->GetRequestedRegion() );
-
+	
 }
 
 
 template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 {
 	std::cout << "Inside MSRG Algorithm ..." << std::endl;
-
-		
+	
+	
     InputImageConstPointer m_Criteria = this->GetInput ();
     OutputImagePointer outputImage = this->GetOutput ();
 	
-    //unsigned long outputImageDataSize = outputImage->GetPixelContainer()->Size();
+    
+	
+	typedef typename itk::ImageRegionIterator< OutputImageType > OutputIteratorType;
+	typedef typename itk::ImageRegionConstIterator< OutputImageType > ConstOutputIteratorType;
 	
     // *************************************************************
     // *                INIT        IMAGES                         *
@@ -107,18 +111,47 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
     // *************************************************************  
 	
 	OutputImagePointer relabelMarker;
+	
+	
 	// Do we need to relabel the image markers ?
 	if (labelMarker)
 	{
+		
+		// PROBLEM: if you set a RequestedRegion the labelisation do not use it => if you have markers outside your bounding box
+		// you will  have more regions ! => clear outside the bounding box.
+		if (m_Marker->GetLargestPossibleRegion()!=m_Marker->GetRequestedRegion())
+		{
+		
+			std::cout << "Bounding Box Activated !" << std::endl;
+			//1- recopy the requested region to the status Image (tempory image)
+			OutputIteratorType statusIterator( statusImage, statusImage->GetRequestedRegion ()  );
+			OutputIteratorType markerIterator( m_Marker, m_Marker->GetRequestedRegion ()  );
+			for ( statusIterator.GoToBegin(), markerIterator.GoToBegin(); !statusIterator.IsAtEnd();
+				  ++statusIterator, ++markerIterator)
+			{
+				statusIterator.Set(markerIterator.Get());
+			}
+			
+			//2- recopy the full statusImage to the marker image
+			unsigned long outputImageDataSize = outputImage->GetPixelContainer()->Size();
+			OutputImagePixelType* importPointer = statusImage->GetPixelContainer()->GetBufferPointer();
+			OutputImagePixelType* bufferPointer = m_Marker->GetPixelContainer()->GetBufferPointer();
+			memcpy(bufferPointer, importPointer, outputImageDataSize*sizeof(OutputImagePixelType));
+			
+			//3- don't forget to clean the statusImage
+			statusImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
+			
+		}
+		
 		relabelMarker=MorphoHelper<OutputImageType>::LabelImage(m_Marker);
 		m_Marker=relabelMarker;
 	}
-	// Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
+	
 	m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
 	
+	// GetImageMax can works with requestedRegion => no problem when bounding is activated with setRequestedRegion
 	int NumberOfRegions=static_cast<int>(MSRGImageHelper<OutputImageType>::GetImageMax(m_Marker));
-	std::cout << "NumberOfRegions=" << NumberOfRegions << std::endl;
-	
+	std::cout << "NumberOfRegions=" << NumberOfRegions << std::endl; 
 	
 	// *************************************************************
     // *                MEAN and COV EXTRACTION                    *
@@ -132,7 +165,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	for( int i=0; i<NumberOfRegions; i++ )
 		SRGSample[i]  = SampleType::New();
 	
-	typedef typename itk::ImageRegionConstIterator< OutputImageType > ConstOutputIteratorType;
+	
 	typedef typename itk::ImageRegionConstIterator< InputImageType>  ConstCriteriaIteratorType;
 	ConstOutputIteratorType inputMarkerIt( m_Marker, m_Marker->GetRequestedRegion ()  );
 	ConstCriteriaIteratorType  inputCriteriaIt(  m_Criteria, m_Criteria->GetRequestedRegion() );
@@ -173,7 +206,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	}
 	
 	
-
+	
 	
 	
     //  Extract only the rings of the regions 
@@ -183,28 +216,27 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	
 	
 	// extract initial solution (user markers)
-	 OutputImagePointer erodMarker=MorphoHelper<OutputImageType>::ErodeImageByRadius(m_Marker,1);
+	OutputImagePointer erodMarker=MorphoHelper<OutputImageType>::ErodeImageByRadius(m_Marker,1);
 	
-	  // Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
-		m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
-    	erodMarker->SetRequestedRegion(statusImage->GetRequestedRegion ());
-
-	 
-	 typedef typename itk::ImageRegionIterator< OutputImageType > OutputIteratorType;
-	 
-	 ConstOutputIteratorType erodMarkerIt( erodMarker, erodMarker->GetRequestedRegion ()  );
-	 OutputIteratorType outputImageIt1( outputImage, outputImage->GetRequestedRegion ()  );
+	// Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
+	m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+	erodMarker->SetRequestedRegion(statusImage->GetRequestedRegion ());
 	
-	 for ( erodMarkerIt.GoToBegin(), outputImageIt1.GoToBegin(); !erodMarkerIt.IsAtEnd();
+	
+	
+	ConstOutputIteratorType erodMarkerIt( erodMarker, erodMarker->GetRequestedRegion ()  );
+	OutputIteratorType outputImageIt1( outputImage, outputImage->GetRequestedRegion ()  );
+	
+	for ( erodMarkerIt.GoToBegin(), outputImageIt1.GoToBegin(); !erodMarkerIt.IsAtEnd();
 	 	  ++outputImageIt1, ++erodMarkerIt)
-	 {
+	{
 		outputImageIt1.Set(erodMarkerIt.Get());
 	}
-	 /*
+	/*
 	 OutputImagePixelType* importPointer = erodMarker->GetPixelContainer()->GetBufferPointer();
 	 OutputImagePixelType* bufferPointer = outputImage->GetPixelContainer()->GetBufferPointer();
 	 memcpy(bufferPointer, importPointer, outputImageDataSize*sizeof(OutputImagePixelType));
-	*/
+	 */
 	// set status values to permanent 
 	
 	ConstOutputIteratorType outputImageIt( outputImage, outputImage->GetRequestedRegion ()  );
@@ -216,7 +248,7 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 			statusIt.Set(1); // permanent
 	}
 	
-
+	
 	// remove these points from the initial markerImage, so we will just have the ring of the region => (the inputs seeds for the PQ)	
 	typedef typename itk::SubtractImageFilter<OutputImageType,OutputImageType,OutputImageType> SubtractFilterType;
 	typename SubtractFilterType::Pointer subtractFilter = SubtractFilterType::New();
@@ -226,8 +258,8 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	m_Marker=subtractFilter->GetOutput();
 	
 	// Overide SetRequestedRegion ! others itkFilters update to LargestPossibleRegion 
-		m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
-    	outputImage->SetRequestedRegion(statusImage->GetRequestedRegion ());
+	m_Marker->SetRequestedRegion(statusImage->GetRequestedRegion ());
+	outputImage->SetRequestedRegion(statusImage->GetRequestedRegion ());
 				
 	// *************************************************************
 	// *                PRIORITY QUEUE INIT                        *
@@ -271,19 +303,23 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	typedef typename itk::ConstNeighborhoodIterator < OutputImageType > NeighborhoodIteratorType;
 	typename NeighborhoodIteratorType::RadiusType radius;
 	radius.Fill (1);
-	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetLargestPossibleRegion ());
+	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetLargestPossibleRegion());
 	OutputImagePixelType w;
 	seedType pi;
 	IndexOutputType piIndex, qiIndex;
 	bool boundary = false;
+	std::cout << "boundary size =" << m_Marker->GetRequestedRegion().GetSize() << std::endl;
+	std::cout << "boundary start =" << m_Marker->GetRequestedRegion().GetIndex() << std::endl;
 	
 	while (!PQ.empty ())
 	{
+
 		pi = PQ.top ();
 		PQ.pop ();
 		piIndex = pi.index;
 		statusImage->SetPixel (piIndex, 1);
 		outputImage->SetPixel (piIndex, pi.label);	// propagate label
+		std::cout << "index=" << piIndex << std::endl;
 		it.SetLocation (piIndex);
 		for (unsigned i = 0; i < it.Size (); i++)
 		{
@@ -305,6 +341,13 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 		}
 		
 	}
+	/*
+	 typedef typename itk::ImageFileWriter < OutputImageType > WriterType;
+	 typename WriterType::Pointer writer = WriterType::New ();
+	 writer->SetFileName ("OsirixMSRGOutput.png");
+	 writer->SetInput (outputImage);
+	 writer->Update ();
+	 */
 }
 
 

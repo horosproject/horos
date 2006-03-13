@@ -90,6 +90,7 @@ template <class TImage> typename MSRGImageHelper<TImage>::PixelType MSRGImageHel
  	typedef itk::MinimumMaximumImageCalculator < ImageType> MinimumMaximumImageCalculatorType;
 	typename MinimumMaximumImageCalculatorType::Pointer MinMaxCalculator = MinimumMaximumImageCalculatorType::New ();
 	MinMaxCalculator->SetImage(inputImage);
+	MinMaxCalculator->SetRegion(inputImage->GetRequestedRegion());
 	MinMaxCalculator->Compute();
 	return MinMaxCalculator->GetMaximum();
 }

@@ -344,8 +344,10 @@ int i,j,k,l;
 			markerRegion.SetSize(sizeRequested);
 			markerRegion.SetIndex(startRequested);
 			m_Marker->SetRequestedRegion(markerRegion);
+			// you have to relabel the image because it is possible to have others tPlain region outside the bounding box;
+			msrg->LabelMarkerImage(true);
 		}
-		
+
 		msrg->SetMarker(m_Marker);
 		msrg->Update();
 		
@@ -422,7 +424,11 @@ int i,j,k,l;
 			markerRegion.SetSize(sizeRequested);
 			markerRegion.SetIndex(startRequested);
 			m_Marker->SetRequestedRegion(markerRegion);
+			
+			// you have to relabel the image because it is possible to have others tPlain region outside the bounding box;
+			msrg->LabelMarkerImage(true);
 		}
+
 		msrg->SetMarker(m_Marker);
 		msrg->Update();
 		
@@ -501,6 +507,8 @@ int i,j,k,l;
 			markerRegion.SetSize(sizeRequested);
 			markerRegion.SetIndex(startRequested);
 			m_Marker->SetRequestedRegion(markerRegion);
+			// you have to relabel the image because it is possible to have others tPlain region outside the bounding box;
+			msrg->LabelMarkerImage(true);
 		}
 		
 		msrg->SetMarker(m_Marker);
@@ -585,6 +593,8 @@ int i,j,k,l;
 			markerRegion.SetSize(sizeRequested);
 			markerRegion.SetIndex(startRequested);
 			m_Marker->SetRequestedRegion(markerRegion);
+			// you have to relabel the image because it is possible to have others tPlain region outside the bounding box;
+			msrg->LabelMarkerImage(true);	
 		}
 		msrg->SetMarker(m_Marker);
 		msrg->Update();

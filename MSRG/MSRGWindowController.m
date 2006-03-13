@@ -191,7 +191,6 @@ PURPOSE.
 }
 -(BOOL)checkBoundingBoxROIPresentOnCurrentSlice
 {	
-	NSLog(@"2D");
 	int i;
 	// Check if there is a ROI which name is BoundingBox
 	NSMutableArray	*curRoiList = [[viewer roiList] objectAtIndex: [[viewer imageView] curImage]];
