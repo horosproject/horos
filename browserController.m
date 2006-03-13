@@ -3048,7 +3048,9 @@ long        i;
 	// *********************************************
 	//	PLUGINS
 	// *********************************************
-	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
+	
+	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3 && 
+							[[tableColumn identifier] isEqualToString:@"reportURL"])
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
 		{
@@ -3060,7 +3062,9 @@ long        i;
 				
 				return [filter report: item action: @"dateReport"];
 			}
+			return nil;
 		}
+		return nil;
 	}
 	else if( [[tableColumn identifier] isEqualToString:@"reportURL"])
 	{
