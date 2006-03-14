@@ -81,7 +81,7 @@
 {
 	if ([sender isEqual: originalView])
 	{
-		[viewer fullWindowModality:0:self];
+		[(OrthogonalMPRPETCTViewer*)viewer fullWindowModality:0:self];
 	}
 	else if ([sender isEqual: xReslicedView])
 	{
@@ -344,7 +344,7 @@
 	[yReslicedView setBlendingFactor: 0];
 }
 
-- (BOOL) containsView: (OrthogonalMPRView*) view
+- (BOOL) containsView: (DCMView*) view
 {
 	return ([view isEqualTo:originalView] || [view isEqualTo:xReslicedView] || [view isEqualTo:yReslicedView]);
 }
@@ -352,9 +352,9 @@
 -(void) ApplyCLUTString:(NSString*) str
 {
 	[super ApplyCLUTString:str];
-	[originalView setCurCLUTMenu: str];
-	[xReslicedView setCurCLUTMenu: str];
-	[yReslicedView setCurCLUTMenu: str];
+	[(OrthogonalMPRPETCTView*)originalView setCurCLUTMenu: str];
+	[(OrthogonalMPRPETCTView*)xReslicedView setCurCLUTMenu: str];
+	[(OrthogonalMPRPETCTView*)yReslicedView setCurCLUTMenu: str];
 }
 
 @end

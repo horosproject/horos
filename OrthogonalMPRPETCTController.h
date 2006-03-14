@@ -36,7 +36,7 @@
 - (void) stopBlending;
 - (void) scaleToFit;
 
-- (BOOL) containsView: (OrthogonalMPRView*) view;
+- (BOOL) containsView: (DCMView*) view;
 
 - (void) fullWindowModality: (id) sender;
 - (void) fullWindowPlan: (id) sender;

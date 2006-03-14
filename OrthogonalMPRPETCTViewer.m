@@ -207,9 +207,9 @@ NSString * documentsDirectory();
 	}
 	
 	// the PETCT will display the PET CLUT in CLUTpoppuMenu
-	[[PETCTController originalView] setCurCLUTMenu: [[PETController originalView] curCLUTMenu]];
-	[[PETCTController xReslicedView] setCurCLUTMenu: [[PETController xReslicedView] curCLUTMenu]];
-	[[PETCTController yReslicedView] setCurCLUTMenu: [[PETController yReslicedView] curCLUTMenu]];	
+	[(OrthogonalMPRPETCTView*)[PETCTController originalView] setCurCLUTMenu: [(OrthogonalMPRPETCTView*)[PETController originalView] curCLUTMenu]];
+	[(OrthogonalMPRPETCTView*)[PETCTController xReslicedView] setCurCLUTMenu: [(OrthogonalMPRPETCTView*)[PETController xReslicedView] curCLUTMenu]];
+	[(OrthogonalMPRPETCTView*)[PETCTController yReslicedView] setCurCLUTMenu: [(OrthogonalMPRPETCTView*)[PETController yReslicedView] curCLUTMenu]];	
 	
 	curCLUTMenu = str;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];		
@@ -377,7 +377,7 @@ NSString * documentsDirectory();
 	|| [PETController containsView: [self keyView]]
 	|| [PETCTController containsView: [self keyView]])
 	{
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[[self keyView] curWLWWMenu]];
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[(OrthogonalMPRView*)[self keyView] curWLWWMenu]];
 	}
 	
 	if ([PETCTController containsView: [self keyView]])
@@ -684,8 +684,8 @@ NSString * documentsDirectory();
 	|| [PETController containsView: [self keyView]]
 	|| [PETCTController containsView: [self keyView]])
 	{
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: [[self keyView] curCLUTMenu] userInfo: 0L];
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [[self keyView] curWLWWMenu] userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curCLUTMenu] userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [(OrthogonalMPRPETCTView*)[self keyView] curWLWWMenu] userInfo: 0L];
 	}
 	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 }
@@ -2098,7 +2098,7 @@ NSString * documentsDirectory();
 
 - (DCMView*) keyView
 {
-	return [[self window] firstResponder];
+	return (DCMView*)[[self window] firstResponder];
 }
 
 -(void) sendMail:(id) sender
@@ -2441,27 +2441,6 @@ NSString * documentsDirectory();
 			
 			[view setCrossPosition:oldX :oldY];
 			[view setNeedsDisplay:YES];
-
-//			curImage = [[self keyView] curImage];
-//			
-//			
-//			for( i = 0 ; i < [[[[self keyView] controller] originalDCMPixList] count]; i++)
-//			{
-//				[[self keyView] setIndex:i];
-//				[[self keyView] sendSyncMessage:1];
-//				[[self keyView] display];
-//				
-//				{
-//					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
-//					[pool release];
-//				}
-//				
-//				[splash incrementBy: 1];
-//			}
-//			
-//			[[self keyView] setIndex: curImage];
-//			[[self keyView] display];
 			
 			[splash close];
 			[splash release];

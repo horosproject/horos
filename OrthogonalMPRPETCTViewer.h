@@ -106,6 +106,8 @@
 - (void) flipHorizontalX: (id) sender;
 - (void) flipHorizontalY: (id) sender;
 
+- (void) fullWindowModality:(int)index:(id)sender;
+
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;
 - (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView;
