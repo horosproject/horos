@@ -84,6 +84,7 @@
                 blendingSlider = NSSlider; 
                 blendingToolView = NSView; 
                 clutPopup = NSPopUpButton; 
+                dcmExport3Modalities = NSButton; 
                 dcmExportWindow = NSWindow; 
                 dcmFormat = NSMatrix; 
                 dcmSelection = NSMatrix; 

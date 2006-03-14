@@ -2127,7 +2127,7 @@ NSString * documentsDirectory();
 - (void) exportJPEG:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-	BOOL			all = NO;
+	BOOL			all = YES;
 	long			i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
@@ -2236,8 +2236,12 @@ NSString * documentsDirectory();
 
 - (void) exportDICOMFileInt :(BOOL) screenCapture
 {
-	DCMPix *curPix = [[self keyView] curDCM];
+	[self exportDICOMFileInt:screenCapture view:[self keyView]];
+}
 
+- (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView
+{
+	DCMPix *curPix = [curView curDCM];
 	long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 			clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long	width, height, spp, bpp, err;
@@ -2247,20 +2251,20 @@ NSString * documentsDirectory();
 	[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 	[[NSUserDefaults standardUserDefaults] setInteger: barHide forKey: @"CLUTBARS"];
 	
-	unsigned char *data = [[self keyView] getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
+	unsigned char *data = [curView getRawPixels:&width :&height :&spp :&bpp :screenCapture :NO];
 	
 	if( data)
 	{
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 		
-		[exportDCM setSourceFile: [[[[[self keyView] controller] originalDCMFilesList] objectAtIndex:[self indexForPix:[[self keyView] curImage]]] valueForKey:@"completePath"]];
+		[exportDCM setSourceFile: [[[[curView controller] originalDCMFilesList] objectAtIndex:[self indexForPix:[curView curImage]]] valueForKey:@"completePath"]];
 		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 		
-		[[self keyView] getWLWW:&cwl :&cww];
+		[curView getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
 		
 		if( screenCapture)
-			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [[self keyView] scaleValue] :[curPix pixelSpacingX] / [[self keyView] scaleValue]];
+			[exportDCM setPixelSpacing: [curPix pixelSpacingX] / [curView scaleValue] :[curPix pixelSpacingX] / [curView scaleValue]];
 		else
 			[exportDCM setPixelSpacing: [curPix pixelSpacingX] :[curPix pixelSpacingY]];
 			
@@ -2297,37 +2301,167 @@ NSString * documentsDirectory();
     {
 		if( [[dcmSelection selectedCell] tag] == 0)
 		{
-			[self exportDICOMFileInt: YES];//[[dcmFormat selectedCell] tag]];
+			if([dcmExport3Modalities state]==NSOffState)
+			{
+				[self exportDICOMFileInt: YES];//[[dcmFormat selectedCell] tag]];
+			}
+			else
+			{
+				long nCT, nPETCT, nPET;
+				nCT = 15300 + [[NSCalendarDate date] minuteOfHour];
+				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour];
+				nPET = 35300 + [[NSCalendarDate date] minuteOfHour];
+				
+				if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+				{
+					[exportDCM setSeriesNumber:nCT];
+					[self exportDICOMFileInt: YES view:[[self CTController] originalView]];
+					[exportDCM setSeriesNumber:nPETCT];
+					[self exportDICOMFileInt: YES view:[[self PETCTController] originalView]];
+					[exportDCM setSeriesNumber:nPET];
+					[self exportDICOMFileInt: YES view:[[self PETController] originalView]];
+				}
+				else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+				{
+					[exportDCM setSeriesNumber:nCT];
+					[self exportDICOMFileInt: YES view:[[self CTController] xReslicedView]];
+					[exportDCM setSeriesNumber:nPETCT];
+					[self exportDICOMFileInt: YES view:[[self PETCTController] xReslicedView]];
+					[exportDCM setSeriesNumber:nPET];
+					[self exportDICOMFileInt: YES view:[[self PETController] xReslicedView]];
+				}
+				else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+				{
+					[exportDCM setSeriesNumber:nCT];
+					[self exportDICOMFileInt: YES view:[[self CTController] yReslicedView]];
+					[exportDCM setSeriesNumber:nPETCT];
+					[self exportDICOMFileInt: YES view:[[self PETCTController] yReslicedView]];
+					[exportDCM setSeriesNumber:nPET];
+					[self exportDICOMFileInt: YES view:[[self PETController] yReslicedView]];
+				}
+			}
 		}
 		else
-		{
+		{	
+			long deltaX, deltaY, x, y, oldX, oldY, max;
+			OrthogonalMPRView *view, *viewCT, *viewPETCT, *viewPET;
+			
+			if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+			{
+				deltaX = 0;
+				deltaY = 1;
+				view = [[[self keyView] controller] xReslicedView];
+				x = [view crossPositionX];
+				y = 0;
+				oldX = [view crossPositionX];
+				oldY = [view crossPositionY];
+				max = [[view curDCM] pheight];
+				
+				viewCT = [[self CTController] originalView];
+				viewPETCT = [[self PETCTController] originalView];
+				viewPET = [[self PETController] originalView];
+			}
+			else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+			{
+				deltaX = 0;
+				deltaY = 1;
+				view = [[[self keyView] controller] originalView];
+				x = [view crossPositionX];
+				y = 0;
+				oldX = [view crossPositionX];
+				oldY = [view crossPositionY];
+				max = [[view curDCM] pheight];
+				
+				viewCT = [[self CTController] xReslicedView];
+				viewPETCT = [[self PETCTController] xReslicedView];
+				viewPET = [[self PETController] xReslicedView];
+			}
+			else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+			{
+				deltaX = 1;
+				deltaY = 0;
+				view = [[[self keyView] controller] originalView];
+				x = 0;
+				y = [view crossPositionY];
+				oldX = [view crossPositionX];
+				oldY = [view crossPositionY];
+				max = [[view curDCM] pheight];
+				
+				viewCT = [[self CTController] yReslicedView];
+				viewPETCT = [[self PETCTController] yReslicedView];
+				viewPET = [[self PETController] yReslicedView];
+			}
+			
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[splash showWindow:self];
-			[[splash progress] setMaxValue:[[[[self keyView] controller] originalDCMPixList] count]];
-			
-			curImage = [[self keyView] curImage];
-			
+			[[splash progress] setMaxValue:max];
+
 			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
-			for( i = 0 ; i < [[[[self keyView] controller] originalDCMPixList] count]; i++)
+			if([dcmExport3Modalities state]==NSOffState)
 			{
-				[[self keyView] setIndex:i];
-				[[self keyView] sendSyncMessage:1];
-				[[self keyView] display];
-				
+				for( i = 0; i < max; i++)
 				{
+					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+					[modalitySplitView display];
+					
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
+					[self exportDICOMFileInt: YES];
 					[pool release];
+					
+					[splash incrementBy: 1];
 				}
-				
-				[splash incrementBy: 1];
+			}
+			else
+			{	
+				long nCT, nPETCT, nPET;
+				nCT = 15300 + [[NSCalendarDate date] minuteOfHour];
+				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour];
+				nPET = 35300 + [[NSCalendarDate date] minuteOfHour];
+
+				for( i = 0; i < max; i++)
+				{
+					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
+					[modalitySplitView display];
+					
+					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					[exportDCM setSeriesNumber:nCT];
+					[self exportDICOMFileInt: YES view:viewCT];
+					[exportDCM setSeriesNumber:nPETCT];
+					[self exportDICOMFileInt: YES view:viewPETCT];
+					[exportDCM setSeriesNumber:nPET];
+					[self exportDICOMFileInt: YES view:viewPET];
+					[pool release];
+					
+					[splash incrementBy: 1];
+				}
 			}
 			
-			[[self keyView] setIndex: curImage];
-			[[self keyView] display];
+			[view setCrossPosition:oldX :oldY];
+			[view setNeedsDisplay:YES];
+
+//			curImage = [[self keyView] curImage];
+//			
+//			
+//			for( i = 0 ; i < [[[[self keyView] controller] originalDCMPixList] count]; i++)
+//			{
+//				[[self keyView] setIndex:i];
+//				[[self keyView] sendSyncMessage:1];
+//				[[self keyView] display];
+//				
+//				{
+//					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
+//					[pool release];
+//				}
+//				
+//				[splash incrementBy: 1];
+//			}
+//			
+//			[[self keyView] setIndex: curImage];
+//			[[self keyView] display];
 			
 			[splash close];
 			[splash release];

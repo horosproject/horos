@@ -69,12 +69,12 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	AffineTransformType::Pointer transform = AffineTransformType::New();
 	
 	ParametersType parameters(transform->GetNumberOfParameters());
-	NSLog(@"transform->GetNumberOfParameters() : %d", transform->GetNumberOfParameters());
+	
 	int i;
 	for(i=0; i<transform->GetNumberOfParameters(); i++)
 	{
 		parameters[i] = theParameters[i];
-		NSLog(@"parameters[%d], %f",i,parameters[i]);
+		//NSLog(@"parameters[%d], %f",i,parameters[i]);
 	}
 	
 	transform->SetParameters(parameters);
@@ -118,7 +118,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 //	// First calculate the amount of memory needed for the new serie
 	NSArray	*pixList = [referenceViewer pixList];
-	///NSArray	*pixList = [originalViewer pixList];
+	//NSArray	*pixList = [originalViewer pixList];
 	DCMPix	*curPix;
 	long	mem = 0;
 	
@@ -146,8 +146,8 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		// Now copy the DCMPix with the new buffer
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 		for( i = 0; i < [pixList count]; i++)
+		//for( i = 0; i < [[originalViewer pixList] count]; i++)
 		{
-			NSLog(@"i : %d", i);
 			//curPix = [[[originalViewer pixList] objectAtIndex: i] copy];
 			curPix = [[pixList objectAtIndex: i] copy];
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
@@ -163,7 +163,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 //													: [[pixList objectAtIndex: i] originZ]];
 
 			[newPixList addObject: curPix];
+			NSLog(@"[curPix sliceLocation] : %f", [curPix sliceLocation]);
 		}
+		
+		NSLog(@"i : %d", i);
 		
 		// We don't need to duplicate the DicomFile array, because it is identical!
 		// just make sure we have the same amout of DicomFile than DCMPix

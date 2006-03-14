@@ -39,6 +39,7 @@
 	IBOutlet NSWindow					*dcmExportWindow;
 	IBOutlet NSMatrix					*dcmSelection, *dcmFormat;
 	IBOutlet NSTextField				*dcmSeriesName;
+	IBOutlet NSButton					*dcmExport3Modalities;
 	DICOMExport							*exportDCM;
 	
     IBOutlet NSView						*WLWWView;
@@ -107,4 +108,5 @@
 
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;
+- (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView;
 @end
