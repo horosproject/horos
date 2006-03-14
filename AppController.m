@@ -2484,7 +2484,10 @@ static BOOL isHcugeCh = NO, testDone = NO;
 		int i;
 		for( i = 0; i < [names count] && !isHcugeCh; i++)
 		{
-			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: [[names objectAtIndex: i] length]-8];
+			NSString *name = [names objectAtIndex: i];
+			int len = [name length];
+			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
+			NSString *domainName = [name substringFromIndex: len - 8];
 			if([domainName isEqualToString: @"hcuge.ch"]
 				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"])
 			{
