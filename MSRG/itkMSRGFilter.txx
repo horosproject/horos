@@ -103,26 +103,28 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	OutputImagePointer statusImage = OutputImageType::New ();
 	statusImage->SetRegions(region);
 	statusImage->Allocate();
-	statusImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);
-	statusImage->SetRequestedRegion(m_Marker->GetRequestedRegion ());
+	statusImage->FillBuffer (NumericTraits < OutputImagePixelType >::Zero);	
+	statusImage->SetRequestedRegion(m_Marker->GetRequestedRegion());
 	
     // *************************************************************
     // *                REGION INIT                                *
     // *************************************************************  
 	
 	OutputImagePointer relabelMarker;
-	
-	
+	bool boundingBox=false;
+	if (m_Marker->GetLargestPossibleRegion()!=m_Marker->GetRequestedRegion())
+	{
+		boundingBox=true;
+		std::cout << "Bounding Box Activated !" << std::endl;
+	}
 	// Do we need to relabel the image markers ?
 	if (labelMarker)
 	{
 		
 		// PROBLEM: if you set a RequestedRegion the labelisation do not use it => if you have markers outside your bounding box
 		// you will  have more regions ! => clear outside the bounding box.
-		if (m_Marker->GetLargestPossibleRegion()!=m_Marker->GetRequestedRegion())
+		if (boundingBox)
 		{
-		
-			std::cout << "Bounding Box Activated !" << std::endl;
 			//1- recopy the requested region to the status Image (tempory image)
 			OutputIteratorType statusIterator( statusImage, statusImage->GetRequestedRegion ()  );
 			OutputIteratorType markerIterator( m_Marker, m_Marker->GetRequestedRegion ()  );
@@ -303,27 +305,38 @@ template < class TInputImage > void MSRGFilter < TInputImage >::GenerateData ()
 	typedef typename itk::ConstNeighborhoodIterator < OutputImageType > NeighborhoodIteratorType;
 	typename NeighborhoodIteratorType::RadiusType radius;
 	radius.Fill (1);
-	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetLargestPossibleRegion());
+	NeighborhoodIteratorType it (radius, m_Marker, m_Marker->GetLargestPossibleRegion());//<= TODO:(BUG1) change to GetRequestedRegion when boundary works with it !
 	OutputImagePixelType w;
 	seedType pi;
-	IndexOutputType piIndex, qiIndex;
-	bool boundary = false;
-	std::cout << "boundary size =" << m_Marker->GetRequestedRegion().GetSize() << std::endl;
-	std::cout << "boundary start =" << m_Marker->GetRequestedRegion().GetIndex() << std::endl;
+	IndexOutputType piIndex, qiIndex,downRightCorner,upperLeftCorner,tempIndex;
+	upperLeftCorner=m_Marker->GetRequestedRegion().GetIndex();//TODO: remove this line when BUG1 fixed
+	downRightCorner=upperLeftCorner+m_Marker->GetRequestedRegion().GetSize();//TODO: remove this line when BUG1 fixed
+	std::cout << "upperLeftCorner="<< upperLeftCorner <<std::endl;
+	std::cout << "downRightCorner="<< downRightCorner <<std::endl;
 	
+	bool boundary = false;
 	while (!PQ.empty ())
 	{
-
+		
 		pi = PQ.top ();
 		PQ.pop ();
 		piIndex = pi.index;
 		statusImage->SetPixel (piIndex, 1);
 		outputImage->SetPixel (piIndex, pi.label);	// propagate label
-		std::cout << "index=" << piIndex << std::endl;
 		it.SetLocation (piIndex);
 		for (unsigned i = 0; i < it.Size (); i++)
 		{
 			w = it.GetPixel (i, boundary); 
+			// patch for BUG1
+			if (boundingBox)
+			{
+				boundary = true;
+				tempIndex=it.GetIndex (i);
+				for (unsigned int k=0; k<ImageDimension; k++)
+					if (tempIndex[k]<upperLeftCorner[k] || tempIndex[k]>=downRightCorner[k])
+						boundary=false;	
+			}
+			
 			if (boundary)
 			{		
 				qiIndex = it.GetIndex (i);		
