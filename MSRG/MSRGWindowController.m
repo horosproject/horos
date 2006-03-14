@@ -90,7 +90,7 @@ PURPOSE.
 		if ([ActivateBoundingBoxButton state]==NSOnState){
 			// Bounding Box
 			NSRect rect=[BoundingROIStart rect];
-			msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:NO GrowIn3D:YES boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
+			msrgSeg=[[MSRGSegmentation alloc] initWithViewerList:viewersList currentViewer:viewer boundingBoxOn:YES GrowIn3D:YES boundingRect:rect boundingBeginZ:begin boundingEndZ:end];
 
 			
 		} else
