@@ -198,11 +198,10 @@
 		[originalView setBlending:[[viewer PETController] originalView]];
 		[originalView setBlendingFactor: blendingFactor];
 		[originalView setIndexWithReset: [[[viewer CTController] originalView] curImage] :NO];
-
+		
 		// cross position
 		[originalView setCrossPositionX:[[[viewer CTController] originalView] crossPositionX]];
 		[originalView setCrossPositionY:[[[viewer CTController] originalView] crossPositionY]];
-		[originalView setNeedsDisplay:YES];
 		
 		[xReslicedView setDCM:[[[viewer CTController] xReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
 		[xReslicedView setBlending:[[viewer PETController] xReslicedView]];
@@ -212,7 +211,6 @@
 		// cross position
 		[xReslicedView setCrossPositionX:[[[viewer CTController] xReslicedView] crossPositionX]];
 		[xReslicedView setCrossPositionY:[[[viewer CTController] xReslicedView] crossPositionY]];
-		[xReslicedView setNeedsDisplay:YES];
 		
 		[yReslicedView setDCM:[[[viewer CTController] yReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
 		[yReslicedView setBlending:[[viewer PETController] yReslicedView]];
@@ -222,7 +220,6 @@
 		// cross position
 		[yReslicedView setCrossPositionX:[[[viewer CTController] yReslicedView] crossPositionX]];
 		[yReslicedView setCrossPositionY:[[[viewer CTController] yReslicedView] crossPositionY]];
-		[yReslicedView setNeedsDisplay:YES];
 	}
 	
 	if(xOldValues)

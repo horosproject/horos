@@ -37,9 +37,10 @@ extern BOOL USETOOLBARPANEL;
 	dstframe.origin.x = screenRect.origin.x;
 	dstframe.origin.y = screenRect.origin.y + screenRect.size.height -dstframe.size.height;
 	
-	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
+//	NSLog(@"X: %2.2f Y:%2.2f", dstframe.origin.x, dstframe.origin.y);
 	
 	[[self window] setFrame:dstframe display:YES];
+	
 }
 
 - (id)initForScreen: (long) s
@@ -150,6 +151,7 @@ extern BOOL USETOOLBARPANEL;
 	
 	if( toolbar)
 	{
+		[[self window] setToolbar: 0L];
 		[[self window] setShowsToolbarButton:NO];
 		[[[self window] toolbar] setVisible: YES];
 		[[self window] setToolbar: toolbar];

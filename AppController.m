@@ -2244,112 +2244,112 @@ static BOOL initialized = NO;
 
 		
 		
-		//excess viewers. Need to add spaces to accept
-		while (viewerCount > (rows * columns)){
-			float ratio = ((float)columns/(float)rows)/numberOfMonitors;
-			//NSLog(@"ratio: %f", ratio);
-			if (ratio > 1.5 && landscape)
-				rows ++;
-			else 
-				columns ++;
-		}
+	//excess viewers. Need to add spaces to accept
+	while (viewerCount > (rows * columns)){
+		float ratio = ((float)columns/(float)rows)/numberOfMonitors;
+		//NSLog(@"ratio: %f", ratio);
+		if (ratio > 1.5 && landscape)
+			rows ++;
+		else 
+			columns ++;
+	}
+	
+	
+	// set image tiling to 1 row and columns
+	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"])
+		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
+	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
+		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
+	//I will generalize the options once I get a handle on the issues. LP
+	// if monitor count is greater than or equal to viewers. One viewer per window
+	if (viewerCount <= numberOfMonitors) {
+		int count = [viewersList count];
+		int skipScreen = 0;
 		
-		
-		// set image tiling to 1 row and columns
-		if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"])
-			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
-		if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
-			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
-		//I will generalize the options once I get a handle on the issues. LP
-		// if monitor count is greater than or equal to viewers. One viewer per window
-		if (viewerCount <= numberOfMonitors) {
-			int count = [viewersList count];
-			int skipScreen = 0;
+		for( i = 0; i < count; i++) {
+			NSScreen *screen = [screens objectAtIndex:i];
+			NSRect frame = [screen visibleFrame];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
-			for( i = 0; i < count; i++) {
-				NSScreen *screen = [screens objectAtIndex:i];
-				NSRect frame = [screen visibleFrame];
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-				
-				[[viewersList objectAtIndex:i] setWindowFrame:frame];				
+			[[viewersList objectAtIndex:i] setWindowFrame:frame];				
 
-			}
-		} 
-		/* 
-		Will have columns but no rows. 
-		There are more columns than monitors. 
-		 Need to separate columns among the window evenly
-		 */
-		else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0)){
-			int viewersPerScreen = viewerCount / numberOfMonitors;
-			for( i = 0; i < viewerCount; i++) {
-				int index = (int) i/viewersPerScreen;
-				int viewerPosition = i % viewersPerScreen;
-				NSScreen *screen = [screens objectAtIndex:index];
-				NSRect frame = [screen visibleFrame];
-				
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+		}
+	} 
+	/* 
+	Will have columns but no rows. 
+	There are more columns than monitors. 
+	 Need to separate columns among the window evenly
+	 */
+	else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0)){
+		int viewersPerScreen = viewerCount / numberOfMonitors;
+		for( i = 0; i < viewerCount; i++) {
+			int index = (int) i/viewersPerScreen;
+			int viewerPosition = i % viewersPerScreen;
+			NSScreen *screen = [screens objectAtIndex:index];
+			NSRect frame = [screen visibleFrame];
+			
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			frame.size.width /= viewersPerScreen;
+			frame.origin.x += (frame.size.width * viewerPosition);
+			[[viewersList objectAtIndex:i] setWindowFrame:frame];
+		}		
+	} 
+	//have different number of columns in each window
+	else if( viewerCount <= columns) 
+	{
+		int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
+
+		int extraViewers = viewerCount % numberOfMonitors;
+		for( i = 0; i < viewerCount; i++) {
+			int monitorIndex = (int) i /viewersPerScreen;
+			int viewerPosition = i % viewersPerScreen;
+			NSScreen *screen = [screens objectAtIndex:monitorIndex];
+			NSRect frame = [screen visibleFrame];
+			
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			if (monitorIndex < extraViewers) 
 				frame.size.width /= viewersPerScreen;
-				frame.origin.x += (frame.size.width * viewerPosition);
-				[[viewersList objectAtIndex:i] setWindowFrame:frame];
-			}		
-		} 
-		//have different number of columns in each window
-		else if( viewerCount <= columns) 
-		{
-			int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
-
-			int extraViewers = viewerCount % numberOfMonitors;
-			for( i = 0; i < viewerCount; i++) {
-				int monitorIndex = (int) i /viewersPerScreen;
-				int viewerPosition = i % viewersPerScreen;
-				NSScreen *screen = [screens objectAtIndex:monitorIndex];
-				NSRect frame = [screen visibleFrame];
+			else
+				frame.size.width /= (viewersPerScreen - 1);
 				
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-				if (monitorIndex < extraViewers) 
-					frame.size.width /= viewersPerScreen;
-				else
-					frame.size.width /= (viewersPerScreen - 1);
-					
-				frame.origin.x += (frame.size.width * viewerPosition);
-				
-				[[viewersList objectAtIndex:i] setWindowFrame:frame];
-			}
+			frame.origin.x += (frame.size.width * viewerPosition);
+			
+			[[viewersList objectAtIndex:i] setWindowFrame:frame];
 		}
-		//adjust for actual number of rows needed
-		else if (viewerCount <=  columns * rows)  
-		{
-			int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
-			int extraViewers = columns % numberOfMonitors;
-			for( i = 0; i < viewerCount; i++) {
-				int row = i/columns;
-				int columnIndex = (i - (row * columns));
-				int monitorIndex =  columnIndex /viewersPerScreen;
-				int viewerPosition = columnIndex % viewersPerScreen;
-				NSScreen *screen = [screens objectAtIndex:monitorIndex];
-				NSRect frame = [screen visibleFrame];
+	}
+	//adjust for actual number of rows needed
+	else if (viewerCount <=  columns * rows)  
+	{
+		int viewersPerScreen = ceil(((float) columns / numberOfMonitors));
+		int extraViewers = columns % numberOfMonitors;
+		for( i = 0; i < viewerCount; i++) {
+			int row = i/columns;
+			int columnIndex = (i - (row * columns));
+			int monitorIndex =  columnIndex /viewersPerScreen;
+			int viewerPosition = columnIndex % viewersPerScreen;
+			NSScreen *screen = [screens objectAtIndex:monitorIndex];
+			NSRect frame = [screen visibleFrame];
 
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 
-				if (monitorIndex < extraViewers || extraViewers == 0) 
-					frame.size.width /= viewersPerScreen;
-				else
-					frame.size.width /= (viewersPerScreen - 1);
-					
-				frame.origin.x += (frame.size.width * viewerPosition);
+			if (monitorIndex < extraViewers || extraViewers == 0) 
+				frame.size.width /= viewersPerScreen;
+			else
+				frame.size.width /= (viewersPerScreen - 1);
 				
-				frame.size.height /= rows;
-				frame.origin.y += frame.size.height * ((rows - 1) - row);
-				
-				[[viewersList objectAtIndex:i] setWindowFrame:frame];
-			}
+			frame.origin.x += (frame.size.width * viewerPosition);
+			
+			frame.size.height /= rows;
+			frame.origin.y += frame.size.height * ((rows - 1) - row);
+			
+			[[viewersList objectAtIndex:i] setWindowFrame:frame];
 		}
-		else
-		{
-			NSLog(@"NO tiling");
-			tileDone = NO;
-		}
+	}
+	else
+	{
+		NSLog(@"NO tiling");
+		tileDone = NO;
+	}
 
 	if( [viewersList count] >= 1)
 		[[[viewersList lastObject] window] makeKeyAndOrderFront:self];

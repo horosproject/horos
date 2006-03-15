@@ -3189,7 +3189,8 @@ static long scrollMode;
 			NSOpenGLPFAAccelerated,
 			NSOpenGLPFANoRecovery,
             NSOpenGLPFADoubleBuffer,
-//			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
+//			NSOpenGLPFAOffScreen,
+			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
 			0
 	};
 	// Get pixel format from OpenGL
@@ -5632,6 +5633,7 @@ static long scrollMode;
 			*width*=4;
 			*height = size.size.height;
 			*spp = 3;
+//			*spp = 4;
 			*bpp = 8;
 			
 			buf = malloc( *width * *height * *spp * *bpp/8);
@@ -5649,7 +5651,26 @@ static long scrollMode;
 				}
 				
 				[[self openGLContext] makeCurrentContext];
-				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+//				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+
+				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
+				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);	// <- This is faster, doesn't require conversion -> DMA transfer. We do the conversion with vImage
+				
+				vImage_Buffer src, dst;
+				src.height = *height;
+				src.width = *width;
+				src.rowBytes = *width * 4;
+				src.data = rgbabuf;
+				
+				dst.height =  *height;
+				dst.width = *width;
+				dst.rowBytes = *width * 3;
+				dst.data = buf;
+				
+				
+				vImageConvert_ARGB8888toRGB888( &src, &dst, 0);
+				
+				free( rgbabuf);
 				
 				long rowBytes = *width**spp**bpp/8;
 				
@@ -5661,6 +5682,8 @@ static long scrollMode;
 					BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
 					BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
 				}
+				
+				free( tempBuf);
 			}
 		}
 //		else
