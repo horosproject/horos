@@ -103,9 +103,12 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	size[2] = [[referenceViewer pixList] count];
 	resample->SetSize(size);
 
+	NSLog(@"start transform");
 	resample->Update();
 	
 	float* resultBuff = resample->GetOutput()->GetBufferPointer();
+	
+	NSLog(@"transform done");
 		
 	[self createNewViewerWithBuffer:resultBuff resampleOnViewer:referenceViewer];
 }
@@ -152,6 +155,10 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			curPix = [[pixList objectAtIndex: i] copy];
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
 			
+			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime
+			[curPix setEchotime: [[[originalViewer pixList] objectAtIndex: i] echotime]];
+			[curPix setRepetitiontime: [[[originalViewer pixList] objectAtIndex: i] repetitiontime]];
+			
 //			curPix = [[DCMPix alloc] initwithdata	: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)
 //													: 32
 //													: [[pixList objectAtIndex: i] pwidth]
@@ -163,7 +170,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 //													: [[pixList objectAtIndex: i] originZ]];
 
 			[newPixList addObject: curPix];
-			NSLog(@"[curPix sliceLocation] : %f", [curPix sliceLocation]);
+			//NSLog(@"[curPix sliceLocation] : %f", [curPix sliceLocation]);
 		}
 		
 		NSLog(@"i : %d", i);

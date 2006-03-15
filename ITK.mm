@@ -75,13 +75,9 @@
 		importFilter->SetRegion( region );
 		
 		double origin[ 3 ];
-		
-		
-		
 		origin[0] = [firstObject originX]; // X coordinate
 		origin[1] = [firstObject originY]; // Y coordinate
 		origin[2] = [firstObject originZ]; // Z coordinate
-
 		importFilter->SetOrigin( origin );
 		
 		double spacing[ 3 ];

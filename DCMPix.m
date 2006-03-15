@@ -2262,6 +2262,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 - (NSString*) repetitiontime {return repetitiontime;}
 - (NSString*) echotime {return echotime;}
+- (void) setRepetitiontime:(NSString*)rep {repetitiontime = rep;}
+- (void) setEchotime:(NSString*)echo {echotime = echo;}
 - (NSString*) protocolName {return protocolName;}
 
 - (char*) UncompressDICOM : (NSString*) file :( long) imageNb

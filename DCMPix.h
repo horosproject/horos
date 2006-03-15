@@ -177,6 +177,8 @@
 -(void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (NSString*) repetitiontime;
 - (NSString*) echotime;
+- (void) setRepetitiontime:(NSString*)rep;
+- (void) setEchotime:(NSString*)echo;
 - (NSString*) protocolName;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
