@@ -166,7 +166,7 @@ NSString * documentsDirectory();
 
 	[[self window] setShowsResizeIndicator:YES];
 	[[self window] performZoom:self];
-	[[self window] display];
+//	[[self window] display];
 	
 	return self;
 }

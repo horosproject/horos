@@ -5651,26 +5651,31 @@ static long scrollMode;
 				}
 				
 				[[self openGLContext] makeCurrentContext];
-//				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
-
-				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
-				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);	// <- This is faster, doesn't require conversion -> DMA transfer. We do the conversion with vImage
+				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 				
-				vImage_Buffer src, dst;
-				src.height = *height;
-				src.width = *width;
-				src.rowBytes = *width * 4;
-				src.data = rgbabuf;
-				
-				dst.height =  *height;
-				dst.width = *width;
-				dst.rowBytes = *width * 3;
-				dst.data = buf;
-				
-				
-				vImageConvert_ARGB8888toRGB888( &src, &dst, 0);
-				
-				free( rgbabuf);
+//				unsigned char*	rgbabuf = malloc( *width * *height * 4 * *bpp/8);
+//				
+//				#if __BIG_ENDIAN__
+//				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, rgbabuf);	// <- This is faster, doesn't require conversion -> DMA transfer. We do the conversion with vImage
+//				#else
+//				glReadPixels(0, 0, *width, *height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, rgbabuf);
+//				#endif
+//				
+//				vImage_Buffer src, dst;
+//				src.height = *height;
+//				src.width = *width;
+//				src.rowBytes = *width * 4;
+//				src.data = rgbabuf;
+//				
+//				dst.height =  *height;
+//				dst.width = *width;
+//				dst.rowBytes = *width * 3;
+//				dst.data = buf;
+//				
+//				
+//				vImageConvert_ARGB8888toRGB888( &src, &dst, 0);
+//				
+//				free( rgbabuf);
 				
 				long rowBytes = *width**spp**bpp/8;
 				

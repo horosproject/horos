@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-#define TIMEOUT	10
+#define TIMEOUT	5
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -57,6 +57,7 @@ volatile static BOOL threadIsRunning = NO;
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
+		myrunLoop = [[NSRunLoop alloc] init];
 		
 		[self buildFixedIPList];
 		
@@ -142,12 +143,29 @@ volatile static BOOL threadIsRunning = NO;
 //	return YES;
 //}
 
+//- (void)connectionReceived:(NSNotification *)note
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
+////    NSFileHandle		*incomingConnection = [[note userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
+//	
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadCompletionNotification object: [note object]];
+//	
+//	[[note object] readToEndOfFileInBackgroundAndNotify];
+//	
+//	NSLog( @"connectionReceived");
+//	
+//	[pool release];
+//}
+
 - (void)readAllTheData:(NSNotification *)note
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
 	BOOL				success = YES;
-	NSData				*data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
 	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
+	[[note object] release];
+
 	if( data)
 	{
 		if( [data bytes])
@@ -282,8 +300,7 @@ volatile static BOOL threadIsRunning = NO;
 		}
 	}
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
-	[[note object] release];
+	[data release];
 	
 	resolved = YES;
 	
@@ -301,7 +318,10 @@ volatile static BOOL threadIsRunning = NO;
 		NSFileHandle * sendConnection = [[NSFileHandle alloc] initWithFileDescriptor:socketToRemoteServer closeOnDealloc:YES];
 		if(sendConnection)
 		{
+//			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleReadCompletionNotification object:sendConnection];
+           
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
+			
 			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
@@ -425,14 +445,11 @@ volatile static BOOL threadIsRunning = NO;
 				
 				[sendConnection writeData: toTransfer];
 				
-//					NSData				*readData;
-//					NSMutableData		*data = [NSMutableData dataWithCapacity: 0];
-//					while ( (readData = [sendConnection availableData]) && [readData length]) [data appendData: readData];
-//					NSLog( @"Received data: %d Mb", [data length]/(1024*1024));
-//					[self readAllTheData: data];
-//					[sendConnection release];
+//				[sendConnection readInBackgroundAndNotify];
 				
-				[sendConnection readToEndOfFileInBackgroundAndNotify];
+//				[sendConnection readToEndOfFileInBackgroundAndNotify];
+
+				[sendConnection readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"OsiriXRunLoopMode"]];
 			}
 		}
 		else
@@ -564,7 +581,7 @@ volatile static BOOL threadIsRunning = NO;
     // This case is slightly more complicated. We need to find the object in the list and remove it.
     NSEnumerator * enumerator = [services objectEnumerator];
     NSNetService * currentNetService;
-
+	
     while(currentNetService = [enumerator nextObject]) {
         if ([currentNetService isEqual:aNetService])
 		{
@@ -619,7 +636,8 @@ volatile static BOOL threadIsRunning = NO;
 	resolved = YES;
 	
     //  Make sure to cancel any previous resolves.
-    if (serviceBeingResolved) {
+    if (serviceBeingResolved)
+	{
         [serviceBeingResolved stop];
         [serviceBeingResolved release];
         serviceBeingResolved = nil;
@@ -640,10 +658,11 @@ volatile static BOOL threadIsRunning = NO;
         [serviceBeingResolved retain];
         [serviceBeingResolved setDelegate:self];
 		
-		[serviceBeingResolved scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:	NSDefaultRunLoopMode];
+//		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];	//@"OsiriXRunLoopMode"];
+		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXRunLoopMode"];	//];
 		
 		resolved = NO;
-		[serviceBeingResolved resolveWithTimeout:5];
+		[serviceBeingResolved resolveWithTimeout: TIMEOUT];
     }
 }
 
@@ -651,9 +670,24 @@ volatile static BOOL threadIsRunning = NO;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
+//	NSLog( @"Bonjour message: %@", [object valueForKey:@"msg"]);
+	
+	long	try = 10;
+	
+	resolved = NO;
+	while( resolved == NO && try > 0)
+	{
+		[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
+		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		
+		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
+		{
+			[[NSRunLoop currentRunLoop] runMode:@"OsiriXRunLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+//			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		}
+		
+		try--;
+	}
 	
 	threadIsRunning = NO;
 	
@@ -665,6 +699,11 @@ volatile static BOOL threadIsRunning = NO;
 	threadIsRunning = YES;
 	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
 	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+
+//	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L] waitUntilDone: YES];
+
+//	[self resolveServiceThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+	
 	
 	return resolved;
 }
@@ -678,10 +717,8 @@ volatile static BOOL threadIsRunning = NO;
 	
 	[lock lock];
 	
-	[self resolveServiceWithIndex: index msg:"VERSI"];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};
-	
+	[self connectToServer: index message:@"VERSI"];
+		
 	if( localVersion == BonjourDatabaseVersion) result = YES;
 	else result = NO;
 	
@@ -802,8 +839,9 @@ volatile static BOOL threadIsRunning = NO;
 	{
 		if( [modelVersion isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"]] == NO)
 		{
-			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", 0L), nil, nil, nil);
 			[lock unlock];
+			NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Database structure is not identical. Use the SAME version of OsiriX on clients and servers to correct the problem.", 0L), nil, nil, nil);
+			
 			return 0L;
 		}
 		
@@ -830,9 +868,10 @@ volatile static BOOL threadIsRunning = NO;
 				
 				if( resolved == NO || wrongPassword == YES)
 				{
+					[lock unlock];
+					
 					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Wrong password.", 0L), nil, nil, nil);
 					
-					[lock unlock];
 					return 0L;
 				}
 			}

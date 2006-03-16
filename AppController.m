@@ -1652,7 +1652,9 @@ static BOOL initialized = NO;
 		NSString *reportsDirectory = [documentsDirectory() stringByAppendingString:@"/REPORTS/"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
 
+		// DELETE & CREATE THE TEMP DIRECTORY...
 		NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 		
 		NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
@@ -2488,6 +2490,7 @@ static BOOL isHcugeCh = NO, testDone = NO;
 			int len = [name length];
 			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
 			NSString *domainName = [name substringFromIndex: len - 8];
+
 			if([domainName isEqualToString: @"hcuge.ch"]
 				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"])
 			{

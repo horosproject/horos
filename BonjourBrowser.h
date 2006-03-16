@@ -18,6 +18,7 @@
 
 @interface BonjourBrowser : NSObject
 {
+	NSRunLoop			*myrunLoop;
 	NSLock				*lock;
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
@@ -55,9 +56,6 @@
 - (NSMutableArray*) services;
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
-// delegate of a NSFileManager
-- (BOOL)fileManager:(NSFileManager *)manager shouldProceedAfterError:(NSDictionary *)errorDict;
-- (void)fileManager:(NSFileManager *)manager willProcessPath:(NSString *)path;
 
 - (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (long) noOfImages;
 - (NSString*) getDatabaseFile:(int) index ;

@@ -426,7 +426,6 @@ extern NSString * documentsDirectory();
 		}
 		else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 		{
-			NSLog(@"BONJOUR DICOM");
 			NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
 			NSMutableArray	*dstPaths = [NSMutableArray arrayWithCapacity:0];
 			
@@ -439,8 +438,6 @@ extern NSString * documentsDirectory();
 			pos += 4;
 			
 			representationToSend = [NSMutableData dataWithCapacity: 0];
-			
-			NSLog(@"noOfFiles : %d", noOfFiles);
 			
 			for( i = 0; i < noOfFiles; i++)
 			{
@@ -455,7 +452,6 @@ extern NSString * documentsDirectory();
 				pos += stringSize;
 				
 				[localPaths addObject: path];
-				NSLog(@"[localPaths addObject: path] : %@", path);
 				
 //				if([[path pathExtension] isEqualToString:@"zip"])
 //				{
@@ -485,7 +481,6 @@ extern NSString * documentsDirectory();
 				pos += stringSize;
 				
 				[dstPaths addObject: path];
-				NSLog(@"[dstPaths addObject: path] : %@", path);
 				
 //				if([[path pathExtension] isEqualToString:@"zip"])
 //				{
