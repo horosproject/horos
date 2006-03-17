@@ -26,7 +26,7 @@
 #import <OsiriX/DCMSequenceAttribute.h>
 #import "DCMObjectDBImport.h"
 #import "AppController.h"
-#import "DICOMToNSString.h"
+ #import "DICOMToNSString.h"
 
 
 
@@ -42,7 +42,6 @@
 *					DICOM to NSStrings elsewher ein OsiriX
 *
 *******************************************************************************************************************/
-
 
 
 
@@ -1383,7 +1382,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						
 					//	NSLog( characterSet);
 					//	NSLog( @"%d", encoding);
-						/*
+					/*	
 						if( [characterSet isEqualToString:@"ISO_IR 127"]) encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
 						if( [characterSet isEqualToString:@"ISO_IR 101"]) encoding = NSISOLatin2StringEncoding;
 						if( [characterSet isEqualToString:@"ISO_IR 109"]) encoding = -2147483133;	//[characterSet numberFromLocalizedStringEncodingName :@"Western (ISO Latin 3)"];
@@ -1398,7 +1397,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						if( [characterSet isEqualToString:@"ISO_IR 13"]) encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (Mac OS)"];
 						if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
 						if( [characterSet isEqualToString:@"ISO_IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
-						*/
+					*/	
 					//	ISO -IR 166
 					//	NSLog( @"%d", encoding);
 //					}

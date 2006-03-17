@@ -353,6 +353,7 @@ PluginManager			*pluginManager = 0L;
 						PluginFilter*	filter = [filterClass filter];
 						[preProcessPlugins addObject: filter];
 					}
+
 					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
 					{
 						NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];

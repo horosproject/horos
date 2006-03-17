@@ -1457,6 +1457,12 @@
 		BF8DE5E906507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		BF8DE5EE06507355005DB40E /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
 		BF8DE5EF06507355005DB40E /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E106507355005DB40E /* SmartIcon.tif */; };
+		BF8E5ABE09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */; };
+		BF8E5ABF09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
+		BF8E5AC009CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */; };
+		BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
+		BF8E5AC209CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */; };
+		BF8E5AC309CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
 		BF9D3B260770AA6A002F0847 /* DCMCompositeResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF9D3B270770AA6A002F0847 /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
 		BFAEB2E706BF2C5000C7EF1E /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10606BF2C4E00C7EF1E /* jaricom.c */; };
@@ -10162,6 +10168,8 @@
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
 		BF8DE5E106507355005DB40E /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
+		BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKQueryRetrieveSCP.h; sourceTree = "<group>"; };
+		BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKQueryRetrieveSCP.mm; sourceTree = "<group>"; };
 		BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OsiriXSCPDataHandler.h; sourceTree = "<group>"; };
 		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
 		BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCompositeResponseHandler.h; path = Networking/DCMCompositeResponseHandler.h; sourceTree = "<group>"; };
@@ -14305,6 +14313,8 @@
 				BF1745D308E0C7E200822756 /* LogWindowController.m */,
 				BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */,
 				BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */,
+				BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */,
+				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -19012,6 +19022,7 @@
 				A9523D3309BDB4890070CBD5 /* etkQuaternion.hpp in Headers */,
 				A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF8E5AC009CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20817,6 +20828,7 @@
 				A9523E1E09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC9109BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF8E5ABE09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22627,6 +22639,7 @@
 				A9523E1C09BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC8F09BF301F00F408B7 /* ITKTransform.h in Headers */,
+				BF8E5AC209CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25070,6 +25083,7 @@
 				A9523D3409BDB4890070CBD5 /* etkError.cpp in Sources */,
 				A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25817,6 +25831,7 @@
 				A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF8E5ABF09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26568,6 +26583,7 @@
 				A9523E1D09BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF8E5AC309CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

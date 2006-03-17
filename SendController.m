@@ -476,12 +476,32 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	/*
 	switch(_offisTS)
 	{
-		case SendImplicitLittleEndian:		transferSyntax = @"Implicit";					break;
-		case SendExplicitLittleEndian:		transferSyntax = @"Explicit Little Endian";		break;
-		case SendExplicitBigEndian:			transferSyntax = @"Big Endian";					break;
-		case SendJPEGLossless:				transferSyntax = @"JPEG Lossless";				break;
-		case SendRLE:						transferSyntax = @"RLE";						break;
-		case SendJPEG2000Lossless:			transferSyntax = @"JPEG 2000 Lossless";			break;
+		case SendImplicitLittleEndian:		
+			transferSyntax = @"Implicit";					break;
+		case SendExplicitLittleEndian:		
+			transferSyntax = @"Explicit Little Endian";		break;
+		case SendExplicitBigEndian:			
+			transferSyntax = @"Big Endian";					break;
+		case SendJPEGLossless:				
+			transferSyntax = @"JPEG Lossless";				break;
+		case SendRLE:						
+			transferSyntax = @"RLE";						break;
+		case SendJPEG2000Lossless:			
+			transferSyntax = @"JPEG 2000 Lossless";			break;
+		case SendJPEG2000Lossy10:
+			transferSyntax = @"JPEG 2000  Lossy";			break;
+		case SendJPEG2000Lossy20:
+			transferSyntax = @"JPEG 2000 Lossy";			break;
+		case SendJPEG2000Lossy50:
+			transferSyntax = @"JPEG 2000 Lossy";			break;
+		case SendJPEGLossy9:
+			transferSyntax = @"JPEG Lossy";					break;
+		case SendJPEGLossy8:
+			transferSyntax = @"JPEG Lossy";					break;
+		case SendJPEGLossy7:
+			transferSyntax = @"JPEG Lossy";					break;
+		case SendBip:
+			break;
 	}
 	*/
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
