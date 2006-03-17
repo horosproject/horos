@@ -1090,6 +1090,8 @@ public:
 		//[self renderWindow]->SetDoubleBuffer(0);
 		//vtkMapper::SetGlobalImmediateModeRendering(1);
 		
+		rotate = NO;
+		
 		splash = [[WaitRendering alloc] init:@"Rendering..."];
 //		[[splash window] makeKeyAndOrderFront:self];
 		
@@ -1138,6 +1140,7 @@ public:
 				 object: nil];
 				 
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
+		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
     }
     
@@ -1148,6 +1151,10 @@ public:
 {
 	if( [notification object] == [self window])
 	{
+		[autoRotate invalidate];
+		[autoRotate release];
+		autoRotate = 0L;
+		
 		[mouseModifiers invalidate];
 		[mouseModifiers release];
 		mouseModifiers = 0L;
@@ -1452,11 +1459,22 @@ public:
 	[super otherMouseDown: theEvent];
 }
 
+- (void) autoRotate:(id) sender
+{
+	if( rotate)
+	{
+		[self Azimuth: 8.];
+		[self setNeedsDisplay: YES];
+	}
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
     BOOL		keepOn = YES;
     NSPoint		mouseLoc, mouseLocPre, mouseLocStart;
 	short		tool;
+	
+	if ([theEvent clickCount] > 1) rotate = !rotate;
 	
 	noWaitDialog = YES;
 	tool = currentTool;

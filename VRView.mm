@@ -1291,6 +1291,15 @@ public:
 	return tool;
 }
 
+- (void) autoRotate:(id) sender
+{
+	if( rotate)
+	{
+		[self Azimuth: 8.];
+		[self setNeedsDisplay: YES];
+	}
+}
+
 - (void) checkMouseModifiers:(id) sender
 {
 	if( [[NSApp currentEvent] modifierFlags])
@@ -1304,6 +1313,8 @@ public:
 {
     if ( self = [super initWithFrame:frame] )
     {
+		rotate = NO;
+		
 		splash = [[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
@@ -1380,6 +1391,7 @@ public:
 		[self load3DPointsDefaultProperties];
 		
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
+		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	}
     
@@ -1390,6 +1402,10 @@ public:
 {
 	if( [notification object] == [self window])
 	{
+		[autoRotate invalidate];
+		[autoRotate release];
+		autoRotate = 0L;
+		
 		[mouseModifiers invalidate];
 		[mouseModifiers release];
 		mouseModifiers = 0L;
@@ -1749,7 +1765,9 @@ public:
     BOOL		keepOn = YES;
     NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
 	short		tool;
-
+	
+	if ([theEvent clickCount] > 1) rotate = !rotate;
+	
 	noWaitDialog = YES;
 	tool = currentTool;
 	

@@ -15,10 +15,11 @@
 #import "OrthogonalMPRPETCTViewer.h"
 #import "OrthogonalMPRPETCTView.h"
 
-#import "OrthogonalMIPPETViewer.h"
+//#import "OrthogonalMIPPETViewer.h"
 #import "Mailer.h"
 #import "DICOMExport.h"
 #import "wait.h"
+#import "VRController.h"
 
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
@@ -35,7 +36,7 @@ static NSString*	ResetToolbarItemIdentifier					= @"Reset.tiff";
 static NSString*	MIPToolbarItemIdentifier					= @"Empty";
 static NSString*	FlipVolumeToolbarItemIdentifier				= @"Revert.tiff";
 static NSString*	WLWWToolbarItemIdentifier					= @"WLWW";
-
+static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
 
 
 
@@ -65,6 +66,8 @@ NSString * documentsDirectory();
 {
 	self = [super initWithWindowNibName:@"PETCT"];
 	[[self window] setDelegate:self];
+	
+	blendingViewerController = [bC retain];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
@@ -176,7 +179,9 @@ NSString * documentsDirectory();
 	//NSLog(@"pixList");
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
+	[blendingViewerController release];
 	[toolbar release];
 	[PETCTController stopBlending];
 	[super dealloc];
@@ -853,6 +858,17 @@ NSString * documentsDirectory();
 //	[toolbarItem setMaxSize:NSMakeSize(NSWidth([axesView frame]),NSHeight([axesView frame]))];
 //
 //    }
+
+
+else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
+		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
+		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
+
+		[toolbarItem setTarget: blendingViewerController];
+		[toolbarItem setAction: @selector(Panel3D)];
+    }
 	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier]) {
 		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
@@ -948,6 +964,7 @@ NSString * documentsDirectory();
 											SameHeightSplitViewToolbarItemIdentifier,
 											SameWidthSplitViewToolbarItemIdentifier,
 											WLWWToolbarItemIdentifier,
+											VRPanelToolbarItemIdentifier,
 											nil];
 }
 
@@ -970,6 +987,7 @@ NSString * documentsDirectory();
 										ResetToolbarItemIdentifier,
 										ExportToolbarItemIdentifier,
 										WLWWToolbarItemIdentifier,
+										VRPanelToolbarItemIdentifier,
 										nil];
 }
 
@@ -1048,15 +1066,15 @@ NSString * documentsDirectory();
     return enable;
 }
 
-#pragma mark-
-#pragma mark MIP View
-
--(IBAction) orthogonalMIPPETViewer
-{
-	OrthogonalMIPPETViewer *viewer;
-	viewer = [[OrthogonalMIPPETViewer alloc] initWithPixList:[PETController originalDCMPixList]];
-	[viewer showWindow:self];
-}
+//#pragma mark-
+//#pragma mark MIP View
+//
+//-(IBAction) orthogonalMIPPETViewer
+//{
+//	OrthogonalMIPPETViewer *viewer;
+//	viewer = [[OrthogonalMIPPETViewer alloc] initWithPixList:[PETController originalDCMPixList]];
+//	[viewer showWindow:self];
+//}
 
 #pragma mark-
 #pragma mark NSSplitView Control

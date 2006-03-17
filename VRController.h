@@ -35,7 +35,10 @@
 @interface VRController : Window3DController
 {
     IBOutlet NSSlider       *LODSlider;
-    IBOutlet VRView			*view;
+	IBOutlet VRView			*view;
+	
+	NSString				*mode;
+	
     IBOutlet NSView         *toolsView, *WLWWView, *LODView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
 	IBOutlet NSMatrix		*modeMatrix;
@@ -86,6 +89,7 @@
 	NSMutableArray			*roiVolumes;
 }
 
+- (NSString*) mode;
 - (IBAction) resetShading:(id) sender;
 - (void) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
@@ -94,7 +98,8 @@
 - (void) updateBlendingImage;
 - (ViewerController*) blendingController;
 - (void) LODsliderAction:(id) sender;
-- (id) initWithPix:(NSMutableArray*) pix :(NSArray*) file :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
+- (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
+- (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) m;
 - (void) setupToolbar;
 - (void) setDefaultTool:(id) sender;
 - (void) setCurrentTool:(short) newTool;

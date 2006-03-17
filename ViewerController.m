@@ -5007,6 +5007,48 @@ extern NSString * documentsDirectory();
 	}
 }
 
+- (IBAction) Panel3D:(id) sender
+{
+	long i;
+	
+	[self checkEverythingLoaded];
+	
+	if( [self computeInterval] == 0 ||
+		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+	{
+		[self SetThicknessInterval:sender];
+	}
+	else
+	{
+		VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
+		
+		if( viewer && [[viewer mode] isEqualToString: @"panel"])
+		{
+			[[viewer window] makeKeyAndOrderFront:self];
+		}
+		else
+		{
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode:@"panel"];
+			for( i = 1; i < maxMovieIndex; i++)
+			{
+				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+			}
+			
+			[viewer ApplyCLUTString:curCLUTMenu];
+			float   iwl, iww;
+			[imageView getWLWW:&iwl :&iww];
+			[viewer setWLWW:iwl :iww];
+			[viewer load3DState];
+			[viewer setModeIndex: 1];	// FORCE MIP MODE
+			[viewer showWindow:self];
+			[[viewer window] makeKeyAndOrderFront:self];
+			[[viewer window] display];
+		}
+	}
+}
+
 -(IBAction) VRViewer:(id) sender
 {
 	long i;
@@ -5030,7 +5072,7 @@ extern NSString * documentsDirectory();
 		}
 		else
 		{
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode:@"standard"];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];

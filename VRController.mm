@@ -46,7 +46,9 @@ extern NSString * documentsDirectory();
 extern NSString* convertDICOM( NSString *inputfile);
 }
 
-static NSString* 	MIPToolbarIdentifier            = @"VR Toolbar Identifier";
+static NSString* 	VRStandardToolbarIdentifier		= @"VR Toolbar Identifier";
+static NSString* 	VRPanelToolbarIdentifier		= @"VRPanel Toolbar Identifier";
+
 static NSString*	QTExportToolbarItemIdentifier 	= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier 	= @"iPhoto.icns";
 static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
@@ -287,11 +289,23 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 
 -(NSMutableArray*) pixList { return pixList[0];}
 
+- (NSString*) mode
+{
+	return mode;
+}
+
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
+{
+	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:@"standard"];
+}
+
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) m
 {
     unsigned long   i;
     short           err = 0;
 	BOOL			testInterval = YES;
+	
+	mode = [m retain];
 	
 	// BY DEFAULT TURN OFF OPENGL ENGINE !
 	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
@@ -375,8 +389,12 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 
 	[pixList[0] retain];
 	[volumeData[0] retain];
-    self = [super initWithWindowNibName:@"VR"];
     
+	if( [mode isEqualToString:@"standard"])
+		self = [super initWithWindowNibName:@"VR"];
+	else
+		self = [super initWithWindowNibName:@"VRPanel"];
+		
     [[self window] setDelegate:self];
     
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
@@ -676,6 +694,8 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	long i;
 
     NSLog(@"Dealloc VRController");
+	
+	[mode release];
 	
 	// Release Undo system
 	for( i = 0; i < maxMovieIndex; i++)
@@ -1116,8 +1136,10 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 // ============================================================
 
 - (void) setupToolbar {
-    // Create a new toolbar instance, and attach it to our document window 
-    toolbar = [[NSToolbar alloc] initWithIdentifier: MIPToolbarIdentifier];
+    // Create a new toolbar instance, and attach it to our document window
+	
+	if( [mode isEqualToString:@"standard"]) toolbar = [[NSToolbar alloc] initWithIdentifier: VRStandardToolbarIdentifier];
+    else toolbar = [[NSToolbar alloc] initWithIdentifier: VRPanelToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
     [toolbar setAllowsUserCustomization: YES];
@@ -1129,8 +1151,8 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton:NO];
-	[[[self window] toolbar] setVisible: YES];
+	[[self window] setShowsToolbarButton: [mode isEqualToString:@"panel"]];
+	[[[self window] toolbar] setVisible: [mode isEqualToString:@"standard"]];
     
 //    [window makeKeyAndOrderFront:nil];
 }
@@ -1430,9 +1452,57 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
-    return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
-											ModeToolbarItemIdentifier,
-                                            WLWWToolbarItemIdentifier,
+    
+	if( [mode isEqualToString:@"standard"])
+		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+												ModeToolbarItemIdentifier,
+												WLWWToolbarItemIdentifier,
+												LODToolbarItemIdentifier,
+												CaptureToolbarItemIdentifier,
+												CroppingToolbarItemIdentifier,
+												OrientationToolbarItemIdentifier,
+												ShadingToolbarItemIdentifier,
+												EngineToolbarItemIdentifier,
+												PerspectiveToolbarItemIdentifier,
+												BlendingToolbarItemIdentifier,
+												MovieToolbarItemIdentifier,
+												NSToolbarFlexibleSpaceItemIdentifier,
+												QTExportToolbarItemIdentifier,
+												QTExportVRToolbarItemIdentifier,
+												MailToolbarItemIdentifier,
+												ResetToolbarItemIdentifier,
+												RevertToolbarItemIdentifier,
+												ExportToolbarItemIdentifier,
+												FlyThruToolbarItemIdentifier,
+												nil];
+	else
+		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
+												ModeToolbarItemIdentifier,
+												WLWWToolbarItemIdentifier,
+												LODToolbarItemIdentifier,
+												CaptureToolbarItemIdentifier,
+												CroppingToolbarItemIdentifier,
+												OrientationToolbarItemIdentifier,
+												ShadingToolbarItemIdentifier,
+												NSToolbarFlexibleSpaceItemIdentifier,
+												QTExportToolbarItemIdentifier,
+												MailToolbarItemIdentifier,
+												ResetToolbarItemIdentifier,
+												ExportToolbarItemIdentifier,
+												nil];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
+    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
+    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+    // The set of allowed items is used to construct the customization palette
+	
+	if( [mode isEqualToString:@"standard"])
+		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+											NSToolbarFlexibleSpaceItemIdentifier,
+											NSToolbarSpaceItemIdentifier,
+											NSToolbarSeparatorItemIdentifier,
+											WLWWToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
 											CaptureToolbarItemIdentifier,
 											CroppingToolbarItemIdentifier,
@@ -1440,55 +1510,48 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											ShadingToolbarItemIdentifier,
 											EngineToolbarItemIdentifier,
 											PerspectiveToolbarItemIdentifier,
+											AxToolbarItemIdentifier,
+											CoToolbarItemIdentifier,
+											SaToolbarItemIdentifier,
+											SaOppositeToolbarItemIdentifier,
+											ToolsToolbarItemIdentifier,
+											ModeToolbarItemIdentifier,
 											BlendingToolbarItemIdentifier,
 											MovieToolbarItemIdentifier,
-											NSToolbarFlexibleSpaceItemIdentifier,
+											StereoIdentifier,
 											QTExportToolbarItemIdentifier,
+											iPhotoToolbarItemIdentifier,
 											QTExportVRToolbarItemIdentifier,
 											MailToolbarItemIdentifier,
 											ResetToolbarItemIdentifier,
 											RevertToolbarItemIdentifier,
 											ExportToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
-                                            nil];
-}
-
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
-    // The set of allowed items is used to construct the customization palette 
-    return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
-                                        NSToolbarFlexibleSpaceItemIdentifier,
-                                        NSToolbarSpaceItemIdentifier,
-                                        NSToolbarSeparatorItemIdentifier,
-                                        WLWWToolbarItemIdentifier,
-										LODToolbarItemIdentifier,
-										CaptureToolbarItemIdentifier,
-										CroppingToolbarItemIdentifier,
-										OrientationToolbarItemIdentifier,
-										ShadingToolbarItemIdentifier,
-										EngineToolbarItemIdentifier,
-										PerspectiveToolbarItemIdentifier,
-										AxToolbarItemIdentifier,
-										CoToolbarItemIdentifier,
-										SaToolbarItemIdentifier,
-										SaOppositeToolbarItemIdentifier,
-                                        ToolsToolbarItemIdentifier,
-										ModeToolbarItemIdentifier,
-										BlendingToolbarItemIdentifier,
-										MovieToolbarItemIdentifier,
-										StereoIdentifier,
-										QTExportToolbarItemIdentifier,
-										iPhotoToolbarItemIdentifier,
-										QTExportVRToolbarItemIdentifier,
-										MailToolbarItemIdentifier,
-										ResetToolbarItemIdentifier,
-										RevertToolbarItemIdentifier,
-										ExportToolbarItemIdentifier,
-										FlyThruToolbarItemIdentifier,
-										ScissorStateToolbarItemIdentifier,
-										ROIManagerToolbarItemIdentifier,
-                                        nil];
+											ScissorStateToolbarItemIdentifier,
+											ROIManagerToolbarItemIdentifier,
+											nil];
+	else
+		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
+											NSToolbarFlexibleSpaceItemIdentifier,
+											NSToolbarSpaceItemIdentifier,
+											NSToolbarSeparatorItemIdentifier,
+											WLWWToolbarItemIdentifier,
+											LODToolbarItemIdentifier,
+											CaptureToolbarItemIdentifier,
+											CroppingToolbarItemIdentifier,
+											OrientationToolbarItemIdentifier,
+											ShadingToolbarItemIdentifier,
+											AxToolbarItemIdentifier,
+											CoToolbarItemIdentifier,
+											SaToolbarItemIdentifier,
+											SaOppositeToolbarItemIdentifier,
+											QTExportToolbarItemIdentifier,
+											iPhotoToolbarItemIdentifier,
+											MailToolbarItemIdentifier,
+											ResetToolbarItemIdentifier,
+											RevertToolbarItemIdentifier,
+											ExportToolbarItemIdentifier,
+											nil];
 }
 
 - (void) toolbarWillAddItem: (NSNotification *) notif {

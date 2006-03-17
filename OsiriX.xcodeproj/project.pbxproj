@@ -694,24 +694,6 @@
 		A9F2E5EA09224ED600055899 /* DarkPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F2E5E609224ED600055899 /* DarkPanel.m */; };
 		A9F2E5ED09224ED600055899 /* DarkPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F2E5E509224ED600055899 /* DarkPanel.h */; };
 		A9F2E5EE09224ED700055899 /* DarkPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F2E5E609224ED600055899 /* DarkPanel.m */; };
-		A9F6541B090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F65419090FCFA200BAA6B6 /* OrthogonalMIPPET.h */; };
-		A9F6541C090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F6541A090FCFA200BAA6B6 /* OrthogonalMIPPET.m */; };
-		A9F6541D090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F65419090FCFA200BAA6B6 /* OrthogonalMIPPET.h */; };
-		A9F6541E090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F6541A090FCFA200BAA6B6 /* OrthogonalMIPPET.m */; };
-		A9F6541F090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F65419090FCFA200BAA6B6 /* OrthogonalMIPPET.h */; };
-		A9F65420090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F6541A090FCFA200BAA6B6 /* OrthogonalMIPPET.m */; };
-		A9F656D7091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656D5091201C900BAA6B6 /* OrthogonalMIPPETView.h */; };
-		A9F656D8091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656D6091201C900BAA6B6 /* OrthogonalMIPPETView.m */; };
-		A9F656D9091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656D5091201C900BAA6B6 /* OrthogonalMIPPETView.h */; };
-		A9F656DA091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656D6091201C900BAA6B6 /* OrthogonalMIPPETView.m */; };
-		A9F656DB091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656D5091201C900BAA6B6 /* OrthogonalMIPPETView.h */; };
-		A9F656DC091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656D6091201C900BAA6B6 /* OrthogonalMIPPETView.m */; };
-		A9F656E90912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656E70912045100BAA6B6 /* OrthogonalMIPPETViewer.h */; };
-		A9F656EA0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656E80912045100BAA6B6 /* OrthogonalMIPPETViewer.m */; };
-		A9F656EB0912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656E70912045100BAA6B6 /* OrthogonalMIPPETViewer.h */; };
-		A9F656EC0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656E80912045100BAA6B6 /* OrthogonalMIPPETViewer.m */; };
-		A9F656ED0912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F656E70912045100BAA6B6 /* OrthogonalMIPPETViewer.h */; };
-		A9F656EE0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F656E80912045100BAA6B6 /* OrthogonalMIPPETViewer.m */; };
 		A9F6E4B808FEAF280060285A /* OrthogonalReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F6E4B708FEAF280060285A /* OrthogonalReslice.h */; };
 		A9F6E4B908FEAF280060285A /* OrthogonalReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F6E4B708FEAF280060285A /* OrthogonalReslice.h */; };
 		A9F6E4BA08FEAF280060285A /* OrthogonalReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F6E4B708FEAF280060285A /* OrthogonalReslice.h */; };
@@ -8236,6 +8218,9 @@
 		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE677D1407A6BDDD003B3650 /* VRViewVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */; };
+		CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
+		CE69601F09CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
+		CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
 		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6B2E2108DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6B2E2208DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
@@ -9767,12 +9752,6 @@
 		A9F2E558092227A400055899 /* DarkWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DarkWindow.m; sourceTree = "<group>"; };
 		A9F2E5E509224ED600055899 /* DarkPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DarkPanel.h; sourceTree = "<group>"; };
 		A9F2E5E609224ED600055899 /* DarkPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DarkPanel.m; sourceTree = "<group>"; };
-		A9F65419090FCFA200BAA6B6 /* OrthogonalMIPPET.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMIPPET.h; sourceTree = "<group>"; };
-		A9F6541A090FCFA200BAA6B6 /* OrthogonalMIPPET.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMIPPET.m; sourceTree = "<group>"; };
-		A9F656D5091201C900BAA6B6 /* OrthogonalMIPPETView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMIPPETView.h; sourceTree = "<group>"; };
-		A9F656D6091201C900BAA6B6 /* OrthogonalMIPPETView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMIPPETView.m; sourceTree = "<group>"; };
-		A9F656E70912045100BAA6B6 /* OrthogonalMIPPETViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrthogonalMIPPETViewer.h; sourceTree = "<group>"; };
-		A9F656E80912045100BAA6B6 /* OrthogonalMIPPETViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrthogonalMIPPETViewer.m; sourceTree = "<group>"; };
 		A9F6E4B708FEAF280060285A /* OrthogonalReslice.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OrthogonalReslice.h; sourceTree = "<group>"; };
 		A9F6E4BC08FEAF450060285A /* OrthogonalReslice.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OrthogonalReslice.m; sourceTree = "<group>"; };
 		A9F6E4C108FEAF610060285A /* OrthogonalMPRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OrthogonalMPRView.h; sourceTree = "<group>"; };
@@ -12576,6 +12555,7 @@
 		CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRViewVPRO.h; sourceTree = "<group>"; };
 		CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRControllerVPRO.mm; sourceTree = "<group>"; };
 		CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRControllerVPRO.h; sourceTree = "<group>"; };
+		CE69601D09CAB75800EFFDEF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/VRPanel.nib; sourceTree = "<group>"; };
 		CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FixedIP.tif; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
@@ -13146,6 +13126,7 @@
 				CE0E08FD06A1075000F2C01C /* ThickSlab.nib */,
 				BFC68622065EF4B600AE4050 /* ToolbarPanel.nib */,
 				ABBB64420635878E00D9531F /* Viewer.nib */,
+				CE69601C09CAB75800EFFDEF /* VRPanel.nib */,
 				ABBB64400635878E00D9531F /* VR.nib */,
 				CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */,
 				ABBB643E0635878E00D9531F /* Wait.nib */,
@@ -13634,19 +13615,6 @@
 			name = Bonjour;
 			sourceTree = "<group>";
 		};
-		A9F656D20912019B00BAA6B6 /* MIP */ = {
-			isa = PBXGroup;
-			children = (
-				A9F65419090FCFA200BAA6B6 /* OrthogonalMIPPET.h */,
-				A9F6541A090FCFA200BAA6B6 /* OrthogonalMIPPET.m */,
-				A9F656D5091201C900BAA6B6 /* OrthogonalMIPPETView.h */,
-				A9F656D6091201C900BAA6B6 /* OrthogonalMIPPETView.m */,
-				A9F656E70912045100BAA6B6 /* OrthogonalMIPPETViewer.h */,
-				A9F656E80912045100BAA6B6 /* OrthogonalMIPPETViewer.m */,
-			);
-			name = MIP;
-			sourceTree = "<group>";
-		};
 		A9F6E4B108FEAEFC0060285A /* OrthogonalReslice */ = {
 			isa = PBXGroup;
 			children = (
@@ -13671,7 +13639,6 @@
 				A9F6E4FE08FEB0740060285A /* OrthogonalMPRPETCTController.m */,
 				A9F6E50308FEB0860060285A /* OrthogonalMPRPETCTViewer.h */,
 				A9F6E50808FEB09D0060285A /* OrthogonalMPRPETCTViewer.m */,
-				A9F656D20912019B00BAA6B6 /* MIP */,
 			);
 			name = "PET-CT";
 			sourceTree = "<group>";
@@ -18570,9 +18537,6 @@
 				A9F6E4F008FEB0410060285A /* OrthogonalMPRPETCTView.h in Headers */,
 				A9F6E4FA08FEB05F0060285A /* OrthogonalMPRPETCTController.h in Headers */,
 				A9F6E50408FEB0860060285A /* OrthogonalMPRPETCTViewer.h in Headers */,
-				A9F6541F090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */,
-				A9F656D7091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */,
-				A9F656E90912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */,
 				A9EDB2CF091A473E00EE86AF /* KFSplitView.h in Headers */,
 				A9F2E559092227A400055899 /* DarkWindow.h in Headers */,
 				A9F2E5E709224ED600055899 /* DarkPanel.h in Headers */,
@@ -20375,9 +20339,6 @@
 				A9F6E4F108FEB0410060285A /* OrthogonalMPRPETCTView.h in Headers */,
 				A9F6E4FB08FEB05F0060285A /* OrthogonalMPRPETCTController.h in Headers */,
 				A9F6E50508FEB0860060285A /* OrthogonalMPRPETCTViewer.h in Headers */,
-				A9F6541B090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */,
-				A9F656D9091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */,
-				A9F656EB0912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */,
 				A9F2E55F092227A400055899 /* DarkWindow.h in Headers */,
 				A9F2E5ED09224ED600055899 /* DarkPanel.h in Headers */,
 				CE37F9480925D1CE000A14CA /* KFSplitView.h in Headers */,
@@ -22184,9 +22145,6 @@
 				A9F6E4F208FEB0410060285A /* OrthogonalMPRPETCTView.h in Headers */,
 				A9F6E4FC08FEB05F0060285A /* OrthogonalMPRPETCTController.h in Headers */,
 				A9F6E50608FEB0860060285A /* OrthogonalMPRPETCTViewer.h in Headers */,
-				A9F6541D090FCFA200BAA6B6 /* OrthogonalMIPPET.h in Headers */,
-				A9F656DB091201C900BAA6B6 /* OrthogonalMIPPETView.h in Headers */,
-				A9F656ED0912045100BAA6B6 /* OrthogonalMIPPETViewer.h in Headers */,
 				A9F2E55B092227A400055899 /* DarkWindow.h in Headers */,
 				A9F2E5E909224ED600055899 /* DarkPanel.h in Headers */,
 				CE01441A0923A64400F46597 /* KFSplitView.h in Headers */,
@@ -23467,6 +23425,7 @@
 				3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
+				CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23735,6 +23694,7 @@
 				3A2D126309BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9E09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
+				CE69601F09CAB75800EFFDEF /* VRPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24003,6 +23963,7 @@
 				3A2D125F09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */,
 				3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9D09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
+				CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24542,9 +24503,6 @@
 				A9F6E4F508FEB0510060285A /* OrthogonalMPRPETCTView.m in Sources */,
 				A9F6E4FF08FEB0740060285A /* OrthogonalMPRPETCTController.m in Sources */,
 				A9F6E50908FEB09D0060285A /* OrthogonalMPRPETCTViewer.m in Sources */,
-				A9F65420090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */,
-				A9F656D8091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */,
-				A9F656EA0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */,
 				A9EDB2D0091A473E00EE86AF /* KFSplitView.m in Sources */,
 				A9F2E55A092227A400055899 /* DarkWindow.m in Sources */,
 				A9F2E5E809224ED600055899 /* DarkPanel.m in Sources */,
@@ -25289,9 +25247,6 @@
 				A9F6E4F608FEB0510060285A /* OrthogonalMPRPETCTView.m in Sources */,
 				A9F6E50008FEB0740060285A /* OrthogonalMPRPETCTController.m in Sources */,
 				A9F6E50A08FEB09D0060285A /* OrthogonalMPRPETCTViewer.m in Sources */,
-				A9F6541C090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */,
-				A9F656DA091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */,
-				A9F656EC0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */,
 				A9F2E560092227A400055899 /* DarkWindow.m in Sources */,
 				A9F2E5EE09224ED700055899 /* DarkPanel.m in Sources */,
 				CE37F9470925D1CC000A14CA /* KFSplitView.m in Sources */,
@@ -26040,9 +25995,6 @@
 				A9F6E4F708FEB0510060285A /* OrthogonalMPRPETCTView.m in Sources */,
 				A9F6E50108FEB0740060285A /* OrthogonalMPRPETCTController.m in Sources */,
 				A9F6E50B08FEB09D0060285A /* OrthogonalMPRPETCTViewer.m in Sources */,
-				A9F6541E090FCFA200BAA6B6 /* OrthogonalMIPPET.m in Sources */,
-				A9F656DC091201C900BAA6B6 /* OrthogonalMIPPETView.m in Sources */,
-				A9F656EE0912045100BAA6B6 /* OrthogonalMIPPETViewer.m in Sources */,
 				A9F2E55C092227A400055899 /* DarkWindow.m in Sources */,
 				A9F2E5EA09224ED600055899 /* DarkPanel.m in Sources */,
 				CE0144190923A64300F46597 /* KFSplitView.m in Sources */,
@@ -26928,6 +26880,14 @@
 				CE3BF8EA098543F20000D64F /* English */,
 			);
 			name = OrthogonalMPR.nib;
+			sourceTree = "<group>";
+		};
+		CE69601C09CAB75800EFFDEF /* VRPanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE69601D09CAB75800EFFDEF /* English */,
+			);
+			name = VRPanel.nib;
 			sourceTree = "<group>";
 		};
 		CE6E2D1106CAED0300BC7907 /* Plot.nib */ = {

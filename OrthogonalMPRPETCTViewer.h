@@ -16,7 +16,10 @@
 #import "OrthogonalMPRPETCTController.h"
 #import "KFSplitView.h"
 
-@interface OrthogonalMPRPETCTViewer : NSWindowController {
+@interface OrthogonalMPRPETCTViewer : NSWindowController
+{
+	ViewerController							*blendingViewerController;
+	
 	IBOutlet OrthogonalMPRPETCTController		*CTController, *PETCTController, *PETController;
 	
 //	IBOutlet NSSplitView						*originalSplitView, *xReslicedSplitView, *yReslicedSplitView, *modalitySplitView;

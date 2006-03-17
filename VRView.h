@@ -143,6 +143,9 @@ typedef char* vtkMyCallbackVR;
 
 @interface VRView : VTKView <Schedulable>
 {
+	NSTimer						*autoRotate;
+	BOOL						rotate;
+
 	int							projectionMode;
     NSMutableArray				*blendingPixList;
     DCMPix						*blendingFirstObject;

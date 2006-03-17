@@ -403,6 +403,7 @@
 - (void) renameSeriesROIwithName: (NSString*) name newName:(NSString*) newName;
 - (void)setStandardRect:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect;
+- (IBAction) Panel3D:(id) sender;
 
 #pragma mark-
 #pragma mark Brush ROI Filters
