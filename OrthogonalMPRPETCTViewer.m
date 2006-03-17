@@ -699,6 +699,11 @@ NSString * documentsDirectory();
 #pragma mark-
 #pragma mark Tools
 
+- (IBAction) Panel3D:(id) sender
+{
+	[blendingViewerController Panel3D: sender];
+}
+
 - (IBAction) changeTool:(id) sender
 {
 	if( [sender tag] >= 0)
@@ -866,8 +871,8 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
 
-		[toolbarItem setTarget: blendingViewerController];
-		[toolbarItem setAction: @selector(Panel3D)];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(Panel3D:)];
     }
 	else if ([itemIdent isEqual: SameWidthSplitViewToolbarItemIdentifier]) {
 		[toolbarItem setLabel:NSLocalizedString(@"Same Widths", 0L)];
