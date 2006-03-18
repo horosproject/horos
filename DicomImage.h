@@ -21,8 +21,9 @@
 }
 
 -(NSString*) uniqueFilename;
-- (NSSet *)paths;
-- (DCMSequenceAttribute *)graphicAnnotationSequence;
+-(NSSet*) paths;
+-(NSString*) completePath;
+-(DCMSequenceAttribute*) graphicAnnotationSequence;
 
 
 

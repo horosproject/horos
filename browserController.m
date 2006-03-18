@@ -3936,8 +3936,7 @@ long        i;
     
 	[appController setCurrentHangingProtocolForModality:nil description:nil];
 	
-    if( [theCell tag] >= 0)
-    {
+    if( [theCell tag] >= 0 ) {
 		[self viewerDICOM:sender];
     }
 }
@@ -5639,7 +5638,7 @@ static BOOL needToRezoom;
 		}
 	}
 	*/	
-
+	
 	// do nothing for a ZIP file with XML descriptor
 	BOOL zipFile = NO;
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
