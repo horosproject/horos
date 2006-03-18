@@ -642,7 +642,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
       case EXS_JPEGProcess1TransferSyntax:
         /* we prefer JPEGBaseline (default lossy for 8 bit images) */
@@ -650,7 +656,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
       case EXS_JPEGProcess2_4TransferSyntax:
         /* we prefer JPEGExtended (default lossy for 12 bit images) */
@@ -658,7 +670,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[5] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
       case EXS_JPEG2000LosslessOnly:
         /* we prefer JPEG 2000 lossless */
@@ -666,7 +684,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
       case EXS_JPEG2000:
         /* we prefer JPEG 2000 lossy or lossless */
@@ -674,7 +698,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
 #ifdef WITH_ZLIB
       case EXS_DeflatedLittleEndianExplicit:
@@ -683,7 +713,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[5] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[8] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
 #endif
       case EXS_RLELossless:
@@ -692,7 +728,13 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
+		transferSyntaxes[4] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[5] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[6] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[8] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[9] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        numTransferSyntaxes = 10;
         break;
 #endif
       default:
@@ -708,8 +750,15 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
           transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
         }
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+		transferSyntaxes[2] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[9] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 10;
         break;
     }
 
