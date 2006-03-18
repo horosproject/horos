@@ -37,7 +37,7 @@
     IBOutlet NSSlider       *LODSlider;
 	IBOutlet VRView			*view;
 	
-	NSString				*mode;
+	NSString				*style;
 	
     IBOutlet NSView         *toolsView, *WLWWView, *LODView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
@@ -89,7 +89,7 @@
 	NSMutableArray			*roiVolumes;
 }
 
-- (NSString*) mode;
+- (NSString*) style;
 - (IBAction) resetShading:(id) sender;
 - (void) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
@@ -99,7 +99,7 @@
 - (ViewerController*) blendingController;
 - (void) LODsliderAction:(id) sender;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
-- (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) m;
+- (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode;
 - (void) setupToolbar;
 - (void) setDefaultTool:(id) sender;
 - (void) setCurrentTool:(short) newTool;

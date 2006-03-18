@@ -184,6 +184,7 @@
                 exportDCMWindow = NSWindow; 
                 framesSlider = NSSlider; 
                 orientation = NSMatrix; 
+                pixelInformation = NSTextField; 
                 point3DColorWell = NSColorWell; 
                 point3DInfoPanel = NSPanel; 
                 point3DPropagateToAll = NSButton; 

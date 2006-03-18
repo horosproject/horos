@@ -19,7 +19,10 @@
 
 @class DICOMExport;
 
-@interface OrthogonalMPRViewer : NSWindowController {
+@interface OrthogonalMPRViewer : NSWindowController
+{
+	ViewerController					*viewer;
+
 	IBOutlet OrthogonalMPRController	*controller;
 	IBOutlet NSSplitView				*splitView;
 	
@@ -55,6 +58,7 @@
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu: (NSString*) wlww;
 - (void) flipVolume;
+- (DCMView*) keyView;
 
 // Thick Slab
 -(IBAction) setThickSlabMode : (id) sender;

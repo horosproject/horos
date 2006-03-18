@@ -5022,26 +5022,32 @@ extern NSString * documentsDirectory();
 	}
 	else
 	{
-		VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
+		VRController *viewer = [appController FindViewer :@"VRPanel" :pixList[0]];
 		
-		if( viewer && [[viewer mode] isEqualToString: @"panel"])
+		if( viewer)
 		{
 			[[viewer window] makeKeyAndOrderFront:self];
 		}
 		else
 		{
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode:@"panel"];
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"panel" mode:@"MIP"];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
 			
-			[viewer ApplyCLUTString:curCLUTMenu];
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[viewer setWLWW:iwl :iww];
+			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+			{
+				[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+			}
+			else
+			{
+				float   iwl, iww;
+				[imageView getWLWW:&iwl :&iww];
+				[viewer setWLWW:iwl :iww];
+			}
+			
 			[viewer load3DState];
-			[viewer setModeIndex: 1];	// FORCE MIP MODE
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
@@ -5072,18 +5078,29 @@ extern NSString * documentsDirectory();
 		}
 		else
 		{
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode:@"standard"];
+			NSString	*mode;
+			
+			if( [sender tag] == 3) mode = @"MIP";
+			else mode = @"VR";
+		
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"standard" mode: mode];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
 			
-			[viewer ApplyCLUTString:curCLUTMenu];
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[viewer setWLWW:iwl :iww];
+			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+			{
+				[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+			}
+			else
+			{
+				float   iwl, iww;
+				[imageView getWLWW:&iwl :&iww];
+				[viewer setWLWW:iwl :iww];
+			}
+			
 			[viewer load3DState];
-			if( [sender tag] == 3) [viewer setModeIndex: 1];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
@@ -5379,7 +5396,7 @@ long i;
 			}
 			else
 			{
-				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController];
+				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self];
 				
 				[viewer ApplyCLUTString:curCLUTMenu];
 				

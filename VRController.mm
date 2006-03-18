@@ -289,23 +289,33 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 
 -(NSMutableArray*) pixList { return pixList[0];}
 
-- (NSString*) mode
+- (NSString*) style
 {
-	return mode;
+	return style;
+}
+
+-(void) awakeFromNib
+{
+	if( [style isEqualToString:@"panel"])
+	{
+		[self setShouldCascadeWindows: NO];
+		[[self window] setFrameAutosaveName:@"3D Panel"];
+		[[self window] setFrameUsingName:@"3D Panel"];
+	}
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
-	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:@"standard"];
+	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
 }
 
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) m
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
 {
     unsigned long   i;
     short           err = 0;
 	BOOL			testInterval = YES;
 	
-	mode = [m retain];
+	style = [m retain];
 	
 	// BY DEFAULT TURN OFF OPENGL ENGINE !
 	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
@@ -390,11 +400,12 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	[pixList[0] retain];
 	[volumeData[0] retain];
     
-	if( [mode isEqualToString:@"standard"])
+	if( [style isEqualToString:@"standard"])
 		self = [super initWithWindowNibName:@"VR"];
 	else
+	{
 		self = [super initWithWindowNibName:@"VRPanel"];
-		
+	}
     [[self window] setDelegate:self];
     
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
@@ -403,7 +414,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
         [self dealloc];
         return 0L;
     }
-    
+	    
 	blendingController = bC;
 	if( blendingController) // Blending! Activate image fusion
 	{
@@ -515,7 +526,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
                name: @"CloseViewerNotification"
              object: nil];
 
-	if( [mode isEqualToString:@"standard"])
+	if( [style isEqualToString:@"standard"])
 		[[self window] performZoom:self];
 	
 	[movieRateSlider setEnabled: NO];
@@ -545,7 +556,13 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	{
 		[[toolsMatrix cellWithTag:21] setEnabled:YES];
 	}
-	
+
+	if( [renderingMode isEqualToString:@"MIP"])
+		[self setModeIndex: 1];
+		
+	if( [style isEqualToString:@"panel"])
+		[view setRotate: YES];
+		
     return self;
 }
 
@@ -573,7 +590,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
@@ -591,16 +608,17 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	
+	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
 	[view set3DStateDictionary:dict];
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
-	else [self ApplyCLUTString:@"VR Muscles-Bones"];
+	else if([view mode] == 0) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
 	
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-	else [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];
+	else if([view mode] == 0) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
 	else [shadingCheck setState: NSOffState];
@@ -696,7 +714,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 
     NSLog(@"Dealloc VRController");
 	
-	[mode release];
+	[style release];
 	
 	// Release Undo system
 	for( i = 0; i < maxMovieIndex; i++)
@@ -1139,7 +1157,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 - (void) setupToolbar {
     // Create a new toolbar instance, and attach it to our document window
 	
-	if( [mode isEqualToString:@"standard"]) toolbar = [[NSToolbar alloc] initWithIdentifier: VRStandardToolbarIdentifier];
+	if( [style isEqualToString:@"standard"]) toolbar = [[NSToolbar alloc] initWithIdentifier: VRStandardToolbarIdentifier];
     else toolbar = [[NSToolbar alloc] initWithIdentifier: VRPanelToolbarIdentifier];
     
     // Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
@@ -1152,8 +1170,8 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     
     // Attach the toolbar to the document window 
     [[self window] setToolbar: toolbar];
-	[[self window] setShowsToolbarButton: [mode isEqualToString:@"panel"]];
-	[[[self window] toolbar] setVisible: [mode isEqualToString:@"standard"]];
+	[[self window] setShowsToolbarButton: [style isEqualToString:@"panel"]];
+	[[[self window] toolbar] setVisible: [style isEqualToString:@"standard"]];
     
 //    [window makeKeyAndOrderFront:nil];
 }
@@ -1454,7 +1472,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     
-	if( [mode isEqualToString:@"standard"])
+	if( [style isEqualToString:@"standard"])
 		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
@@ -1498,7 +1516,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette
 	
-	if( [mode isEqualToString:@"standard"])
+	if( [style isEqualToString:@"standard"])
 		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
@@ -1730,7 +1748,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		
 		// find the slice where we want to add the point
 		float sliceInterval = [secondDCMPix sliceLocation] - [firstDCMPix sliceLocation];
-		long sliceNumber = sc[2]+0.5;
+		long sliceNumber = (long) ( sc[2]+0.5 );
 		
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{

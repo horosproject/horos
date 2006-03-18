@@ -33,7 +33,7 @@ static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
 static NSString*	ResetToolbarItemIdentifier				= @"Reset.tiff";
 static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tiff";
-
+static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
 
 
 
@@ -56,6 +56,22 @@ NSString * documentsDirectory();
 	[controller blendingPropagateY: sender];
 }
 
+- (void) Display3DPoint:(NSNotification*) note
+{
+	NSMutableArray	*v = [note object];
+	
+	if( v == [controller originalDCMPixList])
+	{
+		OrthogonalMPRView *view = [[[self keyView] controller] originalView];
+		
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		
+		view = [[[self keyView] controller] xReslicedView];
+		
+		[view setCrossPosition: [view crossPositionX] :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]];
+	}
+}
+
 - (void) CloseViewerNotification: (NSNotification*) note
 {
 	ViewerController	*v = [note object];
@@ -74,10 +90,18 @@ NSString * documentsDirectory();
 	[[self window] setShowsResizeIndicator:YES];
 	[[self window] performZoom:self];
 	
+	viewer = [bC retain];
+	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
 											name: @"CloseViewerNotification"
 											object: nil];
+	
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(Display3DPoint:)
+											name: @"Display3DPoint"
+											object: nil];
+	
 	
 	[splitView setDelegate:self];
 	
@@ -128,7 +152,8 @@ NSString * documentsDirectory();
 	return self;
 }
 
-- (void) dealloc {
+- (void) dealloc{
+	[viewer release];
 	[toolbar release];
 	[exportDCM release];
 	[super dealloc];
@@ -628,6 +653,11 @@ NSString * documentsDirectory();
 #pragma mark-
 #pragma mark Tools Selection
 
+- (IBAction) Panel3D:(id) sender
+{
+	[viewer Panel3D: sender];
+}
+
 - (IBAction) changeTool:(id) sender
 {
 	if( [sender tag] >= 0)
@@ -810,6 +840,15 @@ NSString * documentsDirectory();
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(resetImage:)];
     }
+	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
+		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
+		[toolbarItem setImage:[NSImage imageNamed:VRPanelToolbarItemIdentifier]];
+
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(Panel3D:)];
+    }
 	else if ([itemIdent isEqualToString: FlipVolumeToolbarItemIdentifier]) {
 		[toolbarItem setLabel: NSLocalizedString(@"Flip Volume", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Flip Volume", nil)];
@@ -854,6 +893,7 @@ NSString * documentsDirectory();
 									//		QTExportToolbarItemIdentifier,
 											MailToolbarItemIdentifier,
 											AdjustSplitViewToolbarItemIdentifier,
+											VRPanelToolbarItemIdentifier,
 											nil];
 }
 
@@ -878,6 +918,7 @@ NSString * documentsDirectory();
 										TurnSplitViewToolbarItemIdentifier,
 										ResetToolbarItemIdentifier,
 										FlipVolumeToolbarItemIdentifier,
+										VRPanelToolbarItemIdentifier,
 										nil];
 }
 
