@@ -6223,7 +6223,7 @@ static long scrollMode;
 				cblueTable[ i] = blueTable[ i] * blueFactor;
 			}
 			#if __BIG_ENDIAN__
-			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &redTable, (Pixel_8*) &greenTable, (Pixel_8*) &blueTable, 0);
+			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 			#else
 			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &cblueTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &credTable, (Pixel_8*) &alphaTable, 0);
 			#endif

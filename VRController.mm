@@ -514,9 +514,10 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
            selector: @selector(CloseViewerNotification:)
                name: @"CloseViewerNotification"
              object: nil];
-	
-	[[self window] performZoom:self];
 
+	if( [mode isEqualToString:@"standard"])
+		[[self window] performZoom:self];
+	
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled: NO];
