@@ -906,16 +906,18 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     /*
      * Refuse any "Storage" presentation contexts to non-writable
      * storage areas.
-     */
+     
     if (!config_->writableStorageArea(calledAETitle))
     {
       refuseAnyStorageContexts(assoc);
     }
-
+	*/
+	
+	
     /*
      * Enforce RSNA'93 Demonstration Requirements about only
      * accepting a context for MOVE if a context for FIND is also present.
-     */
+   
 
     for (i=0; i<(int)DIM_OF(queryRetrievePairs); i++) {
         movepid = ASC_findAcceptedPresentationContextID(assoc,
@@ -925,7 +927,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
             queryRetrievePairs[i].findSyntax);
         if (findpid == 0) {
         if (options_.requireFindForMove_) {
-            /* refuse the move */
+            //* refuse the move 
             ASC_refusePresentationContext(assoc->params,
                 movepid, ASC_P_USERREJECTION);
             } else {
@@ -934,13 +936,14 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         }
         }
     }
-
+	  */
+	  
     /*
      * Enforce an Ad-Hoc rule to limit storage access.
      * If the storage area is "writable" and some other association has
      * already negotiated a "Storage" class presentation context,
      * then refuse any "storage" presentation contexts.
-     */
+    
 
     if (options_.refuseMultipleStorageAssociations_)
     {
@@ -952,7 +955,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
           }
         }
     }
-
+	 */
+	 
+	 
     return cond;
 }
 
@@ -1054,9 +1059,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         }
     }
 
+	/* Does peer AE have access to required service ?? */
+	/*
     if (! go_cleanup)
     {
-        /* Does peer AE have access to required service ?? */
+        
         if (! config_->peerInAETitle(assoc->params->DULparams.calledAPTitle,
         assoc->params->DULparams.callingAPTitle,
         assoc->params->DULparams.callingPresentationAddress))
@@ -1065,7 +1072,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             go_cleanup = OFTrue;
         }
     }
-
+	*/
+	
     if (! go_cleanup)
     {
         // too many concurrent associations ??
