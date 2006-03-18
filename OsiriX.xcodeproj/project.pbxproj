@@ -1407,8 +1407,140 @@
 		BF398B8C065B124700AD1F25 /* InArrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF398B8A065B124700AD1F25 /* InArrow.tif */; };
 		BF3BB380067808D5004F6E91 /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF3BB381067808D5004F6E91 /* DCMTransferSyntax.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */; };
+		BF3F214709CB86E5002736A5 /* diargimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5609B6827F00545F5E /* diargimg.cc */; };
+		BF3F214809CB86E5002736A5 /* diargimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5709B6827F00545F5E /* diargimg.h */; };
+		BF3F214909CB86E6002736A5 /* diargpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5809B6827F00545F5E /* diargpxt.h */; };
+		BF3F214A09CB86E7002736A5 /* dicmyimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5909B6827F00545F5E /* dicmyimg.cc */; };
+		BF3F214B09CB86E7002736A5 /* dicmyimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5A09B6827F00545F5E /* dicmyimg.h */; };
+		BF3F214C09CB86E8002736A5 /* dicmypxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5B09B6827F00545F5E /* dicmypxt.h */; };
+		BF3F214D09CB86E8002736A5 /* dicocpt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5C09B6827F00545F5E /* dicocpt.h */; };
+		BF3F214F09CB86EB002736A5 /* dicoflt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5D09B6827F00545F5E /* dicoflt.h */; };
+		BF3F215009CB86EC002736A5 /* dicoimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5E09B6827F00545F5E /* dicoimg.cc */; };
+		BF3F215109CB86F2002736A5 /* dicoimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5F09B6827F00545F5E /* dicoimg.h */; };
+		BF3F215209CB86F2002736A5 /* dicomot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6009B6827F00545F5E /* dicomot.h */; };
+		BF3F215309CB86F3002736A5 /* dicoopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6109B6827F00545F5E /* dicoopx.cc */; };
+		BF3F215409CB86F3002736A5 /* dicoopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6209B6827F00545F5E /* dicoopx.h */; };
+		BF3F215609CB86F6002736A5 /* dicopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6409B6827F00545F5E /* dicopx.cc */; };
+		BF3F215709CB86F6002736A5 /* dicoopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6309B6827F00545F5E /* dicoopxt.h */; };
+		BF3F215809CB86F8002736A5 /* dicopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6509B6827F00545F5E /* dicopx.h */; };
+		BF3F215909CB86F8002736A5 /* dicopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6609B6827F00545F5E /* dicopxt.h */; };
+		BF3F215A09CB86F9002736A5 /* dicorot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6709B6827F00545F5E /* dicorot.h */; };
+		BF3F215B09CB86FA002736A5 /* dicosct.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6809B6827F00545F5E /* dicosct.h */; };
+		BF3F215C09CB86FA002736A5 /* dihsvimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6909B6827F00545F5E /* dihsvimg.cc */; };
+		BF3F215D09CB86FC002736A5 /* dihsvimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6A09B6827F00545F5E /* dihsvimg.h */; };
+		BF3F215E09CB86FC002736A5 /* dihsvpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6B09B6827F00545F5E /* dihsvpxt.h */; };
+		BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6C09B6827F00545F5E /* dipalimg.cc */; };
+		BF3F216009CB86FD002736A5 /* dipalimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6D09B6827F00545F5E /* dipalimg.h */; };
+		BF3F216109CB86FF002736A5 /* dipalpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6E09B6827F00545F5E /* dipalpxt.h */; };
+		BF3F216209CB86FF002736A5 /* dipipng.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6F09B6827F00545F5E /* dipipng.cc */; };
+		BF3F216309CB8700002736A5 /* dipipng.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7009B6827F00545F5E /* dipipng.h */; };
+		BF3F216409CB8701002736A5 /* dipitiff.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7109B6827F00545F5E /* dipitiff.cc */; };
+		BF3F216509CB8705002736A5 /* dipitiff.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7209B6827F00545F5E /* dipitiff.h */; };
+		BF3F216609CB8706002736A5 /* diqtcmap.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7309B6827F00545F5E /* diqtcmap.h */; };
+		BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7409B6827F00545F5E /* diqtctab.cc */; };
+		BF3F216809CB8707002736A5 /* diqtctab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7509B6827F00545F5E /* diqtctab.h */; };
+		BF3F216909CB8708002736A5 /* diqtfs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7609B6827F00545F5E /* diqtfs.cc */; };
+		BF3F216A09CB8708002736A5 /* diqtfs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7709B6827F00545F5E /* diqtfs.h */; };
+		BF3F216B09CB870A002736A5 /* diqthash.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7809B6827F00545F5E /* diqthash.cc */; };
+		BF3F216C09CB870A002736A5 /* diqthash.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7909B6827F00545F5E /* diqthash.h */; };
+		BF3F216D09CB870B002736A5 /* diqthitl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7A09B6827F00545F5E /* diqthitl.cc */; };
+		BF3F216E09CB870C002736A5 /* diqthitl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7B09B6827F00545F5E /* diqthitl.h */; };
+		BF3F216F09CB870C002736A5 /* diqthitm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7C09B6827F00545F5E /* diqthitm.h */; };
+		BF3F217009CB870E002736A5 /* diqtid.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7D09B6827F00545F5E /* diqtid.h */; };
+		BF3F217109CB870E002736A5 /* diqtpbox.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7E09B6827F00545F5E /* diqtpbox.cc */; };
+		BF3F217209CB870E002736A5 /* diqtpbox.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7F09B6827F00545F5E /* diqtpbox.h */; };
+		BF3F217309CB870F002736A5 /* diqtpix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8009B6828000545F5E /* diqtpix.h */; };
+		BF3F217409CB8715002736A5 /* diqtstab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8109B6828000545F5E /* diqtstab.h */; };
+		BF3F217509CB8715002736A5 /* diqttype.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8209B6828000545F5E /* diqttype.h */; };
+		BF3F217609CB8715002736A5 /* diquant.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8309B6828000545F5E /* diquant.cc */; };
+		BF3F217709CB8718002736A5 /* diregist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8509B6828000545F5E /* diregist.cc */; };
+		BF3F217809CB8718002736A5 /* diregist.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8609B6828000545F5E /* diregist.h */; };
+		BF3F217909CB8719002736A5 /* dirgbimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8709B6828000545F5E /* dirgbimg.cc */; };
+		BF3F217A09CB871A002736A5 /* dirgbimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8809B6828000545F5E /* dirgbimg.h */; };
+		BF3F217B09CB871C002736A5 /* diquant.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8409B6828000545F5E /* diquant.h */; };
+		BF3F217C09CB871D002736A5 /* dirgbpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8909B6828000545F5E /* dirgbpxt.h */; };
+		BF3F217D09CB871D002736A5 /* diybrimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8A09B6828000545F5E /* diybrimg.cc */; };
+		BF3F217E09CB871E002736A5 /* diybrimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8B09B6828000545F5E /* diybrimg.h */; };
+		BF3F217F09CB8720002736A5 /* diybrpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8C09B6828000545F5E /* diybrpxt.h */; };
+		BF3F218009CB8720002736A5 /* diyf2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8D09B6828000545F5E /* diyf2img.cc */; };
+		BF3F218109CB8721002736A5 /* diyf2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8E09B6828000545F5E /* diyf2img.h */; };
+		BF3F218209CB8721002736A5 /* diyf2pxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8F09B6828000545F5E /* diyf2pxt.h */; };
+		BF3F218309CB8722002736A5 /* diyp2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9009B6828000545F5E /* diyp2img.cc */; };
+		BF3F218409CB8723002736A5 /* diyp2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9109B6828000545F5E /* diyp2img.h */; };
+		BF3F218509CB8725002736A5 /* diyp2pxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9209B6828000545F5E /* diyp2pxt.h */; };
+		BF3F218609CB8737002736A5 /* dcmimage.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9409B6828000545F5E /* dcmimage.cc */; };
+		BF3F218709CB8737002736A5 /* dcmimage.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9509B6828000545F5E /* dcmimage.h */; };
+		BF3F218809CB8737002736A5 /* dibaslut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9609B6828000545F5E /* dibaslut.cc */; };
+		BF3F218909CB8737002736A5 /* dibaslut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9709B6828000545F5E /* dibaslut.h */; };
+		BF3F218A09CB8738002736A5 /* diciefn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9809B6828000545F5E /* diciefn.cc */; };
+		BF3F218B09CB8739002736A5 /* diciefn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9909B6828000545F5E /* diciefn.h */; };
+		BF3F218C09CB873A002736A5 /* dicielut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9A09B6828000545F5E /* dicielut.cc */; };
+		BF3F218D09CB873A002736A5 /* dicielut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9B09B6828000545F5E /* dicielut.h */; };
+		BF3F218E09CB873B002736A5 /* dicrvfit.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9C09B6828000545F5E /* dicrvfit.h */; };
+		BF3F218F09CB873B002736A5 /* didislut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9D09B6828000545F5E /* didislut.cc */; };
+		BF3F219009CB873D002736A5 /* didislut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9E09B6828000545F5E /* didislut.h */; };
+		BF3F219109CB873D002736A5 /* didispfn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9F09B6828000545F5E /* didispfn.cc */; };
+		BF3F219209CB873E002736A5 /* didispfn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA009B6828000545F5E /* didispfn.h */; };
+		BF3F219309CB873E002736A5 /* didocu.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA109B6828000545F5E /* didocu.cc */; };
+		BF3F219409CB873F002736A5 /* didocu.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA209B6828000545F5E /* didocu.h */; };
+		BF3F219509CB873F002736A5 /* diflipt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA309B6828000545F5E /* diflipt.h */; };
+		BF3F219609CB8741002736A5 /* digsdfn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA409B6828000545F5E /* digsdfn.cc */; };
+		BF3F219709CB8742002736A5 /* digsdfn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA509B6828000545F5E /* digsdfn.h */; };
+		BF3F219809CB8743002736A5 /* digsdlut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA609B6828000545F5E /* digsdlut.cc */; };
+		BF3F219909CB8745002736A5 /* digsdlut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA709B6828000545F5E /* digsdlut.h */; };
+		BF3F219A09CB8745002736A5 /* diimage.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA809B6828000545F5E /* diimage.cc */; };
+		BF3F219B09CB8745002736A5 /* diimage.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA909B6828000545F5E /* diimage.h */; };
+		BF3F219C09CB8745002736A5 /* diinpx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAA09B6828000545F5E /* diinpx.cc */; };
+		BF3F219D09CB8746002736A5 /* diinpx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAB09B6828000545F5E /* diinpx.h */; };
+		BF3F219E09CB8747002736A5 /* diinpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAC09B6828000545F5E /* diinpxt.h */; };
+		BF3F219F09CB8748002736A5 /* diluptab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAD09B6828000545F5E /* diluptab.cc */; };
+		BF3F21A009CB8749002736A5 /* diluptab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAE09B6828000545F5E /* diluptab.h */; };
+		BF3F21A109CB8749002736A5 /* dimo1img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAF09B6828000545F5E /* dimo1img.cc */; };
+		BF3F21A209CB8752002736A5 /* dimo1img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB009B6828000545F5E /* dimo1img.h */; };
+		BF3F21A309CB8752002736A5 /* dimo2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB109B6828000545F5E /* dimo2img.cc */; };
+		BF3F21A409CB8754002736A5 /* dimo2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB209B6828000545F5E /* dimo2img.h */; };
+		BF3F21A509CB8754002736A5 /* dimocpt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB309B6828000545F5E /* dimocpt.h */; };
+		BF3F21A609CB8755002736A5 /* dimoflt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB409B6828000545F5E /* dimoflt.h */; };
+		BF3F21A709CB8755002736A5 /* dimoimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB509B6828000545F5E /* dimoimg.cc */; };
+		BF3F21A809CB8756002736A5 /* dimoimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB609B6828000545F5E /* dimoimg.h */; };
+		BF3F21A909CB8758002736A5 /* dimoimg3.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB709B6828000545F5E /* dimoimg3.cc */; };
+		BF3F21AA09CB8758002736A5 /* dimoimg4.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB809B6828000545F5E /* dimoimg4.cc */; };
+		BF3F21AB09CB8758002736A5 /* dimoimg5.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB909B6828000545F5E /* dimoimg5.cc */; };
+		BF3F21AC09CB8759002736A5 /* dimoipxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBA09B6828000545F5E /* dimoipxt.h */; };
+		BF3F21AD09CB875A002736A5 /* dimomod.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BBB09B6828000545F5E /* dimomod.cc */; };
+		BF3F21AE09CB875C002736A5 /* dimomod.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBC09B6828000545F5E /* dimomod.h */; };
+		BF3F21AF09CB875C002736A5 /* dimoopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BBD09B6828000545F5E /* dimoopx.cc */; };
+		BF3F21B009CB875C002736A5 /* dimoopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBE09B6828000545F5E /* dimoopx.h */; };
+		BF3F21B109CB875D002736A5 /* dimoopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBF09B6828000545F5E /* dimoopxt.h */; };
+		BF3F21B209CB875D002736A5 /* dimopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC009B6828000545F5E /* dimopx.cc */; };
+		BF3F21B309CB875F002736A5 /* dimopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC109B6828000545F5E /* dimopx.h */; };
+		BF3F21B409CB8760002736A5 /* dimopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC209B6828000545F5E /* dimopxt.h */; };
+		BF3F21B509CB8761002736A5 /* dimorot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC309B6828000545F5E /* dimorot.h */; };
+		BF3F21B609CB8762002736A5 /* dimosct.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC409B6828000545F5E /* dimosct.h */; };
+		BF3F21B709CB8763002736A5 /* diobjcou.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC509B6828000545F5E /* diobjcou.h */; };
+		BF3F21B809CB8764002736A5 /* diovdat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC609B6828100545F5E /* diovdat.cc */; };
+		BF3F21B909CB8766002736A5 /* diovdat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC709B6828100545F5E /* diovdat.h */; };
+		BF3F21BA09CB8767002736A5 /* diovlay.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC809B6828100545F5E /* diovlay.cc */; };
+		BF3F21BB09CB8768002736A5 /* diovlay.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC909B6828100545F5E /* diovlay.h */; };
+		BF3F21BC09CB8769002736A5 /* diovlimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BCA09B6828100545F5E /* diovlimg.cc */; };
+		BF3F21BD09CB876A002736A5 /* diovlimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCB09B6828100545F5E /* diovlimg.h */; };
+		BF3F21BE09CB876B002736A5 /* diovpln.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BCC09B6828100545F5E /* diovpln.cc */; };
+		BF3F21BF09CB876B002736A5 /* diovpln.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCD09B6828100545F5E /* diovpln.h */; };
+		BF3F21C009CB876C002736A5 /* dipixel.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCE09B6828100545F5E /* dipixel.h */; };
+		BF3F21C109CB876D002736A5 /* diplugin.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCF09B6828100545F5E /* diplugin.h */; };
+		BF3F21C209CB876D002736A5 /* dipxrept.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD009B6828100545F5E /* dipxrept.h */; };
+		BF3F21C309CB876F002736A5 /* diregbas.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD109B6828100545F5E /* diregbas.h */; };
+		BF3F21C409CB876F002736A5 /* dirotat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD209B6828100545F5E /* dirotat.h */; };
+		BF3F21C509CB8770002736A5 /* discalet.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD309B6828100545F5E /* discalet.h */; };
+		BF3F21C609CB8771002736A5 /* displint.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD409B6828100545F5E /* displint.h */; };
+		BF3F21C709CB8772002736A5 /* ditranst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD509B6828100545F5E /* ditranst.h */; };
+		BF3F21C809CB8773002736A5 /* diutils.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BD609B6828100545F5E /* diutils.cc */; };
+		BF3F21C909CB8773002736A5 /* diutils.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD709B6828100545F5E /* diutils.h */; };
 		BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
+		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
+		BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
+		BF4CEBD809CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
 		BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
 		BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
 		BF5C0189065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
@@ -1782,135 +1914,6 @@
 		BFBF3F0709B6828D00545F5E /* dcvrut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5209B6827F00545F5E /* dcvrut.h */; };
 		BFBF3F0809B6828D00545F5E /* dcxfer.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5309B6827F00545F5E /* dcxfer.cc */; };
 		BFBF3F0909B6828D00545F5E /* dcxfer.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5409B6827F00545F5E /* dcxfer.h */; };
-		BFBF3F0A09B6828D00545F5E /* diargimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5609B6827F00545F5E /* diargimg.cc */; };
-		BFBF3F0B09B6828D00545F5E /* diargimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5709B6827F00545F5E /* diargimg.h */; };
-		BFBF3F0C09B6828D00545F5E /* diargpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5809B6827F00545F5E /* diargpxt.h */; };
-		BFBF3F0D09B6828D00545F5E /* dicmyimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5909B6827F00545F5E /* dicmyimg.cc */; };
-		BFBF3F0E09B6828D00545F5E /* dicmyimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5A09B6827F00545F5E /* dicmyimg.h */; };
-		BFBF3F0F09B6828D00545F5E /* dicmypxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5B09B6827F00545F5E /* dicmypxt.h */; };
-		BFBF3F1009B6828D00545F5E /* dicocpt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5C09B6827F00545F5E /* dicocpt.h */; };
-		BFBF3F1109B6828D00545F5E /* dicoflt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5D09B6827F00545F5E /* dicoflt.h */; };
-		BFBF3F1209B6828D00545F5E /* dicoimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5E09B6827F00545F5E /* dicoimg.cc */; };
-		BFBF3F1309B6828D00545F5E /* dicoimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B5F09B6827F00545F5E /* dicoimg.h */; };
-		BFBF3F1409B6828D00545F5E /* dicomot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6009B6827F00545F5E /* dicomot.h */; };
-		BFBF3F1509B6828D00545F5E /* dicoopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6109B6827F00545F5E /* dicoopx.cc */; };
-		BFBF3F1609B6828D00545F5E /* dicoopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6209B6827F00545F5E /* dicoopx.h */; };
-		BFBF3F1709B6828D00545F5E /* dicoopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6309B6827F00545F5E /* dicoopxt.h */; };
-		BFBF3F1809B6828D00545F5E /* dicopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6409B6827F00545F5E /* dicopx.cc */; };
-		BFBF3F1909B6828D00545F5E /* dicopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6509B6827F00545F5E /* dicopx.h */; };
-		BFBF3F1A09B6828D00545F5E /* dicopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6609B6827F00545F5E /* dicopxt.h */; };
-		BFBF3F1B09B6828D00545F5E /* dicorot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6709B6827F00545F5E /* dicorot.h */; };
-		BFBF3F1C09B6828D00545F5E /* dicosct.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6809B6827F00545F5E /* dicosct.h */; };
-		BFBF3F1D09B6828D00545F5E /* dihsvimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6909B6827F00545F5E /* dihsvimg.cc */; };
-		BFBF3F1E09B6828D00545F5E /* dihsvimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6A09B6827F00545F5E /* dihsvimg.h */; };
-		BFBF3F1F09B6828D00545F5E /* dihsvpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6B09B6827F00545F5E /* dihsvpxt.h */; };
-		BFBF3F2009B6828D00545F5E /* dipalimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6C09B6827F00545F5E /* dipalimg.cc */; };
-		BFBF3F2109B6828D00545F5E /* dipalimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6D09B6827F00545F5E /* dipalimg.h */; };
-		BFBF3F2209B6828D00545F5E /* dipalpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B6E09B6827F00545F5E /* dipalpxt.h */; };
-		BFBF3F2309B6828D00545F5E /* dipipng.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B6F09B6827F00545F5E /* dipipng.cc */; };
-		BFBF3F2409B6828D00545F5E /* dipipng.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7009B6827F00545F5E /* dipipng.h */; };
-		BFBF3F2509B6828D00545F5E /* dipitiff.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7109B6827F00545F5E /* dipitiff.cc */; };
-		BFBF3F2609B6828D00545F5E /* dipitiff.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7209B6827F00545F5E /* dipitiff.h */; };
-		BFBF3F2709B6828D00545F5E /* diqtcmap.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7309B6827F00545F5E /* diqtcmap.h */; };
-		BFBF3F2809B6828D00545F5E /* diqtctab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7409B6827F00545F5E /* diqtctab.cc */; };
-		BFBF3F2909B6828D00545F5E /* diqtctab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7509B6827F00545F5E /* diqtctab.h */; };
-		BFBF3F2A09B6828D00545F5E /* diqtfs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7609B6827F00545F5E /* diqtfs.cc */; };
-		BFBF3F2B09B6828D00545F5E /* diqtfs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7709B6827F00545F5E /* diqtfs.h */; };
-		BFBF3F2C09B6828D00545F5E /* diqthash.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7809B6827F00545F5E /* diqthash.cc */; };
-		BFBF3F2D09B6828D00545F5E /* diqthash.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7909B6827F00545F5E /* diqthash.h */; };
-		BFBF3F2E09B6828D00545F5E /* diqthitl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7A09B6827F00545F5E /* diqthitl.cc */; };
-		BFBF3F2F09B6828D00545F5E /* diqthitl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7B09B6827F00545F5E /* diqthitl.h */; };
-		BFBF3F3009B6828D00545F5E /* diqthitm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7C09B6827F00545F5E /* diqthitm.h */; };
-		BFBF3F3109B6828D00545F5E /* diqtid.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7D09B6827F00545F5E /* diqtid.h */; };
-		BFBF3F3209B6828D00545F5E /* diqtpbox.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B7E09B6827F00545F5E /* diqtpbox.cc */; };
-		BFBF3F3309B6828D00545F5E /* diqtpbox.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B7F09B6827F00545F5E /* diqtpbox.h */; };
-		BFBF3F3409B6828D00545F5E /* diqtpix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8009B6828000545F5E /* diqtpix.h */; };
-		BFBF3F3509B6828D00545F5E /* diqtstab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8109B6828000545F5E /* diqtstab.h */; };
-		BFBF3F3609B6828D00545F5E /* diqttype.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8209B6828000545F5E /* diqttype.h */; };
-		BFBF3F3709B6828D00545F5E /* diquant.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8309B6828000545F5E /* diquant.cc */; };
-		BFBF3F3809B6828D00545F5E /* diquant.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8409B6828000545F5E /* diquant.h */; };
-		BFBF3F3909B6828D00545F5E /* diregist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8509B6828000545F5E /* diregist.cc */; };
-		BFBF3F3A09B6828D00545F5E /* diregist.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8609B6828000545F5E /* diregist.h */; };
-		BFBF3F3B09B6828D00545F5E /* dirgbimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8709B6828000545F5E /* dirgbimg.cc */; };
-		BFBF3F3C09B6828D00545F5E /* dirgbimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8809B6828000545F5E /* dirgbimg.h */; };
-		BFBF3F3D09B6828D00545F5E /* dirgbpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8909B6828000545F5E /* dirgbpxt.h */; };
-		BFBF3F3E09B6828D00545F5E /* diybrimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8A09B6828000545F5E /* diybrimg.cc */; };
-		BFBF3F3F09B6828D00545F5E /* diybrimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8B09B6828000545F5E /* diybrimg.h */; };
-		BFBF3F4009B6828D00545F5E /* diybrpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8C09B6828000545F5E /* diybrpxt.h */; };
-		BFBF3F4109B6828D00545F5E /* diyf2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B8D09B6828000545F5E /* diyf2img.cc */; };
-		BFBF3F4209B6828D00545F5E /* diyf2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8E09B6828000545F5E /* diyf2img.h */; };
-		BFBF3F4309B6828D00545F5E /* diyf2pxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B8F09B6828000545F5E /* diyf2pxt.h */; };
-		BFBF3F4409B6828D00545F5E /* diyp2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9009B6828000545F5E /* diyp2img.cc */; };
-		BFBF3F4509B6828D00545F5E /* diyp2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9109B6828000545F5E /* diyp2img.h */; };
-		BFBF3F4609B6828D00545F5E /* diyp2pxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9209B6828000545F5E /* diyp2pxt.h */; };
-		BFBF3F4709B6828D00545F5E /* dcmimage.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9409B6828000545F5E /* dcmimage.cc */; };
-		BFBF3F4809B6828D00545F5E /* dcmimage.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9509B6828000545F5E /* dcmimage.h */; };
-		BFBF3F4909B6828D00545F5E /* dibaslut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9609B6828000545F5E /* dibaslut.cc */; };
-		BFBF3F4A09B6828D00545F5E /* dibaslut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9709B6828000545F5E /* dibaslut.h */; };
-		BFBF3F4B09B6828D00545F5E /* diciefn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9809B6828000545F5E /* diciefn.cc */; };
-		BFBF3F4C09B6828D00545F5E /* diciefn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9909B6828000545F5E /* diciefn.h */; };
-		BFBF3F4D09B6828D00545F5E /* dicielut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9A09B6828000545F5E /* dicielut.cc */; };
-		BFBF3F4E09B6828D00545F5E /* dicielut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9B09B6828000545F5E /* dicielut.h */; };
-		BFBF3F4F09B6828D00545F5E /* dicrvfit.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9C09B6828000545F5E /* dicrvfit.h */; };
-		BFBF3F5009B6828D00545F5E /* didislut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9D09B6828000545F5E /* didislut.cc */; };
-		BFBF3F5109B6828D00545F5E /* didislut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3B9E09B6828000545F5E /* didislut.h */; };
-		BFBF3F5209B6828D00545F5E /* didispfn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B9F09B6828000545F5E /* didispfn.cc */; };
-		BFBF3F5309B6828D00545F5E /* didispfn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA009B6828000545F5E /* didispfn.h */; };
-		BFBF3F5409B6828D00545F5E /* didocu.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA109B6828000545F5E /* didocu.cc */; };
-		BFBF3F5509B6828D00545F5E /* didocu.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA209B6828000545F5E /* didocu.h */; };
-		BFBF3F5609B6828D00545F5E /* diflipt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA309B6828000545F5E /* diflipt.h */; };
-		BFBF3F5709B6828D00545F5E /* digsdfn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA409B6828000545F5E /* digsdfn.cc */; };
-		BFBF3F5809B6828D00545F5E /* digsdfn.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA509B6828000545F5E /* digsdfn.h */; };
-		BFBF3F5909B6828D00545F5E /* digsdlut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA609B6828000545F5E /* digsdlut.cc */; };
-		BFBF3F5A09B6828D00545F5E /* digsdlut.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA709B6828000545F5E /* digsdlut.h */; };
-		BFBF3F5B09B6828D00545F5E /* diimage.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BA809B6828000545F5E /* diimage.cc */; };
-		BFBF3F5C09B6828D00545F5E /* diimage.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BA909B6828000545F5E /* diimage.h */; };
-		BFBF3F5D09B6828D00545F5E /* diinpx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAA09B6828000545F5E /* diinpx.cc */; };
-		BFBF3F5E09B6828D00545F5E /* diinpx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAB09B6828000545F5E /* diinpx.h */; };
-		BFBF3F5F09B6828D00545F5E /* diinpxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAC09B6828000545F5E /* diinpxt.h */; };
-		BFBF3F6009B6828D00545F5E /* diluptab.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAD09B6828000545F5E /* diluptab.cc */; };
-		BFBF3F6109B6828D00545F5E /* diluptab.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BAE09B6828000545F5E /* diluptab.h */; };
-		BFBF3F6209B6828D00545F5E /* dimo1img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BAF09B6828000545F5E /* dimo1img.cc */; };
-		BFBF3F6309B6828D00545F5E /* dimo1img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB009B6828000545F5E /* dimo1img.h */; };
-		BFBF3F6409B6828D00545F5E /* dimo2img.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB109B6828000545F5E /* dimo2img.cc */; };
-		BFBF3F6509B6828D00545F5E /* dimo2img.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB209B6828000545F5E /* dimo2img.h */; };
-		BFBF3F6609B6828D00545F5E /* dimocpt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB309B6828000545F5E /* dimocpt.h */; };
-		BFBF3F6709B6828D00545F5E /* dimoflt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB409B6828000545F5E /* dimoflt.h */; };
-		BFBF3F6809B6828D00545F5E /* dimoimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB509B6828000545F5E /* dimoimg.cc */; };
-		BFBF3F6909B6828D00545F5E /* dimoimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BB609B6828000545F5E /* dimoimg.h */; };
-		BFBF3F6A09B6828D00545F5E /* dimoimg3.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB709B6828000545F5E /* dimoimg3.cc */; };
-		BFBF3F6B09B6828D00545F5E /* dimoimg4.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB809B6828000545F5E /* dimoimg4.cc */; };
-		BFBF3F6C09B6828D00545F5E /* dimoimg5.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BB909B6828000545F5E /* dimoimg5.cc */; };
-		BFBF3F6D09B6828D00545F5E /* dimoipxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBA09B6828000545F5E /* dimoipxt.h */; };
-		BFBF3F6E09B6828D00545F5E /* dimomod.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BBB09B6828000545F5E /* dimomod.cc */; };
-		BFBF3F6F09B6828D00545F5E /* dimomod.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBC09B6828000545F5E /* dimomod.h */; };
-		BFBF3F7009B6828D00545F5E /* dimoopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BBD09B6828000545F5E /* dimoopx.cc */; };
-		BFBF3F7109B6828D00545F5E /* dimoopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBE09B6828000545F5E /* dimoopx.h */; };
-		BFBF3F7209B6828D00545F5E /* dimoopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BBF09B6828000545F5E /* dimoopxt.h */; };
-		BFBF3F7309B6828D00545F5E /* dimopx.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC009B6828000545F5E /* dimopx.cc */; };
-		BFBF3F7409B6828D00545F5E /* dimopx.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC109B6828000545F5E /* dimopx.h */; };
-		BFBF3F7509B6828D00545F5E /* dimopxt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC209B6828000545F5E /* dimopxt.h */; };
-		BFBF3F7609B6828D00545F5E /* dimorot.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC309B6828000545F5E /* dimorot.h */; };
-		BFBF3F7709B6828D00545F5E /* dimosct.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC409B6828000545F5E /* dimosct.h */; };
-		BFBF3F7809B6828D00545F5E /* diobjcou.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC509B6828000545F5E /* diobjcou.h */; };
-		BFBF3F7909B6828D00545F5E /* diovdat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC609B6828100545F5E /* diovdat.cc */; };
-		BFBF3F7A09B6828D00545F5E /* diovdat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC709B6828100545F5E /* diovdat.h */; };
-		BFBF3F7B09B6828D00545F5E /* diovlay.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BC809B6828100545F5E /* diovlay.cc */; };
-		BFBF3F7C09B6828D00545F5E /* diovlay.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BC909B6828100545F5E /* diovlay.h */; };
-		BFBF3F7D09B6828D00545F5E /* diovlimg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BCA09B6828100545F5E /* diovlimg.cc */; };
-		BFBF3F7E09B6828D00545F5E /* diovlimg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCB09B6828100545F5E /* diovlimg.h */; };
-		BFBF3F7F09B6828D00545F5E /* diovpln.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BCC09B6828100545F5E /* diovpln.cc */; };
-		BFBF3F8009B6828D00545F5E /* diovpln.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCD09B6828100545F5E /* diovpln.h */; };
-		BFBF3F8109B6828D00545F5E /* dipixel.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCE09B6828100545F5E /* dipixel.h */; };
-		BFBF3F8209B6828D00545F5E /* diplugin.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BCF09B6828100545F5E /* diplugin.h */; };
-		BFBF3F8309B6828D00545F5E /* dipxrept.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD009B6828100545F5E /* dipxrept.h */; };
-		BFBF3F8409B6828D00545F5E /* diregbas.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD109B6828100545F5E /* diregbas.h */; };
-		BFBF3F8509B6828D00545F5E /* dirotat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD209B6828100545F5E /* dirotat.h */; };
-		BFBF3F8609B6828D00545F5E /* discalet.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD309B6828100545F5E /* discalet.h */; };
-		BFBF3F8709B6828D00545F5E /* displint.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD409B6828100545F5E /* displint.h */; };
-		BFBF3F8809B6828D00545F5E /* ditranst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD509B6828100545F5E /* ditranst.h */; };
-		BFBF3F8909B6828D00545F5E /* diutils.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BD609B6828100545F5E /* diutils.cc */; };
-		BFBF3F8A09B6828D00545F5E /* diutils.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD709B6828100545F5E /* diutils.h */; };
 		BFBF3F8B09B6828D00545F5E /* ddpiimpl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BD909B6828100545F5E /* ddpiimpl.cc */; };
 		BFBF3F8C09B6828D00545F5E /* ddpiimpl.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BDA09B6828100545F5E /* ddpiimpl.h */; };
 		BFBF3F8D09B6828D00545F5E /* dipijpeg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BDB09B6828100545F5E /* dipijpeg.cc */; };
@@ -2355,7 +2358,6 @@
 		BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF414609B6828D00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
-		BFBF414709B6828D00545F5E /* dcmqrcnf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9B09B6828800545F5E /* dcmqrcnf.cc */; };
 		BFBF414809B6828D00545F5E /* dcmqrcnf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */; };
 		BFBF414909B6828D00545F5E /* dcmqrdba.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9D09B6828800545F5E /* dcmqrdba.h */; };
 		BFBF414A09B6828D00545F5E /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
@@ -2369,8 +2371,6 @@
 		BFBF415209B6828D00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
 		BFBF415309B6828D00545F5E /* dcmqrsrv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */; };
 		BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
-		BFBF415509B6828D00545F5E /* dcmqrtis.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA909B6828800545F5E /* dcmqrtis.cc */; };
-		BFBF415609B6828D00545F5E /* dcmqrtis.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAA09B6828800545F5E /* dcmqrtis.h */; };
 		BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF415809B6828D00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
 		BFBF415909B6828D00545F5E /* sialgo.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAE09B6828800545F5E /* sialgo.h */; };
@@ -10124,6 +10124,7 @@
 		BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTransferSyntax.m; sourceTree = "<group>"; };
 		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
 		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
+		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
 		BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = "<group>"; };
 		BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = "<group>"; };
 		BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarDate.h; sourceTree = "<group>"; };
@@ -15309,6 +15310,7 @@
 				BFBF3D9809B6828800545F5E /* dcmqrcbm.h */,
 				BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */,
 				BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */,
+				BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */,
 				BFBF3D9B09B6828800545F5E /* dcmqrcnf.cc */,
 				BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */,
 				BFBF3D9D09B6828800545F5E /* dcmqrdba.h */,
@@ -18633,89 +18635,6 @@
 				BFBF3F0509B6828D00545F5E /* dcvrus.h in Headers */,
 				BFBF3F0709B6828D00545F5E /* dcvrut.h in Headers */,
 				BFBF3F0909B6828D00545F5E /* dcxfer.h in Headers */,
-				BFBF3F0B09B6828D00545F5E /* diargimg.h in Headers */,
-				BFBF3F0C09B6828D00545F5E /* diargpxt.h in Headers */,
-				BFBF3F0E09B6828D00545F5E /* dicmyimg.h in Headers */,
-				BFBF3F0F09B6828D00545F5E /* dicmypxt.h in Headers */,
-				BFBF3F1009B6828D00545F5E /* dicocpt.h in Headers */,
-				BFBF3F1109B6828D00545F5E /* dicoflt.h in Headers */,
-				BFBF3F1309B6828D00545F5E /* dicoimg.h in Headers */,
-				BFBF3F1409B6828D00545F5E /* dicomot.h in Headers */,
-				BFBF3F1609B6828D00545F5E /* dicoopx.h in Headers */,
-				BFBF3F1709B6828D00545F5E /* dicoopxt.h in Headers */,
-				BFBF3F1909B6828D00545F5E /* dicopx.h in Headers */,
-				BFBF3F1A09B6828D00545F5E /* dicopxt.h in Headers */,
-				BFBF3F1B09B6828D00545F5E /* dicorot.h in Headers */,
-				BFBF3F1C09B6828D00545F5E /* dicosct.h in Headers */,
-				BFBF3F1E09B6828D00545F5E /* dihsvimg.h in Headers */,
-				BFBF3F1F09B6828D00545F5E /* dihsvpxt.h in Headers */,
-				BFBF3F2109B6828D00545F5E /* dipalimg.h in Headers */,
-				BFBF3F2209B6828D00545F5E /* dipalpxt.h in Headers */,
-				BFBF3F2409B6828D00545F5E /* dipipng.h in Headers */,
-				BFBF3F2609B6828D00545F5E /* dipitiff.h in Headers */,
-				BFBF3F2709B6828D00545F5E /* diqtcmap.h in Headers */,
-				BFBF3F2909B6828D00545F5E /* diqtctab.h in Headers */,
-				BFBF3F2B09B6828D00545F5E /* diqtfs.h in Headers */,
-				BFBF3F2D09B6828D00545F5E /* diqthash.h in Headers */,
-				BFBF3F2F09B6828D00545F5E /* diqthitl.h in Headers */,
-				BFBF3F3009B6828D00545F5E /* diqthitm.h in Headers */,
-				BFBF3F3109B6828D00545F5E /* diqtid.h in Headers */,
-				BFBF3F3309B6828D00545F5E /* diqtpbox.h in Headers */,
-				BFBF3F3409B6828D00545F5E /* diqtpix.h in Headers */,
-				BFBF3F3509B6828D00545F5E /* diqtstab.h in Headers */,
-				BFBF3F3609B6828D00545F5E /* diqttype.h in Headers */,
-				BFBF3F3809B6828D00545F5E /* diquant.h in Headers */,
-				BFBF3F3A09B6828D00545F5E /* diregist.h in Headers */,
-				BFBF3F3C09B6828D00545F5E /* dirgbimg.h in Headers */,
-				BFBF3F3D09B6828D00545F5E /* dirgbpxt.h in Headers */,
-				BFBF3F3F09B6828D00545F5E /* diybrimg.h in Headers */,
-				BFBF3F4009B6828D00545F5E /* diybrpxt.h in Headers */,
-				BFBF3F4209B6828D00545F5E /* diyf2img.h in Headers */,
-				BFBF3F4309B6828D00545F5E /* diyf2pxt.h in Headers */,
-				BFBF3F4509B6828D00545F5E /* diyp2img.h in Headers */,
-				BFBF3F4609B6828D00545F5E /* diyp2pxt.h in Headers */,
-				BFBF3F4809B6828D00545F5E /* dcmimage.h in Headers */,
-				BFBF3F4A09B6828D00545F5E /* dibaslut.h in Headers */,
-				BFBF3F4C09B6828D00545F5E /* diciefn.h in Headers */,
-				BFBF3F4E09B6828D00545F5E /* dicielut.h in Headers */,
-				BFBF3F4F09B6828D00545F5E /* dicrvfit.h in Headers */,
-				BFBF3F5109B6828D00545F5E /* didislut.h in Headers */,
-				BFBF3F5309B6828D00545F5E /* didispfn.h in Headers */,
-				BFBF3F5509B6828D00545F5E /* didocu.h in Headers */,
-				BFBF3F5609B6828D00545F5E /* diflipt.h in Headers */,
-				BFBF3F5809B6828D00545F5E /* digsdfn.h in Headers */,
-				BFBF3F5A09B6828D00545F5E /* digsdlut.h in Headers */,
-				BFBF3F5C09B6828D00545F5E /* diimage.h in Headers */,
-				BFBF3F5E09B6828D00545F5E /* diinpx.h in Headers */,
-				BFBF3F5F09B6828D00545F5E /* diinpxt.h in Headers */,
-				BFBF3F6109B6828D00545F5E /* diluptab.h in Headers */,
-				BFBF3F6309B6828D00545F5E /* dimo1img.h in Headers */,
-				BFBF3F6509B6828D00545F5E /* dimo2img.h in Headers */,
-				BFBF3F6609B6828D00545F5E /* dimocpt.h in Headers */,
-				BFBF3F6709B6828D00545F5E /* dimoflt.h in Headers */,
-				BFBF3F6909B6828D00545F5E /* dimoimg.h in Headers */,
-				BFBF3F6D09B6828D00545F5E /* dimoipxt.h in Headers */,
-				BFBF3F6F09B6828D00545F5E /* dimomod.h in Headers */,
-				BFBF3F7109B6828D00545F5E /* dimoopx.h in Headers */,
-				BFBF3F7209B6828D00545F5E /* dimoopxt.h in Headers */,
-				BFBF3F7409B6828D00545F5E /* dimopx.h in Headers */,
-				BFBF3F7509B6828D00545F5E /* dimopxt.h in Headers */,
-				BFBF3F7609B6828D00545F5E /* dimorot.h in Headers */,
-				BFBF3F7709B6828D00545F5E /* dimosct.h in Headers */,
-				BFBF3F7809B6828D00545F5E /* diobjcou.h in Headers */,
-				BFBF3F7A09B6828D00545F5E /* diovdat.h in Headers */,
-				BFBF3F7C09B6828D00545F5E /* diovlay.h in Headers */,
-				BFBF3F7E09B6828D00545F5E /* diovlimg.h in Headers */,
-				BFBF3F8009B6828D00545F5E /* diovpln.h in Headers */,
-				BFBF3F8109B6828D00545F5E /* dipixel.h in Headers */,
-				BFBF3F8209B6828D00545F5E /* diplugin.h in Headers */,
-				BFBF3F8309B6828D00545F5E /* dipxrept.h in Headers */,
-				BFBF3F8409B6828D00545F5E /* diregbas.h in Headers */,
-				BFBF3F8509B6828D00545F5E /* dirotat.h in Headers */,
-				BFBF3F8609B6828D00545F5E /* discalet.h in Headers */,
-				BFBF3F8709B6828D00545F5E /* displint.h in Headers */,
-				BFBF3F8809B6828D00545F5E /* ditranst.h in Headers */,
-				BFBF3F8A09B6828D00545F5E /* diutils.h in Headers */,
 				BFBF3F8C09B6828D00545F5E /* ddpiimpl.h in Headers */,
 				BFBF3F8E09B6828D00545F5E /* dipijpeg.h in Headers */,
 				BFBF3F9009B6828D00545F5E /* djcodecd.h in Headers */,
@@ -18868,7 +18787,6 @@
 				BFBF415009B6828D00545F5E /* dcmqropt.h in Headers */,
 				BFBF415209B6828D00545F5E /* dcmqrptb.h in Headers */,
 				BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */,
-				BFBF415609B6828D00545F5E /* dcmqrtis.h in Headers */,
 				BFBF415809B6828D00545F5E /* dcsignat.h in Headers */,
 				BFBF415909B6828D00545F5E /* sialgo.h in Headers */,
 				BFBF415B09B6828D00545F5E /* siautopr.h in Headers */,
@@ -18987,6 +18905,89 @@
 				A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */,
 				A9E5AC9309BF301F00F408B7 /* ITKTransform.h in Headers */,
 				BF8E5AC009CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
+				BF3F214809CB86E5002736A5 /* diargimg.h in Headers */,
+				BF3F214909CB86E6002736A5 /* diargpxt.h in Headers */,
+				BF3F214B09CB86E7002736A5 /* dicmyimg.h in Headers */,
+				BF3F214C09CB86E8002736A5 /* dicmypxt.h in Headers */,
+				BF3F214D09CB86E8002736A5 /* dicocpt.h in Headers */,
+				BF3F214F09CB86EB002736A5 /* dicoflt.h in Headers */,
+				BF3F215109CB86F2002736A5 /* dicoimg.h in Headers */,
+				BF3F215209CB86F2002736A5 /* dicomot.h in Headers */,
+				BF3F215409CB86F3002736A5 /* dicoopx.h in Headers */,
+				BF3F215709CB86F6002736A5 /* dicoopxt.h in Headers */,
+				BF3F215809CB86F8002736A5 /* dicopx.h in Headers */,
+				BF3F215909CB86F8002736A5 /* dicopxt.h in Headers */,
+				BF3F215A09CB86F9002736A5 /* dicorot.h in Headers */,
+				BF3F215B09CB86FA002736A5 /* dicosct.h in Headers */,
+				BF3F215D09CB86FC002736A5 /* dihsvimg.h in Headers */,
+				BF3F215E09CB86FC002736A5 /* dihsvpxt.h in Headers */,
+				BF3F216009CB86FD002736A5 /* dipalimg.h in Headers */,
+				BF3F216109CB86FF002736A5 /* dipalpxt.h in Headers */,
+				BF3F216309CB8700002736A5 /* dipipng.h in Headers */,
+				BF3F216509CB8705002736A5 /* dipitiff.h in Headers */,
+				BF3F216609CB8706002736A5 /* diqtcmap.h in Headers */,
+				BF3F216809CB8707002736A5 /* diqtctab.h in Headers */,
+				BF3F216A09CB8708002736A5 /* diqtfs.h in Headers */,
+				BF3F216C09CB870A002736A5 /* diqthash.h in Headers */,
+				BF3F216E09CB870C002736A5 /* diqthitl.h in Headers */,
+				BF3F216F09CB870C002736A5 /* diqthitm.h in Headers */,
+				BF3F217009CB870E002736A5 /* diqtid.h in Headers */,
+				BF3F217209CB870E002736A5 /* diqtpbox.h in Headers */,
+				BF3F217309CB870F002736A5 /* diqtpix.h in Headers */,
+				BF3F217409CB8715002736A5 /* diqtstab.h in Headers */,
+				BF3F217509CB8715002736A5 /* diqttype.h in Headers */,
+				BF3F217809CB8718002736A5 /* diregist.h in Headers */,
+				BF3F217A09CB871A002736A5 /* dirgbimg.h in Headers */,
+				BF3F217B09CB871C002736A5 /* diquant.h in Headers */,
+				BF3F217C09CB871D002736A5 /* dirgbpxt.h in Headers */,
+				BF3F217E09CB871E002736A5 /* diybrimg.h in Headers */,
+				BF3F217F09CB8720002736A5 /* diybrpxt.h in Headers */,
+				BF3F218109CB8721002736A5 /* diyf2img.h in Headers */,
+				BF3F218209CB8721002736A5 /* diyf2pxt.h in Headers */,
+				BF3F218409CB8723002736A5 /* diyp2img.h in Headers */,
+				BF3F218509CB8725002736A5 /* diyp2pxt.h in Headers */,
+				BF3F218709CB8737002736A5 /* dcmimage.h in Headers */,
+				BF3F218909CB8737002736A5 /* dibaslut.h in Headers */,
+				BF3F218B09CB8739002736A5 /* diciefn.h in Headers */,
+				BF3F218D09CB873A002736A5 /* dicielut.h in Headers */,
+				BF3F218E09CB873B002736A5 /* dicrvfit.h in Headers */,
+				BF3F219009CB873D002736A5 /* didislut.h in Headers */,
+				BF3F219209CB873E002736A5 /* didispfn.h in Headers */,
+				BF3F219409CB873F002736A5 /* didocu.h in Headers */,
+				BF3F219509CB873F002736A5 /* diflipt.h in Headers */,
+				BF3F219709CB8742002736A5 /* digsdfn.h in Headers */,
+				BF3F219909CB8745002736A5 /* digsdlut.h in Headers */,
+				BF3F219B09CB8745002736A5 /* diimage.h in Headers */,
+				BF3F219D09CB8746002736A5 /* diinpx.h in Headers */,
+				BF3F219E09CB8747002736A5 /* diinpxt.h in Headers */,
+				BF3F21A009CB8749002736A5 /* diluptab.h in Headers */,
+				BF3F21A209CB8752002736A5 /* dimo1img.h in Headers */,
+				BF3F21A409CB8754002736A5 /* dimo2img.h in Headers */,
+				BF3F21A509CB8754002736A5 /* dimocpt.h in Headers */,
+				BF3F21A609CB8755002736A5 /* dimoflt.h in Headers */,
+				BF3F21A809CB8756002736A5 /* dimoimg.h in Headers */,
+				BF3F21AC09CB8759002736A5 /* dimoipxt.h in Headers */,
+				BF3F21AE09CB875C002736A5 /* dimomod.h in Headers */,
+				BF3F21B009CB875C002736A5 /* dimoopx.h in Headers */,
+				BF3F21B109CB875D002736A5 /* dimoopxt.h in Headers */,
+				BF3F21B309CB875F002736A5 /* dimopx.h in Headers */,
+				BF3F21B409CB8760002736A5 /* dimopxt.h in Headers */,
+				BF3F21B509CB8761002736A5 /* dimorot.h in Headers */,
+				BF3F21B609CB8762002736A5 /* dimosct.h in Headers */,
+				BF3F21B709CB8763002736A5 /* diobjcou.h in Headers */,
+				BF3F21B909CB8766002736A5 /* diovdat.h in Headers */,
+				BF3F21BB09CB8768002736A5 /* diovlay.h in Headers */,
+				BF3F21BD09CB876A002736A5 /* diovlimg.h in Headers */,
+				BF3F21BF09CB876B002736A5 /* diovpln.h in Headers */,
+				BF3F21C009CB876C002736A5 /* dipixel.h in Headers */,
+				BF3F21C109CB876D002736A5 /* diplugin.h in Headers */,
+				BF3F21C209CB876D002736A5 /* dipxrept.h in Headers */,
+				BF3F21C309CB876F002736A5 /* diregbas.h in Headers */,
+				BF3F21C409CB876F002736A5 /* dirotat.h in Headers */,
+				BF3F21C509CB8770002736A5 /* discalet.h in Headers */,
+				BF3F21C609CB8771002736A5 /* displint.h in Headers */,
+				BF3F21C709CB8772002736A5 /* ditranst.h in Headers */,
+				BF3F21C909CB8773002736A5 /* diutils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24591,52 +24592,6 @@
 				BFBF3F0409B6828D00545F5E /* dcvrus.cc in Sources */,
 				BFBF3F0609B6828D00545F5E /* dcvrut.cc in Sources */,
 				BFBF3F0809B6828D00545F5E /* dcxfer.cc in Sources */,
-				BFBF3F0A09B6828D00545F5E /* diargimg.cc in Sources */,
-				BFBF3F0D09B6828D00545F5E /* dicmyimg.cc in Sources */,
-				BFBF3F1209B6828D00545F5E /* dicoimg.cc in Sources */,
-				BFBF3F1509B6828D00545F5E /* dicoopx.cc in Sources */,
-				BFBF3F1809B6828D00545F5E /* dicopx.cc in Sources */,
-				BFBF3F1D09B6828D00545F5E /* dihsvimg.cc in Sources */,
-				BFBF3F2009B6828D00545F5E /* dipalimg.cc in Sources */,
-				BFBF3F2309B6828D00545F5E /* dipipng.cc in Sources */,
-				BFBF3F2509B6828D00545F5E /* dipitiff.cc in Sources */,
-				BFBF3F2809B6828D00545F5E /* diqtctab.cc in Sources */,
-				BFBF3F2A09B6828D00545F5E /* diqtfs.cc in Sources */,
-				BFBF3F2C09B6828D00545F5E /* diqthash.cc in Sources */,
-				BFBF3F2E09B6828D00545F5E /* diqthitl.cc in Sources */,
-				BFBF3F3209B6828D00545F5E /* diqtpbox.cc in Sources */,
-				BFBF3F3709B6828D00545F5E /* diquant.cc in Sources */,
-				BFBF3F3909B6828D00545F5E /* diregist.cc in Sources */,
-				BFBF3F3B09B6828D00545F5E /* dirgbimg.cc in Sources */,
-				BFBF3F3E09B6828D00545F5E /* diybrimg.cc in Sources */,
-				BFBF3F4109B6828D00545F5E /* diyf2img.cc in Sources */,
-				BFBF3F4409B6828D00545F5E /* diyp2img.cc in Sources */,
-				BFBF3F4709B6828D00545F5E /* dcmimage.cc in Sources */,
-				BFBF3F4909B6828D00545F5E /* dibaslut.cc in Sources */,
-				BFBF3F4B09B6828D00545F5E /* diciefn.cc in Sources */,
-				BFBF3F4D09B6828D00545F5E /* dicielut.cc in Sources */,
-				BFBF3F5009B6828D00545F5E /* didislut.cc in Sources */,
-				BFBF3F5209B6828D00545F5E /* didispfn.cc in Sources */,
-				BFBF3F5409B6828D00545F5E /* didocu.cc in Sources */,
-				BFBF3F5709B6828D00545F5E /* digsdfn.cc in Sources */,
-				BFBF3F5909B6828D00545F5E /* digsdlut.cc in Sources */,
-				BFBF3F5B09B6828D00545F5E /* diimage.cc in Sources */,
-				BFBF3F5D09B6828D00545F5E /* diinpx.cc in Sources */,
-				BFBF3F6009B6828D00545F5E /* diluptab.cc in Sources */,
-				BFBF3F6209B6828D00545F5E /* dimo1img.cc in Sources */,
-				BFBF3F6409B6828D00545F5E /* dimo2img.cc in Sources */,
-				BFBF3F6809B6828D00545F5E /* dimoimg.cc in Sources */,
-				BFBF3F6A09B6828D00545F5E /* dimoimg3.cc in Sources */,
-				BFBF3F6B09B6828D00545F5E /* dimoimg4.cc in Sources */,
-				BFBF3F6C09B6828D00545F5E /* dimoimg5.cc in Sources */,
-				BFBF3F6E09B6828D00545F5E /* dimomod.cc in Sources */,
-				BFBF3F7009B6828D00545F5E /* dimoopx.cc in Sources */,
-				BFBF3F7309B6828D00545F5E /* dimopx.cc in Sources */,
-				BFBF3F7909B6828D00545F5E /* diovdat.cc in Sources */,
-				BFBF3F7B09B6828D00545F5E /* diovlay.cc in Sources */,
-				BFBF3F7D09B6828D00545F5E /* diovlimg.cc in Sources */,
-				BFBF3F7F09B6828D00545F5E /* diovpln.cc in Sources */,
-				BFBF3F8909B6828D00545F5E /* diutils.cc in Sources */,
 				BFBF3F8B09B6828D00545F5E /* ddpiimpl.cc in Sources */,
 				BFBF3F8D09B6828D00545F5E /* dipijpeg.cc in Sources */,
 				BFBF3F8F09B6828D00545F5E /* djcodecd.cc in Sources */,
@@ -24937,13 +24892,11 @@
 				BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */,
 				BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
-				BFBF414709B6828D00545F5E /* dcmqrcnf.cc in Sources */,
 				BFBF414A09B6828D00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
 				BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */,
 				BFBF415309B6828D00545F5E /* dcmqrsrv.cc in Sources */,
-				BFBF415509B6828D00545F5E /* dcmqrtis.cc in Sources */,
 				BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */,
 				BFBF415A09B6828D00545F5E /* siautopr.cc in Sources */,
 				BFBF415C09B6828D00545F5E /* sibrsapr.cc in Sources */,
@@ -25042,6 +24995,53 @@
 				A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */,
 				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
+				BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */,
+				BF3F214709CB86E5002736A5 /* diargimg.cc in Sources */,
+				BF3F214A09CB86E7002736A5 /* dicmyimg.cc in Sources */,
+				BF3F215009CB86EC002736A5 /* dicoimg.cc in Sources */,
+				BF3F215309CB86F3002736A5 /* dicoopx.cc in Sources */,
+				BF3F215609CB86F6002736A5 /* dicopx.cc in Sources */,
+				BF3F215C09CB86FA002736A5 /* dihsvimg.cc in Sources */,
+				BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */,
+				BF3F216209CB86FF002736A5 /* dipipng.cc in Sources */,
+				BF3F216409CB8701002736A5 /* dipitiff.cc in Sources */,
+				BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */,
+				BF3F216909CB8708002736A5 /* diqtfs.cc in Sources */,
+				BF3F216B09CB870A002736A5 /* diqthash.cc in Sources */,
+				BF3F216D09CB870B002736A5 /* diqthitl.cc in Sources */,
+				BF3F217109CB870E002736A5 /* diqtpbox.cc in Sources */,
+				BF3F217609CB8715002736A5 /* diquant.cc in Sources */,
+				BF3F217709CB8718002736A5 /* diregist.cc in Sources */,
+				BF3F217909CB8719002736A5 /* dirgbimg.cc in Sources */,
+				BF3F217D09CB871D002736A5 /* diybrimg.cc in Sources */,
+				BF3F218009CB8720002736A5 /* diyf2img.cc in Sources */,
+				BF3F218309CB8722002736A5 /* diyp2img.cc in Sources */,
+				BF3F218609CB8737002736A5 /* dcmimage.cc in Sources */,
+				BF3F218809CB8737002736A5 /* dibaslut.cc in Sources */,
+				BF3F218A09CB8738002736A5 /* diciefn.cc in Sources */,
+				BF3F218C09CB873A002736A5 /* dicielut.cc in Sources */,
+				BF3F218F09CB873B002736A5 /* didislut.cc in Sources */,
+				BF3F219109CB873D002736A5 /* didispfn.cc in Sources */,
+				BF3F219309CB873E002736A5 /* didocu.cc in Sources */,
+				BF3F219609CB8741002736A5 /* digsdfn.cc in Sources */,
+				BF3F219809CB8743002736A5 /* digsdlut.cc in Sources */,
+				BF3F219A09CB8745002736A5 /* diimage.cc in Sources */,
+				BF3F219C09CB8745002736A5 /* diinpx.cc in Sources */,
+				BF3F219F09CB8748002736A5 /* diluptab.cc in Sources */,
+				BF3F21A109CB8749002736A5 /* dimo1img.cc in Sources */,
+				BF3F21A309CB8752002736A5 /* dimo2img.cc in Sources */,
+				BF3F21A709CB8755002736A5 /* dimoimg.cc in Sources */,
+				BF3F21A909CB8758002736A5 /* dimoimg3.cc in Sources */,
+				BF3F21AA09CB8758002736A5 /* dimoimg4.cc in Sources */,
+				BF3F21AB09CB8758002736A5 /* dimoimg5.cc in Sources */,
+				BF3F21AD09CB875A002736A5 /* dimomod.cc in Sources */,
+				BF3F21AF09CB875C002736A5 /* dimoopx.cc in Sources */,
+				BF3F21B209CB875D002736A5 /* dimopx.cc in Sources */,
+				BF3F21B809CB8764002736A5 /* diovdat.cc in Sources */,
+				BF3F21BA09CB8767002736A5 /* diovlay.cc in Sources */,
+				BF3F21BC09CB8769002736A5 /* diovlimg.cc in Sources */,
+				BF3F21BE09CB876B002736A5 /* diovpln.cc in Sources */,
+				BF3F21C809CB8773002736A5 /* diutils.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25787,6 +25787,7 @@
 				CE59FFB309BEA982000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5ABF09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
+				BF4CEBD809CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26536,6 +26537,7 @@
 				CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */,
 				A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5AC309CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
+				BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

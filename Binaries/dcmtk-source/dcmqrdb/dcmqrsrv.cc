@@ -4,7 +4,7 @@
  *
  *  This software and supporting documentation were developed by
  *
- *    Kuratorium OFFIS e.V.
+ *    Kuratorium OFFIS e.V.x
  *    Healthcare Information and Communication Systems
  *    Escherweg 2
  *    D-26121 Oldenburg, Germany
@@ -593,8 +593,8 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
-
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+	//change to have 10 possible Syntaxes. We want to accept any incoming Syntax
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL,NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes = 0;
 
     switch (options_.networkTransferSyntax_)
@@ -608,16 +608,33 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         /* we prefer Little Endian Explicit */
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		
+        numTransferSyntaxes = 10;
         break;
+		
       case EXS_BigEndianExplicit:
         /* we prefer Big Endian Explicit */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
+		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;			//jpeg 2000 lossless
+		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
+		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
+		transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+        numTransferSyntaxes = 10;
         break;
+		
 #ifndef DISABLE_COMPRESSION_EXTENSION
       case EXS_JPEGProcess14SV1TransferSyntax:
         /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
