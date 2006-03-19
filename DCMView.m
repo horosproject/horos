@@ -303,6 +303,16 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 @implementation DCMView
 
+- (void) Display3DPoint:(NSNotification*) note
+{
+	NSMutableArray	*v = [note object];
+	
+	if( v == dcmPixList)
+	{
+		[self setNeedsDisplay: YES];
+	}
+}
+
 -(OrthogonalMPRController*) controller
 {
 	return 0L;	// Only defined in herited classes
@@ -3212,7 +3222,12 @@ static long scrollMode;
            selector: @selector(doSyncronize:)
                name: @"sync"
              object: nil];
-			 
+	
+	[nc	addObserver: self
+			selector: @selector(Display3DPoint:)
+				name: @"Display3DPoint"
+			object: nil];
+	
 	[nc addObserver: self
            selector: @selector(roiChange:)
                name: @"roiChange"

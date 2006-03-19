@@ -2399,6 +2399,17 @@ int i,j,l;
 	else return YES;
 }
 
+- (void) Display3DPoint:(NSNotification*) note
+{
+	NSMutableArray	*v = [note object];
+	
+	if( v == pixList[ 0])
+	{
+		[imageView setIndex: [[[note userInfo] valueForKey:@"z"] intValue]];
+		[imageView sendSyncMessage:1];
+	}
+}
+
 -(void) checkEverythingLoaded
 {
 	if( ThreadLoadImage == YES)
@@ -4006,6 +4017,11 @@ extern NSString * documentsDirectory();
                name: @"UpdateWLWWMenu"
              object: nil];
 	
+	[nc	addObserver: self
+			selector: @selector(Display3DPoint:)
+				name: @"Display3DPoint"
+			object: nil];
+											
 	[nc addObserver: self
            selector: @selector(ViewFrameDidChange:)
                name: NSViewFrameDidChangeNotification
