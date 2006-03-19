@@ -33,7 +33,7 @@ static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier				= @"Mail.icns";
 static NSString*	ResetToolbarItemIdentifier				= @"Reset.tiff";
 static NSString*	FlipVolumeToolbarItemIdentifier			= @"FlipData.tiff";
-static NSString*	VRPanelToolbarItemIdentifier				= @"MIP.tif";
+static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 
 

@@ -2923,8 +2923,8 @@ static long scrollMode;
         else if( tool == tWL && [stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
 		{
 			// change blending value
-			blendingFactor = blendingFactorStart + (current.y - start.y);
-			
+			blendingFactor = blendingFactorStart + (current.x - start.x);
+				
 			if( blendingFactor < -256.0) blendingFactor = -256.0;
 			if( blendingFactor > 256.0) blendingFactor = 256.0;
 			

@@ -127,6 +127,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier		= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier		= @"FlipHorizontal.tif";
+static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 
 static NSArray*		DefaultROINames;
 
@@ -8442,6 +8443,15 @@ NSMutableArray		*array;
 	[toolbarItem setImage: [NSImage imageNamed: FlipVerticalToolbarItemIdentifier]];
 	[toolbarItem setTarget: nil];
 	[toolbarItem setAction: @selector(flipVertical:)];
+    }
+	else if ([itemIdent isEqualToString: VRPanelToolbarItemIdentifier]) {
+	
+	[toolbarItem setLabel: NSLocalizedString(@"3D Panel", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"3D Panel", nil)];
+	[toolbarItem setImage: [NSImage imageNamed: VRPanelToolbarItemIdentifier]];
+	[toolbarItem setTarget: nil];
+	[toolbarItem setAction: @selector(Panel3D:)];
     } 
 	else if ([itemIdent isEqualToString: FlipHorizontalToolbarItemIdentifier]) {
 	
@@ -8494,7 +8504,7 @@ NSMutableArray		*array;
 										SyncSeriesToolbarItemIdentifier,
 										PlayToolbarItemIdentifier,
 										SpeedToolbarItemIdentifier,
-										NSToolbarFlexibleSpaceItemIdentifier,
+										VRPanelToolbarItemIdentifier,
 										nil];
 }
 
@@ -8540,7 +8550,7 @@ NSMutableArray		*array;
 														ReportToolbarItemIdentifier,
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
-													//	BrushToolsToolbarItemIdentifier,
+														VRPanelToolbarItemIdentifier,
 														nil];
 	
 	long		i;
