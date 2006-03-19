@@ -1006,13 +1006,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	if( pTextureName)
 	{
 		glDeleteTextures (textureX * textureY, pTextureName);
-		DisposePtr( (Ptr) pTextureName);
+		free( (Ptr) pTextureName);
 		pTextureName = 0L;
 	}
 	if( blendingTextureName)
 	{
-	//	glDeleteTextures (textureX * textureY, blendingTextureName);
-		DisposePtr( (Ptr) blendingTextureName);
+		glDeleteTextures (textureX * textureY, blendingTextureName);
+		free( (Ptr) blendingTextureName);
 		blendingTextureName = 0L;
 	}
 	if( colorBuff) free( colorBuff);
@@ -3154,7 +3154,7 @@ static long scrollMode;
 - (id)initWithFrameInt:(NSRect)frameRect
 {
 	long i;
-
+	
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	syncSeriesIndex = -1;
