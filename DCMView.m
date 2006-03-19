@@ -1011,7 +1011,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 	if( blendingTextureName)
 	{
-		glDeleteTextures (textureX * textureY, blendingTextureName);
+		glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
 		free( (Ptr) blendingTextureName);
 		blendingTextureName = 0L;
 	}
@@ -3205,7 +3205,6 @@ static long scrollMode;
 	blendingView = 0L;
 	pTextureName = 0L;
 	blendingTextureName = 0L;
-	subtractedTextureName = 0L;
 	
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -4145,7 +4144,7 @@ static long scrollMode;
 	}
 }
 
-- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset
+- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY
 {
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
@@ -4171,12 +4170,12 @@ static long scrollMode;
 	glEnable (TEXTRECTMODE); // enable texturing
 	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); 
 	
-	for (x = 0; x < textureX; x++) // for all horizontal textures
+	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
 			// use remaining to determine next texture size
 			currTextureWidth = GetNextTextureSize (textureWidth - offsetX, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // current effective texture width for drawing
 			offsetY = 0; // start at top
-			for (y = 0; y < textureY; y++) // for a complete column
+			for (y = 0; y < tY; y++) // for a complete column
 			{
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
@@ -4901,7 +4900,7 @@ static long scrollMode;
 			}
 			else glDisable( GL_BLEND);
 			
-			[self drawRectIn:size :pTextureName :offset];
+			[self drawRectIn:size :pTextureName :offset :textureX :textureY];
 			
 			if( blendingView)
 			{
@@ -4948,7 +4947,7 @@ static long scrollMode;
 				
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				[blendingView drawRectIn:size :blendingTextureName :offset];
+				[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY];
 				
 				glDisable( GL_BLEND);
 			}
@@ -6139,7 +6138,7 @@ static long scrollMode;
 	*b = blueTable;
 }
 
--(GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending
+- (GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending textureX:(long*) tX textureY:(long*) tY
 {
 	if( noScale == YES)
 	{
@@ -6148,7 +6147,7 @@ static long scrollMode;
 	
     if( texture)
 	{
-		glDeleteTextures (textureX * textureY, texture);
+		glDeleteTextures( *tX * *tY, texture);
 		free( (char*) texture);
 		texture = 0L;
 	}
@@ -6277,30 +6276,24 @@ static long scrollMode;
 	
 	textureHeight = [curDCM pheight];
 	
-	// OVERLAP
-	//textureWidth += 2;
-	//textureHeight += 2;
-    
     glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y
     // extract the number of horiz. textures needed to tile image
-    textureX = GetTextureNumFromTextureDim (textureWidth, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
+    *tX = GetTextureNumFromTextureDim (textureWidth, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
     // extract the number of horiz. textures needed to tile image
-    textureY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
+    *tY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
+
+	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
 	
-	texture = (GLuint *) malloc ((long) sizeof (GLuint) * textureX * textureY);
-	
-//	NSLog(@"Textures: %d x %d", textureX, textureY);
-	
-    glGenTextures (textureX * textureY, texture); // generate textures names need to support tiling
+    glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
-            for (x = 0; x < textureX; x++) // for all horizontal textures
+            for (x = 0; x < *tX; x++) // for all horizontal textures
             {
 				currWidth = GetNextTextureSize (textureWidth - offsetX, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size 
 				
 				offsetY = 0; // reset vertical offest for every column
-				for (y = 0; y < textureY; y++) // for all vertical textures
+				for (y = 0; y < *tY; y++) // for all vertical textures
 				{
 					unsigned char * pBuffer;
 					
@@ -6455,11 +6448,11 @@ BOOL	lowRes = NO;
     [[self openGLContext] makeCurrentContext];
     [[self openGLContext] update];
 	
-	pTextureName = [self loadTextureIn:pTextureName :NO];
+	pTextureName = [self loadTextureIn:pTextureName :NO textureX:&textureX textureY:&textureY];
 	
 	if( blendingView)
 	{
-		blendingTextureName = [blendingView loadTextureIn:blendingTextureName :YES];
+		blendingTextureName = [blendingView loadTextureIn:blendingTextureName :YES textureX:&blendingTextureX textureY:&blendingTextureY];
 	}
 }
 

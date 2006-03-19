@@ -161,31 +161,26 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	float			blendingPixelMouseValue;
 	long			blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB;
 	
-    long imageWidth; // height of orginal image
-    long imageHeight; // width of orginal image
-    float imageAspect; // width / height or aspect ratio of orginal image
-    long imageDepth; // depth of image (after loading into gworld, will be either 32 or 16 bits)
-    long textureX; // number of horizontal textures
-    long textureY; // number of vertical textures
-    GLuint * pTextureName; // array for texture names (# = textureX * textureY)
-	GLuint * blendingTextureName; // array for texture names (# = textureX * textureY)
-	GLuint * subtractedTextureName; // array for texture names (# = textureX * textureY)
-    long textureWidth; // total width of texels with cover image (including any border on image, but not internal texture overlaps)
-    long textureHeight; // total height of texels with cover image (including any border on image, but not internal texture overlaps)
+    long			textureX, blendingTextureX; // number of horizontal textures
+    long			textureY, blendingTextureY; // number of vertical textures
+    GLuint			* pTextureName; // array for texture names (# = textureX * textureY)
+	GLuint			* blendingTextureName; // array for texture names (# = textureX * textureY)
+    long			textureWidth; // total width of texels with cover image (including any border on image, but not internal texture overlaps)
+    long			textureHeight; // total height of texels with cover image (including any border on image, but not internal texture overlaps)
     
-	BOOL f_ext_texture_rectangle; // is texture rectangle extension supported
-	BOOL f_ext_client_storage; // is client storage extension supported
-	BOOL f_ext_packed_pixel; // is packed pixel extension supported
-	BOOL f_ext_texture_edge_clamp; // is SGI texture edge clamp extension supported
-	BOOL f_gl_texture_edge_clamp; // is OpenGL texture edge clamp support (1.2+)
-	unsigned long edgeClampParam; // the param that is passed to the texturing parmeteres
-	long maxTextureSize; // the minimum max texture size across all GPUs
-	long maxNOPTDTextureSize; // the minimum max texture size across all GPUs that support non-power of two texture dimensions
-	long TEXTRECTMODE;
+	BOOL			f_ext_texture_rectangle; // is texture rectangle extension supported
+	BOOL			f_ext_client_storage; // is client storage extension supported
+	BOOL			f_ext_packed_pixel; // is packed pixel extension supported
+	BOOL			f_ext_texture_edge_clamp; // is SGI texture edge clamp extension supported
+	BOOL			f_gl_texture_edge_clamp; // is OpenGL texture edge clamp support (1.2+)
+	unsigned long	edgeClampParam; // the param that is passed to the texturing parmeteres
+	long			maxTextureSize; // the minimum max texture size across all GPUs
+	long			maxNOPTDTextureSize; // the minimum max texture size across all GPUs that support non-power of two texture dimensions
+	long			TEXTRECTMODE;
 	
-	BOOL isKeyView; //needed for Image View subclass
-	NSCursor *cursor;
-	BOOL cursorSet;
+	BOOL			isKeyView; //needed for Image View subclass
+	NSCursor		*cursor;
+	BOOL			cursorSet;
 }
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;
@@ -206,7 +201,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) subtract:(DCMView*) bV;
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
--(GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending;
+- (GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending textureX:(long*) tX textureY:(long*) tY;
 - (void) setSubtraction:(long) imID :(NSPoint) offset;
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;
