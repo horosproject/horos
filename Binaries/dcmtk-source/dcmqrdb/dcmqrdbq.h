@@ -1,38 +1,25 @@
-/*
- *
- *  Copyright (C) 1993-2005, OFFIS
- *
- *  This software and supporting documentation were developed by
- *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
- *
- *  Module:  dcmqrdb
- *
- *  Author:  Andrew Hewett, Marco Eichelberg
- *
- *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
- *
- *  Last Update:      $Author: lpysher $
- *  Update Date:      $Date: 2006/03/01 20:16:07 $
- *  Source File:      $Source: /cvsroot/osirix/osirix/Binaries/dcmtk-source/dcmqrdb/dcmqrdbi.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
- */
+//
+//  dcmqrdbq.h
+//  OsiriX
+//
+//  Created by Lance Pysher on 3/19/06.
 
-#ifndef DCMQRDBI_H
-#define DCMQRDBI_H
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+#import <Cocoa/Cocoa.h>
+#undef verify
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrdba.h"    /* for class DcmQueryRetrieveDatabaseHandle */
@@ -41,6 +28,8 @@
 #include "dimse.h"
 #include "offname.h"
 
+#include "dcmqrdbi.h" // for DB_Level
+
 struct StudyDescRecord;
 struct DB_Private_Handle;
 struct DB_SmallDcmElmt;
@@ -48,61 +37,11 @@ struct IdxRecord;
 struct DB_ElementList;
 class DcmQueryRetrieveConfig;
 
-#define DBINDEXFILE "index.dat"
-
-#ifndef _WIN32
-/* we lock image files on all platforms except Win32 where it does not work
- * due to the different semantics of LockFile/LockFileEx compared to flock.
- */
-#define LOCK_IMAGE_FILES
-#endif
-
-/** enumeration describing the levels of the DICOM Q/R information model
- */
-enum DB_LEVEL
-{
-  /// DICOM Q/R patient level
-  PATIENT_LEVEL,
-  /// DICOM Q/R study level
-  STUDY_LEVEL,
-  /// DICOM Q/R series level
-  SERIE_LEVEL,
-  /// DICOM Q/R instance level
-  IMAGE_LEVEL
-};
-
-/// upper limit for the number of studies per storage area
-#define DB_UpperMaxStudies              500000000
-
-/// upper limit for the number bytes per study
-#define DB_UpperMaxBytesPerStudy        0x40000000L
-
-
-/** This enum describes the status of one entry in the database hierarchy. An 
- *  entry can describe a study, a series or an instance. A study or series is 
- *  new exactly if all subobjects (series and instances) are new. A study or 
- *  series contains new subobjecs as long as any subobject (series or instance) 
- *  has the status objectIsNew. Instances can never have the status 
- *  DVIF_objectContainsNewSubobjects. 
- */
-enum DVIFhierarchyStatus
-{
-  /// object (study, series or instance) in the database is not new
-  DVIF_objectIsNotNew,
-  /// object (study, series or instance) in the database is new
-  DVIF_objectIsNew,
-  /// object (study or series) in the database is not new but contains new subobjects
-  DVIF_objectContainsNewSubobjects
-};
-
-
-
-
 /** This class maintains database handles based on the classical "index.dat" file.
  *  A database handle maintains a connection to a database and encapsulates database support for
  *  store, find and move/get operations.
  */
-class DcmQueryRetrieveIndexDatabaseHandle: public DcmQueryRetrieveDatabaseHandle
+class DcmQueryRetrieveOsiriXDatabaseHandle: public DcmQueryRetrieveDatabaseHandle
 {
 public:
 
@@ -115,7 +54,7 @@ public:
    *  @param result upon successful initialization of the database handle,
    *    EC_Normal is returned in this parameter, otherwise an error code is returned.
    */
-  DcmQueryRetrieveIndexDatabaseHandle(
+  DcmQueryRetrieveOsiriXDatabaseHandle(
     const char *storageArea,
     long maxStudiesPerStorageArea,
     long maxBytesPerStudy,
@@ -125,7 +64,7 @@ public:
    *  request if necessary, deletes temporary files used for C-STORE and
    *  sub-operations of C-MOVE.
    */
-   ~DcmQueryRetrieveIndexDatabaseHandle();
+   ~DcmQueryRetrieveOsiriXDatabaseHandle();
   
   /** set the debug level.
    *  @param debug level, zero or nonzero
@@ -355,11 +294,7 @@ public:
       
 private:
 
-  OFCondition removeDuplicateImage(
-      const char *SOPInstanceUID, const char *StudyInstanceUID,
-      StudyDescRecord *pStudyDesc, const char *newImageFileName);
-  int deleteOldestStudy(StudyDescRecord *pStudyDesc);
-  OFCondition deleteOldestImages(StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize);
+
   int matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
@@ -411,64 +346,3 @@ private:
 };
 
 
-/** Index database factory class. Instances of this class are able to create database
- *  handles for a given called application entity title.
- */
-class DcmQueryRetrieveIndexDatabaseHandleFactory: public DcmQueryRetrieveDatabaseHandleFactory
-{
-public:
-
-  /** constructor
-   *  @param config system configuration object, must not be NULL.
-   */
-  DcmQueryRetrieveIndexDatabaseHandleFactory(const DcmQueryRetrieveConfig *config);
-
-  /// destructor
-  virtual ~DcmQueryRetrieveIndexDatabaseHandleFactory();
-
-  /** this method creates a new database handle instance on the heap and returns
-   *  a pointer to it, along with a result that indicates if the instance was
-   *  successfully initialized, i.e. connected to the database
-   *  @param callingAETitle calling aetitle
-   *  @param calledAETitle called aetitle
-   *  @param result result returned in this variable
-   *  @return pointer to database object, must not be NULL if result is EC_Normal.
-   */
-  virtual DcmQueryRetrieveDatabaseHandle *createDBHandle(
-    const char *callingAETitle, 
-    const char *calledAETitle,
-    OFCondition& result) const;
-
-private:
-
-  /// pointer to system configuration
-  const DcmQueryRetrieveConfig *config_;
-};
-
-#endif
-
-/*
- * CVS Log
- * $Log: dcmqrdbi.h,v $
- * Revision 1.1  2006/03/01 20:16:07  lpysher
- * Added dcmtkt ocvs not in xcode  and fixed bug with multiple monitors
- *
- * Revision 1.4  2005/12/08 16:04:22  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.3  2005/04/22 15:36:34  meichel
- * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
- *   to allow configuration retrieval based on calling aetitle.
- *
- * Revision 1.2  2005/04/04 10:04:45  meichel
- * Added public declarations for index file functions that are
- *   used from module dcmpstat
- *
- * Revision 1.1  2005/03/30 13:34:50  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */

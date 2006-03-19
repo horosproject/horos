@@ -1403,6 +1403,7 @@
 		BF34857D0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
 		BF34857E0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
 		BF34857F0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
+		BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
 		BF398B8B065B124700AD1F25 /* InArrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF398B8A065B124700AD1F25 /* InArrow.tif */; };
 		BF398B8C065B124700AD1F25 /* InArrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF398B8A065B124700AD1F25 /* InArrow.tif */; };
 		BF3BB380067808D5004F6E91 /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2360,7 +2361,6 @@
 		BFBF414609B6828D00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
 		BFBF414809B6828D00545F5E /* dcmqrcnf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */; };
 		BFBF414909B6828D00545F5E /* dcmqrdba.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9D09B6828800545F5E /* dcmqrdba.h */; };
-		BFBF414A09B6828D00545F5E /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
 		BFBF414B09B6828D00545F5E /* dcmqrdbi.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9F09B6828800545F5E /* dcmqrdbi.h */; };
 		BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA009B6828800545F5E /* dcmqrdbs.cc */; };
 		BFBF414D09B6828D00545F5E /* dcmqrdbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA109B6828800545F5E /* dcmqrdbs.h */; };
@@ -4471,6 +4471,12 @@
 		BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
 		BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF27D4F0787AECC00D8766D /* DCMFindSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C16B0785D6F800806344 /* DCMFindSCU.m */; };
+		BFF9D57A09CDCA5600B3B940 /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
+		BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
+		BFF9D57C09CDCA5600B3B940 /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
+		BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
+		BFF9D57E09CDCA5600B3B940 /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
+		BFF9D57F09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
 		CE0144190923A64300F46597 /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
 		CE01441A0923A64400F46597 /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
 		CE07B72909641CFA00189FEC /* Endoscopy.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE07B72709641CFA00189FEC /* Endoscopy.nib */; };
@@ -11291,6 +11297,8 @@
 		BFEB763B0677FDA700F242F3 /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = nameDictionary.plist; sourceTree = "<group>"; };
 		BFEB763C0677FDA700F242F3 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = tagDictionary.plist; sourceTree = "<group>"; };
 		BFEB767E0678071400F242F3 /* DCMUIDs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMUIDs.h; sourceTree = "<group>"; };
+		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
+		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
 		CE07B72809641CFA00189FEC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Endoscopy.nib; sourceTree = "<group>"; };
 		CE0936B80963D63800C6A2CA /* MatrixContextual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixContextual.h; sourceTree = "<group>"; };
 		CE0936B90963D63800C6A2CA /* MatrixContextual.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatrixContextual.m; sourceTree = "<group>"; };
@@ -15316,6 +15324,8 @@
 				BFBF3D9D09B6828800545F5E /* dcmqrdba.h */,
 				BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */,
 				BFBF3D9F09B6828800545F5E /* dcmqrdbi.h */,
+				BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */,
+				BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */,
 				BFBF3DA009B6828800545F5E /* dcmqrdbs.cc */,
 				BFBF3DA109B6828800545F5E /* dcmqrdbs.h */,
 				BFBF3DA209B6828800545F5E /* dcmqridx.h */,
@@ -18988,6 +18998,7 @@
 				BF3F21C609CB8771002736A5 /* displint.h in Headers */,
 				BF3F21C709CB8772002736A5 /* ditranst.h in Headers */,
 				BF3F21C909CB8773002736A5 /* diutils.h in Headers */,
+				BFF9D57E09CDCA5600B3B940 /* dcmqrdbq.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20791,6 +20802,7 @@
 				CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC9109BF301F00F408B7 /* ITKTransform.h in Headers */,
 				BF8E5ABE09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
+				BFF9D57A09CDCA5600B3B940 /* dcmqrdbq.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22599,6 +22611,7 @@
 				CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */,
 				A9E5AC8F09BF301F00F408B7 /* ITKTransform.h in Headers */,
 				BF8E5AC209CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
+				BFF9D57C09CDCA5600B3B940 /* dcmqrdbq.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24892,7 +24905,6 @@
 				BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */,
 				BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
-				BFBF414A09B6828D00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
 				BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */,
@@ -25042,6 +25054,8 @@
 				BF3F21BC09CB8769002736A5 /* diovlimg.cc in Sources */,
 				BF3F21BE09CB876B002736A5 /* diovpln.cc in Sources */,
 				BF3F21C809CB8773002736A5 /* diutils.cc in Sources */,
+				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
+				BFF9D57F09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25788,6 +25802,7 @@
 				A9E5AC9209BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5ABF09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 				BF4CEBD809CB736D0073E928 /* dcmqrcnf.mm in Sources */,
+				BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26538,6 +26553,7 @@
 				A9E5AC9009BF301F00F408B7 /* ITKTransform.mm in Sources */,
 				BF8E5AC309CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
 				BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */,
+				BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
