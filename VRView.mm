@@ -1302,7 +1302,8 @@ public:
 {
 	if( rotate)
 	{
-		[self Azimuth: 8.];
+		[self Azimuth: 4.];
+		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		[self setNeedsDisplay: YES];
 	}
 }
@@ -1402,7 +1403,7 @@ public:
 		[self load3DPointsDefaultProperties];
 		
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
-		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
+		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	}
     
@@ -1783,20 +1784,24 @@ public:
 	
 	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
 	{
-		NSString	*pixLoc = [[NSString stringWithFormat: @"Pixel X: %d Y: %d Z: %d", pix[ 0], pix[ 1], pix[ 2]] stringByPaddingToLength: 25 withString: @" " startingAtIndex: 0];
-		NSString	*mmLoc = [[NSString stringWithFormat: @"in mm X: %.2f Y: %.2f Z: %.2f", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 45 withString: @" " startingAtIndex: 0];
-		NSString	*val = [NSString stringWithFormat: @"Value: %.2f", value];
+		long sliceNo;
+		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
+		else sliceNo = [pixList count] -1 -pix[ 2];
+	
+		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
+		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
+		NSString	*val = [NSString stringWithFormat: @"Value:%.2f", value];
 		
 		if( [firstObject SUVConverted]) val = [val stringByAppendingString: @" SUV"];
 		
-		NSString	*mode;
-		switch( renderingMode)
-		{
-			case 0:		mode = @"VR - ";		break;
-			case 1:		mode = @"MIP - ";		break;
-		}
+//		NSString	*mode;
+//		switch( renderingMode)
+//		{
+//			case 0:		mode = @"VR - ";		break;
+//			case 1:		mode = @"MIP - ";		break;
+//		}
 		
-		[pixelInformation setStringValue: [NSString stringWithFormat: @"%@%@ %@ %@", mode, pixLoc, mmLoc, val]];
+		[pixelInformation setStringValue: [NSString stringWithFormat: @"%@ %@ %@", pixLoc, mmLoc, val]];
 	}
 	else [pixelInformation setStringValue: @""];
 }

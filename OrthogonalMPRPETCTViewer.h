@@ -27,30 +27,32 @@
 //	IBOutlet NSSplitView						*modalitySplitView;
 	float										minSplitViewsSize;
 	
-	NSToolbar									*toolbar;
-    IBOutlet NSView								*toolsView;
-	IBOutlet NSMatrix							*toolsMatrix;
-	IBOutlet NSView								*blendingToolView;
-	IBOutlet NSTextField						*blendingPercentage;
-	IBOutlet NSSlider							*blendingSlider;
+	NSToolbar								*toolbar;
+    IBOutlet NSView							*toolsView;
+	IBOutlet NSMatrix						*toolsMatrix;
+	IBOutlet NSView							*blendingToolView;
+	IBOutlet NSTextField					*blendingPercentage;
+	IBOutlet NSSlider						*blendingSlider;
 		
-	BOOL										isFullWindow;
-	long										displayResliceAxes;
+	BOOL									isFullWindow;
+	long									displayResliceAxes;
 	
-	NSArray										*filesList;
+	NSArray									*filesList;
 	
-	IBOutlet NSWindow					*dcmExportWindow;
-	IBOutlet NSMatrix					*dcmSelection, *dcmFormat;
-	IBOutlet NSTextField				*dcmSeriesName;
-	IBOutlet NSButton					*dcmExport3Modalities;
-	DICOMExport							*exportDCM;
+	IBOutlet NSWindow						*dcmExportWindow;
+	IBOutlet NSMatrix						*dcmSelection, *dcmFormat;
+	IBOutlet NSTextField					*dcmSeriesName;
+	IBOutlet NSButton						*dcmExport3Modalities;
+	DICOMExport								*exportDCM;
 	
-    IBOutlet NSView						*WLWWView;
-    IBOutlet NSPopUpButton				*wlwwPopup;
-    IBOutlet NSPopUpButton				*clutPopup;
-	IBOutlet NSPopUpButton				*OpacityPopup;
+    IBOutlet NSView							*WLWWView;
+    IBOutlet NSPopUpButton					*wlwwPopup;
+    IBOutlet NSPopUpButton					*clutPopup;
+	IBOutlet NSPopUpButton					*OpacityPopup;
 
-	NSString							*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
+	NSString								*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
+	
+	long									fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
 }
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC;

@@ -62,11 +62,11 @@ NSString * documentsDirectory();
 	
 	if( v == [controller originalDCMPixList])
 	{
-		OrthogonalMPRView *view = [[[self keyView] controller] originalView];
+		OrthogonalMPRView *view = [controller originalView];
 		
 		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
 		
-		view = [[[self keyView] controller] xReslicedView];
+		view = [controller xReslicedView];
 		
 		[view setCrossPosition: [view crossPositionX] :[[controller originalDCMPixList] count] -1 - [[[note userInfo] valueForKey:@"z"] intValue]];
 	}

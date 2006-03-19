@@ -195,6 +195,13 @@
 	else
 	{
 		[originalView setDCM:[[[viewer CTController] originalView] pixList]  :originalDCMFilesList :nil :[[[viewer CTController] originalView] curImage] :1 :YES];
+		[xReslicedView setDCM:[[[viewer CTController] xReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
+		[yReslicedView setDCM:[[[viewer CTController] yReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
+		
+		
+		
+		
+		
 		[originalView setBlending:[[viewer PETController] originalView]];
 		[originalView setBlendingFactor: blendingFactor];
 		[originalView setIndexWithReset: [[[viewer CTController] originalView] curImage] :NO];
@@ -203,7 +210,8 @@
 		[originalView setCrossPositionX:[[[viewer CTController] originalView] crossPositionX]];
 		[originalView setCrossPositionY:[[[viewer CTController] originalView] crossPositionY]];
 		
-		[xReslicedView setDCM:[[[viewer CTController] xReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
+		
+		
 		[xReslicedView setBlending:[[viewer PETController] xReslicedView]];
 		[xReslicedView setBlendingFactor: blendingFactor];
 		[xReslicedView setIndexWithReset:0 :NO];
@@ -212,7 +220,8 @@
 		[xReslicedView setCrossPositionX:[[[viewer CTController] xReslicedView] crossPositionX]];
 		[xReslicedView setCrossPositionY:[[[viewer CTController] xReslicedView] crossPositionY]];
 		
-		[yReslicedView setDCM:[[[viewer CTController] yReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
+		
+		
 		[yReslicedView setBlending:[[viewer PETController] yReslicedView]];
 		[yReslicedView setBlendingFactor: blendingFactor];
 		[yReslicedView setIndexWithReset:0 :NO];
@@ -269,9 +278,9 @@
 	[self blendingPropagate: xReslicedView];
 	[self blendingPropagate: yReslicedView];
 
-//	[originalView setNeedsDisplay:YES];
-//	[xReslicedView setNeedsDisplay:YES];
-//	[yReslicedView setNeedsDisplay:YES];
+	[originalView displayIfNeeded];
+	[xReslicedView displayIfNeeded];
+	[yReslicedView displayIfNeeded];
 }
 
 - (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view

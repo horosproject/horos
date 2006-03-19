@@ -6149,7 +6149,7 @@ static long scrollMode;
     if( texture)
 	{
 		glDeleteTextures (textureX * textureY, texture);
-		DisposePtr( (char*) texture);
+		free( (char*) texture);
 		texture = 0L;
 	}
 	
@@ -6288,7 +6288,7 @@ static long scrollMode;
     // extract the number of horiz. textures needed to tile image
     textureY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
 	
-	texture = (GLuint *) NewPtrClear ((long) sizeof (GLuint) * textureX * textureY);
+	texture = (GLuint *) malloc ((long) sizeof (GLuint) * textureX * textureY);
 	
 //	NSLog(@"Textures: %d x %d", textureX, textureY);
 	

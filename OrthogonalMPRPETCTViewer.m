@@ -62,6 +62,33 @@ NSString * documentsDirectory();
 	}
 }
 
+- (void) Display3DPoint:(NSNotification*) note
+{
+	NSMutableArray	*v = [note object];
+	
+	if( [[PETController originalDCMPixList] firstObjectCommonWithArray: v])
+	{
+		OrthogonalMPRView *view = [PETController originalView];
+		
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		
+		view = [PETController xReslicedView];
+		
+		[view setCrossPosition: [view crossPositionX] :[[PETController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistPETSlice)];
+	}
+	
+	if( [[CTController originalDCMPixList] firstObjectCommonWithArray: v])
+	{
+		OrthogonalMPRView *view = [CTController originalView];
+		
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		
+		view = [CTController xReslicedView];
+		
+		[view setCrossPosition: [view crossPositionX] :[[CTController originalDCMPixList] count] -1 - ([[[note userInfo] valueForKey:@"z"] intValue] + fistCTSlice)];
+	}
+}
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC
 {
 	self = [super initWithWindowNibName:@"PETCT"];
@@ -72,6 +99,11 @@ NSString * documentsDirectory();
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
 											name: @"CloseViewerNotification"
+											object: nil];
+
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(Display3DPoint:)
+											name: @"Display3DPoint"
 											object: nil];
 
 	[originalSplitView setDelegate:self];
@@ -132,7 +164,7 @@ NSString * documentsDirectory();
 	higherPETSliceIndex = (higherCommunSlice - firstPETSlice) / [[[bC pixList] objectAtIndex:0] sliceInterval];
 	lowerPETSliceIndex = (lowerCommunSlice - firstPETSlice) / [[[bC pixList] objectAtIndex:0] sliceInterval];
 	
-	long fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
+	
 	fistCTSlice = (higherCTSliceIndex < lowerCTSliceIndex)? higherCTSliceIndex : lowerCTSliceIndex ;
 	fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
 	sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
