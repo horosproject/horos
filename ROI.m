@@ -17,7 +17,7 @@
 Version 2.3
 	20051227	LP	Preliminary: Adding ability to import and export DICOM presentation states.
 					Added ***UID to keep track of Series, SOP, and referenced UIDs.
-	
+	20060318	RBR	Added menu item 'Display Name Only' to not display statistical data.
 	
 	
 */
@@ -2019,27 +2019,28 @@ return rect;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 				
-				if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-				
-				float aera = [self plainArea];
-				
-				if( pixelSpacingX != 0 && pixelSpacingY != 0)
-				{
-					if( aera*pixelSpacingX*pixelSpacingY < 1.)
-						sprintf (cstr, "Area: %0.3f %cm2", aera*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
-					else
-						sprintf (cstr, "Area: %0.3f cm2", aera*pixelSpacingX*pixelSpacingY/100.);
-				}
-				else
-					sprintf (cstr, "Area: %0.3f pix2", aera);
+				if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO ) {
+					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				
-				sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				
-				sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					float area = [self plainArea];
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+						if( area*pixelSpacingX*pixelSpacingY < 1. )
+							sprintf (cstr, "Area: %0.3f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+						else
+							sprintf (cstr, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+					}
+					else
+						sprintf (cstr, "Area: %0.3f pix2", area);
+					
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					
+					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					
+					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+				}
 			}
 		}
 		break;
@@ -2084,20 +2085,22 @@ return rect;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 				
-				if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-				
-				sprintf (cstr, "Val: %0.3f", rmean);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				sprintf (cstr, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				
-				float location[ 3 ];
-				[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location];
-				if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-					sprintf (cstr, "3D Pos: X:%0.3f %cm Y:%0.3f %cm Z:%0.3f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
-				else
-					sprintf (cstr, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+					
+					sprintf (cstr, "Val: %0.3f", rmean);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					sprintf (cstr, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					
+					float location[ 3 ];
+					[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location];
+					if(fabs(location[0]) < 1.0 && location[0] != 0.0)
+						sprintf (cstr, "3D Pos: X:%0.3f %cm Y:%0.3f %cm Z:%0.3f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+					else
+						sprintf (cstr, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+				}
 			}
 		}
 		break;
@@ -2301,19 +2304,16 @@ return rect;
 				tPt.y += 5. / [[curView curDCM] pixelRatio];
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y :line++];
-					
-				if( type == tMesure)
-				{
-						if( pixelSpacingX != 0 && pixelSpacingY != 0)
-						{
-							if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
-								sprintf (cstr, "Length: %0.3f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
-							else
-								sprintf (cstr, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
-						}
+				if( type == tMesure ) {
+					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
+						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
+							sprintf (cstr, "Length: %0.3f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
 						else
-							sprintf (cstr, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y :line++];
+							sprintf (cstr, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+					}
+					else
+						sprintf (cstr, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y :line++];
 				}
 			}
 		break;
@@ -2357,24 +2357,26 @@ return rect;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 					
-					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0)
-					{
-						if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-							sprintf (cstr, "Area: %0.3f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+						
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
+								sprintf (cstr, "Area: %0.3f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+							else
+								sprintf (cstr, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
+						}
 						else
-							sprintf (cstr, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
+							sprintf (cstr, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 					}
-					else
-						sprintf (cstr, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 				}
 			}
 		break;
@@ -2424,24 +2426,26 @@ return rect;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 				
-				if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-				
-				if( pixelSpacingX != 0 && pixelSpacingY != 0)
-				{
-					if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-						sprintf (cstr, "Area: %0.3f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0)
+					{
+						if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
+							sprintf (cstr, "Area: %0.3f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+						else
+							sprintf (cstr, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
+					}
 					else
-						sprintf (cstr, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
+						sprintf (cstr, "Area: %0.3f pix2", [self EllipseArea]);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					
+					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					
+					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
+					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 				}
-				else
-					sprintf (cstr, "Area: %0.3f pix2", [self EllipseArea]);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				
-				sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-				
-				sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-				[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 			}
 		}
 		break;
@@ -2480,37 +2484,37 @@ return rect;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 					
-					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0)
-					{
-						if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+								sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+							else
+								sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+						}
 						else
-							sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+							sprintf (cstr, "Area: %0.3f pix2", [self Area]);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						length = 0;
+						for( i = 0; i < [points count]-1; i++ ) {
+							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+						}
+						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
+						
+						if (length < .1)
+							sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+						else
+							sprintf (cstr, "Length: %0.3f cm", length);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 					}
-					else
-						sprintf (cstr, "Area: %0.3f pix2", [self Area]);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					length = 0;
-					for( i = 0; i < [points count]-1; i++)
-					{
-						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
-					}
-					length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
-					
-					if (length < .1)
-						sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
-					else
-						sprintf (cstr, "Length: %0.3f cm", length);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 				}
 			}
 			else if( type == tOPolygon)
@@ -2528,36 +2532,37 @@ return rect;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
 					
-					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0)
-					{
-						if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+						
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+								sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+							else
+								sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+						}
 						else
-							sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+							sprintf (cstr, "Area: %0.3f pix2", [self Area]);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						
+						length = 0;
+						for( i = 0; i < [points count]-1; i++ ) {
+							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+						}
+						
+						if (length < .1)
+							sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+						else
+							sprintf (cstr, "Length: %0.3f cm", length);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 					}
-					else
-						sprintf (cstr, "Area: %0.3f pix2", [self Area]);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					length = 0;
-					for( i = 0; i < [points count]-1; i++)
-					{
-						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
-					}
-					
-					if (length < .1)
-						sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
-					else
-						sprintf (cstr, "Length: %0.3f cm", length);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 				}
 			}
 			else if( type == tAngle)
@@ -2725,7 +2730,9 @@ return rect;
 	return array;
 }
 
-- (long) type {return type;}
+- (long)type {
+	return type;
+}
 
 - (BOOL) needQuartz
 {

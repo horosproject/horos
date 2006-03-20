@@ -72,7 +72,7 @@ NSRect screenFrame();
 - (IBAction) openOsirixFeatureRequest: (id) sender;
 
 - (IBAction) closeAllViewers: (id) sender;
-- (IBAction) switchRoiTextIfSelected:(id) sender;
+- (IBAction) updateViews:(id) sender;
 - (IBAction) checkForUpdates:(id) sender;
 - (IBAction) showPreferencePanel:(id)sender;
 - (IBAction) about:(id)sender;

@@ -734,11 +734,12 @@ NSRect screenFrame()
 	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
 	[theArguments addObject: @"--fork"];
 
-	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != 0L && [[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO)
-		{
+	if( [[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] != 0L &&
+		[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] isEqualToString:@""] == NO ) {
+		
 		NSLog([[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"]);
-		theArguments = [theArguments arrayByAddingObjectsFromArray:[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] componentsSeparatedByString:@" "]];
-		}
+		[theArguments addObjectsFromArray:[[[NSUserDefaults standardUserDefaults] stringForKey: @"STORESCPEXTRA"] componentsSeparatedByString:@" "]];
+	}
 		
 	[theTask setArguments: theArguments];
 
@@ -1814,7 +1815,7 @@ static BOOL initialized = NO;
 	
 }
 
-- (IBAction) switchRoiTextIfSelected:(id) sender {
+- (IBAction) updateViews:(id) sender {
 	long				i;
 	NSArray				*winList = [NSApp windows];
 	

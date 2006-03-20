@@ -2,7 +2,6 @@
     IBClasses = (
         {
             ACTIONS = {
-                StartSTORESCP = id; 
                 about = id; 
                 cancelModal = id; 
                 checkForUpdates = id; 
@@ -11,13 +10,15 @@
                 okModal = id; 
                 openOsirixBugReporter = id; 
                 openOsirixDiscussion = id; 
+                openOsirixFeatureRequest = id; 
                 openOsirixWebPage = id; 
                 openOsirixWikiWebPage = id; 
                 sendEmail = id; 
                 showPreferencePanel = id; 
-                switchRoiTextIfSelected = id; 
+                startSTORESCP = id; 
                 terminate = id; 
                 tileWindows = id; 
+                updateViews = id; 
             }; 
             CLASS = AppController; 
             LANGUAGE = ObjC; 
