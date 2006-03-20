@@ -1454,8 +1454,9 @@ public:
 		volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
 
 		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
-
-		[self setWLWW: [[dict objectForKey:@"WL"] longValue] :[[dict objectForKey:@"WW"] longValue]];
+		
+		if( [[dict objectForKey:@"SUVConverted"] boolValue] == [firstObject SUVConverted])
+			[self setWLWW: [[dict objectForKey:@"WL"] longValue] :[[dict objectForKey:@"WW"] longValue]];
 		
 		tempArray = [dict objectForKey:@"CameraPosition"];
 		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
@@ -1493,6 +1494,7 @@ public:
 	
 	[dict setObject:[NSNumber numberWithFloat:wl] forKey:@"WL"];
 	[dict setObject:[NSNumber numberWithFloat:ww] forKey:@"WW"];
+	[dict setObject:[NSNumber numberWithBool:[firstObject SUVConverted]] forKey:@"SUVConverted"];
 	
 	aCamera->GetPosition( temp);
 	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraPosition"];

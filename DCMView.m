@@ -303,15 +303,49 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 @implementation DCMView
 
+- (void) erase2DPointMarker
+{
+	display2DPoint = NSMakePoint(0,0);
+}
+
+- (void) draw2DPointMarker
+{
+	if( display2DPoint.x != 0 || display2DPoint.y != 0)
+	{
+		glColor3f (0.0f, 0.5f, 1.0f);
+		glLineWidth(2.0);
+		glBegin(GL_LINES);
+		
+		float crossx, crossy;
+		
+		crossx = display2DPoint.x - [curDCM pwidth]/2.;
+		crossy = display2DPoint.y - [curDCM pheight]/2.;
+		
+		glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+		glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
+		glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+		glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
+		
+		glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+		glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+		glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+		glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+		glEnd();
+	}
+}
+
 - (void) Display3DPoint:(NSNotification*) note
 {
-	NSMutableArray	*v = [note object];
-	
-	if( v == dcmPixList)
+	if( stringID == 0L)
 	{
-		display2DPoint.x = [[[note userInfo] valueForKey:@"x"] intValue];
-		display2DPoint.y = [[[note userInfo] valueForKey:@"y"] intValue];
-		[self setNeedsDisplay: YES];
+		NSMutableArray	*v = [note object];
+		
+		if( v == dcmPixList)
+		{
+			display2DPoint.x = [[[note userInfo] valueForKey:@"x"] intValue];
+			display2DPoint.y = [[[note userInfo] valueForKey:@"y"] intValue];
+			[self setNeedsDisplay: YES];
+		}
 	}
 }
 
@@ -1919,6 +1953,9 @@ static long scrollMode;
 	
     if( dcmPixList)
     {
+		[self erase2DPointMarker];
+		if( blendingView) [blendingView erase2DPointMarker];
+		
         NSPoint     eventLocation = [event locationInWindow];
         NSRect      size = [self frame];
         long		tool;
@@ -5296,31 +5333,8 @@ static long scrollMode;
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				
-				if( display2DPoint.x != 0 && display2DPoint.y != 0)
-				{
-					glColor3f (0.0f, 0.5f, 1.0f);
-					glLineWidth(2.0);
-					glBegin(GL_LINES);
-					
-					float crossx, crossy;
-					
-					crossx = display2DPoint.x - [curDCM pwidth]/2.;
-					crossy = display2DPoint.y - [curDCM pheight]/2.;
-					
-					glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
-					glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
-					glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
-					glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
-					
-					glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
-					glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
-					glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
-					glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
-					glEnd();
-					
-					display2DPoint.x = 0;
-					display2DPoint.y = 0;
-				}
+				[self draw2DPointMarker];
+				if( blendingView) [blendingView draw2DPointMarker];
 				
 				// Draw any Plugin objects
 				
