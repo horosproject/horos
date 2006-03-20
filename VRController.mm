@@ -1500,6 +1500,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 												WLWWToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
 												CaptureToolbarItemIdentifier,
+												BlendingToolbarItemIdentifier,
 												CroppingToolbarItemIdentifier,
 												OrientationToolbarItemIdentifier,
 												ShadingToolbarItemIdentifier,
@@ -1570,6 +1571,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											ResetToolbarItemIdentifier,
 											RevertToolbarItemIdentifier,
 											ExportToolbarItemIdentifier,
+											BlendingToolbarItemIdentifier,
 											nil];
 }
 

@@ -198,8 +198,8 @@ typedef char* vtkMyCallbackVR;
     DCMPix					*firstObject;
     float					*data;
 	
-	float					valueFactor;
-	long					OFFSET16;
+	float					valueFactor, blendingValueFactor;
+	long					OFFSET16, blendingOFFSET16;
 	
 	unsigned char			*dataFRGB;
 	char					*data8;

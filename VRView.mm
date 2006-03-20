@@ -1329,6 +1329,8 @@ public:
 		
 		valueFactor = 1.0;
 		OFFSET16 = 1500;
+		blendingValueFactor = 1.0;
+		blendingOFFSET16 = 1500;
 		
 		renderingMode = 0;	// VR, MIP = 1
 		blendingController = 0L;
@@ -2958,8 +2960,8 @@ public:
 //		if( blendingTextureMapper) blendingTextureMapper->SetInput((vtkDataSet *) blendingFlip->GetOutput());
 //	}
 	
-	blendingOpacityTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + blendingWl-blendingWw/2), valueFactor*(OFFSET16 + blendingWl+blendingWw/2), 255, (double*) &alpha);
-	blendingColorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + blendingWl-blendingWw/2), valueFactor*(OFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
+	blendingOpacityTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &alpha);
+	blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
 	
     [self setNeedsDisplay:YES];
 }
@@ -3008,7 +3010,7 @@ public:
 				alpha[ i] = val / 255.;
 			}
 		}
-		blendingOpacityTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + blendingWl-blendingWw/2), valueFactor*(OFFSET16 + blendingWl+blendingWw/2), 255, (double*) &alpha);
+		blendingOpacityTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &alpha);
 		
 		[self setNeedsDisplay: YES];
 	}
@@ -3026,7 +3028,7 @@ public:
 			blendingtable[i][1] = g[i] / 255.;
 			blendingtable[i][2] = b[i] / 255.;
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + blendingWl-blendingWw/2), valueFactor*(OFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
+		blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
 	}
 	else
 	{
@@ -3036,7 +3038,7 @@ public:
 			blendingtable[i][1] = i / 255.;
 			blendingtable[i][2] = i / 255.;
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + blendingWl-blendingWw/2), valueFactor*(OFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
+		blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
 	}
 	
     [self setNeedsDisplay:YES];
@@ -3489,8 +3491,15 @@ public:
 			
 			blendingDst8.data = blendingData8;
 			blendingSrcf.data = blendingData;
+			
+			if( [blendingFirstObject SUVConverted])
+			{
+				blendingValueFactor = 4000. / [blendingFirstObject maxValueOfSeries];
+				blendingOFFSET16 = 0;
 				
-			vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -OFFSET16, valueFactor, 0);
+				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+			}
+			else vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, blendingValueFactor, 0);
 		}
 		
 		blendingWl = [blendingFirstObject wl];
