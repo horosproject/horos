@@ -404,6 +404,13 @@
 - (void)setStandardRect:(NSRect)rect;
 - (void)setWindowFrame:(NSRect)rect;
 - (IBAction) Panel3D:(id) sender;
+- (void) revertSeries:(id) sender;
+- (NSImage*) imageForROI: (int) i;
+- (void) ActivateBlending:(ViewerController*) bC;
+- (void) setFusionMode:(long) m;
+- (short) curMovieIndex;
+- (id) findiChatButton;
+- (void) convertPETtoSUV;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

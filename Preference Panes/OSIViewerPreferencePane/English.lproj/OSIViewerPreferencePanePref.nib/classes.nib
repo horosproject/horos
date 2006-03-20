@@ -17,6 +17,7 @@
                 setAlbumName = id; 
                 setAutoHideMatrixState = id; 
                 setBestRendering = id; 
+                setConvertPETtoSUVautomatically = id; 
                 setExportSize = id; 
                 setMax3DTexture = id; 
                 setMax3DTextureShading = id; 
@@ -35,6 +36,7 @@
                 bestRenderingSlider = NSSlider; 
                 bestRenderingString = NSTextField; 
                 checkSaveLoadROI = NSButton; 
+                convertPETtoSUVCheck = NSButton; 
                 iPhotoAlbumName = NSTextField; 
                 max3DTextureSlider = NSSlider; 
                 max3DTextureSliderShading = NSSlider; 

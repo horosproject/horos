@@ -21,7 +21,8 @@
 											*autoHideMatrix,
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
-											*noInterpolationCheck;
+											*noInterpolationCheck,
+											*convertPETtoSUVCheck;
 	
 	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
 	
@@ -49,4 +50,5 @@
 - (IBAction) setMax3DTextureShading: (id) sender;
 - (IBAction) setNoInterpolation: (id) sender;
 - (IBAction) setWindowSizeViewer: (id) sender;
+- (IBAction) setConvertPETtoSUVautomatically: (id) sender;
 @end

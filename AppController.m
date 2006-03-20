@@ -1458,6 +1458,9 @@ static BOOL initialized = NO;
 		// ** ANONYMIZELISTENER
 		[defaultValues setObject:@"NO" forKey:@"ANONYMIZELISTENER"];
 		
+		// ** ConvertPETtoSUVautomatically
+		[defaultValues setObject: @"YES" forKey: @"ConvertPETtoSUVautomatically"];
+		
 		// ** SURVEYDONE
 		[defaultValues setObject: @"NO" forKey: @"SURVEYDONE3"];
 		

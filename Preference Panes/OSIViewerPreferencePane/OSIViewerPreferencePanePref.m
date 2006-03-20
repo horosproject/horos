@@ -104,6 +104,8 @@
 	
 	[windowSizeMatrix selectCellWithTag: [defaults integerForKey: @"WINDOWSIZEVIEWER"]];
 	
+	[convertPETtoSUVCheck setState: [defaults boolForKey: @"ConvertPETtoSUVautomatically"]];
+	
 	int i = [defaults integerForKey: @"MAX3DTEXTURE"], x = 1;
 	
 	while( i > 32)
@@ -217,6 +219,11 @@
 - (IBAction) setOpenViewerBut: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"OPENVIEWER"];
+}
+
+- (IBAction) setConvertPETtoSUVautomatically: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"ConvertPETtoSUVautomatically"];
 }
 
 - (IBAction) setAlbumName: (id) sender

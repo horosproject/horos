@@ -6136,6 +6136,75 @@ int i,j,l;
 	}
 }
 #pragma mark SUV
+- (void) convertPETtoSUV
+{
+	long	y, x, i;
+	BOOL	updatewlww = NO;
+	float	updatefactor;
+	float	maxValueOfSeries = 0;
+	
+	if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
+	if( [[imageView curDCM] patientsWeight] <= 0) return;
+	
+	if( [[imageView curDCM] SUVConverted] == NO)
+	{
+		updatewlww = YES;
+		updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
+	}
+	
+	maxValueOfSeries = 0;
+	
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[y] count]; x++)
+		{
+			DCMPix	*pix = [pixList[y] objectAtIndex: x];
+			
+			if( [pix SUVConverted] == NO)
+			{
+				float	*imageData = [pix fImage];
+				float	factor = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
+				
+				i = [pix pheight] * [pix pwidth];
+				
+				while( i--> 0)
+				{
+					*imageData++ *=  factor;
+				}
+				
+				[pix setSUVConverted : YES];
+			}
+			
+			[pix computePixMinPixMax];
+			
+			if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
+		}
+	}
+	
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[y] count]; x++)
+		{
+			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
+		}
+	}
+	
+	if(  updatewlww)
+	{
+		float cwl, cww;
+			
+		[imageView getWLWW:&cwl :&cww];
+		[imageView setWLWW: cwl * updatefactor : cww * updatefactor];
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
+	
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[y] count]; x++) [[pixList[y] objectAtIndex: x] setDisplaySUVValue: YES];
+	}
+}
+
 -(IBAction) endDisplaySUV:(id) sender
 {
 	long y, x, i;
@@ -6166,68 +6235,7 @@ int i,j,l;
 			switch( [[suvConversion selectedCell] tag])
 			{
 				case 1:	// Convert all pixels to SUV
-				{
-					BOOL updatewlww = NO;
-					float updatefactor;
-					
-					if( [[imageView curDCM] SUVConverted] == NO)
-					{
-						updatewlww = YES;
-						updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
-					}
-					
-					maxValueOfSeries = 0;
-					
-					for( y = 0; y < maxMovieIndex; y++)
-					{
-						for( x = 0; x < [pixList[y] count]; x++)
-						{
-							DCMPix	*pix = [pixList[y] objectAtIndex: x];
-							
-							if( [pix SUVConverted] == NO)
-							{
-								float	*imageData = [pix fImage];
-								float	factor = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
-								
-								i = [pix pheight] * [pix pwidth];
-								
-								while( i--> 0)
-								{
-									*imageData++ *=  factor;
-								}
-								
-								[pix setSUVConverted : YES];
-							}
-							
-							[pix computePixMinPixMax];
-							
-							if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
-						}
-					}
-					
-					for( y = 0; y < maxMovieIndex; y++)
-					{
-						for( x = 0; x < [pixList[y] count]; x++)
-						{
-							[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
-						}
-					}
-					
-					if(  updatewlww)
-					{
-						float cwl, cww;
-							
-						[imageView getWLWW:&cwl :&cww];
-						[imageView setWLWW: cwl * updatefactor : cww * updatefactor];
-					}
-					
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
-					
-					for( y = 0; y < maxMovieIndex; y++)
-					{
-						for( x = 0; x < [pixList[y] count]; x++) [[pixList[y] objectAtIndex: x] setDisplaySUVValue: YES];
-					}
-				}
+					[self convertPETtoSUV];
 				break;
 				
 				case 2:	// Display SUV
@@ -9354,6 +9362,11 @@ long i;
 			{
 				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
 			}
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+		{
+			[self convertPETtoSUV];
 		}
 	}
 	
