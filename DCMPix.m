@@ -3289,6 +3289,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	// Dunno if this is the best way to do this.  Still have to worry about re-creating
 	// ROIs between sessions.  My concerns that this is a temp solution are why the statics
 	// are handled below rather than at the class level.
+	
+	NSLog( @"loadDICOMDCMFramework for RTSTRUCT" );
 
 	static bool first = YES;
 	static NSMutableSet *rtstructUIDs;
@@ -3303,8 +3305,16 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if ( [rtstructUIDs containsObject: rtstructUID] ) return;
 	
 	[rtstructUIDs addObject: rtstructUID];
+
+	int choice = NSRunAlertPanel( NSLocalizedString( @"Create ROIs?", nil ),
+								  NSLocalizedString( @"Are you sure you want to create a set of ROIs from this RTSTRUCT?", nil ),
+								  NSLocalizedString( @"OK", nil ),
+								  NSLocalizedString( @"Cancel", nil ), nil );
+
+	if ( choice != NSAlertDefaultReturn ) return;
 	
-	NSLog( @"loadDICOMDCMFramework for RTSTRUCT" );
+	NSString *dirPath = [documentsDirectory() stringByAppendingString:@"/ROIs/"];
+
 	
 	// Get all referenced images up front.
 	// This is better than running a Fetch Request for EVERY ROI since
@@ -3317,12 +3327,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		return;
 	}
 
-	/*  Need to go even deeper nested than below!  Will cop out for now and just look at the current series.  Too many bugs in sample data!  Sigh.
-		
+	NSMutableArray *refImgUIDPredicates = [NSMutableArray arrayWithCapacity: 0];
+	
 	NSString *refSeriesUID = nil;
 	NSEnumerator *refFrameEnum = [[refFrameSequence sequence] objectEnumerator];
 	DCMObject *refFrameSeqItem;
-	
+
 	while ( refFrameSeqItem = [refFrameEnum nextObject] ) {
 		DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
 		NSEnumerator *refStudyEnum = [[refStudySeq sequence] objectEnumerator];
@@ -3330,21 +3340,39 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 		while ( refStudySeqItem = [refStudyEnum nextObject] ) {
 			DCMSequenceAttribute *refSeriesSeq = (DCMSequenceAttribute *)[refStudySeqItem attributeWithName: @"RTReferencedSeriesSequence"];
-			DCMObject *refSeriesSeqItem = [[refSeriesSeq sequence] objectAtIndex: 0]; // Really should loop over ALL seqs - I'm lazy for now.
-			refSeriesUID = [refSeriesSeqItem attributeValueWithName: @"SeriesInstanceUID"];
-			break;  // Again, we should really collect ALL the series.  It's getting late and I gotta get this to work once.
+			NSEnumerator *refSeriesEnum = [[refSeriesSeq sequence] objectEnumerator];
+			DCMObject *refSeriesSeqItem;
+			
+			while ( refSeriesSeqItem = [refSeriesEnum nextObject] ) {
+				DCMSequenceAttribute *contourImgSeq = (DCMSequenceAttribute *)[refSeriesSeqItem attributeWithName: @"ContourImageSequence"];
+				NSEnumerator *contourImgSeqEnum = [[contourImgSeq sequence] objectEnumerator];
+				DCMObject *contourImgSeqItem;
+				
+				while ( contourImgSeqItem = [contourImgSeqEnum nextObject] ) {
+					NSString *refImgUID = [contourImgSeqItem attributeValueWithName: @"ReferencedSOPInstanceUID"];
+					NSPredicate *pred = [NSPredicate predicateWithFormat: @"sopInstanceUID like %@", refImgUID];
+					[refImgUIDPredicates addObject: pred];
+				}
+			}
 		}
 	}
-	*/
-	NSString *refStudyUID = [dcmObject attributeValueWithName: @"StudyInstanceUID"];
 	
+	if ( [refImgUIDPredicates count] == 0 ) {
+		NSLog( @"No reference images found." );
+		return;
+	}
+	
+	//NSString *refStudyUID = [dcmObject attributeValueWithName: @"StudyInstanceUID"];
 	
 	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContext];
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	[request setEntity: [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc]];
 	
-	[request setPredicate: [NSPredicate predicateWithFormat: @"series.study.studyInstanceUID like%@", refStudyUID]];
+	//[request setPredicate: [NSPredicate predicateWithFormat: @"series.study.studyInstanceUID like%@", refStudyUID]];
+
+	[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: refImgUIDPredicates]];
+
 	[moc lock];
 	NSArray *imgObjects = [moc executeFetchRequest: request error: &error];
 	[moc unlock];
@@ -3357,10 +3385,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	// Put all images in a dictionary for quick lookup based on SOP Instance UID
 	
 	NSMutableDictionary *imgDict = [NSMutableDictionary dictionaryWithCapacity: [imgObjects count]];
+	NSMutableArray *dcmImgObjects = [NSMutableArray arrayWithCapacity: [imgObjects count]];
+	
 	int i;
 	for ( i = 0; i < [imgObjects count]; i++ ) {
 		DicomImage *imgObj = [imgObjects objectAtIndex: i];
 		[imgDict setObject: imgObj forKey: [imgObj valueForKey: @"sopInstanceUID"]];
+		[dcmImgObjects addObject: [DCMObject objectWithContentsOfFile: [imgObj completePath] decodingPixelData: NO]];
 	}
 	
 	DCMSequenceAttribute *roiSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"StructureSetROISequence"];
@@ -3392,14 +3423,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		NSArray *rgbArray = [sequenceItem attributeArrayWithName: @"ROIDisplayColor"];
 		
 		RGBColor color = {
-			[[rgbArray objectAtIndex: 0] intValue],
-			[[rgbArray objectAtIndex: 1] intValue],
-			[[rgbArray objectAtIndex: 2] intValue] };
+			[[rgbArray objectAtIndex: 0] floatValue] * 65535 / 256.0,
+			[[rgbArray objectAtIndex: 1] floatValue] * 65535 / 256.0,
+			[[rgbArray objectAtIndex: 2] floatValue] * 65535 / 256.0 };
 		
 		NSString *roiName = [roiNames valueForKey: [sequenceItem attributeValueWithName: @"ReferencedROINumber"]];
 		
 		NSLog( @"roiName = %@", roiName );
-		
 		DCMSequenceAttribute *contourSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"ContourSequence"];
 		if ( roiContourSequence == nil ) {
 			NSLog( @"contourSequence not found" );
@@ -3416,6 +3446,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				NSLog( @"contourImageSequence not found" );
 				return;
 			}
+		
 			
 			NSString *contourType = [contourItem attributeValueWithName: @"ContourGeometricType"];
 			
@@ -3428,25 +3459,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			NSString *refImgUID = nil;
 			DicomImage *img = nil;
-
-			//DCMObject *imgSeqItem;				
-			//NSEnumerator *imgSeqEnum = [[contourImageSequence sequence] objectEnumerator];
-			//while ( imgSeqItem = [imgSeqEnum nextObject] ) {
-			//	refImgUID = [imgSeqItem attributeValueWithName: @"ReferencedSOPInstanceUID"];
-			//	break;  // For now, take only the FIRST image assuming all ROIs are in the same image.
-						// Let's work on this later.
-			//}
-			
-			// Fetch actual image object in order to get pixel size info, etc.
-			
-			// This image does not seem to be guaranteed to be the one the contour was defined in.
-			// Gotta search all images in series for nearest image :-(.
-			//DicomImage *img = [imgDict objectForKey: refImgUID];
-			
-			//if ( img == nil ) {
-			//	NSLog( @"Referenced Image not found in DB" );
-			//	return;
-			//}
 			
 			NSArray *dcmPoints = [contourItem attributeArrayWithName: @"ContourData"];
 			
@@ -3459,8 +3471,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			float posX, posY, posZ;
 			
 			int pointIndex;
-
-#ifdef RBR		
+		
 			for ( pointIndex = 0; pointIndex < numPoints; pointIndex++ ) {
 				
 				int imgIndex;
@@ -3468,18 +3479,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				for ( imgIndex = 0; imgIndex < [imgObjects count]; imgIndex++ ) {
 					img = [imgObjects objectAtIndex: imgIndex];
 					
-					NSString *path = [img completePath];
-					DCMObject *imgObject = [DCMObject objectWithContentsOfFile: path decodingPixelData: NO];
+					DCMObject *imgObject = [dcmImgObjects objectAtIndex: imgIndex];
 					
 					if ( imgObject == nil ) {
 						NSLog( @"Error opening referenced image file" );
 						return;
 					}
-					
-					// I think DCMPix is TOO HEAVY WEIGHT.  Try hardcoding needed stuff.
-					//DCMPix *pix = [[[DCMPix alloc] myinit: path :0L
-					//									 :[[img valueForKey: @"numberOfFrames"] intValue] :NULL :0L :0L] autorelease];
-					
 					
 					NSArray *pixelSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
 					NSArray *position = [imgObject attributeArrayWithName: @"ImagePositionPatient"];
@@ -3513,7 +3518,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					temp[ 2 ] = [[dcmPoints objectAtIndex: 3 * pointIndex + 2] floatValue] - posZ;
 					sliceCoords[ 2 ] = temp[ 0 ] * orients[ 6 ] + temp[ 1 ] * orients[ 7 ] + temp[ 2 ] * orients[ 8 ];
 					
-					if ( fabs( sliceCoords[ 2 ] ) < 1.0 /*mm*/ ) {  // Nearest slice?  Need a better way to find closest w/o hardcoding a 'nearness'.
+					if ( fabs( sliceCoords[ 2 ] ) < 1.5 /*mm*/ ) {  // Nearest slice?  Need a better way to find closest w/o hardcoding a 'nearness'.
 						sliceCoords[ 0 ] = temp[ 0 ] * orients[ 0 ] + temp[ 1 ] * orients[ 1 ] + temp[ 2 ] * orients[ 2 ];
 						sliceCoords[ 1 ] = temp[ 0 ] * orients[ 3 ] + temp[ 1 ] * orients[ 4 ] + temp[ 2 ] * orients[ 5 ];
 						sliceCoords[ 0 ] /= pixelSpacingX;
@@ -3535,12 +3540,16 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				
 			} // Loop over all points in ROI
 			
-#endif
 
+			//ROI *roi = [[ROI alloc] init];  // Note: initWithType: is WAAAY too expensive.
+			
+			//[roi setType: type];
+			//[roi setOriginAndSpacing: pixelSpacingX : pixelSpacingY : NSMakePoint( posX, posY )];
+			
 			ROI *roi = [[ROI alloc] initWithType: type
-												 : pixelSpacingX
-												 : pixelSpacingY
-												 : NSMakePoint( posX, posY )];
+												: pixelSpacingX
+												: pixelSpacingY
+												: NSMakePoint( posX, posY )];
 			
 			[roi setName: roiName];
 			[roi setColor: color];
@@ -3550,27 +3559,24 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			// Save ROI to disk by reading in existing ROI list for slice and adding this new ROI.
 			
-			NSString *dirPath = [documentsDirectory() stringByAppendingString:@"/ROIs/"];
-//			NSMutableString	*str = [NSMutableString stringWithString: [img valueForKey:@"uniqueFilename"]];
+			NSMutableString	*str = [NSMutableString stringWithString: [img valueForKey:@"uniqueFilename"]];
 			
-//			[str replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [str length])];
+			[str replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [str length])];
 
-//			NSString *roiPath = [dirPath stringByAppendingFormat: @"%@-%d", str, 0];
-			//NSLog( @"refImgUID = %@", refImgUID );
-			//NSLog( @"img UID = %@", [img valueForKey: @"sopInstanceUID"] );
-//			NSLog( @"roiPath = %@", roiPath );
+			NSString *roiPath = [dirPath stringByAppendingFormat: @"%@-%d", str, 0];
+			NSLog( @"roiPath = %@", roiPath );
 
-			//NSMutableArray *roiArray = [NSUnarchiver unarchiveObjectWithFile: roiPath];
+			NSMutableArray *roiArray = [NSUnarchiver unarchiveObjectWithFile: roiPath];
 			
-			//if ( roiArray == nil ) roiArray = [NSMutableArray arrayWithCapacity: 1];
+			if ( roiArray == nil ) roiArray = [NSMutableArray arrayWithCapacity: 1];
 			
-			//[roiArray addObject: roi];
+			[roiArray addObject: roi];
 			[roi release];
 			
-			//[NSArchiver archiveRootObject: roiArray toFile: roiPath];
+			[NSArchiver archiveRootObject: roiArray toFile: roiPath];
 			
 		} // Loop over ContourSequence
-		
+
 	}  // Loop over ROIContourSequence
 	
 } // end createROIsFromRTSTRUCT
