@@ -9494,7 +9494,7 @@ long i;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
 		{
-			[self convertPETtoSUV];
+			[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
 		}
 	}
 	

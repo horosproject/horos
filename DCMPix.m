@@ -1952,7 +1952,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 {
 	displaySUVValue = NO;
 	fixed8bitsWLWW = NO;
-	checking = NO;
+	checking = [[NSLock alloc] init];
 	convertedDICOM = 0L;
 	subtractedfImage = 0L;
 	units = 0L;
@@ -2013,7 +2013,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		thickSlab = 0L;
 		sliceInterval = 0;
 		convertedDICOM = 0L;
-		checking = NO;
+		checking = [[NSLock alloc] init];
 		stack = 2;
 		stackMode = 0;
 		updateToBeApplied = NO;
@@ -2160,7 +2160,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		pixelRatio = 1.0;
 		sliceInterval = 0;
 		convertedDICOM = 0L;
-		checking = NO;
+		checking = [[NSLock alloc] init];
 		stack = 2;
 		stackMode = 0;
 		updateToBeApplied = NO;
@@ -3227,12 +3227,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 -(void) revert
 {
-	if( checking == YES)		// someone is already trying to load data in another thread... simply wait and see....
-	{
-		while( checking == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}  //{ NSLog(@"Waiting");}
-	}
-	
 	if( fImage == 0L) return;
+	
+	[checking lock];
 	
 	SUVConverted = NO;
 	fullww = 0;
@@ -3257,7 +3254,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	}
 	fImage = 0L;
 	
-//	sliceInterval = 0;
+	[checking unlock];
 }
 
 - (void) checkSUV
@@ -5878,12 +5875,7 @@ PapyShort       fileNb, theErr;
 }
 
 -(void) CheckLoad
-{	
-	if( checking == YES)		// someone is already trying to load data in another thread... simply wait and see....
-	{
-		while( checking == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}  //{ NSLog(@"Waiting");}
-	}
-	
+{
 	BOOL USECUSTOMTIFF = NO;
 
 	#ifdef USEVIMAGE
@@ -5896,7 +5888,7 @@ PapyShort       fileNb, theErr;
 		
 		if( srcFile == 0L) return;
 		
-		checking = YES;
+		[checking lock];
 		
 		if( isBonjour)
 		{
@@ -5908,7 +5900,7 @@ PapyShort       fileNb, theErr;
 			
 			if( srcFile == 0L)
 			{
-				checking = NO;
+				[checking unlock];
 				return;
 			}
 		}
@@ -6575,7 +6567,7 @@ PapyShort       fileNb, theErr;
 		}
 	}
 
-	checking = NO;
+	[checking unlock];
 }
 
 - (void) setBaseAddr :( char*) ptr

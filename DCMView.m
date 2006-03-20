@@ -63,6 +63,7 @@ Version 2.3
 
 enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D = 5};
 
+extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
 extern      BrowserController			*browserWindow;
@@ -4197,6 +4198,11 @@ static long scrollMode;
 
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY
 {
+	if( mainThread != [NSThread currentThread])
+	{
+		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
+	}
+	
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
 
@@ -6199,6 +6205,11 @@ static long scrollMode;
 	if( noScale == YES)
 	{
 		[curDCM changeWLWW :127 : 256];
+	}
+	
+	if( mainThread != [NSThread currentThread])
+	{
+		NSLog(@"Warning! OpenGL activity NOT in the main thread???");
 	}
 	
     if( texture)

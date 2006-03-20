@@ -76,8 +76,6 @@
 	short				stackMode, pixPos, stackDirection;
 	NSArray				*pixArray;
 	
-	volatile BOOL		checking;
-	
 	NSString			*echotime, *repetitiontime, *convertedDICOM, *protocolName;
 	
 	// ThickSlab
@@ -86,6 +84,7 @@
 	
 	BOOL				generated;
 	
+	NSLock				*checking;
 	
 	// DICOM params needed for SUV calculations
 	
