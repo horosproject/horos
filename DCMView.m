@@ -1145,11 +1145,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
 {
-	if( currentTool >= 5)   // A ROI TOOL !
-	{
-		return NO;
-	}
-	else return YES;
+	return YES;
 }
 
 - (BOOL)acceptsFirstResponder {
