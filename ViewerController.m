@@ -6707,7 +6707,7 @@ int i,j,l;
 	
 	for( i = 0; i < [winList count]; i++)
 	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"VR"])
+		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"VR"] == YES || [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"VRPanel"] == YES)
 		{
 			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
 		}
@@ -6724,6 +6724,7 @@ int i,j,l;
 	}
 	
 	[viewersList release];
+
 }
 #pragma mark Registration
 
