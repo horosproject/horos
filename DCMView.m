@@ -309,6 +309,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	if( v == dcmPixList)
 	{
+		display2DPoint.x = [[[note userInfo] valueForKey:@"x"] intValue];
+		display2DPoint.y = [[[note userInfo] valueForKey:@"y"] intValue];
 		[self setNeedsDisplay: YES];
 	}
 }
@@ -3175,6 +3177,7 @@ static long scrollMode;
 	curDCM = 0L;
 	curRoiList = 0L;
 	blendingMode = 0;
+	display2DPoint = NSMakePoint(0,0);
 	colorBuff = 0L;
 	stringID = 0L;
 	mprVector[ 0] = 0;
@@ -5293,6 +5296,34 @@ static long scrollMode;
 					{
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
+				}
+				
+				// Draw 2D point cross (used when double-click in 3D panel)
+				
+				if( display2DPoint.x != 0 && display2DPoint.y != 0)
+				{
+					glColor3f (0.0f, 0.5f, 1.0f);
+					glLineWidth(2.0);
+					glBegin(GL_LINES);
+					
+					float crossx, crossy;
+					
+					crossx = display2DPoint.x - [curDCM pwidth]/2.;
+					crossy = display2DPoint.y - [curDCM pheight]/2.;
+					
+					glVertex2f( scaleValue * (crossx - 40), scaleValue*(crossy));
+					glVertex2f( scaleValue * (crossx - 5), scaleValue*(crossy));
+					glVertex2f( scaleValue * (crossx + 40), scaleValue*(crossy));
+					glVertex2f( scaleValue * (crossx + 5), scaleValue*(crossy));
+					
+					glVertex2f( scaleValue * (crossx), scaleValue*(crossy-40));
+					glVertex2f( scaleValue * (crossx), scaleValue*(crossy-5));
+					glVertex2f( scaleValue * (crossx), scaleValue*(crossy+5));
+					glVertex2f( scaleValue * (crossx), scaleValue*(crossy+40));
+					glEnd();
+					
+					display2DPoint.x = 0;
+					display2DPoint.y = 0;
 				}
 				
 				// Draw any Plugin objects

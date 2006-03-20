@@ -181,6 +181,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	BOOL			isKeyView; //needed for Image View subclass
 	NSCursor		*cursor;
 	BOOL			cursorSet;
+	NSPoint			display2DPoint;
 }
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;
