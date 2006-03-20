@@ -7775,6 +7775,9 @@ float			iwl, iww;
 	
 	[imageObj release];
 	
+	[checking release];
+	
+	
     [super dealloc];
 }
 
