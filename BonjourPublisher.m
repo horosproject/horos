@@ -169,6 +169,8 @@ extern NSString * documentsDirectory();
 	NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
 	NSMutableData		*representationToSend = 0L;
 	
+	[[aNotification object] acceptConnectionInBackgroundAndNotify];
+	
 	if( incomingConnection)
 	{
 		// Waiting for incomming message (6 first bytes)
@@ -539,9 +541,6 @@ extern NSString * documentsDirectory();
 		}
 		
 		[incomingConnection writeData:representationToSend];
-		
-		[[aNotification object] acceptConnectionInBackgroundAndNotify];
-		
 		[incomingConnection closeFile];
 	}
 	

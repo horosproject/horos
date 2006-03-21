@@ -91,11 +91,16 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	outputSpacing[2] = [referenceViewer computeInterval];
 	resample->SetOutputSpacing(outputSpacing);
 	
-	double outputOrigin[3];	
+	double outputOrigin[3], outputOriginConverted[3];	
 	outputOrigin[0] = [[[referenceViewer pixList] objectAtIndex: 0] originX];// - [[[originalViewer pixList] objectAtIndex: 0] originX];
 	outputOrigin[1] = [[[referenceViewer pixList] objectAtIndex: 0] originY];// - [[[originalViewer pixList] objectAtIndex: 0] originY];
 	outputOrigin[2] = [[[referenceViewer pixList] objectAtIndex: 0] originZ];// - [[[originalViewer pixList] objectAtIndex: 0] originZ];
-	resample->SetOutputOrigin(outputOrigin);
+
+	outputOriginConverted[ 0] = outputOrigin[ 0] * theParameters[ 0] + outputOrigin[ 1] * theParameters[ 1] + outputOrigin[ 2] * theParameters[ 2];
+	outputOriginConverted[ 1] = outputOrigin[ 0] * theParameters[ 3] + outputOrigin[ 1] * theParameters[ 4] + outputOrigin[ 2] * theParameters[ 5];
+	outputOriginConverted[ 2] = outputOrigin[ 0] * theParameters[ 6] + outputOrigin[ 1] * theParameters[ 7] + outputOrigin[ 2] * theParameters[ 8];
+
+	resample->SetOutputOrigin( outputOriginConverted);
 	
 	ImageType::SizeType size;
 	size[0] = [[[referenceViewer pixList] objectAtIndex: 0] pwidth];
@@ -103,6 +108,23 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	size[2] = [[referenceViewer pixList] count];
 	resample->SetSize(size);
 
+	int u, v;
+	// Display translation
+	printf ("\nTranslation:\n");
+	for (u = 0; u < 3; u++)
+		printf ("\t%3.2f", theParameters [9+u]);
+	printf ("\n\n");
+
+	// Display rotation
+	printf ("Rotation:\n");
+	for (u = 0; u < 3; u++)
+	{
+		for (v = 0; v < 3; v++)
+			printf ("\t%3.2f", theParameters [u*3+v]);
+		printf ("\n");
+	}
+	printf ("\n\n");
+	
 	NSLog(@"start transform");
 	resample->Update();
 	

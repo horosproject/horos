@@ -6861,9 +6861,13 @@ int i,j,l;
 
 						float sensorLocationConverted[ 3];
 						
-						sensorLocationConverted[ 0] = sensorLocation[ 0] * vectorModel[ 0] + sensorLocation[ 1] * vectorModel[ 1] + sensorLocation[ 2] * vectorModel[ 2];
-						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorModel[ 3] + sensorLocation[ 1] * vectorModel[ 4] + sensorLocation[ 2] * vectorModel[ 5];
-						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorModel[ 6] + sensorLocation[ 1] * vectorModel[ 7] + sensorLocation[ 2] * vectorModel[ 8];
+//						sensorLocationConverted[ 0] = sensorLocation[ 0];
+//						sensorLocationConverted[ 1] = sensorLocation[ 1];
+//						sensorLocationConverted[ 2] = sensorLocation[ 2];
+						
+						sensorLocationConverted[ 0] = sensorLocation[ 0] * vectorSensor[ 0] + sensorLocation[ 1] * vectorSensor[ 1] + sensorLocation[ 2] * vectorSensor[ 2];
+						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorSensor[ 3] + sensorLocation[ 1] * vectorSensor[ 4] + sensorLocation[ 2] * vectorSensor[ 5];
+						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorSensor[ 6] + sensorLocation[ 1] * vectorSensor[ 7] + sensorLocation[ 2] * vectorSensor[ 8];
 						
 						// add the points to the registration method
 						[hr addModelPointX: modelLocation[0] Y: modelLocation[1] Z: modelLocation[2]];
@@ -6897,12 +6901,9 @@ int i,j,l;
 //			rotationConverted[ 4] = 1;
 //			rotationConverted[ 5] = 0;
 //
-//			rotationConverted[ 6] = 0;
-//			rotationConverted[ 7] = 0;
-//			rotationConverted[ 8] = 1;
-////			rotationConverted[6] = rotationConverted[1]*rotationConverted[5] - rotationConverted[2]*rotationConverted[4];
-////			rotationConverted[7] = rotationConverted[2]*rotationConverted[3] - rotationConverted[0]*rotationConverted[5];
-////			rotationConverted[8] = rotationConverted[0]*rotationConverted[4] - rotationConverted[1]*rotationConverted[3];
+//			rotationConverted[6] = rotationConverted[1]*rotationConverted[5] - rotationConverted[2]*rotationConverted[4];
+//			rotationConverted[7] = rotationConverted[2]*rotationConverted[3] - rotationConverted[0]*rotationConverted[5];
+//			rotationConverted[8] = rotationConverted[0]*rotationConverted[4] - rotationConverted[1]*rotationConverted[3];
 			
 			[transform computeAffineTransformWithRotation: rotationConverted translation: translationConverted resampleOnViewer: self];
 			[transform release];
