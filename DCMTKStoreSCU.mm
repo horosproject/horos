@@ -121,7 +121,8 @@ static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static OFCmdUnsignedInt opt_maxSendPDULength = 0;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_LittleEndianExplicit;
 
-static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
+//static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
+static OFBool opt_haltOnUnsuccessfulStore = OFFalse;
 static OFBool unsuccessfulStoreEncountered = OFFalse;
 static int lastStatusCode = STATUS_Success;
 
@@ -637,7 +638,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset *statusDetail = NULL;
 
     unsuccessfulStoreEncountered = OFTrue; // assumption
-
+	
     if (opt_verbose) {
         printf("--------------------------\n");
         printf("Sending file: %s\n", fname);
@@ -684,7 +685,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	
 	/************* do on the fly conversion here*********************/
 	
-	printf("on the fly conversion\n");
+	//printf("on the fly conversion\n");
 	//we have a valid presentation ID,.Chaeck and see if file is consistent with it
 	DcmXfer preferredXfer(opt_networkTransferSyntax);
 	OFBool status = YES;
@@ -693,7 +694,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
 	DcmXfer propoesdTransfer(pc.acceptedTransferSyntax);
 	 if (presId != 0) {
-		printf("presID: %d\n", presId);
+		//printf("presID: %d\n", presId);
 		if (filexfer.isNotEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
 			// do nothing
 		}
@@ -710,7 +711,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	 }
 	 else
 		status = NO;
-	 printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
+	// printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
 	 //reload file after syntax change
 	if (status) {
 		cond = 	dcmff.loadFile(fname);
@@ -803,7 +804,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
      */
 {
     OFCondition cond = EC_Normal;
-
+	
     /* opt_repeatCount specifies how many times a certain file shall be processed */
     int n = (int)opt_repeatCount;
 
@@ -1370,6 +1371,7 @@ NS_DURING
 
     while ((iter != enditer) && (cond == EC_Normal) && !_shouldAbort) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
     {
+		
         cond = cstore(assoc, *iter);
         ++iter;
 		if (cond == EC_Normal)  _numberSent++;
@@ -1377,7 +1379,7 @@ NS_DURING
 		
 	
 		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:nil waitUntilDone:NO];
-		//[self updateLogEntry:self];
+		
 		//Need to add code to update nedtwork logs
     }
 
