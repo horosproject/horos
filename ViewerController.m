@@ -6809,6 +6809,11 @@ int i,j,l;
 	{
 		HornRegistration *hr = [[HornRegistration alloc] init];
 		
+		float vectorModel[ 9], vectorSensor[ 9];
+		
+		[[[movingViewer pixList] objectAtIndex:0] orientation: vectorSensor];
+		[[[self pixList] objectAtIndex:0] orientation: vectorModel];
+		
 		int i,j,k; // 'for' indexes
 		for (i=0; i<[modelPointROIs count] && pointsNamesMatch2by2 && !triplets; i++)
 		{
@@ -6846,9 +6851,23 @@ int i,j,l;
 												pixY:			[[[curSensorPoint2D points] objectAtIndex:0] y]
 												toDICOMCoords:	sensorLocation];
 						
+						// Convert the point in 3D orientation of the model
+						
+//						float modelLocationConverted[ 3];
+//						
+//						modelLocationConverted[ 0] = modelLocation[ 0] * vectorModel[ 0] + modelLocation[ 1] * vectorModel[ 1] + modelLocation[ 2] * vectorModel[ 2];
+//						modelLocationConverted[ 1] = modelLocation[ 0] * vectorModel[ 3] + modelLocation[ 1] * vectorModel[ 4] + modelLocation[ 2] * vectorModel[ 5];
+//						modelLocationConverted[ 2] = modelLocation[ 0] * vectorModel[ 6] + modelLocation[ 1] * vectorModel[ 7] + modelLocation[ 2] * vectorModel[ 8];
+
+						float sensorLocationConverted[ 3];
+						
+						sensorLocationConverted[ 0] = sensorLocation[ 0] * vectorModel[ 0] + sensorLocation[ 1] * vectorModel[ 1] + sensorLocation[ 2] * vectorModel[ 2];
+						sensorLocationConverted[ 1] = sensorLocation[ 0] * vectorModel[ 3] + sensorLocation[ 1] * vectorModel[ 4] + sensorLocation[ 2] * vectorModel[ 5];
+						sensorLocationConverted[ 2] = sensorLocation[ 0] * vectorModel[ 6] + sensorLocation[ 1] * vectorModel[ 7] + sensorLocation[ 2] * vectorModel[ 8];
+						
 						// add the points to the registration method
 						[hr addModelPointX: modelLocation[0] Y: modelLocation[1] Z: modelLocation[2]];
-						[hr addSensorPointX: sensorLocation[0] Y: sensorLocation[1] Z: sensorLocation[2]];
+						[hr addSensorPointX: sensorLocationConverted[0] Y: sensorLocationConverted[1] Z: sensorLocationConverted[2]];
 					}
 				}
 			}
