@@ -6879,7 +6879,32 @@ int i,j,l;
 			[hr compute];
 			
 			ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
-			[transform computeAffineTransformWithRotation: [hr rotation] translation: [hr translation] resampleOnViewer: self];
+			
+			double	*rotation, rotationConverted[ 9];
+			double	*translation, translationConverted[ 3];
+			
+			rotation = [hr rotation];
+			translation = [hr translation];
+			
+			for( i = 0; i < 9 ; i++) rotationConverted[ i] = rotation[ i];
+			for( i = 0; i < 3 ; i++) translationConverted[ i] = translation[ i];
+			
+//			rotationConverted[ 0] = 1;
+//			rotationConverted[ 1] = 0;
+//			rotationConverted[ 2] = 0;
+//			
+//			rotationConverted[ 3] = 0;
+//			rotationConverted[ 4] = 1;
+//			rotationConverted[ 5] = 0;
+//
+//			rotationConverted[ 6] = 0;
+//			rotationConverted[ 7] = 0;
+//			rotationConverted[ 8] = 1;
+////			rotationConverted[6] = rotationConverted[1]*rotationConverted[5] - rotationConverted[2]*rotationConverted[4];
+////			rotationConverted[7] = rotationConverted[2]*rotationConverted[3] - rotationConverted[0]*rotationConverted[5];
+////			rotationConverted[8] = rotationConverted[0]*rotationConverted[4] - rotationConverted[1]*rotationConverted[3];
+			
+			[transform computeAffineTransformWithRotation: rotationConverted translation: translationConverted resampleOnViewer: self];
 			[transform release];
 		}
 		[hr release];

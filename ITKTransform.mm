@@ -43,7 +43,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	
 	// rotation matrix
 	parameters[0]=aRotation[0]; parameters[1]=aRotation[1]; parameters[2]=aRotation[2];
-	parameters[3]=aRotation[3]; parameters[4]=aRotation[4]; parameters[5]=aRotation[6];
+	parameters[3]=aRotation[3]; parameters[4]=aRotation[4]; parameters[5]=aRotation[5];
 	parameters[6]=aRotation[6]; parameters[7]=aRotation[7]; parameters[8]=aRotation[8];
 	
 	// translation vector
