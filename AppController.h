@@ -104,3 +104,4 @@ NSRect screenFrame();
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
 @end
+

@@ -59,6 +59,7 @@ MODIFICATION HISTORY
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
 #import "NetworkListener.h"
+#import "DCMTKQueryRetrieveSCP.h"
 
 
 
@@ -80,6 +81,7 @@ short					Altivec;
 AppController			*appController = 0L;
 
 NetworkListener			*storeSCP = 0L;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP;
 
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 
@@ -644,6 +646,11 @@ NSRect screenFrame()
 		{
 
 		// Kill DCMTK listener
+		//built in dcmtk serve testing
+		//[dcmtkQRSCP abort];
+		//[dcmtkQRSCP release];
+		//dcmtkQRSCP = nil;
+		
 		NSMutableArray  *theArguments = [NSMutableArray array];
 		NSTask			*aTask = [[NSTask alloc] init];		
 		[aTask setLaunchPath:@"/usr/bin/killall"];		
@@ -654,7 +661,7 @@ NSRect screenFrame()
 		[aTask interrupt];
 		[aTask release];
 		aTask = nil;
-
+		
 		
 		// Kill OsiriX framework listener
 		if( storeSCP)
@@ -709,11 +716,22 @@ NSRect screenFrame()
 
 -(void) startSTORESCP:(id) sender
 {
-	NSLog(@"dcmtk:");
+	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
+	// this implies it needs it's own pool of objects
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	//Testing built in dcmtk server don't remove- LP
+	//NSLog(@"dcmtk:");
+	//NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"];
+	//int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
+	//NSDictionary *params = nil;
+	//dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
+	//[dcmtkQRSCP run];
+	//return;
 	
 	// this method is always executed as a new thread detached from the NSthread command of RestartSTORESCP method
 	// this implies it needs it's own pool of objects
-	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+
 	
 	quitting = NO;
 	
@@ -2090,6 +2108,7 @@ static BOOL initialized = NO;
     [nc removeObserver: self];
 	
     [browserController release];
+	[dcmtkQRSCP release];
     [super dealloc];
 }
 

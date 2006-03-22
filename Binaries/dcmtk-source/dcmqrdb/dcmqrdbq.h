@@ -37,7 +37,7 @@ struct IdxRecord;
 struct DB_ElementList;
 class DcmQueryRetrieveConfig;
 
-/** This class maintains database handles based on the classical "index.dat" file.
+/** This class maintains database handles based on OsiriX core Data .
  *  A database handle maintains a connection to a database and encapsulates database support for
  *  store, find and move/get operations.
  */
@@ -48,16 +48,12 @@ public:
   /** Constructor. Creates and initializes a index file handle for the given 
    *  database storage area (storageArea).
    *  @param storageArea name of storage area, must not be NULL
-   *  @param maxStudiesPerStorageArea maximum number of studies for this storage area,
-   *    needed to correctly parse the index file.
-   *  @param maxBytesPerStudy maximum number of bytes per study, for quota mechanism
+
    *  @param result upon successful initialization of the database handle,
    *    EC_Normal is returned in this parameter, otherwise an error code is returned.
    */
   DcmQueryRetrieveOsiriXDatabaseHandle(
     const char *storageArea,
-    long maxStudiesPerStorageArea,
-    long maxBytesPerStudy,
     OFCondition& result);
   
   /** Destructor. Destroys handle, cancels any ongoing
@@ -342,6 +338,37 @@ private:
 
   /// current debug level
   int debugLevel;
+
+};
+
+/** Index database factory class. Instances of this class are able to create database
+ *  handles for a given called application entity title.
+ */
+class DcmQueryRetrieveOsiriXDatabaseHandleFactory: public DcmQueryRetrieveDatabaseHandleFactory
+{
+public:
+
+  /** constructor
+   *  @param config system configuration object, must not be NULL.
+   */
+  DcmQueryRetrieveOsiriXDatabaseHandleFactory();
+
+  /// destructor
+  virtual ~DcmQueryRetrieveOsiriXDatabaseHandleFactory();
+
+  /** this method creates a new database handle instance on the heap and returns
+   *  a pointer to it, along with a result that indicates if the instance was
+   *  successfully initialized, i.e. connected to the database
+   *  @param callingAETitle calling aetitle
+   *  @param calledAETitle called aetitle
+   *  @param result result returned in this variable
+   *  @return pointer to database object, must not be NULL if result is EC_Normal.
+   */
+  virtual DcmQueryRetrieveDatabaseHandle *createDBHandle(
+    const char *callingAETitle, 
+    const char *calledAETitle,
+    OFCondition& result) const;
+
 
 };
 

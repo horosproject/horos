@@ -174,6 +174,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 case DIMSE_C_STORE_RQ:
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
+				/*
                 case DIMSE_C_FIND_RQ:
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
@@ -184,11 +185,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_CANCEL_RQ:
-                    /* This is a late cancel request, just ignore it */
+                    //* This is a late cancel request, just ignore it 
                     if (options_.verbose_) {
                         printf("dispatch: late C-CANCEL-RQ, ignoring\n");
                     }
                     break;
+				*/
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
@@ -1087,12 +1089,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
     if (! go_cleanup)
     {
         cond = negotiateAssociation(assoc);
+		printf("negotiateAssociation");
         if (cond.bad()) go_cleanup = OFTrue;
     }
 
     if (! go_cleanup)
     {
         cond = ASC_acknowledgeAssociation(assoc);
+		printf("acknowledgeAssociation");
         if (cond.bad())
         {
             DimseCondition::dump(cond);
@@ -1117,11 +1121,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
+			printf("handleAssociation single process");
         }
 #ifdef HAVE_FORK
         else
         {
             /* spawn a sub-process to handle the association */
+			printf("spawn new process");
             pid = (int)(fork());
             if (pid < 0)
             {

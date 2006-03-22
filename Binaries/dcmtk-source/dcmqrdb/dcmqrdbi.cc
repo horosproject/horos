@@ -3384,6 +3384,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
                 char            *newImageFileName)
 {
 
+
     OFString filename;
     char prefix[12];
 
@@ -3393,7 +3394,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
     unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
-    if (! fnamecreator.makeFilename(seed, handle->storageArea, prefix, ".dcm", filename)) return DcmQRIndexDatabaseError;
+	if (! fnamecreator.makeFilename(seed, handle->storageArea, prefix, ".dcm", filename)) return DcmQRIndexDatabaseError;
 
     strcpy(newImageFileName, filename.c_str());
     return EC_Normal;
@@ -3467,44 +3468,4 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 }
 
 
-/*
- * CVS Log
- * $Log: dcmqrdbi.cc,v $
- * Revision 1.1  2006/03/01 20:16:07  lpysher
- * Added dcmtkt ocvs not in xcode  and fixed bug with multiple monitors
- *
- * Revision 1.9  2005/12/16 09:16:08  onken
- * - Added variable initialization to avoid compiler warning
- *
- * Revision 1.8  2005/12/14 14:29:43  joergr
- * Including ctype if present, needed for Solaris.
- *
- * Revision 1.7  2005/12/14 13:46:54  meichel
- * Changed order of include files to avoid warning on FreeBSD
- *
- * Revision 1.6  2005/12/08 15:47:09  meichel
- * Changed include path schema for all DCMTK header files
- *
- * Revision 1.5  2005/12/01 09:10:06  joergr
- * Fixed bug in method matchUID (formerly known as DB_MatchUID).
- *
- * Revision 1.4  2005/04/22 15:36:32  meichel
- * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
- *   to allow configuration retrieval based on calling aetitle.
- *
- * Revision 1.3  2005/04/04 14:23:21  meichel
- * Renamed application "dcmqrdb" into "dcmqrscp" to avoid name clash with
- *   dcmqrdb library, which confuses the MSVC build system.
- *
- * Revision 1.2  2005/04/04 10:04:47  meichel
- * Added public declarations for index file functions that are
- *   used from module dcmpstat
- *
- * Revision 1.1  2005/03/30 13:34:53  meichel
- * Initial release of module dcmqrdb that will replace module imagectn.
- *   It provides a clear interface between the Q/R DICOM front-end and the
- *   database back-end. The imagectn code has been re-factored into a minimal
- *   class structure.
- *
- *
- */
+

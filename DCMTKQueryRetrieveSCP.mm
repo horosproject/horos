@@ -77,11 +77,11 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dcuid.h"       /* for dcmtk version name */
 
-#ifdef WITH_SQL_DATABASE
-#include "dcmtk/dcmqrdbx/dcmqrdbq.h"
-#else
-#include "dcmqrdbi.h"
-#endif
+//#ifdef WITH_SQL_DATABASE
+#include "dcmqrdbq.h"
+//#else
+//#include "dcmqrdbi.h"
+//#endif
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -261,13 +261,13 @@ void errmsg(const char* msg, ...)
 // Have this to avoid errors until I can get rid of it
 DcmQueryRetrieveConfig config;
 
-#ifdef WITH_SQL_DATABASE
+//#ifdef WITH_SQL_DATABASE
     // use SQL database
-    DcmQueryRetrieveSQLDatabaseHandleFactory factory;
-#else
+    DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
+//#else
     // use linear index database (index.dat)
-    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
-#endif
+//    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
+//#endif
 
     DcmQueryRetrieveSCP scp(config, options, factory);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
