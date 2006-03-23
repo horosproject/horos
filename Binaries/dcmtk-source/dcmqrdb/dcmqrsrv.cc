@@ -126,7 +126,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
     OFBool firstLoop = OFTrue;
-
+	printf("dispatch\n");
     // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
     // flag is not set, in which case the inner loop is executed only once and this loop
     // repeats for each incoming DIMSE command. In this case, the DB handle is created
@@ -134,10 +134,11 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     while (cond.good())
     {
         /* Create a database handle for this association */
+		
         DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
               assoc->params->DULparams.callingAPTitle,
           assoc->params->DULparams.calledAPTitle, cond);
-
+		
         if (cond.bad())
         {
           DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
@@ -224,13 +225,14 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     DIC_NODENAME        peerHostName;
     DIC_AE              peerAETitle;
     DIC_AE              myAETitle;
-
+	//printf("handle association\n");
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
+	printf("peerAET: %s\n  myAET: %s\n  peerhostname: %s%\n", peerAETitle, myAETitle, peerHostName);
 
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
-
+	printf("dispatched\n");
  /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE) {
         if (options_.verbose_)
@@ -1121,7 +1123,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);
-			printf("handleAssociation single process");
+			printf("handleAssociation single process\n");
         }
 #ifdef HAVE_FORK
         else
@@ -1131,6 +1133,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             pid = (int)(fork());
             if (pid < 0)
             {
+				printf("pid < 0. Cannot spawn new process\n");
                 DcmQueryRetrieveOptions::errmsg("Cannot create association sub-process: %s",
                    strerror(errno));
                 cond = refuseAssociation(&assoc, CTN_CannotFork);
@@ -1139,11 +1142,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             else if (pid > 0)
             {
                 /* parent process, note process in table */
+				printf("parent process: %d\n", pid);
                 processtable_.addProcessToTable(pid, assoc);
             }
             else
             {
                 /* child process, handle the association */
+				printf("child process handle association\n");
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 exit(0);

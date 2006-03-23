@@ -29,13 +29,33 @@
 #include "offname.h"
 
 #include "dcmqrdbi.h" // for DB_Level
+#include "dcmqridx.h"
 
 struct StudyDescRecord;
-struct DB_Private_Handle;
+struct DB_OsiriX_Handle;
 struct DB_SmallDcmElmt;
 struct IdxRecord;
 struct DB_ElementList;
 class DcmQueryRetrieveConfig;
+
+struct DB_OsiriX_Handle
+{	
+	int pidx ;
+    DB_ElementList *findRequestList ;
+    DB_ElementList *findResponseList ;
+    DB_LEVEL queryLevel ;
+   // char indexFilename[DBC_MAXSTRING+1] ;
+    char storageArea[256] ;
+    long maxBytesPerStudy ;
+    long maxStudiesAllowed ;
+    int idxCounter ;
+    DB_CounterList *moveCounterList ;
+    int NumberRemainOperations ;
+    DB_QUERY_CLASS rootLevel ;
+    DB_UidList *uidList ;
+	NSArray *findArray;
+	NSArray *moveArray;
+};
 
 /** This class maintains database handles based on OsiriX core Data .
  *  A database handle maintains a connection to a database and encapsulates database support for
@@ -285,7 +305,7 @@ public:
   const char *getStorageArea() const;
 
   /// return path to index file
-  const char *getIndexFilename() const;
+//  const char *getIndexFilename() const;
 
       
 private:
@@ -297,13 +317,13 @@ private:
   int matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int matchOther (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
   int dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt);
-  void makeResponseList(DB_Private_Handle *phandle, IdxRecord *idxRec);
+  void makeResponseList(DB_OsiriX_Handle *phandle, IdxRecord *idxRec);
   int matchStudyUIDInStudyDesc (StudyDescRecord *pStudyDesc, char *StudyUID, int maxStudiesAllowed);
   OFCondition checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
   void dbdebug(int level, const char* format, ...) const;
 
   OFCondition hierarchicalCompare (
-      DB_Private_Handle *phandle,
+      DB_OsiriX_Handle *phandle,
       IdxRecord         *idxRec,
       DB_LEVEL          level,
       DB_LEVEL          infLevel,
@@ -322,7 +342,7 @@ private:
       DB_LEVEL        lowestLevel);
 
   /// database handle
-  DB_Private_Handle *handle;
+  DB_OsiriX_Handle *handle;
 
   /// flag indicating whether or not the quota system is enabled
   OFBool quotaSystemEnabled;

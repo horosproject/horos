@@ -124,6 +124,7 @@ static int NbFindAttr = ((sizeof (TbFindAttr)) / (sizeof (TbFindAttr [0])));
 
 /* ========================= static functions ========================= */
 
+
 static char *DB_strdup(const char* str)
 {
     if (str == NULL) return NULL;
