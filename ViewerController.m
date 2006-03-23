@@ -9948,9 +9948,9 @@ sourceRef);
 	
 	[imageView scaleToFit];
 	
-	[[self window] makeKeyAndOrderFront:self];
-	[[self window] makeMainWindow];
-	[self showWindow:self];
+//	[[self window] makeKeyAndOrderFront:self];
+//	[[self window] makeMainWindow];
+//	[self showWindow:self];
 }
 
 

@@ -2415,6 +2415,11 @@ static BOOL initialized = NO;
 		}
 	}
 	
+	for( i = 0; i < [viewersList count]; i++)
+	{
+		[[viewersList objectAtIndex: i] showWindow:self];
+	}
+	
 	[viewersList release];
 }
 

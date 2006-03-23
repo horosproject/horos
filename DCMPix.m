@@ -3806,10 +3806,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	depth = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
 	
-	//		if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && depth == 16)
-	//		{
-	//			depth = 8;
-	//		}
+//	if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && depth == 16)
+//	{
+//		depth = 8;
+//	}
 	
 	width = height = 0;
 	int spp = 1;
@@ -4533,7 +4533,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);	//papBitsAllocatedGr
 			depth = (int) val->us;
 			
-			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);		//papBitsAllocatedGr
+			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);		//papBitsStoredGr
 //			if( val->us == 8 && depth == 16)
 //			{
 //				depth = 8;
