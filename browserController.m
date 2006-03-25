@@ -5149,6 +5149,8 @@ static BOOL needToRezoom;
 		NSMutableArray		*viewerPix[ 50];
 		ViewerController	*movieController = 0L;
 		
+// NS_DURING (1) keyImages
+		
 		if( keyImages)
 		{
 			NSArray *keyImagesToOpenArray = [NSArray array];
@@ -5173,10 +5175,8 @@ static BOOL needToRezoom;
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
 		}
 		
-		// ************************************
-		// ***** Compute Required Memory ******
-		// ************************************
-		
+// NS_DURING (2) Compute Required Memory
+
 		BOOL	enoughMemory = NO;
 		long	subSampling = 1;
 		
@@ -5187,38 +5187,31 @@ static BOOL needToRezoom;
 			
 			for( x = 0; x < [toOpenArray count]; x++)
 			{
-				memBlock = 0;
-				
+				memBlock = 0;				
 				loadList = [toOpenArray objectAtIndex: x];
+				NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+				[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
+				[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
 				
-			//	if( [[loadList objectAtIndex:0] findViewer:0] == NO || viewer != 0L)
+				if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
 				{
-					// MULTI-FRAME IMAGES
-					NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+					multiFrame = YES;
 					
-					[curFile setValue:[NSDate date] forKeyPath:@"series.dateOpened"];
-					[curFile setValue:[NSDate date] forKeyPath:@"series.study.dateOpened"];
-					
-					if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+					mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+					memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+				}
+				else
+				{
+					for( i = 0; i < [loadList count]; i++)
 					{
-						multiFrame = YES;
-						
-						mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
-					}
-					else
-					{
-						for( i = 0; i < [loadList count]; i++)
-						{
-							curFile = [loadList objectAtIndex: i];
-							mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-							memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-						}
+						curFile = [loadList objectAtIndex: i];
+						mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 					}
 				}
 				
 				memBlockSize[ x] = memBlock;
-			}
+			} //end for
 			
 			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
 			NSLog(@"Test memory for: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
@@ -5254,7 +5247,7 @@ static BOOL needToRezoom;
 
 			free( testPtr);
 			testPtr = 0L;
-		}
+		} //end while
 		
 		int result = NSAlertDefaultReturn;
 		
@@ -5263,9 +5256,7 @@ static BOOL needToRezoom;
 			int result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", 0L), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 
-		// ************************************
-		// *****       Load Images       ******
-		// ************************************
+// NS_DURING (3) Load Images (memory allocation)
 		
 		BOOL		notEnoughMemory = NO;
 		
@@ -5312,85 +5303,71 @@ static BOOL needToRezoom;
 			}
 		}
 		else notEnoughMemory = YES;
+
+// NS_DURING (4) Load Images loop
 		
 		if( notEnoughMemory == NO)
 		{
 			mem = 0;
 			for( x = 0; x < [toOpenArray count]; x++)
-			{
-	//			int the_number = [[[loadList objectAtIndex: 0] valueForKey:@"numberOfSeries"] intValue];
-	//			for( z = 0 ; z < [[[loadList objectAtIndex: 0] valueForKey:@"numberOfSeries"] intValue]; z++)
-	//			{
-					NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
-					
-	//						if( movieViewer == YES)
-	//						{
-	//							if( x == 0)
-	//								volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr+mem length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
-	//							else
-	//								volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr+mem length:memBlockSize[ x]*sizeof( float) freeWhenDone:NO];
-	//						}
-	//						else
-					{
-						fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
-						if( fVolumePtr) volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
-						mem = 0;
-					}
+				{
+				NSLog(@"Current block to malloc: %d Mb", (memBlockSize[ x] * sizeof( float)) / (1024*1024));
+				fVolumePtr = malloc( memBlockSize[ x] * sizeof(float));
+				mem = 0;
+				
 					
 					if( fVolumePtr)
 					{
+						volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:memBlockSize[ x]*sizeof( float) freeWhenDone:YES];
 						loadList = [toOpenArray objectAtIndex: x];
-						
+						// Why viewerPix[0] (fixed value) within the loop?					
 						viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
 						
-					//	if( [[loadList objectAtIndex:0] findViewer:z] == NO || movieViewer == YES || viewer != 0L)
+						
+						if( [loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1)
 						{
-							// MULTI-FRAME IMAGES
+							multiFrame = YES;							
+							NSManagedObject*  curFile = [loadList objectAtIndex: 0];
 							
-							if( [loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1)  //     **We selected a multi-frame image !!!
+							for( i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++)
 							{
-								multiFrame = YES;
+								NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
+								DCMPix*			dcmPix;
+								dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 								
-								NSManagedObject*  curFile = [loadList objectAtIndex: 0];
-								
-								for( i = 0; i < [[curFile valueForKey:@"numberOfFrames"] intValue]; i++)
+								if( dcmPix)
 								{
-									NSManagedObject*  curFile = [loadList objectAtIndex: 0];
-									
-									DCMPix*			dcmPix;
-									dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
-									mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-									
-									if( dcmPix)
-									{
-										[viewerPix[0] addObject: dcmPix];
-										[dcmPix release];
-									}
+									[viewerPix[0] addObject: dcmPix];
+									[dcmPix release];
 								}
-							}
-							else
+							} //end for
+						}
+						else
+						{
+							//multiframe==NO
+							for( i = 0; i < [loadList count]; i++)
 							{
-								for( i = 0; i < [loadList count]; i++)
+								NSManagedObject*  curFile = [loadList objectAtIndex: i];
+								DCMPix*     dcmPix;
+								dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
+								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+								
+								if( dcmPix)
 								{
-									NSManagedObject*  curFile = [loadList objectAtIndex: i];
-									DCMPix*     dcmPix;
-									dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
-									mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
-									
-									if( dcmPix)
-									{
-										[viewerPix[0] addObject: dcmPix];
-										[dcmPix release];
-									}
+									[viewerPix[0] addObject: dcmPix];
+									[dcmPix release];
 								}
 							}
 						}
+						
+						//opening images refered to in viewerPix[0] in the adequate viewer
 						
 						if( [viewerPix[0] count] > 0)
 						{
 							if( movieViewer == NO)
 							{
-								if( multiFrame == YES)  // MULTIFRAME *************
+								if( multiFrame == YES)
 								{
 									NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity: [viewerPix[0] count]];
 									
@@ -5398,11 +5375,13 @@ static BOOL needToRezoom;
 									
 									if( viewer)
 									{
+										//reuse of existing viewer
 										[viewer changeImageData:viewerPix[0] :filesAr :volumeData :YES];
 										[viewer startLoadImageThread];
 									}
 									else
 									{
+										//creation of new viewer
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
 										[viewerController showWindowTransition];
@@ -5413,13 +5392,16 @@ static BOOL needToRezoom;
 								}
 								else
 								{
+									//multiframe == NO
 									if( viewer)
 									{
+										//reuse of existing viewer
 										[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData :YES];
 										[viewer startLoadImageThread];
 									}
 									else
 									{
+										//creation of new viewer
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
 										[viewerController showWindowTransition];
@@ -5429,6 +5411,7 @@ static BOOL needToRezoom;
 							}
 							else
 							{
+								//movieViewer==YES
 								if( movieController == 0L)
 								{
 									movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
@@ -5443,12 +5426,14 @@ static BOOL needToRezoom;
 						
 						[viewerPix[0] release];
 					}
-	//			}
-			}
+			} //end for
 		}
+		
+// NS_DURING (5) movieController activation
 		
 		if( movieController)
 		{
+			NSLog(@"openViewerFromImages-movieController activation");
 			[movieController showWindowTransition];
 			[movieController startLoadImageThread];
 		}
