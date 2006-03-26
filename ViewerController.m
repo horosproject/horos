@@ -2820,22 +2820,6 @@ static ViewerController *draggedController = 0L;
 #pragma mark 4.1. single viewport
 
 
-- (long) indexForPix: (long) pixIndex
-{
-	if ([[[fileList[curMovieIndex] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
-		return pixIndex;
-	else
-		return 0;
-}
-
-- (short) getNumberOfImages
-{
-    return [pixList[curMovieIndex] count];
-}
-
--(long) maxMovieIndex { return maxMovieIndex;}
-
-
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
 	self = [super initWithWindowNibName:@"Viewer"];
@@ -2860,6 +2844,390 @@ static ViewerController *draggedController = 0L;
 	return self;
 
 }
+
+
+-(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
+{
+	BOOL		sameSeries = NO;
+	long		i, imageIndex;
+	long		type;
+	float		startScale;
+	long		startWL;
+	long		diffWL;
+	long		startWW;
+	long		previousColumns = [imageView columns], previousRows = [imageView rows];
+	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
+	
+	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
+	if( [[appController FindRelatedViewers:pixList[0]] count] > 1)
+	{
+		NSLog( @"changeImageData not possible with other post-processing windows opened");
+		return;
+	}
+	
+	if( previousColumns != 1 || previousRows != 1)
+	{
+		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
+		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
+	}
+	
+	// Release previous data
+	
+	stopThreadLoadImage = YES;
+	while( ThreadLoadImage == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};	//{[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];}
+	
+	long index2compare;
+	
+	if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
+	else index2compare = 0;
+	
+	if( [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
+	{
+		NSLog( @"same series");
+		if( [d count] >= [fileList[ 0] count])
+		{
+			sameSeries = YES;
+			if( [imageView flippedData]) imageIndex = [fileList[ 0] count] -1 -[imageView curImage];
+			else imageIndex = [imageView curImage];
+		}
+		else imageIndex = 0;
+	}
+	else
+	{
+		imageIndex = 0;
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
+	
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		[self saveROI: i];
+		
+		[roiList[ i] release];
+		[pixList[ i] release];
+		[fileList[ i] release];
+		[volumeData[ i] release];
+	}
+	
+//	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+//	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
+//	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
+
+	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+	curConvMenu = NSLocalizedString(@"No Filter", nil);
+	curWLWWMenu = NSLocalizedString(@"Default WL & WW", nil);
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	
+	// Load new data
+	curMovieIndex = 0;
+	maxMovieIndex = 1;
+	
+	volumeData[ 0] = v;
+	[volumeData[ 0] retain];
+	
+	direction = 1;
+	
+    [f retain];
+    pixList[ 0] = f;
+    
+	// Prepare pixList for image thick slab
+	for( i = 0; i < [pixList[0] count]; i++)
+	{
+		[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
+	}
+	
+
+   [d retain];
+    fileList[ 0] = d;
+
+	// Prepare roiList
+	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
+	for( i = 0; i < [pixList[0] count]; i++)
+	{
+		[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
+	}
+	[self loadROI:0];
+	
+ 	
+	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+	if( sameSeries) [imageView setIndex: imageIndex];
+	else [imageView setIndexWithReset: imageIndex :YES];
+		
+	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
+	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+	
+	loadingPercentage = 0;
+	[self setWindowTitle:self];
+	
+    [slider setMaxValue:[pixList[0] count]-1];
+	[slider setNumberOfTickMarks:[pixList[0] count]];
+	[self adjustSlider];
+		
+	if([fileList[0] count] == 1)
+    {
+        [speedSlider setEnabled:NO];
+        [slider setEnabled:NO];
+    }
+	else
+	{
+		[speedSlider setEnabled:YES];
+        [slider setEnabled:YES];
+	}
+    
+	[subtractOnOff setState: NSOffState];
+	[popFusion selectItemAtIndex:0];
+	[convPopup selectItemAtIndex:0];
+	[stacksFusion setIntValue:2];
+	[sliderFusion setIntValue:1];
+	[sliderFusion setEnabled:NO];
+	
+	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
+	
+	i = [[NSApp orderedWindows] indexOfObject: [self window]];
+	if( i != NSNotFound)
+	{
+		i++;
+		for( ; i < [[NSApp orderedWindows] count]; i++)
+		{
+			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
+			{
+				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
+				[[[[NSApp orderedWindows] objectAtIndex: i] windowController] propagateSettings];
+			}
+		}
+		
+	}
+	[imageView becomeMainWindow];
+	
+	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString:@"PET"];
+	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
+	
+	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
+	
+	if( status == 0L) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
+	else [StatusPopup selectItemWithTag: [status intValue]];
+	
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
+	
+	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+	else [CommentsField setTitle: com];
+	
+	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
+		[browserWindow findAndSelectFile: 0L image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
+		
+	////////
+	
+	if( previousColumns != 1 || previousRows != 1)
+	{
+		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:previousColumns], [NSNumber numberWithInt:previousRows], nil];
+		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
+	}
+	
+	if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
+	{
+		[self buildMatrixPreview];
+		[self matrixPreviewSelectCurrentSeries];
+	}
+	else
+	{
+		[self matrixPreviewSelectCurrentSeries];
+	}
+
+	[previousPatientUID release];
+	
+	// Is it only key images?
+	NSArray	*images = fileList[ 0];
+	BOOL onlyKeyImages = YES;
+	
+	for( i = 0; i < [images count]; i++)
+	{
+		NSManagedObject	*image = [images objectAtIndex: i];
+		if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
+	}
+	
+	if( onlyKeyImages)
+	{
+		[keyImageDisplay setTag: 1];
+		[keyImageDisplay setTitle: NSLocalizedString(@"All Images", nil)];
+	}
+	else
+	{
+		[keyImageDisplay setTag: 0];
+		[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
+	}
+}
+
+- (void) showWindowTransition
+{
+	long	type;
+	float   startScale;
+	long	startWL;
+	long	diffWL;
+	long	startWW, i;
+	NSRect	screenRect;
+	
+	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
+	{
+		case 0:		// use main screen only
+			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
+		break;
+		
+		case 1:		// use second screen only
+			if( [[NSScreen screens] count] > 1)
+			{
+				screenRect = [[[NSScreen screens] objectAtIndex: 1] visibleFrame];
+			}
+			else
+			{
+				screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
+			}
+		break;
+		
+		case 2:		// use all screens
+			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
+		break;
+	}
+	
+	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	{
+		screenRect.size.height -= [ToolbarPanelController fixedHeight];
+	}
+	
+	[[self window] setFrame:screenRect display:YES];
+	
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
+	{
+		case 0:	[[self window] setFrame:screenRect display:YES];	break;
+		case 1:	[imageView resizeWindowToScale: 1.0];	break;
+		case 2:	[imageView resizeWindowToScale: 1.5];	break;
+		case 3:	[imageView resizeWindowToScale: 2.0];	break;
+	}
+	
+	[imageView scaleToFit];
+	
+//	[[self window] makeKeyAndOrderFront:self];
+//	[[self window] makeMainWindow];
+//	[self showWindow:self];
+}
+
+
+- (void) startLoadImageThread
+{	
+	stopThreadLoadImage = NO;
+	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
+	[self setWindowTitle:self];
+}
+
+
+-(void) loadImageData:(id) sender
+{
+    NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+    long				i, x;
+	BOOL				isPET = NO;
+	
+	NSLog(@"LOADING: Start loading images");
+	
+    ThreadLoadImage = YES;
+	
+	loadingPercentage = 0;
+	
+//	while(someoneIsLoading)
+//	{
+//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	}
+//    someoneIsLoading = YES;
+	
+	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
+	
+	float maxValueOfSeries = 0;
+	
+	for( x = 0; x < maxMovieIndex; x++)
+	{
+		for( i = 0 ; i < [pixList[ x] count]; i++)
+		{
+			if( stopThreadLoadImage == NO)
+			{
+				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
+					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 0]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
+				else
+					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 0]; 
+					
+				DCMPix* pix = [pixList[ x] objectAtIndex: i];
+				[pix CheckLoad];
+				
+				if( isPET)
+				{
+					if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
+				}
+			}
+			
+			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
+			
+			while(loadingPause)
+			{
+				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+			}
+		}
+	}
+	
+	if( isPET)
+	{
+		for( x = 0; x < maxMovieIndex; x++)
+		{
+			for( i = 0 ; i < [pixList[ x] count]; i++)
+			{
+				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+			}
+		}
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+		{
+			[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
+		}
+	}
+	
+	loadingPercentage = 1;
+	
+	ThreadLoadImage = NO;
+//	someoneIsLoading = NO;
+	NSLog(@"LOADING: All images loaded");
+	
+	if( stopThreadLoadImage == NO)
+		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
+	
+    [pool release];
+}
+
+//static volatile BOOL someoneIsLoading = NO;
+
+-(void) setLoadingPause:(BOOL) lp
+{
+	loadingPause = lp;
+}
+
+
+
+- (long) indexForPix: (long) pixIndex
+{
+	if ([[[fileList[curMovieIndex] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] == 1)
+		return pixIndex;
+	else
+		return 0;
+}
+
+- (short) getNumberOfImages
+{
+    return [pixList[curMovieIndex] count];
+}
+
+-(long) maxMovieIndex { return maxMovieIndex;}
+
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
@@ -2906,7 +3274,7 @@ static ViewerController *draggedController = 0L;
 
 #pragma mark 4.1.1. DICOM pipeline
 
-#pragma mark filters 
+#pragma mark 4.1.1.1 Filters 
 
 
 // filter from plugin
@@ -2954,7 +3322,39 @@ static ViewerController *draggedController = 0L;
 
 #pragma mark 4.1.1.2. Mask Subtraction
 
-#pragma mark subtraction
+- (IBAction) subtractSwitch:(id) sender
+{
+	short firstAfterMask;
+	if( [sender state])
+	{
+		// subtraction asked for
+		
+		// mask contains the cardinality of the mask. At initialization, set to 1 (segond image)
+		// curImage contains the image in the series to which the mask will be applied
+		[imageView setSubtraction: mask :subOffset];
+		
+		//needs to to to frame 3 ?
+		if ([imageView curImage] < (mask + 1)) firstAfterMask=(mask + 1);
+		else firstAfterMask=[imageView curImage];		
+
+		float	iww;
+		[imageView getWLWW:&wlBeforeSubtract :&iww];
+		
+		[imageView setWLWW: 0 :iww];
+	}
+	else
+	{
+		[imageView setSubtraction: -1 :subOffset];
+		
+		float	iwl, iww;
+		
+		[imageView getWLWW:&iwl :&iww];
+		[imageView setWLWW: wlBeforeSubtract :iww];
+	}
+	[imageView setIndex:firstAfterMask];
+	[self adjustSlider];
+}
+
 
 - (IBAction) subtractCurrent:(id) sender
 {
@@ -2964,12 +3364,14 @@ static ViewerController *draggedController = 0L;
 		[self subtractSwitch:subtractOnOff];
 	}
 	
-	subtractedImage = [imageView curImage];
-	[imageView setSubtraction: subtractedImage :subOffset];
+	mask = [imageView curImage];
+	[imageView setSubtraction: mask :subOffset];
 	
-	[subtractIm setIntValue: subtractedImage+1];
-	[imageView setIndex:[imageView curImage]];
+	[subtractIm setIntValue: mask+1];
+	[imageView setIndex:[imageView curImage]+1];
+	[self adjustSlider];
 }
+
 
 - (IBAction) subtractStepper:(id) sender
 {
@@ -2988,40 +3390,13 @@ static ViewerController *draggedController = 0L;
 	
 	if( [subtractOnOff state] == NSOnState)
 	{
-		[imageView setSubtraction: subtractedImage :subOffset];
+		[imageView setSubtraction: mask :subOffset];
 		[imageView setIndex:[imageView curImage]];
 	}
 }
 
-- (IBAction) subtractSwitch:(id) sender
-{
-	if( [sender state])
-	{
-		[imageView setSubtraction: subtractedImage :subOffset];
-		
-		float	iww;
-		
-		[imageView getWLWW:&wlBeforeSubtract :&iww];
-		
-		[imageView setWLWW: 0 :iww];
-	}
-	else
-	{
-		[imageView setSubtraction: -1 :subOffset];
-		
-		float	iwl, iww;
-		
-		[imageView getWLWW:&iwl :&iww];
-		[imageView setWLWW: wlBeforeSubtract :iww];
-	}
-	[imageView setIndex:[imageView curImage]];
-}
-
-
-
 #pragma mark-
 #pragma mark 4.1.1.3. VOI LUT transformation
-
 
 - (void) setCurWLWWMenu:(NSString*) s
 {
@@ -8476,7 +8851,7 @@ int i,j,l;
 	ThreadLoadImage = NO;
 	
 	subOffset.y = subOffset.x = 0;
-	subtractedImage = 0;
+	mask = 1;
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
@@ -9468,101 +9843,6 @@ long i;
 	}
 }
 
-
-//static volatile BOOL someoneIsLoading = NO;
-
--(void) setLoadingPause:(BOOL) lp
-{
-	loadingPause = lp;
-}
-
--(void) loadImageData:(id) sender
-{
-    NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-    long				i, x;
-	BOOL				isPET = NO;
-	
-	NSLog(@"LOADING: Start loading images");
-	
-    ThreadLoadImage = YES;
-	
-	loadingPercentage = 0;
-	
-//	while(someoneIsLoading)
-//	{
-//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-//	}
-//    someoneIsLoading = YES;
-	
-	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
-	
-	float maxValueOfSeries = 0;
-	
-	for( x = 0; x < maxMovieIndex; x++)
-	{
-		for( i = 0 ; i < [pixList[ x] count]; i++)
-		{
-			if( stopThreadLoadImage == NO)
-			{
-				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
-					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 0]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
-				else
-					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 0]; 
-					
-				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				[pix CheckLoad];
-				
-				if( isPET)
-				{
-					if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
-				}
-			}
-			
-			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
-			
-			while(loadingPause)
-			{
-				[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-			}
-		}
-	}
-	
-	if( isPET)
-	{
-		for( x = 0; x < maxMovieIndex; x++)
-		{
-			for( i = 0 ; i < [pixList[ x] count]; i++)
-			{
-				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
-			}
-		}
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
-		{
-			[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
-		}
-	}
-	
-	loadingPercentage = 1;
-	
-	ThreadLoadImage = NO;
-//	someoneIsLoading = NO;
-	NSLog(@"LOADING: All images loaded");
-	
-	if( stopThreadLoadImage == NO)
-		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
-	
-    [pool release];
-}
-
-- (void) startLoadImageThread
-{	
-	stopThreadLoadImage = NO;
-	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
-	[self setWindowTitle:self];
-}
-
-
 #pragma mark key image
 
 - (IBAction) keyImageCheckBox:(id) sender
@@ -9681,278 +9961,6 @@ sourceRef);
 
     return err;
 }
-
-
--(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
-{
-	BOOL		sameSeries = NO;
-	long		i, imageIndex;
-	long		type;
-	float		startScale;
-	long		startWL;
-	long		diffWL;
-	long		startWW;
-	long		previousColumns = [imageView columns], previousRows = [imageView rows];
-	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
-	
-	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
-	if( [[appController FindRelatedViewers:pixList[0]] count] > 1)
-	{
-		NSLog( @"changeImageData not possible with other post-processing windows opened");
-		return;
-	}
-	
-	if( previousColumns != 1 || previousRows != 1)
-	{
-		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
-		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-	}
-	
-	// Release previous data
-	
-	stopThreadLoadImage = YES;
-	while( ThreadLoadImage == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};	//{[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];}
-	
-	long index2compare;
-	
-	if( [imageView flippedData]) index2compare = [fileList[ 0] count]-1;
-	else index2compare = 0;
-	
-	if( [fileList[ 0] objectAtIndex: index2compare] == [d objectAtIndex: 0])
-	{
-		NSLog( @"same series");
-		if( [d count] >= [fileList[ 0] count])
-		{
-			sameSeries = YES;
-			if( [imageView flippedData]) imageIndex = [fileList[ 0] count] -1 -[imageView curImage];
-			else imageIndex = [imageView curImage];
-		}
-		else imageIndex = 0;
-	}
-	else
-	{
-		imageIndex = 0;
-	}
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
-	
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		[self saveROI: i];
-		
-		[roiList[ i] release];
-		[pixList[ i] release];
-		[fileList[ i] release];
-		[volumeData[ i] release];
-	}
-	
-//	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
-//	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
-//	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
-
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	curConvMenu = NSLocalizedString(@"No Filter", nil);
-	curWLWWMenu = NSLocalizedString(@"Default WL & WW", nil);
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	
-	// Load new data
-	curMovieIndex = 0;
-	maxMovieIndex = 1;
-	
-	volumeData[ 0] = v;
-	[volumeData[ 0] retain];
-	
-	direction = 1;
-	
-    [f retain];
-    pixList[ 0] = f;
-    
-	// Prepare pixList for image thick slab
-	for( i = 0; i < [pixList[0] count]; i++)
-	{
-		[[pixList[0] objectAtIndex: i] setArrayPix: pixList[0] :i];
-	}
-	
-
-   [d retain];
-    fileList[ 0] = d;
-
-	// Prepare roiList
-	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
-	for( i = 0; i < [pixList[0] count]; i++)
-	{
-		[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
-	}
-	[self loadROI:0];
-	
- 	
-	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
-	if( sameSeries) [imageView setIndex: imageIndex];
-	else [imageView setIndexWithReset: imageIndex :YES];
-		
-	DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
-	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
-	
-	loadingPercentage = 0;
-	[self setWindowTitle:self];
-	
-    [slider setMaxValue:[pixList[0] count]-1];
-	[slider setNumberOfTickMarks:[pixList[0] count]];
-	[self adjustSlider];
-		
-	if([fileList[0] count] == 1)
-    {
-        [speedSlider setEnabled:NO];
-        [slider setEnabled:NO];
-    }
-	else
-	{
-		[speedSlider setEnabled:YES];
-        [slider setEnabled:YES];
-	}
-    
-	[subtractOnOff setState: NSOffState];
-	[popFusion selectItemAtIndex:0];
-	[convPopup selectItemAtIndex:0];
-	[stacksFusion setIntValue:2];
-	[sliderFusion setIntValue:1];
-	[sliderFusion setEnabled:NO];
-	
-	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
-	
-	i = [[NSApp orderedWindows] indexOfObject: [self window]];
-	if( i != NSNotFound)
-	{
-		i++;
-		for( ; i < [[NSApp orderedWindows] count]; i++)
-		{
-			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
-			{
-				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
-				[[[[NSApp orderedWindows] objectAtIndex: i] windowController] propagateSettings];
-			}
-		}
-		
-	}
-	[imageView becomeMainWindow];
-	
-	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString:@"PET"];
-	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
-	
-	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
-	
-	if( status == 0L) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
-	else [StatusPopup selectItemWithTag: [status intValue]];
-	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
-	
-	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
-	else [CommentsField setTitle: com];
-	
-	if( [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		[browserWindow findAndSelectFile: 0L image :[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand :NO];
-		
-	////////
-	
-	if( previousColumns != 1 || previousRows != 1)
-	{
-		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:previousColumns], [NSNumber numberWithInt:previousRows], nil];
-		NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
-	}
-	
-	if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
-	{
-		[self buildMatrixPreview];
-		[self matrixPreviewSelectCurrentSeries];
-	}
-	else
-	{
-		[self matrixPreviewSelectCurrentSeries];
-	}
-
-	[previousPatientUID release];
-	
-	// Is it only key images?
-	NSArray	*images = fileList[ 0];
-	BOOL onlyKeyImages = YES;
-	
-	for( i = 0; i < [images count]; i++)
-	{
-		NSManagedObject	*image = [images objectAtIndex: i];
-		if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
-	}
-	
-	if( onlyKeyImages)
-	{
-		[keyImageDisplay setTag: 1];
-		[keyImageDisplay setTitle: NSLocalizedString(@"All Images", nil)];
-	}
-	else
-	{
-		[keyImageDisplay setTag: 0];
-		[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
-	}
-}
-
-- (void) showWindowTransition
-{
-	long	type;
-	float   startScale;
-	long	startWL;
-	long	diffWL;
-	long	startWW, i;
-	NSRect	screenRect;
-	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
-	{
-		case 0:		// use main screen only
-			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
-		break;
-		
-		case 1:		// use second screen only
-			if( [[NSScreen screens] count] > 1)
-			{
-				screenRect = [[[NSScreen screens] objectAtIndex: 1] visibleFrame];
-			}
-			else
-			{
-				screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
-			}
-		break;
-		
-		case 2:		// use all screens
-			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
-		break;
-	}
-	
-	if( USETOOLBARPANEL || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
-	{
-		screenRect.size.height -= [ToolbarPanelController fixedHeight];
-	}
-	
-	[[self window] setFrame:screenRect display:YES];
-	
-	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
-	{
-		case 0:	[[self window] setFrame:screenRect display:YES];	break;
-		case 1:	[imageView resizeWindowToScale: 1.0];	break;
-		case 2:	[imageView resizeWindowToScale: 1.5];	break;
-		case 3:	[imageView resizeWindowToScale: 2.0];	break;
-	}
-	
-	[imageView scaleToFit];
-	
-//	[[self window] makeKeyAndOrderFront:self];
-//	[[self window] makeMainWindow];
-//	[self showWindow:self];
-}
-
 
 
 /*

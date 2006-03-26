@@ -68,7 +68,7 @@
 	IBOutlet NSPopUpButton  *OpacityPopup;
 	
 			 NSPoint		subOffset;
-			 long			subtractedImage, speedometer;
+			 long			mask, speedometer;
 			 float			wlBeforeSubtract;
 			 
 	IBOutlet NSView			*StatusView;
