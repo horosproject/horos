@@ -2912,7 +2912,6 @@
 		BFBF44EB09B6828E00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF44ED09B6828E00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
-		BFBF44EE09B6828E00545F5E /* dcmqrcnf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9B09B6828800545F5E /* dcmqrcnf.cc */; };
 		BFBF44EF09B6828E00545F5E /* dcmqrcnf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9C09B6828800545F5E /* dcmqrcnf.h */; };
 		BFBF44F009B6828E00545F5E /* dcmqrdba.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9D09B6828800545F5E /* dcmqrdba.h */; };
 		BFBF44F109B6828E00545F5E /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
@@ -2926,8 +2925,6 @@
 		BFBF44F909B6828E00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
 		BFBF44FA09B6828E00545F5E /* dcmqrsrv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */; };
 		BFBF44FB09B6828E00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
-		BFBF44FC09B6828E00545F5E /* dcmqrtis.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA909B6828800545F5E /* dcmqrtis.cc */; };
-		BFBF44FD09B6828E00545F5E /* dcmqrtis.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAA09B6828800545F5E /* dcmqrtis.h */; };
 		BFBF44FE09B6828E00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF44FF09B6828E00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
 		BFBF450009B6828E00545F5E /* sialgo.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAE09B6828800545F5E /* sialgo.h */; };
@@ -12268,7 +12265,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -22121,7 +22118,6 @@
 				BFBF44F709B6828E00545F5E /* dcmqropt.h in Headers */,
 				BFBF44F909B6828E00545F5E /* dcmqrptb.h in Headers */,
 				BFBF44FB09B6828E00545F5E /* dcmqrsrv.h in Headers */,
-				BFBF44FD09B6828E00545F5E /* dcmqrtis.h in Headers */,
 				BFBF44FF09B6828E00545F5E /* dcsignat.h in Headers */,
 				BFBF450009B6828E00545F5E /* sialgo.h in Headers */,
 				BFBF450209B6828E00545F5E /* siautopr.h in Headers */,
@@ -25698,13 +25694,11 @@
 				BFBF44E809B6828E00545F5E /* dcmqrcbg.cc in Sources */,
 				BFBF44EA09B6828E00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */,
-				BFBF44EE09B6828E00545F5E /* dcmqrcnf.cc in Sources */,
 				BFBF44F109B6828E00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF44F309B6828E00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF44F609B6828E00545F5E /* dcmqropt.cc in Sources */,
 				BFBF44F809B6828E00545F5E /* dcmqrptb.cc in Sources */,
 				BFBF44FA09B6828E00545F5E /* dcmqrsrv.cc in Sources */,
-				BFBF44FC09B6828E00545F5E /* dcmqrtis.cc in Sources */,
 				BFBF44FE09B6828E00545F5E /* dcsignat.cc in Sources */,
 				BFBF450109B6828E00545F5E /* siautopr.cc in Sources */,
 				BFBF450309B6828E00545F5E /* sibrsapr.cc in Sources */,

@@ -1165,6 +1165,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     }
     
 //    [self display];
+	[self mouseMoved: [NSApp currentEvent]];
+	
 	[self setNeedsDisplay:YES];
 	
 	if (isKeyView) {

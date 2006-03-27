@@ -142,6 +142,9 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 
 @interface VRPROView : VTKView <Schedulable>
 {
+	NSTimer						*autoRotate;
+	BOOL						rotate;
+
 	int							projectionMode;
     NSMutableArray				*blendingPixList;
     DCMPix						*blendingFirstObject;
