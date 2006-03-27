@@ -123,43 +123,46 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 	// allocate the memory for the icon 
 	iconPtr = icon;
 	
-	if( isRGB)
+	if( diff)
 	{
-		long	x;
-		unsigned char   *rgbImage = (unsigned char*) image;
-		
-		for (i = 0; i < destHeight; i++)  // lines
+		if( isRGB)
 		{
-			line = width * (long) (ratio * i)*4 ;   //ARGB
-			iconPtr = icon + rowBytes*i;
-			for (j = 0; j < destWidth; j++)         // columns 
+			long	x;
+			unsigned char   *rgbImage = (unsigned char*) image;
+			
+			for (i = 0; i < destHeight; i++)  // lines
 			{
-				for (x =1; x< 4;x++, iconPtr++)		// Dont take alpha channel
+				line = width * (long) (ratio * i)*4 ;   //ARGB
+				iconPtr = icon + rowBytes*i;
+				for (j = 0; j < destWidth; j++)         // columns 
 				{
-					value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
+					for (x =1; x< 4;x++, iconPtr++)		// Dont take alpha channel
+					{
+						value = *( rgbImage + line + x + (long) (j * ratio)*4); //ARGB
+						
+						if( value > max) value = max;
+						else if( value < min) value = min;
+						
+						*iconPtr = (((value-min) * 255L) / diff);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (i = 0; i < destHeight; i++)  // lines
+			{
+				line = width * (long) (ratio * i) ;
+				iconPtr = icon + rowBytes*i;
+				for (j = 0; j < destWidth; j++, iconPtr++)         // columns 
+				{ 
+					value = *( image + line + (long) (j * ratio));
 					
 					if( value > max) value = max;
 					else if( value < min) value = min;
 					
 					*iconPtr = (((value-min) * 255L) / diff);
 				}
-			}
-		}
-	}
-	else
-	{
-		for (i = 0; i < destHeight; i++)  // lines
-		{
-			line = width * (long) (ratio * i) ;
-			iconPtr = icon + rowBytes*i;
-			for (j = 0; j < destWidth; j++, iconPtr++)         // columns 
-			{ 
-				value = *( image + line + (long) (j * ratio));
-				
-				if( value > max) value = max;
-				else if( value < min) value = min;
-				
-				*iconPtr = (((value-min) * 255L) / diff);
 			}
 		}
 	}
