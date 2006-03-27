@@ -2355,7 +2355,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
     
     if( [sender tag])   //User clicks OK Button
     {
-		if( [[dcmSelection selectedCell] tag] == 0)
+		if( [[dcmSelection selectedCell] tag] == 0) // current image only
 		{
 			if([dcmExport3Modalities state]==NSOffState)
 			{
@@ -2397,7 +2397,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 				}
 			}
 		}
-		else
+		else	// all images of the series
 		{	
 			long deltaX, deltaY, x, y, oldX, oldY, max;
 			OrthogonalMPRView *view, *viewCT, *viewPETCT, *viewPET;
@@ -2448,9 +2448,21 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 				viewPET = [[self PETController] yReslicedView];
 			}
 			
+			long from, to, interval;
+			
+			from = [dcmFrom intValue]-1;
+			to = [dcmTo intValue];
+			interval = [dcmInterval intValue];
+			
+			if( to < from)
+			{
+				to = [dcmFrom intValue]-1;
+				from = [dcmTo intValue];
+			}
+			
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[splash showWindow:self];
-			[[splash progress] setMaxValue:max];
+			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 
 			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
@@ -2458,7 +2470,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 			
 			if([dcmExport3Modalities state]==NSOffState)
 			{
-				for( i = 0; i < max; i++)
+				for( i = from; i < to; i+=interval)
 				{
 					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
 					[modalitySplitView display];
@@ -2506,6 +2518,52 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 
 - (void) exportDICOMFile:(id) sender
 {
+	long max;
+	OrthogonalMPRView *view;
+	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+	{
+		view = [[[self keyView] controller] xReslicedView];
+		max = [[view curDCM] pheight];
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+	{
+		view = [[[self keyView] controller] originalView];
+		max = [[view curDCM] pheight];
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+	{
+		view = [[[self keyView] controller] originalView];
+		max = [[view curDCM] pheight];
+	}
+	[dcmFrom setMaxValue:max];
+	[dcmTo setMaxValue:max];
+	[dcmInterval setMaxValue:max];
+	[dcmFrom performClick: self];	// Will update the text field
+	[dcmTo performClick: self];	// Will update the text field
+	[dcmInterval performClick: self];	// Will update the text field
+
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
+
+- (IBAction) changeFromAndToBounds:(id) sender
+{
+	if([sender isEqualTo:dcmFrom]){[dcmFromTextField setIntValue:[sender intValue]];[dcmFromTextField display];}
+	else if([sender isEqualTo:dcmTo]){[dcmToTextField setIntValue:[sender intValue]];[dcmToTextField display];}
+	else if([sender isEqualTo:dcmToTextField]){[dcmTo setIntValue:[sender intValue]];[dcmTo display];}
+	else if([sender isEqualTo:dcmFromTextField]){[dcmFrom setIntValue:[sender intValue]];[dcmFrom display];}
+			
+	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+	{
+		[self resliceFromX: [[[[self keyView] controller] xReslicedView] crossPositionX] : [sender intValue] : [[self keyView] controller]];
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+	{
+		[self resliceFromOriginal: [[[[self keyView] controller] originalView] crossPositionX] : [sender intValue] : [[self keyView] controller]];
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+	{
+		[self resliceFromOriginal: [sender intValue]: [[[[self keyView] controller] originalView] crossPositionY] : [[self keyView] controller]];
+	}
+}
+
 @end

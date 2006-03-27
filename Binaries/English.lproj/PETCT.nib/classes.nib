@@ -62,6 +62,7 @@
                 blendingPropagateX = id; 
                 blendingPropagateY = id; 
                 changeBlendingFactor = id; 
+                changeFromAndToBounds = id; 
                 changeTool = id; 
                 customizeViewerToolBar = id; 
                 endExportDICOMFileSettings = id; 
@@ -87,8 +88,13 @@
                 dcmExport3Modalities = NSButton; 
                 dcmExportWindow = NSWindow; 
                 dcmFormat = NSMatrix; 
+                dcmFrom = NSSlider; 
+                dcmFromTextField = NSTextField; 
+                dcmInterval = NSSlider; 
                 dcmSelection = NSMatrix; 
                 dcmSeriesName = NSTextField; 
+                dcmTo = NSSlider; 
+                dcmToTextField = NSTextField; 
                 modalitySplitView = KFSplitView; 
                 originalSplitView = KFSplitView; 
                 toolsMatrix = NSMatrix; 
