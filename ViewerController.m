@@ -1306,6 +1306,8 @@ int sortROIByName(id roi1, id roi2, void *context)
         
 		curWLWWMenu = [newName stringValue];
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+		
+		[imageView setWLWW: iwl: iww];
     }
 }
 
@@ -9203,6 +9205,7 @@ int i,j,l;
 			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 			{
 				[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
 			}
 			else
 			{
@@ -9323,6 +9326,7 @@ int i,j,l;
 					if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 					{
 						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
 					}
 					else
 					{

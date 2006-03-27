@@ -4635,6 +4635,16 @@ public:
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 }
 
+- (void)changeColorWith:(NSColor*) color
+{
+	if( color)
+	{
+		//change background color
+		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		[self setNeedsDisplay:YES];
+	}
+}
+
 - (void)changeColor:(id)sender{
 	if(![point3DColorWell isActive])
 	{

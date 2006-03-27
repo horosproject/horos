@@ -24,6 +24,7 @@
                 setMultipleScreens = id; 
                 setNoInterpolation = id; 
                 setOpenViewerBut = id; 
+                setPETCLUTfor3DMIP = id; 
                 setReverseScrollWheel = id; 
                 setSaveLoadROI = id; 
                 setToolbarMatrix = id; 
@@ -45,6 +46,7 @@
                 multipleScreensMatrix = NSMatrix; 
                 noInterpolationCheck = NSButton; 
                 openViewerCheck = NSButton; 
+                preferWonBforPET3D = NSButton; 
                 recommandations = NSTextField; 
                 reverseScrollWheelCheck = NSButton; 
                 sizeMatrix = NSMatrix; 

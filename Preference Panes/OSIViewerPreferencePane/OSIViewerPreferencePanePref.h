@@ -22,7 +22,8 @@
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
 											*noInterpolationCheck,
-											*convertPETtoSUVCheck;
+											*convertPETtoSUVCheck,
+											*preferWonBforPET3D;
 	
 	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
 	
@@ -37,6 +38,7 @@
 }
 
 - (void) mainViewDidLoad;
+- (IBAction) setPETCLUTfor3DMIP: (id) sender;
 - (IBAction) setToolbarMatrix: (id) sender;
 - (IBAction) setExportSize: (id) sender;
 - (IBAction) setSaveLoadROI: (id) sender;

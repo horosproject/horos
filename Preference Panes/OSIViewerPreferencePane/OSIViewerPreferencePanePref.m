@@ -106,6 +106,11 @@
 	
 	[convertPETtoSUVCheck setState: [defaults boolForKey: @"ConvertPETtoSUVautomatically"]];
 	
+	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"] isEqualToString:@"B/W Inverse"])
+		[preferWonBforPET3D setState: NSOnState];
+	else
+		[preferWonBforPET3D setState: NSOffState];
+	
 	int i = [defaults integerForKey: @"MAX3DTEXTURE"], x = 1;
 	
 	while( i > 32)
@@ -194,6 +199,14 @@
 - (IBAction) setToolbarMatrix: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEALWAYSTOOLBARPANEL"];
+}
+
+- (IBAction) setPETCLUTfor3DMIP: (id) sender
+{
+	if( [sender state])
+		[[NSUserDefaults standardUserDefaults] setObject:@"B/W Inverse" forKey: @"PET Clut MIP"];
+	else
+		[[NSUserDefaults standardUserDefaults] setObject:NSLocalizedString( @"No CLUT", 0L) forKey: @"PET Clut MIP"];
 }
 
 - (IBAction) setAutoHideMatrixState: (id) sender

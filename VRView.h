@@ -283,6 +283,7 @@ typedef char* vtkMyCallbackVR;
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;
 
+- (void)changeColorWith:(NSColor*) color;
 - (void) exportDICOMFile:(id) sender;
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(void) set3DStateDictionary:(NSDictionary*) dict;
