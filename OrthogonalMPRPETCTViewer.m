@@ -2518,30 +2518,44 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 
 - (void) exportDICOMFile:(id) sender
 {
-	long max;
+	long max, curIndex;
 	OrthogonalMPRView *view;
 	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
 	{
 		view = [[[self keyView] controller] xReslicedView];
-		max = [[view curDCM] pheight];
+		max = [[[self keyView] dcmPixList] count];
+		curIndex = [[self keyView] curImage];
 	}
 	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
 	{
 		view = [[[self keyView] controller] originalView];
-		max = [[view curDCM] pheight];
+		max = [[view curDCM] pwidth];
+		curIndex = [[[[self keyView] controller] originalView] crossPositionX];
 	}
 	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
 	{
 		view = [[[self keyView] controller] originalView];
 		max = [[view curDCM] pheight];
+		curIndex = [[[[self keyView] controller] originalView] crossPositionY];
 	}
 	[dcmFrom setMaxValue:max];
 	[dcmTo setMaxValue:max];
 	[dcmInterval setMaxValue:max];
-	[dcmFrom performClick: self];	// Will update the text field
-	[dcmTo performClick: self];	// Will update the text field
-	[dcmInterval performClick: self];	// Will update the text field
 
+	[dcmFrom setIntValue:curIndex];
+	[dcmFromTextField setIntValue:curIndex];
+	[dcmTo setIntValue:curIndex];
+	[dcmToTextField setIntValue:curIndex];
+	[dcmInterval setIntValue:1];
+	[dcmIntervalTextField setIntValue:1];
+
+	[dcmInterval display];
+	[dcmIntervalTextField display];
+	[dcmFrom display];
+	[dcmTo display];
+	[dcmFromTextField display];
+	[dcmToTextField display];
+	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
@@ -2565,5 +2579,37 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 		[self resliceFromOriginal: [sender intValue]: [[[[self keyView] controller] originalView] crossPositionY] : [[self keyView] controller]];
 	}
 }
+
+//- (IBAction) setCurrentPosition:(id) sender
+//{
+//	if( [sender tag] == 0)
+//	{
+//		if( [imageView flippedData])
+//		{
+//			[dcmFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+//		}
+//		else
+//		{
+//			[dcmFrom setIntValue: [imageView curImage]+1];
+//		}
+//	}
+//	else
+//	{
+//		if( [imageView flippedData])
+//		{
+//			[dcmTo setIntValue:  [pixList[ curMovieIndex] count] - [imageView curImage]];
+//		}
+//		else
+//		{
+//			[dcmTo setIntValue: [imageView curImage]+1];
+//		}
+//	}
+//	
+//	[dcmInterval display];
+//	[dcmFrom display];
+//	[dcmTo display];
+//	[dcmFromTextField display];
+//	[dcmToTextField display];
+//}
 
 @end

@@ -91,6 +91,7 @@
                 dcmFrom = NSSlider; 
                 dcmFromTextField = NSTextField; 
                 dcmInterval = NSSlider; 
+                dcmIntervalTextField = NSTextField; 
                 dcmSelection = NSMatrix; 
                 dcmSeriesName = NSTextField; 
                 dcmTo = NSSlider; 
