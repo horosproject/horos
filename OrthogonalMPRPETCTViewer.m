@@ -2582,6 +2582,21 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 
 //- (IBAction) setCurrentPosition:(id) sender
 //{
+//	long curIndex;
+//	
+//	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+//	{
+//		curIndex = [[self keyView] curImage];
+//	}
+//	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+//	{
+//		curIndex = [[[[self keyView] controller] originalView] crossPositionX];
+//	}
+//	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+//	{
+//		curIndex = [[[[self keyView] controller] originalView] crossPositionY];
+//	}
+//	
 //	if( [sender tag] == 0)
 //	{
 //		if( [imageView flippedData])
