@@ -136,4 +136,18 @@
 	return 0;
 }
 
+// Following stubs are to be subclassed.  Included here to remove compile-time warning messages.
+
+- (id)reportDateForStudy: (NSManagedObject*)study {
+	return nil;
+}
+
+- (void)deleteReportForStudy: (NSManagedObject*)study {
+	return;
+}
+
+- (void)createReportForStudy: (NSManagedObject*)study {
+	return;
+}
+
 @end

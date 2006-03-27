@@ -60,6 +60,12 @@
 // Create a new 2D window, containing a copy of the current series
 - (ViewerController*) duplicateCurrent2DViewerWindow;
 
+// Following stubs are to be subclassed by report filters.  Included here to remove compile-time warning messages.
+
+- (id)reportDateForStudy: (NSManagedObject*)study;
+- (void)deleteReportForStudy: (NSManagedObject*)study;
+- (void)createReportForStudy: (NSManagedObject*)study;
+
 // PRIVATE FUNCTIONS - DON'T SUBCLASS OR MODIFY
 
 - (long) prepareFilter:(ViewerController*) vC;

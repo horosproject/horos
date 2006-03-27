@@ -1522,8 +1522,12 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     }
 }
 
-- (void)mouseUp:(NSEvent *)event
-{
+- (void)mouseUp:(NSEvent *)event {
+
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
+
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
@@ -1544,15 +1548,20 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
             [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
         }
 		
+		if ( pluginOverridesMouse && ( [event modifierFlags] & NSControlKeyMask ) ) {  // Simulate Right Mouse Button action
+			[nc postNotificationName: @"PLUGINrightMouseUp" object: self userInfo: userInfo];
+			[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+			return;
+		}
+				
 		long tool = [self getTool:event];
 		
 		if( crossMove >= 0) tool = tCross;
 		
-		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
-		{
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
+		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"]) {
+			[nc postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
 		}
-//		else if ( tool == tCross && [[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
+		//		else if ( tool == tCross && [[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
 //		{
 //			NSPoint     eventLocation = [event locationInWindow];
 //			NSRect size = [self frame];
@@ -1599,9 +1608,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			{
 				[[curRoiList objectAtIndex:i] mouseRoiUp: tempPt];
 				
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex:i] userInfo: nil];
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
+					[nc postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex:i] userInfo: nil];
 				}
 			}
 			
@@ -1618,9 +1626,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
     }
 	
-	NSNotificationCenter *nc;
-	nc = [NSNotificationCenter defaultCenter];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
 	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
@@ -2531,6 +2536,11 @@ static long scrollMode;
 	[self mouseDragged:(NSEvent *)event];
 }
 
+-(NSMenu*) menuForEvent:(NSEvent *)theEvent {
+	if ( pluginOverridesMouse ) return nil;  // Turn off contextual menu.  RBR 3/26/06
+	return [self menu];  // Default
+}
+	
 -(NSString*) stringID
 {
 	return stringID;

@@ -5385,6 +5385,7 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
 										[viewerController showWindowTransition];
+										[viewerController showWindow: self];  // This used to be in showWindowTransition, but it has been commented out ??.
 										[viewerController startLoadImageThread];
 									}		
 									
@@ -5405,6 +5406,7 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
 										[viewerController showWindowTransition];
+										[viewerController showWindow: self];  // This used to be in showWindowTransition, but it has been commented out ??.
 										[viewerController startLoadImageThread];
 									}
 								}

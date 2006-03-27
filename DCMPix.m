@@ -3289,6 +3289,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	// Dunno if this is the best way to do this.  Still have to worry about re-creating
 	// ROIs between sessions.  My concerns that this is a temp solution are why the statics
 	// are handled below rather than at the class level.
+
+	extern NSThread *mainThread;
+	
+	//ThreadID threadID;
+	
+	//OSErr err = GetCurrentThread( &threadID );
+	
+	if( mainThread != [NSThread currentThread] ) return;
 	
 	NSLog( @"loadDICOMDCMFramework for RTSTRUCT" );
 
@@ -3307,11 +3315,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	[rtstructUIDs addObject: rtstructUID];
 
 	int choice = NSRunAlertPanel( NSLocalizedString( @"Create ROIs?", nil ),
-								  NSLocalizedString( @"Are you sure you want to create a set of ROIs from this RTSTRUCT?", nil ),
-								  NSLocalizedString( @"OK", nil ),
-								  NSLocalizedString( @"Cancel", nil ), nil );
+								  NSLocalizedString( @"Would you like to create a set of ROIs from this RTSTRUCT?", nil ),
+								  NSLocalizedString( @"Cancel", nil ),
+								  NSLocalizedString( @"OK", nil ), nil );
 
-	if ( choice != NSAlertDefaultReturn ) return;
+	if ( choice == NSAlertDefaultReturn ) return;
 	
 	NSString *dirPath = [documentsDirectory() stringByAppendingString:@"/ROIs/"];
 
@@ -3564,8 +3572,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			[str replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [str length])];
 
 			NSString *roiPath = [dirPath stringByAppendingFormat: @"%@-%d", str, 0];
-			NSLog( @"roiPath = %@", roiPath );
-
 			NSMutableArray *roiArray = [NSUnarchiver unarchiveObjectWithFile: roiPath];
 			
 			if ( roiArray == nil ) roiArray = [NSMutableArray arrayWithCapacity: 1];
