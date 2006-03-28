@@ -2489,7 +2489,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour];
 				nPET = 35300 + [[NSCalendarDate date] minuteOfHour];
 
-				for( i = 0; i < max; i++)
+				for( i = from; i < to; i+=interval)
 				{
 					[view setCrossPosition:x+i*deltaX :y+i*deltaY];
 					[modalitySplitView display];
