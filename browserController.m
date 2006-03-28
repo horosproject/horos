@@ -2707,6 +2707,7 @@ long        i;
 	NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0], *studiesArray = [NSMutableArray arrayWithCapacity:0] , *seriesArray = [NSMutableArray arrayWithCapacity:0];
 	NSError					*error = 0L;
 	BOOL					matrixThumbnails = NO;
+	int						animState = [animationCheck state];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
 	{
@@ -2719,6 +2720,8 @@ long        i;
 		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
 		return;
 	}
+	
+	[animationCheck setState: NSOffState];
 	
 	[context lock];
 
@@ -2940,6 +2943,8 @@ long        i;
 	}
 	
 	[context unlock];
+	
+	[animationCheck setState: animState];
 }
 
 - (void) refreshColumns
