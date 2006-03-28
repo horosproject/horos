@@ -213,6 +213,8 @@ NSString * documentsDirectory();
 
 - (void) dealloc
 {
+	NSLog(@"OrthogonalMPRPETCTViewer dealloc");
+	
 	[blendingViewerController release];
 	[toolbar release];
 	[PETCTController stopBlending];

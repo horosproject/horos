@@ -49,6 +49,8 @@
 
 - (void) dealloc
 {
+	NSLog(@"OrthogonalMPRController dealloc");
+	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[originalDCMPixList release];

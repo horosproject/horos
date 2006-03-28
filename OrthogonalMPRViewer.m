@@ -152,7 +152,10 @@ NSString * documentsDirectory();
 	return self;
 }
 
-- (void) dealloc{
+- (void) dealloc
+{
+	NSLog(@"OrthogonalMPRViewer dealloc");
+		
 	[viewer release];
 	[toolbar release];
 	[exportDCM release];
