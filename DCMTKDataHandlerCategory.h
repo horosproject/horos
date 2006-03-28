@@ -30,7 +30,7 @@
 
 
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset;
-- ( DcmDataset *)studyDatasetForFetchedObject:(id)fetchedObject;
+- ( DcmDataset)studyDatasetForFetchedObject:(id)fetchedObject;
 - ( DcmDataset *)seriesDatasetForFetchedObject:(id)fetchedObject;
 - ( DcmDataset *)imageDatasetForFetchedObject:(id)fetchedObject;
 - ( NSArray *)foundEntities;
