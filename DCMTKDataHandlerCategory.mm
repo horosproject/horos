@@ -317,8 +317,79 @@
 }
 	
 
-- ( DcmDataset *)studyDatasetForFetchedObject:(id)fetchedObject{
-	return nil;
+- ( DcmDataset )studyDatasetForFetchedObject:(id)fetchedObject{
+	DcmDataset dataset;
+	NSStringEncoding encoding = [NSString defaultCStringEncoding];
+	if ([fetchedObject valueForKey:@"name"])
+		dataset.putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString(DCM_PatientsName, NULL);
+		
+	if ([fetchedObject valueForKey:@"patientID"])	
+		dataset.putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString(DCM_PatientID, NULL);
+		
+	if ([fetchedObject valueForKey:@"studyName"])	
+		dataset.putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString( DCM_StudyDescription, NULL);
+		
+
+	if ([fetchedObject valueForKey:@"date"]){
+		DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
+		DCMCalendarDate *dicomTime = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
+		dataset.putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+		dataset.putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+
+	
+	}
+	
+	else {
+		dataset.putAndInsertString(DCM_StudyDate, NULL);
+		dataset.putAndInsertString(DCM_StudyTime, NULL);
+		
+	}
+	
+	
+			
+	if ([fetchedObject valueForKey:@"studyInstanceUID"])
+		dataset.putAndInsertString(DCM_StudyInstanceUID,  [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	else
+		dataset.putAndInsertString(DCM_StudyInstanceUID, NULL);
+	
+	
+	if ([fetchedObject valueForKey:@"id"])
+		dataset.putAndInsertString(DCM_StudyID , [[fetchedObject valueForKey:@"id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	else
+		dataset.putAndInsertString(DCM_StudyID, NULL);
+		
+	if ([fetchedObject valueForKey:@"modality"])
+		dataset.putAndInsertString(DCM_ModalitiesInStudy , [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	else
+		dataset.putAndInsertString(DCM_ModalitiesInStudy , NULL);
+	
+		
+	if ([fetchedObject valueForKey:@"referringPhysician"])
+		dataset.putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString(DCM_ReferringPhysiciansName, NULL);
+		
+	if ([fetchedObject valueForKey:@"performingPhysician"])
+		dataset.putAndInsertString(DCM_PerformingPhysiciansName,  [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString(DCM_PerformingPhysiciansName, NULL);
+		
+	if ([fetchedObject valueForKey:@"institutionName"])
+		dataset.putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:encoding]);
+	else
+		dataset.putAndInsertString(DCM_InstitutionName, NULL);
+	
+	
+	dataset.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
+
+	return dataset;
+
 }
 - ( DcmDataset *)seriesDatasetForFetchedObject:(id)fetchedObject{
 	return nil;
