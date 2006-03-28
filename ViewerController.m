@@ -9670,7 +9670,9 @@ long i;
 				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
 				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
 				[(OrthogonalMPRPETCTView*)[[pcviewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
-	
+				
+				[pcviewer showWindow:self];
+				
 				float   iwl, iww;
 				[imageView getWLWW:&iwl :&iww];
 				[[pcviewer CTController] setWLWW:iwl :iww];
@@ -9682,20 +9684,22 @@ long i;
 //				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETController] setCurWLWWMenu:[blendingController curWLWWMenu]];
 				
-				[pcviewer showWindow:self];
+				
 			}
 			else
 			{
 				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self];
 				
 				[viewer ApplyCLUTString:curCLUTMenu];
+
+				[viewer showWindow:self];
 				
 				float   iwl, iww;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
 //				[[viewer controller] setCurWLWWMenu:curWLWWMenu];
 				
-				[viewer showWindow:self];
+
 			}
 		}
 	}

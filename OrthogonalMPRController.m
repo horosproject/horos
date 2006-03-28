@@ -39,10 +39,18 @@
 	
 	viewer = newViewer;
 	
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(changeWLWW:)
+											name: @"changeWLWW"
+											object: nil];
+	
 	return self;
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	
 	[originalDCMPixList release];
 	[originalDCMFilesList release];
 	[reslicer release];
@@ -375,12 +383,29 @@
 	}
 }
 
+- (void) changeWLWW: (NSNotification*) note
+{
+	DCMPix	*otherPix = [note object];
+	
+	if( [originalDCMPixList containsObject: otherPix])
+	{
+		float iwl, iww;
+		
+		iww = [otherPix ww];
+		iwl = [otherPix wl];
+		
+		if( iww != [[originalView curDCM] ww] || iwl != [[originalView curDCM] wl]) [self setWLWW: iwl :iww];
+	}
+}
+
 - (void) setWLWW:(float) iwl :(float) iww
 {
 	[originalView adjustWLWW: iwl : iww];
 	[xReslicedView adjustWLWW: iwl : iww];
 	[yReslicedView adjustWLWW: iwl : iww];
 	[self setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:0L];
 }
 
 - (void) setCurWLWWMenu:(NSString*) str

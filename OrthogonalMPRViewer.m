@@ -413,6 +413,8 @@ NSString * documentsDirectory();
 
 - (void) windowWillClose:(NSNotification *)notification
 {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	
 	[[NSUserDefaults standardUserDefaults] setBool:[splitView isVertical] forKey: @"orthogonalMPRVertialNSSplitView"];
 	
 	[splitView setDelegate: 0L];

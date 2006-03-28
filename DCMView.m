@@ -3011,6 +3011,39 @@ static long scrollMode;
 	}
 }
 
+- (void) changeWLWW: (NSNotification*) note
+{
+	DCMPix	*otherPix = [note object];
+	
+	if( [dcmPixList containsObject: otherPix])
+	{
+		float iwl, iww;
+		
+		iww = [otherPix ww];
+		iwl = [otherPix wl];
+		
+		if( iww != [curDCM ww] || iwl != [curDCM wl]) [self setWLWW: iwl :iww];
+	}
+	
+	if( blendingView)
+	{
+		if( [[blendingView dcmPixList] containsObject: otherPix])
+		{
+			float iwl, iww;
+			
+			iww = [otherPix ww];
+			iwl = [otherPix wl];
+			
+			if( iww != [[blendingView curDCM] ww] || iwl != [[blendingView curDCM] wl])
+			{
+				[blendingView setWLWW: iwl :iww];
+				[self loadTextures];
+				[self setNeedsDisplay:YES];
+			}
+		}
+	}
+}
+
 - (void) setWLWW:(float) wl :(float) ww
 {
 	if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"])
@@ -3302,7 +3335,10 @@ static long scrollMode;
                name:  @"changeGLFontNotification" 
              object: nil];
 			
-			
+	[nc	addObserver: self
+			selector: @selector(changeWLWW:)
+				name: @"changeWLWW"
+			object: nil];
     
     colorTransfer = NO;
 	colorBuff = 0L;

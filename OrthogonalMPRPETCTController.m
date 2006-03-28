@@ -22,6 +22,7 @@
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :(id) newViewer
 {
 	[super initWithPixList: pix : files : vData : bC : newViewer];
+
 	isBlending = (bC != nil);
 }
 
@@ -319,11 +320,28 @@
 	}
 }
 
+//- (void) changeWLWW: (NSNotification*) note
+//{
+//	DCMPix	*otherPix = [note object];
+//	
+//	if( [originalDCMPixList containsObject: otherPix])
+//	{
+//		float iwl, iww;
+//		
+//		iww = [otherPix ww];
+//		iwl = [otherPix wl];
+//		
+//		if( iww != [[originalView curDCM] ww] || iwl != [[originalView curDCM] wl]) [self setWLWW: iwl :iww];
+//	}
+//}
+
 - (void) setWLWW:(float) iwl :(float) iww
 {
 	[super setWLWW: iwl : iww];
 	[viewer setWLWW: iwl : iww : self];
 	[self setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: [originalView curDCM] userInfo:0L];
 }
 
 - (void) superSetWLWW:(float) iwl :(float) iww
