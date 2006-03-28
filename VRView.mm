@@ -1271,7 +1271,9 @@ public:
 	unsigned char   r[256], g[256], b[256];
 	
 	[[note object] ConvertCLUT: r :g :b];
-
+	
+	//aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+	
 	[self setCLUT :r : g : b];
 }
 
