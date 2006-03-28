@@ -43,6 +43,7 @@
 	IBOutlet NSMatrix						*dcmSelection, *dcmFormat;
 	IBOutlet NSSlider						*dcmInterval, *dcmFrom, *dcmTo;
 	IBOutlet NSTextField					*dcmSeriesName, *dcmFromTextField, *dcmToTextField, *dcmIntervalTextField;
+	IBOutlet NSBox							*dcmBox;
 	IBOutlet NSButton						*dcmExport3Modalities;
 	DICOMExport								*exportDCM;
 	
@@ -119,4 +120,6 @@
 - (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView;
 - (IBAction) changeFromAndToBounds:(id) sender;
 - (IBAction) setCurrentPosition:(id) sender;
+- (IBAction) setCurrentdcmExport:(id) sender;
+- (void)checkView:(NSView *)aView :(BOOL) OnOff;
 @end

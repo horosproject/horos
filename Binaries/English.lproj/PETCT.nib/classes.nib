@@ -73,6 +73,7 @@
                 flipVerticalX = id; 
                 flipVerticalY = id; 
                 setCurrentPosition = id; 
+                setCurrentdcmExport = id; 
             }; 
             CLASS = OrthogonalMPRPETCTViewer; 
             LANGUAGE = ObjC; 
@@ -86,6 +87,7 @@
                 blendingSlider = NSSlider; 
                 blendingToolView = NSView; 
                 clutPopup = NSPopUpButton; 
+                dcmBox = NSBox; 
                 dcmExport3Modalities = NSButton; 
                 dcmExportWindow = NSWindow; 
                 dcmFormat = NSMatrix; 

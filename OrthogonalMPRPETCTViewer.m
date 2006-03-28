@@ -2540,7 +2540,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	}
 	[dcmFrom setMaxValue:max];
 	[dcmTo setMaxValue:max];
-	[dcmInterval setMaxValue:max];
+	[dcmInterval setMaxValue:90];
 
 	[dcmFrom setIntValue:1];
 	[dcmFromTextField setIntValue:1];
@@ -2548,13 +2548,8 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	[dcmToTextField setIntValue:max];
 	[dcmInterval setIntValue:1];
 	[dcmIntervalTextField setIntValue:1];
-
-	[dcmInterval display];
-	[dcmIntervalTextField display];
-	[dcmFrom display];
-	[dcmTo display];
-	[dcmFromTextField display];
-	[dcmToTextField display];
+	
+	[self checkView: dcmBox :([[dcmSelection selectedCell] tag] == 1)];
 	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
@@ -2628,6 +2623,29 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	[dcmTo display];
 	[dcmFromTextField display];
 	[dcmToTextField display];
+}
+
+- (IBAction) setCurrentdcmExport:(id) sender
+{
+	if( [[sender selectedCell] tag] == 1) [self checkView: dcmBox :YES];
+	else [self checkView: dcmBox :NO];
+}
+
+- (void)checkView:(NSView *)aView :(BOOL) OnOff
+{
+    id view;
+    NSEnumerator *enumerator;
+  
+    if ([aView isKindOfClass: [NSControl class] ])
+	{
+       [(NSControl*) aView setEnabled: OnOff];
+	   return;
+    }
+    // Recursively check all the subviews in the view
+    enumerator = [ [aView subviews] objectEnumerator];
+    while (view = [enumerator nextObject]) {
+        [self checkView:view :OnOff];
+    }
 }
 
 @end
