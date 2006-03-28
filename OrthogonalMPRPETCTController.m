@@ -278,9 +278,13 @@
 	[self blendingPropagate: xReslicedView];
 	[self blendingPropagate: yReslicedView];
 
-	[originalView setNeedsDisplay: YES];
-	[xReslicedView setNeedsDisplay: YES];
-	[yReslicedView setNeedsDisplay: YES];
+	[originalView display];
+	[xReslicedView display];
+	[yReslicedView display];
+
+	[originalView setNeedsDisplay: NO];
+	[xReslicedView setNeedsDisplay: NO];
+	[yReslicedView setNeedsDisplay: NO];
 }
 
 - (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view

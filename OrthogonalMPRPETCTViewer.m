@@ -355,11 +355,12 @@ NSString * documentsDirectory();
 		[PETController superSetWLWW: iwl : iww];
 		
 		[[PETCTController originalView] loadTextures];
-		[[PETCTController originalView] setNeedsDisplay:YES];
 		[[PETCTController xReslicedView] loadTextures];
-		[[PETCTController xReslicedView] setNeedsDisplay:YES];
 		[[PETCTController yReslicedView] loadTextures];
+		
+		[[PETCTController xReslicedView] setNeedsDisplay:YES];
 		[[PETCTController yReslicedView] setNeedsDisplay:YES];
+		[[PETCTController originalView] setNeedsDisplay:YES];
 		
 		[PETController setCurWLWWMenu: curWLWWMenu];
 		[PETCTController setCurWLWWMenu: curWLWWMenu];
