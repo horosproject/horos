@@ -9313,11 +9313,11 @@ int i,j,l;
 				else
 				{
 					NSString	*mode;
- 			
+					
 					if( [sender tag] == 3) mode = @"MIP";
 					else mode = @"VR";
-		
-					viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"standard" mode: mode];
+					
+					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode: mode];
 					for( i = 1; i < maxMovieIndex; i++)
 					{
 						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
@@ -9372,13 +9372,27 @@ int i,j,l;
 		}
 		else
 		{
-		
-		
-		
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
+			NSString	*mode;
+			
+			if( [sender tag] == 3) mode = @"MIP";
+			else mode = @"VR";
+			
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"standard" mode: mode];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+			}
+			
+			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+			{
+				[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+			}
+			else
+			{
+				float   iwl, iww;
+				[imageView getWLWW:&iwl :&iww];
+				[viewer setWLWW:iwl :iww];
 			}
 			
 			[viewer ApplyCLUTString:curCLUTMenu];

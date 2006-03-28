@@ -2392,6 +2392,11 @@ public:
 {
     unichar c = [[event characters] characterAtIndex:0];
     
+	if( c == ' ')
+	{
+		rotate = !rotate;
+	}
+	
 	if( c == 27)
 	{
 		[[[self window] windowController] offFullScreen];

@@ -319,6 +319,11 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
+	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:@"VR"];
+}
+
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) renderingMode
+{
     unsigned long   i;
     short           err = 0;
 	BOOL			testInterval = YES;
@@ -467,6 +472,9 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	[self updateEngine];
 	
 	[view updateScissorStateButtons];
+	
+	if( [renderingMode isEqualToString:@"MIP"])
+		[self setModeIndex: 1];
 	
     return self;
 }

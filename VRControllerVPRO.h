@@ -85,6 +85,7 @@
 -(ViewerController*) viewer2D;
 -(void) LODsliderAction:(id) sender;
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC mode:(NSString*) renderingMode;
 - (void) setupToolbar;
 -(void) setDefaultTool:(id) sender;
 -(NSMatrix*) toolsMatrix;

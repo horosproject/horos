@@ -5385,7 +5385,7 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
 										[viewerController showWindowTransition];
-										[viewerController showWindow: self];  // This used to be in showWindowTransition, but it has been commented out ??.
+//										[viewerController showWindow: self];  // Yes, windows will be displayed in TileWindows function !
 										[viewerController startLoadImageThread];
 									}		
 									
@@ -5406,7 +5406,7 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
 										[viewerController showWindowTransition];
-										[viewerController showWindow: self];  // This used to be in showWindowTransition, but it has been commented out ??.
+//										[viewerController showWindow: self];	// Yes, windows will be displayed in TileWindows function !
 										[viewerController startLoadImageThread];
 									}
 								}
@@ -5711,6 +5711,8 @@ static BOOL needToRezoom;
 	else [self filesForDatabaseOutlineSelection: images];
 	
 	[self openViewerFromImages :[NSArray arrayWithObject:images] movie: nil viewer :nil keyImagesOnly:NO];
+	
+	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 }
 
 - (void) viewerDICOMKeyImages:(id) sender
@@ -5724,6 +5726,8 @@ static BOOL needToRezoom;
 	else [self filesForDatabaseOutlineSelection: selectedItems];
 
 	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: nil viewer :nil keyImagesOnly:YES];
+	
+	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 }
 
 - (void) MovieViewerDICOM:(id) sender
