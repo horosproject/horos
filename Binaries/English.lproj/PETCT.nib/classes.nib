@@ -72,6 +72,7 @@
                 flipVerticalOriginal = id; 
                 flipVerticalX = id; 
                 flipVerticalY = id; 
+                setCurrentPosition = id; 
             }; 
             CLASS = OrthogonalMPRPETCTViewer; 
             LANGUAGE = ObjC; 

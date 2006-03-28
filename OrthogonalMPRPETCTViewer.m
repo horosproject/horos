@@ -2542,10 +2542,10 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	[dcmTo setMaxValue:max];
 	[dcmInterval setMaxValue:max];
 
-	[dcmFrom setIntValue:curIndex];
-	[dcmFromTextField setIntValue:curIndex];
-	[dcmTo setIntValue:curIndex];
-	[dcmToTextField setIntValue:curIndex];
+	[dcmFrom setIntValue:1];
+	[dcmFromTextField setIntValue:1];
+	[dcmTo setIntValue:max];
+	[dcmToTextField setIntValue:max];
 	[dcmInterval setIntValue:1];
 	[dcmIntervalTextField setIntValue:1];
 
@@ -2580,51 +2580,54 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	}
 }
 
-//- (IBAction) setCurrentPosition:(id) sender
-//{
-//	long curIndex;
-//	
-//	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
-//	{
-//		curIndex = [[self keyView] curImage];
-//	}
-//	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
-//	{
-//		curIndex = [[[[self keyView] controller] originalView] crossPositionX];
-//	}
-//	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
-//	{
-//		curIndex = [[[[self keyView] controller] originalView] crossPositionY];
-//	}
-//	
-//	if( [sender tag] == 0)
-//	{
-//		if( [imageView flippedData])
-//		{
-//			[dcmFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-//		}
-//		else
-//		{
-//			[dcmFrom setIntValue: [imageView curImage]+1];
-//		}
-//	}
-//	else
-//	{
-//		if( [imageView flippedData])
-//		{
-//			[dcmTo setIntValue:  [pixList[ curMovieIndex] count] - [imageView curImage]];
-//		}
-//		else
-//		{
-//			[dcmTo setIntValue: [imageView curImage]+1];
-//		}
-//	}
-//	
-//	[dcmInterval display];
-//	[dcmFrom display];
-//	[dcmTo display];
-//	[dcmFromTextField display];
-//	[dcmToTextField display];
-//}
+- (IBAction) setCurrentPosition:(id) sender
+{
+	long max, curIndex;
+	
+	if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
+	{
+		max = [[[self keyView] dcmPixList] count];
+		curIndex = [[self keyView] curImage]+1;
+		if( [[[[self keyView] controller] originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] xReslicedView]])
+	{
+		max = [[[[[self keyView] controller] originalView] curDCM] pwidth];
+		curIndex = [[[[self keyView] controller] originalView] crossPositionY]+1;
+		if( [[[[self keyView] controller] originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	else if ([[self keyView] isEqualTo:[[[self keyView] controller] yReslicedView]])
+	{
+		max = [[[[[self keyView] controller] originalView] curDCM] pheight];
+		curIndex = [[[[self keyView] controller] originalView] crossPositionX]+1;
+		if( [[[[self keyView] controller] originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	
+	if( [sender tag] == 0)
+	{
+			[dcmFrom setIntValue:curIndex];
+			[dcmFromTextField setIntValue:curIndex];
+	}
+	else
+	{
+			[dcmTo setIntValue:curIndex];
+			[dcmToTextField setIntValue:curIndex];
+	}
+	
+	[dcmInterval display];
+	[dcmFrom display];
+	[dcmTo display];
+	[dcmFromTextField display];
+	[dcmToTextField display];
+}
 
 @end

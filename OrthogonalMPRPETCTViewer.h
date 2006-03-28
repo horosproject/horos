@@ -118,4 +118,5 @@
 -(IBAction) endExportDICOMFileSettings:(id) sender;
 - (void) exportDICOMFileInt :(BOOL) screenCapture view:(DCMView*) curView;
 - (IBAction) changeFromAndToBounds:(id) sender;
+- (IBAction) setCurrentPosition:(id) sender;
 @end
