@@ -603,6 +603,28 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
+
+	// Select the series that contains the highest pixel value !
+	// AVOID the VTK BUG of MIN/MAX gradient
+	float max = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
+	
+	for( i = 1; i < maxMovieIndex; i++)
+	{
+		if( max < [[pixList[ i] objectAtIndex: 0] maxValueOfSeries])
+		{
+			max = [[pixList[ i] objectAtIndex: 0] maxValueOfSeries];
+			curMovieIndex = i;
+		}
+	}
+	
+	if( curMovieIndex != 0)
+	{
+		[self setMovieFrame: curMovieIndex];
+		[moviePosSlider setIntValue: curMovieIndex];
+	}
+	
+	//
+	
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{

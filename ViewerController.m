@@ -1924,9 +1924,8 @@ static ViewerController *draggedController = 0L;
 		{
 			curMovieIndex --;
 			if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
-		
-			[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
-			[imageView setIndex:[imageView curImage]];
+			
+			[self setMovieIndex: curMovieIndex];
 		}
 		else [super keyDown:event];
 	}
@@ -1937,8 +1936,7 @@ static ViewerController *draggedController = 0L;
 			curMovieIndex ++;
 			if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
 			
-			[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
-			[imageView setIndex:[imageView curImage]];
+			[self setMovieIndex: curMovieIndex];
 		}
 		else [super keyDown:event];
 	}
@@ -3163,10 +3161,7 @@ static ViewerController *draggedController = 0L;
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
 				[pix CheckLoad];
 				
-				if( isPET)
-				{
-					if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
-				}
+				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
 			}
 			
 			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
@@ -3178,16 +3173,16 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
+	for( x = 0; x < maxMovieIndex; x++)
+	{
+		for( i = 0 ; i < [pixList[ x] count]; i++)
+		{
+			[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+		}
+	}
+	
 	if( isPET)
 	{
-		for( x = 0; x < maxMovieIndex; x++)
-		{
-			for( i = 0 ; i < [pixList[ x] count]; i++)
-			{
-				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
-			}
-		}
-		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
 		{
 			[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
@@ -5744,6 +5739,7 @@ int i,j,l;
 			if( y == curMovieIndex) proceed = YES;
 			else proceed = NO;
 		}
+		else proceed = YES;
 		
 		if( proceed)
 		{
@@ -6681,7 +6677,7 @@ int i,j,l;
 			
 			[pix computePixMinPixMax];
 			
-			if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
+			if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
 		}
 	}
 	
@@ -6758,7 +6754,7 @@ int i,j,l;
 							
 							[pix computePixMinPixMax];
 							
-							if( maxValueOfSeries < [pix fullww]) maxValueOfSeries = [pix fullww];
+							if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
 						}
 					}
 					
@@ -9196,7 +9192,7 @@ int i,j,l;
 		}
 		else
 		{
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"panel" mode:@"MIP"];
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[ 0] :blendingController :self style:@"panel" mode:@"MIP"];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
@@ -9317,7 +9313,7 @@ int i,j,l;
 					if( [sender tag] == 3) mode = @"MIP";
 					else mode = @"VR";
 					
-					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self mode: mode];
+					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
 					for( i = 1; i < maxMovieIndex; i++)
 					{
 						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
@@ -9377,7 +9373,7 @@ int i,j,l;
 			if( [sender tag] == 3) mode = @"MIP";
 			else mode = @"VR";
 			
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self style:@"standard" mode: mode];
+			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];

@@ -1309,6 +1309,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					}
 				}
 			}
+			
 			return;
 		}
 		else
@@ -1590,7 +1591,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}
 		}
 	}
-		
+	
 	if( roi)
 	{
 		free( ptsInt);
@@ -6663,12 +6664,12 @@ PapyShort       fileNb, theErr;
 		
 		i = width * height;
 		
-		i /= 10;					//Check only 1 on 10 pixels...
+		i /= 4;					//Check only 1 on 4 pixels...
 		i--;
 		while( i-- > 0)
 		{
 			fvalue = *pt;
-			pt += 10;
+			pt += 4;
 			if (fvalue < fmin) fmin = fvalue;
 			else if (fvalue > fmax) fmax = fvalue;
 		}
