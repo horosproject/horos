@@ -31,6 +31,8 @@
 #include "dcmqrdbi.h" // for DB_Level
 #include "dcmqridx.h"
 
+#import "DCMTKDataHandlerCategory.h"
+
 struct StudyDescRecord;
 struct DB_OsiriX_Handle;
 struct DB_SmallDcmElmt;
@@ -53,8 +55,9 @@ struct DB_OsiriX_Handle
     int NumberRemainOperations ;
     DB_QUERY_CLASS rootLevel ;
     DB_UidList *uidList ;
-	NSArray *findArray;
-	NSArray *moveArray;
+	OsiriXSCPDataHandler *dataHandler;
+	//NSArray *findArray;
+	//NSArray *moveArray;
 };
 
 /** This class maintains database handles based on OsiriX core Data .

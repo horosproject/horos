@@ -37,6 +37,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 - (void)dealloc{
 	//[[DBManager sharedManager] performSelectorOnMainThread:@selector(saveAction:) withObject:self waitUntilDone:YES];
+	[specificCharacterSet release];
+	[findArray release];
+	[moveArray release];
 	[logEntry setValue:@"Complete" forKey:@"message"];
 	[super dealloc];
 }

@@ -31,6 +31,12 @@
 @interface OsiriXSCPDataHandler : DCMCStoreReceivedPDUHandler {
 	int numberMoving;
 	id logEntry;
+	NSString *specificCharacterSet;
+	NSStringEncoding encoding;
+	NSArray *findArray;
+	NSArray *moveArray;
+	NSEnumerator *findEnumerator;
+	NSEnumerator *moveEnumerator;
 
 }
 

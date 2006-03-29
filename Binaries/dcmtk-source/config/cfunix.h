@@ -344,7 +344,7 @@ typedef long ssize_t;
 #endif
 
 /* Define `uchar' to `unsigned char' if <sys/types.h> does not define. */
-#define HAVE_NO_TYPEDEF_UCHAR 1
+//#define HAVE_NO_TYPEDEF_UCHAR 1
 #ifdef HAVE_NO_TYPEDEF_UCHAR
 typedef unsigned char uchar;
 #endif
@@ -356,7 +356,7 @@ typedef unsigned int uint;
 #endif
 
 /* Define `ulong' to `unsigned long' if <sys/types.h> does not define. */
-#define HAVE_NO_TYPEDEF_ULONG 1
+//#define HAVE_NO_TYPEDEF_ULONG 1
 #ifdef HAVE_NO_TYPEDEF_ULONG
 typedef unsigned long ulong;
 #endif

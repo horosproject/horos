@@ -46,8 +46,8 @@
 **
 ** MT level: Thread unsafe!
 */
-void prepareCmdLineArgs(int& argc, char** argv, 
-			const char* progname = "aProgram");
+
+//void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram");
 
 
 #endif

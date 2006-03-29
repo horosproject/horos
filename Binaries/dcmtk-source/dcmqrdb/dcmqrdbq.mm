@@ -466,7 +466,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 	
 	// Search Core Data here
 	
-	
+	[handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
 	 /**** If an error occured in Matching function
     ****    return a failed status
     ***/
@@ -738,8 +738,9 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		//handle -> maxStudiesAllowed = maxStudiesPerStorageArea;
 		handle -> uidList = NULL;
 		result = EC_Normal;
-		handle -> findArray = nil;
-		handle -> moveArray = nil;
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		//handle -> findArray = nil;
+		//handle -> moveArray = nil;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
@@ -763,8 +764,9 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
       DB_FreeElementList (handle -> findRequestList);
       DB_FreeElementList (handle -> findResponseList);
       DB_FreeUidList (handle -> uidList);
-		[handle -> moveArray release];
-		[handle -> findArray release];
+	  [handle -> dataHandler release];
+		//[handle -> moveArray release];
+		//[handle -> findArray release];
       free ( (char *)(handle) );
     }
 }
