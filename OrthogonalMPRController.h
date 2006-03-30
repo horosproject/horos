@@ -41,6 +41,7 @@
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu:(NSString*) str;
+- (void) setFusion;
 
 -(short) thickSlabMode;
 -(void) setThickSlabMode : (short) newThickSlabMode;
