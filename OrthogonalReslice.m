@@ -255,8 +255,11 @@
 			else curPix = [newPixListY objectAtIndex: stack];
 		}
 		
-		[curPix setPwidth: newX];
-		[curPix setPheight: newY];
+//		if( newX != [curPix pwidth]) NSLog( @"aaa?");
+//		if( newY != [curPix pheight]) NSLog( @"aaa?");
+//		
+//		[curPix setPwidth: newX];
+//		[curPix setPheight: newY];
 		
 		[curPix setTot: 0];
 		[curPix setFrameNo: 0];

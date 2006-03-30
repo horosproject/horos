@@ -6250,8 +6250,6 @@ static long scrollMode;
 
 - (GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending textureX:(long*) tX textureY:(long*) tY
 {
-	GLuint *toBeDeletedTexture = 0L;
-	
 	if( noScale == YES)
 	{
 		[curDCM changeWLWW :127 : 256];
@@ -6264,7 +6262,8 @@ static long scrollMode;
 	
     if( texture)
 	{
-		toBeDeletedTexture = texture;
+		glDeleteTextures( *tX * *tY, texture);
+		free( (char*) texture);
 		texture = 0L;
 	}
 	
@@ -6473,12 +6472,6 @@ static long scrollMode;
     }
     
     glDisable (TEXTRECTMODE);
-	
-	if( toBeDeletedTexture)
-	{
-		glDeleteTextures( *tX * *tY, toBeDeletedTexture);
-		free( (char*) toBeDeletedTexture);
-	}
 	
 	[[self openGLContext] update];
 		
