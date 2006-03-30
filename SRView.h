@@ -173,6 +173,8 @@ typedef char* vtkPolyDataNormals;
 	float						rotationValue;
 	long						rotationOrientation;
 	
+	vtkCallbackCommand			*cbStart;
+	
 	// DICOM export
 	IBOutlet NSWindow			*exportDCMWindow;
 	IBOutlet NSSlider			*dcmframesSlider;

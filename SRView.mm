@@ -288,6 +288,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				exporter->SetInput( [self renderWindow]);
 				exporter->SetFilePrefix( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
 				exporter->Write();
+				
+				exporter->Delete();
 			}
 			break;
 			
@@ -298,6 +300,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				exporter->SetInput( [self renderWindow]);
 				exporter->SetFileName( [[panel filename] UTF8String]);
 				exporter->Write();
+				
+				exporter->Delete();
 			}
 			break;
 			
@@ -308,6 +312,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				exporter->SetInput( [self renderWindow]);
 				exporter->SetFileName( [[panel filename] UTF8String]);
 				exporter->Write();
+				
+				exporter->Delete();
 			}
 			break;
 			
@@ -318,6 +324,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				exporter->SetInput( [self renderWindow]);
 				exporter->SetFilePrefix( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
 				exporter->Write();
+				
+				exporter->Delete();
 			}
 			break;
 			
@@ -333,6 +341,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					exporter->SetInput(Nil);
 				exporter->SetFileName( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
 				exporter->Write();
+				
+				exporter->Delete();
 			}
 			break;
 		}
@@ -673,6 +683,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		blendingController = 0L;
 		blendingFactor = 0.5;
 		blendingReader = 0L;
+		cbStart = 0L;
 		
 		exportDCM = 0L;
 		
@@ -741,6 +752,12 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	}
 	
 	if( flip) flip->Delete();
+	
+	if( isoResample) isoResample->Delete();
+	if( BisoResample) BisoResample->Delete();
+	
+	cbStart->Delete();
+	matrice->Delete();
 	
 	outlineData->Delete();
 	mapOutline->Delete();
@@ -1428,6 +1445,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	{
 		if( blendingReader)
 		{
+			matriceBlending->Delete();
 			if( blendingFlip) blendingFlip->Delete();
 			blendingReader->Delete();
 			blendingReader = 0L;
@@ -1494,7 +1512,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	if( resolution == 1.0)
 	{
 		if( isoResample) isoResample->Delete();
-		
 		isoResample = 0L;
 	}
 	else
@@ -1724,7 +1741,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	vtkCallbackCommand *cbStart = vtkCallbackCommand::New();
+	cbStart = vtkCallbackCommand::New();
 	cbStart->SetCallback( startRendering);
 	cbStart->SetClientData( self);
 	
@@ -2268,9 +2285,11 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	//Mapper
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
 	mapper->SetInputConnection(sphereSource->GetOutputPort());
+	sphereSource->Delete();
 	//Actor
 	vtkActor *sphereActor = vtkActor::New();
 	sphereActor->SetMapper(mapper);
+	mapper->Delete();
 	sphereActor->GetProperty()->SetColor(r,g,b);
 	sphereActor->DragableOn();
 	sphereActor->PickableOn();
@@ -2339,6 +2358,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
 	aRenderer->AddActor(actor);
+	actor->Delete();
 }
 
 - (void) addRandomPoints: (int) n : (int) r
@@ -2459,8 +2479,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	aRenderer->RemoveActor(actor);
 	// remove the highlight bounding box
 	[self unselectAllActors];
-	// kill the actor himself
-	actor->Delete();
 	// remove from list
 	[point3DActorArray removeObjectAtIndex:index];
 	[point3DPositionsArray removeObjectAtIndex:index];
