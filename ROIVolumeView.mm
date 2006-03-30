@@ -73,6 +73,7 @@
 
 	vtkPolyData *profile = vtkPolyData::New();
     profile->SetPoints( points);
+	points->Delete();
 	
 	// Delaunay3D is used to triangulate the points. The Tolerance is the distance
 	// that nearly coincident points are merged together. (Delaunay does better if
@@ -91,10 +92,12 @@
 		del->SetTolerance( 0.001);
 		del->SetAlpha( 20);
 		del->BoundingTriangulationOff();
-		
+	profile->Delete();
+	
 	vtkDataSetMapper *map = vtkDataSetMapper::New();
 		map->SetInput( (vtkDataSet*) del->GetOutput());
-
+	del->Delete();
+	
 	//  vtkSurfaceReconstructionFilter
 
 //	vtkSurfaceReconstructionFilter *surf = vtkSurfaceReconstructionFilter::New();
@@ -103,6 +106,7 @@
 //	vtkContourFilter *cf = vtkContourFilter::New();
 //	cf->SetInput( surf->GetOutput());
 //	cf->SetValue( 0, 0.0);
+//	surf->Delete();
 //
 //	vtkReverseSense *reverse = vtkReverseSense::New();
 //	reverse->SetInput( cf->GetOutput());
@@ -112,7 +116,8 @@
 //	vtkPolyDataMapper *popMapper = vtkPolyDataMapper::New();
 //	popMapper->SetInput(cf->GetOutput());
 //	popMapper->ScalarVisibilityOff();
-
+//
+//	cf->Delete();
 
 
 	vtkActor *triangulation = vtkActor::New();
@@ -123,7 +128,8 @@
 		triangulation->GetProperty()->SetAmbient( 0.2);
 		triangulation->GetProperty()->SetDiffuse( 0.8);
 		triangulation->GetProperty()->SetOpacity(0.5);
-
+	map->Delete();
+	
 	// The balls
 	
 	vtkSphereSource *ball = vtkSphereSource::New();
@@ -134,10 +140,12 @@
 	vtkGlyph3D *balls = vtkGlyph3D::New();
 		balls->SetInput( (vtkDataObject*) del->GetOutput());
 		balls->SetSource( ball->GetOutput());
+	ball->Delete();
 	
 	vtkPolyDataMapper *mapBalls = vtkPolyDataMapper::New();
 		mapBalls->SetInput( balls->GetOutput());
-		
+	balls->Delete();
+	
 	vtkActor *ballActor = vtkActor::New();
 		ballActor->SetMapper( mapBalls);
 		ballActor->GetProperty()->SetSpecular( 0.5);
@@ -145,9 +153,13 @@
 		ballActor->GetProperty()->SetAmbient( 0.2);
 		ballActor->GetProperty()->SetDiffuse( 0.8);
 		ballActor->GetProperty()->SetOpacity( 0.8);
-
+	mapBalls->Delete();
+	
 	aRenderer->AddActor( ballActor);
+	ballActor->Delete();
+	
 	aRenderer->AddActor( triangulation);
+	triangulation->Delete();
 	
     aCamera = vtkCamera::New();
 	aCamera->Zoom(1.5);
@@ -161,17 +173,7 @@
 	aCamera->OrthogonalizeViewUp();
 	aRenderer->ResetCamera();
 	
-	ball->Delete();
-	balls->Delete();
-	mapBalls->Delete();
-	ballActor->Delete();
-	
 	aCamera->Delete();
-	triangulation->Delete();
-	map->Delete();
-	del->Delete();
-	profile->Delete();
-	points->Delete();
 	
 	return error;
 }

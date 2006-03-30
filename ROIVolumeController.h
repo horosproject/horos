@@ -27,6 +27,7 @@
     IBOutlet ROIVolumeView			*view;
 	IBOutlet NSTextField			*volumeField;
 	
+	ROIVolume						*roiVolume;
 	ViewerController				*viewer;
 }
 

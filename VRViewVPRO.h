@@ -164,6 +164,7 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 	vtkColorTransferFunction	*blendingColorTransferFunction;
 	vtkVolumeRayCastCompositeFunction *blendingCompositeFunction;
 	vtkPiecewiseFunction		*blendingOpacityTransferFunction;
+	vtkCallbackCommand			*cbStart;
 	
 //	vtkImageFlip				*flip, *blendingFlip;
 	BOOL					needToFlip;

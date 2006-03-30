@@ -1557,6 +1557,7 @@ public:
 	
 	[self setBlendingPixSource: 0L];
 	
+	cbStart->Delete();
 	opacityTransferFunction->Delete();
 	volumeProperty->Delete();
 	compositeFunction->Delete();
@@ -1586,6 +1587,10 @@ public:
 	ROI3DData->Delete();
 	ROI3D->Delete();
 	ROI3DActor->Delete();
+	
+	Line2D->Delete();
+	Line2DActor->Delete();
+	Line2DText->Delete();
 	
     [pixList release];
     pixList = 0L;
@@ -3604,7 +3609,7 @@ public:
 //										[blendingFirstObject originY],
 //										[blendingFirstObject originZ]);
 		blendingVolume->SetUserMatrix( matrice);
-		
+		matrice->Delete();
 		
 //		if( blendingFlip) outlineData->SetInput((vtkDataSet *) blendingFlip->GetOutput());
 //		else outlineData->SetInput((vtkDataSet *) blendingReader->GetOutput());
@@ -3762,7 +3767,7 @@ public:
 	data = volumeData;
 	
 	aRenderer = [self renderer];
-	vtkCallbackCommand *cbStart = vtkCallbackCommand::New();
+	cbStart = vtkCallbackCommand::New();
 	cbStart->SetCallback( startRendering);
 	cbStart->SetClientData( self);
 	
@@ -4060,6 +4065,8 @@ public:
 //							[firstObject originY],// * matrice->Element[0][1] + [firstObject originY] * matrice->Element[1][1] + [firstObject originZ]*matrice->Element[2][1],
 //							[firstObject originZ]);// * matrice->Element[0][2] + [firstObject originY] * matrice->Element[1][2] + [firstObject originZ]*matrice->Element[2][2]);
 	volume->SetUserMatrix( matrice);
+	matrice->Delete();
+	
 	volume->PickableOff();
 	
 	outlineData = vtkOutlineFilter::New();

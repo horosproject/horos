@@ -11,9 +11,10 @@
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
 =========================================================================*/
+#import "ROIVolume.h"
 #import "ROIVolumeController.h"
 #import "ROIVolumeView.h"
-#import "ROIVolume.h"
+
 #import "DCMView.h"
 
 @implementation ROIVolumeController
@@ -31,6 +32,7 @@
 {
     unsigned long   i;
 	
+	roiVolume = 0L;
 	viewer = iviewer;
 	
     self = [super initWithWindowNibName:@"ROIVolume"];
@@ -61,7 +63,7 @@
     
     [[self window] setDelegate:self];
 
-    ROIVolume *roiVolume = [[ROIVolume alloc] init];
+	roiVolume = [[ROIVolume alloc] init];
 	[roiVolume setROIList: roiList];
 	
 	[view setROIActorVolume:[roiVolume roiVolumeActor]];
@@ -84,7 +86,9 @@
 	
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc removeObserver: self];
-    	
+	
+	[roiVolume release];
+	
 	[super dealloc];
 }
 

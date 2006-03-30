@@ -259,6 +259,7 @@ typedef char* vtkMyCallbackVR;
 	vtkPolyDataMapper2D			*Line2D;
 	vtkActor2D					*Line2DActor;
 	vtkTextActor				*Line2DText;
+	vtkCallbackCommand			*cbStart;
 	
 	BOOL						clamping;
 	
