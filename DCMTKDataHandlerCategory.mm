@@ -326,122 +326,120 @@ extern BrowserController *browserWindow;
 }
 	
 
-- (DcmDataset )studyDatasetForFetchedObject:(id)fetchedObject{
-	DcmDataset dataset;
+- (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
+	//DcmDataset dataset;
 	
 	if ([fetchedObject valueForKey:@"name"])
-		dataset.putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_PatientsName, NULL);
+		dataset ->putAndInsertString(DCM_PatientsName, NULL);
 		
 	if ([fetchedObject valueForKey:@"patientID"])	
-		dataset.putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_PatientID, NULL);
+		dataset ->putAndInsertString(DCM_PatientID, NULL);
 		
 	if ([fetchedObject valueForKey:@"studyName"])	
-		dataset.putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString( DCM_StudyDescription, NULL);
+		dataset ->putAndInsertString( DCM_StudyDescription, NULL);
 		
 
 	if ([fetchedObject valueForKey:@"date"]){
 		DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
 		DCMCalendarDate *dicomTime = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-		dataset.putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
-		dataset.putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);	
+		dataset ->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+		dataset ->putAndInsertString(DCM_StudyTime, [[dicomDate timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);	
 	}
 	
 	else {
-		dataset.putAndInsertString(DCM_StudyDate, NULL);
-		dataset.putAndInsertString(DCM_StudyTime, NULL);
+		dataset ->putAndInsertString(DCM_StudyDate, NULL);
+		dataset ->putAndInsertString(DCM_StudyTime, NULL);
 		
 	}
 	
 	
 			
 	if ([fetchedObject valueForKey:@"studyInstanceUID"])
-		dataset.putAndInsertString(DCM_StudyInstanceUID,  [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_StudyInstanceUID,  [[fetchedObject valueForKey:@"studyInstanceUID"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	else
-		dataset.putAndInsertString(DCM_StudyInstanceUID, NULL);
+		dataset ->putAndInsertString(DCM_StudyInstanceUID, NULL);
 	
 	
 	if ([fetchedObject valueForKey:@"id"])
-		dataset.putAndInsertString(DCM_StudyID , [[fetchedObject valueForKey:@"id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_StudyID , [[fetchedObject valueForKey:@"id"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	else
-		dataset.putAndInsertString(DCM_StudyID, NULL);
+		dataset ->putAndInsertString(DCM_StudyID, NULL);
 		
 	if ([fetchedObject valueForKey:@"modality"])
-		dataset.putAndInsertString(DCM_ModalitiesInStudy , [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_ModalitiesInStudy , [[fetchedObject valueForKey:@"modality"] cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	else
-		dataset.putAndInsertString(DCM_ModalitiesInStudy , NULL);
+		dataset ->putAndInsertString(DCM_ModalitiesInStudy , NULL);
 	
 		
 	if ([fetchedObject valueForKey:@"referringPhysician"])
-		dataset.putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_ReferringPhysiciansName, NULL);
+		dataset ->putAndInsertString(DCM_ReferringPhysiciansName, NULL);
 		
 	if ([fetchedObject valueForKey:@"performingPhysician"])
-		dataset.putAndInsertString(DCM_PerformingPhysiciansName,  [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PerformingPhysiciansName,  [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_PerformingPhysiciansName, NULL);
+		dataset ->putAndInsertString(DCM_PerformingPhysiciansName, NULL);
 		
 	if ([fetchedObject valueForKey:@"institutionName"])
-		dataset.putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_InstitutionName, NULL);
+		dataset ->putAndInsertString(DCM_InstitutionName, NULL);
 	
 	
-	dataset.putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
+	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
 
-	return dataset;
+	//return dataset;
 
 }
-- ( DcmDataset)seriesDatasetForFetchedObject:(id)fetchedObject{
-	DcmDataset dataset;
+- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
+	//DcmDataset dataset;
 	
 	if ([fetchedObject valueForKey:@"name"])	
-		dataset.putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:encoding]);
 	else
-		dataset.putAndInsertString(DCM_SeriesDescription, NULL);
+		dataset ->putAndInsertString(DCM_SeriesDescription, NULL);
 		
 	if ([fetchedObject valueForKey:@"date"]){
 
 		DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
 		DCMCalendarDate *dicomTime = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
-		dataset.putAndInsertString(DCM_SeriesDate, [[dicomDate dateString]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
-		dataset.putAndInsertString(DCM_SeriesTime, [[dicomDate timeString]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_SeriesDate, [[dicomDate dateString]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_SeriesTime, [[dicomDate timeString]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	}
 	else {
-		dataset.putAndInsertString(DCM_SeriesDate, NULL);
-		dataset.putAndInsertString(DCM_SeriesTime, NULL);
+		dataset ->putAndInsertString(DCM_SeriesDate, NULL);
+		dataset ->putAndInsertString(DCM_SeriesTime, NULL);
 	}
 
 	
 	if ([fetchedObject valueForKey:@"modality"])
-		dataset.putAndInsertString(DCM_Modality, [[fetchedObject valueForKey:@"modality"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_Modality, [[fetchedObject valueForKey:@"modality"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	else
-		dataset.putAndInsertString(DCM_Modality, NULL);
+		dataset ->putAndInsertString(DCM_Modality, NULL);
 		
 	if ([fetchedObject valueForKey:@"id"])
 	
-		dataset.putAndInsertString(DCM_SeriesNumber, [[fetchedObject valueForKey:@"id"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_SeriesNumber, [[fetchedObject valueForKey:@"id"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	else
-		dataset.putAndInsertString(DCM_SeriesNumber, NULL);
+		dataset ->putAndInsertString(DCM_SeriesNumber, NULL);
 			
 	if ([fetchedObject valueForKey:@"seriesInstanceUID"])
-		dataset.putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	
-	return dataset;
+	//return dataset;
 }
-- ( DcmDataset)imageDatasetForFetchedObject:(id)fetchedObject{
-	DcmDataset dataset;
-	
-	return dataset;
+- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
+
 }
 
-- (void)prepareFindForDataSet:( DcmDataset *)dataset{
+- (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset{
 	NSManagedObjectModel *model = [browserWindow managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
@@ -467,16 +465,24 @@ extern BrowserController *browserWindow;
 				
 	findArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
 	
-	if (error)
+	OFCondition cond;
+	
+	if (error) {
 		findArray = nil;
-	else
+		cond = EC_IllegalParameter;
+	}
+	else {
 		[findArray retain];
+		cond = EC_Normal;
+	}
 		
 	findEnumerator = [findArray objectEnumerator];
+	
+	return cond;
 	 
 }
 
-- (void)prepareMoveForDataSet:( DcmDataset *)dataset{
+- (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset{
 		NSManagedObjectModel *model = [browserWindow managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
@@ -500,14 +506,59 @@ extern BrowserController *browserWindow;
 				
 	error = 0L;
 				
-	moveArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
+	NSArray *array = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
 	
-	if (error)
+	OFCondition cond;
+	
+	if (error) {
 		moveArray = nil;
-	else
-		[moveArray retain];
+		cond = EC_IllegalParameter;
+	}
+	else {
+		NSEnumerator *enumerator = [array objectEnumerator];
+		id moveEntity;
+		NSMutableSet *moveSet = [NSMutableSet set];
+		while (moveEntity = [enumerator nextObject])
+			[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+		
+		moveArray = [[moveSet allObjects] retain];
+		
+		cond = EC_Normal;
+	}
 		
 	moveEnumerator = [moveArray objectEnumerator];
+	
+	return cond;
+}
+
+- (BOOL)findMatchFound{
+	if (findArray) return YES;
+	return NO;
+}
+	
+- (BOOL)moveMatchFound{
+	if (moveArray) return YES;
+		return NO;
+}
+
+- (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete{
+	id item;
+	if (item = [findEnumerator nextObject]) {
+		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) {
+			 [self seriesDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+			
+		}
+		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]){
+			[self studyDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+		}
+		*isComplete = NO;
+	}else
+		*isComplete = YES;
+	return EC_Normal;
+}
+
+- (OFCondition)nextMoveObject:(DcmDataset *)dataset{
+	return EC_Normal;
 }
 
 @end

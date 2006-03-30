@@ -25,17 +25,24 @@
 
 #undef verify
 #include "dcdatset.h"
+#include "ofcond.h"
 
 @interface OsiriXSCPDataHandler (DCMTKDataHandlerCategory)
 
 
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset;
-- ( DcmDataset)studyDatasetForFetchedObject:(id)fetchedObject;
-- ( DcmDataset)seriesDatasetForFetchedObject:(id)fetchedObject;
-- ( DcmDataset)imageDatasetForFetchedObject:(id)fetchedObject;
+- (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
+- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
+- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset;
 
-- (void)prepareFindForDataSet:( DcmDataset *)dataset;
-- (void)prepareMoveForDataSet:( DcmDataset *)dataset;
+- (OFCondition)prepareFindForDataSet:( DcmDataset *)dataset;
+- (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset;
+
+- (BOOL)findMatchFound;
+- (BOOL)moveMatchFound;
+
+- (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete;
+- (OFCondition)nextMoveObject:(DcmDataset *)dataset;
 
  
 @end

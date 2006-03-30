@@ -390,10 +390,13 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
                     return (DcmQROsiriXDatabaseError) ;
                 }
                 qrLevelFound = OFTrue;
-            } else {
-                /** Else it is a query identifier.
-                ** Append it to our RequestList if it is supported
-                */
+				
+            } 
+			/*
+			else {
+                // Else it is a query identifier.
+                // Append it to our RequestList if it is supported
+                // Not sure we need this either
                 if (DB_TagSupported (elem. XTag)) {
 
                     plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
@@ -411,7 +414,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
                     }
                 }
             }
-
+			*/	
             if ( elem. PValueField ) {
                 free (elem. PValueField) ;
             }
@@ -446,7 +449,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
 	
 	    /**** Test the consistency of the request list
     ***/
-
+	// I'm not sure this is necessary 
+	/*
     if (doCheckFindIdentifier) {
         cond = testFindRequestList (handle->findRequestList, handle->queryLevel, qLevel, lLevel) ;
         if (cond != EC_Normal) {
@@ -460,28 +464,26 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
             return (cond) ;
         }
     }
+	*/
 	
 	/**** Then find the first matching image
     ***/
 	
 	// Search Core Data here
 	
-	[handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
+	cond = [handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
+	MatchFound = [handle->dataHandler findMatchFound];
 	 /**** If an error occured in Matching function
     ****    return a failed status
     ***/
 
     if (cond != EC_Normal) {
- //       handle->idxCounter = -1 ;
        DB_FreeElementList (handle->findRequestList) ;
         handle->findRequestList = NULL ;
 #ifdef DEBUG
         dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess\n") ;
 #endif
         status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-
-       // DB_unlock();
-
         return (cond) ;
     }
 	
@@ -667,6 +669,21 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
                 DcmQueryRetrieveDatabaseStatus  *status)
 		
 {
+	OFCondition         cond = EC_Normal;
+	BOOL isComplete;
+	*findResponseIdentifiers = new DcmDataset ;
+	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
+	if (isComplete) {
+		*findResponseIdentifiers = NULL ;
+        status->setStatus(STATUS_Success);
+		 return (EC_Normal) ;
+	}
+	if ( *findResponseIdentifiers != NULL ) {
+		status->setStatus(STATUS_Pending);
+		return (EC_Normal) ;
+	}
+	
+	
 	return DcmQROsiriXDatabaseError;
 }
 
