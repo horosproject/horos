@@ -44,8 +44,11 @@
 - (void) dealloc
 {
 	[roiList release];
+	[properties release];
+	
 	if(roiVolumeActor != 0L)
 		roiVolumeActor->Delete();
+		
 	[super dealloc];
 }
 
@@ -129,6 +132,7 @@
 		
 		vtkPolyData *pointsDataSet = vtkPolyData::New();
 		pointsDataSet->SetPoints(points);
+		points->Delete();
 		
 		//if ([roiList count]==1)
 		if (NO) // desactivated
@@ -168,15 +172,20 @@
 		{
 			vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
 			delaunayTriangulator->SetInput(pointsDataSet);
+			
 			delaunayTriangulator->SetTolerance(0.001);
 			delaunayTriangulator->SetAlpha(20); /// pimp my Alpha!!!
 			delaunayTriangulator->BoundingTriangulationOff();
 			
 			vtkDataSetMapper *map = vtkDataSetMapper::New();
 			map->SetInput((vtkDataSet*) delaunayTriangulator->GetOutput());
-				
+			delaunayTriangulator->Delete();
+			
 			roiVolumeActor->SetMapper(map);
+			map->Delete();
 		}
+		pointsDataSet->Delete();
+		
 		roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 		roiVolumeActor->GetProperty()->SetSpecular(0.3);
 		roiVolumeActor->GetProperty()->SetSpecularPower(20);
@@ -184,6 +193,8 @@
 		roiVolumeActor->GetProperty()->SetDiffuse(0.8);
 		roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	}
+	
+	[pts release];
 }
 
 - (BOOL) isVolume
