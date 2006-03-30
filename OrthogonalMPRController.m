@@ -396,7 +396,10 @@
 		iww = [otherPix ww];
 		iwl = [otherPix wl];
 		
-		if( iww != [[originalView curDCM] ww] || iwl != [[originalView curDCM] wl]) [self setWLWW: iwl :iww];
+		if( iww != [[originalView curDCM] ww] || iwl != [[originalView curDCM] wl])
+		{
+			[self setWLWW: iwl :iww];
+		}
 	}
 }
 
