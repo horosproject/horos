@@ -9341,6 +9341,7 @@ int i,j,l;
 					[viewer load3DState];
 					[viewer showWindow:self];
 					[[viewer window] makeKeyAndOrderFront:self];
+					[[viewer window] display];
 				}
 			}
 		}

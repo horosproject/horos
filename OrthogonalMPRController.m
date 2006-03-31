@@ -650,7 +650,7 @@
 {
 	// Set the 1st view
 	[originalView setPixList:originalDCMPixList :originalDCMFilesList];
-	[originalView setIndex:[originalDCMPixList count]/2];
+	[originalView setIndexWithReset:[originalDCMPixList count]/2 :YES];
 	sign = ([[[originalView pixList] objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
 	
 	//[originalView setCrossPosition:round((float)[[[originalView pixList] objectAtIndex:0] pwidth]*0.5f) :round((float)[[[originalView pixList] objectAtIndex:0] pheight]*0.5f)];

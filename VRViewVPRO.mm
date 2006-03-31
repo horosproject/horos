@@ -4464,6 +4464,16 @@ public:
 	}
 }
 
+- (void)changeColorWith:(NSColor*) color
+{
+	if( color)
+	{
+		//change background color
+		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		[self setNeedsDisplay:YES];
+	}
+}
+
 - (void)changeColor:(id)sender{
 	//change background color
 	NSColor *color= [(NSColorPanel*)sender color];

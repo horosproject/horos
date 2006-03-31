@@ -47,7 +47,7 @@
 {
 	long i, index;
 	
-	[self setDCM:pix :files :nil :0 :'i' :YES];
+	[self setDCM:pix :files :nil :0 :'i' :NO];
 
 	// Prepare pixList for image thick slab
 	for( i = 0; i < [pix count]; i++) [[pix objectAtIndex: i] setArrayPix: pix :i];
@@ -121,7 +121,8 @@
     curWL = [curDCM wl];
 	
     [self loadTextures];
-    [self setNeedsDisplay:YES];
+	[self display];
+    [self setNeedsDisplay:NO];
 }
 
 - (void) getWLWW:(float*) wl :(float*) ww

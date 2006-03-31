@@ -6038,14 +6038,17 @@ static long scrollMode;
 
 -(void) setScaleValue:(float) x
 {
-	scaleValue = x;
-	if( x < 0.01) scaleValue = 0.01;
-	if( x > 100) scaleValue = 100;
+	if( scaleValue != x)
+	{
+		scaleValue = x;
+		if( x < 0.01) scaleValue = 0.01;
+		if( x > 100) scaleValue = 100;
 
-//	if( scaleValue > 0.01 && scaleValue < 100) scaleValue = scaleValue;
-//	else scaleValue = 0.01;
-	
-	[self setNeedsDisplay:YES];
+	//	if( scaleValue > 0.01 && scaleValue < 100) scaleValue = scaleValue;
+	//	else scaleValue = 0.01;
+		
+		[self setNeedsDisplay:YES];
+	}
 }
 
  -(NSMutableArray*) dcmPixList
