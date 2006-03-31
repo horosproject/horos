@@ -4853,112 +4853,14 @@ NSMutableArray		*array;
 	[seriesView setBlendingMode: [sender tag]];
 }
 
-- (void)setOffset: (id)sender
-{
-	if( blendingController == 0L)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Set Offset", nil), NSLocalizedString(@"This function is only useful to manually register 2 images during an image fusion. Activate Image Fusion to use it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-	}
-	else
-	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"])
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Set Offset", nil), NSLocalizedString(@"You have to turn off 'Propagate settings' during the offset settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		}
-		else
-		{
-		
-			// ** ROTATION OFFSET
-			
-			float rotationA = [imageView rotation];
-			float rotationB = [[blendingController imageView] rotation];
-			
-			[imageView setRotation: rotationA - (rotationA - rotationB)];
-			[imageView setRotationOffsetRegistration: rotationA - rotationB];
-
-			// ** ORIGIN OFFSET
-			
-			NSPoint originA = [imageView origin];
-			NSPoint originAO = [imageView originOffsetRegistration];
-			NSPoint originB = [[blendingController imageView] origin];
-			
-			NSPoint a = NSMakePoint( originA.x +originAO.x- originB.x, originA.y+originAO.y - originB.y);
-			
-			[imageView setOriginOffsetRegistration: a];
-			
-			// ** SCALE OFFSET
-			
-			float scaleA = [imageView scaleValue];
-			float scaleAO = [imageView scaleOffsetRegistration];
-			float scaleB = [[blendingController imageView] scaleValue];
-			
-		//	NSLog(@"%f / %f", scaleA*scaleAO, scaleB);
-			
-			float fValue = [[blendingController imageView] pixelSpacing] / [imageView pixelSpacing];
-			
-			[imageView setScaleOffsetRegistration: fValue*(scaleA*scaleAO)/scaleB];
-			
-			float newScaleAO = [imageView scaleOffsetRegistration];
-			
-			[imageView setScaleValue: (scaleA*scaleAO)/newScaleAO];
-			
-		// Toggle "Propagate Settings"
-			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-			[defaults setBool: ! [defaults boolForKey:@"COPYSETTINGS"] forKey: @"COPYSETTINGS"];
-			[self copySettingsToOthers: nil];
-			[self propagateSettings];
-		}
-	}
-}
-
 -(void) copySettingsToOthers: (id)sender
 {
-	if( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] ) {
-		
-		// Apply offsets
-		if( blendingController)
-		{
-			NSPoint originA = [imageView origin];
-			NSPoint originAO = [imageView originOffsetRegistration];
-			NSPoint originB = [[blendingController imageView] originOffsetRegistration];
-			
-			NSPoint post, pre = NSMakePoint( originB.x - (originAO.x-originA.x), originB.y- (originAO.y-originA.y));
-			float rot = [imageView rotation];
-			
-			post.x = pre.x*cos( rot*deg2rad) + pre.y*sin( rot*deg2rad);
-			post.y = -pre.x*sin( rot*deg2rad) + pre.y*cos( rot*deg2rad);
-			
-			NSLog(@"ANGLE: %2.2f", rot);
-			NSLog(@" PRE: X: %2.2f Y: %2.2f", pre.x, pre.y);
-			NSLog(@"POST: X: %2.2f Y: %2.2f", post.x, post.y);
-			
-			[[blendingController imageView] setOrigin: post];
-			
-			float scaleA = [imageView scaleValue];
-			float scaleAO = [imageView scaleOffsetRegistration];
-			[imageView setScaleValue: (scaleA*scaleAO)];
-			
-			[imageView setRotation: [imageView rotation] + [imageView rotationOffsetRegistration]];
-			
-			// Clear Offset
-			
-			[self clearOffset: self];
-		}
-	}
 	[self propagateSettings];
 	
 	[imageView setNeedsDisplay:YES];
 }
 
-
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-
-- (void) clearOffset:(id) sender
-{
-	[imageView setOriginOffsetRegistration: NSMakePoint( 0, 0)];
-	[imageView setScaleOffsetRegistration: 1];
-	[imageView setRotationOffsetRegistration: 0];
-}
 
 -(ViewerController*) blendingController
 {
@@ -6989,7 +6891,6 @@ int i,j,l;
 				float	rot;
 				
 				pan = [imageView origin];
-				rot = [imageView rotationOffsetRegistration];
 				
 				a.x = pan.x*cos( rot*deg2rad) + pan.y*sin( rot*deg2rad);
 				a.y = -pan.x*sin( rot*deg2rad) + pan.y*cos( rot*deg2rad);

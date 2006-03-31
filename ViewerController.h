@@ -273,7 +273,6 @@
 - (IBAction) setButtonTool:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
-- (void) copySettingsToOthers:(id) sender;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (IBAction) export2PACS:(id) sender;
@@ -367,7 +366,6 @@
 //- (IBAction) HuVRViewer:(id) sender;
 - (IBAction) clutAction:(id)sender;
 - (void) tileWindows;
-- (void) clearOffset:(id) sender;
 -(IBAction) export2iPhoto:(id) sender;
 - (void) exportQuicktime:(id) sender;
 - (IBAction) setComments:(id) sender;

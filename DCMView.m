@@ -2037,7 +2037,6 @@ static long scrollMode;
         		
         originStart = origin;
 		originOffsetStart = originOffset;
-		originOffsetRegistrationStart = originOffsetRegistration;
         
         mesureB = mesureA = [[[event window] contentView] convertPoint:eventLocation toView:self];
         mesureB.y = mesureA.y = size.size.height - mesureA.y ;
@@ -2489,9 +2488,6 @@ static long scrollMode;
 				originOffset.x = ((originOffset.x * scaleValue) / sScaleValue);
 				originOffset.y = ((originOffset.y * scaleValue) / sScaleValue);
 				
-				originOffsetRegistration.x = ((originOffsetRegistration.x * scaleValue) / sScaleValue);
-				originOffsetRegistration.y = ((originOffsetRegistration.y * scaleValue) / sScaleValue);
-
 				if( [[[self window] windowController] is2DViewer] == YES)
 					[[[self window] windowController] propagateSettings];
 				
@@ -2823,9 +2819,6 @@ static long scrollMode;
 			originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
 			originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
 			
-			originOffsetRegistration.x = ((originOffsetRegistrationStart.x * scaleValue) / startScaleValue);
-			originOffsetRegistration.y = ((originOffsetRegistrationStart.y * scaleValue) / startScaleValue);
-			
 			//set value for Series Object Presentation State
 			if ([[[self window] windowController] is2DViewer] == YES)
 			{
@@ -2847,8 +2840,8 @@ static long scrollMode;
             if( xFlipped) xmove = -xmove;
             if( yFlipped) ymove = -ymove;
             
-            xx = xmove*cos((rotation+rotationOffsetRegistration)*deg2rad) + ymove*sin((rotation+rotationOffsetRegistration)*deg2rad);
-            yy = xmove*sin((rotation+rotationOffsetRegistration)*deg2rad) - ymove*cos((rotation+rotationOffsetRegistration)*deg2rad);
+            xx = xmove*cos((rotation)*deg2rad) + ymove*sin((rotation)*deg2rad);
+            yy = xmove*sin((rotation)*deg2rad) - ymove*cos((rotation)*deg2rad);
             
             origin.x = originStart.x + xx;
             origin.y = originStart.y + yy;
@@ -3306,7 +3299,6 @@ static long scrollMode;
 	mouseXPos = mouseYPos = 0;
 	pixelMouseValue = 0;
 	originOffset.x = originOffset.y = 0;
-	originOffsetRegistration.x = originOffsetRegistration.y = 0;
 	curDCM = 0L;
 	curRoiList = 0L;
 	blendingMode = 0;
@@ -3320,7 +3312,6 @@ static long scrollMode;
 	slab = 0;
 	cursor = 0L;
 	cursorSet = NO;
-	scaleOffsetRegistration = 1;
 	syncRelativeDiff = 0;
 	volumicSeries = YES;
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
@@ -4234,8 +4225,8 @@ static long scrollMode;
     a.y = yy;
     a.x = xx;
 
-    a.x -= (origin.x + originOffset.x + originOffsetRegistration.x);
-    a.y += (origin.y + originOffset.y + originOffsetRegistration.y);
+    a.x -= (origin.x + originOffset.x);
+    a.y += (origin.y + originOffset.y);
 
 	a.x += [curDCM pwidth]/2.;
 	a.y += [curDCM pheight]/ 2.;
@@ -4263,8 +4254,8 @@ static long scrollMode;
     a.y = yy;
     a.x = xx;
 
-    a.x -= (origin.x + originOffset.x + originOffsetRegistration.x)/scaleValue;
-    a.y += (origin.y + originOffset.y + originOffsetRegistration.y)/scaleValue;
+    a.x -= (origin.x + originOffset.x)/scaleValue;
+    a.y += (origin.y + originOffset.y)/scaleValue;
     
 	if( curDCM)
 	{
@@ -4316,7 +4307,7 @@ static long scrollMode;
 	glDepthMask (GL_TRUE);
 	
 	glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f); // scale to port per pixel scale
-	glRotatef (rotation + rotationOffsetRegistration, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 	
 	if( [curDCM pixelRatio] != 1.0)
@@ -4339,7 +4330,7 @@ static long scrollMode;
 					// use remaining to determine next texture size
 					currTextureHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle) - effectiveTextureMod; // effective texture height for drawing
 					glBindTexture(TEXTRECTMODE, texture[k++]); // work through textures in same order as stored, setting each texture name as current in turn
-					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], (scaleValue * scaleOffsetRegistration),		//
+					DrawGLImageTile (GL_TRIANGLE_STRIP, [curDCM pwidth], [curDCM pheight], (scaleValue),		//
 										currTextureWidth, currTextureHeight, // draw this single texture on two tris 
 										offsetX,  offsetY, 
 										currTextureWidth + offsetX, 
@@ -4546,7 +4537,15 @@ static long scrollMode;
 {
 	long		yRaster = 1, xRaster;
 	char		cstr [ 512], *cptr;
+	BOOL		fullText = YES;
+	
+	if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
+	{
+		fullText = NO;
 		
+		if( isKeyView == NO) return;
+	}
+	
 	//** TEXT INFORMATION
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
@@ -4556,11 +4555,14 @@ static long scrollMode;
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(1.0);
 	
-	sprintf (cstr, "Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]);
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+	if( fullText)
+	{
+		sprintf (cstr, "Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]);
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 
-	sprintf (cstr, "View size: %ld x %ld", (long) size.size.width, (long) size.size.height);
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		sprintf (cstr, "View size: %ld x %ld", (long) size.size.width, (long) size.size.height);
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+	}
 	
 	if( [curDCM isRGB]) sprintf (cstr, "X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB);
 	else sprintf (cstr, "X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue);
@@ -4576,7 +4578,7 @@ static long scrollMode;
 								
 	if( [curDCM displaySUVValue])
 	{
-		if( [curDCM hasSUV])
+		if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
 		{
 			sprintf (cstr, "SUV: %.2f", [self getSUV] );
 			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
@@ -4585,7 +4587,7 @@ static long scrollMode;
 	
 	if( blendingView)
 	{
-		if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV])
+		if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [curDCM SUVConverted] == NO)
 		{
 			sprintf (cstr, "SUV (fused image): %.2f", [self getBlendedSUV] );
 			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
@@ -4603,29 +4605,32 @@ static long scrollMode;
 		lwl = [curDCM wl];
 		lww = [curDCM ww];
 	}
-				
-	if( lww < 50) sprintf (cstr, "WL: %0.4f WW: %0.4f", lwl, lww);
-	else sprintf (cstr, "WL: %ld WW: %ld", (long) lwl, (long) lww);
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 	
-	if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES)// && [[[self window] windowController] is2DViewer] == YES)
+	if( fullText)
 	{
-		if( [curDCM maxValueOfSeries])
+		if( lww < 50) sprintf (cstr, "WL: %0.4f WW: %0.4f", lwl, lww);
+		else sprintf (cstr, "WL: %ld WW: %ld", (long) lwl, (long) lww);
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		
+		if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES)// && [[[self window] windowController] is2DViewer] == YES)
 		{
-			sprintf (cstr, "From: 0 %% to: %d %% (%f)", (long) (lww * 100. / [curDCM maxValueOfSeries]), lww);
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			if( [curDCM maxValueOfSeries])
+			{
+				sprintf (cstr, "From: 0 %% to: %d %% (%f)", (long) (lww * 100. / [curDCM maxValueOfSeries]), lww);
+				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			}
 		}
-	}
-	
-	
-	// Draw any additional plugin text information
-	{
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-			[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
-			
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-															object: self
-														  userInfo: userInfo];
+		
+		
+		// Draw any additional plugin text information
+		{
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+				[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
+				
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+																object: self
+															  userInfo: userInfo];
+		}
 	}
 	
 	// BOTTOM LEFT
@@ -4696,8 +4701,11 @@ static long scrollMode;
 		}
 		else
 			sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp);
+		
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
 	}
-	else
+	else if( fullText)
 	{
 		if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
 		{
@@ -4708,15 +4716,15 @@ static long scrollMode;
 		}
 		else
 			sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]);
+		
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
+		
+		// Zoom
+		sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
 	}
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-	yRaster -= stringSize.height;
-	
-	// Zoom
-	
-	sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*scaleOffsetRegistration*100.0, (float) ((long) rotation % 360));
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-	yRaster -= stringSize.height;
 	
 	// Image Position
 	
@@ -4732,20 +4740,25 @@ static long scrollMode;
 		
 		if( flippedData) sprintf (cstr, "Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]);
 		else sprintf (cstr, "Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]);
+		
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
 	} 
-	else
+	else if( fullText)
 	{
 		if( flippedData) sprintf (cstr, "Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]);
 		else sprintf (cstr, "Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]);
+		
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
 	}
 	
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-	yRaster -= stringSize.height;
+	
 	
 	// Determine Anterior, Posterior, Left, Right, Head, Foot
 	char	string[ 10];
 	float   vectors[ 9];
-	float	rot = rotation + rotationOffsetRegistration;
+	float	rot = rotation;
 	
 	[curDCM orientation:vectors];
 	
@@ -4900,7 +4913,7 @@ static long scrollMode;
 	NSManagedObject   *file;
 
 	file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
-	if( annotations >= annotFull)
+	if( annotations >= annotFull && fullText)
 	{
 		if( [file valueForKeyPath:@"series.study.name"])
 		{
@@ -4932,7 +4945,7 @@ static long scrollMode;
 		
 	} //annotations >= annotFull
 	
-	if( annotations >= annotBase)
+	if( annotations >= annotBase && fullText)
 	{
 		if( [file valueForKeyPath:@"series.study.studyName"])
 		{
@@ -5009,6 +5022,8 @@ static long scrollMode;
 {
 	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
+
+	NSLog( @"drawRect");
 
 	if( noScale)
 	{
@@ -5259,14 +5274,14 @@ static long scrollMode;
 							slabx = (slab/2.)/[curDCM pixelSpacingX]*tvec[ 0];
 							slaby = (slab/2.)/[curDCM pixelSpacingY]*tvec[ 1];
 							
-							glVertex2f( scaleValue*scaleOffsetRegistration * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*scaleOffsetRegistration*(crossy - 1000*mprVector[ 1] - slaby));
-							glVertex2f( scaleValue*scaleOffsetRegistration * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*scaleOffsetRegistration*(crossy + 1000*mprVector[ 1] - slaby));
+							glVertex2f( scaleValue * (crossx - 1000*mprVector[ 0] - slabx), scaleValue*(crossy - 1000*mprVector[ 1] - slaby));
+							glVertex2f( scaleValue * (crossx + 1000*mprVector[ 0] - slabx), scaleValue*(crossy + 1000*mprVector[ 1] - slaby));
 
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx - 1000*mprVector[ 0]), scaleValue*scaleOffsetRegistration*(crossy - 1000*mprVector[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx + 1000*mprVector[ 0]), scaleValue*scaleOffsetRegistration*(crossy + 1000*mprVector[ 1]));
+							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
 
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*scaleOffsetRegistration*(crossy - 1000*mprVector[ 1] + slaby));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*scaleOffsetRegistration*(crossy + 1000*mprVector[ 1] + slaby));
+							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0] + slabx), scaleValue*(crossy - 1000*mprVector[ 1] + slaby));
+							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0] + slabx), scaleValue*(crossy + 1000*mprVector[ 1] + slaby));
 						}
 						else
 						{
@@ -5278,8 +5293,8 @@ static long scrollMode;
 							crossx = cross.x-[curDCM pwidth]/2.;
 							crossy = cross.y-[curDCM pheight]/2.;
 							
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx - 1000*mprVector[ 0]), scaleValue*scaleOffsetRegistration*(crossy - 1000*mprVector[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(crossx + 1000*mprVector[ 0]), scaleValue*scaleOffsetRegistration*(crossy + 1000*mprVector[ 1]));
+							glVertex2f( scaleValue*(crossx - 1000*mprVector[ 0]), scaleValue*(crossy - 1000*mprVector[ 1]));
+							glVertex2f( scaleValue*(crossx + 1000*mprVector[ 0]), scaleValue*(crossy + 1000*mprVector[ 1]));
 						}
 					glEnd();
 					
@@ -5288,8 +5303,8 @@ static long scrollMode;
 						glColor3f (1.0f, 0.0f, 0.0f);
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(cross.x-[curDCM pwidth]/2. - 1000*tvec[ 0]), scaleValue*scaleOffsetRegistration*(cross.y-[curDCM pheight]/2. - 1000*tvec[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(cross.x-[curDCM pwidth]/2. + 1000*tvec[ 0]), scaleValue*scaleOffsetRegistration*(cross.y-[curDCM pheight]/2. + 1000*tvec[ 1]));
+							glVertex2f( scaleValue*(cross.x-[curDCM pwidth]/2. - 1000*tvec[ 0]), scaleValue*(cross.y-[curDCM pheight]/2. - 1000*tvec[ 1]));
+							glVertex2f( scaleValue*(cross.x-[curDCM pwidth]/2. + 1000*tvec[ 0]), scaleValue*(cross.y-[curDCM pheight]/2. + 1000*tvec[ 1]));
 						glEnd();
 					}
 				}
@@ -5299,8 +5314,8 @@ static long scrollMode;
 				crossB.x -= [curDCM pwidth]/2.;
 				crossB.y -= [curDCM pheight]/2.;
 				
-				crossB.x *=scaleValue*scaleOffsetRegistration;
-				crossB.y *=scaleValue*scaleOffsetRegistration;
+				crossB.x *=scaleValue;
+				crossB.y *=scaleValue;
 				
 				glColor3f (1.0f, 0.0f, 0.0f);
 				
@@ -5408,7 +5423,7 @@ static long scrollMode;
 						glLineWidth(1.0);
 					}
 				}
-				glRotatef (rotation + rotationOffsetRegistration, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
 				
 			//	NSLog(@"OO: %f %f", originOffset.x, originOffset.y);
@@ -5463,18 +5478,18 @@ static long scrollMode;
 			
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
-							glVertex2f( -origin.x -size.size.width/2.		, scaleValue*scaleOffsetRegistration * (yy-[curDCM pheight]/2.));
-							glVertex2f( -origin.x -size.size.width/2 + 100   , scaleValue*scaleOffsetRegistration * (yy-[curDCM pheight]/2.));
+							glVertex2f( -origin.x -size.size.width/2.		, scaleValue * (yy-[curDCM pheight]/2.));
+							glVertex2f( -origin.x -size.size.width/2 + 100   , scaleValue * (yy-[curDCM pheight]/2.));
 							
 							if( yFlipped)
 							{
-								glVertex2f( scaleValue*scaleOffsetRegistration * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2.)/[curDCM pixelRatio]);
-								glVertex2f( scaleValue*scaleOffsetRegistration * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2. + 100)/[curDCM pixelRatio]);
+								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2.)/[curDCM pixelRatio]);
+								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2. + 100)/[curDCM pixelRatio]);
 							}
 							else
 							{
-								glVertex2f( scaleValue*scaleOffsetRegistration * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2.)/[curDCM pixelRatio]);
-								glVertex2f( scaleValue*scaleOffsetRegistration * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2. - 100)/[curDCM pixelRatio]);
+								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2.)/[curDCM pixelRatio]);
+								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2. - 100)/[curDCM pixelRatio]);
 							}
 						glEnd();
 					}
@@ -5497,17 +5512,17 @@ static long scrollMode;
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePoint[ 0] - 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePoint[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePoint[ 0] + 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePoint[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePoint[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePoint[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 1000*sliceVector[ 1]));
 						glEnd();
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointI[ 0] - 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePointI[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointI[ 0] + 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePointI[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointI[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointI[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 1000*sliceVector[ 1]));
 						glEnd();
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointO[ 0] - 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePointO[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointO[ 0] + 1000*sliceVector[ 0]), scaleValue*scaleOffsetRegistration*(slicePointO[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointO[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointO[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 1000*sliceVector[ 1]));
 						glEnd();
 						
 						if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 )
@@ -5546,8 +5561,8 @@ static long scrollMode;
 							rotateVector[ 1] = -sliceVector[ 0];
 							
 							glBegin(GL_LINES);
-								glVertex2f( scaleValue*scaleOffsetRegistration*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*scaleOffsetRegistration*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
-								glVertex2f( scaleValue*scaleOffsetRegistration*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*scaleOffsetRegistration*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
 							glEnd();
 							
 							glLineWidth(1.0);
@@ -5559,17 +5574,17 @@ static long scrollMode;
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePoint2[ 0] - 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePoint2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePoint2[ 0] + 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePoint2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePoint2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePoint2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 1000*sliceVector2[ 1]));
 						glEnd();
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointI2[ 0] - 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePointI2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointI2[ 0] + 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePointI2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointI2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointI2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 1000*sliceVector2[ 1]));
 						glEnd();
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointO2[ 0] - 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePointO2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*scaleOffsetRegistration*(slicePointO2[ 0] + 1000*sliceVector2[ 0]), scaleValue*scaleOffsetRegistration*(slicePointO2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointO2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointO2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 1000*sliceVector2[ 1]));
 						glEnd();
 					}
 					
@@ -5590,11 +5605,11 @@ static long scrollMode;
 					glBegin(GL_LINES);
 					if ([curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingX] * 1000.0 < 1)
 					{
-						glVertex2f(scaleValue * scaleOffsetRegistration * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
-						glVertex2f(scaleValue * scaleOffsetRegistration * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12);
+						glVertex2f(scaleValue  * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
+						glVertex2f(scaleValue  * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12);
 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue * scaleOffsetRegistration * (-0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue * scaleOffsetRegistration * (0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
+						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (-0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
+						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
 
 						short i, length;
 						for (i = -20; i<=20; i++)
@@ -5602,20 +5617,20 @@ static long scrollMode;
 							if (i % 10 == 0) length = 10;
 							else  length = 5;
 						
-							glVertex2f(i*scaleValue*scaleOffsetRegistration *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12);
-							glVertex2f(i*scaleValue*scaleOffsetRegistration *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
+							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12);
+							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
 							
-							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue*scaleOffsetRegistration *0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + 10,  i* scaleValue*scaleOffsetRegistration * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue *0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + 10,  i* scaleValue * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
 						}
 					}
 					else
 					{
-						glVertex2f(scaleValue * scaleOffsetRegistration * (-50/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
-						glVertex2f(scaleValue * scaleOffsetRegistration * (50/[curDCM pixelSpacingX]), size.size.height/2 - 12);
+						glVertex2f(scaleValue  * (-50/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
+						glVertex2f(scaleValue  * (50/[curDCM pixelSpacingX]), size.size.height/2 - 12);
 						
-						glVertex2f(-size.size.width/2 + 10 , scaleValue * scaleOffsetRegistration * (-50/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue * scaleOffsetRegistration * (50/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
+						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (-50/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
+						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (50/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
 
 						short i, length;
 						for (i = -5; i<=5; i++)
@@ -5623,11 +5638,11 @@ static long scrollMode;
 							if (i % 5 == 0) length = 10;
 							else  length = 5;
 						
-							glVertex2f(i*scaleValue*scaleOffsetRegistration *10/[curDCM pixelSpacingX], size.size.height/2 - 12);
-							glVertex2f(i*scaleValue*scaleOffsetRegistration *10/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
+							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - 12);
+							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
 							
-							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue*scaleOffsetRegistration *10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + 10,  i* scaleValue*scaleOffsetRegistration * 10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue *10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + 10,  i* scaleValue * 10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
 						}
 					}
 					glEnd();
@@ -5635,12 +5650,6 @@ static long scrollMode;
 					[self drawTextualData: size :annotations];
 					
 				} //annotations >= annotBase
-				
-				yRaster = size.size.height-2;
-				cptr = (char*) [[NSString stringWithString: NSLocalizedString(@"Made with OsiriX",@"Made with OsiriX")] UTF8String];
-				xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-				[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster];
-
 				} //Annotation  != None
 			}  
 		
@@ -5749,9 +5758,6 @@ static long scrollMode;
 			
 			originOffset.x *= maxChanged;
 			originOffset.y *= maxChanged;
-			
-			originOffsetRegistration.x *= maxChanged;
-			originOffsetRegistration.y *= maxChanged;
 			
 			if( [[[self window] windowController] is2DViewer] == YES)
 			[[[self window] windowController] propagateSettings];
@@ -6066,9 +6072,6 @@ static long scrollMode;
 				
 		originOffset.x = ((originOffset.x * x) / scaleValue);
 		originOffset.y = ((originOffset.y * x) / scaleValue);
-				
-		originOffsetRegistration.x = ((originOffsetRegistration.x * x) / scaleValue);
-		originOffsetRegistration.y = ((originOffsetRegistration.y * x) / scaleValue);
 	}
 	scaleValue = x;
 	
@@ -6114,23 +6117,6 @@ static long scrollMode;
 -(void) setSyncSeriesIndex:(long) i
 {
 	syncSeriesIndex = i;
-}
-
--(void) setScaleOffsetRegistration:(float) x
-{
-	scaleOffsetRegistration = x;
-	
-	[self setNeedsDisplay:YES];
-}
-
--(void) setRotationOffsetRegistration:(float) x
-{
-	rotationOffsetRegistration = x;
-	
-//	if( rotationOffsetRegistration < 0) rotationOffsetRegistration += 360;
-//	if( rotationOffsetRegistration > 360) rotationOffsetRegistration -= 360;
-	
-	[self setNeedsDisplay:YES];
 }
 
 -(void) setAlpha:(float) a
@@ -6244,21 +6230,6 @@ static long scrollMode;
 	return originOffset;
 }
 
--(NSPoint) originOffsetRegistration
-{
-	return originOffsetRegistration;
-}
-
--(float) scaleOffsetRegistration
-{
-	return scaleOffsetRegistration;
-}
-
--(float) rotationOffsetRegistration
-{
-	return rotationOffsetRegistration;
-}
-
 -(void) setOrigin:(NSPoint) x
 {
 	if( x.x > -100000 && x.x < 100000) x.x = x.x;
@@ -6275,13 +6246,6 @@ static long scrollMode;
 -(void) setOriginOffset:(NSPoint) x
 {
 	originOffset = x;
-	
-	[self setNeedsDisplay:YES];
-}
-
--(void) setOriginOffsetRegistration:(NSPoint) x
-{
-	originOffsetRegistration = x;
 	
 	[self setNeedsDisplay:YES];
 }

@@ -53,8 +53,8 @@ extern  short		annotations;
 	[super subDrawRect:aRect];
 	
 	float xCrossCenter,yCrossCenter;
-	xCrossCenter = (crossPositionX-[[self curDCM] pwidth]/2) * scaleValue*scaleOffsetRegistration;
-	yCrossCenter = (crossPositionY-[[self curDCM] pheight]/2) * scaleValue*scaleOffsetRegistration;
+	xCrossCenter = (crossPositionX-[[self curDCM] pwidth]/2) * scaleValue;
+	yCrossCenter = (crossPositionY-[[self curDCM] pheight]/2) * scaleValue;
 		
 	// normalization of FOCAL VECTOR
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -142,7 +142,7 @@ extern  short		annotations;
 	maxSize = (vectNorm>maxSize)? maxSize : vectNorm;
 	
 	float normalizationFactor = maxSize/vectNorm;
-	float scaleFactor = scaleValue*scaleOffsetRegistration;
+	float scaleFactor = scaleValue;
 	
 //	if( (mouseLocStart.x > focalPointLocation.x-near && mouseLocStart.x < focalPointLocation.x+near) &&
 //		(mouseLocStart.y > focalPointLocation.y-near && mouseLocStart.y < focalPointLocation.y+near) )

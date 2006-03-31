@@ -166,8 +166,8 @@
 		glEnable(GL_POLYGON_SMOOTH);
 	
 		float xCrossCenter,yCrossCenter;
-		xCrossCenter = (crossPositionX +0.5 -[[self curDCM] pwidth]/2) * scaleValue*scaleOffsetRegistration;
-		yCrossCenter = (crossPositionY +0.5 -[[self curDCM] pheight]/2) * scaleValue*scaleOffsetRegistration;
+		xCrossCenter = (crossPositionX +0.5 -[[self curDCM] pwidth]/2) * scaleValue;
+		yCrossCenter = (crossPositionY +0.5 -[[self curDCM] pheight]/2) * scaleValue;
 		
 		//NSLog(@"subdraw thickslab:%f pixelSpacingY:%f", [controller thickSlabDistance], [[self curDCM] pixelSpacingY]);
 		//yCrossCenter = yCrossCenter - ([controller thickSlabDistance]*(float)[controller thickSlab]   / 2.0);
@@ -215,7 +215,7 @@
 		float shift;
 		if (thickSlabX>0)
 		{
-			shift =  (float)thickSlabX / 2.0 * scaleValue*scaleOffsetRegistration;
+			shift =  (float)thickSlabX / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(xCrossCenter-shift,-4000);
 			glVertex2f(xCrossCenter-shift,4000);
@@ -224,7 +224,7 @@
 		}
 		if (thickSlabY>0)
 		{
-			shift =  (float)thickSlabY / 2.0 * scaleValue*scaleOffsetRegistration;
+			shift =  (float)thickSlabY / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(-4000,yCrossCenter-shift);
 			glVertex2f(4000,yCrossCenter-shift);
