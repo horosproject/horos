@@ -1843,7 +1843,60 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		// Blended view
 		if( blendingView)
 		{
-			NSPoint blendedLocation = [blendingView ConvertFromView2GL:eventLocation];
+			float	vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
+			NSPoint	offset;
+			
+			// Compute blended view offset
+			[curDCM orientation: vectorP];
+			
+			tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
+			tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
+			tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+			
+			tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
+			tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
+			tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
+			
+			offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
+			offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
+			
+			offset.x /= [[blendingView curDCM] pixelSpacingX];
+			offset.y /= [[blendingView curDCM] pixelSpacingY];
+			
+			// Convert screen position to pixel position in blended image
+			float xx, yy;
+			NSRect size = [self frame];
+			NSPoint a = eventLocation;
+						
+			if( xFlipped) a.x = size.size.width - a.x;
+			if( yFlipped) a.y = size.size.height - a.y;
+			
+			a.x -= size.size.width/2;
+			a.x /= [blendingView scaleValue];
+			
+			a.y -= size.size.height/2;
+			a.y /= [blendingView scaleValue];
+			
+			xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
+			yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
+
+			a.y = yy;
+			a.x = xx;
+			
+			a.x -= ([blendingView origin].x + [blendingView originOffset].x)/[blendingView scaleValue];
+			a.y += ([blendingView origin].y + [blendingView originOffset].y)/[blendingView scaleValue];
+						
+			if( curDCM)
+			{
+				a.x += [[blendingView curDCM] pwidth]/2.;
+				a.y += [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelRatio]/ 2.;
+				a.y /= [[blendingView curDCM] pixelRatio];
+			}
+			
+			a.x += offset.x;
+			a.y += offset.y;
+			
+			NSPoint blendedLocation = a;						//= [blendingView ConvertFromView2GL:eventLocation];
 			
 			if( blendedLocation.x >= 0 && blendedLocation.x < [[blendingView curDCM] pwidth])
 			{
@@ -5019,35 +5072,24 @@ static long scrollMode;
 					tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
 					tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
 					tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
-		//			NSLog(@"X:%0.2f Y:%0.2f Z:%0.2f ", tempOrigin[ 0], tempOrigin[ 1], tempOrigin[ 2]);
 					
 					tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
 					tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
 					tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
-		//			NSLog(@"X:%0.2f Y:%0.2f Z:%0.2f ", tempOriginBlending[ 0], tempOriginBlending[ 1], tempOriginBlending[ 2]);
 					
 					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
 					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
 					
-					offset.x *= scaleValue*scaleOffsetRegistration;
+					offset.x *= scaleValue;
 					offset.x /= [curDCM pixelSpacingX];
 					
-					offset.y *= scaleValue*scaleOffsetRegistration;	//
+					offset.y *= scaleValue;
 					offset.y /= [curDCM pixelSpacingY];
-					
-					float diffrotation = rotationOffsetRegistration;
-					NSPoint a;
-					
-					a.x = originOffsetRegistration.x*cos(diffrotation*deg2rad) + originOffsetRegistration.y*sin(diffrotation*deg2rad);
-					a.y = -originOffsetRegistration.x*sin(diffrotation*deg2rad) + originOffsetRegistration.y*cos(diffrotation*deg2rad);
-					
-					offset.y -= a.y;
-					offset.x += a.x;
 				}
 				else
 				{
-					offset.y = -originOffsetRegistration.y;
-					offset.x = originOffsetRegistration.x;
+					offset.y = 0;
+					offset.x = 0;
 				}
 		//		NSLog(@"offset:%f - %f", offset.x, offset.y);
 				
