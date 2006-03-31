@@ -1797,7 +1797,16 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	if( dcmPixList == 0L) return;
 	
 	if( [[self window] isVisible] && [[self window] isKeyWindow])
-	{	
+	{
+		BOOL	needUpdate = NO;
+		
+		float	cpixelMouseValueR = pixelMouseValueR;
+		float	cpixelMouseValueG = pixelMouseValueG;
+		float	cpixelMouseValueB = pixelMouseValueB;
+		float	cmouseXPos = mouseXPos;
+		float	cmouseYPos = mouseYPos;
+		float	cpixelMouseValue = pixelMouseValue;
+		
 		eventLocation = [self convertPoint: eventLocation fromView: self];
 		
 		eventLocation = [[[theEvent window] contentView] convertPoint:eventLocation toView:self];
@@ -1832,6 +1841,20 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				else pixelMouseValue = [curDCM getPixelValueX: xPos Y:yPos];
 			}
 		}
+
+		if(	cpixelMouseValueR != pixelMouseValueR)	needUpdate = YES;
+		if(	cpixelMouseValueG != pixelMouseValueG)	needUpdate = YES;
+		if(	cpixelMouseValueB != pixelMouseValueB)	needUpdate = YES;
+		if(	cmouseXPos != mouseXPos)	needUpdate = YES;
+		if(	cmouseYPos != mouseYPos)	needUpdate = YES;
+		if(	cpixelMouseValue != pixelMouseValue)	needUpdate = YES;
+		
+		float	cblendingMouseXPos = blendingMouseXPos;
+		float	cblendingMouseYPos = blendingMouseYPos;
+		float	cblendingPixelMouseValue = blendingPixelMouseValue;
+		float	cblendingPixelMouseValueR = blendingPixelMouseValueR;
+		float	cblendingPixelMouseValueG = blendingPixelMouseValueG;
+		float	cblendingPixelMouseValueB = blendingPixelMouseValueB;
 
 		blendingMouseXPos = 0;
 		blendingMouseYPos = 0;
@@ -1920,7 +1943,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			}
 		}
 		
-		[self setNeedsDisplay: YES];
+		if( cblendingMouseXPos != blendingMouseXPos) needUpdate = YES;
+		if( cblendingMouseYPos != blendingMouseYPos) needUpdate = YES;
+		if( cblendingPixelMouseValue != blendingPixelMouseValue) needUpdate = YES;
+		if( cblendingPixelMouseValueR != blendingPixelMouseValueR) needUpdate = YES;
+		if( cblendingPixelMouseValueG != blendingPixelMouseValueG) needUpdate = YES;
+		if( cblendingPixelMouseValueB != blendingPixelMouseValueB) needUpdate = YES;
+		
+		if( needUpdate) [self setNeedsDisplay: YES];
 		
 		if( stringID)
 		{
@@ -4587,7 +4617,7 @@ static long scrollMode;
 	
 	if( blendingView)
 	{
-		if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [curDCM SUVConverted] == NO)
+		if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 		{
 			sprintf (cstr, "SUV (fused image): %.2f", [self getBlendedSUV] );
 			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
@@ -4994,7 +5024,7 @@ static long scrollMode;
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
-		yRaster = size.size.height-2 -stringSize.height;
+		yRaster = size.size.height-2;
 		
 		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
@@ -5022,9 +5052,7 @@ static long scrollMode;
 {
 	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
-
-	NSLog( @"drawRect");
-
+	
 	if( noScale)
 	{
 		//scaleValue = 1;

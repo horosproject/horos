@@ -279,13 +279,17 @@
 	[self blendingPropagate: xReslicedView];
 	[self blendingPropagate: yReslicedView];
 
-	[originalView display];
-	[xReslicedView display];
-	[yReslicedView display];
-
-	[originalView setNeedsDisplay: NO];
-	[xReslicedView setNeedsDisplay: NO];
-	[yReslicedView setNeedsDisplay: NO];
+//	[originalView display];
+//	[xReslicedView display];
+//	[yReslicedView display];
+//
+//	[originalView setNeedsDisplay: NO];
+//	[xReslicedView setNeedsDisplay: NO];
+//	[yReslicedView setNeedsDisplay: NO];
+	
+	[originalView setNeedsDisplay: YES];
+	[xReslicedView setNeedsDisplay: YES];
+	[yReslicedView setNeedsDisplay: YES];
 }
 
 - (void) flipVertical:(id) sender: (OrthogonalMPRPETCTView*) view
