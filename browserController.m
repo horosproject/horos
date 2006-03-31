@@ -3910,6 +3910,10 @@ long        i;
     id          theCell = [sender selectedCell];
     int         row, column, count, index;
     
+	NSLog(@"matrixPressed");
+	
+	[[self window] makeFirstResponder:databaseOutline];
+	
 	[animationSlider setEnabled:NO];
 	[animationSlider setIntValue:0];
 	

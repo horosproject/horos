@@ -4579,7 +4579,7 @@ static long scrollMode;
 	
 	yRaster = size.size.height-2;
 	
-	if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] )
+	if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
 	{
 		float location[ 3 ];
 		
