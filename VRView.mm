@@ -1803,7 +1803,7 @@ public:
 		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
 		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
 		
-		if( [firstObject SUVConverted]) val = [val stringByAppendingString: @" SUV"];
+//		if( [firstObject SUVConverted]) val = [val stringByAppendingString: @" SUV"];
 		
 //		NSString	*mode;
 //		switch( renderingMode)

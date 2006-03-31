@@ -969,6 +969,8 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
 		[view setCLUT: 0L :0L :0L];
+		[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];

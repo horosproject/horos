@@ -9606,7 +9606,11 @@ long i;
 			{
 				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self];
 				
-				[viewer ApplyCLUTString:curCLUTMenu];
+				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+				{
+					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+				}
+				else [viewer ApplyCLUTString:curCLUTMenu];
 
 				[viewer showWindow:self];
 				
