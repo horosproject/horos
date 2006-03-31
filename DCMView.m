@@ -4340,6 +4340,10 @@ static long scrollMode;
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 	
+//	NSLog( @"%f %f", origin.x, origin.y);
+//	NSLog( @"%f %f", offset.x, offset.y);
+//	NSLog( @"%f %f", originOffset.x, originOffset.y);
+	
 	if( [curDCM pixelRatio] != 1.0)
 	{
 		glScalef( 1.f, [curDCM pixelRatio], 1.f);
@@ -5134,7 +5138,8 @@ static long scrollMode;
 					offset.y = 0;
 					offset.x = 0;
 				}
-		//		NSLog(@"offset:%f - %f", offset.x, offset.y);
+				
+				//NSLog(@"offset:%f - %f", offset.x, offset.y);
 				
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

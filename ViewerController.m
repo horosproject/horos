@@ -6887,17 +6887,10 @@ int i,j,l;
 			
 			if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
 			{
-				NSPoint pan, a, panOffset;
-				float	rot;
+				NSPoint pan;
 				
 				pan = [imageView origin];
-				
-				a.x = pan.x*cos( rot*deg2rad) + pan.y*sin( rot*deg2rad);
-				a.y = -pan.x*sin( rot*deg2rad) + pan.y*cos( rot*deg2rad);
-					
-			//	a = pan;
-				
-				[[vC imageView] setOrigin: NSMakePoint( a.x, a.y)];
+				[[vC imageView] setOrigin: NSMakePoint( pan.x, pan.y)];
 				
 				fValue = [imageView rotation];
 				[[vC imageView] setRotation: fValue];
