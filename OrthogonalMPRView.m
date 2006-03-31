@@ -121,8 +121,8 @@
     curWL = [curDCM wl];
 	
     [self loadTextures];
-	[self display];
-    [self setNeedsDisplay:NO];
+//	[self display];
+    [self setNeedsDisplay:YES];
 }
 
 - (void) getWLWW:(float*) wl :(float*) ww
