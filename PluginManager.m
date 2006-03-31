@@ -317,7 +317,23 @@ PluginManager			*pluginManager = 0L;
 				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
 				if ( filterClass = [plugin principalClass] )
 				{
-					if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
+					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
+					{
+						PluginFilter*	filter = [filterClass filter];
+						[preProcessPlugins addObject: filter];
+					}
+
+					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
+					{
+						NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
+						NSString *fileFormat;
+						while (fileFormat = [enumerator nextObject])
+						{
+							//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
+							[fileFormatPlugins setObject:plugin forKey:fileFormat];
+						}
+					}
+					else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)] )
 					{
 						NSString	*pluginName = [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"];
 						NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
@@ -348,22 +364,7 @@ PluginManager			*pluginManager = 0L;
 						
 						
 					}
-					else if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
-					{
-						PluginFilter*	filter = [filterClass filter];
-						[preProcessPlugins addObject: filter];
-					}
-
-					else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
-					{
-						NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
-						NSString *fileFormat;
-						while (fileFormat = [enumerator nextObject])
-						{
-							//we will save the bundle rather than a filter.  Each file decode will require a separate decoder
-							[fileFormatPlugins setObject:plugin forKey:fileFormat];
-						}
-					}
+					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
 					{
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];

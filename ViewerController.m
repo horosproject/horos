@@ -2987,21 +2987,22 @@ static ViewerController *draggedController = 0L;
 	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
 	
-	i = [[NSApp orderedWindows] indexOfObject: [self window]];
-	if( i != NSNotFound)
-	{
-		i++;
-		for( ; i < [[NSApp orderedWindows] count]; i++)
-		{
-			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
-			{
-				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
-				[[[[NSApp orderedWindows] objectAtIndex: i] windowController] propagateSettings];
-			}
-		}
-		
-	}
-	[imageView becomeMainWindow];
+//	i = [[NSApp orderedWindows] indexOfObject: [self window]];
+//	if( i != NSNotFound)
+//	{
+//		i++;
+//		for( ; i < [[NSApp orderedWindows] count]; i++)
+//		{
+//			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
+//			{
+//				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
+//				[[[[NSApp orderedWindows] objectAtIndex: i] windowController] propagateSettings];
+//			}
+//		}
+//		
+//	}
+	
+	
 	
 	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString:@"PET"];
 	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
@@ -3061,6 +3062,8 @@ static ViewerController *draggedController = 0L;
 		[keyImageDisplay setTag: 0];
 		[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
 	}
+	
+	[imageView becomeMainWindow];	// This will send the image sync order !
 }
 
 - (void) showWindowTransition

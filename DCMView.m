@@ -3022,7 +3022,8 @@ static long scrollMode;
 		iww = [otherPix ww];
 		iwl = [otherPix wl];
 		
-		if( iww != [curDCM ww] || iwl != [curDCM wl]) [self setWLWW: iwl :iww];
+		if( iww != [curDCM ww] || iwl != [curDCM wl])
+			[self setWLWW: iwl :iww];
 	}
 	
 	if( blendingView)

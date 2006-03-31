@@ -6664,12 +6664,14 @@ PapyShort       fileNb, theErr;
 		
 		i = width * height;
 		
-		i /= 4;					//Check only 1 on 4 pixels...
+		#define INTERVAL 4
+		
+		i /= INTERVAL;					//Check only 1 on INTERVAL pixels...
 		i--;
 		while( i-- > 0)
 		{
 			fvalue = *pt;
-			pt += 4;
+			pt += INTERVAL;
 			if (fvalue < fmin) fmin = fvalue;
 			else if (fvalue > fmax) fmax = fvalue;
 		}
