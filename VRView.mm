@@ -4650,6 +4650,10 @@ public:
 	{
 		//change background color
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		
+		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5) textWLWW->GetTextProperty()->SetColor(1,1,1);
+		else textWLWW->GetTextProperty()->SetColor(0,0,0);
+		
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -4660,6 +4664,10 @@ public:
 		//change background color
 		NSColor *color= [(NSColorPanel*)sender color];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		
+		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5) textWLWW->GetTextProperty()->SetColor(1,1,1);
+		else textWLWW->GetTextProperty()->SetColor(0,0,0);
+		
 		[self setNeedsDisplay:YES];
 	}
 }
