@@ -2427,6 +2427,9 @@ static BOOL initialized = NO;
 		[[viewersList objectAtIndex: i] showWindow:self];
 	}
 	
+//	[[viewersList lastObject] makeKeyAndOrderFront:self];
+//	[[viewersList lastObject] makeMainWindow];
+	
 	[viewersList release];
 }
 
