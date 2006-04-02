@@ -32,6 +32,7 @@
  *
  */
 
+#undef verify
 
 #ifndef DCOBJECT_H
 #define DCOBJECT_H

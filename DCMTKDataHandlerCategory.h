@@ -39,7 +39,7 @@
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset;
 
 - (BOOL)findMatchFound;
-- (BOOL)moveMatchFound;
+- (int)moveMatchFound;
 
 - (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete;
 - (OFCondition)nextMoveObject:(DcmDataset *)dataset;

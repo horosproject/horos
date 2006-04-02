@@ -175,10 +175,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 case DIMSE_C_STORE_RQ:
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
-				/*
+				
                 case DIMSE_C_FIND_RQ:
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
+					
+				/*
                 case DIMSE_C_MOVE_RQ:
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;

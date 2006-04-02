@@ -32,7 +32,7 @@ extern BrowserController *browserWindow;
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset{
 
 	//NSPredicate *compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
-	NSPredicate *compoundPredicate = [NSPredicate predicateWithValue:YES];
+	NSPredicate *compoundPredicate;
 	const char *sType;
 	const char *scs;
 	//NSString *charset;	
@@ -47,67 +47,74 @@ extern BrowserController *browserWindow;
 		specificCharacterSet = [@"ISO_IR 100" retain];
 		encoding = NSISOLatin1StringEncoding;
 	}
+	
+	if (strcmp(sType, "STUDY") == 0) 
+		compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
+	else
+		compoundPredicate = [NSPredicate predicateWithValue:YES];
 		
-
+	NSLog(@"charset %@", specificCharacterSet);
 		
 	
 	int elemCount = (int)(dataset->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 		NSPredicate *predicate = nil;
 		DcmElement* dcelem = dataset->getElement(elemIndex);
-		DcmTagKey key = dataset->getTag().getXTag();
-		if (strcmp(sType, "STUDY")) {
+		DcmTagKey key = dcelem->getTag().getXTag();
+		printf("elemindex: %d key: %s\n",elemIndex, key.toString().c_str());
+		if (strcmp(sType, "STUDY") == 0) {
 			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:
-						[NSArray arrayWithObjects:[NSPredicate predicateWithFormat:@"hasDICOM == %d", YES], 
-						compoundPredicate, nil]];
+						[NSArray arrayWithObjects: compoundPredicate, nil]];
 			if (key == DCM_PatientsName){
 				char *pn;
-				if (dcelem->getString(pn).good())
+				if (dcelem->getString(pn).good() && pn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_PatientID){
 				char *pid;
-				if (dcelem->getString(pid).good())
+				if (dcelem->getString(pid).good() && pid != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"patientID like[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_StudyInstanceUID ){
 				char *suid;
-				if (dcelem->getString(suid).good())
+				if (dcelem->getString(suid).good() && suid != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_StudyID ) {
 				char *sid;
-				if (dcelem->getString(sid).good())
+				if (dcelem->getString(sid).good() && sid != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key ==  DCM_StudyDescription) {
 				char *sd;
-				if (dcelem->getString(sd).good())
+				if (dcelem->getString(sd).good() && sd != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"studyName like[cd] %@", [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_InstitutionName) {
 				char *inn;
-				if (dcelem->getString(inn).good())
+				if (dcelem->getString(inn).good() && inn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"institutionName like[cd] %@", [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_ReferringPhysiciansName) {
 				char *rpn;
-				if (dcelem->getString(rpn).good())
+				if (dcelem->getString(rpn).good() && rpn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"referringPhysician like[cd] %@", [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key ==  DCM_PerformingPhysiciansName) {
 				char *ppn;
-				if (dcelem->getString(ppn).good())
+				if (dcelem->getString(ppn).good() && ppn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"performingPhysician like[cd] %@", [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet]];
 			}
+			
 			else if (key == DCM_StudyDate) {
+				NSLog(@"StudyDate");
 				char *aDate;
 				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good()) {
+				if (dcelem->getString(aDate).good() && aDate != NULL) {
 					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 					value = [DCMCalendarDate dicomDate:dateString];
 				}
-  
+				NSLog(@"StudyDate decoded");
 				if (!value) {
 					predicate = nil;
 				}
@@ -146,10 +153,11 @@ extern BrowserController *browserWindow;
 					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\") AND date < CAST(%f, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
+			
 			else if (key == DCM_StudyTime) {
 				char *aDate;
 				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good()) {
+				if (dcelem->getString(aDate).good() && aDate != NULL) {
 					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 					value = [DCMCalendarDate dicomTime:dateString];
 				}
@@ -192,37 +200,38 @@ extern BrowserController *browserWindow;
 					predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
 				}
 			}
+			
 			else
 				predicate = nil;
 				
 			if (predicate)
 				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
-		else if (strcmp(sType, "SERIES")) {
+		else if (strcmp(sType, "SERIES") == 0) {
 			if (key == DCM_StudyInstanceUID) {
 				char *string;
-				if (dcelem->getString(string).good())
+				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_SeriesInstanceUID) {
 				char *string;
-				if (dcelem->getString(string).good())
+				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			} 
 			else if (key == DCM_SeriesDescription) {
 				char *string;
-				if (dcelem->getString(string).good())
+				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_SeriesNumber) {
 				char *string;
-				if (dcelem->getString(string).good())
+				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_SeriesDate) {
 				char *aDate;
 				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good()) {
+				if (dcelem->getString(aDate).good() && aDate != NULL) {
 					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 					value = [DCMCalendarDate dicomDate:dateString];
 				}
@@ -269,7 +278,7 @@ extern BrowserController *browserWindow;
 			else if (key == DCM_SeriesTime) {
 				char *aDate;
 				DCMCalendarDate *value = nil;
-				if (dcelem->getString(aDate).good()) {
+				if (dcelem->getString(aDate).good() && aDate != NULL) {
 					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 					value = [DCMCalendarDate dicomTime:dateString];
 				}
@@ -315,7 +324,7 @@ extern BrowserController *browserWindow;
 			if (predicate)
 				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
-			else if (strcmp(sType, "IMAGE")) {
+			else if (strcmp(sType, "IMAGE") == 0) {
 		}
 	}
 
@@ -391,6 +400,26 @@ extern BrowserController *browserWindow;
 		dataset ->putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:encoding]);
 	else
 		dataset ->putAndInsertString(DCM_InstitutionName, NULL);
+		
+	dataset ->putAndInsertString(DCM_SpecificCharacterSet,  [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		
+	if ([fetchedObject valueForKey:@"noFiles"]) {		
+		int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
+		char value[10];
+		sprintf(value, "%d", numberInstances);
+		NSLog(@"number files: %d", numberInstances);
+		dataset ->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
+	}
+		
+	if ([fetchedObject valueForKey:@"series"]) {
+		int numberInstances = [[fetchedObject valueForKey:@"series"] count];
+		char value[10];
+		sprintf(value, "%d", numberInstances);
+		NSLog(@"number series: %d", numberInstances);
+		dataset ->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
+	}
+		
+
 	
 	
 	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "STUDY");
@@ -433,6 +462,18 @@ extern BrowserController *browserWindow;
 	if ([fetchedObject valueForKey:@"seriesInstanceUID"])
 		dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	
+
+	if ([fetchedObject valueForKey:@"noFiles"]) {
+		int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
+		char value[10];
+		sprintf(value, "%d", numberInstances);
+		NSLog(@"number series: %d", numberInstances);
+		dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
+
+	}
+
+	
+	
 	//return dataset;
 }
 - (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
@@ -449,11 +490,11 @@ extern BrowserController *browserWindow;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
 	
-	if (strcmp(sType, "STUDY")) 
+	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
-	else if (strcmp(sType, "SERIES")) 
+	else if (strcmp(sType, "SERIES") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Series"];
-	else if (strcmp(sType, "IMAGE")) 
+	else if (strcmp(sType, "IMAGE") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Image"];
 	else 
 		entity = nil;
@@ -492,11 +533,11 @@ extern BrowserController *browserWindow;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
 	
-	if (strcmp(sType, "STUDY")) 
+	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
-	else if (strcmp(sType, "SERIES")) 
+	else if (strcmp(sType, "SERIES") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Series"];
-	else if (strcmp(sType, "IMAGE")) 
+	else if (strcmp(sType, "IMAGE") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Image"];
 	else 
 		entity = nil;
@@ -536,9 +577,8 @@ extern BrowserController *browserWindow;
 	return NO;
 }
 	
-- (BOOL)moveMatchFound{
-	if (moveArray) return YES;
-		return NO;
+- (int)moveMatchFound{
+	return [moveArray count];
 }
 
 - (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete{

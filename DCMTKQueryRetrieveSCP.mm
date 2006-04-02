@@ -271,6 +271,11 @@ DcmQueryRetrieveConfig config;
 
     DcmQueryRetrieveSCP scp(config, options, factory);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
+	
+	//Start Bonjour 
+	NSNetService *netService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:_aeTitle port:_port];
+	[netService setDelegate:nil];
+	[netService publish];
 
     /* loop waiting for associations */
     while (cond.good() && !_abort)
@@ -278,6 +283,10 @@ DcmQueryRetrieveConfig config;
       cond = scp.waitForAssociation(options.net_);
       if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
     }
+	
+	//stop bonjour
+	[netService stop];
+	[netService release];
 	
 	cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {

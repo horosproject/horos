@@ -61,7 +61,7 @@ MODIFICATION HISTORY
 #import "NetworkListener.h"
 #import "DCMTKQueryRetrieveSCP.h"
 
-#define BUILTIN_DCMTK NO
+#define BUILTIN_DCMTK YES
 
 ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 

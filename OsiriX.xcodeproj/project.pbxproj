@@ -1282,6 +1282,9 @@
 		BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
 		BF01AA23078CF6C80037222F /* DCMCMoveResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF01AA24078CF6C80037222F /* DCMCMoveResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */; };
+		BF025FD609DF8C060056E827 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF025FD509DF8C060056E827 /* dcmqrcbm.mm */; };
+		BF025FD709DF8C060056E827 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF025FD509DF8C060056E827 /* dcmqrcbm.mm */; };
+		BF025FD809DF8C060056E827 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF025FD509DF8C060056E827 /* dcmqrcbm.mm */; };
 		BF03E55D07BEFFC500100045 /* DCMCFindResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2168,7 +2171,6 @@
 		BFBF414009B6828D00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF414209B6828D00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF414609B6828D00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -2905,7 +2907,6 @@
 		BFBF44E709B6828E00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF44E809B6828E00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF44E909B6828E00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF44EA09B6828E00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF44EB09B6828E00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF44ED09B6828E00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -3641,7 +3642,6 @@
 		BFBF488E09B6828E00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF488F09B6828E00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF489009B6828E00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF489109B6828E00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF489209B6828E00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF489309B6828E00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF489409B6828E00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -9526,6 +9526,7 @@
 		BF00C95906F3F43900715191 /* DCMCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCursor.m; sourceTree = "<group>"; };
 		BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCMoveResponseDataHandler.h; path = Networking/DCMCMoveResponseDataHandler.h; sourceTree = "<group>"; };
 		BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCMoveResponseDataHandler.m; path = Networking/DCMCMoveResponseDataHandler.m; sourceTree = "<group>"; };
+		BF025FD509DF8C060056E827 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
 		BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCFindResponse.h; sourceTree = "<group>"; };
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
@@ -12068,7 +12069,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -14743,6 +14744,7 @@
 				BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */,
 				BFBF3D9609B6828800545F5E /* dcmqrcbg.h */,
 				BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */,
+				BF025FD509DF8C060056E827 /* dcmqrcbm.mm */,
 				BFBF3D9809B6828800545F5E /* dcmqrcbm.h */,
 				BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */,
 				BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */,
@@ -24139,7 +24141,6 @@
 				BFBF413D09B6828D00545F5E /* dvsighdl.cc in Sources */,
 				BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
@@ -24293,6 +24294,7 @@
 				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
 				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
 				BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
+				BF025FD609DF8C060056E827 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24739,7 +24741,6 @@
 				BFBF488B09B6828E00545F5E /* dvsighdl.cc in Sources */,
 				BFBF488D09B6828E00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF488F09B6828E00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF489109B6828E00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF489309B6828E00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF489809B6828E00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF489A09B6828E00545F5E /* dcmqrdbs.cc in Sources */,
@@ -24848,6 +24849,7 @@
 				BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				CE61039609DEA0F800A1FA92 /* jdlossls.c in Sources */,
+				BF025FD809DF8C060056E827 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25298,7 +25300,6 @@
 				BFBF44E409B6828E00545F5E /* dvsighdl.cc in Sources */,
 				BFBF44E609B6828E00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF44E809B6828E00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF44EA09B6828E00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF44F109B6828E00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF44F309B6828E00545F5E /* dcmqrdbs.cc in Sources */,
@@ -25406,6 +25407,7 @@
 				BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 				BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893BA09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
+				BF025FD709DF8C060056E827 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
