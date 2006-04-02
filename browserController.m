@@ -5394,7 +5394,6 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :filesAr :volumeData];
 										[viewerController showWindowTransition];
-//										[viewerController showWindow: self];  // Yes, windows will be displayed in TileWindows function !
 										[viewerController startLoadImageThread];
 									}		
 									
@@ -5415,7 +5414,6 @@ static BOOL needToRezoom;
 										ViewerController * viewerController;
 										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
 										[viewerController showWindowTransition];
-//										[viewerController showWindow: self];	// Yes, windows will be displayed in TileWindows function !
 										[viewerController startLoadImageThread];
 									}
 								}
