@@ -7288,8 +7288,11 @@ static BOOL needToRezoom;
 			// Find the DICOM-STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
-			if (!addDICOMDIR )
-				tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
+			if (!addDICOMDIR ) {
+				NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+				[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+				tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+			}
 			else {
 				NSMutableString *name;
 				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
