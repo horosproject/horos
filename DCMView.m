@@ -4657,17 +4657,17 @@ static long scrollMode;
 			}
 		}
 		
+	}		
+	// Draw any additional plugin text information
+	{
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
 		
-		// Draw any additional plugin text information
-		{
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-				[NSNumber numberWithFloat: yRaster++ * stringSize.height], @"yPos", nil];
-				
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-																object: self
-															  userInfo: userInfo];
-		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+															object: self
+														  userInfo: userInfo];
 	}
+	
 	
 	// BOTTOM LEFT
 	
