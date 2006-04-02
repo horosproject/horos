@@ -84,10 +84,10 @@ public:
     , nFailed(0)
     , nWarning(0)
     {
-      origAETitle[0] = '\0';
-      origHostName[0] = '\0';
-      dstAETitle[0] = '\0';
-      ourAETitle[0] = '\0';
+      //origAETitle[0] = '\0';
+      //origHostName[0] = '\0';
+      //dstAETitle[0] = '\0';
+     // ourAETitle[0] = '\0';
     }
 
     /** callback handler called by the DIMSE_storeProvider callback function.

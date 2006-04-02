@@ -2266,7 +2266,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 
         DcmElement* dcelem = moveRequestIdentifiers->getElement(elemIndex);
-
+		
         elem.XTag = dcelem->getTag().getXTag();
         if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
             elem.ValueLength = dcelem->getLength();

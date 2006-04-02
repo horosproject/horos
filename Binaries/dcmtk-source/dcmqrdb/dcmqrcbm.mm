@@ -82,12 +82,16 @@ OFBool DcmQueryRetrieveMoveContext::isVerbose() const
 
 void DcmQueryRetrieveMoveContext::callbackHandler(
 	/* in */ 
-	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
+	OFBool cancelled, 
+	T_DIMSE_C_MoveRQ *request, 
+	DcmDataset *requestIdentifiers, 
+	int responseCount,
 	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,	
+	T_DIMSE_C_MoveRSP *response,
+	 DcmDataset **stDetail,	
 	DcmDataset **responseIdentifiers)
 {
+	printf("DcmQueryRetrieveMoveContext::callbackHandler\n");
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);

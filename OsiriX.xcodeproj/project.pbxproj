@@ -2168,7 +2168,6 @@
 		BFBF414009B6828D00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF414209B6828D00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF414409B6828D00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF414609B6828D00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -2905,7 +2904,6 @@
 		BFBF44E709B6828E00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF44E809B6828E00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF44E909B6828E00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF44EA09B6828E00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF44EB09B6828E00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF44ED09B6828E00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -3641,7 +3639,6 @@
 		BFBF488E09B6828E00545F5E /* dcmqrcbf.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9409B6828700545F5E /* dcmqrcbf.h */; };
 		BFBF488F09B6828E00545F5E /* dcmqrcbg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */; };
 		BFBF489009B6828E00545F5E /* dcmqrcbg.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9609B6828800545F5E /* dcmqrcbg.h */; };
-		BFBF489109B6828E00545F5E /* dcmqrcbm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */; };
 		BFBF489209B6828E00545F5E /* dcmqrcbm.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9809B6828800545F5E /* dcmqrcbm.h */; };
 		BFBF489309B6828E00545F5E /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */; };
 		BFBF489409B6828E00545F5E /* dcmqrcbs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */; };
@@ -3872,6 +3869,9 @@
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
+		BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
+		BFDF1D5609E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
+		BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
 		BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
 		BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
@@ -10709,6 +10709,7 @@
 		BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomCursor.tif; sourceTree = "<group>"; };
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
+		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
 		BFE468980761623400409444 /* DCMAssociation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAssociation.h; path = Networking/DCMAssociation.h; sourceTree = "<group>"; };
 		BFE468990761623400409444 /* DCMAssociation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAssociation.m; path = Networking/DCMAssociation.m; sourceTree = "<group>"; };
 		BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCPListener.h; path = Networking/DCMStoreSCPListener.h; sourceTree = "<group>"; };
@@ -14742,6 +14743,7 @@
 				BFBF3D9509B6828700545F5E /* dcmqrcbg.cc */,
 				BFBF3D9609B6828800545F5E /* dcmqrcbg.h */,
 				BFBF3D9709B6828800545F5E /* dcmqrcbm.cc */,
+				BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */,
 				BFBF3D9809B6828800545F5E /* dcmqrcbm.h */,
 				BFBF3D9909B6828800545F5E /* dcmqrcbs.cc */,
 				BFBF3D9A09B6828800545F5E /* dcmqrcbs.h */,
@@ -24138,7 +24140,6 @@
 				BFBF413D09B6828D00545F5E /* dvsighdl.cc in Sources */,
 				BFBF413F09B6828D00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF414109B6828D00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF414309B6828D00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF414509B6828D00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
@@ -24292,6 +24293,7 @@
 				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
 				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
 				BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
+				BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24738,7 +24740,6 @@
 				BFBF488B09B6828E00545F5E /* dvsighdl.cc in Sources */,
 				BFBF488D09B6828E00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF488F09B6828E00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF489109B6828E00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF489309B6828E00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF489809B6828E00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF489A09B6828E00545F5E /* dcmqrdbs.cc in Sources */,
@@ -24846,6 +24847,7 @@
 				BF4CEBD809CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 				BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
+				BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25296,7 +25298,6 @@
 				BFBF44E409B6828E00545F5E /* dvsighdl.cc in Sources */,
 				BFBF44E609B6828E00545F5E /* dcmqrcbf.cc in Sources */,
 				BFBF44E809B6828E00545F5E /* dcmqrcbg.cc in Sources */,
-				BFBF44EA09B6828E00545F5E /* dcmqrcbm.cc in Sources */,
 				BFBF44EC09B6828E00545F5E /* dcmqrcbs.cc in Sources */,
 				BFBF44F109B6828E00545F5E /* dcmqrdbi.cc in Sources */,
 				BFBF44F309B6828E00545F5E /* dcmqrdbs.cc in Sources */,
@@ -25404,6 +25405,7 @@
 				BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 				BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893BA09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
+				BFDF1D5609E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -105,6 +105,11 @@ extern BrowserController *browserWindow;
 				if (dcelem->getString(ppn).good() && ppn != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"performingPhysician like[cd] %@", [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet]];
 			}
+			else if (key ==  DCM_ModalitiesInStudy) {
+				char *mis;
+				if (dcelem->getString(mis).good() && mis != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+			}
 			
 			else if (key == DCM_StudyDate) {
 				NSLog(@"StudyDate");
@@ -182,8 +187,7 @@ extern BrowserController *browserWindow;
 					if ([values count] == 2){
 						NSNumber *startDate = [NSNumber numberWithInt:[[values objectAtIndex:0] intValue]];
 						NSNumber *endDate = [NSNumber numberWithInt:[[values objectAtIndex:1] intValue]];
-						//NSLog(@"startDate: %@", [startDate description]);
-						//NSLog(@"endDate :%@", [endDate description]);
+
 						//need two predicates for range
 						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"dicomTime >= %@",startDate];
 						
@@ -228,6 +232,12 @@ extern BrowserController *browserWindow;
 				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			}
+			else if (key ==  DCM_Modality) {
+				char *mis;
+				if (dcelem->getString(mis).good() && mis != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"study.modality like[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+			}
+			
 			else if (key == DCM_SeriesDate) {
 				char *aDate;
 				DCMCalendarDate *value = nil;
@@ -453,9 +463,10 @@ extern BrowserController *browserWindow;
 	else
 		dataset ->putAndInsertString(DCM_Modality, NULL);
 		
-	if ([fetchedObject valueForKey:@"id"])
-	
-		dataset ->putAndInsertString(DCM_SeriesNumber, [[fetchedObject valueForKey:@"id"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	if ([fetchedObject valueForKey:@"id"]) {
+		NSNumber *number = [fetchedObject valueForKey:@"id"];
+		dataset ->putAndInsertString(DCM_SeriesNumber, [[number stringValue]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	}
 	else
 		dataset ->putAndInsertString(DCM_SeriesNumber, NULL);
 			
@@ -597,7 +608,10 @@ extern BrowserController *browserWindow;
 	return EC_Normal;
 }
 
-- (OFCondition)nextMoveObject:(DcmDataset *)dataset{
+- (OFCondition)nextMoveObject:(char *)imageFileName{
+	NSString *path;
+	if (path = [moveEnumerator nextObject])
+		imageFileName = (char *)[path cStringUsingEncoding:[NSString defaultCStringEncoding]];
 	return EC_Normal;
 }
 

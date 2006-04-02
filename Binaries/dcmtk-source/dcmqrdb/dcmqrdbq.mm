@@ -669,17 +669,22 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
                 DcmQueryRetrieveDatabaseStatus  *status)
 		
 {
+	dbdebug(1, "nextFindResponse () : start\n") ;
 	OFCondition         cond = EC_Normal;
 	BOOL isComplete;
 	*findResponseIdentifiers = new DcmDataset ;
+	dbdebug(1, "nextFindResponse () : new dataset\n") ;
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
+	dbdebug(1, "nextFindResponse () : next response\n") ;
 	if (isComplete) {
 		*findResponseIdentifiers = NULL ;
         status->setStatus(STATUS_Success);
+		dbdebug(1, "nextFindResponse () : STATUS_Success\n") ;
 		 return (EC_Normal) ;
 	}
 	if ( *findResponseIdentifiers != NULL ) {
 		status->setStatus(STATUS_Pending);
+		dbdebug(1, "nextFindResponse () : STATUS_Pending\n") ;
 		return (EC_Normal) ;
 	}
 	
@@ -705,7 +710,37 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
                 unsigned short  *numberOfRemainingSubOperations,
                 DcmQueryRetrieveDatabaseStatus  *status)
 {
-	return DcmQROsiriXDatabaseError;
+	if ( handle->NumberRemainOperations <= 0 ) {
+        status->setStatus(STATUS_Success);
+        return (EC_Normal) ;
+    }
+	NSLog(@"next Move response");
+	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
+	status->setStatus(STATUS_Success);
+	 /**** Goto the next matching image number  *****/
+	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
+	NSLog(@"Next file: %s", imageFileName);
+	DcmFileFormat fileformat;
+	cond = fileformat.loadFile(imageFileName);
+	
+	if (cond.good()) {
+		const char *sopclass;
+		const char *sopinstance;
+		cond = fileformat.getDataset()->findAndGetString(DCM_SOPClassUID, sopclass, OFFalse);
+		cond = fileformat.getDataset()->findAndGetString(DCM_SOPInstanceUID, sopinstance, OFFalse);
+		strcpy (SOPClassUID, (char *) sopclass) ;
+		strcpy (SOPInstanceUID, (char *) sopinstance) ;
+		
+	}
+
+	//read file to get SOPClass and SOPInstanceUIDs
+	
+	
+	
+	
+	 
+	 return cond;
+	//return DcmQROsiriXDatabaseError;
 }
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
@@ -724,16 +759,18 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     OFCondition         cond = EC_Normal;
     OFBool qrLevelFound = OFFalse;
 
+
+	NSLog(@"start move request");
     /**** Is SOPClassUID supported ?
     ***/
 //we only support study root currently
-     handle->rootLevel = PATIENT_ROOT ;
-	if (strcmp( SOPClassUID, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
+    // handle->rootLevel = PATIENT_ROOT ;
+	if (strcmp(SOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
         handle->rootLevel = STUDY_ROOT ;
 
 	#ifndef NO_GET_SUPPORT
-	    else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = STUDY_ROOT ;
+	//    else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
+    //    handle->rootLevel = STUDY_ROOT ;
 	#endif
 	    else {
         status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
@@ -863,7 +900,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     ***/
 	
 	// Search Core Data here
-	
+	NSLog(@"search core data for move");
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
 	

@@ -163,7 +163,6 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         {
             firstLoop = OFFalse;
             cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
-
             /* did peer release, abort, or do we have a valid message ? */
             if (cond.good())
             {
@@ -179,21 +178,22 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 case DIMSE_C_FIND_RQ:
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
-					
-				/*
+									
                 case DIMSE_C_MOVE_RQ:
+					printf("DIMSE_C_MOVE_RQ\n");
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
-                case DIMSE_C_GET_RQ:
-                    cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
-                    break;
+				
+               // case DIMSE_C_GET_RQ:
+               //     cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
+               //     break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 
                     if (options_.verbose_) {
                         printf("dispatch: late C-CANCEL-RQ, ignoring\n");
                     }
                     break;
-				*/
+				
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
@@ -345,11 +345,14 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
         T_ASC_PresentationContextID presID, DcmQueryRetrieveDatabaseHandle& dbHandle)
 {
     OFCondition cond = EC_Normal;
-    DcmQueryRetrieveMoveContext context(dbHandle, options_, config_, STATUS_Pending, assoc, request->MessageID, request->Priority);
+	//printf("move context\n");
+    DcmQueryRetrieveMoveContext context(dbHandle, options_, NULL, STATUS_Pending, assoc, request->MessageID, request->Priority);
 
     DIC_AE aeTitle;
     aeTitle[0] = '\0';
+	//printf("ASC_getAPTitles\n");
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
+	//printf("context.setOurAETitle\n");
     context.setOurAETitle(aeTitle);
 
     if (options_.verbose_) {

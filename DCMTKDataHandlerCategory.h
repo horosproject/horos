@@ -42,7 +42,7 @@
 - (int)moveMatchFound;
 
 - (OFCondition)nextFindObject:(DcmDataset *)dataset  isComplete:(BOOL *)isComplete;
-- (OFCondition)nextMoveObject:(DcmDataset *)dataset;
+- (OFCondition)nextMoveObject:(char *)imageFileName;
 
  
 @end
