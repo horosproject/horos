@@ -200,10 +200,22 @@
 		 	 
 //	NSLog(@"Axe: %d", axe);
 	long minI, maxI;
-	thickSlab = (thickSlab==0) ? 1 : thickSlab ;
-	minI = sliceNumber-floor((float)thickSlab/2.0);
-	maxI = sliceNumber+ceil((float)thickSlab/2.0);
-	maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
+	
+	if( thickSlab <= 1)
+	{
+		thickSlab = 1;
+		minI = sliceNumber;
+		maxI = minI+1;
+		if( maxI > newTotal-1) NSLog(@"maxI > newTotal-1");
+		maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
+	}
+	else
+	{
+		thickSlab = (thickSlab==0) ? 1 : thickSlab ;
+		minI = sliceNumber-floor((float)thickSlab/2.0);
+		maxI = sliceNumber+ceil((float)thickSlab/2.0);
+		maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
+	}
 	
 //	NSLog(@"newTotal : %d ", newTotal);
 //	NSLog(@"minI : %d , maxI : %d", minI, maxI);
@@ -254,12 +266,6 @@
 			}
 			else curPix = [newPixListY objectAtIndex: stack];
 		}
-		
-//		if( newX != [curPix pwidth]) NSLog( @"aaa?");
-//		if( newY != [curPix pheight]) NSLog( @"aaa?");
-//		
-//		[curPix setPwidth: newX];
-//		[curPix setPheight: newY];
 		
 		[curPix setTot: 0];
 		[curPix setFrameNo: 0];

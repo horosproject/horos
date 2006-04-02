@@ -1062,7 +1062,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		free( (Ptr) blendingTextureName);
 		blendingTextureName = 0L;
 	}
-	if( colorBuff) free( colorBuff);
+	if( colorBuf) free( colorBuf);
+	if( blendingColorBuf) free( blendingColorBuf);
 		
 	if( dcmRoiList == 0L)
 	{
@@ -3245,8 +3246,8 @@ static long scrollMode;
 	else
 	{
 		colorTransfer = NO;
-		if( colorBuff) free(colorBuff);
-		colorBuff = 0L;
+		if( colorBuf) free(colorBuf);
+		colorBuf = 0L;
 		
 		for( i = 0; i < 256; i++)
 		{
@@ -3333,7 +3334,8 @@ static long scrollMode;
 	curRoiList = 0L;
 	blendingMode = 0;
 	display2DPoint = NSMakePoint(0,0);
-	colorBuff = 0L;
+	colorBuf = 0L;
+	blendingColorBuf = 0L;
 	stringID = 0L;
 	mprVector[ 0] = 0;
 	mprVector[ 1] = 0;
@@ -3416,7 +3418,7 @@ static long scrollMode;
 			object: nil];
     
     colorTransfer = NO;
-	colorBuff = 0L;
+	
 	for (i = 0; i < 256; i++)
 	{
 		alphaTable[i] = 0xFF;
@@ -5143,8 +5145,12 @@ static long scrollMode;
 				
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY];
 				
+				if( blendingTextureName)
+					[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY];
+				else
+					NSLog( @"blendingTextureName == 0L");
+					
 				glDisable( GL_BLEND);
 			}
 			
@@ -5989,7 +5995,7 @@ static long scrollMode;
 				}
 			}
 		}
-		else if( colorBuff != 0L)		// A CLUT is applied
+		else if( colorBuf != 0L)		// A CLUT is applied
 		{
 			*spp = 3;
 			*bpp = 8;
@@ -5998,7 +6004,7 @@ static long scrollMode;
 			buf = malloc( i);
 			if( buf)
 			{
-				unsigned char *dst = buf, *src = colorBuff;
+				unsigned char *dst = buf, *src = colorBuf;
 				i = *width * *height;
 				
 				// CONVERT ARGB TO RGB
@@ -6291,8 +6297,10 @@ static long scrollMode;
 	*b = blueTable;
 }
 
-- (GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending textureX:(long*) tX textureY:(long*) tY
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY
 {
+	if( curDCM == 0L) NSLog( @"err curDCM == 0L");
+	
 	if( noScale == YES)
 	{
 		[curDCM changeWLWW :127 : 256];
@@ -6312,7 +6320,7 @@ static long scrollMode;
 	
 	if( [curDCM isRGB] == YES)
 	{
-		if((colorTransfer == YES) | (blending == YES))
+		if((colorTransfer == YES) || (blending == YES))
 		{
 			vImage_Buffer src, dest;
 			
@@ -6387,14 +6395,13 @@ static long scrollMode;
 
 		}
 	}
-	else if( (colorTransfer == YES) | (blending == YES))
+	else if( (colorTransfer == YES) || (blending == YES))
 	{
-		if( colorBuff)
+		if( *colorBufPtr)
 		{
-			free( colorBuff);
-			
+			free( *colorBufPtr);
 		}
-		colorBuff = malloc( [curDCM rowBytes] * [curDCM pheight] * 4);
+		*colorBufPtr = malloc( [curDCM rowBytes] * [curDCM pheight] * 4);
 		
 		vImage_Buffer src, dest;
 		
@@ -6406,7 +6413,7 @@ static long scrollMode;
 		dest.height = [curDCM pheight];
 		dest.width = [curDCM pwidth];
 		dest.rowBytes = [curDCM rowBytes]*4;
-		dest.data = colorBuff;
+		dest.data = *colorBufPtr;
 		
 		vImageConvert_Planar8toARGB8888(&src, &src, &src, &src, &dest, 0);
 		
@@ -6440,7 +6447,7 @@ static long scrollMode;
     *tX = GetTextureNumFromTextureDim (textureWidth, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
     // extract the number of horiz. textures needed to tile image
     *tY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
-
+	
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
 	
     glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
@@ -6461,8 +6468,8 @@ static long scrollMode;
 									offsetY * [curDCM rowBytes] +      //depth
 									offsetX * 4;							//depth
 					}
-					else if( (colorTransfer == YES) | (blending == YES))
-						pBuffer =  colorBuff +			//baseAddr
+					else if( (colorTransfer == YES) || (blending == YES))
+						pBuffer =  *colorBufPtr +			//baseAddr
 									offsetY * [curDCM rowBytes] * 4 +      //depth
 									offsetX * 4;							//depth
 									
@@ -6516,8 +6523,6 @@ static long scrollMode;
     
     glDisable (TEXTRECTMODE);
 	
-	[[self openGLContext] update];
-		
 	return texture;
 }
 
@@ -6608,11 +6613,11 @@ BOOL	lowRes = NO;
     [[self openGLContext] makeCurrentContext];
     [[self openGLContext] update];
 	
-	pTextureName = [self loadTextureIn:pTextureName :NO textureX:&textureX textureY:&textureY];
+	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY];
 	
 	if( blendingView)
 	{
-		blendingTextureName = [blendingView loadTextureIn:blendingTextureName :YES textureX:&blendingTextureX textureY:&blendingTextureY];
+		blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY];
 	}
 }
 

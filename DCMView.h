@@ -83,7 +83,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	float			blendingFactor, blendingFactorStart;
 	BOOL			eraserFlag; // use by the PaletteController to switch between the Brush and the Eraser
 	BOOL			colorTransfer;
-	unsigned char   *colorBuff;
+	unsigned char   *colorBuf, *blendingColorBuf;
 	unsigned char   alphaTable[256], redTable[256], greenTable[256], blueTable[256];
 	float			redFactor, greenFactor, blueFactor;
 	long			blendingMode;
@@ -202,7 +202,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) subtract:(DCMView*) bV;
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
-- (GLuint *) loadTextureIn:(GLuint *) texture :(BOOL) blending textureX:(long*) tX textureY:(long*) tY;
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY;
 - (void) setSubtraction:(long) imID :(NSPoint) offset;
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;
