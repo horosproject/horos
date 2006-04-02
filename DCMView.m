@@ -5014,7 +5014,9 @@ static long scrollMode;
 		
 		if( [curDCM echotime] != 0L &&  [curDCM repetitiontime] != 0L) 
 		{
-			cptr = (char*) [[NSString stringWithFormat:@"TR: %@, TE: %@", [curDCM repetitiontime], [curDCM echotime]] UTF8String];
+			float repetitiontime = [[curDCM repetitiontime] floatValue];
+			float echotime = [[curDCM echotime] floatValue];
+			cptr = (char*) [[NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime] UTF8String];
 			xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
 			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height];
 			yRaster += (stringSize.height + stringSize.height/10);
