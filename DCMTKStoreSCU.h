@@ -21,6 +21,8 @@
 #import <Cocoa/Cocoa.h>
 
 
+
+
 int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 
 
@@ -59,7 +61,7 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 - (void)abort;
 - (void)save:(id)sender;
 
-
-
-
 @end
+
+
+

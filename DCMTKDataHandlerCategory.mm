@@ -53,7 +53,7 @@ extern BrowserController *browserWindow;
 	else
 		compoundPredicate = [NSPredicate predicateWithValue:YES];
 		
-	NSLog(@"charset %@", specificCharacterSet);
+	//NSLog(@"charset %@", specificCharacterSet);
 		
 	
 	int elemCount = (int)(dataset->card());
@@ -112,14 +112,14 @@ extern BrowserController *browserWindow;
 			}
 			
 			else if (key == DCM_StudyDate) {
-				NSLog(@"StudyDate");
+				//NSLog(@"StudyDate");
 				char *aDate;
 				DCMCalendarDate *value = nil;
 				if (dcelem->getString(aDate).good() && aDate != NULL) {
 					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
 					value = [DCMCalendarDate dicomDate:dateString];
 				}
-				NSLog(@"StudyDate decoded");
+				//NSLog(@"StudyDate decoded");
 				if (!value) {
 					predicate = nil;
 				}
@@ -143,8 +143,7 @@ extern BrowserController *browserWindow;
 					if ([values count] == 2){
 						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
 						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-						//NSLog(@"startDate: %@", [startDate description]);
-						//NSLog(@"endDate :%@", [endDate description]);
+
 						//need two predicates for range
 						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\")", [self startOfDay:startDate]];
 						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%f, \"NSDate\")",[self endOfDay:endDate]];
@@ -268,8 +267,7 @@ extern BrowserController *browserWindow;
 					if ([values count] == 2){
 						DCMCalendarDate *startDate = [DCMCalendarDate dicomDate:[values objectAtIndex:0]];
 						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
-						//NSLog(@"startDate: %@", [startDate description]);
-						//NSLog(@"endDate :%@", [endDate description]);
+
 						//need two predicates for range
 						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\")", [self startOfDay:startDate]];
 						
@@ -338,7 +336,7 @@ extern BrowserController *browserWindow;
 		}
 	}
 
-	NSLog(@"predicate: %@", [compoundPredicate description]);
+	//NSLog(@"predicate: %@", [compoundPredicate description]);
 	return compoundPredicate;
 
 		
@@ -417,7 +415,7 @@ extern BrowserController *browserWindow;
 		int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
 		char value[10];
 		sprintf(value, "%d", numberInstances);
-		NSLog(@"number files: %d", numberInstances);
+		//NSLog(@"number files: %d", numberInstances);
 		dataset ->putAndInsertString(DCM_NumberOfStudyRelatedInstances, value);
 	}
 		
@@ -425,7 +423,7 @@ extern BrowserController *browserWindow;
 		int numberInstances = [[fetchedObject valueForKey:@"series"] count];
 		char value[10];
 		sprintf(value, "%d", numberInstances);
-		NSLog(@"number series: %d", numberInstances);
+		//NSLog(@"number series: %d", numberInstances);
 		dataset ->putAndInsertString(DCM_NumberOfStudyRelatedSeries, value);
 	}
 		
@@ -478,7 +476,7 @@ extern BrowserController *browserWindow;
 		int numberInstances = [[fetchedObject valueForKey:@"noFiles"] intValue];
 		char value[10];
 		sprintf(value, "%d", numberInstances);
-		NSLog(@"number series: %d", numberInstances);
+		//NSLog(@"number series: %d", numberInstances);
 		dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
 
 	}
@@ -528,14 +526,15 @@ extern BrowserController *browserWindow;
 		cond = EC_Normal;
 	}
 		
-	findEnumerator = [findArray objectEnumerator];
+	findEnumerator = [[findArray objectEnumerator] retain];;
 	
 	return cond;
 	 
 }
 
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset{
-		NSManagedObjectModel *model = [browserWindow managedObjectModel];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSManagedObjectModel *model = [browserWindow managedObjectModel];
 	NSError *error = 0L;
 	NSEntityDescription *entity;
 	NSPredicate *predicate = [self predicateForDataset:dataset];
@@ -559,7 +558,7 @@ extern BrowserController *browserWindow;
 	error = 0L;
 				
 	NSArray *array = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
-	
+	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	OFCondition cond;
 	
 	if (error) {
@@ -569,17 +568,43 @@ extern BrowserController *browserWindow;
 	else {
 		NSEnumerator *enumerator = [array objectEnumerator];
 		id moveEntity;
+		//create set
 		NSMutableSet *moveSet = [NSMutableSet set];
 		while (moveEntity = [enumerator nextObject])
 			[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+		//array from set
+		NSArray *tempMoveArray = [moveSet allObjects];
 		
-		moveArray = [[moveSet allObjects] retain];
-		NSLog(@"Move array: %@", [moveArray description]);
+		/*
+		create temp folder for Move paths. 
+		Create symbolic links. 
+		Will allow us to convert the sytax on copies if necessary
+		*/
+		//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
+		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
+		
+		NSFileManager *fileManager = [NSFileManager defaultManager];
+		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
+		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
+			NSLog(@"created temp Folder: %@", tempMoveFolder);
+		
+		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
+		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
+		NSString *path;
+		while (path = [tempEnumerator nextObject]) {
+			NSString *lastPath = [path lastPathComponent];
+			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
+			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
+			[paths addObject:newPath];
+		}
 		cond = EC_Normal;
 	}
-		
-	moveEnumerator = [moveArray objectEnumerator];
 	
+	moveArray = [paths copy];
+	[paths release];	
+	//NSLog(@"Move array: %@", [moveArray description]);
+	moveEnumerator = [[moveArray objectEnumerator] retain];
+	[pool release];
 	return cond;
 }
 
@@ -610,9 +635,15 @@ extern BrowserController *browserWindow;
 
 - (OFCondition)nextMoveObject:(char *)imageFileName{
 	NSString *path;
-	if (path = [moveEnumerator nextObject])
+	//NSLog(@"nextMOveObject: %@", [moveEnumerator description]);
+	if (path = [moveEnumerator nextObject]) {
+		//NSLog(@"move path: %@", path);
 		strcpy(imageFileName, [path cStringUsingEncoding:[NSString defaultCStringEncoding]]);
-		//imageFileName = (char *)[path cStringUsingEncoding:[NSString defaultCStringEncoding]];
+	}
+	else {
+		//NSLog(@"No path");
+		return EC_IllegalParameter;
+	}
 	return EC_Normal;
 }
 

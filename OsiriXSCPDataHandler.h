@@ -37,6 +37,7 @@
 	NSArray *moveArray;
 	NSEnumerator *findEnumerator;
 	NSEnumerator *moveEnumerator;
+	NSString *tempMoveFolder;
 
 }
 

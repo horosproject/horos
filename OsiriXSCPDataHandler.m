@@ -41,6 +41,11 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	[findArray release];
 	[moveArray release];
 	[logEntry setValue:@"Complete" forKey:@"message"];
+	if (tempMoveFolder && [[NSFileManager defaultManager] fileExistsAtPath:tempMoveFolder])
+		[[NSFileManager defaultManager] removeFileAtPath:tempMoveFolder handler:nil];
+	[tempMoveFolder release];
+	[findEnumerator release];
+	[moveEnumerator release];
 	[super dealloc];
 }
 

@@ -141,10 +141,10 @@ void errmsg(const char* msg, ...)
 	options.verbose_= 2;
 	
 	//debug
-	options.debug_ = OFTrue;
-	DUL_Debug(OFTrue);
-	DIMSE_debug(OFTrue);
-	SetDebugLevel(3);
+//	options.debug_ = OFTrue;
+//	DUL_Debug(OFTrue);
+//	DIMSE_debug(OFTrue);
+//	SetDebugLevel(3);
 	
 	//no restrictions on moves
 	options.restrictMoveToSameAE_ = OFFalse;

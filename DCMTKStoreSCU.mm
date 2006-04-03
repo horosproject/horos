@@ -522,7 +522,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
 	//DcmFileFormat fileformat;
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	//hopefully dcmtk willsupport jpeg2000 compressio and decompression in the future
+	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
 	if (filexfer.getXferID() == EXS_JPEG2000LosslessOnly || filexfer.getXferID() == EXS_JPEG2000) {
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
@@ -915,7 +915,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@", _callingAET]; 
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	
-	//delete if necessary and create temp floder. Allows us to compress and deompress files. Wish we could do on the fly
+	//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
 	if ([fileManager createDirectoryAtPath:tempFolder attributes:nil])
@@ -1213,16 +1213,16 @@ NS_DURING
 
 #ifdef ON_THE_FLY_COMPRESSION
     // register global JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs();
+   // DJDecoderRegistration::registerCodecs();
 
     // register global JPEG compression codecs
-    DJEncoderRegistration::registerCodecs();
+  //  DJEncoderRegistration::registerCodecs();
 
     // register RLE compression codec
-    DcmRLEEncoderRegistration::registerCodecs();
+ //   DcmRLEEncoderRegistration::registerCodecs();
 
     // register RLE decompression codec
-    DcmRLEDecoderRegistration::registerCodecs();
+//    DcmRLEDecoderRegistration::registerCodecs();
 #endif
 
     /* make sure data dictionary is loaded */
@@ -1510,12 +1510,12 @@ NS_ENDHANDLER
 
 #ifdef ON_THE_FLY_COMPRESSION
     // deregister JPEG codecs
-    DJDecoderRegistration::cleanup();
-    DJEncoderRegistration::cleanup();
+   // DJDecoderRegistration::cleanup();
+   // DJEncoderRegistration::cleanup();
 
     // deregister RLE codecs
-    DcmRLEDecoderRegistration::cleanup();
-    DcmRLEEncoderRegistration::cleanup();
+  //  DcmRLEDecoderRegistration::cleanup();
+  //  DcmRLEEncoderRegistration::cleanup();
 #endif
 
 #ifdef DEBUG
