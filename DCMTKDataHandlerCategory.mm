@@ -574,7 +574,7 @@ extern BrowserController *browserWindow;
 			[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
 		
 		moveArray = [[moveSet allObjects] retain];
-		
+		NSLog(@"Move array: %@", [moveArray description]);
 		cond = EC_Normal;
 	}
 		
@@ -611,7 +611,8 @@ extern BrowserController *browserWindow;
 - (OFCondition)nextMoveObject:(char *)imageFileName{
 	NSString *path;
 	if (path = [moveEnumerator nextObject])
-		imageFileName = (char *)[path cStringUsingEncoding:[NSString defaultCStringEncoding]];
+		strcpy(imageFileName, [path cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+		//imageFileName = (char *)[path cStringUsingEncoding:[NSString defaultCStringEncoding]];
 	return EC_Normal;
 }
 

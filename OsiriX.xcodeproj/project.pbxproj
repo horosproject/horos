@@ -1316,6 +1316,12 @@
 		BF1833D409AD833D0046C295 /* FlipVertical.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833D009AD833D0046C295 /* FlipVertical.tif */; };
 		BF1833D509AD833D0046C295 /* FlipHorizontal.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */; };
 		BF1833D609AD833D0046C295 /* FlipVertical.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833D009AD833D0046C295 /* FlipVertical.tif */; };
+		BF18A85909E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */; };
+		BF18A85A09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
+		BF18A85B09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */; };
+		BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
+		BF18A85D09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */; };
+		BF18A85E09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */; };
 		BF19256B0762958D009C6832 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF19256C0762958D009C6832 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */; };
 		BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -9543,6 +9549,8 @@
 		BF17E990088768CA00ECF621 /* LogTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LogTableView.m; sourceTree = "<group>"; };
 		BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipHorizontal.tif; sourceTree = "<group>"; };
 		BF1833D009AD833D0046C295 /* FlipVertical.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipVertical.tif; sourceTree = "<group>"; };
+		BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppControllerDCMTKCategory.h; sourceTree = "<group>"; };
+		BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppControllerDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF1925690762958D009C6832 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMAbstractSyntaxUID.h; path = Networking/DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
 		BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAbstractSyntaxUID.m; path = Networking/DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
@@ -12068,7 +12076,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -13508,6 +13516,8 @@
 				CEE73FC808F44724002A395F /* FVTiff.m */,
 				AB142DFC05600D76008461A0 /* AppController.h */,
 				AB142DFD05600D76008461A0 /* AppController.m */,
+				BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */,
+				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
 				7E569397065007D6001A9762 /* SmartWindowController.h */,
@@ -18428,6 +18438,7 @@
 				BF3F21C909CB8773002736A5 /* diutils.h in Headers */,
 				BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */,
 				BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
+				BF18A85B09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20232,6 +20243,7 @@
 				BF9893B709D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
 				CE61039B09DEA15F00A1FA92 /* jchuff8.h in Headers */,
 				CE61039C09DEA18B00A1FA92 /* jmemsys8.h in Headers */,
+				BF18A85D09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22041,6 +22053,7 @@
 				BF8E5AC209CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */,
 				BFF9D57C09CDCA5600B3B940 /* dcmqrdbq.h in Headers */,
 				BF9893B909D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
+				BF18A85909E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24294,6 +24307,7 @@
 				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
 				BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
+				BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24848,6 +24862,7 @@
 				BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
+				BF18A85E09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25406,6 +25421,7 @@
 				BFF9D57D09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */,
 				BF9893BA09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5609E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
+				BF18A85A09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

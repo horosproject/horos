@@ -558,7 +558,9 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		}	
 		
 		*dstPort = [port intValue];
-		dstPeer = (char *)[hostname cStringUsingEncoding:NSISOLatin1StringEncoding];
+		strcpy(dstPeer, [hostname cStringUsingEncoding:NSISOLatin1StringEncoding]);
+		//dstPeer = (char *)[hostname cStringUsingEncoding:NSISOLatin1StringEncoding];
+		NSLog(@"dstPeer: %s", dstPeer);
 	}
 	else
 		return OFFalse;

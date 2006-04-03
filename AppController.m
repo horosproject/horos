@@ -61,6 +61,8 @@ MODIFICATION HISTORY
 #import "NetworkListener.h"
 #import "DCMTKQueryRetrieveSCP.h"
 
+#import "AppControllerDCMTKCategory.h"
+
 #define BUILTIN_DCMTK YES
 
 ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
@@ -878,6 +880,7 @@ NSRect screenFrame()
     quitting = YES;
     [theTask interrupt];
 	[theTask release];
+	[self destroyDCMTK];
 }
 
 
@@ -1721,7 +1724,7 @@ static BOOL initialized = NO;
 	verboseUpdateCheck = NO;
 	
 	appController = self;
-	
+	[self initDCMTK];
 	[self restartSTORESCP];
 	
 //    // RUN DICOM LISTENER

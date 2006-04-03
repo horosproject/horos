@@ -714,9 +714,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
         status->setStatus(STATUS_Success);
         return (EC_Normal) ;
     }
-	NSLog(@"next Move response");
+	
 	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
-	status->setStatus(STATUS_Success);
+	NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
+	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
 	NSLog(@"Next file: %s", imageFileName);
@@ -903,6 +904,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	NSLog(@"search core data for move");
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
+	NSLog(@"NumberRemainOperations: %d", [handle->dataHandler moveMatchFound]);
 	
 	 /**** If an error occured in Matching function
     ****    return a failed status
