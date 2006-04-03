@@ -6204,7 +6204,7 @@ int i,j,l;
 	int x, i, j;
 	BOOL found;
 	
-	NSMutableArray *names = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray *names = [NSMutableArray array];
 	
 	for(x=0; x < [pixList[curMovieIndex] count]; x++)
 	{

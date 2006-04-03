@@ -2483,9 +2483,9 @@ long        i;
 		[sort release];
 		NSArray *sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		
-		
 //		if([sortedArray count] == 1 && [[[sortedArray objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
 //			return [NSArray arrayWithObject:item];
+
 		return sortedArray;
 	}
 	
@@ -2644,7 +2644,7 @@ long        i;
 			NSMutableArray	*imagePaths = [NSMutableArray arrayWithCapacity: 0];
 			
 			[matrixViewArray release];
-				
+			
 			if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
 					[[[item valueForKey:@"images"] allObjects] count] == 1 && 
 					[[[[[item valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)

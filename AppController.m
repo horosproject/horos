@@ -311,9 +311,12 @@ NSString* convertDICOM( NSString *inputfile)
 	NSLog(@"IN");
 	NSTask *convertTask = [[NSTask alloc] init];
     
-    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdjpeg"]];
-    
+//    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdjpeg"]];
+
+	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dcmdjpeg"]]; 
+	
     [theArguments addObject:inputfile];
     [theArguments addObject:outputfile];
 	
@@ -339,6 +342,7 @@ NSString* convertDICOM( NSString *inputfile)
 		
 	NS_HANDLER
 		NSLog( [localException name]);
+		converting = NO;
 	NS_ENDHANDLER
 	
 	return outputfile ;

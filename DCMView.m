@@ -541,6 +541,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				[roi setRoiFont: labelFontListGL :self];
 				
 				[roiList addObject: roi];
+				
+				[roi release];
 								
 			}
 		}
@@ -564,6 +566,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			[roi setRoiFont: labelFontListGL :self];
 			
 			[curRoiList addObject: roi];
+			[roi release];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
 			
@@ -1542,7 +1545,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     {
 		[self mouseMoved: event];	// Update some variables...
 		
-        if( curImage != startImage)
+        if( curImage != startImage && (matrix && browserWindow))
         {
             NSButtonCell *cell = [matrix cellAtRow:curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
             [cell performClick:0L];
