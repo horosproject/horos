@@ -1911,6 +1911,16 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	}
 }
 
+- (NSMutableArray*) roi2DPointsArray
+{
+	return roi2DPointsArray;
+}
+
+- (NSMutableArray*) sliceNumber2DPointsArray
+{
+	return sliceNumber2DPointsArray;
+}
+
 // contextual menu
 - (void)createContextualMenu{
 	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];

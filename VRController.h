@@ -130,6 +130,8 @@
 - (void) remove3DPoint: (NSNotification*) note;
 - (void) add2DPoint: (float) x : (float) y : (float) z;
 - (void) remove2DPoint: (float) x : (float) y : (float) z;
+- (NSMutableArray*) roi2DPointsArray;
+- (NSMutableArray*) sliceNumber2DPointsArray;
 - (IBAction) undo:(id) sender;
 - (void) sendMail:(id) sender;
 - (void) exportJPEG:(id) sender;

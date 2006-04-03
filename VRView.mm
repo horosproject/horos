@@ -1828,7 +1828,7 @@ public:
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
-	if( [theEvent clickCount] > 1)
+	if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
 	{
 		long	pix[ 3];
 		float	pos[ 3], value;
@@ -2390,6 +2390,21 @@ public:
 																[point3DInfoPanel frame].size.height)
 										display:YES animate:YES];
 					[point3DInfoPanel orderFront:self];
+					
+					
+					float pos[3];
+					[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:pos];
+					
+					int pix[3];
+					pix[0] = (int)[[[[[controller roi2DPointsArray] objectAtIndex:[self selected3DPointIndex]] points] objectAtIndex:0] x];
+					pix[1] = (int)[[[[[controller roi2DPointsArray] objectAtIndex:[self selected3DPointIndex]] points] objectAtIndex:0] y];
+					pix[2] = [[[controller sliceNumber2DPointsArray] objectAtIndex:[self selected3DPointIndex]] intValue];
+					
+					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
+																						[NSNumber numberWithFloat: pos[0]], @"xmm", [NSNumber numberWithFloat: pos[1]], @"ymm", [NSNumber numberWithFloat: pos[2]], @"zmm",
+																						0L];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+					
 //					NSLog(@"mouseLocationOnScreen : %f, %f", [point3DInfoPanel frame].origin.x, [point3DInfoPanel frame].origin.y);
 //					NSLog(@"point3DInfoPanel position : %f, %f", mouseLocationOnScreen.x, mouseLocationOnScreen.y);
 //					NSLog(@"dble click on a Point in VR view");
