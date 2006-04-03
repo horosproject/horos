@@ -3195,11 +3195,11 @@ static ViewerController *draggedController = 0L;
 	
 	NSLog(@"LOADING: All images loaded");
 	
-	if( stopThreadLoadImage == NO)
-		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
-	
 	ThreadLoadImage = NO;
 	[ThreadLoadImageLock unlock];
+	
+	if( stopThreadLoadImage == NO)
+		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
 	
     [pool release];
 }
