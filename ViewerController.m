@@ -890,6 +890,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	speedometer = 0;
 	matrixPreviewBuilt = NO;
 	
+	ThreadLoadImageLock = [[NSLock alloc] init];
+	
 	return self;
 }
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame{
@@ -953,7 +955,8 @@ int sortROIByName(id roi1, id roi2, void *context)
     }
 	
 	stopThreadLoadImage = YES;
-	while( ThreadLoadImage == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};	//{[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];}
+	[ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
@@ -1409,6 +1412,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[thickSlab release];
 	
 	[curvedController release];
+	
+	[ThreadLoadImageLock release];
 	
     [super dealloc];
 }
@@ -2876,7 +2881,8 @@ static ViewerController *draggedController = 0L;
 	// Release previous data
 	
 	stopThreadLoadImage = YES;
-	while( ThreadLoadImage == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};	//{[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];}
+	[ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
 	
 	long index2compare;
 	
@@ -3134,9 +3140,10 @@ static ViewerController *draggedController = 0L;
     long				i, x;
 	BOOL				isPET = NO;
 	
-	NSLog(@"LOADING: Start loading images");
+	[ThreadLoadImageLock lock];
+	ThreadLoadImage = YES;
 	
-    ThreadLoadImage = YES;
+	NSLog(@"LOADING: Start loading images");
 	
 	loadingPercentage = 0;
 	
@@ -3194,12 +3201,13 @@ static ViewerController *draggedController = 0L;
 	
 	loadingPercentage = 1;
 	
-	ThreadLoadImage = NO;
-//	someoneIsLoading = NO;
 	NSLog(@"LOADING: All images loaded");
 	
 	if( stopThreadLoadImage == NO)
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
+	
+	ThreadLoadImage = NO;
+	[ThreadLoadImageLock unlock];
 	
     [pool release];
 }
@@ -9740,7 +9748,8 @@ long i;
 	{
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
-		while( ThreadLoadImage == YES) {[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];};	//{[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];}
+		[ThreadLoadImageLock lock];
+		[ThreadLoadImageLock unlock];
 		[splash close];
 		[splash release];
 	}

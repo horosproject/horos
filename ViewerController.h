@@ -36,7 +36,8 @@
 
 @interface ViewerController : NSWindowController  <Schedulable>
 {
-
+	NSLock	*ThreadLoadImageLock;
+	
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;
 
