@@ -5262,6 +5262,15 @@ static BOOL needToRezoom;
 		
 		if( subSampling != 1)
 		{
+			NSArray	*winList = [NSApp windows];
+			for( i = 0; i < [winList count]; i++)
+			{
+				if([[winList objectAtIndex:i] isMiniaturized])
+				{
+					[[winList objectAtIndex:i] deminiaturize:self];
+				}
+			}
+					
 			int result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", 0L), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 
@@ -5278,6 +5287,15 @@ static BOOL needToRezoom;
 				fVolumePtr = malloc(mem * sizeof(float));
 				if( fVolumePtr == 0L)
 				{
+					NSArray	*winList = [NSApp windows];
+					for( i = 0; i < [winList count]; i++)
+					{
+						if([[winList objectAtIndex:i] isMiniaturized])
+						{
+							[[winList objectAtIndex:i] deminiaturize:self];
+						}
+					}
+					
 					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
 					notEnoughMemory = YES;
 				}

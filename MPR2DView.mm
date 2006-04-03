@@ -1719,7 +1719,12 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 	for( uu = 0; uu < thickSlabCount; uu++)
 	{		
 		tempIm = rotate->GetOutput();
+		//rotate->Update();
 		tempIm->Update();
+		
+		double		dddd[ 3];
+		rotate->GetOutputOrigin( dddd);
+		NSLog(@"Origin: %f %f %f", dddd[ 0], dddd[ 1], dddd[ 2]);
 		
 		if( tempIm)
 		{
@@ -1737,9 +1742,8 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 			
 			tempIm->GetSpacing( space);
 			tempIm->GetOrigin( origin);
-	//		NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
-	//		rotate->GetOutputOrigin( origin);
-	//		NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+			
 			
 			width = imExtent[ 1]-imExtent[ 0]+1;
 			height = imExtent[ 3]-imExtent[ 2]+1;
@@ -1894,6 +1898,12 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 				//	newOrigin[0] = temp[ 0];// - newOrigin[0];
 				//	newOrigin[1] = temp[ 1];// - newOrigin[1];
 				//	newOrigin[2] = temp[ 2];// - newOrigin[2];
+				
+//				newOrigin[0] = origin[0] * vectors[0] + origin[1] * vectors[1] + origin[2]*vectors[2];
+//				newOrigin[1] = origin[0] * vectors[3] + origin[1] * vectors[4] + origin[2]*vectors[5];
+//				newOrigin[2] = origin[0] * vectors[6] + origin[1] * vectors[7] + origin[2]*vectors[8];
+				
+				
 					[(DCMPix*)[finalPixList objectAtIndex:0] setOrigin: newOrigin];
 				}
 
@@ -2257,7 +2267,7 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 	reader->SetDataOrigin(  ([firstObject originX] ) * vectors[0] + ([firstObject originY]) * vectors[1] + ([firstObject originZ] )*vectors[2],
 							([firstObject originX] ) * vectors[3] + ([firstObject originY]) * vectors[4] + ([firstObject originZ] )*vectors[5],
 							([firstObject originX] ) * vectors[6] + ([firstObject originY]) * vectors[7] + ([firstObject originZ] )*vectors[8]);
-//	reader->SetDataOrigin(  [firstObject originX],[firstObject originY],[firstObject originZ]);
+	//reader->SetDataOrigin(  [firstObject originX],[firstObject originY],[firstObject originZ]);
 	reader->SetDataExtentToWholeExtent();
 	reader->SetDataScalarTypeToFloat();
 	reader->SetImportVoidPointer(data);
@@ -2284,7 +2294,7 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 	rotate->SetOutputDimensionality( 2);
 	rotate->SetBackgroundLevel( -1024);
 	rotate->SetOutputExtent( 0, FOV, 0, FOV, 0, 0);
-	
+
 	// PERPENDICULAR RESLICE
 	
 	rotatePerpendicular = vtkImageReslice::New();
