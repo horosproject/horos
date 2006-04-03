@@ -21,8 +21,8 @@
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
-static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add";
-static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus";
+static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
+static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 
 @implementation XMLController
 

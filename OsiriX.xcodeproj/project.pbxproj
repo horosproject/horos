@@ -7614,6 +7614,12 @@
 		CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
 		CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
+		CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
+		CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
+		CE5D33B709E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
+		CE5D33B809E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
+		CE5D33B909E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
+		CE5D33BA09E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
 		CE5EABC50935E702006D85DD /* UCLA.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBA0935E702006D85DD /* UCLA.plist */; };
 		CE5EABC60935E702006D85DD /* Stern.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBB0935E702006D85DD /* Stern.plist */; };
 		CE5EABC70935E702006D85DD /* Ratio.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABBC0935E702006D85DD /* Ratio.plist */; };
@@ -11982,6 +11988,8 @@
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tiff; sourceTree = "<group>"; };
+		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
+		CE5D33B409E1C26400CC6884 /* minus-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "minus-large.tif"; sourceTree = "<group>"; };
 		CE5EABBA0935E702006D85DD /* UCLA.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = UCLA.plist; sourceTree = "<group>"; };
 		CE5EABBB0935E702006D85DD /* Stern.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Stern.plist; sourceTree = "<group>"; };
 		CE5EABBC0935E702006D85DD /* Ratio.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Ratio.plist; sourceTree = "<group>"; };
@@ -13356,6 +13364,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CE5D33B309E1C26400CC6884 /* add-large.tif */,
+				CE5D33B409E1C26400CC6884 /* minus-large.tif */,
 				A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */,
 				BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */,
 				BF1833D009AD833D0046C295 /* FlipVertical.tif */,
@@ -22882,6 +22892,8 @@
 				3A2D126809BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9C09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 				CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */,
+				CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */,
+				CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23151,6 +23163,8 @@
 				3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9E09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 				CE69601F09CAB75800EFFDEF /* VRPanel.nib in Resources */,
+				CE5D33B709E1C26400CC6884 /* add-large.tif in Resources */,
+				CE5D33B809E1C26400CC6884 /* minus-large.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23420,6 +23434,8 @@
 				3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */,
 				A9C63A9D09BD7C5D00E312AE /* cerveau_icon.jpg in Resources */,
 				CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */,
+				CE5D33B909E1C26400CC6884 /* add-large.tif in Resources */,
+				CE5D33BA09E1C26400CC6884 /* minus-large.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
