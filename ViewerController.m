@@ -4654,8 +4654,8 @@ NSMutableArray		*array;
 	
 	NSLog( @"Blending Activated!");
 	
-	[self checkEverythingLoaded];
-	[bC checkEverythingLoaded];
+//	[self checkEverythingLoaded];
+//	[bC checkEverythingLoaded];
 	
 	[imageView sendSyncMessage:0];
 	
