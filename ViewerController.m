@@ -1787,8 +1787,8 @@ static ViewerController *draggedController = 0L;
 										}
 										[blendingPlugins setMenu: fusionPluginsMenu];
 										
-										[self checkEverythingLoaded];
-										[draggedController checkEverythingLoaded];
+										//[self checkEverythingLoaded];
+										//[draggedController checkEverythingLoaded];
 										
 										// What type of blending?
 										[NSApp beginSheet: blendingTypeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
