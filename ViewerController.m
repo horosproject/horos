@@ -3139,12 +3139,6 @@ static ViewerController *draggedController = 0L;
 	
 	loadingPercentage = 0;
 	
-//	while(someoneIsLoading)
-//	{
-//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-//	}
-//    someoneIsLoading = YES;
-	
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
 	float maxValueOfSeries = 0;
@@ -3183,6 +3177,9 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
+	ThreadLoadImage = NO;
+	[ThreadLoadImageLock unlock];
+	
 	if( isPET)
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
@@ -3194,9 +3191,6 @@ static ViewerController *draggedController = 0L;
 	loadingPercentage = 1;
 	
 	NSLog(@"LOADING: All images loaded");
-	
-	ThreadLoadImage = NO;
-	[ThreadLoadImageLock unlock];
 	
 	if( stopThreadLoadImage == NO)
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
@@ -6616,7 +6610,12 @@ int i,j,l;
 	
 	if( [sender tag] == 1)
 	{
+		BOOL savedDefault = [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"];
+		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ConvertPETtoSUVautomatically"];
+		
 		if( [[imageView curDCM] SUVConverted]) [self revertSeries:self];
+		
+		[[NSUserDefaults standardUserDefaults] setBool:savedDefault forKey:@"ConvertPETtoSUVautomatically"];
 		
 		for( y = 0; y < maxMovieIndex; y++)
 		{
