@@ -1767,28 +1767,18 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	{
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
 		DCMPix *secondDCMPix = [[viewer2D pixList] objectAtIndex: 1];
-		// compute 2D Coordinates
-		float dc[3], sc[3];
-		dc[0] = x;
-		dc[1] = y;
-		dc[2] = z;
-		[view convert3Dto2Dpoint:dc :sc];
-		
-		sc[0] /= [self factor];
-		sc[1] /= [self factor];
-		sc[2] /= [self factor];
 		
 		// find the slice where we want to add the point
 		float sliceInterval = [secondDCMPix sliceLocation] - [firstDCMPix sliceLocation];
-		long sliceNumber = (long) ( sc[2]+0.5 );
+		long sliceNumber = (long) (z+0.5);
 		
 		if (sliceNumber>=0 && sliceNumber<[[viewer2D pixList] count])
 		{
 			// Create the new 2D Point ROI
 			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :NSMakePoint( [firstDCMPix originX], [firstDCMPix originY])];
 			NSRect irect;
-			irect.origin.x = sc[0];
-			irect.origin.y = sc[1];
+			irect.origin.x = x;
+			irect.origin.y = y;
 			irect.size.width = irect.size.height = 0;
 			[new2DPointROI setROIRect:irect];
 			[[viewer2D imageView] roiSet:new2DPointROI];

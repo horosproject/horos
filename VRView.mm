@@ -5129,11 +5129,16 @@ public:
 {
 	long	pix[ 3];
 	float	pos[ 3], value;
-	
+
 	if( [self get3DPixelUnder2DPositionX:x Y:y pixel:pix position:pos value:&value])
 	{
 		[self add3DPoint: pos[0] : pos[1] : pos[2]];
-		[controller add2DPoint: pos[0] : pos[1] : pos[2]];
+
+		long sliceNo;
+		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
+		else sliceNo = [pixList count] -1 -pix[ 2];
+
+		[controller add2DPoint: pix[0] : pix[1] : sliceNo];
 	}
 }
 
