@@ -18,9 +18,9 @@
 #import "dicomFile.h"
 #import <OsiriX/DCMObject.h>
 
-static NSString* 	XMLToolbarIdentifier				= @"XML Toolbar Identifier";
-static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
-static NSString*	ExportTextToolbarItemIdentifier 	= @"ExportText";
+static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
+static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
+static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
 static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add";
 static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus";
 
@@ -299,6 +299,8 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus";
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	ExportToolbarItemIdentifier, 
 										ExportTextToolbarItemIdentifier,
+										ExpandAllItemsToolbarItemIdentifier,
+										CollapseAllItemsToolbarItemIdentifier,
 										nil];
 }
 

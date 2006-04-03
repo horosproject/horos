@@ -9123,6 +9123,7 @@ int i,j,l;
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
@@ -9164,6 +9165,7 @@ int i,j,l;
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[viewer setWLWW:iwl :iww];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
@@ -9255,6 +9257,7 @@ int i,j,l;
 					[viewer showWindow:self];
 					[[viewer window] makeKeyAndOrderFront:self];
 					[[viewer window] display];
+					[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 				}
 			}
 		}
@@ -9324,6 +9327,7 @@ int i,j,l;
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
@@ -9353,6 +9357,7 @@ int i,j,l;
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[viewer ChangeSettings:self];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
@@ -9539,6 +9544,7 @@ long i;
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
 			[viewer showWindow:self];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
@@ -9598,7 +9604,7 @@ long i;
 				[[pcviewer CTController] setWLWW:iwl :iww];
 				[[blendingController imageView] getWLWW:&iwl :&iww];
 				[[pcviewer PETController] setWLWW:iwl :iww];
-
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
 //  The following methods are NOT defined in their receivers!				
 //				[[pcviewer CTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
@@ -9621,6 +9627,7 @@ long i;
 				float   iwl, iww;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 //				[[viewer controller] setCurWLWWMenu:curWLWWMenu];
 				
 
@@ -9669,6 +9676,7 @@ long i;
 			//[viewer setCurWLWWMenu:curWLWWMenu];
 			
 			[viewer showWindow:self];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
 	}
 }
