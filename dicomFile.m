@@ -1688,11 +1688,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					}
 				}
 				
-				[dicomElements setObject:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:origin[0]],
-																	[NSNumber numberWithFloat:origin[1]],
-																	[NSNumber numberWithFloat:origin[2]],
-																	0L] forKey:@"origin"];
-				
 				orientation[ 0] = 1;	orientation[ 1] = 0;		orientation[ 2] = 0;
 				orientation[ 3] = 0;	orientation[ 4] = 1;		orientation[ 5] = 0;
 				
@@ -1714,37 +1709,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 				orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
 				
-				[dicomElements setObject:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:orientation[0]],
-																	[NSNumber numberWithFloat:orientation[1]],
-																	[NSNumber numberWithFloat:orientation[2]],
-																	[NSNumber numberWithFloat:orientation[3]],
-																	[NSNumber numberWithFloat:orientation[4]],
-																	[NSNumber numberWithFloat:orientation[5]],
-																	[NSNumber numberWithFloat:orientation[6]],
-																	[NSNumber numberWithFloat:orientation[7]],
-																	[NSNumber numberWithFloat:orientation[8]],
-																	0L] forKey:@"orientationArray"];
+				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8])) location = origin[ 0];
+				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8])) location = origin[ 1];
+				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7])) location = origin[ 2];
 				
-				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
-				{
-				//	NSLog(@"Saggital");
-					location = origin[ 0];
-				}
-
-				if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8]))
-				{
-				//	NSLog(@"Coronal");
-					location = origin[ 1];
-				}
-
-				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7]))
-				{
-				//	NSLog(@"Axial");
-					location = origin[ 2];
-				}
-				
-				sliceLocation = [[NSString alloc] initWithFormat:@"%7d", (long) (location * 100.)];
-				[dicomElements setObject:sliceLocation forKey:@"sliceLocation"];
+				[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
 				
 //				val = Papy3GetElement (theGroupP, papSliceLocationGr, &nbVal, &itemType);
 //				if (val != NULL)
@@ -2151,7 +2120,46 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else
 			imageID = [[NSString alloc] initWithFormat:@"%5d", 1];
 		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+				
+		// Compute slice location
+		float		orientation[ 9];
+		float		origin[ 3];
+		float		location = 0;
+		
+		origin[0] = origin[1] = origin[2] = 0;
+		
+		NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
+		if( ipp)
+		{
+			origin[0] = [[ipp objectAtIndex:0] floatValue];
+			origin[1] = [[ipp objectAtIndex:1] floatValue];
+			origin[2] = [[ipp objectAtIndex:2] floatValue];
+		}
+		
+		orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+		orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+		NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
+		if( iop)
+		{
+			long j;
 			
+			for (j = 0 ; j < [iop count]; j++) 
+				orientation[ j] = [[iop objectAtIndex:j] floatValue];
+		}
+
+		// Compute normal vector
+		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
+		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
+		orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
+		
+		if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8])) location = origin[ 0];
+		if( fabs( orientation[7]) > fabs(orientation[6]) && fabs( orientation[7]) > fabs(orientation[8])) location = origin[ 1];
+		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7])) location = origin[ 2];
+		
+		[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
+		
+		// Series Number
+		
 		if (seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain]) {
 		}
 		else
@@ -2289,7 +2297,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		Modality = 0L;
 		filePath = f;
 		SOPUID = 0L;
-		sliceLocation = 0L;
 		fileType = 0L;
 		NoOfSeries = 1;
 		
@@ -2351,7 +2358,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     [imageType release];
     [SOPUID release];
     [patientID release];
-    [sliceLocation release];
     [seriesNo release];
 
     [name release];
@@ -2614,7 +2620,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			date = [[NSDate dateWithString:[xmlData objectForKey:@"studyDate"]] retain];
 			Modality = [[xmlData objectForKey:@"modality"] retain];
 			filePath = [f retain];
-			sliceLocation = 0L;
 			fileType = [[NSString stringWithString:@"XMLDESCRIPTOR"] retain];
 			NoOfSeries = 1;
 			NoOfFrames = [[xmlData objectForKey:@"numberOfImages"] intValue];

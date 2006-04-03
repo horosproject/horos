@@ -698,9 +698,8 @@ static BOOL FORCEREBUILD = NO;
 								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curFile elementForKey: @"studyDate"]];
 								[image setValue:[time timeAsNumber] forKey:@"dicomTime"];
 								
-							//	NSLog( [curFile elementForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]);
 								[image setValue:[curFile elementForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
-								
+								[image setValue:[curFile elementForKey: @"sliceLocation"] forKey:@"sliceLocation"];
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curFile elementForKey: @"fileType"] forKey:@"fileType"];
 								

@@ -62,6 +62,8 @@
 		strcmp(tagString, "0020,000E") == 0 ||	//SeriesInstanceUID
 		strcmp(tagString, "0020,000D") == 0 ||	//StudyInstanceUID
 		strcmp(tagString, "0020,0010") == 0 ||	//StudyID
+		strcmp(tagString, "0020,0032") == 0 ||	//Image Position
+		strcmp(tagString, "0020,0037") == 0 ||	//Image Orientation
 		strcmp(tagString, "0028,0008") == 0 ||	//Number of Frames
 		strcmp(tagString, "0028,0010") == 0 ||	//Rows
 		strcmp(tagString, "0028,0011") == 0 ||	//Columns

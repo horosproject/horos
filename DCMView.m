@@ -3855,12 +3855,12 @@ static long scrollMode;
 						noSlicePosition = NO;
 						
 						if( everythingLoaded) firstSliceLocation = [[dcmPixList objectAtIndex: 0] sliceLocation];
-						else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] / 100.;
+						else firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 						
 						for( i = 0; i < [dcmFilesList count]; i++)
 						{
 							if( everythingLoaded) slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
-							else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue] / 100.;
+							else slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
 							
 							fdiff = slicePosition - loc;
 							

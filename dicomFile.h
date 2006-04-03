@@ -32,7 +32,6 @@
 	NSString			*patientID;
 	NSString			*studyIDs;
 	NSString			*seriesNo;
-	NSString			*sliceLocation;
     NSCalendarDate		*date;
 	
 	long				width, height;

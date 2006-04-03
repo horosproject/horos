@@ -1143,6 +1143,7 @@ int sortROIByName(id roi1, id roi2, void *context)
     
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
+		[FullScreenWindow release];
         
         
    //     [contentView release];
@@ -1720,7 +1721,6 @@ static ViewerController *draggedController = 0L;
 			// Find a 2D viewer containing this specific file!
 			
 			NSArray				*winList = [NSApp windows];
-			NSMutableArray		*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 			BOOL				found = NO;
 			
 			for( i = 0; i < [winList count]; i++)
@@ -5044,15 +5044,15 @@ extern NSString * documentsDirectory();
 		}
 	}
 	
-				if( !found)
-				{
-					ROIManagerController		*manager = [[ROIManagerController alloc] initWithViewer: self];
-					if( manager)
-					{
-						[manager showWindow:self];
-						[[manager window] makeKeyAndOrderFront:self];
-					}
-				}
+	if( !found)
+	{
+		ROIManagerController		*manager = [[ROIManagerController alloc] initWithViewer: self];
+		if( manager)
+		{
+			[manager showWindow:self];
+			[[manager window] makeKeyAndOrderFront:self];
+		}
+	}
 }
 
 

@@ -1744,7 +1744,6 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 			tempIm->GetOrigin( origin);
 			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
 			
-			
 			width = imExtent[ 1]-imExtent[ 0]+1;
 			height = imExtent[ 3]-imExtent[ 2]+1;
 			
@@ -2292,6 +2291,7 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 //	rotate->SetTransformInputSampling( false);
 	rotate->SetInterpolationModeToNearestNeighbor();	//SetInterpolationModeToLinear(); //SetInterpolationModeToCubic();	//SetInterpolationModeToCubic();
 	rotate->SetOutputDimensionality( 2);
+//	rotate->SetOutputOrigin( 0,0,0);
 	rotate->SetBackgroundLevel( -1024);
 	rotate->SetOutputExtent( 0, FOV, 0, FOV, 0, 0);
 
