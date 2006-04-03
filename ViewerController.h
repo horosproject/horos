@@ -308,7 +308,6 @@
 - (void) setDefaultTool:(id) sender;
 - (OSErr)getFSRefAtPath:(NSString*)sourceItem ref:(FSRef*)sourceRef;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*) d :(NSData*) v;
-- (id) initWithWindowNibName:(NSString *)nibName :(NSMutableArray *)f :(NSArray *)d :(NSData *) v;
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray *)d volumeData:(NSData *) v;
 - (void) speedSliderAction:(id) sender;
 - (void) setupToolbar;

@@ -884,16 +884,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	[appController tileWindows: self];
 }
-	
-- (id) initWithWindowNibName:(NSString *)nibName :(NSMutableArray*)f :(NSArray*)d :(NSData*) v{
-	self = [super initWithWindowNibName:nibName];
-	speedometer = 0;
-	matrixPreviewBuilt = NO;
-	
-	ThreadLoadImageLock = [[NSLock alloc] init];
-	
-	return self;
-}
+
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame{
 	
 	NSRect currentFrame = [sender frame];
@@ -2828,6 +2819,7 @@ static ViewerController *draggedController = 0L;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
 	self = [super initWithWindowNibName:@"Viewer"];
+	
 	[self setPixelList:f fileList:d volumeData:v];
 	
 	NSNotificationCenter *nc;
@@ -8742,6 +8734,11 @@ int i,j,l;
 
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v{
 	long i;
+
+	speedometer = 0;
+	matrixPreviewBuilt = NO;
+	
+	ThreadLoadImageLock = [[NSLock alloc] init];
 	
 	windowWillClose = NO;
 	EXPORT2IPHOTO = NO;
