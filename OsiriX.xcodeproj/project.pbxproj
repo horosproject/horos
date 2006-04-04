@@ -1465,6 +1465,36 @@
 		BF3F21C709CB8772002736A5 /* ditranst.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD509B6828100545F5E /* ditranst.h */; };
 		BF3F21C809CB8773002736A5 /* diutils.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3BD609B6828100545F5E /* diutils.cc */; };
 		BF3F21C909CB8773002736A5 /* diutils.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3BD709B6828100545F5E /* diutils.h */; };
+		BF432BC909E313EF00AC322E /* DCMTKQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */; };
+		BF432BCA09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */; };
+		BF432BCB09E313EF00AC322E /* DCMTKQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */; };
+		BF432BCC09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */; };
+		BF432BCD09E313EF00AC322E /* DCMTKQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */; };
+		BF432BCE09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */; };
+		BF432BD709E31B9A00AC322E /* DCMTKStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */; };
+		BF432BD809E31B9A00AC322E /* DCMTKStudyQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */; };
+		BF432BD909E31B9A00AC322E /* DCMTKStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */; };
+		BF432BDA09E31B9A00AC322E /* DCMTKStudyQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */; };
+		BF432BDB09E31B9B00AC322E /* DCMTKStudyQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */; };
+		BF432BDC09E31B9B00AC322E /* DCMTKStudyQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */; };
+		BF432BE109E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */; };
+		BF432BE209E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */; };
+		BF432BE309E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */; };
+		BF432BE409E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */; };
+		BF432BE509E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */; };
+		BF432BE609E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */; };
+		BF432BED09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */; };
+		BF432BEE09E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */; };
+		BF432BEF09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */; };
+		BF432BF009E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */; };
+		BF432BF109E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */; };
+		BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */; };
+		BF432BF809E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */; };
+		BF432BF909E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */; };
+		BF432BFA09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */; };
+		BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */; };
+		BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */; };
+		BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */; };
 		BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
@@ -9565,6 +9595,16 @@
 		BF398B8A065B124700AD1F25 /* InArrow.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = InArrow.tif; sourceTree = "<group>"; };
 		BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTransferSyntax.h; sourceTree = "<group>"; };
 		BF3BB37F067808D5004F6E91 /* DCMTransferSyntax.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTransferSyntax.m; sourceTree = "<group>"; };
+		BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKQueryNode.h; sourceTree = "<group>"; };
+		BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKQueryNode.mm; sourceTree = "<group>"; };
+		BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStudyQueryNode.h; sourceTree = "<group>"; };
+		BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKStudyQueryNode.mm; sourceTree = "<group>"; };
+		BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKSeriesQueryNode.h; sourceTree = "<group>"; };
+		BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKSeriesQueryNode.mm; sourceTree = "<group>"; };
+		BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKImageQueryNode.h; sourceTree = "<group>"; };
+		BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKImageQueryNode.mm; sourceTree = "<group>"; };
+		BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKRootQueryNode.h; sourceTree = "<group>"; };
+		BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKRootQueryNode.mm; sourceTree = "<group>"; };
 		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
 		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
@@ -13342,6 +13382,16 @@
 				ABE3336A063D624400C8E087 /* QueryFilter.m */,
 				7EE416C708B2612600D4C9CC /* QueryLogController.h */,
 				7EE416C808B2612600D4C9CC /* QueryLogController.m */,
+				BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */,
+				BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */,
+				BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */,
+				BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */,
+				BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */,
+				BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */,
+				BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */,
+				BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */,
+				BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */,
+				BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */,
 			);
 			name = Query;
 			sourceTree = "<group>";
@@ -18449,6 +18499,11 @@
 				BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */,
 				BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
 				BF18A85B09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
+				BF432BCD09E313EF00AC322E /* DCMTKQueryNode.h in Headers */,
+				BF432BDB09E31B9B00AC322E /* DCMTKStudyQueryNode.h in Headers */,
+				BF432BE509E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
+				BF432BF109E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
+				BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20254,6 +20309,11 @@
 				CE61039B09DEA15F00A1FA92 /* jchuff8.h in Headers */,
 				CE61039C09DEA18B00A1FA92 /* jmemsys8.h in Headers */,
 				BF18A85D09E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
+				BF432BCB09E313EF00AC322E /* DCMTKQueryNode.h in Headers */,
+				BF432BD909E31B9A00AC322E /* DCMTKStudyQueryNode.h in Headers */,
+				BF432BE309E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
+				BF432BEF09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
+				BF432BFA09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22064,6 +22124,11 @@
 				BFF9D57C09CDCA5600B3B940 /* dcmqrdbq.h in Headers */,
 				BF9893B909D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */,
 				BF18A85909E0BF00005DEFB6 /* AppControllerDCMTKCategory.h in Headers */,
+				BF432BC909E313EF00AC322E /* DCMTKQueryNode.h in Headers */,
+				BF432BD709E31B9A00AC322E /* DCMTKStudyQueryNode.h in Headers */,
+				BF432BE109E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
+				BF432BED09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
+				BF432BF809E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24324,6 +24389,11 @@
 				BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 				BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
+				BF432BCE09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
+				BF432BDC09E31B9B00AC322E /* DCMTKStudyQueryNode.mm in Sources */,
+				BF432BE609E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
+				BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
+				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24879,6 +24949,11 @@
 				BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 				BF18A85E09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
+				BF432BCC09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
+				BF432BDA09E31B9A00AC322E /* DCMTKStudyQueryNode.mm in Sources */,
+				BF432BE409E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
+				BF432BF009E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
+				BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25438,6 +25513,11 @@
 				BF9893BA09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */,
 				BFDF1D5609E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
 				BF18A85A09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
+				BF432BCA09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
+				BF432BD809E31B9A00AC322E /* DCMTKStudyQueryNode.mm in Sources */,
+				BF432BE209E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
+				BF432BEE09E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
+				BF432BF909E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
