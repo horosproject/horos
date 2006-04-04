@@ -9756,6 +9756,8 @@ long i;
 		[ThreadLoadImageLock unlock];
 		[splash close];
 		[splash release];
+		
+		[self setWindowTitle: self];
 	}
 }
 
