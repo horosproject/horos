@@ -31,10 +31,9 @@
 
 
 - (DCMObject *)queryPrototype{
-	//root will search for series
+	//patient will search for series
 	DCMObject *findObject = [DCMObject dcmObject];
-	//[findObject setAttributeValues:[NSMutableArray array] forName:@"PatientsName"];
-	//[findObject setAttributeValues:[NSMutableArray array] forName:@"PatientID"];
+
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"SeriesDescription"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"SeriesDate"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"SeriesTime"];

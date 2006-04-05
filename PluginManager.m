@@ -38,7 +38,7 @@ PluginManager			*pluginManager = 0L;
 		NSString	*pluginName = [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"];
 		NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
 		NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-		
+	
 		if( menuTitles)
 		{
 			if( [menuTitles count] > 1)
@@ -315,8 +315,12 @@ PluginManager			*pluginManager = 0L;
 			if ( [[name pathExtension] isEqualToString:@"plugin"] )
 			{
 				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
-				if ( filterClass = [plugin principalClass] )
+				//NSLog(@"plugin: %@", [plugin  description]);
+				//NSLog(@"plugin principal class : %@", NSStringFromClass([plugin principalClass]));
+				//NSLog(@"plugin principal class Name : %@", [[plugin infoDictionary] objectForKey:@"NSPrincipalClass"]);
+				if ( filterClass = [plugin principalClass])
 				{
+					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
 					{
 						PluginFilter*	filter = [filterClass filter];
@@ -367,6 +371,7 @@ PluginManager			*pluginManager = 0L;
 					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
 					{
+						NSLog(@"report PLugin: %@", [[plugin infoDictionary] description]);
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}

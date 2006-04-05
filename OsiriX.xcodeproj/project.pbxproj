@@ -3895,6 +3895,43 @@
 		BFC9C2AC09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
 		BFC9C2AD09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */; };
 		BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
+		BFD0862109E373F000B24030 /* storescp.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFD0861809E3738D00B24030 /* storescp.mm */; };
+		BFD0862209E3740F00B24030 /* cmdlnarg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABB09B6827D00545F5E /* cmdlnarg.cc */; };
+		BFD0862309E3740F00B24030 /* dcbytstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABD09B6827D00545F5E /* dcbytstr.cc */; };
+		BFD0862409E3741000B24030 /* dcchrstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABF09B6827D00545F5E /* dcchrstr.cc */; };
+		BFD0862509E3741100B24030 /* dccodec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC109B6827D00545F5E /* dccodec.cc */; };
+		BFD0862609E3741200B24030 /* dcdatset.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC309B6827D00545F5E /* dcdatset.cc */; };
+		BFD0862709E3741600B24030 /* dcddirif.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC509B6827D00545F5E /* dcddirif.cc */; };
+		BFD0862809E3741700B24030 /* dcdebug.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC709B6827D00545F5E /* dcdebug.cc */; };
+		BFD0862909E3741800B24030 /* dcdicdir.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACB09B6827D00545F5E /* dcdicdir.cc */; };
+		BFD0862A09E3741800B24030 /* dcdicent.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACD09B6827D00545F5E /* dcdicent.cc */; };
+		BFD0862B09E3741900B24030 /* dcdict.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACF09B6827D00545F5E /* dcdict.cc */; };
+		BFD0862C09E3741A00B24030 /* dcdictbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD109B6827D00545F5E /* dcdictbi.cc */; };
+		BFD0862D09E3741B00B24030 /* dcdirrec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD209B6827D00545F5E /* dcdirrec.cc */; };
+		BFD0862E09E3741D00B24030 /* dcelem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD409B6827D00545F5E /* dcelem.cc */; };
+		BFD0862F09E3741E00B24030 /* dcerror.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD609B6827D00545F5E /* dcerror.cc */; };
+		BFD0863009E3741F00B24030 /* dcfilefo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD809B6827D00545F5E /* dcfilefo.cc */; };
+		BFD0863109E3741F00B24030 /* dchashdi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADA09B6827D00545F5E /* dchashdi.cc */; };
+		BFD0863209E3742100B24030 /* dcistrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADC09B6827D00545F5E /* dcistrma.cc */; };
+		BFD0863309E3742200B24030 /* dcistrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADE09B6827D00545F5E /* dcistrmb.cc */; };
+		BFD0863409E3742300B24030 /* dcistrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE009B6827D00545F5E /* dcistrmf.cc */; };
+		BFD0863509E3742700B24030 /* dcistrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE209B6827D00545F5E /* dcistrmz.cc */; };
+		BFD0863609E3742800B24030 /* dcitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE409B6827D00545F5E /* dcitem.cc */; };
+		BFD0863709E3742900B24030 /* dclist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE609B6827D00545F5E /* dclist.cc */; };
+		BFD0863809E3742C00B24030 /* dcmetinf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE809B6827D00545F5E /* dcmetinf.cc */; };
+		BFD0863909E3742C00B24030 /* dcobject.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEA09B6827D00545F5E /* dcobject.cc */; };
+		BFD0863A09E3742D00B24030 /* dcostrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AED09B6827D00545F5E /* dcostrma.cc */; };
+		BFD0863B09E3743000B24030 /* dcostrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEF09B6827D00545F5E /* dcostrmb.cc */; };
+		BFD0863C09E3743100B24030 /* dcostrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF109B6827D00545F5E /* dcostrmf.cc */; };
+		BFD0863D09E3743100B24030 /* dcostrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF309B6827D00545F5E /* dcostrmz.cc */; };
+		BFD0863E09E3743400B24030 /* dcpcache.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF609B6827E00545F5E /* dcpcache.cc */; };
+		BFD0863F09E3743400B24030 /* dcpixel.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF809B6827E00545F5E /* dcpixel.cc */; };
+		BFD0864009E3743500B24030 /* dcpixseq.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFA09B6827E00545F5E /* dcpixseq.cc */; };
+		BFD0864109E3743700B24030 /* dcpxitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFC09B6827E00545F5E /* dcpxitem.cc */; };
+		BFD0864209E3743800B24030 /* dcrleccd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFE09B6827E00545F5E /* dcrleccd.cc */; };
+		BFD0864309E3743900B24030 /* dcrlecce.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0009B6827E00545F5E /* dcrlecce.cc */; };
+		BFD0864409E3743900B24030 /* dcrlecp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0209B6827E00545F5E /* dcrlecp.cc */; };
+		BFD0864509E3743C00B24030 /* dcrledrg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0509B6827E00545F5E /* dcrledrg.cc */; };
 		BFD4BFF406F2A96900EC9A90 /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		BFD4BFF506F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFF606F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
@@ -10757,6 +10794,8 @@
 		BFC8C77D076E818F00D17A68 /* DCMSOPClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMSOPClass.m; path = Networking/DCMSOPClass.m; sourceTree = "<group>"; };
 		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
 		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
+		BFD0861809E3738D00B24030 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = "<group>"; };
+		BFD0861C09E373C100B24030 /* storescp */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; name = storescp; path = build/Development/storescp; sourceTree = "<group>"; };
 		BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ContrastCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
@@ -12124,7 +12163,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -12359,6 +12398,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BFD0861A09E373C100B24030 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECB054907539E3900576814 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -12542,6 +12588,7 @@
 				ABA71D3F06726B1800335A62 /* OsiriX.app */,
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
 				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
+				BFD0861C09E373C100B24030 /* storescp */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -13384,14 +13431,14 @@
 				7EE416C808B2612600D4C9CC /* QueryLogController.m */,
 				BF432BC709E313EE00AC322E /* DCMTKQueryNode.h */,
 				BF432BC809E313EF00AC322E /* DCMTKQueryNode.mm */,
+				BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */,
+				BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */,
 				BF432BD509E31B9A00AC322E /* DCMTKStudyQueryNode.h */,
 				BF432BD609E31B9A00AC322E /* DCMTKStudyQueryNode.mm */,
 				BF432BDF09E31BE800AC322E /* DCMTKSeriesQueryNode.h */,
 				BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */,
 				BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */,
 				BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */,
-				BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */,
-				BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */,
 			);
 			name = Query;
 			sourceTree = "<group>";
@@ -13987,6 +14034,7 @@
 		BFBF3AAF09B6820C00545F5E /* dcmtk */ = {
 			isa = PBXGroup;
 			children = (
+				BFD0861809E3738D00B24030 /* storescp.mm */,
 				BFBF3AB709B6827D00545F5E /* config */,
 				BFBF3ABA09B6827D00545F5E /* dcmdata */,
 				BFBF3B5509B6827F00545F5E /* dcmimage */,
@@ -22451,6 +22499,36 @@
 ";
 			productType = "com.apple.product-type.application";
 		};
+		BFD0861B09E373C100B24030 /* storescp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFD0864609E3745A00B24030 /* Build configuration list for PBXNativeTarget "storescp" */;
+			buildPhases = (
+				BFD0861909E373C100B24030 /* Sources */,
+				BFD0861A09E373C100B24030 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = storescp;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+			);
+			name = storescp;
+			productName = storescp;
+			productReference = BFD0861C09E373C100B24030 /* storescp */;
+			productType = "com.apple.product-type.tool";
+		};
 		CECBFEE707539E3900576814 /* Development VolumePRO */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC9085757B70073649A /* Build configuration list for PBXNativeTarget "Development VolumePRO" */;
@@ -22610,6 +22688,7 @@
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				4A16D0950965E15300F82EC4 /* Unit Testing (Cocoa) */,
+				BFD0861B09E373C100B24030 /* storescp */,
 			);
 		};
 /* End PBXProject section */
@@ -24957,6 +25036,50 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BFD0861909E373C100B24030 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFD0862109E373F000B24030 /* storescp.mm in Sources */,
+				BFD0862209E3740F00B24030 /* cmdlnarg.cc in Sources */,
+				BFD0862309E3740F00B24030 /* dcbytstr.cc in Sources */,
+				BFD0862409E3741000B24030 /* dcchrstr.cc in Sources */,
+				BFD0862509E3741100B24030 /* dccodec.cc in Sources */,
+				BFD0862609E3741200B24030 /* dcdatset.cc in Sources */,
+				BFD0862709E3741600B24030 /* dcddirif.cc in Sources */,
+				BFD0862809E3741700B24030 /* dcdebug.cc in Sources */,
+				BFD0862909E3741800B24030 /* dcdicdir.cc in Sources */,
+				BFD0862A09E3741800B24030 /* dcdicent.cc in Sources */,
+				BFD0862B09E3741900B24030 /* dcdict.cc in Sources */,
+				BFD0862C09E3741A00B24030 /* dcdictbi.cc in Sources */,
+				BFD0862D09E3741B00B24030 /* dcdirrec.cc in Sources */,
+				BFD0862E09E3741D00B24030 /* dcelem.cc in Sources */,
+				BFD0862F09E3741E00B24030 /* dcerror.cc in Sources */,
+				BFD0863009E3741F00B24030 /* dcfilefo.cc in Sources */,
+				BFD0863109E3741F00B24030 /* dchashdi.cc in Sources */,
+				BFD0863209E3742100B24030 /* dcistrma.cc in Sources */,
+				BFD0863309E3742200B24030 /* dcistrmb.cc in Sources */,
+				BFD0863409E3742300B24030 /* dcistrmf.cc in Sources */,
+				BFD0863509E3742700B24030 /* dcistrmz.cc in Sources */,
+				BFD0863609E3742800B24030 /* dcitem.cc in Sources */,
+				BFD0863709E3742900B24030 /* dclist.cc in Sources */,
+				BFD0863809E3742C00B24030 /* dcmetinf.cc in Sources */,
+				BFD0863909E3742C00B24030 /* dcobject.cc in Sources */,
+				BFD0863A09E3742D00B24030 /* dcostrma.cc in Sources */,
+				BFD0863B09E3743000B24030 /* dcostrmb.cc in Sources */,
+				BFD0863C09E3743100B24030 /* dcostrmf.cc in Sources */,
+				BFD0863D09E3743100B24030 /* dcostrmz.cc in Sources */,
+				BFD0863E09E3743400B24030 /* dcpcache.cc in Sources */,
+				BFD0863F09E3743400B24030 /* dcpixel.cc in Sources */,
+				BFD0864009E3743500B24030 /* dcpixseq.cc in Sources */,
+				BFD0864109E3743700B24030 /* dcpxitem.cc in Sources */,
+				BFD0864209E3743800B24030 /* dcrleccd.cc in Sources */,
+				BFD0864309E3743900B24030 /* dcrlecce.cc in Sources */,
+				BFD0864409E3743900B24030 /* dcrlecp.cc in Sources */,
+				BFD0864509E3743C00B24030 /* dcrledrg.cc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECB03FD07539E3900576814 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -26590,6 +26713,46 @@
 			};
 			name = Default;
 		};
+		BFD0864709E3745A00B24030 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = storescp;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		BFD0864809E3745A00B24030 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = storescp;
+				ZERO_LINK = YES;
+			};
+			name = Default;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -26661,6 +26824,15 @@
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Development */,
 				7E76BEDA085757B70073649A /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		BFD0864609E3745A00B24030 /* Build configuration list for PBXNativeTarget "storescp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFD0864709E3745A00B24030 /* Development */,
+				BFD0864809E3745A00B24030 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
