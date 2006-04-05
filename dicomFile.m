@@ -1314,6 +1314,40 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					NSString	*album = 0L;
 					
+					theErr = Papy3GotoGroupNb (fileNb, 0x0020);
+					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+					{
+						SElement *inGrOrModP = theGroupP;
+						
+						int theEnumGrNb = Papy3ToEnumGroup( 0x0020);
+						int theMaxElem = gArrGroup [theEnumGrNb].size;
+						int j;
+						
+						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+						{
+							if( inGrOrModP->element == 0x4000)
+							{
+								if( inGrOrModP->nb_val > 0)
+								{
+									UValue_T *theValueP = inGrOrModP->value;
+									
+									if( theValueP->a)
+									{
+										album = [NSString stringWithCString:theValueP->a];
+								
+										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										{
+											album = [album substringFromIndex:2];
+											[dicomElements setObject:album forKey:@"album"];
+										}
+									}
+								}
+							}
+						}
+						
+						theErr = Papy3GroupFree (&theGroupP, TRUE);
+					}
+					
 					theErr = Papy3GotoGroupNb (fileNb, 0x0040);
 					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 					{
@@ -1334,7 +1368,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a)
 									{
 										album = [NSString stringWithCString:theValueP->a];
-										[dicomElements setObject:album forKey:@"album"];
+								
+										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										{
+											album = [album substringFromIndex:2];
+											[dicomElements setObject:album forKey:@"album"];
+										}
 									}
 								}
 							}
@@ -1348,11 +1387,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a)
 									{
 										album = [NSString stringWithCString:theValueP->a];
-										[dicomElements setObject:album forKey:@"album"];
+								
+										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										{
+											album = [album substringFromIndex:2];
+											[dicomElements setObject:album forKey:@"album"];
+										}
 									}
 								}
 							}
 						}
+						theErr = Papy3GroupFree (&theGroupP, TRUE);
 					}
 				}
 			}
@@ -1990,18 +2035,25 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				//Autres modalités :	A définir.
 				NSString			*field = 0L, *album = 0L;
 				
+				field = [dcmObject attributeValueForKey: @"0020,4000"];
+				if( field)
+				{
+					if( [[field substringToIndex:2] isEqualToString: @"LV"])
+						album = [field substringFromIndex:2];
+				}
+				
 				field = [dcmObject attributeValueForKey: @"0040,0280"];
 				if( field)
 				{
-					if( [[field substringToIndex:3] isEqualToString: @"LV"])
-						album = [field substringFromIndex:3];
+					if( [[field substringToIndex:2] isEqualToString: @"LV"])
+						album = [field substringFromIndex:2];
 				}
 				
 				field = [dcmObject attributeValueForKey: @"0040,1400"];
 				if( field)
 				{
-					if( [[field substringToIndex:3] isEqualToString: @"LV"])
-						album = [field substringFromIndex:3];
+					if( [[field substringToIndex:2] isEqualToString: @"LV"])
+						album = [field substringFromIndex:2];
 				}
 				
 				if( album) [dicomElements setObject:album forKey:@"album"];

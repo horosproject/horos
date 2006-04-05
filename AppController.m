@@ -2564,7 +2564,7 @@ static BOOL isHcugeCh = NO, testDone = NO;
 			if([domainName isEqualToString: @"hcuge.ch"]
 				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"])
 			{
-				isHcugeCh = NO;
+				isHcugeCh = YES;
 			}
 		}
 		
