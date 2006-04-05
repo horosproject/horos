@@ -23,7 +23,7 @@
 
 
 @interface DCMSeriesQueryNode : DCMQueryNode {
-
+	
 }
 
 @end

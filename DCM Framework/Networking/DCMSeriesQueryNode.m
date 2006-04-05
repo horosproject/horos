@@ -33,9 +33,7 @@
 - (DCMObject *)queryPrototype{
 	//root will search for Images
 	DCMObject *findObject = [DCMObject dcmObject];
-	//[findObject setAttributeValues:[NSMutableArray array] forName:@"PatientsName"];
-	//[findObject setAttributeValues:[NSMutableArray array] forName:@"PatientID"];
-	//[findObject setAttributeValues:[NSMutableArray array] forName:@"SeriesDescription"];
+
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"InstanceDate"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"InstanceTime"];
 	[findObject setAttributeValues:[NSMutableArray array] forName:@"SOPInstanceUID"];

@@ -23,7 +23,7 @@
 
 
 @interface DCMTKSeriesQueryNode : DCMTKQueryNode {
-
+	NSString *_studyInstanceUID;
 }
 
 @end

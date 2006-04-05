@@ -1016,19 +1016,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 			break;
 	}
-	/*
-	if ([_transferSyntax isEqualToString:@"Explicit Little Endian"])		
-	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossless" ])		
-	else if ([_transferSyntax isEqualToString:@"JPEG 2000 Lossy" ])			
-	else if ([_transferSyntax isEqualToString:@"JPEG Lossless"])			
-	else if ([_transferSyntax isEqualToString:@"JPEG Lossy"])					
-	else if ([_transferSyntax isEqualToString:@"Implicit"])					
-	else if ([_transferSyntax isEqualToString:@"RLE"])						
-	else if ([_transferSyntax isEqualToString:@"Big Endian"])				
-	*/
+
 
 #ifdef WITH_ZLIB
-	//if ([_transferSyntax isEqualToString:@"Deflated"])						opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+
 #endif
 
 	//default should be False
@@ -1242,7 +1233,7 @@ NS_DURING
 	
 
 	
-//NS_DURING	
+
 	
 #ifdef WITH_OPENSSL
 

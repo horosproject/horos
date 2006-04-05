@@ -27,8 +27,22 @@
 
 @implementation DCMTKRootQueryNode
 
-+ (id)queryNodeWithDataset:(DcmDataset *)dataset{
-	return [[[DCMTKRootQueryNode alloc] initWithDataset:(DcmDataset *)dataset] autorelease];
++ (id)queryNodeWithDataset:(DcmDataset *)dataset
+						callingAET:(NSString *)myAET  
+						calledAET:(NSString *)theirAET  
+						hostname:(NSString *)hostname 
+						port:(int)port 
+						transferSyntax:(int)transferSyntax
+						compression: (float)compression
+									extraParameters:(NSDictionary *)extraParameters{
+	return [[[DCMTKRootQueryNode alloc] initWithDataset:(DcmDataset *)dataset
+										callingAET:(NSString *)myAET  
+										calledAET:(NSString *)theirAET  
+										hostname:(NSString *)hostname 
+										port:(int)port 
+										transferSyntax:(int)transferSyntax
+										compression: (float)compression
+										extraParameters:(NSDictionary *)extraParameters] autorelease];
 }
 
 - (DcmDataset *)queryPrototype{
@@ -51,7 +65,14 @@
 - (void)addChild:(DcmDataset *)dataset{
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
-	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset]];
+	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
+			callingAET:_callingAET  
+			calledAET:_calledAET
+			hostname:_hostname 
+			port:_port 
+			transferSyntax:_transferSyntax
+			compression: _compression
+			extraParameters:_extraParameters]];
 }
 
 
