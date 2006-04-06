@@ -55,6 +55,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
+DCMTKQueryNode *node;
 
 #ifdef WITH_OPENSSL
 
@@ -86,6 +87,8 @@ errmsg(const char *msg,...)
 }
 
 
+
+
 static void
 progressCallback(
         void *callbackData,
@@ -107,43 +110,15 @@ progressCallback(
      *   responseIdentifiers - [in] Contains the record which was received. This record matches the search
      *                              mask of the C-FIND-RQ which was sent.
      */
-{
-    /* dump response number */
+{	
+		    /* dump response number */
     printf("RESPONSE: %d (%s)\n", responseCount,
         DU_cfindStatusString(rsp->DimseStatus));
 
     /* dump data set which was received */
     responseIdentifiers->print(COUT);
-
-    /* dump delimiter */
-    printf("--------\n");
-
-    /* create new nodes here. We will need to figure out a way to output back to self */
-    
-    //    char rspIdsFileName[1024];
-     //   sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
-     //   writeToFile(rspIdsFileName, responseIdentifiers);
+	  // [node addChild:responseIdentifiers];
    
-
-    MyCallbackInfo *myCallbackData = OFstatic_cast(MyCallbackInfo *, callbackData);
-
-    /* should we send a cancel back ?? */
-	/*
-    if (opt_cancelAfterNResponses == responseCount)
-    {
-        if (opt_verbose)
-        {
-            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n", request->MessageID, myCallbackData->presId);
-        }
-        OFCondition cond = DIMSE_sendCancelRequest(myCallbackData->assoc, myCallbackData->presId, request->MessageID);
-        if (cond.bad())
-        {
-            errmsg("Cancel RQ Failed:");
-            DimseCondition::dump(cond);
-        }
-    }
-	*/
-
 }
 
 
@@ -200,6 +175,8 @@ progressCallback(
 		_numberImages = nil;
 		_specificCharacterSet = nil;
 		
+		node = self;
+		
 	}
 	return self;
 }
@@ -253,17 +230,94 @@ progressCallback(
 	return nil;
 }
 
+- (DcmDataset *)moveDataset{
+	return nil;
+}
+
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
+/***** possible names **********
+	STUDY NAMES
+		PatientsName
+		PatientID
+		StudyDescription
+		StudyDate
+		StudyTime
+		StudyID
+		ModalitiesInStudy
+	SERIES
+		SeriesDescription
+		SeriesDate
+		SeriesTime
+		SeriesNumber
+		Modality
+	IMAGE
+		InstanceCreationDate
+		InstanceCreationTime
+		StudyInstanceUID
+		SeriesInstanceUID
+		SOPInstanceUID
+		InstanceNumber
+		
+		
+
+
+
+*******************************/
 - (void)queryWithValues:(NSArray *)values{
+	//add query keys
+	DcmDataset *dataset = [self queryPrototype];
+	NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
+	int encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
+	dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
+	const char *queryLevel;
+	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
+	//Keys are only modified at the study level.  At other levels the UIDs will be used
+	if (strcmp(queryLevel, "STUDY") == 0) {
+		NSEnumerator *enumerator = [values objectEnumerator];
+		NSDictionary *dictionary;
+		// need to get actual encoding from preferences
+		
+
+		while (dictionary = [enumerator nextObject]) {
+			const char *string;
+			NSString *key = [dictionary objectForKey:@"name"];
+			id value  = [dictionary objectForKey:@"value"];
+			if ([key isEqualToString:@"PatientsName"]) {	
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_PatientsName, string);
+			}
+			else if ([key isEqualToString:@"PatientID"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_PatientID, string);
+			}
+			else if ([key isEqualToString:@"StudyDescription"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_StudyDescription, string);
+			}
+			else if ([key isEqualToString:@"StudyID"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_StudyID, string);
+			}
+			else if ([key isEqualToString:@"ModalitiesinStudy"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
+			}
+		}
+	}
+	if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset]) {
+	 }
+	 delete dataset;
 }
 
 - (void)move{
-	 if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel]) {
+	DcmDataset *dataset = [self moveDataset];
+	if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset]) {
 	 }
+	 delete dataset;
 }
 
 //common network code for move and query
-- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax{
+- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	OFCondition cond;
@@ -293,7 +347,7 @@ progressCallback(
 
 	
 	//debug code activated for now
-	//_debug = OFTrue;
+	_debug = OFTrue;
 	//DUL_Debug(OFTrue);
 	//DIMSE_debug(OFTrue);
 	//SetDebugLevel(3);
@@ -301,27 +355,8 @@ progressCallback(
 	//Use Little Endian TS
 	_networkTransferSyntax = EXS_LittleEndianExplicit;
 	
-		//Timeout
-	//OFCmdSignedInt opt_timeout = 0;
-	//dcmConnectionTimeout.set((Sint32) opt_timeout);
-
-   //acse-timeout
-	//OFCmdSignedInt opt_timeout = 0;
-	//_acse_timeout = OFstatic_cast(int, opt_timeout);
 	
-	//dimse-timeout
-	//OFCmdSignedInt opt_timeout = 0;
-	//_dimse_timeout = OFstatic_cast(int, opt_timeout);
-	//_blockMode = DIMSE_NONBLOCKING;
-	
-	//max PUD
-	//_maxReceivePDULength = 
-	
-	//max-send-pdu
-	//opt_maxSendPDULength = 
-	//dcmMaxOutgoingPDUSize.set((Uint32)opt_maxSendPDULength);
-	
-//	NS_DURING
+	NS_DURING
 	
 #ifdef WITH_OPENSSL
 
@@ -455,7 +490,7 @@ progressCallback(
 	//NSLog(@"peer host: %s", peerHost);
 	ASC_setPresentationAddresses(params, localHost, peerHost);
 	
-	    /* Set the presentation contexts which will be negotiated */
+	/* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
 	/*
 	abstract syntax should be 
@@ -515,6 +550,137 @@ progressCallback(
 		//return;
 	}
 	
+	//specific for Move vs find
+	if (strcmp(abstractSyntax, UID_FINDStudyRootQueryRetrieveInformationModel) == 0) {
+		if (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+		  {
+			cond = [self cfind:assoc dataset:dataset];
+		  }
+	}
+	else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0) { 
+	}
+	else {
+		NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
+		//shouldn't get here
+	}
+	
+	/* tear down association, i.e. terminate network connection to SCP */
+    if (cond == EC_Normal)
+    {
+        if (_abortAssociation) {
+            if (_verbose)
+                printf("Aborting Association\n");
+            cond = ASC_abortAssociation(assoc);
+            if (cond.bad()) {
+                errmsg("Association Abort Failed:");
+                DimseCondition::dump(cond);
+                queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+				[queryException raise];
+				//return;
+            }
+        } else {
+            /* release association */
+            if (_verbose)
+                printf("Releasing Association\n");
+            cond = ASC_releaseAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Release Failed:");
+                DimseCondition::dump(cond);
+                queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Release Failed" userInfo:nil];
+				[queryException raise];
+				//return;
+            }
+        }
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
+        errmsg("Protocol Error: peer requested release (Aborting)");
+        if (_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+			[queryException raise];
+			//return;
+        }
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
+        if (_verbose) printf("Peer Aborted Association\n");
+    }
+    else
+    {
+        errmsg("SCU Failed:");
+        DimseCondition::dump(cond);
+        if (_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+			queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+			[queryException raise];
+			//return;
+        }
+    }
+	
+
+NS_HANDLER
+	NSLog(@"Exception: %@", [queryException description]);
+NS_ENDHANDLER
+	
+
+
+// CLEANUP
+
+    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+    cond = ASC_destroyAssociation(&assoc);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);  
+		//queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Destroy Association" userInfo:nil];
+		//[queryException raise]; 
+		//return;     
+    }
+	
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+    cond = ASC_dropNetwork(&net);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);
+		//queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Drop Network" userInfo:nil];
+		//[queryException raise];
+		//return;
+    }
+	
+
+#ifdef WITH_OPENSSL
+/*
+    if (tLayer && opt_writeSeedFile)
+    {
+      if (tLayer->canWriteRandomSeed())
+      {
+        if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+        {
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+        }
+      } else {
+        CERR << "Warning: cannot write random seed, ignoring." << endl;
+      }
+    }
+    delete tLayer;
+*/
+#endif
+
+
+
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
+ 
 	//NS_HANDLER
 	//NS_ENDHANDLER
 	[pool release];
@@ -582,60 +748,8 @@ progressCallback(
         transferSyntaxes, numTransferSyntaxes);
 }
 
-- (void) progressCallback:(void *)callbackData 
-			request:(T_DIMSE_C_FindRQ *)request
-			responseCount:(int)responseCount
-			response:(T_DIMSE_C_FindRSP *)rsp
-			responseIdentifiers:(DcmDataset *)responseIdentifiers
-        
-    /*
-     * This function.is used to indicate progress when findscu receives search results over the
-     * network. This function will simply cause some information to be dumped to stdout.
-     *
-     * Parameters:
-     *   callbackData        - [in] data for this callback function
-     *   request             - [in] The original find request message.
-     *   responseCount       - [in] Specifies how many C-FIND-RSP were received including the current one.
-     *   rsp                 - [in] the C-FIND-RSP message which was received shortly before the call to
-     *                              this function.
-     *   responseIdentifiers - [in] Contains the record which was received. This record matches the search
-     *                              mask of the C-FIND-RQ which was sent.
-     */
-{
-    /* dump response number */
-    printf("RESPONSE: %d (%s)\n", responseCount,
-        DU_cfindStatusString(rsp->DimseStatus));
 
-    /* dump data set which was received */
-    responseIdentifiers->print(COUT);
 
-    /* dump delimiter */
-    printf("--------\n");
-
-    /* in case opt_extractResponsesToFile is set the responses shall be extracted to a certain file */
-   // if (opt_extractResponsesToFile) {
-   //     char rspIdsFileName[1024];
-   //     sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
-  //      writeToFile(rspIdsFileName, responseIdentifiers);
-  //  }
-
-    MyCallbackInfo *myCallbackData = OFstatic_cast(MyCallbackInfo *, callbackData);
-
-    /* should we send a cancel back ?? */
-    if (_cancelAfterNResponses == responseCount)
-    {
-        if (_verbose)
-        {
-            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n", request->MessageID, myCallbackData->presId);
-        }
-        OFCondition cond = DIMSE_sendCancelRequest(myCallbackData->assoc, myCallbackData->presId, request->MessageID);
-        if (cond.bad())
-        {
-            errmsg("Cancel RQ Failed:");
-            DimseCondition::dump(cond);
-        }
-    }
-}
 
 - (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset 
     /*

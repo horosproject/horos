@@ -20,6 +20,10 @@
 
 #import "DCMTKServiceClassUser.h"
 
+#include "tlstrans.h"
+#include "tlslayer.h"
+#include "ofstring.h"
+
 
 @implementation DCMTKServiceClassUser
 
@@ -53,7 +57,7 @@
 		_acse_timeout = 30;
 		
 		//SSL
-		_keyFileFormat = SSL_FILETYPE_PEM;
+		//_keyFileFormat = SSL_FILETYPE_PEM;
 		_doAuthenticate = NO;
 		_privateKeyFile = NULL;
 		_certificateFile = NULL;
@@ -61,7 +65,7 @@
 		
 		_readSeedFile = NULL;
 		_writeSeedFile = NULL;
-		_certVerification = DCV_requireCertificate;
+		//_certVerification = DCV_requireCertificate;
 		_dhparam = NULL;
 	}
 	return self;

@@ -63,6 +63,7 @@
 }
 
 - (void)addChild:(DcmDataset *)dataset{
+	NSLog(@"add child to root");
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset

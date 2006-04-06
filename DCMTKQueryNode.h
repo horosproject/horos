@@ -27,9 +27,9 @@
 #include "dcdatset.h"
 #include "dimse.h"
 #include "dccodec.h"
-#include "tlstrans.h"
-#include "tlslayer.h"
-#include "ofstring.h"
+//#include "tlstrans.h"
+//#include "tlslayer.h"
+//#include "ofstring.h"
 
 
 
@@ -77,18 +77,15 @@
 - (NSMutableArray *)children;
 - (void)addChild:(DcmDataset *)dataset;
 - (DcmDataset *)queryPrototype;
+- (DcmDataset *)moveDataset;
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
 - (void)queryWithValues:(NSArray *)values;
 - (void)move;
 
 //common network code for move and query
-- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax;
+- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset;
 - (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax;
-- (void) progressCallback:(void *)callbackData 
-			request:(T_DIMSE_C_FindRQ *)request
-			responseCount:(int)responseCount
-			response:(T_DIMSE_C_FindRSP *)rsp
-			responseIdentifiers:(DcmDataset *)responseIdentifiers;
+
 - (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset;
 - (OFCondition) cfind:(T_ASC_Association *)assoc dataset:(DcmDataset *)dataset;
 

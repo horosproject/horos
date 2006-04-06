@@ -33,7 +33,7 @@
 - (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;
 
 
-- (DCMRootQueryNode *)rootNode;
+- (id)rootNode;
 - (NSArray *)queries;
 
 - (void)addFilter:(id)filter forDescription:(NSString *)description;

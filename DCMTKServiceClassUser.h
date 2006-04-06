@@ -31,9 +31,9 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 #include "dcdatset.h"
 #include "dimse.h"
 #include "dccodec.h"
-#include "tlstrans.h"
-#include "tlslayer.h"
-#include "ofstring.h"
+//#include "tlstrans.h"
+//#include "tlslayer.h"
+//#include "ofstring.h"
 
 
 @interface DCMTKServiceClassUser : NSObject {
@@ -69,7 +69,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 	
 	const char *_readSeedFile;
 	const char *_writeSeedFile;
-	DcmCertificateVerification _certVerification;
+	//DcmCertificateVerification _certVerification;
 	const char *_dhparam;
 
 

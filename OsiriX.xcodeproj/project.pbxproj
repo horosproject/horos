@@ -401,11 +401,11 @@
 		7E9C6D2D066D2BE800D33966 /* redLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D2C066D2BE800D33966 /* redLight.tif */; };
 		7E9C6D2E066D2BE800D33966 /* redLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D2C066D2BE800D33966 /* redLight.tif */; };
 		7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB4AAE5079494CB007AD271 /* QueryArrayController.h */; };
-		7EB4AAE8079494CB007AD271 /* QueryArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.m */; };
+		7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */; };
 		7EB4AAE9079494CB007AD271 /* QueryArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB4AAE5079494CB007AD271 /* QueryArrayController.h */; };
-		7EB4AAEA079494CB007AD271 /* QueryArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.m */; };
+		7EB4AAEA079494CB007AD271 /* QueryArrayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */; };
 		7EB4AAEB079494CB007AD271 /* QueryArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB4AAE5079494CB007AD271 /* QueryArrayController.h */; };
-		7EB4AAEC079494CB007AD271 /* QueryArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.m */; };
+		7EB4AAEC079494CB007AD271 /* QueryArrayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */; };
 		7EB72CB1076127D80025F400 /* DCMRequestPDU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EB72CAF076127D80025F400 /* DCMRequestPDU.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7EB72CB2076127D80025F400 /* DCMRequestPDU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB72CB0076127D80025F400 /* DCMRequestPDU.m */; };
 		7EBB31090887269B00BF6B39 /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -9163,7 +9163,7 @@
 		7E9C6D24066D2BCD00D33966 /* greenLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = greenLight.tif; sourceTree = "<group>"; };
 		7E9C6D2C066D2BE800D33966 /* redLight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = redLight.tif; sourceTree = "<group>"; };
 		7EB4AAE5079494CB007AD271 /* QueryArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryArrayController.h; sourceTree = "<group>"; };
-		7EB4AAE6079494CB007AD271 /* QueryArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryArrayController.m; sourceTree = "<group>"; };
+		7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = QueryArrayController.mm; sourceTree = "<group>"; };
 		7EB72CAF076127D80025F400 /* DCMRequestPDU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRequestPDU.h; path = Networking/DCMRequestPDU.h; sourceTree = "<group>"; };
 		7EB72CB0076127D80025F400 /* DCMRequestPDU.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMRequestPDU.m; path = Networking/DCMRequestPDU.m; sourceTree = "<group>"; };
 		7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMNetServiceDelegate.h; sourceTree = "<group>"; };
@@ -13430,7 +13430,7 @@
 				BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */,
 				BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */,
 				7EB4AAE5079494CB007AD271 /* QueryArrayController.h */,
-				7EB4AAE6079494CB007AD271 /* QueryArrayController.m */,
+				7EB4AAE6079494CB007AD271 /* QueryArrayController.mm */,
 				AB425D72058FC58E00224020 /* QueryController.h */,
 				AB425D73058FC58E00224020 /* QueryController.mm */,
 				ABE33369063D624400C8E087 /* QueryFilter.h */,
@@ -24084,7 +24084,7 @@
 				CEDB1499076837F100375F65 /* jerror.c in Sources */,
 				CEDB149A076837F300375F65 /* jdsample.c in Sources */,
 				CEDB149B076837F400375F65 /* jdpostct.c in Sources */,
-				7EB4AAE8079494CB007AD271 /* QueryArrayController.m in Sources */,
+				7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				7E54307807A05ED400500ABB /* BurnerWindowController.m in Sources */,
 				CE3E696207AFB6DE00541E20 /* CurvedMPR.m in Sources */,
 				CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */,
@@ -24646,7 +24646,7 @@
 				CEA20536073A810100F0DAB7 /* iPhoto.m in Sources */,
 				7E0339EB07415C4F0025DDB4 /* BurnerWindowController.m in Sources */,
 				CE79DCFD0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */,
-				7EB4AAEC079494CB007AD271 /* QueryArrayController.m in Sources */,
+				7EB4AAEC079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				CE3E696007AFB6DE00541E20 /* CurvedMPR.m in Sources */,
 				CEDE5B6007F206B5003034B6 /* ROIDefaultsWindow.m in Sources */,
 				CEF9E7D90811B67D00412C8A /* Scheduler.m in Sources */,
@@ -25203,7 +25203,7 @@
 				CECB054307539E3900576814 /* DCMCalendarScript.m in Sources */,
 				CECB054507539E3900576814 /* iPhoto.m in Sources */,
 				CECB054607539E3900576814 /* BurnerWindowController.m in Sources */,
-				7EB4AAEA079494CB007AD271 /* QueryArrayController.m in Sources */,
+				7EB4AAEA079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				CEA0C72F07A6B186004E5D9D /* vtkOpenGLVolumeProVP1000Mapper.cxx in Sources */,
 				CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */,
 				CE3E695E07AFB6DE00541E20 /* CurvedMPR.m in Sources */,
