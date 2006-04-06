@@ -2361,7 +2361,13 @@ static long scrollMode;
 						
 						if( [aNewROI ROImode] == ROI_selected)
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: aNewROI userInfo: nil];
-							
+						
+						NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:	aNewROI,							@"ROI",
+																								[NSNumber numberWithInt:curImage],	@"sliceNumber", 
+																								nil];
+					   
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"addROI" object:self userInfo:userInfo];
+						
 						[aNewROI release];
 					}
 				}
@@ -3419,7 +3425,12 @@ static long scrollMode;
 			selector: @selector(changeWLWW:)
 				name: @"changeWLWW"
 			object: nil];
-    
+
+	[nc	addObserver: self
+			selector: @selector(addROI:)
+				name: @"addROI"
+			object: nil];
+	
     colorTransfer = NO;
 	
 	for (i = 0; i < 256; i++)
@@ -5480,7 +5491,6 @@ static long scrollMode;
 				// Draw ROIs
 				{
 					long i;
-					
 					for( i = 0; i < [curRoiList count]; i++)
 					{
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
@@ -6140,10 +6150,15 @@ static long scrollMode;
 	}
 }
 
- -(NSMutableArray*) dcmPixList
- {
+-(NSMutableArray*) dcmPixList
+{
 	return dcmPixList;
- }
+}
+
+-(NSMutableArray*) dcmRoiList
+{
+	return dcmRoiList;
+}
 
 - (long) indexForPix: (long) pixIndex
 {
@@ -7160,6 +7175,49 @@ BOOL	lowRes = NO;
 // joris test.... 
 - (void) subDrawRect:(NSRect)aRect
 {
+}
+
+//- (void) addPointROI: (float) x : (float) y : (float) z
+//{
+//	long sliceNumber = (long) (z+0.5);
+//	
+//	if (sliceNumber>=0 && sliceNumber<[[self dcmPixList] count])
+//	{
+//		// Create the new 2D Point ROI
+//		ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[self pixelSpacingX] :[self pixelSpacingY] :NSMakePoint( [self origin].x, [self origin].y)];
+//		NSRect irect;
+//		irect.origin.x = x;
+//		irect.origin.y = y;
+//		irect.size.width = irect.size.height = 0;
+//		[new2DPointROI setROIRect:irect];
+//		[self roiSet:new2DPointROI];
+//		// add the 2D Point ROI to the ROI list
+//		//[[[viewer2D roiList] objectAtIndex: sliceNumber] addObject: new2DPointROI];
+//		// notify the change
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: 0L];
+//	}
+//}
+//
+-(void) addROI:(NSNotification*)note
+{
+	NSLog(@"addROI:(NSNotification*)note");
+
+	DCMView *sender = [note object];
+	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
+	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
+	
+	if (![self isEqualTo:sender])
+	{
+		NSLog(@"![self isEqualTo:sender]");
+		if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
+		{
+			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
+			[self roiSet:addedROI];
+			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
+			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
+		}
+	}
 }
 
 @end

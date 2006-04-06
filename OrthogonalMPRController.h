@@ -19,7 +19,7 @@
 //@class OrthogonalMPRViewer;
 
 @interface OrthogonalMPRController : NSObject { //NSWindowController {
-	NSMutableArray				*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList, *originalDCMFilesList;
+	NSMutableArray				*originalDCMPixList, *xReslicedDCMPixList, *yReslicedDCMPixList, *originalDCMFilesList, *originalROIList;
 	OrthogonalReslice			*reslicer;
 	float						sign;
 	
@@ -86,4 +86,5 @@
 - (void) blendingPropagateY:(OrthogonalMPRView*) sender;
 - (void) blendingPropagate:(OrthogonalMPRView*) sender;
 
+- (void) addROI:(NSNotification*)note;
 @end
