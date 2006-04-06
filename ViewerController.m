@@ -747,7 +747,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	/********** Flip submenu ************/ 
 	
 	[contextual addItem:[NSMenuItem separatorItem]];
-		item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Flip", nil) action: nil  keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Flip", nil) action: nil  keyEquivalent:@""];
 	[contextual addItem:item];
 	NSMenu *flipSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Flip", nil)];
 	[item setSubmenu:flipSubmenu ];
@@ -759,7 +759,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[subMenuItem setTarget:imageView];
 	[flipSubmenu addItem:subMenuItem];
 	[subMenuItem release];
-	
+	[item release];
 	[flipSubmenu release];
 	
 	
@@ -1340,6 +1340,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	long	i;
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+
+	[curOpacityMenu release];
 
 	[imageView release];
 	
