@@ -19,14 +19,23 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-
+#import "DCMTKServiceClassUser.h"
 
 #undef verify
+
+#include "osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcdatset.h"
+#include "dimse.h"
+#include "dccodec.h"
+#include "tlstrans.h"
+#include "tlslayer.h"
+#include "ofstring.h"
+
+
 
 @class DCMCalendarDate;
 
-@interface DCMTKQueryNode : NSObject {
+@interface DCMTKQueryNode : DCMTKServiceClassUser {
 	NSMutableArray *_children;
 	NSString *_uid;
 	NSString *_theDescription;
@@ -37,16 +46,6 @@
 	NSString *_modality;
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
-	
-	NSString *_callingAET;
-	NSString *_calledAET;
-	int _port;
-	NSString *_hostname;
-	NSDictionary *_extraParameters;
-	BOOL _shouldAbort;
-	int _transferSyntax;
-	float _compression;
-	
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
@@ -84,5 +83,13 @@
 
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax;
+- (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax;
+- (void) progressCallback:(void *)callbackData 
+			request:(T_DIMSE_C_FindRQ *)request
+			responseCount:(int)responseCount
+			response:(T_DIMSE_C_FindRSP *)rsp
+			responseIdentifiers:(DcmDataset *)responseIdentifiers;
+- (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset;
+- (OFCondition) cfind:(T_ASC_Association *)assoc dataset:(DcmDataset *)dataset;
 
 @end

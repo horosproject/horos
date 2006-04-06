@@ -1790,6 +1790,12 @@
 		BFB8F7F7087B805F007ABE20 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		BFBA8288075AADDA004D2D6C /* DCMPresentationContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFBA8289075AADDB004D2D6C /* DCMPresentationContext.m in Sources */ = {isa = PBXBuildFile; fileRef = BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */; };
+		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
+		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
+		BFBCD8A909E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
+		BFBCD8AA09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
+		BFBCD8AB09E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
+		BFBCD8AC09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
 		BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
 		BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
 		BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
@@ -9846,6 +9852,8 @@
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
 		BFBA8272075AA9B4004D2D6C /* DCMPresentationContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationContext.h; path = "DCM Framework/Networking/DCMPresentationContext.h"; sourceTree = SOURCE_ROOT; };
 		BFBA8273075AA9B4004D2D6C /* DCMPresentationContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationContext.m; path = "DCM Framework/Networking/DCMPresentationContext.m"; sourceTree = SOURCE_ROOT; };
+		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
+		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
 		BFBF3A9D09B681F500545F5E /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		BFBF3A9E09B681F500545F5E /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		BFBF3A9F09B681F500545F5E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
@@ -10795,7 +10803,7 @@
 		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
 		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
 		BFD0861809E3738D00B24030 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = "<group>"; };
-		BFD0861C09E373C100B24030 /* storescp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = storescp; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFD0861C09E373C100B24030 /* storescp */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = storescp; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ContrastCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
@@ -13832,6 +13840,8 @@
 				BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */,
 				BF1745D208E0C7E200822756 /* LogWindowController.h */,
 				BF1745D308E0C7E200822756 /* LogWindowController.m */,
+				BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */,
+				BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */,
 				BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */,
 				BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */,
 				BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */,
@@ -18552,6 +18562,7 @@
 				BF432BE509E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
 				BF432BF109E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
+				BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20362,6 +20373,7 @@
 				BF432BE309E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
 				BF432BEF09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BFA09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
+				BFBCD8AB09E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22177,6 +22189,7 @@
 				BF432BE109E31BE800AC322E /* DCMTKSeriesQueryNode.h in Headers */,
 				BF432BED09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BF809E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
+				BFBCD8A909E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24473,6 +24486,7 @@
 				BF432BE609E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
 				BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
+				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25033,6 +25047,7 @@
 				BF432BE409E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
 				BF432BF009E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
+				BFBCD8AC09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25641,6 +25656,7 @@
 				BF432BE209E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
 				BF432BEE09E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BF909E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
+				BFBCD8AA09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
