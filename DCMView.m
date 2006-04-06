@@ -7211,11 +7211,14 @@ BOOL	lowRes = NO;
 		NSLog(@"![self isEqualTo:sender]");
 		if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
 		{
-			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
-			[self roiSet:addedROI];
-			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
-			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
+			if( [[dcmRoiList objectAtIndex: sliceNumber] containsObject: addedROI] == NO)
+			{
+				NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
+				[self roiSet:addedROI];
+				NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
+				[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
+			}
 		}
 	}
 }

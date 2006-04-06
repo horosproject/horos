@@ -1461,7 +1461,8 @@ return rect;
 	if( type == tText || type == t2DPoint)
 	{
 		action = NO;
-	}else if( type == tPlain)
+	}
+	else if( type == tPlain)
 	{
 		switch( mode)
 		{
@@ -2057,7 +2058,7 @@ return rect;
 			  // M_PI defined in cmath.h
 			  angle = i * 2 * M_PI /CIRCLERESOLUTION;
 			  
-			  glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle));
+			  glVertex2f( (rect.origin.x - offsetx)*scaleValue + 8*cos(angle), (rect.origin.y - offsety)*scaleValue + 8*sin(angle)*pixelSpacingX/pixelSpacingY);
 			}
 			glEnd();
 			
