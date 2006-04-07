@@ -18,8 +18,12 @@
 #import "QueryArrayController.h"
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMNetworking.h>
+#import <OsiriX/DCMNetServiceDelegate.h>
 
 #import "DCMTKRootQueryNode.h"
+#import "DCMTKStudyQueryNode.h"
+#import "DCMTKSeriesQueryNode.h"
+#import "DCMTKImageQueryNode.h"
 
 @implementation QueryArrayController
 
@@ -34,7 +38,7 @@
 		port = [tcpPort retain];
 		queries = nil;
 		_netService = [netService retain];
-		NSLog(@"init Query Manager");
+		//NSLog(@"init Query Manager");
 		
 	}
 	return self;
@@ -80,17 +84,23 @@
 
 - (void)performQuery{
 	NS_DURING
-	NSLog(@"query");
+	//NSLog(@"query");
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
 	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
 	[params setObject:callingAET forKey:@"callingAET"];
 	[params setObject:calledAET forKey:@"calledAET"];
-	if (_netService)
+	/*
+	if (_netService) {
+		hostname = [_netService hostName];
+		[port release];
+		port = [[NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:_netService]] retain];
 		[params setObject:_netService  forKey:@"netService"];
+	}
 	else {
 		[params setObject:hostname  forKey:@"hostname"];
 		[params setObject:port forKey:@"port"];
 	}
+	*/
 	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
 	[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
@@ -98,8 +108,8 @@
 	rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
 									callingAET:callingAET
 									calledAET:calledAET 
-									hostname:[[self parameters] objectForKey:@"hostname"] 
-									port:[[[self parameters] objectForKey:@"port"] intValue] 
+									hostname:hostname
+									port:[port intValue]
 									transferSyntax:nil
 									compression: nil
 									extraParameters:nil] retain];

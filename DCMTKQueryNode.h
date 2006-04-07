@@ -80,7 +80,7 @@
 - (DcmDataset *)moveDataset;
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
 - (void)queryWithValues:(NSArray *)values;
-- (void)move;
+- (void)move:(id)sender;
 
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset;
@@ -88,5 +88,8 @@
 
 - (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset;
 - (OFCondition) cfind:(T_ASC_Association *)assoc dataset:(DcmDataset *)dataset;
+
+- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset;
+- (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset;
 
 @end

@@ -55,7 +55,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
-DCMTKQueryNode *node;
+
 
 #ifdef WITH_OPENSSL
 
@@ -72,6 +72,7 @@ NSException* queryException;
 typedef struct {
     T_ASC_Association *assoc;
     T_ASC_PresentationContextID presId;
+	DCMTKQueryNode *node;
 } MyCallbackInfo;
 
 static void
@@ -112,13 +113,50 @@ progressCallback(
      */
 {	
 		    /* dump response number */
-    printf("RESPONSE: %d (%s)\n", responseCount,
-        DU_cfindStatusString(rsp->DimseStatus));
+   // printf("RESPONSE: %d (%s)\n", responseCount,
+   //     DU_cfindStatusString(rsp->DimseStatus));
 
     /* dump data set which was received */
-    responseIdentifiers->print(COUT);
-	  // [node addChild:responseIdentifiers];
+   // responseIdentifiers->print(COUT);
+
+	MyCallbackInfo *callbackInfo = (MyCallbackInfo *)callbackData;
+	DCMTKQueryNode *node = callbackInfo -> node;
+	[node addChild:responseIdentifiers];
    
+}
+
+static void
+moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
+    int responseCount, T_DIMSE_C_MoveRSP *response)
+
+{	
+    OFCondition cond = EC_Normal;
+    MyCallbackInfo *myCallbackData;
+
+    myCallbackData = (MyCallbackInfo*)callbackData;
+	NSLog(@"move Response: %d", responseCount);
+   // if (_verbose) {
+   //     printf("Move Response %d: ", responseCount);
+   //     DIMSE_printCMoveRSP(stdout, response);
+   // }
+
+   
+}
+
+static void
+subOpCallback(void * /*subOpCallbackData*/ ,
+        T_ASC_Network *aNet, T_ASC_Association **subAssoc)
+{
+	
+   // if (aNet == NULL) return;   /* help no net ! */
+
+  //  if (*subAssoc == NULL) {
+        /* negotiate association */
+ //       acceptSubAssoc(aNet, subAssoc);
+//    } else {
+        /* be a service class provider */
+//        subOpSCP(subAssoc);
+//    }
 }
 
 
@@ -164,7 +202,7 @@ progressCallback(
 							transferSyntax:(int)transferSyntax
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters]){
-		_children = [[NSMutableArray alloc] init];
+		//_children = [[NSMutableArray alloc] init];
 		_uid = nil;
 		_theDescription = nil;
 		_name = nil;
@@ -173,9 +211,7 @@ progressCallback(
 		_time  = nil;
 		_modality = nil;
 		_numberImages = nil;
-		_specificCharacterSet = nil;
-		
-		node = self;
+		_specificCharacterSet = nil;		
 		
 	}
 	return self;
@@ -231,7 +267,7 @@ progressCallback(
 }
 
 - (DcmDataset *)moveDataset{
-	return nil;
+
 }
 
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
@@ -306,14 +342,17 @@ progressCallback(
 	}
 	if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset]) {
 	 }
-	 delete dataset;
+	 
+	 if (dataset != NULL) delete dataset;
+	
 }
 
-- (void)move{
+- (void) move:(id)sender{
 	DcmDataset *dataset = [self moveDataset];
 	if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset]) {
 	 }
-	 delete dataset;
+	 if (dataset != NULL) delete dataset;
+	 
 }
 
 //common network code for move and query
@@ -338,7 +377,7 @@ progressCallback(
     DIC_NODENAME peerHost;
     T_ASC_Association *assoc = NULL;
    
-
+	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
@@ -348,9 +387,9 @@ progressCallback(
 	
 	//debug code activated for now
 	_debug = OFTrue;
-	//DUL_Debug(OFTrue);
-	//DIMSE_debug(OFTrue);
-	//SetDebugLevel(3);
+	DUL_Debug(OFTrue);
+	DIMSE_debug(OFTrue);
+	SetDebugLevel(3);
 	
 	//Use Little Endian TS
 	_networkTransferSyntax = EXS_LittleEndianExplicit;
@@ -545,7 +584,7 @@ progressCallback(
 	/* If there are none, finish the execution */
 	if (ASC_countAcceptedPresentationContexts(params) == 0) {
 		errmsg("No Acceptable Presentation Contexts");
-		queryException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil];
+		queryException = [NSException exceptionWithName:@"DICOM Network Failure (qrscu)" reason:@"No acceptable presentation contexts" userInfo:nil];
 		[queryException raise];
 		//return;
 	}
@@ -558,6 +597,7 @@ progressCallback(
 		  }
 	}
 	else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0) { 
+		cond = [self cmove:assoc network:net dataset:dataset];
 	}
 	else {
 		NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
@@ -792,6 +832,7 @@ NS_ENDHANDLER
     /* prepare the callback data */
     callbackData.assoc = assoc;
     callbackData.presId = presId;
+	callbackData.node = self;
 
     /* if required, dump some more general information */
     if (_verbose) {
@@ -857,6 +898,88 @@ NS_ENDHANDLER
 
     /* return result value */
     return cond;
+}
+
+
+- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset{
+    /* opt_repeatCount specifies how many times a certain file shall be processed */
+    //int n = (int)_repeatCount;
+	int n = 1;
+	OFCondition cond = EC_Normal;
+    /* as long as no error occured and the counter does not equal 0 */
+    while (cond == EC_Normal && n--) {
+        /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
+        cond = [self moveSCU:assoc network:(T_ASC_Network *)net dataset:dataset];
+    }
+
+    /* return result value */
+    return cond;
+}
+
+- (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
+{
+  T_ASC_PresentationContextID presId;
+    T_DIMSE_C_MoveRQ    req;
+    T_DIMSE_C_MoveRSP   rsp;
+    DIC_US              msgId = assoc->nextMsgID++;
+    DcmDataset          *rspIds = NULL;
+    const char          *sopClass;
+    DcmDataset          *statusDetail = NULL;
+    MyCallbackInfo      callbackData;
+		
+   // sopClass = querySyntax[opt_queryModel].moveSyntax;
+
+    /* which presentation context should be used */
+    presId = ASC_findAcceptedPresentationContextID(assoc, UID_MOVEStudyRootQueryRetrieveInformationModel);
+    if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+
+    if (_verbose) {
+        printf("Move SCU RQ: MsgID %d\n", msgId);
+        printf("Request:\n");
+        dataset->print(COUT);
+    }
+
+    /* prepare the callback data */
+    callbackData.assoc = assoc;
+    callbackData.presId = presId;
+	callbackData.node = self;
+
+    req.MessageID = msgId;
+    strcpy(req.AffectedSOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel);
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
+    req.DataSetType = DIMSE_DATASET_PRESENT;
+ 
+	/* set the destination to be me */
+	ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
+
+
+    OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dataset,
+        moveCallback, &callbackData, _blockMode, _dimse_timeout,
+        net, subOpCallback, NULL,
+        &rsp, &statusDetail, &rspIds , OFTrue);
+
+    if (cond == EC_Normal) {
+        if (_verbose) {
+            DIMSE_printCMoveRSP(stdout, &rsp);
+            if (rspIds != NULL) {
+                printf("Response Identifiers:\n");
+                rspIds->print(COUT);
+            }
+        }
+    } else {
+        errmsg("Move Failed:");
+        DimseCondition::dump(cond);
+    }
+    if (statusDetail != NULL) {
+        printf("  Status Detail:\n");
+        statusDetail->print(COUT);
+        delete statusDetail;
+    }
+
+    if (rspIds != NULL) delete rspIds;
+
+    return cond;
+
 }
 
 

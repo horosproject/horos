@@ -66,38 +66,38 @@
 		
 		const char *string = nil;
 		
-		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good())
+		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
 			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-
-		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good()) 
+		
+		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
 			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
-		if (dataset ->findAndGetString(DCM_StudyDescription, string).good()) 
+		if (dataset ->findAndGetString(DCM_StudyDescription, string).good() && string != nil) 
 			_theDescription = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
-		if (dataset ->findAndGetString(DCM_PatientsName, string).good())	
+		if (dataset ->findAndGetString(DCM_PatientsName, string).good() && string != nil)	
 			_name =  [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 		
-		if (dataset ->findAndGetString(DCM_PatientID, string).good())		
+		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
 			_patientID = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
 			
-		if (dataset ->findAndGetString(DCM_StudyDate, string).good()) {
+		if (dataset ->findAndGetString(DCM_StudyDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
 			[dateString release];
 		}
 		
-		if (dataset ->findAndGetString(DCM_StudyTime, string).good()) {
+		if (dataset ->findAndGetString(DCM_StudyTime, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_time = [[DCMCalendarDate dicomTime:dateString] retain];
 			[dateString release];
 		}
 		
 
-		if (dataset ->findAndGetString(DCM_ModalitiesInStudy, string).good())	
+		if (dataset ->findAndGetString(DCM_ModalitiesInStudy, string).good() && string != nil)	
 			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
-		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good())	
+		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)	
 			_numberImages = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 
 	}
@@ -120,6 +120,14 @@
 	return dataset;
 	
 }
+
+- (DcmDataset *)moveDataset{
+	DcmDataset *dataset = new DcmDataset();
+	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
+	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "STUDY", OFTrue);
+	return dataset;
+}
+
 
 - (void)addChild:(DcmDataset *)dataset{
 	if (!_children)

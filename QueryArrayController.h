@@ -17,10 +17,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DCMRootQueryNode;
+
 
 @interface QueryArrayController : NSObject {
-	DCMRootQueryNode *rootNode;
+	id rootNode;
 	NSMutableDictionary *filters;
 	NSString *callingAET;
 	NSString *calledAET;

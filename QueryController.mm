@@ -33,6 +33,10 @@
 #import "NetworkMoveDataHandler.h"
 #import "AdvancedQuerySubview.h"
 #include "DCMTKVerifySCU.h"
+#import "DCMTKRootQueryNode.h"
+#import "DCMTKStudyQueryNode.h"
+//#import "DCMTKSeriesQueryNode.h"
+//#import "DCMTKImageQueryNode.h"
 
 
 //extern int mainFindSCU(int argc, char *argv[]);
@@ -94,24 +98,16 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item{
 
-	//return (item == nil) ? [(PMDirectoryRecord*)[(NSArray *)[queryManager queryList] objectAtIndex:index] objectForKey:@"Directory Record"] : [(PMDirectoryRecord*)item getChildAt:index];
-	return (item == nil) ? [[queryManager queries] objectAtIndex:index] : [[(DCMQueryNode *)item children] objectAtIndex:index];
+	return (item == nil) ? [[queryManager queries] objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];
 }
 
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item{
-/*
-	if (item == nil) 
-		return [[queryManager queryList] count];
-	else
-		return ![(PMDirectoryRecord*)item isLeaf];
-*/
-
 	if (item == nil)
 		return [[queryManager queries] count];
 	else
 	{
-		if ( [item isMemberOfClass:[DCMImageQueryNode class]] == NO && [item isMemberOfClass:[DCMSeriesQueryNode class]] == NO)
+		if ( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES || [item isMemberOfClass:[DCMTKRootQueryNode class]] == YES)
 			return YES;
 		else 
 			return NO;
@@ -120,35 +116,26 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
+	NSLog(@"number of Children for :%@", [item description]);
 	if( item)
 	{
-		if (![(DCMQueryNode *)item children]) {
+		if (![(DCMTKQueryNode *)item children]) {
 			[progressIndicator startAnimation:nil];
-			[item queryWithValues:nil parameters:[queryManager parameters]];
+			//[item queryWithValues:nil parameters:[queryManager parameters]];
+			NSLog(@"Query Series: %@", [item description]);
+			[item queryWithValues:nil];
 			[progressIndicator stopAnimation:nil];
 		}
 	}
-	return  (item == nil) ? [[queryManager queries] count] : [[(DCMQueryNode *) item children] count];
+	return  (item == nil) ? [[queryManager queries] count] : [[(DCMTKQueryNode *) item children] count];
 }
 
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
 
 	if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
-	{
-//		NSLog(@"Idnetifer: %@  value: %@", [tableColumn identifier], [item valueForKey: [tableColumn identifier]]);
-		
-		return [item valueForKey: [tableColumn identifier]];
-		
-		
-		//if( [[tableColumn identifier] isEqualToString:@"time"] == NO)  return [item valueForKey: [tableColumn identifier]];
-		//else
-		//{	
-		//	if ([[item valueForKey: @"time"] isKindOfClass:[NSDate class]])
-		//		return (NSDate *)[item valueForKey: @"time"];
-		//	else
-		//		return nil;
-		//}
+	{		
+		return [item valueForKey: [tableColumn identifier]];		
 	}
 	return nil;
 
