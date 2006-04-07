@@ -925,12 +925,15 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		origin.x = origin.y = 0;
 		curImage = index;    
 		curDCM = [dcmPixList objectAtIndex: curImage];
-		if( dcmRoiList) curRoiList = [dcmRoiList objectAtIndex: curImage];
+		
+		[curRoiList release];
+		
+		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else
 		{
-			if( curRoiList) [curRoiList release];
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		}
+		
 		for( i = 0; i < [curRoiList count]; i++)
 		{
 			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :self];
@@ -1067,12 +1070,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 	if( colorBuf) free( colorBuf);
 	if( blendingColorBuf) free( blendingColorBuf);
-		
-	if( dcmRoiList == 0L)
-	{
-		if( curRoiList) [curRoiList release];
-		curRoiList = 0L;
-	}
+	
+	if( curRoiList) [curRoiList release];
+	curRoiList = 0L;
 	
 	[dcmRoiList release];
 	dcmRoiList = 0L;
@@ -1112,11 +1112,12 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
         curImage = index;
         
         curDCM = [dcmPixList objectAtIndex:curImage];
-
-		if( dcmRoiList) curRoiList = [dcmRoiList objectAtIndex: curImage];
+		
+		[curRoiList release];
+		
+		if( dcmRoiList) curRoiList = [[dcmRoiList objectAtIndex: curImage] retain];
 		else
 		{
-			if( curRoiList) [curRoiList release];
 			curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
 		}
 
@@ -7201,7 +7202,9 @@ BOOL	lowRes = NO;
 -(void) addROI:(NSNotification*)note
 {
 	NSLog(@"addROI:(NSNotification*)note");
-
+	
+	if (NO)
+	{
 	DCMView *sender = [note object];
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
@@ -7211,7 +7214,7 @@ BOOL	lowRes = NO;
 		NSLog(@"![self isEqualTo:sender]");
 		if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
 		{
-			if( [[dcmRoiList objectAtIndex: sliceNumber] containsObject: addedROI] == NO)
+		//	if( [[dcmRoiList objectAtIndex: sliceNumber] containsObject: addedROI] == NO)
 			{
 				NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
 				[self roiSet:addedROI];
@@ -7220,6 +7223,7 @@ BOOL	lowRes = NO;
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
 			}
 		}
+	}
 	}
 }
 

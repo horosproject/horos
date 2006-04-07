@@ -132,12 +132,10 @@
 		xReslicedDCMPixList = [reslicer xReslicedDCMPixList];
 		yReslicedDCMPixList = [reslicer yReslicedDCMPixList];
 		
-//		NSLog(@"yReslicedView setDcmRoiList");
-//		[yReslicedView setDcmRoiList:[self pointsROIAtX:x]];
-//		NSLog(@"xReslicedView setDcmRoiList");
-//		[xReslicedView setDcmRoiList:[self pointsROIAtY:y]];
-
-		[self loadROIonReslicedViews: x: y];
+//		NSLog(@"yReslicedView setCurRoiList");
+//		[yReslicedView setCurRoiList:[self pointsROIAtX:x]];
+//		NSLog(@"xReslicedView setCurRoiList");
+//		[xReslicedView setCurRoiList:[self pointsROIAtY:y]];
 		
 		[xReslicedView setPixList : xReslicedDCMPixList :originalDCMFilesList];
 		[yReslicedView setPixList : yReslicedDCMPixList :originalDCMFilesList];
@@ -176,8 +174,8 @@
 			[reslicer yReslice:x];
 			yReslicedDCMPixList = [reslicer yReslicedDCMPixList];
 			
-//			NSLog(@"yReslicedView setDcmRoiList");
-			[yReslicedView setDcmRoiList:[self pointsROIAtX:x]];
+//			NSLog(@"yReslicedView setCurRoiList");
+			[yReslicedView setCurRoiList:[self pointsROIAtX:x]];
 		
 			[yReslicedView setPixList : yReslicedDCMPixList :originalDCMFilesList];
 			
@@ -197,8 +195,8 @@
 			[reslicer xReslice:x];
 			xReslicedDCMPixList = [reslicer xReslicedDCMPixList];
 			
-//			NSLog(@"xReslicedView setDcmRoiList");
-			[xReslicedView setDcmRoiList:[self pointsROIAtY:y]];
+//			NSLog(@"xReslicedView setCurRoiList");
+			[xReslicedView setCurRoiList:[self pointsROIAtY:y]];
 			
 			[xReslicedView setPixList : xReslicedDCMPixList :originalDCMFilesList];
 			
@@ -243,6 +241,8 @@
 		[yReslicedView setOrigin:yOrigin];
 	}
 
+	[self loadROIonReslicedViews: [originalView crossPositionX]: [originalView crossPositionY]];
+	
 	// needs display
 	[originalView setNeedsDisplay:YES];
 	[xReslicedView setNeedsDisplay:YES];
@@ -684,13 +684,13 @@
 - (void) showViews:(id)sender
 {
 	// Set the 1st view
-	[originalView setPixList:originalDCMPixList :originalDCMFilesList];
+	[originalView setPixList:originalDCMPixList :originalDCMFilesList:originalROIList];
 	[originalView setIndexWithReset:[originalDCMPixList count]/2 :YES];
 	sign = ([[[originalView pixList] objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
 	
-	[originalView setDcmRoiList:originalROIList];
-	NSMutableArray *rois = [originalView dcmRoiList];
-	
+//	[originalView setCurRoiList:originalROIList];
+//	NSMutableArray *rois = [originalView dcmRoiList];
+//	
 	//[originalView setCrossPosition:round((float)[[[originalView pixList] objectAtIndex:0] pwidth]*0.5f) :round((float)[[[originalView pixList] objectAtIndex:0] pheight]*0.5f)];
 	
 	// orthogonal reslice
@@ -789,7 +789,9 @@
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
 			if([aROI type]==t2DPoint)
 			{
-				if((long)([[[aROI points] objectAtIndex:0] x]+0.5)==x)
+				NSLog(@"pt : %f, x : %d", [[[aROI points] objectAtIndex:0] x], x);
+//				if((long)([[[aROI points] objectAtIndex:0] x]+0.5)==x)
+				if((long)([[[aROI points] objectAtIndex:0] x])==x)
 				{
 					//NSLog(@"pt 2D");
 					ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)];
@@ -807,7 +809,7 @@
 	}
 	//NSLog(@"[roisAtX count] : %d", [roisAtX count]);
 	
-	return [NSMutableArray arrayWithObject:roisAtX];
+	return roisAtX;
 }
 
 - (NSMutableArray*) pointsROIAtY: (long) y
@@ -826,8 +828,9 @@
 			if([aROI type]==t2DPoint)
 			{
 				//NSLog(@"pt 2D");
-				//NSLog(@"pt : %f, y : %d", [[[aROI points] objectAtIndex:0] y], y);
-				if((long)([[[aROI points] objectAtIndex:0] y]+0.5)==y)
+				NSLog(@"pt : %f, y : %d", [[[aROI points] objectAtIndex:0] y], y);
+//				if((long)([[[aROI points] objectAtIndex:0] y]+0.5)==y)
+				if((long)([[[aROI points] objectAtIndex:0] y])==y)
 				{
 					//NSLog(@"pt 2D");
 					ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[xReslicedView pixelSpacingX] :[xReslicedView pixelSpacingY] :NSMakePoint( [xReslicedView origin].x, [xReslicedView origin].y)];
@@ -845,13 +848,18 @@
 	}
 	//NSLog(@"[roisAtY count] : %d", [roisAtY count]);
 	
-	return [NSMutableArray arrayWithObject:roisAtY];
+	return roisAtY;
 }
 
 - (void) loadROIonReslicedViews: (long) x: (long) y
 {
-	[xReslicedView setDcmRoiList:[self pointsROIAtY:y]];
-	[yReslicedView setDcmRoiList:[self pointsROIAtX:x]];
+	NSLog(@"loadROIonReslicedViews");
+	[xReslicedView setCurRoiList:[self pointsROIAtY:y]];
+	[yReslicedView setCurRoiList:[self pointsROIAtX:x]];
+//	[xReslicedView setIndex:0];
+//	[yReslicedView setIndex:0];
+	[xReslicedView setNeedsDisplay:YES];
+	[yReslicedView setNeedsDisplay:YES];
 }
 
 -(void) roiSelected:(NSNotification*) note

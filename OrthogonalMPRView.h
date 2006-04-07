@@ -30,6 +30,7 @@
 }
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files;
+- (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois;
 //- (void) setPixList: (NSMutableArray*) pix;
 - (NSMutableArray*) pixList;
 - (void) setController: (OrthogonalMPRController*) newController;
@@ -56,5 +57,7 @@
 
 - (void) setCurWLWWMenu:(NSString*) str;
 - (NSString*) curWLWWMenu;
+
+- (void) setCurRoiList: (NSMutableArray*) rois;
 
 @end

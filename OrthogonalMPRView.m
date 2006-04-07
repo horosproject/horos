@@ -44,30 +44,12 @@
 	[super dealloc];
 }
 
-- (void) setPixList: (NSMutableArray*) pix :(NSArray*) files
+- (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois
 {
 	long i, index;
+	
+	[self setDCM:pix :files :rois :0 :'i' :NO];
 
-	if(dcmRoiList==0L)
-	{
-		dcmRoiList = [[NSMutableArray alloc] initWithCapacity: 0];
-		for( i = 0; i < [pix count]; i++)
-		{
-			[dcmRoiList addObject:[NSMutableArray arrayWithCapacity:0]];
-		}
-		[dcmRoiList retain];
-		if( curRoiList) [curRoiList release];
-		curRoiList = [[NSMutableArray alloc] initWithCapacity:0];
-	}
-	else
-	{
-		curRoiList = [dcmRoiList objectAtIndex: 0];
-	}
-		
-	[self setDCM:pix :files :dcmRoiList :0 :'i' :NO];
-	//[self setDCM:pix :files :nil :0 :'i' :NO];
-
-//	curRoiList = [NSMutableArray arrayWithCapacity:0];
 	// Prepare pixList for image thick slab
 	for( i = 0; i < [pix count]; i++) [[pix objectAtIndex: i] setArrayPix: pix :i];
 	
@@ -75,18 +57,25 @@
 	
 }
 
+- (void) setPixList: (NSMutableArray*) pix :(NSArray*) files
+{
+	[self setPixList: pix : files : 0L];
+}
+
 - (NSMutableArray*) pixList
 {
 	return dcmPixList;
 }
 
-- (void) setDcmRoiList: (NSMutableArray*) rois
+- (void) setCurRoiList: (NSMutableArray*) rois
 {
-	if(dcmRoiList) [dcmRoiList release];
-	dcmRoiList = rois;
-	[dcmRoiList retain];
+//	if(dcmRoiList) [dcmRoiList release];
+//	dcmRoiList = rois;
+//	[dcmRoiList retain];
+//	
+//	curRoiList = [dcmRoiList objectAtIndex: curImage];
 	
-	curRoiList = [dcmRoiList objectAtIndex: curImage];
+	curRoiList = [rois retain];
 	
 	int i;
 	for(i=0; i<[curRoiList count]; i++)
@@ -94,7 +83,7 @@
 		[self roiSet:[curRoiList objectAtIndex:i]];
 	}
 
-//	NSLog(@"setDcmRoiList");	
+//	NSLog(@"setCurRoiList");	
 //	int j;
 //	for(j=0; j<[dcmRoiList count]; j++)
 //	{
@@ -427,7 +416,7 @@
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
 	
-	if (![self isEqualTo:sender] && ![self isEqualTo:[controller xReslicedView]] && ![self isEqualTo:[controller yReslicedView]])
+	if (![self isEqualTo:sender])// && ![self isEqualTo:[controller xReslicedView]] && ![self isEqualTo:[controller yReslicedView]])
 	{
 		NSLog(@"sender is not self");
 		if ([[controller originalView] isEqualTo:sender])
@@ -455,17 +444,19 @@
 					[new2DPointROI setROIRect:irect];
 					[self roiSet:new2DPointROI];
 					// add the 2D Point ROI to the ROI list
-					[[dcmRoiList objectAtIndex: 0] addObject: new2DPointROI];
+					//[[dcmRoiList objectAtIndex: 0] addObject: new2DPointROI];
+					[curRoiList addObject: new2DPointROI];
 					// no notification !!! or loop and die!
 				}
 				[controller loadROIonReslicedViews: [self crossPositionX] : [self crossPositionY]];
 			}
 		}
-		else if ([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender])
+		else if (([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender]) && [[controller originalView] isEqualTo:self])
 		{
 			NSLog(@"sender is xReslicedView OR yReslicedView");
 			if([addedROI type]==t2DPoint)
 			{
+				NSLog(@"ROI is a Point");
 				ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)];
 
 				NSRect irect;
@@ -485,19 +476,28 @@
 				[[controller originalView] roiSet:new2DPointROI];
 				// add the 2D Point ROI to the ROI list
 				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
+				NSLog(@"slice : %d", slice);
 				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			}
 			[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
 		}
-		else if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
-		{
-			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
-			[self roiSet:addedROI];
-			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
-			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
-		}
+//		else if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
+//		{
+//			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
+//			[self roiSet:addedROI];
+//			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
+//			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
+//			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
+//		}
+		[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
 	}
+}
+
+-(void) roiSelected:(NSNotification*)note
+{
+	[super roiSelected:note];
+//	if ([[controller originalView] isEqualTo:self])
+		[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
 }
 
 @end
