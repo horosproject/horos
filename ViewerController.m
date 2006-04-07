@@ -3171,22 +3171,28 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
-	for( x = 0; x < maxMovieIndex; x++)
+	if( stopThreadLoadImage == NO)
 	{
-		for( i = 0 ; i < [pixList[ x] count]; i++)
+		for( x = 0; x < maxMovieIndex; x++)
 		{
-			[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+			for( i = 0 ; i < [pixList[ x] count]; i++)
+			{
+				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+			}
 		}
 	}
 	
 	ThreadLoadImage = NO;
 	[ThreadLoadImageLock unlock];
 	
-	if( isPET)
+	if( stopThreadLoadImage == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+		if( isPET)
 		{
-			[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+			{
+				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
+			}
 		}
 	}
 	
@@ -4664,6 +4670,8 @@ NSMutableArray		*array;
 		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
 		
 		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO) [blendingController ApplyCLUTString:@"PET"];
+		
+		[imageView setBlendingFactor: [blendingSlider floatValue]];
 	}
 	else
 	{
@@ -4671,8 +4679,6 @@ NSMutableArray		*array;
 		[blendingSlider setEnabled:NO];
 		[blendingPercentage setStringValue:@"-"];
 	}
-	
-	[imageView setBlendingFactor: [blendingSlider floatValue]];
 	
 	if (bC != self)
 		[seriesView ActivateBlending:bC blendingFactor:[blendingSlider floatValue]];

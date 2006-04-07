@@ -186,6 +186,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;
  -(NSMutableArray*) dcmPixList;
+ -(NSMutableArray*) dcmRoiList;
 - (long) indexForPix: (long) pixIndex; // Return the index into fileList that coresponds to the index in pixList
 - (long) syncSeriesIndex;
 - (void) setSyncSeriesIndex:(long) i;
