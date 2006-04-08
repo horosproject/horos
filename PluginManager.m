@@ -315,12 +315,9 @@ PluginManager			*pluginManager = 0L;
 			if ( [[name pathExtension] isEqualToString:@"plugin"] )
 			{
 				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
-				//NSLog(@"plugin: %@", [plugin  description]);
-				//NSLog(@"plugin principal class : %@", NSStringFromClass([plugin principalClass]));
-				//NSLog(@"plugin principal class Name : %@", [[plugin infoDictionary] objectForKey:@"NSPrincipalClass"]);
-				if ( filterClass = [plugin principalClass])
+				 
+				if (filterClass = [plugin principalClass])	
 				{
-					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
 					{
 						PluginFilter*	filter = [filterClass filter];
@@ -371,7 +368,7 @@ PluginManager			*pluginManager = 0L;
 					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
 					{
-						NSLog(@"report PLugin: %@", [[plugin infoDictionary] description]);
+						//NSLog(@"report PLugin: %@", [[plugin infoDictionary] description]);
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}

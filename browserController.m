@@ -7139,8 +7139,10 @@ static BOOL needToRezoom;
 					
 			if( plugin)
 			{
+				NSLog(@"generate report with plugin");
 				PluginFilter* filter = [[plugin principalClass] filter];
 				[filter createReportForStudy: studySelected];
+				NSLog(@"end generate report with plugin");
 				//[filter report: studySelected action: @"openReport"];
 			}
 			else

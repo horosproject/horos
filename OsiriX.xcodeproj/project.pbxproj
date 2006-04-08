@@ -1755,6 +1755,12 @@
 		BF7DEBB109D1FC6C00A332B8 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
+		BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
+		BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
+		BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
+		BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
+		BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		BF8DE5E706507355005DB40E /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
 		BF8DE5E806507355005DB40E /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E106507355005DB40E /* SmartIcon.tif */; };
@@ -9671,6 +9677,8 @@
 		BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMToNSString.m; sourceTree = "<group>"; };
 		BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKStoreSCU.h; sourceTree = "<group>"; };
 		BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKStoreSCU.mm; sourceTree = "<group>"; };
+		BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ReportPluginFilter.h; sourceTree = "<group>"; };
+		BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ReportPluginFilter.m; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
 		BF8DE5E106507355005DB40E /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
@@ -13289,6 +13297,8 @@
 		AB2C25060677863100A08910 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */,
+				BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */,
 				BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */,
 				BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */,
 				AB2C24E00677861300A08910 /* PluginFilter.m */,
@@ -18563,6 +18573,7 @@
 				BF432BF109E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
+				BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20374,6 +20385,7 @@
 				BF432BEF09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BFA09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8AB09E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
+				BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22190,6 +22202,7 @@
 				BF432BED09E31C0F00AC322E /* DCMTKImageQueryNode.h in Headers */,
 				BF432BF809E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8A909E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
+				BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24487,6 +24500,7 @@
 				BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
+				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25048,6 +25062,7 @@
 				BF432BF009E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8AC09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
+				BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25657,6 +25672,7 @@
 				BF432BEE09E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
 				BF432BF909E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8AA09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
+				BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
