@@ -276,7 +276,9 @@ DcmQueryRetrieveConfig config;
 	NSNetService *netService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:_aeTitle port:_port];
 	[netService setDelegate:nil];
 	[netService publish];
-
+	
+	_abort = NO;
+	
     /* loop waiting for associations */
     while (cond.good() && !_abort)
     {
@@ -292,14 +294,13 @@ DcmQueryRetrieveConfig config;
     if (cond.bad()) {
         errmsg("Error dropping network:");
         DimseCondition::dump(cond);
-        return;
     }
 	
 	return;
-
-
 }
--(void)abort{
+-(void)abort
+{
+
 }
 
 @end
