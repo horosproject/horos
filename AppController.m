@@ -640,7 +640,9 @@ NSRect screenFrame()
 #define INCOMINGPATH @"/INCOMING/"
 
 -(void) restartSTORESCP
-{	NSLog(@"restartSTORESCP");
+{
+	NSLog(@"restartSTORESCP");
+	
 	// Is called restart because previous instances of storescp might exist and need to be killed before starting
 	// This should be performed only if OsiriX is to handle storescp, depending on what is defined in the preferences
 	// Key:@"STORESCP" is the corresponding switch
@@ -648,57 +650,69 @@ NSRect screenFrame()
 	NS_DURING
     quitting = YES;
 	
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+	// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+	{
+		// Kill DCMTK listener
+		//built in dcmtk serve testing
+		if (BUILTIN_DCMTK == YES)
 		{
-
-			// Kill DCMTK listener
-			//built in dcmtk serve testing
-			 if (BUILTIN_DCMTK == YES) {
-				[dcmtkQRSCP abort];
-				[dcmtkQRSCP release];
-				dcmtkQRSCP = nil;
-			}
-			else{
-				NSMutableArray  *theArguments = [NSMutableArray array];
-				NSTask			*aTask = [[NSTask alloc] init];		
-				[aTask setLaunchPath:@"/usr/bin/killall"];		
-				[theArguments addObject:@"storescp"];
-				[aTask setArguments:theArguments];		
-				[aTask launch];
-				[aTask waitUntilExit];		
-				[aTask interrupt];
-				[aTask release];
-				aTask = nil;
-			}
+			[dcmtkQRSCP abort];
+			[dcmtkQRSCP release];
+			dcmtkQRSCP = nil;
+		}
+		else
+		{
+			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+			
+			NSMutableArray  *theArguments = [NSMutableArray array];
+			NSTask			*aTask = [[NSTask alloc] init];		
+			[aTask setLaunchPath:@"/usr/bin/killall"];		
+			[theArguments addObject:@"storescp"];
+			[aTask setArguments:theArguments];		
+			[aTask launch];
+			[aTask waitUntilExit];		
+			[aTask interrupt];
+			[aTask release];
+			aTask = nil;
+		}
 		
 		// Kill OsiriX framework listener
 		if( storeSCP)
 		{
+			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+			
 			[storeSCP stop];
 			[storeSCP release];
 			storeSCP = 0L;
 		}
-
-
+		
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString            *path = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 		BOOL				isDir = YES;
+		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-
-
+		
 		// @"USESTORESCP" is true when DCMTK is chosen
 		// In this case it's necesary to start a new thread
 		// In case of using DCM framework, the code follows right after "else" statement
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
-			{[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];}
+		{
+			[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
+		}
 		else
-			{
+		{
+			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+			
 			//DCM framework storescp
 			//NSAutoreleasePool allows retaining storeSCP NetworkListener object, having it persist after the [pool release]
+			
 			NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-				
+			
 			int debugLevel = 0;
 			NSMutableDictionary *params = [NSMutableDictionary dictionary];
 			[params setObject: [NSNumber numberWithInt:debugLevel] forKey: @"debugLevel"];
@@ -708,13 +722,12 @@ NSRect screenFrame()
 			storeSCP = [[NetworkListener listenWithParameters:params] retain];
 
 			[pool release];
-			}
 		}
+	}
 
 	NS_HANDLER
 		NSLog(@"Exception restarting storeSCP");
 	NS_ENDHANDLER
-	
 }
 
 -(void) displayListenerError: (NSString*) err
@@ -1731,15 +1744,6 @@ static BOOL initialized = NO;
 	[self initDCMTK];
 	[self restartSTORESCP];
 	
-//    // RUN DICOM LISTENER
-//    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-//    {
-//		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
-//			[NSThread detachNewThreadSelector: @selector(StartSTORESCP:) toTarget: self withObject: self];
-//		else
-//		    [self StartSTORESCP:nil];
-//    }
-		
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
