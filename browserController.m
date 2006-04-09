@@ -7181,6 +7181,8 @@ static BOOL needToRezoom;
 					
 					// Set only LAST component -> the bonjour server will complete the address
 					[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:[[studySelected valueForKey:@"reportURL"] lastPathComponent] forKey:@"reportURL"];
+					
+					[report release];
 				}
 				
 				NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
@@ -7209,6 +7211,8 @@ static BOOL needToRezoom;
 					Reports	*report = [[Reports alloc] init];
 					
 					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:[[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]];
+					
+					[report release];
 				}
 			}
 		}
