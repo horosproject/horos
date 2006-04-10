@@ -65,6 +65,8 @@ MODIFICATION HISTORY
 
 #define BUILTIN_DCMTK YES
 
+static NSString *hostName = @"";
+
 ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
 extern		NSMutableDictionary		*plugins;
@@ -2111,8 +2113,11 @@ static BOOL initialized = NO;
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
 	if([AppController isHUG])
 	{
-		[self HUGDisableBonjourFeature];
-		[self HUGVerifyComPACSPlugin];
+		if(![hostName isEqualToString: @"lavimarch.hcuge.ch"])
+		{
+			[self HUGDisableBonjourFeature];
+			[self HUGVerifyComPACSPlugin];
+		}
 	}
 	/// *****************************
 	/// *****************************
@@ -2828,21 +2833,19 @@ static BOOL isHcugeCh = NO, testDone = NO;
 		int i;
 		for( i = 0; i < [names count] && !isHcugeCh; i++)
 		{
-			NSString *name = [names objectAtIndex: i];
-			int len = [name length];
+			int len = [[names objectAtIndex: i] length];
 			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
-			NSString *domainName = [name substringFromIndex: len - 8];
+			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
 
-			if([domainName isEqualToString: @"hcuge.ch"]
-				&& ![[names objectAtIndex: i] isEqualToString: @"uin-mc05.hcuge.ch"])
+			if([domainName isEqualToString: @"hcuge.ch"])
 			{
 				isHcugeCh = YES;
+				hostName = [names objectAtIndex: i];
+				//NSLog(@"hostName : %@", hostName);
 			}
 		}
-		
 		testDone = YES;
 	}
-
 	return isHcugeCh;
 }
 
