@@ -803,7 +803,7 @@
 					[new2DPointROI setROIRect:irect];
 					[new2DPointROI setParentROI:aROI];
 					// copy the state
-					[new2DPointROI setROIMode:[aROI ROImode]];
+//					[new2DPointROI setROIMode:[aROI ROImode]];
 					// copy the name
 					[new2DPointROI setName:[aROI name]];
 					// add the 2D Point ROI to the ROI list
@@ -847,7 +847,7 @@
 					[new2DPointROI setROIRect:irect];
 					[new2DPointROI setParentROI:aROI];
 					// copy the state
-					[new2DPointROI setROIMode:[aROI ROImode]];
+//					[new2DPointROI setROIMode:[aROI ROImode]];
 					// copy the name
 					[new2DPointROI setName:[aROI name]];
 					// add the 2D Point ROI to the ROI list

@@ -160,6 +160,7 @@ GLenum glReportError (void)
     {
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
+		parentROI = 0L;
 		points = [coder decodeObject];
 		rect = NSRectFromString( [coder decodeObject]);
 		type = [[coder decodeObject] floatValue];
@@ -299,6 +300,7 @@ GLenum glReportError (void)
 	[_sopInstanceUID release];
 	[_referencedSOPInstanceUID release];
 	[_referencedSOPClassUID release];
+	[parentROI release];
 	
 	[super dealloc];
 }
@@ -382,6 +384,7 @@ GLenum glReportError (void)
 		long i,j;
         type = tPlain;
 		mode = ROI_sleep;
+		parentROI = 0L;
 		thickness = 2.0;
 		opacity = 0.5;
 		textureName = 0L;
@@ -438,6 +441,7 @@ GLenum glReportError (void)
 	{
         type = itype;
 		mode = ROI_sleep;
+		parentROI = 0L;
 		
 		previousPoint.x = previousPoint.y = -1000;
 		
@@ -1759,7 +1763,7 @@ return rect;
 	
 	[self valid];
 	
-	if( action) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	if( action) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"moved", @"action", 0L]];
 	
 	return action;
 }
@@ -2897,7 +2901,11 @@ return rect;
 
 - (void) setParentROI: (ROI*) aROI;
 {
-	parentROI = aROI;
+	if( aROI == parentROI) return;
+	
+	[parentROI release];
+	
+	parentROI = [aROI retain];
 }
 
 @end

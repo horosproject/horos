@@ -314,4 +314,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void)resizeWindowToScale:(float)resizeScale;
 - (float) getBlendedSUV;
 - (OrthogonalMPRController*) controller;
+-(void) roiChange:(NSNotification*)note;
+-(void) addROI:(NSNotification*)note;
+-(void) roiSelected:(NSNotification*) note;
 @end
