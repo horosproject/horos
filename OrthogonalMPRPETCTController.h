@@ -22,7 +22,7 @@
 
 	BOOL						isBlending;
 }
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :(id) newViewer;
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer;
 
 - (void) setCrossPosition: (long) x: (long) y: (id) sender;
 - (void) resliceFromOriginal: (long) x: (long) y;

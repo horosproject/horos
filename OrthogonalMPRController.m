@@ -20,13 +20,13 @@
 
 @implementation OrthogonalMPRController
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC:(id) newViewer
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 {
 	// initialisations
 	originalDCMPixList = [pix retain];
 	originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 	
-	//originalROIList = [[[bC imageView] dcmRoiList] retain];	<- Isn't Wrong??? Why this? It crashes PET-CT
+	originalROIList = [[[vC imageView] dcmRoiList] retain];	//<- Isn't Wrong??? Why this? It crashes PET-CT
 	
 	reslicer = [[OrthogonalReslice alloc] initWithOriginalDCMPixList: originalDCMPixList];
 		
@@ -789,7 +789,7 @@
 			ROI *aROI = [[rois objectAtIndex:i] objectAtIndex:j];
 			if([aROI type]==t2DPoint)
 			{
-				NSLog(@"pt : %f, x : %d", [[[aROI points] objectAtIndex:0] x], x);
+				//NSLog(@"pt : %f, x : %d", [[[aROI points] objectAtIndex:0] x], x);
 //				if((long)([[[aROI points] objectAtIndex:0] x]+0.5)==x)
 				if((long)([[[aROI points] objectAtIndex:0] x])==x)
 				{
@@ -801,6 +801,11 @@
 					irect.origin.y = sliceIndex; // i is slice number
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
+					[new2DPointROI setParentROI:aROI];
+					// copy the state
+					[new2DPointROI setROIMode:[aROI ROImode]];
+					// copy the name
+					[new2DPointROI setName:[aROI name]];
 					// add the 2D Point ROI to the ROI list
 					[roisAtX addObject:new2DPointROI];
 				}
@@ -828,7 +833,7 @@
 			if([aROI type]==t2DPoint)
 			{
 				//NSLog(@"pt 2D");
-				NSLog(@"pt : %f, y : %d", [[[aROI points] objectAtIndex:0] y], y);
+				//NSLog(@"pt : %f, y : %d", [[[aROI points] objectAtIndex:0] y], y);
 //				if((long)([[[aROI points] objectAtIndex:0] y]+0.5)==y)
 				if((long)([[[aROI points] objectAtIndex:0] y])==y)
 				{
@@ -840,6 +845,11 @@
 					irect.origin.y = sliceIndex;
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
+					[new2DPointROI setParentROI:aROI];
+					// copy the state
+					[new2DPointROI setROIMode:[aROI ROImode]];
+					// copy the name
+					[new2DPointROI setName:[aROI name]];
 					// add the 2D Point ROI to the ROI list
 					[roisAtY addObject:new2DPointROI];
 				}
@@ -862,13 +872,13 @@
 	[yReslicedView setNeedsDisplay:YES];
 }
 
--(void) roiSelected:(NSNotification*) note
-{
-	if([[note object] type]==t2DPoint)
-	{
-		[self loadROIonReslicedViews: originalCrossPositionX : originalCrossPositionY];
-	}
-}
+//-(void) roiSelected:(NSNotification*) note
+//{
+//	if([[note object] type]==t2DPoint)
+//	{
+//		[self loadROIonReslicedViews: originalCrossPositionX : originalCrossPositionY];
+//	}
+//}
 
 //-(void) roiChange:(NSNotification*)note
 //{
@@ -878,95 +888,95 @@
 //	}
 //}
 
-- (void) addROI:(NSNotification*)note
-{
-	//[super addROI:note];
-	
-	NSLog(@"addROI:(NSNotification*)note [OrthogonalMPRController]");
-	DCMView *sender = [note object];
-	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
-	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
-	
-	if([addedROI type]==t2DPoint)
-	{
-		if([xReslicedView isEqualTo:sender] || [yReslicedView isEqualTo:sender])
-		{
-			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[originalView pixelSpacingX] :[originalView pixelSpacingY] :NSMakePoint( [originalView origin].x, [originalView origin].y)];
-
-			NSRect irect;
-			if([xReslicedView isEqualTo:sender])
-			{
-				irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
-				irect.origin.y = [originalView crossPositionY];
-			}
-			else
-			{
-				irect.origin.x = [originalView crossPositionX];
-				irect.origin.y = [[[addedROI points] objectAtIndex:0] x];
-			}			
-			irect.size.width = irect.size.height = 0;
-			[new2DPointROI setROIRect:irect];
-	
-			[originalView roiSet:new2DPointROI];
-			// add the 2D Point ROI to the ROI list
-			long slice = (sign>0)? [[originalView dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
-			[[[originalView dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
-		}
-		[self loadROIonReslicedViews: [originalView crossPositionX] : [originalView crossPositionY]];
-	}
-	
-//	if (![self isEqualTo:sender])
+//- (void) addROI:(NSNotification*)note
+//{
+//	//[super addROI:note];
+//	
+//	NSLog(@"addROI:(NSNotification*)note [OrthogonalMPRController]");
+//	DCMView *sender = [note object];
+//	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
+//	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
+//	
+//	if([addedROI type]==t2DPoint)
 //	{
-//		NSLog(@"sender is not self");
-//		if ([[controller originalView] isEqualTo:sender])
+//		if([xReslicedView isEqualTo:sender] || [yReslicedView isEqualTo:sender])
 //		{
-//			NSLog(@"sender is originalView");
-//			if([addedROI type]==t2DPoint)
+//			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[originalView pixelSpacingX] :[originalView pixelSpacingY] :NSMakePoint( [originalView origin].x, [originalView origin].y)];
+//
+//			NSRect irect;
+//			if([xReslicedView isEqualTo:sender])
 //			{
-//				ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[self pixelSpacingX] :[self pixelSpacingY] :NSMakePoint( [self origin].x, [self origin].y)];
-//				NSRect irect;
-//				
-//				if([self isEqualTo:[controller xReslicedView]])
-//				{
-//					irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
-//				}
-//				else
-//				{
-//					irect.origin.x = [[[addedROI points] objectAtIndex:0] y];
-//				}
-//				
-//				long sliceIndex = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -sliceNumber : sliceNumber; // i is slice number
-//				irect.origin.y = sliceIndex;
-//				irect.size.width = irect.size.height = 0;
-//				[new2DPointROI setROIRect:irect];
-//				[self roiSet:new2DPointROI];
-//				// add the 2D Point ROI to the ROI list
-//				[[dcmRoiList objectAtIndex: 0] addObject: new2DPointROI];
-//				// no notification !!! or loop and die!
+//				irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
+//				irect.origin.y = [originalView crossPositionY];
 //			}
-//		}
-//		else if ([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender])
-//		{
-//			NSLog(@"sender is xReslicedView OR yReslicedView");
-//			if([addedROI type]==t2DPoint)
+//			else
 //			{
-//				// remove point on sender
-//				
-//				// add pt on self (which is original)
-//				
-//				// notify (will add the point to xresliced an yresliced)
-//				
-//			}
+//				irect.origin.x = [originalView crossPositionX];
+//				irect.origin.y = [[[addedROI points] objectAtIndex:0] x];
+//			}			
+//			irect.size.width = irect.size.height = 0;
+//			[new2DPointROI setROIRect:irect];
+//	
+//			[originalView roiSet:new2DPointROI];
+//			// add the 2D Point ROI to the ROI list
+//			long slice = (sign>0)? [[originalView dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
+//			[[[originalView dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 //		}
-//		else if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
-//		{
-//			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
-//			[self roiSet:addedROI];
-//			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
-//			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
-//			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
-//		}
+//		[self loadROIonReslicedViews: [originalView crossPositionX] : [originalView crossPositionY]];
 //	}
-}
+//	
+////	if (![self isEqualTo:sender])
+////	{
+////		NSLog(@"sender is not self");
+////		if ([[controller originalView] isEqualTo:sender])
+////		{
+////			NSLog(@"sender is originalView");
+////			if([addedROI type]==t2DPoint)
+////			{
+////				ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[self pixelSpacingX] :[self pixelSpacingY] :NSMakePoint( [self origin].x, [self origin].y)];
+////				NSRect irect;
+////				
+////				if([self isEqualTo:[controller xReslicedView]])
+////				{
+////					irect.origin.x = [[[addedROI points] objectAtIndex:0] x];
+////				}
+////				else
+////				{
+////					irect.origin.x = [[[addedROI points] objectAtIndex:0] y];
+////				}
+////				
+////				long sliceIndex = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -sliceNumber : sliceNumber; // i is slice number
+////				irect.origin.y = sliceIndex;
+////				irect.size.width = irect.size.height = 0;
+////				[new2DPointROI setROIRect:irect];
+////				[self roiSet:new2DPointROI];
+////				// add the 2D Point ROI to the ROI list
+////				[[dcmRoiList objectAtIndex: 0] addObject: new2DPointROI];
+////				// no notification !!! or loop and die!
+////			}
+////		}
+////		else if ([[controller xReslicedView] isEqualTo:sender] || [[controller yReslicedView] isEqualTo:sender])
+////		{
+////			NSLog(@"sender is xReslicedView OR yReslicedView");
+////			if([addedROI type]==t2DPoint)
+////			{
+////				// remove point on sender
+////				
+////				// add pt on self (which is original)
+////				
+////				// notify (will add the point to xresliced an yresliced)
+////				
+////			}
+////		}
+////		else if([[self dcmPixList] isEqualTo:[sender dcmPixList]])
+////		{
+////			NSLog(@"[[self dcmPixList] isEqualTo:[sender dcmPixList]]");
+////			[self roiSet:addedROI];
+////			NSLog(@"[dcmRoiList count] : %d", [dcmRoiList count]);
+////			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
+////			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
+////		}
+////	}
+//}
 
 @end

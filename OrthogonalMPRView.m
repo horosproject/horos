@@ -35,6 +35,11 @@
 	
 	curWLWWMenu = NSLocalizedString(@"Other", 0L);
 	
+    [[NSNotificationCenter defaultCenter]	addObserver: self
+											   selector: @selector(removeROI:)
+												   name: @"removeROI"
+												 object: nil];
+	
 	return self;
 }
 
@@ -65,6 +70,11 @@
 - (NSMutableArray*) pixList
 {
 	return dcmPixList;
+}
+
+- (NSMutableArray*) curRoiList
+{
+	return curRoiList;
 }
 
 - (void) setCurRoiList: (NSMutableArray*) rois
@@ -443,6 +453,12 @@
 					irect.size.width = irect.size.height = 0;
 					[new2DPointROI setROIRect:irect];
 					[self roiSet:new2DPointROI];
+					
+					// copy the state
+					[new2DPointROI setROIMode:[addedROI ROImode]];
+					// copy the name
+					[new2DPointROI setName:[addedROI name]];
+					
 					// add the 2D Point ROI to the ROI list
 					//[[dcmRoiList objectAtIndex: 0] addObject: new2DPointROI];
 					[curRoiList addObject: new2DPointROI];
@@ -474,6 +490,18 @@
 				[new2DPointROI setROIRect:irect];
 		
 				[[controller originalView] roiSet:new2DPointROI];
+				
+				int i;
+				for(i=0; i<[curRoiList count]; i++)
+				{
+					[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
+				}
+				
+				// copy the state
+				[new2DPointROI setROIMode:ROI_selected];
+//				// copy the name
+//				[new2DPointROI setName:[addedROI name]];
+					
 				// add the 2D Point ROI to the ROI list
 				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
 				NSLog(@"slice : %d", slice);
@@ -489,15 +517,120 @@
 //			[[dcmRoiList objectAtIndex: sliceNumber] addObject: addedROI];
 //			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:addedROI userInfo: 0L];
 //		}
-		[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+		//[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
 	}
 }
 
 -(void) roiSelected:(NSNotification*)note
+{	
+	NSLog(@"roiSelected in OrthogonalMPRView");
+//	[super roiSelected:note];
+	
+	ROI *roi = [note object];
+	if([roi parentROI] && [roi type]==t2DPoint)
+	{
+		// the ROI has a parent. Thus it is on a resliced view. Which one?
+		NSLog(@"roi is 2D Point and has parent");
+		ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)];
+		NSRect irect;
+		if([[[controller xReslicedView] curRoiList] containsObject:roi])
+		{
+			NSLog(@"this Point belongs to xReslicedView");
+			irect.origin.x = [[[roi points] objectAtIndex:0] x];
+			irect.origin.y = [[controller originalView] crossPositionY];
+		}
+		else if([[[controller yReslicedView] curRoiList] containsObject:roi])
+		{
+			NSLog(@"this Point belongs to yReslicedView");
+			irect.origin.x = [[controller originalView] crossPositionX];
+			irect.origin.y = [[[roi points] objectAtIndex:0] x];
+		}
+		else
+		{
+			NSLog(@"nobody contains this f**king Point");
+			return;
+		}
+		// remove the parent ROI on original view. (will be replaced by the new one)
+		int i;
+		for(i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
+		{
+			if([[[[controller originalView] dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
+			{
+				NSLog(@"Point removed in originalView");
+				[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
+			}
+		}
+		// create the new ROI
+		irect.size.width = irect.size.height = 0;
+		[new2DPointROI setROIRect:irect];
+		[[controller originalView] roiSet:new2DPointROI];
+
+		// copy the state
+		[new2DPointROI setROIMode:[roi ROImode]];
+		// copy the name
+		[new2DPointROI setName:[roi name]];
+
+		// add the 2D Point ROI to the ROI list
+		long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
+		NSLog(@"slice : %d", slice);
+		[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
+		[[controller originalView] setNeedsDisplay:YES];
+	}
+//	else
+//	{
+//		[super roiSelected:note];
+//	}
+	// sync the 2 resliced views
+	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+}
+
+- (void) removeROI :(NSNotification*) note
 {
-	[super roiSelected:note];
-//	if ([[controller originalView] isEqualTo:self])
+	NSLog(@"removeROI in OrthogonalMPRView");
+	ROI *roi = [note object];
+	int i, j;
+	if([roi parentROI])
+	{
+		NSLog(@"the roi is on a resliced view");
+		if([[controller originalView] isEqualTo:self])
+		{
+			NSLog(@"notification received by original view");
+			for(i=0; i<[[self dcmRoiList] count]; i++)
+			{
+				if([[[self dcmRoiList] objectAtIndex:i] containsObject:[roi parentROI]])
+				{
+					NSLog(@"parent of removed ROI is on original view");
+					[[[self dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
+				}
+			}
+			[self setNeedsDisplay:YES];
+		}
+		else
+		{
+			NSLog(@"notification received by resliced view");
+//			for(i=0; i<[curRoiList count]; i++)
+//			{
+//				if([[[curRoiList objectAtIndex:i] parentROI] isEqualTo:[roi parentROI]])
+//				{
+//					NSLog(@"parent = parent");
+//					[curRoiList removeObjectAtIndex:i];
+//				}
+//			}
+		}
 		[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+	}
+	else if([[controller xReslicedView] isEqualTo:self] || [[controller yReslicedView] isEqualTo:self])
+	{
+//		NSLog(@"the roi is NOT on a resliced view");
+//		NSLog(@"[curRoiList count] : %d", [curRoiList count]);
+		for(i=0; i<[curRoiList count]; i++)
+		{
+			if([[[curRoiList objectAtIndex:i] parentROI] isEqualTo:roi])
+			{
+				[curRoiList removeObjectAtIndex:i];
+			}
+		}
+	}
 }
 
 @end

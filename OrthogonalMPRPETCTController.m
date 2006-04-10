@@ -19,9 +19,9 @@
 
 @implementation OrthogonalMPRPETCTController
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :(id) newViewer
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer
 {
-	[super initWithPixList: pix : files : vData : bC : newViewer];
+	[super initWithPixList: pix : files : vData : vC : bC : newViewer];
 
 	isBlending = (bC != nil);
 }

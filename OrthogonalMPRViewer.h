@@ -49,11 +49,13 @@
 	NSString							*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
 }
 
-- (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) bC;
+- (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 
 - (OrthogonalMPRController*) controller;
 
 - (BOOL) is2DViewer;
+- (ViewerController*) viewer;
+
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu: (NSString*) wlww;
@@ -89,4 +91,8 @@
 
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;
+
+// ROIs
+- (IBAction) roiDeleteAll:(id) sender;
+
 @end

@@ -83,14 +83,14 @@ NSString * documentsDirectory();
 	}
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC
 {
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];
 	[[self window] setDelegate:self];
 	[[self window] setShowsResizeIndicator:YES];
 	[[self window] performZoom:self];
 	
-	viewer = [bC retain];
+	viewer = [vC retain];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
@@ -116,7 +116,7 @@ NSString * documentsDirectory();
 
 	[self updateToolbarItems];
 	// initialisations
-	[controller initWithPixList: pix : files : vData : bC: self];
+	[controller initWithPixList: pix : files : vData : vC : bC: self];
 	
 	isFullWindow = NO;
 	displayResliceAxes = 1;
@@ -173,6 +173,11 @@ NSString * documentsDirectory();
 - (BOOL) is2DViewer
 {
 	return NO;
+}
+
+- (ViewerController*) viewer
+{
+	return viewer;
 }
 
 - (void) ApplyCLUTString:(NSString*) str
@@ -1282,6 +1287,18 @@ NSString * documentsDirectory();
 	[dcmInterval setIntValue: [controller thickSlab]];
 	[dcmInterval performClick: self];	// Will update the text field
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+#pragma mark-
+#pragma mark ROIs
+
+- (IBAction) roiDeleteAll:(id) sender
+{
+	[viewer roiDeleteAll:sender];
+	[[controller originalView] setNeedsDisplay:YES];
+	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+	[[controller xReslicedView] setNeedsDisplay:YES];
+	[[controller yReslicedView] setNeedsDisplay:YES];
 }
 
 @end

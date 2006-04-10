@@ -83,6 +83,7 @@ enum
 	NSString		*_referencedSOPClassUID;
 	int				_frameNumber;
 	
+	ROI*			parentROI;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -203,4 +204,9 @@ enum
 - (void)setFrameNumber: (int)frameNumber;
 - (BOOL) reduceTextureIfPossible;
 - (void) addMarginToBuffer: (int) margin;
+
+// parent ROI
+- (ROI*) parentROI;
+- (void) setParentROI: (ROI*) aROI;
+
 @end

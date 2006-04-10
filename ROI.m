@@ -2889,4 +2889,15 @@ return rect;
 	}
 }
 
+// parent ROI
+- (ROI*) parentROI
+{
+	return parentROI;
+}
+
+- (void) setParentROI: (ROI*) aROI;
+{
+	parentROI = aROI;
+}
+
 @end

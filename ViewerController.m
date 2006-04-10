@@ -9597,7 +9597,7 @@ long i;
 			
 			if( blendingController)
 			{
-				OrthogonalMPRPETCTViewer	*pcviewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController];
+				OrthogonalMPRPETCTViewer *pcviewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
 				
 				[[pcviewer CTController] ApplyCLUTString:curCLUTMenu];
 				[[pcviewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
@@ -9620,11 +9620,10 @@ long i;
 //				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETController] setCurWLWWMenu:[blendingController curWLWWMenu]];
 				
-				
 			}
 			else
 			{
-				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self];
+				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 				
 				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 				{
@@ -9638,9 +9637,7 @@ long i;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
 				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-//				[[viewer controller] setCurWLWWMenu:curWLWWMenu];
-				
-
+//				[[viewer controller] setCurWLWWMenu:curWLWWMenu];				
 			}
 		}
 	}

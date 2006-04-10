@@ -57,7 +57,7 @@
 	long									fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC;
+- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC:(ViewerController*) bC;
 
 - (DCMView*) keyView;
 - (BOOL) is2DViewer;
