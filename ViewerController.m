@@ -784,9 +784,9 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
 	{
-		loading = [NSString stringWithFormat:NSLocalizedString(@"Loading (%2.f %%) - ", nil), loadingPercentage * 100.];
+		loading = [NSString stringWithFormat:NSLocalizedString(@"Loading (%2.f%%) - ", nil), loadingPercentage * 100.];
 		
-		if( loadingPercentage != 1) [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
+		if( loadingPercentage != 1) [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
 	}
 	
 	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
@@ -3170,7 +3170,7 @@ static ViewerController *draggedController = 0L;
 			}
 		}
 	}
-	
+		
 	if( stopThreadLoadImage == NO)
 	{
 		for( x = 0; x < maxMovieIndex; x++)
@@ -3202,6 +3202,8 @@ static ViewerController *draggedController = 0L;
 	
 	if( stopThreadLoadImage == NO)
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
+	
+	[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
 	
     [pool release];
 }

@@ -1170,8 +1170,10 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     }
     
 //    [self display];
-	[self mouseMoved: [NSApp currentEvent]];
+
+	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
+	[self mouseMoved: event];
 	[self setNeedsDisplay:YES];
 	
 	if (isKeyView) {
@@ -1782,9 +1784,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void) checkMouseModifiers:(id) sender
 {
-	if( [[NSApp currentEvent] modifierFlags])
+	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
 	{
-		long tool = [self getTool:[NSApp currentEvent]];
+		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
 		[self setCursorForView: tool];
 	}
 }
@@ -1812,9 +1814,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		float	cmouseYPos = mouseYPos;
 		float	cpixelMouseValue = pixelMouseValue;
 		
-		eventLocation = [self convertPoint: eventLocation fromView: self];
-		
-		eventLocation = [[[theEvent window] contentView] convertPoint:eventLocation toView:self];
+		eventLocation = [self convertPoint:eventLocation fromView:nil];
 		eventLocation.y = size.size.height - eventLocation.y;
 		
 		NSPoint imageLocation = [self ConvertFromView2GL:eventLocation];
@@ -2091,7 +2091,7 @@ static long scrollMode;
         {
             [browserWindow viewerDICOM:nil];
         }
-		else if( [event clickCount] > 1 && ([[NSApp currentEvent] modifierFlags] & NSCommandKeyMask))
+		else if( [event clickCount] > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 		{
 			if( [[[self window] windowController] is2DViewer] == YES)
 				[[[self window] windowController] setKeyImage: self];
@@ -2226,7 +2226,7 @@ static long scrollMode;
 					
 					[[curRoiList objectAtIndex: selected] setROIMode : [[curRoiList objectAtIndex: selected] clickInROI: tempPt :scaleValue]];
 					
-					NSArray *winList = [NSApp windows];
+					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;
 					
 					for( i = 0; i < [winList count]; i++)
@@ -3971,7 +3971,7 @@ static long scrollMode;
 
 -(void) roiSelected:(NSNotification*) note
 {
-	NSArray *winList = [NSApp windows];
+	NSArray *winList = [[NSApplication sharedApplication] windows];
 	long	i;
 	
 	for( i = 0; i < [winList count]; i++)
@@ -6552,7 +6552,7 @@ static long scrollMode;
 long	x = curImage;
 BOOL	lowRes = NO;
 
-	if( [[NSApp currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
+	if( [[[NSApplication sharedApplication] currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
 
     curImage = [sender intValue];
 		
