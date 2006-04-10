@@ -1339,7 +1339,7 @@ return rect;
 
 - (BOOL) mouseRoiUp:(NSPoint) pt
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo:  [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", 0L]];
 	
 	previousPoint.x = previousPoint.y = -1000;
 	
@@ -1763,7 +1763,7 @@ return rect;
 	
 	[self valid];
 	
-	if( action) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"moved", @"action", 0L]];
+	if( action) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	
 	return action;
 }

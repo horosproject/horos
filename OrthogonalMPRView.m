@@ -443,7 +443,7 @@
 //				
 //				if( xp * yresliced + yp * xresliced == [[controller originalView] crossPositionX] * yresliced + [[controller originalView] crossPositionY] * xresliced )
 //				{
-//					ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[self pixelSpacingX] :[self pixelSpacingY] :NSMakePoint( [self origin].x, [self origin].y)];
+//					ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[self pixelSpacingX] :[self pixelSpacingY] :NSMakePoint( [self origin].x, [self origin].y)] autorelease];
 //					NSRect irect;
 //				
 //					irect.origin.x = xp * xresliced + yp * yresliced;
@@ -474,7 +474,7 @@
 			if([addedROI type]==t2DPoint)
 			{
 				NSLog(@"ROI is a Point");
-				ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)];
+				ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
 
 				NSRect irect;
 				if([[controller xReslicedView] isEqualTo:sender])
@@ -522,17 +522,17 @@
 	}
 }
 
--(void) roiSelected:(NSNotification*)note
+-(void) roiChange:(NSNotification*)note
 {	
-	NSLog(@"roiSelected in OrthogonalMPRView");
-	[super roiSelected:note];
+	[super roiChange:note];
 	
+	if( [[[note userInfo] valueForKey:@"action"] isEqualToString:@"mouseUp"] && [[self window] firstResponder] == self)
+	{
 	ROI *roi = [note object];
 	if([roi parentROI] && [roi type]==t2DPoint)
 	{
 		// the ROI has a parent. Thus it is on a resliced view. Which one?
 		NSLog(@"roi is 2D Point and has parent");
-		ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)];
 		NSRect irect;
 		if([[[controller xReslicedView] curRoiList] containsObject:roi])
 		{
@@ -551,7 +551,9 @@
 			NSLog(@"nobody contains this f**king Point");
 			return;
 		}
-		
+
+		ROI *new2DPointROI = [[[ROI alloc] initWithType: t2DPoint :[[controller originalView] pixelSpacingX] :[[controller originalView] pixelSpacingY] :NSMakePoint( [[controller originalView] origin].x, [[controller originalView] origin].y)] autorelease];
+
 		// remove the parent ROI on original view. (will be replaced by the new one)
 		int i;
 		for(i=0; i<[[[controller originalView] dcmRoiList] count]; i++)
@@ -562,6 +564,9 @@
 				[[[[controller originalView] dcmRoiList] objectAtIndex:i] removeObject:[roi parentROI]];
 			}
 		}
+		
+		[roi setParentROI: 0L];
+		
 		// create the new ROI
 		irect.size.width = irect.size.height = 0;
 		[new2DPointROI setROIRect:irect];
@@ -581,6 +586,7 @@
 
 	// sync the 2 resliced views
 	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
+	}
 }
 
 - (void) removeROI :(NSNotification*) note

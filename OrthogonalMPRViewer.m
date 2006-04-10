@@ -78,7 +78,7 @@ NSString * documentsDirectory();
 	
 	if( [v pixList] == [controller originalDCMPixList])
 	{
-		[self close];
+		[[self window] performClose: self];
 		return;
 	}
 }
