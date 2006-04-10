@@ -26,7 +26,7 @@
 	originalDCMPixList = [pix retain];
 	originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 	
-	originalROIList = [[[bC imageView] dcmRoiList] retain];
+	//originalROIList = [[[bC imageView] dcmRoiList] retain];	<- Isn't Wrong??? Why this? It crashes PET-CT
 	
 	reslicer = [[OrthogonalReslice alloc] initWithOriginalDCMPixList: originalDCMPixList];
 		

@@ -923,7 +923,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		curROI = 0L;
 		
 		origin.x = origin.y = 0;
-		curImage = index;    
+		curImage = index; 
+		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
 		curDCM = [dcmPixList objectAtIndex: curImage];
 		
 		[curRoiList release];
@@ -1110,7 +1111,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		[[self window] setAcceptsMouseMovedEvents: YES];
 		
         curImage = index;
-        
+        if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
         curDCM = [dcmPixList objectAtIndex:curImage];
 		
 		[curRoiList release];
