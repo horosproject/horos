@@ -2464,13 +2464,13 @@ return rect;
 			if( mode == ROI_drawing) glLineWidth(thickness * 2);
 			else glLineWidth(thickness);
 			
-			if( type == tCPolygon || type == tPencil)  glBegin(GL_LINE_LOOP);
-			else glBegin(GL_LINE_STRIP);
+			if( type == tCPolygon || type == tPencil)	glBegin(GL_LINE_LOOP);
+			else										glBegin(GL_LINE_STRIP);
 			
-				for( i = 0; i < [points count]; i++)
-				{
-					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-				}
+			for( i = 0; i < [points count]; i++)
+			{
+				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+			}
 			glEnd();
 			
 			// TEXT
