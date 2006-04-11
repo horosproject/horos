@@ -86,6 +86,8 @@
 - (void) blendingPropagateY:(OrthogonalMPRView*) sender;
 - (void) blendingPropagate:(OrthogonalMPRView*) sender;
 
+- (void) loadROIonXReslicedView: (long) y;
+- (void) loadROIonYReslicedView: (long) x;
 - (void) loadROIonReslicedViews: (long) x: (long) y;
 - (void) addROI:(NSNotification*)note;
 @end

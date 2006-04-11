@@ -658,6 +658,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
 	}
 	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -1241,6 +1243,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				}
 			}
 			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+			
 			[self setNeedsDisplay:YES];
 			
 			curROI = 0L;
@@ -1288,6 +1292,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					i--;
 				}
 			}
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
 			
 			[self setNeedsDisplay: YES];
 		}

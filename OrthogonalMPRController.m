@@ -861,15 +861,22 @@
 	return roisAtY;
 }
 
+- (void) loadROIonXReslicedView: (long) y
+{
+	[xReslicedView setCurRoiList:[self pointsROIAtY:y]];
+	[xReslicedView setNeedsDisplay:YES];
+}
+
+- (void) loadROIonYReslicedView: (long) x
+{
+	[yReslicedView setCurRoiList:[self pointsROIAtX:x]];
+	[yReslicedView setNeedsDisplay:YES];
+}
+
 - (void) loadROIonReslicedViews: (long) x: (long) y
 {
-	NSLog(@"loadROIonReslicedViews");
-	[xReslicedView setCurRoiList:[self pointsROIAtY:y]];
-	[yReslicedView setCurRoiList:[self pointsROIAtX:x]];
-//	[xReslicedView setIndex:0];
-//	[yReslicedView setIndex:0];
-	[xReslicedView setNeedsDisplay:YES];
-	[yReslicedView setNeedsDisplay:YES];
+	[self loadROIonXReslicedView: y];
+	[self loadROIonYReslicedView: x];
 }
 
 //-(void) roiSelected:(NSNotification*) note
