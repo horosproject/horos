@@ -2,16 +2,16 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {endSelectServer = id; selectServer = id; }; 
+            ACTIONS = {closeSendPanel = id; endSelectServer = id; releaseSelfWhenDone = id; }; 
             CLASS = SendController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                DICOMSendTool = NSMatrix; 
+                addressAndPort = NSTextField; 
                 keyImageMatrix = NSMatrix; 
                 numberImagesTextField = NSTextField; 
+                sendSCU = id; 
                 serverList = NSComboBox; 
                 syntaxListOffis = NSPopUpButton; 
-                syntaxListOsiriX = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }

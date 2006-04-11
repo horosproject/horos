@@ -58,8 +58,10 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 @implementation SendController
 
-+ (void)sendFiles:(NSArray *)files{
-	if 	([files  count]){
++ (void)sendFiles:(NSArray *)files
+{
+	if 	([files  count])
+	{
 		SendController *sendController = [[SendController alloc] initWithFiles:files];
 		[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
 		[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
@@ -77,9 +79,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d images", nil), count]];
 			
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
-		_serverToolIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSenderEngine"];
+//		_serverToolIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSenderEngine"];
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
-		_osirixTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOsiriX"];
+//		_osirixTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOsiriX"];
 		_offisTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"];
 		
 		_readyForRelease = NO;
@@ -107,7 +109,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 //		[DICOMSendTool selectCellWithTag: _serverToolIndex];
 		[keyImageMatrix selectCellWithTag: _keyImageIndex];
 		
-		[syntaxListOsiriX selectItemWithTag: _osirixTS];
+//		[syntaxListOsiriX selectItemWithTag: _osirixTS];
 		[syntaxListOffis selectItemWithTag: _offisTS];
 
 	}
@@ -172,8 +174,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	if ([[self server] isKindOfClass:[NSDictionary class]])
 	{
 		int preferredTS = [[[self server] objectForKey:@"Transfer Syntax"] intValue];
-		if (preferredTS < SendImplicitLittleEndian)
-				[self  setOsirixTS:preferredTS];
+//		if (preferredTS < SendImplicitLittleEndian)
+//				[self  setOsirixTS:preferredTS];
 				
 		if (preferredTS ==  SendExplicitLittleEndian || 
 			preferredTS == SendImplicitLittleEndian || 
@@ -185,15 +187,15 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 }
 
-- (int)serverToolIndex{
-	return _serverToolIndex;
-}
+//- (int)serverToolIndex{
+//	return _serverToolIndex;
+//}
 
--(void)setServerToolIndex:(int)index{
-
-	_serverToolIndex = index;
-	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSenderEngine"];
-}
+//-(void)setServerToolIndex:(int)index{
+//
+//	_serverToolIndex = index;
+//	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSenderEngine"];
+//}
 
 - (int)keyImageIndex{
 	return _keyImageIndex;
@@ -204,14 +206,14 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"lastSendWhat"];
 }
 
-- (int) osirixTS{
-	return _osirixTS;
-}
+//- (int) osirixTS{
+//	return _osirixTS;
+//}
 
-- (void) setOsirixTS:(int)index{
-	_osirixTS = index;
-	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"syntaxListOsiriX"];
-}
+//- (void) setOsirixTS:(int)index{
+//	_osirixTS = index;
+//	[[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"syntaxListOsiriX"];
+//}
 
 
 - (int) offisTS{
@@ -297,158 +299,158 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 #pragma mark Sending functions	
 
-- (void)sendDICOMFiles:(NSMutableArray *)files
-{
-	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-	
-	NSLog( @"**** WE SHOULD NOT BE HERE");
-	
-	NSMutableArray		*filesToSend = [files retain];
-	//NSMutableArray		*tempFiles = [NSMutableArray array];
-	//convert Syntax
-	NSEnumerator *enumerator = [filesToSend objectEnumerator];
-	NSString *path;
-	DCMTransferSyntax *ts;
-	NSString *transferSyntax;
-	//get Transfer Syntax and compression in indicated
-	int compression = DCMLosslessQuality;
-	switch ([self osirixTS]) {
-		case SendExplicitLittleEndian: 
-			ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-			transferSyntax = @"Explicit Little Endian";
-			break;
-		case SendJPEG2000Lossless:
-			ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
-			transferSyntax = @"JPEG 2000 Lossless";
-			break;
-		case SendJPEG2000Lossy10:
-			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-			compression = DCMHighQuality;
-			transferSyntax = @"JPEG 2000 Lossy";
-			break;
-		case SendJPEG2000Lossy20:
-			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-			compression = DCMMediumQuality;
-			transferSyntax = @"JPEG 2000 Lossy";
-			break;
-		case SendJPEG2000Lossy50:
-			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-			compression =  DCMLowQuality;
-			transferSyntax = @"JPEG 2000 Lossy";
-			break;
-		case SendJPEGLossless: 
-			ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
-			transferSyntax = @"JPEG Lossless";
-			break;
-		case SendJPEGLossy9:
-			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-			compression = DCMHighQuality;
-			transferSyntax = @"JPEG Lossy";
-			break;
-		case SendJPEGLossy8:
-			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-			compression =  DCMMediumQuality;
-			transferSyntax = @"JPEG Lossy";
-			break;			
-		case SendJPEGLossy7:
-			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-			compression =  DCMLowQuality;
-			transferSyntax = @"JPEG Lossy";
-			break;
-		case SendImplicitLittleEndian:
-			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
-			transferSyntax = @"Implicit";
-	}
-
-	NSString *calledAET;
-	NSString *hostname;
-	NSString *destPort;
-	NSNetService *netService = nil;
-	NSArray *objects;
-	NSArray *keys;
-
-	//bonjour
-	if ([[self server] isMemberOfClass:[NSNetService class]]){
-		calledAET = [[self server] name];
-		hostname = [[self server] hostName];
-		destPort = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]];
-		netService = [self server];		
-		objects = [NSArray arrayWithObjects:filesToSend, 
-						[NSNumber numberWithInt:compression],
-						ts,
-						[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], 
-						calledAET, 
-						hostname, 
-						destPort,  
-						netService,
-						nil];
-		keys = [NSArray arrayWithObjects:@"filesToSend", 
-					@"compression", 
-					@"transferSyntax",
-					@"callingAET", 
-					@"calledAET", 
-					@"hostname", 
-					@"port", 
-					@"netService",
-					nil];
-	}
-	else{
-		calledAET = [[self server] objectForKey:@"AETitle"];
-		hostname = [[self server] objectForKey:@"Address"];
-		destPort = [[self server] objectForKey:@"Port"];
-		objects = [NSArray arrayWithObjects:filesToSend, 
-						[NSNumber numberWithInt:compression],
-						ts,
-						[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], 
-						calledAET, 
-						hostname, 
-						destPort, 
-						nil];
-		keys = [NSArray arrayWithObjects:@"filesToSend", 
-					@"compression", 
-					@"transferSyntax",
-					@"callingAET", 
-					@"calledAET", 
-					@"hostname", 
-					@"port", 
-					nil];
-	}
-	NetworkSendDataHandler *dataHandler = [[[NetworkSendDataHandler alloc] initWithDebugLevel:0] autorelease];
-	[dataHandler setCalledAET:calledAET];
-	
-	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjects:objects forKeys:keys];
-	[params setObject:dataHandler forKey:@"receivedDataHandler"];
-	
-	DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
-	
-	/*
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-			calledAET:calledAET 
-			hostname:hostname 
-			port:[destPort intValue] 
-			filesToSend:(NSArray *)filesToSend
-			transferSyntax:(NSString *)transferSyntax
-			compression: 1.0
-			extraParameters:nil];
-	[storeSCU run:self];
-*/
-	[filesToSend release];
-
-	NSMutableDictionary *info = [NSMutableDictionary dictionary];
-	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"SendTotal"];
-	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"NumberSent"];
-	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
-	[info setObject:calledAET forKey:@"CalledAET"];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
-	
-	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
-	
-	[pool release];
-	//need to unlock to allow release of self after send complete
-	[_lock unlock];
-	
-}
+//- (void)sendDICOMFiles:(NSMutableArray *)files
+//{
+//	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+//	
+//	NSLog( @"**** WE SHOULD NOT BE HERE");
+//	
+//	NSMutableArray		*filesToSend = [files retain];
+//	//NSMutableArray		*tempFiles = [NSMutableArray array];
+//	//convert Syntax
+//	NSEnumerator *enumerator = [filesToSend objectEnumerator];
+//	NSString *path;
+//	DCMTransferSyntax *ts;
+//	NSString *transferSyntax;
+//	//get Transfer Syntax and compression in indicated
+//	int compression = DCMLosslessQuality;
+//	switch ([self osirixTS]) {
+//		case SendExplicitLittleEndian: 
+//			ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+//			transferSyntax = @"Explicit Little Endian";
+//			break;
+//		case SendJPEG2000Lossless:
+//			ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
+//			transferSyntax = @"JPEG 2000 Lossless";
+//			break;
+//		case SendJPEG2000Lossy10:
+//			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//			compression = DCMHighQuality;
+//			transferSyntax = @"JPEG 2000 Lossy";
+//			break;
+//		case SendJPEG2000Lossy20:
+//			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//			compression = DCMMediumQuality;
+//			transferSyntax = @"JPEG 2000 Lossy";
+//			break;
+//		case SendJPEG2000Lossy50:
+//			ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//			compression =  DCMLowQuality;
+//			transferSyntax = @"JPEG 2000 Lossy";
+//			break;
+//		case SendJPEGLossless: 
+//			ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
+//			transferSyntax = @"JPEG Lossless";
+//			break;
+//		case SendJPEGLossy9:
+//			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//			compression = DCMHighQuality;
+//			transferSyntax = @"JPEG Lossy";
+//			break;
+//		case SendJPEGLossy8:
+//			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//			compression =  DCMMediumQuality;
+//			transferSyntax = @"JPEG Lossy";
+//			break;			
+//		case SendJPEGLossy7:
+//			ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//			compression =  DCMLowQuality;
+//			transferSyntax = @"JPEG Lossy";
+//			break;
+//		case SendImplicitLittleEndian:
+//			ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
+//			transferSyntax = @"Implicit";
+//	}
+//
+//	NSString *calledAET;
+//	NSString *hostname;
+//	NSString *destPort;
+//	NSNetService *netService = nil;
+//	NSArray *objects;
+//	NSArray *keys;
+//
+//	//bonjour
+//	if ([[self server] isMemberOfClass:[NSNetService class]]){
+//		calledAET = [[self server] name];
+//		hostname = [[self server] hostName];
+//		destPort = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]];
+//		netService = [self server];		
+//		objects = [NSArray arrayWithObjects:filesToSend, 
+//						[NSNumber numberWithInt:compression],
+//						ts,
+//						[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], 
+//						calledAET, 
+//						hostname, 
+//						destPort,  
+//						netService,
+//						nil];
+//		keys = [NSArray arrayWithObjects:@"filesToSend", 
+//					@"compression", 
+//					@"transferSyntax",
+//					@"callingAET", 
+//					@"calledAET", 
+//					@"hostname", 
+//					@"port", 
+//					@"netService",
+//					nil];
+//	}
+//	else{
+//		calledAET = [[self server] objectForKey:@"AETitle"];
+//		hostname = [[self server] objectForKey:@"Address"];
+//		destPort = [[self server] objectForKey:@"Port"];
+//		objects = [NSArray arrayWithObjects:filesToSend, 
+//						[NSNumber numberWithInt:compression],
+//						ts,
+//						[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], 
+//						calledAET, 
+//						hostname, 
+//						destPort, 
+//						nil];
+//		keys = [NSArray arrayWithObjects:@"filesToSend", 
+//					@"compression", 
+//					@"transferSyntax",
+//					@"callingAET", 
+//					@"calledAET", 
+//					@"hostname", 
+//					@"port", 
+//					nil];
+//	}
+//	NetworkSendDataHandler *dataHandler = [[[NetworkSendDataHandler alloc] initWithDebugLevel:0] autorelease];
+//	[dataHandler setCalledAET:calledAET];
+//	
+//	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjects:objects forKeys:keys];
+//	[params setObject:dataHandler forKey:@"receivedDataHandler"];
+//	
+//	DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
+//	
+//	/*
+//	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+//			calledAET:calledAET 
+//			hostname:hostname 
+//			port:[destPort intValue] 
+//			filesToSend:(NSArray *)filesToSend
+//			transferSyntax:(NSString *)transferSyntax
+//			compression: 1.0
+//			extraParameters:nil];
+//	[storeSCU run:self];
+//*/
+//	[filesToSend release];
+//
+//	NSMutableDictionary *info = [NSMutableDictionary dictionary];
+//	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"SendTotal"];
+//	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"NumberSent"];
+//	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
+//	[info setObject:calledAET forKey:@"CalledAET"];
+//	
+//	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
+//	
+//	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
+//	
+//	[pool release];
+//	//need to unlock to allow release of self after send complete
+//	[_lock unlock];
+//	
+//}
 
 - (void) sendDICOMFilesOffis:(NSMutableArray *)files
 {
@@ -700,6 +702,11 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			
 	}
 	return nil;
+}
+
+- (void)comboBoxSelectionDidChange:(NSNotification *)notification
+{
+	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
 }
 
 - (void)listenForAbort:(id)handler{

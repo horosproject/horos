@@ -22,9 +22,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
-
-
 enum TransferSyntaxCodes
 {
 	SendExplicitLittleEndian		= 0, 
@@ -46,11 +43,7 @@ enum TransferSyntaxCodes
 
 enum SendServerType { osirixServer, offisServer };
 
-
-
 @class Wait;
-
-
 
 @interface SendController : NSWindowController {
 	id _server;
@@ -58,21 +51,23 @@ enum SendServerType { osirixServer, offisServer };
 	NSString *_transferSyntaxString;
 	NSString *_numberFiles;
 	
-	int _serverToolIndex;
+//	int _serverToolIndex;
 	int _keyImageIndex;
 	int _serverIndex;
-	int _osirixTS;
+//	int _osirixTS;
 	int _offisTS;
 	 
 	 id sendSCU;
 	
-	IBOutlet NSComboBox	*serverList;
-	IBOutlet NSMatrix	*DICOMSendTool;
-	IBOutlet NSMatrix *keyImageMatrix;
-	IBOutlet NSTextField *numberImagesTextField;
+	IBOutlet NSComboBox		*serverList;
+
+	IBOutlet NSMatrix		*keyImageMatrix;
+	IBOutlet NSTextField	*numberImagesTextField, *addressAndPort;
 	IBOutlet NSPopUpButton	*syntaxListOffis;
-	IBOutlet NSPopUpButton *syntaxListOsiriX;
-	
+
+//	IBOutlet NSPopUpButton	*syntaxListOsiriX;
+//	IBOutlet NSMatrix		*DICOMSendTool;
+
 	Wait *_waitSendWindow;
 	BOOL _readyForRelease;
 	NSLock *_lock;
@@ -80,33 +75,22 @@ enum SendServerType { osirixServer, offisServer };
 }
 + (void)sendFiles:(NSArray *)files;
 - (id)initWithFiles:(NSArray *)files;
-
 - (id)serverAtIndex:(int)index;
 - (id)server;
-
 - (NSString *)numberFiles;
 - (void)setNumberFiles:(NSString *)numberFiles;
-
-- (int)serverToolIndex;
--(void)setServerToolIndex:(int)index;
+- (IBAction) endSelectServer:(id) sender;
 - (int)keyImageIndex;
--(void)setKeyImageIndex:(int)index;
-- (int) osirixTS;
-- (void) setOsirixTS:(int)index;
+- (void)setKeyImageIndex:(int)index;
 - (int) offisTS;
 - (void) setOffisTS:(int)index;
-
-- (void)sendDICOMFiles:(NSMutableArray *)files;
-
 - (void)releaseSelfWhenDone:(id)sender;
 - (void)listenForAbort:(id)handler;
 - (void)abort;
-
 - (void)closeSendPanel:(id)sender;
-
-
-
-
-
-
+//- (int) osirixTS;
+//- (void) setOsirixTS:(int)index;
+//- (void)sendDICOMFiles:(NSMutableArray *)files;
+//- (int)serverToolIndex;
+//-(void)setServerToolIndex:(int)index;
 @end

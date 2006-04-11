@@ -39,12 +39,12 @@ extern BrowserController *browserWindow;
 	//should be STUDY, SERIES OR IMAGE
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
-	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good()) {
+	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
 	}
 	else {
-		specificCharacterSet = [@"ISO_IR 100" retain];
+		specificCharacterSet = [[NSString stringWithString:@"ISO_IR 100"] retain];
 		encoding = NSISOLatin1StringEncoding;
 	}
 	
