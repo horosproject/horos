@@ -21,6 +21,7 @@
 #import "DCMTKQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DICOMToNSString.h"
+#import "MoveManager.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -328,6 +329,16 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 			else if ([key isEqualToString:@"StudyDescription"]) {
 				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_StudyDescription, string);
+			}
+			else if ([key isEqualToString:@"StudyDate"]) {
+				NSString *date = [(DCMCalendarDate *)value queryString];
+				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
+				dataset->putAndInsertString(DCM_StudyDescription, string);
+			}
+			else if ([key isEqualToString:@"StudyTime"]) {
+				NSString *date = [(DCMCalendarDate *)value queryString];
+				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
 				dataset->putAndInsertString(DCM_StudyDescription, string);
 			}
 			else if ([key isEqualToString:@"StudyID"]) {
@@ -907,7 +918,8 @@ NS_ENDHANDLER
 	int n = 1;
 	OFCondition cond = EC_Normal;
     /* as long as no error occured and the counter does not equal 0 */
-    while (cond == EC_Normal && n--) {
+	//only do move if we aren't already moving
+    while (cond == EC_Normal && n-- && ![[MoveManager sharedManager] containsMove:self]) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
         cond = [self moveSCU:assoc network:(T_ASC_Network *)net dataset:dataset];
     }
@@ -918,6 +930,9 @@ NS_ENDHANDLER
 
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
 {
+	//add self to list of moves. Prevents deallocating  the move if a new query is done
+	[[MoveManager sharedManager] addMove:self];
+
   T_ASC_PresentationContextID presId;
     T_DIMSE_C_MoveRQ    req;
     T_DIMSE_C_MoveRSP   rsp;
@@ -977,6 +992,8 @@ NS_ENDHANDLER
     }
 
     if (rspIds != NULL) delete rspIds;
+	
+	[[MoveManager sharedManager] removeMove:self];
 
     return cond;
 

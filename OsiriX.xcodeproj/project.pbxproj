@@ -1773,6 +1773,12 @@
 		BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
 		BF8E5AC209CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h in Headers */ = {isa = PBXBuildFile; fileRef = BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */; };
 		BF8E5AC309CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */; };
+		BF90551E09EB4985009C30D1 /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
+		BF90551F09EB4985009C30D1 /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
+		BF90552009EB4985009C30D1 /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
+		BF90552109EB4985009C30D1 /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
+		BF90552209EB4985009C30D1 /* MoveManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BF90551C09EB4985009C30D1 /* MoveManager.h */; };
+		BF90552309EB4985009C30D1 /* MoveManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BF90551D09EB4985009C30D1 /* MoveManager.m */; };
 		BF9893B709D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
 		BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
 		BF9893B909D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
@@ -9684,6 +9690,8 @@
 		BF8DE5E106507355005DB40E /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
 		BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKQueryRetrieveSCP.h; sourceTree = "<group>"; };
 		BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKQueryRetrieveSCP.mm; sourceTree = "<group>"; };
+		BF90551C09EB4985009C30D1 /* MoveManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveManager.h; sourceTree = "<group>"; };
+		BF90551D09EB4985009C30D1 /* MoveManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoveManager.m; sourceTree = "<group>"; };
 		BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OsiriXSCPDataHandler.h; sourceTree = "<group>"; };
 		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
 		BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKDataHandlerCategory.h; sourceTree = "<group>"; };
@@ -13457,6 +13465,8 @@
 				BF432BE009E31BE800AC322E /* DCMTKSeriesQueryNode.mm */,
 				BF432BEB09E31C0F00AC322E /* DCMTKImageQueryNode.h */,
 				BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */,
+				BF90551C09EB4985009C30D1 /* MoveManager.h */,
+				BF90551D09EB4985009C30D1 /* MoveManager.m */,
 			);
 			name = Query;
 			sourceTree = "<group>";
@@ -18574,6 +18584,7 @@
 				BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
+				BF90552209EB4985009C30D1 /* MoveManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20386,6 +20397,7 @@
 				BF432BFA09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8AB09E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */,
+				BF90551E09EB4985009C30D1 /* MoveManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22203,6 +22215,7 @@
 				BF432BF809E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */,
 				BFBCD8A909E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
+				BF90552009EB4985009C30D1 /* MoveManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24501,6 +24514,7 @@
 				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
+				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25063,6 +25077,7 @@
 				BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8AC09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */,
+				BF90551F09EB4985009C30D1 /* MoveManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25673,6 +25688,7 @@
 				BF432BF909E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
 				BFBCD8AA09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
+				BF90552109EB4985009C30D1 /* MoveManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

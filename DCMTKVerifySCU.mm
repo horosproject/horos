@@ -690,4 +690,8 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
     return cond;
 }
 
+@implementation DCMTKVerifySCU
+
+@end
+
 

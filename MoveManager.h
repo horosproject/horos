@@ -1,3 +1,9 @@
+//
+//  MoveManager.h
+//  OsiriX
+//
+//  Created by Lance Pysher on 4/10/06.
+
 /*=========================================================================
   Program:   OsiriX
 
@@ -12,17 +18,16 @@
      PURPOSE.
 =========================================================================*/
 
-//
-
 #import <Cocoa/Cocoa.h>
-#import "DCMTKServiceClassUser.h"
-#undef verify
 
 
-
-int runEcho(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
-
-@interface DCMTKVerifySCU : DCMTKServiceClassUser {
+@interface MoveManager : NSObject {
+	NSMutableSet *_set;
 }
+
++ (id)sharedManager;
+- (void)addMove:(id)move;
+- (void)removeMove:(id)move;
+- (BOOL)containsMove:(id)move;
 
 @end
