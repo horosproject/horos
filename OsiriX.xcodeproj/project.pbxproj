@@ -1028,18 +1028,12 @@
 		ABBA9E2A05D9CC27005A07C9 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
 		ABBA9E2B05D9CC28005A07C9 /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
 		ABBA9E2C05D9CC28005A07C9 /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
-		ABBB63A50635874E00D9531F /* dcm2xml in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639B0635874D00D9531F /* dcm2xml */; };
 		ABBB63A60635874E00D9531F /* dcmdjpeg in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639C0635874D00D9531F /* dcmdjpeg */; };
 		ABBB63A70635874E00D9531F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
 		ABBB63A80635874E00D9531F /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
-		ABBB63AD0635874E00D9531F /* storescp in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A30635874D00D9531F /* storescp */; };
-		ABBB63AE0635874E00D9531F /* storescu in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A40635874E00D9531F /* storescu */; };
-		ABBB63AF0635874E00D9531F /* dcm2xml in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639B0635874D00D9531F /* dcm2xml */; };
 		ABBB63B00635874E00D9531F /* dcmdjpeg in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639C0635874D00D9531F /* dcmdjpeg */; };
 		ABBB63B10635874E00D9531F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
 		ABBB63B20635874E00D9531F /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
-		ABBB63B70635874E00D9531F /* storescp in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A30635874D00D9531F /* storescp */; };
-		ABBB63B80635874E00D9531F /* storescu in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A40635874E00D9531F /* storescu */; };
 		ABBB645A0635878E00D9531F /* XMLViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643A0635878E00D9531F /* XMLViewer.nib */; };
 		ABBB645B0635878E00D9531F /* WaitRendering.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643C0635878E00D9531F /* WaitRendering.nib */; };
 		ABBB645C0635878E00D9531F /* Wait.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643E0635878E00D9531F /* Wait.nib */; };
@@ -8022,12 +8016,9 @@
 		CECB035E07539E3900576814 /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
 		CECB035F07539E3900576814 /* BurnerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */; };
 		CECB036407539E3900576814 /* dicomDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABB7A43306343BC900AD1777 /* dicomDictionary.plist */; };
-		CECB036607539E3900576814 /* dcm2xml in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639B0635874D00D9531F /* dcm2xml */; };
 		CECB036707539E3900576814 /* dcmdjpeg in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639C0635874D00D9531F /* dcmdjpeg */; };
 		CECB036807539E3900576814 /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
 		CECB036907539E3900576814 /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
-		CECB036A07539E3900576814 /* storescp in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A30635874D00D9531F /* storescp */; };
-		CECB036B07539E3900576814 /* storescu in Resources */ = {isa = PBXBuildFile; fileRef = ABBB63A40635874E00D9531F /* storescu */; };
 		CECB036C07539E3900576814 /* XMLViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643A0635878E00D9531F /* XMLViewer.nib */; };
 		CECB036D07539E3900576814 /* WaitRendering.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643C0635878E00D9531F /* WaitRendering.nib */; };
 		CECB036E07539E3900576814 /* Wait.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643E0635878E00D9531F /* Wait.nib */; };
@@ -9487,12 +9478,9 @@
 		ABB7A43306343BC900AD1777 /* dicomDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = dicomDictionary.plist; sourceTree = "<group>"; };
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
-		ABBB639B0635874D00D9531F /* dcm2xml */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcm2xml; sourceTree = "<group>"; };
 		ABBB639C0635874D00D9531F /* dcmdjpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmdjpeg; sourceTree = "<group>"; };
 		ABBB639D0635874D00D9531F /* dcmdump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmdump; sourceTree = "<group>"; };
 		ABBB639E0635874D00D9531F /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = dicom.dic; sourceTree = "<group>"; };
-		ABBB63A30635874D00D9531F /* storescp */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = storescp; sourceTree = "<group>"; };
-		ABBB63A40635874E00D9531F /* storescu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = storescu; sourceTree = "<group>"; };
 		ABBB643B0635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/XMLViewer.nib; sourceTree = "<group>"; };
 		ABBB643D0635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/WaitRendering.nib; sourceTree = "<group>"; };
 		ABBB643F0635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Wait.nib; sourceTree = "<group>"; };
@@ -13475,12 +13463,9 @@
 			isa = PBXGroup;
 			children = (
 				7EE713BA097450B000510E88 /* dcmmkdir */,
-				ABBB639B0635874D00D9531F /* dcm2xml */,
 				ABBB639C0635874D00D9531F /* dcmdjpeg */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
 				ABBB639E0635874D00D9531F /* dicom.dic */,
-				ABBB63A30635874D00D9531F /* storescp */,
-				ABBB63A40635874E00D9531F /* storescu */,
 			);
 			name = DCMTK;
 			path = Binaries/DCMTK;
@@ -22817,12 +22802,9 @@
 			files = (
 				ABB7A43406343BCA00AD1777 /* dicomDictionary.plist in Resources */,
 				ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */,
-				ABBB63A50635874E00D9531F /* dcm2xml in Resources */,
 				ABBB63A60635874E00D9531F /* dcmdjpeg in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
-				ABBB63AD0635874E00D9531F /* storescp in Resources */,
-				ABBB63AE0635874E00D9531F /* storescu in Resources */,
 				ABBB645A0635878E00D9531F /* XMLViewer.nib in Resources */,
 				ABBB645B0635878E00D9531F /* WaitRendering.nib in Resources */,
 				ABBB645C0635878E00D9531F /* Wait.nib in Resources */,
@@ -23086,12 +23068,9 @@
 			files = (
 				ABB7A43506343BCA00AD1777 /* dicomDictionary.plist in Resources */,
 				ABBFDA41063480490011BD0A /* Deployment-Info.plist in Resources */,
-				ABBB63AF0635874E00D9531F /* dcm2xml in Resources */,
 				ABBB63B00635874E00D9531F /* dcmdjpeg in Resources */,
 				ABBB63B10635874E00D9531F /* dcmdump in Resources */,
 				ABBB63B20635874E00D9531F /* dicom.dic in Resources */,
-				ABBB63B70635874E00D9531F /* storescp in Resources */,
-				ABBB63B80635874E00D9531F /* storescu in Resources */,
 				ABBB646A0635878E00D9531F /* XMLViewer.nib in Resources */,
 				ABBB646B0635878E00D9531F /* WaitRendering.nib in Resources */,
 				ABBB646C0635878E00D9531F /* Wait.nib in Resources */,
@@ -23356,12 +23335,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CECB036407539E3900576814 /* dicomDictionary.plist in Resources */,
-				CECB036607539E3900576814 /* dcm2xml in Resources */,
 				CECB036707539E3900576814 /* dcmdjpeg in Resources */,
 				CECB036807539E3900576814 /* dcmdump in Resources */,
 				CECB036907539E3900576814 /* dicom.dic in Resources */,
-				CECB036A07539E3900576814 /* storescp in Resources */,
-				CECB036B07539E3900576814 /* storescu in Resources */,
 				CECB036C07539E3900576814 /* XMLViewer.nib in Resources */,
 				CECB036D07539E3900576814 /* WaitRendering.nib in Resources */,
 				CECB036E07539E3900576814 /* Wait.nib in Resources */,

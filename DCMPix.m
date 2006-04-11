@@ -1614,7 +1614,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	idev = 0;
 	imin = 99999;
 	imax = -99999;
-
+	
+	[self CheckLoad];
+	
 	if( [roi type] == tPlain)
 	{
 		long			textWidth = [roi textureWidth];
@@ -1740,20 +1742,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( pts[ i].y >= height) clip = YES;
 		}
 		
-		if( clip)
-		{
-			long newNo;
-			
-			pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
-			CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
-			
-			free( pts);
-			pts = pTemp;
-			
-			no = newNo;
-		}
-		
-		[self CheckLoad];
 		
 	//	upleftx = downrightx = [[ptsTemp objectAtIndex:0] x];
 	//	uplefty = downrighty = [[ptsTemp objectAtIndex:0] y];
@@ -1780,7 +1768,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 		if( no == 1)
 		{
-			if( isRGB)
+			if( clip)
+			{
+				if( max) *max = 0;
+				if( min) *min = 0;
+				if( mean) *mean = 0;
+				if( total) *total = 0;
+			}
+			else if( isRGB)
 			{
 				unsigned char*  rgbPtr = (unsigned char*) &fImage[ (pts[ 0].y * width) + pts[ 0].x];
 				
@@ -1804,7 +1799,20 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}
 		}
 		else
-		{		
+		{
+			if( clip)
+			{
+				long newNo;
+				
+				pTemp = (NSPointInt*) malloc( sizeof(NSPointInt) * 4 * no);
+				CLIP_Polygon( pts, no, pTemp, &newNo, width, height);
+				
+				free( pts);
+				pts = pTemp;
+				
+				no = newNo;
+			}
+			
 			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0);
 			
 			if( max) *max = imax;
