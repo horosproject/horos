@@ -3511,7 +3511,7 @@ static ViewerController *draggedController = 0L;
 {
 	float				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
 	float				vectors[ 9], vectorsB[ 9];
-	long				i;
+	long				i, x;
 	
 	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
 	{
@@ -3570,8 +3570,6 @@ static ViewerController *draggedController = 0L;
 				
 				if( sameSize)
 				{
-					long x;
-					
 					NSLog(@"Flip Data Now");
 					
 					interval = -interval;
@@ -3625,8 +3623,16 @@ static ViewerController *draggedController = 0L;
 					[self flipDataSeries: self];
 				}
 			}
-			
-			for( i = 0 ; i < maxMovieIndex; i++) [[pixList[ i] objectAtIndex:0] setSliceInterval: interval];
+			else
+			{
+				for( x = 0; x < maxMovieIndex; x++)
+				{
+					for( i = 0; i < [pixList[ x] count]; i++)
+					{
+						[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
+					}
+				}
+			}
 			
 			NSLog( @"Interval: %2.2f", interval);
 			NSLog( @"%2.2f %2.2f %2.2f", vectors[0], vectors[1], vectors[2]);

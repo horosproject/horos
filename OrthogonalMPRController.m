@@ -686,8 +686,11 @@
 	// Set the 1st view
 	[originalView setPixList:originalDCMPixList :originalDCMFilesList:originalROIList];
 	[originalView setIndexWithReset:[originalDCMPixList count]/2 :YES];
-	sign = ([[[originalView pixList] objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
-	
+
+	DCMPix	*pix = [[originalView pixList] objectAtIndex:0];
+
+	sign = ([pix sliceInterval] >= 0)? 1.0 : -1.0;
+
 //	[originalView setCurRoiList:originalROIList];
 //	NSMutableArray *rois = [originalView dcmRoiList];
 //	
