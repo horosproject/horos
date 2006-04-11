@@ -496,7 +496,12 @@
 					
 				// add the 2D Point ROI to the ROI list
 				long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[addedROI points] objectAtIndex:0] y] : [[[addedROI points] objectAtIndex:0] y];
+				
+				if( slice < 0) slice = 0;
+				if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
+
 				NSLog(@"slice : %d", slice);
+				
 				[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			}
 			[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
@@ -566,7 +571,12 @@
 			
 			// add the 2D Point ROI to the ROI list
 			long slice = ([controller sign]>0)? [[[controller originalView] dcmPixList] count]-1 -[[[roi points] objectAtIndex:0] y] : [[[roi points] objectAtIndex:0] y];
+			
+			if( slice < 0) slice = 0;
+			if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
+			
 			NSLog(@"slice : %d", slice);
+			
 			[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			[[controller originalView] setNeedsDisplay:YES];
 			
