@@ -130,8 +130,6 @@
 		183C869E08563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
 		183C869F08563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
 		183C86A008563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
-		2C71468106E08651005D574B /* HuVR.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2C71467F06E08651005D574B /* HuVR.nib */; };
-		2C71468206E08651005D574B /* HuVR.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2C71467F06E08651005D574B /* HuVR.nib */; };
 		3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
 		3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
 		3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
@@ -1047,7 +1045,6 @@
 		ABBB64650635878E00D9531F /* MPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64500635878E00D9531F /* MPR.nib */; };
 		ABBB64670635878E00D9531F /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64540635878E00D9531F /* MainMenu.nib */; };
 		ABBB64680635878E00D9531F /* Histogram.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64560635878E00D9531F /* Histogram.nib */; };
-		ABBB64690635878E00D9531F /* FindSCU.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64580635878E00D9531F /* FindSCU.nib */; };
 		ABBB646A0635878E00D9531F /* XMLViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643A0635878E00D9531F /* XMLViewer.nib */; };
 		ABBB646B0635878E00D9531F /* WaitRendering.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643C0635878E00D9531F /* WaitRendering.nib */; };
 		ABBB646C0635878E00D9531F /* Wait.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB643E0635878E00D9531F /* Wait.nib */; };
@@ -1061,7 +1058,6 @@
 		ABBB64750635878E00D9531F /* MPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64500635878E00D9531F /* MPR.nib */; };
 		ABBB64770635878E00D9531F /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64540635878E00D9531F /* MainMenu.nib */; };
 		ABBB64780635878E00D9531F /* Histogram.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64560635878E00D9531F /* Histogram.nib */; };
-		ABBB64790635878E00D9531F /* FindSCU.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64580635878E00D9531F /* FindSCU.nib */; };
 		ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647B063587B200D9531F /* 2DBlending.tif */; };
 		ABBB64AE063587B200D9531F /* 3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647C063587B200D9531F /* 3D.tif */; };
 		ABBB64AF063587B200D9531F /* 3DRotate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647D063587B200D9531F /* 3DRotate.tiff */; };
@@ -1280,9 +1276,6 @@
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
-		BF0483450998573A00380CF5 /* SplashQtz.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF0483430998573A00380CF5 /* SplashQtz.nib */; };
-		BF0483460998573A00380CF5 /* SplashQtz.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF0483430998573A00380CF5 /* SplashQtz.nib */; };
-		BF0483470998573A00380CF5 /* SplashQtz.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF0483430998573A00380CF5 /* SplashQtz.nib */; };
 		BF1745CD08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CE08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CF08E0C57400822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
@@ -8032,7 +8025,6 @@
 		CECB037607539E3900576814 /* MPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64500635878E00D9531F /* MPR.nib */; };
 		CECB037807539E3900576814 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64540635878E00D9531F /* MainMenu.nib */; };
 		CECB037907539E3900576814 /* Histogram.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64560635878E00D9531F /* Histogram.nib */; };
-		CECB037A07539E3900576814 /* FindSCU.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64580635878E00D9531F /* FindSCU.nib */; };
 		CECB037B07539E3900576814 /* 2DBlending.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647B063587B200D9531F /* 2DBlending.tif */; };
 		CECB037C07539E3900576814 /* 3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647C063587B200D9531F /* 3D.tif */; };
 		CECB037D07539E3900576814 /* 3DRotate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647D063587B200D9531F /* 3DRotate.tiff */; };
@@ -8127,7 +8119,6 @@
 		CECB03DD07539E3900576814 /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CECB03DE07539E3900576814 /* Plot.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE6E2D1106CAED0300BC7907 /* Plot.nib */; };
 		CECB03DF07539E3900576814 /* ITKSegmentation.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE26443006DCF0D1007F5B71 /* ITKSegmentation.nib */; };
-		CECB03E307539E3900576814 /* HuVR.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2C71467F06E08651005D574B /* HuVR.nib */; };
 		CECB03E407539E3900576814 /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		CECB03E507539E3900576814 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		CECB03E607539E3900576814 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
@@ -8911,7 +8902,6 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		2C71468006E08651005D574B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/HuVR.nib; sourceTree = "<group>"; };
 		3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGMultiCriteriaHelper.h; sourceTree = "<group>"; };
 		3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = MSRGMultiCriteriaHelper.txx; sourceTree = "<group>"; };
 		3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MSRGWindowController.h; sourceTree = "<group>"; };
@@ -9494,7 +9484,6 @@
 		ABBB64510635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MPR.nib; sourceTree = "<group>"; };
 		ABBB64550635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		ABBB64570635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Histogram.nib; sourceTree = "<group>"; };
-		ABBB64590635878E00D9531F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/FindSCU.nib; sourceTree = "<group>"; };
 		ABBB647B063587B200D9531F /* 2DBlending.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DBlending.tif; sourceTree = "<group>"; };
 		ABBB647C063587B200D9531F /* 3D.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3D.tif; sourceTree = "<group>"; };
 		ABBB647D063587B200D9531F /* 3DRotate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotate.tiff; sourceTree = "<group>"; };
@@ -9614,7 +9603,6 @@
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
 		BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCMoveResponse.m; sourceTree = "<group>"; };
-		BF0483440998573A00380CF5 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/SplashQtz.nib; sourceTree = "<group>"; };
 		BF1745CC08E0C57300822756 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/LogWindow.nib; sourceTree = "<group>"; };
 		BF1745D208E0C7E200822756 /* LogWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogWindowController.h; sourceTree = "<group>"; };
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
@@ -12656,10 +12644,8 @@
 				A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */,
 				7ED5C2810699E44600875C39 /* Anonymize.nib */,
 				7E0339FA07415E7D0025DDB4 /* BurnViewer.nib */,
-				ABBB64580635878E00D9531F /* FindSCU.nib */,
 				183C869408563FA8000E6A68 /* FlyThru.nib */,
 				ABBB64560635878E00D9531F /* Histogram.nib */,
-				2C71467F06E08651005D574B /* HuVR.nib */,
 				CE26443006DCF0D1007F5B71 /* ITKSegmentation.nib */,
 				ABBB64540635878E00D9531F /* MainMenu.nib */,
 				ABBB64500635878E00D9531F /* MPR.nib */,
@@ -12685,7 +12671,6 @@
 				CEDE5B6B07F206FA003034B6 /* ROIDefaults.nib */,
 				BF1745CB08E0C57300822756 /* LogWindow.nib */,
 				7E075C540951FADD004B9D6F /* Send.nib */,
-				BF0483430998573A00380CF5 /* SplashQtz.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
@@ -22818,7 +22803,6 @@
 				ABBB64650635878E00D9531F /* MPR.nib in Resources */,
 				ABBB64670635878E00D9531F /* MainMenu.nib in Resources */,
 				ABBB64680635878E00D9531F /* Histogram.nib in Resources */,
-				ABBB64690635878E00D9531F /* FindSCU.nib in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,
 				ABBB64AE063587B200D9531F /* 3D.tif in Resources */,
 				ABBB64AF063587B200D9531F /* 3DRotate.tiff in Resources */,
@@ -22912,7 +22896,6 @@
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
 				CE6E2D1406CAED0300BC7907 /* Plot.nib in Resources */,
 				CE26443206DCF0D1007F5B71 /* ITKSegmentation.nib in Resources */,
-				2C71468106E08651005D574B /* HuVR.nib in Resources */,
 				BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
 				BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */,
 				BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */,
@@ -23044,7 +23027,6 @@
 				CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */,
 				CE54877A0989363200CF4C60 /* Brush.tiff in Resources */,
 				A91CE49E098F5464008665E3 /* ROIVolumeManager.nib in Resources */,
-				BF0483450998573A00380CF5 /* SplashQtz.nib in Resources */,
 				CEDCDD5B099C8AA20026AA4B /* ROIManager.tiff in Resources */,
 				ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */,
 				AB46648D09A331DF005A2766 /* Report.icns in Resources */,
@@ -23084,7 +23066,6 @@
 				ABBB64750635878E00D9531F /* MPR.nib in Resources */,
 				ABBB64770635878E00D9531F /* MainMenu.nib in Resources */,
 				ABBB64780635878E00D9531F /* Histogram.nib in Resources */,
-				ABBB64790635878E00D9531F /* FindSCU.nib in Resources */,
 				ABBB64DF063587B200D9531F /* 2DBlending.tif in Resources */,
 				ABBB64E0063587B200D9531F /* 3D.tif in Resources */,
 				ABBB64E1063587B200D9531F /* 3DRotate.tiff in Resources */,
@@ -23179,7 +23160,6 @@
 				CE74824106C9701200FFA74C /* trash.icns in Resources */,
 				CE6E2D1306CAED0300BC7907 /* Plot.nib in Resources */,
 				CE26443306DCF0D3007F5B71 /* ITKSegmentation.nib in Resources */,
-				2C71468206E08651005D574B /* HuVR.nib in Resources */,
 				BFD4BFF406F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
 				BFD4BFF506F2A96900EC9A90 /* RotateCursor.tif in Resources */,
 				BFD4BFF606F2A96900EC9A90 /* StackCursor.tif in Resources */,
@@ -23313,7 +23293,6 @@
 				CE5487420989346800CF4C60 /* BrushPalette.tif in Resources */,
 				CE54877B0989363200CF4C60 /* Brush.tiff in Resources */,
 				A91CE4A0098F5464008665E3 /* ROIVolumeManager.nib in Resources */,
-				BF0483470998573A00380CF5 /* SplashQtz.nib in Resources */,
 				CEDCDD5C099C8AA20026AA4B /* ROIManager.tiff in Resources */,
 				ABEF846B09A23EF5006CEC3E /* ReportTemplate.doc in Resources */,
 				AB46648E09A331DF005A2766 /* Report.icns in Resources */,
@@ -23351,7 +23330,6 @@
 				CECB037607539E3900576814 /* MPR.nib in Resources */,
 				CECB037807539E3900576814 /* MainMenu.nib in Resources */,
 				CECB037907539E3900576814 /* Histogram.nib in Resources */,
-				CECB037A07539E3900576814 /* FindSCU.nib in Resources */,
 				CECB037B07539E3900576814 /* 2DBlending.tif in Resources */,
 				CECB037C07539E3900576814 /* 3D.tif in Resources */,
 				CECB037D07539E3900576814 /* 3DRotate.tiff in Resources */,
@@ -23446,7 +23424,6 @@
 				CECB03DD07539E3900576814 /* trash.icns in Resources */,
 				CECB03DE07539E3900576814 /* Plot.nib in Resources */,
 				CECB03DF07539E3900576814 /* ITKSegmentation.nib in Resources */,
-				CECB03E307539E3900576814 /* HuVR.nib in Resources */,
 				CECB03E407539E3900576814 /* ContrastCursor.tif in Resources */,
 				CECB03E507539E3900576814 /* RotateCursor.tif in Resources */,
 				CECB03E607539E3900576814 /* StackCursor.tif in Resources */,
@@ -23581,7 +23558,6 @@
 				CE5487430989346800CF4C60 /* BrushPalette.tif in Resources */,
 				CE54877C0989363200CF4C60 /* Brush.tiff in Resources */,
 				A91CE49F098F5464008665E3 /* ROIVolumeManager.nib in Resources */,
-				BF0483460998573A00380CF5 /* SplashQtz.nib in Resources */,
 				CEDCDD5D099C8AA20026AA4B /* ROIManager.tiff in Resources */,
 				ABEF846C09A23EF5006CEC3E /* ReportTemplate.doc in Resources */,
 				AB46648F09A331DF005A2766 /* Report.icns in Resources */,
@@ -25747,14 +25723,6 @@
 			name = FlyThru.nib;
 			sourceTree = "<group>";
 		};
-		2C71467F06E08651005D574B /* HuVR.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2C71468006E08651005D574B /* English */,
-			);
-			name = HuVR.nib;
-			sourceTree = "<group>";
-		};
 		3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -25907,28 +25875,12 @@
 			name = Histogram.nib;
 			sourceTree = "<group>";
 		};
-		ABBB64580635878E00D9531F /* FindSCU.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				ABBB64590635878E00D9531F /* English */,
-			);
-			name = FindSCU.nib;
-			sourceTree = "<group>";
-		};
 		ABCB2D330655B186006C5630 /* SearchWindow.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				ABCB2D340655B186006C5630 /* English */,
 			);
 			name = SearchWindow.nib;
-			sourceTree = "<group>";
-		};
-		BF0483430998573A00380CF5 /* SplashQtz.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BF0483440998573A00380CF5 /* English */,
-			);
-			name = SplashQtz.nib;
 			sourceTree = "<group>";
 		};
 		BF1745CB08E0C57300822756 /* LogWindow.nib */ = {

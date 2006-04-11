@@ -104,7 +104,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		if (_serverIndex < count)
 			[serverList selectItemAtIndex: _serverIndex];
 			
-		[DICOMSendTool selectCellWithTag: _serverToolIndex];
+//		[DICOMSendTool selectCellWithTag: _serverToolIndex];
 		[keyImageMatrix selectCellWithTag: _keyImageIndex];
 		
 		[syntaxListOsiriX selectItemWithTag: _osirixTS];
@@ -278,13 +278,12 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			[_waitSendWindow showWindow:self];
 			[[_waitSendWindow progress] setMaxValue:[files2Send count]];
 			
-			if(_serverToolIndex == 1)
-			{
-				
-				[_waitSendWindow setCancel:YES];
-				[NSThread detachNewThreadSelector: @selector(sendDICOMFiles:) toTarget:self withObject: files2Send];
-			}
-			else
+//			if(_serverToolIndex == 1)
+//			{
+//				[_waitSendWindow setCancel:YES];
+//				[NSThread detachNewThreadSelector: @selector(sendDICOMFiles:) toTarget:self withObject: files2Send];
+//			}
+//			else
 			{
 				[_waitSendWindow setCancel:YES];
 				//[[_waitSendWindow progress] setIndeterminate: YES];
@@ -301,7 +300,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 - (void)sendDICOMFiles:(NSMutableArray *)files
 {
 	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-
+	
+	NSLog( @"**** WE SHOULD NOT BE HERE");
+	
 	NSMutableArray		*filesToSend = [files retain];
 	//NSMutableArray		*tempFiles = [NSMutableArray array];
 	//convert Syntax
