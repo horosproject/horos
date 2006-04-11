@@ -21,6 +21,7 @@
 //#import "PMAttribute.h"
 //#import "PMDirectoryRecord.h"
 //#import "PMAttributeList.h"
+#import "WaitRendering.h"
 #import "QueryFilter.h"
 #import "AdvancedQuerySubview.h"
 #import "DICOMLogger.h"
@@ -759,10 +760,14 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 }
 
 - (IBAction)verify:(id)sender{
-	id aServer;
-	NSString *message;
+	id				aServer;
+	NSString		*message;
+	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Verifying...", nil)];
+	[wait showWindow:self];
 	NSString * status = [self dicomEcho] ? @"succeeded" : @"failed";
-	
+	[wait close];
+	[wait release];
+
 	if ( [servers selectedRow] >= 0) {
 		aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
 		if ([aServer isMemberOfClass:[NSNetService class]])

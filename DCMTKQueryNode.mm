@@ -334,12 +334,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			else if ([key isEqualToString:@"StudyDate"]) {
 				NSString *date = [(DCMCalendarDate *)value queryString];
 				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
-				dataset->putAndInsertString(DCM_StudyDescription, string);
+				dataset->putAndInsertString(DCM_StudyDate, string);
 			}
 			else if ([key isEqualToString:@"StudyTime"]) {
 				NSString *date = [(DCMCalendarDate *)value queryString];
 				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
-				dataset->putAndInsertString(DCM_StudyDescription, string);
+				dataset->putAndInsertString(DCM_StudyTime, string);
 			}
 			else if ([key isEqualToString:@"StudyID"]) {
 				string = [(NSString*)value cStringUsingEncoding:encoding];
