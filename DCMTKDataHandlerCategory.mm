@@ -32,11 +32,12 @@ extern BrowserController *browserWindow;
 - (NSPredicate *)predicateForDataset:( DcmDataset *)dataset{
 
 	//NSPredicate *compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
-	NSPredicate *compoundPredicate;
+	NSPredicate *compoundPredicate = nil;
 	const char *sType;
 	const char *scs;
 	//NSString *charset;	
 	//should be STUDY, SERIES OR IMAGE
+	NS_DURING 
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
@@ -337,6 +338,10 @@ extern BrowserController *browserWindow;
 	}
 
 	//NSLog(@"predicate: %@", [compoundPredicate description]);
+	NS_HANDLER
+		NSLog(@"Exception getting predicate: %@ for dataset\n", [localException description]);
+		dataset->print(COUT);
+	NS_ENDHANDLER
 	return compoundPredicate;
 
 		
