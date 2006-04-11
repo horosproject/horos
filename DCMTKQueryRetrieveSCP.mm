@@ -155,7 +155,7 @@ void errmsg(const char* msg, ...)
 	options.supportPatientRoot_ = OFFalse;
 	options.supportPatientStudyOnly_ = OFFalse;
 	
-	options.networkTransferSyntax_     = EXS_Unknown;
+	options.networkTransferSyntax_     = EXS_LittleEndianImplicit;
 	/*we will stick to the default for now for incoming syntaxes
 	options.networkTransferSyntax_     = EXS_LittleEndianExplicit;
 	options.networkTransferSyntax_     = EXS_BigEndianExplicit;
