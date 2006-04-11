@@ -445,12 +445,12 @@
 // overwrite the DCMView method:
 - (void) addROI:(NSNotification*)note
 {
-	[super addROI:note];
-
 	NSLog(@"addROI:(NSNotification*)note [overwrited]");
 	DCMView *sender = [note object];
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
+	
+	if( [addedROI type] != t2DPoint) return;
 	
 	if (![self isEqualTo:sender])// && ![self isEqualTo:[controller xReslicedView]] && ![self isEqualTo:[controller yReslicedView]])
 	{
@@ -549,13 +549,16 @@
 }
 
 -(void) roiChange:(NSNotification*)note
-{	
+{
+	ROI *roi = [note object];
+	
 	[super roiChange:note];
+	
+	if( [roi type] != t2DPoint) return;
 	
 	if( [[[note userInfo] valueForKey:@"action"] isEqualToString:@"mouseUp"] && [[self window] firstResponder] == self)
 	{
-		ROI *roi = [note object];
-		if([roi parentROI] && [roi type] == t2DPoint)
+		if([roi parentROI])
 		{
 			int		reslicedview = 0;
 			
