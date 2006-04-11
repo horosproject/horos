@@ -36,6 +36,11 @@
 	curWLWWMenu = NSLocalizedString(@"Other", 0L);
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(addROI:)
+											name: @"addROI"
+											object: nil];
+	
+	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(removeROI:)
 											name: @"removeROI"
 											object: nil];
@@ -450,7 +455,7 @@
 	ROI *addedROI = [[note userInfo] objectForKey:@"ROI"];
 	int sliceNumber = [[[note userInfo] objectForKey:@"sliceNumber"] intValue];
 	
-	if( [addedROI type] != t2DPoint) return;
+//	if( [addedROI type] != t2DPoint) return;
 	
 	if (![self isEqualTo:sender])// && ![self isEqualTo:[controller xReslicedView]] && ![self isEqualTo:[controller yReslicedView]])
 	{
