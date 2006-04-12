@@ -35,7 +35,10 @@ extern BrowserController *browserWindow;
 
 - (id)initWithDebugLevel:(int)debug{
 	if (self = [super initWithDebugLevel:debug])
+	{
 		NSLog(@"Init NetworkMoveHandler");
+		logEntry = 0L;
+	}
 	return self;
 }
 
@@ -44,14 +47,13 @@ extern BrowserController *browserWindow;
 	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:object waitUntilDone:YES];
 }
 
-- (void)updateLogEntry:(DCMObject *)object{
-	//NSLog(@"Update move log: %@", [object description]);
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+- (void)updateLogEntry:(DCMObject *)object
+{
 	[object retain];
 	NS_DURING
 	
 		if (!logEntry) {
-			logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]];
+			logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]] retain];
 			[logEntry setValue:[NSDate date] forKey:@"startTime"];
 			[logEntry setValue:@"Move" forKey:@"type"];
 			[logEntry setValue:calledAET forKey:@"originName"];
@@ -97,18 +99,13 @@ extern BrowserController *browserWindow;
 		NSLog(@"Error Updating retrieve status: %@", [localException description]);
 	NS_ENDHANDLER
 	[object release];
-	[pool release];
-	
 }
 
 - (void) dealloc {
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
 	[logEntry setValue:@"complete" forKey:@"message"];
-	//NSLog(@"logEntry: %@", [logEntry description]);
+	[logEntry release];
 	[super dealloc];
 }
-
-
-	
 
 @end

@@ -27,7 +27,4 @@
 	id logEntry;
 	
 }
-
-- (void)save:(id)sender;
-
 @end

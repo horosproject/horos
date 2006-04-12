@@ -30,7 +30,9 @@ extern BrowserController *browserWindow;
 @implementation NetworkSendDataHandler
 
 - (id)initWithDebugLevel:(int)debug{
-	if (self = [super initWithDebugLevel:debug]){
+	if (self = [super initWithDebugLevel:debug])
+	{
+		logEntry = 0L;
 	}
 	return self;
 }
@@ -41,8 +43,8 @@ extern BrowserController *browserWindow;
 		
 }
 
-- (void)updateLogEntry:(DCMObject *)object{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+- (void)updateLogEntry:(DCMObject *)object
+{
 	[object retain];
 	NSManagedObjectContext *context = [browserWindow managedObjectContext];
 	[context lock];
@@ -51,7 +53,7 @@ extern BrowserController *browserWindow;
 		NSString *patientName = [currentObject attributeValueWithName:@"PatientsName"];
 		NSString *studyDescription = [currentObject attributeValueWithName:@"StudyDescription"];
 		
-		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context] retain];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Send" forKey:@"type"];
 		[logEntry setValue:calledAET forKey:@"destinationName"];
@@ -74,29 +76,13 @@ extern BrowserController *browserWindow;
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
 	[object release];
 	[context unlock];
-	[pool release];
 }
 
 - (void) dealloc {
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
 	[logEntry setValue:@"complete" forKey:@"message"];
-	[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:YES];
-	//NSLog(@"logEntry: %@", [logEntry description]);
+	[logEntry release];
 	[super dealloc];
-}
-
-- (void)save:(id)sender{
-	NSError *error = 0L;
-	NSManagedObjectContext *context = [browserWindow managedObjectContext];
-	
-	[context lock];
-	if (![context  save: &error])
-	{
-		NSString *localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Error saving: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
-		[[NSApplication sharedApplication] presentError:error];
-	}
-	[context unlock];
 }
 
 @end

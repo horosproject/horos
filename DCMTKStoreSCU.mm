@@ -1519,8 +1519,8 @@ NS_ENDHANDLER
 	[pool release];
 }
 
-- (void)updateLogEntry: (id)sender{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+- (void)updateLogEntry: (id)sender
+{
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	[context lock];
 	
@@ -1569,7 +1569,6 @@ NS_ENDHANDLER
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
 	
 	[context unlock];
-	[pool release];
 }
 
 - (void)abort{

@@ -35,8 +35,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 @implementation OsiriXSCPDataHandler
 
-- (void)dealloc{
-	//[[DBManager sharedManager] performSelectorOnMainThread:@selector(saveAction:) withObject:self waitUntilDone:YES];
+- (void)dealloc
+{
 	[specificCharacterSet release];
 	[findArray release];
 	[moveArray release];
@@ -46,6 +46,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	[tempMoveFolder release];
 	[findEnumerator release];
 	[moveEnumerator release];
+	[logEntry release];
 	[super dealloc];
 }
 
@@ -58,7 +59,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 - (id)initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
 	//NSLog(@"init NetworkDataHandler");
 	if (self = [super initWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug])
+	{
 		commandType = 0x0001;
+		logEntry = 0L;
+	}
 	return self;
 }
 
@@ -773,11 +777,11 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 - (void)updateLogEntry:(NSDictionary *)userInfo{
 	if(debugLevel > 0) 
 		NSLog(@"update receive log: %@", [userInfo description]);
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
 	[userInfo retain];
 	NS_DURING
 	if (!logEntry) {
-		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]];
+		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]] retain];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Receive" forKey:@"type"];
 		[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
@@ -795,7 +799,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		NSLog(@"exception while updating receive status: %@", [localException name]);
 	NS_ENDHANDLER
 	[userInfo release];
-	[pool release];	
 }
 
 
