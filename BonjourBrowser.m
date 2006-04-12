@@ -941,7 +941,6 @@ volatile static BOOL threadIsRunning = NO;
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName] == NO)
 		{
-		//	NSLog( [curImage valueForKey:@"path"]);
 			[paths addObject: [curImage valueForKey:@"path"]];
 			[dicomFileNames addObject: dicomFileName];
 			

@@ -1595,7 +1595,7 @@ long        i;
 	}
 	else
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn) DoIt = YES;
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn) DoIt = YES;
     }
 	
 	if( DoIt)
@@ -1606,7 +1606,7 @@ long        i;
 		
 		[context lock];
 		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Checking files...", nil)];
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
 		[wait showWindow:self];
 		
         filesArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -1625,18 +1625,23 @@ long        i;
 			NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
 			id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
 			
-			if ([fileType isEqual:NSFileTypeRegular])
+			if ([fileType isEqual:NSFileTypeRegular] && [[[pathname lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == NO)
 			{
 				[filesArray addObject:itemPath];
 			}
 		}
-		
+
+		NSArray*	addedFiles = [[self addFilesToDatabase: filesArray] valueForKey:@"completePath"];
+
 		[wait close];
 		[wait release];
 		
-		NSArray*	addedFiles = [[self addFilesToDatabase: filesArray] valueForKey:@"completePath"];
+		Wait *step2 = [[Wait alloc] initWithString: NSLocalizedString(@"Step 2: Removing unreadable files...", 0L)];
+		[step2 showWindow:self];
 		
-		if( [addedFiles count] != [filesArray count] && [filesArray count] < 50000)
+		[[step2 progress] setMaxValue:[filesArray count]/50];
+		
+		if( [addedFiles count] != [filesArray count])
 		{
 			long i;
 			
@@ -1649,14 +1654,18 @@ long        i;
 					NSLog( @"Remove file: %@", [filesArray objectAtIndex: i]);
 					[[NSFileManager defaultManager] removeFileAtPath:[filesArray objectAtIndex: i] handler:nil];
 				}
+				
+				if( i % 50 == 0) [step2 incrementBy:1];
 			}
 		}
-				
+		
 		[filesArray release];
+		[step2 close];
+		[step2 release];
 		
 		NSLog( @"FORCEREBUILD: %d", FORCEREBUILD);
 		
-		Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Cleaning Database...",@"Cleaning Database...")];
+		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
 		
 		[splash showWindow:self];
 		
