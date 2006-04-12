@@ -2356,7 +2356,9 @@ long        i;
 	if( [databaseOutline sortDescriptors] == 0L || [[databaseOutline sortDescriptors] count] == 0)
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
 	else
-		sortDescriptors = [[databaseOutline sortDescriptors] arrayByAddingObject: sortdate];
+	{
+		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
+	}
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
 	
 	[databaseOutline reloadData];
@@ -4756,9 +4758,8 @@ static BOOL needToRezoom;
 	NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 	
 	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
-	
-	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObject: sort]];
-	
+	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
+	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, sortdate, 0L]];
 	result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
 	
 	[context unlock];
