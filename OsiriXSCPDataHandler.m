@@ -767,7 +767,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 }
 
 - (void)updateReceiveStatus:(NSDictionary *)userInfo{
-	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:YES];
 }
 
 - (void)updateLogEntry:(NSDictionary *)userInfo{

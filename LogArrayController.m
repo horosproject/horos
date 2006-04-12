@@ -53,7 +53,7 @@ extern BrowserController *browserWindow;
 - (void)remove:(id)sender{
 	NSLog(@"remove");
 	[super remove:sender];
-	[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:YES];
 }
 
 - (void)save:(id)sender{

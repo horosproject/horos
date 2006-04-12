@@ -3203,7 +3203,7 @@ static ViewerController *draggedController = 0L;
 	if( stopThreadLoadImage == NO)
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
 	
-	[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
+	[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
 	
     [pool release];
 }

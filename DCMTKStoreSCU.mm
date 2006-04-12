@@ -1369,7 +1369,7 @@ NS_DURING
 		else _numberErrors = _numberOfFiles - _numberSent;
 		
 	
-		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:nil waitUntilDone:NO];
+		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:nil waitUntilDone:YES];
 		
 		//Need to add code to update nedtwork logs
     }

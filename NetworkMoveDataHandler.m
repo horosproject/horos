@@ -41,7 +41,7 @@ extern BrowserController *browserWindow;
 
 - (void)evaluateStatusAndSetSuccess:(DCMObject *)object{
 	[super evaluateStatusAndSetSuccess:(DCMObject *)object];
-	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:object waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:object waitUntilDone:YES];
 }
 
 - (void)updateLogEntry:(DCMObject *)object{

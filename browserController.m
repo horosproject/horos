@@ -8336,7 +8336,7 @@ static BOOL needToRezoom;
 	if ([[info objectForKey:@"RetrieveComplete"] boolValue])
 		[activeSends removeObjectForKey:date];
 	}
-	[self performSelectorOnMainThread:@selector(reloadSendLog:) withObject:nil waitUntilDone:NO];	
+	[self performSelectorOnMainThread:@selector(reloadSendLog:) withObject:nil waitUntilDone:YES];	
 	//[sendLogTable reloadData];
 }
 */

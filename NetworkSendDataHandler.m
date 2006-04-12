@@ -37,7 +37,7 @@ extern BrowserController *browserWindow;
 
 - (void)evaluateStatusAndSetSuccess:(DCMObject *)object{
 	[super evaluateStatusAndSetSuccess:(DCMObject *)object];
-	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:object waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:object waitUntilDone:YES];
 		
 }
 
@@ -72,15 +72,12 @@ extern BrowserController *browserWindow;
 	
 	}
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-//	[self save:nil]; DONT CALL THIS SO OFTEN... It's REALLLLLLLLLY sloooooow
-	//[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:NO];
 	[object release];
 	[context unlock];
 	[pool release];
 }
 
 - (void) dealloc {
-	[self save:nil];
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
 	[logEntry setValue:@"complete" forKey:@"message"];
 	[self performSelectorOnMainThread:@selector(save:) withObject:nil waitUntilDone:YES];

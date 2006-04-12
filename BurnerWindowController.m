@@ -174,7 +174,7 @@ extern BrowserController  *browserWindow;
 	[self addDicomdir];
 	isSettingUpBurn = NO;
 
-	[self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
 	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
 	[pool release];
 }

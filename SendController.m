@@ -444,7 +444,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 //	
 //	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 //	
-//	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
+//	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
 //	
 //	[pool release];
 //	//need to unlock to allow release of self after send complete
@@ -528,7 +528,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
-	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:NO];	
+	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
@@ -666,7 +666,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (void)setSendMessage:(NSNotification *)note
 {
-	[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:NO]; // <- GUI operations are permitted ONLY on the main thread
+	[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:YES]; // <- GUI operations are permitted ONLY on the main thread
 }
 
 #pragma mark serversArray functions

@@ -1722,9 +1722,9 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 		//rotate->Update();
 		tempIm->Update();
 		
-		double		dddd[ 3];
-		rotate->GetOutputOrigin( dddd);
-		NSLog(@"Origin: %f %f %f", dddd[ 0], dddd[ 1], dddd[ 2]);
+//		double		dddd[ 3];
+//		rotate->GetOutputOrigin( dddd);
+//		NSLog(@"Origin: %f %f %f", dddd[ 0], dddd[ 1], dddd[ 2]);
 		
 		if( tempIm)
 		{
@@ -1742,7 +1742,7 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 			
 			tempIm->GetSpacing( space);
 			tempIm->GetOrigin( origin);
-			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+//			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
 			
 			width = imExtent[ 1]-imExtent[ 0]+1;
 			height = imExtent[ 3]-imExtent[ 2]+1;
