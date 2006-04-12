@@ -3295,9 +3295,21 @@ long        i;
 				{
 					// write the file to the specified location on the disk
 					NSFileManager *fileManager = [NSFileManager defaultManager];
+					// zip
 					NSString *newFilePath = [[savePanel URL] path];
 					if ([fileManager fileExistsAtPath:filePath])
 						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
+					// xml
+					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
+					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
+					[xmlFilePath appendString: @"xml"];
+					NSLog(@"xmlFilePath : %@", xmlFilePath);
+					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
+					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
+					[newXmlFilePath appendString: @"xml"];
+					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+					if ([fileManager fileExistsAtPath:xmlFilePath])
+						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
 				}
 
 				return;
@@ -5674,9 +5686,21 @@ static BOOL needToRezoom;
 				{
 					// write the file to the specified location on the disk
 					NSFileManager *fileManager = [NSFileManager defaultManager];
+					// zip
 					NSString *newFilePath = [[savePanel URL] path];
 					if ([fileManager fileExistsAtPath:filePath])
 						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
+					// xml
+					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
+					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
+					[xmlFilePath appendString: @"xml"];
+					NSLog(@"xmlFilePath : %@", xmlFilePath);
+					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
+					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
+					[newXmlFilePath appendString: @"xml"];
+					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+					if ([fileManager fileExistsAtPath:xmlFilePath])
+						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
 				}
 
 				return;
