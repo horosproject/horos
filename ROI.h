@@ -71,6 +71,7 @@ enum
 	DCMPix			*pix;
 	
 	float			rmean, rmax, rmin, rdev, rtotal;
+	float			Brmean, Brmax, Brmin, Brdev, Brtotal;
 	
 	float			mousePosMeasure;
 	
@@ -135,6 +136,7 @@ enum
 // Set resolution and origin associated to the ROI
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin;
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
+- (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification;
 
 // Compute the roiArea in cm2
 - (float) roiArea;
@@ -169,6 +171,7 @@ enum
 - (void) setMousePosMeasure:(float) p;
 - (NSData*) data;
 - (void) roiMove:(NSPoint) offset;
+- (void) roiMove:(NSPoint) offset :(BOOL) sendNotification;
 - (long) clickInROI:(NSPoint) pt :(float) scale;
 - (BOOL) mouseRoiDown:(NSPoint) pt :(float) scale;
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale;
@@ -189,7 +192,6 @@ enum
 - (void) recompute;
 - (void) rotate: (float) angle :(NSPoint) center;
 - (void) resize: (float) factor :(NSPoint) center;
-
 - (void) setPix: (DCMPix*) newPix;
 - (DCMPix*) pix;
 - (NSString *)roiSeriesInstanceUID;

@@ -219,6 +219,7 @@ GLenum glReportError (void)
 		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
+		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		mousePosMeasure = -1;
 		textureName = 0L;
 		{
@@ -312,6 +313,11 @@ GLenum glReportError (void)
 
 - (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin
 {
+	[self setOriginAndSpacing :ipixelSpacingx :ipixelSpacingy :iimageOrigin :YES];
+}
+
+- (void) setOriginAndSpacing :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin :(BOOL) sendNotification
+{
 	long	i;
 	BOOL	change = NO;
 	
@@ -335,8 +341,6 @@ GLenum glReportError (void)
 	
 	if( change == NO) return;
 	
-	rtotal = -1;
-	
 	NSPoint offset;
 	
 	offset.x = (imageOrigin.x - iimageOrigin.x)/pixelSpacingX;
@@ -344,7 +348,7 @@ GLenum glReportError (void)
 	
 	long modeSaved = mode;
 	mode = ROI_selected;
-	[self roiMove:offset];
+	[self roiMove:offset :sendNotification];
 	mode = modeSaved;
 
 	rect.origin.x *= (pixelSpacingX/ipixelSpacingx);
@@ -366,7 +370,13 @@ GLenum glReportError (void)
 	pixelSpacingY = ipixelSpacingy;
 	imageOrigin = iimageOrigin;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	if( sendNotification)
+	{
+		rtotal = -1;
+		Brtotal = -1;
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+	}
 }
 
 - (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin
@@ -398,6 +408,7 @@ GLenum glReportError (void)
 		curView = 0L; //@TODO attention curView Null impossible de recuperer l'etat de la gomme !
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
+		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		previousPoint.x = previousPoint.y = -1000;
 		
 		// specific init for tPlain ...
@@ -466,6 +477,7 @@ GLenum glReportError (void)
 		curView = 0L;
 		stringTex = 0L;
 		rmean = rmax = rmin = rdev = rtotal = -1;
+		Brmean = Brmax = Brmin = Brdev = Brtotal = -1;
 		
 		if( type == tText)
 		{
@@ -1183,6 +1195,7 @@ return rect;
 		}
 		
 		rtotal = -1;
+		Brtotal = -1;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	}
 }
@@ -1218,6 +1231,7 @@ return rect;
 		}
 		
 		rtotal = -1;
+		Brtotal = -1;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	}
 }
@@ -1301,16 +1315,16 @@ return rect;
 - (void) recompute
 {
 	rtotal = -1;
+	Brtotal = -1;
 //	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 }
 
-- (void) roiMove:(NSPoint) offset
+- (void) roiMove:(NSPoint) offset :(BOOL) sendNotification
 {
 	if( mode == ROI_selected)
 	{
 		long i;
 
-		rtotal = -1;
 		switch( type)
 		{
 			case tOval:
@@ -1333,8 +1347,18 @@ return rect;
 			break;
 		}
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		if( sendNotification)
+		{
+			rtotal = -1;
+			Brtotal = -1;
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+		}
 	}
+}
+
+- (void) roiMove:(NSPoint) offset
+{
+	[self roiMove:offset :YES];
 }
 
 - (BOOL) mouseRoiUp:(NSPoint) pt
@@ -1350,6 +1374,7 @@ return rect;
 		if( mode == ROI_drawing)
 		{
 			rtotal = -1;
+			Brtotal = -1;
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 			
 			mode = ROI_selected;
@@ -1636,6 +1661,7 @@ return rect;
 				action = YES;
 				
 				rtotal = -1;
+				Brtotal = -1;
 			break;
 			
 			case ROI_selected:
@@ -1654,6 +1680,7 @@ return rect;
 				if( modifier & NSShiftKeyMask) rect.size.width = rect.size.height;
 				
 				rtotal = -1;
+				Brtotal = -1;
 				action = YES;
 			break;
 			
@@ -1663,6 +1690,7 @@ return rect;
 			
 			case ROI_selectedModify:
 			rtotal = -1;
+			Brtotal = -1;
 			if( type == tROI)
 			{
 				NSPoint leftUp, rightUp, leftDown, rightDown;
@@ -1724,6 +1752,7 @@ return rect;
 			
 			//	[[points lastObject] setPoint: pt];
 				rtotal = -1;
+				Brtotal = -1;
 				action = YES;
 			}
 			break;
@@ -1735,6 +1764,7 @@ return rect;
 			case ROI_selectedModify:
 				[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
 				rtotal = -1;
+				Brtotal = -1;
 				action = YES;
 			break;
 		}
@@ -1746,6 +1776,7 @@ return rect;
 			case ROI_drawing:
 				[[points lastObject] setPoint: pt];
 				rtotal = -1;
+				Brtotal = -1;
 				action = YES;
 			break;
 			
@@ -1756,6 +1787,7 @@ return rect;
 			case ROI_selectedModify:
 				[[points objectAtIndex: selectedModifyPoint] setPoint: pt];
 				rtotal = -1;
+				Brtotal = -1;
 				action = YES;
 			break;
 		}
@@ -2092,9 +2124,26 @@ return rect;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+//					if( [curView blendingView])
+//					{
+//						if( Brtotal == -1)
+//						{
+//							DCMPix	*blendedPix = [[curView blendingView] curDCM];
+//							
+//							[self setOriginAndSpacing:[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :NSMakePoint( [blendedPix originX], [blendedPix originY]) :NO];
+//							[blendedPix computeROI:self :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
+//							[self setOriginAndSpacing:[[curView curDCM] pixelSpacingX] :[[curView curDCM] pixelSpacingY] :NSMakePoint( [[curView curDCM] originX], [[curView curDCM] originY]) :NO];
+//						}
+//					}
 					
 					sprintf (cstr, "Val: %0.3f", rmean);
 					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					if( Brtotal != -1)
+					{
+						sprintf (cstr, "Fused Val: %0.3f", Brmean);
+						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					}
+					
 					sprintf (cstr, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
 					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
 					

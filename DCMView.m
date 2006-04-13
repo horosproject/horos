@@ -1912,8 +1912,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			a.y -= size.size.height/2;
 			a.y /= [blendingView scaleValue];
 			
-			xx = a.x*cos(rotation*deg2rad) + a.y*sin(rotation*deg2rad);
-			yy = -a.x*sin(rotation*deg2rad) + a.y*cos(rotation*deg2rad);
+			xx = a.x*cos([blendingView rotation]*deg2rad) + a.y*sin([blendingView rotation]*deg2rad);
+			yy = -a.x*sin([blendingView rotation]*deg2rad) + a.y*cos([blendingView rotation]*deg2rad);
 
 			a.y = yy;
 			a.x = xx;
@@ -2747,7 +2747,10 @@ static long scrollMode;
 					
 					for( i = 0; i < [curRoiList count]; i++)
 					{
-						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] roiMove: offset];
+						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+						{
+							[[curRoiList objectAtIndex:i] roiMove: offset];
+						}
 					}
 				}
 			}
