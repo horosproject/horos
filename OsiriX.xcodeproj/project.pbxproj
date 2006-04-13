@@ -146,9 +146,6 @@
 		3A2D126909BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		3A2D126A09BC9B0C00CCBC80 /* MSRGPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */; };
 		4A16D0A40965E21800F82EC4 /* UnitTestingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */; };
-		4AEA0EF5096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
-		4AEA0EF7096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
-		4AEA0EF8096287DD00AE4488 /* AboutIcons in Resources */ = {isa = PBXBuildFile; fileRef = 4AEA0EE5096287DD00AE4488 /* AboutIcons */; };
 		7E0339EA07415C4F0025DDB4 /* BurnerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */; };
 		7E0339EB07415C4F0025DDB4 /* BurnerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */; };
 		7E0339FC07415E7D0025DDB4 /* BurnViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = 7E0339FA07415E7D0025DDB4 /* BurnViewer.nib */; };
@@ -3958,9 +3955,6 @@
 		BFE4AAF5077A757700D2D44A /* DCMStoreSCPListener.h in Headers */ = {isa = PBXBuildFile; fileRef = BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFE4AAF6077A757700D2D44A /* DCMStoreSCPListener.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */; };
 		BFEA82E00940F1D500B90699 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFEA82DF0940F1D500B90699 /* Quartz.framework */; };
-		BFEA83B30940F71000B90699 /* About.qtz in Resources */ = {isa = PBXBuildFile; fileRef = BFEA83B20940F71000B90699 /* About.qtz */; };
-		BFEA83B50940F71000B90699 /* About.qtz in Resources */ = {isa = PBXBuildFile; fileRef = BFEA83B20940F71000B90699 /* About.qtz */; };
-		BFEA83B60940F71000B90699 /* About.qtz in Resources */ = {isa = PBXBuildFile; fileRef = BFEA83B20940F71000B90699 /* About.qtz */; };
 		BFEB763D0677FDA700F242F3 /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFEB763E0677FDA700F242F3 /* DCMTagDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */; };
 		BFEB763F0677FDA700F242F3 /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8911,7 +8905,6 @@
 		4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Unit Testing (Cocoa)-Info.plist"; path = "UnitTesting/Unit Testing (Cocoa)-Info.plist"; sourceTree = "<group>"; };
 		4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnitTestingBase.h; path = UnitTesting/UnitTestingBase.h; sourceTree = "<group>"; };
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
-		4AEA0EE5096287DD00AE4488 /* AboutIcons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AboutIcons; path = Binaries/Icons/AboutIcons; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0339FB07415E7D0025DDB4 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/BurnViewer.nib; sourceTree = "<group>"; };
@@ -10808,7 +10801,6 @@
 		BFE4AAF3077A757700D2D44A /* DCMStoreSCPListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMStoreSCPListener.h; path = Networking/DCMStoreSCPListener.h; sourceTree = "<group>"; };
 		BFE4AAF4077A757700D2D44A /* DCMStoreSCPListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMStoreSCPListener.m; path = Networking/DCMStoreSCPListener.m; sourceTree = "<group>"; };
 		BFEA82DF0940F1D500B90699 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
-		BFEA83B20940F71000B90699 /* About.qtz */ = {isa = PBXFileReference; lastKnownFileType = file; name = About.qtz; path = Binaries/Icons/About.qtz; sourceTree = "<group>"; };
 		BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagDictionary.h; sourceTree = "<group>"; };
 		BFEB76380677FDA700F242F3 /* DCMTagDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMTagDictionary.m; sourceTree = "<group>"; };
 		BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTagForNameDictionary.h; sourceTree = "<group>"; };
@@ -12625,8 +12617,6 @@
 			children = (
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
-				BFEA83B20940F71000B90699 /* About.qtz */,
-				4AEA0EE5096287DD00AE4488 /* AboutIcons */,
 				CE7DECC208F05F1500763A70 /* Previous DB Models */,
 				7E5E9259072FEE86007683A2 /* iCal script.applescript */,
 				CEBD8A4B0875B029000E42D6 /* Pane */,
@@ -23008,12 +22998,10 @@
 				CE5EABCD0935E702006D85DD /* Hue1.plist in Resources */,
 				CE5EABCE0935E702006D85DD /* HotMetal.plist in Resources */,
 				CE5EABCF0935E702006D85DD /* HotGreen.plist in Resources */,
-				BFEA83B30940F71000B90699 /* About.qtz in Resources */,
 				CEF30FD10945DEA300824A2B /* windows.tif in Resources */,
 				CE2028FB094EFFC300C00310 /* Endoscopy.tif in Resources */,
 				7E075C560951FADD004B9D6F /* Send.nib in Resources */,
 				CE90D8C4095F5B48004FC7E2 /* FlipData.tiff in Resources */,
-				4AEA0EF5096287DD00AE4488 /* AboutIcons in Resources */,
 				CE286C120964196C001A4573 /* Localizable.strings in Resources */,
 				CE07B72909641CFA00189FEC /* Endoscopy.nib in Resources */,
 				CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */,
@@ -23274,12 +23262,10 @@
 				CE5EABD80935E702006D85DD /* Hue1.plist in Resources */,
 				CE5EABD90935E702006D85DD /* HotMetal.plist in Resources */,
 				CE5EABDA0935E702006D85DD /* HotGreen.plist in Resources */,
-				BFEA83B60940F71000B90699 /* About.qtz in Resources */,
 				CEF30FD20945DEA300824A2B /* windows.tif in Resources */,
 				CE2028FC094EFFC300C00310 /* Endoscopy.tif in Resources */,
 				7E075C590951FADF004B9D6F /* Send.nib in Resources */,
 				CE90D8C5095F5B48004FC7E2 /* FlipData.tiff in Resources */,
-				4AEA0EF8096287DD00AE4488 /* AboutIcons in Resources */,
 				CE286C130964196C001A4573 /* Localizable.strings in Resources */,
 				CE07B72A09641CFA00189FEC /* Endoscopy.nib in Resources */,
 				CE6C77EF09739B3100F951C2 /* Rotate3DCursor.tif in Resources */,
@@ -23539,12 +23525,10 @@
 				CE5EABE30935E702006D85DD /* Hue1.plist in Resources */,
 				CE5EABE40935E702006D85DD /* HotMetal.plist in Resources */,
 				CE5EABE50935E702006D85DD /* HotGreen.plist in Resources */,
-				BFEA83B50940F71000B90699 /* About.qtz in Resources */,
 				CEF30FD30945DEA300824A2B /* windows.tif in Resources */,
 				CE2028F9094EFFC300C00310 /* Endoscopy.tif in Resources */,
 				7E075C580951FADE004B9D6F /* Send.nib in Resources */,
 				CE90D8C6095F5B48004FC7E2 /* FlipData.tiff in Resources */,
-				4AEA0EF7096287DD00AE4488 /* AboutIcons in Resources */,
 				CE286C140964196C001A4573 /* Localizable.strings in Resources */,
 				CE07B72B09641CFA00189FEC /* Endoscopy.nib in Resources */,
 				CE6C77F109739B3100F951C2 /* Rotate3DCursor.tif in Resources */,
