@@ -1742,30 +1742,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( pts[ i].y >= height) clip = YES;
 		}
 		
-		
-	//	upleftx = downrightx = [[ptsTemp objectAtIndex:0] x];
-	//	uplefty = downrighty = [[ptsTemp objectAtIndex:0] y];
-	//	
-	//	for( i = 0; i < [ptsTemp count]; i++)
-	//	{
-	//		if( upleftx > [[ptsTemp objectAtIndex:i] x]) upleftx = [[ptsTemp objectAtIndex:i] x];
-	//		if( uplefty > [[ptsTemp objectAtIndex:i] y]) uplefty = [[ptsTemp objectAtIndex:i] y];
-	//
-	//		if( downrightx < [[ptsTemp objectAtIndex:i] x]) downrightx = [[ptsTemp objectAtIndex:i] x];
-	//		if( downrighty < [[ptsTemp objectAtIndex:i] y]) downrighty = [[ptsTemp objectAtIndex:i] y];
-	//	}
-	//	
-	//	if( upleftx < 0) upleftx = 0;
-	//	if( downrightx < 0) downrightx = 0;
-	//	if( upleftx > width) upleftx = width;
-	//	if( downrightx > width) downrightx = width;
-	//	
-	//	if( uplefty < 0) uplefty = 0;
-	//	if( downrighty < 0) downrighty = 0;
-	//	if( uplefty > height) uplefty = height;
-	//	if( downrighty > height) downrighty = height;
-			
-		
 		if( no == 1)
 		{
 			if( clip)

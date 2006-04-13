@@ -3173,7 +3173,7 @@ static long scrollMode;
 
 -(void) setFusion:(short) mode :(short) stacks
 {
-	long i;
+	long i, x;
 	
 	thickSlabMode = mode;
 	thickSlabStacks = stacks;

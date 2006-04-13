@@ -64,9 +64,16 @@
 	long i, index;
 	
 	[self setDCM:pix :files :rois :0 :'i' :NO];
-
-	// Prepare pixList for image thick slab
-	for( i = 0; i < [pix count]; i++) [[pix objectAtIndex: i] setArrayPix: pix :i];
+	
+	if( [[[[self window] windowController] windowNibName] isEqualToString:@"OrthogonalMPR"])
+	{
+		NSLog( @"setArrayPix");
+		// Prepare pixList for image thick slab - DO IT ONLY FOR NON - PET-CT VIEWER !!!!!!! ROI CRASH - Antoine
+		for( i = 0; i < [pix count]; i++)
+		{
+			[[pix objectAtIndex: i] setArrayPix: pix :i];
+		}
+	}
 	
 	[self setIndex:0];
 	
