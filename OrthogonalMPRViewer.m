@@ -83,6 +83,11 @@ NSString * documentsDirectory();
 	}
 }
 
+-(NSArray*) pixList
+{
+	return [viewer pixList];
+}
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC
 {
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];

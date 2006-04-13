@@ -38,6 +38,7 @@
 	long									displayResliceAxes;
 	
 	NSArray									*filesList;
+	NSMutableArray							*pixList;
 	
 	IBOutlet NSWindow						*dcmExportWindow;
 	IBOutlet NSMatrix						*dcmSelection, *dcmFormat;

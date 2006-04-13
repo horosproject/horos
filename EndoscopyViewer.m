@@ -26,10 +26,11 @@ MODIFICATION HISTORY
 
 
 
-
+#import "OrthogonalMPRViewer.h"
 #import "EndoscopyViewer.h"
 #import "EndoscopyMPRView.h"
 #import "DICOMExport.h"
+
 
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
@@ -78,7 +79,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	[vrController setCurrentTool:18]; // 3D camera rotate tool
 	
 	// 2D MPR
-	[mprController initWithPixList: pix : files : vData : bC: self];
+	[mprController initWithPixList: pix : files : vData : vC: bC :self];
 	
 	[[self window] performZoom:self];
 	

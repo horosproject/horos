@@ -63,6 +63,9 @@ MODIFICATION HISTORY
 
 #import "AppControllerDCMTKCategory.h"
 
+#import "OrthogonalMPRViewer.h"
+#import "OrthogonalMPRPETCTViewer.h"
+
 #define BUILTIN_DCMTK YES
 
 static NSString *hostName = @"";
@@ -2545,7 +2548,7 @@ static BOOL initialized = NO;
 	//get 2D viewer windows
 	for( i = 0; i < [winList count]; i++)
 	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
 			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
 		}

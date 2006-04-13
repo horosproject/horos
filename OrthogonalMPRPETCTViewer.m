@@ -117,6 +117,8 @@ NSString * documentsDirectory();
 		[self turnModalitySplitView];
 	}
 	
+	pixList = [pix retain];
+	
 	// takes the intersection of the CT and the PET stack
 	float signCT, signPET;
 	signCT = ([[pix objectAtIndex:0] sliceInterval] > 0)? 1.0 : -1.0;
@@ -208,13 +210,13 @@ NSString * documentsDirectory();
 
 -(NSArray*) pixList
 {
-	//NSLog(@"pixList");
+	return pixList;
 }
 
 - (void) dealloc
 {
 	NSLog(@"OrthogonalMPRPETCTViewer dealloc");
-	
+	[pixList release];
 	[blendingViewerController release];
 	[toolbar release];
 	[PETCTController stopBlending];
