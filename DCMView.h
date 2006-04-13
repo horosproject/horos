@@ -306,7 +306,6 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (NSManagedObject *)imageObj;
 - (NSManagedObject *)seriesObj;
 - (void)updatePresentationStateFromSeries;
-- (void) subDrawRect:(NSRect)aRect;
 - (IBAction)resetSeriesPresentationState:(id)sender;
 - (IBAction)resetImagePresentationState:(id)sender;
 - (void) setCursorForView: (long) tool;
@@ -315,6 +314,5 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (float) getBlendedSUV;
 - (OrthogonalMPRController*) controller;
 -(void) roiChange:(NSNotification*)note;
--(void) addROI:(NSNotification*)note;
 -(void) roiSelected:(NSNotification*) note;
 @end

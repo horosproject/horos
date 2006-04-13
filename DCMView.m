@@ -1897,6 +1897,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			offset.x /= [[blendingView curDCM] pixelSpacingX];
 			offset.y /= [[blendingView curDCM] pixelSpacingY];
+//			
+//			NSLog( @"%f %f", offset.x, offset.y);
 			
 			// Convert screen position to pixel position in blended image
 			float xx, yy;
@@ -2457,6 +2459,8 @@ static long scrollMode;
 					[(OrthogonalMPRView*)self scrollTool: 0 : (long)change];
 				}
 			}
+			
+			[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		}
 		else if( [stringID isEqualToString:@"MPR3D"])
 		{

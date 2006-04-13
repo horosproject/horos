@@ -2124,7 +2124,7 @@ return rect;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-//					if( [curView blendingView])
+//					if( [curView blendingView])		Sadly this doesn't work AT ALL ! Antoine
 //					{
 //						if( Brtotal == -1)
 //						{

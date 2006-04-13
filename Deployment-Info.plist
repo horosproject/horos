@@ -113,7 +113,11 @@
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.2.4b2</string>
+	<string>OsiriX v.2.4b3</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.4b3</string>
+	<key>CFBundleVersion</key>
+	<string>231</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -122,12 +126,8 @@
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string></string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
-	<key>CFBundleVersion</key>
-	<string>231</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>

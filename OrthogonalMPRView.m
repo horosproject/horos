@@ -53,7 +53,8 @@
 	return self;
 }
 
-- (void) dealloc {
+- (void) dealloc
+{
 	long i;
 	[controller release];
 	[super dealloc];
@@ -67,7 +68,6 @@
 	
 	if( [[[[self window] windowController] windowNibName] isEqualToString:@"OrthogonalMPR"])
 	{
-		NSLog( @"setArrayPix");
 		// Prepare pixList for image thick slab - DO IT ONLY FOR NON - PET-CT VIEWER !!!!!!! ROI CRASH - Antoine
 		for( i = 0; i < [pix count]; i++)
 		{
