@@ -62,8 +62,8 @@
 
 @interface ThickSlabVR : NSView {
 	float								*imageBlendingPtr, *imagePtr;
-	long								width, height, count, ww, wl;
-	float								spaceX, spaceY, thickness;
+	long								width, height, count;
+	float								spaceX, spaceY, thickness, ww, wl;
 	
 	BOOL								flipData, lowQuality;
 
@@ -91,8 +91,8 @@
 	BOOL								threadDone, isRGB;
 }
 -(void) setImageData:(long) w :(long) h :(long) c :(float) sX :(float) sY :(float) t :(BOOL) flip;
--(void) setWLWW: (long) l :(long) w;
--(void) setBlendingWLWW: (long) l :(long) w;
+-(void) setWLWW: (float) l :(float) w;
+-(void) setBlendingWLWW: (float) l :(float) w;
 -(void) setCLUT: (unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
 -(unsigned char*) renderSlab;

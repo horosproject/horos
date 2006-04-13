@@ -249,7 +249,7 @@ extern short Altivec;
 	}
 }
 
--(void) setWLWW: (long) l :(long) w
+-(void) setWLWW: (float) l :(float) w
 {
 	wl = l;
 	ww = w;
@@ -273,7 +273,7 @@ extern short Altivec;
 	}
 }
 
--(void) setBlendingWLWW: (long) l :(long) w
+-(void) setBlendingWLWW: (float) l :(float) w
 {
 	if( imageBlendingPtr)
 	{

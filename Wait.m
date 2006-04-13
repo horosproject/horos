@@ -106,6 +106,7 @@
 	cancel = NO;
 	aborted = NO;
 	openSession = useSession;
+	_target = 0L;
 	
 	return self;
 }
