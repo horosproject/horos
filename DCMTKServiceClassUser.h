@@ -82,5 +82,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters;
+			
+- (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax;
 
 @end
