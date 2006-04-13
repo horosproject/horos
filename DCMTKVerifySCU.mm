@@ -425,7 +425,7 @@ runEcho(const char *myAET, const char*peerAET, const char*hostname, int port, NS
 #endif
 
     /* sets this application's title and the called application's title in the params */
-    /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
+    /* structure. The default values to be set here are "verifyscu" and "ANY-SCP". */
 	if (!cond.bad()) 
 		ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
@@ -691,6 +691,460 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 }
 
 @implementation DCMTKVerifySCU
+
+- (id) initWithCallingAET:(NSString *)myAET  
+			calledAET:(NSString *)theirAET  
+			hostname:(NSString *)hostname 
+			port:(int)port 
+			transferSyntax:(int)transferSyntax
+			compression: (float)compression
+			extraParameters:(NSDictionary *)extraParameters{
+			
+	if (self = [super initWithCallingAET:(NSString *)myAET  
+			calledAET:(NSString *)theirAET  
+			hostname:(NSString *)hostname 
+			port:(int)port 
+			transferSyntax:(int)transferSyntax
+			compression: (float)compression
+			extraParameters:(NSDictionary *)extraParameters]){
+			
+		_acse_timeout = 10;
+	}
+	return self;
+}
+		
+			
+
+
+- (BOOL)echo{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	BOOL connection_Status = NO;
+	OFCondition cond;
+	const char *opt_peer = NULL;
+    OFCmdUnsignedInt opt_port = 104;
+    const char *opt_peerTitle = PEERAPPLICATIONTITLE;
+    const char *opt_ourTitle = APPLICATIONTITLE;
+	
+	if (_callingAET)
+		opt_ourTitle = [_callingAET UTF8String];
+		
+	if (_calledAET)
+		opt_peerTitle = [_calledAET UTF8String];
+		
+    T_ASC_Network *net = NULL;
+    T_ASC_Parameters *params;
+    DIC_NODENAME localHost;
+    DIC_NODENAME peerHost;
+    T_ASC_Association *assoc = NULL;
+   
+	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
+	opt_peer = [_hostname UTF8String];
+	opt_port = _port;
+	
+	//verbose option set to true for now
+	_verbose=OFTrue;
+
+	
+	//debug code activated for now
+	_debug = OFTrue;
+	DUL_Debug(OFTrue);
+	DIMSE_debug(OFTrue);
+	SetDebugLevel(3);
+	
+	//Use Little Endian TS
+	_networkTransferSyntax = EXS_LittleEndianExplicit;
+	
+	
+	NS_DURING
+	
+#ifdef WITH_OPENSSL
+
+	//disable TLS
+	_secureConnection = OFFalse;
+	
+	//enable TLS
+	//        _secureConnection = OFTrue;
+	//_doAuthenticate = OFTrue;
+	//app.checkValue(cmd.getValue(opt_privateKeyFile));
+	//app.checkValue(cmd.getValue(opt_certificateFile));
+	
+	//anonymous-tls
+	// _secureConnection = OFTrue;
+	
+	//Password
+	//opt_passwd
+	
+	//pem-keys 
+	//_keyFileFormat = SSL_FILETYPE_PEM;
+	
+	/*
+	 if (cmd.findOption("--dhparam"))
+      {
+        app.checkValue(cmd.getValue(_dhparam));
+      }
+
+      if (cmd.findOption("--seed"))
+      {
+        app.checkValue(cmd.getValue(_readSeedFile));
+      }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-seed"))
+      {
+        if (_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+        _writeSeedFile = _readSeedFile;
+      }
+      if (cmd.findOption("--write-seed-file"))
+      {
+        if (_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+        app.checkValue(cmd.getValue(_writeSeedFile));
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--require-peer-cert")) _certVerification = DCV_requireCertificate;
+      if (cmd.findOption("--verify-peer-cert"))  _certVerification = DCV_checkCertificate;
+      if (cmd.findOption("--ignore-peer-cert"))  _certVerification = DCV_ignoreCertificate;
+      cmd.endOptionBlock();
+
+      const char *current = NULL;
+      const char *currentOpenSSL;
+      if (cmd.findOption("--cipher", 0, OFCommandLine::FOM_First))
+      {
+        opt_ciphersuites.clear();
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
+          {
+            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+            unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
+            for (unsigned long cs=0; cs < numSuites; cs++)
+            {
+              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            }
+            return 1;
+          } else {
+            if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
+            opt_ciphersuites += currentOpenSSL;
+          }
+        } while (cmd.findOption("--cipher", 0, OFCommandLine::FOM_Next));
+      }
+	*/
+#endif
+
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded()) {
+        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+                DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+	
+	/* initialize network, i.e. create an instance of T_ASC_Network*. */
+    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Could create association parameters" userInfo:nil];
+		[verifyException raise];
+        //return;
+    }
+	
+#ifdef WITH_OPENSSL
+
+    DcmTLSTransportLayer *tLayer = NULL;
+    if (_secureConnection)
+    {
+	}
+
+#endif
+
+/* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
+    cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
+	DimseCondition::dump(cond);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Could create association parameters" userInfo:nil];
+		[verifyException raise];
+		//return;
+    }
+	
+	/* sets this application's title and the called application's title in the params */
+	/* structure. The default values to be set here are "verifyscu" and "ANY-SCP". */
+	ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+
+	/* Set the transport layer type (type of network connection) in the params */
+	/* strucutre. The default is an insecure connection; where OpenSSL is  */
+	/* available the user is able to request an encrypted,secure connection. */
+	cond = ASC_setTransportLayerType(params, _secureConnection);
+	if (cond.bad()) {
+		DimseCondition::dump(cond);
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:@"Could not set transport layer" userInfo:nil];
+		[verifyException raise];
+		//return;
+	}
+	
+	/* Figure out the presentation addresses and copy the */
+	/* corresponding values into the association parameters.*/
+	gethostname(localHost, sizeof(localHost) - 1);
+	sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
+	//NSLog(@"peer host: %s", peerHost);
+	ASC_setPresentationAddresses(params, localHost, peerHost);
+	
+	/* Set the presentation contexts which will be negotiated */
+    /* when the network connection will be established */
+	/*
+	abstract syntax should be 
+	UID_MOVEStudyRootQueryRetrieveInformationModel
+					or 
+	UID_FINDStudyRootQueryRetrieveInformationModel
+	*/
+	cond = [self addPresentationContext:params abstractSyntax:UID_VerificationSOPClass];
+    
+    if (cond.bad()) {
+        DimseCondition::dump(cond);
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (findscu)" reason:@"Could not create presentation context" userInfo:nil];
+        [verifyException raise];
+    }
+
+    /* dump presentation contexts if required */
+    if (_debug) {
+        printf("Request Parameters:\n");
+        ASC_dumpParameters(params, COUT);
+    }
+	
+	    /* create association, i.e. try to establish a network connection to another */
+    /* DICOM application. This call creates an instance of T_ASC_Association*. */
+	if (!cond.bad()) {
+		if (_verbose)
+			printf("Requesting Association\n");
+		cond = ASC_requestAssociation(net, params, &assoc);
+		if (cond.bad()) {
+			if (cond == DUL_ASSOCIATIONREJECTED)
+			{
+				T_ASC_RejectParameters rej;
+
+				ASC_getRejectParameters(params, &rej);
+				errmsg("Association Rejected:");
+				ASC_printRejectParameters(stderr, &rej);
+				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Association Rejected" userInfo:nil];
+				[verifyException raise];
+			} else {
+				errmsg("Association Request Failed:");
+				DimseCondition::dump(cond);
+				verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Association Failed" userInfo:nil];
+			[verifyException raise];
+			}
+		}
+	}
+
+    /* dump the presentation contexts which have been accepted/refused */
+    if (_debug) {
+        printf("Association Parameters Negotiated:\n");
+        ASC_dumpParameters(params, COUT);
+    }
+	
+			/* count the presentation contexts which have been accepted by the SCP */
+	/* If there are none, finish the execution */
+	if (ASC_countAcceptedPresentationContexts(params) == 0) {
+		errmsg("No Acceptable Presentation Contexts");
+		verifyException = [NSException exceptionWithName:@"DICOM Network Failure (qrscu)" reason:@"No acceptable presentation contexts" userInfo:nil];
+		[verifyException raise];
+		//return;
+	}
+	
+	    /* dump general information concerning the establishment of the network connection if required */
+    if (_verbose) {
+        printf("Association Accepted (Max Send PDV: %lu)\n",
+                assoc->sendPDVLength);
+    }
+	
+	 /* do the real work, i.e. send a number of C-ECHO-RQ messages to the DICOM application */
+    /* this application is connected with and handle corresponding C-ECHO-RSP messages. */
+	if (!cond.bad()) 
+		cond = [self cecho: assoc repeat:1];
+		//cond = cecho(assoc, 1);
+
+		/* tear down association, i.e. terminate network connection to SCP */
+    if (cond == EC_Normal)
+    {
+		connection_Status = YES;
+        if (_abortAssociation) {
+            if (_verbose)
+                printf("Aborting Association\n");
+            cond = ASC_abortAssociation(assoc);
+            if (cond.bad()) {
+                errmsg("Association Abort Failed:");
+                DimseCondition::dump(cond);
+                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
+				[verifyException raise];
+				//return;
+            }
+        } else {
+            /* release association */
+            if (_verbose)
+                printf("Releasing Association\n");
+            cond = ASC_releaseAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Release Failed:");
+                DimseCondition::dump(cond);
+                verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Release Failed" userInfo:nil];
+				[verifyException raise];
+				//return;
+            }
+        }
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
+        errmsg("Protocol Error: peer requested release (Aborting)");
+        if (_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
+			[verifyException raise];
+			//return;
+        }
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
+        if (_verbose) printf("Peer Aborted Association\n");
+    }
+    else
+    {
+        errmsg("SCU Failed:");
+        DimseCondition::dump(cond);
+        if (_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+			verifyException = [NSException exceptionWithName:@"DICOM Network Failure (verifyscu)" reason:@"Abort Failed" userInfo:nil];
+			[verifyException raise];
+			//return;
+        }
+    }
+	
+	NS_HANDLER
+	NSLog(@"Exception: %@", [verifyException description]);
+	NS_ENDHANDLER
+	
+
+
+// CLEANUP
+
+    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+    cond = ASC_destroyAssociation(&assoc);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);  
+    
+    }
+	
+    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+    cond = ASC_dropNetwork(&net);
+    if (cond.bad()) {
+        DimseCondition::dump(cond);
+
+    }
+	
+
+#ifdef WITH_OPENSSL
+/*
+    if (tLayer && opt_writeSeedFile)
+    {
+      if (tLayer->canWriteRandomSeed())
+      {
+        if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+        {
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+        }
+      } else {
+        CERR << "Warning: cannot write random seed, ignoring." << endl;
+      }
+    }
+    delete tLayer;
+*/
+#endif
+
+
+
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
+ 
+	[pool release];
+	return connection_Status;
+}
+
+-(OFCondition)cecho:(T_ASC_Association *) assoc repeat:(int) num_repeat
+    /*
+     * This function will send num_repeat C-ECHO-RQ messages to the DICOM application
+     * this application is connected with and handle corresponding C-ECHO-RSP messages.
+     *
+     * Parameters:
+     *   assoc      - [in] The association (network connection to another DICOM application).
+     *   num_repeat - [in] The amount of C-ECHO-RQ messages which shall be sent.
+     */
+{
+    OFCondition cond = EC_Normal;
+    unsigned long n = num_repeat;
+
+    /* as long as no error occured and the counter does not equal 0 */
+    /* send an C-ECHO-RQ and handle the response */
+    while (cond == EC_Normal && n--) cond = [self echoSCU:assoc]; // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+
+    return cond;
+}
+
+-(OFCondition)echoSCU:(T_ASC_Association *) assoc
+    /*
+     * This function will send a C-ECHO-RQ over the network to another DICOM application
+     * and handle the response.
+     *
+     * Parameters:
+     *   assoc - [in] The association (network connection to another DICOM application).
+     */
+{
+    DIC_US msgId = assoc->nextMsgID++;
+    DIC_US status;
+    DcmDataset *statusDetail = NULL;
+
+    /* dump information if required */
+    if (_verbose) {
+        printf("Echo [%d], ", msgId);
+        fflush(stdout);
+    }
+
+    /* send C-ECHO-RQ and handle response */
+    OFCondition cond = DIMSE_echoUser(assoc, msgId, opt_blockMode, opt_dimse_timeout, &status, &statusDetail);
+
+    /* depending on if a response was received, dump some information */
+    if (cond.good()) {
+        if (_verbose) {
+            printf("Complete [Status: %s]\n",
+                DU_cstoreStatusString(status));
+        }
+    } else {
+        errmsg("Failed:");
+        DimseCondition::dump(cond);
+    }
+
+    /* check for status detail information, there should never be any */
+    if (statusDetail != NULL) {
+        printf("  Status Detail (should never be any):\n");
+        statusDetail->print(COUT);
+        delete statusDetail;
+    }
+
+    /* return result value */
+    return cond;
+}
+
+
 
 @end
 

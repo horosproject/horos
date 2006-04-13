@@ -23,6 +23,11 @@
 int runEcho(const char *myAET, const char*peerAET, const char*hostname, int port, NSDictionary *extraParameters);
 
 @interface DCMTKVerifySCU : DCMTKServiceClassUser {
+	NSException *verifyException;
 }
+
+- (BOOL)echo;
+-(OFCondition)cecho:(T_ASC_Association *) assoc repeat:(int) num_repeat;
+-(OFCondition)echoSCU:(T_ASC_Association *) assoc;
 
 @end
