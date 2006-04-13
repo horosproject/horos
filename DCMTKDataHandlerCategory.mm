@@ -33,8 +33,8 @@ extern BrowserController *browserWindow;
 
 	//NSPredicate *compoundPredicate = [NSPredicate predicateWithFormat:@"hasDICOM == %d", YES];
 	NSPredicate *compoundPredicate = nil;
-	const char *sType;
-	const char *scs;
+	const char *sType = NULL;
+	const char *scs = NULL;
 	//NSString *charset;	
 	//should be STUDY, SERIES OR IMAGE
 	NS_DURING 
@@ -502,7 +502,7 @@ extern BrowserController *browserWindow;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
-	
+	OFCondition cond;
 	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
@@ -512,26 +512,33 @@ extern BrowserController *browserWindow;
 		entity = [[model entitiesByName] objectForKey:@"Image"];
 	else 
 		entity = nil;
+	
+	if (entity) {
+		[request setEntity:entity];
+		[request setPredicate:predicate];
+					
+		error = 0L;
+					
+		findArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
 		
-	[request setEntity:entity];
-	[request setPredicate:predicate];
-				
-	error = 0L;
-				
-	findArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
-	
-	OFCondition cond;
-	
-	if (error) {
+		
+		
+		if (error) {
+			findArray = nil;
+			cond = EC_IllegalParameter;
+		}
+		else {
+			[findArray retain];
+			cond = EC_Normal;
+		}
+	}
+	else{
 		findArray = nil;
 		cond = EC_IllegalParameter;
 	}
-	else {
-		[findArray retain];
-		cond = EC_Normal;
-	}
-		
-	findEnumerator = [[findArray objectEnumerator] retain];;
+			
+	findEnumerator = [[findArray objectEnumerator] retain];
+
 	
 	return cond;
 	 
