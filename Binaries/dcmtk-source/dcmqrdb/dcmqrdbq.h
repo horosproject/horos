@@ -56,6 +56,7 @@ struct DB_OsiriX_Handle
     DB_QUERY_CLASS rootLevel ;
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
+	NSManagedObject *logEntry;
 	//NSArray *findArray;
 	//NSArray *moveArray;
 };

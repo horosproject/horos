@@ -40,6 +40,7 @@ extern BrowserController *browserWindow;
 	NS_DURING 
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
+	NSLog(@"get Specific Character set");
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
@@ -54,7 +55,7 @@ extern BrowserController *browserWindow;
 	else
 		compoundPredicate = [NSPredicate predicateWithValue:YES];
 		
-	//NSLog(@"charset %@", specificCharacterSet);
+	NSLog(@"charset %@", specificCharacterSet);
 		
 	
 	int elemCount = (int)(dataset->card());

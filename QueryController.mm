@@ -709,8 +709,15 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 		}
 	}
-	
-	return runEcho([myAET UTF8String], [theirAET UTF8String], [hostname UTF8String], [port intValue], nil);
+	DCMTKVerifySCU *verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
+			calledAET:theirAET  
+			hostname:hostname 
+			port:[port intValue]
+			transferSyntax:nil
+			compression: nil
+			extraParameters:nil] autorelease];
+	return [verifySCU echo];
+	//return runEcho([myAET UTF8String], [theirAET UTF8String], [hostname UTF8String], [port intValue], nil);
 	
 	
 	/*
