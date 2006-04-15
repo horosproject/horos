@@ -7833,7 +7833,10 @@ int i,j,l;
 	
 	[quicktimeFrom setMaxValue: [pixList[ curMovieIndex] count]];
 	[quicktimeTo setMaxValue: [pixList[ curMovieIndex] count]];
-	
+
+	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+
 	[quicktimeFrom setIntValue: 1];
 	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
 	
@@ -8069,6 +8072,9 @@ int i,j,l;
 	
 	[dcmFrom setMaxValue: [pixList[ curMovieIndex] count]];
 	[dcmTo setMaxValue: [pixList[ curMovieIndex] count]];
+	
+	[dcmFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+	[dcmTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
 	[dcmFrom setIntValue: 1];
 	[dcmTo setIntValue: [pixList[ curMovieIndex] count]];

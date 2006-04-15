@@ -20,8 +20,7 @@
 
 #import "MoveManager.h"
 
-MoveManager *sharedManager;
-
+static MoveManager *sharedManager = 0L;
 
 @implementation MoveManager
 
