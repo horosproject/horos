@@ -4012,6 +4012,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
 		oImage =  malloc([pixData length]);			
 		[pixData getBytes:oImage];
+		//NSLog(@"image size: %d", ( height * width * 2));
+		//NSLog(@"Data size: %d", [pixData length]);
 		
 	}
 	if( oImage == 0L)
@@ -4227,7 +4229,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		else
 		{
 			vImage_Buffer src16, dstf;
-			
 			dstf.height = src16.height = height;
 			dstf.width = src16.width = width;
 			src16.rowBytes = width*2;
@@ -4256,6 +4257,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}
 			else
 			{
+				
 				vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
 				//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
 			}

@@ -38,6 +38,7 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 	int		_bytesPerSample;
 	int		_numberOfFrames;
 	int		_pixelDepth;
+	int		_bitsStored;
 	BOOL	_isShort, _isSigned;
 	float	_compression;
 	int		_min;

@@ -179,10 +179,11 @@ short DCMHasAltiVec()
 	_framesCreated = NO;
 	
 	_pixelDepth = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsStored"]] value] intValue];
-	//NSLog(@"Init PixelDataAttr _pixelDepth %d", _pixelDepth);
+	_bitsStored = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
+	
 	if ([ts isExplicit] && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
 		theVR = vr;	
-	else if (_pixelDepth <= 8 || [dicomData isEncapsulated]) 
+	else if (_bitsStored <= 8 || [dicomData isEncapsulated]) 
 		theVR = @"OB";
 	else {
 		forImplicitUseOW = YES;
@@ -206,6 +207,8 @@ short DCMHasAltiVec()
 		_valueLength = vl;
 		_valueMultiplicity = 1;
 		_values =  nil;
+	
+		//NSLog(@"data length: %d", [dicomData length]);
 		if (dicomData) 
 			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] retain];
 		else
@@ -224,12 +227,12 @@ short DCMHasAltiVec()
 	if ([_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]])
 		_numberOfFrames = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"NumberofFrames"]] value] intValue];
 	_isSigned = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PixelRepresentation"]] value] boolValue];
-
 	transferSyntax = [ts retain];
 	_isDecoded = NO;
 
 	if (decodeData)
 		[self decodeData];
+
 	
 	return self;
 }
@@ -1214,7 +1217,7 @@ short DCMHasAltiVec()
 }
 
 - (void)decodeData{
-	//NSLog(@"decode data");
+	NSLog(@"decode data");
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	if (!_framesCreated)
 		[self createFrames];
@@ -2426,7 +2429,8 @@ NS_ENDHANDLER
 	if ([_dcmObject attributeValueWithName:@"RescaleIntercept" ]  != nil)
             rescaleIntercept = (float)([[_dcmObject attributeValueWithName:@"RescaleIntercept" ] floatValue]);            
 	if ([_dcmObject attributeValueWithName:@"RescaleSlope" ] != nil) 
-            rescaleSlope = [[_dcmObject attributeValueWithName:@"RescaleSlope" ] floatValue];        		
+            rescaleSlope = [[_dcmObject attributeValueWithName:@"RescaleSlope" ] floatValue];  
+	
 	// 8 bit grayscale		
 	if (_samplesPerPixel == 1 && _pixelDepth <= 8){
 		src8.rowBytes = _columns * sizeof(char);
@@ -2445,6 +2449,7 @@ NS_ENDHANDLER
 	}
 	//16 bit unsigned
 	else if (_samplesPerPixel == 1 && _pixelDepth <= 16 && !(_isSigned)){
+		
 		src16.rowBytes = _columns * sizeof(short);
 		src16.data = (unsigned short *)[data bytes];
 		floatData = [NSMutableData dataWithLength:[data length] * sizeof(float)/sizeof(unsigned short)];
@@ -2560,13 +2565,13 @@ NS_ENDHANDLER
 }
 
 - (NSMutableData *)createFrameAtIndex:(int)index{
-	//NSLog(@"Create frame at Index %d", index);
+	
 	//NSDate *timestamp = [NSDate date];
 	NSMutableData *subData = nil;
 	if (!_framesCreated){	
 		//NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if ([transferSyntax isEncapsulated])	{
-			NSLog(@"encapsulated");
+			//NSLog(@"encapsulated");
 			NSMutableArray *offsetTable = [NSMutableArray array];
 			/*offset table will be first fragment
 				if single image value = 0;
@@ -2645,13 +2650,11 @@ NS_ENDHANDLER
 
 		} //end encapsulated
 		//multiple frames
-		else if (_numberOfFrames > 0) {
-		//	NSLog(@"multiframe");
-			
+		else if (_numberOfFrames > 1) {
 			int depth = 1;
-			if (_pixelDepth <= 8) 
+			if (_bitsStored <= 8) 
 				depth = 1;
-			else if (_pixelDepth  <= 16)
+			else if (_bitsStored  <= 16)
 				depth = 2;
 			else
 				depth = 4;
@@ -2659,19 +2662,19 @@ NS_ENDHANDLER
 			NSRange range = NSMakeRange(index * frameLength, frameLength);
 			NSData *subdata = [[_values objectAtIndex:0]  subdataWithRange:range];
 			subData = [[subdata mutableCopy] autorelease];
-			//subData = subdata;
-			
 		}
 		//only one fame
-		else 
+		else {
+			
 			subData =[_values objectAtIndex:0];
+		}
 		//NSLog(@"interval: %f", -[timestamp timeIntervalSinceNow]);
 	}		
 	return subData;
 }
 
 - (void)createFrames{
-	//NSLog(@"createFrames");
+	
 	if (!_framesCreated){
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		if (DEBUG)
@@ -2817,14 +2820,13 @@ NS_ENDHANDLER
 	BOOL colorspaceIsConverted = NO;
 	NSMutableData *subData = nil;
 	if (_framesCreated) {
-		//NSLog(@"frames created");
 		subData = [_values objectAtIndex:index];
 	}
 	else
 		subData = [self createFrameAtIndex:index];
-		
+	
 	if ([_values count] > 0 && index < _numberOfFrames){
-		//NSLog(@"decodeFrameAtIndex: %d syntax %@", index, [transferSyntax description]);
+		
 			
 		if (DEBUG)
 				NSLog(@"to decoders:%@", [transferSyntax description]);
@@ -2897,7 +2899,8 @@ NS_ENDHANDLER
 				}
 			}
 			//non encapsulated
-			else if (_pixelDepth > 8) {
+			else if (_bitsStored > 8) {
+			//else if (_pixelDepth > 8) {
 				//Little Endian Data and BigEndian Host
 				if ((NSHostByteOrder() == NS_BigEndian) &&
 				 ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]] || 
@@ -2989,6 +2992,7 @@ NS_ENDHANDLER
 	//16 bit gray
 	else {
 	//convert to Float
+		
 		NSMutableData *data8 = [NSMutableData dataWithLength:_rows*_columns];
 		vImage_Buffer src16, dstf, dst8;
 		dstf.height = src16.height = dst8.height=  _rows;
