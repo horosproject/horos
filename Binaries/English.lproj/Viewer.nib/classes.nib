@@ -107,6 +107,7 @@
                 MPR2DViewer = id; 
                 MPRViewer = id; 
                 MoviePlayStop = id; 
+                Panel3D = id; 
                 PlayStop = id; 
                 SRViewer = id; 
                 SyncSeries = id; 
@@ -116,14 +117,12 @@
                 blendingSlider = id; 
                 brushTool = id; 
                 changeMatrixSize = id; 
-                clearOffset = id; 
                 closeBrushROIFilterOptionsSheet = id; 
                 closeSelectedBrushROI = id; 
                 closeSelectedBrushROIWithRadius = id; 
                 clutAction = id; 
                 computeSum = id; 
                 convMatrixAction = id; 
-                copySettingsToOthers = id; 
                 dilateSelectedBrushROI = id; 
                 dilateSelectedBrushROIWithRadius = id; 
                 endBlendingType = id; 
@@ -145,8 +144,10 @@
                 erodeSelectedBrushROIWithRadius = id; 
                 export2PACS = id; 
                 export2iPhoto = id; 
+                exportDICOMSlider = id; 
                 exportJPEG = id; 
                 exportQuicktime = id; 
+                exportQuicktimeSlider = id; 
                 keyImageCheckBox = id; 
                 keyImageDisplayButton = id; 
                 loadPatient = id; 
@@ -156,6 +157,7 @@
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
                 resetImage = id; 
+                revertSeries = id; 
                 roiDeleteAll = id; 
                 roiPropagate = id; 
                 roiPropagateSetup = id; 
@@ -246,10 +248,12 @@
                 dcmExportWindow = NSWindow; 
                 dcmFormat = NSMatrix; 
                 dcmFrom = NSSlider; 
+                dcmFromText = NSTextField; 
                 dcmInterval = NSSlider; 
                 dcmSelection = NSMatrix; 
                 dcmSeriesName = NSTextField; 
                 dcmTo = NSSlider; 
+                dcmToText = NSTextField; 
                 displaySUVWindow = NSWindow; 
                 fromset = NSTextField; 
                 iPhotoView = NSView; 
@@ -277,9 +281,11 @@
                 previewMatrix = NSMatrix; 
                 quicktimeBox = NSBox; 
                 quicktimeFrom = NSSlider; 
+                quicktimeFromText = NSTextField; 
                 quicktimeInterval = NSSlider; 
                 quicktimeMode = NSMatrix; 
                 quicktimeTo = NSSlider; 
+                quicktimeToText = NSTextField; 
                 quicktimeWindow = NSWindow; 
                 roiPropaCopy = NSMatrix; 
                 roiPropaDest = NSTextField; 

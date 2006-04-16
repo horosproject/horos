@@ -7823,6 +7823,17 @@ int i,j,l;
 	}
 }
 
+- (IBAction) exportQuicktimeSlider:(id) sender
+{
+	[quicktimeFromText takeIntValueFrom: quicktimeFrom];
+	[quicktimeToText takeIntValueFrom: quicktimeTo];
+	
+	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+	else [imageView setIndex:  [sender intValue]-1];
+	
+	[imageView sendSyncMessage:1];
+}
+
 - (void) exportQuicktime:(id) sender
 {
 	if( [sender tag] == 1) EXPORT2IPHOTO = YES;
@@ -8063,6 +8074,18 @@ int i,j,l;
 	
 	if( [[sender selectedCell] tag] == 1) [self checkView: quicktimeBox :YES];
 	else [self checkView: quicktimeBox :NO];
+}
+
+
+- (IBAction) exportDICOMSlider:(id) sender
+{
+	[dcmFromText takeIntValueFrom: dcmFrom];
+	[dcmToText takeIntValueFrom: dcmTo];
+	
+	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+	else [imageView setIndex:  [sender intValue]-1];
+	
+	[imageView sendSyncMessage:1];
 }
 
 - (void) exportDICOMFile:(id) sender

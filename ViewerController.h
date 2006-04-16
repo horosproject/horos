@@ -48,6 +48,7 @@
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;
 	IBOutlet NSSlider		*quicktimeInterval, *quicktimeFrom, *quicktimeTo;
+	IBOutlet NSTextField	*quicktimeFromText, *quicktimeToText;
 	IBOutlet NSBox			*quicktimeBox;
 	
 	DCMView					*imageView;
@@ -135,6 +136,7 @@
 	IBOutlet NSWindow       *dcmExportWindow;
 	IBOutlet NSMatrix		*dcmSelection, *dcmFormat;
 	IBOutlet NSSlider		*dcmInterval, *dcmFrom, *dcmTo;
+	IBOutlet NSTextField	*dcmFromText, *dcmToText;
 	IBOutlet NSBox			*dcmBox;
 	IBOutlet NSTextField	*dcmSeriesName;
 	
@@ -368,6 +370,8 @@
 - (void) tileWindows;
 -(IBAction) export2iPhoto:(id) sender;
 - (void) exportQuicktime:(id) sender;
+- (IBAction) exportQuicktimeSlider:(id) sender;
+- (IBAction) exportDICOMSlider:(id) sender;;
 - (IBAction) setComments:(id) sender;
 - (IBAction) setStatus:(id) sender;
 - (IBAction) endSetComments:(id) sender;

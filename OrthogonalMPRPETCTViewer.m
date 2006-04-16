@@ -2547,6 +2547,9 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	}
 	[dcmFrom setMaxValue:max];
 	[dcmTo setMaxValue:max];
+	[dcmFrom setNumberOfTickMarks:max];
+	[dcmTo setNumberOfTickMarks:max];
+	[dcmTo setMaxValue:max];
 	[dcmInterval setMaxValue:90];
 
 	[dcmFrom setIntValue:1];

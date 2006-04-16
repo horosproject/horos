@@ -561,7 +561,11 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 		[self setModeIndex: 1];
 		
 	if( [style isEqualToString:@"panel"])
+	{
 		[view setRotate: YES];
+		[view setLOD: 1.0];
+		[LODSlider setIntValue: 1];
+	}
 		
     return self;
 }

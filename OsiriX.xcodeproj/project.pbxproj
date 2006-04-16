@@ -4174,13 +4174,10 @@
 		CE39BFA206BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
-		CE3BF8EB098543F30000D64F /* MIPPET.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E5098543F20000D64F /* MIPPET.nib */; };
 		CE3BF8EC098543F30000D64F /* PETCT.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E7098543F20000D64F /* PETCT.nib */; };
 		CE3BF8ED098543F30000D64F /* OrthogonalMPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */; };
-		CE3BF8EE098543F30000D64F /* MIPPET.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E5098543F20000D64F /* MIPPET.nib */; };
 		CE3BF8EF098543F30000D64F /* PETCT.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E7098543F20000D64F /* PETCT.nib */; };
 		CE3BF8F0098543F30000D64F /* OrthogonalMPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */; };
-		CE3BF8F1098543F30000D64F /* MIPPET.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E5098543F20000D64F /* MIPPET.nib */; };
 		CE3BF8F2098543F30000D64F /* PETCT.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E7098543F20000D64F /* PETCT.nib */; };
 		CE3BF8F3098543F30000D64F /* OrthogonalMPR.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */; };
 		CE3E695D07AFB6DE00541E20 /* CurvedMPR.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */; };
@@ -10883,7 +10880,6 @@
 		CE3422CA0946237A00CCEA2A /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = Binaries/VTKLibs/libvtksys.a; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
-		CE3BF8E6098543F20000D64F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/MIPPET.nib; sourceTree = "<group>"; };
 		CE3BF8E8098543F20000D64F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PETCT.nib; sourceTree = "<group>"; };
 		CE3BF8EA098543F20000D64F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/OrthogonalMPR.nib; sourceTree = "<group>"; };
 		CE3E695B07AFB6DE00541E20 /* CurvedMPR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurvedMPR.h; sourceTree = "<group>"; };
@@ -12624,7 +12620,6 @@
 				ABBB647A063587B200D9531F /* Icons */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */,
-				CE3BF8E5098543F20000D64F /* MIPPET.nib */,
 				CE3BF8E7098543F20000D64F /* PETCT.nib */,
 				CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */,
 				CE07B72709641CFA00189FEC /* Endoscopy.nib */,
@@ -23008,7 +23003,6 @@
 				CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */,
 				7EE713BC097450B000510E88 /* dcmmkdir in Resources */,
 				CED8BC7C097F93D1002665CE /* SUV.tif in Resources */,
-				CE3BF8EB098543F30000D64F /* MIPPET.nib in Resources */,
 				CE3BF8EC098543F30000D64F /* PETCT.nib in Resources */,
 				CE3BF8ED098543F30000D64F /* OrthogonalMPR.nib in Resources */,
 				7E49AE490988345000AEF594 /* DicomImporter.mdimporter in Resources */,
@@ -23272,7 +23266,6 @@
 				CE6C77F009739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */,
 				7EE713BE097450B000510E88 /* dcmmkdir in Resources */,
 				CED8BC7E097F93D1002665CE /* SUV.tif in Resources */,
-				CE3BF8EE098543F30000D64F /* MIPPET.nib in Resources */,
 				CE3BF8EF098543F30000D64F /* PETCT.nib in Resources */,
 				CE3BF8F0098543F30000D64F /* OrthogonalMPR.nib in Resources */,
 				7E49AE4B0988345000AEF594 /* DicomImporter.mdimporter in Resources */,
@@ -23535,7 +23528,6 @@
 				CE6C77F209739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */,
 				7EE713BB097450B000510E88 /* dcmmkdir in Resources */,
 				CED8BC7D097F93D1002665CE /* SUV.tif in Resources */,
-				CE3BF8F1098543F30000D64F /* MIPPET.nib in Resources */,
 				CE3BF8F2098543F30000D64F /* PETCT.nib in Resources */,
 				CE3BF8F3098543F30000D64F /* OrthogonalMPR.nib in Resources */,
 				7E49AE4A0988345000AEF594 /* DicomImporter.mdimporter in Resources */,
@@ -25921,14 +25913,6 @@
 				CE2FE58B0753A4A4005C4F80 /* English */,
 			);
 			name = VRVPRO.nib;
-			sourceTree = "<group>";
-		};
-		CE3BF8E5098543F20000D64F /* MIPPET.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3BF8E6098543F20000D64F /* English */,
-			);
-			name = MIPPET.nib;
 			sourceTree = "<group>";
 		};
 		CE3BF8E7098543F20000D64F /* PETCT.nib */ = {
