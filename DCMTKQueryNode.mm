@@ -552,7 +552,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     //cond = addPresentationContext(params, UID_FINDStudyRootQueryRetrieveInformationModel);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-        exit(1);
+        [queryException raise];
     }
 
     /* dump presentation contexts if required */

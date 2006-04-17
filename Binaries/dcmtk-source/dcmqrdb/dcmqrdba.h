@@ -207,6 +207,12 @@ public:
    *  @param checkMove checking for C-MOVE parameters
    */
   virtual void setIdentifierChecking(OFBool checkFind, OFBool checkMove) = 0;
+  
+//creates logEntry
+//  virtual OFCondition createLogEntry(DcmDataset *dataset) = 0;
+
+//Updates values of Log entry
+//	virtual OFCondition updateLogEntry() = 0;
 
 };
 

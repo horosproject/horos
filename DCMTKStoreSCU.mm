@@ -37,6 +37,7 @@
 */
 
 #import "DCMTKStoreSCU.h"
+#import "browserController.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -912,7 +913,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	// if we ever alllow simultaneous sends we will need a dynamic name;
+	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
 	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@", _callingAET]; 
+	//NSString *tempFolder = [NSString stringWithFormat:@"%@/.DICOMSend_%@",osiriXFolder,  _callingAET]; 
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	
 	//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly

@@ -100,6 +100,7 @@ const char *opt_configFileName = "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
+DcmQueryRetrieveSCP *scp;
 
 void errmsg(const char* msg, ...)
 {
@@ -120,17 +121,33 @@ void errmsg(const char* msg, ...)
 		_port = port;
 		_aeTitle = [aeTitle retain];
 		_params = [params retain];
+			//Create a timer to cleanup scp children every  hour
+		[NSTimer scheduledTimerWithTimeInterval:3600 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
+		//[NSTimer scheduledTimerWithTimeInterval:10 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
 	}
 	return self;
 }
 
 - (void)dealloc{
+
+	if (scp != NULL) {
+		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
+		 delete scp;
+	}
+
 	[_aeTitle release];
 	[_params release];
 	[super dealloc];
 }
 
+- (void)cleanup:(NSTimer *)timer{
+	if (scp != NULL) 
+		scp->cleanChildren(OFTrue);  // clean up any child processes 	
+}
+
 - (void)run{
+
+
 	OFCondition cond = EC_Normal;
     OFCmdUnsignedInt overridePort = 0;
     OFCmdUnsignedInt overrideMaxPDU = 0;
@@ -268,9 +285,12 @@ DcmQueryRetrieveConfig config;
     // use linear index database (index.dat)
 //    DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
 //#endif
-
-    DcmQueryRetrieveSCP scp(config, options, factory);
-    scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
+	 //use if static scp rather than pointer
+    //DcmQueryRetrieveSCP scp(config, options, factory);
+	//scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
+   scp = new DcmQueryRetrieveSCP(config, options, factory);
+   scp->setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
+    
 	
 	//Start Bonjour 
 	NSNetService *netService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:_aeTitle port:_port];
@@ -282,9 +302,16 @@ DcmQueryRetrieveConfig config;
     /* loop waiting for associations */
     while (cond.good() && !_abort)
     {
-      cond = scp.waitForAssociation(options.net_);
-      if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
+      cond = scp->waitForAssociation(options.net_);
+	  scp->cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
+	  //use if static scp rather than pointer
+	//	cond = scp.waitForAssociation(options.net_);
+	//  scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
+      //if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
     }
+	
+	delete scp;
+	scp = NULL;
 	
 	//stop bonjour
 	[netService stop];
@@ -300,7 +327,7 @@ DcmQueryRetrieveConfig config;
 }
 -(void)abort
 {
-
+	_abort = YES;
 }
 
 @end

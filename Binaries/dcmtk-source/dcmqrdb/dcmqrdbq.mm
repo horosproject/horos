@@ -18,6 +18,7 @@
      PURPOSE.
 =========================================================================*/
 #import "browserController.h"
+#import "DICOMToNSString.h"
 
 #undef verify
 
@@ -410,6 +411,54 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
     return (cond);
 }
 
+/*************
+Log Entry
+*************/
+OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::createLogEntry(DcmDataset *dataset) {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	handle->logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry"
+		inManagedObjectContext:[[BrowserController currentBrowser]  managedObjectContext]] retain];
+	NSManagedObject *logEntry = handle->logEntry;
+	[logEntry setValue:[NSDate date] forKey:@"startTime"];
+	[logEntry setValue:@"Receive" forKey:@"type"];
+	const char *scs;
+	NSString *specificCharacterSet;
+	const char *pn;
+	NSString *patientName;
+	const char *sd;
+	NSString *studyDescription;
+	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+		specificCharacterSet = [NSString stringWithCString:scs];
+	}
+	else {
+		specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
+	}
+	
+	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
+		patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+	}
+	else {
+		patientName = [NSString stringWithString:@""];
+	}
+	
+	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
+		studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
+	}
+	else {
+		studyDescription = [NSString stringWithString:@""];
+	}
+
+	//[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
+	[logEntry setValue:patientName forKey:@"patientName"];
+	[logEntry setValue:studyDescription forKey:@"studyName"];	
+	[pool release];
+	return EC_Normal;
+}
+
+OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(){
+	return EC_Normal;
+}
 
 
 

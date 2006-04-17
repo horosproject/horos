@@ -27,6 +27,7 @@
 #include "dicom.h"
 #include "dimse.h"
 #include "offname.h"
+#include "dcdatset.h"
 
 #include "dcmqrdbi.h" // for DB_Level
 #include "dcmqridx.h"
@@ -310,6 +311,13 @@ public:
 
   /// return path to index file
 //  const char *getIndexFilename() const;
+
+
+//creates logEntry
+OFCondition createLogEntry(DcmDataset *dataset);
+
+//Updates values of Log entry
+OFCondition updateLogEntry();
 
       
 private:

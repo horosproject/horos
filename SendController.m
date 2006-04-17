@@ -151,7 +151,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 - (id)serverAtIndex:(int)index
 {
 	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
+	NSLog(@"server at INdex: %d", index);
 	
 	if( index > -1 && index < [serversArray count])
 		return [serversArray objectAtIndex:index];
@@ -167,6 +167,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 }
 
 - (IBAction)selectServer: (id)sender{
+	NSLog(@"select server: %@", [sender description]);
 	_serverIndex = [sender indexOfSelectedItem];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:_serverIndex forKey:@"lastSendServer"];
@@ -233,7 +234,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (IBAction) endSelectServer:(id) sender
 {
-	
+	NSLog(@"end select server");
 	[[self window] orderOut:sender];
 	[NSApp endSheet: [self window] returnCode:[sender tag]];
 	NSArray *objectsToSend = _files;
@@ -461,7 +462,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSString *hostname;
 	NSString *destPort;
 	NSString *transferSyntax;
-		
+	NSLog(@"Server destination: %@", [[self server] description]);	
 	
 	if ([[self server] isMemberOfClass: [NSNetService class]]){
 		calledAET = [[self server] name];
@@ -476,37 +477,6 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	}		
 	
 
-	/*
-	switch(_offisTS)
-	{
-		case SendImplicitLittleEndian:		
-			transferSyntax = @"Implicit";					break;
-		case SendExplicitLittleEndian:		
-			transferSyntax = @"Explicit Little Endian";		break;
-		case SendExplicitBigEndian:			
-			transferSyntax = @"Big Endian";					break;
-		case SendJPEGLossless:				
-			transferSyntax = @"JPEG Lossless";				break;
-		case SendRLE:						
-			transferSyntax = @"RLE";						break;
-		case SendJPEG2000Lossless:			
-			transferSyntax = @"JPEG 2000 Lossless";			break;
-		case SendJPEG2000Lossy10:
-			transferSyntax = @"JPEG 2000  Lossy";			break;
-		case SendJPEG2000Lossy20:
-			transferSyntax = @"JPEG 2000 Lossy";			break;
-		case SendJPEG2000Lossy50:
-			transferSyntax = @"JPEG 2000 Lossy";			break;
-		case SendJPEGLossy9:
-			transferSyntax = @"JPEG Lossy";					break;
-		case SendJPEGLossy8:
-			transferSyntax = @"JPEG Lossy";					break;
-		case SendJPEGLossy7:
-			transferSyntax = @"JPEG Lossy";					break;
-		case SendBip:
-			break;
-	}
-	*/
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 			calledAET:calledAET 
 			hostname:hostname 

@@ -2,7 +2,12 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {closeSendPanel = id; endSelectServer = id; releaseSelfWhenDone = id; }; 
+            ACTIONS = {
+                closeSendPanel = id; 
+                endSelectServer = id; 
+                releaseSelfWhenDone = id; 
+                selectServer = id; 
+            }; 
             CLASS = SendController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
