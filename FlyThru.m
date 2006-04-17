@@ -30,8 +30,8 @@
 	pathCameras = [[NSMutableArray alloc] initWithCapacity:0];
 	stepsPositionInPath = 0L;
 	
-	[self setNumberOfFrames:100];
-	interpolationMethod = 1;
+	[self setNumberOfFrames:50];
+	interpolationMethod = 0;
 	constantSpeed = YES;
 	loop = NO;
 	
@@ -49,8 +49,8 @@
 	stepsPositionInPath = 0L;
 	
 	[self addCamera: sCamera];
-	[self setNumberOfFrames:100];
-	interpolationMethod = 1;
+	[self setNumberOfFrames:50];
+	interpolationMethod = 0;
 	constantSpeed = YES;
 	loop = NO;
 	
