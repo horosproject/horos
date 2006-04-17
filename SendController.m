@@ -151,7 +151,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 - (id)serverAtIndex:(int)index
 {
 	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	NSLog(@"server at INdex: %d", index);
+	//NSLog(@"server at INdex: %d", index);
 	
 	if( index > -1 && index < [serversArray count])
 		return [serversArray objectAtIndex:index];
@@ -167,7 +167,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 }
 
 - (IBAction)selectServer: (id)sender{
-	NSLog(@"select server: %@", [sender description]);
+	//NSLog(@"select server: %@", [sender description]);
 	_serverIndex = [sender indexOfSelectedItem];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:_serverIndex forKey:@"lastSendServer"];
