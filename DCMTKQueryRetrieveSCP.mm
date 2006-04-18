@@ -131,7 +131,7 @@ void errmsg(const char* msg, ...)
 - (void)dealloc{
 
 	if (scp != NULL) {
-		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
+	//	 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
 	}
 
@@ -141,8 +141,8 @@ void errmsg(const char* msg, ...)
 }
 
 - (void)cleanup:(NSTimer *)timer{
-	if (scp != NULL) 
-		scp->cleanChildren(OFTrue);  // clean up any child processes 	
+	//if (scp != NULL) 
+	//	scp->cleanChildren(OFTrue);  // clean up any child processes 	
 }
 
 - (void)run{
@@ -303,7 +303,7 @@ DcmQueryRetrieveConfig config;
     while (cond.good() && !_abort)
     {
       cond = scp->waitForAssociation(options.net_);
-	  scp->cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
+	  //scp->cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
 	  //use if static scp rather than pointer
 	//	cond = scp.waitForAssociation(options.net_);
 	//  scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */

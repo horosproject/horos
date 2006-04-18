@@ -530,28 +530,25 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	//NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
-	//NSLog(@"Search Locations for : %@" , moveDestination);
+			
 	NSPredicate *serverPredicate = [NSPredicate predicateWithFormat: @"AETitle == %@", moveDestination];
 	NSArray *serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
-	//NSLog(@"Servers count: %d", [serverSelection count]);		
+			
 	//if empty. Try NSNetService
 	if ([serverSelection count] == 0) {
-		//NSLog(@"try Netservice");
 		serverPredicate = [NSPredicate predicateWithFormat:@"name == %@", moveDestination];
 		serverSelection = [bonjourServers filteredArrayUsingPredicate:serverPredicate];
 	}
-	//NSLog(@"Servers count after net service: %d", [serverSelection count]);
-	NSNetService *netService = nil;
+	NSNetService *netService= nil;
 			
-	if ([serverSelection count] > 0) {
+	if ([serverSelection count]) {
 		id server = [serverSelection objectAtIndex:0];
 		if ([server isMemberOfClass:[NSNetService class]]) {
 					
 			netService = server;
 			//theirAET = [server name];
 			hostname = [server hostName];
-			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:netService]];
-			
+			port = @"";
 		}
 		else {
 					//NSLog(@"
@@ -563,7 +560,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		*dstPort = [port intValue];
 		strcpy(dstPeer, [hostname cStringUsingEncoding:NSISOLatin1StringEncoding]);
 		//dstPeer = (char *)[hostname cStringUsingEncoding:NSISOLatin1StringEncoding];
-		//NSLog(@"dstPeer: %s", dstPeer);
+		NSLog(@"dstPeer: %s", dstPeer);
 	}
 	else
 		return OFFalse;

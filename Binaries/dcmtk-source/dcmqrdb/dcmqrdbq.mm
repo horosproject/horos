@@ -423,11 +423,11 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		NSManagedObject *logEntry = handle->logEntry;
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Receive" forKey:@"type"];
-		const char *scs;
+		const char *scs = 0L;
 		NSString *specificCharacterSet;
-		const char *pn;
+		const char *pn = 0L;
 		NSString *patientName;
-		const char *sd;
+		const char *sd = 0L;
 		NSString *studyDescription;
 		if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
 			specificCharacterSet = [NSString stringWithCString:scs];

@@ -40,8 +40,6 @@
 #include "dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
 #include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
-#include "dcmqrdbq.h"
-
 
 
 static void findCallback(
@@ -381,8 +379,6 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     OFCondition dbcond = EC_Normal;
     char imageFileName[MAXPATHLEN+1];
     DcmFileFormat dcmff;
-	
-
 
     DcmQueryRetrieveStoreContext context(dbHandle, options_, STATUS_Success, &dcmff, correctUIDPadding);
 
@@ -390,9 +386,6 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         printf("Received Store SCP: ");
         DIMSE_printCStoreRQ(stdout, request);
     }
-	
-	//DcmQueryRetrieveOsiriXDatabaseHandle *aHandle = static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle);	
-	//cond = aHandle->updateLogEntry(dcmff.getDataset());
 
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
         /* callback will send back sop class not supported status */

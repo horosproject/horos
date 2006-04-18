@@ -58,7 +58,7 @@ struct DB_OsiriX_Handle
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
 	NSManagedObject *logEntry;
-	const char *callingAET;
+	const char callingAET[256];		// Changed to an array! You CANNOT copy data to a pointer that is not allocated : strcpy((char *)(handle -> callingAET), callingAET);
 	//NSArray *findArray;
 	//NSArray *moveArray;
 };
