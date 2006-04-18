@@ -5292,7 +5292,13 @@ static long scrollMode;
 						float	bwl, bww;
 						char	cstr [400], *cptr;
 						
-						[blendingView getCLUT:&bred :&bgreen :&bblue];
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+						{
+							bred = PETredTable;
+							bgreen = PETgreenTable;
+							bblue = PETblueTable;
+						}
+						else [blendingView getCLUT:&bred :&bgreen :&bblue];
 						
 						#define BBARPOSX1 55.f
 						#define BBARPOSX2 25.f
