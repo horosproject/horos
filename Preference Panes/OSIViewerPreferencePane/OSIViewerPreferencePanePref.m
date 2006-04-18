@@ -206,7 +206,7 @@
 	if( [sender state])
 		[[NSUserDefaults standardUserDefaults] setObject:@"B/W Inverse" forKey: @"PET Clut MIP"];
 	else
-		[[NSUserDefaults standardUserDefaults] setObject:NSLocalizedString( @"No CLUT", 0L) forKey: @"PET Clut MIP"];
+		[[NSUserDefaults standardUserDefaults] setObject:@"PET" forKey: @"PET Clut MIP"];
 }
 
 - (IBAction) setAutoHideMatrixState: (id) sender

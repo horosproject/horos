@@ -46,7 +46,7 @@
 {
 	if ([event modifierFlags] & NSAlternateKeyMask)
 	{
-		[self fullWindowPlan: sender];
+		[self fullWindowView: sender];
 	}
 	else if ([event modifierFlags] & NSShiftKeyMask)
 	{
@@ -54,7 +54,7 @@
 	}
 	else
 	{
-		[self fullWindowView: sender];
+		[self fullWindowPlan: sender];
 	}
 	// trick to refresh the view
 	NSRect frame = [[viewer window] frame];

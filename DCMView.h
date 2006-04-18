@@ -203,7 +203,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) subtract:(DCMView*) bV;
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY;
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT;
 - (void) setSubtraction:(long) imID :(NSPoint) offset;
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;

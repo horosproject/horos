@@ -73,6 +73,8 @@ static		float						deg2rad = 3.14159265358979/180.0;
 extern		long						numberOf2DViewer;
 			BOOL						ALWAYSSYNC = NO, display2DMPRLines = YES;
 
+static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
+
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 
 #define CROSS(dest,v1,v2) \
@@ -3356,6 +3358,37 @@ static long scrollMode;
 {
 	long i;
 	
+	if( PETredTable == 0L)
+	{
+		NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:@"PET"];
+		if( aCLUT)
+		{
+			NSArray				*array;
+			
+			PETredTable = malloc( 256);
+			PETgreenTable = malloc( 256);
+			PETblueTable = malloc( 256);
+			
+			array = [aCLUT objectForKey:@"Red"];
+			for( i = 0; i < 256; i++)
+			{
+				PETredTable[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Green"];
+			for( i = 0; i < 256; i++)
+			{
+				PETgreenTable[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Blue"];
+			for( i = 0; i < 256; i++)
+			{
+				PETblueTable[i] = [[array objectAtIndex: i] longValue];
+			}
+		}
+	}
+	
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	syncSeriesIndex = -1;
@@ -6335,8 +6368,15 @@ static long scrollMode;
 	*b = blueTable;
 }
 
-- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY
+- (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT 
 {
+	if(  rT == 0L)
+	{
+		rT = redTable;
+		gT = greenTable;
+		bT = blueTable;
+	}
+
 	if( curDCM == 0L) NSLog( @"err curDCM == 0L");
 	
 	if( noScale == YES)
@@ -6381,9 +6421,9 @@ static long scrollMode;
 				
 				for( i = 0; i < 256; i++)
 				{
-					credTable[ i] = redTable[ i] * redFactor;
-					cgreenTable[ i] = greenTable[ i] * greenFactor;
-					cblueTable[ i] = blueTable[ i] * blueFactor;
+					credTable[ i] = rT[ i] * redFactor;
+					cgreenTable[ i] = gT[ i] * greenFactor;
+					cblueTable[ i] = bT[ i] * blueFactor;
 				}
 				#if __BIG_ENDIAN__
 				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
@@ -6394,9 +6434,9 @@ static long scrollMode;
 			else
 			{
 				#if __BIG_ENDIAN__
-				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &redTable, (Pixel_8*) &greenTable, (Pixel_8*) &blueTable, 0);
+				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 				#else
-				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &blueTable, (Pixel_8*) &greenTable, (Pixel_8*) &redTable, (Pixel_8*) &alphaTable, 0);
+				vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) bT, (Pixel_8*) gT, (Pixel_8*) rT, (Pixel_8*) &alphaTable, 0);
 				#endif
 			}
 		}
@@ -6421,9 +6461,9 @@ static long scrollMode;
 			
 			for( i = 0; i < 256; i++)
 			{
-				credTable[ i] = redTable[ i] * redFactor;
-				cgreenTable[ i] = greenTable[ i] * greenFactor;
-				cblueTable[ i] = blueTable[ i] * blueFactor;
+				credTable[ i] = rT[ i] * redFactor;
+				cgreenTable[ i] = gT[ i] * greenFactor;
+				cblueTable[ i] = bT[ i] * blueFactor;
 			}
 			#if __BIG_ENDIAN__
 			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
@@ -6462,13 +6502,13 @@ static long scrollMode;
 			
 			for( i = 0; i < 256; i++)
 			{
-				credTable[ i] = redTable[ i] * redFactor;
-				cgreenTable[ i] = greenTable[ i] * greenFactor;
-				cblueTable[ i] = blueTable[ i] * blueFactor;
+				credTable[ i] = rT[ i] * redFactor;
+				cgreenTable[ i] = gT[ i] * greenFactor;
+				cblueTable[ i] = bT[ i] * blueFactor;
 			}
 			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 		}
-		else vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &redTable, (Pixel_8*) &greenTable, (Pixel_8*) &blueTable, 0);
+		else vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 	
 //	glDisable(GL_TEXTURE_2D);
@@ -6651,11 +6691,14 @@ BOOL	lowRes = NO;
     [[self openGLContext] makeCurrentContext];
     [[self openGLContext] update];
 	
-	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY];
+	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable];
 	
 	if( blendingView)
 	{
-		blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY];
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"] isEqualToString: @"B/W Inverse"])
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable];
+		else
+			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];
 	}
 }
 

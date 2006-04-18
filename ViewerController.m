@@ -3004,7 +3004,7 @@ static ViewerController *draggedController = 0L;
 	
 	
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString:@"PET"];
+	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
 	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
@@ -4263,8 +4263,6 @@ short				matrix[25];
 			
 			if( thickSlab)
 			{
-			//	unsigned char *r, *g, *b;
-			//	[imageView getCLUT: &r :&g :&b];
 				[thickSlab setCLUT:red :green :blue];
 			}
 			
@@ -4677,7 +4675,7 @@ NSMutableArray		*array;
 		[blendingSlider setEnabled:YES];
 		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
 		
-		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO) [blendingController ApplyCLUTString:@"PET"];
+		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO) [blendingController ApplyCLUTString:[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
 		
 		[imageView setBlendingFactor: [blendingSlider floatValue]];
 	}
@@ -9017,7 +9015,7 @@ int i,j,l;
 	
 	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
-		[self ApplyCLUTString:@"PET"];
+		[self ApplyCLUTString:[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
 		
 	}
 	

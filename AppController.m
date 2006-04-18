@@ -1907,7 +1907,7 @@ static BOOL initialized = NO;
 		[defaultValues setObject: @"NO" forKey: @"ORIGINALSIZE"];
 		
 		// ** Scroll Wheel Reversed
-		[defaultValues setObject: @"NO" forKey: @"Scroll Wheel Reversed"];
+		[defaultValues setObject: @"YES" forKey: @"Scroll Wheel Reversed"];
 		
 		// ** ALBUMNAME
 		[defaultValues setObject: @"OsiriX" forKey: @"ALBUMNAME"];
