@@ -1745,6 +1745,9 @@
 		BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
 		BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
+		BF8B2A4A09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
+		BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
+		BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */; };
 		BF8DE5E206507355005DB40E /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		BF8DE5E706507355005DB40E /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
 		BF8DE5E806507355005DB40E /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E106507355005DB40E /* SmartIcon.tif */; };
@@ -2219,7 +2222,6 @@
 		BFBF415009B6828D00545F5E /* dcmqropt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA409B6828800545F5E /* dcmqropt.h */; };
 		BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA509B6828800545F5E /* dcmqrptb.cc */; };
 		BFBF415209B6828D00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
-		BFBF415309B6828D00545F5E /* dcmqrsrv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */; };
 		BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
 		BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF415809B6828D00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
@@ -2956,7 +2958,6 @@
 		BFBF44F709B6828E00545F5E /* dcmqropt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA409B6828800545F5E /* dcmqropt.h */; };
 		BFBF44F809B6828E00545F5E /* dcmqrptb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA509B6828800545F5E /* dcmqrptb.cc */; };
 		BFBF44F909B6828E00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
-		BFBF44FA09B6828E00545F5E /* dcmqrsrv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */; };
 		BFBF44FB09B6828E00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
 		BFBF44FE09B6828E00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF44FF09B6828E00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
@@ -3691,7 +3692,6 @@
 		BFBF489E09B6828E00545F5E /* dcmqropt.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA409B6828800545F5E /* dcmqropt.h */; };
 		BFBF489F09B6828E00545F5E /* dcmqrptb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA509B6828800545F5E /* dcmqrptb.cc */; };
 		BFBF48A009B6828E00545F5E /* dcmqrptb.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA609B6828800545F5E /* dcmqrptb.h */; };
-		BFBF48A109B6828E00545F5E /* dcmqrsrv.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */; };
 		BFBF48A209B6828E00545F5E /* dcmqrsrv.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DA809B6828800545F5E /* dcmqrsrv.h */; };
 		BFBF48A509B6828E00545F5E /* dcsignat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3DAC09B6828800545F5E /* dcsignat.cc */; };
 		BFBF48A609B6828E00545F5E /* dcsignat.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3DAD09B6828800545F5E /* dcsignat.h */; };
@@ -9651,6 +9651,7 @@
 		BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKStoreSCU.mm; sourceTree = "<group>"; };
 		BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ReportPluginFilter.h; sourceTree = "<group>"; };
 		BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ReportPluginFilter.m; sourceTree = "<group>"; };
+		BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrsrv.mm; sourceTree = "<group>"; };
 		BF8DE5DA06507355005DB40E /* Album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Album.tiff; sourceTree = "<group>"; };
 		BF8DE5E006507355005DB40E /* SmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartAlbum.tiff; sourceTree = "<group>"; };
 		BF8DE5E106507355005DB40E /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
@@ -10581,7 +10582,6 @@
 		BFBF3DA409B6828800545F5E /* dcmqropt.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqropt.h; sourceTree = "<group>"; };
 		BFBF3DA509B6828800545F5E /* dcmqrptb.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrptb.cc; sourceTree = "<group>"; };
 		BFBF3DA609B6828800545F5E /* dcmqrptb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrptb.h; sourceTree = "<group>"; };
-		BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrsrv.cc; sourceTree = "<group>"; };
 		BFBF3DA809B6828800545F5E /* dcmqrsrv.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrsrv.h; sourceTree = "<group>"; };
 		BFBF3DA909B6828800545F5E /* dcmqrtis.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrtis.cc; sourceTree = "<group>"; };
 		BFBF3DAA09B6828800545F5E /* dcmqrtis.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dcmqrtis.h; sourceTree = "<group>"; };
@@ -14865,8 +14865,8 @@
 				BFBF3DA409B6828800545F5E /* dcmqropt.h */,
 				BFBF3DA509B6828800545F5E /* dcmqrptb.cc */,
 				BFBF3DA609B6828800545F5E /* dcmqrptb.h */,
-				BFBF3DA709B6828800545F5E /* dcmqrsrv.cc */,
 				BFBF3DA809B6828800545F5E /* dcmqrsrv.h */,
+				BF8B2A4909F470F400F1F759 /* dcmqrsrv.mm */,
 				BFBF3DA909B6828800545F5E /* dcmqrtis.cc */,
 				BFBF3DAA09B6828800545F5E /* dcmqrtis.h */,
 			);
@@ -24284,7 +24284,6 @@
 				BFBF414C09B6828D00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF414F09B6828D00545F5E /* dcmqropt.cc in Sources */,
 				BFBF415109B6828D00545F5E /* dcmqrptb.cc in Sources */,
-				BFBF415309B6828D00545F5E /* dcmqrsrv.cc in Sources */,
 				BFBF415709B6828D00545F5E /* dcsignat.cc in Sources */,
 				BFBF415A09B6828D00545F5E /* siautopr.cc in Sources */,
 				BFBF415C09B6828D00545F5E /* sibrsapr.cc in Sources */,
@@ -24443,6 +24442,7 @@
 				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
+				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24894,7 +24894,6 @@
 				BFBF489A09B6828E00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF489D09B6828E00545F5E /* dcmqropt.cc in Sources */,
 				BFBF489F09B6828E00545F5E /* dcmqrptb.cc in Sources */,
-				BFBF48A109B6828E00545F5E /* dcmqrsrv.cc in Sources */,
 				BFBF48A509B6828E00545F5E /* dcsignat.cc in Sources */,
 				BFBF48A809B6828E00545F5E /* siautopr.cc in Sources */,
 				BFBF48AA09B6828E00545F5E /* sibrsapr.cc in Sources */,
@@ -25006,6 +25005,7 @@
 				BFBCD8AC09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90551F09EB4985009C30D1 /* MoveManager.m in Sources */,
+				BF8B2A4A09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25505,7 +25505,6 @@
 				BFBF44F309B6828E00545F5E /* dcmqrdbs.cc in Sources */,
 				BFBF44F609B6828E00545F5E /* dcmqropt.cc in Sources */,
 				BFBF44F809B6828E00545F5E /* dcmqrptb.cc in Sources */,
-				BFBF44FA09B6828E00545F5E /* dcmqrsrv.cc in Sources */,
 				BFBF44FE09B6828E00545F5E /* dcsignat.cc in Sources */,
 				BFBF450109B6828E00545F5E /* siautopr.cc in Sources */,
 				BFBF450309B6828E00545F5E /* sibrsapr.cc in Sources */,
@@ -25617,6 +25616,7 @@
 				BFBCD8AA09E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
 				BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90552109EB4985009C30D1 /* MoveManager.m in Sources */,
+				BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

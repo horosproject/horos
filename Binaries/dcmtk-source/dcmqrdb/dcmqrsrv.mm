@@ -391,9 +391,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         DIMSE_printCStoreRQ(stdout, request);
     }
 	
-	//assoc->params->DULparams.callingAPTitle
-	//if (dbHandle->logEntry == NULL)
-	//	cond = (DcmQueryRetrieveOsiriXDatabaseHandle)dbHandle.createLogEntry(dcmff);
+	//DcmQueryRetrieveOsiriXDatabaseHandle *aHandle = static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle);	
+	//cond = aHandle->updateLogEntry(dcmff.getDataset());
 
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
         /* callback will send back sop class not supported status */

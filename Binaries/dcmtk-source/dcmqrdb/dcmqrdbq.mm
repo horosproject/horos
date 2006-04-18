@@ -414,51 +414,59 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
 /*************
 Log Entry
 *************/
-OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::createLogEntry(DcmDataset *dataset) {
+OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	handle->logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry"
-		inManagedObjectContext:[[BrowserController currentBrowser]  managedObjectContext]] retain];
-	NSManagedObject *logEntry = handle->logEntry;
-	[logEntry setValue:[NSDate date] forKey:@"startTime"];
-	[logEntry setValue:@"Receive" forKey:@"type"];
-	const char *scs;
-	NSString *specificCharacterSet;
-	const char *pn;
-	NSString *patientName;
-	const char *sd;
-	NSString *studyDescription;
-	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
-		specificCharacterSet = [NSString stringWithCString:scs];
-	}
-	else {
-		specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
-	}
-	
-	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
-		patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
-	}
-	else {
-		patientName = [NSString stringWithString:@""];
-	}
-	
-	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
-		studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
-	}
-	else {
-		studyDescription = [NSString stringWithString:@""];
-	}
+	NSLog(@"Update logEntry");
+	if (handle->logEntry == nil) {
+		handle->logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry"
+			inManagedObjectContext:[[BrowserController currentBrowser]  managedObjectContext]] retain];
+		NSManagedObject *logEntry = handle->logEntry;
+		[logEntry setValue:[NSDate date] forKey:@"startTime"];
+		[logEntry setValue:@"Receive" forKey:@"type"];
+		const char *scs;
+		NSString *specificCharacterSet;
+		const char *pn;
+		NSString *patientName;
+		const char *sd;
+		NSString *studyDescription;
+		if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+			specificCharacterSet = [NSString stringWithCString:scs];
+		}
+		else {
+			specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
+		}
+		
+		if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
+			patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+		}
+		else {
+			patientName = [NSString stringWithString:@""];
+		}
+		
+		if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
+			studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
+		}
+		else {
+			studyDescription = [NSString stringWithString:@""];
+		}
 
-	//[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
-	[logEntry setValue:patientName forKey:@"patientName"];
-	[logEntry setValue:studyDescription forKey:@"studyName"];	
+		[logEntry setValue:[NSString stringWithCString:handle->callingAET] forKey:@"originName"];
+		[logEntry setValue:patientName forKey:@"patientName"];
+		[logEntry setValue:studyDescription forKey:@"studyName"];	
+		[logEntry setValue:[NSNumber numberWithInt:0] forKey:@"numberImages"];
+	}
+	NSManagedObject *logEntry = handle->logEntry;
+	int count = [[logEntry valueForKey:@"numberImages"] intValue] + 1;
+	[logEntry setValue:@"In Progress" forKey:@"message"];
+	[logEntry setValue:[NSNumber numberWithInt:count] forKey:@"numberImages"];
+	[logEntry setValue:[NSNumber numberWithInt:count] forKey:@"numberSent"];
+	[logEntry setValue:[NSDate date] forKey:@"endTime"];
+	NSLog(@"************logEntry**************\n", [logEntry description]);
 	[pool release];
 	return EC_Normal;
 }
 
-OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(){
-	return EC_Normal;
-}
+
 
 
 
@@ -1155,7 +1163,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::cancelMoveRequest (DcmQueryRet
  */
 
 DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
-    const char *storageArea,
+    const char *callingAET,
     OFCondition& result)
 :handle(NULL)
 , quotaSystemEnabled(OFFalse)
@@ -1168,23 +1176,19 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
     handle = (DB_OsiriX_Handle *) malloc ( sizeof(DB_OsiriX_Handle) );
 
 #ifdef DEBUG
-    dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
+   // dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
    // dbdebug(1, "                     maxStudiesPerStorageArea: %ld maxBytesPerStudy: %ld\n",
   //          maxStudiesPerStorageArea, maxBytesPerStudy);
 #endif
 
     if (handle) {
-        //sprintf (handle -> storageArea,"%s", storageArea);
-		//handle -> idxCounter = -1;
+		strcpy((char *)(handle -> callingAET), callingAET);
 		handle -> findRequestList = NULL;
 		handle -> findResponseList = NULL;
-		//handle -> maxBytesPerStudy = 0;
-		//handle -> maxStudiesAllowed = maxStudiesPerStorageArea;
 		handle -> uidList = NULL;
 		result = EC_Normal;
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
-		//handle -> findArray = nil;
-		//handle -> moveArray = nil;
+		handle -> logEntry = NULL;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
@@ -1202,15 +1206,15 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 
     if (handle)
     {
-
+		// set logEntry to complete
+	   if (handle->logEntry != NULL)
+		   [handle->logEntry  setValue:@"Complete" forKey:@"message"];
 
       /* Free lists */
       DB_FreeElementList (handle -> findRequestList);
       DB_FreeElementList (handle -> findResponseList);
       DB_FreeUidList (handle -> uidList);
 	  [handle -> dataHandler release];
-		//[handle -> moveArray release];
-		//[handle -> findArray release];
       free ( (char *)(handle) );
     }
 }
@@ -1317,12 +1321,12 @@ DcmQueryRetrieveOsiriXDatabaseHandleFactory::~DcmQueryRetrieveOsiriXDatabaseHand
 }
 
 DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveOsiriXDatabaseHandleFactory::createDBHandle(
-    const char * /* callingAETitle */,
+    const char * callingAETitle,
     const char *calledAETitle,
     OFCondition& result) const
 {
   return new DcmQueryRetrieveOsiriXDatabaseHandle(
-    NULL, result);
+    callingAETitle, result);
 }
 
 

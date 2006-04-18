@@ -209,7 +209,7 @@ public:
   virtual void setIdentifierChecking(OFBool checkFind, OFBool checkMove) = 0;
   
 //creates logEntry
-//  virtual OFCondition createLogEntry(DcmDataset *dataset) = 0;
+//  virtual OFCondition updateLogEntry(DcmDataset *dataset) = 0;
 
 //Updates values of Log entry
 //	virtual OFCondition updateLogEntry() = 0;

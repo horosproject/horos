@@ -58,6 +58,7 @@ struct DB_OsiriX_Handle
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
 	NSManagedObject *logEntry;
+	const char *callingAET;
 	//NSArray *findArray;
 	//NSArray *moveArray;
 };
@@ -71,14 +72,14 @@ class DcmQueryRetrieveOsiriXDatabaseHandle: public DcmQueryRetrieveDatabaseHandl
 public:
 
   /** Constructor. Creates and initializes a index file handle for the given 
-   *  database storage area (storageArea).
+   *  callingAET.
    *  @param storageArea name of storage area, must not be NULL
 
    *  @param result upon successful initialization of the database handle,
    *    EC_Normal is returned in this parameter, otherwise an error code is returned.
    */
   DcmQueryRetrieveOsiriXDatabaseHandle(
-    const char *storageArea,
+    const char *callingAET,
     OFCondition& result);
   
   /** Destructor. Destroys handle, cancels any ongoing
@@ -314,10 +315,9 @@ public:
 
 
 //creates logEntry
-OFCondition createLogEntry(DcmDataset *dataset);
+OFCondition updateLogEntry(DcmDataset *dataset);
 
-//Updates values of Log entry
-OFCondition updateLogEntry();
+
 
       
 private:
