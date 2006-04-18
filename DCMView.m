@@ -3360,7 +3360,7 @@ static long scrollMode;
 	
 	if( PETredTable == 0L)
 	{
-		NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:@"PET"];
+		NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
 		if( aCLUT)
 		{
 			NSArray				*array;
@@ -6695,7 +6695,7 @@ BOOL	lowRes = NO;
 	
 	if( blendingView)
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"] isEqualToString: @"B/W Inverse"])
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable: PETredTable greenTable:PETgreenTable blueTable:PETblueTable];
 		else
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];

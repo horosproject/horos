@@ -8694,28 +8694,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456 /* OSI3DPreferencePane.prefPane */;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456;
 			remoteInfo = OSI3DPreferencePane;
 		};
 		ABC398FF09F527D7000A6508 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8D202CF80486D31800D8A456 /* OSIPETPreferencePane.prefPane */;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456;
 			remoteInfo = OSIPETPreferencePane;
 		};
 		ABC3990109F527E7000A6508 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSI3DPreferencePane */;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSI3DPreferencePane;
 		};
 		ABC3990309F527EA000A6508 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSIPETPreferencePane */;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIPETPreferencePane;
 		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {

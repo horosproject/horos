@@ -3004,7 +3004,13 @@ static ViewerController *draggedController = 0L;
 	
 	
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO) [self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+	{
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+			[self ApplyCLUTString: @"B/W Inverse"];
+		else
+			[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+	}
 	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
 	
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
@@ -4675,7 +4681,13 @@ NSMutableArray		*array;
 		[blendingSlider setEnabled:YES];
 		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
 		
-		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO) [blendingController ApplyCLUTString:[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				[self ApplyCLUTString: @"B/W Inverse"];
+			else
+				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
 		
 		[imageView setBlendingFactor: [blendingSlider floatValue]];
 	}
@@ -9015,8 +9027,10 @@ int i,j,l;
 	
 	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
-		[self ApplyCLUTString:[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
-		
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+			[self ApplyCLUTString: @"B/W Inverse"];
+		else
+			[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 	}
 	
 	numberOf2DViewer++;
@@ -9153,7 +9167,10 @@ int i,j,l;
 					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
 				}
 				
-				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+					[self ApplyCLUTString: @"B/W Inverse"];
+				else
+					[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 			}
 			else
 			{
@@ -9283,7 +9300,11 @@ int i,j,l;
 						{
 							[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
 						}
-						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+						
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+							[viewer ApplyCLUTString: @"B/W Inverse"];
+						else
+							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 					}
 					else
 					{
@@ -9352,7 +9373,11 @@ int i,j,l;
 				{
 					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
 				}
-				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+				
+				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+					[viewer ApplyCLUTString: @"B/W Inverse"];
+				else
+					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 			}
 			else
 			{
@@ -9660,7 +9685,10 @@ long i;
 				
 				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 				{
-					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"]];
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+						[viewer ApplyCLUTString: @"B/W Inverse"];
+					else
+						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 				}
 				else [viewer ApplyCLUTString:curCLUTMenu];
 

@@ -17,8 +17,11 @@
 
 @interface OSIPETPreferencePane : NSPreferencePane 
 {
-	IBOutlet NSButton						*convertPETtoSUVCheck,
-											*preferWonBforPET3D;
+	IBOutlet NSButton						*convertPETtoSUVCheck;
+											
+	IBOutlet NSPopUpButton					*CLUTBlendingMenu, *DefaultCLUTMenu;
+	
+	IBOutlet NSMatrix						*CLUTMode;
 }
 
 - (void) mainViewDidLoad;

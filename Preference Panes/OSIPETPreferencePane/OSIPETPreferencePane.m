@@ -19,7 +19,31 @@
 {
 	NSLog(@"dealloc OSIPETPreferencePane");
 	
+	[[NSUserDefaults standardUserDefaults] setObject:[DefaultCLUTMenu title] forKey: @"PET Default CLUT"];
+	[[NSUserDefaults standardUserDefaults] setObject:[CLUTBlendingMenu title] forKey: @"PET Blending CLUT"];
+	
 	[super dealloc];
+}
+
+- (void) buildCLUTMenu :(NSPopUpButton*) clutPopup
+{
+	//*** Build the CLUT menu
+    short							i;
+    NSArray							*keys;
+    NSArray							*sortedKeys;
+
+    // Presets VIEWER Menu
+	
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+    i = [[clutPopup menu] numberOfItems];
+    while(i-- > 0) [[clutPopup menu] removeItemAtIndex:0];
+		
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:0L keyEquivalent:@""];
+    }
 }
 
 - (void) mainViewDidLoad
@@ -28,18 +52,24 @@
 		
 	[convertPETtoSUVCheck setState: [defaults boolForKey: @"ConvertPETtoSUVautomatically"]];
 	
-	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut MIP"] isEqualToString:@"B/W Inverse"])
-		[preferWonBforPET3D setState: NSOnState];
+	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString:@"B/W Inverse"])
+		[CLUTMode selectCellWithTag: 0];
 	else
-		[preferWonBforPET3D setState: NSOffState];
+		[CLUTMode selectCellWithTag: 1];
+	
+	[self buildCLUTMenu: DefaultCLUTMenu];
+	[DefaultCLUTMenu setTitle: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+	
+	[self buildCLUTMenu: CLUTBlendingMenu];
+	[CLUTBlendingMenu setTitle: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
 }
 
 - (IBAction) setPETCLUTfor3DMIP: (id) sender
 {
-	if( [sender state])
-		[[NSUserDefaults standardUserDefaults] setObject:@"B/W Inverse" forKey: @"PET Clut MIP"];
+	if( [[sender selectedCell] tag] == 0)
+		[[NSUserDefaults standardUserDefaults] setObject:@"B/W Inverse" forKey: @"PET Clut Mode"];
 	else
-		[[NSUserDefaults standardUserDefaults] setObject:@"PET" forKey: @"PET Clut MIP"];
+		[[NSUserDefaults standardUserDefaults] setObject:@"Classic Mode" forKey: @"PET Clut Mode"];
 }
 
 - (IBAction) setConvertPETtoSUVautomatically: (id) sender

@@ -356,15 +356,6 @@ static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 					selector: @selector(CloseViewerNotification:)
 					name: @"CloseViewerNotification"
 					object: nil];
-//	if( [[self modality] isEqualToString:@"PT"] == YES)
-//	{
-//		[self ApplyCLUTString:@"PET"];
-//	}
-	
-//	[view setSelectedPlaneID: [[selectedPlaneMatrix selectedCell] tag]];
-	
-//	[view movePlanes:[Xslider floatValue] :[Yslider floatValue] :[Zslider floatValue]];
-
 
     return self;
 }

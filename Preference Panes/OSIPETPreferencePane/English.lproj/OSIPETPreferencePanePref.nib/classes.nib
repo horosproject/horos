@@ -16,7 +16,12 @@
             ACTIONS = {setConvertPETtoSUVautomatically = id; setPETCLUTfor3DMIP = id; }; 
             CLASS = OSIPETPreferencePane; 
             LANGUAGE = ObjC; 
-            OUTLETS = {convertPETtoSUVCheck = NSButton; preferWonBforPET3D = NSButton; }; 
+            OUTLETS = {
+                CLUTBlendingMenu = NSPopUpButton; 
+                CLUTMode = NSMatrix; 
+                DefaultCLUTMenu = NSPopUpButton; 
+                convertPETtoSUVCheck = NSButton; 
+            }; 
             SUPERCLASS = NSPreferencePane; 
         }
     ); 

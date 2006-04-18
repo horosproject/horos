@@ -1713,7 +1713,9 @@ static BOOL initialized = NO;
 		
 		[defaultValues setObject:@"100" forKey:@"AUTOCLEANINGSPACESIZE"];
 		
-		[defaultValues setObject:@"B/W Inverse" forKey:@"PET Clut MIP"];
+		[defaultValues setObject:@"B/W Inverse" forKey:@"PET Clut Mode"];
+		[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
+		[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];
 		
 		// ** PORT
 		[defaultValues setObject:@"4096" forKey:@"AEPORT"];

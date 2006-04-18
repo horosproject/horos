@@ -525,12 +525,7 @@ extern NSString * documentsDirectory();
 					selector: @selector(CloseViewerNotification:)
 					name: @"CloseViewerNotification"
 					object: nil];
-					
-//	if( [[self modality] isEqualToString:@"PT"] == YES)
-//	{
-//		[self ApplyCLUTString:@"PET"];
-//	}
-	
+
 	[view axView:self];
 //	[originalView axView:self];
 //	[perpendicularView axView:self];
