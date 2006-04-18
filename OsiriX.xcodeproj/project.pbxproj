@@ -30,6 +30,8 @@
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
 				CEACC7B10878781000CF466E /* PBXTargetDependency */,
 				CEACC7B30878781000CF466E /* PBXTargetDependency */,
+				ABC3990209F527E7000A6508 /* PBXTargetDependency */,
+				ABC3990409F527EA000A6508 /* PBXTargetDependency */,
 				CEACC7B50878781000CF466E /* PBXTargetDependency */,
 				CEACC7B70878781000CF466E /* PBXTargetDependency */,
 				CEACC7B90878781000CF466E /* PBXTargetDependency */,
@@ -1161,6 +1163,12 @@
 		ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
 		ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABBFDA41063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
+		ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
+		ABC393A009F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
+		ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
+		ABC3994409F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */; };
+		ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */; };
+		ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
 		ABCA5BA60625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
@@ -8682,6 +8690,34 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "DCM Framework";
 		};
+		ABC398F509F527C4000A6508 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456 /* OSI3DPreferencePane.prefPane */;
+			remoteInfo = OSI3DPreferencePane;
+		};
+		ABC398FF09F527D7000A6508 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456 /* OSIPETPreferencePane.prefPane */;
+			remoteInfo = OSIPETPreferencePane;
+		};
+		ABC3990109F527E7000A6508 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSI3DPreferencePane */;
+			remoteInfo = OSI3DPreferencePane;
+		};
+		ABC3990309F527EA000A6508 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456 /* OSIPETPreferencePane */;
+			remoteInfo = OSIPETPreferencePane;
+		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */;
@@ -9529,6 +9565,10 @@
 		ABBDAEB906407CF90016210A /* VRMakeObject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = VRMakeObject.c; sourceTree = "<group>"; };
 		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
+		ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSI3DPreferencePane.prefPane; path = "Preference Panes/OSI3DPreferencePane/build/Development/OSI3DPreferencePane.prefPane"; sourceTree = "<group>"; };
+		ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSI3DPreferencePane.xcodeproj; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.xcodeproj"; sourceTree = "<group>"; };
+		ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIPETPreferencePane.xcodeproj; path = "Preference Panes/OSIPETPreferencePane/OSIPETPreferencePane.xcodeproj"; sourceTree = "<group>"; };
+		ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIPETPreferencePane.prefPane; path = "Preference Panes/OSIPETPreferencePane/build/Development/OSIPETPreferencePane.prefPane"; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
 		ABCB2D340655B186006C5630 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/SearchWindow.nib; sourceTree = "<group>"; };
@@ -12730,6 +12770,8 @@
 		4A2F58D9078D119600C514A2 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */,
+				ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */,
 				CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */,
 				CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */,
 				CE4E42E408758A1700D0AFDB /* OSIDatabasePreferencePane.xcodeproj */,
@@ -13589,6 +13631,22 @@
 			);
 			name = Icons;
 			path = Binaries/Icons;
+			sourceTree = "<group>";
+		};
+		ABC398F109F527C4000A6508 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ABC398F609F527C4000A6508 /* OSI3DPreferencePane.prefPane */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ABC398FB09F527D7000A6508 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ABC3990009F527D7000A6508 /* OSIPETPreferencePane.prefPane */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		ABD9E69C05B49D6C0077115D /* Database */ = {
@@ -16504,6 +16562,8 @@
 				CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */,
 				CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */,
 				CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */,
+				ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */,
+				ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */,
 				CEBD8A9A0875B233000E42D6 /* OSIListenerPreferencePane.prefPane */,
 				CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */,
 				CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */,
@@ -22642,6 +22702,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = ABC398F109F527C4000A6508 /* Products */;
+					ProjectRef = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
+				},
+				{
 					ProductGroup = CE4E42EB08758A1700D0AFDB /* Products */;
 					ProjectRef = CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */;
 				},
@@ -22666,6 +22730,10 @@
 					ProjectRef = CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */;
 				},
 				{
+					ProductGroup = ABC398FB09F527D7000A6508 /* Products */;
+					ProjectRef = ABC398FA09F527D7000A6508 /* OSIPETPreferencePane.xcodeproj */;
+				},
+				{
 					ProductGroup = CE4E42F408758A1700D0AFDB /* Products */;
 					ProjectRef = CE4E42F308758A1700D0AFDB /* OSIRoutingPreferencePane.xcodeproj */;
 				},
@@ -22688,6 +22756,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		ABC398F609F527C4000A6508 /* OSI3DPreferencePane.prefPane */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OSI3DPreferencePane.prefPane;
+			remoteRef = ABC398F509F527C4000A6508 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC3990009F527D7000A6508 /* OSIPETPreferencePane.prefPane */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OSIPETPreferencePane.prefPane;
+			remoteRef = ABC398FF09F527D7000A6508 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CE4E42F908758A1800D0AFDB /* OSILocationsPreferencePane.prefPane */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
@@ -23023,6 +23105,8 @@
 				CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */,
 				CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */,
 				CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */,
+				ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
+				ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23285,6 +23369,8 @@
 				CE69601F09CAB75800EFFDEF /* VRPanel.nib in Resources */,
 				CE5D33B709E1C26400CC6884 /* add-large.tif in Resources */,
 				CE5D33B809E1C26400CC6884 /* minus-large.tif in Resources */,
+				ABC393A009F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
+				ABC3994409F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23547,6 +23633,8 @@
 				CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */,
 				CE5D33B909E1C26400CC6884 /* add-large.tif in Resources */,
 				CE5D33BA09E1C26400CC6884 /* minus-large.tif in Resources */,
+				ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
+				ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25647,6 +25735,16 @@
 			isa = PBXTargetDependency;
 			target = 7E0B3A3E067526CD00908593 /* DCM Framework */;
 			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
+		};
+		ABC3990209F527E7000A6508 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSI3DPreferencePane;
+			targetProxy = ABC3990109F527E7000A6508 /* PBXContainerItemProxy */;
+		};
+		ABC3990409F527EA000A6508 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSIPETPreferencePane;
+			targetProxy = ABC3990309F527EA000A6508 /* PBXContainerItemProxy */;
 		};
 		CEACC7AD0878781000CF466E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

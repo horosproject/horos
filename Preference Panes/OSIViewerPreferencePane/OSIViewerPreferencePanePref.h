@@ -21,24 +21,17 @@
 											*autoHideMatrix,
 											*openViewerCheck,
 											*reverseScrollWheelCheck,
-											*noInterpolationCheck,
-											*convertPETtoSUVCheck,
-											*preferWonBforPET3D;
-	
-	IBOutlet NSSlider						*bestRenderingSlider, *max3DTextureSlider, *max3DTextureSliderShading;
+											*noInterpolationCheck;
 	
 	IBOutlet NSMatrix						*sizeMatrix,
 											*multipleScreensMatrix,
 											*windowSizeMatrix,
 											*toolbarPanelMatrix;
 											
-	IBOutlet NSTextField					*iPhotoAlbumName, *max3DTextureString, *max3DTextureStringShading, *bestRenderingString;
-	
-	IBOutlet NSTextField					*recommandations;
+	IBOutlet NSTextField					*iPhotoAlbumName;
 }
 
 - (void) mainViewDidLoad;
-- (IBAction) setPETCLUTfor3DMIP: (id) sender;
 - (IBAction) setToolbarMatrix: (id) sender;
 - (IBAction) setExportSize: (id) sender;
 - (IBAction) setSaveLoadROI: (id) sender;
@@ -47,10 +40,6 @@
 - (IBAction) setMultipleScreens: (id) sender;
 - (IBAction) setAlbumName: (id) sender;
 - (IBAction) setAutoHideMatrixState: (id) sender;
-- (IBAction) setBestRendering: (id) sender;
-- (IBAction) setMax3DTexture: (id) sender;
-- (IBAction) setMax3DTextureShading: (id) sender;
 - (IBAction) setNoInterpolation: (id) sender;
 - (IBAction) setWindowSizeViewer: (id) sender;
-- (IBAction) setConvertPETtoSUVautomatically: (id) sender;
 @end

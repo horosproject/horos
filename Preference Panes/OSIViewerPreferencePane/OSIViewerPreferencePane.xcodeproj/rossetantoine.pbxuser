@@ -28,12 +28,16 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 167050240;
-			PBXWorkspaceStateSaveDate = 167050240;
+			PBXPerProjectTemplateStateSaveDate = 167059453;
+			PBXWorkspaceStateSaveDate = 167059453;
 		};
 		perUserProjectItems = {
-			AB503D1C09F4FC2200512582 /* PBXTextBookmark */ = AB503D1C09F4FC2200512582 /* PBXTextBookmark */;
-			AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */ = AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */;
+			ABC3940709F52058000A6508 /* PBXTextBookmark */ = ABC3940709F52058000A6508 /* PBXTextBookmark */;
+			ABC3940809F52058000A6508 /* PBXTextBookmark */ = ABC3940809F52058000A6508 /* PBXTextBookmark */;
+			ABC3940909F52058000A6508 /* PBXTextBookmark */ = ABC3940909F52058000A6508 /* PBXTextBookmark */;
+			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
+			ABC3940B09F52058000A6508 /* PBXTextBookmark */ = ABC3940B09F52058000A6508 /* PBXTextBookmark */;
+			ABC3941509F5206D000A6508 /* PBXTextBookmark */ = ABC3941509F5206D000A6508 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
 		userBuildSettings = {
@@ -54,31 +58,78 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	AB503D1C09F4FC2200512582 /* PBXTextBookmark */ = {
+	ABC3940709F52058000A6508 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
+		name = "@end";
+		rLen = 5;
+		rLoc = 3239;
+		rType = 0;
+		vrLen = 1485;
+		vrLoc = 1759;
+	};
+	ABC3940809F52058000A6508 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
+		name = "OSIViewerPreferencePanePref.h: setAutoHideMatrixState:";
+		rLen = 0;
+		rLoc = 1348;
+		rType = 0;
+		vrLen = 1598;
+		vrLoc = 0;
+	};
+	ABC3940909F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
 		name = "OSIViewerPreferencePanePref.m: 195";
 		rLen = 0;
-		rLoc = 6030;
+		rLoc = 2109;
 		rType = 0;
 		vrLen = 1844;
 		vrLoc = 4762;
 	};
-	AB6FC1BF09BD8B2A002DA597 /* PBXTextBookmark */ = {
+	ABC3940A09F52058000A6508 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
+		name = "OSIViewerPreferencePanePref.h: setAutoHideMatrixState:";
+		rLen = 0;
+		rLoc = 1348;
+		rType = 0;
+		vrLen = 1598;
+		vrLoc = 0;
+	};
+	ABC3940B09F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = ReserveScreenForDB;
-		rLen = 18;
-		rLoc = 5823;
+		name = "@end";
+		rLen = 5;
+		rLoc = 3239;
 		rType = 0;
-		vrLen = 1731;
-		vrLoc = 4849;
+		vrLen = 1485;
+		vrLoc = 1759;
+	};
+	ABC3941509F5206D000A6508 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
+		name = "OSIViewerPreferencePanePref.h: iPhotoAlbumName";
+		rLen = 0;
+		rLoc = 963;
+		rType = 0;
+		vrLen = 1447;
+		vrLoc = 0;
+	};
+	F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1185, 756}}";
+			sepNavSelRange = "{963, 0}";
+			sepNavVisRect = "{{0, 0}, {1185, 756}}";
+		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1185, 3472}}";
-			sepNavSelRange = "{6030, 0}";
-			sepNavVisRect = "{{0, 2212}, {1185, 756}}";
+			sepNavIntBoundsRect = "{{0, 0}, {453, 1764}}";
+			sepNavSelRange = "{3239, 5}";
+			sepNavVisRect = "{{0, 1563}, {453, 201}}";
 		};
 	};
 }

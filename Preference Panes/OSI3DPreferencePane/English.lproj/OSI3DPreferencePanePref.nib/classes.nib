@@ -13,13 +13,25 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            ACTIONS = {setConvertPETtoSUVautomatically = id; setPETCLUTfor3DMIP = id; }; 
+            CLASS = OSI3DPreferencePanePref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {convertPETtoSUVCheck = NSButton; preferWonBforPET3D = NSButton; }; 
+            SUPERCLASS = NSPreferencePane; 
+        }, 
+        {
             ACTIONS = {
                 setAlbumName = id; 
                 setAutoHideMatrixState = id; 
+                setBestRendering = id; 
+                setConvertPETtoSUVautomatically = id; 
                 setExportSize = id; 
+                setMax3DTexture = id; 
+                setMax3DTextureShading = id; 
                 setMultipleScreens = id; 
                 setNoInterpolation = id; 
                 setOpenViewerBut = id; 
+                setPETCLUTfor3DMIP = id; 
                 setReverseScrollWheel = id; 
                 setSaveLoadROI = id; 
                 setToolbarMatrix = id; 
@@ -29,11 +41,20 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 autoHideMatrix = NSButton; 
+                bestRenderingSlider = NSSlider; 
+                bestRenderingString = NSTextField; 
                 checkSaveLoadROI = NSButton; 
+                convertPETtoSUVCheck = NSButton; 
                 iPhotoAlbumName = NSTextField; 
+                max3DTextureSlider = NSSlider; 
+                max3DTextureSliderShading = NSSlider; 
+                max3DTextureString = NSTextField; 
+                max3DTextureStringShading = NSTextField; 
                 multipleScreensMatrix = NSMatrix; 
                 noInterpolationCheck = NSButton; 
                 openViewerCheck = NSButton; 
+                preferWonBforPET3D = NSButton; 
+                recommandations = NSTextField; 
                 reverseScrollWheelCheck = NSButton; 
                 sizeMatrix = NSMatrix; 
                 toolbarPanelMatrix = NSMatrix; 

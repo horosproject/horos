@@ -220,6 +220,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -299,14 +301,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>OSIViewerPreferencePanePref.m</string>
+								<string>OSIViewerPreferencePanePref.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -314,14 +314,21 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>OSIViewerPreferencePanePref.m</string>
+										<string>OSIViewerPreferencePanePref.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB503D1C09F4FC2200512582</string>
+										<string>ABC3941509F5206D000A6508</string>
 										<key>history</key>
 										<array>
-											<string>AB6FC1BF09BD8B2A002DA597</string>
+											<string>ABC3940709F52058000A6508</string>
+											<string>ABC3940809F52058000A6508</string>
+										</array>
+										<key>prevStack</key>
+										<array>
+											<string>ABC3940909F52058000A6508</string>
+											<string>ABC3940A09F52058000A6508</string>
+											<string>ABC3940B09F52058000A6508</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -379,9 +386,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB503D1D09F4FC2200512582</string>
+				<string>ABC3940D09F52058000A6508</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB503D1E09F4FC2200512582</string>
+				<string>ABC3940E09F52058000A6508</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -535,12 +542,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>OSIViewerPreferencePanePref.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -596,7 +605,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>AB6FC1C009BD8B2A002DA597</string>
-				<string>AB503D1F09F4FC2200512582</string>
+				<string>ABC3940F09F52058000A6508</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -607,7 +616,7 @@
 			<key>WindowToolGUID</key>
 			<string>AB6FC1C009BD8B2A002DA597</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
