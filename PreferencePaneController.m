@@ -26,6 +26,7 @@ Version 2.3
 #import "AppController.h"
 #import "BrowserController.h"
 #import "DicomFile.h"
+#import "DCMView.h"
 
 #define DATAFILEPATH @"/Database.dat"
 
@@ -63,8 +64,14 @@ extern BrowserController	*browserWindow;
 	BOOL				refreshDatabase = NO;
 	BOOL				refreshColumns = NO;
 	BOOL				reopenDatabase = NO;
+	BOOL				recomputePETBlending = NO;
+	
 	NS_DURING
 	
+	if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[[note object] stringForKey: @"PET Blending CLUT"]] == NO) 
+	{
+		recomputePETBlending = YES;
+	}
 	if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[[note object] stringForKey: @"AETITLE"]] == NO) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[[note object] stringForKey: @"STORESCPEXTRA"]] == NO) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"AEPORT"]					isEqualToString:	[[note object] stringForKey: @"AEPORT"]] == NO) restartListener = YES;
@@ -102,6 +109,9 @@ extern BrowserController	*browserWindow;
 		
 	if (refreshColumns)	
 		[browserWindow refreshColumns];
+	
+	if( recomputePETBlending)
+		[DCMView computePETBlendingCLUT];
 	
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];

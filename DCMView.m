@@ -3354,39 +3354,49 @@ static long scrollMode;
 	NSLog(@"sync relative: %2.2f", syncRelativeDiff);
 }
 
++ (void) computePETBlendingCLUT
+{
+	if( PETredTable != 0L) free( PETredTable);
+	if( PETgreenTable != 0L) free( PETgreenTable);
+	if( PETblueTable != 0L) free( PETblueTable);
+	
+	NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
+	if( aCLUT)
+	{
+		long				i;
+		NSArray				*array;
+		
+		PETredTable = malloc( 256);
+		PETgreenTable = malloc( 256);
+		PETblueTable = malloc( 256);
+		
+		array = [aCLUT objectForKey:@"Red"];
+		for( i = 0; i < 256; i++)
+		{
+			PETredTable[i] = [[array objectAtIndex: i] longValue];
+		}
+		
+		array = [aCLUT objectForKey:@"Green"];
+		for( i = 0; i < 256; i++)
+		{
+			PETgreenTable[i] = [[array objectAtIndex: i] longValue];
+		}
+		
+		array = [aCLUT objectForKey:@"Blue"];
+		for( i = 0; i < 256; i++)
+		{
+			PETblueTable[i] = [[array objectAtIndex: i] longValue];
+		}
+	}
+}
+
 - (id)initWithFrameInt:(NSRect)frameRect
 {
 	long i;
 	
 	if( PETredTable == 0L)
 	{
-		NSDictionary		*aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Blending CLUT"]];
-		if( aCLUT)
-		{
-			NSArray				*array;
-			
-			PETredTable = malloc( 256);
-			PETgreenTable = malloc( 256);
-			PETblueTable = malloc( 256);
-			
-			array = [aCLUT objectForKey:@"Red"];
-			for( i = 0; i < 256; i++)
-			{
-				PETredTable[i] = [[array objectAtIndex: i] longValue];
-			}
-			
-			array = [aCLUT objectForKey:@"Green"];
-			for( i = 0; i < 256; i++)
-			{
-				PETgreenTable[i] = [[array objectAtIndex: i] longValue];
-			}
-			
-			array = [aCLUT objectForKey:@"Blue"];
-			for( i = 0; i < 256; i++)
-			{
-				PETblueTable[i] = [[array objectAtIndex: i] longValue];
-			}
-		}
+		[DCMView computePETBlendingCLUT];
 	}
 	
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] retain];

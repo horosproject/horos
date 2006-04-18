@@ -17,30 +17,31 @@
 
 @interface OSIDatabasePreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSScrollView	*scrollView;
-	IBOutlet NSMatrix *locationMatrix;
-	IBOutlet NSTextField *locationURLField;
-	IBOutlet NSMatrix *copyDatabaseModeMatrix;
-	IBOutlet NSButton *copyDatabaseOnOffButton;
-	IBOutlet NSButton *localizerOnOffButton;
-	IBOutlet NSMatrix *columnsDisplay;
-	IBOutlet NSMatrix *multipleScreensMatrix;
-	IBOutlet NSMatrix *seriesOrderMatrix;
-	IBOutlet NSMatrix *reportsMode;
+	IBOutlet NSMatrix		*locationMatrix;
+	IBOutlet NSTextField	*locationURLField;
+	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
+	IBOutlet NSButton		*copyDatabaseOnOffButton;
+	IBOutlet NSButton		*localizerOnOffButton;
+	IBOutlet NSMatrix		*columnsDisplay;
+	IBOutlet NSMatrix		*seriesOrderMatrix;
+	IBOutlet NSMatrix		*reportsMode;
 	IBOutlet NSPopUpButton	*reportsPluginsMenu;
+	
+	IBOutlet NSMatrix		*commentsDeleteMatrix;
+	IBOutlet NSTextField	*commentsDeleteText;
 	
 	IBOutlet NSButton		*commentsAutoFill;
 	IBOutlet NSTextField	*commentsGroup, *commentsElement;
 	
 	// Auto-Cleaning
 	
-	IBOutlet NSButton *older;
-	IBOutlet NSMatrix *olderType;
-	IBOutlet NSPopUpButton *olderThanProduced, *olderThanOpened;
+	IBOutlet NSButton		*older;
+	IBOutlet NSMatrix		*olderType;
+	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
 	
-	IBOutlet NSButton *freeSpace;
-	IBOutlet NSMatrix *freeSpaceType;
-	IBOutlet NSPopUpButton *freeSpaceSize;
+	IBOutlet NSButton		*freeSpace;
+	IBOutlet NSMatrix		*freeSpaceType;
+	IBOutlet NSPopUpButton	*freeSpaceSize;
 
 }
 
@@ -50,7 +51,6 @@
 - (IBAction)setCopyDatabaseMode:(id)sender;
 - (IBAction)setCopyDatabaseOnOff:(id)sender;
 - (IBAction)setLocalizerOnOff:(id)sender;
-- (IBAction)setMultipleScreens:(id)sender;
 - (IBAction)setDisplayPatientName:(id)sender;
 - (IBAction)databaseCleaning:(id)sender;
 - (IBAction)setSeriesOrder:(id)sender;

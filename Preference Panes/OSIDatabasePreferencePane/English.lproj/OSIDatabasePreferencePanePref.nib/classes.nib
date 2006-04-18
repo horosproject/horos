@@ -31,6 +31,8 @@
             OUTLETS = {
                 columnsDisplay = NSMatrix; 
                 commentsAutoFill = NSButton; 
+                commentsDeleteMatrix = NSMatrix; 
+                commentsDeleteText = NSTextField; 
                 commentsElement = NSTextField; 
                 commentsGroup = NSTextField; 
                 copyDatabaseModeMatrix = NSMatrix; 
@@ -41,14 +43,12 @@
                 localizerOnOffButton = NSButton; 
                 locationMatrix = NSMatrix; 
                 locationURLField = NSTextField; 
-                multipleScreensMatrix = NSMatrix; 
                 older = NSButton; 
                 olderThanOpened = NSPopUpButton; 
                 olderThanProduced = NSPopUpButton; 
                 olderType = NSMatrix; 
                 reportsMode = NSMatrix; 
                 reportsPluginsMenu = NSPopUpButton; 
-                scrollView = NSScrollView; 
                 seriesOrderMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 

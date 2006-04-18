@@ -1845,6 +1845,15 @@ static BOOL initialized = NO;
 		// ** SUVCONVERSION
 		[defaultValues setObject: @"0" forKey: @"SUVCONVERSION"];
 		
+		// ** AUTOCLEANINGCOMMENTS
+		[defaultValues setObject: @"NO" forKey: @"AUTOCLEANINGCOMMENTS"];
+		
+		// ** AUTOCLEANINGCOMMENTSTEXT
+		[defaultValues setObject: @"" forKey: @"AUTOCLEANINGCOMMENTSTEXT"];
+		
+		// ** AUTOCLEANINGDONTCONTAIN
+		[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];
+		
 		// ** COMMENTSAUTOFILL
 		[defaultValues setObject: @"NO" forKey: @"COMMENTSAUTOFILL"];
 		
