@@ -1806,6 +1806,7 @@ long        i;
 				NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
 				NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
 				NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
+				
 				if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
 				long		to, from = i;
 				
@@ -1818,22 +1819,31 @@ long        i;
 				}
 				to = i;
 				
+				BOOL removeTheseStudies = NO;
+				
 				if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"])
 				{
 					if( [producedDate compare: studyDate] == NSOrderedDescending)
 					{
-						for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+						removeTheseStudies = YES;
 					}
+					else removeTheseStudies = NO;
 				}
 				
-				if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"])
+				if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] && removeTheseStudies == YES)
 				{
 					if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
 				
 					if( [openedDate compare: openedStudyDate] == NSOrderedDescending)
 					{
-						for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+						removeTheseStudies = YES;
 					}
+					else removeTheseStudies = NO;
+				}
+				
+				if( removeTheseStudies == YES)
+				{
+					for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
 				}
 			}
 			
@@ -1851,7 +1861,11 @@ long        i;
 			{
 				for (i = 0; i<[toBeRemoved count];i++)
 				{
-					if ([[[toBeRemoved objectAtIndex: i] valueForKey: @"comment"] rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+					NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
+					
+					if( comment == 0L) comment = @"";
+					
+					if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
 					{
 						if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0)
 						{
@@ -1890,28 +1904,48 @@ long        i;
 				
 				if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
 				{
-//					NSMutableArray	*nonLocalImagesPath = [[toBeRemoved filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
-//					
-//					for( i = 0; i < [nonLocalImagesPath count]; i++)
-//					{
-//						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
-//						
-//						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-//						{
-//							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-//						}
-//						
-//						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-//						{
-//							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-//						}
-//					}
+					NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
+					
+					for (x = 0; x< [toBeRemoved count];x++)
+					{
+						NSManagedObject	*curObj = [toBeRemoved objectAtIndex: x];
+						
+						if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+						{
+							NSArray	*seriesArray = [self childrenArray: curObj];
+							
+							for( i = 0 ; i < [seriesArray count]; i++)
+							{
+								NSArray		*imagesArray = [self imagesArray: [seriesArray objectAtIndex: i]];
+								
+								[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
+							}
+						}
+						else NSLog( @"Uh? Autocleaning, object strange...");
+					}
+					
+					for( i = 0; i < [nonLocalImagesPath count]; i++)
+					{
+//						NSLog( @"files to remove: %@", [nonLocalImagesPath objectAtIndex: i]);
+						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+						}
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+						}
+					}
 				}
 				
-//				for( i = 0; i < [toBeRemoved count]; i++)
-//				{
-//					[context deleteObject: [toBeRemoved objectAtIndex: i]];
-//				}
+				for( i = 0; i < [toBeRemoved count]; i++)
+				{
+//					NSLog( @"object to remove: %@", [[toBeRemoved objectAtIndex: i] description]);
+					[context deleteObject: [toBeRemoved objectAtIndex: i]];
+				}
 				
 				[self saveDatabase: currentDatabasePath];
 				
