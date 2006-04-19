@@ -22,7 +22,6 @@
                 setLocalizerOnOff = id; 
                 setLocation = id; 
                 setLocationURL = id; 
-                setMultipleScreens = id; 
                 setReportMode = id; 
                 setSeriesOrder = id; 
             }; 
@@ -37,6 +36,7 @@
                 commentsGroup = NSTextField; 
                 copyDatabaseModeMatrix = NSMatrix; 
                 copyDatabaseOnOffButton = NSButton; 
+                deleteOriginal = NSButton; 
                 freeSpace = NSButton; 
                 freeSpaceSize = NSPopUpButton; 
                 freeSpaceType = NSMatrix; 

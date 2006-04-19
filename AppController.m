@@ -1854,6 +1854,9 @@ static BOOL initialized = NO;
 		// ** AUTOCLEANINGDONTCONTAIN
 		[defaultValues setObject: @"0" forKey: @"AUTOCLEANINGDONTCONTAIN"];
 		
+		// ** AUTOCLEANINGDELETEORIGINAL
+		[defaultValues setObject: @"NO" forKey: @"AUTOCLEANINGDELETEORIGINAL"];
+		
 		// ** COMMENTSAUTOFILL
 		[defaultValues setObject: @"NO" forKey: @"COMMENTSAUTOFILL"];
 		

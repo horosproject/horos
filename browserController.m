@@ -1846,8 +1846,20 @@ long        i;
 				}
 					
 			}
+			
+			if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
+			{
+				if ([[[toBeRemoved objectAtIndex: i] valueForKey: @"comments"] rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+				{
+					if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0) [toBeRemoved removeObjectAtIndex: i];
+				}
+				else
+				{
+					if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1) [toBeRemoved removeObjectAtIndex: i];
+				}
+			}
 
-			if( [toBeRemoved count] > 0)							// (DDP: 051109) was >1, i.e. required at least 2 studies out of date to be removed.
+			if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
 			{														// Stop thread
 				if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
 				if( threadRunning == YES)
@@ -1865,8 +1877,32 @@ long        i;
 				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 				[wait showWindow:self];
 				
+				if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
+				{
+					NSMutableArray	*nonLocalImagesPath = [[toBeRemoved filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+					
+					for( i = 0; i < [nonLocalImagesPath count]; i++)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+						}
+						
+						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+						}
+					}
+				}
+				
 				for( i = 0; i < [toBeRemoved count]; i++)
+				{
 					[context deleteObject: [toBeRemoved objectAtIndex: i]];
+				}
+				
+				
 				[self saveDatabase: currentDatabasePath];
 				
 				[self outlineViewRefresh];

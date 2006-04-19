@@ -35,7 +35,7 @@
 	
 	// Auto-Cleaning
 	
-	IBOutlet NSButton		*older;
+	IBOutlet NSButton		*older, *deleteOriginal;
 	IBOutlet NSMatrix		*olderType;
 	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
 	

@@ -138,6 +138,7 @@ Version 2.3
 	// DATABASE AUTO-CLEANING
 	
 	[older setState:[defaults boolForKey:@"AUTOCLEANINGDATE"]];
+	[deleteOriginal setState:[defaults boolForKey:@"AUTOCLEANINGDELETEORIGINAL"]];
 	[[olderType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGDATEPRODUCED"]];
 	[[olderType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGDATEOPENED"]];
 	[[olderType cellWithTag:2] setState:[defaults boolForKey:@"AUTOCLEANINGCOMMENTS"]];
@@ -211,6 +212,7 @@ Version 2.3
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	[defaults setBool:[older state] forKey:@"AUTOCLEANINGDATE"];
+	[defaults setBool:[deleteOriginal state] forKey:@"AUTOCLEANINGDELETEORIGINAL"];
 	[defaults setBool:[[olderType cellWithTag:0] state] forKey:@"AUTOCLEANINGDATEPRODUCED"];
 	[defaults setBool:[[olderType cellWithTag:1] state] forKey:@"AUTOCLEANINGDATEOPENED"];
 	[defaults setBool:[[olderType cellWithTag:2] state] forKey:@"AUTOCLEANINGCOMMENTS"];
