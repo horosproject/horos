@@ -1231,6 +1231,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					{
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 						[curRoiList removeObjectAtIndex:i];
+						i--;
 					}
 				}
 			}
@@ -1281,6 +1282,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					{
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 						[curRoiList removeObjectAtIndex:i];
+						i--;
 					}
 				}
 			}

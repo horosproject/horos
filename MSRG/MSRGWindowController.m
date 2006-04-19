@@ -454,6 +454,7 @@ PURPOSE.
 			if ([[currentROI name] isEqualToString:@"FrameMarker"])
 			{
 				[curRoiList removeObjectAtIndex:j];
+				j--;
 			}
 		} 
 	}

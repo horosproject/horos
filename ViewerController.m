@@ -7133,6 +7133,8 @@ int i,j,l;
 				{
 					foundAMatchingName = YES; // stop the research
 					[sensorPointROIs removeObjectAtIndex:j]; // to accelerate the research
+					j--;
+					
 					[previousNames addObject:sensorName]; // to avoid triplets
 					
 					if(!triplets)

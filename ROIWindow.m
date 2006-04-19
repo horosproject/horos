@@ -254,6 +254,7 @@
 			
 			if ( [[roi name] isEqualToString: roiName] ) {
 				[roiImageList removeObjectAtIndex: j];
+				j--;
 			}
 		}
 	}

@@ -1836,26 +1836,37 @@ long        i;
 					}
 				}
 			}
-
+			
 			for (i = 0; i<[toBeRemoved count];i++)					// Check if studies are in an album or added today.  If so don't autoclean that study from the database (DDP: 051108).
 			{
 				if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
 				  [[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*24.0 )  // within 24 hours
 				{
 					[toBeRemoved removeObjectAtIndex: i];
+					i--;
 				}
-					
 			}
 			
 			if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
 			{
-				if ([[[toBeRemoved objectAtIndex: i] valueForKey: @"comments"] rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+				for (i = 0; i<[toBeRemoved count];i++)
 				{
-					if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0) [toBeRemoved removeObjectAtIndex: i];
-				}
-				else
-				{
-					if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1) [toBeRemoved removeObjectAtIndex: i];
+					if ([[[toBeRemoved objectAtIndex: i] valueForKey: @"comment"] rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+					{
+						if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0)
+						{
+							[toBeRemoved removeObjectAtIndex: i];
+							i--;
+						}
+					}
+					else
+					{
+						if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1)
+						{
+							[toBeRemoved removeObjectAtIndex: i];
+							i--;
+						}
+					}
 				}
 			}
 
@@ -1879,29 +1890,28 @@ long        i;
 				
 				if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
 				{
-					NSMutableArray	*nonLocalImagesPath = [[toBeRemoved filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
-					
-					for( i = 0; i < [nonLocalImagesPath count]; i++)
-					{
-						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
-						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-						}
-						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-						}
-					}
+//					NSMutableArray	*nonLocalImagesPath = [[toBeRemoved filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
+//					
+//					for( i = 0; i < [nonLocalImagesPath count]; i++)
+//					{
+//						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+//						
+//						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+//						{
+//							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+//						}
+//						
+//						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+//						{
+//							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+//						}
+//					}
 				}
 				
-				for( i = 0; i < [toBeRemoved count]; i++)
-				{
-					[context deleteObject: [toBeRemoved objectAtIndex: i]];
-				}
-				
+//				for( i = 0; i < [toBeRemoved count]; i++)
+//				{
+//					[context deleteObject: [toBeRemoved objectAtIndex: i]];
+//				}
 				
 				[self saveDatabase: currentDatabasePath];
 				
@@ -6621,14 +6631,22 @@ static BOOL needToRezoom;
 								case 1: //EXCEPT STILL
 									for( i = 0; i < [filesArray count]; i++)
 									{
-										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES) [filesArray removeObjectAtIndex:i];
+										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"STILL"] == YES)
+										{
+											[filesArray removeObjectAtIndex:i];
+											i--;
+										}
 									}
 								break;
 								
 								case 2: //EXCEPT MOVIE
 									for( i = 0; i < [filesArray count]; i++)
 									{
-										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES) [filesArray removeObjectAtIndex:i];
+										if( [[[filesArray objectAtIndex:i] lastPathComponent] isEqualToString:@"MOVIE"] == YES)
+										{
+											[filesArray removeObjectAtIndex:i];
+											i--;
+										}
 									}
 								break;
 							}
