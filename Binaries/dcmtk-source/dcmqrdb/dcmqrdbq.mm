@@ -416,52 +416,45 @@ Log Entry
 *************/
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset) {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSLog(@"Update logEntry");
-	if (handle->logEntry == nil) {
-		handle->logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry"
-			inManagedObjectContext:[[BrowserController currentBrowser]  managedObjectContext]] retain];
-		NSManagedObject *logEntry = handle->logEntry;
-		[logEntry setValue:[NSDate date] forKey:@"startTime"];
-		[logEntry setValue:@"Receive" forKey:@"type"];
-		const char *scs = 0L;
-		NSString *specificCharacterSet;
-		const char *pn = 0L;
-		NSString *patientName;
-		const char *sd = 0L;
-		NSString *studyDescription;
-		if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
-			specificCharacterSet = [NSString stringWithCString:scs];
-		}
-		else {
-			specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
-		}
-		
-		if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
-			patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
-		}
-		else {
-			patientName = [NSString stringWithString:@""];
-		}
-		
-		if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
-			studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
-		}
-		else {
-			studyDescription = [NSString stringWithString:@""];
-		}
-
-		[logEntry setValue:[NSString stringWithCString:handle->callingAET] forKey:@"originName"];
-		[logEntry setValue:patientName forKey:@"patientName"];
-		[logEntry setValue:studyDescription forKey:@"studyName"];	
-		[logEntry setValue:[NSNumber numberWithInt:0] forKey:@"numberImages"];
+			
+	const char *scs = 0L;
+	NSString *specificCharacterSet;
+	const char *pn = 0L;
+	NSString *patientName;
+	const char *sd = 0L;
+	NSString *studyDescription;
+	
+	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+		specificCharacterSet = [NSString stringWithCString:scs];
 	}
-	NSManagedObject *logEntry = handle->logEntry;
-	int count = [[logEntry valueForKey:@"numberImages"] intValue] + 1;
-	[logEntry setValue:@"In Progress" forKey:@"message"];
-	[logEntry setValue:[NSNumber numberWithInt:count] forKey:@"numberImages"];
-	[logEntry setValue:[NSNumber numberWithInt:count] forKey:@"numberSent"];
-	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-	NSLog(@"************logEntry**************\n", [logEntry description]);
+	else {
+		specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
+	}
+	
+	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
+		patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+	}
+	else {
+		patientName = [NSString stringWithString:@""];
+	}
+	
+	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
+		studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
+	}
+	else {
+		studyDescription = [NSString stringWithString:@""];
+	}
+
+	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+	[userInfo setObject:patientName forKey:@"PatientName"];
+	[userInfo setObject:studyDescription forKey:@"StudyDescription"];
+	[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
+	[userInfo setObject:[NSNumber numberWithInt:handle->imageCount++]  forKey:@"NumberReceived"];
+	NSLog(@"Update logEntry dataset: %@", [handle->dataHandler description]);
+
+	//[userInfo writeToFile:@"" atomically:YES];
+	//[handle->dataHandler updateLogEntry:userInfo];
+	
 	[pool release];
 	return EC_Normal;
 }
@@ -1189,6 +1182,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		result = EC_Normal;
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		handle -> logEntry = NULL;
+		handle -> imageCount = 0;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
