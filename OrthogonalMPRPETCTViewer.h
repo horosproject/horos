@@ -123,4 +123,5 @@
 - (IBAction) setCurrentPosition:(id) sender;
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
+- (void)dcmExportTextFieldDidChange:(NSNotification *)note;
 @end

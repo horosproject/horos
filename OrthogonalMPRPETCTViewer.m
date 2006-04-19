@@ -105,7 +105,12 @@ NSString * documentsDirectory();
 											selector: @selector(Display3DPoint:)
 											name: @"Display3DPoint"
 											object: nil];
-
+											
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(dcmExportTextFieldDidChange:)
+											name: @"NSControlTextDidChangeNotification"
+											object: nil];
+											
 	[originalSplitView setDelegate:self];
 	[xReslicedSplitView setDelegate:self];
 	[yReslicedSplitView setDelegate:self];
@@ -2656,6 +2661,22 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
     while (view = [enumerator nextObject]) {
         [self checkView:view :OnOff];
     }
+}
+
+- (void)dcmExportTextFieldDidChange:(NSNotification *)note
+{
+	if([[note object] isEqualTo:dcmIntervalTextField])
+	{
+		[dcmInterval takeIntValueFrom:dcmIntervalTextField];
+	}
+	else if([[note object] isEqualTo:dcmFromTextField])
+	{
+		[dcmFrom takeIntValueFrom:dcmFromTextField];
+	}
+	else if([[note object] isEqualTo:dcmToTextField])
+	{
+		[dcmTo takeIntValueFrom:dcmToTextField];
+	}
 }
 
 @end
