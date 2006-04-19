@@ -107,6 +107,10 @@ NSString * documentsDirectory();
 											name: @"Display3DPoint"
 											object: nil];
 	
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											selector: @selector(dcmExportTextFieldDidChange:)
+											name: @"NSControlTextDidChangeNotification"
+											object: nil];
 	
 	[splitView setDelegate:self];
 	
@@ -1214,15 +1218,8 @@ NSString * documentsDirectory();
 		{
 			long deltaX, deltaY, x, y, oldX, oldY, max;
 			OrthogonalMPRView *view;
-	
-			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
-			[splash showWindow:self];
 			
 			curImage = [[self keyView] curImage];
-			
-			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
-			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
 			if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
 			{
@@ -1258,9 +1255,28 @@ NSString * documentsDirectory();
 				max = [[view curDCM] pheight];
 			}
 			
-			[[splash progress] setMaxValue:max / [dcmInterval intValue]];
+			long from, to, interval;
 			
-			for( i = 0 ; i < max; i += [dcmInterval intValue])
+			from = [dcmFrom intValue]-1;
+			to = [dcmTo intValue];
+			interval = [dcmInterval intValue];
+			
+			if( to < from)
+			{
+				to = [dcmFrom intValue]-1;
+				from = [dcmTo intValue];
+			}
+
+			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
+			[splash showWindow:self];
+			[[splash progress] setMaxValue:(int)((to-from)/interval)];
+			
+			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
+			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
+			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+			
+			//for( i = 0 ; i < max; i += [dcmInterval intValue])
+			for( i = from; i < to; i+=interval)
 			{
 				[view setCrossPosition:x+i*deltaX :y+i*deltaY];
 				[splitView display];
@@ -1289,9 +1305,157 @@ NSString * documentsDirectory();
 
 - (void) exportDICOMFile:(id) sender
 {
-	[dcmInterval setIntValue: [controller thickSlab]];
-	[dcmInterval performClick: self];	// Will update the text field
+	long max, curIndex;
+	OrthogonalMPRView *view;
+	if ([[self keyView] isEqualTo:[controller originalView]])
+	{
+		view = [controller xReslicedView];
+		max = [[[self keyView] dcmPixList] count];
+		curIndex = [[self keyView] curImage];
+	}
+	else if ([[self keyView] isEqualTo:[controller xReslicedView]])
+	{
+		view = [controller originalView];
+		max = [[view curDCM] pwidth];
+		curIndex = [[controller originalView] crossPositionX];
+	}
+	else if ([[self keyView] isEqualTo:[controller yReslicedView]])
+	{
+		view = [controller originalView];
+		max = [[view curDCM] pheight];
+		curIndex = [[controller originalView] crossPositionY];
+	}
+	
+	[dcmFrom setMaxValue:max];
+	[dcmTo setMaxValue:max];
+	[dcmFrom setNumberOfTickMarks:max];
+	[dcmTo setNumberOfTickMarks:max];
+	[dcmTo setMaxValue:max];
+	[dcmInterval setMaxValue:90];
+
+	[dcmFrom setIntValue:1];
+	[dcmFromTextField setIntValue:1];
+	[dcmTo setIntValue:max];
+	[dcmToTextField setIntValue:max];
+	[dcmInterval setIntValue:1];
+	[dcmIntervalTextField setIntValue:1];
+	
+	[self checkView: dcmBox :([[dcmSelection selectedCell] tag] == 1)];
+	
     [NSApp beginSheet: dcmExportWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (IBAction) changeFromAndToBounds:(id) sender
+{
+	if([sender isEqualTo:dcmFrom]){[dcmFromTextField setIntValue:[sender intValue]];[dcmFromTextField display];}
+	else if([sender isEqualTo:dcmTo]){[dcmToTextField setIntValue:[sender intValue]];[dcmToTextField display];}
+	else if([sender isEqualTo:dcmToTextField]){[dcmTo setIntValue:[sender intValue]];[dcmTo display];}
+	else if([sender isEqualTo:dcmFromTextField]){[dcmFrom setIntValue:[sender intValue]];[dcmFrom display];}
+			
+	if ([[self keyView] isEqualTo:[controller originalView]])
+	{
+		//[self resliceFromX: [[controller xReslicedView] crossPositionX] : [sender intValue] : controller];
+		[controller reslice: [[controller xReslicedView] crossPositionX] : [sender intValue] : [controller xReslicedView]];
+	}
+	else if ([[self keyView] isEqualTo:[controller xReslicedView]])
+	{
+		//[self resliceFromOriginal: [[controller originalView] crossPositionX] : [sender intValue] : controller];
+		[controller reslice: [[controller originalView] crossPositionX] : [sender intValue] : [controller originalView]];
+	}
+	else if ([[self keyView] isEqualTo:[controller yReslicedView]])
+	{
+		//[self resliceFromOriginal: [sender intValue]: [[controller originalView] crossPositionY] : controller];
+		[controller reslice: [sender intValue]: [[controller originalView] crossPositionY] : [controller originalView]];
+	}
+}
+
+- (IBAction) setCurrentPosition:(id) sender
+{
+	long max, curIndex;
+	
+	if ([[self keyView] isEqualTo:[controller originalView]])
+	{
+		max = [[[self keyView] dcmPixList] count];
+		curIndex = [[self keyView] curImage]+1;
+		if( [[controller originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	else if ([[self keyView] isEqualTo:[controller xReslicedView]])
+	{
+		max = [[[controller originalView] curDCM] pwidth];
+		curIndex = [[controller originalView] crossPositionY]+1;
+		if( [[controller originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	else if ([[self keyView] isEqualTo:[controller yReslicedView]])
+	{
+		max = [[[controller originalView] curDCM] pheight];
+		curIndex = [[controller originalView] crossPositionX]+1;
+		if( [[controller originalView] flippedData])
+		{
+			curIndex = max-curIndex;
+		}
+	}
+	
+	if( [sender tag] == 0)
+	{
+			[dcmFrom setIntValue:curIndex];
+			[dcmFromTextField setIntValue:curIndex];
+	}
+	else
+	{
+			[dcmTo setIntValue:curIndex];
+			[dcmToTextField setIntValue:curIndex];
+	}
+	
+	[dcmInterval display];
+	[dcmFrom display];
+	[dcmTo display];
+	[dcmFromTextField display];
+	[dcmToTextField display];
+}
+
+- (IBAction) setCurrentdcmExport:(id) sender
+{
+	if( [[sender selectedCell] tag] == 1) [self checkView: dcmBox :YES];
+	else [self checkView: dcmBox :NO];
+}
+
+- (void)checkView:(NSView *)aView :(BOOL) OnOff
+{
+    id view;
+    NSEnumerator *enumerator;
+  
+    if ([aView isKindOfClass: [NSControl class] ])
+	{
+       [(NSControl*) aView setEnabled: OnOff];
+	   return;
+    }
+    // Recursively check all the subviews in the view
+    enumerator = [ [aView subviews] objectEnumerator];
+    while (view = [enumerator nextObject]) {
+        [self checkView:view :OnOff];
+    }
+}
+
+- (void)dcmExportTextFieldDidChange:(NSNotification *)note
+{
+	if([[note object] isEqualTo:dcmIntervalTextField])
+	{
+		[dcmInterval takeIntValueFrom:dcmIntervalTextField];
+	}
+	else if([[note object] isEqualTo:dcmFromTextField])
+	{
+		[dcmFrom takeIntValueFrom:dcmFromTextField];
+	}
+	else if([[note object] isEqualTo:dcmToTextField])
+	{
+		[dcmTo takeIntValueFrom:dcmToTextField];
+	}
 }
 
 #pragma mark-

@@ -37,8 +37,9 @@
 	
 	IBOutlet NSWindow					*dcmExportWindow;
 	IBOutlet NSMatrix					*dcmSelection, *dcmFormat;
-	IBOutlet NSSlider					*dcmInterval;
-	IBOutlet NSTextField				*dcmSeriesName;
+	IBOutlet NSSlider					*dcmInterval, *dcmFrom, *dcmTo;
+	IBOutlet NSTextField				*dcmSeriesName, *dcmFromTextField, *dcmToTextField, *dcmIntervalTextField;
+	IBOutlet NSBox						*dcmBox;
 	DICOMExport							*exportDCM;
 	
     IBOutlet NSView						*WLWWView;
@@ -91,6 +92,13 @@
 
 //export
 -(IBAction) endExportDICOMFileSettings:(id) sender;
+-(IBAction) changeFromAndToBounds:(id) sender;
+-(IBAction) setCurrentPosition:(id) sender;
+-(IBAction) setCurrentdcmExport:(id) sender;
+
+-(void) checkView:(NSView *)aView :(BOOL) OnOff;
+
+-(void) dcmExportTextFieldDidChange:(NSNotification *)note;
 
 // ROIs
 - (IBAction) roiDeleteAll:(id) sender;
