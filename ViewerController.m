@@ -1409,6 +1409,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[ThreadLoadImageLock release];
 	
     [super dealloc];
+	
+	[appController tileWindows: self];
 }
 
 
