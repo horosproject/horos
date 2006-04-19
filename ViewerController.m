@@ -8665,7 +8665,33 @@ int i,j,l;
 	return nil;
 }
 
-
+- (void)exportTextFieldDidChange:(NSNotification *)note
+{
+	if([[note object] isEqualTo:dcmIntervalText])
+	{
+		[dcmInterval takeIntValueFrom:dcmIntervalText];
+	}
+	else if([[note object] isEqualTo:dcmFromText])
+	{
+		[dcmFrom takeIntValueFrom:dcmFromText];
+	}
+	else if([[note object] isEqualTo:dcmToText])
+	{
+		[dcmTo takeIntValueFrom:dcmToText];
+	}
+	else if([[note object] isEqualTo:quicktimeIntervalText])
+	{
+		[quicktimeInterval takeIntValueFrom:quicktimeIntervalText];
+	}
+	else if([[note object] isEqualTo:quicktimeFromText])
+	{
+		[quicktimeFrom takeIntValueFrom:quicktimeFromText];
+	}
+	else if([[note object] isEqualTo:quicktimeToText])
+	{
+		[quicktimeTo takeIntValueFrom:quicktimeToText];
+	}
+}
 
 #pragma mark-
 #pragma mark 4.5.1.2 Exportation of image raw
@@ -9024,6 +9050,11 @@ int i,j,l;
 			selector: @selector(notificationSyncSeries:)
                name: @"notificationSyncSeries"
              object: nil];
+	
+	[nc	addObserver: self
+		   selector: @selector(exportTextFieldDidChange:)
+			   name: @"NSControlTextDidChangeNotification"
+			 object: nil];
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 	

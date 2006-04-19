@@ -48,7 +48,7 @@
     IBOutlet NSWindow       *quicktimeWindow;
 	IBOutlet NSMatrix		*quicktimeMode;
 	IBOutlet NSSlider		*quicktimeInterval, *quicktimeFrom, *quicktimeTo;
-	IBOutlet NSTextField	*quicktimeFromText, *quicktimeToText;
+	IBOutlet NSTextField	*quicktimeIntervalText, *quicktimeFromText, *quicktimeToText;
 	IBOutlet NSBox			*quicktimeBox;
 	
 	DCMView					*imageView;
@@ -136,7 +136,7 @@
 	IBOutlet NSWindow       *dcmExportWindow;
 	IBOutlet NSMatrix		*dcmSelection, *dcmFormat;
 	IBOutlet NSSlider		*dcmInterval, *dcmFrom, *dcmTo;
-	IBOutlet NSTextField	*dcmFromText, *dcmToText;
+	IBOutlet NSTextField	*dcmIntervalText, *dcmFromText, *dcmToText;
 	IBOutlet NSBox			*dcmBox;
 	IBOutlet NSTextField	*dcmSeriesName;
 	
@@ -413,6 +413,8 @@
 - (short) curMovieIndex;
 - (id) findiChatButton;
 - (void) convertPETtoSUV;
+
+- (void)exportTextFieldDidChange:(NSNotification *)note;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

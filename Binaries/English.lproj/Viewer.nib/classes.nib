@@ -250,6 +250,7 @@
                 dcmFrom = NSSlider; 
                 dcmFromText = NSTextField; 
                 dcmInterval = NSSlider; 
+                dcmIntervalText = NSTextField; 
                 dcmSelection = NSMatrix; 
                 dcmSeriesName = NSTextField; 
                 dcmTo = NSSlider; 
@@ -283,6 +284,7 @@
                 quicktimeFrom = NSSlider; 
                 quicktimeFromText = NSTextField; 
                 quicktimeInterval = NSSlider; 
+                quicktimeIntervalText = NSTextField; 
                 quicktimeMode = NSMatrix; 
                 quicktimeTo = NSSlider; 
                 quicktimeToText = NSTextField; 
