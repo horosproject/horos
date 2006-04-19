@@ -8669,26 +8669,50 @@ int i,j,l;
 {
 	if([[note object] isEqualTo:dcmIntervalText])
 	{
+		if([dcmIntervalText intValue] > [dcmInterval maxValue])
+		{
+			[dcmIntervalText setIntValue:[dcmInterval maxValue]];
+		}
 		[dcmInterval takeIntValueFrom:dcmIntervalText];
 	}
 	else if([[note object] isEqualTo:dcmFromText])
 	{
+		if([dcmFromText intValue] > [dcmFrom maxValue])
+		{
+			[dcmFromText setIntValue:[dcmFrom maxValue]];
+		}
 		[dcmFrom takeIntValueFrom:dcmFromText];
 	}
 	else if([[note object] isEqualTo:dcmToText])
 	{
+		if([dcmToText intValue] > [dcmTo maxValue])
+		{
+			[dcmToText setIntValue:[dcmTo maxValue]];
+		}
 		[dcmTo takeIntValueFrom:dcmToText];
 	}
 	else if([[note object] isEqualTo:quicktimeIntervalText])
 	{
+		if([quicktimeIntervalText intValue] > [quicktimeInterval maxValue])
+		{
+			[quicktimeIntervalText setIntValue:[quicktimeInterval maxValue]];
+		}
 		[quicktimeInterval takeIntValueFrom:quicktimeIntervalText];
 	}
 	else if([[note object] isEqualTo:quicktimeFromText])
 	{
+		if([quicktimeFromText intValue] > [quicktimeFrom maxValue])
+		{
+			[quicktimeFromText setIntValue:[quicktimeFrom maxValue]];
+		}
 		[quicktimeFrom takeIntValueFrom:quicktimeFromText];
 	}
 	else if([[note object] isEqualTo:quicktimeToText])
 	{
+		if([quicktimeToText intValue] > [quicktimeTo maxValue])
+		{
+			[quicktimeToText setIntValue:[quicktimeTo maxValue]];
+		}
 		[quicktimeTo takeIntValueFrom:quicktimeToText];
 	}
 }

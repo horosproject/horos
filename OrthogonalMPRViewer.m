@@ -1445,15 +1445,27 @@ NSString * documentsDirectory();
 - (void)dcmExportTextFieldDidChange:(NSNotification *)note
 {
 	if([[note object] isEqualTo:dcmIntervalTextField])
-	{
+	{	
+		if([dcmIntervalTextField intValue] > [dcmInterval maxValue])
+		{
+			[dcmIntervalTextField setIntValue:[dcmInterval maxValue]];
+		}
 		[dcmInterval takeIntValueFrom:dcmIntervalTextField];
 	}
 	else if([[note object] isEqualTo:dcmFromTextField])
 	{
+		if([dcmFromTextField intValue] > [dcmFrom maxValue])
+		{
+			[dcmFromTextField setIntValue:[dcmFrom maxValue]];
+		}
 		[dcmFrom takeIntValueFrom:dcmFromTextField];
 	}
 	else if([[note object] isEqualTo:dcmToTextField])
 	{
+		if([dcmToTextField intValue] > [dcmTo maxValue])
+		{
+			[dcmToTextField setIntValue:[dcmTo maxValue]];
+		}
 		[dcmTo takeIntValueFrom:dcmToTextField];
 	}
 }
