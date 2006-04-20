@@ -1775,188 +1775,191 @@ long        i;
 	
 	if( [defaults boolForKey:@"AUTOCLEANINGDATE"])
 	{
-		if( [checkIncomingLock tryLock])
+		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES)
 		{
-		//	NSLog(@"lock autoCleanDatabaseDate");
-			
-			NSError				*error = 0L;
-			long				i, x;
-			NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
-			NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
-			NSArray				*studiesArray;
-			NSDate				*now = [NSDate date];
-			NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
-			NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
-			NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
-			NSManagedObjectContext *context = [self managedObjectContext];
-			
-			[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[request setPredicate: predicate];
-			
-			[context lock];
-			error = 0L;
-			studiesArray = [context executeFetchRequest:request error:&error];
-			
-			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
-			NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-			[sort release];
-			
-			for( i = 0; i < [studiesArray count]; i++)
+			if( [checkIncomingLock tryLock])
 			{
-				NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
-				NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
-				NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
+			//	NSLog(@"lock autoCleanDatabaseDate");
 				
-				if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-				long		to, from = i;
+				NSError				*error = 0L;
+				long				i, x;
+				NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
+				NSPredicate			*predicate = [NSPredicate predicateWithValue:YES];
+				NSArray				*studiesArray;
+				NSDate				*now = [NSDate date];
+				NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
+				NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
+				NSMutableArray		*toBeRemoved = [NSMutableArray arrayWithCapacity: 0];
+				NSManagedObjectContext *context = [self managedObjectContext];
 				
-				while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
+				[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+				[request setPredicate: predicate];
+				
+				[context lock];
+				error = 0L;
+				studiesArray = [context executeFetchRequest:request error:&error];
+				
+				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
+				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+				[sort release];
+				
+				for( i = 0; i < [studiesArray count]; i++)
 				{
-					i++;
-					studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
-					if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
-					else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
-				}
-				to = i;
-				
-				BOOL removeTheseStudies = NO;
-				
-				if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"])
-				{
-					if( [producedDate compare: studyDate] == NSOrderedDescending)
-					{
-						removeTheseStudies = YES;
-					}
-					else removeTheseStudies = NO;
-				}
-				
-				if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] && removeTheseStudies == YES)
-				{
+					NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
+					NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
+					NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
+					
 					if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-				
-					if( [openedDate compare: openedStudyDate] == NSOrderedDescending)
+					long		to, from = i;
+					
+					while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
 					{
-						removeTheseStudies = YES;
+						i++;
+						studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
+						if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
+						else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
 					}
-					else removeTheseStudies = NO;
-				}
-				
-				if( removeTheseStudies == YES)
-				{
-					for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
-				}
-			}
-			
-			for (i = 0; i<[toBeRemoved count];i++)					// Check if studies are in an album or added today.  If so don't autoclean that study from the database (DDP: 051108).
-			{
-				if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
-				  [[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*24.0 )  // within 24 hours
-				{
-					[toBeRemoved removeObjectAtIndex: i];
-					i--;
-				}
-			}
-			
-			if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
-			{
-				for (i = 0; i<[toBeRemoved count];i++)
-				{
-					NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
+					to = i;
 					
-					if( comment == 0L) comment = @"";
+					BOOL dateProduced = YES, dateOpened = YES;
 					
-					if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
+					if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"])
 					{
-						if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0)
+						if( [producedDate compare: studyDate] == NSOrderedDescending)
 						{
-							[toBeRemoved removeObjectAtIndex: i];
-							i--;
+							dateProduced = YES;
 						}
+						else dateProduced = NO;
 					}
-					else
-					{
-						if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1)
-						{
-							[toBeRemoved removeObjectAtIndex: i];
-							i--;
-						}
-					}
-				}
-			}
-
-			if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
-			{														// Stop thread
-				if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-				if( threadRunning == YES)
-				{
-					shouldDie = YES;
-					NSDate *now = [NSDate date];
-					while (threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
-					{
-						[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-					}
-				}
-				
-				NSLog(@"Will delete: %d studies", [toBeRemoved count]);
-				
-				WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
-				[wait showWindow:self];
-				
-				if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
-				{
-					NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
 					
-					for (x = 0; x< [toBeRemoved count];x++)
+					if( [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"])
 					{
-						NSManagedObject	*curObj = [toBeRemoved objectAtIndex: x];
+						if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+					
+						if( [openedDate compare: openedStudyDate] == NSOrderedDescending)
+						{
+							dateOpened = YES;
+						}
+						else dateOpened = NO;
+					}
+					
+					if(  dateProduced == YES && dateOpened == YES)
+					{
+						for( x = from; x <= to; x++) if( [toBeRemoved containsObject:[studiesArray objectAtIndex: x]] == NO) [toBeRemoved addObject: [studiesArray objectAtIndex: x]];
+					}
+				}
+				
+				for (i = 0; i<[toBeRemoved count];i++)					// Check if studies are in an album or added today.  If so don't autoclean that study from the database (DDP: 051108).
+				{
+					if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
+					  [[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*24.0 )  // within 24 hours
+					{
+						[toBeRemoved removeObjectAtIndex: i];
+						i--;
+					}
+				}
+				
+				if( [defaults boolForKey: @"AUTOCLEANINGCOMMENTS"])
+				{
+					for (i = 0; i<[toBeRemoved count];i++)
+					{
+						NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
 						
-						if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+						if( comment == 0L) comment = @"";
+						
+						if ([comment rangeOfString:[defaults stringForKey: @"AUTOCLEANINGCOMMENTSTEXT"] options:NSCaseInsensitiveSearch].location == NSNotFound)
 						{
-							NSArray	*seriesArray = [self childrenArray: curObj];
-							
-							for( i = 0 ; i < [seriesArray count]; i++)
+							if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 0)
 							{
-								NSArray		*imagesArray = [self imagesArray: [seriesArray objectAtIndex: i]];
-								
-								[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
+								[toBeRemoved removeObjectAtIndex: i];
+								i--;
 							}
 						}
-						else NSLog( @"Uh? Autocleaning, object strange...");
+						else
+						{
+							if( [defaults integerForKey: @"AUTOCLEANINGDONTCONTAIN"] == 1)
+							{
+								[toBeRemoved removeObjectAtIndex: i];
+								i--;
+							}
+						}
+					}
+				}
+
+				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
+				{														// Stop thread
+					if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
+					if( threadRunning == YES)
+					{
+						shouldDie = YES;
+						NSDate *now = [NSDate date];
+						while (threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
+						{
+							[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+						}
 					}
 					
-					for( i = 0; i < [nonLocalImagesPath count]; i++)
+					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
+					
+					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
+					[wait showWindow:self];
+					
+					if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
 					{
-//						NSLog( @"files to remove: %@", [nonLocalImagesPath objectAtIndex: i]);
-						[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+						NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
 						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+						for (x = 0; x< [toBeRemoved count];x++)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+							NSManagedObject	*curObj = [toBeRemoved objectAtIndex: x];
+							
+							if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+							{
+								NSArray	*seriesArray = [self childrenArray: curObj];
+								
+								for( i = 0 ; i < [seriesArray count]; i++)
+								{
+									NSArray		*imagesArray = [self imagesArray: [seriesArray objectAtIndex: i]];
+									
+									[nonLocalImagesPath addObjectsFromArray: [[imagesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"]];
+								}
+							}
+							else NSLog( @"Uh? Autocleaning, object strange...");
 						}
 						
-						if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+						for( i = 0; i < [nonLocalImagesPath count]; i++)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+	//						NSLog( @"files to remove: %@", [nonLocalImagesPath objectAtIndex: i]);
+							[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
+							
+							if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+							{
+								[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+							}
+							
+							if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"zip"])		// ZIP -> DELETE XML
+							{
+								[[NSFileManager defaultManager] removeFileAtPath:[[[nonLocalImagesPath objectAtIndex: i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+							}
 						}
 					}
+					
+					for( i = 0; i < [toBeRemoved count]; i++)
+					{
+	//					NSLog( @"object to remove: %@", [[toBeRemoved objectAtIndex: i] description]);
+						[context deleteObject: [toBeRemoved objectAtIndex: i]];
+					}
+					
+					[self saveDatabase: currentDatabasePath];
+					
+					[self outlineViewRefresh];
+					
+					[wait close];
+					[wait release];
 				}
 				
-				for( i = 0; i < [toBeRemoved count]; i++)
-				{
-//					NSLog( @"object to remove: %@", [[toBeRemoved objectAtIndex: i] description]);
-					[context deleteObject: [toBeRemoved objectAtIndex: i]];
-				}
-				
-				[self saveDatabase: currentDatabasePath];
-				
-				[self outlineViewRefresh];
-				
-				[wait close];
-				[wait release];
+				[checkIncomingLock unlock];
+				[context unlock];
 			}
-			
-			[checkIncomingLock unlock];
-			[context unlock];
 		}
 	}
 }

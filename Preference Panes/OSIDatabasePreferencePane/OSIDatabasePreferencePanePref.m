@@ -210,9 +210,15 @@ Version 2.3
 - (IBAction) databaseCleaning:(id)sender
 {
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
+
+	if( [[olderType cellWithTag:0] state] == NSOffState && [[olderType cellWithTag:1] state] == NSOffState)
+	{
+		[older setState: NSOffState];
+	}
 	
 	[defaults setBool:[older state] forKey:@"AUTOCLEANINGDATE"];
 	[defaults setBool:[deleteOriginal state] forKey:@"AUTOCLEANINGDELETEORIGINAL"];
+	
 	[defaults setBool:[[olderType cellWithTag:0] state] forKey:@"AUTOCLEANINGDATEPRODUCED"];
 	[defaults setBool:[[olderType cellWithTag:1] state] forKey:@"AUTOCLEANINGDATEOPENED"];
 	[defaults setBool:[[olderType cellWithTag:2] state] forKey:@"AUTOCLEANINGCOMMENTS"];
