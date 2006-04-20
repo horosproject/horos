@@ -121,9 +121,8 @@ void errmsg(const char* msg, ...)
 		_port = port;
 		_aeTitle = [aeTitle retain];
 		_params = [params retain];
-			//Create a timer to cleanup scp children every  hour
+		//Create a timer to cleanup scp children every  hour
 		[NSTimer scheduledTimerWithTimeInterval:3600 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
-		//[NSTimer scheduledTimerWithTimeInterval:10 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
 	}
 	return self;
 }
@@ -131,7 +130,7 @@ void errmsg(const char* msg, ...)
 - (void)dealloc{
 
 	if (scp != NULL) {
-	//	 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
+		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
 	}
 
@@ -141,8 +140,8 @@ void errmsg(const char* msg, ...)
 }
 
 - (void)cleanup:(NSTimer *)timer{
-	//if (scp != NULL) 
-	//	scp->cleanChildren(OFTrue);  // clean up any child processes 	
+	if (scp != NULL) 
+		scp->cleanChildren(OFTrue);  // clean up any child processes 	
 }
 
 - (void)run{
@@ -303,12 +302,8 @@ DcmQueryRetrieveConfig config;
     while (cond.good() && !_abort)
     {
       cond = scp->waitForAssociation(options.net_);
-	  //scp->cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
-	  //use if static scp rather than pointer
-	//	cond = scp.waitForAssociation(options.net_);
-	//  scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
-      //if (!options.singleProcess_) scp.cleanChildren(options.verbose_ ? OFTrue : OFFalse);  /* clean up any child processes */
-    }
+	  scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+	}
 	
 	delete scp;
 	scp = NULL;
