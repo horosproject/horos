@@ -5439,6 +5439,7 @@ int i,j,l;
 			{
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
 				[[roiList[curMovieIndex] objectAtIndex: x] removeObject:curROI];
+				i--;
 			}
 		}
 	}
