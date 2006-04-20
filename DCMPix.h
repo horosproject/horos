@@ -78,6 +78,8 @@
 	
 	NSString			*echotime, *repetitiontime, *convertedDICOM, *protocolName;
 	
+	NSString			*viewPosition, *patientPosition;
+	
 	// ThickSlab
 	
 	ThickSlabController *thickSlab;
@@ -179,6 +181,8 @@
 - (void) setRepetitiontime:(NSString*)rep;
 - (void) setEchotime:(NSString*)echo;
 - (NSString*) protocolName;
+- (NSString*) viewPosition;
+- (NSString*) patientPosition;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 - (void) setArrayPix :(NSArray*) array :(short) i;

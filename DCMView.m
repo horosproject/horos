@@ -4781,61 +4781,82 @@ static long scrollMode;
 	}
 	
 	// Thickness
-	if( [curDCM stack] > 1)
+	if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
 	{
-		long maxVal;
-		
-		if( flippedData) maxVal = curImage-[curDCM stack];
-		else maxVal = curImage+[curDCM stack];
-		
-		if( maxVal < 0) maxVal = curImage;
-		else if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count] - curImage;
-		else maxVal = [curDCM stack];
-		
-		float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
-		
-		vv += [curDCM sliceThickness];
-		
-		float pp;
-		
-		if( flippedData)
+		if( [curDCM stack] > 1)
 		{
-			pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
-		}
-		else
-			pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
+			long maxVal;
 			
-		if( vv < 1.0 && vv != 0.0)
-		{
-			if( fabs( pp) < 1.0 && pp != 0.0)
-				sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5);
+			if( flippedData) maxVal = curImage-[curDCM stack];
+			else maxVal = curImage+[curDCM stack];
+			
+			if( maxVal < 0) maxVal = curImage;
+			else if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count] - curImage;
+			else maxVal = [curDCM stack];
+			
+			float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
+			
+			vv += [curDCM sliceThickness];
+			
+			float pp;
+			
+			if( flippedData)
+			{
+				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
+			}
 			else
-				sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp);
+				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
+				
+			if( vv < 1.0 && vv != 0.0)
+			{
+				if( fabs( pp) < 1.0 && pp != 0.0)
+					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5);
+				else
+					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp);
+			}
+			else
+				sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp);
+			
+			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			yRaster -= stringSize.height;
 		}
-		else
-			sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp);
-		
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-		yRaster -= stringSize.height;
+		else if( fullText)
+		{
+			if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
+			{
+				if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
+					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5);
+				else
+					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]);
+			}
+			else
+				sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]);
+			
+			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			yRaster -= stringSize.height;
+			
+			// Zoom
+			sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
+			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			yRaster -= stringSize.height;
+		}
 	}
-	else if( fullText)
+	else if( [curDCM viewPosition] || [curDCM patientPosition])
 	{
-		if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
+		NSString	*nsstring = 0L;
+		
+		if( [curDCM viewPosition]) nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM viewPosition]];
+		if( [curDCM patientPosition])
 		{
-			if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
-				sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5);
-			else
-				sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]);
+			if( nsstring) nsstring = [nsstring stringByAppendingString: [curDCM patientPosition]];
+			else nsstring = [NSString stringWithFormat: @"Position: %@ ", [curDCM patientPosition]];
 		}
-		else
-			sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]);
 		
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-		yRaster -= stringSize.height;
+		// Position
+		char	string[ 256];
+		[self getLossyCString:nsstring  : string];
 		
-		// Zoom
-		sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		[self DrawCStringGL: string : fontListGL :4 :yRaster];
 		yRaster -= stringSize.height;
 	}
 	

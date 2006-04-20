@@ -1949,6 +1949,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	repetitiontime = 0L;
 	echotime = 0L;
 	protocolName = 0L;
+	viewPosition = 0L;
+	patientPosition = 0L;
 	maxValueOfSeries = 0;
 	radiopharmaceuticalStartTime = 0L;
 	acquisitionTime = 0L;
@@ -2023,6 +2025,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		repetitiontime = 0L;
 		echotime = 0L;
 		protocolName = 0L;
+		viewPosition = 0L;
+		patientPosition = 0L;
 		
 		units = 0L;
 		decayCorrection = 0L;
@@ -2168,6 +2172,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		repetitiontime = 0L;
 		echotime = 0L;
 		protocolName = 0L;
+		viewPosition = 0L;
+		patientPosition = 0L;
 		
 		orientation[ 0] = 1;
 		orientation[ 1] = 0;
@@ -2223,6 +2229,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	copy->repetitiontime = [self->repetitiontime retain];
 	copy->protocolName = [self->protocolName retain];
 	copy->convertedDICOM = [self->convertedDICOM retain];
+	copy->viewPosition = [self->viewPosition retain];
+	copy->patientPosition = [self->patientPosition retain];
 	
 	copy->units = [self->units retain];
 	copy->decayCorrection = [self->decayCorrection retain];
@@ -2254,6 +2262,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 - (void) setRepetitiontime:(NSString*)rep {repetitiontime = rep;}
 - (void) setEchotime:(NSString*)echo {echotime = echo;}
 - (NSString*) protocolName {return protocolName;}
+- (NSString*) viewPosition {return viewPosition;}
+- (NSString*) patientPosition {return patientPosition;}
 
 - (char*) UncompressDICOM : (NSString*) file :( long) imageNb
 {
@@ -3229,6 +3239,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	[repetitiontime release];					repetitiontime = 0L;
 	[echotime release];							echotime = 0L;
 	[protocolName release];						protocolName = 0L;
+	[viewPosition release];						viewPosition = 0L;
+	[patientPosition release];					patientPosition = 0L;
 	[units release];							units = 0L;
 	[decayCorrection release];					decayCorrection = 0L;
 	
@@ -3761,6 +3773,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];
 	
 	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
+	
+	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
+	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
 	
 	if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
 	if (!cineRate)	cineRate = 1000/ [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
@@ -4416,6 +4431,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if (val != NULL) protocolName = [[NSString stringWithCString:val->a] retain];
 			else protocolName = 0;
 			
+			val = Papy3GetElement (theGroupP, papViewPositionGr, &nbVal, &elemType);
+			if (val != NULL) viewPosition = [[NSString stringWithCString:val->a] retain];
+			else viewPosition = 0;
+			
+			val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
+			if (val != NULL) patientPosition = [[NSString stringWithCString:val->a] retain];
+			else patientPosition = 0;
 			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
@@ -7751,6 +7773,8 @@ float			iwl, iww;
 	[echotime release];
 	[units release];
 	[protocolName release];
+	[patientPosition release];
+	[viewPosition release];
 	[decayCorrection release];
 	
 	if( fVolImage == 0L)
