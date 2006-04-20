@@ -37,6 +37,7 @@
 @interface ViewerController : NSWindowController  <Schedulable>
 {
 	NSLock	*ThreadLoadImageLock;
+	NSLock	*roiLock;
 	
 	IBOutlet StudyView		*studyView;
 			SeriesView		*seriesView;
@@ -271,7 +272,7 @@
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name;
 -(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
-
+- (NSLock*) roiLock;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (void) setLoadingPause:(BOOL) lp;

@@ -1407,6 +1407,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[curvedController release];
 	
 	[ThreadLoadImageLock release];
+	[roiLock release];
 	
     [super dealloc];
 	
@@ -6314,12 +6315,15 @@ int i,j,l;
 //	else [self setROITool: tPlain name:@"Brush"];
 }
 
+- (NSLock*) roiLock { return roiLock;}
 
 //obligatory class for protocol Schedulable.h
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
 	NSEnumerator	*enumerator = [workUnits objectEnumerator];
 	NSDictionary	*object;
+	
+	[roiLock lock];
 	
 	while (object = [enumerator nextObject])
 	{
@@ -6345,6 +6349,8 @@ int i,j,l;
 		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
 			[[object objectForKey:@"filter"] erode: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 	}
+	
+	[roiLock unlock];
 }
 
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
@@ -8848,6 +8854,7 @@ int i,j,l;
 	matrixPreviewBuilt = NO;
 	
 	ThreadLoadImageLock = [[NSLock alloc] init];
+	roiLock = [[NSLock alloc] init];
 	
 	windowWillClose = NO;
 	EXPORT2IPHOTO = NO;
