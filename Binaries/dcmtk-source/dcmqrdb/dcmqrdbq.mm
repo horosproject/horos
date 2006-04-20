@@ -449,7 +449,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	[userInfo setObject:patientName forKey:@"PatientName"];
 	[userInfo setObject:studyDescription forKey:@"StudyDescription"];
 	[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
-	[userInfo setObject:[NSNumber numberWithInt:handle->imageCount++]  forKey:@"NumberReceived"];
+	//[userInfo setObject:[NSNumber numberWithInt:handle->imageCount++]  forKey:@"NumberReceived"];
 	NSLog(@"Update logEntry dataset: %@", [handle->dataHandler description]);
 
 	//[userInfo writeToFile:@"" atomically:YES];
@@ -1182,7 +1182,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		result = EC_Normal;
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		handle -> logEntry = NULL;
-		handle -> imageCount = 0;
+		//handle -> imageCount = 0;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
