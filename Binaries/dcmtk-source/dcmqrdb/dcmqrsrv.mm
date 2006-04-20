@@ -41,6 +41,8 @@
 #include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
 
+#import "dcmqrdbq.h";
+
 
 static void findCallback(
         /* in */
@@ -432,6 +434,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     context.setFileName(imageFileName);
 
     DcmDataset *dset = dcmff.getDataset();
+
+	//static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle) -> updateLogEntry(dset);
 
     /* we must still retrieve the data set even if some error has occured */
 

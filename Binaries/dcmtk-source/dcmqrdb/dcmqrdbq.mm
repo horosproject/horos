@@ -450,11 +450,8 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	[userInfo setObject:studyDescription forKey:@"StudyDescription"];
 	[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
 	//[userInfo setObject:[NSNumber numberWithInt:handle->imageCount++]  forKey:@"NumberReceived"];
-	NSLog(@"Update logEntry dataset: %@", [handle->dataHandler description]);
 
-	//[userInfo writeToFile:@"" atomically:YES];
-	//[handle->dataHandler updateLogEntry:userInfo];
-	
+		
 	[pool release];
 	return EC_Normal;
 }
@@ -1201,8 +1198,10 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
     if (handle)
     {
 		// set logEntry to complete
-	   if (handle->logEntry != NULL)
+	   if (handle->logEntry != NULL) {
 		   [handle->logEntry  setValue:@"Complete" forKey:@"message"];
+		   [handle->logEntry release];
+		}
 
       /* Free lists */
       DB_FreeElementList (handle -> findRequestList);
