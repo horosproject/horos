@@ -1864,8 +1864,6 @@ long        i;
 				{
 					for (i = 0; i<[toBeRemoved count];i++)
 					{
-						NSLog( [[toBeRemoved objectAtIndex: i] valueForKey: @"name"]);
-					
 						NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
 						
 						if( comment == 0L) comment = @"";
@@ -3810,6 +3808,12 @@ long        i;
 	 NSButtonCell    *cell = [oMatrix selectedCell];
 	 if( cell)
 	 {
+		if( [cell tag] >= [matrixViewArray count])
+		{
+			[oMatrix selectCellWithTag: 0];
+			cell = [oMatrix selectedCell];
+		}
+		
 		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
