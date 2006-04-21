@@ -984,10 +984,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.dateOfBirth"] timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
-		int months, days; 
-		[dateOfBirth years:&YearOld months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+		[yearOld release];
+		yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
 	}
 }
 
@@ -1085,6 +1083,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[fontColor release];
 	[fontGL release];
 	[labelFont release];
+	[yearOld release];
 	
 //	[self clearGLContext];
 	
@@ -1185,11 +1184,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
 		[[NSNotificationCenter defaultCenter]  postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 	}
-	NSCalendarDate *momsBDay;
-	momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.dateOfBirth"] timeIntervalSinceReferenceDate]];
-	NSCalendarDate *dateOfBirth = [NSCalendarDate date];
-	int months, days; 
-	[dateOfBirth years:&YearOld months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+
+	[yearOld release];
+	yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -3401,6 +3398,7 @@ static long scrollMode;
 		[DCMView computePETBlendingCLUT];
 	}
 	
+	yearOld = 0L;
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	syncSeriesIndex = -1;
@@ -5055,7 +5053,7 @@ static long scrollMode;
 			
 			if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 			{
-				nsstring = [NSString stringWithFormat: @"%@ - %@ - %d yo",[file valueForKeyPath:@"series.study.name"], [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], YearOld];
+				nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
 			}
 			else  nsstring = [file valueForKeyPath:@"series.study.name"];
 			

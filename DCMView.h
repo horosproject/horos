@@ -75,7 +75,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 
 	BOOL			flippedData;
 	
-	int				YearOld;
+	NSString		*yearOld;
 	
 	ROI				*curROI;
 	BOOL			drawingROI, noScale, volumicSeries;

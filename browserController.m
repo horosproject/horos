@@ -1901,8 +1901,9 @@ long        i;
 					
 					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
 					
-					WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
+					Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 					[wait showWindow:self];
+					[[wait progress] setMaxValue:[toBeRemoved count]];
 					
 					if( [defaults boolForKey: @"AUTOCLEANINGDELETEORIGINAL"])
 					{
@@ -1928,7 +1929,6 @@ long        i;
 						
 						for( i = 0; i < [nonLocalImagesPath count]; i++)
 						{
-	//						NSLog( @"files to remove: %@", [nonLocalImagesPath objectAtIndex: i]);
 							[[NSFileManager defaultManager] removeFileAtPath:[nonLocalImagesPath objectAtIndex: i] handler:nil];
 							
 							if( [[[nonLocalImagesPath objectAtIndex: i] pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
@@ -1945,8 +1945,13 @@ long        i;
 					
 					for( i = 0; i < [toBeRemoved count]; i++)
 					{
-	//					NSLog( @"object to remove: %@", [[toBeRemoved objectAtIndex: i] description]);
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
 						[context deleteObject: [toBeRemoved objectAtIndex: i]];
+						
+						[wait incrementBy:1];
+						
+						[pool release];
 					}
 					
 					[self saveDatabase: currentDatabasePath];

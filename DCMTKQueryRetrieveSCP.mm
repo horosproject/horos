@@ -154,7 +154,7 @@ void errmsg(const char* msg, ...)
 
 
 	//verbose
-	options.verbose_= 1;
+	options.verbose_= 0;
 	
 	//debug
 //	options.debug_ = OFTrue;
