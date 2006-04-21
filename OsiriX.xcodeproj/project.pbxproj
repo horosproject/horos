@@ -3974,6 +3974,12 @@
 		BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
 		BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF27D4F0787AECC00D8766D /* DCMFindSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C16B0785D6F800806344 /* DCMFindSCU.m */; };
+		BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF5D23E09F93B3F0077E16B /* LogManager.h */; };
+		BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF5D23F09F93B3F0077E16B /* LogManager.mm */; };
+		BFF5D24209F93B3F0077E16B /* LogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF5D23E09F93B3F0077E16B /* LogManager.h */; };
+		BFF5D24309F93B3F0077E16B /* LogManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF5D23F09F93B3F0077E16B /* LogManager.mm */; };
+		BFF5D24409F93B3F0077E16B /* LogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF5D23E09F93B3F0077E16B /* LogManager.h */; };
+		BFF5D24509F93B3F0077E16B /* LogManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF5D23F09F93B3F0077E16B /* LogManager.mm */; };
 		BFF9D57A09CDCA5600B3B940 /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
 		BFF9D57B09CDCA5600B3B940 /* dcmqrdbq.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */; };
 		BFF9D57C09CDCA5600B3B940 /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
@@ -10845,6 +10851,8 @@
 		BFEB763B0677FDA700F242F3 /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = nameDictionary.plist; sourceTree = "<group>"; };
 		BFEB763C0677FDA700F242F3 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = tagDictionary.plist; sourceTree = "<group>"; };
 		BFEB767E0678071400F242F3 /* DCMUIDs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMUIDs.h; sourceTree = "<group>"; };
+		BFF5D23E09F93B3F0077E16B /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogManager.h; sourceTree = "<group>"; };
+		BFF5D23F09F93B3F0077E16B /* LogManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LogManager.mm; sourceTree = "<group>"; };
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
 		CE07B72809641CFA00189FEC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Endoscopy.nib; sourceTree = "<group>"; };
@@ -13879,6 +13887,8 @@
 				BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */,
 				BF8E5ABC09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.h */,
 				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
+				BFF5D23E09F93B3F0077E16B /* LogManager.h */,
+				BFF5D23F09F93B3F0077E16B /* LogManager.mm */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -18600,6 +18610,7 @@
 				BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90552209EB4985009C30D1 /* MoveManager.h in Headers */,
+				BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20413,6 +20424,7 @@
 				BFBCD8AB09E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90551E09EB4985009C30D1 /* MoveManager.h in Headers */,
+				BFF5D24409F93B3F0077E16B /* LogManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22231,6 +22243,7 @@
 				BFBCD8A909E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */,
 				BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90552009EB4985009C30D1 /* MoveManager.h in Headers */,
+				BFF5D24209F93B3F0077E16B /* LogManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24531,6 +24544,7 @@
 				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
+				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25094,6 +25108,7 @@
 				BF83CD9109E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90551F09EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4A09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
+				BFF5D24509F93B3F0077E16B /* LogManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25705,6 +25720,7 @@
 				BF83CD8F09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
 				BF90552109EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
+				BFF5D24309F93B3F0077E16B /* LogManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
