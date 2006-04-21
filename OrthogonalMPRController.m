@@ -22,40 +22,41 @@
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 {
-	if(![super init])
-		return;
-	// initialisations
-	originalDCMPixList = [pix retain];
-	originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
-	
-	if( [vC blendingController] == 0L)
-	{
-		NSLog( @"originalROIList");
-		originalROIList = [[[vC imageView] dcmRoiList] retain];
-	}
-	else
-	{
-		originalROIList = 0L;
-	}
-	
-	reslicer = [[OrthogonalReslice alloc] initWithOriginalDCMPixList: originalDCMPixList];
+	if (self = [super init])
+	{		
+		// initialisations
+		originalDCMPixList = [pix retain];
+		originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
 		
-	// Set the views (OrthogonalMPRView)
-	[originalView setController:self];
-	[xReslicedView setController:self];
-	[yReslicedView setController:self];
+		if( [vC blendingController] == 0L)
+		{
+			NSLog( @"originalROIList");
+			originalROIList = [[[vC imageView] dcmRoiList] retain];
+		}
+		else
+		{
+			originalROIList = 0L;
+		}
 		
-	[originalView setCurrentTool:tCross];	
-	[xReslicedView setCurrentTool:tCross];
-	[yReslicedView setCurrentTool:tCross];
+		reslicer = [[OrthogonalReslice alloc] initWithOriginalDCMPixList: originalDCMPixList];
+			
+		// Set the views (OrthogonalMPRView)
+		[originalView setController:self];
+		[xReslicedView setController:self];
+		[yReslicedView setController:self];
+			
+		[originalView setCurrentTool:tCross];	
+		[xReslicedView setCurrentTool:tCross];
+		[yReslicedView setCurrentTool:tCross];
+		
+		viewer = newViewer;
+		
+		[[NSNotificationCenter defaultCenter]	addObserver: self
+												selector: @selector(changeWLWW:)
+												name: @"changeWLWW"
+												object: nil];
+	}
 	
-	viewer = newViewer;
-	
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(changeWLWW:)
-											name: @"changeWLWW"
-											object: nil];
-			 
 	return self;
 }
 
