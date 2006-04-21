@@ -1041,10 +1041,11 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[shortDateString release];
 	[localeDictionnary release];
-
+	
 	[dcmFilesList release];
 	dcmFilesList = 0L;
 	
+	curDCM = 0L;
 	[dcmPixList release];
 	dcmPixList = 0L;
 
@@ -1805,6 +1806,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
+	
+	if( curDCM == 0L) return;
 	
 	NSPoint     eventLocation = [theEvent locationInWindow];
 	NSRect      size = [self frame];

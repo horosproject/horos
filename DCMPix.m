@@ -6965,6 +6965,7 @@ fullww = (pixmax - pixmin);
 	float val = 0;
 	
 	if( x < 0 || x >= width || y < 0 || y >= height) return 0;
+	if( fImage == 0L) return 0;
 	
 	if( (stackMode == 1 || stackMode == 2 || stackMode == 3) && stack >= 1)
 	{
