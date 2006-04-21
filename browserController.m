@@ -92,6 +92,7 @@ extern BOOL hasMacOSXTiger();
 #import "stringNumericCompare.h"
 #import "SendController.h"
 #import "Reports.h"
+#import "LogManager.h"
 
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
@@ -6090,9 +6091,6 @@ static BOOL needToRezoom;
 																  name: NSWorkspaceDidUnmountNotification
 																object: nil];
 																
-		
-		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DICOMSendStatus" object:nil];
-		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
 
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(closeAllWindows:) name: @"Close All Viewers" object: nil];	
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(mainWindowHasChanged:) name: NSWindowDidBecomeMainNotification object: nil];
@@ -6374,6 +6372,8 @@ static BOOL needToRezoom;
 // opens a port for interapplication communication	
 	[[NSConnection defaultConnection] registerName:@"OsiriX"];
 	[[NSConnection defaultConnection] setRootObject:self];
+//start timer for monitoring incoming logs on main thread
+	[LogManager currentLogManager];
 }
 
 - (IBAction)customize:(id)sender {
@@ -7414,6 +7414,7 @@ static BOOL needToRezoom;
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
+				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				tempPath = [path stringByAppendingPathComponent:name];
 			}
 			
@@ -7438,6 +7439,7 @@ static BOOL needToRezoom;
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				tempPath = [tempPath stringByAppendingPathComponent:name];
 			}
 				
@@ -7458,6 +7460,7 @@ static BOOL needToRezoom;
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];  
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				tempPath = [tempPath stringByAppendingPathComponent:name];
 			}
 			
