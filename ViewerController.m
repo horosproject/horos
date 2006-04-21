@@ -798,21 +798,17 @@ int sortROIByName(id roi1, id roi2, void *context)
 	else
 	{
 		NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
-		int		years, months, days;
-		
-		if( bod)
-		{
-			NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [bod timeIntervalSinceReferenceDate]];
-			NSCalendarDate *dateOfBirth = [NSCalendarDate date];
-			
-			[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
-		}
-		else years = 0;
 		
 		NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
 		NSDictionary	*localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull) [[self window] setTitle: [NSString stringWithFormat: @"%@%@ - %@ (%d yo) - %@ (%@)", loading, [curImage valueForKeyPath:@"series.study.name"], [bod descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], years, [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
+		{
+			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
+				[[self window] setTitle: [NSString stringWithFormat: @"%@%@ - %@ (%@) - %@ (%@)", loading, [curImage valueForKeyPath:@"series.study.name"], [bod descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+			else
+				[[self window] setTitle: [NSString stringWithFormat: @"%@%@ - %@ (%@)", loading, [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+		}	
 		else [[self window] setTitle: [NSString stringWithFormat: @"%@%@ (%@)", loading, [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
 	}
 }
