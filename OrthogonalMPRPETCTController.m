@@ -199,10 +199,6 @@
 		[xReslicedView setDCM:[[[viewer CTController] xReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
 		[yReslicedView setDCM:[[[viewer CTController] yReslicedView] pixList]  :originalDCMFilesList :nil :0 :1 :YES];
 		
-		
-		
-		
-		
 		[originalView setBlending:[[viewer PETController] originalView]];
 		[originalView setBlendingFactor: blendingFactor];
 		[originalView setIndexWithReset: [[[viewer CTController] originalView] curImage] :NO];
@@ -211,8 +207,6 @@
 		[originalView setCrossPositionX:[[[viewer CTController] originalView] crossPositionX]];
 		[originalView setCrossPositionY:[[[viewer CTController] originalView] crossPositionY]];
 		
-		
-		
 		[xReslicedView setBlending:[[viewer PETController] xReslicedView]];
 		[xReslicedView setBlendingFactor: blendingFactor];
 		[xReslicedView setIndexWithReset:0 :NO];
@@ -220,9 +214,7 @@
 		// cross position
 		[xReslicedView setCrossPositionX:[[[viewer CTController] xReslicedView] crossPositionX]];
 		[xReslicedView setCrossPositionY:[[[viewer CTController] xReslicedView] crossPositionY]];
-		
-		
-		
+				
 		[yReslicedView setBlending:[[viewer PETController] yReslicedView]];
 		[yReslicedView setBlendingFactor: blendingFactor];
 		[yReslicedView setIndexWithReset:0 :NO];
@@ -272,20 +264,11 @@
 		[originalView setXFlipped:originalFlippedX];
 		// vertically flipped
 		[originalView setYFlipped:originalFlippedY];
-
 	}
 
 	[self blendingPropagate: originalView];
 	[self blendingPropagate: xReslicedView];
 	[self blendingPropagate: yReslicedView];
-
-//	[originalView display];
-//	[xReslicedView display];
-//	[yReslicedView display];
-//
-//	[originalView setNeedsDisplay: NO];
-//	[xReslicedView setNeedsDisplay: NO];
-//	[yReslicedView setNeedsDisplay: NO];
 	
 	[originalView setNeedsDisplay: YES];
 	[xReslicedView setNeedsDisplay: YES];

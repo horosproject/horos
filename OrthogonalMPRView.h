@@ -31,7 +31,6 @@
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files;
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois;
-//- (void) setPixList: (NSMutableArray*) pix;
 - (NSMutableArray*) pixList;
 - (void) setController: (OrthogonalMPRController*) newController;
 - (OrthogonalMPRController*) controller;

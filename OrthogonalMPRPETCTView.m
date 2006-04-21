@@ -27,6 +27,8 @@
 
 - (void) setCrossPosition: (long) x: (long) y
 {
+	if(crossPositionX == x && crossPositionY == y)
+		return;
 	crossPositionX = x;
 	crossPositionY = y;
 	[controller setCrossPosition: x: y: self];
@@ -69,6 +71,8 @@
 
 - (void) setCurCLUTMenu: (NSString*) clut
 {
+	if(curCLUTMenu == clut)
+		return;
 	curCLUTMenu = clut;
 }
 

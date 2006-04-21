@@ -22,6 +22,8 @@
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 {
+	if(![super init])
+		return;
 	// initialisations
 	originalDCMPixList = [pix retain];
 	originalDCMFilesList = [[NSMutableArray alloc] initWithArray:files];
@@ -79,9 +81,6 @@
 
 - (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender
 {
-//	originalROIList = [[originalView dcmRoiList] retain];
-	
-	//NSLog(@"reslice: %d, %d", x, y);
 	float originalScaleValue, xScaleValue, yScaleValue, originalRotation, xRotation, yRotation;
 
 	originalRotation = 0;
@@ -258,7 +257,6 @@
 	NSPoint		pt;
 	
 	// X - Views
-	
 	pt.y = [xReslicedView origin].y;
 	pt.x = [sender origin].x;
 	[xReslicedView setOrigin: pt];
@@ -268,7 +266,6 @@
 	[xReslicedView setOriginOffset: pt];
 
 	// Y - Views
-	
 	pt.y = [yReslicedView origin].y;
 	pt.x = -[sender origin].y;
 	[yReslicedView setOrigin: pt];
@@ -289,7 +286,6 @@
 	NSPoint		pt;
 	
 	// X - Views
-	
 	pt.y = [originalView origin].y;
 	pt.x = [sender origin].x;
 	[originalView setOrigin: pt];
@@ -299,7 +295,6 @@
 	[originalView setOriginOffset: pt];
 
 	// Y - Views
-	
 	pt.x = [yReslicedView origin].x;
 	pt.y = [sender origin].y;
 	[yReslicedView setOrigin: pt];
@@ -320,7 +315,6 @@
 	NSPoint		pt;
 	
 	// X - Views
-	
 	pt.x = [originalView origin].x;
 	pt.y = -[sender origin].x;
 	[originalView setOrigin: pt];
@@ -330,7 +324,6 @@
 	[originalView setOriginOffset: pt];
 
 	// Y - Views
-	
 	pt.x = [xReslicedView origin].x;
 	pt.y = [sender origin].y;
 	[xReslicedView setOrigin: pt];
@@ -479,7 +472,7 @@
 	{
 		max = [[xReslicedView curDCM] pheight];
 		x = [xReslicedView crossPositionX];
-		y = xReslicedCrossPositionY+(from-to);//*max/([[originalView curDCM] pheight]/2);
+		y = xReslicedCrossPositionY+(from-to);
 		if ( y < 0) y = 0;
 		if ( y >= max) y = max-1;
 		[xReslicedView setCrossPosition:x :y];
@@ -488,7 +481,7 @@
 	{
 		max = [[originalView curDCM] pheight];
 		x = [originalView crossPositionX];
-		y = originalCrossPositionY+(from-to);//*max/([[xReslicedView curDCM] pheight]/2);
+		y = originalCrossPositionY+(from-to);
 		if ( y < 0) y = 0;
 		if ( y >= max) y = max-1;
 		[originalView setCrossPosition:x :y];
@@ -496,7 +489,7 @@
 	else if ([sender isEqual: yReslicedView])
 	{
 		max = [[originalView curDCM] pwidth];
-		x = originalCrossPositionX+(from-to);//*max/([[yReslicedView curDCM] pwidth]/2);
+		x = originalCrossPositionX+(from-to);
 		y = [originalView crossPositionY];
 		if ( x < 0) x = 0;
 		if ( x >= max) x = max-1;
@@ -610,6 +603,8 @@
 
 -(void) setThickSlabMode : (short) newThickSlabMode
 {
+	if(thickSlabMode == newThickSlabMode)
+		return;
 	thickSlabMode = newThickSlabMode;
 	[self setFusion];
 }
@@ -641,21 +636,16 @@
 	long originalThickSlab, xReslicedThickSlab, yReslicedThickSlab;
 	originalThickSlab = thickSlab;
 	
-//	NSLog(@"thickSlabDistance: %f pixelSpacingY: %f",[self thickSlabDistance], [[originalView curDCM] pixelSpacingY]);
-	
 	xReslicedThickSlab = ((float)thickSlab * [self thickSlabDistance] / [[originalView curDCM] pixelSpacingY]);
 	yReslicedThickSlab = ((float)thickSlab * [self thickSlabDistance] / [[originalView curDCM] pixelSpacingX]);
 	
 	[originalView setFusion:thickSlabMode :originalThickSlab];
 	[originalView setThickSlabXY : xReslicedThickSlab : yReslicedThickSlab];
 	
-//	NSLog(@"axial: %d x: %d y:%d", originalThickSlab, xReslicedThickSlab, yReslicedThickSlab);
-	
 	[reslicer setThickSlab : xReslicedThickSlab];
 	
 	[xReslicedView setFusion:thickSlabMode :xReslicedThickSlab];
 	[xReslicedView setThickSlabXY : yReslicedThickSlab : thickSlab];
-	
 	
 	[yReslicedView setFusion:thickSlabMode :yReslicedThickSlab];
 	[yReslicedView setThickSlabXY : xReslicedThickSlab : thickSlab];
@@ -686,16 +676,6 @@
 	[originalView setCrossPositionX:x];
 	[originalView setCrossPositionY:y];
 	[self reslice:x:y:originalView];
-	
-	//[originalView setRotation:0];	
-	//[xReslicedView setRotation:0];
-	//[yReslicedView setRotation:0];
-//	xReslicedDCMPixList = [reslicer xReslicedDCMPixList];
-//	yReslicedDCMPixList = [reslicer yReslicedDCMPixList];
-//	
-//	// Display results in the resliced views (OrthogonalMPRView)
-//	[xReslicedView setPixList:xReslicedDCMPixList :originalDCMFilesList];
-//	[yReslicedView setPixList:yReslicedDCMPixList :originalDCMFilesList];
 }
 
 

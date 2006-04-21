@@ -17,7 +17,6 @@
 
 @implementation OrthogonalReslice
 
-// init
 - (id) init
 {
 	if (self = [super init])
@@ -62,7 +61,6 @@
 	originalDCMPixList = pixList;
 }
 
-//
 -(void) dealloc
 {
 	if( Ycache) free( Ycache);
@@ -146,7 +144,6 @@
 	DCMPix				*lastPix = [pixList lastObject];
 	long				i, newTotal;
 	unsigned char		*emptyData;
-	//float				*emptyData;
 	long				imageSize, size, x, y, newX, newY;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], ratio, sliceInterval;
 	
@@ -184,9 +181,6 @@
 	
 	newY /= 2;
 	newY *= 2;
-	
-	//sign = ([firstPix sliceInterval] > 0)? 1.0 : -1.0;
-	//sign = (sliceInterval > 0)? 1.0 : -1.0;
 
 	imageSize = sizeof(float) * newX * newY;	// image weight in bytes
 	size = imageSize;
@@ -197,8 +191,7 @@
 	long	stack = 0;
 	
 	i = sliceNumber;
-		 	 
-//	NSLog(@"Axe: %d", axe);
+
 	long minI, maxI;
 	
 	if( thickSlab <= 1)
@@ -217,22 +210,10 @@
 		maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
 	}
 	
-//	NSLog(@"newTotal : %d ", newTotal);
-//	NSLog(@"minI : %d , maxI : %d", minI, maxI);
-	
-//	float airDensity[ newX];
-//	long k;
-//	for( k = 0 ; k < newX ; k++)
-//	{
-//		airDensity[k] = -1000.0;
-//	}
-	
 	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
 		if( i < 0) i = 0;
 		if( i >= newTotal) i = newTotal-1;
-		
-	//	NSLog(@"Slice: %d", i);
 	
 		if( axe == 0)		// X - RESLICE
 		{
@@ -351,10 +332,6 @@
 			[curPix setSliceThickness: [firstPix pixelSpacingY]];
 			[curPix setSliceInterval: [firstPix pixelSpacingY]];
 			[curPix setOrigin: origin];
-			
-			//[curPix fImage] = *emptyData;
-			//BlockMoveData(emptyData, [curPix fImage],size);
-			//free(emptyData);
 		}
 		else									// Y - RESLICE
 		{
@@ -374,7 +351,6 @@
 					
 					// Create a scheduler
 					id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-				//	[sched setDelegate: self];
 					
 					// Create the work units.
 					NSMutableSet *unitsSet = [NSMutableSet set];
@@ -497,10 +473,6 @@
 			[curPix setSliceInterval: [firstPix pixelSpacingY]];
 			
 			[curPix setOrigin: origin];
-			
-			//*[curPix fImage] = *emptyData;
-			//BlockMoveData(emptyData, [curPix fImage],size);
-			//free(emptyData);
 		}
 	}
 			

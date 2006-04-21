@@ -814,25 +814,6 @@ NSString * documentsDirectory();
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
     
-//    if ([itemIdent isEqual: QTExportToolbarItemIdentifier]) {
-//        
-//	[toolbarItem setLabel: NSLocalizedString(@"Export",nil)];
-//	[toolbarItem setPaletteLabel: NSLocalizedString(@"Export",nil)];
-//        [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Quicktime file",nil)];
-//	[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
-//	[toolbarItem setTarget: self];
-//	[toolbarItem setAction: @selector(exportQuicktime:)];
-//    }
-//	else if ([itemIdent isEqual: iPhotoToolbarItemIdentifier]) {
-//        
-//	[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
-//	[toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto",nil)];
-//	[toolbarItem setToolTip: NSLocalizedString(@"Export this series to iPhoto",nil)];
-//	
-//	[toolbarItem setView: iPhotoView];
-//	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
-//	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
-//    }
 	if ([itemIdent isEqual: MailToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email",nil)];
@@ -884,32 +865,7 @@ NSString * documentsDirectory();
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([blendingToolView frame]), NSHeight([blendingToolView frame]))];
     }
-//	else if([itemIdent isEqual: MovieToolbarItemIdentifier]) {
-//	// Set up the standard properties 
-//	[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
-//	[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
-//	[toolbarItem setToolTip:NSLocalizedString( @"4D Player",nil)];
-//	
-//	// Use a custom view, a text field, for the search item 
-//	[toolbarItem setView: movieView];
-//	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
-//	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
-//    }
-//	else if([itemIdent isEqual: AxesToolbarItemIdentifier]) {
-//	// Set up the standard properties 
-//	[toolbarItem setLabel: @"MPR Axes"];
-//	[toolbarItem setPaletteLabel: @"MPR Axes"];
-//	[toolbarItem setToolTip: @"Change MPR Axes"];
-//	
-//	// Use a custom view, a text field, for the search item 
-//	[toolbarItem setView: axesView];
-//	[toolbarItem setMinSize:NSMakeSize(NSWidth([axesView frame]), NSHeight([axesView frame]))];
-//	[toolbarItem setMaxSize:NSMakeSize(NSWidth([axesView frame]),NSHeight([axesView frame]))];
-//
-//    }
-
-
-else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
+	else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 		[toolbarItem setLabel:NSLocalizedString(@"3D Panel", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"3D Panel",nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"3D Panel",nil)];
@@ -970,14 +926,6 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flipVolume)];
     }
-//	else if ([itemIdent isEqualToString: MIPToolbarItemIdentifier]) {
-//		[toolbarItem setLabel: NSLocalizedString(@"MIP", nil)];
-//		[toolbarItem setPaletteLabel: NSLocalizedString(@"MIP", nil)];
-//		[toolbarItem setToolTip: NSLocalizedString(@"MIP on whole PET stack", nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: MIPToolbarItemIdentifier]];
-//		[toolbarItem setTarget: self];
-//		[toolbarItem setAction: @selector(orthogonalMIPPETViewer)];
-//    }
 	else if([itemIdent isEqualToString: WLWWToolbarItemIdentifier])
 	{
 		// Set up the standard properties 
@@ -1065,22 +1013,6 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 			[item setImage:[NSImage imageNamed:@"verticalSplitView"]];
 		}
 	}
-//	else if ([[item itemIdentifier] isEqualToString:SameWidthSplitViewToolbarItemIdentifier])
-//	{
-//		[item setLabel:NSLocalizedString(@"Same Widths", 0L)];
-//		[item setPaletteLabel: NSLocalizedString(@"Same Widths",nil)];
-//		[item setToolTip: NSLocalizedString(@"Set the three views to the same width",nil)];
-//		[item setImage:[NSImage imageNamed:@"sameWidthsSplitView"]];
-//	}
-//	else if ([[item itemIdentifier] isEqualToString:SameHeightSplitViewToolbarItemIdentifier])
-//	{
-//		[item setLabel:NSLocalizedString(@"Same Heights", 0L)];
-//		[item setPaletteLabel: NSLocalizedString(@"Same Heights",nil)];
-//		[item setToolTip: NSLocalizedString(@"Set the three views to the same height",nil)];
-//		[item setImage:[NSImage imageNamed:@"sameHeightsSplitView"]];
-//	}
-	
-//	[addedItem retain];
 }  
 
 - (void) toolbarDidRemoveItem: (NSNotification *) notif {
@@ -1114,16 +1046,6 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	
     return enable;
 }
-
-//#pragma mark-
-//#pragma mark MIP View
-//
-//-(IBAction) orthogonalMIPPETViewer
-//{
-//	OrthogonalMIPPETViewer *viewer;
-//	viewer = [[OrthogonalMIPPETViewer alloc] initWithPixList:[PETController originalDCMPixList]];
-//	[viewer showWindow:self];
-//}
 
 #pragma mark-
 #pragma mark NSSplitView Control
@@ -1562,285 +1484,6 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 	[yReslicedSplitView setNeedsDisplay:YES];
 	[modalitySplitView setNeedsDisplay:YES];
 }
-		
-//- (void) fullWindowView:(int)index:(id)sender
-//{
-//	if (isFullWindow)
-//	{
-//		[self adjustHeightSplitView];
-//		[self adjustWidthSplitView];
-//		[CTController restoreViewsFrame];
-//		[PETController restoreViewsFrame];
-//		[PETCTController restoreViewsFrame];
-//		
-//		if (displayResliceAxes)
-//		{
-//			[CTController displayResliceAxes:YES];
-//			[PETController displayResliceAxes:YES];
-//			[PETCTController displayResliceAxes:YES];
-//		}
-//		
-//		float w1,w2,w3,h1,h2,h3;
-//		
-//		w1 = [[CTController originalView] frame].size.width + [[PETController originalView] frame].size.width + [[PETCTController originalView] frame].size.width;
-//		w2 = [[CTController xReslicedView] frame].size.width + [[PETController xReslicedView] frame].size.width + [[PETCTController xReslicedView] frame].size.width;
-//		w3 = [[CTController yReslicedView] frame].size.width + [[PETController yReslicedView] frame].size.width + [[PETCTController yReslicedView] frame].size.width;
-//
-//		h1 = [[CTController originalView] frame].size.height + [[PETController originalView] frame].size.height + [[PETCTController originalView] frame].size.height;
-//		h2 = [[CTController xReslicedView] frame].size.height + [[PETController xReslicedView] frame].size.height + [[PETCTController xReslicedView] frame].size.height;
-//		h3 = [[CTController yReslicedView] frame].size.height + [[PETController yReslicedView] frame].size.height + [[PETCTController yReslicedView] frame].size.height;
-//		
-//		if ([modalitySplitView isVertical])
-//		{
-//			h1 = h1/3.0;
-//			h2 = h2/3.0;
-//			h3 = h3/3.0;
-//		}
-//		else
-//		{
-//			w1 = w1/3.0;
-//			w2 = w2/3.0;
-//			w3 = w3/3.0;
-//		}
-//		[originalSplitView setFrameSize:NSMakeSize(w1,h1)];
-//		[xReslicedSplitView setFrameSize:NSMakeSize(w2,h2)];
-//		[yReslicedSplitView setFrameSize:NSMakeSize(w3,h3)];
-//				
-//		[originalSplitView adjustSubviews];
-//		[xReslicedSplitView adjustSubviews];
-//		[yReslicedSplitView adjustSubviews];
-////		[originalSplitView setNeedsDisplay:YES];
-////		[xReslicedSplitView setNeedsDisplay:YES];
-////		[yReslicedSplitView setNeedsDisplay:YES];
-//		
-//		[modalitySplitView adjustSubviews];
-//		[modalitySplitView setNeedsDisplay:YES];
-//
-//		[CTController restoreScaleValue];
-//		[PETController restoreScaleValue];
-//		[PETCTController restoreScaleValue];
-//		isFullWindow = NO;
-//	}
-//	else
-//	{
-//		[CTController saveViewsFrame];
-//		[PETController saveViewsFrame];
-//		[PETCTController saveViewsFrame];
-//		
-//		[CTController saveScaleValue];
-//		[PETController saveScaleValue];
-//		[PETCTController saveScaleValue];
-//		
-//		[CTController displayResliceAxes:NO];
-//		[PETController displayResliceAxes:NO];
-//		[PETCTController displayResliceAxes:NO];
-//		
-//		NSSize modalitySplitViewSize = [modalitySplitView frame].size;
-//				
-//		float w,h, w2,h2, w3,h3;
-//		if ([modalitySplitView isVertical])
-//		{
-//			h = modalitySplitViewSize.height;
-//			w = 0;
-//			h2 = h - 2 * [[[modalitySplitView subviews] objectAtIndex:0] dividerThickness];
-//			w2 = modalitySplitViewSize.width - 2 * [modalitySplitView dividerThickness];
-//			w3 = w2;
-//			h3 = 0;
-//		}
-//		else
-//		{
-//			h = 0;
-//			w = modalitySplitViewSize.width;
-//			h2 = modalitySplitViewSize.height - 2 * [modalitySplitView dividerThickness];
-//			w2 = w - 2 * [[[modalitySplitView subviews] objectAtIndex:0] dividerThickness];
-//			w3 = 0;
-//			h3 = h2;
-//		}
-//		
-//		NSSize newSubViewSize = NSMakeSize(w,h);
-//		NSSize fullWindowSize = NSMakeSize(w2,h2);
-//		NSSize zeroSize = NSMakeSize(0,0);
-//		
-//		if ([sender isEqual:CTController])
-//		{
-//			if (index==0)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[CTController originalView] setFrameSize: fullWindowSize];
-//				
-//				[[PETController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETCTController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//						
-//				[[[modalitySplitView subviews] objectAtIndex:0] adjustSubviews];
-//					
-//				[CTController scaleToFit:[CTController originalView]];
-//				[[self window] makeFirstResponder:[CTController originalView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==1)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[CTController xReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[[[[modalitySplitView subviews] objectAtIndex:1] subviews] objectAtIndex:1] setFrameSize: NSMakeSize(w3,h3)];
-//				[[[[[modalitySplitView subviews] objectAtIndex:1] subviews] objectAtIndex:2] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:1] adjustSubviews];
-//					
-//				[CTController scaleToFit:[CTController xReslicedView]];
-//				[[self window] makeFirstResponder:[CTController xReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==2)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				
-//				[[CTController yReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[[[[modalitySplitView subviews] objectAtIndex:2] subviews] objectAtIndex:1] setFrameSize: NSMakeSize(w3,h3)];
-//				[[[[[modalitySplitView subviews] objectAtIndex:2] subviews] objectAtIndex:2] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:2] adjustSubviews];
-//					
-//				[CTController scaleToFit:[CTController yReslicedView]];
-//				[[self window] makeFirstResponder:[CTController yReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//		}
-//		else if ([sender isEqual:PETController])
-//		{
-//			if (index==0)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[PETController originalView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETCTController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//						
-//				[[[modalitySplitView subviews] objectAtIndex:0] adjustSubviews];
-//					
-//				[PETController scaleToFit:[PETController originalView]];
-//				[[self window] makeFirstResponder:[PETController originalView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==1)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[PETController xReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController xReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETCTController xReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:1] adjustSubviews];
-//					
-//				[PETController scaleToFit:[PETController xReslicedView]];
-//				[[self window] makeFirstResponder:[PETController xReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==2)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				
-//				[[PETController yReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController yReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETCTController yReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:2] adjustSubviews];
-//					
-//				[PETController scaleToFit:[PETController yReslicedView]];
-//				[[self window] makeFirstResponder:[PETController yReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//		}
-//		else if ([sender isEqual:PETCTController])
-//		{
-//			if (index==0)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[PETCTController originalView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETController originalView] setFrameSize: NSMakeSize(w3,h3)];
-//						
-//				[[[modalitySplitView subviews] objectAtIndex:0] adjustSubviews];
-//					
-//				[PETCTController scaleToFit:[PETCTController originalView]];
-//				[[self window] makeFirstResponder:[PETCTController originalView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==1)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:2] setFrameSize: newSubViewSize];
-//				
-//				[[PETCTController xReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController xReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETController xReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:1] adjustSubviews];
-//					
-//				[PETCTController scaleToFit:[PETCTController xReslicedView]];
-//				[[self window] makeFirstResponder:[PETCTController xReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//			else if (index==2)
-//			{
-//				[[[modalitySplitView subviews] objectAtIndex:1] setFrameSize: newSubViewSize];
-//				[[[modalitySplitView subviews] objectAtIndex:0] setFrameSize: newSubViewSize];
-//				
-//				[[PETCTController yReslicedView] setFrameSize: fullWindowSize];
-//				
-//				[[CTController yReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				[[PETController yReslicedView] setFrameSize: NSMakeSize(w3,h3)];
-//				
-//				[[[modalitySplitView subviews] objectAtIndex:2] adjustSubviews];
-//					
-//				[PETCTController scaleToFit:[PETCTController yReslicedView]];
-//				[[self window] makeFirstResponder:[PETCTController yReslicedView]];
-//				[modalitySplitView adjustSubviews];
-//			}
-//		}
-//		
-//		if (index==0)
-//		{
-//			[sender scaleToFit: [sender originalView]];
-//			if ([sender isEqual:PETCTController]) [[sender originalView] blendingPropagate];
-//		}
-//		else if (index==1)
-//		{
-//			[sender scaleToFit: [sender xReslicedView]];
-//			if ([sender isEqual:PETCTController]) [[sender xReslicedView] blendingPropagate];
-//		}
-//		else if (index==2)
-//		{
-//			[sender scaleToFit: [sender yReslicedView]];
-//			if ([sender isEqual:PETCTController]) [[sender yReslicedView] blendingPropagate];
-//		}
-//		isFullWindow = YES;
-//		
-//		[originalSplitView kfRecalculateDividerRects];
-//		[xReslicedSplitView kfRecalculateDividerRects];
-//		[yReslicedSplitView kfRecalculateDividerRects];
-//		[originalSplitView setNeedsDisplay:YES];
-//		[xReslicedSplitView setNeedsDisplay:YES];
-//		[yReslicedSplitView setNeedsDisplay:YES];
-//
-//	}
-//}
 
 #pragma mark-
 #pragma mark NSSplitview's delegate methods
@@ -1966,50 +1609,7 @@ else if ([itemIdent isEqual: VRPanelToolbarItemIdentifier]) {
 		NSArray	*subviews = [currentSplitView subviews];
 		rect1 = [[subviews objectAtIndex:0] frame];
 		rect2 = [[subviews objectAtIndex:1] frame];
-		rect3 = [[subviews objectAtIndex:2] frame];
-//		
-//		if([currentSplitView isSubviewCollapsed:[subviews objectAtIndex:0]])
-//		{
-////			if([currentSplitView isVertical])
-////			{
-////				rect1.size.width = minSplitViewsSize;
-////			}
-////			else
-////			{
-////				rect1.size.height = minSplitViewsSize;
-////			}
-//			[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:0] isCollapsed:YES];
-//			[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:0] isCollapsed:YES];
-//			[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:0] isCollapsed:YES];
-//		}
-//		else if([currentSplitView isSubviewCollapsed:[subviews objectAtIndex:1]])
-//		{
-////			if([currentSplitView isVertical])
-////			{
-////				rect2.size.width = minSplitViewsSize;
-////			}
-////			else
-////			{
-////				rect2.size.height = minSplitViewsSize;
-////			}
-//			[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:1] isCollapsed:YES];
-//			[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:1] isCollapsed:YES];
-//			[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:1] isCollapsed:YES];
-//		}
-//		else if([currentSplitView isSubviewCollapsed:[subviews objectAtIndex:2]])
-//		{
-////			if([currentSplitView isVertical])
-////			{
-////				rect3.size.width = minSplitViewsSize;
-////			}
-////			else
-////			{
-////				rect3.size.height = minSplitViewsSize;
-////			}
-//			[originalSplitView setSubview:[[originalSplitView subviews] objectAtIndex:2] isCollapsed:YES];
-//			[xReslicedSplitView setSubview:[[xReslicedSplitView subviews] objectAtIndex:2] isCollapsed:YES];
-//			[yReslicedSplitView setSubview:[[yReslicedSplitView subviews] objectAtIndex:2] isCollapsed:YES];
-//		}		
+		rect3 = [[subviews objectAtIndex:2] frame];	
 
 		subviews = [originalSplitView subviews];
 		old_rect1 = [[subviews objectAtIndex:0] frame];

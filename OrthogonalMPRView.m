@@ -143,15 +143,6 @@
 
 - (NSMutableArray*) dcmRoiList
 {
-
-//NSLog(@">>>dcmRoiList");	
-//	int j;
-//	for(j=0; j<[dcmRoiList count]; j++)
-//	{
-//		if ([[dcmRoiList objectAtIndex:j] count])
-//		NSLog(@"slice: %d , count: %d", j, [[dcmRoiList objectAtIndex:j] count]);
-//	}
-
 	return dcmRoiList;
 }
 
@@ -171,19 +162,21 @@
 
 - (void) setCrossPosition: (long) x: (long) y
 {
-	x = (x<0)? 0 : x;
-	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
-	crossPositionX = x;
-	
-	y = (y<0)? 0 : y;
-	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
-	crossPositionY = y;
-	
+//	x = (x<0)? 0 : x;
+//	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
+//	crossPositionX = x;
+	[self setCrossPositionX: x];
+//	y = (y<0)? 0 : y;
+//	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
+//	crossPositionY = y;
+	[self setCrossPositionY: y];
 	[controller reslice: x:  y: self];
 }
 
 - (void) setCrossPositionX: (long) x
 {
+	if(crossPositionX == x)
+		return;
 	x = (x<0)? 0 : x;
 	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
 	crossPositionX = x;
@@ -191,6 +184,8 @@
 
 - (void) setCrossPositionY: (long) y
 {
+	if(crossPositionY == y)
+		return;
 	y = (y<0)? 0 : y;
 	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
 	crossPositionY = y;
@@ -408,18 +403,6 @@
 		[super mouseDown:event];
 	}
 }
-
-//- (void) mouseUp:(NSEvent *)event
-//{
-//	if ([event clickCount] != 2)
-//	{
-//		[super mouseUp:event];
-//	}
-//	else
-//	{
-//		[controller doubleClickOn: self];
-//	}
-//}
 
 - (void) scrollTool: (long) from : (long) to
 {
