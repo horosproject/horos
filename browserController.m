@@ -815,6 +815,7 @@ static BOOL FORCEREBUILD = NO;
 		{
 			[splash close];
 			[splash release];
+			splash = 0L;
 		}
 		
 		[self autoCleanDatabaseFreeSpace: self];
@@ -1863,6 +1864,8 @@ long        i;
 				{
 					for (i = 0; i<[toBeRemoved count];i++)
 					{
+						NSLog( [[toBeRemoved objectAtIndex: i] valueForKey: @"name"]);
+					
 						NSString	*comment = [[toBeRemoved objectAtIndex: i] valueForKey: @"comment"];
 						
 						if( comment == 0L) comment = @"";
@@ -1945,13 +1948,9 @@ long        i;
 					
 					for( i = 0; i < [toBeRemoved count]; i++)
 					{
-						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						
 						[context deleteObject: [toBeRemoved objectAtIndex: i]];
 						
 						[wait incrementBy:1];
-						
-						[pool release];
 					}
 					
 					[self saveDatabase: currentDatabasePath];
@@ -8187,16 +8186,17 @@ static BOOL needToRezoom;
 			
 			if( i % 50 == 0) [splash incrementBy:1];
 		}
+
 		
+		[splash close];
+		[splash release];
+				
 		if( needsUpdate)
 		{
 			[self saveDatabase: currentDatabasePath];
 		}
 		
 		[self outlineViewRefresh];
-		
-		[splash close];
-		[splash release];
 	}
 	
 	[context unlock];
