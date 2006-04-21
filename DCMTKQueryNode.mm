@@ -22,6 +22,7 @@
 #import <OsiriX/DCMCalendarDate.h>
 #import "DICOMToNSString.h"
 #import "MoveManager.h"
+#import "browserController.h"
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -135,11 +136,44 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     MyCallbackInfo *myCallbackData;
 
     myCallbackData = (MyCallbackInfo*)callbackData;
+	DCMTKQueryNode *node = myCallbackData -> node;
 	NSLog(@"move Response: %d", responseCount);
-   // if (_verbose) {
-   //     printf("Move Response %d: ", responseCount);
-   //     DIMSE_printCMoveRSP(stdout, response);
-   // }
+	NSManagedObject *logEntry = [node logEntry];
+	if (!logEntry) {		
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+		[logEntry setValue:[NSDate date] forKey:@"startTime"];
+		[logEntry setValue:@"Move" forKey:@"type"];
+		[logEntry setValue:[node calledAET] forKey:@"destinationName"];
+		[logEntry setValue:[node callingAET] forKey:@"originName"];
+		//if (_patientName)
+		//	[logEntry setValue:_patientName forKey:@"patientName"];
+		//if (_studyDescription)
+		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
+		[node setLogEntry:logEntry];
+	
+	}	
+	int numberPending = response -> NumberOfRemainingSubOperations;
+	int numberSent = response -> NumberOfCompletedSubOperations;
+	int numberErrors = response -> NumberOfFailedSubOperations + response -> NumberOfWarningSubOperations;
+	int numberImages = numberPending + numberSent + numberErrors ;
+	[logEntry setValue:[NSNumber numberWithInt:numberImages] forKey:@"numberImages"];
+	[logEntry setValue:[NSNumber numberWithInt:numberPending] forKey:@"numberPending"];
+	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
+	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
+	if (numberPending > 0) {
+		[logEntry setValue:@"in progress" forKey:@"message"];
+	}
+	else{
+		[logEntry setValue:@"complete" forKey:@"message"];
+	
+	}
+	[logEntry setValue:[NSDate date] forKey:@"endTime"];
+
+ //   if (_verbose) {
+//        printf("Move Response %d: \n", responseCount);
+ //       DIMSE_printCMoveRSP(stdout, response);
+//    }
 
    
 }
@@ -997,6 +1031,15 @@ NS_ENDHANDLER
 
     return cond;
 
+}
+
+- (NSManagedObject *)logEntry{
+	return _logEntry;
+}
+
+- (void)setLogEntry:(NSManagedObject *)logEntry{
+	[_logEntry release];
+	_logEntry = [logEntry retain];
 }
 
 

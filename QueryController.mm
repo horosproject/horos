@@ -117,13 +117,13 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
-	NSLog(@"number of Children for :%@", [item description]);
+	//NSLog(@"number of Children for :%@", [item description]);
 	if( item)
 	{
 		if (![(DCMTKQueryNode *)item children]) {
 			[progressIndicator startAnimation:nil];
 			//[item queryWithValues:nil parameters:[queryManager parameters]];
-			NSLog(@"Query Series: %@", [item description]);
+			//NSLog(@"Query Series: %@", [item description]);
 			[item queryWithValues:nil];
 			[progressIndicator stopAnimation:nil];
 		}

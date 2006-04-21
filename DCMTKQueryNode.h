@@ -46,6 +46,7 @@
 	NSString *_modality;
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
+	NSManagedObject *_logEntry;
 }
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
@@ -81,6 +82,8 @@
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
 - (void)queryWithValues:(NSArray *)values;
 - (void)move:(id)sender;
+- (NSManagedObject *)logEntry;
+- (void)setLogEntry:(NSManagedObject *)logEntry;
 
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset;

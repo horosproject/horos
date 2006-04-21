@@ -146,4 +146,12 @@
         transferSyntaxes, numTransferSyntaxes);
 }
 
+- (NSString *)calledAET{
+	return _calledAET;
+}
+
+- (NSString *)callingAET{
+	return _callingAET;
+}
+
 @end

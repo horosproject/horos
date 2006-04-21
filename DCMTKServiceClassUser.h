@@ -84,5 +84,7 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 			extraParameters:(NSDictionary *)extraParameters;
 			
 - (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax;
+- (NSString *)calledAET;
+- (NSString *)callingAET;
 
 @end
