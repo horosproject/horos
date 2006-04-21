@@ -871,6 +871,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[win showWindowTransition];
 	[win startLoadImageThread]; // Start async reading of all images
 	
+
 	[appController tileWindows: self];
 
 	return win;
@@ -910,8 +911,19 @@ int sortROIByName(id roi1, id roi2, void *context)
 	return windowWillClose;
 }
 
+- (BOOL)windowShouldClose:(id)sender
+{
+	stopThreadLoadImage = YES;
+	[ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
+
+	return YES;
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
+	
+	
 	windowWillClose = YES;
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -1334,7 +1346,12 @@ int sortROIByName(id roi1, id roi2, void *context)
 - (void) dealloc
 {
 	long	i;
-	
+
+	[ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
+	[ThreadLoadImageLock release];
+	ThreadLoadImageLock = 0L;
+
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
 	[curOpacityMenu release];
@@ -1401,13 +1418,14 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[thickSlab release];
 	
 	[curvedController release];
-	
-	[ThreadLoadImageLock release];
+		
 	[roiLock release];
 	
     [super dealloc];
-	
-	[appController tileWindows: self];
+
+//	[appController tileWindows: 0L];	<- We cannot do this, because:
+//	This is very important, or if we have a queue of closing windows, it will crash....
+	[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 }
 
 
@@ -3139,6 +3157,12 @@ static ViewerController *draggedController = 0L;
     long				i, x;
 	BOOL				isPET = NO;
 	
+	if( ThreadLoadImageLock == 0L)
+	{
+		[pool release];
+		return;
+	}
+	
 	[ThreadLoadImageLock lock];
 	ThreadLoadImage = YES;
 	
@@ -3206,9 +3230,10 @@ static ViewerController *draggedController = 0L;
 	NSLog(@"LOADING: All images loaded");
 	
 	if( stopThreadLoadImage == NO)
+	{
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
-	
-	[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
+		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
+	}
 	
     [pool release];
 }
@@ -8843,9 +8868,10 @@ int i,j,l;
 	}
 }
 
-- (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v{
+- (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v
+{
 	long i;
-
+	
 	speedometer = 0;
 	matrixPreviewBuilt = NO;
 	
