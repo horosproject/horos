@@ -51,10 +51,8 @@ enum SendServerType { osirixServer, offisServer };
 	NSString *_transferSyntaxString;
 	NSString *_numberFiles;
 	
-//	int _serverToolIndex;
 	int _keyImageIndex;
 	int _serverIndex;
-//	int _osirixTS;
 	int _offisTS;
 	 
 	 id sendSCU;
@@ -64,9 +62,6 @@ enum SendServerType { osirixServer, offisServer };
 	IBOutlet NSMatrix		*keyImageMatrix;
 	IBOutlet NSTextField	*numberImagesTextField, *addressAndPort;
 	IBOutlet NSPopUpButton	*syntaxListOffis;
-
-//	IBOutlet NSPopUpButton	*syntaxListOsiriX;
-//	IBOutlet NSMatrix		*DICOMSendTool;
 
 	Wait *_waitSendWindow;
 	BOOL _readyForRelease;
@@ -88,9 +83,5 @@ enum SendServerType { osirixServer, offisServer };
 - (void)listenForAbort:(id)handler;
 - (void)abort;
 - (void)closeSendPanel:(id)sender;
-//- (int) osirixTS;
-//- (void) setOsirixTS:(int)index;
-//- (void)sendDICOMFiles:(NSMutableArray *)files;
-//- (int)serverToolIndex;
-//-(void)setServerToolIndex:(int)index;
+- (IBAction)selectServer: (id)sender;
 @end

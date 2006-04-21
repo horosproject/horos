@@ -77,7 +77,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d image", nil), count]];
 		else if (count > 1)
 			[self setNumberFiles: [NSString stringWithFormat:NSLocalizedString(@"%d images", nil), count]];
-			
+		
+		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 //		_serverToolIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSenderEngine"];
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
@@ -89,7 +90,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		[_lock  lock];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
-	
+
 	}
 	return self;
 }
@@ -111,7 +112,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		
 //		[syntaxListOsiriX selectItemWithTag: _osirixTS];
 		[syntaxListOffis selectItemWithTag: _offisTS];
-
+		
+		[self selectServer: serverList];
 	}
 
 }
@@ -166,7 +168,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 }
 
-- (IBAction)selectServer: (id)sender{
+- (IBAction)selectServer: (id)sender
+{
 	//NSLog(@"select server: %@", [sender description]);
 	_serverIndex = [sender indexOfSelectedItem];
 	
@@ -185,7 +188,15 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 				[self  setOffisTS:preferredTS];
 	
 	}	
-	
+
+	if ([[self server] isMemberOfClass: [NSNetService class]])
+	{
+		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]]]];
+	}
+	else
+	{
+		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
+	}
 }
 
 //- (int)serverToolIndex{
@@ -474,7 +485,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		calledAET = [[self server] objectForKey:@"AETitle"];
 		hostname = [[self server] objectForKey:@"Address"];
 		destPort = [[self server] objectForKey:@"Port"];
-	}		
+	}
 	
 
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
@@ -674,10 +685,19 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	return nil;
 }
 
-- (void)comboBoxSelectionDidChange:(NSNotification *)notification
-{
-	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
-}
+//- (void)comboBoxSelectionDidChange:(NSNotification *)notification
+//{
+//	if ([[self server] isMemberOfClass: [NSNetService class]])
+//	{
+//		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]]]];
+//	}
+//	else
+//	{
+//		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
+//	}
+//
+//	
+//}
 
 - (void)listenForAbort:(id)handler{
 	[sendSCU abort];
