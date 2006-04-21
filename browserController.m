@@ -6999,7 +6999,7 @@ static BOOL needToRezoom;
 						if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 					}
 				}
-				else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO)
+				else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 				{
 					NSString *dstPath;
 					dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
