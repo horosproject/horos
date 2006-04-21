@@ -19,6 +19,7 @@
 =========================================================================*/
 #import "browserController.h"
 #import "DICOMToNSString.h"
+#import "LogManager.h"
 
 #undef verify
 
@@ -444,13 +445,21 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	else {
 		studyDescription = [NSString stringWithString:@""];
 	}
-
-	NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-	[userInfo setObject:patientName forKey:@"PatientName"];
-	[userInfo setObject:studyDescription forKey:@"StudyDescription"];
-	[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
-	//[userInfo setObject:[NSNumber numberWithInt:handle->imageCount++]  forKey:@"NumberReceived"];
-
+	if (handle->logEntry == NULL) {
+		handle->logEntry = [[NSMutableDictionary alloc] init];
+		NSMutableDictionary *userInfo = handle->logEntry;
+		[userInfo setObject:patientName forKey:@"PatientName"];		
+		[userInfo setObject:studyDescription forKey:@"StudyDescription"];
+		[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
+		[userInfo setObject:[NSDate date] forKey:@"startTime"];
+		[userInfo  setObject:@"In Progress" forKey:@"message"];
+	}
+	
+	NSMutableDictionary *userInfo = handle->logEntry;	
+	[userInfo setObject:[NSNumber numberWithInt:++(handle->imageCount)]  forKey:@"NumberReceived"];
+	[userInfo setObject:[NSDate date] forKey:@"endTime"];
+	//[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DCMTKUpdateReceive" object:nil userInfo:userInfo];
+	
 		
 	[pool release];
 	return EC_Normal;
@@ -1179,7 +1188,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		result = EC_Normal;
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		handle -> logEntry = NULL;
-		//handle -> imageCount = 0;
+		handle -> imageCount = 0;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
@@ -1199,7 +1208,9 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
     {
 		// set logEntry to complete
 	   if (handle->logEntry != NULL) {
-		   [handle->logEntry  setValue:@"Complete" forKey:@"message"];
+		   [handle->logEntry  setObject:@"Complete" forKey:@"message"];
+		   [handle->logEntry  setObject:[NSDate date] forKey:@"endTime"];
+			//[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DCMTKUpdateReceive" object:nil userInfo:handle->logEntry];
 		   [handle->logEntry release];
 		}
 
