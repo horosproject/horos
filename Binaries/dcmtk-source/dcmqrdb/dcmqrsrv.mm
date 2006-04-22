@@ -435,8 +435,6 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
     DcmDataset *dset = dcmff.getDataset();
 
-	static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle) -> updateLogEntry(dset);
-
     /* we must still retrieve the data set even if some error has occured */
 
     if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
@@ -448,6 +446,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
                                    &dset, storeCallback,
                                    (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
+	
+	static_cast<DcmQueryRetrieveOsiriXDatabaseHandle *>(&dbHandle) -> updateLogEntry(dset);
 
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Store SCP Failed:");

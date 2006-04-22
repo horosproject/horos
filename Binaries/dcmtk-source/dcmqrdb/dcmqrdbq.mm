@@ -453,12 +453,15 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
 		[userInfo setObject:[NSDate date] forKey:@"startTime"];
 		[userInfo  setObject:@"In Progress" forKey:@"message"];
+		[userInfo  setObject:[NSString stringWithFormat:@"%d", random()] forKey:@"uid"];
 	}
 	
 	NSMutableDictionary *userInfo = handle->logEntry;	
-	[userInfo setObject:[NSNumber numberWithInt:++(handle->imageCount)]  forKey:@"NumberReceived"];
+	[userInfo setObject:[NSNumber numberWithInt:++(handle->imageCount)]  forKey:@"numberReceived"];
 	[userInfo setObject:[NSDate date] forKey:@"endTime"];
-	//[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DCMTKUpdateReceive" object:nil userInfo:userInfo];
+	NSString *path = [[[LogManager currentLogManager] logFolder]
+				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[userInfo objectForKey:@"uid"]]];
+	[userInfo writeToFile:path atomically:YES];
 	
 		
 	[pool release];
@@ -1207,11 +1210,15 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
     if (handle)
     {
 		// set logEntry to complete
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	   if (handle->logEntry != NULL) {
-		   [handle->logEntry  setObject:@"Complete" forKey:@"message"];
-		   [handle->logEntry  setObject:[NSDate date] forKey:@"endTime"];
-			//[[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"DCMTKUpdateReceive" object:nil userInfo:handle->logEntry];
-		   [handle->logEntry release];
+			NSMutableDictionary *logEntry = handle->logEntry;
+		   [logEntry  setObject:@"Complete" forKey:@"message"];
+		   [logEntry  setObject:[NSDate date] forKey:@"endTime"];
+			NSString *path = [[[LogManager currentLogManager] logFolder]
+				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[logEntry objectForKey:@"uid"]]];
+			[logEntry writeToFile:path atomically:YES];
+		   [logEntry release];
 		}
 
       /* Free lists */
@@ -1220,6 +1227,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
       DB_FreeUidList (handle -> uidList);
 	  [handle -> dataHandler release];
       free ( (char *)(handle) );
+	  [pool release];
     }
 }
 

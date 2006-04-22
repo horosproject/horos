@@ -21,12 +21,12 @@
 
 
 @interface LogManager : NSObject {
-
+	NSTimer *_timer;
+	NSMutableDictionary *_currentLogs;
 }
 
 + (id)currentLogManager;
-- (void)updateLog:(NSNotification *)note;
-- (void)removeLog:(NSNotification *)note;
-- (void)checkLogs:(NSDictionary *)logInfo;
+- (void)checkLogs:(NSTimer *)timer;
+- (NSString *)logFolder;
 
 @end
