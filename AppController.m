@@ -2555,7 +2555,7 @@ static BOOL initialized = NO;
 	
 	int					numberOfMonitors = [[self viewerScreens] count];	
 
-	//NSLog(@"tile Windows");
+	NSLog(@"tile Windows");
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
 	

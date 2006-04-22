@@ -8910,7 +8910,7 @@ static BOOL needToRezoom;
 		else toolbarItem = nil;
     }
 
-     return toolbarItem;	//[toolbarItem autorelease];
+     return [toolbarItem autorelease];
 }
 
 
@@ -9013,11 +9013,11 @@ static BOOL needToRezoom;
     // key in the userInfo 
     NSToolbarItem *removedItem = [[notif userInfo] objectForKey: @"item"];
 
-	[removedItem release];
-/*    if (removedItem==activeSearchItem) {
-	[activeSearchItem autorelease];
-	activeSearchItem = nil;    
-    }*/
+	if( [[removedItem itemIdentifier] isEqualToString:SearchToolbarItemIdentifier])
+	{
+		[toolbarSearchItem release];
+		toolbarSearchItem = 0L;
+	}
 }
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem

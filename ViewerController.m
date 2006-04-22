@@ -1425,6 +1425,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
+	[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 	[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 }
 
