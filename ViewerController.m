@@ -6755,7 +6755,7 @@ int i,j,l;
 	else
 	{
 		[[suvForm cellAtIndex: 0] setStringValue: [NSString stringWithFormat:@"%2.3f", [[imageView curDCM] patientsWeight]]];
-		[[suvForm cellAtIndex: 1] setStringValue: [NSString stringWithFormat:@"%2.0f / %2.0f", [[imageView curDCM] radionuclideTotalDose], [[imageView curDCM] radionuclideTotalDoseCorrected]]];
+		[[suvForm cellAtIndex: 1] setStringValue: [NSString stringWithFormat:@"%2.3f / %2.3f", [[imageView curDCM] radionuclideTotalDose] / 1000000., [[imageView curDCM] radionuclideTotalDoseCorrected] / 1000000. ]];
 		
 		if( [[imageView curDCM] radiopharmaceuticalStartTime])
 			[[suvForm cellAtIndex: 2] setStringValue: [[[[[imageView curDCM] radiopharmaceuticalStartTime] description] substringFromIndex:11] substringToIndex:8]];
@@ -6763,7 +6763,7 @@ int i,j,l;
 		if( [[imageView curDCM] radiopharmaceuticalStartTime])
 			[[suvForm cellAtIndex: 3] setStringValue: [[[[[imageView curDCM] acquisitionTime] description] substringFromIndex:11] substringToIndex:8]];
 		
-		[[suvForm cellAtIndex: 4] setStringValue: [NSString stringWithFormat:@"%2.1f", [[imageView curDCM] halflife]]];
+		[[suvForm cellAtIndex: 4] setStringValue: [NSString stringWithFormat:@"%2.2f", [[imageView curDCM] halflife] / 60.]];
 		
 		[NSApp beginSheet: displaySUVWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 	}

@@ -463,7 +463,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[userInfo objectForKey:@"uid"]]];
 	[userInfo writeToFile:path atomically:YES];
 	
-		
 	[pool release];
 	return EC_Normal;
 }
