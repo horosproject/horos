@@ -953,7 +953,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	opt_port = _port;
 	
 	//verbose option set to true for now
-	opt_verbose=OFTrue;
+	opt_verbose=OFFalse;
 	opt_showPresentationContexts=OFTrue;
 	
 	//debug code activated for now
