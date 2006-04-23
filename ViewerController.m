@@ -20,9 +20,10 @@ Version 2.3
 	20060124	LP	SyncSeriesMenuItem status updated with status of sync series
 	
 Version 2.3.1
+
 	20060208	LP	Revised zooming behavior
 	20060217	LP	Added some more menu items 
-	20060216	LP	Added a Shift option to databaseWindow. Holding doown the shift key will bring the browser to the front without closing viewers
+	20060216	LP	Added a Shift option to databaseWindow. Holding down the shift key will bring the browser to the front without closing viewers
 
 Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without changing anything else (work in progress)
 	
@@ -126,14 +127,14 @@ static NSString*	TileWindowsToolbarItemIdentifier	= @"windows.tif";
 static NSString*	SUVToolbarItemIdentifier			= @"SUV.tif";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
-static NSString*	FlipVerticalToolbarItemIdentifier		= @"FlipVertical.tif";
-static NSString*	FlipHorizontalToolbarItemIdentifier		= @"FlipHorizontal.tif";
-static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
+static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
+static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
+static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSArray*		DefaultROINames;
 
-static	BOOL EXPORT2IPHOTO = NO;
-static	ViewerController *blendedwin = 0L;
-static	float	deg2rad = 3.14159265358979/180.0; 
+static	BOOL EXPORT2IPHOTO								= NO;
+static	ViewerController *blendedwin					= 0L;
+static	float	deg2rad									= 3.14159265358979/180.0; 
 
 static ViewerController *gSelf;
 
