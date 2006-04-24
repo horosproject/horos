@@ -53,10 +53,14 @@
 #pragma mark¥
 
 - (void)setKey:(id)key{
+	if( _key == key) return;
+	
 	[_key release];
 	_key = [key retain];
 }
 - (void)setObject:(id)object{
+	if( _object == object) return;
+
 	[_object release];
 	_object = [object retain];
 }

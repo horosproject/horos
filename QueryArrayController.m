@@ -92,6 +92,7 @@
 	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
 	[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
+	[rootNode release];
 	rootNode = [[DCMRootQueryNode queryNodeWithObject:nil] retain];
 	NSMutableArray *filterArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [filters keyEnumerator];
@@ -104,6 +105,8 @@
 	}
 			
 	[rootNode queryWithValues:filterArray parameters:params];
+	
+	[queries release];
 	queries = [[rootNode children] retain];
 	
 	NS_HANDLER

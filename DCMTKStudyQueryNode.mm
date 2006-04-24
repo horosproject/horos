@@ -97,8 +97,12 @@
 		if (dataset ->findAndGetString(DCM_ModalitiesInStudy, string).good() && string != nil)	
 			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			
-		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)	
-			_numberImages = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+		if (dataset ->findAndGetString(DCM_NumberOfStudyRelatedInstances, string).good() && string != nil)
+		{
+			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
+			[numberString release];
+		}
 
 	}
 	return self;

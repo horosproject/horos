@@ -135,8 +135,12 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
 
 	if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
-	{		
-		return [item valueForKey: [tableColumn identifier]];		
+	{
+		if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+		{
+			return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
+		}
+		else return [item valueForKey: [tableColumn identifier]];		
 	}
 	return nil;
 

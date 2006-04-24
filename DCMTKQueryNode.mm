@@ -1039,6 +1039,8 @@ NS_ENDHANDLER
 }
 
 - (void)setLogEntry:(NSManagedObject *)logEntry{
+	if( logEntry == _logEntry) return;
+
 	[_logEntry release];
 	_logEntry = [logEntry retain];
 }
