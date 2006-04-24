@@ -1524,6 +1524,8 @@ NS_ENDHANDLER
 
 - (void)updateLogEntry: (id)sender
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 	[context lock];
 	

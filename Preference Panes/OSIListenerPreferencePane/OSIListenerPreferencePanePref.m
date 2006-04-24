@@ -70,6 +70,7 @@ char *GetPrivateIP()
 	[aeTitleField setStringValue:[defaults stringForKey:@"AETITLE"]];
 	[portField setStringValue:[defaults stringForKey:@"AEPORT"]];
 	
+	[generateLogsButton setState:[defaults boolForKey:@"NETWORKLOGS"]];
 	[listenerOnOffButton setState:[defaults boolForKey:@"STORESCP"]];
 	
 //	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
@@ -144,6 +145,9 @@ char *GetPrivateIP()
 }
 - (IBAction)setListenerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"STORESCP"];
+}
+- (IBAction)setGenerateLogs:(id)sender{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NETWORKLOGS"];
 }
 - (IBAction)setAnonymizeListenerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"ANONYMIZELISTENER"];

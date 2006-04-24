@@ -1717,6 +1717,9 @@ static BOOL initialized = NO;
 		[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
 		[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];
 		
+		// ** NETWORKLOGS
+		[defaultValues setObject:@"NO" forKey:@"NETWORKLOGS"];
+		
 		// ** PORT
 		[defaultValues setObject:@"4096" forKey:@"AEPORT"];
 		

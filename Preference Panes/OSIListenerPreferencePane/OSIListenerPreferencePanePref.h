@@ -28,6 +28,7 @@
 	IBOutlet NSFormCell *ipField;
 	IBOutlet NSFormCell *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
+	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSTextField *extrastorescp;
 }
 
@@ -38,6 +39,7 @@
 - (IBAction)setDeleteFileMode:(id)sender;
 - (IBAction)setListenerOnOff:(id)sender;
 - (IBAction)setAnonymizeListenerOnOff:(id)sender;
+- (IBAction)setGenerateLogs:(id)sender;
 - (IBAction)helpstorescp:(id) sender;
 - (IBAction)setExtraStoreSCP:(id)sender;
 @end

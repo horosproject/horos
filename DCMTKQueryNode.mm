@@ -131,7 +131,9 @@ static void
 moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
 
-{	
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	
     OFCondition cond = EC_Normal;
     MyCallbackInfo *myCallbackData;
 
@@ -139,7 +141,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	DCMTKQueryNode *node = myCallbackData -> node;
 	NSLog(@"move Response: %d", responseCount);
 	NSManagedObject *logEntry = [node logEntry];
-	if (!logEntry) {		
+	if (!logEntry) {
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];

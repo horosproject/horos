@@ -19,6 +19,7 @@
                 setAnonymizeListenerOnOff = id; 
                 setDeleteFileMode = id; 
                 setExtraStoreSCP = id; 
+                setGenerateLogs = id; 
                 setListenerOnOff = id; 
                 setTransferSyntaxMode = id; 
                 setUseStoreSCP = id; 
@@ -30,6 +31,7 @@
                 aeTitleField = NSFormCell; 
                 deleteFileModeMatrix = NSMatrix; 
                 extrastorescp = NSTextField; 
+                generateLogsButton = NSButton; 
                 ipField = NSFormCell; 
                 listenerOnOffAnonymize = NSButton; 
                 listenerOnOffButton = NSButton; 

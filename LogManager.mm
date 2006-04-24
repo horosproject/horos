@@ -35,7 +35,7 @@ LogManager *currentLogManager;
 - (id)init{
 	if (self = [super init]){
 		_currentLogs = [[NSMutableDictionary alloc] init];
-		_timer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
+		_timer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 		
 	}
 	return self;

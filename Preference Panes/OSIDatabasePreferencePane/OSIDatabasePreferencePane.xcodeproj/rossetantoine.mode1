@@ -372,9 +372,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABC3943709F5211D000A6508</string>
+				<string>AB7925ED09FCBDF4006E342C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABC3943809F5211D000A6508</string>
+				<string>AB7925EE09FCBDF4006E342C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -508,7 +508,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>AB4664CF09A335BC005A2766</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
@@ -910,8 +909,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {491, 168}}</string>
-											<string>{{0, 173}, {491, 270}}</string>
+											<string>{{0, 0}, {366, 168}}</string>
+											<string>{{0, 173}, {366, 270}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -960,9 +959,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>ABC3943909F5211D000A6508</string>
+				<string>AB7925EF09FCBDF4006E342C</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>ABC3943A09F5211D000A6508</string>
+				<string>AB7925F009FCBDF4006E342C</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

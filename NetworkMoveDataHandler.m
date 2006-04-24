@@ -49,6 +49,8 @@ extern BrowserController *browserWindow;
 
 - (void)updateLogEntry:(DCMObject *)object
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	
 	[object retain];
 	NS_DURING
 	
@@ -102,9 +104,12 @@ extern BrowserController *browserWindow;
 }
 
 - (void) dealloc {
-	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-	[logEntry setValue:@"complete" forKey:@"message"];
-	[logEntry release];
+	if( logEntry)
+	{
+		[logEntry setValue:[NSDate date] forKey:@"endTime"];
+		[logEntry setValue:@"complete" forKey:@"message"];
+		[logEntry release];
+	}
 	[super dealloc];
 }
 

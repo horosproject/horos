@@ -51,8 +51,8 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 167059739;
-			PBXWorkspaceStateSaveDate = 167059739;
+			PBXPerProjectTemplateStateSaveDate = 167558641;
+			PBXWorkspaceStateSaveDate = 167558641;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -125,7 +125,7 @@
 		functionName = "-mainViewDidLoad";
 		hitCount = 1;
 		lineNumber = 100;
-		modificationTime = 167061536.622551;
+		modificationTime = 167556340.355541;
 		state = 1;
 	};
 	AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */ = {
@@ -138,7 +138,7 @@
 		functionName = "-setReportMode:";
 		hitCount = 1;
 		lineNumber = 173;
-		modificationTime = 167061536.622535;
+		modificationTime = 167556340.355557;
 		state = 1;
 	};
 	F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */ = {

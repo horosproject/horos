@@ -27,7 +27,7 @@
 
 -(id) init
 {
-  return  [super initWithWindowNibName:@"LogWindow"];
+	return  [super initWithWindowNibName:@"LogWindow"];
 }
 
 - (NSManagedObjectContext *)managedObjectContext{
@@ -36,6 +36,17 @@
 -(void) awakeFromNib
 {
 	[[self window] setFrameAutosaveName:@"LogWindow"];
+}
+
+-(IBAction) showWindow:(id) sender
+{
+	[super showWindow: sender];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO)
+	{
+		if( NSRunInformationalAlertPanel(@"Network Logs", @"Network Logs are currently off. Do you want to activate them?\r\rYou can activate or de-activate them in the Preferences - Listener window.", @"Activate", @"Cancel", 0L) == 1)
+			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"NETWORKLOGS"];
+	}
 }
 
 @end
