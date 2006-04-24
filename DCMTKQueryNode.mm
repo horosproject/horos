@@ -238,6 +238,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters]){
 		//_children = [[NSMutableArray alloc] init];
+		_children = nil;
 		_uid = nil;
 		_theDescription = nil;
 		_name = nil;

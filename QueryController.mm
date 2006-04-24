@@ -484,7 +484,20 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 -(id) init
 {
-    if ( self = [super initWithWindowNibName:@"Query"]) {
+    if ( self = [super initWithWindowNibName:@"Query"])
+	{
+		result = 0L;
+		queryFilters = 0L;
+		advancedQuerySubviews = 0L;
+		dateQueryFilter = 0L;
+		currentQueryKey = 0L;
+		logString = 0L;
+		echoSuccess = 0L;
+		activeMoves = 0L;
+		moveLog = 0L;
+		currentEchoRow = 0L;
+		echoImage = 0L;
+		
 		queryFilters = [[NSMutableArray array] retain];
 		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
@@ -492,15 +505,18 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		
 		logString = [NSString stringWithContentsOfFile:[logPath stringByExpandingTildeInPath]];
 		if (!logString)
+		{
 			logString = @"";
-			
-		
+		}
+		[logString retain];
+
 	}
     
     return self;
 }
 
 - (void)dealloc{
+	[logString release];
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
@@ -587,8 +603,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[logView setEditable:NO];
 	[[logView textStorage] setAttributedString:[[[NSAttributedString alloc] initWithString:logString] autorelease]];
 	[logView scrollRangeToVisible:NSMakeRange([[logView string] length], 0)];
-	
-	
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
