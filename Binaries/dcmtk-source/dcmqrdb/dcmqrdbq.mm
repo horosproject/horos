@@ -459,9 +459,17 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	NSMutableDictionary *userInfo = handle->logEntry;	
 	[userInfo setObject:[NSNumber numberWithInt:++(handle->imageCount)]  forKey:@"numberReceived"];
 	[userInfo setObject:[NSDate date] forKey:@"endTime"];
-	NSString *path = [[[LogManager currentLogManager] logFolder]
-				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[userInfo objectForKey:@"uid"]]];
-	[userInfo writeToFile:path atomically:YES];
+//	NSString *path = [[[LogManager currentLogManager] logFolder]
+//				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[userInfo objectForKey:@"uid"]]];
+//	[userInfo writeToFile:path atomically:YES];
+
+// Lance, this is creating many errors on my side, locking OsiriX in a loop.
+// We can keep only the last writeToFile in the ~DcmQueryRetrieveOsiriXDatabaseHandle() function. This solves the problem.
+//
+//2006-04-24 09:33:15.795 OsiriX[17124] NSInternalInconsistencyException
+//2006-04-24 09:33:15.795 OsiriX[17124] cannot find data for a temporary oid: 0x1178d630 <x-coredata:///LogEntry/tEE139003-3780-4867-B66F-1AD7A6E36770>
+//dispatched
+
 	
 	[pool release];
 	return EC_Normal;

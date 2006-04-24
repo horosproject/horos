@@ -33,5 +33,9 @@
 - (NSManagedObjectContext *)managedObjectContext{
 }
 	
+-(void) awakeFromNib
+{
+	[[self window] setFrameAutosaveName:@"LogWindow"];
+}
 
 @end

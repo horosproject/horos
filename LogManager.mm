@@ -35,7 +35,7 @@ LogManager *currentLogManager;
 - (id)init{
 	if (self = [super init]){
 		_currentLogs = [[NSMutableDictionary alloc] init];
-		_timer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
+		_timer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 		
 	}
 	return self;
@@ -73,6 +73,8 @@ LogManager *currentLogManager;
 			
 			NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
 			NSDictionary *logInfo = [NSDictionary dictionaryWithContentsOfFile:file];
+			//delete file
+			[manager removeFileAtPath:file handler:nil];
 			
 			NSString *uid = [logInfo objectForKey:@"uid"];
 			id logEntry = [_currentLogs objectForKey:uid];
@@ -95,8 +97,6 @@ LogManager *currentLogManager;
 			[logEntry setValue:[logInfo objectForKey:@"errorCount"] forKey:@"numberError"];
 			[logEntry setValue:[logInfo objectForKey:@"endTime"] forKey:@"endTime"];
 			
-			//delete file
-			[manager removeFileAtPath:file handler:nil];
 			if ([[logInfo objectForKey:@"message"] isEqualToString:@"Complete"]) {
 				[_currentLogs removeObjectForKey:uid];
 				NSLog(@"Remove %@ on completion", uid);
