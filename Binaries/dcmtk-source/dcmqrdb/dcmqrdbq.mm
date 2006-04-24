@@ -1252,7 +1252,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     newImageFileName[0]=0; // return empty string in case of error
 //   if (! fnamecreator.makeFilename(seed, handle->storageArea, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
 	if (! fnamecreator.makeFilename(seed, [dstFolder UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
-	printf("newFileName: %s", filename.c_str());
+//	printf("newFileName: %s", filename.c_str());
     strcpy(newImageFileName, filename.c_str());
 	[pool release];
     return EC_Normal;
