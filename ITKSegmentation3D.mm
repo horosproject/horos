@@ -448,7 +448,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
     return self;
 }
 
-- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(long) setIn :(float) inValue :(long) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
+- (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
 	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
 	
@@ -484,10 +484,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		float loV, upV;
 		if (algorithmNumber==0)
 		{
-			float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:startingPoint.x Y:startingPoint.y];
+			long xpx, ypx;
+			xpx = (long)startingPoint.x;
+			ypx = (long)startingPoint.y;
+			NSLog(@"xpx : %d, ypx: %d", xpx, ypx);
+			float mouseValue = [[[srcViewer imageView] curDCM] getPixelValueX:(long)startingPoint.x Y:(long)startingPoint.y];
 			float interval = [[parameters objectAtIndex:0] floatValue];
 			loV = mouseValue - interval/2.0;
 			upV = mouseValue + interval/2.0;
+			NSLog(@"startingPoint.x : %f, startingPoint.y: %f", startingPoint.x, startingPoint.y);
+			NSLog(@"mouseValue : %f, loV: %f, upV: %f", mouseValue, loV, upV);
 		}
 		else if (algorithmNumber==1)
 		{

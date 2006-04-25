@@ -299,7 +299,9 @@
 		{
 			if( resultsViewer == 0L)
 			{
+				long currentImageIndex = [[viewer imageView] curImage];
 				resultsViewer = [self duplicateCurrent2DViewerWindow];
+				[[viewer imageView] setIndex:currentImageIndex];
 				
 				if( [[pixelsSet cellWithTag:1] state] == NSOnState)	// FILL THE IMAGE WITH THE VALUE
 				{
@@ -339,9 +341,9 @@
 								: startingPoint
 								: algo //[[params cellAtIndex: 1] floatValue]
 								: parametersArray //[[params cellAtIndex: 2] floatValue]
-								: [[pixelsSet cellWithTag:0] state]
+								: [[pixelsSet cellWithTag:0] state]==NSOnState
 								: [[pixelsValue cellWithTag:0] floatValue]
-								: [[pixelsSet cellWithTag:1] state]
+								: [[pixelsSet cellWithTag:1] state]==NSOnState
 								: [[pixelsValue cellWithTag:1] floatValue]
 								: [[outputROIType selectedCell] tag]
 								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
