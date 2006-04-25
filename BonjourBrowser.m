@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-#define TIMEOUT	5
+#define TIMEOUT	10
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -55,6 +55,8 @@ volatile static BOOL threadIsRunning = NO;
 		long i;
 		
 		lock = [[NSLock alloc] init];
+		threadLock = [[NSLock alloc] init];
+		readAllDataLock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
 		myrunLoop = [[NSRunLoop alloc] init];
@@ -87,6 +89,7 @@ volatile static BOOL threadIsRunning = NO;
 		
 		serviceBeingResolvedIndex = -1;
 		[browser setDelegate:self];
+		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXRunLoopMode"];	//];
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
 		
@@ -107,6 +110,8 @@ volatile static BOOL threadIsRunning = NO;
 	[modelVersion release];
 	[FileModificationDate release];
 	[filePathToLoad release];
+	[threadLock release];
+	[readAllDataLock release];
 	
 	[super dealloc];
 }
@@ -162,6 +167,8 @@ volatile static BOOL threadIsRunning = NO;
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
 	BOOL				success = YES;
 	NSData				*data = [[[note userInfo] objectForKey:NSFileHandleNotificationDataItem] retain];
+	
+	[readAllDataLock lock];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: [note object]];
 	[[note object] release];
@@ -248,15 +255,21 @@ volatile static BOOL threadIsRunning = NO;
 					
 					if( [curData length])
 					{
-						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath]) NSLog(@"strange...");
-						
-						[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
-						success = [[NSFileManager defaultManager] createFileAtPath: [localPath stringByAppendingString:@"RENAME"] contents:curData attributes:nil];
-						success = [[NSFileManager defaultManager] movePath:[localPath stringByAppendingString:@"RENAME"] toPath:localPath handler:0L];
-						
-						if( success == NO)
+						NSLog( localPath);
+						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath])
 						{
-							NSLog(@"Bonjour transfer failed");
+							NSLog(@"strange...");
+						}
+						else
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
+
+							success = [[NSFileManager defaultManager] createFileAtPath: localPath contents:curData attributes:nil];
+							
+							if( success == NO)
+							{
+								NSLog(@"Bonjour transfer failed");
+							}
 						}
 					}
 				}
@@ -303,6 +316,9 @@ volatile static BOOL threadIsRunning = NO;
 	[data release];
 	
 	resolved = YES;
+	
+	
+	[readAllDataLock unlock];
 	
 	[pool release];
 }
@@ -615,19 +631,6 @@ volatile static BOOL threadIsRunning = NO;
 		[interfaceOsiriX displayBonjourServices];
 	}
 }
-//
-//- (void) stopService
-//{
-//	return;
-//	
-//	if (serviceBeingResolved)
-//	{
-//        [serviceBeingResolved stop];
-//        [serviceBeingResolved release];
-//        serviceBeingResolved = nil;
-//    }
-//}
-
 
 - (void) resolveServiceWithIndex:(int)index msg: (char*) msg
 {
@@ -646,6 +649,7 @@ volatile static BOOL threadIsRunning = NO;
 	
     if(-1 == index)
 	{
+		NSLog(@"index == -1");
     }
 	else if( index >= BonjourServices)
 	{
@@ -670,8 +674,6 @@ volatile static BOOL threadIsRunning = NO;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-//	NSLog( @"Bonjour message: %@", [object valueForKey:@"msg"]);
-	
 	long	try = 10;
 	
 	resolved = NO;
@@ -689,21 +691,18 @@ volatile static BOOL threadIsRunning = NO;
 		try--;
 	}
 	
-	threadIsRunning = NO;
-	
 	[pool release];
 }
 
 - (BOOL) connectToServer:(long) index message:(NSString*) message
 {
-	threadIsRunning = YES;
-	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
-	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-
-//	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L] waitUntilDone: YES];
-
-//	[self resolveServiceThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+//	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+//
+	[threadLock lock];
 	
+	[self resolveServiceThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+
+	[threadLock unlock];
 	
 	return resolved;
 }
@@ -778,16 +777,14 @@ volatile static BOOL threadIsRunning = NO;
 {
 	NSString	*returnedFile = 0L;
 	
+	[readAllDataLock lock];
+	[lock lock];
 	// Does the file already exist?
 	
 	returnedFile = [BonjourBrowser bonjour2local: pathFile];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath:returnedFile]) return returnedFile;
 	else returnedFile = 0L;
-	
-	//
-	
-	[lock lock];
 	
 	[filePathToLoad release];
 	filePathToLoad = [pathFile retain];
@@ -800,6 +797,7 @@ volatile static BOOL threadIsRunning = NO;
 	}
 	
 	[lock unlock];
+	[readAllDataLock unlock];
 	
 	return returnedFile;
 }

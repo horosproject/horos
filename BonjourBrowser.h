@@ -19,7 +19,7 @@
 @interface BonjourBrowser : NSObject
 {
 	NSRunLoop			*myrunLoop;
-	NSLock				*lock;
+	NSLock				*lock, *threadLock, *readAllDataLock;
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
     NSNetService		*serviceBeingResolved;
