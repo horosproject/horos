@@ -434,10 +434,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 	
 	//debug code activated for now
-	_debug = OFTrue;
-	DUL_Debug(OFTrue);
-	DIMSE_debug(OFTrue);
-	SetDebugLevel(3);
+//	_debug = OFTrue;
+//	DUL_Debug(OFTrue);
+//	DIMSE_debug(OFTrue);
+//	SetDebugLevel(3);
 	
 	//Use Little Endian TS
 	_networkTransferSyntax = EXS_LittleEndianExplicit;

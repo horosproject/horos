@@ -46,7 +46,7 @@
 		_compression = compression;
 		
 		_verbose = YES;
-		_debug = YES;
+		_debug = NO;
 		_abortAssociation = NO;
 		_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 		_repeatCount = -1;

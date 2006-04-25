@@ -9247,6 +9247,8 @@ int i,j,l;
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
 			
+			[viewer load3DState];
+			
 			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 			{
 				if( [[imageView curDCM] SUVConverted] == YES)
@@ -9259,9 +9261,9 @@ int i,j,l;
 				}
 				
 				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-					[self ApplyCLUTString: @"B/W Inverse"];
+					[viewer ApplyCLUTString: @"B/W Inverse"];
 				else
-					[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 			}
 			else
 			{
@@ -9270,7 +9272,7 @@ int i,j,l;
 				[viewer setWLWW:iwl :iww];
 			}
 			
-			[viewer load3DState];
+			
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
