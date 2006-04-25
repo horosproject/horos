@@ -1970,8 +1970,7 @@ static BOOL initialized = NO;
 		
 		// **
 		
-		[defaultValues setObject: @"YES" forKey: @"COPYSETTINGS"];	
-		[defaultValues setObject: @"ISO_IR 100" forKey: @"QUERYCHARACTERSET"];
+		[defaultValues setObject: @"YES" forKey: @"COPYSETTINGS"];
 		
 		[defaultValues setObject: @"YES" forKey: @"USESTORESCP"];
 		// Parsing Series Objects

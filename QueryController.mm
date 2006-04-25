@@ -192,9 +192,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			[queryManager release];
 		queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
 	// add filters as needed
-	
+		
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
 			//Specific Character Set
-		[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 	
 		if ([filterValue length] > 0) {			
 			[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
@@ -371,7 +372,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			}
 			
 		//Specific Character Set
-		[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];	
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];	
 		
 		//run query
 		[progressIndicator startAnimation:nil];
