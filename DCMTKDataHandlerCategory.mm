@@ -503,6 +503,10 @@ extern BrowserController *browserWindow;
 			
 	if ([fetchedObject valueForKey:@"seriesInstanceUID"])
 		dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+		
+
+	else
+		dataset ->putAndInsertString(DCM_StudyInstanceUID, NULL);
 	
 
 	if ([fetchedObject valueForKey:@"noFiles"]) {
@@ -519,6 +523,22 @@ extern BrowserController *browserWindow;
 	//return dataset;
 }
 - (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
+
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NS_DURING
+	if ([fetchedObject valueForKey:@"sopInstanceUID"])
+		dataset ->putAndInsertString(DCM_SOPInstanceUID, [[fetchedObject valueForKey:@"sopInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	if ([fetchedObject valueForKey:@"instanceNumber"]) {
+		NSString *number = [[fetchedObject valueForKey:@"instanceNumber"] stringValue];
+		dataset ->putAndInsertString(DCM_InstanceNumber, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	}
+	if ([fetchedObject valueForKey:@"numberOfFrames"]) {
+		NSString *number = [[fetchedObject valueForKey:@"numberOfFrames"] stringValue];
+		dataset ->putAndInsertString(DCM_NumberOfFrames, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	}
+	NS_HANDLER
+	NS_ENDHANDLER
+	[pool release];
 
 }
 
@@ -666,6 +686,9 @@ extern BrowserController *browserWindow;
 		}
 		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]){
 			[self studyDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
+		}
+		else if ([[item valueForKey:@"type"] isEqualToString:@"Image"]){
+			[self imageDatasetForFetchedObject:item dataset:(DcmDataset *)dataset];
 		}
 		*isComplete = NO;
 	}else
