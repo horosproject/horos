@@ -75,17 +75,17 @@ extern BrowserController *browserWindow;
 			else if (key == DCM_PatientID){
 				char *pid;
 				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"patientID like[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"patientID like[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
 			}
 			else if (key == DCM_StudyInstanceUID ){
 				char *suid;
 				if (dcelem->getString(suid).good() && suid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:nil]];
 			}
 			else if (key == DCM_StudyID ) {
 				char *sid;
 				if (dcelem->getString(sid).good() && sid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:nil]];
 			}
 			else if (key ==  DCM_StudyDescription) {
 				char *sd;
@@ -216,12 +216,12 @@ extern BrowserController *browserWindow;
 			if (key == DCM_StudyInstanceUID) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
 			}
 			else if (key == DCM_SeriesInstanceUID) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
 			} 
 			else if (key == DCM_SeriesDescription) {
 				char *string;
@@ -335,6 +335,33 @@ extern BrowserController *browserWindow;
 				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
 			else if (strcmp(sType, "IMAGE") == 0) {
+			if (key == DCM_StudyInstanceUID) {
+				char *string;
+				if (dcelem->getString(string).good() && string != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"series.study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+			}
+			else if (key == DCM_SeriesInstanceUID) {
+				char *string;
+				if (dcelem->getString(string).good() && string != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+			} 
+			else if (key == DCM_SOPInstanceUID) {
+				char *string;
+				if (dcelem->getString(string).good() && string != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+			}
+			else if (key == DCM_InstanceNumber) {
+				char *string;
+				if (dcelem->getString(string).good() && string != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"instanceNumber == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+			}
+			else if (key == DCM_NumberOfFrames) {
+				char *string;
+				if (dcelem->getString(string).good() && string != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+			}
+			
+				
 		}
 	}
 
