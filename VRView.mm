@@ -546,6 +546,12 @@ public:
 		
 		croppingBox->PlaceWidget();
 	}
+	
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
+	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*1.5);
+	
+	
 	[self display];
 	
 	[www end];
@@ -3432,13 +3438,9 @@ public:
 		LOD += 0.5;
 		if( LOD < 1.5) LOD = 1.5;
 		
-		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*2);
-		
-//		if( volumeMapper) volumeMapper->SetAutoAdjustSampleDistances( false);
-//		if( volumeMapper) volumeMapper->SetInteractiveSampleDistance( LOD*2);
+		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*1.5);
 		
 		[self setNeedsDisplay:YES];
 	}
