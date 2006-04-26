@@ -51,7 +51,7 @@
 	}
 	stringEncoding = [[defaults stringForKey:@"STRINGENCODING"] retain];
 	int tag = 0;
-	 if( stringEncoding  == @"ISO_IR 192")	
+	 if( stringEncoding  == @"ISO_IR 192")	//UTF8
 		tag = 0;
 	else if ( stringEncoding == @"ISO_IR 100")
 		tag = 1;
