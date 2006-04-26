@@ -1174,7 +1174,7 @@ int sortROIByName(id roi1, id roi2, void *context)
         {
             NSLog(@"Window was created");			
             [FullScreenWindow setTitle: @"myWindow"];			
-            [FullScreenWindow setReleasedWhenClosed: YES];   // was YES....
+            [FullScreenWindow setReleasedWhenClosed: NO];
             [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1];
             [FullScreenWindow setBackgroundColor:[NSColor blackColor]];
             
