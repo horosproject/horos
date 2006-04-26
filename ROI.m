@@ -867,7 +867,7 @@ return rect;
 - (long) clickInROI:(NSPoint) pt :(float) scale
 {
 	NSRect		arect;
-	long		i;
+	long		i, j;
 	long		xmin, xmax, ymin, ymax;
 	long		imode = ROI_sleep;
 
@@ -931,30 +931,63 @@ return rect;
 		}
 		break;
 		
-		case tCPolygon:
 		case tOPolygon:
 		case tAngle:
-		case tPencil:
-		
-			xmin = [[points objectAtIndex:0] x] -5;
-			ymin = [[points objectAtIndex:0] y] -5;
-			
-			xmax = xmin + 10;
-			ymax = ymin + 10;
-			
-			for( i = 0; i < [points count]; i++)
+		{
+			float distance;
+
+			for( i = 0; i < ([points count] - 1); i++)
 			{
-				if( [[points objectAtIndex:i] x] < xmin) xmin = [[points objectAtIndex:i] x] -5;
-				if( [[points objectAtIndex:i] x] > xmax) xmax = [[points objectAtIndex:i] x] +5;
-				if( [[points objectAtIndex:i] y] < ymin) ymin = [[points objectAtIndex:i] y] -5;
-				if( [[points objectAtIndex:i] y] > ymax) ymax = [[points objectAtIndex:i] y] +5;
+				[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+				if( distance*scale < 5.0)
+				{
+					imode = ROI_selected;
+					break;
+				}
 			}
-			
-			arect = NSMakeRect( xmin, ymin, xmax - xmin, ymax - ymin);
-			
-			if( NSPointInRect( pt, arect)) imode = ROI_selected;
-			
+		}
 		break;
+
+
+		case tCPolygon:
+		case tPencil:
+		{
+ 			int count = 0;
+			
+			for (j = 0; j < 5; j++)
+			{
+				NSPoint selectPt = pt;
+				
+				switch(j)
+				{
+					case 0: break;
+					case 1: selectPt.x += 5.0/scale; break;
+					case 2: selectPt.x -= 5.0/scale; break;
+					case 3: selectPt.y += 5.0/scale; break;
+					case 4: selectPt.y -= 5.0/scale; break;
+				}
+				for( i = 0; i < [points count]; i++)
+				{
+					NSPoint p1 = [[points objectAtIndex:i] point];
+					NSPoint p2 = [[points objectAtIndex:(i+1)%[points count]] point];
+					double intercept;
+					
+					if (selectPt.y > MIN(p1.y, p2.y) && selectPt.y <= MAX(p1.y, p2.y) && selectPt.x <= MAX(p1.x, p2.x) && p1.y != p2.y)
+					{
+						intercept = (selectPt.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
+						if (p1.x == p2.x || selectPt.x <= intercept)
+							count = !count;
+					}
+				}
+				
+				if (count)
+				{
+					imode = ROI_selected;
+					break;
+				}
+			}
+			break;
+		}
 	}
 	
 	if( imode == ROI_selected)
