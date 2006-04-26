@@ -249,7 +249,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_time  = nil;
 		_modality = nil;
 		_numberImages = nil;
-		_specificCharacterSet = nil;		
+		_specificCharacterSet = nil;	
+		//dataset->print(COUT);
+		if (dataset != NULL)
+			dataset->writeXML(cout, 0); 	
 		
 	}
 	return self;
