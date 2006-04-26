@@ -579,7 +579,7 @@ static float oldsetww, oldsetwl;
     
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
-        
+        [FullScreenWindow release];
         
 //		[contentView release];
         
@@ -601,7 +601,7 @@ static float oldsetww, oldsetwl;
         {
             NSLog(@"Window was created");			
             [FullScreenWindow setTitle: @"myWindow"];			
-            [FullScreenWindow setReleasedWhenClosed: YES];   // was YES....
+            [FullScreenWindow setReleasedWhenClosed: NO];
             [FullScreenWindow setLevel: NSScreenSaverWindowLevel - 1];
             [FullScreenWindow setBackgroundColor:[NSColor blackColor]];
             
