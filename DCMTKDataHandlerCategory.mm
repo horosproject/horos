@@ -40,7 +40,7 @@ extern BrowserController *browserWindow;
 	NS_DURING 
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
-	NSLog(@"get Specific Character set");
+	//NSLog(@"get Specific Character set");
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
@@ -55,7 +55,7 @@ extern BrowserController *browserWindow;
 	else
 		compoundPredicate = [NSPredicate predicateWithValue:YES];
 		
-	NSLog(@"charset %@", specificCharacterSet);
+	//NSLog(@"charset %@", specificCharacterSet);
 		
 	
 	int elemCount = (int)(dataset->card());
@@ -378,19 +378,21 @@ extern BrowserController *browserWindow;
 
 - (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
 	//DcmDataset dataset;
-	
+	//lets test responses as hardwired UTF8Strings
+	//use utf8Encoding rather than encoding
+		
 	if ([fetchedObject valueForKey:@"name"])
-		dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_PatientsName, NULL);
 		
 	if ([fetchedObject valueForKey:@"patientID"])	
-		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_PatientID, NULL);
 		
 	if ([fetchedObject valueForKey:@"studyName"])	
-		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString( DCM_StudyDescription, NULL);
 		
@@ -428,17 +430,17 @@ extern BrowserController *browserWindow;
 	
 		
 	if ([fetchedObject valueForKey:@"referringPhysician"])
-		dataset ->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_ReferringPhysiciansName, [[fetchedObject valueForKey:@"referringPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_ReferringPhysiciansName, NULL);
 		
 	if ([fetchedObject valueForKey:@"performingPhysician"])
-		dataset ->putAndInsertString(DCM_PerformingPhysiciansName,  [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_PerformingPhysiciansName,  [[fetchedObject valueForKey:@"performingPhysician"] cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_PerformingPhysiciansName, NULL);
 		
 	if ([fetchedObject valueForKey:@"institutionName"])
-		dataset ->putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_InstitutionName,  [[fetchedObject valueForKey:@"institutionName"]  cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_InstitutionName, NULL);
 		
@@ -472,7 +474,7 @@ extern BrowserController *browserWindow;
 	//DcmDataset dataset;
 	
 	if ([fetchedObject valueForKey:@"name"])	
-		dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:encoding]);
+		dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
 		dataset ->putAndInsertString(DCM_SeriesDescription, NULL);
 		

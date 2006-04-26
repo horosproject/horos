@@ -51,26 +51,27 @@
 	}
 	stringEncoding = [[defaults stringForKey:@"STRINGENCODING"] retain];
 	int tag = 0;
-	if ( stringEncoding == @"ISO_IR 100")
+	 if( stringEncoding  == @"ISO_IR 192")	
 		tag = 0;
+	else if ( stringEncoding == @"ISO_IR 100")
+		tag = 1;
 	else if( stringEncoding == @"ISO_IR 101")
-		tag =  1;
-	else if( stringEncoding == @"ISO_IR 109")	
 		tag =  2;
-	else if( stringEncoding ==	@"ISO_IR 110")
+	else if( stringEncoding == @"ISO_IR 109")	
 		tag =  3;
+	else if( stringEncoding ==	@"ISO_IR 110")
+		tag =  4;
 	else if( stringEncoding ==@"ISO_IR 127")	
-		tag =  4 ;
+		tag =  5 ;
 	else if( stringEncoding  == @"ISO_IR 144")		
-		tag =  5;
-	else if( stringEncoding == @"ISO_IR 126")	
 		tag =  6;
+	else if( stringEncoding == @"ISO_IR 126")	
+		tag =  7;
 	else if( stringEncoding == @"ISO_IR 138")		
-		tag =  7 ;
-	else if( stringEncoding == @"GB18030")	
 		tag =  8 ;
-	else if( stringEncoding  == @"ISO_IR 192")	
+	else if( stringEncoding == @"GB18030")	
 		tag =  9;
+	
 	else if( stringEncoding == @"ISO 2022 IR 149")
 		tag =  10;
 	else if( stringEncoding  == @"ISO 2022 IR 13")	
@@ -279,26 +280,27 @@
 	//int encoding = [[sender selectedItem] tag];
 
 	switch ([[sender selectedItem] tag]){
-		case 0: encoding = @"ISO_IR 100";
+		case 0: encoding = @"ISO_IR 192";
 			break;
-		case 1: encoding = @"ISO_IR 101";
+		case 1: encoding = @"ISO_IR 100";
 			break;
-		case 2: encoding = @"ISO_IR 109";
+		case 2: encoding = @"ISO_IR 101";
 			break;
-		case 3: encoding = @"ISO_IR 110";
+		case 3: encoding = @"ISO_IR 109";
 			break;
-		case 4: encoding = @"ISO_IR 127";
+		case 4: encoding = @"ISO_IR 110";
 			break;
-		case 5: encoding = @"ISO_IR 144";
+		case 5: encoding = @"ISO_IR 127";
 			break;
-		case 6: encoding = @"ISO_IR 126";
+		case 6: encoding = @"ISO_IR 144";
 			break;
-		case 7: encoding = @"ISO_IR 138";
+		case 7: encoding = @"ISO_IR 126";
 			break;
-		case 8: encoding = @"GB18030";
+		case 8: encoding = @"ISO_IR 138";
 			break;
-		case 9: encoding = @"ISO_IR 192";
+		case 9: encoding = @"GB18030";
 			break;
+		
 		case 10: encoding = @"ISO 2022 IR 149";
 			break;
 		case 11: encoding = @"ISO 2022 IR 13";

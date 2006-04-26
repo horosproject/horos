@@ -341,6 +341,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	//add query keys
 	DcmDataset *dataset = [self queryPrototype];
 	NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
+	NSLog(@"default string Encoding: %@",stringEncoding );
+	//hard code for UTF8
+	//stringEncoding = @"ISO_IR 192";
 	int encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
 	dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
 	const char *queryLevel;
