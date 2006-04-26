@@ -957,10 +957,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	opt_showPresentationContexts=OFTrue;
 	
 	//debug code activated for now
-	//opt_debug = OFTrue;
-	//DUL_Debug(OFTrue);
-	//DIMSE_debug(OFTrue);
-	//SetDebugLevel(3);
+	opt_debug = OFTrue;
+	DUL_Debug(OFTrue);
+	DIMSE_debug(OFTrue);
+	SetDebugLevel(3);
 	
 	/****************************
 	
