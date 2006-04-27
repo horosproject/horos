@@ -57,7 +57,8 @@
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 149"]) encoding = -2147483645;	//[characterSet numberFromLocalizedStringEncodingName :@"Korean (Mac OS)"];
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 13"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];	//
 	else if( [characterSet isEqualToString:@"ISO_IR 13"]) encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (Mac OS)"];
-	else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
+	else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = NSISO2022JPStringEncoding;
+	//else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = -2147483647;	//21 //[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
 	else if( [characterSet isEqualToString:@"ISO_IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
 	
 	return encoding;
