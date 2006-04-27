@@ -917,11 +917,10 @@ int sortROIByName(id roi1, id roi2, void *context)
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 
 	return YES;
 }
@@ -962,11 +961,10 @@ int sortROIByName(id roi1, id roi2, void *context)
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
@@ -1358,13 +1356,13 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	long	i;
 
+	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	[ThreadLoadImageLock release];
 	ThreadLoadImageLock = 0L;
@@ -1713,9 +1711,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (void) viewXML:(id) sender
 {
-	[[self window] setRepresentedFilename: [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"completePath"]];
+	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0]; 
+
+	[[self window] setRepresentedFilename: path];
 	
-    XMLController * xmlController = [[XMLController alloc] init:[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"completePath"] :[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]]];
+    XMLController * xmlController = [[XMLController alloc] init: path :[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]]];
     
     [xmlController showWindow:self];
 }
@@ -2912,11 +2912,10 @@ static ViewerController *draggedController = 0L;
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
-		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
-	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	long index2compare;
 	
@@ -3188,7 +3187,6 @@ static ViewerController *draggedController = 0L;
 	
 	[ThreadLoadImageLock lock];
 	ThreadLoadImage = YES;
-	loadingImageDone = NO;
 	
 	NSLog(@"LOADING: Start loading images");
 	
@@ -3236,6 +3234,13 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	ThreadLoadImage = NO;
+	if( stopThreadLoadImage == YES)
+	{
+		[pool release];
+		[ThreadLoadImageLock unlock];
+		return;
+	}
+	
 	[ThreadLoadImageLock unlock];
 	
 	if( stopThreadLoadImage == NO)
@@ -3260,8 +3265,6 @@ static ViewerController *draggedController = 0L;
 	}
 	
     [pool release];
-	
-	loadingImageDone = YES;
 }
 
 //static volatile BOOL someoneIsLoading = NO;
@@ -9940,11 +9943,10 @@ long i;
 		
 		if( [browserWindow isCurrentDatabaseBonjour])
 		{
-			while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+			while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
 		}
 		else [ThreadLoadImageLock lock];
 		[ThreadLoadImageLock unlock];
-		while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 		
 		[splash close];
 		[splash release];

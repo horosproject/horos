@@ -1088,7 +1088,7 @@ static BOOL FORCEREBUILD = NO;
 
 - (void) bonjourRunLoop:(id) sender
 {
-	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.001]];
+	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 }
 
 -(void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour
@@ -1103,7 +1103,7 @@ static BOOL FORCEREBUILD = NO;
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];;
+		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];;
 	}
 	else
 	{

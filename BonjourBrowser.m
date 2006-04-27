@@ -42,7 +42,6 @@ volatile static BOOL threadIsRunning = NO;
 	{
 		if( [NSThread currentThread] == mainThread)
 		{
-//			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
 			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 	}
@@ -90,7 +89,6 @@ volatile static BOOL threadIsRunning = NO;
 		BonjourDatabaseVersion = 0;
 		
 		resolved = YES;
-//		alreadyExecuting = NO;
 		
 		setValueObject = 0L;
 		setValueValue = 0L;
@@ -102,7 +100,6 @@ volatile static BOOL threadIsRunning = NO;
 		
 		[browser searchForServicesOfType:@"_osirix._tcp." inDomain:@""];
 		
-//		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
 		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -687,25 +684,13 @@ volatile static BOOL threadIsRunning = NO;
 	
 	NSRunLoop	*run = [NSRunLoop currentRunLoop];
 	
-//	NSLog( @"Bonjour message: %@", [object valueForKey:@"msg"]);
-	
-	long	try = 10;
-	
 	resolved = NO;
-	while( resolved == NO && try > 0)
+	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
+	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+	
+	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 	{
-		[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
-		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
-		
-		if( try != 10) NSLog( @"try again");
-		
-		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
-		{
-			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-//			[run runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		}
-		
-		try--;
+		[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 	}
 	
 	threadIsRunning = NO;
