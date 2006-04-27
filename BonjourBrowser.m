@@ -43,7 +43,7 @@ volatile static BOOL threadIsRunning = NO;
 		if( [NSThread currentThread] == mainThread)
 		{
 //			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
-			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+			[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 	}
 }
@@ -701,7 +701,7 @@ volatile static BOOL threadIsRunning = NO;
 		
 		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 		{
-			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 //			[run runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		}
 		
@@ -715,9 +715,9 @@ volatile static BOOL threadIsRunning = NO;
 
 - (BOOL) connectToServer:(long) index message:(NSString*) message
 {
-//	threadIsRunning = YES;
-//	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
-//	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	threadIsRunning = YES;
+	[NSThread detachNewThreadSelector:@selector(resolveServiceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
+	while( threadIsRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 
@@ -725,7 +725,7 @@ volatile static BOOL threadIsRunning = NO;
 	
 //	[self resolveServiceThread: dict];
 	
-	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone:YES modes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
+//	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone:YES modes: [NSArray arrayWithObject:@"OsiriXLoopMode"]];
 
 //	[self resolveServiceThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L]];
 	

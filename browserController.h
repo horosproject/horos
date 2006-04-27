@@ -73,7 +73,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
     
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer;
+    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *bonjourRunLoopTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     

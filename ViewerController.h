@@ -181,7 +181,7 @@
 	
 	float					direction, loadingPercentage;
     
-	volatile BOOL			ThreadLoadImage, stopThreadLoadImage, loadingPause;
+	volatile BOOL			ThreadLoadImage, stopThreadLoadImage, loadingPause, loadingImageDone;
     BOOL                    FullScreenOn;
     NSWindow                *FullScreenWindow;
     NSWindow                *StartingWindow;

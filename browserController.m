@@ -1086,6 +1086,11 @@ static BOOL FORCEREBUILD = NO;
 	}
 }
 
+- (void) bonjourRunLoop:(id) sender
+{
+	[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+}
+
 -(void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour
 {
 	if( isCurrentDatabaseBonjour == NO)
@@ -1095,6 +1100,16 @@ static BOOL FORCEREBUILD = NO;
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
 	[self loadDatabase: currentDatabasePath];
+	
+	if( isCurrentDatabaseBonjour)
+	{
+		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];;
+	}
+	else
+	{
+		[bonjourRunLoopTimer release];
+		bonjourRunLoopTimer = 0L;
+	}
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
@@ -2542,14 +2557,26 @@ long        i;
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
+		long		i;
+		NSArray		*winList = [NSApp windows];
+		BOOL		doit = YES;
+		
+		for( i = 0; i < [winList count]; i++)
 		{
-			if( [checkIncomingLock tryLock])
+			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) doit = NO;
+		}
+		
+		if( doit)
+		{
+			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
 			{
-			//	NSLog(@"lock checkBonjourUpToDate");
-				[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
+				if( [checkIncomingLock tryLock])
+				{
+				//	NSLog(@"lock checkBonjourUpToDate");
+					[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
+				}
+				else NSLog(@"checkBonjourUpToDate locked...");
 			}
-			else NSLog(@"checkBonjourUpToDate locked...");
 		}
 		
 		[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
@@ -3969,9 +3996,6 @@ long        i;
 
 -(void) previewPerformAnimation:(id) sender
 {
-	if( isCurrentDatabaseBonjour)
-		[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
-	
     // Wait loading all images !!!
 	if( bonjourDownloading) return;
 	if( [animationCheck state] == NSOffState) return;
@@ -6079,6 +6103,7 @@ static BOOL needToRezoom;
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:16.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60*2 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
+		bonjourRunLoopTimer = 0L;
 		
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];

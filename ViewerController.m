@@ -921,6 +921,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
+	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 
 	return YES;
 }
@@ -965,6 +966,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
+	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
@@ -1362,6 +1364,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
+	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+	
 	[ThreadLoadImageLock release];
 	ThreadLoadImageLock = 0L;
 
@@ -2912,6 +2916,7 @@ static ViewerController *draggedController = 0L;
 	}
 	else [ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
+	while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	long index2compare;
 	
@@ -3183,6 +3188,7 @@ static ViewerController *draggedController = 0L;
 	
 	[ThreadLoadImageLock lock];
 	ThreadLoadImage = YES;
+	loadingImageDone = NO;
 	
 	NSLog(@"LOADING: Start loading images");
 	
@@ -3254,6 +3260,8 @@ static ViewerController *draggedController = 0L;
 	}
 	
     [pool release];
+	
+	loadingImageDone = YES;
 }
 
 //static volatile BOOL someoneIsLoading = NO;
@@ -9936,6 +9944,8 @@ long i;
 		}
 		else [ThreadLoadImageLock lock];
 		[ThreadLoadImageLock unlock];
+		while( loadingImageDone == NO) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+		
 		[splash close];
 		[splash release];
 		
