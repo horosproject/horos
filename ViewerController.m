@@ -915,7 +915,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 - (BOOL)windowShouldClose:(id)sender
 {
 	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
+	while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block
 	[ThreadLoadImageLock unlock];
 
 	return YES;
@@ -955,7 +955,7 @@ int sortROIByName(id roi1, id roi2, void *context)
     }
 	
 	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
+	while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
 	[ThreadLoadImageLock unlock];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
@@ -1348,7 +1348,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	long	i;
 
-	[ThreadLoadImageLock lock];
+	while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
 	[ThreadLoadImageLock unlock];
 	[ThreadLoadImageLock release];
 	ThreadLoadImageLock = 0L;
@@ -2894,7 +2894,8 @@ static ViewerController *draggedController = 0L;
 	// Release previous data
 	
 	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
+	while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
+//	[ThreadLoadImageLock lock];
 	[ThreadLoadImageLock unlock];
 	
 	long index2compare;
@@ -9913,7 +9914,7 @@ long i;
 	{
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
-		[ThreadLoadImageLock lock];
+		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];	// For Bonjour sharing... to avoid block	// For Bonjour sharing... to avoid block
 		[ThreadLoadImageLock unlock];
 		[splash close];
 		[splash release];

@@ -2518,7 +2518,7 @@ long        i;
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
 				
 				NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
-								
+				
 				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
 				{
 					NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
@@ -3969,6 +3969,9 @@ long        i;
 
 -(void) previewPerformAnimation:(id) sender
 {
+	if( isCurrentDatabaseBonjour)
+		[[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
+	
     // Wait loading all images !!!
 	if( bonjourDownloading) return;
 	if( [animationCheck state] == NSOffState) return;
