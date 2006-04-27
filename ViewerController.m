@@ -3254,8 +3254,6 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
-	loadingPercentage = 1;
-	
 	NSLog(@"LOADING: All images loaded");
 	
 	if( stopThreadLoadImage == NO)
@@ -3263,6 +3261,8 @@ static ViewerController *draggedController = 0L;
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
 	}
+	
+	loadingPercentage = 1;
 	
     [pool release];
 }
@@ -9947,6 +9947,11 @@ long i;
 		}
 		else [ThreadLoadImageLock lock];
 		[ThreadLoadImageLock unlock];
+		
+		while( loadingPercentage != 1)
+		{
+			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];		// To be sure that PerformOnMainThread has been called !
+		}
 		
 		[splash close];
 		[splash release];
