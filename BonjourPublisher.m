@@ -41,6 +41,8 @@ extern NSString * documentsDirectory();
 		fdForListening = 0;
 		listeningSocket = 0L;
 		netService = 0L;
+		
+		connectionLock = [[NSLock alloc] init];
 	}
 	return self;
 }
@@ -48,6 +50,7 @@ extern NSString * documentsDirectory();
 - (void) dealloc
 {
 	[serviceName release];
+	[connectionLock release];
 	
 	[super dealloc];
 }
@@ -164,7 +167,10 @@ extern NSString * documentsDirectory();
 - (void)connectionReceived:(NSNotification *)aNotification
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-    NSFileHandle		*incomingConnection = [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
+    
+	[connectionLock lock];
+	
+	NSFileHandle		*incomingConnection = [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
 	NSData				*readData;
 	NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
 	NSMutableData		*representationToSend = 0L;
@@ -543,6 +549,8 @@ extern NSString * documentsDirectory();
 		[incomingConnection writeData:representationToSend];
 		[incomingConnection closeFile];
 	}
+	
+	[connectionLock unlock];
 	
 	[pool release];
 }

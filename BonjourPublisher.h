@@ -24,6 +24,8 @@
 	int					fdForListening;
 	int					numberOfConnectedUsers;
 	BrowserController	*interfaceOsiriX;
+	
+	NSLock				*connectionLock;
 }
 
 - (id)initWithBrowserController: (BrowserController*) bC;
