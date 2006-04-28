@@ -1524,6 +1524,23 @@ NS_ENDHANDLER
 
 - (void)updateLogEntry: (id)sender
 {
+	//update send progress bar
+	
+	NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+	[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
+	[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
+	[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+	if (_numberSent + _numberErrors < _numberOfFiles) {
+		[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
+		[userInfo setObject:@"in progress" forKey:@"Message"];
+	}
+	else{
+		[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
+		[userInfo setObject:@"complete" forKey:@"Message"];
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
+
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
 	
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
@@ -1553,25 +1570,6 @@ NS_ENDHANDLER
 	
 	}
 	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-	
-	
-
-	//update send progress bar
-	
-	NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-	[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
-	[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
-	[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
-	if (_numberSent + _numberErrors < _numberOfFiles) {
-		[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-		[userInfo setObject:@"in progress" forKey:@"Message"];
-	}
-	else{
-		[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-		[userInfo setObject:@"complete" forKey:@"Message"];
-	}
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
 	
 	[context unlock];
 }

@@ -249,8 +249,6 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (void) addHelpMenu;
 
 - (BOOL) isItCD:(NSArray*) pathFilesComponent;
-//- (void)setSendMessage:(NSNotification *)note;
-//- (void)receivedImage:(NSNotification *)note;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;

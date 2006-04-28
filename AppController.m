@@ -1537,29 +1537,29 @@ static BOOL initialized = NO;
 		
 		// --
 		{
-			//    NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
-			//	NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
-			//	for( i = 0; i < 256; i++)
-			//	{
-			//		[rArray addObject: [NSNumber numberWithLong:i]];
-			//	}
-			//	[aCLUTFilter setObject:rArray forKey:@"Red"];
-			//	
-			//	NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
-			//	for( i = 0; i < 256; i++)
-			//	{
-			//		[gArray addObject: [NSNumber numberWithLong:0]];
-			//	}
-			//	[aCLUTFilter setObject:gArray forKey:@"Green"];
-			//	
-			//	NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
-			//	for( i = 0; i < 256; i++)
-			//	{
-			//		[bArray addObject: [NSNumber numberWithLong:0]];
-			//	}
-			//	[aCLUTFilter setObject:bArray forKey:@"Blue"];
-			//	
-			//	[clutValues setObject:aCLUTFilter forKey:@"Red CLUT"];
+		//    NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
+		//	NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
+		//	for( i = 0; i < 256; i++)
+		//	{
+		//		[rArray addObject: [NSNumber numberWithLong:i]];
+		//	}
+		//	[aCLUTFilter setObject:rArray forKey:@"Red"];
+		//	
+		//	NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
+		//	for( i = 0; i < 256; i++)
+		//	{
+		//		[gArray addObject: [NSNumber numberWithLong:0]];
+		//	}
+		//	[aCLUTFilter setObject:gArray forKey:@"Green"];
+		//	
+		//	NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		//	for( i = 0; i < 256; i++)
+		//	{
+		//		[bArray addObject: [NSNumber numberWithLong:0]];
+		//	}
+		//	[aCLUTFilter setObject:bArray forKey:@"Blue"];
+		//	
+		//	[clutValues setObject:aCLUTFilter forKey:@"Red CLUT"];
 		}
 		
 		// --
