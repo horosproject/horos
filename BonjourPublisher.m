@@ -266,7 +266,7 @@ extern NSString * documentsDirectory();
 			}
 			while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
 			
-			[[data subdataWithRange: NSMakeRange(10,fileSize)] writeToFile:dstPath atomically:NO];
+			[[data subdataWithRange: NSMakeRange(10,fileSize)] writeToFile:dstPath atomically: YES];
 			
 			representationToSend = 0L;
 		}
