@@ -21,10 +21,13 @@
 											
 	IBOutlet NSPopUpButton					*CLUTBlendingMenu, *DefaultCLUTMenu;
 	
-	IBOutlet NSMatrix						*CLUTMode;
+	IBOutlet NSMatrix						*CLUTMode, *WindowingModeMatrix;
+	IBOutlet NSTextField					*minimumValueText;
 }
 
 - (void) mainViewDidLoad;
 - (IBAction) setPETCLUTfor3DMIP: (id) sender;
 - (IBAction) setConvertPETtoSUVautomatically: (id) sender;
+- (IBAction) setWindowingMode: (id) sender;
+- (IBAction) setMinimumValue: (id) sender;
 @end

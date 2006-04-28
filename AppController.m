@@ -1713,6 +1713,9 @@ static BOOL initialized = NO;
 		
 		[defaultValues setObject:@"100" forKey:@"AUTOCLEANINGSPACESIZE"];
 		
+		[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
+		[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];
+		
 		[defaultValues setObject:@"B/W Inverse" forKey:@"PET Clut Mode"];
 		[defaultValues setObject:@"PET" forKey: @"PET Default CLUT"];
 		[defaultValues setObject:@"PET" forKey: @"PET Blending CLUT"];

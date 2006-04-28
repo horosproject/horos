@@ -116,7 +116,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	NSDictionary	*localeDictionnary;
 
     NSPoint         start, originStart, originOffsetStart, previous;
-    float			startWW, curWW;
+    float			startWW, curWW, startMin, startMax;
     float			startWL, curWL;
     NSSize          scaleStart, scaleInit;
     

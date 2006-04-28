@@ -21,8 +21,19 @@
 	
 	[[NSUserDefaults standardUserDefaults] setObject:[DefaultCLUTMenu title] forKey: @"PET Default CLUT"];
 	[[NSUserDefaults standardUserDefaults] setObject:[CLUTBlendingMenu title] forKey: @"PET Blending CLUT"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[minimumValueText intValue] forKey: @"PETMinimumValue"];
 	
 	[super dealloc];
+}
+
+- (IBAction) setWindowingMode: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"PETWindowingMode"];
+}
+
+- (IBAction) setMinimumValue: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[minimumValueText intValue] forKey: @"PETMinimumValue"];
 }
 
 - (void) buildCLUTMenu :(NSPopUpButton*) clutPopup
@@ -49,7 +60,10 @@
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		
+	
+	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
+	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];
+	
 	[convertPETtoSUVCheck setState: [defaults boolForKey: @"ConvertPETtoSUVautomatically"]];
 	
 	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString:@"B/W Inverse"])

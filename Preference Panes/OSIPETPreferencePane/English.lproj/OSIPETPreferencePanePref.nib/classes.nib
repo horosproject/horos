@@ -13,14 +13,21 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {setConvertPETtoSUVautomatically = id; setPETCLUTfor3DMIP = id; }; 
+            ACTIONS = {
+                setConvertPETtoSUVautomatically = id; 
+                setMinimumValue = id; 
+                setPETCLUTfor3DMIP = id; 
+                setWindowingMode = id; 
+            }; 
             CLASS = OSIPETPreferencePane; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 CLUTBlendingMenu = NSPopUpButton; 
                 CLUTMode = NSMatrix; 
                 DefaultCLUTMenu = NSPopUpButton; 
+                WindowingModeMatrix = NSMatrix; 
                 convertPETtoSUVCheck = NSButton; 
+                minimumValueText = NSTextField; 
             }; 
             SUPERCLASS = NSPreferencePane; 
         }

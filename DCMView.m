@@ -2086,6 +2086,8 @@ static long scrollMode;
         startImage = curImage;
         startWW = [curDCM ww];
         startWL = [curDCM wl];
+		startMin = [curDCM wl] - [curDCM ww]/2;
+		startMax = [curDCM wl] + [curDCM ww]/2;
         startScaleValue = scaleValue;
         rotationStart = rotation;
 		blendingFactorStart = blendingFactor;
@@ -3040,12 +3042,30 @@ static long scrollMode;
 			{
 				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"])
 				{
-					float startlevel = 0;
-					float endlevel = startWL + startWW/2 + (current.x -  start.x) * WWAdapter;
+					float startlevel;
+					float endlevel;
 					
-					if( endlevel < 0.001) endlevel = 0.001;
-					
-					[curDCM changeWLWW: startlevel + (endlevel - startlevel)/2 :startlevel + endlevel];
+					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+					{
+						case 0:
+							[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
+						break;
+						
+						case 1:
+							endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+							
+							[curDCM changeWLWW: (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"]: endlevel - startMin];
+						break;
+						
+						case 2:
+							endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+							startlevel = startMin + (current.x -  start.x) * WWAdapter ;
+							
+							if( startlevel < 0) startlevel = 0;
+							
+							[curDCM changeWLWW: startlevel + (endlevel - startlevel) / 2: endlevel - startlevel];
+						break;
+					}
 				}
 				else
 				{
@@ -3160,10 +3180,15 @@ static long scrollMode;
 
 - (void) setWLWW:(float) wl :(float) ww
 {
-	if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"])
-	{
-		wl = ww/2;	//if( wl - ww/2 < 0) 
-	}
+//	if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"])
+//	{
+//		switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+//		{
+//			case 0:		break;
+//			case 1:		wl = ww/2;		wl+= [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];		break;
+//			case 2:		break;
+//		}
+//	}
 	
     [curDCM changeWLWW :wl : ww];
     
@@ -4720,7 +4745,7 @@ static long scrollMode;
 		lww = [curDCM ww];
 	}
 	
-	if( fullText)
+//	if( fullText)
 	{
 		if( lww < 50) sprintf (cstr, "WL: %0.4f WW: %0.4f", lwl, lww);
 		else sprintf (cstr, "WL: %ld WW: %ld", (long) lwl, (long) lww);
@@ -4730,7 +4755,7 @@ static long scrollMode;
 		{
 			if( [curDCM maxValueOfSeries])
 			{
-				sprintf (cstr, "From: 0 %% to: %d %% (%f)", (long) (lww * 100. / [curDCM maxValueOfSeries]), lww);
+				sprintf (cstr, "From: 0 %% (%0.2f) to: %d %% (%0.2f)", lwl - lww/2, (long) (lww * 100. / [curDCM maxValueOfSeries]), lwl + lww/2);
 				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 			}
 		}

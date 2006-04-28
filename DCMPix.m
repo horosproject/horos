@@ -2606,13 +2606,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		{
 			if( spp == 3)	// RGB
 			{
-				unsigned char *buf = _TIFFmalloc(TIFFScanlineSize(tif));
+				unsigned char *buf = _TIFFmalloc( TIFFScanlineSize(tif));
 				unsigned char  *dst, *aImage = (unsigned char*) oImage;
 				long scanline = TIFFScanlineSize(tif);
 				
 				for (row = 0; row < h; row++)
 				{
 					TIFFReadScanline(tif, buf, row, 0);
+					
 					
 					dst = aImage + (row*(scanline/3) * 4);
 					for( i = 0; i < scanline/3; i++)
@@ -2690,9 +2691,19 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 		if( realwidth != width)
 		{
-			for( i = 0; i < height;i++)
+			if( isRGB == NO)	// 16 bits
 			{
-				memmove( oImage + i*width, oImage + i*realwidth, width*2);
+				for( i = 0; i < height;i++)
+				{
+					memmove( oImage + i*width, oImage + i*realwidth, width*2);
+				}
+			}
+			else				// 32 bits
+			{
+				for( i = 0; i < height;i++)
+				{
+					memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
+				}
 			}
 		}
 		
@@ -7317,8 +7328,8 @@ float			iwl, iww;
 							else
 							#endif
 							{
-							//	if( stackMode == 2) vmaxNoAltivec(fNext, fImage, fResult, height * width);
-							//	else vminNoAltivec(fNext, fImage, fResult, height * width);
+								if( stackMode == 2) vmaxNoAltivec(fNext, fImage, fResult, height * width);
+								else vminNoAltivec(fNext, fImage, fResult, height * width);
 							}
 						}
 						
@@ -7348,8 +7359,8 @@ float			iwl, iww;
 										else
 										#endif
 										{
-										//	if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
-										//	else vminNoAltivec(fResult, fNext, fResult, height * width);
+											if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
+											else vminNoAltivec(fResult, fNext, fResult, height * width);
 										}
 									}
 								}
