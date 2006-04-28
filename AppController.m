@@ -200,7 +200,7 @@ int GetAllPIDsForProcessName(const char* ProcessName,
         * Return Value: a return value indicating success or failure.  Actually, sysctl will either return
         *     zero on no error and -1 on error.  The errno UNIX variable will be set on error.
         */ 
-        error = sysctl(mib, 3, NULL, &sizeOfBufferRequired, NULL, NULL);
+        error = sysctl(mib, 3, NULL, &sizeOfBufferRequired, NULL, 0);
 
         /* If an error occurred then return the accociated error.  The error itself actually is stored in the UNIX 
         * errno variable.  We can access the errno value using the errno global variable.  We will return the 
@@ -251,7 +251,7 @@ int GetAllPIDsForProcessName(const char* ProcessName,
         * Return Value: a return value indicating success or failure.  Actually, sysctl will either return 
         *     zero on no error and -1 on error.  The errno UNIX variable will be set on error.
         */ 
-        error = sysctl(mib, 3, BSDProcessInformationStructure, &sizeOfBufferRequired, NULL, NULL);
+        error = sysctl(mib, 3, BSDProcessInformationStructure, &sizeOfBufferRequired, NULL, 0);
     
         //Here we successfully got the process information.  Thus set the variable to end this sysctl calling loop
         if (error == 0)
@@ -2753,8 +2753,8 @@ static BOOL initialized = NO;
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
 {
 
-	[currentHangingProtocol release];
-	currentHangingProtocol = nil;
+//	[currentHangingProtocol release];
+//	currentHangingProtocol = nil;
 	
 	if (!modality )
 	{
@@ -2764,12 +2764,14 @@ static BOOL initialized = NO;
 	}
 	else
 	{
-		
 		NSArray *hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: modality];
 		if ([hangingProtocolArray count] > 0) {
 			NSEnumerator *enumerator = [hangingProtocolArray objectEnumerator];
+
+			[currentHangingProtocol release];
+			currentHangingProtocol = nil;
 			currentHangingProtocol = [hangingProtocolArray objectAtIndex:0];
-			
+
 			[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
 			[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
 			
@@ -2778,6 +2780,10 @@ static BOOL initialized = NO;
 				NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
 				if (searchRange.location != NSNotFound) {
 					currentHangingProtocol = protocol;
+
+					[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
+					[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
+
 					break;
 				}
 			}

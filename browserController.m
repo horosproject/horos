@@ -5866,13 +5866,26 @@ static BOOL needToRezoom;
 	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Series"] == NO)		// Called by return/enter key with only one series selected. <- why only one??.....
 	{
 		[appController setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
+		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
+		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+		{
+			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+		}
+		else {
+			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+			NSMutableArray *children =  [NSMutableArray array];
+			int i;
+			for (i = 0; i < count; i++)
+				[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
+			
+			[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+		}
 	}
 	else														// Called by double click in matrix.
 	{
 		[appController setCurrentHangingProtocolForModality: Nil description: Nil];	
+		[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
 	}
-	
-	[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
 }
 
 
