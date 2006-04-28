@@ -3180,16 +3180,6 @@ static long scrollMode;
 
 - (void) setWLWW:(float) wl :(float) ww
 {
-//	if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"])
-//	{
-//		switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-//		{
-//			case 0:		break;
-//			case 1:		wl = ww/2;		wl+= [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];		break;
-//			case 2:		break;
-//		}
-//	}
-	
     [curDCM changeWLWW :wl : ww];
     
     curWW = [curDCM ww];
@@ -4755,7 +4745,9 @@ static long scrollMode;
 		{
 			if( [curDCM maxValueOfSeries])
 			{
-				sprintf (cstr, "From: 0 %% (%0.2f) to: %d %% (%0.2f)", lwl - lww/2, (long) (lww * 100. / [curDCM maxValueOfSeries]), lwl + lww/2);
+				float min = lwl - lww/2, max = lwl + lww/2;
+				
+				sprintf (cstr, "From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2);
 				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 			}
 		}
