@@ -262,9 +262,11 @@ volatile static BOOL threadIsRunning = NO;
 					{
 						if ([[NSFileManager defaultManager] fileExistsAtPath: localPath]) NSLog(@"strange...");
 						
-						[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
-						success = [[NSFileManager defaultManager] createFileAtPath: [localPath stringByAppendingString:@"RENAME"] contents:curData attributes:nil];
-						success = [[NSFileManager defaultManager] movePath:[localPath stringByAppendingString:@"RENAME"] toPath:localPath handler:0L];
+						[curData writeToFile: localPath atomically: YES];
+						
+//						[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
+//						success = [[NSFileManager defaultManager] createFileAtPath: [localPath stringByAppendingString:@"RENAME"] contents:curData attributes:nil];
+//						success = [[NSFileManager defaultManager] movePath:[localPath stringByAppendingString:@"RENAME"] toPath:localPath handler:0L];
 						
 						if( success == NO)
 						{
