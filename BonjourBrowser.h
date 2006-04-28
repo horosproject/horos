@@ -50,7 +50,7 @@
 
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub;
 
-- (void) resolveServiceWithIndex:(int)index msg: (char*) msg;
+- (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg;
 
 - (NSMutableArray*) services;
 - (NSString *) databaseFilePathForService:(NSString*) service;

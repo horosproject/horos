@@ -322,8 +322,10 @@ volatile static BOOL threadIsRunning = NO;
 }
 
 //socket.h
-- (void) connectToService: (struct sockaddr_in*) socketAddress
+- (BOOL) connectToService: (struct sockaddr_in*) socketAddress
 {
+	BOOL succeed = NO;
+	
 	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);
 	if(socketToRemoteServer > 0)
 	{
@@ -335,7 +337,6 @@ volatile static BOOL threadIsRunning = NO;
 //			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleReadCompletionNotification object:sendConnection];
            
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(readAllTheData:) name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
-			
 			
 			 if(connect(socketToRemoteServer, (struct sockaddr *)socketAddress, sizeof(*socketAddress)) == 0)
 			 {
@@ -464,6 +465,13 @@ volatile static BOOL threadIsRunning = NO;
 //				[sendConnection readToEndOfFileInBackgroundAndNotify];
 
 				[sendConnection readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"OsiriXLoopMode"]];
+				
+				succeed = YES;
+			}
+			else
+			{
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object: sendConnection];
+				[sendConnection release];
 			}
 		}
 		else
@@ -471,6 +479,8 @@ volatile static BOOL threadIsRunning = NO;
 			close(socketToRemoteServer);
 		}
 	}
+	
+	return succeed;
 }
 
 - (long) BonjourServices
@@ -505,7 +515,7 @@ volatile static BOOL threadIsRunning = NO;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
-- (void) fixedIP: (int) index
+- (BOOL) fixedIP: (int) index
 {
 	struct sockaddr_in service;
 	const char	*host_name = [[[services objectAtIndex: index] valueForKey:@"Address"] UTF8String];
@@ -525,7 +535,7 @@ volatile static BOOL threadIsRunning = NO;
 	
 	service.sin_port = htons(8780);
 	
-	[self connectToService: &service];
+	return [self connectToService: &service];
 }
 
 - (void) netServiceDidResolveAddress:(NSNetService *)sender
@@ -643,8 +653,10 @@ volatile static BOOL threadIsRunning = NO;
 //}
 
 
-- (void) resolveServiceWithIndex:(int)index msg: (char*) msg
+- (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg
 {
+	BOOL succeed = NO;
+	
 	serviceBeingResolvedIndex = index;
 	strcpy( messageToRemoteService, msg);
 	resolved = YES;
@@ -664,7 +676,7 @@ volatile static BOOL threadIsRunning = NO;
 	else if( index >= BonjourServices)
 	{
 		resolved = NO;
-		[self fixedIP: index];
+		succeed = [self fixedIP: index];
 	}
 	else
 	{        
@@ -677,23 +689,31 @@ volatile static BOOL threadIsRunning = NO;
 		
 		resolved = NO;
 		[serviceBeingResolved resolveWithTimeout: TIMEOUT];
+		succeed = YES;
     }
+	
+	return succeed;
 }
 
 - (void) resolveServiceThread:(NSDictionary*) object
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSRunLoop	*run = [NSRunLoop currentRunLoop];
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	BOOL				succeed;
+	NSRunLoop			*run = [NSRunLoop currentRunLoop];
 	
 	resolved = NO;
-	[self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
-	NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
 	
-	while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
+	if( succeed)
 	{
-		[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		
+		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
+		{
+			[run runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		}
 	}
+	
 	[pool release];
 	
 	threadIsRunning = NO;
@@ -710,6 +730,7 @@ volatile static BOOL threadIsRunning = NO;
 		if( [NSThread currentThread] == mainThread) [[NSRunLoop currentRunLoop] runMode:@"OsiriXLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 		else [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
 	}
+	
 //	[self performSelectorOnMainThread:@selector(resolveServiceThread:) withObject:dict waitUntilDone: YES];
 	
 //	[self resolveServiceThread: dict];
