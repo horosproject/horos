@@ -549,7 +549,7 @@ public:
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*1.5);
+	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*3);
 	
 	
 	[self display];
@@ -3440,7 +3440,7 @@ public:
 		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*1.5);
+		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*3);
 		
 		[self setNeedsDisplay:YES];
 	}
