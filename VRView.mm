@@ -225,6 +225,8 @@ public:
 		
 		[VRView getCroppingBox: a :volume :widget];
 		[VRView setCroppingBox: a :volume];
+		
+		[VRView getCroppingBox: a :blendingVolume :widget];
 		[VRView setCroppingBox: a :blendingVolume];
 		
 		widget->SetHandleSize( 0.005);
@@ -277,6 +279,8 @@ public:
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox
 {
+	if( volume == 0L) return NO;
+
 	vtkVolumeMapper *mapper = (vtkVolumeMapper*) volume->GetMapper();
 	if( mapper)
 	{
@@ -538,6 +542,8 @@ public:
 	if( validBox)
 	{
 		[VRView setCroppingBox: a :volume];
+		
+		[VRView getCroppingBox: a :blendingVolume :croppingBox];
 		[VRView setCroppingBox: a :blendingVolume];
 	}
 	else
@@ -624,6 +630,8 @@ public:
 	if( validBox)
 	{
 		[VRView setCroppingBox: a :volume];
+		
+		[VRView getCroppingBox: a :blendingVolume :croppingBox];
 		[VRView setCroppingBox: a :blendingVolume];
 	}
 	else
@@ -2028,6 +2036,7 @@ public:
 		else if( tool == tWL)
 		{
 			float	startWW = ww, startWL = wl;
+			float	startMin = wl - ww/2, startMax = wl + ww/2;
 			
 			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
@@ -2042,10 +2051,42 @@ public:
 				case NSLeftMouseDragged:
 				{
 					float WWAdapter  = startWW / 200.0;
+					float startlevel, endlevel;
 					
-					wl =  (startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter);
-					ww =  (startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter);
-					if( ww < 1) ww = 1;
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+					{
+						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+						{
+							case 0:
+								wl =  (startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter);
+								ww =  (startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter);
+							break;
+							
+							case 1:
+								endlevel = startMax + (mouseLoc.y - mouseLocStart.y) * WWAdapter ;
+								
+								wl =  (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+								ww = endlevel - startMin;
+							break;
+							
+							case 2:
+								endlevel = startMax + (mouseLoc.y - mouseLocStart.y) * WWAdapter ;
+								startlevel = startMin + (mouseLoc.x - mouseLocStart.x) * WWAdapter ;
+								
+								if( startlevel < 0) startlevel = 0;
+								
+								wl = startlevel + (endlevel - startlevel) / 2;
+								ww = endlevel - startlevel;
+							break;
+						}
+					}
+					else
+					{
+						wl =  (startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter);
+						ww =  (startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter);
+					}
+					
+					if( ww < 0.1) ww = 0.1;
 					
 					[self setOpacity: currentOpacityArray];
 					
@@ -2060,8 +2101,17 @@ public:
 	//					[self flipData: (char*) dst8.data :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
 	//				}
 					
-					if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-					else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+					{
+						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
+						else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+					}
+					else
+					{
+						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
+						else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+					}
+					
 					textWLWW->SetInput( WLWWString);
 					
 					
@@ -3283,6 +3333,8 @@ public:
 				if( validBox)
 				{
 					[VRView setCroppingBox: a :volume];
+					
+					[VRView getCroppingBox: a :blendingVolume :croppingBox];
 					[VRView setCroppingBox: a :blendingVolume];
 				}
 			}
@@ -3743,6 +3795,8 @@ public:
 	if( validBox)
 	{
 		[VRView setCroppingBox: a :volume];
+		
+		[VRView getCroppingBox: a :blendingVolume :croppingBox];
 		[VRView setCroppingBox: a :blendingVolume];
 	}
 	
@@ -4635,15 +4689,17 @@ public:
 	a[5] = [[cam maxCroppingPlanes] z];
 	
 	[VRView setCroppingBox: a :volume];
-	[VRView setCroppingBox: a :blendingVolume];
-	
+		
 	double origin[3];
 	volume->GetPosition(origin);	//GetOrigin		
 	a[0] += origin[0];		a[1] += origin[0];
 	a[2] += origin[1];		a[3] += origin[1];
 	a[4] += origin[2];		a[5] += origin[2];
 	croppingBox->PlaceWidget(a[0], a[1], a[2], a[3], a[4], a[5]);
-	
+
+	[VRView getCroppingBox: a :blendingVolume :croppingBox];
+	[VRView setCroppingBox: a :blendingVolume];
+
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);
 	aCamera->SetViewUp(vUp);

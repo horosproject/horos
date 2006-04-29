@@ -262,6 +262,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) roiSet;
 -(void) roiSet:(ROI*) aRoi;
 - (void) colorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
+- (void) blendingColorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b;
 - (void )changeFont:(id)sender;
 - (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font;
 - (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray;

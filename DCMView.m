@@ -6432,6 +6432,21 @@ static long scrollMode;
 	*b = blueTable;
 }
 
+- (void) blendingColorTables:(unsigned char **) a :(unsigned char **) r :(unsigned char **)g :(unsigned char **) b
+{
+	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+	{
+		*a = alphaTable;
+		*r = PETredTable;
+		*g = PETgreenTable;
+		*b = PETblueTable;
+	}
+	else
+	{
+		[blendingView colorTables:a :r :g :b];
+	}
+}
+
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT 
 {
 	if(  rT == 0L)

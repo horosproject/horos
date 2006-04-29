@@ -185,7 +185,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	Pixel_8			*alphaTable, *redTable, *greenTable, *blueTable;
 	float			iwl, iww;
 
-	[[blendingController imageView] colorTables:&alphaTable :&redTable :&greenTable :&blueTable];
+	[[viewer2D imageView] blendingColorTables:&alphaTable :&redTable :&greenTable :&blueTable];
 	
 	[view setBlendingCLUT :redTable :greenTable :blueTable];
 	
@@ -399,7 +399,8 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 
 	[pixList[0] retain];
 	[volumeData[0] retain];
-    
+    viewer2D = [vC retain];
+	
 	if( [style isEqualToString:@"standard"])
 		self = [super initWithWindowNibName:@"VR"];
 	else
@@ -433,8 +434,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	x2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
 	y2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
 	z2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
-
-	viewer2D = [vC retain];
+	
 	if (viewer2D)
 	{		
 		long i, j;
@@ -643,7 +643,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
 	else if([view mode] == 0) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
 	
-	if( [dict objectForKey:@"CLUTName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
+	if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
 	else if([view mode] == 0) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
