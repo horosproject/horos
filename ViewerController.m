@@ -2891,7 +2891,9 @@ static ViewerController *draggedController = 0L;
 	long		startWW;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
-	
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
+
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
 	if( [[appController FindRelatedViewers:pixList[0]] count] > 1)
 	{
@@ -2938,7 +2940,6 @@ static ViewerController *draggedController = 0L;
 		imageIndex = 0;
 	}
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
