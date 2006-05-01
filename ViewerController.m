@@ -2901,6 +2901,8 @@ static ViewerController *draggedController = 0L;
 		return;
 	}
 	
+	windowWillClose = YES;
+	
 	if( previousColumns != 1 || previousRows != 1)
 	{
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:1], nil];
@@ -2939,7 +2941,6 @@ static ViewerController *draggedController = 0L;
 	{
 		imageIndex = 0;
 	}
-	
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -3110,6 +3111,8 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	[imageView becomeMainWindow];	// This will send the image sync order !
+	
+	windowWillClose = NO;
 }
 
 - (void) showWindowTransition

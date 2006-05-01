@@ -1686,7 +1686,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 -(void) roiSet:(ROI*) aRoi
 {
-	[aRoi setRoiFont: labelFontListGL :self];
+	[aRoi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 }
 
 -(void) roiSet
