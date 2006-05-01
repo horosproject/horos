@@ -37,6 +37,7 @@ Version 2.3
 #define CIRCLERESOLUTION 40
 #define ROIVERSION		2
 
+static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
 
 static		NSString				*defaultName;
@@ -534,21 +535,39 @@ GLenum glReportError (void)
 	return nil;
 }
 
+- (long) maxStringWidth:( char *) cstr max:(long) max
+{
+	if( cstr[ 0] == 0) return max;
+	
+	long i = 0, temp = 0;
+	
+	while( cstr[ i] != 0)
+	{
+		temp += fontSize[ cstr[ i]];
+		i++;
+	}
+	
+	if( temp > max) max = temp;
+	
+	return max;
+}
+
 - (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line
 {
+	if( cstrOut[ 0] == 0) return;
+
 	float xx, yy, rotation = 0, ratio;
 	
 	line *= 12;
 	
 	ratio = [[curView curDCM] pixelRatio];
 	
-	if( [curView rotation])
-	{
-		rotation = [curView rotation]*deg2rad;
-		xx = x + (line+1.)*sin(rotation);
-		yy = y + ((line+1.)/ratio)*cos(rotation);
-	}
-	else
+//	if( [curView rotation])
+//	{
+//		xx = x + line*sin(rotation);
+//		yy = y + line/ratio*cos(rotation);
+//	}
+//	else
 	{
 		xx = x + 1.0f;
 		yy = y + (line + 1.0)/ratio;
@@ -556,19 +575,17 @@ GLenum glReportError (void)
 	
     glColor3f (0.0, 0.0, 0.0);
 
-//	glPushMatrix();
-	
     glRasterPos3d (xx, yy, 0);
 	
     GLint i = 0;
     while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
 
-	if( rotation)
-	{
-		xx = x + line*sin(rotation);
-		yy = y + line/ratio*cos(rotation);
-	}
-	else
+//	if( rotation)
+//	{
+//		xx = x + line*sin(rotation);
+//		yy = y + line/ratio*cos(rotation);
+//	}
+//	else
 	{
 		xx = x;
 		yy = y + line/ratio;
@@ -578,8 +595,6 @@ GLenum glReportError (void)
     glRasterPos3d (xx, yy, 0);
     i = 0;
     while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
-	
-//	glPopMatrix();
 }
 
 -(float) EllipseArea
@@ -712,7 +727,8 @@ GLenum glReportError (void)
 
 - (NSPoint) lowerRightPoint
 {
-	long		i, xmin, xmax, ymin, ymax;
+	long		i;
+	float		xmin, xmax, ymin, ymax;
 	NSPoint		result;
 	
 	switch( type)
@@ -1981,6 +1997,114 @@ return rect;
 	mousePosMeasure = p;
 }
 
+
+static int roundboxtype= 15;
+
+void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, float rad)
+{
+	 float vec[7][2]= {{0.195, 0.02}, {0.383, 0.067}, {0.55, 0.169}, {0.707, 0.293},
+					   {0.831, 0.45}, {0.924, 0.617}, {0.98, 0.805}};
+	 int a;
+	 
+	 /* mult */
+	 for(a=0; a<7; a++) {
+			 vec[a][0]*= rad; vec[a][1]*= rad;
+	 }
+
+	 glBegin(mode);
+
+	 /* start with corner right-bottom */
+	 if(roundboxtype & 4) {
+			 glVertex2f( maxx-rad, miny);
+			 for(a=0; a<7; a++) {
+					 glVertex2f( maxx-rad+vec[a][0], miny+vec[a][1]);
+			 }
+			 glVertex2f( maxx, miny+rad);
+	 }
+	 else glVertex2f( maxx, miny);
+	 
+	 /* corner right-top */
+	 if(roundboxtype & 2) {
+			 glVertex2f( maxx, maxy-rad);
+			 for(a=0; a<7; a++) {
+					 glVertex2f( maxx-vec[a][1], maxy-rad+vec[a][0]);
+			 }
+			 glVertex2f( maxx-rad, maxy);
+	 }
+	 else glVertex2f( maxx, maxy);
+	 
+	 /* corner left-top */
+	 if(roundboxtype & 1) {
+			 glVertex2f( minx+rad, maxy);
+			 for(a=0; a<7; a++) {
+					 glVertex2f( minx+rad-vec[a][0], maxy-vec[a][1]);
+			 }
+			 glVertex2f( minx, maxy-rad);
+	 }
+	 else glVertex2f( minx, maxy);
+	 
+	 /* corner left-bottom */
+	 if(roundboxtype & 8) {
+			 glVertex2f( minx, miny+rad);
+			 for(a=0; a<7; a++) {
+					 glVertex2f( minx+vec[a][1], miny+rad-vec[a][0]);
+			 }
+			 glVertex2f( minx+rad, miny);
+	 }
+	 else glVertex2f( minx, miny);
+	 
+	 glEnd();
+}
+
+- (void) drawTextualData:( char*) line1 :( char*) line2 :( char*) line3 :( char*) line4 :( char*) line5 location:(NSPoint) tPt
+{
+	NSRect	drawRect;
+	long	maxWidth = 0, line;
+	
+	drawRect.origin = tPt;
+	
+	line = 0;
+	maxWidth = [self maxStringWidth:line1 max: maxWidth];	if( line1[0]) line++;
+	maxWidth = [self maxStringWidth:line2 max: maxWidth];	if( line2[0]) line++;
+	maxWidth = [self maxStringWidth:line3 max: maxWidth];	if( line3[0]) line++;
+	maxWidth = [self maxStringWidth:line4 max: maxWidth];	if( line4[0]) line++;
+	maxWidth = [self maxStringWidth:line5 max: maxWidth];	if( line5[0]) line++;
+	
+	drawRect.size.height = line * 12 + 4;
+	drawRect.size.width = maxWidth + 8;
+	
+	glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
+	
+	if( [curView rotation])
+	{
+		glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+	
+		float rotation = [curView rotation]*deg2rad;
+	
+		NSPoint origin;
+		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
+		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
+	
+		drawRect.origin.x = origin.x;
+		drawRect.origin.y = origin.y;
+	}
+	
+	gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
+	
+	tPt.x = drawRect.origin.x + 4;
+	tPt.y = drawRect.origin.y + 12 + 2;
+		
+	line = 0;
+	[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
+	[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
+	[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
+	[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
+	[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
+
+	if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+
+}
+
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY
 {
 	long	i;
@@ -1993,11 +2117,12 @@ return rect;
 	
 	float screenXUpL,screenYUpL,screenXDr,screenYDr; // for tPlain ROI
 
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	glEnable(GL_BLEND);
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
 	switch( type)
 	{
@@ -2079,7 +2204,7 @@ return rect;
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char	cstr[ 256];
+				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2087,7 +2212,9 @@ return rect;
 				tPt.x += 5.;
 				tPt.y += 5. / [[curView curDCM] pixelRatio];
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
 				if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -2096,21 +2223,17 @@ return rect;
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 						if( area*pixelSpacingX*pixelSpacingY < 1. )
-							sprintf (cstr, "Area: %0.3f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							sprintf (line2, "Area: %0.3f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 						else
-							sprintf (cstr, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+							sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
 					}
 					else
-						sprintf (cstr, "Area: %0.3f pix2", area);
+						sprintf (line2, "Area: %0.3f pix2", area);
 					
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 				}
+				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2145,7 +2268,7 @@ return rect;
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char	cstr[ 256];
+				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2153,9 +2276,12 @@ return rect;
 				tPt.x += 5;
 				tPt.y += 5;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO )
+				{
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 //					if( [curView blendingView])		Sadly this doesn't work AT ALL ! Antoine
 //					{
@@ -2169,25 +2295,19 @@ return rect;
 //						}
 //					}
 					
-					sprintf (cstr, "Val: %0.3f", rmean);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					if( Brtotal != -1)
-					{
-						sprintf (cstr, "Fused Val: %0.3f", Brmean);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					}
+					sprintf (line2, "Val: %0.3f", rmean);
+					if( Brtotal != -1) sprintf (line3, "Fused Val: %0.3f", Brmean);
 					
-					sprintf (cstr, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
 					
 					float location[ 3 ];
 					[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location];
 					if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-						sprintf (cstr, "3D Pos: X:%0.3f %cm Y:%0.3f %cm Z:%0.3f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+						sprintf (line5, "3D Pos: X:%0.3f %cm Y:%0.3f %cm Z:%0.3f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
 					else
-						sprintf (cstr, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						sprintf (line5, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
 				}
+				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2382,7 +2502,7 @@ return rect;
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
-				char	cstr[ 256];
+				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2390,18 +2510,20 @@ return rect;
 				tPt.x += 5.;
 				tPt.y += 5. / [[curView curDCM] pixelRatio];
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y :line++];
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				if( type == tMesure ) {
 					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
 						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
-							sprintf (cstr, "Length: %0.3f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
+							sprintf (line2, "Length: %0.3f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
 						else
-							sprintf (cstr, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
+							sprintf (line2, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 					}
 					else
-						sprintf (cstr, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y :line++];
+						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 				}
+				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		break;
 		
@@ -2434,36 +2556,36 @@ return rect;
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
-					char	cstr[ 256];
-					NSPoint tPt = [self lowerRightPoint];
-					long	line = 0;
+					NSPoint			tPt = [self lowerRightPoint];
+					long			line = 0;
+					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 					tPt.x += 5;
 					tPt.y += 5;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
-						
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					else line1[ 0] = 0;
+					
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO )
+					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-								sprintf (cstr, "Area: %0.3f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+								sprintf (line2, "Area: %0.3f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
 							else
-								sprintf (cstr, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
+								sprintf (line2, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
 						}
 						else
-							sprintf (cstr, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-						
-						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-						
-						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+							sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					}
+					
+					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 		break;
@@ -2503,15 +2625,17 @@ return rect;
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char	cstr[ 256];
-				NSPoint tPt = [self lowerRightPoint];
-				long	line = 0;
+				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
+				NSPoint			tPt = [self lowerRightPoint];
+				long			line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 				tPt.x += 5;
 				tPt.y += 5;
 				
-				if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+				
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -2519,20 +2643,18 @@ return rect;
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
 					{
 						if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (cstr, "Area: %0.3f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							sprintf (line2, "Area: %0.3f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 						else
-							sprintf (cstr, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
+							sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
 					}
 					else
-						sprintf (cstr, "Area: %0.3f pix2", [self EllipseArea]);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
 					
-					sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-					
-					sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-					[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 				}
+				
+				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2560,7 +2682,7 @@ return rect;
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
-					char	cstr[ 256];
+					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
 					float   length;
@@ -2569,26 +2691,23 @@ return rect;
 					tPt.x += 5;
 					tPt.y += 5;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+					
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
-								sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
 						else
-							sprintf (cstr, "Area: %0.3f pix2", [self Area]);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-						
-						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-						
-						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+							sprintf (line2, "Area: %0.3f pix2", [self Area]);
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
 						for( i = 0; i < [points count]-1; i++ ) {
@@ -2597,18 +2716,19 @@ return rect;
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
 						
 						if (length < .1)
-							sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "Length: %0.3f %cm", length * 10000.0, 0xB5);
 						else
-							sprintf (cstr, "Length: %0.3f cm", length);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+							sprintf (line5, "Length: %0.3f cm", length);
 					}
+					
+					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 			else if( type == tOPolygon)
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
-					char	cstr[ 256];
+					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
 					float   length;
@@ -2617,7 +2737,9 @@ return rect;
 					tPt.x += 5;
 					tPt.y += 5;
 					
-					if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+					
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
 						
@@ -2625,19 +2747,15 @@ return rect;
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (cstr, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
-								sprintf (cstr, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
 						else
-							sprintf (cstr, "Area: %0.3f pix2", [self Area]);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+							sprintf (line2, "Area: %0.3f pix2", [self Area]);
 						
-						sprintf (cstr, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
-						
-						sprintf (cstr, "Min: %0.3f Max: %0.3f", rmin, rmax);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
 						length = 0;
 						for( i = 0; i < [points count]-1; i++ ) {
@@ -2645,11 +2763,12 @@ return rect;
 						}
 						
 						if (length < .1)
-							sprintf (cstr, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "Length: %0.3f %cm", length * 10000.0, 0xB5);
 						else
-							sprintf (cstr, "Length: %0.3f cm", length);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+							sprintf (line5, "Length: %0.3f cm", length);
 					}
+					
+					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 			else if( type == tAngle)
@@ -2658,7 +2777,7 @@ return rect;
 				{
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 					{
-						char	cstr[ 256];
+						char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 						NSPoint tPt = [self lowerRightPoint];
 						long	line = 0;
 						float   angle;
@@ -2667,12 +2786,15 @@ return rect;
 						tPt.x += 5;
 						tPt.y += 5;
 						
-						if( [name isEqualToString:@"Unnamed"] == NO) [self glStr: (unsigned char*) [name cString] : tPt.x : tPt.y : line++];
+						line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+						
+						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 						
 						angle = [self Angle:[[points objectAtIndex: 0] point] :[[points objectAtIndex: 1] point] : [[points objectAtIndex: 2] point]];
 						
-						sprintf (cstr, "Angle: %0.3f / %0.3f", angle, 360 - angle);
-						[self glStr: (unsigned char*) cstr : tPt.x : tPt.y : line++];
+						sprintf (line2, "Angle: %0.3f / %0.3f", angle, 360 - angle);
+						
+						[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 					}
 				}
 			}
@@ -2832,10 +2954,11 @@ return rect;
 	return NO;
 }
 
-- (void) setRoiFont: (long) f :(DCMView*) v
+- (void) setRoiFont: (long) f :(long*) s :(DCMView*) v
 {
 	fontListGL = f;
 	curView = v;
+	fontSize = s;
 }
 
 - (float) roiArea

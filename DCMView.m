@@ -450,7 +450,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
             {
                 [[roiArray objectAtIndex: j] setOriginAndSpacing:[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
                 [[roiArray objectAtIndex: j] setROIMode: ROI_selected];
-                [[roiArray objectAtIndex: j] setRoiFont: labelFontListGL :self];
+                [[roiArray objectAtIndex: j] setRoiFont: labelFontListGL :labelFontListGLSize :self];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: [roiArray objectAtIndex: j] userInfo: nil];
             }
@@ -540,7 +540,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				}
 				
 				[roi setPoints: pointsArray];
-				[roi setRoiFont: labelFontListGL :self];
+				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 				
 				[roiList addObject: roi];
 				
@@ -565,7 +565,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			[roi setPoints: pointsArray];
 			[roi setROIMode: ROI_selected];
-			[roi setRoiFont: labelFontListGL :self];
+			[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			
 			[curRoiList addObject: roi];
 			[roi release];
@@ -595,7 +595,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		{
 			[[roiArray objectAtIndex: i] setOriginAndSpacing:[curDCM pixelSpacingX] :[curDCM pixelSpacingY] :NSMakePoint( [curDCM originX], [curDCM originY])];
 			[[roiArray objectAtIndex: i] setROIMode: ROI_selected];
-			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :self];
+			[[roiArray objectAtIndex: i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 		}
 		
 		[curRoiList addObjectsFromArray: roiArray];
@@ -941,7 +941,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		for( i = 0; i < [curRoiList count]; i++)
 		{
-			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :self];
+			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			[[curRoiList objectAtIndex:i ] recompute];
 			// Unselect previous ROIs
 			[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
@@ -1129,7 +1129,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		keepIt = NO;
 		for( i = 0; i < [curRoiList count]; i++)
 		{
-			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :self];
+			[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 			
 			[[curRoiList objectAtIndex:i ] recompute];
 			
@@ -1694,7 +1694,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	long i;
 	for( i = 0; i < [curRoiList count]; i++)
 	{
-		[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :self];
+		[[curRoiList objectAtIndex:i ] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 	}
 }
 
@@ -2376,7 +2376,7 @@ static long scrollMode;
 						}
 						else [curRoiList addObject: aNewROI];
 						
-						[aNewROI setRoiFont: labelFontListGL :self];
+						[aNewROI setRoiFont: labelFontListGL :labelFontListGLSize :self];
 						drawingROI = [aNewROI mouseRoiDown: tempPt :scaleValue];
 						if( drawingROI == NO)
 						{
@@ -3537,16 +3537,14 @@ static long scrollMode;
     
 	[self FindMinimumOpenGLCapabilities];
     
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+//	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     // This hint is for antialiasing
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
     // Setup some basic OpenGL stuff
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//    glColor4f(0.1f, 0.1f, 0.2f, 1.0f);
 	fontColor = nil;
 	
 //	NSLog(@"font alloc");
@@ -4070,7 +4068,7 @@ static long scrollMode;
 	{
 		if( [curRoiList objectAtIndex:i] == [note object])
 		{
-			[[note object] setRoiFont:labelFontListGL :self];
+			[[note object] setRoiFont:labelFontListGL :labelFontListGLSize :self];
 			[self setNeedsDisplay:YES];
 		}
 	}

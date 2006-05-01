@@ -66,7 +66,7 @@ enum
 	
 	long			selectedModifyPoint;
 	NSPoint			clickPoint, previousPoint;
-	long			fontListGL;
+	long			fontListGL, *fontSize;
 	DCMView			*curView;
 	DCMPix			*pix;
 	
@@ -187,7 +187,7 @@ enum
 - (void) setThickness:(float) a;
 - (NSMutableDictionary*) dataString;
 - (BOOL) mouseRoiUp:(NSPoint) pt;
-- (void) setRoiFont: (long) f :(DCMView*) v;
+- (void) setRoiFont: (long) f :(long*) s :(DCMView*) v;
 - (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line;
 - (void) recompute;
 - (void) rotate: (float) angle :(NSPoint) center;
