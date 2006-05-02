@@ -110,7 +110,7 @@
 									calledAET:calledAET 
 									hostname:hostname
 									port:[port intValue]
-									transferSyntax:nil
+									transferSyntax:nil		//EXS_LittleEndianExplicit
 									compression: nil
 									extraParameters:nil] retain];
 	NSMutableArray *filterArray = [NSMutableArray array];

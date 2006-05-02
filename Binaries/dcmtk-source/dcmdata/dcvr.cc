@@ -44,7 +44,7 @@
  */
 OFGlobal<OFBool> dcmEnableUnknownVRGeneration(OFTrue);
 OFGlobal<OFBool> dcmEnableUnlimitedTextVRGeneration(OFTrue);
-OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFFalse);
+OFGlobal<OFBool> dcmEnableUnknownVRConversion(OFTrue);
 
 /*
 ** VR property table
