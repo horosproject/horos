@@ -2184,12 +2184,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 		drawRect.origin.x = origin.x;
 		drawRect.origin.y = origin.y;
+		
+		tPt = origin;
 	}
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
 	if( moved)	// Draw bézier line
 	{
+		if( [curView rotation])
+			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		
 		GLfloat ctrlpoints[4][3];
 		
 		#define OFF 40
@@ -2213,6 +2218,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glDisable(GL_MAP1_VERTEX_3);
 		
 		glLineWidth( 1.0);
+		
+		if( [curView rotation])
+			glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	}
 }
 
