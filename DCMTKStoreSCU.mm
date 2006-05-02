@@ -956,11 +956,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	opt_verbose=OFFalse;
 	opt_showPresentationContexts=OFTrue;
 	
-	//debug code activated for now
-	opt_debug = OFTrue;
-	DUL_Debug(OFTrue);
-	DIMSE_debug(OFTrue);
-	SetDebugLevel(3);
+	//debug code off for now
+	opt_debug = OFFalse;
+	
+	DUL_Debug(OFFalse);
+	DIMSE_debug(OFFalse);
+	SetDebugLevel(0);
 	
 	/****************************
 	
