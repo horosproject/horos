@@ -2151,7 +2151,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 		
-		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
+		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
 		
 		if( [curView rotation]) glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
