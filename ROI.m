@@ -973,6 +973,8 @@ return rect;
 			}
 			break;
 			
+			case tCPolygon:
+			case tPencil:
 			case tOPolygon:
 			case tAngle:
 			{
@@ -991,45 +993,45 @@ return rect;
 			break;
 
 
-			case tCPolygon:
-			case tPencil:
-			{
-				int count = 0;
-				
-				for (j = 0; j < 5; j++)
-				{
-					NSPoint selectPt = pt;
-					
-					switch(j)
-					{
-						case 0: break;
-						case 1: selectPt.x += 5.0/scale; break;
-						case 2: selectPt.x -= 5.0/scale; break;
-						case 3: selectPt.y += 5.0/scale; break;
-						case 4: selectPt.y -= 5.0/scale; break;
-					}
-					for( i = 0; i < [points count]; i++)
-					{
-						NSPoint p1 = [[points objectAtIndex:i] point];
-						NSPoint p2 = [[points objectAtIndex:(i+1)%[points count]] point];
-						double intercept;
-						
-						if (selectPt.y > MIN(p1.y, p2.y) && selectPt.y <= MAX(p1.y, p2.y) && selectPt.x <= MAX(p1.x, p2.x) && p1.y != p2.y)
-						{
-							intercept = (selectPt.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
-							if (p1.x == p2.x || selectPt.x <= intercept)
-								count = !count;
-						}
-					}
-					
-					if (count)
-					{
-						imode = ROI_selected;
-						break;
-					}
-				}
-				break;
-			}
+//			case tCPolygon:
+//			case tPencil:
+//			{
+//				int count = 0;
+//				
+//				for (j = 0; j < 5; j++)
+//				{
+//					NSPoint selectPt = pt;
+//					
+//					switch(j)
+//					{
+//						case 0: break;
+//						case 1: selectPt.x += 5.0/scale; break;
+//						case 2: selectPt.x -= 5.0/scale; break;
+//						case 3: selectPt.y += 5.0/scale; break;
+//						case 4: selectPt.y -= 5.0/scale; break;
+//					}
+//					for( i = 0; i < [points count]; i++)
+//					{
+//						NSPoint p1 = [[points objectAtIndex:i] point];
+//						NSPoint p2 = [[points objectAtIndex:(i+1)%[points count]] point];
+//						double intercept;
+//						
+//						if (selectPt.y > MIN(p1.y, p2.y) && selectPt.y <= MAX(p1.y, p2.y) && selectPt.x <= MAX(p1.x, p2.x) && p1.y != p2.y)
+//						{
+//							intercept = (selectPt.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
+//							if (p1.x == p2.x || selectPt.x <= intercept)
+//								count = !count;
+//						}
+//					}
+//					
+//					if (count)
+//					{
+//						imode = ROI_selected;
+//						break;
+//					}
+//				}
+//				break;
+//			}
 		}
 	}
 	
@@ -2216,16 +2218,22 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
-	if( moved)	// Draw bézier line
+	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
+	
+	if( moved)	// Draw bezier line
 	{
 		if( type == tCPolygon || type == tOPolygon || type == tPencil)
 		{
 			float ymin = [[points objectAtIndex:0] y];
+			
+			tPt.y = [[points objectAtIndex: 0] y];
+			tPt.x = [[points objectAtIndex: 0] x];
+			
 			long i;
 			
 			for( i = 0; i < [points count]; i++)
 			{
-				if( [[points objectAtIndex:i] y] < ymin)
+				if( [[points objectAtIndex:i] y] > ymin)
 				{
 					ymin = [[points objectAtIndex:i] y];
 					tPt.y = [[points objectAtIndex:i] y];
@@ -2234,6 +2242,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			
 			tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
+			
+			if( [curView rotation])
+			{
+				float rotation = [curView rotation]*deg2rad;
+			
+				NSPoint origin;
+				origin.x = tPt.x * cos(rotation) - tPt.y * sin(rotation);
+				origin.y = tPt.x * sin(rotation) + tPt.y * cos(rotation);
+			
+				tPt.x = origin.x;
+				tPt.y = origin.y;
+			}
 		}
 	
 		if( [curView rotation])

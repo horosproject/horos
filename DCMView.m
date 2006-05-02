@@ -6420,6 +6420,8 @@ static long scrollMode;
 	
 	if( rotation < 0) rotation += 360;
 	if( rotation > 360) rotation -= 360;
+	
+	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 }
 
 -(NSPoint) origin
