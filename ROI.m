@@ -973,8 +973,7 @@ return rect;
 			}
 			break;
 			
-			case tCPolygon:
-			case tPencil:
+			
 			case tOPolygon:
 			case tAngle:
 			{
@@ -991,7 +990,29 @@ return rect;
 				}
 			}
 			break;
+			
+			case tCPolygon:
+			case tPencil:
+			{
+				float distance;
 
+				for( i = 0; i < ([points count] - 1); i++)
+				{
+					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+					if( distance*scale < 5.0)
+					{
+						imode = ROI_selected;
+						break;
+					}
+				}
+				
+				[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:0] point] :&distance];
+				if( distance*scale < 5.0)
+				{
+					imode = ROI_selected;
+				}
+			}
+			break;
 
 //			case tCPolygon:
 //			case tPencil:
@@ -2202,6 +2223,41 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	BOOL moved;
 	
+	if( type == tCPolygon || type == tOPolygon || type == tPencil)
+	{
+		float ymin = [[points objectAtIndex:0] y];
+		
+		tPt.y = [[points objectAtIndex: 0] y];
+		tPt.x = [[points objectAtIndex: 0] x];
+		
+		long i;
+		
+		for( i = 0; i < [points count]; i++)
+		{
+			if( [[points objectAtIndex:i] y] > ymin)
+			{
+				ymin = [[points objectAtIndex:i] y];
+				tPt.y = [[points objectAtIndex:i] y];
+				tPt.x = [[points objectAtIndex:i] x];
+			}
+		}
+		
+		tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
+
+		drawRect.origin = tPt;
+//		if( [curView rotation])
+//		{
+//			float rotation = [curView rotation]*deg2rad;
+//		
+//			NSPoint origin;
+//			origin.x = tPt.x * cos(rotation) - tPt.y * sin(rotation);
+//			origin.y = tPt.x * sin(rotation) + tPt.y * cos(rotation);
+//		
+//			tPt.x = origin.x;
+//			tPt.y = origin.y;
+//		}
+	}
+	
 	if( [curView rotation])
 	{
 		float rotation = [curView rotation]*deg2rad;
@@ -2216,46 +2272,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		tPt = origin;
 	}
 	
+	
+		
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
 	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
 	if( moved)	// Draw bezier line
 	{
-		if( type == tCPolygon || type == tOPolygon || type == tPencil)
-		{
-			float ymin = [[points objectAtIndex:0] y];
-			
-			tPt.y = [[points objectAtIndex: 0] y];
-			tPt.x = [[points objectAtIndex: 0] x];
-			
-			long i;
-			
-			for( i = 0; i < [points count]; i++)
-			{
-				if( [[points objectAtIndex:i] y] > ymin)
-				{
-					ymin = [[points objectAtIndex:i] y];
-					tPt.y = [[points objectAtIndex:i] y];
-					tPt.x = [[points objectAtIndex:i] x];
-				}
-			}
-			
-			tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
-			
-			if( [curView rotation])
-			{
-				float rotation = [curView rotation]*deg2rad;
-			
-				NSPoint origin;
-				origin.x = tPt.x * cos(rotation) - tPt.y * sin(rotation);
-				origin.y = tPt.x * sin(rotation) + tPt.y * cos(rotation);
-			
-				tPt.x = origin.x;
-				tPt.y = origin.y;
-			}
-		}
-	
 		if( [curView rotation])
 			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		
