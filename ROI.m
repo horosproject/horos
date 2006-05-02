@@ -2102,6 +2102,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		}
 	}
 	
+	if( *moved)
+	{
+		dRect.origin.x += 5;
+	}
+	
 	[rectArray addObject: [NSValue valueWithRect: dRect]];
 	
 	return dRect;
@@ -2120,14 +2125,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	
-		float rotation = [curView rotation]*deg2rad;
-	
-		NSPoint origin;
-		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
-		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
-	
-		drawRect.origin.x = origin.x;
-		drawRect.origin.y = origin.y;
+//		float rotation = [curView rotation]*deg2rad;
+//	
+//		NSPoint origin;
+//		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
+//		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
+//	
+//		drawRect.origin.x = origin.x;
+//		drawRect.origin.y = origin.y;
 	}
 	
 	gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
@@ -2168,6 +2173,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.width = maxWidth + 8;
 	
 	BOOL moved;
+	
+	if( [curView rotation])
+	{
+		float rotation = [curView rotation]*deg2rad;
+	
+		NSPoint origin;
+		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
+		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
+	
+		drawRect.origin.x = origin.x;
+		drawRect.origin.y = origin.y;
+	}
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
