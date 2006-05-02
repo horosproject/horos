@@ -31,6 +31,8 @@
 
 #import "NSFont_OpenGL.h"
 
+#define MAXCOUNT 256
+
 @interface NSFont (withay_OpenGL_InternalMethods)
 + (unsigned char*) createCharacterWithImage:(NSBitmapImageRep *)bitmap;
 + (void) doOpenGLLog:(NSString *)format, ...;
@@ -40,8 +42,8 @@
 
 static  BOOL					openGLLoggingEnabled = YES;
 static  NSMutableArray			*imageArray = 0L, *imageArrayPreview = 0L;
-static  long					charSizeArray[ 256], charSizeArrayPreview[ 256];
-static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
+static  long					charSizeArray[ MAXCOUNT], charSizeArrayPreview[ MAXCOUNT];
+static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT];
 
 
 /*
@@ -60,7 +62,7 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 	{
 		if( imageArray)
 		{
-			for( i = 0; i < 256; i++)
+			for( i = 0; i < MAXCOUNT; i++)
 			{
 				free( charPtrArray[ i]);
 			}
@@ -72,7 +74,7 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 	{
 		if( imageArrayPreview)
 		{
-			for( i = 0; i < 256; i++)
+			for( i = 0; i < MAXCOUNT; i++)
 			{
 				free( charPtrArrayPreview[ i]);
 			}
@@ -110,7 +112,7 @@ static  unsigned char			*charPtrArray[ 256], *charPtrArrayPreview[ 256];
 	
 	NSLog( @"glFont created");
 	
-	for( i = 0; i < 256; i++)
+	for( i = 0; i < MAXCOUNT; i++)
 	{
 		if( preview) charPtrArrayPreview[ i] = 0;
 		else charPtrArray[ i] = 0;
