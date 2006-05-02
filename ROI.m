@@ -2177,13 +2177,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		#define OFF 40
 		
-		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMinY( drawRect);		ctrlpoints[0][2] = 0;
-		ctrlpoints[1][0] = NSMinX( drawRect);				ctrlpoints[1][1] = NSMinY( drawRect);		ctrlpoints[1][2] = 0;
-		ctrlpoints[2][0] = tPt.x + OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
+		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);		ctrlpoints[0][2] = 0;
+		ctrlpoints[1][0] = NSMinX( drawRect);				ctrlpoints[1][1] = NSMidY( drawRect);		ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = tPt.x - OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
 		
-		glLineWidth( 2.0);
-		glColor4f( 1.0, 0, 0, 0.3);
+		glLineWidth( 3.0);
+		glColor4f( 1.0, 0, 0, 0.4);
 		
 		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
@@ -2302,8 +2302,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				tPt.x += 5.;
-				tPt.y += 5. / [[curView curDCM] pixelRatio];
 				
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
@@ -2365,8 +2363,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				tPt.x += 5;
-				tPt.y += 5;
 				
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
@@ -2598,8 +2594,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				tPt.x += 5.;
-				tPt.y += 5. / [[curView curDCM] pixelRatio];
 				
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
@@ -2651,8 +2645,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					long			line = 0;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					tPt.x += 5;
-					tPt.y += 5;
 					
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
@@ -2719,8 +2711,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long			line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				tPt.x += 5;
-				tPt.y += 5;
 				
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
@@ -2776,8 +2766,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					float   length;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					tPt.x += 5;
-					tPt.y += 5;
 					
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
@@ -2821,8 +2809,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					float   length;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					tPt.x += 5;
-					tPt.y += 5;
 					
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
@@ -2869,8 +2855,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						float   angle;
 						
 						tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-						tPt.x += 5;
-						tPt.y += 5;
 						
 						line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 						

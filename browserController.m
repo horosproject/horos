@@ -5173,7 +5173,7 @@ static BOOL needToRezoom;
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :0];
+					filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :10];
 					destPath = [[documentsDirectory() stringByAppendingString:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
 					
 					// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
@@ -5207,7 +5207,7 @@ static BOOL needToRezoom;
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :0];
+					NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
 					
 					[bonjourBrowser sendDICOMFile: row-1 path: sendPath];
 					
