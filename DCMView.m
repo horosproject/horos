@@ -2213,11 +2213,25 @@ static long scrollMode;
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 				[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 			
+			BOOL roiFound = NO;
+			
 			for( i = 0; i < [curRoiList count]; i++)
 			{
-				if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :scaleValue] )
+				if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
 				{
 					selected = i;
+					roiFound = YES;
+				}
+			}
+			
+			if( roiFound == NO)
+			{
+				for( i = 0; i < [curRoiList count]; i++)
+				{
+					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
+					{
+						selected = i;
+					}
 				}
 			}
 			
@@ -2247,7 +2261,10 @@ static long scrollMode;
 				{
 					curROI = 0L;
 					
-					[[curRoiList objectAtIndex: selected] setROIMode : [[curRoiList objectAtIndex: selected] clickInROI: tempPt :scaleValue]];
+					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
+					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];
+					
+					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
 					
 					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;

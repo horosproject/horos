@@ -91,8 +91,6 @@ enum
 	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 }
 
-- (void) drawTextualData;
-
 // Create a new ROI, needs the current pixel resolution and image origin
 - (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
 - (id) initWithType: (long) itype :(float) ipixelSpacingx :(float) ipixelSpacingy :(NSPoint) iimageOrigin;
@@ -178,7 +176,6 @@ enum
 - (NSData*) data;
 - (void) roiMove:(NSPoint) offset;
 - (void) roiMove:(NSPoint) offset :(BOOL) sendNotification;
-- (long) clickInROI:(NSPoint) pt :(float) scale;
 - (BOOL) mouseRoiDown:(NSPoint) pt :(float) scale;
 - (BOOL) mouseRoiDragged:(NSPoint) pt :(unsigned int) modifier :(float) scale;
 - (NSMutableArray*) dataValues;
@@ -212,6 +209,8 @@ enum
 - (void)setFrameNumber: (int)frameNumber;
 - (BOOL) reduceTextureIfPossible;
 - (void) addMarginToBuffer: (int) margin;
+- (void) drawTextualData;
+- (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect;
 
 // parent ROI
 - (ROI*) parentROI;

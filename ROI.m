@@ -880,7 +880,7 @@ return rect;
 	return;
 }
 
-- (long) clickInROI:(NSPoint) pt :(float) scale
+- (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect
 {
 	NSRect		arect;
 	long		i, j;
@@ -892,117 +892,144 @@ return rect;
 		return 0;
 	}
 	
-	switch( type)
+	if( testDrawRect)
 	{
-		case tPlain:
-			if (pt.x>textureUpLeftCornerX && pt.x<textureDownRightCornerX && pt.y>textureUpLeftCornerY && pt.y<textureDownRightCornerY)
-			{
-				if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-				{
-					imode = ROI_selectedModify;
-				}
-				else
-				{
-					imode = ROI_selected;
-				}
-			}
-			break;
-		case tOval:
-			arect = NSMakeRect( rect.origin.x -rect.size.width -5./scale, rect.origin.y -rect.size.height -5./scale, 2*rect.size.width +10./scale, 2*rect.size.height +10./scale);
-			
-			if( NSPointInRect( pt, arect)) imode = ROI_selected;
-		break;
+		NSPoint cPt = pt;
 		
+		cPt.x = (cPt.x - offsetx)*scale;
+		cPt.y = (cPt.y - offsety)*scale;
 		
-		case tROI:
-			arect = NSMakeRect( rect.origin.x -5, rect.origin.y-5, rect.size.width+10, rect.size.height+10);
-			
-			if( NSPointInRect( pt, arect)) imode = ROI_selected;
-		break;
-		
-		case t2DPoint:
-			arect = NSMakeRect( rect.origin.x - 8/scale, rect.origin.y - 8/scale, 8*2/scale, 8*2/scale);
-			
-			if( NSPointInRect( pt, arect)) imode = ROI_selected;
-		break;
-		
-		case tText:
-			arect = NSMakeRect( rect.origin.x - rect.size.width/(2*scale), rect.origin.y - rect.size.height/(2*scale), rect.size.width/scale, rect.size.height/scale);
-			
-			if( NSPointInRect( pt, arect)) imode = ROI_selected;
-		break;
-		
-		
-		case tArrow:
-		case tMesure:
+		if( [curView rotation])
 		{
-			float distance;
-			
-			[self DistancePointLine:pt :[[points objectAtIndex:0] point] : [[points objectAtIndex:1] point] :&distance];
-			
-			if( distance*scale < 5.0)
-			{
-				imode = ROI_selected;
-			}
+			float rotation = [curView rotation]*deg2rad;
+		
+			NSPoint origin;
+			origin.x = cPt.x * cos(rotation) - cPt.y * sin(rotation);
+			origin.y = cPt.x * sin(rotation) + cPt.y * cos(rotation);
+		
+			cPt.x = origin.x;
+			cPt.y = origin.y;
 		}
-		break;
 		
-		case tOPolygon:
-		case tAngle:
+		if( NSPointInRect( cPt, drawRect))
 		{
-			float distance;
-
-			for( i = 0; i < ([points count] - 1); i++)
+			imode = ROI_selected;
+		}
+	}
+	else
+	{
+		switch( type)
+		{
+			case tPlain:
+				if (pt.x>textureUpLeftCornerX && pt.x<textureDownRightCornerX && pt.y>textureUpLeftCornerY && pt.y<textureDownRightCornerY)
+				{
+					if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+					{
+						imode = ROI_selectedModify;
+					}
+					else
+					{
+						imode = ROI_selected;
+					}
+				}
+				break;
+			case tOval:
+				arect = NSMakeRect( rect.origin.x -rect.size.width -5./scale, rect.origin.y -rect.size.height -5./scale, 2*rect.size.width +10./scale, 2*rect.size.height +10./scale);
+				
+				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+			break;
+			
+			
+			case tROI:
+				arect = NSMakeRect( rect.origin.x -5, rect.origin.y-5, rect.size.width+10, rect.size.height+10);
+				
+				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+			break;
+			
+			case t2DPoint:
+				arect = NSMakeRect( rect.origin.x - 8/scale, rect.origin.y - 8/scale, 8*2/scale, 8*2/scale);
+				
+				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+			break;
+			
+			case tText:
+				arect = NSMakeRect( rect.origin.x - rect.size.width/(2*scale), rect.origin.y - rect.size.height/(2*scale), rect.size.width/scale, rect.size.height/scale);
+				
+				if( NSPointInRect( pt, arect)) imode = ROI_selected;
+			break;
+			
+			
+			case tArrow:
+			case tMesure:
 			{
-				[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+				float distance;
+				
+				[self DistancePointLine:pt :[[points objectAtIndex:0] point] : [[points objectAtIndex:1] point] :&distance];
+				
 				if( distance*scale < 5.0)
 				{
 					imode = ROI_selected;
-					break;
-				}
-			}
-		}
-		break;
-
-
-		case tCPolygon:
-		case tPencil:
-		{
- 			int count = 0;
-			
-			for (j = 0; j < 5; j++)
-			{
-				NSPoint selectPt = pt;
-				
-				switch(j)
-				{
-					case 0: break;
-					case 1: selectPt.x += 5.0/scale; break;
-					case 2: selectPt.x -= 5.0/scale; break;
-					case 3: selectPt.y += 5.0/scale; break;
-					case 4: selectPt.y -= 5.0/scale; break;
-				}
-				for( i = 0; i < [points count]; i++)
-				{
-					NSPoint p1 = [[points objectAtIndex:i] point];
-					NSPoint p2 = [[points objectAtIndex:(i+1)%[points count]] point];
-					double intercept;
-					
-					if (selectPt.y > MIN(p1.y, p2.y) && selectPt.y <= MAX(p1.y, p2.y) && selectPt.x <= MAX(p1.x, p2.x) && p1.y != p2.y)
-					{
-						intercept = (selectPt.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
-						if (p1.x == p2.x || selectPt.x <= intercept)
-							count = !count;
-					}
-				}
-				
-				if (count)
-				{
-					imode = ROI_selected;
-					break;
 				}
 			}
 			break;
+			
+			case tOPolygon:
+			case tAngle:
+			{
+				float distance;
+
+				for( i = 0; i < ([points count] - 1); i++)
+				{
+					[self DistancePointLine:pt :[[points objectAtIndex:i] point] : [[points objectAtIndex:(i+1)] point] :&distance];
+					if( distance*scale < 5.0)
+					{
+						imode = ROI_selected;
+						break;
+					}
+				}
+			}
+			break;
+
+
+			case tCPolygon:
+			case tPencil:
+			{
+				int count = 0;
+				
+				for (j = 0; j < 5; j++)
+				{
+					NSPoint selectPt = pt;
+					
+					switch(j)
+					{
+						case 0: break;
+						case 1: selectPt.x += 5.0/scale; break;
+						case 2: selectPt.x -= 5.0/scale; break;
+						case 3: selectPt.y += 5.0/scale; break;
+						case 4: selectPt.y -= 5.0/scale; break;
+					}
+					for( i = 0; i < [points count]; i++)
+					{
+						NSPoint p1 = [[points objectAtIndex:i] point];
+						NSPoint p2 = [[points objectAtIndex:(i+1)%[points count]] point];
+						double intercept;
+						
+						if (selectPt.y > MIN(p1.y, p2.y) && selectPt.y <= MAX(p1.y, p2.y) && selectPt.x <= MAX(p1.x, p2.x) && p1.y != p2.y)
+						{
+							intercept = (selectPt.y-p1.y)*(p2.x-p1.x)/(p2.y-p1.y)+p1.x;
+							if (p1.x == p2.x || selectPt.x <= intercept)
+								count = !count;
+						}
+					}
+					
+					if (count)
+					{
+						imode = ROI_selected;
+						break;
+					}
+				}
+				break;
+			}
 		}
 	}
 	
@@ -2061,8 +2088,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	long				i;
 	NSMutableArray		*rectArray = [curView rectArray];
-	
-	long				direction = 0, maxRedo = [rectArray count];
+
+	long				direction = 0, maxRedo = [rectArray count] + 2;
 	
 	*moved = NO;
 	
@@ -2073,6 +2100,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		if( NSIntersectsRect( curRect, dRect))
 		{
 			NSRect interRect = NSIntersectionRect( curRect, dRect);
+			
+			interRect.size.height++;
+			interRect.size.width++;
 			
 			NSPoint cInterRect = NSMakePoint( NSMidX( interRect), NSMidY( interRect));
 			NSPoint cCurRect = NSMakePoint( NSMidX( curRect), NSMidY( curRect));
@@ -2114,46 +2144,42 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) drawTextualData
 {
-	glEnable(GL_POLYGON_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-	glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
-	
-	if( [curView rotation])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 	{
-		glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-	
-//		float rotation = [curView rotation]*deg2rad;
-//	
-//		NSPoint origin;
-//		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
-//		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
-//	
-//		drawRect.origin.x = origin.x;
-//		drawRect.origin.y = origin.y;
+		glEnable(GL_POLYGON_SMOOTH);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+		
+		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
+		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+		
+		if( [curView rotation]) glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		
+		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
+		
+		NSPoint tPt;
+		
+		tPt.x = drawRect.origin.x + 4;
+		tPt.y = drawRect.origin.y + 12 + 2;
+		
+		long line = 0;
+		
+		[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
+		[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
+		[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
+		[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
+		[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
+
+		if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+
+		glDisable(GL_POLYGON_SMOOTH);
+		glDisable(GL_BLEND);
 	}
-	
-	gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
-	
-	NSPoint tPt;
-	
-	tPt.x = drawRect.origin.x + 4;
-	tPt.y = drawRect.origin.y + 12 + 2;
-	
-	long line = 0;
-	
-	[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
-	[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
-	[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
-	[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
-	[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
-
-	if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-
-	glDisable(GL_POLYGON_SMOOTH);
-	glDisable(GL_BLEND);
+	else
+	{
+		drawRect = NSMakeRect(0, 0, 0, 0);
+	}
 }
 
 - (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
@@ -2319,16 +2345,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glLineWidth(1.0);
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
-			
 			// TEXT
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
@@ -2382,14 +2406,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
@@ -2612,15 +2635,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
-			
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				if( type == tMesure ) {
@@ -2664,14 +2685,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			{
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
 					NSPoint			tPt = [self lowerRightPoint];
 					long			line = 0;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					
-					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					else line1[ 0] = 0;
@@ -2730,14 +2750,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 			
 			// TEXT
+			
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
 				NSPoint			tPt = [self lowerRightPoint];
 				long			line = 0;
 				
 				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
-				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
@@ -2784,6 +2804,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			if( type == tCPolygon || type == tPencil)
 			{
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
 					NSPoint tPt = [self lowerRightPoint];
@@ -2791,8 +2812,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					float   length;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					
-					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
@@ -2827,6 +2846,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			else if( type == tOPolygon)
 			{
+				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
 					NSPoint tPt = [self lowerRightPoint];
@@ -2834,8 +2854,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					float   length;
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					
-					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
@@ -2873,6 +2891,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				if( [points count] == 3)
 				{
+					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 					{
 						NSPoint tPt = [self lowerRightPoint];
@@ -2880,8 +2899,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						float   angle;
 						
 						tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-						
-						line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
 						
 						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 						
