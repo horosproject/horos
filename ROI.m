@@ -2218,6 +2218,24 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( moved)	// Draw bézier line
 	{
+		if( type == tCPolygon || type == tOPolygon || type == tPencil)
+		{
+			float ymin = [[points objectAtIndex:0] y];
+			long i;
+			
+			for( i = 0; i < [points count]; i++)
+			{
+				if( [[points objectAtIndex:i] y] < ymin)
+				{
+					ymin = [[points objectAtIndex:i] y];
+					tPt.y = [[points objectAtIndex:i] y];
+					tPt.x = [[points objectAtIndex:i] x];
+				}
+			}
+			
+			tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
+		}
+	
 		if( [curView rotation])
 			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		
