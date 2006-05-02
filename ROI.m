@@ -1879,6 +1879,7 @@ return rect;
 	}
 }
 - (RGBColor) color {return color;}
+
 - (void) setColor:(RGBColor) a
 {
 	color = a;
@@ -2056,6 +2057,38 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 glEnd();
 }
 
+- (NSRect) findAnEmptySpaceForMyRect:(NSRect) drawRect
+{
+	long				i;
+	NSMutableArray		*rectArray = [curView rectArray];
+	
+	for( i = 0; i < [rectArray count]; i++)
+	{
+		NSRect	curRect = [[rectArray objectAtIndex: i] rectValue];
+		
+		if( NSIntersectsRect( curRect, drawRect))
+		{
+			NSRect interRect = NSIntersectionRect( curRect, drawRect);
+			
+			NSPoint cInterRect = NSMakePoint( NSMidX( interRect), NSMidY( interRect));
+			NSPoint cCurRect = NSMakePoint( NSMidX( curRect), NSMidY( curRect));
+			
+			if( cInterRect.y < cCurRect.y)
+			{
+				drawRect.origin.y -= interRect.size.height;
+			}
+			else
+			{
+				drawRect.origin.y += interRect.size.height;
+			}
+		}
+	}
+	
+	[rectArray addObject: [NSValue valueWithRect: drawRect]];
+	
+	return drawRect;
+}
+
 - (void) drawTextualData:( char*) line1 :( char*) line2 :( char*) line3 :( char*) line4 :( char*) line5 location:(NSPoint) tPt
 {
 	NSRect	drawRect;
@@ -2072,6 +2105,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	drawRect.size.height = line * 12 + 4;
 	drawRect.size.width = maxWidth + 8;
+	
+	drawRect = [self findAnEmptySpaceForMyRect: drawRect];
 	
 	glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
 	

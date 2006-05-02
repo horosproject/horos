@@ -5601,11 +5601,13 @@ static long scrollMode;
 				
 				if( drawROI)
 				{
+					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					long i;
 					for( i = 0; i < [curRoiList count]; i++)
 					{
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
+					[rectArray release];
 				}
 				
 				if( [[[self window] windowController] is2DViewer] == YES) [[[[self window] windowController] roiLock] unlock];
@@ -5864,6 +5866,11 @@ static long scrollMode;
 //		
 //		[im drawRepresentation:[im bestRepresentationForDevice:nil] inRect:dstRect]; 
 	}
+}
+
+- (NSMutableArray*) rectArray
+{
+	return rectArray;
 }
 
 - (void)reshape	// scrolled, moved or resized

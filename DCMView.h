@@ -99,6 +99,8 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	
     NSImage         *myImage;
 	
+	NSMutableArray	*rectArray;
+	
     NSMutableArray  *dcmPixList;
     NSArray			*dcmFilesList;
 	NSMutableArray  *dcmRoiList, *curRoiList;
@@ -183,6 +185,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	BOOL			cursorSet;
 	NSPoint			display2DPoint;
 }
+- (NSMutableArray*) rectArray;
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;
  -(NSMutableArray*) dcmPixList;

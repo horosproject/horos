@@ -31,7 +31,6 @@ MODIFICATION HISTORY
 #import "EndoscopyMPRView.h"
 #import "DICOMExport.h"
 
-
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
@@ -148,7 +147,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 - (void) setCameraRepresentation
 {
 	// get the camera
-	Camera *curCamera = [(VRView*)[vrController view] camera];
+	Camera *curCamera = [((VRView*)[vrController view]) camera];
 	
 	[self setCameraPositionRepresentation: curCamera];
 	[self setCameraFocalPointRepresentation: curCamera];
