@@ -2057,12 +2057,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 glEnd();
 }
 
-- (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect
+- (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect :(BOOL*) moved
 {
 	long				i;
 	NSMutableArray		*rectArray = [curView rectArray];
 	
 	long				direction = 0, maxRedo = [rectArray count];
+	
+	*moved = NO;
 	
 	for( i = 0; i < [rectArray count]; i++)
 	{
@@ -2095,6 +2097,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 			
 			if( maxRedo-- >= 0) i = -1;
+			
+			*moved = YES;
 		}
 	}
 	
@@ -2163,7 +2167,36 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.height = line * 12 + 4;
 	drawRect.size.width = maxWidth + 8;
 	
-	drawRect = [self findAnEmptySpaceForMyRect: drawRect];
+	BOOL moved;
+	
+	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
+	
+	if( moved)	// Draw bézier line
+	{
+		GLfloat ctrlpoints[4][3];
+		
+		#define OFF 40
+		
+		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMinY( drawRect);		ctrlpoints[0][2] = 0;
+		ctrlpoints[1][0] = NSMinX( drawRect);				ctrlpoints[1][1] = NSMinY( drawRect);		ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = tPt.x + OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
+		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
+		
+		glLineWidth( 2.0);
+		glColor4f( 1.0, 0, 0, 0.3);
+		
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
+		glEnable(GL_MAP1_VERTEX_3);
+	
+	    glBegin(GL_LINE_STRIP);
+		int i;
+        for (i = 0; i <= 30; i++) 
+            glEvalCoord1f((GLfloat) i/30.0);
+		glEnd();
+		glDisable(GL_MAP1_VERTEX_3);
+		
+		glLineWidth( 1.0);
+	}
 }
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY

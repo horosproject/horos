@@ -3468,6 +3468,8 @@ long        i;
 		}
 		else {
 			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+			if( count < 1) count = 1;
+			
 			NSMutableArray *children =  [NSMutableArray array];
 			int i;
 			for (i = 0; i < count; i++)
@@ -5872,6 +5874,8 @@ static BOOL needToRezoom;
 		}
 		else {
 			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+			if( count < 1) count = 1;
+			
 			NSMutableArray *children =  [NSMutableArray array];
 			int i;
 			for (i = 0; i < count; i++)
