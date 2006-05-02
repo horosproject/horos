@@ -2112,7 +2112,7 @@ static long scrollMode;
 		
         if( [event clickCount] > 1 && [self window] == [browserWindow window])
         {
-            [browserWindow viewerDICOM:nil];
+            [browserWindow matrixDoublePressed:nil];
         }
 		else if( [event clickCount] > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 		{
@@ -5607,6 +5607,12 @@ static long scrollMode;
 					{
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
+					
+					for( i = 0; i < [curRoiList count]; i++)
+					{
+						[[curRoiList objectAtIndex:i] drawTextualData];
+					}
+					
 					[rectArray release];
 				}
 				

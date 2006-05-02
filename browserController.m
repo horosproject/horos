@@ -4015,7 +4015,6 @@ long        i;
 {
 	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
 	
-	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
 		reverseScrollWheel=-1.0;
 	else
@@ -4081,13 +4080,13 @@ long        i;
 
 - (IBAction) matrixDoublePressed:(id)sender
 {
-    id  theCell = [sender selectedCell];
+    id  theCell = [oMatrix selectedCell];
     int column,row;
     
 	[appController setCurrentHangingProtocolForModality:nil description:nil];
 	
     if( [theCell tag] >= 0 ) {
-		[self viewerDICOM:sender];
+		[self viewerDICOM: oMatrix];
     }
 }
 

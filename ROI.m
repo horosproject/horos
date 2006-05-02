@@ -2057,57 +2057,59 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	 glEnd();
 }
 
-- (NSRect) findAnEmptySpaceForMyRect:(NSRect) drawRect
+- (NSRect) findAnEmptySpaceForMyRect:(NSRect) dRect
 {
 	long				i;
 	NSMutableArray		*rectArray = [curView rectArray];
+	
+	long				direction = 0, maxRedo = [rectArray count];
 	
 	for( i = 0; i < [rectArray count]; i++)
 	{
 		NSRect	curRect = [[rectArray objectAtIndex: i] rectValue];
 		
-		if( NSIntersectsRect( curRect, drawRect))
+		if( NSIntersectsRect( curRect, dRect))
 		{
-			NSRect interRect = NSIntersectionRect( curRect, drawRect);
+			NSRect interRect = NSIntersectionRect( curRect, dRect);
 			
 			NSPoint cInterRect = NSMakePoint( NSMidX( interRect), NSMidY( interRect));
 			NSPoint cCurRect = NSMakePoint( NSMidX( curRect), NSMidY( curRect));
 			
-			if( cInterRect.y < cCurRect.y)
+			if( direction)
 			{
-				drawRect.origin.y -= interRect.size.height;
+				if( direction == -1) dRect.origin.y -= interRect.size.height;
+				else dRect.origin.y += interRect.size.height;
 			}
 			else
 			{
-				drawRect.origin.y += interRect.size.height;
+				if( cInterRect.y < cCurRect.y)
+				{
+					dRect.origin.y -= interRect.size.height;
+					direction = -1;
+				}
+				else
+				{
+					dRect.origin.y += interRect.size.height;
+					direction = 1;
+				}
 			}
+			
+			if( maxRedo-- >= 0) i = -1;
 		}
 	}
 	
-	[rectArray addObject: [NSValue valueWithRect: drawRect]];
+	[rectArray addObject: [NSValue valueWithRect: dRect]];
 	
-	return drawRect;
+	return dRect;
 }
 
-- (void) drawTextualData:( char*) line1 :( char*) line2 :( char*) line3 :( char*) line4 :( char*) line5 location:(NSPoint) tPt
+- (void) drawTextualData
 {
-	NSRect	drawRect;
-	long	maxWidth = 0, line;
-	
-	drawRect.origin = tPt;
-	
-	line = 0;
-	maxWidth = [self maxStringWidth:line1 max: maxWidth];	if( line1[0]) line++;
-	maxWidth = [self maxStringWidth:line2 max: maxWidth];	if( line2[0]) line++;
-	maxWidth = [self maxStringWidth:line3 max: maxWidth];	if( line3[0]) line++;
-	maxWidth = [self maxStringWidth:line4 max: maxWidth];	if( line4[0]) line++;
-	maxWidth = [self maxStringWidth:line5 max: maxWidth];	if( line5[0]) line++;
-	
-	drawRect.size.height = line * 12 + 4;
-	drawRect.size.width = maxWidth + 8;
-	
-	drawRect = [self findAnEmptySpaceForMyRect: drawRect];
-	
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
 	glColor4f(0.0f, 0.0f, 0.0f, 0.3f);
 	
 	if( [curView rotation])
@@ -2126,10 +2128,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
 	
+	NSPoint tPt;
+	
 	tPt.x = drawRect.origin.x + 4;
 	tPt.y = drawRect.origin.y + 12 + 2;
-		
-	line = 0;
+	
+	long line = 0;
+	
 	[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
 	[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
 	[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
@@ -2138,6 +2143,27 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 	if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_BLEND);
+}
+
+- (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
+{
+	long	maxWidth = 0, line;
+	
+	drawRect.origin = tPt;
+	
+	line = 0;
+	maxWidth = [self maxStringWidth:l1 max: maxWidth];	if( l1[0]) line++;
+	maxWidth = [self maxStringWidth:l2 max: maxWidth];	if( l2[0]) line++;
+	maxWidth = [self maxStringWidth:l3 max: maxWidth];	if( l3[0]) line++;
+	maxWidth = [self maxStringWidth:l4 max: maxWidth];	if( l4[0]) line++;
+	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l5[0]) line++;
+	
+	drawRect.size.height = line * 12 + 4;
+	drawRect.size.width = maxWidth + 8;
+	
+	drawRect = [self findAnEmptySpaceForMyRect: drawRect];
 }
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY
@@ -2239,7 +2265,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2268,7 +2293,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 				}
-				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2303,7 +2328,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2342,7 +2366,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						sprintf (line5, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
 				}
-				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2537,7 +2561,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
-				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
@@ -2558,7 +2581,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					else
 						sprintf (line2, "Length: %0.3f pix", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 				}
-				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		break;
 		
@@ -2593,7 +2616,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					NSPoint			tPt = [self lowerRightPoint];
 					long			line = 0;
-					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					
 					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 					tPt.x += 5;
@@ -2620,7 +2642,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					}
 					
-					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 		break;
@@ -2660,7 +2682,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 			{
-				char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 				NSPoint			tPt = [self lowerRightPoint];
 				long			line = 0;
 				
@@ -2689,7 +2710,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 				}
 				
-				[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
 		break;
@@ -2717,7 +2738,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
-					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
 					float   length;
@@ -2756,14 +2776,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
 					
-					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 			else if( type == tOPolygon)
 			{
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 				{
-					char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
 					float   length;
@@ -2803,7 +2822,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
 					
-					[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
 			else if( type == tAngle)
@@ -2812,7 +2831,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 					{
-						char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 						NSPoint tPt = [self lowerRightPoint];
 						long	line = 0;
 						float   angle;
@@ -2829,7 +2847,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						sprintf (line2, "Angle: %0.3f / %0.3f", angle, 360 - angle);
 						
-						[self drawTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+						[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 					}
 				}
 			}

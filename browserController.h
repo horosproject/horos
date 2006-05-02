@@ -184,7 +184,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
 
-
+- (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
 - (NSArray*) addURLToDatabaseFiles:(NSArray*) URLs;

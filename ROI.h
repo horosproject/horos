@@ -85,7 +85,13 @@ enum
 	int				_frameNumber;
 	
 	ROI*			parentROI;
+	
+	NSRect			drawRect;
+	
+	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 }
+
+- (void) drawTextualData;
 
 // Create a new ROI, needs the current pixel resolution and image origin
 - (id) initWithType: (long) itype :(float) ipixelSpacing :(NSPoint) iimageOrigin;
