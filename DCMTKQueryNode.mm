@@ -251,8 +251,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_numberImages = nil;
 		_specificCharacterSet = nil;	
 		//dataset->print(COUT);
-		if (dataset != NULL)
-			dataset->writeXML(cout, 0); 	
+		//if (dataset != NULL)
+		//	dataset->writeXML(cout, 0); 	
 		
 	}
 	return self;

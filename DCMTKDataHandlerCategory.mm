@@ -382,17 +382,17 @@ extern BrowserController *browserWindow;
 	//use utf8Encoding rather than encoding
 		
 	if ([fetchedObject valueForKey:@"name"])
-		dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding]);
+		dataset ->putAndInsertString(DCM_PatientsName, [[fetchedObject valueForKey:@"name"] cStringUsingEncoding:encoding]);
 	else
 		dataset ->putAndInsertString(DCM_PatientsName, NULL);
 		
 	if ([fetchedObject valueForKey:@"patientID"])	
-		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:NSUTF8StringEncoding]);
+		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
 	else
 		dataset ->putAndInsertString(DCM_PatientID, NULL);
 		
 	if ([fetchedObject valueForKey:@"studyName"])	
-		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:NSUTF8StringEncoding]);
+		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);
 	else
 		dataset ->putAndInsertString( DCM_StudyDescription, NULL);
 		
@@ -444,6 +444,7 @@ extern BrowserController *browserWindow;
 	else
 		dataset ->putAndInsertString(DCM_InstitutionName, NULL);
 		
+	//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
 	dataset ->putAndInsertString(DCM_SpecificCharacterSet,  [specificCharacterSet cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 		
 	if ([fetchedObject valueForKey:@"noFiles"]) {		
@@ -538,6 +539,8 @@ extern BrowserController *browserWindow;
 		NSString *number = [[fetchedObject valueForKey:@"numberOfFrames"] stringValue];
 		dataset ->putAndInsertString(DCM_NumberOfFrames, [number cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 	}
+	//UTF 8 Encoding
+	//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
 	NS_HANDLER
 	NS_ENDHANDLER
 	[pool release];
