@@ -5903,7 +5903,7 @@ PapyShort       fileNb, theErr;
     return readable;
 }
 
--(void) CheckLoad
+-(void) CheckLoadIn
 {
 	BOOL USECUSTOMTIFF = NO;
 
@@ -5917,19 +5917,17 @@ PapyShort       fileNb, theErr;
 		
 		if( srcFile == 0L) return;
 		
-		[checking lock];
-		
 		if( isBonjour)
 		{
 			// LOAD THE FILE FROM BONJOUR SHARED DATABASE
 			
 			[srcFile release];
+			srcFile = 0L;
 			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: imageObj :0];
 			[srcFile retain];
 			
 			if( srcFile == 0L)
 			{
-				[checking unlock];
 				return;
 			}
 		}
@@ -6595,7 +6593,14 @@ PapyShort       fileNb, theErr;
 			}
 		}
 	}
+}
 
+-(void) CheckLoad
+{
+	[checking lock];
+	
+	[self CheckLoadIn];
+	
 	[checking unlock];
 }
 
@@ -7810,7 +7815,7 @@ float			iwl, iww;
 	[imageObj release];
 	
 	[checking release];
-	
+	checking = 0L;
 	
     [super dealloc];
 }
