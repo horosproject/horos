@@ -5546,6 +5546,10 @@ static BOOL needToRezoom;
 									[correspondingObjects addObject: curFile];
 									[dcmPix release];
 								}
+								else
+								{
+									NSLog( @"not readable: %@", [curFile valueForKey:@"completePath"] );
+								}
 							}
 						}
 						
