@@ -442,11 +442,19 @@ volatile static BOOL threadIsRunning = NO;
 				
 				if ((strcmp( messageToRemoteService, "SENDD") == 0))
 				{
-					NSData	*file = [NSData dataWithContentsOfFile: path];
+					long i, temp, noOfFiles = [paths count];
 					
-					long fileSize = NSSwapHostLongToBig( [file length]);
-					[toTransfer appendBytes:&fileSize length: 4];
-					[toTransfer appendData:file];
+					temp = NSSwapHostLongToBig( noOfFiles);
+					[toTransfer appendBytes:&temp length: 4];
+					
+					for( i = 0; i < noOfFiles ; i++)
+					{
+						NSData	*file = [NSData dataWithContentsOfFile: path];
+					
+						long fileSize = NSSwapHostLongToBig( [file length]);
+						[toTransfer appendBytes:&fileSize length: 4];
+						[toTransfer appendData:file];
+					}
 				}
 				
 				if ((strcmp( messageToRemoteService, "PASWD") == 0))
@@ -935,14 +943,19 @@ volatile static BOOL threadIsRunning = NO;
 	return dbFileName;
 }
 
-- (BOOL) sendDICOMFile:(int) index path:(NSString*) ip
+- (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
 {
-	if( [[NSFileManager defaultManager] fileExistsAtPath: ip] == NO) return NO;
+	long i;
+	
+	for( i = 0 ; i < [ip count]; i++)
+	{
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [ip objectAtIndex: i]] == NO) return NO;
+	}
 	
 	[BonjourBrowser waitForLock: lock];
 	
-	[path release];
-	path = [ip retain];
+	[paths release];
+	paths = [ip retain];
 	
 	[self connectToServer: index message:@"SENDD"];
 	

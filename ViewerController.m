@@ -3210,7 +3210,8 @@ static ViewerController *draggedController = 0L;
 					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 0]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
 				else
 					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: 0] : 0]; 
-					
+				
+				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
 				[pix CheckLoad];
 				

@@ -251,28 +251,39 @@ extern NSString * documentsDirectory();
 		}
 		else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
 		{
-			// We read 4 bytes that contain the file size
+			long i;
+			
+			// We read 4 bytes that contain the no of file
 			while ( [data length] < 6 + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+			long fileNo;
+			[[data subdataWithRange: NSMakeRange(6, 4)] getBytes: &fileNo];
+			fileNo = NSSwapBigLongToHost( fileNo);
 			
-			long fileSize;
-			[[data subdataWithRange: NSMakeRange(6, 4)] getBytes: &fileSize];
-			fileSize = NSSwapBigLongToHost( fileSize);
-			
-			while ( [data length] < 6 + 4 + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-			
-			NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
-			NSString	*dstPath;
-			
-			long index = [NSDate timeIntervalSinceReferenceDate];
-			
-			do
-			{
-				dstPath = [NSString stringWithFormat:@"%@/%d", incomingFolder, index];
-				index++;
+			for( i = 0 ; i < fileNo; i++)
+			{			
+				// We read 4 bytes that contain the file size
+				while ( [data length] < 6 + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				
+				long fileSize;
+				[[data subdataWithRange: NSMakeRange(6, 4)] getBytes: &fileSize];
+				fileSize = NSSwapBigLongToHost( fileSize);
+				
+				while ( [data length] < 6 + 4 + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				
+				NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
+				NSString	*dstPath;
+				
+				long index = [NSDate timeIntervalSinceReferenceDate];
+				
+				do
+				{
+					dstPath = [NSString stringWithFormat:@"%@/%d", incomingFolder, index];
+					index++;
+				}
+				while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
+				
+				[[data subdataWithRange: NSMakeRange(10,fileSize)] writeToFile:dstPath atomically: YES];
 			}
-			while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-			
-			[[data subdataWithRange: NSMakeRange(10,fileSize)] writeToFile:dstPath atomically: YES];
 			
 			representationToSend = 0L;
 		}

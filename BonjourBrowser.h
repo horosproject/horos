@@ -60,7 +60,7 @@
 - (NSString*) getDatabaseFile:(int) index ;
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 
-- (BOOL) sendDICOMFile:(int) index path:(NSString*) ip;
+- (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip;
 - (BOOL) isBonjourDatabaseUpToDate: (int) index;
 
 - (NSString*) getFile:(NSString*) pathFile index:(int) index;

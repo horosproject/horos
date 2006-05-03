@@ -45,6 +45,7 @@ Version 2.3
 */
 
 extern BOOL hasMacOSXTiger();
+extern NSLock *PapyrusLock;
 
 #import "DCMView.h"
 #import "MyOutlineView.h"
@@ -1432,6 +1433,8 @@ BOOL            readable = YES;
 PapyShort       fileNb, theErr;
 SElement		*theGroupP;
 
+	[PapyrusLock lock];
+	
     fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
     if (fileNb < 0)
     {
@@ -1448,6 +1451,9 @@ SElement		*theGroupP;
         
         Papy3FileClose (fileNb, TRUE);
     }
+	
+	[PapyrusLock unlock];
+	
 	//some valid dicom files are rejected by papy
     if (!readable)
 		return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]];
@@ -5209,13 +5215,13 @@ static BOOL needToRezoom;
 					
 					NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
 					
-					[bonjourBrowser sendDICOMFile: row-1 path: sendPath];
+					[bonjourBrowser sendDICOMFile: row-1 paths: [NSArray arrayWithObject: sendPath]];
 					
 					if([[sendPath pathExtension] isEqualToString:@"zip"])
 					{
 						// it is a ZIP
 						NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-						[bonjourBrowser sendDICOMFile: row-1 path: xmlPath];
+						[bonjourBrowser sendDICOMFile: row-1 paths: [NSArray arrayWithObject: xmlPath]];
 					}
 					
 					[splash incrementBy:1];
