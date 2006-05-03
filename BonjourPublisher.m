@@ -184,7 +184,7 @@ extern NSString * documentsDirectory();
 		
 		if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 		{
-			//NSLog( @"[data bytes] = DATAB");
+			[interfaceOsiriX saveDatabase: 0L];
 			
 			// we send the database SQL file
 			NSString *databasePath = [interfaceOsiriX localDatabasePath];

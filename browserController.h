@@ -315,6 +315,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSButton*) bonjourPasswordCheck;
 - (void) bonjourRunLoop:(id) sender;
 
+
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
