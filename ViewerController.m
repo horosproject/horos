@@ -4741,10 +4741,13 @@ NSMutableArray		*array;
 		
 		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
 		{
-			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-				[self ApplyCLUTString: @"B/W Inverse"];
-			else
-				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+			if( [[self modality] isEqualToString:@"PT"] == YES)
+			{
+				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+					[self ApplyCLUTString: @"B/W Inverse"];
+				else
+					[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+			}
 		}
 		
 		[imageView setBlendingFactor: [blendingSlider floatValue]];
