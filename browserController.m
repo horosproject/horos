@@ -5506,7 +5506,7 @@ static BOOL needToRezoom;
 						loadList = [toOpenArray objectAtIndex: x];
 						// Why viewerPix[0] (fixed value) within the loop?					
 						viewerPix[0] = [[NSMutableArray alloc] initWithCapacity:0];
-						
+						NSMutableArray *correspondingObjects = [[NSMutableArray alloc] initWithCapacity:0];
 						
 						if( [loadList count] == 1 && [[[loadList objectAtIndex: 0] valueForKey:@"numberOfFrames"] intValue] > 1)
 						{
@@ -5518,11 +5518,13 @@ static BOOL needToRezoom;
 								NSManagedObject*  curFile = [loadList objectAtIndex: 0];								
 								DCMPix*			dcmPix;
 								dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[[curFile valueForKey:@"numberOfFrames"] intValue] :fVolumePtr+mem :i :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
-								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 								
 								if( dcmPix)
 								{
+									mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+									
 									[viewerPix[0] addObject: dcmPix];
+									[correspondingObjects addObject: curFile];
 									[dcmPix release];
 								}
 							} //end for
@@ -5535,16 +5537,28 @@ static BOOL needToRezoom;
 								NSManagedObject*  curFile = [loadList objectAtIndex: i];
 								DCMPix*     dcmPix;
 								dcmPix = [[DCMPix alloc] myinit: [curFile valueForKey:@"completePath"] :i :[loadList count] :fVolumePtr+mem :0 :[[curFile valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curFile];
-								mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 								
 								if( dcmPix)
 								{
+									mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+									
 									[viewerPix[0] addObject: dcmPix];
+									[correspondingObjects addObject: curFile];
 									[dcmPix release];
 								}
 							}
 						}
 						
+						if( [viewerPix[0] count] != [loadList count])
+						{
+							for( i = 0; i < [viewerPix[0] count]; i++)
+							{
+								[[viewerPix[0] objectAtIndex: i] setID: i];
+								[[viewerPix[0] objectAtIndex: i] setTot: [viewerPix[0] count]];
+							}
+							
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", 0L), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
+						}
 						//opening images refered to in viewerPix[0] in the adequate viewer
 						
 						if( [viewerPix[0] count] > 0)
@@ -5555,7 +5569,7 @@ static BOOL needToRezoom;
 								{
 									NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity: [viewerPix[0] count]];
 									
-									for( i = 0; i < [viewerPix[0] count]; i++) [filesAr addObject:[loadList objectAtIndex:0]];
+									for( i = 0; i < [viewerPix[0] count]; i++) [filesAr addObject:[correspondingObjects objectAtIndex:0]];
 									
 									if( viewer)
 									{
@@ -5580,14 +5594,14 @@ static BOOL needToRezoom;
 									if( viewer)
 									{
 										//reuse of existing viewer
-										[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData :YES];
+										[viewer changeImageData:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData :YES];
 										[viewer startLoadImageThread];
 									}
 									else
 									{
 										//creation of new viewer
 										ViewerController * viewerController;
-										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
+										viewerController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
 										[viewerController showWindowTransition];
 										[viewerController startLoadImageThread];
 									}
@@ -5598,17 +5612,18 @@ static BOOL needToRezoom;
 								//movieViewer==YES
 								if( movieController == 0L)
 								{
-									movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
+									movieController = [[ViewerController alloc] viewCinit:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
 								}
 								else
 								{
-									[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:loadList] :volumeData];
+									[movieController addMovieSerie:viewerPix[0] :[NSMutableArray arrayWithArray:correspondingObjects] :volumeData];
 								}
 							}
 							[volumeData release];
 						}
 						
 						[viewerPix[0] release];
+						[correspondingObjects release];
 					}
 			} //end for
 		}
