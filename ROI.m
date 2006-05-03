@@ -2292,8 +2292,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		ctrlpoints[2][0] = tPt.x - OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
 		
+			//<joris>	
+//		glLineWidth( 3.0);
+//		glColor4f( 1.0, 0, 0, 0.4);
+
 		glLineWidth( 3.0);
-		glColor4f( 1.0, 0, 0, 0.4);
+		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+			//</joris>	
 		
 		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
@@ -2306,6 +2312,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glDisable(GL_MAP1_VERTEX_3);
 		
 		glLineWidth( 1.0);
+		
+	//<joris>	
+		glColor4f( 1.0, 1.0, 1.0, 0.5);
+		
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
+		glEnable(GL_MAP1_VERTEX_3);
+	
+	    glBegin(GL_LINE_STRIP);
+        for (i = 0; i <= 30; i++) 
+            glEvalCoord1f((GLfloat) i/30.0);
+		glEnd();
+		glDisable(GL_MAP1_VERTEX_3);
+		
+	//</joris>			
 		
 		if( [curView rotation])
 			glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
