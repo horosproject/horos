@@ -5205,26 +5205,36 @@ static BOOL needToRezoom;
 			else if( [bonjourServicesList selectedRow] != row)	 // Copying TO
 			{
 				Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+				long x;
 				
 				[splash showWindow:self];
 				[[splash progress] setMaxValue:[imagesArray count]];
 
-				for( i = 0; i < [imagesArray count]; i++)
+				for( i = 0; i < [imagesArray count];)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 					
-					NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
-					
-					[bonjourBrowser sendDICOMFile: row-1 paths: [NSArray arrayWithObject: sendPath]];
-					
-					if([[sendPath pathExtension] isEqualToString:@"zip"])
+					for( x = 0; x < 10; x++)
 					{
-						// it is a ZIP
-						NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-						[bonjourBrowser sendDICOMFile: row-1 paths: [NSArray arrayWithObject: xmlPath]];
+						if( i <  [imagesArray count])
+						{
+							NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+						
+							[packArray addObject: sendPath];
+							
+							if([[sendPath pathExtension] isEqualToString:@"zip"])
+							{
+								// it is a ZIP
+								NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+								[packArray addObject: xmlPath];
+							}
+							[splash incrementBy:1];
+						}
+						i++;
 					}
 					
-					[splash incrementBy:1];
+					[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
 					
 					[pool release];
 				}

@@ -251,24 +251,26 @@ extern NSString * documentsDirectory();
 		}
 		else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
 		{
-			long i;
+			long pos = 6, i;
 			
 			// We read 4 bytes that contain the no of file
-			while ( [data length] < 6 + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+			while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 			long fileNo;
-			[[data subdataWithRange: NSMakeRange(6, 4)] getBytes: &fileNo];
+			[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
 			fileNo = NSSwapBigLongToHost( fileNo);
+			pos += 4;
 			
 			for( i = 0 ; i < fileNo; i++)
 			{			
 				// We read 4 bytes that contain the file size
-				while ( [data length] < 6 + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
 				long fileSize;
-				[[data subdataWithRange: NSMakeRange(6, 4)] getBytes: &fileSize];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
 				fileSize = NSSwapBigLongToHost( fileSize);
+				pos += 4;
 				
-				while ( [data length] < 6 + 4 + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
 				NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
 				NSString	*dstPath;
@@ -282,7 +284,9 @@ extern NSString * documentsDirectory();
 				}
 				while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
 				
-				[[data subdataWithRange: NSMakeRange(10,fileSize)] writeToFile:dstPath atomically: YES];
+				[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile:dstPath atomically: YES];
+				
+				pos += fileSize;
 			}
 			
 			representationToSend = 0L;
