@@ -449,8 +449,10 @@ volatile static BOOL threadIsRunning = NO;
 					
 					for( i = 0; i < noOfFiles ; i++)
 					{
-						NSData	*file = [NSData dataWithContentsOfFile: path];
-					
+						NSData	*file = [NSData dataWithContentsOfFile: [paths objectAtIndex: i]];
+						
+						NSLog( @"File size: %d", [file length]);
+						
 						long fileSize = NSSwapHostLongToBig( [file length]);
 						[toTransfer appendBytes:&fileSize length: 4];
 						[toTransfer appendData:file];
