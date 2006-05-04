@@ -6926,6 +6926,8 @@ int i,j,l;
 			{
 				BOOL	 propagate = YES;
 				
+				if( [[imageView curDCM] isRGB] != [[[vC imageView] curDCM] isRGB]) propagate = NO;
+				
 				if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
 				
 				if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
