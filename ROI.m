@@ -879,7 +879,7 @@ return rect;
 		NSPoint cPt = pt;
 		
 		cPt.x = (cPt.x - offsetx)*scale;
-		cPt.y = (cPt.y - offsety)*scale;
+		cPt.y = (cPt.y - offsety)*(scale * [[curView curDCM] pixelRatio]);
 		
 		if( [curView rotation])
 		{
@@ -2262,7 +2262,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if( moved)	// Draw bezier line
 	{
 		glScalef( 1.f, 1.f/[[curView curDCM] pixelRatio], 1.f);
-
+		
 		if( [curView rotation])
 			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		
@@ -2275,14 +2275,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		ctrlpoints[2][0] = tPt.x - OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
 		
-		
 		glLineWidth( 3.0);
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
 		
 		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
-	
+		
 	    glBegin(GL_LINE_STRIP);
 		int i;
         for (i = 0; i <= 30; i++) 
@@ -2296,7 +2295,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
-	
+		
 	    glBegin(GL_LINE_STRIP);
         for (i = 0; i <= 30; i++) 
             glEvalCoord1f((GLfloat) i/30.0);
