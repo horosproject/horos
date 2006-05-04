@@ -3255,6 +3255,8 @@ static ViewerController *draggedController = 0L;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
 			{
 				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
+				
+				[imageView performSelectorOnMainThread:@selector( mouseDown:) withObject:[[NSApplication sharedApplication] currentEvent] waitUntilDone: YES];
 			}
 		}
 	}
