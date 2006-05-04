@@ -2111,7 +2111,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	long				i;
 	NSMutableArray		*rectArray = [curView rectArray];
-
+	
+	if( rectArray == 0L)
+	{
+		*moved = NO;
+		return dRect;
+	}
+	
 	long				direction = 0, maxRedo = [rectArray count] + 2;
 	
 	*moved = NO;

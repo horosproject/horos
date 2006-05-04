@@ -5622,6 +5622,7 @@ static long scrollMode;
 					long i;
 					for( i = 0; i < [curRoiList count]; i++)
 					{
+						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
 					
@@ -5631,6 +5632,7 @@ static long scrollMode;
 					}
 					
 					[rectArray release];
+					rectArray = 0L;
 				}
 				
 				if( [[[self window] windowController] is2DViewer] == YES) [[[[self window] windowController] roiLock] unlock];
