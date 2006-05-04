@@ -348,7 +348,6 @@ static BOOL FORCEREBUILD = NO;
 	NSString		*subFolder;
 	long			subFolderInt;
 
-
 	do
 	{
 		
@@ -1546,6 +1545,8 @@ SElement		*theGroupP;
 	
 	for( i = 0 ; i < [filesInput count]; i++)
 	{
+		NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+		
 		NSString	*dstPath, *srcPath = [filesInput objectAtIndex:i];
 		NSString	*extension = [srcPath pathExtension];
 		
@@ -1560,11 +1561,7 @@ SElement		*theGroupP;
 				if([extension isEqualToString:@""])
 					extension = [NSString stringWithString:@"dcm"]; 
 				
-//				if ( [extension caseInsensitiveCompare:@"tif"] == NSOrderedSame || [extension caseInsensitiveCompare:@"tiff"] == NSOrderedSame)
-//					dstPath = [self getNewFileDatabasePath:[[srcPath stringByDeletingPathExtension] lastPathComponent]: extension];
-//				else
-
-					dstPath = [self getNewFileDatabasePath:extension];	
+				dstPath = [self getNewFileDatabasePath:extension];	
 				
 				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
 				{
@@ -1579,6 +1576,8 @@ SElement		*theGroupP;
 		}
 		
 		[splash incrementBy:1];
+		
+		[pool release];
 	}
 	
 	[splash close];

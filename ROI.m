@@ -560,18 +560,8 @@ GLenum glReportError (void)
 	
 	line *= 12;
 	
-	ratio = [[curView curDCM] pixelRatio];
-	
-//	if( [curView rotation])
-//	{
-//		xx = x + line*sin(rotation);
-//		yy = y + line/ratio*cos(rotation);
-//	}
-//	else
-	{
-		xx = x + 1.0f;
-		yy = y + (line + 1.0)/ratio;
-	}
+	xx = x + 1.0f;
+	yy = y + (line + 1.0);
 	
     glColor3f (0.0, 0.0, 0.0);
 
@@ -580,16 +570,8 @@ GLenum glReportError (void)
     GLint i = 0;
     while (cstrOut [i]) glCallList (fontListGL + cstrOut[i++] - ' ');
 
-//	if( rotation)
-//	{
-//		xx = x + line*sin(rotation);
-//		yy = y + line/ratio*cos(rotation);
-//	}
-//	else
-	{
-		xx = x;
-		yy = y + line/ratio;
-	}
+	xx = x;
+	yy = y + line;
 	
     glColor3f (1.0f, 1.0f, 1.0f);
     glRasterPos3d (xx, yy, 0);
@@ -2183,14 +2165,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
 		
+		glScalef( 1.f, 1.f/[[curView curDCM] pixelRatio], 1.f);
+
 		if( [curView rotation]) glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-		
+				
 		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
 		
 		NSPoint tPt;
 		
 		tPt.x = drawRect.origin.x + 4;
-		tPt.y = drawRect.origin.y + 12 + 2;
+		tPt.y = drawRect.origin.y + (12 + 2);
 		
 		long line = 0;
 		
@@ -2201,6 +2185,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
 
 		if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+				
+		glScalef( 1.f, [[curView curDCM] pixelRatio], 1.f);
 
 		glDisable(GL_POLYGON_SMOOTH);
 		glDisable(GL_BLEND);
@@ -2214,6 +2200,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
 {
 	long	maxWidth = 0, line;
+	
+	tPt.y *= [[curView curDCM] pixelRatio];
 	
 	drawRect.origin = tPt;
 	
@@ -2251,17 +2239,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
 
 		drawRect.origin = tPt;
-//		if( [curView rotation])
-//		{
-//			float rotation = [curView rotation]*deg2rad;
-//		
-//			NSPoint origin;
-//			origin.x = tPt.x * cos(rotation) - tPt.y * sin(rotation);
-//			origin.y = tPt.x * sin(rotation) + tPt.y * cos(rotation);
-//		
-//			tPt.x = origin.x;
-//			tPt.y = origin.y;
-//		}
 	}
 	
 	if( [curView rotation])
@@ -2278,14 +2255,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		tPt = origin;
 	}
 	
-	
-		
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
 	
 	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
 	if( moved)	// Draw bezier line
 	{
+		glScalef( 1.f, 1.f/[[curView curDCM] pixelRatio], 1.f);
+
 		if( [curView rotation])
 			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 		
@@ -2297,6 +2274,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		ctrlpoints[1][0] = NSMinX( drawRect);				ctrlpoints[1][1] = NSMidY( drawRect);		ctrlpoints[1][2] = 0;
 		ctrlpoints[2][0] = tPt.x - OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
+		
 		
 		glLineWidth( 3.0);
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
@@ -2327,6 +2305,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		if( [curView rotation])
 			glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		
+		glScalef( 1.f, [[curView curDCM] pixelRatio], 1.f);
 	}
 }
 
@@ -2341,7 +2321,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	pixelSpacingY = spacingY;
 	
 	float screenXUpL,screenYUpL,screenXDr,screenYDr; // for tPlain ROI
-
+	
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POLYGON_SMOOTH);
