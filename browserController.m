@@ -5553,7 +5553,7 @@ static BOOL needToRezoom;
 							}
 						}
 						
-						if( [viewerPix[0] count] != [loadList count])
+						if( [viewerPix[0] count] != [loadList count] && multiFrame == NO)
 						{
 							for( i = 0; i < [viewerPix[0] count]; i++)
 							{
