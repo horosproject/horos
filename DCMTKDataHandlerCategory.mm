@@ -571,10 +571,12 @@ extern BrowserController *browserWindow;
 		[request setPredicate:predicate];
 					
 		error = 0L;
-					
-		findArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
 		
+		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
 		
+		[context lock];
+		
+		findArray = [context executeFetchRequest:request error:&error];
 		
 		if (error) {
 			findArray = nil;
@@ -584,6 +586,8 @@ extern BrowserController *browserWindow;
 			[findArray retain];
 			cond = EC_Normal;
 		}
+		
+		[context unlock];
 	}
 	else{
 		findArray = nil;
@@ -621,8 +625,12 @@ extern BrowserController *browserWindow;
 	[request setPredicate:predicate];
 				
 	error = 0L;
-				
-	NSArray *array = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
+	
+	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+	
+	[context lock];
+	
+	NSArray *array = [context executeFetchRequest:request error:&error];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	OFCondition cond;
 	
@@ -664,6 +672,8 @@ extern BrowserController *browserWindow;
 		}
 		cond = EC_Normal;
 	}
+	
+	[context unlock];
 	
 	moveArray = [paths copy];
 	[paths release];	

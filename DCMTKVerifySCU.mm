@@ -170,15 +170,15 @@ static const char* transferSyntaxes[] = {
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
-	//verbose option set to true for now
-	_verbose=OFTrue;
-
-	
-	//debug code activated for now
-	_debug = OFTrue;
-	DUL_Debug(OFTrue);
-	DIMSE_debug(OFFalse);
-	SetDebugLevel(3);
+//	//verbose option set to true for now
+//	_verbose=OFTrue;
+//
+//	
+//	//debug code activated for now
+//	_debug = OFTrue;
+//	DUL_Debug(OFTrue);
+//	DIMSE_debug(OFFalse);
+//	SetDebugLevel(3);
 	
 	//Use Little Endian TS
 	_networkTransferSyntax = EXS_LittleEndianExplicit;
