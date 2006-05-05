@@ -471,10 +471,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 }
 
 
-
-
-
-
 /************************************
 				FIND
 **************************************/
@@ -1213,7 +1209,8 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
     {
 		// set logEntry to complete
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	   if (handle->logEntry != NULL) {
+	   if (handle->logEntry != NULL)
+	   {
 			NSMutableDictionary *logEntry = handle->logEntry;
 		   [logEntry  setObject:@"Complete" forKey:@"message"];
 		   [logEntry  setObject:[NSDate date] forKey:@"endTime"];
@@ -1237,13 +1234,15 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
  *      Provides a storage filename
  *********************************/
 
+static long seed = 0;
+
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 const char      *SOPClassUID,
                 const char      * /* SOPInstanceUID */ ,
                 char            *newImageFileName)
 {	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *dstFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
+	NSString *dstFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"TEMP"];
     OFString filename;
     char prefix[12];
 
@@ -1251,10 +1250,12 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
     if (m==NULL) m = "XX";
     sprintf(prefix, "%s_", m);
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
-    unsigned int seed = (unsigned int)time(NULL);
-    newImageFileName[0]=0; // return empty string in case of error
-//   if (! fnamecreator.makeFilename(seed, handle->storageArea, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
-	if (! fnamecreator.makeFilename(seed, [dstFolder UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+    // unsigned int seed = (unsigned int) time (NULL);
+	seed++;
+	unsigned seedvalue = seed +  (unsigned int) time (NULL);
+    newImageFileName[0] = 0; // return empty string in case of error
+//   if (! fnamecreator.makeFilename(seedvalue, handle->storageArea, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+	if (! fnamecreator.makeFilename(seedvalue, [dstFolder UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
 //	printf("newFileName: %s", filename.c_str());
     strcpy(newImageFileName, filename.c_str());
 	[pool release];

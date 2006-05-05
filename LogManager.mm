@@ -58,58 +58,57 @@ LogManager *currentLogManager;
 	return path;
 }
 
-
-
-
-- (void)checkLogs:(NSTimer *)timer{
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];	
-	NSFileManager *manager = [NSFileManager defaultManager];
-	NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
-	NSString *path;
-	
-	NS_DURING
-	while (path = [enumerator nextObject]){
-		if ([[path pathExtension] isEqualToString: @"plist"]) {
-			
-			NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
-			NSDictionary *logInfo = [NSDictionary dictionaryWithContentsOfFile:file];
-			//delete file
-			[manager removeFileAtPath:file handler:nil];
-			
-			NSString *uid = [logInfo objectForKey:@"uid"];
-			id logEntry = [_currentLogs objectForKey:uid];
-			if (logEntry == nil) {
-		//create logEntry and add to _logs
-				logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-				[logEntry setValue:[logInfo objectForKey:@"startTime"] forKey:@"startTime"];
-				[logEntry setValue:@"Receive" forKey:@"type"];
-				[logEntry setValue:[logInfo objectForKey:@"CallingAET"] forKey:@"originName"];
-				[logEntry setValue:[logInfo objectForKey:@"PatientName"] forKey:@"patientName"];
-				[logEntry setValue:[logInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];
-				[_currentLogs setObject:logEntry forKey:uid];
-			}
-				
-			
-			//update logEntry
-			[logEntry setValue:[logInfo objectForKey:@"message"] forKey:@"message"];
-			[logEntry setValue:[logInfo objectForKey:@"numberReceived"] forKey:@"numberImages"];
-			[logEntry setValue:[logInfo objectForKey:@"numberReceived"  ] forKey:@"numberSent"];
-			[logEntry setValue:[logInfo objectForKey:@"errorCount"] forKey:@"numberError"];
-			[logEntry setValue:[logInfo objectForKey:@"endTime"] forKey:@"endTime"];
-			
-			if ([[logInfo objectForKey:@"message"] isEqualToString:@"Complete"]) {
-				[_currentLogs removeObjectForKey:uid];
-				NSLog(@"Remove %@ on completion", uid);
-			}
-		}
+- (void)checkLogs:(NSTimer *)timer
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"])
+	{
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];	
+		NSFileManager *manager = [NSFileManager defaultManager];
+		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
+		NSString *path;
 		
+		NS_DURING
+		while (path = [enumerator nextObject]){
+			if ([[path pathExtension] isEqualToString: @"plist"]) {
+				
+				NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
+				NSDictionary *logInfo = [NSDictionary dictionaryWithContentsOfFile:file];
+				//delete file
+				[manager removeFileAtPath:file handler:nil];
+				
+				NSString *uid = [logInfo objectForKey:@"uid"];
+				id logEntry = [_currentLogs objectForKey:uid];
+				if (logEntry == nil) {
+			//create logEntry and add to _logs
+					logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+					[logEntry setValue:[logInfo objectForKey:@"startTime"] forKey:@"startTime"];
+					[logEntry setValue:@"Receive" forKey:@"type"];
+					[logEntry setValue:[logInfo objectForKey:@"CallingAET"] forKey:@"originName"];
+					[logEntry setValue:[logInfo objectForKey:@"PatientName"] forKey:@"patientName"];
+					[logEntry setValue:[logInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];
+					[_currentLogs setObject:logEntry forKey:uid];
+				}
+					
+				
+				//update logEntry
+				[logEntry setValue:[logInfo objectForKey:@"message"] forKey:@"message"];
+				[logEntry setValue:[logInfo objectForKey:@"numberReceived"] forKey:@"numberImages"];
+				[logEntry setValue:[logInfo objectForKey:@"numberReceived"  ] forKey:@"numberSent"];
+				[logEntry setValue:[logInfo objectForKey:@"errorCount"] forKey:@"numberError"];
+				[logEntry setValue:[logInfo objectForKey:@"endTime"] forKey:@"endTime"];
+				
+				if ([[logInfo objectForKey:@"message"] isEqualToString:@"Complete"]) {
+					[_currentLogs removeObjectForKey:uid];
+					NSLog(@"Remove %@ on completion", uid);
+				}
+			}
+			
+		}
+
+		NS_HANDLER
+			NSLog(@"Exception while checking logs: %@", [localException description]);
+		NS_ENDHANDLER
 	}
-
-
-	NS_HANDLER
-		NSLog(@"Exception while checking logs: %@", [localException description]);
-	NS_ENDHANDLER
-
 }
 
 @end

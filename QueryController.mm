@@ -610,8 +610,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[[logView textStorage] setAttributedString:[[[NSAttributedString alloc] initWithString:logString] autorelease]];
 	[logView scrollRangeToVisible:NSMakeRange([[logView string] length], 0)];
 	
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:NSControlTextDidEndEditingNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
