@@ -51,10 +51,7 @@ Version 2.3
 
 #import "DCMTKStoreSCU.h"
 
-
 extern NSMutableDictionary	*plugins, *pluginsDict;
-
-
 
 @implementation SendController
 
@@ -336,7 +333,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	}
 	
 
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 			calledAET:calledAET 
 			hostname:hostname 
 			port:[destPort intValue] 
@@ -344,7 +341,6 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			transferSyntax:_offisTS
 			compression: 1.0
 			extraParameters:nil];
-	sendSCU = storeSCU;
 	[storeSCU run:self];
 	
 	[filesToSend release];
@@ -358,6 +354,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
 	
 	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
+	
+	[storeSCU release];
+	storeSCU = 0L;
 	
 	[pool release];
 	//need to unlock to allow release of self after send complete
@@ -393,7 +392,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (void)setSendMessage:(NSNotification *)note
 {
-	[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:YES]; // <- GUI operations are permitted ONLY on the main thread
+	if( [note object] == storeSCU)
+		[self performSelectorOnMainThread:@selector(setSendMessageThread:) withObject:[note userInfo] waitUntilDone:YES]; // <- GUI operations are permitted ONLY on the main thread
 }
 
 #pragma mark serversArray functions
@@ -434,7 +434,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 
 - (void)listenForAbort:(id)handler{
-	[sendSCU abort];
+	[storeSCU abort];
 }
 
 - (void)abort{

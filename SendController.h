@@ -44,29 +44,25 @@ enum TransferSyntaxCodes
 enum SendServerType { osirixServer, offisServer };
 
 @class Wait;
+@class DCMTKStoreSCU;
 
 @interface SendController : NSWindowController {
-	id _server;
-	NSArray *_files;
-	NSString *_transferSyntaxString;
-	NSString *_numberFiles;
-	
-	int _keyImageIndex;
-	int _serverIndex;
-	int _offisTS;
-	 
-	 id sendSCU;
+	id					_server;
+	NSArray				*_files;
+	NSString			*_transferSyntaxString;
+	NSString			*_numberFiles;
+	int					_keyImageIndex;
+	int					_serverIndex;
+	int					_offisTS;
+	Wait				*_waitSendWindow;
+	BOOL				_readyForRelease;
+	NSLock				*_lock;
+	DCMTKStoreSCU		*storeSCU;
 	
 	IBOutlet NSComboBox		*serverList;
-
 	IBOutlet NSMatrix		*keyImageMatrix;
 	IBOutlet NSTextField	*numberImagesTextField, *addressAndPort;
 	IBOutlet NSPopUpButton	*syntaxListOffis;
-
-	Wait *_waitSendWindow;
-	BOOL _readyForRelease;
-	NSLock *_lock;
-
 }
 + (void)sendFiles:(NSArray *)files;
 - (id)initWithFiles:(NSArray *)files;
