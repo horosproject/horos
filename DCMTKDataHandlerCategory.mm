@@ -63,7 +63,7 @@ extern BrowserController *browserWindow;
 		NSPredicate *predicate = nil;
 		DcmElement* dcelem = dataset->getElement(elemIndex);
 		DcmTagKey key = dcelem->getTag().getXTag();
-		printf("elemindex: %d key: %s\n",elemIndex, key.toString().c_str());
+		//printf("elemindex: %d key: %s\n",elemIndex, key.toString().c_str());
 		if (strcmp(sType, "STUDY") == 0) {
 			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:
 						[NSArray arrayWithObjects: compoundPredicate, nil]];
@@ -334,7 +334,8 @@ extern BrowserController *browserWindow;
 			if (predicate)
 				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
-			else if (strcmp(sType, "IMAGE") == 0) {
+		else if (strcmp(sType, "IMAGE") == 0) {
+			
 			if (key == DCM_StudyInstanceUID) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
@@ -346,6 +347,7 @@ extern BrowserController *browserWindow;
 					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
 			} 
 			else if (key == DCM_SOPInstanceUID) {
+				NSLog(@"sop Instance");
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
@@ -360,9 +362,9 @@ extern BrowserController *browserWindow;
 				if (dcelem->getString(string).good() && string != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
 			}
-			
-				
 		}
+		if (predicate)
+			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 	}
 
 	//NSLog(@"predicate: %@", [compoundPredicate description]);
