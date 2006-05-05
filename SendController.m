@@ -57,11 +57,18 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 + (void)sendFiles:(NSArray *)files
 {
-	if 	([files  count])
+	if( [files  count])
 	{
-		SendController *sendController = [[SendController alloc] initWithFiles:files];
-		[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
-		[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
+		if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count] > 0)
+		{
+			SendController *sendController = [[SendController alloc] initWithFiles:files];
+			[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
+			[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget:sendController withObject: nil];
+		}
+		else
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No DICOM destinations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+		}
 	}
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"No files are selected...",nil),NSLocalizedString( @"OK",nil), nil, nil);
 }
@@ -77,9 +84,11 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
-//		_serverToolIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSenderEngine"];
+		
+		if( _serverIndex >= [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count])
+			_serverIndex = 0;
+		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
-//		_osirixTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOsiriX"];
 		_offisTS = [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"];
 		
 		_readyForRelease = NO;
@@ -116,7 +125,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 }
 
 - (void)dealloc{
-	//NSLog(@"Release SendController");
+	NSLog(@"SendController Released");
 	[_files release];
 	[_server release];
 	[_transferSyntaxString release];

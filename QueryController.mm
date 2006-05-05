@@ -153,7 +153,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[outlineView reloadData];
 }
 
-
 //Actions
 -(void) query:(id)sender
 {
@@ -185,8 +184,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	//get rid of white space at end and append "*"
 
 		NSString *filterValue = [[searchField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	
-	
 		
 		if (queryManager)
 			[queryManager release];
@@ -208,19 +205,16 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			[queryManager addFilter:dateString forDescription:@"StudyDate"];
 		}
 		
-		if (startingDate || [filterValue length] > 0) {
-			[NSThread detachNewThreadSelector:@selector(performQuery:) toTarget:self withObject:nil];
-		//	[self performQuery: 0L];
-			[progressIndicator startAnimation:nil];
+		if (startingDate || [filterValue length] > 0)
+		{
+			[self performQuery: 0L];
 		}
 		
 			
 		// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Continue", nil), nil) != NSAlertDefaultReturn) {
-			[progressIndicator startAnimation:nil];
-			NSLog(@"detach query thread");
-			[NSThread detachNewThreadSelector:@selector(performQuery:) toTarget:self withObject:nil];
-		//	[self performQuery: 0L];
+		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Continue", nil), nil) != NSAlertDefaultReturn)
+		{
+			[self performQuery: 0L];
 		}
 	}
 	else
@@ -376,9 +370,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];	
 		
 		//run query
-		[progressIndicator startAnimation:nil];
-		[NSThread detachNewThreadSelector:@selector(performQuery:) toTarget:self withObject:nil];
-	//	[self performQuery: 0L];
+		[self performQuery: 0L];
 		[advancedQueryWindow close];	
 		}
 		else
@@ -389,8 +381,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 }
 
 
+// This function calls many GUI function, it has to be called from the main thread
 - (void)performQuery:(id)object{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	[progressIndicator startAnimation:nil];
 	[queryManager performQuery];
 	[progressIndicator stopAnimation:nil];
 	[queryManager sortArray: [outlineView sortDescriptors]];
@@ -492,6 +486,12 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 {
     if ( self = [super initWithWindowNibName:@"Query"])
 	{
+		if( [[self serversList] count] == 0)
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+			return 0L;
+		}
+	
 		result = 0L;
 		queryFilters = 0L;
 		advancedQuerySubviews = 0L;
@@ -610,6 +610,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[[logView textStorage] setAttributedString:[[[NSAttributedString alloc] initWithString:logString] autorelease]];
 	[logView scrollRangeToVisible:NSMakeRange([[logView string] length], 0)];
 	
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textDidEndEditing:) name:NSControlTextDidEndEditingNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
