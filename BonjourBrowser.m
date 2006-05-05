@@ -594,9 +594,8 @@ volatile static BOOL threadIsRunning = NO;
 }
 
 // This object is the delegate of its NSNetServiceBrowser object.
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing {
-    // add every service found on the network
-
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
 	// remove my own sharing service
 	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
 	{
@@ -607,6 +606,7 @@ volatile static BOOL threadIsRunning = NO;
 		[services insertObject:aNetService atIndex:BonjourServices];
 		BonjourServices ++;
 	}
+	
 	// update interface
     if(!moreComing) [interfaceOsiriX displayBonjourServices];
 }

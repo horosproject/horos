@@ -80,18 +80,11 @@ DCMNetServiceDelegate *_netServiceDelegate;
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing{
 }
 
-
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing{
-
-		[_dicomServices addObject:aNetService];
-		[aNetService setDelegate:self];
-		[aNetService resolveWithTimeout:5];	
-		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
-		//NSLog(@"Dicom Services:\n%@",[aNetService description]);
-
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
+	[aNetService setDelegate:self];
+	[aNetService resolveWithTimeout:5];
 }
-
 
 //Bonjour Delegate methods
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didNotSearch:(NSDictionary *)errorDict{
@@ -122,22 +115,17 @@ DCMNetServiceDelegate *_netServiceDelegate;
 //NetService delegate
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
-    NSLog( @"There was an error while attempting to resolve address for %@",
-			[sender name] );
+    NSLog( @"There was an error while attempting to resolve address for %@", [sender name] );
 	[_dicomServices removeObject:sender];
 }
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	//NSHost *host = [NSHost hostWithAddress:[sender hostName]];
-	//NSLog(@"host: %@", [host description]);
-    NSLog( @"Successfully resolved address for %@ at %@.", [sender name] , [sender hostName]);
+	if( [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
+	{
+		[_dicomServices addObject: sender];
+		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
+		NSLog( @"Successfully resolved address for %@ at %@.", [sender name] , [sender hostName]);
+	}
 }
-
-- (void)netServiceWillResolve:(NSNetService *)sender
-{
-    NSLog( @"Attempting to resolve address for %@...", [sender name] );
-}
-
-
 @end
