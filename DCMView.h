@@ -185,6 +185,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	BOOL			cursorSet;
 	NSPoint			display2DPoint;
 }
+- (void) applyImageTransformation;
 - (NSMutableArray*) rectArray;
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;
@@ -222,6 +223,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) setCross:(long) x :(long)y :(BOOL) update;
 - (void) setMPRAngle: (float) vectorMPR;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
+- (NSPoint) ConvertFromGL2View:(NSPoint) a;
 - (void) cross3D:(float*) x :(float*) y :(float*) z;
 - (void) setWLWW:(float) wl :(float) ww;
 - (void) getWLWW:(float*) wl :(float*) ww;

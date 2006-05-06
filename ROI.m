@@ -759,6 +759,10 @@ GLenum glReportError (void)
 		break;
 		
 		case tOval:
+			result.x = rect.origin.x + rect.size.width/4;
+			result.y = rect.origin.y + rect.size.height;
+		break;
+		
 		case tROI:
 			result.x = rect.origin.x + rect.size.width;
 			result.y = rect.origin.y + rect.size.height;
@@ -876,22 +880,7 @@ return rect;
 	
 	if( testDrawRect)
 	{
-		NSPoint cPt = pt;
-		
-		cPt.x = (cPt.x - offsetx)*scale;
-		cPt.y = (cPt.y - offsety)*(scale * [[curView curDCM] pixelRatio]);
-		
-		if( [curView rotation])
-		{
-			float rotation = [curView rotation]*deg2rad;
-		
-			NSPoint origin;
-			origin.x = cPt.x * cos(rotation) - cPt.y * sin(rotation);
-			origin.y = cPt.x * sin(rotation) + cPt.y * cos(rotation);
-		
-			cPt.x = origin.x;
-			cPt.y = origin.y;
-		}
+		NSPoint cPt = [curView ConvertFromGL2View: pt];
 		
 		if( NSPointInRect( cPt, drawRect))
 		{
@@ -2157,7 +2146,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 	{
-		glEnable(GL_POLYGON_SMOOTH);
+//		glEnable(GL_POLYGON_SMOOTH);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -2165,10 +2154,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
 		
-		glScalef( 1.f, 1.f/[[curView curDCM] pixelRatio], 1.f);
-
-		if( [curView rotation]) glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-				
+		glLoadIdentity();
+		
+		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
+		
 		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
 		
 		NSPoint tPt;
@@ -2183,13 +2172,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
 		[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
 		[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
-
-		if( [curView rotation]) glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-				
-		glScalef( 1.f, [[curView curDCM] pixelRatio], 1.f);
-
-		glDisable(GL_POLYGON_SMOOTH);
+		
+//		glDisable(GL_POLYGON_SMOOTH);
 		glDisable(GL_BLEND);
+		
+		[curView applyImageTransformation];
 	}
 	else
 	{
@@ -2200,9 +2187,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
 {
 	long	maxWidth = 0, line;
-	
-	tPt.y *= [[curView curDCM] pixelRatio];
-	
+
+	tPt = [curView ConvertFromGL2View: tPt];
 	drawRect.origin = tPt;
 	
 	line = 0;
@@ -2236,23 +2222,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 		}
 		
-		tPt.x = (tPt.x - [[curView curDCM] pwidth]/2.) * [curView scaleValue];		tPt.y = (tPt.y - [[curView curDCM] pheight]/2.) * [curView scaleValue];
-
+		tPt = [curView ConvertFromGL2View: tPt];
 		drawRect.origin = tPt;
-	}
-	
-	if( [curView rotation])
-	{
-		float rotation = [curView rotation]*deg2rad;
-	
-		NSPoint origin;
-		origin.x = drawRect.origin.x * cos(rotation) - drawRect.origin.y * sin(rotation);
-		origin.y = drawRect.origin.x * sin(rotation) + drawRect.origin.y * cos(rotation);
-	
-		drawRect.origin.x = origin.x;
-		drawRect.origin.y = origin.y;
-		
-		tPt = origin;
 	}
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
@@ -2261,10 +2232,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( moved)	// Draw bezier line
 	{
-		glScalef( 1.f, 1.f/[[curView curDCM] pixelRatio], 1.f);
-		
-		if( [curView rotation])
-			glRotatef( -[curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
+		glLoadIdentity();
+		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
 		
 		GLfloat ctrlpoints[4][3];
 		
@@ -2302,10 +2271,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		glEnd();
 		glDisable(GL_MAP1_VERTEX_3);
 		
-		if( [curView rotation])
-			glRotatef( [curView rotation], 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
-		
-		glScalef( 1.f, [[curView curDCM] pixelRatio], 1.f);
+		[curView applyImageTransformation];
 	}
 }
 
@@ -2411,8 +2377,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
-				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
 				if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO ) {
@@ -2470,8 +2434,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
-				
-				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
@@ -2700,8 +2662,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
 				
-				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				if( type == tMesure ) {
 					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
@@ -2749,8 +2709,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					NSPoint			tPt = [self lowerRightPoint];
 					long			line = 0;
-					
-					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					else line1[ 0] = 0;
@@ -2816,8 +2774,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSPoint			tPt = [self lowerRightPoint];
 				long			line = 0;
 				
-				tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
@@ -2870,8 +2826,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					long	line = 0;
 					float   length;
 					
-					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
-					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
@@ -2911,8 +2865,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
 					float   length;
-					
-					tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 					
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 					
@@ -2956,8 +2908,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						NSPoint tPt = [self lowerRightPoint];
 						long	line = 0;
 						float   angle;
-						
-						tPt.x = (tPt.x - offsetx) * scaleValue;		tPt.y = (tPt.y - offsety) * scaleValue;
 						
 						if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
 						

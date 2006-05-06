@@ -4374,6 +4374,42 @@ static long scrollMode;
     return a;
 }
 
+-(NSPoint) ConvertFromGL2View:(NSPoint) a
+{
+    float xx, yy;
+    NSRect size = [self frame];
+	
+	if( curDCM)
+	{
+		a.y *= [curDCM pixelRatio];
+		a.y -= [curDCM pheight]*[curDCM pixelRatio]/ 2.;
+		a.x -= [curDCM pwidth]/2.;
+	}
+	
+	a.y -= (origin.y + originOffset.y)/scaleValue;
+	a.x += (origin.x + originOffset.x)/scaleValue;
+
+    xx = a.x*cos(-rotation*deg2rad) + a.y*sin(-rotation*deg2rad);
+    yy = -a.x*sin(-rotation*deg2rad) + a.y*cos(-rotation*deg2rad);
+
+    a.y = yy;
+    a.x = xx;
+
+    a.y *= scaleValue;
+	a.y += size.size.height/2;
+	
+    a.x *= scaleValue;
+	a.x += size.size.width/2;
+	
+	if( xFlipped) a.x = size.size.width - a.x;
+	if( yFlipped) a.y = size.size.height - a.y;
+	
+	a.x -= size.size.width/2;
+	a.y -= size.size.height/2;
+	
+    return a;
+}
+
 -(NSPoint) ConvertFromView2GL:(NSPoint) a
 {
     float xx, yy;
@@ -4439,8 +4475,6 @@ static long scrollMode;
 	long effectiveTextureMod = 0; // texture size modification (inset) to account for borders
 	long x, y, k = 0, offsetY, offsetX = 0, currTextureWidth, currTextureHeight;
 
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
     glMatrixMode (GL_MODELVIEW);
     glLoadIdentity ();
 	
@@ -5187,6 +5221,19 @@ static long scrollMode;
 //	yRaster -= 12;
 }
 
+- (void) applyImageTransformation
+{
+	NSSize size = [self frame].size;
+	
+	glLoadIdentity ();
+	glViewport(0, 0, size.width, size.height);
+
+	glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f);
+	glRotatef (rotation, 0.0f, 0.0f, 1.0f);
+	glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
+	glScalef( 1.f, [curDCM pixelRatio], 1.f);
+}
+
 - (void) drawRect:(NSRect)aRect
 {
 	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
@@ -5601,15 +5648,10 @@ static long scrollMode;
 						glLineWidth(1.0);
 					}
 				}
+				
 				glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 				glTranslatef( origin.x + originOffset.x, -origin.y - originOffset.y, 0.0f);
-				
-			//	NSLog(@"OO: %f %f", originOffset.x, originOffset.y);
-				
-				if( [curDCM pixelRatio] != 1.0)
-				{
-					glScalef( 1.f, [curDCM pixelRatio], 1.f);
-				}
+				glScalef( 1.f, [curDCM pixelRatio], 1.f);
 				
 				// Draw ROIs
 				BOOL drawROI = YES;
@@ -5913,11 +5955,6 @@ static long scrollMode;
 
 		rect = [self frame];//[self bounds];
 		
-		glViewport(0, 0, (int) rect.size.width, (int) rect.size.height);
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
