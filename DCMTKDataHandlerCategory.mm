@@ -220,8 +220,18 @@ extern BrowserController *browserWindow;
 			}
 			else if (key == DCM_SeriesInstanceUID) {
 				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				if (dcelem->getString(string).good() && string != NULL) {
+					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
+					NSString *format = @"*%@*" ;
+					if ([u hasPrefix:@"*"] && [u hasSuffix:@"*"])
+						format = @"";
+					else if ([u hasPrefix:@"*"])
+						format = @"%@*";
+					else if ([u hasSuffix:@"*"])
+						format = @"*%@";
+					NSString *suid = [NSString stringWithFormat:format, u];
+					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID like %@", suid];
+				}
 			} 
 			else if (key == DCM_SeriesDescription) {
 				char *string;
@@ -343,8 +353,18 @@ extern BrowserController *browserWindow;
 			}
 			else if (key == DCM_SeriesInstanceUID) {
 				char *string;
-				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				if (dcelem->getString(string).good() && string != NULL) {
+					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
+					NSString *format = @"*%@*" ;
+					if ([u hasPrefix:@"*"] && [u hasSuffix:@"*"])
+						format = @"";
+					else if ([u hasPrefix:@"*"])
+						format = @"%@*";
+					else if ([u hasSuffix:@"*"])
+						format = @"*%@";
+					NSString *suid = [NSString stringWithFormat:format, u];
+					predicate = [NSPredicate predicateWithFormat:@"series.seriesInstanceUID like %@", suid];
+				}
 			} 
 			else if (key == DCM_SOPInstanceUID) {
 				NSLog(@"sop Instance");
@@ -475,7 +495,7 @@ extern BrowserController *browserWindow;
 }
 - (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset{
 	//DcmDataset dataset;
-	
+	NSLog(@"uid: %@",[fetchedObject valueForKey:@"dicomSeriesInstanceUID"]);
 	if ([fetchedObject valueForKey:@"name"])	
 		dataset ->putAndInsertString(DCM_SeriesDescription, [[fetchedObject valueForKey:@"name"]   cStringUsingEncoding:NSUTF8StringEncoding]);
 	else
@@ -506,8 +526,8 @@ extern BrowserController *browserWindow;
 	else
 		dataset ->putAndInsertString(DCM_SeriesNumber, NULL);
 			
-	if ([fetchedObject valueForKey:@"seriesInstanceUID"])
-		dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"seriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
+	if ([fetchedObject valueForKey:@"dicomSeriesInstanceUID"])
+		dataset ->putAndInsertString(DCM_SeriesInstanceUID, [[fetchedObject valueForKey:@"dicomSeriesInstanceUID"]  cStringUsingEncoding:NSISOLatin1StringEncoding]) ;
 		
 
 	else

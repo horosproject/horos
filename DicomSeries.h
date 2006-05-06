@@ -25,5 +25,6 @@
 - (NSSet *)paths;
 - (NSSet *)keyImages;
 - (NSArray *)sortedImages;
+- (NSString *)dicomSeriesInstanceUID;
 
 @end
