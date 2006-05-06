@@ -901,11 +901,11 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
     }
 	
 	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
-	NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
+	//NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
-	NSLog(@"Next file: %s", imageFileName);
+	//NSLog(@"Next file: %s", imageFileName);
 	DcmFileFormat fileformat;
 	cond = fileformat.loadFile(imageFileName);
 	
