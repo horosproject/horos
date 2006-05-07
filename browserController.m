@@ -471,7 +471,17 @@ static BOOL FORCEREBUILD = NO;
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 	error = 0L;
-	NSArray *studiesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+	NSArray *studiesArray;
+	@try
+	{
+		studiesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
+	}
+	@catch( NSException *ne)
+	{
+		NSLog(@"exception: %@", [ne description]);
+		NSLog(@"executeFetchRequest failed for studiesArray.");
+		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
+	}
 	if (error)
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);

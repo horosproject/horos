@@ -91,7 +91,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 	 DcmDataset **stDetail,	
 	DcmDataset **responseIdentifiers)
 {
-	printf("DcmQueryRetrieveMoveContext::callbackHandler\n");
+//	printf("DcmQueryRetrieveMoveContext::callbackHandler\n");
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
