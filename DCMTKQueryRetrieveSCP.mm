@@ -121,8 +121,9 @@ void errmsg(const char* msg, ...)
 		_port = port;
 		_aeTitle = [aeTitle retain];
 		_params = [params retain];
-		//Create a timer to cleanup scp children every 8 hours
-		[NSTimer scheduledTimerWithTimeInterval:3600*8 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
+//		This seems to generate some problems when it happens in the middle of a store-scp... I removed it for now.
+//		//Create a timer to cleanup scp children every 8 hours
+//		[NSTimer scheduledTimerWithTimeInterval:3600*8 target:self  selector:@selector(cleanup:) userInfo:nil repeats:YES];
 	}
 	return self;
 }
@@ -139,10 +140,10 @@ void errmsg(const char* msg, ...)
 	[super dealloc];
 }
 
-- (void)cleanup:(NSTimer *)timer{
-	if (scp != NULL) 
-		scp->cleanChildren(OFTrue);  // clean up any child processes 	
-}
+//- (void)cleanup:(NSTimer *)timer{
+//	if (scp != NULL) 
+//		scp->cleanChildren(OFTrue);  // clean up any child processes 	
+//}
 
 - (void)run{
 
