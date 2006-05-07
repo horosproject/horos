@@ -155,8 +155,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				[request setPredicate:predicate];
 				
 				error = 0L;
-				
-				NSArray *fetchArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
+				NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+				[context lock];
+				NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 				
 				if (error) 
 					NSLog(@"error: %@", [error description]);
@@ -216,6 +217,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				
 					[scpDelegate sendCommand:moveResponse data:[DCMObject dcmObject] forAffectedSOPClassUID:[moveRequest affectedSOPClassUID]];
 				}
+				
+				[context unlock];
 			}
 			else{
 				DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
@@ -265,7 +268,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		
 		NS_DURING
 		error = 0L;
-		NSArray *fetchArray = [[browserWindow managedObjectContext] executeFetchRequest:request error:&error];
+		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+		[context lock];
+		NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 		if (!error && [fetchArray count]) {
 			unsigned short remaining = [fetchArray count];
 			unsigned short completed = 0;
@@ -332,6 +337,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			if (error)
 				NSLog(@"Fetch error: %@", [error description]);
 		}
+		
+		[context unlock];
+		
 		//NSLog(@"Find response: %@", [response description]);
 		NS_HANDLER
 			DCMCFindResponse *findResponse = [DCMCFindResponse cFindResponseWithAffectedSOPClassUID:[findRequest affectedSOPClassUID]  
@@ -783,13 +791,18 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	
 	[userInfo retain];
 	NS_DURING
-	if (!logEntry) {
-		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]] retain];
+	if (!logEntry)
+	{
+		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+		[context lock];
+		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context] retain];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Receive" forKey:@"type"];
 		[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
 		[logEntry setValue:[userInfo objectForKey:@"PatientName"] forKey:@"patientName"];
-		[logEntry setValue:[userInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];			
+		[logEntry setValue:[userInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];
+		
+		[context unlock];		
 	}
 	[logEntry setValue:[userInfo objectForKey:@"Message"] forKey:@"message"];
 	[logEntry setValue:[userInfo objectForKey:@"NumberReceived"] forKey:@"numberImages"];

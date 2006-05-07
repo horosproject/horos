@@ -143,6 +143,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	NSManagedObject *logEntry = [node logEntry];
 	if (!logEntry) {
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		[context lock];
 		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Move" forKey:@"type"];
@@ -153,6 +154,8 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 		//if (_studyDescription)
 		//	[logEntry setValue:_studyDescription forKey:@"studyName"];
 		[node setLogEntry:logEntry];
+		
+		[context unlock];
 	
 	}	
 	int numberPending = response -> NumberOfRemainingSubOperations;

@@ -67,6 +67,8 @@ LogManager *currentLogManager;
 		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
 		NSString *path;
 		
+		[context lock];
+		
 		NS_DURING
 		while (path = [enumerator nextObject]){
 			if ([[path pathExtension] isEqualToString: @"plist"]) {
@@ -108,6 +110,8 @@ LogManager *currentLogManager;
 		NS_HANDLER
 			NSLog(@"Exception while checking logs: %@", [localException description]);
 		NS_ENDHANDLER
+		
+		[context unlock];
 	}
 }
 
