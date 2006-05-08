@@ -53,7 +53,6 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC
 {
 	self = [super initWithWindowNibName:@"Endoscopy"];
-	[[self window] setDelegate:self];
 	[[self window] setShowsResizeIndicator:YES];
 	
 	[topSplitView setDelegate:self];
@@ -63,7 +62,7 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 //											selector: @selector(CloseViewerNotification:)
 //											name: @"CloseViewerNotification"
 //											object: nil];
-	
+
 	// initialisations
 	pixList = pix;
 	[pixList retain];
@@ -77,10 +76,13 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	
 	[vrController setCurrentTool:18]; // 3D camera rotate tool
 	
+	[[self window] setWindowController: self]; // we don't want the VRController to become the window controller!!!
+	
 	// 2D MPR
 	[mprController initWithPixList: pix : files : vData : vC: bC :self];
 	
-	[[self window] performZoom:self];
+	[[self window] setDelegate:self];
+	//[[self window] performZoom:self]; // this is done in the VRController init... do it twice and it would have zero effect...
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
