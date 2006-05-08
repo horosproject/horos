@@ -13,11 +13,11 @@
 		<key>350</key>
 		<string>1211 1015 137 75 0 0 2560 1578 </string>
 		<key>386</key>
-		<string>578 642 124 69 0 0 1280 1002 </string>
+		<string>738 772 124 69 0 0 1600 1178 </string>
 		<key>462</key>
 		<string>543 517 193 77 0 0 1280 832 </string>
 		<key>514</key>
-		<string>555 632 169 90 0 0 1280 1002 </string>
+		<string>715 762 169 90 0 0 1600 1178 </string>
 		<key>552</key>
 		<string>801 647 78 78 0 0 1680 1028 </string>
 		<key>575</key>
@@ -32,8 +32,9 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>144</integer>
-		<integer>386</integer>
+		<integer>525</integer>
 		<integer>514</integer>
+		<integer>386</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8I127</string>
