@@ -2237,18 +2237,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		GLfloat ctrlpoints[4][3];
 		
-		#define OFF 40
+		const int OFF = 30;
 		
 		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);		ctrlpoints[0][2] = 0;
-		ctrlpoints[1][0] = NSMinX( drawRect);				ctrlpoints[1][1] = NSMidY( drawRect);		ctrlpoints[1][2] = 0;
-		ctrlpoints[2][0] = tPt.x - OFF;						ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
-		ctrlpoints[3][0] = tPt.x;							ctrlpoints[3][1] = tPt.y;					ctrlpoints[3][2] = 0;
+		ctrlpoints[1][0] = tPt.x - OFF;						ctrlpoints[1][1] = tPt.y;					ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = tPt.x;							ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		
 		glLineWidth( 3.0);
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
 		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
 		
-		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
@@ -2262,7 +2261,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		glColor4f( 1.0, 1.0, 1.0, 0.5);
 		
-		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4,&ctrlpoints[0][0]);
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
 		glEnable(GL_MAP1_VERTEX_3);
 		
 	    glBegin(GL_LINE_STRIP);
@@ -2386,7 +2385,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					
 					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 						if( area*pixelSpacingX*pixelSpacingY < 1. )
-							sprintf (line2, "Area: %0.3f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							sprintf (line2, "A: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 						else
 							sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
 					}
@@ -2460,7 +2459,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					float location[ 3 ];
 					[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location];
 					if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-						sprintf (line5, "3D Pos: X:%0.3f %cm Y:%0.3f %cm Z:%0.3f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+						sprintf (line5, "3D Pos: X:%0.1f %cm Y:%0.1f %cm Z:%0.1f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
 					else
 						sprintf (line5, "3D Pos: X:%0.3f mm Y:%0.3f mm Z:%0.3f mm", location[0], location[1], location[2]);
 				}
@@ -2663,10 +2662,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				long	line = 0;
 				
 				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
-				if( type == tMesure ) {
+				if( type == tMesure &&[[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTNAMEONLY"] == NO) {
 					if( pixelSpacingX != 0 && pixelSpacingY != 0) {
 						if ([self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] < .1)
-							sprintf (line2, "Length: %0.3f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
+							sprintf (line2, "L: %0.1f %cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]] * 10000.0, 0xb5);
 						else
 							sprintf (line2, "Length: %0.3f cm", [self Length:[[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]]);
 					}
@@ -2719,7 +2718,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-								sprintf (line2, "Area: %0.3f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+								sprintf (line2, "A: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.));
 						}
@@ -2782,7 +2781,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( pixelSpacingX != 0 && pixelSpacingY != 0)
 					{
 						if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-							sprintf (line2, "Area: %0.3f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							sprintf (line2, "A: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
 						else
 							sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
 					}
@@ -2833,7 +2832,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
@@ -2849,7 +2848,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
 						
 						if (length < .1)
-							sprintf (line5, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 						else
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
@@ -2874,7 +2873,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
 							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "Area: %0.3f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
 							else
 								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
 						}
@@ -2890,7 +2889,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						}
 						
 						if (length < .1)
-							sprintf (line5, "Length: %0.3f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
 						else
 							sprintf (line5, "Length: %0.3f cm", length);
 					}

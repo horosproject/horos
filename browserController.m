@@ -3461,7 +3461,7 @@ long        i;
 		// DICOM & others
 		[appController setCurrentHangingProtocolForModality:nil description:nil];
 		[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item] viewer:0L];
-		[appController setCurrentHangingProtocolForModality:[item valueForKeyPath:@"study.modality"] description:[item valueForKeyPath:@"study.studyName"]];
+//		[appController setCurrentHangingProtocolForModality:[item valueForKeyPath:@"study.modality"] description:[item valueForKeyPath:@"study.studyName"]];
 	}
 	else	// STUDY - HANGING PROTOCOLS
 	{
@@ -5912,7 +5912,7 @@ static BOOL needToRezoom;
 
 // (DDP: 060112) allow return key to open from database like a double click with modality layout prefs.
 
-	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Series"] == NO)		// Called by return/enter key with only one series selected. <- why only one??.....
+	if ([[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 	{
 		[appController setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
 		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
