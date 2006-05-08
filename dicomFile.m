@@ -258,8 +258,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	int success = 0;
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
 	
-	fileType = [[NSString stringWithString:@"FVTiff"] retain];
-	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
@@ -308,7 +306,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:name];
 			serie = [[NSString alloc] initWithString:name];
 			Modality = [[NSString alloc] initWithString:@"FV300"];
-			
+			fileType = [[NSString stringWithString:@"FVTiff"] retain];
 			
 			// set the comments field
 			NSXMLElement* rootElement = [xmlDocument rootElement];
@@ -385,7 +383,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NoOfFrames = 1;
 	
-	fileType = [[NSString stringWithString:@"IMAGE"] retain];
+	
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES ||
@@ -517,6 +515,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
 				if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
 				{
@@ -636,98 +635,97 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return -1;
 }
 
--(short) getSIGNA5
-{
-	NSData		*file;
-	char		*ptr;
-	long		i;
-	NSString	*extension = [[filePath pathExtension] lowercaseString];
-	
-	file = [NSData dataWithContentsOfFile: filePath];
-	if( [file length] > 3300)
-	{
-		ptr = (char*) [file bytes];
-		
-		fileType = [[NSString stringWithString:@"SIGNA5"] retain];
-		
-//		for( i = 0 ; i < [file length]; i++)
+//-(short) getSIGNA5
+//{
+//	NSData		*file;
+//	char		*ptr;
+//	long		i;
+//	NSString	*extension = [[filePath pathExtension] lowercaseString];
+//	
+//	file = [NSData dataWithContentsOfFile: filePath];
+//	if( [file length] > 3300)
+//	{
+//		ptr = (char*) [file bytes];
+//		
+////		for( i = 0 ; i < [file length]; i++)
+////		{
+////			if( *((short*)&ptr[ i]) == 512 && *((short*)&ptr[ i+2]) == 512)
+////			{
+////				NSLog(@"Found! %d", i);
+////				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+4]), *((float*)&ptr[ i+8]));
+////				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+12]), *((float*)&ptr[ i+16]));
+////				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+20]), *((float*)&ptr[ i+24]));
+////			}
+////		}
+//		
+//		//for( i = 0 ; i < [file length]; i++)
+//		i = 3228;
 //		{
-//			if( *((short*)&ptr[ i]) == 512 && *((short*)&ptr[ i+2]) == 512)
+//			if( ptr[ i] == 'I' && ptr[ i+1] == 'M' && ptr[ i+2] == 'G' && ptr[ i+3] == 'F')
 //			{
-//				NSLog(@"Found! %d", i);
-//				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+4]), *((float*)&ptr[ i+8]));
-//				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+12]), *((float*)&ptr[ i+16]));
-//				NSLog(@"%2.2f, %2.2f", *((float*)&ptr[ i+20]), *((float*)&ptr[ i+24]));
+//				NSLog(@"SIGNA 5.X File Format: %d", i);
+//				
+//				name = [[NSString alloc] initWithString: [[filePath lastPathComponent] stringByDeletingPathExtension]];
+//				patientID = [[NSString alloc] initWithString:name];
+//				studyID = [[NSString alloc] initWithString:name];
+//				serieID = [[NSString alloc] initWithString:name];
+//				imageID = [[NSString alloc] initWithString:[filePath pathExtension]];
+//				study = [[NSString alloc] initWithString:@"unnamed"];
+//				serie = [[NSString alloc] initWithString:@"unnamed"];
+//				Modality = [[NSString alloc] initWithString:extension];
+//				fileType = [[NSString stringWithString:@"SIGNA5"] retain];
+//				
+//				FILE *fp = fopen([ filePath UTF8String], "r");
+//				
+//				fseek(fp, i, SEEK_SET);
+//				
+//				int magic;
+//				fread(&magic, 4, 1, fp);
+//  
+//				int offset;
+//				fread(&offset, 4, 1, fp);
+//				
+//				NSLog(@"offset: %d", offset+i);
+//				
+//				fread(&height, 4, 1, fp);
+//				fread(&width, 4, 1, fp);
+//				int depth;
+//				fread(&depth, 4, 1, fp);
+//				
+//				NoOfFrames = 1;
+//				NoOfSeries = 1;
+//				
+//				NSLog(@"%dx%dx%d", height, width, depth);
+//				
+//				fclose( fp);
+//				
+//				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+//				
+//				[dicomElements setObject:studyID forKey:@"studyID"];
+//				[dicomElements setObject:study forKey:@"studyDescription"];
+//				[dicomElements setObject:date forKey:@"studyDate"];
+//				[dicomElements setObject:Modality forKey:@"modality"];
+//				[dicomElements setObject:patientID forKey:@"patientID"];
+//				[dicomElements setObject:name forKey:@"patientName"];
+//				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+//				[dicomElements setObject:serieID forKey:@"seriesID"];
+//				[dicomElements setObject:name forKey:@"seriesDescription"];
+//				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+//				[dicomElements setObject:imageID forKey:@"SOPUID"];
+//				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+//				[dicomElements setObject:fileType forKey:@"fileType"];
+//
+//				if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
+//				{
+//					return 0;   // success
+//				}
 //			}
 //		}
-		
-		//for( i = 0 ; i < [file length]; i++)
-		i = 3228;
-		{
-			if( ptr[ i] == 'I' && ptr[ i+1] == 'M' && ptr[ i+2] == 'G' && ptr[ i+3] == 'F')
-			{
-				NSLog(@"SIGNA 5.X File Format: %d", i);
-				
-				name = [[NSString alloc] initWithString: [[filePath lastPathComponent] stringByDeletingPathExtension]];
-				patientID = [[NSString alloc] initWithString:name];
-				studyID = [[NSString alloc] initWithString:name];
-				serieID = [[NSString alloc] initWithString:name];
-				imageID = [[NSString alloc] initWithString:[filePath pathExtension]];
-				study = [[NSString alloc] initWithString:@"unnamed"];
-				serie = [[NSString alloc] initWithString:@"unnamed"];
-				Modality = [[NSString alloc] initWithString:extension];
-				
-				FILE *fp = fopen([ filePath UTF8String], "r");
-				
-				fseek(fp, i, SEEK_SET);
-				
-				int magic;
-				fread(&magic, 4, 1, fp);
-  
-				int offset;
-				fread(&offset, 4, 1, fp);
-				
-				NSLog(@"offset: %d", offset+i);
-				
-				fread(&height, 4, 1, fp);
-				fread(&width, 4, 1, fp);
-				int depth;
-				fread(&depth, 4, 1, fp);
-				
-				NoOfFrames = 1;
-				NoOfSeries = 1;
-				
-				NSLog(@"%dx%dx%d", height, width, depth);
-				
-				fclose( fp);
-				
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-				
-				[dicomElements setObject:studyID forKey:@"studyID"];
-				[dicomElements setObject:study forKey:@"studyDescription"];
-				[dicomElements setObject:date forKey:@"studyDate"];
-				[dicomElements setObject:Modality forKey:@"modality"];
-				[dicomElements setObject:patientID forKey:@"patientID"];
-				[dicomElements setObject:name forKey:@"patientName"];
-				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-				[dicomElements setObject:serieID forKey:@"seriesID"];
-				[dicomElements setObject:name forKey:@"seriesDescription"];
-				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-				[dicomElements setObject:imageID forKey:@"SOPUID"];
-				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-				[dicomElements setObject:fileType forKey:@"fileType"];
-
-				if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
-				{
-					return 0;   // success
-				}
-			}
-		}
-		
-	}
-	
-	return -1;
-}
+//		
+//	}
+//	
+//	return -1;
+//}
 
 #include "BioradHeader.h"
 
@@ -2339,7 +2337,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( self = [super init])
 	{
 		[DicomFile setDefaults];
+		
 		//width and height need to greater than 0 or get validation errors
+		
 		width = 1;
 		height = 1;
 		name = 0L;

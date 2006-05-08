@@ -746,15 +746,18 @@ static BOOL FORCEREBUILD = NO;
 									// if an album name is provided, add the file to this album
 									//NSLog(@"an album name is provided");
 									// search the album with this name
+									
+									NSArray	*albumArray = [self albumArray];
+									
 									NSManagedObject *album = nil;
 									int i;
-									for(i=0 ; i<[[self albumArray] count] ; i++)
+									for(i=0 ; i<[albumArray count] ; i++)
 									{
-										//NSLog(@"album %d : %@", i, [[[self albumArray] objectAtIndex: i] valueForKeyPath:@"name"]);
-										if([[[[self albumArray] objectAtIndex: i] valueForKeyPath:@"name"]
+										//NSLog(@"album %d : %@", i, [[albumArray objectAtIndex: i] valueForKeyPath:@"name"]);
+										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"]
 												isEqualToString: [[curFile dicomElements] valueForKey:@"album"]])
 										{
-											album = [[self albumArray] objectAtIndex: i];
+											album = [albumArray objectAtIndex: i];
 										}
 									}
 									
@@ -4902,8 +4905,7 @@ static BOOL needToRezoom;
 	NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 	
 	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
-	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
-	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, sortdate, 0L]];
+	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, 0L]];
 	result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
 	
 	[context unlock];
@@ -5117,13 +5119,15 @@ static BOOL needToRezoom;
 	
 	if ([tableView isEqual:albumTable] && !isCurrentDatabaseBonjour)
 	{
-		if (row >= [[self albumArray] count] || row  == 0)
+		NSArray	*albumArray = [self albumArray];
+	
+		if (row >= [albumArray count] || row  == 0)
 			return NO;
 		
 		//can't add to smart Album
-		if ([[[[self albumArray] objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue]) return NO;
+		if ([[[albumArray objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue]) return NO;
 		
-		NSManagedObject *album = [[self albumArray] objectAtIndex: row];
+		NSManagedObject *album = [albumArray objectAtIndex: row];
 		
 		if( draggedItems)
 		{
