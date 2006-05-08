@@ -79,7 +79,7 @@ public:
     const DcmQueryRetrieveDatabaseHandleFactory& factory);
 
   /// destructor
-  virtual ~DcmQueryRetrieveSCP() { }
+  ~DcmQueryRetrieveSCP();
 
   /** wait for incoming A-ASSOCIATE requests, perform association negotiation
    *  and serve the requests. May fork child processes depending on availability
@@ -176,6 +176,8 @@ private:
 
   /// SCP configuration options
   const DcmQueryRetrieveOptions& options_;
+  
+	NSString *dstFolder;
 };
 
 #endif

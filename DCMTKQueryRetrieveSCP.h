@@ -31,6 +31,6 @@
 - (id)initWithPort:(int)port aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params;
 - (void)run;
 -(void)abort;
-- (void)cleanup:(NSTimer *)timer;
+//- (void)cleanup:(NSTimer *)timer;
 
 @end
