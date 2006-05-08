@@ -7,33 +7,34 @@
 	<key>IBEditorPositions</key>
 	<dict>
 		<key>106</key>
-		<string>552 631 176 91 0 0 1280 1002 </string>
+		<string>712 762 176 91 0 0 1600 1178 </string>
 		<key>140</key>
-		<string>562 631 156 91 0 0 1280 1002 </string>
+		<string>722 762 156 91 0 0 1600 1178 </string>
 		<key>280</key>
-		<string>556 634 167 85 0 0 1280 1002 </string>
+		<string>716 765 167 85 0 0 1600 1178 </string>
 		<key>310</key>
-		<string>571 639 137 75 0 0 1280 1002 </string>
+		<string>731 770 137 75 0 0 1600 1178 </string>
 		<key>40</key>
 		<string>525 650 230 75 0 0 1280 1002 </string>
 		<key>58</key>
-		<string>484 638 312 78 0 0 1280 1002 </string>
+		<string>644 769 312 78 0 0 1600 1178 </string>
 		<key>81</key>
-		<string>601 638 78 78 0 0 1280 1002 </string>
+		<string>761 769 78 78 0 0 1600 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>443.0</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>280</integer>
-		<integer>106</integer>
-		<integer>5</integer>
-		<integer>310</integer>
-		<integer>213</integer>
-		<integer>199</integer>
-		<integer>58</integer>
-		<integer>140</integer>
 		<integer>81</integer>
+		<integer>5</integer>
+		<integer>106</integer>
+		<integer>140</integer>
+		<integer>213</integer>
+		<integer>280</integer>
+		<integer>289</integer>
+		<integer>58</integer>
+		<integer>199</integer>
+		<integer>310</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8I127</string>

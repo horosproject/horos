@@ -230,7 +230,7 @@ extern  short		annotations;
 
 - (void) setCameraPosition: (float) x : (float) y
 {
-	NSLog(@"setCameraPosition: %f, %f", x, y);
+	//NSLog(@"setCameraPosition: %f, %f", x, y);
 	cameraPosition.x = x;
 	cameraPosition.y = y;
 	
