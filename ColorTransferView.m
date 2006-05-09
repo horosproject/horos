@@ -48,7 +48,7 @@
 {
 	if( curIndex >= 0)
 	{
-		NSColor *newColor = [pick color];
+		NSColor *newColor = [[pick color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 		
 		[colors replaceObjectAtIndex: curIndex withObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],0L]]; 
 	//	[[NSNotificationCenter defaultCenter] postNotificationName: @"CLUTChanged" object: self userInfo: 0L];
@@ -136,7 +136,7 @@
 		
 		curIndex = [points indexOfObject:newPt];
 		
-		NSColor *newColor = [pick color];
+		NSColor *newColor = [[pick color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
 		
 		[colors insertObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: [newColor redComponent]], [NSNumber numberWithFloat: [newColor greenComponent]], [NSNumber numberWithFloat: [newColor blueComponent]],0L ] atIndex:curIndex];
 	}

@@ -1341,7 +1341,7 @@ static BOOL initialized = NO;
 		
 		NSMutableDictionary *wlwwValues = [NSMutableDictionary dictionary];
 		
-		iww = 842;          iwl = -595;
+		iww = 1400;          iwl = -500;
 		[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Pulmonary"];
 		
 		iww = 1500;          iwl = 300;
