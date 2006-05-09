@@ -2895,7 +2895,10 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
-	if( [[appController FindRelatedViewers:pixList[0]] count] > 1)
+	
+	long minWindows = 1;
+	if( [self FullScreenON]) minWindows++;
+	if( [[appController FindRelatedViewers:pixList[0]] count] > minWindows)
 	{
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
