@@ -5912,9 +5912,7 @@ static BOOL needToRezoom;
 	   }
 	}
 
-// (DDP: 060112) allow return key to open from database like a double click with modality layout prefs.
-
-	if ([[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
+	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 	{
 		[appController setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
 		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];

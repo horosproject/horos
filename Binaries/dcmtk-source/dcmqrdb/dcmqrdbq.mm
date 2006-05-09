@@ -1194,6 +1194,8 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 	else
 		result = DcmQROsiriXDatabaseError;
 
+	dstFolder = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"TEMP"] retain];
+	
 	return;
 }
 
@@ -1226,6 +1228,10 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
       DB_FreeUidList (handle -> uidList);
 	  [handle -> dataHandler release];
       free ( (char *)(handle) );
+	  
+	  [dstFolder release];
+	  dstFolder = 0L;
+	  
 	  [pool release];
     }
 }
@@ -1242,7 +1248,6 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 char            *newImageFileName)
 {	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSString *dstFolder = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"TEMP"];
     OFString filename;
     char prefix[12];
 

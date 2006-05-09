@@ -371,6 +371,8 @@ private:
 
   /// current debug level
   int debugLevel;
+  
+  NSString *dstFolder;
 
 };
 
