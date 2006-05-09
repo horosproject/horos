@@ -41,6 +41,7 @@ Version 2.3
 	20060128	LP	Modified isDICOMFile to test with DCMFramework as last resort. some valid files not read by papyrus
 	20060308	RBR	Added test for RTSTRUCT in matrixNewIcon.  Write button icon indicating RTSTRUCT rather than error button.
 	20060309	LP	added databaseWindow: to close all viewers
+	20060607	LP Converted routing to DCMTK
 
 */
 
@@ -94,6 +95,7 @@ extern NSLock *PapyrusLock;
 #import "SendController.h"
 #import "Reports.h"
 #import "LogManager.h"
+#import "DCMTKStoreSCU.h"
 
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
@@ -8507,10 +8509,22 @@ static BOOL needToRezoom;
 
 			if (sendFile && server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:1]]) {	
 
-				NSArray *objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:compression], ts, [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"],    nil];
-				NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", nil];
-				NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-				DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
+				//NSArray *objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:compression], ts, [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"],    nil];
+				//NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", nil];
+				//NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+				//DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
+				
+				DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+										calledAET:[server objectForKey:@"AETitle"] 
+										hostname:[server objectForKey:@"Address"] 
+										port:[[server objectForKey:@"Port"] intValue] 
+										filesToSend:(NSArray *)filesToSend
+										transferSyntax:[[server objectForKey:@"Transfer Syntax"] intValue] 
+										compression: 1.0
+										extraParameters:nil];
+				[storeSCU run:self];
+				[storeSCU release];
+				
 				
 			}
 			//NSLog(@"New style Routing Information");
