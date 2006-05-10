@@ -133,6 +133,7 @@ void errmsg(const char* msg, ...)
 	if (scp != NULL) {
 		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
 		 delete scp;
+		 scp = 0L;
 	}
 
 	[_aeTitle release];
@@ -302,8 +303,8 @@ DcmQueryRetrieveConfig config;
     /* loop waiting for associations */
     while (cond.good() && !_abort)
     {
-      cond = scp->waitForAssociation(options.net_);
-	  scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
+		if( _abort == NO) cond = scp->waitForAssociation(options.net_);
+		if( _abort == NO) scp->cleanChildren(OFTrue);  /* clean up any child processes  This needs to be here*/
 	}
 	
 	delete scp;
@@ -312,6 +313,7 @@ DcmQueryRetrieveConfig config;
 	//stop bonjour
 	[netService stop];
 	[netService release];
+	netService = 0L;
 	
 	cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {

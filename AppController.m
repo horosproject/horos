@@ -88,7 +88,7 @@ short					Altivec;
 AppController			*appController = 0L;
 
 NetworkListener			*storeSCP = 0L;
-DCMTKQueryRetrieveSCP   *dcmtkQRSCP;
+DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
 
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
 
@@ -922,7 +922,6 @@ NSRect screenFrame()
 		//built in dcmtk serve testing
 		if (BUILTIN_DCMTK == YES)
 		{
-			[dcmtkQRSCP abort];
 			[dcmtkQRSCP release];
 			dcmtkQRSCP = nil;
 		}
@@ -1163,7 +1162,6 @@ NSRect screenFrame()
 	
 	if (BUILTIN_DCMTK == YES)
 	{
-		[dcmtkQRSCP abort];
 		[dcmtkQRSCP release];
 		dcmtkQRSCP = nil;
 	}
@@ -1171,6 +1169,14 @@ NSRect screenFrame()
 	[self destroyDCMTK];
 	
 	[AppController cleanOsiriXSubProcesses];
+	
+	// DELETE THE TEMP DIRECTORY...
+	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
+	
+	// DELETE THE DUMP DIRECTORY...
+	NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: 0L];
 }
 
 
@@ -1185,14 +1191,6 @@ NSRect screenFrame()
 	}
 	
 	[NSApp terminate: sender];
-	
-	// DELETE THE TEMP DIRECTORY...
-	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
-	
-	// DELETE THE DUMP DIRECTORY...
-	NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: 0L];
 }
 
 - (id)init {
@@ -2422,6 +2420,8 @@ static BOOL initialized = NO;
 	
     [browserController release];
 	[dcmtkQRSCP release];
+	dcmtkQRSCP = 0L;
+	
     [super dealloc];
 }
 
