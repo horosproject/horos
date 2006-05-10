@@ -3665,6 +3665,10 @@ static long scrollMode;
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
 	[self sendSyncMessage:0];
+	
+	[appController setXFlipped: xFlipped];
+	[appController setYFlipped: yFlipped];
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -7242,8 +7246,8 @@ BOOL	lowRes = NO;
 	if( series)
 	{
 		//NSLog(@"Series for DCMView: %@", [series valueForKey:@"seriesInstanceUID"]);
-		xFlipped = [[series valueForKey:@"xFlipped"] boolValue];
-		yFlipped = [[series valueForKey:@"yFlipped"] boolValue];
+		[self setXFlipped: [[series valueForKey:@"xFlipped"] boolValue]];
+		[self setYFlipped: [[series valueForKey:@"yFlipped"] boolValue]];
 				
 		if ([series valueForKey:@"scale"] != 0L && [[[self window] windowController] is2DViewer] == YES)
 			if( [[[self seriesObj] valueForKey:@"scale"] floatValue] > 0.0)
