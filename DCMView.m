@@ -4910,11 +4910,6 @@ static long scrollMode;
 			
 			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
 			yRaster -= stringSize.height;
-			
-			// Zoom
-			sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-			yRaster -= stringSize.height;
 		}
 	} 
 	else if( [curDCM viewPosition] || [curDCM patientPosition])	 
@@ -4934,6 +4929,14 @@ static long scrollMode;
 
 		 [self DrawCStringGL: string : fontListGL :4 :yRaster];	 
 		 yRaster -= stringSize.height;	 
+	}
+	
+	if( fullText)
+	{
+		// Zoom
+		sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
+		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		yRaster -= stringSize.height;
 	}
 	
 	// Image Position
