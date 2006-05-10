@@ -1852,7 +1852,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		if( dev)
 		{
 			*dev /= countstack;
-			*dev /= sqrtf( countstack);
+			
+			float vv = fabs( (countstack-1) * sliceInterval);
+			vv += sliceThickness;
+			
+			*dev /= sqrtf( vv / sliceThickness);
 		}
 		if( total) *total /= countstack;
 	}
