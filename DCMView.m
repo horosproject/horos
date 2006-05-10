@@ -2061,6 +2061,14 @@ static long scrollMode;
 	return tool;
 }
 
+- (void) setStartWLWW
+{
+	startWW = [curDCM ww];
+	startWL = [curDCM wl];
+	startMin = [curDCM wl] - [curDCM ww]/2;
+	startMax = [curDCM wl] + [curDCM ww]/2;
+}
+
 - (void)mouseDown:(NSEvent *)event
 {
 	if( [[[self window] windowController] is2DViewer] == YES)
@@ -2084,10 +2092,7 @@ static long scrollMode;
 		tool = [self getTool: event];
 		
         startImage = curImage;
-        startWW = [curDCM ww];
-        startWL = [curDCM wl];
-		startMin = [curDCM wl] - [curDCM ww]/2;
-		startMax = [curDCM wl] + [curDCM ww]/2;
+        [self setStartWLWW];
         startScaleValue = scaleValue;
         rotationStart = rotation;
 		blendingFactorStart = blendingFactor;

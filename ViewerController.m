@@ -3259,7 +3259,7 @@ static ViewerController *draggedController = 0L;
 			{
 				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
 				
-				[imageView performSelectorOnMainThread:@selector( mouseDown:) withObject:[[NSApplication sharedApplication] currentEvent] waitUntilDone: YES];
+				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:0L waitUntilDone: YES];
 			}
 		}
 	}

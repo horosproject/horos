@@ -321,5 +321,6 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (OrthogonalMPRController*) controller;
 -(void) roiChange:(NSNotification*)note;
 -(void) roiSelected:(NSNotification*) note;
+- (void) setStartWLWW;
 + (void) computePETBlendingCLUT;
 @end
