@@ -2133,7 +2133,7 @@ static BOOL initialized = NO;
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
 	if([AppController isHUG])
 	{
-		if(![hostName isEqualToString: @"lavimarch.hcuge.ch"] && ![hostName isEqualToString: @"drdd-mc19.hcuge.ch"])
+		if(![hostName isEqualToString: @"lavimarch.hcuge.ch"] && ![hostName isEqualToString: @"drdd-mc19.hcuge.ch"] && ![hostName isEqualToString: @"uin-mc04.hcuge.ch"])
 		{
 			[self HUGDisableBonjourFeature];
 			[self HUGVerifyComPACSPlugin];
