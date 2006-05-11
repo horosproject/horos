@@ -1194,7 +1194,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 	else
 		result = DcmQROsiriXDatabaseError;
 
-	dstFolder = [[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"TEMP"] retain];
+	dstFolder = [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"] retain];
 	
 	return;
 }

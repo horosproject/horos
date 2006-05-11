@@ -1125,6 +1125,8 @@ static BOOL FORCEREBUILD = NO;
 		[bonjourRunLoopTimer release];
 		bonjourRunLoopTimer = 0L;
 	}
+	
+	[self setFixedDocumentsDirectory];
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
@@ -6149,6 +6151,8 @@ static BOOL needToRezoom;
 			[currentDatabasePath release];
 			currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
 			
+			[self setFixedDocumentsDirectory];
+			
 			NEEDTOREBUILD = YES;
 			FORCEREBUILD = YES;
 		}
@@ -9276,8 +9280,27 @@ static BOOL needToRezoom;
 	[self executeFilterFromString:[sender label]];
 }
 
-- (NSString *)documentsDirectory{
-	return documentsDirectory();
+- (NSString *) setFixedDocumentsDirectory
+{
+	[fixedDocumentsDirectory release];
+	fixedDocumentsDirectory = [documentsDirectory() retain];
+	
+	NSLog( @"setFixedDocumentsDirectory");
+}
+
+- (NSString *) fixedDocumentsDirectory
+{
+	if( fixedDocumentsDirectory == 0L) [self setFixedDocumentsDirectory];
+	return fixedDocumentsDirectory;
+}
+
+- (NSString *) documentsDirectory
+{
+	NSString	*dir = documentsDirectory();
+	
+	if( [dir isEqualToString: fixedDocumentsDirectory] == NO) [self setFixedDocumentsDirectory];
+	
+	return dir;
 }
 
 - (IBAction)showLogWindow: (id)sender {
