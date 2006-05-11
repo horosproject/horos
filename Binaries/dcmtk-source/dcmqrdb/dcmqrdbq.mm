@@ -1194,8 +1194,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 	else
 		result = DcmQROsiriXDatabaseError;
 
-	dstFolder = [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"] retain];
-	
 	return;
 }
 
@@ -1229,9 +1227,6 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 	  [handle -> dataHandler release];
       free ( (char *)(handle) );
 	  
-	  [dstFolder release];
-	  dstFolder = 0L;
-	  
 	  [pool release];
     }
 }
@@ -1260,7 +1255,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	unsigned seedvalue = seed +  (unsigned int) time (NULL);
     newImageFileName[0] = 0; // return empty string in case of error
 //   if (! fnamecreator.makeFilename(seedvalue, handle->storageArea, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
-	if (! fnamecreator.makeFilename(seedvalue, [dstFolder UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+	if (! fnamecreator.makeFilename(seedvalue, [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"] UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
 //	printf("newFileName: %s", filename.c_str());
     strcpy(newImageFileName, filename.c_str());
 	[pool release];

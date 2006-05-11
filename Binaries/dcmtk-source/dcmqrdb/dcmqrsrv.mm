@@ -121,13 +121,12 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 , factory_(factory)
 , options_(options)
 {
-	dstFolder = [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"INCOMING"] retain];
+
 }
 
 DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
 {
-	[dstFolder release];
-	dstFolder = 0L;
+
 }
 
 OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool correctUIDPadding)
@@ -487,7 +486,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 		{
 			NSString *srcFile = [NSString stringWithCString: imageFileName];
 			
-			[[NSFileManager defaultManager] movePath: srcFile toPath:[dstFolder stringByAppendingPathComponent: [srcFile lastPathComponent]] handler:nil];
+			[[NSFileManager defaultManager] movePath: srcFile toPath:[[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"INCOMING"] stringByAppendingPathComponent: [srcFile lastPathComponent]] handler:nil];
 		}
 	}
 	

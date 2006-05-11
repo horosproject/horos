@@ -176,8 +176,6 @@ private:
 
   /// SCP configuration options
   const DcmQueryRetrieveOptions& options_;
-  
-	NSString *dstFolder;
 };
 
 #endif

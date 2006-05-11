@@ -371,9 +371,6 @@ private:
 
   /// current debug level
   int debugLevel;
-  
-  NSString *dstFolder;
-
 };
 
 /** Index database factory class. Instances of this class are able to create database
