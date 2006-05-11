@@ -6151,11 +6151,11 @@ static BOOL needToRezoom;
 			[currentDatabasePath release];
 			currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
 			
-			[self setFixedDocumentsDirectory];
-			
 			NEEDTOREBUILD = YES;
 			FORCEREBUILD = YES;
 		}
+		
+		[self setFixedDocumentsDirectory];
 
 		str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		
@@ -9286,6 +9286,7 @@ static BOOL needToRezoom;
 	fixedDocumentsDirectory = [documentsDirectory() retain];
 	
 	NSLog( @"setFixedDocumentsDirectory");
+	return fixedDocumentsDirectory;
 }
 
 - (NSString *) fixedDocumentsDirectory
@@ -9297,8 +9298,6 @@ static BOOL needToRezoom;
 - (NSString *) documentsDirectory
 {
 	NSString	*dir = documentsDirectory();
-	
-	if( [dir isEqualToString: fixedDocumentsDirectory] == NO) [self setFixedDocumentsDirectory];
 	
 	return dir;
 }
