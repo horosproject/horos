@@ -1317,8 +1317,8 @@ PixelRepresentation
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%d", (int)fabs(hexValue)];
-		NSLog(@"string %@ newValue: %d",string,(int)fabs(hexValue));
+		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
+		
 		[newUIDValues addObject:newValue];
 	}
 	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
@@ -1340,12 +1340,13 @@ PixelRepresentation
 	NSEnumerator *enumerator = [values objectEnumerator];
 	NSString *string;
 	NSMutableArray *newUIDValues = [NSMutableArray array];
-	while (string = [enumerator nextObject]) {
+	while (string = [enumerator nextObject])
+	{
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%d", (int)fabs(hexValue)];
-		//NSLog(@"string %@ newValue: %d",string,(int)fabs(hexValue));
+		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
+		
 		[newUIDValues addObject:newValue];
 	}
 	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
@@ -1358,11 +1359,8 @@ PixelRepresentation
 	NSMutableArray *attrValues = [NSMutableArray arrayWithObject:uid];
 	DCMAttribute *attr = [DCMAttribute attributeWithAttributeTag:tag vr:[tag vr] values:attrValues];
 	[attributes setObject:attr forKey:[tag stringValue]];
-	
-	NSLog(@"SeriesInstanceUID: %@", [attr description]);
-	
-	
 }
+
 - (void)newSOPInstanceUID{
 	NSString *globallyUniqueString = [[NSProcessInfo processInfo] globallyUniqueString];
 	NSArray *values = [globallyUniqueString componentsSeparatedByString:@"-"];
@@ -1373,8 +1371,8 @@ PixelRepresentation
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%d", (int)fabs(hexValue)];
-		//NSLog(@"string %@ newValue: %d",string,(int)fabs(hexValue));
+		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
+		
 		[newUIDValues addObject:newValue];
 	}
 	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];

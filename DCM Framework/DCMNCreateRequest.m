@@ -35,7 +35,7 @@
 		unsigned int hexValue;
 		NSScanner *scanner = [NSScanner scannerWithString:string];
 		[scanner scanHexInt:&hexValue];
-		NSString *newValue = [NSString stringWithFormat:@"%d", (int)fabs(hexValue)];
+		NSString *newValue = [NSString stringWithFormat:@"%u", hexValue];
 		//NSLog(@"string %@ newValue: %d",string,(int)fabs(hexValue));
 		[newUIDValues addObject:newValue];
 	}
