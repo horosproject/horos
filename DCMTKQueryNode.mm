@@ -132,7 +132,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
 
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
     OFCondition cond = EC_Normal;
     MyCallbackInfo *myCallbackData;

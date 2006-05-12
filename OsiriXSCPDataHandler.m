@@ -784,7 +784,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 - (void)updateLogEntry:(NSDictionary *)userInfo{
 
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
 	if(debugLevel > 0) 
 		NSLog(@"update receive log: %@", [userInfo description]);

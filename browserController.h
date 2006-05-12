@@ -167,7 +167,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	NSLock							*checkIncomingLock;
 	NSTimeInterval					lastSaved;
 	
-    BOOL							showAllImages, DatabaseIsEdited;
+    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;
 	NSConditionLock					*queueLock;
 	
 	IBOutlet NSScrollView			*thumbnailsScrollView;
@@ -185,6 +185,9 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
+
+- (void) setNetworkLogs;
+- (BOOL) isNetworkLogsActive;
 
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;

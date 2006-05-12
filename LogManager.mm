@@ -60,7 +60,7 @@ LogManager *currentLogManager;
 
 - (void)checkLogs:(NSTimer *)timer
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"])
+	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];	
 		NSFileManager *manager = [NSFileManager defaultManager];

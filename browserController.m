@@ -6156,6 +6156,7 @@ static BOOL needToRezoom;
 		}
 		
 		[self setFixedDocumentsDirectory];
+		[self setNetworkLogs];
 
 		str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		
@@ -9278,6 +9279,16 @@ static BOOL needToRezoom;
 - (void) executeFilterFromToolbar:(id) sender
 {
 	[self executeFilterFromString:[sender label]];
+}
+
+- (void) setNetworkLogs
+{
+	isNetworkLogsActive = [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"];
+}
+
+- (BOOL) isNetworkLogsActive
+{
+	return isNetworkLogsActive;
 }
 
 - (NSString *) setFixedDocumentsDirectory

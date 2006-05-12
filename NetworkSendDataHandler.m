@@ -45,7 +45,7 @@ extern BrowserController *browserWindow;
 
 - (void)updateLogEntry:(DCMObject *)object
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	[object retain];
 	NSManagedObjectContext *context = [browserWindow managedObjectContext];
 	[context lock];

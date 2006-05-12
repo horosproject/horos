@@ -415,9 +415,9 @@ static OFCondition DB_FreeElementList (DB_ElementList *lst)
 /*************
 Log Entry
 *************/
-OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset) {
-
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return EC_Normal;
+OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dataset)
+{
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return EC_Normal;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			

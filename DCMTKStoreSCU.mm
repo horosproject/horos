@@ -1540,7 +1540,7 @@ NS_ENDHANDLER
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NETWORKLOGS"] == NO) return;
+		if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 		
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		[context lock];
