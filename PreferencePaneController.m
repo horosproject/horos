@@ -113,6 +113,8 @@ extern BrowserController	*browserWindow;
 	if( recomputePETBlending)
 		[DCMView computePETBlendingCLUT];
 	
+	[[BrowserController currentBrowser] setNetworkLogs];
+	
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];
 	
