@@ -57,6 +57,12 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 + (void)sendFiles:(NSArray *)files
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMSENDALLOWED"] == NO)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"DICOM Sending is not activated. Contact your PACS manager for more information about DICOM Send.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+		return;
+	}
+
 	if( [files  count])
 	{
 		if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count] > 0)

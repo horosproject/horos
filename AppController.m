@@ -1897,6 +1897,9 @@ static BOOL initialized = NO;
 		// ** FONTNAME
 		[defaultValues setObject: @"Geneva" forKey: @"FONTNAME"];
 		
+		// ** DICOMSENDALLOWED
+		[defaultValues setObject: @"YES" forKey: @"DICOMSENDALLOWED"];
+		
 		// ** FONTSIZE
 		[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
 		
