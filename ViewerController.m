@@ -5917,6 +5917,8 @@ int i,j,l;
 {
 	long i, x, y;
 	
+	[imageView stopROIEditing];
+	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
 		for( x = 0; x < [pixList[y] count]; x++)

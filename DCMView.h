@@ -185,6 +185,8 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	BOOL			cursorSet;
 	NSPoint			display2DPoint;
 }
++ (void)setPluginOverridesMouse: (BOOL)override;
++ (void) computePETBlendingCLUT;
 - (void) applyImageTransformation;
 - (NSMutableArray*) rectArray;
 -(BOOL) flippedData;
@@ -282,7 +284,6 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (IBAction) roiLoadFromXMLFiles: (id) sender;
 - (float)mouseXPos;
 - (float)mouseYPos;
-+ (void)setPluginOverridesMouse: (BOOL)override;
 - (GLuint)fontListGL;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) setSyncro:(long) s;
@@ -322,5 +323,5 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) roiChange:(NSNotification*)note;
 -(void) roiSelected:(NSNotification*) note;
 - (void) setStartWLWW;
-+ (void) computePETBlendingCLUT;
+- (void) stopROIEditing;
 @end
