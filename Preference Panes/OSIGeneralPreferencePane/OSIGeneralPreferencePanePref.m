@@ -66,11 +66,7 @@
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[_authView setString:"com.rossetantoine.osirix.preferences.general"];
-		
 		[_authView setEnabled: YES];
-		
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
 	}
 	else
 	{
@@ -82,20 +78,19 @@
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
+	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[_authView setString:"com.rossetantoine.osirix.preferences.general"];
-		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-		else [self enableControls: NO];
 	}
 	else
 	{
 		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
 		[_authView setEnabled: NO];
 	}
-	[_authView updateStatus:self];
+	
+	[_authView updateStatus: self];
 	
 	//setup GUI
 	[CheckUpdatesOnOff setState:[defaults boolForKey:@"CHECKUPDATES"]];
