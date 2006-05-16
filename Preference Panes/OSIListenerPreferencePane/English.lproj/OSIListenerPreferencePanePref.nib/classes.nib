@@ -27,6 +27,7 @@
             CLASS = OSIListenerPreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
                 aeForm = NSForm; 
                 aeTitleField = NSFormCell; 
                 deleteFileModeMatrix = NSMatrix; 
@@ -42,7 +43,8 @@
                 useStoreSCPModeMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

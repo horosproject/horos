@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
@@ -30,6 +30,8 @@
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSTextField *extrastorescp;
+	
+	IBOutlet SFAuthorizationView *_authView;
 }
 
 - (void) mainViewDidLoad;

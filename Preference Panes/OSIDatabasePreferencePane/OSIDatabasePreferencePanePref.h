@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIDatabasePreferencePanePref : NSPreferencePane 
 {
@@ -42,6 +42,8 @@
 	IBOutlet NSButton		*freeSpace;
 	IBOutlet NSMatrix		*freeSpaceType;
 	IBOutlet NSPopUpButton	*freeSpaceSize;
+	
+	IBOutlet SFAuthorizationView *_authView;
 
 }
 

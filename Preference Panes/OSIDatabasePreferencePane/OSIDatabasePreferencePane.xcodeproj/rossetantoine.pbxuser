@@ -5,9 +5,12 @@
 		activeBuildStyle = 06F27B30FFEEEFEF11CA0E56 /* Development */;
 		activeExecutable = AB8EE86509AB159D00F4090C /* Executable */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */;
+		addToTargets = (
+			8D202CE80486D31800D8A456 /* OSIDatabasePreferencePane */,
+		);
 		breakpoints = (
-			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */,
-			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */,
+			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:139 */,
+			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:221 */,
 		);
 		breakpointsGroup = AB8EE88509AB15B700F4090C /* XCBreakpointsBucket */;
 		codeSenseManager = AB465F4C09A32E06005A2766 /* Code sense */;
@@ -34,7 +37,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					243,
+					516,
 					20,
 					48,
 					43,
@@ -51,8 +54,19 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 167558641;
-			PBXWorkspaceStateSaveDate = 167558641;
+			PBXPerProjectTemplateStateSaveDate = 169461667;
+			PBXWorkspaceStateSaveDate = 169461667;
+		};
+		perUserProjectItems = {
+			AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = AB80A1D00A19C50900FED357 /* PBXTextBookmark */;
+			AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */;
+			AB80A6110A19C65800FED357 /* PBXTextBookmark */ = AB80A6110A19C65800FED357 /* PBXTextBookmark */;
+			AB80A6290A19C72900FED357 /* PBXTextBookmark */ = AB80A6290A19C72900FED357 /* PBXTextBookmark */;
+			AB80A62A0A19C72900FED357 /* PBXTextBookmark */ = AB80A62A0A19C72900FED357 /* PBXTextBookmark */;
+			AB80A62B0A19C72900FED357 /* PBXTextBookmark */ = AB80A62B0A19C72900FED357 /* PBXTextBookmark */;
+			AB80A62C0A19C72900FED357 /* PBXTextBookmark */ = AB80A62C0A19C72900FED357 /* PBXTextBookmark */;
+			AB80A6300A19C79200FED357 /* PBXTextBookmark */ = AB80A6300A19C79200FED357 /* PBXTextBookmark */;
+			AB80A6380A19C7A500FED357 /* PBXTextBookmark */ = AB80A6380A19C7A500FED357 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -72,6 +86,96 @@
 	AB465F4C09A32E06005A2766 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */;
+		name = "OSIDatabasePreferencePanePref.h: _authView";
+		rLen = 0;
+		rLoc = 1519;
+		rType = 0;
+		vrLen = 1217;
+		vrLoc = 403;
+	};
+	AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "[self checkView: [self mainView] :val];";
+		rLen = 39;
+		rLoc = 1364;
+		rType = 0;
+		vrLen = 1046;
+		vrLoc = 830;
+	};
+	AB80A6110A19C65800FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */;
+		name = "OSIDatabasePreferencePanePref.h: 16";
+		rLen = 0;
+		rLoc = 587;
+		rType = 0;
+		vrLen = 1550;
+		vrLoc = 0;
+	};
+	AB80A6290A19C72900FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */;
+		name = _authView;
+		rLen = 9;
+		rLoc = 1509;
+		rType = 0;
+		vrLen = 1550;
+		vrLoc = 0;
+	};
+	AB80A62A0A19C72900FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "OSIDatabasePreferencePanePref.m: 31";
+		rLen = 0;
+		rLoc = 987;
+		rType = 0;
+		vrLen = 1026;
+		vrLoc = 830;
+	};
+	AB80A62B0A19C72900FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "OSIDatabasePreferencePanePref.m: 31";
+		rLen = 0;
+		rLoc = 987;
+		rType = 0;
+		vrLen = 1026;
+		vrLoc = 830;
+	};
+	AB80A62C0A19C72900FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */;
+		name = _authView;
+		rLen = 9;
+		rLoc = 1509;
+		rType = 0;
+		vrLen = 1550;
+		vrLoc = 0;
+	};
+	AB80A6300A19C79200FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "if( aView == _authView) return;";
+		rLen = 31;
+		rLoc = 974;
+		rType = 0;
+		vrLen = 1044;
+		vrLoc = 830;
+	};
+	AB80A6380A19C7A500FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
+		name = "if( aView == _authView) return;";
+		rLen = 31;
+		rLoc = 974;
+		rType = 0;
+		vrLen = 1044;
+		vrLoc = 830;
 	};
 	AB8EE86509AB159D00F4090C /* Executable */ = {
 		isa = PBXExecutable;
@@ -111,11 +215,11 @@
 		isa = XCBreakpointsBucket;
 		name = "Project Breakpoints";
 		objects = (
-			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */,
-			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */,
+			AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:139 */,
+			AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:221 */,
 		);
 	};
-	AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:100 */ = {
+	AB8EE88B09AB15CD00F4090C /* OSIDatabasePreferencePanePref.m:139 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -124,11 +228,11 @@
 		fileReference = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
 		functionName = "-mainViewDidLoad";
 		hitCount = 1;
-		lineNumber = 100;
+		lineNumber = 139;
 		modificationTime = 167556340.355541;
 		state = 1;
 	};
-	AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:173 */ = {
+	AB8EE89D09AB160800F4090C /* OSIDatabasePreferencePanePref.m:221 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -137,23 +241,23 @@
 		fileReference = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
 		functionName = "-setReportMode:";
 		hitCount = 1;
-		lineNumber = 173;
+		lineNumber = 221;
 		modificationTime = 167556340.355557;
 		state = 1;
 	};
 	F506C03C013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1206, 910}}";
-			sepNavSelRange = "{627, 10}";
-			sepNavVisRect = "{{0, 0}, {1206, 569}}";
+			sepNavIntBoundsRect = "{{0, 0}, {708, 938}}";
+			sepNavSelRange = "{1509, 9}";
+			sepNavVisRect = "{{0, 0}, {708, 690}}";
 			sepNavWindowFrame = "{{557, 116}, {1245, 698}}";
 		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1206, 4746}}";
-			sepNavSelRange = "{3702, 17}";
-			sepNavVisRect = "{{0, 1333}, {1206, 569}}";
+			sepNavIntBoundsRect = "{{0, 0}, {708, 5894}}";
+			sepNavSelRange = "{974, 31}";
+			sepNavVisRect = "{{0, 308}, {708, 690}}";
 			sepNavWindowFrame = "{{37, 51}, {1245, 698}}";
 		};
 	};

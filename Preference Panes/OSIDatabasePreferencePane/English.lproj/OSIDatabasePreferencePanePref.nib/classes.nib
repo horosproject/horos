@@ -28,6 +28,7 @@
             CLASS = OSIDatabasePreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
                 columnsDisplay = NSMatrix; 
                 commentsAutoFill = NSButton; 
                 commentsDeleteMatrix = NSMatrix; 
@@ -52,7 +53,8 @@
                 seriesOrderMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }
