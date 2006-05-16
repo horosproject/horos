@@ -17,10 +17,56 @@
 
 @implementation OSIRoutingPreferencePanePref
 
+- (void)checkView:(NSView *)aView :(BOOL) OnOff
+{
+    id view;
+    NSEnumerator *enumerator;
+	
+	if( aView == _authView) return;
+	
+    if ([aView isKindOfClass: [NSControl class] ])
+	{
+       [(NSControl*) aView setEnabled: OnOff];
+	   return;
+    }
+
+	// Recursively check all the subviews in the view
+    enumerator = [ [aView subviews] objectEnumerator];
+    while (view = [enumerator nextObject]) {
+        [self checkView:view :OnOff];
+    }
+}
+
+- (void) enableControls: (BOOL) val
+{
+	[self checkView: [self mainView] :val];
+
+//	[characterSetPopup setEnabled: val];
+//	[addServerDICOM setEnabled: val];
+//	[addServerSharing setEnabled: val];
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
+{
+    [self enableControls: YES];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
+{    
+    [self enableControls: NO];
+}
+
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
+	[_authView setDelegate:self];
+	[_authView setString:"com.osirix.routing"];
+	[_authView updateStatus:self];
+	
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+	else [self enableControls: NO];
+
 	routingCalendars = [[[defaults arrayForKey:@"ROUTING CALENDARS"]  mutableCopy] retain];
 	//setup GUI
 	[routingActivated setState: [defaults boolForKey:@"ROUTINGACTIVATED"]];
@@ -65,7 +111,7 @@
     setObjectValue:anObject
     forTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
-{   
+{  
 		NSParameterAssert(rowIndex >= 0 && rowIndex < [routingCalendars count]);
 		[routingCalendars replaceObjectAtIndex:rowIndex withObject:anObject];
 		
@@ -79,14 +125,20 @@
 	return [routingCalendars objectAtIndex:rowIndex];
 }
 
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-	return YES;
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
+	else return NO;
 }
 
-- (void) deleteSelectedRow:(id)sender{
-	[routingCalendars removeObjectAtIndex:[calendarTable selectedRow]];
-	[calendarTable reloadData];
-	[[NSUserDefaults standardUserDefaults] setObject:routingCalendars forKey:@"ROUTING CALENDARS"];
+- (void) deleteSelectedRow:(id)sender
+{
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		[routingCalendars removeObjectAtIndex:[calendarTable selectedRow]];
+		[calendarTable reloadData];
+		[[NSUserDefaults standardUserDefaults] setObject:routingCalendars forKey:@"ROUTING CALENDARS"];
+	}
 }
 
 

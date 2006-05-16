@@ -4,6 +4,9 @@
 		activeBuildConfigurationName = Development;
 		activeBuildStyle = 06F27B30FFEEEFEF11CA0E56 /* Development */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIRoutingPreferencePane */;
+		addToTargets = (
+			8D202CE80486D31800D8A456 /* OSIRoutingPreferencePane */,
+		);
 		codeSenseManager = ABA06BCA09AB1C6C00CCC284 /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -11,7 +14,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					243,
+					166,
 					20,
 					48,
 					43,
@@ -28,8 +31,8 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 162219134;
-			PBXWorkspaceStateSaveDate = 162219134;
+			PBXPerProjectTemplateStateSaveDate = 169462919;
+			PBXWorkspaceStateSaveDate = 169462919;
 		};
 		sourceControlManager = ABA06BC909AB1C6C00CCC284 /* Source Control */;
 		userBuildSettings = {
@@ -49,5 +52,10 @@
 	ABA06BCA09AB1C6C00CCC284 /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	F506C03D013D9D7901CA16C8 /* OSIRoutingPreferencePanePref.m */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{-1665, -155}, {1354, 1050}}";
+		};
 	};
 }

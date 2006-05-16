@@ -26,11 +26,13 @@
                 CLUTMode = NSMatrix; 
                 DefaultCLUTMenu = NSPopUpButton; 
                 WindowingModeMatrix = NSMatrix; 
+                "_authView" = SFAuthorizationView; 
                 convertPETtoSUVCheck = NSButton; 
                 minimumValueText = NSTextField; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

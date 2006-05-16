@@ -15,6 +15,46 @@
 #import "OSIPETPreferencePane.h"
 
 @implementation OSIPETPreferencePane
+
+- (void)checkView:(NSView *)aView :(BOOL) OnOff
+{
+    id view;
+    NSEnumerator *enumerator;
+	
+	if( aView == _authView) return;
+	
+    if ([aView isKindOfClass: [NSControl class] ])
+	{
+       [(NSControl*) aView setEnabled: OnOff];
+	   return;
+    }
+
+	// Recursively check all the subviews in the view
+    enumerator = [ [aView subviews] objectEnumerator];
+    while (view = [enumerator nextObject]) {
+        [self checkView:view :OnOff];
+    }
+}
+
+- (void) enableControls: (BOOL) val
+{
+	[self checkView: [self mainView] :val];
+
+//	[characterSetPopup setEnabled: val];
+//	[addServerDICOM setEnabled: val];
+//	[addServerSharing setEnabled: val];
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
+{
+    [self enableControls: YES];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
+{    
+    [self enableControls: NO];
+}
+
 - (void) dealloc
 {
 	NSLog(@"dealloc OSIPETPreferencePane");
@@ -60,7 +100,14 @@
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+	[_authView setDelegate:self];
+	[_authView setString:"com.osirix.pet"];
+	[_authView updateStatus:self];
 	
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+	else [self enableControls: NO];
+
 	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
 	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];
 	

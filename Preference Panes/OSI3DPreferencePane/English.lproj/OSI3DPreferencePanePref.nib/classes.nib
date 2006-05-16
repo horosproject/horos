@@ -13,10 +13,19 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {setConvertPETtoSUVautomatically = id; setPETCLUTfor3DMIP = id; }; 
+            ACTIONS = {setBestRendering = id; setMax3DTexture = id; setMax3DTextureShading = id; }; 
             CLASS = OSI3DPreferencePanePref; 
             LANGUAGE = ObjC; 
-            OUTLETS = {convertPETtoSUVCheck = NSButton; preferWonBforPET3D = NSButton; }; 
+            OUTLETS = {
+                "_authView" = SFAuthorizationView; 
+                bestRenderingSlider = NSSlider; 
+                bestRenderingString = NSTextField; 
+                max3DTextureSlider = NSSlider; 
+                max3DTextureSliderShading = NSSlider; 
+                max3DTextureString = NSTextField; 
+                max3DTextureStringShading = NSTextField; 
+                recommandations = NSTextField; 
+            }; 
             SUPERCLASS = NSPreferencePane; 
         }, 
         {
@@ -61,7 +70,8 @@
                 windowSizeMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

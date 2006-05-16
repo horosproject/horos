@@ -14,12 +14,21 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {newHangingProtocol = id; setModalityForHangingProtocols = id; }; 
+            ACTIONS = {
+                deleteSelectedRow = id; 
+                newHangingProtocol = id; 
+                setModalityForHangingProtocols = id; 
+            }; 
             CLASS = OSIHangingPreferencePanePref; 
             LANGUAGE = ObjC; 
-            OUTLETS = {hangingProtocolTableView = NSTableView; newHangingProtocolButton = NSButton; }; 
+            OUTLETS = {
+                "_authView" = SFAuthorizationView; 
+                hangingProtocolTableView = NSTableView; 
+                newHangingProtocolButton = NSButton; 
+            }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

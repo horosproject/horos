@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSICDPreferencePanePref : NSPreferencePane 
 {
@@ -26,6 +26,8 @@
 	IBOutlet id					burnOsirixCheck,
 								burnSupplementaryFolderCheck,
 								supplementaryFolderPath;
+								
+	IBOutlet SFAuthorizationView	*_authView;
 }
 
 - (void) mainViewDidLoad;

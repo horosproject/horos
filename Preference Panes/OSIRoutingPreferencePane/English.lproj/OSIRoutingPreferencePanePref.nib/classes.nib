@@ -15,12 +15,13 @@
         }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
-            ACTIONS = {newCalendar = id; setActivated = id; }; 
+            ACTIONS = {deleteSelectedRow = id; newCalendar = id; setActivated = id; }; 
             CLASS = OSIRoutingPreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
                 calendarTable = NSTableView; 
-                routesController = id; 
+                routesController = NSArrayController; 
                 routingActivated = NSButton; 
                 ruleWindow = NSWindow; 
             }; 
@@ -33,7 +34,8 @@
             OUTLETS = {routingTable = NSTableView; ruleWindow = NSWindow; }; 
             SUPERCLASS = NSArrayController; 
         }, 
-        {CLASS = RulesController; LANGUAGE = ObjC; SUPERCLASS = NSArrayController; }
+        {CLASS = RulesController; LANGUAGE = ObjC; SUPERCLASS = NSArrayController; }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

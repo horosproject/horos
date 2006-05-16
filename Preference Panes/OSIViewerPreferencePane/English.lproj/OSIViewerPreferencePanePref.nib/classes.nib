@@ -28,6 +28,7 @@
             CLASS = OSIViewerPreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
                 autoHideMatrix = NSButton; 
                 checkSaveLoadROI = NSButton; 
                 iPhotoAlbumName = NSTextField; 
@@ -40,7 +41,8 @@
                 windowSizeMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

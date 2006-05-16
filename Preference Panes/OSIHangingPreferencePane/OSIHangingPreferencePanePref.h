@@ -12,9 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIHangingPreferencePanePref : NSPreferencePane 
 {
@@ -22,6 +21,8 @@
 	IBOutlet NSTableView *hangingProtocolTableView;
 	IBOutlet NSButton *newHangingProtocolButton;
 	NSString *modalityForHangingProtocols;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;

@@ -26,11 +26,13 @@
             OUTLETS = {
                 CheckUpdatesOnOff = NSButton; 
                 DcmTkJpegOnOff = NSButton; 
+                "_authView" = SFAuthorizationView; 
                 parserMatrix = NSMatrix; 
                 readerMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

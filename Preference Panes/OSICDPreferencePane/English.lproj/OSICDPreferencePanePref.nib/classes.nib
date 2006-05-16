@@ -16,7 +16,6 @@
             ACTIONS = {
                 chooseSupplementaryBurnPath = id; 
                 setBurnOsirixApplication = id; 
-                setBurnSupplementaryFolder = id; 
                 setDicomdirMode = id; 
                 setMountOnOff = id; 
                 setStillMovieMode = id; 
@@ -25,17 +24,18 @@
             CLASS = OSICDPreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
                 burnOsirixCheck = id; 
                 burnSupplementaryFolderCheck = id; 
-                dicomdirModeMatrix = NSButton; 
+                dicomdirModeMatrix = NSMatrix; 
                 mountOnOffButton = NSButton; 
-                preferenceController = id; 
-                stillMovieModeMatrix = NSButton; 
+                stillMovieModeMatrix = NSMatrix; 
                 supplementaryFolderPath = id; 
                 unmountOnOffButton = NSButton; 
             }; 
             SUPERCLASS = NSPreferencePane; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

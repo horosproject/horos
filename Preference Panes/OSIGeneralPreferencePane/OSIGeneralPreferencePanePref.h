@@ -14,7 +14,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <Cocoa/Cocoa.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
@@ -22,6 +22,8 @@
 	IBOutlet NSButton		*DcmTkJpegOnOff;
 	
 	IBOutlet NSMatrix		*readerMatrix, *parserMatrix;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 -(void) mainViewDidLoad;

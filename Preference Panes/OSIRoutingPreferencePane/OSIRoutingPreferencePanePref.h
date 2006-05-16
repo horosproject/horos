@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIRoutingPreferencePanePref : NSPreferencePane 
 {
@@ -22,6 +22,8 @@
 	IBOutlet NSButton *routingActivated;
 	IBOutlet NSWindow *ruleWindow;
 	IBOutlet NSArrayController *routesController;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;

@@ -4,6 +4,9 @@
 		activeBuildConfigurationName = Development;
 		activeBuildStyle = 06F27B30FFEEEFEF11CA0E56 /* Development */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */;
+		addToTargets = (
+			8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */,
+		);
 		codeSenseManager = AB29966B09AB2BCA00F810FC /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -28,15 +31,14 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 167059453;
-			PBXWorkspaceStateSaveDate = 167059453;
+			PBXPerProjectTemplateStateSaveDate = 169461988;
+			PBXWorkspaceStateSaveDate = 169461988;
 		};
 		perUserProjectItems = {
+			AB80A6710A19C8ED00FED357 /* PBXTextBookmark */ = AB80A6710A19C8ED00FED357 /* PBXTextBookmark */;
 			ABC3940709F52058000A6508 /* PBXTextBookmark */ = ABC3940709F52058000A6508 /* PBXTextBookmark */;
-			ABC3940809F52058000A6508 /* PBXTextBookmark */ = ABC3940809F52058000A6508 /* PBXTextBookmark */;
 			ABC3940909F52058000A6508 /* PBXTextBookmark */ = ABC3940909F52058000A6508 /* PBXTextBookmark */;
 			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
-			ABC3940B09F52058000A6508 /* PBXTextBookmark */ = ABC3940B09F52058000A6508 /* PBXTextBookmark */;
 			ABC3941509F5206D000A6508 /* PBXTextBookmark */ = ABC3941509F5206D000A6508 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
@@ -58,6 +60,16 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	AB80A6710A19C8ED00FED357 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
+		name = "OSIViewerPreferencePanePref.h: iPhotoAlbumName";
+		rLen = 0;
+		rLoc = 963;
+		rType = 0;
+		vrLen = 1447;
+		vrLoc = 0;
+	};
 	ABC3940709F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
@@ -67,16 +79,6 @@
 		rType = 0;
 		vrLen = 1485;
 		vrLoc = 1759;
-	};
-	ABC3940809F52058000A6508 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
-		name = "OSIViewerPreferencePanePref.h: setAutoHideMatrixState:";
-		rLen = 0;
-		rLoc = 1348;
-		rType = 0;
-		vrLen = 1598;
-		vrLoc = 0;
 	};
 	ABC3940909F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -95,18 +97,8 @@
 		rLen = 0;
 		rLoc = 1348;
 		rType = 0;
-		vrLen = 1598;
+		vrLen = 1447;
 		vrLoc = 0;
-	};
-	ABC3940B09F52058000A6508 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = "@end";
-		rLen = 5;
-		rLoc = 3239;
-		rType = 0;
-		vrLen = 1485;
-		vrLoc = 1759;
 	};
 	ABC3941509F5206D000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -120,9 +112,9 @@
 	};
 	F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1185, 756}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1185, 713}}";
 			sepNavSelRange = "{963, 0}";
-			sepNavVisRect = "{{0, 0}, {1185, 756}}";
+			sepNavVisRect = "{{0, 0}, {1185, 713}}";
 		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */ = {

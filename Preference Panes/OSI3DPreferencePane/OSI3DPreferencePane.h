@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSI3DPreferencePanePref : NSPreferencePane 
 {
@@ -22,6 +22,8 @@
 	IBOutlet NSTextField					*max3DTextureString, *max3DTextureStringShading, *bestRenderingString;
 	
 	IBOutlet NSTextField					*recommandations;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;

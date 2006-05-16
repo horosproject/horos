@@ -13,7 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface OSIPETPreferencePane : NSPreferencePane 
 {
@@ -23,6 +23,8 @@
 	
 	IBOutlet NSMatrix						*CLUTMode, *WindowingModeMatrix;
 	IBOutlet NSTextField					*minimumValueText;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (void) mainViewDidLoad;

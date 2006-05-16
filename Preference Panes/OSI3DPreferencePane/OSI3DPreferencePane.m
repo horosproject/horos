@@ -15,6 +15,42 @@
 #import "OSI3DPreferencePane.h"
 
 @implementation OSI3DPreferencePanePref
+
+- (void)checkView:(NSView *)aView :(BOOL) OnOff
+{
+    id view;
+    NSEnumerator *enumerator;
+	
+	if( aView == _authView) return;
+	
+    if( [aView isKindOfClass: [NSControl class]])
+	{
+       [(NSControl*) aView setEnabled: OnOff];
+	   return;
+    }
+
+	// Recursively check all the subviews in the view
+    enumerator = [ [aView subviews] objectEnumerator];
+    while (view = [enumerator nextObject]) {
+        [self checkView:view :OnOff];
+    }
+}
+
+- (void) enableControls: (BOOL) val
+{
+	[self checkView: [self mainView] :val];
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
+{
+    [self enableControls: YES];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
+{    
+    [self enableControls: NO];
+}
+
 - (void) dealloc
 {
 	NSLog(@"dealloc OSI3DPreferencePanePref");
@@ -59,7 +95,14 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
-//setup GUI	
+	[_authView setDelegate:self];
+	[_authView setString:"com.osirix.3d"];
+	[_authView updateStatus:self];
+	
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+	else [self enableControls: NO];
+	
+	//setup GUI	
 	long vram = [self vramSize]  / (1024L * 1024L);
 	long with, without;
 	
