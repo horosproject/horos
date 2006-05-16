@@ -96,15 +96,19 @@ char *GetPrivateIP()
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
-	[_authView updateStatus:self];
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
 		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
 		else [self enableControls: NO];
 	}
-	else [_authView setEnabled: NO];
+	else
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setEnabled: NO];
+	}
+	[_authView updateStatus:self];
+
 
 	//setup GUI
 	

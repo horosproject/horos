@@ -274,7 +274,6 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     return cond;
 }
 
-
 OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_EchoRQ * req,
         T_ASC_PresentationContextID presId)
 {
@@ -1178,6 +1177,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
                 exit(0);
+//
+//				pthread_t threadId;
+//				pthread_attr_t stack_size;
+//				pthread_attr_init(&stack_size);
+//				pthread_create(&threadId, &stack_size, threadFunc, assoc);
             }
         }
 #endif

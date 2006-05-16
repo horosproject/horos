@@ -69,15 +69,19 @@
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.rossetantoine.osirix.preferences.viewer"];
-	[_authView updateStatus:self];
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.viewer"];
 		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
 		else [self enableControls: NO];
 	}
-	else [_authView setEnabled: NO];
+	else
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setEnabled: NO];
+	}
+	[_authView updateStatus:self];
+
 	
 	[checkSaveLoadROI setState :[defaults boolForKey: @"SAVEROIS"]];
 	[sizeMatrix selectCellWithTag: [defaults boolForKey: @"ORIGINALSIZE"]];

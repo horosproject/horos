@@ -102,15 +102,19 @@
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.rossetantoine.osirix.preferences.pet"];
-	[_authView updateStatus:self];
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.pet"];
 		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
 		else [self enableControls: NO];
 	}
-	else [_authView setEnabled: NO];
+	else
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setEnabled: NO];
+	}
+	[_authView updateStatus:self];
+
 
 	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
 	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];

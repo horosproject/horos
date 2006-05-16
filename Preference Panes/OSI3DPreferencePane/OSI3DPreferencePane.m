@@ -96,15 +96,19 @@
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	[_authView setDelegate:self];
-	[_authView setString:"com.rossetantoine.osirix.preferences.3d"];
-	[_authView updateStatus:self];
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.3d"];
 		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
 		else [self enableControls: NO];
 	}
-	else [_authView setEnabled: NO];
+	else
+	{
+		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[_authView setEnabled: NO];
+	}
+	[_authView updateStatus:self];
+
 	
 	//setup GUI	
 	long vram = [self vramSize]  / (1024L * 1024L);
