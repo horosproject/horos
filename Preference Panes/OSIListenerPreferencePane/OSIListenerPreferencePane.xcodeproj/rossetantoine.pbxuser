@@ -53,17 +53,15 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 169474843;
-			PBXWorkspaceStateSaveDate = 169474843;
+			PBXPerProjectTemplateStateSaveDate = 169482671;
+			PBXWorkspaceStateSaveDate = 169482671;
 		};
 		perUserProjectItems = {
+			AB1A682A0A1A1A3100169F3B /* PBXTextBookmark */ = AB1A682A0A1A1A3100169F3B /* PBXTextBookmark */;
 			AB35516209B74B1B00F0C358 /* PBXTextBookmark */ = AB35516209B74B1B00F0C358 /* PBXTextBookmark */;
 			AB52E74B0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74B0A19FC0F00726305 /* PBXTextBookmark */;
 			AB52E74C0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74C0A19FC0F00726305 /* PBXTextBookmark */;
-			AB52E74D0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74D0A19FC0F00726305 /* PBXTextBookmark */;
 			AB52E74E0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74E0A19FC0F00726305 /* PBXTextBookmark */;
-			AB52E74F0A19FC0F00726305 /* PBXTextBookmark */ = AB52E74F0A19FC0F00726305 /* PBXTextBookmark */;
-			AB52E7500A19FC0F00726305 /* PBXTextBookmark */ = AB52E7500A19FC0F00726305 /* PBXTextBookmark */;
 			AB52E7660A19FF8F00726305 /* PBXTextBookmark */ = AB52E7660A19FF8F00726305 /* PBXTextBookmark */;
 			AB7925FD09FCBE46006E342C /* PBXTextBookmark */ = AB7925FD09FCBE46006E342C /* PBXTextBookmark */;
 			AB80AB470A19CF1800FED357 /* PBXTextBookmark */ = AB80AB470A19CF1800FED357 /* PBXTextBookmark */;
@@ -75,6 +73,16 @@
 	};
 	8D202CE80486D31800D8A456 /* OSIListenerPreferencePane */ = {
 		activeExec = 0;
+	};
+	AB1A682A0A1A1A3100169F3B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
+		name = "OSIListenerPreferencePanePref.h: setSingleProcess:";
+		rLen = 0;
+		rLoc = 1662;
+		rType = 0;
+		vrLen = 1520;
+		vrLoc = 148;
 	};
 	AB34B6EA09AA0E9A0057FE0E /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -98,7 +106,7 @@
 		functionName = "-setExtraStoreSCP:";
 		hitCount = 1;
 		lineNumber = 86;
-		modificationTime = 169474195.065881;
+		modificationTime = 169483644.219339;
 		state = 1;
 	};
 	AB34B70609AA11020057FE0E /* Executable */ = {
@@ -172,16 +180,6 @@
 		vrLen = 2136;
 		vrLoc = 5091;
 	};
-	AB52E74D0A19FC0F00726305 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
-		name = "OSIListenerPreferencePanePref.h: setSingleProcess:";
-		rLen = 0;
-		rLoc = 1662;
-		rType = 0;
-		vrLen = 1520;
-		vrLoc = 148;
-	};
 	AB52E74E0A19FC0F00726305 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = AB80AB4F0A19CF1800FED357 /* OSIViewerPreferencePanePref.m */;
@@ -191,26 +189,6 @@
 		rType = 0;
 		vrLen = 1682;
 		vrLoc = 1295;
-	};
-	AB52E74F0A19FC0F00726305 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */;
-		name = singleProcessButton;
-		rLen = 19;
-		rLoc = 1161;
-		rType = 0;
-		vrLen = 1467;
-		vrLoc = 76;
-	};
-	AB52E7500A19FC0F00726305 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIListenerPreferencePanePref.m */;
-		name = "- (IBAction)setSingleProcess:(id)sender";
-		rLen = 39;
-		rLoc = 6638;
-		rType = 0;
-		vrLen = 2136;
-		vrLoc = 5091;
 	};
 	AB52E7660A19FF8F00726305 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -272,11 +250,6 @@
 		name = OSIViewerPreferencePanePref.m;
 		path = "/Users/rossetantoine/osirix/osirix/Preference Panes/OSIViewerPreferencePane/OSIViewerPreferencePanePref.m";
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {859, 2184}}";
-			sepNavSelRange = "{1899, 0}";
-			sepNavVisRect = "{{0, 699}, {859, 605}}";
-		};
 	};
 	F506C03C013D9D7901CA16C8 /* OSIListenerPreferencePanePref.h */ = {
 		uiCtxt = {

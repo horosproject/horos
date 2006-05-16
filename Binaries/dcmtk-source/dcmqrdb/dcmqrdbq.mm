@@ -655,7 +655,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startFindRequest(
     ***/
 	
 	// Search Core Data here
-	
+	if( handle -> dataHandler == 0L)
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		
 	cond = [handle->dataHandler prepareFindForDataSet:findRequestIdentifiers];
 	MatchFound = [handle->dataHandler findMatchFound];
 	 /**** If an error occured in Matching function
@@ -859,6 +861,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextFindResponse (
 	BOOL isComplete;
 	*findResponseIdentifiers = new DcmDataset ;
 	dbdebug(1, "nextFindResponse () : new dataset\n") ;
+	
+	if( handle -> dataHandler == 0L)
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		
 	cond = [handle ->dataHandler nextFindObject:*findResponseIdentifiers  isComplete:&isComplete];
 	dbdebug(1, "nextFindResponse () : next response\n") ;
 	if (isComplete) {
@@ -904,6 +910,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 	//NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
+	if( handle -> dataHandler == 0L)
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		
 	OFCondition cond = [handle->dataHandler nextMoveObject:imageFileName];
 	//NSLog(@"Next file: %s", imageFileName);
 	DcmFileFormat fileformat;
@@ -1117,6 +1126,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
 	
 	// Search Core Data here
 	NSLog(@"search core data for move");
+	if( handle -> dataHandler == 0L)
+		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
 	NSLog(@"NumberRemainOperations: %d", [handle->dataHandler moveMatchFound]);
@@ -1187,7 +1199,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		handle -> findResponseList = NULL;
 		handle -> uidList = NULL;
 		result = EC_Normal;
-		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
+		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
 	}
