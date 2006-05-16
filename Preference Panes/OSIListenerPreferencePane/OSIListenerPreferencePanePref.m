@@ -71,7 +71,7 @@ char *GetPrivateIP()
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    [self enableControls: NO];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) dealloc
@@ -96,12 +96,15 @@ char *GetPrivateIP()
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.osirix.listener"];
+	[_authView setString:"com.rossetantoine.osirix.preferences.listener"];
 	[_authView updateStatus:self];
 	
-	
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-	else [self enableControls: NO];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else [_authView setEnabled: NO];
 
 	//setup GUI
 	

@@ -40,10 +40,6 @@
 - (void) enableControls: (BOOL) val
 {
 	[self checkView: [self mainView] :val];
-
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -52,8 +48,8 @@
 }
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
-{    
-    [self enableControls: NO];
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) dealloc
@@ -63,20 +59,42 @@
 	[super dealloc];
 }
 
+- (IBAction) setAuthentication: (id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"AUTHENTICATION"];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		[_authView setEnabled: YES];
+		
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else
+	{
+		[_authView setEnabled: NO];
+	}
+}
+
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.osirix.general"];
+	[_authView setString:"com.rossetantoine.osirix.preferences.general"];
 	[_authView updateStatus:self];
 	
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-	else [self enableControls: NO];
-
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else [_authView setEnabled: NO];
+	
 	//setup GUI
 	[CheckUpdatesOnOff setState:[defaults boolForKey:@"CHECKUPDATES"]];
 	[DcmTkJpegOnOff setState:[defaults boolForKey:@"DCMTKJPEG"]];
+	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 	
 	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX"]];
 	[parserMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMFILE"]];

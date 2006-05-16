@@ -20,6 +20,7 @@
 {
 	IBOutlet NSButton		*CheckUpdatesOnOff;
 	IBOutlet NSButton		*DcmTkJpegOnOff;
+	IBOutlet NSButton		*securityOnOff;
 	
 	IBOutlet NSMatrix		*readerMatrix, *parserMatrix;
 	
@@ -33,6 +34,5 @@
 -(IBAction)setParser: (id) sender;
 -(IBAction)setUseTransistion:(id)sender;
 -(IBAction)setTransitionType:(id)sender;
-
-
+- (IBAction) setAuthentication: (id) sender;
 @end

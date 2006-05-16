@@ -46,10 +46,6 @@ Version 2.3
 - (void) enableControls: (BOOL) val
 {
 	[self checkView: [self mainView] :val];
-
-//	[characterSetPopup setEnabled: val];
-//	[addServerDICOM setEnabled: val];
-//	[addServerSharing setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
@@ -59,7 +55,7 @@ Version 2.3
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    [self enableControls: NO];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) dealloc
@@ -139,14 +135,16 @@ Version 2.3
 
 - (void) mainViewDidLoad
 {
-
 	[_authView setDelegate:self];
-	[_authView setString:"com.osirix.database"];
+	[_authView setString:"com.rossetantoine.osirix.preferences.database"];
 	[_authView updateStatus:self];
 	
-	
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-	else [self enableControls: NO];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else [_authView setEnabled: NO];
 
 //	[[scrollView verticalScroller] setFloatValue: 0]; 
 ////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0];

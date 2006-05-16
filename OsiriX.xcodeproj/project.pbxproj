@@ -919,6 +919,9 @@
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB46648E09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB46648F09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
+		AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
+		AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
+		AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB52E5C70A19D93500726305 /* Security.framework */; };
 		AB695A1E063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
 		AB695A1F063D8261002BDF78 /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
 		AB6AC6460624AC5200AFC7AF /* VRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6420624AC5200AFC7AF /* VRView.h */; };
@@ -9436,6 +9439,7 @@
 		AB4E3C0505ADD50F001411D1 /* PapyDataSetRead3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyDataSetRead3.c; path = Papyrus3/PapyDataSetRead3.c; sourceTree = "<group>"; };
 		AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDirParser.h; sourceTree = "<group>"; };
 		AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DicomDirParser.m; sourceTree = "<group>"; };
+		AB52E5C70A19D93500726305 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		AB59B18205697FD400B77AFC /* DCMView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMView.m; sourceTree = "<group>"; };
 		AB59B18405697FD700B77AFC /* DCMView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMView.h; sourceTree = "<group>"; };
 		AB5E1A300595697700C48BEB /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
@@ -12353,6 +12357,7 @@
 				BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
+				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12431,6 +12436,7 @@
 				BFBF3AAA09B681F500545F5E /* libssl.dylib in Frameworks */,
 				BFBF3AAB09B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AAC09B681F500545F5E /* libz.dylib in Frameworks */,
+				AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12517,6 +12523,7 @@
 				BFBF3AA609B681F500545F5E /* libssl.dylib in Frameworks */,
 				BFBF3AA709B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA809B681F500545F5E /* libz.dylib in Frameworks */,
+				AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12559,6 +12566,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AB52E5C70A19D93500726305 /* Security.framework */,
 				CEA656CB094EF64300D4E5E5 /* vli3.framework */,
 				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
@@ -26363,6 +26371,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26421,6 +26430,7 @@
 					Binaries,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
@@ -26484,6 +26494,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"$(SRCROOT)/VolumePRO",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -26540,6 +26551,7 @@
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
 					"$(SRCROOT)/VolumePRO",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -26599,6 +26611,7 @@
 					VolumePRO,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -26655,6 +26668,7 @@
 					VolumePRO,
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					"$(SRCROOT)",
+					"$(SYSTEM_DEVELOPER_DIR)/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = YES;

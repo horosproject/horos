@@ -52,7 +52,7 @@
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    [self enableControls: NO];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) dealloc
@@ -69,11 +69,15 @@
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
 	[_authView setDelegate:self];
-	[_authView setString:"com.osirix.viewer"];
+	[_authView setString:"com.rossetantoine.osirix.preferences.viewer"];
 	[_authView updateStatus:self];
 	
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-	else [self enableControls: NO];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else [_authView setEnabled: NO];
 	
 	[checkSaveLoadROI setState :[defaults boolForKey: @"SAVEROIS"]];
 	[sizeMatrix selectCellWithTag: [defaults boolForKey: @"ORIGINALSIZE"]];

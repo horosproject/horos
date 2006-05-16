@@ -20,7 +20,78 @@ Version 2.3
 	
 *****************************************************************************************************/
 
+#include <Security/Security.h>
 
+//static OSStatus SetupRight(
+//    AuthorizationRef    authRef, 
+//    const char *        rightName, 
+//    CFStringRef         rightRule, 
+//    CFStringRef         rightPrompt
+//)
+//{
+//    OSStatus err;
+//	
+//    err = AuthorizationRightGet(rightName, NULL);
+//    if (err == noErr)
+//	{
+//	
+//    }
+//	else if (err == errAuthorizationDenied)
+//	{
+//        err = AuthorizationRightSet(
+//            authRef,                // authRef
+//            rightName,              // rightName
+//            rightRule,              // rightDefinition
+//            rightPrompt,            // descriptionKey
+//            NULL,                   // bundle, NULL indicates main
+//            NULL                    // localeTableName, 
+//        );                          // NULL indicates
+//                                    // "Localizable.strings"
+//		
+//        if (err != noErr) {
+//            #if ! defined(NDEBUG)
+//                fprintf(
+//                    stderr, 
+//                    "Could not create default right (%ld)\n", 
+//                    err
+//                );
+//            #endif
+//            err = noErr;
+//        }
+//    }
+//
+//    return err;
+//}
+//
+//extern OSStatus SetupAuthorization(void)
+//{
+//    OSStatus err;
+//	AuthorizationRef gAuthorization;
+//	
+//    // Connect to Authorization Services.
+//
+//    err = AuthorizationCreate(NULL, NULL, 0, &gAuthorization);
+//
+//    // Set up our rights.
+//	
+//    if (err == noErr)
+//	{
+//        err = SetupRight(
+//            gAuthorization, 
+//            "com.rossetantoine.osirix.preferences.general", 
+//            CFSTR(kAuthorizationRuleAuthenticateAsAdmin), 
+//            CFSTR("You must be authorized.")
+//        );
+//		
+//		 err = SetupRight(
+//            gAuthorization, 
+//            "com.rossetantoine.osirix.preferences.3d", 
+//            CFSTR(kAuthorizationRuleAuthenticateAsAdmin), 
+//            CFSTR("You must be authorized.")
+//        );
+//    }
+//    return err;
+//}
 
 #import "PreferencePaneController.h"
 #import "AppController.h"

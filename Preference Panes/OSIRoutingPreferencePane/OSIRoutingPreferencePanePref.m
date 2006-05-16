@@ -53,7 +53,7 @@
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
 {    
-    [self enableControls: NO];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
 - (void) mainViewDidLoad
@@ -61,11 +61,15 @@
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	
 	[_authView setDelegate:self];
-	[_authView setString:"com.osirix.routing"];
+	[_authView setString:"com.rossetantoine.osirix.preferences.routing"];
 	[_authView updateStatus:self];
 	
-	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
-	else [self enableControls: NO];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+	{
+		if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+		else [self enableControls: NO];
+	}
+	else [_authView setEnabled: NO];
 
 	routingCalendars = [[[defaults arrayForKey:@"ROUTING CALENDARS"]  mutableCopy] retain];
 	//setup GUI

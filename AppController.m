@@ -1806,6 +1806,9 @@ static BOOL initialized = NO;
 		// ** DCMTKJPEG
 		[defaultValues setObject: @"NO" forKey: @"DCMTKJPEG"];
 		
+		// ** AUTHENTICATION
+		[defaultValues setObject: @"NO" forKey: @"AUTHENTICATION"];
+		
 		// ** CHECKUPDATES
 		[defaultValues setObject: @"YES" forKey: @"CHECKUPDATES"];
 		

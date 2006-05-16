@@ -220,8 +220,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -268,8 +266,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>9</integer>
-									<integer>5</integer>
+									<integer>3</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -293,7 +291,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>456 125 963 753 0 0 1440 878 </string>
+						<string>-1655 146 963 753 -1680 -150 1680 1050 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -304,6 +302,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -321,16 +321,18 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB80A6380A19C7A500FED357</string>
+										<string>AB52DFCE0A19D10C00726305</string>
 										<key>history</key>
 										<array>
-											<string>AB80A6290A19C72900FED357</string>
-											<string>AB80A6300A19C79200FED357</string>
+											<string>AB80AB570A19CF2500FED357</string>
+											<string>AB80AB580A19CF2500FED357</string>
+											<string>AB52DFCD0A19D10C00726305</string>
 										</array>
 										<key>prevStack</key>
 										<array>
 											<string>AB80A1D00A19C50900FED357</string>
 											<string>AB80A5DE0A19C5B600FED357</string>
+											<string>AB80AB5F0A19CF2500FED357</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -344,7 +346,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {755, 707}}</string>
 								<key>RubberWindowFrame</key>
-								<string>456 125 963 753 0 0 1440 878 </string>
+								<string>-1655 146 963 753 -1680 -150 1680 1050 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -364,7 +366,7 @@
 								<key>Frame</key>
 								<string>{{0, 712}, {755, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>456 125 963 753 0 0 1440 878 </string>
+								<string>-1655 146 963 753 -1680 -150 1680 1050 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -388,9 +390,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB80A6390A19C7A500FED357</string>
+				<string>AB52DFCF0A19D10C00726305</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB80A63A0A19C7A500FED357</string>
+				<string>AB52DFD00A19D10C00726305</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -528,7 +530,7 @@
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>456 125 963 753 0 0 1440 878 </string>
+	<string>-1655 146 963 753 -1680 -150 1680 1050 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -927,8 +929,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {367, 168}}</string>
-											<string>{{0, 173}, {367, 270}}</string>
+											<string>{{0, 0}, {491, 168}}</string>
+											<string>{{0, 173}, {491, 270}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -977,9 +979,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>AB80A63B0A19C7A500FED357</string>
+				<string>AB52DFD10A19D10C00726305</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>AB80A63C0A19C7A500FED357</string>
+				<string>AB52DFD20A19D10C00726305</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
