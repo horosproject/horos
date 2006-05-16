@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
+#import <SecurityInterface/SFAuthorizationView.h>
 
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
@@ -21,6 +22,10 @@
 	IBOutlet NSTableView *serverTable, *osirixServerTable;
 	NSString  *stringEncoding;
 	NSMutableArray *serverList, *osirixServerList;
+	
+	IBOutlet	NSButton	*addServerDICOM, *addServerSharing;
+	
+	IBOutlet SFAuthorizationView *_authView;
 }
 
 - (void) mainViewDidLoad;

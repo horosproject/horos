@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {
             CLASS = NSPreferencePane; 
             LANGUAGE = ObjC; 
@@ -23,12 +24,16 @@
             CLASS = OSILocationsPreferencePanePref; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_authView" = SFAuthorizationView; 
+                addServerDICOM = NSButton; 
+                addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 
                 osirixServerTable = NSTableView; 
                 serverTable = NSTableView; 
             }; 
             SUPERCLASS = NSPreferencePane; 
         }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = ServerTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
     ); 
     IBVersion = 1; 

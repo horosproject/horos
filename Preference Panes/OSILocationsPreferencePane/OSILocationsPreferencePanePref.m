@@ -36,9 +36,34 @@
 
 @implementation OSILocationsPreferencePanePref
 
+- (void) enableControls: (BOOL) val
+{
+	[characterSetPopup setEnabled: val];
+	[addServerDICOM setEnabled: val];
+	[addServerSharing setEnabled: val];
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view
+{
+    [self enableControls: YES];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view
+{    
+    [self enableControls: NO];
+}
+
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	[_authView setDelegate:self];
+	[_authView setString:"com.osirix.locations"];
+	[_authView updateStatus:self];
+	
+	
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) [self enableControls: YES];
+	else [self enableControls: NO];
 	
 	//setup GUI
 	serverList = [[[defaults arrayForKey:@"SERVERS"] mutableCopy] retain];
@@ -162,40 +187,42 @@
 		[osirixServerTable reloadData];
 	}
 }
-
 - (void)tableView:(NSTableView *)aTableView
     setObjectValue:anObject
     forTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
 {
-	NSMutableDictionary *theRecord;	   
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{ 
+		NSMutableDictionary *theRecord;	   
 
-	if( [aTableView tag] == 0)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
-		
-		theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
+		if( [aTableView tag] == 0)
+		{
+			NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
+			
+			theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
 
-		[theRecord setObject:anObject forKey:[aTableColumn identifier]];
+			[theRecord setObject:anObject forKey:[aTableColumn identifier]];
+			
+			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
+			
+			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+		}
 		
-		[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
-		
-		[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
-	}
-	
-	if( [aTableView tag] == 1)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
-		
-		theRecord = [[osirixServerList objectAtIndex:rowIndex] mutableCopy];
-		
-		[theRecord setObject:anObject forKey:[aTableColumn identifier]];
-		
-		[osirixServerList replaceObjectAtIndex:rowIndex withObject: theRecord];
-		
-		[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+		if( [aTableView tag] == 1)
+		{
+			NSParameterAssert(rowIndex >= 0 && rowIndex < [osirixServerList count]);
+			
+			theRecord = [[osirixServerList objectAtIndex:rowIndex] mutableCopy];
+			
+			[theRecord setObject:anObject forKey:[aTableColumn identifier]];
+			
+			[osirixServerList replaceObjectAtIndex:rowIndex withObject: theRecord];
+			
+			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+		}
 	}
 }
 
@@ -249,29 +276,31 @@
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-//	NSLog(@"index: %d id %@", rowIndex, [aTableColumn identifier]);
-	
-	return YES;
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState) return YES;
+	else return NO;
 }
 
 - (void) deleteSelectedRow:(id)sender
 {
-	if( [sender tag] == 0)
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		[serverList removeObjectAtIndex:[serverTable selectedRow]];
-		[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+		if( [sender tag] == 0)
+		{
+			[serverList removeObjectAtIndex:[serverTable selectedRow]];
+			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+			
+			[serverTable reloadData];
+		}
 		
-		[serverTable reloadData];
-	}
-	
-	if( [sender tag] == 1)
-	{
-		[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
-		[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
-		
-		[osirixServerTable reloadData];
+		if( [sender tag] == 1)
+		{
+			[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
+			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+			
+			[osirixServerTable reloadData];
+		}
 	}
 }
 
