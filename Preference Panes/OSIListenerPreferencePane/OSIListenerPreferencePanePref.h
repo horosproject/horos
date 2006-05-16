@@ -30,6 +30,7 @@
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSTextField *extrastorescp;
+	IBOutlet NSButton *singleProcessButton;
 	
 	IBOutlet SFAuthorizationView *_authView;
 }
@@ -44,4 +45,5 @@
 - (IBAction)setGenerateLogs:(id)sender;
 - (IBAction)helpstorescp:(id) sender;
 - (IBAction)setExtraStoreSCP:(id)sender;
+- (IBAction)setSingleProcess:(id)sender;
 @end

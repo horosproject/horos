@@ -21,6 +21,7 @@
                 setExtraStoreSCP = id; 
                 setGenerateLogs = id; 
                 setListenerOnOff = id; 
+                setSingleProcess = id; 
                 setTransferSyntaxMode = id; 
                 setUseStoreSCP = id; 
             }; 
@@ -38,6 +39,7 @@
                 listenerOnOffButton = NSButton; 
                 nameField = NSFormCell; 
                 portField = NSFormCell; 
+                singleProcessButton = NSButton; 
                 transferSyntaxBox = NSBox; 
                 transferSyntaxModeMatrix = NSMatrix; 
                 useStoreSCPModeMatrix = NSMatrix; 

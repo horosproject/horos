@@ -158,6 +158,9 @@ void errmsg(const char* msg, ...)
 	//verbose
 	options.verbose_= 0;
 	
+	//single process
+	options.singleProcess_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"];
+	
 	//debug
 //	options.debug_ = OFTrue;
 //	DUL_Debug(OFTrue);

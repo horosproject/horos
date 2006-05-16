@@ -1803,6 +1803,9 @@ static BOOL initialized = NO;
 		// ** USEPAPYRUSDCMFILE
 		[defaultValues setObject: @"YES" forKey: @"USEPAPYRUSDCMFILE"];
 		
+		// ** SINGLEPROCESS
+		[defaultValues setObject: @"NO" forKey: @"SINGLEPROCESS"];
+		
 		// ** DCMTKJPEG
 		[defaultValues setObject: @"NO" forKey: @"DCMTKJPEG"];
 		

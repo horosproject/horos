@@ -124,6 +124,8 @@ char *GetPrivateIP()
 	[generateLogsButton setState:[defaults boolForKey:@"NETWORKLOGS"]];
 	[listenerOnOffButton setState:[defaults boolForKey:@"STORESCP"]];
 	
+	[singleProcessButton setState:[defaults boolForKey:@"SINGLEPROCESS"]];
+	
 //	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
 //	
 //	[defaults boolForKey:@"USESTORESCP"] ? 
@@ -190,9 +192,11 @@ char *GetPrivateIP()
 	[AETransferSyntax release];
 }
 
+- (IBAction)setSingleProcess:(id)sender{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"SINGLEPROCESS"];
+}
 - (IBAction)setDeleteFileMode:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:@"DELETEFILELISTENER"];
-
 }
 - (IBAction)setListenerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"STORESCP"];
