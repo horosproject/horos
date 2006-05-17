@@ -1923,7 +1923,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
 		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
+		{
 			[dicomElements setObject:studyID forKey:@"seriesID"];
+			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
 		
@@ -2243,19 +2246,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
 				
 		if( cardiacTime != -1)  // For new Cardiac-CT Siemens series
-			{
-				NSString	*n;
-				n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
-				[serieID release];
-				serieID = n;
+		{
+			NSString	*n;
+			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
+			[serieID release];
+			serieID = n;
 		}
 		if( seriesNo)
-				{
-					NSString	*n;
-					
-					n = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
-					[serieID release];
-					serieID = n;
+		{
+			NSString	*n;
+			
+			n = [[NSString alloc] initWithFormat:@"%8.8d %@", [seriesNo intValue] , serieID];
+			[serieID release];
+			serieID = n;
 		}
 		
 		if( imageType != 0)
@@ -2307,7 +2310,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
 		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
+		{
 			[dicomElements setObject:studyID forKey:@"seriesID"];
+			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
 		
