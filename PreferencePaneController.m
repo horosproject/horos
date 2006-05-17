@@ -297,6 +297,20 @@ extern BrowserController	*browserWindow;
 	return pane;
 }
 
+- (void) selectFirstPane
+{
+	NSString *pathToPrefPaneBundle;
+	NSBundle *prefBundle;
+	Class prefPaneClass;
+	
+	pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
+	
+	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
+	prefPaneClass = [prefBundle principalClass];
+	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
+	[self setPane:aPane];
+	[pane release];
+}
 
 - (IBAction)selectPane:(id)sender{
 	NSString *pathToPrefPaneBundle;

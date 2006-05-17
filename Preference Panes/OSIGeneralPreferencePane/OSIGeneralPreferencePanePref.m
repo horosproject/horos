@@ -24,7 +24,7 @@
 	
 	if( aView == _authView) return;
 	
-    if ([aView isKindOfClass: [NSControl class] ])
+    if ([aView isKindOfClass: [NSControl class]])
 	{
        [(NSControl*) aView setEnabled: OnOff];
 	   return;
@@ -63,16 +63,9 @@
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"AUTHENTICATION"];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.general"];
-		[_authView setEnabled: YES];
-	}
-	else
-	{
-		[_authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
-		[_authView setEnabled: NO];
-	}
+	// Reload our view !
+	[[[[self mainView] window] windowController] selectFirstPane];
+	
 }
 
 - (void) mainViewDidLoad
