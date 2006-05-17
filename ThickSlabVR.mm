@@ -12,12 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "ThickSlabVR.h"
-
-#define MAXSLAB 100
 
 extern short Altivec;
 
@@ -25,19 +20,12 @@ extern short Altivec;
 
 -(void) dealloc
 {
-//	NSLog(@"ThickSlabVR dealloc");
-
-	opacityTransferFunction->Delete();
-//	colorTransferFunction->Delete();
-//	volumeProperty->Delete();
-//	compositeFunction->Delete();
-//	volumeMapper->Delete();
-//	volume->Delete();
-//	reader->Delete();
-//	if( flipReader) flipReader->Delete();
-//	aCamera->Delete();
+	NSLog( @"ThickSlabVR");
 	
-	free( dst8.data);
+	opacityTransferFunction->Delete();
+	
+	if( dst8.data) free( dst8.data);
+	if( dst8Blending.data) free( dst8Blending.data);
 	
 	[super dealloc];
 }
@@ -78,9 +66,6 @@ extern short Altivec;
 {
 	imageBlendingPtr = i;
 	
-//	reader->SetWholeExtent(0, width-1, 0, height-1, 0, count-1);
-//	reader->SetDataExtentToWholeExtent();
-	
 	srcfBlending.height = height * count;
 	dst8Blending.height = height * count;
 	
@@ -94,26 +79,21 @@ extern short Altivec;
 {
 	imagePtr = i;
 	
-	count = c;
+	srcf.height = height * c;
+	dst8.height = height * c;
 
-//	reader->SetWholeExtent(0, width-1, 0, height-1, 0, count-1);
-//	reader->SetDataExtentToWholeExtent();
-	
-	srcf.height = height * count;
-	dst8.height = height * count;
-	
+	if( count != c)
+	{
+		count = c;
+		if( dst8.data) free( dst8.data);
+		dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
+	}
+
 	srcf.data = imagePtr;
 }
 
 -(void) setImageData:(long) w :(long) h :(long) c :(float) sX :(float) sY :(float) t :(BOOL) flip
 {
-	// Resize port
-//	NSSize size;
-	
-//	size.width = w;
-//	size.height = h;
-//	[self setFrameSize: size];
-	
 	flipData = flip;
 	
 	if( width == w && height == h && count == c) return;
@@ -157,59 +137,8 @@ extern short Altivec;
 	dst8.data = (char*) malloc( dst8.height * dst8.width * sizeof(char));
 	if( dst8.data == 0L) return;
 	
-	// VTK VOLUME
-	
 	flipReader = 0L;
-	
-//	reader = vtkImageImport::New();
-//	reader->SetWholeExtent(0, width-1, 0, height-1, 0, count-1);
-//	reader->SetDataExtentToWholeExtent();
-//	reader->SetDataScalarTypeToUnsignedChar();
-//	reader->SetNumberOfScalarComponents( 1);
-//	reader->SetImportVoidPointer(dst8.data);
-	
-	
-	
-//	if( spaceX == 0 || spaceY == 0) reader->SetDataSpacing( 1, 1, thickness);
-//	else reader->SetDataSpacing( spaceX, spaceY, thickness);
-
-	
-//	colorTransferFunction = vtkColorTransferFunction::New();
-//  [self setCLUT:0L :0L :0L];
-//	volumeProperty = vtkVolumeProperty::New();
-//	volumeProperty->SetColor( colorTransferFunction);
-//	volumeProperty->SetScalarOpacity( opacityTransferFunction);
-//	volumeProperty->SetInterpolationTypeToNearest();
-//	
-//	compositeFunction = vtkVolumeRayCastCompositeFunction::New();
-//	
-//	volumeMapper = vtkVolumeRayCastMapper::New();
-//	volumeMapper->SetVolumeRayCastFunction( compositeFunction);
-//	
-//	volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
-//	
-//	volume = vtkVolume::New();
-//	volume->SetMapper( volumeMapper);
-//	volume->SetProperty( volumeProperty);
-//	
-//	// VTK RENDERER
-//	
-//	aCamera = vtkCamera::New();
-//	aCamera->SetFocalPoint (0, 0, 0);
-//	aCamera->SetPosition (0, 0, 1);
-//	aCamera->ComputeViewPlaneNormal();
-//	aCamera->SetViewUp(0, 1, 0);
-//	aCamera->OrthogonalizeViewUp();
-//	aCamera->SetParallelProjection( 1);
-//	
-//	//vtkRenderer
-//	aRenderer = [self renderer];
-//	aRenderer->AddVolume( volume);
-//	aRenderer->SetActiveCamera(aCamera);
-//	aRenderer->ResetCamera();
-//	
-//	aCamera->Zoom( 2.0);
-}
+	}
 
 -(void) setOpacity:(NSArray*) array
 {
@@ -253,13 +182,13 @@ extern short Altivec;
 {
 	wl = l;
 	ww = w;
-		
+	
 	vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
 	
 	if( flipData == NO)
 	{
 		long			i, size;
-		unsigned char   *tempPtr = (unsigned char*) malloc( height * width * MAXSLAB);
+		unsigned char   *tempPtr = (unsigned char*) malloc( height * width * count);
 		
 		size = height * width;
 		
@@ -282,7 +211,7 @@ extern short Altivec;
 		if( flipData == NO)
 		{
 			long			i, size;
-			unsigned char   *tempPtr = (unsigned char*) malloc( height * width * MAXSLAB);
+			unsigned char   *tempPtr = (unsigned char*) malloc( height * width * count);
 			
 			size = height * width;
 			
