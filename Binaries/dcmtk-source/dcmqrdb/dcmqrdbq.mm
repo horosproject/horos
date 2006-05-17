@@ -1254,23 +1254,22 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
                 const char      * /* SOPInstanceUID */ ,
                 char            *newImageFileName)
 {	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     OFString filename;
     char prefix[12];
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
     if (m==NULL) m = "XX";
     sprintf(prefix, "%s_", m);
-    // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
-    // unsigned int seed = (unsigned int) time (NULL);
+	
 	seed++;
 	unsigned seedvalue = seed +  (unsigned int) time (NULL);
     newImageFileName[0] = 0; // return empty string in case of error
-//   if (! fnamecreator.makeFilename(seedvalue, handle->storageArea, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+	
 	if (! fnamecreator.makeFilename(seedvalue, [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"] UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+	
 //	printf("newFileName: %s", filename.c_str());
     strcpy(newImageFileName, filename.c_str());
-	[pool release];
+	
     return EC_Normal;
 }
 
