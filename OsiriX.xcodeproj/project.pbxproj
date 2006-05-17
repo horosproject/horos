@@ -1249,6 +1249,9 @@
 		ABDEBD54063D6938005B99B4 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
 		ABDEBD6C063D693F005B99B4 /* add.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD51063D6938005B99B4 /* add.tif */; };
 		ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
+		ABDF59FD0A1B63F4002A353A /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
+		ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9E7042609B89E1C00971B6E /* BonesRemovalCursor.tif */; };
+		ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */; };
 		ABE1E8AF0649F4150028E2E0 /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		ABE1E8B00649F4150028E2E0 /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		ABE3336B063D624400C8E087 /* QueryFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33369063D624400C8E087 /* QueryFilter.h */; };
@@ -23128,6 +23131,7 @@
 				CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */,
 				ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
+				ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23392,6 +23396,7 @@
 				CE5D33B809E1C26400CC6884 /* minus-large.tif in Resources */,
 				ABC393A009F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994409F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
+				ABDF59FD0A1B63F4002A353A /* BonesRemovalCursor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23656,6 +23661,7 @@
 				CE5D33BA09E1C26400CC6884 /* minus-large.tif in Resources */,
 				ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
+				ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
