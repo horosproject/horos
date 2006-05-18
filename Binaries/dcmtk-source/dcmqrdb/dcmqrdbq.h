@@ -47,7 +47,6 @@ struct DB_OsiriX_Handle
     DB_ElementList *findRequestList ;
     DB_ElementList *findResponseList ;
     DB_LEVEL queryLevel ;
-   // char indexFilename[DBC_MAXSTRING+1] ;
     char storageArea[256] ;
     long maxBytesPerStudy ;
     long maxStudiesAllowed ;
@@ -58,10 +57,18 @@ struct DB_OsiriX_Handle
     DB_UidList *uidList ;
 	OsiriXSCPDataHandler *dataHandler;
 	NSMutableDictionary *logEntry;
-	const char callingAET[256];		// Changed to an array! You CANNOT copy data to a pointer that is not allocated : strcpy((char *)(handle -> callingAET), callingAET);
+	const char callingAET[256];
 	int imageCount;
-	//NSArray *findArray;
-	//NSArray *moveArray;
+	
+	BOOL logCreated;
+	char logPatientName[256];
+	char logStudyDescription[256];
+	char logCallingAET[256];
+	long logStartTime;
+	char logMessage[256];
+	char logUID[256];
+	long logNumberReceived;
+	long logEndTime;
 };
 
 /** This class maintains database handles based on OsiriX core Data .

@@ -45,6 +45,14 @@
 
 #import "dcmqrdbq.h";
 
+static char *last(char *p, int c)
+{
+  char *t;              /* temporary variable */
+
+  if ((t = strrchr(p, c)) != NULL) return t + 1;
+  
+  return p;
+}
 
 static void findCallback(
         /* in */
@@ -483,9 +491,9 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 	{
 		if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
 		{
-			NSString *srcFile = [NSString stringWithCString: imageFileName];
-			
-			[[NSFileManager defaultManager] movePath: srcFile toPath:[[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"INCOMING"] stringByAppendingPathComponent: [srcFile lastPathComponent]] handler:nil];
+			char dir[ 1024];
+			sprintf( dir, "%s/%s/%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "INCOMING", last( imageFileName, '/'));
+			rename( imageFileName, dir);
 		}
 	}
 	

@@ -226,7 +226,6 @@
 		7E2BE3F60715DBFB0017898A /* Network.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3F40715DBFB0017898A /* Network.tiff */; };
 		7E2BE3FE0715DC0D0017898A /* StartupDisk.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */; };
 		7E2BE3FF0715DC0D0017898A /* StartupDisk.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */; };
-		7E2BE4080715DC220017898A /* route.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4060715DC220017898A /* route.tif */; };
 		7E2BE4190715E5040017898A /* CD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tiff */; };
 		7E2BE41A0715E5040017898A /* CD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tiff */; };
 		7E331F4B07CD416F00AA50DF /* DCMRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E331F4907CD416F00AA50DF /* DCMRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -566,9 +565,6 @@
 		A9B411EF0890498600913770 /* small_sharedAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tiff */; };
 		A9B411F00890498600913770 /* small_sharedAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tiff */; };
 		A9B411F10890498600913770 /* small_sharedAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tiff */; };
-		A9B4122B08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */; };
-		A9B4122C08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */; };
-		A9B4122D08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */; };
 		A9B412D5089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9B412D6089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		A9B412D7089180A200913770 /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
@@ -952,7 +948,6 @@
 		AB7D0BB80615F94D00890872 /* ROI.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7D0BB40615F94D00890872 /* ROI.m */; };
 		AB7D5E5B0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		AB7D5E5C0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
-		AB824F5006513CE10092D9CE /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB824F4F06513CE10092D9CE /* SmartIcon.tif */; };
 		AB851A69063E0A02003DE553 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		AB851A6A063E0A02003DE553 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		AB866039066E40970015E1C4 /* ToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AB866037066E40970015E1C4 /* ToolbarPanel.m */; };
@@ -8106,7 +8101,6 @@
 		CECB03BF07539E3900576814 /* Album.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tiff */; };
 		CECB03C007539E3900576814 /* SmartAlbum.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E006507355005DB40E /* SmartAlbum.tiff */; };
 		CECB03C107539E3900576814 /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5E106507355005DB40E /* SmartIcon.tif */; };
-		CECB03C207539E3900576814 /* SmartIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB824F4F06513CE10092D9CE /* SmartIcon.tif */; };
 		CECB03C407539E3900576814 /* SearchWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABCB2D330655B186006C5630 /* SearchWindow.nib */; };
 		CECB03C507539E3900576814 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB746742065938DB005838D5 /* Pencil.tiff */; };
 		CECB03C707539E3900576814 /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
@@ -8140,7 +8134,6 @@
 		CECB03EB07539E3900576814 /* AccountPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3EB0715DBE80017898A /* AccountPreferences.tiff */; };
 		CECB03EC07539E3900576814 /* Network.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3F40715DBFB0017898A /* Network.tiff */; };
 		CECB03ED07539E3900576814 /* StartupDisk.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */; };
-		CECB03EE07539E3900576814 /* route.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4060715DC220017898A /* route.tif */; };
 		CECB03EF07539E3900576814 /* CD.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tiff */; };
 		CECB03F807539E3900576814 /* PreferencePanesViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE7A0C2D071D26D100C5E16F /* PreferencePanesViewer.nib */; };
 		CECB03F907539E3900576814 /* iCal script.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 7E5E9259072FEE86007683A2 /* iCal script.applescript */; };
@@ -9083,7 +9076,6 @@
 		7E2BE3EB0715DBE80017898A /* AccountPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AccountPreferences.tiff; sourceTree = "<group>"; };
 		7E2BE3F40715DBFB0017898A /* Network.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Network.tiff; sourceTree = "<group>"; };
 		7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StartupDisk.tiff; sourceTree = "<group>"; };
-		7E2BE4060715DC220017898A /* route.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = route.tif; sourceTree = "<group>"; };
 		7E2BE4180715E5040017898A /* CD.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CD.tiff; sourceTree = "<group>"; };
 		7E331F4907CD416F00AA50DF /* DCMRecord.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMRecord.h; sourceTree = "<group>"; };
 		7E331F4A07CD416F00AA50DF /* DCMRecord.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMRecord.m; sourceTree = "<group>"; };
@@ -9278,7 +9270,6 @@
 		A9B411B40890492F00913770 /* small_smartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tiff; sourceTree = "<group>"; };
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tiff; sourceTree = "<group>"; };
 		A9B411EE0890498600913770 /* small_sharedAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedAlbum.tiff; sourceTree = "<group>"; };
-		A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tiff; sourceTree = "<group>"; };
 		A9B412D4089180A200913770 /* bonjour.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tiff; sourceTree = "<group>"; };
 		A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cerveau_icon.jpg; sourceTree = "<group>"; };
 		A9D780AA09A4D2A6004302DC /* ITKBrushROIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITKBrushROIFilter.h; sourceTree = "<group>"; };
@@ -9465,7 +9456,6 @@
 		AB7D0BB30615F94D00890872 /* ROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI.h; sourceTree = "<group>"; };
 		AB7D0BB40615F94D00890872 /* ROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROI.m; sourceTree = "<group>"; };
 		AB7D5E5A0669A698000C16AE /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jasper.h; path = Binaries/Jasper/Headers/jasper.h; sourceTree = "<group>"; };
-		AB824F4F06513CE10092D9CE /* SmartIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmartIcon.tif; sourceTree = "<group>"; };
 		AB851A68063E0A02003DE553 /* QuickManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QuickManual.pdf; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
 		AB866038066E40970015E1C4 /* ToolbarPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolbarPanel.h; sourceTree = "<group>"; };
@@ -13539,9 +13529,9 @@
 				CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */,
 				CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */,
 				A9B411EE0890498600913770 /* small_sharedAlbum.tiff */,
-				A9B411B30890492F00913770 /* small_album.tiff */,
-				A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */,
 				A9B411B40890492F00913770 /* small_smartAlbum.tiff */,
+				A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */,
+				A9B411B30890492F00913770 /* small_album.tiff */,
 				A9B412D4089180A200913770 /* bonjour.tiff */,
 				A9B4119C0890423C00913770 /* osirix16x16.tiff */,
 				CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */,
@@ -13574,7 +13564,6 @@
 				7E9C6D2C066D2BE800D33966 /* redLight.tif */,
 				BF398B8A065B124700AD1F25 /* InArrow.tif */,
 				BF8DE5DA06507355005DB40E /* Album.tiff */,
-				AB824F4F06513CE10092D9CE /* SmartIcon.tif */,
 				BF8DE5E006507355005DB40E /* SmartAlbum.tiff */,
 				BF8DE5E106507355005DB40E /* SmartIcon.tif */,
 				ABE1E8AE0649F4150028E2E0 /* iPod.icns */,
@@ -13644,8 +13633,6 @@
 				7E2BE3EB0715DBE80017898A /* AccountPreferences.tiff */,
 				7E2BE3F40715DBFB0017898A /* Network.tiff */,
 				7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */,
-				7E2BE4060715DC220017898A /* route.tif */,
-				A9B4122A08904C6600913770 /* small_sharedSmartAlbum.tiff */,
 				CEB1DA6608A3B1040058C303 /* smalltrash.tif */,
 			);
 			name = Icons;
@@ -23059,7 +23046,6 @@
 				A9B411B70890492F00913770 /* small_album.tiff in Resources */,
 				A9B411B80890492F00913770 /* small_smartAlbum.tiff in Resources */,
 				A9B411EF0890498600913770 /* small_sharedAlbum.tiff in Resources */,
-				A9B4122B08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */,
 				CE4CD8DD0890DAC700CF4FE4 /* Realised2.tif in Resources */,
 				CE4CD8DE0890DAC700CF4FE4 /* Realised4.tif in Resources */,
 				CE4CD8DF0890DAC700CF4FE4 /* Realised3.tif in Resources */,
@@ -23227,7 +23213,6 @@
 				BF8DE5E906507355005DB40E /* Album.tiff in Resources */,
 				BF8DE5EE06507355005DB40E /* SmartAlbum.tiff in Resources */,
 				BF8DE5EF06507355005DB40E /* SmartIcon.tif in Resources */,
-				AB824F5006513CE10092D9CE /* SmartIcon.tif in Resources */,
 				ABCB2D350655B186006C5630 /* SearchWindow.nib in Resources */,
 				AB746743065938DB005838D5 /* Pencil.tiff in Resources */,
 				ABBA8D9D065AB90200A1F89C /* VR Bones.plist in Resources */,
@@ -23261,7 +23246,6 @@
 				7E2BE3ED0715DBE80017898A /* AccountPreferences.tiff in Resources */,
 				7E2BE3F60715DBFB0017898A /* Network.tiff in Resources */,
 				7E2BE3FF0715DC0D0017898A /* StartupDisk.tiff in Resources */,
-				7E2BE4080715DC220017898A /* route.tif in Resources */,
 				7E2BE41A0715E5040017898A /* CD.tiff in Resources */,
 				CE7A0C2F071D26D100C5E16F /* PreferencePanesViewer.nib in Resources */,
 				7E5E925B072FEE86007683A2 /* iCal script.applescript in Resources */,
@@ -23323,7 +23307,6 @@
 				A9B411BF0890493000913770 /* small_album.tiff in Resources */,
 				A9B411C00890493000913770 /* small_smartAlbum.tiff in Resources */,
 				A9B411F10890498600913770 /* small_sharedAlbum.tiff in Resources */,
-				A9B4122D08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */,
 				CE4CD8E70890DAC700CF4FE4 /* Realised2.tif in Resources */,
 				CE4CD8E80890DAC700CF4FE4 /* Realised4.tif in Resources */,
 				CE4CD8E90890DAC700CF4FE4 /* Realised3.tif in Resources */,
@@ -23491,7 +23474,6 @@
 				CECB03BF07539E3900576814 /* Album.tiff in Resources */,
 				CECB03C007539E3900576814 /* SmartAlbum.tiff in Resources */,
 				CECB03C107539E3900576814 /* SmartIcon.tif in Resources */,
-				CECB03C207539E3900576814 /* SmartIcon.tif in Resources */,
 				CECB03C407539E3900576814 /* SearchWindow.nib in Resources */,
 				CECB03C507539E3900576814 /* Pencil.tiff in Resources */,
 				CECB03C707539E3900576814 /* VR Bones.plist in Resources */,
@@ -23525,7 +23507,6 @@
 				CECB03EB07539E3900576814 /* AccountPreferences.tiff in Resources */,
 				CECB03EC07539E3900576814 /* Network.tiff in Resources */,
 				CECB03ED07539E3900576814 /* StartupDisk.tiff in Resources */,
-				CECB03EE07539E3900576814 /* route.tif in Resources */,
 				CECB03EF07539E3900576814 /* CD.tiff in Resources */,
 				CECB03F807539E3900576814 /* PreferencePanesViewer.nib in Resources */,
 				CECB03F907539E3900576814 /* iCal script.applescript in Resources */,
@@ -23589,7 +23570,6 @@
 				A9B411BB0890492F00913770 /* small_album.tiff in Resources */,
 				A9B411BC0890492F00913770 /* small_smartAlbum.tiff in Resources */,
 				A9B411F00890498600913770 /* small_sharedAlbum.tiff in Resources */,
-				A9B4122C08904C6600913770 /* small_sharedSmartAlbum.tiff in Resources */,
 				CE4CD8E20890DAC700CF4FE4 /* Realised2.tif in Resources */,
 				CE4CD8E30890DAC700CF4FE4 /* Realised4.tif in Resources */,
 				CE4CD8E40890DAC700CF4FE4 /* Realised3.tif in Resources */,

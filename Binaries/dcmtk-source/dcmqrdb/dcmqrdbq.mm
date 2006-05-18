@@ -419,54 +419,63 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return EC_Normal;
 	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			
 	const char *scs = 0L;
-	NSString *specificCharacterSet;
 	const char *pn = 0L;
-	NSString *patientName;
 	const char *sd = 0L;
-	NSString *studyDescription;
+	char patientName[ 256];
+	char studyDescription[ 256];
+	char specificCharacterSet[ 256];
 	
+	// ************
+
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
-		specificCharacterSet = [NSString stringWithCString:scs];
+		strcpy( specificCharacterSet, scs);
 	}
 	else {
-		specificCharacterSet = [NSString stringWithString:@"ISO_IR 100"];
+		strcpy( specificCharacterSet, "ISO_IR 100");
 	}
 	
 	if (dataset->findAndGetString (DCM_PatientsName, pn, OFFalse).good() && pn != NULL) {
-		patientName = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+		strcpy( patientName, pn);
 	}
 	else {
-		patientName = [NSString stringWithString:@""];
+		strcpy( patientName, "");
 	}
 	
 	if (dataset->findAndGetString (DCM_StudyDescription, sd, OFFalse).good() && sd != NULL) {
-		studyDescription = [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet];
+		strcpy( studyDescription, sd);
 	}
 	else {
-		studyDescription = [NSString stringWithString:@""];
+		strcpy( studyDescription, "");
 	}
-	if (handle->logEntry == NULL) {
-		handle->logEntry = [[NSMutableDictionary alloc] init];
-		NSMutableDictionary *userInfo = handle->logEntry;
-		[userInfo setObject:patientName forKey:@"PatientName"];		
-		[userInfo setObject:studyDescription forKey:@"StudyDescription"];
-		[userInfo setObject:[NSString stringWithCString:handle->callingAET] forKey:@"CallingAET"];
-		[userInfo setObject:[NSDate date] forKey:@"startTime"];
-		[userInfo  setObject:@"In Progress" forKey:@"message"];
-		[userInfo  setObject:[NSString stringWithFormat:@"%d", random()] forKey:@"uid"];
+
+	if( handle->logCreated == NO)
+	{
+		handle->logCreated = YES;
+		
+		strcpy( handle->logPatientName, patientName);
+		strcpy( handle->logStudyDescription, studyDescription);
+		strcpy( handle->logCallingAET, handle->callingAET);
+		
+		handle->logStartTime = time (NULL);
+		
+		strcpy( handle->logMessage, "In Progress");
+		sprintf( handle->logUID, "%d", random());
 	}
 	
-	NSMutableDictionary *userInfo = handle->logEntry;	
-	[userInfo setObject:[NSNumber numberWithInt:++(handle->imageCount)]  forKey:@"numberReceived"];
-	[userInfo setObject:[NSDate date] forKey:@"endTime"];
-	NSString *path = [[[LogManager currentLogManager] logFolder]
-				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[userInfo objectForKey:@"uid"]]];
-	[userInfo writeToFile:path atomically:YES];
-
-	[pool release];
+	handle->logNumberReceived = ++(handle->imageCount);
+	handle->logEndTime = time (NULL);
+	
+	FILE * pFile;
+	char dir[ 1024];
+	sprintf( dir, "%s/%s%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID, ".log");
+	pFile = fopen (dir,"w+");
+	if( pFile)
+	{
+		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
+		fclose (pFile);
+	}
+	
 	return EC_Normal;
 }
 
@@ -1186,7 +1195,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 {
 	
     handle = (DB_OsiriX_Handle *) malloc ( sizeof(DB_OsiriX_Handle) );
-
+	
 #ifdef DEBUG
    // dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
    // dbdebug(1, "                     maxStudiesPerStorageArea: %ld maxBytesPerStudy: %ld\n",
@@ -1202,6 +1211,7 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 		handle -> dataHandler = NULL;	//[[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		handle -> logEntry = NULL;
 		handle -> imageCount = 0;
+		handle -> logCreated = NO;
 	}
 	else
 		result = DcmQROsiriXDatabaseError;
@@ -1215,32 +1225,34 @@ DcmQueryRetrieveOsiriXDatabaseHandle::DcmQueryRetrieveOsiriXDatabaseHandle(
 
 DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 {
-    int closeresult;
+	int closeresult;
 
-    if (handle)
-    {
+	if (handle)
+	{
 		// set logEntry to complete
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	   if (handle->logEntry != NULL)
+	   if ( handle->logCreated)
 	   {
-			NSMutableDictionary *logEntry = handle->logEntry;
-		   [logEntry  setObject:@"Complete" forKey:@"message"];
-		   [logEntry  setObject:[NSDate date] forKey:@"endTime"];
-			NSString *path = [[[LogManager currentLogManager] logFolder]
-				stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",[logEntry objectForKey:@"uid"]]];
-			[logEntry writeToFile:path atomically:YES];
-		   [logEntry release];
+			strcpy( handle->logMessage, "Complete");
+			handle->logEndTime = time (NULL);
+			
+			FILE * pFile;
+			char dir[ 1024];
+			sprintf( dir, "%s/%s%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID, ".log");
+			pFile = fopen (dir,"w+");
+			if( pFile)
+			{
+				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
+				fclose (pFile);
+			}
 		}
 
-      /* Free lists */
-      DB_FreeElementList (handle -> findRequestList);
-      DB_FreeElementList (handle -> findResponseList);
-      DB_FreeUidList (handle -> uidList);
-	  [handle -> dataHandler release];
-      free ( (char *)(handle) );
-	  
-	  [pool release];
-    }
+		/* Free lists */
+		DB_FreeElementList (handle -> findRequestList);
+		DB_FreeElementList (handle -> findResponseList);
+		DB_FreeUidList (handle -> uidList);
+		[handle -> dataHandler release];
+		free ( (char *)(handle) );
+	}
 }
 
 /**********************************
@@ -1265,9 +1277,10 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	unsigned seedvalue = seed +  (unsigned int) time (NULL);
     newImageFileName[0] = 0; // return empty string in case of error
 	
-	if (! fnamecreator.makeFilename(seedvalue, [[[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent:@"TEMP"] UTF8String], prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
+	char dir[ 1024];
+	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP");
+	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
 	
-//	printf("newFileName: %s", filename.c_str());
     strcpy(newImageFileName, filename.c_str());
 	
     return EC_Normal;

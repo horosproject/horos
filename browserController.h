@@ -177,6 +177,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	NSString						*_filterPredicateDescription;
 	
 	NSString						*fixedDocumentsDirectory;
+	
+	char							cfixedDocumentsDirectory[ 1024];
 }
 
 + (BrowserController*) currentBrowser;
@@ -326,6 +328,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 
 - (NSString *)documentsDirectory;
 - (NSString *) fixedDocumentsDirectory;
+- (char *) cfixedDocumentsDirectory;
 - (NSString *) setFixedDocumentsDirectory;
 - (IBAction)showLogWindow: (id)sender ;
 

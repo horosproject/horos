@@ -9296,8 +9296,15 @@ static BOOL needToRezoom;
 	[fixedDocumentsDirectory release];
 	fixedDocumentsDirectory = [documentsDirectory() retain];
 	
+	strcpy( cfixedDocumentsDirectory, [fixedDocumentsDirectory UTF8String]);
+	
 	NSLog( @"setFixedDocumentsDirectory");
 	return fixedDocumentsDirectory;
+}
+
+- (char *) cfixedDocumentsDirectory
+{
+	return cfixedDocumentsDirectory;
 }
 
 - (NSString *) fixedDocumentsDirectory
