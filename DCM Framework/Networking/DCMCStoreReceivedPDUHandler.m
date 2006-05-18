@@ -60,7 +60,7 @@ htt://www.pixelmed.com
 - (void)dealloc{
 	//NSLog(@"Release receive dataHandler");
 	NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-	[userInfo setObject:@"complete" forKey:@"Message"];
+	[userInfo setObject:@"Complete" forKey:@"Message"];
 	[userInfo setObject:[NSNumber numberWithInt:numberReceived] forKey:@"NumberReceived"];
 	[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
 	if (date)
@@ -260,7 +260,7 @@ htt://www.pixelmed.com
 				//[userInfo setObject:[NSNumber numberWithInt:numberOfFiles] forKey:@"SendTotal"];
 				[userInfo setObject:[NSNumber numberWithInt:++numberReceived] forKey:@"NumberReceived"];
 				[userInfo setObject:[NSNumber numberWithInt:errorCount] forKey:@"ErrorCount"];
-				[userInfo setObject:@"in progress" forKey:@"Message"];
+				[userInfo setObject:@"In Progress" forKey:@"Message"];
 					
 				if (callingAET)
 					[userInfo setObject:callingAET forKey:@"CallingAET"];		

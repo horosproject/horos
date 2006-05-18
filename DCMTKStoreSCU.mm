@@ -1531,11 +1531,11 @@ NS_ENDHANDLER
 		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
 		if (_numberSent + _numberErrors < _numberOfFiles) {
 			[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-			[userInfo setObject:@"in progress" forKey:@"Message"];
+			[userInfo setObject:@"In Progress" forKey:@"Message"];
 		}
 		else{
 			[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-			[userInfo setObject:@"complete" forKey:@"Message"];
+			[userInfo setObject:@"Complete" forKey:@"Message"];
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
@@ -1562,10 +1562,10 @@ NS_ENDHANDLER
 		[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
 		[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
 		if (_numberSent + _numberErrors < _numberOfFiles) {
-			[_logEntry setValue:@"in progress" forKey:@"message"];
+			[_logEntry setValue:@"In Progress" forKey:@"message"];
 		}
 		else{
-			[_logEntry setValue:@"complete" forKey:@"message"];
+			[_logEntry setValue:@"Complete" forKey:@"message"];
 		
 		}
 		[_logEntry setValue:[NSDate date] forKey:@"endTime"];

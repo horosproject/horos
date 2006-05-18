@@ -167,10 +167,10 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
 	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
 	if (numberPending > 0) {
-		[logEntry setValue:@"in progress" forKey:@"message"];
+		[logEntry setValue:@"In Progress" forKey:@"message"];
 	}
 	else{
-		[logEntry setValue:@"complete" forKey:@"message"];
+		[logEntry setValue:@"Complete" forKey:@"message"];
 	
 	}
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];

@@ -209,10 +209,9 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		{
 			[self performQuery: 0L];
 		}
-		
-			
+					
 		// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Continue", nil), nil) != NSAlertDefaultReturn)
+		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{
 			[self performQuery: 0L];
 		}

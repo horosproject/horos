@@ -68,10 +68,10 @@ extern BrowserController *browserWindow;
 	[logEntry setValue:[NSNumber numberWithInt:numberSent] forKey:@"numberSent"];
 	[logEntry setValue:[NSNumber numberWithInt:numberErrors] forKey:@"numberError"];
 	if (numberSent + numberErrors < numberOfFiles) {
-		[logEntry setValue:@"in progress" forKey:@"message"];
+		[logEntry setValue:@"In Progress" forKey:@"message"];
 	}
 	else{
-		[logEntry setValue:@"complete" forKey:@"message"];
+		[logEntry setValue:@"Complete" forKey:@"message"];
 	
 	}
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
@@ -83,7 +83,7 @@ extern BrowserController *browserWindow;
 	if( logEntry)
 	{
 		[logEntry setValue:[NSDate date] forKey:@"endTime"];
-		[logEntry setValue:@"complete" forKey:@"message"];
+		[logEntry setValue:@"Complete" forKey:@"message"];
 		[logEntry release];
 	}
 	[super dealloc];

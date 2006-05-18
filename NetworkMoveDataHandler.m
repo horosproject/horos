@@ -107,7 +107,7 @@ extern BrowserController *browserWindow;
 	if( logEntry)
 	{
 		[logEntry setValue:[NSDate date] forKey:@"endTime"];
-		[logEntry setValue:@"complete" forKey:@"message"];
+		[logEntry setValue:@"Complete" forKey:@"message"];
 		[logEntry release];
 	}
 	[super dealloc];

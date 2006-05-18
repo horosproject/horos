@@ -79,11 +79,11 @@ htt://www.pixelmed.com
 	[userInfo setObject:[NSNumber numberWithInt:numberErrors] forKey:@"ErrorCount"];
 	if (numberSent + numberErrors < numberOfFiles) {
 		[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-		[userInfo setObject:@"in progress" forKey:@"Message"];
+		[userInfo setObject:@"In Progress" forKey:@"Message"];
 	}
 	else{
 		[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-		[userInfo setObject:@"complete" forKey:@"Message"];
+		[userInfo setObject:@"Complete" forKey:@"Message"];
 		moveStatus = 0x0000;
 		NSLog(@"move Complete");
 	}
