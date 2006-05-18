@@ -35,7 +35,7 @@ LogManager *currentLogManager;
 - (id)init{
 	if (self = [super init]){
 		_currentLogs = [[NSMutableDictionary alloc] init];
-		_timer = [[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
+		_timer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 	}
 	return self;
 }
@@ -65,16 +65,25 @@ LogManager *currentLogManager;
 		NSFileManager *manager = [NSFileManager defaultManager];
 		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
 		NSString *path;
+		
+		char logPatientName[ 1024];
+		char logStudyDescription[ 1024];
+		char logCallingAET[ 1024];
+		char logStartTime[ 1024];
+		char logMessage[ 1024];
+		char logUID[ 1024];
+		char logNumberReceived[ 1024];
+		char logEndTime[ 1024];
 
-		char logPatientName[256];
-		char logStudyDescription[256];
-		char logCallingAET[256];
-		char logStartTime[256];
-		char logMessage[256];
-		char logUID[256];
-		char logNumberReceived[256];
-		char logEndTime[256];
-			
+		logPatientName[ 0] = 0;
+		logStudyDescription[ 0] = 0;
+		logCallingAET[ 0] = 0;
+		logStartTime[ 0] = 0;
+		logMessage[ 0] = 0;
+		logUID[ 0] = 0;
+		logNumberReceived[ 0] = 0;
+		logEndTime[ 0] = 0;
+		
 		[context lock];
 		
 		NS_DURING
@@ -82,9 +91,12 @@ LogManager *currentLogManager;
 			if ([[path pathExtension] isEqualToString: @"log"]) {
 				
 				NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
+				NSString *newfile = [file stringByAppendingString:@"reading"];
+				
+				rename( [file UTF8String], [newfile UTF8String]);
 				
 				FILE * pFile;
-				pFile = fopen ( [file UTF8String], "r");
+				pFile = fopen ( [newfile UTF8String], "r");
 				if( pFile)
 				{
 					char	data[ 4096];
@@ -93,17 +105,17 @@ LogManager *currentLogManager;
 					
 					char	*curData = data;
 					
-					strcpy( logPatientName, strsep( &curData, "\r"));
-					strcpy( logStudyDescription, strsep( &curData, "\r"));
-					strcpy( logCallingAET, strsep( &curData, "\r"));
-					strcpy( logStartTime, strsep( &curData, "\r"));
-					strcpy( logMessage, strsep( &curData, "\r"));
-					strcpy( logUID, strsep( &curData, "\r"));
-					strcpy( logNumberReceived, strsep( &curData, "\r"));
-					strcpy( logEndTime, strsep( &curData, "\r"));
+					if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
+					if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
+					if(curData) strcpy( logCallingAET, strsep( &curData, "\r"));
+					if(curData) strcpy( logStartTime, strsep( &curData, "\r"));
+					if(curData) strcpy( logMessage, strsep( &curData, "\r"));
+					if(curData) strcpy( logUID, strsep( &curData, "\r"));
+					if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
+					if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
 					
 					fclose (pFile);
-					remove( [file UTF8String]);
+					remove( [newfile UTF8String]);
 					
 					NSString *uid = [NSString stringWithUTF8String: logUID];
 					id logEntry = [_currentLogs objectForKey:uid];
@@ -127,7 +139,6 @@ LogManager *currentLogManager;
 					[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
 				}
 			}
-			
 		}
 
 		NS_HANDLER

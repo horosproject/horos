@@ -460,20 +460,23 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 		handle->logStartTime = time (NULL);
 		
 		strcpy( handle->logMessage, "In Progress");
-		sprintf( handle->logUID, "%d", random());
+		sprintf( handle->logUID, "%d%s", random(), patientName);
 	}
 	
 	handle->logNumberReceived = ++(handle->imageCount);
 	handle->logEndTime = time (NULL);
 	
 	FILE * pFile;
-	char dir[ 1024];
-	sprintf( dir, "%s/%s%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID, ".log");
+	char dir[ 1024], newdir[1024];
+	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID);
 	pFile = fopen (dir,"w+");
 	if( pFile)
 	{
 		fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
 		fclose (pFile);
+		strcpy( newdir, dir);
+		strcat( newdir, ".log");
+		rename( dir, newdir);
 	}
 	
 	return EC_Normal;
@@ -1236,13 +1239,16 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			handle->logEndTime = time (NULL);
 			
 			FILE * pFile;
-			char dir[ 1024];
-			sprintf( dir, "%s/%s%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID, ".log");
+			char dir[ 1024], newdir[1024];
+			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP/store_log_", handle->logUID);
 			pFile = fopen (dir,"w+");
 			if( pFile)
 			{
 				fprintf (pFile, "%s\r%s\r%s\r%d\r%s\r%s\r%d\r%d\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime);
 				fclose (pFile);
+				strcpy( newdir, dir);
+				strcat( newdir, ".log");
+				rename( dir, newdir);
 			}
 		}
 
