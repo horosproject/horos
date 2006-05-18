@@ -31,6 +31,8 @@ extern BrowserController *browserWindow;
 	//NSLog(@"filter Predicate: %@", [[self filterPredicate] description]);
 	[self fetch:nil];
 	//NSLog(@"Content: %@", [[self content] description]);
+	
+	[self setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"startTime" ascending:NO] autorelease]]];
 }
 
 -(NSManagedObjectContext *)managedObjectContext{
@@ -39,7 +41,7 @@ extern BrowserController *browserWindow;
 
 - (IBAction)nothing:(id)sender{
 	[self fetch:sender];
-	NSLog(@"Content: %@", [[self content] description]);
+//	NSLog(@"Content: %@", [[self content] description]);
 }
 
 
