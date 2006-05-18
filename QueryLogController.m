@@ -40,7 +40,7 @@ extern BrowserController *browserWindow;
 }
 
 - (IBAction)nothing:(id)sender{
-	[self fetch:sender];
+//	[self fetch:sender];
 //	NSLog(@"Content: %@", [[self content] description]);
 }
 
