@@ -616,7 +616,7 @@ public:
 	if( [[dcmrotation selectedCell] tag] == 1) rotationValue = 360;
 	else rotationValue = 180;
 	
-	if( [[orientation selectedCell] tag] == 1) rotationOrientation = 1;
+	if( [[dcmorientation selectedCell] tag] == 1) rotationOrientation = 1;
 	else rotationOrientation = 0;
 	
 	if( [sender tag])
