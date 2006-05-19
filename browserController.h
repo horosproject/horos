@@ -179,6 +179,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	NSString						*fixedDocumentsDirectory;
 	
 	char							cfixedDocumentsDirectory[ 1024];
+	
+	NSTimeInterval					databaseLastModification;
 }
 
 + (BrowserController*) currentBrowser;
@@ -190,7 +192,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
-
+- (NSTimeInterval) databaseLastModification;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;

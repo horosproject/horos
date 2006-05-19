@@ -853,6 +853,8 @@ static BOOL FORCEREBUILD = NO;
 		{
 			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
 			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
+			
+			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
 	}
 	
@@ -939,6 +941,13 @@ static BOOL FORCEREBUILD = NO;
 
 #pragma mark-
 #pragma mark Database functions
+
+- (NSTimeInterval) databaseLastModification
+{
+	if( databaseLastModification == 0) databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
+	
+	return databaseLastModification;
+}
 
 - (NSManagedObjectModel *)managedObjectModel
 {
@@ -3090,6 +3099,8 @@ long        i;
 	[context unlock];
 	
 	[animationCheck setState: animState];
+	
+	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 }
 
 - (void) refreshColumns

@@ -125,7 +125,7 @@ static OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, E_
 	//hopefully dcmtk willsupport jpeg2000 compressio and compression in the future
 	
 	if (newXfer == EXS_JPEG2000) {
-		NSLog(@"Compress JPEG 2000 Lossy");
+		//NSLog(@"Compress JPEG 2000 Lossy");
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
@@ -997,7 +997,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     OFBool qrLevelFound = OFFalse;
 
 
-	NSLog(@"start move request");
+	//NSLog(@"start move request");
     /**** Is SOPClassUID supported ?
     ***/
 //we only support study root currently
@@ -1137,13 +1137,13 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
     ***/
 	
 	// Search Core Data here
-	NSLog(@"search core data for move");
+	//NSLog(@"search core data for move");
 	if( handle -> dataHandler == 0L)
 		handle -> dataHandler = [[OsiriXSCPDataHandler requestDataHandlerWithDestinationFolder:nil debugLevel:0] retain];
 		
 	cond = [handle->dataHandler prepareMoveForDataSet:moveRequestIdentifiers];
 	handle->NumberRemainOperations = [handle->dataHandler moveMatchFound];
-	NSLog(@"NumberRemainOperations: %d", [handle->dataHandler moveMatchFound]);
+	//NSLog(@"NumberRemainOperations: %d", [handle->dataHandler moveMatchFound]);
 	
 	 /**** If an error occured in Matching function
     ****    return a failed status

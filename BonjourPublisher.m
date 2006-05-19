@@ -198,16 +198,19 @@ extern NSString * documentsDirectory();
 			{
 				//NSLog( @"[data bytes] = VERSI");
 				
-				// we send the modification date of the SQL file
-				NSString *databasePath = [interfaceOsiriX localDatabasePath];
+//				// we send the modification date of the SQL file
+//				NSString *databasePath = [interfaceOsiriX localDatabasePath];
+//				
+//				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:databasePath traverseLink:YES];
+//				NSDate *moddate = [fattrs objectForKey:NSFileModificationDate];
+//				NSTimeInterval val = 0;
+//				if( moddate)
+//				{
+//					val = [moddate timeIntervalSinceReferenceDate];
+//				}
 				
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:databasePath traverseLink:YES];
-				NSDate *moddate = [fattrs objectForKey:NSFileModificationDate];
-				NSTimeInterval val = 0;
-				if( moddate)
-				{
-					val = [moddate timeIntervalSinceReferenceDate];
-				}
+				NSTimeInterval val = [interfaceOsiriX databaseLastModification];
+				
 				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(NSTimeInterval)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBVER" length: 6]])
