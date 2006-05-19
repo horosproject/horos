@@ -1781,6 +1781,12 @@
 		BF9893BA09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
 		BF9893BB09D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
 		BF9893BC09D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
+		BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */; };
+		BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */; };
+		BF9999020A1E695800F50753 /* DCMTKPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */; };
+		BF9999030A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */; };
+		BF9999040A1E695800F50753 /* DCMTKPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */; };
+		BF9999050A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */; };
 		BF9D3B260770AA6A002F0847 /* DCMCompositeResponseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF9D3B270770AA6A002F0847 /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
 		BFAEB3FA06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -9706,6 +9712,8 @@
 		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
 		BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKDataHandlerCategory.h; sourceTree = "<group>"; };
 		BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKDataHandlerCategory.mm; sourceTree = "<group>"; };
+		BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKPrintSCU.h; sourceTree = "<group>"; };
+		BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKPrintSCU.mm; sourceTree = "<group>"; };
 		BF9D3B240770AA6A002F0847 /* DCMCompositeResponseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCompositeResponseHandler.h; path = Networking/DCMCompositeResponseHandler.h; sourceTree = "<group>"; };
 		BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCompositeResponseHandler.m; path = Networking/DCMCompositeResponseHandler.m; sourceTree = "<group>"; };
 		BFAEB10506BF2C4E00C7EF1E /* ijg8.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ijg8.dsp; sourceTree = "<group>"; };
@@ -13887,6 +13895,8 @@
 				BF8E5ABD09CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm */,
 				BFF5D23E09F93B3F0077E16B /* LogManager.h */,
 				BFF5D23F09F93B3F0077E16B /* LogManager.mm */,
+				BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */,
+				BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -18609,6 +18619,7 @@
 				BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90552209EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */,
+				BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20423,6 +20434,7 @@
 				BF83CD9009E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90551E09EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24409F93B3F0077E16B /* LogManager.h in Headers */,
+				BF9999040A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22242,6 +22254,7 @@
 				BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */,
 				BF90552009EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24209F93B3F0077E16B /* LogManager.h in Headers */,
+				BF9999020A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24539,6 +24552,7 @@
 				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
+				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25103,6 +25117,7 @@
 				BF90551F09EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4A09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24509F93B3F0077E16B /* LogManager.mm in Sources */,
+				BF9999050A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25715,6 +25730,7 @@
 				BF90552109EB4985009C30D1 /* MoveManager.m in Sources */,
 				BF8B2A4B09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24309F93B3F0077E16B /* LogManager.mm in Sources */,
+				BF9999030A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
