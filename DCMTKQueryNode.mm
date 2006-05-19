@@ -139,7 +139,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     myCallbackData = (MyCallbackInfo*)callbackData;
 	DCMTKQueryNode *node = myCallbackData -> node;
-	NSLog(@"move Response: %d", responseCount);
+//	NSLog(@"move Response: %d", responseCount);
 	NSManagedObject *logEntry = [node logEntry];
 	if (!logEntry) {
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];

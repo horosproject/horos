@@ -92,8 +92,15 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		return NO;
 }
 
- 
-
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+{
+	if( [[aNotification object] isEqual: servers])
+	{
+		[self clearQuery: self];
+		
+		
+	}
+}
 
 //******	OUTLINEVIEW
 
@@ -156,12 +163,15 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 //Actions
 -(void) query:(id)sender
 {
+	
 	NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
 	NSNetService *netService = nil;
 	id aServer;
-	if ([servers selectedRow] >= 0) {
+	if ([servers selectedRow] >= 0)
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: [servers selectedRow] forKey:@"lastQueryServer"];
 		/*
 		if ([servers selectedRow] < [serversArray count]  && [serversArray count] > 0)
 			aServer =  [serversArray objectAtIndex:[servers selectedRow]];
@@ -449,6 +459,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 {
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
+	
 }
 
 - (void)addQuerySubview:(id)sender{
@@ -514,13 +525,17 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			logString = @"";
 		}
 		[logString retain];
-
+		
+		[[self window] setDelegate:self];
 	}
     
     return self;
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
+	NSLog( @"dealloc QueryController");
+
 	[logString release];
 	[queryManager release];
 	[queryFilters release];
@@ -589,8 +604,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	ImageAndTextCell *cell = [[[ImageAndTextCell alloc] init] autorelease];
 	[cell setEditable:NO];
 	[[servers tableColumnWithIdentifier:@"Source"] setDataCell:cell];
-    [servers reloadData];
-	
+   
+	[servers selectRow:[[NSUserDefaults standardUserDefaults] integerForKey:@"lastQueryServer"] byExtendingSelection:NO];
+	[servers reloadData];
+	 
     // OutlineView View
     
     [outlineView setDelegate: self];
@@ -667,8 +684,14 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    [[self window] setDelegate:nil];
+	[[NSUserDefaults standardUserDefaults] setInteger: [servers selectedRow] forKey:@"lastQueryServer"];
+
+
+//    [[self window] setDelegate:nil];
+//	
+//	[self release];
 }
+
 - (void)updateServers:(NSNotification *)note{
 	[servers reloadData];
 }
