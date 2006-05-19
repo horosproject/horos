@@ -34,6 +34,7 @@
 @implementation NSString (DICOMToNSString)
 
 - (id) initWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding{	
+	NSLog(@"String %s  encoding: %@",cString,  encoding);
 	NSStringEncoding stringEncoding = [NSString encodingForDICOMCharacterSet:encoding];
 	return [self initWithCString:cString  encoding:stringEncoding];
 }
