@@ -21,6 +21,7 @@
                 setExtraStoreSCP = id; 
                 setGenerateLogs = id; 
                 setListenerOnOff = id; 
+                setLogDuration = id; 
                 setSingleProcess = id; 
                 setTransferSyntaxMode = id; 
                 setUseStoreSCP = id; 
@@ -37,6 +38,7 @@
                 ipField = NSFormCell; 
                 listenerOnOffAnonymize = NSButton; 
                 listenerOnOffButton = NSButton; 
+                logDurationPopup = NSPopUpButton; 
                 nameField = NSFormCell; 
                 portField = NSFormCell; 
                 singleProcessButton = NSButton; 

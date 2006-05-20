@@ -31,6 +31,7 @@
 	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSTextField *extrastorescp;
 	IBOutlet NSButton *singleProcessButton;
+	IBOutlet NSPopUpButton *logDurationPopup;
 	
 	IBOutlet SFAuthorizationView *_authView;
 }
@@ -46,4 +47,5 @@
 - (IBAction)helpstorescp:(id) sender;
 - (IBAction)setExtraStoreSCP:(id)sender;
 - (IBAction)setSingleProcess:(id)sender;
+- (IBAction)setLogDuration:(id)sender;
 @end

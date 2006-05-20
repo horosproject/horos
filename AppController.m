@@ -1897,6 +1897,9 @@ static BOOL initialized = NO;
 		// ** COPYDATABASEMODE
 		[defaultValues setObject:@"0" forKey:@"COPYDATABASEMODE"];
 		
+		// ** LOGCLEANINGDAYS
+		[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
+		
 		// ** DATABASELOCATION
 		[defaultValues setObject:@"0" forKey:@"DATABASELOCATION"];
 		

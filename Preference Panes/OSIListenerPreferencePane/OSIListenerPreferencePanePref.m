@@ -162,6 +162,13 @@ char *GetPrivateIP()
 	[deleteFileModeMatrix selectCellWithTag:[defaults boolForKey:@"DELETEFILELISTENER"]];
 	
 	[listenerOnOffAnonymize setState:[defaults boolForKey:@"ANONYMIZELISTENER"]];
+	
+	[logDurationPopup selectItemWithTag: [defaults integerForKey:@"LOGCLEANINGDAYS"]];
+}
+
+- (IBAction)setLogDuration:(id)sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[[logDurationPopup selectedItem] tag]  forKey:@"LOGCLEANINGDAYS"];
 }
 
 - (IBAction)setAE:(id)sender{

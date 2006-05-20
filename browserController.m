@@ -1821,6 +1821,33 @@ long        i;
 	
 	if( isCurrentDatabaseBonjour) return;
 	
+	// Logs cleaning
+	
+	if( [checkIncomingLock tryLock])
+	{
+		NSError					*error = 0L;
+		long					i;
+		NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
+		NSArray					*logArray;
+		NSDate					*producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
+		NSManagedObjectContext	*context = [self managedObjectContext];
+		NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%f, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
+		
+		[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"LogEntry"]];
+		[request setPredicate: predicate];
+		
+		[context lock];
+		error = 0L;
+		logArray = [context executeFetchRequest:request error:&error];
+		
+		for( i = 0; i < [logArray count]; i++)
+			[context deleteObject: [logArray objectAtIndex: i]];
+		
+		[context unlock];
+		
+		[checkIncomingLock unlock];
+	}
+	
 	if( [defaults boolForKey:@"AUTOCLEANINGDATE"])
 	{
 		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES)
@@ -2006,8 +2033,9 @@ long        i;
 					[wait release];
 				}
 				
-				[checkIncomingLock unlock];
 				[context unlock];
+				
+				[checkIncomingLock unlock];
 			}
 		}
 	}
