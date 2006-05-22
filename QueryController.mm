@@ -12,21 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
-/* 7/14/05 Added bonjour DICOM servers to servers. LP */
-
-
 #import "QueryController.h"
-//#import "DICOMQueryStudyRoot.h"
-//#import "PMAttributeTag.h"
-//#import "PMAttribute.h"
-//#import "PMDirectoryRecord.h"
-//#import "PMAttributeList.h"
 #import "WaitRendering.h"
 #import "QueryFilter.h"
 #import "AdvancedQuerySubview.h"
 #import "DICOMLogger.h"
 #import "ImageAndTextCell.h"
-//#import <OsiriX/DCM.h"
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMNetServiceDelegate.h>
@@ -36,71 +27,14 @@
 #include "DCMTKVerifySCU.h"
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
-//#import "DCMTKSeriesQueryNode.h"
-//#import "DCMTKImageQueryNode.h"
 
 
-//extern int mainFindSCU(int argc, char *argv[]);
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *StudyDate = @"StudyDate";
 static NSString *Modality = @"Modality";
-static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 @implementation QueryController
-
-//Table View servers
-
-//- (int)numberOfRowsInTableView:(NSTableView *)aTableView{
-//	if ([aTableView isEqual:servers]){
-//		return [[self serversList] count];
-//	}
-//	else
-//		return [moveLog count];
-//		
-//	return 0;
-//}
-//
-//- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-//	if ([aTableView isEqual:servers])
-//	{
-//		id server  = [[self serversList] objectAtIndex:rowIndex];	
-//		if ([server isMemberOfClass:[NSNetService class]])
-//			return [NSString stringWithFormat:@"%@ - Bonjour", [server name]];
-//		else
-//			return [NSString stringWithFormat:@"%@ - %@",[server objectForKey:@"AETitle"],[server objectForKey:@"Description"]];
-//	/*
-//		if( rowIndex > -1 && rowIndex < [serversArray count])
-//		{
-//			id theRecord = [serversArray objectAtIndex:rowIndex];			
-//			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
-//		}
-//		else if( rowIndex > -1) {
-//			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:rowIndex - ([serversArray count])];
-//			return [NSString stringWithFormat:@"%@ - Bonjour", [service name]];
-//		}
-//	*/
-//	}
-//	else{
-//		if (![[aTableColumn identifier] isEqualToString:@"Status"])
-//			return [[moveLog objectAtIndex:rowIndex] valueForKey:[aTableColumn identifier]];
-//		return nil;
-//	}
-//}
-//
-//- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-//		return NO;
-//}
-//
-//- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
-//{
-//	if( [[aNotification object] isEqual: servers])
-//	{
-//		[self clearQuery: self];
-//		
-//		
-//	}
-//}
 
 //******	OUTLINEVIEW
 
@@ -124,13 +58,11 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
-	//NSLog(@"number of Children for :%@", [item description]);
 	if( item)
 	{
-		if (![(DCMTKQueryNode *)item children]) {
+		if (![(DCMTKQueryNode *)item children])
+		{
 			[progressIndicator startAnimation:nil];
-			//[item queryWithValues:nil parameters:[queryManager parameters]];
-			//NSLog(@"Query Series: %@", [item description]);
 			[item queryWithValues:nil];
 			[progressIndicator stopAnimation:nil];
 		}
@@ -157,7 +89,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[outlineView reloadData];
 }
 
-//Actions
 -(void) query:(id)sender
 {
 	
@@ -229,7 +160,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 }
 
--(void) advancedQuery:(id)sender{
+-(void) advancedQuery:(id)sender
+{
 	//only query if have destination
 				
 		//get values from window
@@ -547,21 +479,13 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		dateQueryFilter = 0L;
 		modalityQueryFilter = 0L;
 		currentQueryKey = 0L;
-		logString = 0L;
 		echoSuccess = 0L;
 		activeMoves = 0L;
 		
 		queryFilters = [[NSMutableArray array] retain];
 		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
-		
-		logString = [NSString stringWithContentsOfFile:[logPath stringByExpandingTildeInPath]];
-		if (!logString)
-		{
-			logString = @"";
-		}
-		[logString retain];
-		
+				
 		[[self window] setDelegate:self];
 	}
     
@@ -571,8 +495,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 - (void)dealloc
 {
 	NSLog( @"dealloc QueryController");
-
-	[logString release];
+[fromDate setDateValue: [NSDate date]];
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
@@ -600,7 +523,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	
 	//set up Query Keys
 	currentQueryKey = PatientName;
-//	[queryKeyField setStringValue:NSLocalizedString(@"Patient Name", nil)];
 	
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
@@ -622,8 +544,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[buttonCell setBezelStyle: NSRegularSquareBezelStyle];
 	[tableColumn setDataCell:buttonCell];
 	
-//	NSImageCell *imageCell = [[[NSImageCell alloc] init] autorelease];
-//	[statusTableColumn setDataCell:imageCell];
+	[fromDate setDateValue: [NSDate date]];
+	[toDate setDateValue: [NSDate date]];
 	
 }
 
@@ -667,41 +589,11 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
-
-
-//	[[self window] setDelegate:nil];
-//	
-//	[self release];
 }
 
 - (void)updateServers:(NSNotification *)note{
 	[servers reloadData];
 }
-
-//- (void)retrieveMessage:(NSNotification *)note
-//{
-//	//updates status of retrieve
-//	
-//	NSDictionary *info = [note userInfo];
-//	NSDate *date = [info objectForKey:@"Time"];
-//	//NSLog(@"userInfo: %@", [info description]);
-//	if (date) {
-//		//if we already have the datahandler we have already added to active moves. need to replace objects
-//		if ([[activeMoves allKeys] containsObject:date]){
-//			NSMutableDictionary *dictionary = [activeMoves objectForKey:date];
-//			[dictionary setDictionary:info];
-//		}
-//		else
-//		{
-//			[activeMoves setObject:info forKey:date];
-//			[moveLog addObject:info];
-//			//should scroll to bottom  Not sure how to do it.
-//		}
-//		
-//	if ([[info objectForKey:@"RetrieveComplete"] boolValue])
-//		[activeMoves removeObjectForKey:date];
-//	}
-//}
 
 - (BOOL)dicomEcho{
 	BOOL status = YES;
@@ -740,53 +632,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			compression: nil
 			extraParameters:nil] autorelease];
 	return [verifySCU echo];
-	//return runEcho([myAET UTF8String], [theirAET UTF8String], [hostname UTF8String], [port intValue], nil);
-	
-	
-	/*
-	BOOL status = YES;
-	id echoSCU;
-	NSString *theirAET;
-	NSString *hostname;
-	NSString *port;
-	id aServer;
-	NSData *address = nil;
-	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
-	NSMutableArray *objects;
-	NSMutableArray *keys; 
-	if ([servers selectedRow] >= 0) {
-		NSLog(@"Server at Index: %d", [servers selectedRow]);
-		aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
-	 
-		//Bonjour
-		if ([aServer isMemberOfClass:[NSNetService class]]){
-			theirAET = [aServer name];
-			objects = [NSMutableArray arrayWithObjects:myAET, theirAET, aServer, nil];
-			keys = [NSMutableArray arrayWithObjects:@"callingAET", @"calledAET", @"netService", nil];
-		}
-		else{
-			theirAET = [aServer objectForKey:@"AETitle"];
-			hostname = [aServer objectForKey:@"Address"];
-			port = [aServer objectForKey:@"Port"];
-			objects = [NSMutableArray arrayWithObjects:myAET, theirAET, hostname, port, nil];
-			keys = [NSMutableArray arrayWithObjects:@"callingAET", @"calledAET", @"hostname", @"port", nil];
-		}
-	}
-	echoSuccess = YES;
-
-
-		
-	NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-	
-	//Parameters needed for initiation are:
-	//@"hostname"					string
-	//@"port"						NSNumber int
-	//@"calledAET"				string
-	//@"callingAET"				string
-	
-	return  [DCMVerificationSOPClassSCU echoSCUWithParams:params];
-	*/
-
 }
 
 - (IBAction)verify:(id)sender{
@@ -806,26 +651,14 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
 	}
 	
-	// standard servers
-	/*
-	if ( [servers selectedRow] >= 0 && ([servers selectedRow] < [serversArray count] && [serversArray count] > 0)) {
-		aServer = [serversArray objectAtIndex:[servers selectedRow]];
-		message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
-	}
-	//bonjour servers
-	else if ([servers selectedRow] > 0 ){
-		aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow]  - [serversArray count]];
-		NSLog(@"bojour server: %@", [aServer description]);
-		message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
-	}	
-	*/
 	NSAlert *alert = [NSAlert alertWithMessageText:@"DICOM verification" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
 	[alert setAlertStyle:NSInformationalAlertStyle];
 	[alert runModal];
 
 }
 
-- (IBAction)abort:(id)sender{
+- (IBAction)abort:(id)sender
+{
 	NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
 	[defaultCenter postNotificationName:@"DCMAbortQueryNotification" object:nil];
 	[defaultCenter postNotificationName:@"DCMAbortMoveNotification" object:nil];
