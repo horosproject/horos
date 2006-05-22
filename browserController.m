@@ -518,12 +518,19 @@ static BOOL FORCEREBUILD = NO;
 					
 					[theTask setCurrentDirectoryPath: tempDirectory];
 					[theTask setArguments: [NSArray arrayWithObject:newFile]];
+					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/SafeDBRebuild"]];
 					[theTask launch];
 					[theTask waitUntilExit];
 					[theTask release];
 					
 					curDict = [NSDictionary dictionaryWithContentsOfFile: tempPlistFile];
 					[fm removeFileAtPath:tempPlistFile handler:0L];
+					
+					if( curDict == 0L)
+					{
+						NSLog( @"Error with this file: %@", newFile);
+//						[fm removeFileAtPath: newFile handler:0L];
+					}
 				}
 				else
 				{
@@ -891,7 +898,7 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
+	[self addFilesToDatabase: newFilesArray : onlyDICOM :YES];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
