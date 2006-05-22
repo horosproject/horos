@@ -65,7 +65,7 @@
 - (IBAction)verify:(id)sender;
 - (IBAction)abort:(id)sender;
 - (IBAction)controlAction:(id)sender;
-
+- (void) refresh: (id) sender;
 - (NSArray *)serversList;
 
 @end

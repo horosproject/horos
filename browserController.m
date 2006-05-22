@@ -413,6 +413,9 @@ static BOOL FORCEREBUILD = NO;
 	{
 		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[viewersListToReload objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[viewersListToReload objectAtIndex: i] keyImagesOnly: NO];
 	}
+	
+	if( queryController) [queryController refresh: self];
+
 }
 
 - (void) rebuildViewers: (NSMutableArray*) viewersListToRebuild
@@ -3165,6 +3168,8 @@ long        i;
 		[wait close];
 		[wait release];
 	}
+	
+	if( queryController) [queryController refresh: self];
 	
 	[context unlock];
 	

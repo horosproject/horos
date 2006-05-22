@@ -38,6 +38,11 @@ static NSString *Modality = @"Modality";
 
 //******	OUTLINEVIEW
 
+- (void) refresh: (id) sender
+{
+	[outlineView reloadData];
+}
+
 - (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item{
 
 	return (item == nil) ? [[queryManager queries] objectAtIndex:index] : [[(DCMTKQueryNode *)item children] objectAtIndex:index];
@@ -87,9 +92,9 @@ static NSString *Modality = @"Modality";
 		studyArray = [context executeFetchRequest:request error:&error];
 		if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] == [[item valueForKey:@"numberImages"] intValue])
 		{
-			[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 12]];
+			[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
 		}
-		else [cell setFont: [NSFont systemFontOfSize: 12]];
+		else [cell setFont: [NSFont boldSystemFontOfSize: 13]];
 		
 		[context unlock];
 	}

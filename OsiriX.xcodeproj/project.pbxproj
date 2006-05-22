@@ -9678,7 +9678,7 @@
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
 		ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AdvancedQuerySubview.h; sourceTree = "<group>"; };
 		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
-		ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABEA83830A21BE400094CAEF /* SafeDBRebuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafeDBRebuild.h; sourceTree = "<group>"; };
 		ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SafeDBRebuild.m; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
