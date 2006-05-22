@@ -162,24 +162,45 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( DEFAULTSSET == NO)
 	{
-		NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
+		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"USEPAPYRUSDCMFILE"])
+		{
+			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
+			
+			DEFAULTSSET = YES;
+			
+			USEPAPYRUSDCMFILE = [sd boolForKey: @"USEPAPYRUSDCMFILE"];
+			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
+			
+			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
+			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
+			
+			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
+			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
+			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
+			
+			CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
+		}
+		else	// FOR THE SAFEDBREBUILD ! Shell tool
+		{
+			NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
+			
+			DEFAULTSSET = YES;
+			
+			USEPAPYRUSDCMFILE = [[dict objectForKey: @"USEPAPYRUSDCMFILE"] intValue];
+			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
+			
+			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
+			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
+			
+			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
+			NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
+			combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
+			
+			CHECKFORLAVIM = NO;
+		}
 		
-		DEFAULTSSET = YES;
-		
-		USEPAPYRUSDCMFILE = [[dict objectForKey: @"USEPAPYRUSDCMFILE"] intValue];
-		COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
-		
-		COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
-		COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
-		
-		splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
-		NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
-		combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
-		
-		CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
-		
-		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
-		else NSLog( @"NO Use Papyrus");
+//		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
+//		else NSLog( @"NO Use Papyrus");
 	}
 }
 

@@ -903,7 +903,7 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
+	[self addFilesToDatabase: newFilesArray : onlyDICOM :YES];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
