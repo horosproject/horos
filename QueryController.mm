@@ -138,7 +138,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	return  (item == nil) ? [[queryManager queries] count] : [[(DCMTKQueryNode *) item children] count];
 }
 
-
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
 
 	if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != 0L)
@@ -150,9 +149,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		else return [item valueForKey: [tableColumn identifier]];		
 	}
 	return nil;
-
 }
-
 
 - (void)outlineView:(NSOutlineView *)aOutlineView sortDescriptorsDidChange:(NSArray *)oldDescs
 {
@@ -173,13 +170,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	{
 		[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
 		
-		/*
-		if ([servers selectedRow] < [serversArray count]  && [serversArray count] > 0)
-			aServer =  [serversArray objectAtIndex:[servers selectedRow]];
-		else 
-			aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow] - [serversArray count]];
-		*/
-		
 		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 		
 		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
@@ -195,6 +185,9 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			port = [aServer objectForKey:@"Port"];
 		}
 		
+		[self setDateQuery: dateFilterMatrix];
+		[self setModalityQuery: modalityFilterMatrix];
+		
 		//get rid of white space at end and append "*"
 
 		NSString *filterValue = [[searchField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -209,36 +202,31 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			//Specific Character Set
 			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 		
-		if ([PatientModeMatrix selectedTag] == 0)
-			currentQueryKey = PatientName;
-		else if ([sender tag] == 1)
-			currentQueryKey = PatientID;
+		switch( [PatientModeMatrix selectedTag])
+		{
+			case 0:		currentQueryKey = PatientName;		break;
+			case 1:		currentQueryKey = PatientID;		break;
+		}
 		
 		if ([filterValue length] > 0) {			
 			[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 		}
 		
-		//need to change string to format YYYYMMDD
-		DCMCalendarDate *startingDate = [dateQueryFilter object];
+		if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+		if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 		
-		if (startingDate) {
-			NSMutableString *dateString = [NSMutableString stringWithString: [startingDate descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];			
-			[queryManager addFilter:dateString forDescription:@"StudyDate"];
-		}
-		
-		if (startingDate || [filterValue length] > 0)
+		if ([dateQueryFilter object] || [filterValue length] > 0)
 		{
 			[self performQuery: 0L];
-		}
-					
+		}		
 		// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
 		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{
 			[self performQuery: 0L];
 		}
 	}
-//	else
-//		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+	else
+		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 }
 
 -(void) advancedQuery:(id)sender{
@@ -439,17 +427,36 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[pool release];
 }
 
-- (void)setDateQuery:(id)sender{
+- (void)setModalityQuery:(id)sender
+{
+	[modalityQueryFilter release];
+	
+	if ( [[[sender selectedCell] title] isEqualToString:@"All"] == NO)
+	{
+		modalityQueryFilter = [[QueryFilter queryFilterWithObject:[[sender selectedCell] title] ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+	}
+	else modalityQueryFilter = [[QueryFilter queryFilterWithObject: 0L ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+}
+
+
+- (void)setDateQuery:(id)sender
+{
 	[dateQueryFilter release];
+	
 	DCMCalendarDate *date;
-	if ([sender tag] == 0)
-		date = [DCMCalendarDate date];
-	else if ([sender tag] == 1)
-		date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];
-	else 
-		date = nil;
-		
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
+	
+	int searchType = searchAfter;
+	
+	switch ([sender selectedTag])
+	{
+		case 0:			date = nil;																								break;
+		case 1:			date = [DCMCalendarDate date];																			break;
+		case 2:			date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];	searchType = searchYesterday;	break;
+		case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7];										break;
+		case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31];									break;
+	}
+	
+	dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
 }
 
 //Action methods for managing advanced queries
@@ -529,6 +536,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		queryFilters = 0L;
 		advancedQuerySubviews = 0L;
 		dateQueryFilter = 0L;
+		modalityQueryFilter = 0L;
 		currentQueryKey = 0L;
 		logString = 0L;
 		echoSuccess = 0L;
@@ -559,6 +567,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
+	[modalityQueryFilter release];
 	[advancedQuerySubviews release];
 	[activeMoves release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -585,7 +594,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 //	[queryKeyField setStringValue:NSLocalizedString(@"Patient Name", nil)];
 	
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
-//	[queryDateField setStringValue:NSLocalizedString(@"Any Date", nil)];
+	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 
 	[self addQuerySubview:nil];
 		

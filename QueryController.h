@@ -37,7 +37,7 @@
     NSMutableArray                  *result;
     NSMutableArray					*queryFilters;
 	NSMutableArray					*advancedQuerySubviews;
-	QueryFilter						*dateQueryFilter;
+	QueryFilter						*dateQueryFilter, *modalityQueryFilter;
 	NSString						*currentQueryKey;
 	NSString						*logString;
 	BOOL							echoSuccess;
@@ -52,8 +52,8 @@
 -(void) retrieve:(id)sender;
 - (void)performQuery:(id)object;
 - (void)performRetrieve:(id)object;
-- (void)setCurrentQueryKey:(id)sender;
 - (void)setDateQuery:(id)sender;
+- (void)setModalityQuery:(id)sender;
 - (void)openAdvancedQuery:(id)sender;
 - (void)clearQuery:(id)sender;
 
