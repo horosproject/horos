@@ -452,6 +452,10 @@ static BOOL FORCEREBUILD = NO;
 	NSString				*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
 	NSString				*tempPlistFile = [tempDirectory stringByAppendingPathComponent:@"curFile.plist"];
 	
+	if( safeProcess)
+	{
+		NSLog( @"safe Process DB process");
+	}
 	
 	for( i = 0; i < [winList count]; i++)
 	{
@@ -903,12 +907,12 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	[self addFilesToDatabase: newFilesArray : onlyDICOM :YES];
+	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
-	return [self addFilesToDatabase:newFilesArray :NO];
+	return [self addFilesToDatabase:newFilesArray :NO :NO];
 }
 
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
