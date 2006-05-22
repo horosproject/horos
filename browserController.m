@@ -528,7 +528,7 @@ static BOOL FORCEREBUILD = NO;
 					
 					if( curDict == 0L)
 					{
-						NSLog( @"Error with this file: %@", newFile);
+						NSLog( @"Error with this file: %@.", newFile);
 //						[fm removeFileAtPath: newFile handler:0L];
 					}
 				}
@@ -567,6 +567,11 @@ static BOOL FORCEREBUILD = NO;
 				if( splash)
 				{
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
+					
+					if( ii % 10000 == 0)
+					{
+						[self saveDatabase:currentDatabasePath];
+					}
 				}
 				
 				if( curDict != 0L)
@@ -898,7 +903,7 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	[self addFilesToDatabase: newFilesArray : onlyDICOM :YES];
+	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray

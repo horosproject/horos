@@ -162,19 +162,24 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( DEFAULTSSET == NO)
 	{
+		NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
+		
 		DEFAULTSSET = YES;
 		
-		USEPAPYRUSDCMFILE = [[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMFILE"];
-		COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
+		USEPAPYRUSDCMFILE = [[dict objectForKey: @"USEPAPYRUSDCMFILE"] intValue];
+		COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 		
-		COMMENTSGROUP = [[[NSUserDefaults standardUserDefaults] stringForKey: @"COMMENTSGROUP"] intValue];
-		COMMENTSELEMENT = [[[NSUserDefaults standardUserDefaults] stringForKey: @"COMMENTSELEMENT"] intValue];
+		COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
+		COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
 		
-		splitMultiEchoMR = [[NSUserDefaults standardUserDefaults] boolForKey:@"splitMultiEchoMR"];
-		NOLOCALIZER = [[NSUserDefaults standardUserDefaults] boolForKey: @"NOLOCALIZER"];
-		combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
+		splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
+		NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
+		combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
 		
 		CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
+		
+		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
+		else NSLog( @"NO Use Papyrus");
 	}
 }
 

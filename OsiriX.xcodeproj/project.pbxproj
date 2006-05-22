@@ -1178,6 +1178,7 @@
 		ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
 		ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
 		ABCB1B2F0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
+		ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		ABCB2D350655B186006C5630 /* SearchWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABCB2D330655B186006C5630 /* SearchWindow.nib */; };
 		ABCB2D360655B186006C5630 /* SearchWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABCB2D330655B186006C5630 /* SearchWindow.nib */; };
 		ABCB2D500655B19A006C5630 /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
@@ -25276,6 +25277,7 @@
 				ABEA84360A21BF990094CAEF /* jcmainct.c in Sources */,
 				ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */,
 				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
+				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
