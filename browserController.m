@@ -450,6 +450,7 @@ static BOOL FORCEREBUILD = NO;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	NSString				*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+	NSString				*tempPlistFile = [tempDirectory stringByAppendingPathComponent:@"curFile.plist"];
 	
 	
 	for( i = 0; i < [winList count]; i++)
@@ -510,6 +511,9 @@ static BOOL FORCEREBUILD = NO;
 				
 				if( safeProcess)
 				{
+					NSFileManager	*fm = [NSFileManager defaultManager];
+					[fm removeFileAtPath:tempPlistFile handler:0L];
+					
 					NSTask *theTask = [[NSTask alloc] init];
 					
 					[theTask setCurrentDirectoryPath: tempDirectory];
@@ -518,7 +522,8 @@ static BOOL FORCEREBUILD = NO;
 					[theTask waitUntilExit];
 					[theTask release];
 					
-					curDict = [NSDictionary dictionaryWithContentsOfFile: [tempDirectory stringByAppendingPathComponent:@"curFile.plist"]];
+					curDict = [NSDictionary dictionaryWithContentsOfFile: tempPlistFile];
+					[fm removeFileAtPath:tempPlistFile handler:0L];
 				}
 				else
 				{

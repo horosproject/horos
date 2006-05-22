@@ -25,6 +25,7 @@
 				);
 			};
 			dependencies = (
+				ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */,
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
@@ -1174,6 +1175,9 @@
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
 		ABCA5BA60625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA70625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
+		ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
+		ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
+		ABCB1B2F0A21FB72008EB2E8 /* SafeDBRebuild in Resources */ = {isa = PBXBuildFile; fileRef = ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */; };
 		ABCB2D350655B186006C5630 /* SearchWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABCB2D330655B186006C5630 /* SearchWindow.nib */; };
 		ABCB2D360655B186006C5630 /* SearchWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = ABCB2D330655B186006C5630 /* SearchWindow.nib */; };
 		ABCB2D500655B19A006C5630 /* SearchWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */; };
@@ -8771,6 +8775,13 @@
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIPETPreferencePane;
 		};
+		ABCB1B3B0A21FC04008EB2E8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */;
+			remoteInfo = SafeDBRebuild;
+		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE4E42DE08758A1700D0AFDB /* OSILocationsPreferencePane.xcodeproj */;
@@ -9622,6 +9633,7 @@
 		ABC3993109F52842000A6508 /* OSIPETPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIPETPreferencePane.prefPane; path = "Preference Panes/OSIPETPreferencePane/build/Development/OSIPETPreferencePane.prefPane"; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
+		ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = SafeDBRebuild; path = build/Development/SafeDBRebuild; sourceTree = "<group>"; };
 		ABCB2D340655B186006C5630 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/SearchWindow.nib; sourceTree = "<group>"; };
 		ABCB2D4E0655B19A006C5630 /* SearchWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SearchWindowController.m; sourceTree = "<group>"; };
 		ABCB2D4F0655B19A006C5630 /* SearchWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SearchWindowController.h; sourceTree = "<group>"; };
@@ -12715,6 +12727,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
 				CE7DECC208F05F1500763A70 /* Previous DB Models */,
@@ -23189,6 +23202,7 @@
 				ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */,
+				ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23451,6 +23465,7 @@
 				ABC393A009F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994409F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF59FD0A1B63F4002A353A /* BonesRemovalCursor.tif in Resources */,
+				ABCB1B2F0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23713,6 +23728,7 @@
 				ABC393A109F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */,
 				ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */,
+				ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25870,6 +25886,11 @@
 			name = OSIPETPreferencePane;
 			targetProxy = ABC3990309F527EA000A6508 /* PBXContainerItemProxy */;
 		};
+		ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */;
+			targetProxy = ABCB1B3B0A21FC04008EB2E8 /* PBXContainerItemProxy */;
+		};
 		CEACC7AD0878781000CF466E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OSIViewerPreferencePane;
@@ -26888,9 +26909,14 @@
 		ABEA7F390A21BCE90094CAEF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
+				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
