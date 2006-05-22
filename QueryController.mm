@@ -211,7 +211,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		if ([filterValue length] > 0) {			
 			[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 		}
-		
+		//
 		if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
 		if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 		
@@ -443,20 +443,29 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 {
 	[dateQueryFilter release];
 	
-	DCMCalendarDate *date;
-	
-	int searchType = searchAfter;
-	
-	switch ([sender selectedTag])
+	if( [sender selectedTag] == 5)
 	{
-		case 0:			date = nil;																								break;
-		case 1:			date = [DCMCalendarDate date];																			break;
-		case 2:			date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];	searchType = searchYesterday;	break;
-		case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7];										break;
-		case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31];									break;
+		NSString	*between = [NSString stringWithFormat:@"%@-%@", [[fromDate dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [[toDate dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
+		
+		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	}
-	
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
+	else
+	{		
+		DCMCalendarDate *date;
+		
+		int searchType = searchAfter;
+		
+		switch ([sender selectedTag])
+		{
+			case 0:			date = nil;																								break;
+			case 1:			date = [DCMCalendarDate date];																			break;
+			case 2:			date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];	searchType = searchYesterday;	break;
+			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7];										break;
+			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31];									break;
+			
+		}
+		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
+	}
 }
 
 //Action methods for managing advanced queries
