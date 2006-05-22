@@ -397,8 +397,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			}
 		}
 	}
-	if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset]) {
-	 }
+	if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset])
+	{
+	
+	}
 	 
 	 if (dataset != NULL) delete dataset;
 	
@@ -907,12 +909,21 @@ NS_ENDHANDLER
 
 
     /* dump some more general information */
-    if (cond == EC_Normal) {
+    if (cond == EC_Normal)
+	{
+		if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Find Failed", nil), [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+		}
+				
         if (_verbose) {
             DIMSE_printCFindRSP(stdout, &rsp);
         } else {
-            if (rsp.DimseStatus != STATUS_Success) {
+            if (rsp.DimseStatus != STATUS_Success)
+			{
                 printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
+				
+				
             }
         }
     } else {
@@ -1019,13 +1030,20 @@ NS_ENDHANDLER
         net, subOpCallback, NULL,
         &rsp, &statusDetail, &rspIds , OFTrue);
 
-    if (cond == EC_Normal) {
-        if (_verbose) {
+    if (cond == EC_Normal)
+	{
+		if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+		}
+		
+        if (_verbose)
+		{
             DIMSE_printCMoveRSP(stdout, &rsp);
             if (rspIds != NULL) {
                 printf("Response Identifiers:\n");
                 rspIds->print(COUT);
-            }
+			}
         }
     } else {
         errmsg("Move Failed:");

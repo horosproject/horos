@@ -315,8 +315,8 @@ static NSString *Modality = @"Modality";
 		[self performQuery: 0L];
 		[advancedQueryWindow close];	
 		}
-//		else
-//			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+		else
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
 
 	[advancedQueryWindow close];	
