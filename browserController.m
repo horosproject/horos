@@ -427,7 +427,7 @@ static BOOL FORCEREBUILD = NO;
 	}
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM :(BOOL) safeProcess
 {
 	if( isCurrentDatabaseBonjour) return 0L;
 
@@ -449,7 +449,7 @@ static BOOL FORCEREBUILD = NO;
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
-	
+	NSString				*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
 	
 	
 	for( i = 0; i < [winList count]; i++)
@@ -505,14 +505,31 @@ static BOOL FORCEREBUILD = NO;
 			{
 				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				
-				DicomFile	*curFile = [[DicomFile alloc] init: newFile];
+				DicomFile		*curFile = 0L;
+				NSDictionary	*curDict = 0L;
+				
+				if( safeProcess)
+				{
+					NSTask *theTask = [[NSTask alloc] init];
+					
+					[theTask setCurrentDirectoryPath: tempDirectory];
+					[theTask setArguments: [NSArray arrayWithObject:newFile]];
+					[theTask launch];
+					[theTask waitUntilExit];
+					[theTask release];
+					
+					curDict = [NSDictionary dictionaryWithContentsOfFile: [tempDirectory stringByAppendingPathComponent:@"curFile.plist"]];
+				}
+				else
+				{
+					curFile = [[DicomFile alloc] init: newFile];
+				}
 				
 				if(curFile == 0L && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 				{
-					NSLog(@"OsiriX was not able to read this file... Let's check if there is a associed xml file with it");
 					NSString *filePathWithoutExtension = [newFile stringByDeletingPathExtension];
 					NSString *xmlFilePath = [filePathWithoutExtension stringByAppendingString:@".xml"];
-					//NSLog(@"xmlFilePath : %@", xmlFilePath);
+					
 					if([[NSFileManager defaultManager] fileExistsAtPath:xmlFilePath])
 					{
 						NSLog(@"read the xml data");
@@ -520,19 +537,19 @@ static BOOL FORCEREBUILD = NO;
 						NSLog(@"newFile : %@", newFile);
 						curFile = [[DicomFile alloc] initWithXMLDescriptor:xmlFilePath path:newFile];
 						NSLog(@"xml data OK");
-						// release it for now... don't want to add it until everything is done...
-						//[curFile release];
-						//curFile = 0L;
 					}
+				}
+				
+				if( curFile)
+				{
+					curDict = [curFile dicomElements];
+					[curFile release];
+					curFile = 0L;
 				}
 				
 				if( onlyDICOM)
 				{
-					if( [[curFile elementForKey: @"fileType"] isEqualToString:@"DICOM"] == NO)
-					{
-						[curFile release];
-						curFile = 0L;
-					}
+					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) curDict = 0L;
 				}
 				
 				if( splash)
@@ -540,11 +557,10 @@ static BOOL FORCEREBUILD = NO;
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
 				}
 				
-				if( curFile)
+				if( curDict != 0L)
 				{
-			
 					{
-						if( [[curFile elementForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curFile elementForKey: @"patientUID"] isEqualToString: curPatientUID] == YES)
+						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] isEqualToString: curPatientUID] == YES)
 						{
 							
 						}
@@ -552,38 +568,37 @@ static BOOL FORCEREBUILD = NO;
 						{
 							/*******************************************/
 							/*********** Find study object *************/
-							//NSLog(@"Dicom Elements for DB: %@", [[curFile dicomElements] description]);
-							index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curFile elementForKey: @"studyID"]];
+							index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curDict objectForKey: @"studyID"]];
 							if( index == NSNotFound)
 							{
 															// Fields
 								study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:context];
 								[study setValue:today forKey:@"dateAdded"];
 							
-								[study setValue:[curFile elementForKey: @"studyID"] forKey:@"studyInstanceUID"];
-								[study setValue:[curFile elementForKey: @"studyDescription"] forKey:@"studyName"];
-								[study setValue:[curFile elementForKey: @"studyDate"] forKey:@"date"];
-								[study setValue:[curFile elementForKey: @"accessionNumber"] forKey:@"accessionNumber"];
+								[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
+								[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
+								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+								[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
 							
-								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curFile elementForKey: @"studyDate"]];
+								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
 								[study setValue:[time timeAsNumber] forKey:@"dicomTime"];
 							
-								[study setValue:[curFile elementForKey: @"modality"] forKey:@"modality"];
-								[study setValue:[curFile elementForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
-								[study setValue:[curFile elementForKey: @"patientSex"] forKey:@"patientSex"];
-								[study setValue:[curFile elementForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
-								[study setValue:[curFile elementForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
-								[study setValue:[curFile elementForKey: @"institutionName"] forKey:@"institutionName"];
+								[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+								[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
+								[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
+								[study setValue:[curDict objectForKey: @"referringPhysiciansName"] forKey:@"referringPhysician"];
+								[study setValue:[curDict objectForKey: @"performingPhysiciansName"] forKey:@"performingPhysician"];
+								[study setValue:[curDict objectForKey: @"institutionName"] forKey:@"institutionName"];
 							
-								[study setValue:[curFile elementForKey: @"patientID"] forKey:@"patientID"];
-								[study setValue:[curFile elementForKey: @"patientName"] forKey:@"name"];
-								[study setValue:[curFile elementForKey: @"patientUID"] forKey:@"patientUID"];
-								[study setValue:[curFile elementForKey: @"studyNumber"] forKey:@"id"];
-								[study setValue:[curFile elementForKey: @"studyComment"] forKey:@"comment"];
+								[study setValue:[curDict objectForKey: @"patientID"] forKey:@"patientID"];
+								[study setValue:[curDict objectForKey: @"patientName"] forKey:@"name"];
+								[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
+								[study setValue:[curDict objectForKey: @"studyNumber"] forKey:@"id"];
+								[study setValue:[curDict objectForKey: @"studyComment"] forKey:@"comment"];
 							
 								//need to know if is DICOM so only DICOM is queried for Q/R
-								if ([curFile elementForKey: @"hasDICOM"])
-									[study setValue:[curFile elementForKey: @"hasDICOM"] forKey:@"hasDICOM"];
+								if ([curDict objectForKey: @"hasDICOM"])
+									[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
 								
 								NSArray	*newStudiesArray = [studiesArray arrayByAddingObject: study];
 								[studiesArray release];
@@ -602,20 +617,21 @@ static BOOL FORCEREBUILD = NO;
 							// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
 							for( x = 0; x < [viewersList count]; x++)
 							{
-								if( [[curFile elementForKey: @"patientUID"] isEqualToString: [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]])
+								if( [[curDict objectForKey: @"patientUID"] isEqualToString: [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]])
 								{
 									if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
 										[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
 								}
 							}
 							
-							[curStudyID release];			curStudyID = [[curFile elementForKey: @"studyID"] retain];
-							[curPatientUID release];		curPatientUID = [[curFile elementForKey: @"patientUID"] retain];
+							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
+							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
 							
 							[modifiedStudiesArray addObject: study];
 						}
 						
-						for(i = 0; i < [curFile NoOfSeries]; i++)
+						long NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
+						for(i = 0; i < NoOfSeries; i++)
 						{
 							NSString* SeriesNum;
 							if (i)
@@ -623,7 +639,7 @@ static BOOL FORCEREBUILD = NO;
 							else
 								SeriesNum = @"";
 							
-							if( [[curFile elementForKey: [@"seriesID" stringByAppendingString:SeriesNum]] isEqualToString: curSerieID])
+							if( [[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] isEqualToString: curSerieID])
 							{
 							}
 							else
@@ -633,23 +649,23 @@ static BOOL FORCEREBUILD = NO;
 								
 								NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
 								
-								NSLog([curFile elementForKey: [@"seriesID" stringByAppendingString:SeriesNum]]);
+								NSLog([curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]);
 								
-								index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curFile elementForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
+								index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
 								if( index == NSNotFound)
 								{
 									// Fields
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];
 									
-									[seriesTable setValue:[curFile elementForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
-									[seriesTable setValue:[curFile elementForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
-									[seriesTable setValue:[curFile elementForKey: @"modality"] forKey:@"modality"];
-									[seriesTable setValue:[curFile elementForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
-									[seriesTable setValue:[curFile elementForKey: @"studyDate"] forKey:@"date"];
-									[seriesTable setValue:[curFile elementForKey: @"protocolName"] forKey:@"seriesDescription"];
+									[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
+									[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
+									[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+									[seriesTable setValue:[curDict objectForKey: [@"seriesNumber" stringByAppendingString:SeriesNum]] forKey:@"id"];
+									[seriesTable setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
+									[seriesTable setValue:[curDict objectForKey: @"protocolName"] forKey:@"seriesDescription"];
 									
-									DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curFile elementForKey: @"studyDate"]];
+									DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
 									[seriesTable setValue:[time timeAsNumber] forKey:@"dicomTime"];
 									
 									// Relations
@@ -668,7 +684,7 @@ static BOOL FORCEREBUILD = NO;
 								}
 								
 								[curSerieID release];
-								curSerieID = [[curFile elementForKey: @"seriesID"] retain];
+								curSerieID = [[curDict objectForKey: @"seriesID"] retain];
 							}
 							
 							/*******************************************/
@@ -676,14 +692,14 @@ static BOOL FORCEREBUILD = NO;
 							
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 							
-							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curFile elementForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
-						//	index = [[imagesArray valueForKey:@"instanceNumber"] indexOfObject:[curFile elementForKey: [@"imageID" stringByAppendingString:SeriesNum]]];
+							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
+						//	index = [[imagesArray valueForKey:@"instanceNumber"] indexOfObject:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]]];
 							if( index == NSNotFound)
 							{
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
-								[image setValue:[curFile elementForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
-								[image setValue:[[curFile elementForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
-								[image setValue:[curFile elementForKey: @"modality"] forKey:@"modality"];
+								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
+								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
+								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								
 								BOOL			iPod = NO, local = NO;
 								if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
@@ -707,20 +723,20 @@ static BOOL FORCEREBUILD = NO;
 								[image setValue:[NSNumber numberWithBool:iPod] forKey:@"iPod"];
 								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
-								[image setValue:[curFile elementForKey: @"studyDate"]  forKey:@"date"];
-								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curFile elementForKey: @"studyDate"]];
+								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
+								DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[curDict objectForKey: @"studyDate"]];
 								[image setValue:[time timeAsNumber] forKey:@"dicomTime"];
 								
-								[image setValue:[curFile elementForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
-								[image setValue:[curFile elementForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]] forKey:@"sopInstanceUID"];
+								[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
-								[image setValue:[curFile elementForKey: @"fileType"] forKey:@"fileType"];
+								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
-								[image setValue:[NSNumber numberWithInt: [curFile getHeight]] forKey:@"height"];
-								[image setValue:[NSNumber numberWithInt: [curFile getWidth]] forKey:@"width"];
-								[image setValue:[NSNumber numberWithInt: [curFile NoOfFrames]] forKey:@"numberOfFrames"];
+								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
+								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
+								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
 								[image setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
-								[image setValue:[NSNumber numberWithInt: [curFile NoOfSeries]] forKey:@"numberOfSeries"];
+								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
@@ -730,20 +746,20 @@ static BOOL FORCEREBUILD = NO;
 								
 								if( COMMENTSAUTOFILL)
 								{
-									if([curFile elementForKey: @"commentsAutoFill"])
+									if([curDict objectForKey: @"commentsAutoFill"])
 									{
-										[seriesTable setValue:[curFile elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+										[seriesTable setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
 										
 										if( [study valueForKey:@"comment"] == 0L || [[study valueForKey:@"comment"] isEqualToString:@""])
 										{
-											[study setValue:[curFile elementForKey: @"commentsAutoFill"] forKey:@"comment"];
+											[study setValue:[curDict objectForKey: @"commentsAutoFill"] forKey:@"comment"];
 										}
 									}
 								}
 								
 								[addedImagesArray addObject: image];
 								
-								if([[curFile dicomElements] valueForKey:@"album"] !=nil)
+								if([curDict valueForKey:@"album"] !=nil)
 								{
 									// if an album name is provided, add the file to this album
 									//NSLog(@"an album name is provided");
@@ -757,7 +773,7 @@ static BOOL FORCEREBUILD = NO;
 									{
 										//NSLog(@"album %d : %@", i, [[albumArray objectAtIndex: i] valueForKeyPath:@"name"]);
 										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"]
-												isEqualToString: [[curFile dicomElements] valueForKey:@"album"]])
+												isEqualToString: [curDict valueForKey:@"album"]])
 										{
 											album = [albumArray objectAtIndex: i];
 										}
@@ -768,7 +784,7 @@ static BOOL FORCEREBUILD = NO;
 										// the album doesn't exists, we create it
 										//NSLog(@"album name NOT found, we create it");
 
-										NSString *name = [[curFile dicomElements] valueForKey:@"album"];
+										NSString *name = [curDict valueForKey:@"album"];
 
 										NSManagedObjectContext *context = [self managedObjectContext];
 										[context lock];
@@ -866,6 +882,11 @@ static BOOL FORCEREBUILD = NO;
 	}
 	
 	return addedImagesArray;
+}
+
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
+{
+	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray

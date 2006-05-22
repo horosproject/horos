@@ -770,6 +770,9 @@
 		AB2C25230677873200A08910 /* PluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C25210677873200A08910 /* PluginManager.h */; };
 		AB2C25240677873200A08910 /* PluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C25200677873200A08910 /* PluginManager.m */; };
 		AB2C25250677873200A08910 /* PluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C25210677873200A08910 /* PluginManager.h */; };
+		AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
+		AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */; };
 		AB34218905DD53B8000B8B72 /* MPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CD7F70588FFE300560C85 /* MPRController.h */; };
 		AB34218C05DD53B8000B8B72 /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
 		AB34218D05DD53B8000B8B72 /* VTKView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB3DB0B05868E34006494CB /* VTKView.h */; };
@@ -1257,6 +1260,82 @@
 		ABE33389063D627800C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
+		ABEA83850A21BE400094CAEF /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
+		ABEA83BD0A21BF6D0094CAEF /* PapyWildexit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C405646BBF00BED927 /* PapyWildexit3.c */; };
+		ABEA83BE0A21BF6D0094CAEF /* PapyWild3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C305646BBF00BED927 /* PapyWild3.c */; };
+		ABEA83BF0A21BF6D0094CAEF /* PapyWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C205646BBF00BED927 /* PapyWrite3.c */; };
+		ABEA83C00A21BF6E0094CAEF /* PapyVars3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C105646BBF00BED927 /* PapyVars3.c */; };
+		ABEA83C10A21BF6E0094CAEF /* PapyUtils3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C005646BBF00BED927 /* PapyUtils3.c */; };
+		ABEA83C20A21BF6F0094CAEF /* PapyRead3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BF05646BBF00BED927 /* PapyRead3.c */; };
+		ABEA83C30A21BF700094CAEF /* PapyFileSystemUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */; };
+		ABEA83C40A21BF710094CAEF /* PapyEallocUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */; };
+		ABEA83C50A21BF710094CAEF /* PapyDataSetWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B405646BBF00BED927 /* PapyDataSetWrite3.c */; };
+		ABEA83C60A21BF710094CAEF /* PapyDataSetRead3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3C0505ADD50F001411D1 /* PapyDataSetRead3.c */; };
+		ABEA83C70A21BF720094CAEF /* PapyList3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BD05646BBF00BED927 /* PapyList3.c */; };
+		ABEA83C80A21BF720094CAEF /* PapyInitModules3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BC05646BBF00BED927 /* PapyInitModules3.c */; };
+		ABEA83C90A21BF730094CAEF /* PapyInitGroups3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BB05646BBF00BED927 /* PapyInitGroups3.c */; };
+		ABEA83CA0A21BF730094CAEF /* PapyInit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BA05646BBF00BED927 /* PapyInit3.c */; };
+		ABEA83FB0A21BF740094CAEF /* PapyGetGlobalVar3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B905646BBF00BED927 /* PapyGetGlobalVar3.c */; };
+		ABEA83FC0A21BF740094CAEF /* PapyFiles3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B705646BBF00BED927 /* PapyFiles3.c */; };
+		ABEA83FD0A21BF740094CAEF /* PapyError3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B605646BBF00BED927 /* PapyError3.c */; };
+		ABEA83FE0A21BF7A0094CAEF /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
+		ABEA83FF0A21BF7A0094CAEF /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
+		ABEA84000A21BF7A0094CAEF /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
+		ABEA84010A21BF7B0094CAEF /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F105646C0D00BED927 /* predict.c */; };
+		ABEA84020A21BF7B0094CAEF /* mcu.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F005646C0D00BED927 /* mcu.c */; };
+		ABEA84030A21BF7B0094CAEF /* jpegutil.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EF05646C0D00BED927 /* jpegutil.c */; };
+		ABEA84040A21BF7C0094CAEF /* pmreadoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */; };
+		ABEA84050A21BF7C0094CAEF /* huffdoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */; };
+		ABEA84060A21BF7D0094CAEF /* huffcoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */; };
+		ABEA84070A21BF7D0094CAEF /* decompoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EB05646C0C00BED927 /* decompoptimise.c */; };
+		ABEA84080A21BF810094CAEF /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD63005646C3800BED927 /* jcphuff.c */; };
+		ABEA84090A21BF810094CAEF /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62F05646C3800BED927 /* jcapistd.c */; };
+		ABEA840A0A21BF820094CAEF /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62B05646C3800BED927 /* jdtrans.c */; };
+		ABEA840B0A21BF830094CAEF /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62305646C3800BED927 /* jchuff.c */; };
+		ABEA840C0A21BF830094CAEF /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62105646C3800BED927 /* jccolor.c */; };
+		ABEA840D0A21BF830094CAEF /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61F05646C3800BED927 /* jcapimin.c */; };
+		ABEA840E0A21BF840094CAEF /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60905646C3800BED927 /* jdcolor.c */; };
+		ABEA840F0A21BF850094CAEF /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60B05646C3800BED927 /* jdhuff.c */; };
+		ABEA84100A21BF850094CAEF /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60C05646C3800BED927 /* jdinput.c */; };
+		ABEA84110A21BF850094CAEF /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60D05646C3800BED927 /* jdmainct.c */; };
+		ABEA84120A21BF860094CAEF /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60F05646C3800BED927 /* jdmaster.c */; };
+		ABEA84130A21BF860094CAEF /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61205646C3800BED927 /* jdpostct.c */; };
+		ABEA84140A21BF870094CAEF /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61705646C3800BED927 /* jidctint.c */; };
+		ABEA84150A21BF870094CAEF /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61805646C3800BED927 /* jidctred.c */; };
+		ABEA84160A21BF870094CAEF /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61905646C3800BED927 /* jmemmgr.c */; };
+		ABEA84170A21BF880094CAEF /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62005646C3800BED927 /* jccoefct.c */; };
+		ABEA84180A21BF890094CAEF /* rdcolmap.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61E05646C3800BED927 /* rdcolmap.c */; };
+		ABEA84190A21BF890094CAEF /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61D05646C3800BED927 /* jutils.c */; };
+		ABEA841A0A21BF8A0094CAEF /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61C05646C3800BED927 /* jquant2.c */; };
+		ABEA841B0A21BF8A0094CAEF /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61B05646C3800BED927 /* jquant1.c */; };
+		ABEA841C0A21BF8A0094CAEF /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61A05646C3800BED927 /* jmemnobs.c */; };
+		ABEA841D0A21BF8B0094CAEF /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62E05646C3800BED927 /* jfdctint.c */; };
+		ABEA841E0A21BF8C0094CAEF /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62D05646C3800BED927 /* jfdctfst.c */; };
+		ABEA841F0A21BF8C0094CAEF /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62C05646C3800BED927 /* jfdctflt.c */; };
+		ABEA84200A21BF8D0094CAEF /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62A05646C3800BED927 /* jdatadst.c */; };
+		ABEA84210A21BF8D0094CAEF /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62905646C3800BED927 /* jctrans.c */; };
+		ABEA84220A21BF8D0094CAEF /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62805646C3800BED927 /* jcsample.c */; };
+		ABEA84230A21BF8E0094CAEF /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62705646C3800BED927 /* jcprepct.c */; };
+		ABEA84240A21BF8E0094CAEF /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62605646C3800BED927 /* jcmaster.c */; };
+		ABEA84250A21BF8F0094CAEF /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62505646C3800BED927 /* jcmarker.c */; };
+		ABEA84260A21BF8F0094CAEF /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62405646C3800BED927 /* jcinit.c */; };
+		ABEA84270A21BF900094CAEF /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD62205646C3800BED927 /* jcdctmgr.c */; };
+		ABEA84280A21BF910094CAEF /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61605646C3800BED927 /* jidctfst.c */; };
+		ABEA84290A21BF920094CAEF /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61005646C3800BED927 /* jdmerge.c */; };
+		ABEA842A0A21BF920094CAEF /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61105646C3800BED927 /* jdphuff.c */; };
+		ABEA842B0A21BF930094CAEF /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61305646C3800BED927 /* jdsample.c */; };
+		ABEA842C0A21BF930094CAEF /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61405646C3800BED927 /* jerror.c */; };
+		ABEA842D0A21BF930094CAEF /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD61505646C3800BED927 /* jidctflt.c */; };
+		ABEA842E0A21BF940094CAEF /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60E05646C3800BED927 /* jdmarker.c */; };
+		ABEA842F0A21BF950094CAEF /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60A05646C3800BED927 /* jddctmgr.c */; };
+		ABEA84300A21BF970094CAEF /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60805646C3800BED927 /* jdcoefct.c */; };
+		ABEA84310A21BF970094CAEF /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60705646C3800BED927 /* jdatasrc.c */; };
+		ABEA84320A21BF970094CAEF /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60605646C3800BED927 /* jdapistd.c */; };
+		ABEA84330A21BF980094CAEF /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60505646C3800BED927 /* jdapimin.c */; };
+		ABEA84340A21BF980094CAEF /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60405646C3800BED927 /* jcparam.c */; };
+		ABEA84350A21BF990094CAEF /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60305646C3800BED927 /* jcomapi.c */; };
+		ABEA84360A21BF990094CAEF /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD60205646C3800BED927 /* jcmainct.c */; };
+		ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.m */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF7E7A09A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
@@ -3912,43 +3991,6 @@
 		BFC9C2AC09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
 		BFC9C2AD09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */; };
 		BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */; };
-		BFD0862109E373F000B24030 /* storescp.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFD0861809E3738D00B24030 /* storescp.mm */; };
-		BFD0862209E3740F00B24030 /* cmdlnarg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABB09B6827D00545F5E /* cmdlnarg.cc */; };
-		BFD0862309E3740F00B24030 /* dcbytstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABD09B6827D00545F5E /* dcbytstr.cc */; };
-		BFD0862409E3741000B24030 /* dcchrstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABF09B6827D00545F5E /* dcchrstr.cc */; };
-		BFD0862509E3741100B24030 /* dccodec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC109B6827D00545F5E /* dccodec.cc */; };
-		BFD0862609E3741200B24030 /* dcdatset.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC309B6827D00545F5E /* dcdatset.cc */; };
-		BFD0862709E3741600B24030 /* dcddirif.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC509B6827D00545F5E /* dcddirif.cc */; };
-		BFD0862809E3741700B24030 /* dcdebug.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC709B6827D00545F5E /* dcdebug.cc */; };
-		BFD0862909E3741800B24030 /* dcdicdir.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACB09B6827D00545F5E /* dcdicdir.cc */; };
-		BFD0862A09E3741800B24030 /* dcdicent.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACD09B6827D00545F5E /* dcdicent.cc */; };
-		BFD0862B09E3741900B24030 /* dcdict.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACF09B6827D00545F5E /* dcdict.cc */; };
-		BFD0862C09E3741A00B24030 /* dcdictbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD109B6827D00545F5E /* dcdictbi.cc */; };
-		BFD0862D09E3741B00B24030 /* dcdirrec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD209B6827D00545F5E /* dcdirrec.cc */; };
-		BFD0862E09E3741D00B24030 /* dcelem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD409B6827D00545F5E /* dcelem.cc */; };
-		BFD0862F09E3741E00B24030 /* dcerror.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD609B6827D00545F5E /* dcerror.cc */; };
-		BFD0863009E3741F00B24030 /* dcfilefo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD809B6827D00545F5E /* dcfilefo.cc */; };
-		BFD0863109E3741F00B24030 /* dchashdi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADA09B6827D00545F5E /* dchashdi.cc */; };
-		BFD0863209E3742100B24030 /* dcistrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADC09B6827D00545F5E /* dcistrma.cc */; };
-		BFD0863309E3742200B24030 /* dcistrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADE09B6827D00545F5E /* dcistrmb.cc */; };
-		BFD0863409E3742300B24030 /* dcistrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE009B6827D00545F5E /* dcistrmf.cc */; };
-		BFD0863509E3742700B24030 /* dcistrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE209B6827D00545F5E /* dcistrmz.cc */; };
-		BFD0863609E3742800B24030 /* dcitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE409B6827D00545F5E /* dcitem.cc */; };
-		BFD0863709E3742900B24030 /* dclist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE609B6827D00545F5E /* dclist.cc */; };
-		BFD0863809E3742C00B24030 /* dcmetinf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE809B6827D00545F5E /* dcmetinf.cc */; };
-		BFD0863909E3742C00B24030 /* dcobject.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEA09B6827D00545F5E /* dcobject.cc */; };
-		BFD0863A09E3742D00B24030 /* dcostrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AED09B6827D00545F5E /* dcostrma.cc */; };
-		BFD0863B09E3743000B24030 /* dcostrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEF09B6827D00545F5E /* dcostrmb.cc */; };
-		BFD0863C09E3743100B24030 /* dcostrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF109B6827D00545F5E /* dcostrmf.cc */; };
-		BFD0863D09E3743100B24030 /* dcostrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF309B6827D00545F5E /* dcostrmz.cc */; };
-		BFD0863E09E3743400B24030 /* dcpcache.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF609B6827E00545F5E /* dcpcache.cc */; };
-		BFD0863F09E3743400B24030 /* dcpixel.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF809B6827E00545F5E /* dcpixel.cc */; };
-		BFD0864009E3743500B24030 /* dcpixseq.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFA09B6827E00545F5E /* dcpixseq.cc */; };
-		BFD0864109E3743700B24030 /* dcpxitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFC09B6827E00545F5E /* dcpxitem.cc */; };
-		BFD0864209E3743800B24030 /* dcrleccd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFE09B6827E00545F5E /* dcrleccd.cc */; };
-		BFD0864309E3743900B24030 /* dcrlecce.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0009B6827E00545F5E /* dcrlecce.cc */; };
-		BFD0864409E3743900B24030 /* dcrlecp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0209B6827E00545F5E /* dcrlecp.cc */; };
-		BFD0864509E3743C00B24030 /* dcrledrg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0509B6827E00545F5E /* dcrledrg.cc */; };
 		BFD4BFF406F2A96900EC9A90 /* ContrastCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */; };
 		BFD4BFF506F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFF606F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
@@ -9624,6 +9666,9 @@
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
 		ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AdvancedQuerySubview.h; sourceTree = "<group>"; };
 		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
+		ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABEA83830A21BE400094CAEF /* SafeDBRebuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafeDBRebuild.h; sourceTree = "<group>"; };
+		ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SafeDBRebuild.m; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
 		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
 		ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.doc; path = Binaries/ReportTemplate.doc; sourceTree = "<group>"; };
@@ -10836,7 +10881,6 @@
 		BFC9C2A709B697DB003717B1 /* DCMTKVerifySCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMTKVerifySCU.h; sourceTree = "<group>"; };
 		BFC9C2A809B697DB003717B1 /* DCMTKVerifySCU.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKVerifySCU.mm; sourceTree = "<group>"; };
 		BFD0861809E3738D00B24030 /* storescp.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; name = storescp.mm; path = "Binaries/dcmtk-source/sample apps/dcmnet/storescp.mm"; sourceTree = "<group>"; };
-		BFD0861C09E373C100B24030 /* storescp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = storescp; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD4BFF006F2A96900EC9A90 /* ContrastCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ContrastCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
@@ -12441,10 +12485,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BFD0861A09E373C100B24030 /* Frameworks */ = {
+		ABEA7F060A21BCC90094CAEF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */,
+				AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12633,7 +12679,7 @@
 				ABA71D3F06726B1800335A62 /* OsiriX.app */,
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
 				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
-				BFD0861C09E373C100B24030 /* storescp */,
+				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -12641,6 +12687,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				ABEA7F420A21BD310094CAEF /* SafeDBRebuild */,
 				BFBF3AAF09B6820C00545F5E /* dcmtk */,
 				324AD88708B23B0500101139 /* Models */,
 				7E0B3A08067525FD00908593 /* DCM Framework */,
@@ -13750,6 +13797,15 @@
 			name = LibTiff;
 			path = Binaries/LibTiff;
 			sourceTree = SOURCE_ROOT;
+		};
+		ABEA7F420A21BD310094CAEF /* SafeDBRebuild */ = {
+			isa = PBXGroup;
+			children = (
+				ABEA83830A21BE400094CAEF /* SafeDBRebuild.h */,
+				ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */,
+			);
+			name = SafeDBRebuild;
+			sourceTree = "<group>";
 		};
 		ABF1427B056469CC00CB071B /* Papyrus */ = {
 			isa = PBXGroup;
@@ -22577,12 +22633,12 @@
 ";
 			productType = "com.apple.product-type.application";
 		};
-		BFD0861B09E373C100B24030 /* storescp */ = {
+		ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BFD0864609E3745A00B24030 /* Build configuration list for PBXNativeTarget "storescp" */;
+			buildConfigurationList = ABEA7F380A21BCE90094CAEF /* Build configuration list for PBXNativeTarget "SafeDBRebuild" */;
 			buildPhases = (
-				BFD0861909E373C100B24030 /* Sources */,
-				BFD0861A09E373C100B24030 /* Frameworks */,
+				ABEA7F050A21BCC90094CAEF /* Sources */,
+				ABEA7F060A21BCC90094CAEF /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -22590,21 +22646,23 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = "$(HOME)/bin";
 				OTHER_LDFLAGS = (
 					"-framework",
-					Carbon,
+					Foundation,
+					"-framework",
+					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = storescp;
+				PRODUCT_NAME = SafeDBRebuild;
 				ZERO_LINK = YES;
 			};
 			dependencies = (
 			);
-			name = storescp;
-			productName = storescp;
-			productReference = BFD0861C09E373C100B24030 /* storescp */;
+			name = SafeDBRebuild;
+			productName = SafeDBRebuild;
+			productReference = ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
 		CECBFEE707539E3900576814 /* Development VolumePRO */ = {
@@ -22774,7 +22832,7 @@
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				4A16D0950965E15300F82EC4 /* Unit Testing (Cocoa) */,
-				BFD0861B09E373C100B24030 /* storescp */,
+				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
 			);
 		};
 /* End PBXProject section */
@@ -25121,47 +25179,87 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BFD0861909E373C100B24030 /* Sources */ = {
+		ABEA7F050A21BCC90094CAEF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFD0862109E373F000B24030 /* storescp.mm in Sources */,
-				BFD0862209E3740F00B24030 /* cmdlnarg.cc in Sources */,
-				BFD0862309E3740F00B24030 /* dcbytstr.cc in Sources */,
-				BFD0862409E3741000B24030 /* dcchrstr.cc in Sources */,
-				BFD0862509E3741100B24030 /* dccodec.cc in Sources */,
-				BFD0862609E3741200B24030 /* dcdatset.cc in Sources */,
-				BFD0862709E3741600B24030 /* dcddirif.cc in Sources */,
-				BFD0862809E3741700B24030 /* dcdebug.cc in Sources */,
-				BFD0862909E3741800B24030 /* dcdicdir.cc in Sources */,
-				BFD0862A09E3741800B24030 /* dcdicent.cc in Sources */,
-				BFD0862B09E3741900B24030 /* dcdict.cc in Sources */,
-				BFD0862C09E3741A00B24030 /* dcdictbi.cc in Sources */,
-				BFD0862D09E3741B00B24030 /* dcdirrec.cc in Sources */,
-				BFD0862E09E3741D00B24030 /* dcelem.cc in Sources */,
-				BFD0862F09E3741E00B24030 /* dcerror.cc in Sources */,
-				BFD0863009E3741F00B24030 /* dcfilefo.cc in Sources */,
-				BFD0863109E3741F00B24030 /* dchashdi.cc in Sources */,
-				BFD0863209E3742100B24030 /* dcistrma.cc in Sources */,
-				BFD0863309E3742200B24030 /* dcistrmb.cc in Sources */,
-				BFD0863409E3742300B24030 /* dcistrmf.cc in Sources */,
-				BFD0863509E3742700B24030 /* dcistrmz.cc in Sources */,
-				BFD0863609E3742800B24030 /* dcitem.cc in Sources */,
-				BFD0863709E3742900B24030 /* dclist.cc in Sources */,
-				BFD0863809E3742C00B24030 /* dcmetinf.cc in Sources */,
-				BFD0863909E3742C00B24030 /* dcobject.cc in Sources */,
-				BFD0863A09E3742D00B24030 /* dcostrma.cc in Sources */,
-				BFD0863B09E3743000B24030 /* dcostrmb.cc in Sources */,
-				BFD0863C09E3743100B24030 /* dcostrmf.cc in Sources */,
-				BFD0863D09E3743100B24030 /* dcostrmz.cc in Sources */,
-				BFD0863E09E3743400B24030 /* dcpcache.cc in Sources */,
-				BFD0863F09E3743400B24030 /* dcpixel.cc in Sources */,
-				BFD0864009E3743500B24030 /* dcpixseq.cc in Sources */,
-				BFD0864109E3743700B24030 /* dcpxitem.cc in Sources */,
-				BFD0864209E3743800B24030 /* dcrleccd.cc in Sources */,
-				BFD0864309E3743900B24030 /* dcrlecce.cc in Sources */,
-				BFD0864409E3743900B24030 /* dcrlecp.cc in Sources */,
-				BFD0864509E3743C00B24030 /* dcrledrg.cc in Sources */,
+				ABEA83850A21BE400094CAEF /* SafeDBRebuild.m in Sources */,
+				ABEA83BD0A21BF6D0094CAEF /* PapyWildexit3.c in Sources */,
+				ABEA83BE0A21BF6D0094CAEF /* PapyWild3.c in Sources */,
+				ABEA83BF0A21BF6D0094CAEF /* PapyWrite3.c in Sources */,
+				ABEA83C00A21BF6E0094CAEF /* PapyVars3.c in Sources */,
+				ABEA83C10A21BF6E0094CAEF /* PapyUtils3.c in Sources */,
+				ABEA83C20A21BF6F0094CAEF /* PapyRead3.c in Sources */,
+				ABEA83C30A21BF700094CAEF /* PapyFileSystemUnix3.c in Sources */,
+				ABEA83C40A21BF710094CAEF /* PapyEallocUnix3.c in Sources */,
+				ABEA83C50A21BF710094CAEF /* PapyDataSetWrite3.c in Sources */,
+				ABEA83C60A21BF710094CAEF /* PapyDataSetRead3.c in Sources */,
+				ABEA83C70A21BF720094CAEF /* PapyList3.c in Sources */,
+				ABEA83C80A21BF720094CAEF /* PapyInitModules3.c in Sources */,
+				ABEA83C90A21BF730094CAEF /* PapyInitGroups3.c in Sources */,
+				ABEA83CA0A21BF730094CAEF /* PapyInit3.c in Sources */,
+				ABEA83FB0A21BF740094CAEF /* PapyGetGlobalVar3.c in Sources */,
+				ABEA83FC0A21BF740094CAEF /* PapyFiles3.c in Sources */,
+				ABEA83FD0A21BF740094CAEF /* PapyError3.c in Sources */,
+				ABEA83FE0A21BF7A0094CAEF /* pnmtoljpoptimisebug.c in Sources */,
+				ABEA83FF0A21BF7A0094CAEF /* write.c in Sources */,
+				ABEA84000A21BF7A0094CAEF /* read.c in Sources */,
+				ABEA84010A21BF7B0094CAEF /* predict.c in Sources */,
+				ABEA84020A21BF7B0094CAEF /* mcu.c in Sources */,
+				ABEA84030A21BF7B0094CAEF /* jpegutil.c in Sources */,
+				ABEA84040A21BF7C0094CAEF /* pmreadoptimise.c in Sources */,
+				ABEA84050A21BF7C0094CAEF /* huffdoptimise.c in Sources */,
+				ABEA84060A21BF7D0094CAEF /* huffcoptimisebug.c in Sources */,
+				ABEA84070A21BF7D0094CAEF /* decompoptimise.c in Sources */,
+				ABEA84080A21BF810094CAEF /* jcphuff.c in Sources */,
+				ABEA84090A21BF810094CAEF /* jcapistd.c in Sources */,
+				ABEA840A0A21BF820094CAEF /* jdtrans.c in Sources */,
+				ABEA840B0A21BF830094CAEF /* jchuff.c in Sources */,
+				ABEA840C0A21BF830094CAEF /* jccolor.c in Sources */,
+				ABEA840D0A21BF830094CAEF /* jcapimin.c in Sources */,
+				ABEA840E0A21BF840094CAEF /* jdcolor.c in Sources */,
+				ABEA840F0A21BF850094CAEF /* jdhuff.c in Sources */,
+				ABEA84100A21BF850094CAEF /* jdinput.c in Sources */,
+				ABEA84110A21BF850094CAEF /* jdmainct.c in Sources */,
+				ABEA84120A21BF860094CAEF /* jdmaster.c in Sources */,
+				ABEA84130A21BF860094CAEF /* jdpostct.c in Sources */,
+				ABEA84140A21BF870094CAEF /* jidctint.c in Sources */,
+				ABEA84150A21BF870094CAEF /* jidctred.c in Sources */,
+				ABEA84160A21BF870094CAEF /* jmemmgr.c in Sources */,
+				ABEA84170A21BF880094CAEF /* jccoefct.c in Sources */,
+				ABEA84180A21BF890094CAEF /* rdcolmap.c in Sources */,
+				ABEA84190A21BF890094CAEF /* jutils.c in Sources */,
+				ABEA841A0A21BF8A0094CAEF /* jquant2.c in Sources */,
+				ABEA841B0A21BF8A0094CAEF /* jquant1.c in Sources */,
+				ABEA841C0A21BF8A0094CAEF /* jmemnobs.c in Sources */,
+				ABEA841D0A21BF8B0094CAEF /* jfdctint.c in Sources */,
+				ABEA841E0A21BF8C0094CAEF /* jfdctfst.c in Sources */,
+				ABEA841F0A21BF8C0094CAEF /* jfdctflt.c in Sources */,
+				ABEA84200A21BF8D0094CAEF /* jdatadst.c in Sources */,
+				ABEA84210A21BF8D0094CAEF /* jctrans.c in Sources */,
+				ABEA84220A21BF8D0094CAEF /* jcsample.c in Sources */,
+				ABEA84230A21BF8E0094CAEF /* jcprepct.c in Sources */,
+				ABEA84240A21BF8E0094CAEF /* jcmaster.c in Sources */,
+				ABEA84250A21BF8F0094CAEF /* jcmarker.c in Sources */,
+				ABEA84260A21BF8F0094CAEF /* jcinit.c in Sources */,
+				ABEA84270A21BF900094CAEF /* jcdctmgr.c in Sources */,
+				ABEA84280A21BF910094CAEF /* jidctfst.c in Sources */,
+				ABEA84290A21BF920094CAEF /* jdmerge.c in Sources */,
+				ABEA842A0A21BF920094CAEF /* jdphuff.c in Sources */,
+				ABEA842B0A21BF930094CAEF /* jdsample.c in Sources */,
+				ABEA842C0A21BF930094CAEF /* jerror.c in Sources */,
+				ABEA842D0A21BF930094CAEF /* jidctflt.c in Sources */,
+				ABEA842E0A21BF940094CAEF /* jdmarker.c in Sources */,
+				ABEA842F0A21BF950094CAEF /* jddctmgr.c in Sources */,
+				ABEA84300A21BF970094CAEF /* jdcoefct.c in Sources */,
+				ABEA84310A21BF970094CAEF /* jdatasrc.c in Sources */,
+				ABEA84320A21BF970094CAEF /* jdapistd.c in Sources */,
+				ABEA84330A21BF980094CAEF /* jdapimin.c in Sources */,
+				ABEA84340A21BF980094CAEF /* jcparam.c in Sources */,
+				ABEA84350A21BF990094CAEF /* jcomapi.c in Sources */,
+				ABEA84360A21BF990094CAEF /* jcmainct.c in Sources */,
+				ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */,
+				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26787,42 +26885,50 @@
 			};
 			name = Default;
 		};
-		BFD0864709E3745A00B24030 /* Development */ = {
+		ABEA7F390A21BCE90094CAEF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				INSTALL_PATH = "$(HOME)/bin";
 				OTHER_LDFLAGS = (
 					"-framework",
-					Carbon,
+					Foundation,
+					"-framework",
+					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = storescp;
+				PRODUCT_NAME = SafeDBRebuild;
+				SYMROOT = build;
 				ZERO_LINK = YES;
 			};
 			name = Development;
 		};
-		BFD0864809E3745A00B24030 /* Default */ = {
+		ABEA7F3A0A21BCE90094CAEF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(BUILD_DIR)/build/Development/OsiriX/Contents/MacOS";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				INSTALL_PATH = "$(HOME)/bin";
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /;
 				OTHER_LDFLAGS = (
 					"-framework",
-					Carbon,
+					Foundation,
+					"-framework",
+					AppKit,
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = storescp;
+				PRODUCT_NAME = SafeDBRebuild;
+				SYMROOT = build;
 				ZERO_LINK = YES;
 			};
 			name = Default;
@@ -26902,11 +27008,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		BFD0864609E3745A00B24030 /* Build configuration list for PBXNativeTarget "storescp" */ = {
+		ABEA7F380A21BCE90094CAEF /* Build configuration list for PBXNativeTarget "SafeDBRebuild" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BFD0864709E3745A00B24030 /* Development */,
-				BFD0864809E3745A00B24030 /* Default */,
+				ABEA7F390A21BCE90094CAEF /* Development */,
+				ABEA7F3A0A21BCE90094CAEF /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

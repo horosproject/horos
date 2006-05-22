@@ -2340,6 +2340,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (id) init:(NSString*) f
 {
+	id returnVal = 0L;
+	
 	if( self = [super init])
 	{
 		[DicomFile setDefaults];
@@ -2372,41 +2374,49 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( [self getFVTiffFile] == 0) // this needs to happen before getImageFile, since a FVTiff is a legal tiff and getImageFile will try to read it
 		{
-			return self;
+			returnVal = self;
 		}
 		else if( [self getImageFile] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else if ([self getPluginFile] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else if( [self getBioradPicFile] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else if( [self getAnalyze] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else if( [self getLSM] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else if( [self getDicomFile:NO] == 0)
 		{
-			return self;
+			returnVal = self;
 		}
 		else
 		{
 			[self release];
 			
-			return 0L;
+			returnVal = 0L;
 		}
 	}
 	
-	return self;
+	if( returnVal)
+	{
+		[dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
+		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
+		[dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
+		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+	}
+	
+	return returnVal;
 }
 
 
