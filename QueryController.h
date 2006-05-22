@@ -23,18 +23,16 @@
 @interface QueryController : NSWindowController {
 
     IBOutlet    NSOutlineView				*outlineView;
-    IBOutlet    NSTableView					*servers;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
-	IBOutlet	NSTextField					*statusField;
 	IBOutlet	NSSearchField				*searchField;
-	IBOutlet	NSTextField					*queryKeyField;
-	IBOutlet	NSTextField					*queryDateField;
 	IBOutlet	NSWindow					*advancedQueryWindow;   
 	IBOutlet	NSBox						*filterBox;
-	IBOutlet	NSTextView					*logView;
-	IBOutlet	NSTableView					*logTable;
-	IBOutlet	NSTableColumn				*statusTableColumn;
-	IBOutlet	NSScrollView				*logScrollView;
+	
+	IBOutlet	NSComboBox					*servers;
+	IBOutlet	NSMatrix					*dateFilterMatrix;
+	IBOutlet	NSMatrix					*modalityFilterMatrix;
+	IBOutlet	NSMatrix					*PatientModeMatrix;
+	IBOutlet	NSDatePicker				*fromDate, *toDate;
     
     NSMutableArray                  *result;
     NSMutableArray					*queryFilters;
@@ -44,10 +42,6 @@
 	NSString						*logString;
 	BOOL							echoSuccess;
 	NSMutableDictionary				*activeMoves;
-	NSMutableArray					*moveLog;
-	int								currentEchoRow;
-	NSImage							*echoImage;
-
 	
 	//DICOMQueryStudyRoot
 	QueryArrayController *queryManager;

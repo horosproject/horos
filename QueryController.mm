@@ -51,56 +51,56 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 //Table View servers
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView{
-	if ([aTableView isEqual:servers]){
-		return [[self serversList] count];
-	}
-	else
-		return [moveLog count];
-		
-	return 0;
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-	if ([aTableView isEqual:servers])
-	{
-		id server  = [[self serversList] objectAtIndex:rowIndex];	
-		if ([server isMemberOfClass:[NSNetService class]])
-			return [NSString stringWithFormat:@"%@ - Bonjour", [server name]];
-		else
-			return [NSString stringWithFormat:@"%@ - %@",[server objectForKey:@"AETitle"],[server objectForKey:@"Description"]];
-	/*
-		if( rowIndex > -1 && rowIndex < [serversArray count])
-		{
-			id theRecord = [serversArray objectAtIndex:rowIndex];			
-			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
-		}
-		else if( rowIndex > -1) {
-			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:rowIndex - ([serversArray count])];
-			return [NSString stringWithFormat:@"%@ - Bonjour", [service name]];
-		}
-	*/
-	}
-	else{
-		if (![[aTableColumn identifier] isEqualToString:@"Status"])
-			return [[moveLog objectAtIndex:rowIndex] valueForKey:[aTableColumn identifier]];
-		return nil;
-	}
-}
-
-- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-		return NO;
-}
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
-{
-	if( [[aNotification object] isEqual: servers])
-	{
-		[self clearQuery: self];
-		
-		
-	}
-}
+//- (int)numberOfRowsInTableView:(NSTableView *)aTableView{
+//	if ([aTableView isEqual:servers]){
+//		return [[self serversList] count];
+//	}
+//	else
+//		return [moveLog count];
+//		
+//	return 0;
+//}
+//
+//- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
+//	if ([aTableView isEqual:servers])
+//	{
+//		id server  = [[self serversList] objectAtIndex:rowIndex];	
+//		if ([server isMemberOfClass:[NSNetService class]])
+//			return [NSString stringWithFormat:@"%@ - Bonjour", [server name]];
+//		else
+//			return [NSString stringWithFormat:@"%@ - %@",[server objectForKey:@"AETitle"],[server objectForKey:@"Description"]];
+//	/*
+//		if( rowIndex > -1 && rowIndex < [serversArray count])
+//		{
+//			id theRecord = [serversArray objectAtIndex:rowIndex];			
+//			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
+//		}
+//		else if( rowIndex > -1) {
+//			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:rowIndex - ([serversArray count])];
+//			return [NSString stringWithFormat:@"%@ - Bonjour", [service name]];
+//		}
+//	*/
+//	}
+//	else{
+//		if (![[aTableColumn identifier] isEqualToString:@"Status"])
+//			return [[moveLog objectAtIndex:rowIndex] valueForKey:[aTableColumn identifier]];
+//		return nil;
+//	}
+//}
+//
+//- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
+//		return NO;
+//}
+//
+//- (void)tableViewSelectionDidChange:(NSNotification *)aNotification
+//{
+//	if( [[aNotification object] isEqual: servers])
+//	{
+//		[self clearQuery: self];
+//		
+//		
+//	}
+//}
 
 //******	OUTLINEVIEW
 
@@ -169,16 +169,19 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	NSString *port;
 	NSNetService *netService = nil;
 	id aServer;
-	if ([servers selectedRow] >= 0)
+	if ([servers indexOfSelectedItem] >= 0)
 	{
-		[[NSUserDefaults standardUserDefaults] setInteger: [servers selectedRow] forKey:@"lastQueryServer"];
+		[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
+		
 		/*
 		if ([servers selectedRow] < [serversArray count]  && [serversArray count] > 0)
 			aServer =  [serversArray objectAtIndex:[servers selectedRow]];
 		else 
 			aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow] - [serversArray count]];
 		*/
-		aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
+		
+		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
+		
 		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
 		if ([aServer isMemberOfClass:[NSNetService class]]){
 			theirAET = [aServer name];
@@ -191,25 +194,33 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			hostname = [aServer objectForKey:@"Address"];
 			port = [aServer objectForKey:@"Port"];
 		}
-	//get rid of white space at end and append "*"
+		
+		//get rid of white space at end and append "*"
 
 		NSString *filterValue = [[searchField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 		if (queryManager)
 			[queryManager release];
+			
 		queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
-	// add filters as needed
+		// add filters as needed
 		
 		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
 			//Specific Character Set
 			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-	
+		
+		if ([PatientModeMatrix selectedTag] == 0)
+			currentQueryKey = PatientName;
+		else if ([sender tag] == 1)
+			currentQueryKey = PatientID;
+		
 		if ([filterValue length] > 0) {			
 			[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
 		}
+		
 		//need to change string to format YYYYMMDD
 		DCMCalendarDate *startingDate = [dateQueryFilter object];
-		//NSLog(@"query start date: %@", [startingDate description]);
+		
 		if (startingDate) {
 			NSMutableString *dateString = [NSMutableString stringWithString: [startingDate descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];			
 			[queryManager addFilter:dateString forDescription:@"StudyDate"];
@@ -226,8 +237,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			[self performQuery: 0L];
 		}
 	}
-	else
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+//	else
+//		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 }
 
 -(void) advancedQuery:(id)sender{
@@ -243,8 +254,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	else
 		queryFilters = [[NSMutableArray array] retain];
 		
-	if ([sender tag] > 0) {
-		if ([servers selectedRow] >= 0) {
+	if ([sender tag] > 0)
+	{
+		if ([servers indexOfSelectedItem] >= 0)
+		{
 		//setup remote query
 			NSString *theirAET;
 			NSString *hostname;
@@ -257,7 +270,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 			else 
 				aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow] - [serversArray count]];
 			 */
-			 aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
+			aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
 			if ([aServer isMemberOfClass:[NSNetService class]]){
 				theirAET = [aServer name];
@@ -382,8 +395,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		[self performQuery: 0L];
 		[advancedQueryWindow close];	
 		}
-		else
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+//		else
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
 
 	[advancedQueryWindow close];	
@@ -426,16 +439,6 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[pool release];
 }
 
-- (void)setCurrentQueryKey:(id)sender{
-	if ([sender tag] == 0)
-		currentQueryKey = PatientName;
-		
-	else if ([sender tag] == 1)
-		currentQueryKey = PatientID;
-		
-	[queryKeyField setStringValue:[sender title]];
-}
-
 - (void)setDateQuery:(id)sender{
 	[dateQueryFilter release];
 	DCMCalendarDate *date;
@@ -446,8 +449,7 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	else 
 		date = nil;
 		
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];	
-	[queryDateField setStringValue:[sender title]];
+	dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 }
 
 //Action methods for managing advanced queries
@@ -459,7 +461,28 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 {
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
-	
+    NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+    NSMenuItem *item1, *item2, *item3;
+    id searchCell = [searchField cell];
+    item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+    [cellMenu insertItem:item1 atIndex:0];
+    [item1 release];
+    item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item2 setTag:NSSearchFieldRecentsMenuItemTag];
+    [cellMenu insertItem:item2 atIndex:1];
+    [item2 release];
+    item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+    [cellMenu insertItem:item3 atIndex:2];
+    [item3 release];
+    [searchCell setSearchMenuTemplate:cellMenu];
 }
 
 - (void)addQuerySubview:(id)sender{
@@ -510,14 +533,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		logString = 0L;
 		echoSuccess = 0L;
 		activeMoves = 0L;
-		moveLog = 0L;
-		currentEchoRow = 0L;
-		echoImage = 0L;
 		
 		queryFilters = [[NSMutableArray array] retain];
 		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
-		moveLog = [[NSMutableArray array] retain];
 		
 		logString = [NSString stringWithContentsOfFile:[logPath stringByExpandingTildeInPath]];
 		if (!logString)
@@ -542,92 +561,36 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[dateQueryFilter release];
 	[advancedQuerySubviews release];
 	[activeMoves release];
-	[moveLog release];
-	[echoImage release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
 
 - (void)windowDidLoad
 {
-	//create prototype Menu for SearchField
-	NSMenu *prototype = [[NSMenu alloc] initWithTitle:@"Search Menu"];
-	NSMenuItem *itemName, *itemID, *itemToday, *itemYesterday, *itemAnyDate, *itemAdvanced;
-    id searchCell = [searchField cell];
-	
-	itemName = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Patient Name", nil) action: @selector(setCurrentQueryKey:) keyEquivalent:@""];
-	[itemName setTag:0];
-    [prototype addItem:itemName];
-	
-	itemID = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Patient ID", nil) action: @selector(setCurrentQueryKey:) keyEquivalent:@""];
-    [prototype addItem:itemID];
-	[itemID setTag:1];
-	
-	[prototype addItem:[NSMenuItem separatorItem]];
-	
-	itemToday = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Today", nil) action: @selector(setDateQuery:) keyEquivalent:@""];
-    [prototype addItem:itemToday];
-	[itemToday setTag:0];
-	
-	itemYesterday = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Yesterday", nil) action: @selector(setDateQuery:) keyEquivalent:@""];
-	[itemYesterday setTag:1];
-    [prototype addItem:itemYesterday];
-	
-	itemAnyDate = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Any Date", nil) action: @selector(setDateQuery:) keyEquivalent:@""];
-	[itemAnyDate setTag:2];
-    [prototype addItem:itemAnyDate];
-	
-	[prototype addItem:[NSMenuItem separatorItem]];
-	
-	itemAdvanced = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Advanced Search", nil) action: @selector(openAdvancedQuery:) keyEquivalent:@""];
-    [prototype addItem:itemAdvanced];
-	
-	[searchCell setSearchMenuTemplate:prototype];
+	id searchCell = [searchField cell];
 
 	[[searchCell cancelButtonCell] setTarget:self];
-	[[searchCell cancelButtonCell]  setAction:@selector(clearQuery:)];	
-
-	//[searchCell setCancelButtonCell:nil];
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];	
 	
-	[itemToday release];
-	[itemYesterday release];
-	[itemAdvanced release];
-	[prototype release];	
-	[itemName release];
-	[itemID release];
-	// Finsihed submenu add
-	
-
-	//add data to servers tableView;
-	//[servers setTarget:self];
-	//[servers setAction:@selector(dicomEcho:)];
-	ImageAndTextCell *cell = [[[ImageAndTextCell alloc] init] autorelease];
-	[cell setEditable:NO];
-	[[servers tableColumnWithIdentifier:@"Source"] setDataCell:cell];
-   
-	[servers selectRow:[[NSUserDefaults standardUserDefaults] integerForKey:@"lastQueryServer"] byExtendingSelection:NO];
-	[servers reloadData];
+	[servers selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"lastQueryServer"]];
 	 
     // OutlineView View
     
     [outlineView setDelegate: self];
 	[outlineView setTarget: self];
 	[outlineView setDoubleAction:@selector(retrieve:)];
-
-	[statusField setStringValue:@" "];
+	
 	//set up Query Keys
 	currentQueryKey = PatientName;
-	[queryKeyField setStringValue:NSLocalizedString(@"Patient Name", nil)];
+//	[queryKeyField setStringValue:NSLocalizedString(@"Patient Name", nil)];
+	
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
-	[queryDateField setStringValue:NSLocalizedString(@"Any Date", nil)];
+//	[queryDateField setStringValue:NSLocalizedString(@"Any Date", nil)];
 
 	[self addQuerySubview:nil];
-	[logView setEditable:NO];
-	[[logView textStorage] setAttributedString:[[[NSAttributedString alloc] initWithString:logString] autorelease]];
-	[logView scrollRangeToVisible:NSMakeRange([[logView string] length], 0)];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
+		
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
 
@@ -640,8 +603,9 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 //	[buttonCell setBordered:YES];
 	[buttonCell setBezelStyle: NSRegularSquareBezelStyle];
 	[tableColumn setDataCell:buttonCell];
-	NSImageCell *imageCell = [[[NSImageCell alloc] init] autorelease];
-	[statusTableColumn setDataCell:imageCell];
+	
+//	NSImageCell *imageCell = [[[NSImageCell alloc] init] autorelease];
+//	[statusTableColumn setDataCell:imageCell];
 	
 }
 
@@ -684,10 +648,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSUserDefaults standardUserDefaults] setInteger: [servers selectedRow] forKey:@"lastQueryServer"];
+	[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
 
 
-//    [[self window] setDelegate:nil];
+//	[[self window] setDelegate:nil];
 //	
 //	[self release];
 }
@@ -696,32 +660,30 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[servers reloadData];
 }
 
-- (void)retrieveMessage:(NSNotification *)note{
-
-	//updates status of retrieve
-	
-	NSDictionary *info = [note userInfo];
-	NSDate *date = [info objectForKey:@"Time"];
-	//NSLog(@"userInfo: %@", [info description]);
-	if (date) {
-		//if we already have the datahandler we have already added to active moves. need to replace objects
-		if ([[activeMoves allKeys] containsObject:date]){
-			NSMutableDictionary *dictionary = [activeMoves objectForKey:date];
-			[dictionary setDictionary:info];
-		}
-		else
-		{
-			[activeMoves setObject:info forKey:date];
-			[moveLog addObject:info];
-			//should scroll to bottom  Not sure how to do it.
-		}
-		
-	if ([[info objectForKey:@"RetrieveComplete"] boolValue])
-		[activeMoves removeObjectForKey:date];
-	}
-		
-	[logTable reloadData];
-}
+//- (void)retrieveMessage:(NSNotification *)note
+//{
+//	//updates status of retrieve
+//	
+//	NSDictionary *info = [note userInfo];
+//	NSDate *date = [info objectForKey:@"Time"];
+//	//NSLog(@"userInfo: %@", [info description]);
+//	if (date) {
+//		//if we already have the datahandler we have already added to active moves. need to replace objects
+//		if ([[activeMoves allKeys] containsObject:date]){
+//			NSMutableDictionary *dictionary = [activeMoves objectForKey:date];
+//			[dictionary setDictionary:info];
+//		}
+//		else
+//		{
+//			[activeMoves setObject:info forKey:date];
+//			[moveLog addObject:info];
+//			//should scroll to bottom  Not sure how to do it.
+//		}
+//		
+//	if ([[info objectForKey:@"RetrieveComplete"] boolValue])
+//		[activeMoves removeObjectForKey:date];
+//	}
+//}
 
 - (BOOL)dicomEcho{
 	BOOL status = YES;
@@ -733,9 +695,10 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 	NSMutableArray *objects;
 	NSMutableArray *keys; 
-	if ([servers selectedRow] >= 0) {
-		NSLog(@"Server at Index: %d", [servers selectedRow]);
-		aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
+	if ([servers indexOfSelectedItem] >= 0)
+	{
+		NSLog(@"Server at Index: %d", [servers indexOfSelectedItem]);
+		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 	 
 		//Bonjour
 		if ([aServer isMemberOfClass:[NSNetService class]]){
@@ -817,8 +780,8 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 	[wait close];
 	[wait release];
 
-	if ( [servers selectedRow] >= 0) {
-		aServer = [[self serversList]  objectAtIndex:[servers selectedRow]];
+	if ( [servers indexOfSelectedItem] >= 0) {
+		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 		if ([aServer isMemberOfClass:[NSNetService class]])
 			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
 		else
@@ -869,5 +832,29 @@ static NSString *logPath = @"~/Library/Logs/osirix.log";
 		return [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 }
 
+#pragma mark serversArray functions
 
+- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+{
+	if ([aComboBox isEqual:servers]) return [[self serversList] count];
+}
+
+- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+{
+	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+
+
+	if ([aComboBox isEqual:servers]){
+		if( index > -1 && index < [serversArray count])
+		{
+			id theRecord = [serversArray objectAtIndex: index];			
+			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
+		}
+		else if( index > -1) {
+			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:index - ([serversArray count])];
+			return [NSString stringWithFormat:NSLocalizedString(@"%@ - Bonjour", nil), [service name]];
+		}
+	}
+	return nil;
+}
 @end

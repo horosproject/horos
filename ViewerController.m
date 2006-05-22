@@ -6952,39 +6952,34 @@ int i,j,l;
 					[[vC imageView] setWLWW:iwl :iww];
 				}
 			}
-			
-			float fValue;
-			
-			if(  curvedController == 0L && [vC curvedController] == 0L)
-			{
-				if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
-				{
-					if( [imageView scaleValue] != 0)
-					{
-						fValue = [imageView scaleValue] / [imageView pixelSpacing];
-						[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
-					}
-				}
-				else
-				{
-					if( [imageView scaleValue] != 0)
-						[[vC imageView] setScaleValue: [imageView scaleValue]];
-				}
-			}
-			
+
 			
 			float vectorsA[9], vectorsB[9];
 			
 			[[pixList[0] objectAtIndex:0] orientation: vectorsA];
 			[[[vC pixList] objectAtIndex:0] orientation: vectorsB];
+
+			float fValue;
 			
-//			NSLog(@"VecA: %f %f %f", vectorsA[ 0], vectorsA[ 1], vectorsA[ 2]);
-//			NSLog(@"VecA: %f %f %f", vectorsA[ 3], vectorsA[ 4], vectorsA[ 5]);
-//			NSLog(@"VecA: %f %f %f", vectorsA[ 6], vectorsA[ 7], vectorsA[ 8]);
-//			
-//			NSLog(@"VecB: %f %f %f", vectorsB[ 0], vectorsB[ 1], vectorsB[ 2]);
-//			NSLog(@"VecB: %f %f %f", vectorsB[ 3], vectorsB[ 4], vectorsB[ 5]);
-//			NSLog(@"VecB: %f %f %f", vectorsB[ 6], vectorsB[ 7], vectorsB[ 8]);
+			if(  curvedController == 0L && [vC curvedController] == 0L)
+			{
+				if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
+				{
+					if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
+					{
+						if( [imageView scaleValue] != 0)
+						{
+							fValue = [imageView scaleValue] / [imageView pixelSpacing];
+							[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
+						}
+					}
+					else
+					{
+						if( [imageView scaleValue] != 0)
+							[[vC imageView] setScaleValue: [imageView scaleValue]];
+					}
+				}
+			}
 			
 			if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
 			{

@@ -113,31 +113,38 @@
             OUTLETS = {Xslider = NSSlider; Yslider = NSSlider; Zslider = NSSlider; }; 
             SUPERCLASS = VTKView; 
         }, 
+        {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             ACTIONS = {
                 abort = id; 
+                addQuerySubview = id; 
                 advancedQuery = id; 
+                chooseFilter = id; 
+                clearQuery = id; 
                 controlAction = id; 
+                openAdvancedQuery = id; 
                 query = id; 
+                removeQuerySubview = id; 
                 retrieve = id; 
-                setQueryKey = id; 
+                setCurrentQueryKey = id; 
+                setDateQuery = id; 
                 verify = id; 
             }; 
             CLASS = QueryController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                advancedQueryWindow = id; 
-                filterBox = id; 
-                logScrollView = NSScrollView; 
-                logTable = NSTableView; 
-                outlineView = NSTableView; 
+                PatientModeMatrix = NSMatrix; 
+                advancedQueryWindow = NSWindow; 
+                dateFilterMatrix = NSMatrix; 
+                filterBox = NSBox; 
+                fromDate = NSDatePicker; 
+                modalityFilterMatrix = NSMatrix; 
+                outlineView = NSOutlineView; 
                 progressIndicator = NSProgressIndicator; 
-                queryDateField = id; 
-                queryKeyField = id; 
-                searchField = id; 
-                servers = NSTableView; 
-                statusField = NSTextField; 
+                searchField = NSSearchField; 
+                servers = NSComboBox; 
+                toDate = NSDatePicker; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
