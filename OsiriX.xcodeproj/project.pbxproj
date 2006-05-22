@@ -1265,7 +1265,6 @@
 		ABE33389063D627800C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
-		ABEA83850A21BE400094CAEF /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
 		ABEA83BD0A21BF6D0094CAEF /* PapyWildexit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C405646BBF00BED927 /* PapyWildexit3.c */; };
 		ABEA83BE0A21BF6D0094CAEF /* PapyWild3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C305646BBF00BED927 /* PapyWild3.c */; };
 		ABEA83BF0A21BF6D0094CAEF /* PapyWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C205646BBF00BED927 /* PapyWrite3.c */; };
@@ -8780,7 +8779,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */;
+			remoteGlobalIDString = ABEA7F070A21BCC90094CAEF;
 			remoteInfo = SafeDBRebuild;
 		};
 		CE4E42F808758A1800D0AFDB /* PBXContainerItemProxy */ = {
@@ -9679,7 +9678,7 @@
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
 		ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AdvancedQuerySubview.h; sourceTree = "<group>"; };
 		ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AdvancedQuerySubview.m; sourceTree = "<group>"; };
-		ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABEA83830A21BE400094CAEF /* SafeDBRebuild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SafeDBRebuild.h; sourceTree = "<group>"; };
 		ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SafeDBRebuild.m; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
@@ -25200,7 +25199,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ABEA83850A21BE400094CAEF /* SafeDBRebuild.m in Sources */,
 				ABEA83BD0A21BF6D0094CAEF /* PapyWildexit3.c in Sources */,
 				ABEA83BE0A21BF6D0094CAEF /* PapyWild3.c in Sources */,
 				ABEA83BF0A21BF6D0094CAEF /* PapyWrite3.c in Sources */,

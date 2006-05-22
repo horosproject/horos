@@ -27,7 +27,7 @@
 #include "DCMTKVerifySCU.h"
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
-
+#import "BrowserController.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -68,6 +68,31 @@ static NSString *Modality = @"Modality";
 		}
 	}
 	return  (item == nil) ? [[queryManager queries] count] : [[(DCMTKQueryNode *) item children] count];
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
+	{
+		NSError						*error = 0L;
+		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@) AND (name == %@)", [item valueForKey:@"uid"], [item valueForKey:@"name"]];	//DCMTKQueryNode
+		NSArray						*studyArray;
+		
+		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+		[request setPredicate: predicate];
+		
+		[context lock];
+		studyArray = [context executeFetchRequest:request error:&error];
+		if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] == [[item valueForKey:@"numberImages"] intValue])
+		{
+			[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 12]];
+		}
+		else [cell setFont: [NSFont systemFontOfSize: 12]];
+		
+		[context unlock];
+	}
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
