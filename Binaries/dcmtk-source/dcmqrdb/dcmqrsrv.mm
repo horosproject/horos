@@ -1184,7 +1184,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				printf("child process handle association\n");
                 cond = handleAssociation(assoc, options_.correctUIDPadding_);
                 /* the child process is done so exit */
-                _Exit(0);	//to avoid spin_lock
+                _Exit(3);	//to avoid spin_lock
 				//exit(0);
 //
 //				pthread_t threadId;
