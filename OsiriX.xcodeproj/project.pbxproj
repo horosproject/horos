@@ -1355,8 +1355,7 @@
 		ABF68A43061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
-		ABFB2BB30A22DB0400A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
-		ABFB2BB40A22DB0500A587B5 /* SafeDBRebuild.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEA83830A21BE400094CAEF /* SafeDBRebuild.h */; };
+		ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
 		BF00C95A06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		BF00C95B06F3F43900715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
 		BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
@@ -18691,7 +18690,6 @@
 				BF90552209EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24009F93B3F0077E16B /* LogManager.h in Headers */,
 				BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
-				ABFB2BB40A22DB0500A587B5 /* SafeDBRebuild.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24630,7 +24628,6 @@
 				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
 				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
-				ABFB2BB30A22DB0400A587B5 /* SafeDBRebuild.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25280,6 +25277,7 @@
 				ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */,
 				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
 				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
+				ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
