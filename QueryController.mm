@@ -96,7 +96,7 @@ static NSString *Modality = @"Modality";
 			{
 				[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
 			}
-			else [cell setFont: [NSFont fontWithName:@"LucidaSans" size: 13]];
+			else [cell setFont: [NSFont fontWithName:@"LucidaSans-Demi" size: 13]];
 			
 			[context unlock];
 		}

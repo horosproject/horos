@@ -430,7 +430,7 @@ static BOOL FORCEREBUILD = NO;
 	}
 }
 
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM :(BOOL) safeProcess
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
 {
 	if( isCurrentDatabaseBonjour) return 0L;
 
@@ -503,9 +503,12 @@ static BOOL FORCEREBUILD = NO;
 	}
 	else
 	{
-		addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
-		modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
-				
+		if( produceAddedFiles)
+		{
+			addedImagesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+			modifiedStudiesArray = [NSMutableArray arrayWithCapacity: 0];
+		}
+		
 		// Add the new files
 		while (newFile = [enumerator nextObject])
 		{
@@ -651,7 +654,8 @@ static BOOL FORCEREBUILD = NO;
 							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
 							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
 							
-							[modifiedStudiesArray addObject: study];
+							if( produceAddedFiles)
+								[modifiedStudiesArray addObject: study];
 						}
 						
 						long NoOfSeries = [[curDict objectForKey: @"numberOfSeries"] intValue];
@@ -781,7 +785,8 @@ static BOOL FORCEREBUILD = NO;
 									}
 								}
 								
-								[addedImagesArray addObject: image];
+								if( produceAddedFiles) 
+									[addedImagesArray addObject: image];
 								
 								if([curDict valueForKey:@"album"] !=nil)
 								{
@@ -838,7 +843,8 @@ static BOOL FORCEREBUILD = NO;
 							else
 							{
 								image = [imagesArray objectAtIndex: index];
-								[addedImagesArray addObject: image];
+								if( produceAddedFiles) 
+									[addedImagesArray addObject: image];
 							}
 						}
 					}
@@ -857,11 +863,14 @@ static BOOL FORCEREBUILD = NO;
 		[studiesArray release];
 		
 		// Compute no of images in studies/series
-		for( i = 0; i < [modifiedStudiesArray count]; i++) [[modifiedStudiesArray objectAtIndex: i] valueForKey:@"noFiles"];
+		if( produceAddedFiles)
+			for( i = 0; i < [modifiedStudiesArray count]; i++) [[modifiedStudiesArray objectAtIndex: i] valueForKey:@"noFiles"];
 		
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
-
+		if( produceAddedFiles)
+		{
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+		}
 		
 		[curPatientUID release];
 		[curStudyID release];
@@ -910,12 +919,12 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	[self addFilesToDatabase: newFilesArray : onlyDICOM :NO];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles:NO];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
-	return [self addFilesToDatabase:newFilesArray :NO :NO];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
 }
 
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
@@ -1675,7 +1684,12 @@ long        i;
 		if( FORCEREBUILD) DoIt = YES;
 		else
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn) DoIt = YES;
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+			
+			if( result == NSAlertOtherReturn || result == NSAlertDefaultReturn)
+			{
+				DoIt = YES;
+			}
 		}
 		
 		if( DoIt)
@@ -1684,11 +1698,27 @@ long        i;
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
 			}
+			FORCEREBUILD = YES;
 		}
 	}
 	else
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes.", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn) DoIt = YES;
+		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes. 'Complete Rebuild' will delete all albums, comments and status. For large database (more than 500K images), it is recommended to use the 'Complete Rebuild'", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Complete Rebuild",nil));
+		
+		if( result == NSAlertOtherReturn || result == NSAlertDefaultReturn)
+		{
+			DoIt = YES;
+		}
+		
+		if( result == NSAlertOtherReturn)
+		{
+			if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
+			{
+				[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
+			}
+			
+			FORCEREBUILD = YES;
+		}
     }
 	
 	if( DoIt)
@@ -1723,38 +1753,50 @@ long        i;
 				[filesArray addObject:itemPath];
 			}
 		}
-
-		NSArray*	addedFiles = [[self addFilesToDatabase: filesArray] valueForKey:@"completePath"];
-
+		
+		NSArray*	addedFiles = 0L;
+		
+		if( FORCEREBUILD == NO)
+		{
+			addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES] valueForKey:@"completePath"];
+		}
+		else
+		{
+			[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
+		}
+		
 		[wait close];
 		[wait release];
 		
-		Wait *step2 = [[Wait alloc] initWithString: NSLocalizedString(@"Step 2: Removing unreadable files...", 0L)];
-		[step2 showWindow:self];
-		
-		[[step2 progress] setMaxValue:[filesArray count]/50];
-		
-		if( [addedFiles count] != [filesArray count])
+		if( addedFiles)
 		{
-			long i;
+			Wait *step2 = [[Wait alloc] initWithString: NSLocalizedString(@"Step 2: Removing unreadable files...", 0L)];
+			[step2 showWindow:self];
 			
-			NSLog( @"[addedFiles count] != [filesArray count]");
+			[[step2 progress] setMaxValue:[filesArray count]/50];
 			
-			for( i = 0; i < [filesArray count]; i++)
+			if( [addedFiles count] != [filesArray count])
 			{
-				if( [addedFiles containsObject: [filesArray objectAtIndex: i]] == NO)
-				{
-					NSLog( @"Remove file: %@", [filesArray objectAtIndex: i]);
-					[[NSFileManager defaultManager] removeFileAtPath:[filesArray objectAtIndex: i] handler:nil];
-				}
+				long i;
 				
-				if( i % 50 == 0) [step2 incrementBy:1];
+				NSLog( @"[addedFiles count] != [filesArray count]");
+				
+				for( i = 0; i < [filesArray count]; i++)
+				{
+					if( [addedFiles containsObject: [filesArray objectAtIndex: i]] == NO)
+					{
+						NSLog( @"Remove file: %@", [filesArray objectAtIndex: i]);
+						[[NSFileManager defaultManager] removeFileAtPath:[filesArray objectAtIndex: i] handler:nil];
+					}
+					
+					if( i % 50 == 0) [step2 incrementBy:1];
+				}
 			}
+			
+			[filesArray release];
+			[step2 close];
+			[step2 release];
 		}
-		
-		[filesArray release];
-		[step2 close];
-		[step2 release];
 		
 		NSLog( @"FORCEREBUILD: %d", FORCEREBUILD);
 		
@@ -1767,7 +1809,6 @@ long        i;
 		
 		if( FORCEREBUILD == NO)
 		{
-			
 			// FIND ALL images, and REMOVE non-available images
 			
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
