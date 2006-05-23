@@ -919,12 +919,12 @@ static BOOL FORCEREBUILD = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
 {
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles:NO];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles :YES];
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
 {
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles :YES];
 }
 
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames

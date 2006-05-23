@@ -92,7 +92,7 @@ static NSString *Modality = @"Modality";
 			
 			[context lock];
 			studyArray = [context executeFetchRequest:request error:&error];
-			if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] == [[item valueForKey:@"numberImages"] intValue])
+			if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
 			{
 				[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
 			}
