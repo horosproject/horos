@@ -554,7 +554,7 @@ static BOOL FORCEREBUILD = NO;
 				{
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
 					
-					if( ii % 100 == 0)
+					if( ii % 50000 == 0)
 					{
 						[self saveDatabase:currentDatabasePath];
 					}
