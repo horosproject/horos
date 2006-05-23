@@ -77,26 +77,29 @@ static NSString *Modality = @"Modality";
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
+	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 	{
-		NSError						*error = 0L;
-		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@) AND (name == %@)", [item valueForKey:@"uid"], [item valueForKey:@"name"]];	//DCMTKQueryNode
-		NSArray						*studyArray;
-		
-		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		[context lock];
-		studyArray = [context executeFetchRequest:request error:&error];
-		if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] == [[item valueForKey:@"numberImages"] intValue])
+		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 		{
-			[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
+			NSError						*error = 0L;
+			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+			NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@) AND (name == %@)", [item valueForKey:@"uid"], [item valueForKey:@"name"]];	//DCMTKQueryNode
+			NSArray						*studyArray;
+			
+			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+			[request setPredicate: predicate];
+			
+			[context lock];
+			studyArray = [context executeFetchRequest:request error:&error];
+			if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] == [[item valueForKey:@"numberImages"] intValue])
+			{
+				[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
+			}
+			else [cell setFont: [NSFont fontWithName:@"LucidaSans" size: 13]];
+			
+			[context unlock];
 		}
-		else [cell setFont: [NSFont boldSystemFontOfSize: 13]];
-		
-		[context unlock];
 	}
 }
 
