@@ -583,7 +583,7 @@ static BOOL FORCEREBUILD = NO;
 				{
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
 					
-					if( ii % 10000 == 0)
+					if( ii % 50000 == 0)
 					{
 						[self saveDatabase:currentDatabasePath];
 					}
@@ -1749,25 +1749,20 @@ long        i;
 			if ([fileType isEqual:NSFileTypeRegular] && [[[pathname lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == NO)
 			{
 				[filesArray addObject:itemPath];
-				
-				if( FORCEREBUILD == YES && [filesArray count] >= 10000)
-				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
-					
-					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
-					
-					[filesArray release];
-					filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-					
-					[pool release];
-				}
+//				
+//				if( FORCEREBUILD == YES && [filesArray count] >= 100)
+//				{
+//					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
+//					
+//					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
+//					
+//					[filesArray release];
+//					filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+//					
+//					[pool release];
+//				}
 			}
 		}
-		
-		NSManagedObjectContext		*context = [self managedObjectContext];
-		NSManagedObjectModel		*model = [self managedObjectModel];
-		
-		[context lock];
 		
 		NSArray*	addedFiles = 0L;
 		
@@ -1818,6 +1813,11 @@ long        i;
 		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
 		
 		[splash showWindow:self];
+		
+		NSManagedObjectContext		*context = [self managedObjectContext];
+		NSManagedObjectModel		*model = [self managedObjectModel];
+		
+		[context lock];
 		
 		NSFetchRequest	*dbRequest;
 		NSError			*error = 0L;
