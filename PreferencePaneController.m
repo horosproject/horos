@@ -122,14 +122,16 @@ extern BrowserController	*browserWindow;
 	[self release];
 }
 
-
+- (void) reopenDatabase
+{
+	[browserWindow openDatabaseIn: [documentsDirectory() stringByAppendingString:@"/Database.sql"] Bonjour: NO];
+}
 
 - (void) preferencesUpdated: (NSNotification*) note
 {
 	BOOL				restartListener = NO;
 	BOOL				refreshDatabase = NO;
 	BOOL				refreshColumns = NO;
-	BOOL				reopenDatabase = NO;
 	BOOL				recomputePETBlending = NO;
 	
 	NS_DURING
@@ -149,18 +151,10 @@ extern BrowserController	*browserWindow;
 	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[[note object] integerForKey: @"HIDEPATIENTNAME"]) refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[[note object] objectForKey: @"COLUMNSDATABASE"]] == NO) refreshColumns = YES;	
 	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[[note object] integerForKey: @"SERIESORDER"]) refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"DATABASELOCATIONURL"]		isEqualToString:	[[note object] stringForKey: @"DATABASELOCATIONURL"]] == NO ||
-		[[previousDefaults valueForKey: @"DATABASELOCATION"]intValue]			!=		[[note object] integerForKey: @"DATABASELOCATION"])
-	{
-		reopenDatabase = YES;
-	}
 	
 	[previousDefaults release];
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	
-	if (reopenDatabase)
-		[browserWindow openDatabaseIn: [documentsDirectory() stringByAppendingString:@"/Database.sql"] Bonjour: NO];
-		
 	if (refreshDatabase)
 		[browserWindow outlineViewRefresh];
 		

@@ -1870,21 +1870,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
 				
-			/*	switch(gFileModality [fileNb])
-				{
-					case CR_IM:     Modality = [[NSString alloc] initWithString:@"CR"];     break;
-					case CT_IM:     Modality = [[NSString alloc] initWithString:@"CT"];     break;
-					case DX_IM:     Modality = [[NSString alloc] initWithString:@"DX"];     break;
-					case MR_IM:     Modality = [[NSString alloc] initWithString:@"MR"];     break;
-					case PET_IM:    Modality = [[NSString alloc] initWithString:@"PET"];    break;
-					case RF_IM:     Modality = [[NSString alloc] initWithString:@"RF"];     break;
-					case NM_IM:     Modality = [[NSString alloc] initWithString:@"NM"];     break;
-					case US_IM:     Modality = [[NSString alloc] initWithString:@"US"];     break;
-					default:        Modality = [[NSString alloc] initWithString:@"OT"];     break;
-				}   */
-				
 				// free the module and the associated sequences 
-				
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 		   }
 		   
@@ -1955,21 +1941,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
-		
-		
-//		if( [dicomElements objectForKey:@"studyID"] == 0L)	[dicomElements setObject:name forKey:@"studyID"];
-//		if( [dicomElements objectForKey:@"studyDescription"] == 0L) [dicomElements setObject:name forKey:@"studyDescription"];
-//		if( [dicomElements objectForKey:@"studyDate"] == 0L) [dicomElements setObject:[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] forKey:@"studyDate"];
-//		if( [dicomElements objectForKey:@"modality"] == 0L) [dicomElements setObject:@"OT" forKey:@"modality"];
-//		if( [dicomElements objectForKey:@"patientID"] == 0L) [dicomElements setObject:name forKey:@"patientID"];
-//		if( [dicomElements objectForKey:@"patientName"] == 0L) [dicomElements setObject:name forKey:@"patientName"];
-//		if( [dicomElements objectForKey:@"patientUID"] == 0L) [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-//		if( [dicomElements objectForKey:@"seriesID"] == 0L) [dicomElements setObject:@"0" forKey:@"seriesID"];
-//		if( [dicomElements objectForKey:@"seriesDescription"] == 0L) [dicomElements setObject:name forKey:@"seriesDescription"];
-//		if( [dicomElements objectForKey:@"seriesNumber"] == 0L) [dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-//		if( [dicomElements objectForKey:@"SOPUID"] == 0L) [dicomElements setObject:@"0" forKey:@"SOPUID"];
-//		if( [dicomElements objectForKey:@"imageID"] == 0L) [dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-//		if( [dicomElements objectForKey:@"fileType"] == 0L) [dicomElements setObject:fileType forKey:@"fileType"];
 
 		if( studyID == 0L)
 		{

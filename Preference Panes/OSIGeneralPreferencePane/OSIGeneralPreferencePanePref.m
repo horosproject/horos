@@ -14,6 +14,7 @@
 
 
 #import "OSIGeneralPreferencePanePref.h"
+#import "PreferencePaneController.h"
 
 @implementation OSIGeneralPreferencePanePref
 

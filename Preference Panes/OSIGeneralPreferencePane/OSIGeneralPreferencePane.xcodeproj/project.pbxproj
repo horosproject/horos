@@ -16,6 +16,7 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A6820A19C90F00FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A6810A19C90F00FED357 /* Security.framework */; };
+		CE75CA610A23AD4500D22E9E /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -54,6 +55,7 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIGeneralPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A6810A19C90F00FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PreferencePaneController.h; path = ../../PreferencePaneController.h; sourceTree = SOURCE_ROOT; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIGeneralPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIGeneralPreferencePanePref.m; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CE75CA600A23AD4500D22E9E /* PreferencePaneController.h */,
 				F506C03C013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSIGeneralPreferencePanePref.m */,
 			);
@@ -160,6 +163,7 @@
 			files = (
 				8D202CEA0486D31800D8A456 /* OSIGeneralPreferencePane_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* OSIGeneralPreferencePanePref.h in Headers */,
+				CE75CA610A23AD4500D22E9E /* PreferencePaneController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

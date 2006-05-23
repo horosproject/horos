@@ -20,6 +20,7 @@ Version 2.3
 *****************************************************************************************************/
 
 #import "OSIDatabasePreferencePanePref.h"
+#import "PreferencePaneController.h"
 
 @implementation OSIDatabasePreferencePanePref
 
@@ -339,6 +340,8 @@ Version 2.3
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DATABASELOCATION"];
+	
+	[[[[self mainView] window] windowController] reopenDatabase];
 }
 
 - (IBAction)setLocationURL:(id)sender{
@@ -361,8 +364,14 @@ Version 2.3
 			location = [location stringByDeletingLastPathComponent];
 		}
 		
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		{
+			NSLog( [location lastPathComponent]);
+			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+		}
+		
 		[locationURLField setStringValue: location];
-		[[NSUserDefaults standardUserDefaults] setObject:[oPanel directory] forKey:@"DATABASELOCATIONURL"];
+		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DATABASELOCATIONURL"];
 		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:1];
 	}	
@@ -373,6 +382,8 @@ Version 2.3
 		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:0];
 	}
+	
+	[[[[self mainView] window] windowController] reopenDatabase];
 }
 
 - (IBAction) setCopyDatabaseMode:(id)sender{

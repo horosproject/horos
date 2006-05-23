@@ -366,43 +366,11 @@ static BOOL FORCEREBUILD = NO;
 		dstPath = [NSString stringWithFormat:@"%@/%d.%@", subFolder, DATABASEINDEX, extension];
 		
 		DATABASEINDEX++;
-		
-	//	[[NSUserDefaults standardUserDefaults] setInteger: dbIndex+1 forKey: @"DATABASEINDEX"];		<- EXTREMELY SLOOOOOOOOOOOOOOOOW
 	}
 	while ([[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
 	
 	return dstPath;
 }
-
-// Sorry, but I don't understand the goal of this function... please explain
-
-//- (NSString*) getNewFileDatabasePath: (NSString*) name: (NSString*) extension
-//{
-//	NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-//	NSString		*dstPath;
-//	NSString		*subFolder;
-//	long			subFolderInt;
-//
-//	
-//	subFolderInt = 10000L * (( DATABASEINDEX / 10000L) +1);
-//
-//	if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-//		subFolder = [NSString stringWithFormat:@"%@TIF", OUTpath];
-//	else
-//		subFolder = [NSString stringWithFormat:@"%@%d", OUTpath, subFolderInt];
-//
-//	if (![[NSFileManager defaultManager] fileExistsAtPath: subFolder])
-//		[[NSFileManager defaultManager] createDirectoryAtPath: subFolder attributes: nil];
-//	
-//	dstPath = [NSString stringWithFormat:@"%@/%@.%@", subFolder, name, extension];
-//	
-//	if ([[NSFileManager defaultManager] fileExistsAtPath: dstPath])
-//		return [self getNewFileDatabasePath: extension];
-//	
-//	DATABASEINDEX++;
-//	
-//	return dstPath;
-//}
 
 - (void) reloadViewers: (NSMutableArray*) viewersListToReload
 {
@@ -474,7 +442,9 @@ static BOOL FORCEREBUILD = NO;
 	
 	ii = 0;
 	[context lock];
-
+	
+	[context setStalenessInterval: 1];
+	
 	// Find all current studies
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -496,6 +466,7 @@ static BOOL FORCEREBUILD = NO;
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
 		managedObjectContext = 0L;
+		[context setStalenessInterval: 0];
 		[context unlock];
 		
 		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
@@ -583,7 +554,7 @@ static BOOL FORCEREBUILD = NO;
 				{
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
 					
-					if( ii % 50000 == 0)
+					if( ii % 100 == 0)
 					{
 						[self saveDatabase:currentDatabasePath];
 					}
@@ -791,15 +762,11 @@ static BOOL FORCEREBUILD = NO;
 									}
 								}
 								
-								if( produceAddedFiles) 
+								if( produceAddedFiles)
 									[addedImagesArray addObject: image];
 								
 								if([curDict valueForKey:@"album"] !=nil)
 								{
-									// if an album name is provided, add the file to this album
-									//NSLog(@"an album name is provided");
-									// search the album with this name
-									
 									NSArray	*albumArray = [self albumArray];
 									
 									NSManagedObject *album = nil;
@@ -891,6 +858,7 @@ static BOOL FORCEREBUILD = NO;
 			lastSaved = [NSDate timeIntervalSinceReferenceDate];
 		}
 		
+		[context setStalenessInterval: 0];
 		[context unlock];
 		
 		if( addFailed == NO)
@@ -1421,9 +1389,12 @@ static BOOL FORCEREBUILD = NO;
 		[self updateDatabaseModel: path :DBVersion];
 	}
 	
-//	[managedObjectContext release];		// VERY IMPORTANT! KEEP THE OLD CONTEXT IN MEMORY !
+	[managedObjectContext lock];
+	[managedObjectContext unlock];
+	[managedObjectContext release];
 	managedObjectContext = 0L;
-	
+	[self managedObjectContext];
+
 	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?
 	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingString:@"/DICOMDIR"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir])
@@ -1730,7 +1701,7 @@ long        i;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
 		[wait showWindow:self];
 		
-        filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+        filesArray = [[NSMutableArray alloc] initWithCapacity: 50000];
         		
 		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 		
@@ -1749,18 +1720,18 @@ long        i;
 			if ([fileType isEqual:NSFileTypeRegular] && [[[pathname lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == NO)
 			{
 				[filesArray addObject:itemPath];
-//				
-//				if( FORCEREBUILD == YES && [filesArray count] >= 100)
-//				{
-//					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
-//					
-//					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
-//					
-//					[filesArray release];
-//					filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-//					
-//					[pool release];
-//				}
+				
+				if( FORCEREBUILD == YES && [filesArray count] >= 50000)
+				{
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
+					
+					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
+					
+					[filesArray release];
+					filesArray = [[NSMutableArray alloc] initWithCapacity: 50000];
+					
+					[pool release];
+				}
 			}
 		}
 		

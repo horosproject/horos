@@ -32,4 +32,6 @@
 - (void)setPane:(NSPreferencePane *)aPane;
 - (NSPreferencePane *)pane;
 - (IBAction)selectPane:(id)sender;
+- (void) reopenDatabase;
+- (void) selectFirstPane;
 @end
