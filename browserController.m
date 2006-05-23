@@ -564,14 +564,19 @@ static BOOL FORCEREBUILD = NO;
 				
 				if( curFile)
 				{
-					curDict = [curFile dicomElements];
+					curDict = [[curFile dicomElements] retain];
 					[curFile release];
 					curFile = 0L;
 				}
+				else curDict = [curDict retain];
 				
 				if( onlyDICOM)
 				{
-					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) curDict = 0L;
+					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO)
+					{
+						[curDict release];
+						curDict = 0L;
+					}
 				}
 				
 				if( splash)
@@ -586,6 +591,7 @@ static BOOL FORCEREBUILD = NO;
 				
 				if( curDict != 0L)
 				{
+//					if( 0)
 					{
 						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] isEqualToString: curPatientUID] == YES)
 						{
@@ -810,33 +816,19 @@ static BOOL FORCEREBUILD = NO;
 									
 									if (album == nil)
 									{
-										// the album doesn't exists, we create it
-										//NSLog(@"album name NOT found, we create it");
-
 										NSString *name = [curDict valueForKey:@"album"];
 
 										NSManagedObjectContext *context = [self managedObjectContext];
-										[context lock];
 
 										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 										[album setValue:name forKey:@"name"];
-//
-//										[self saveDatabase: currentDatabasePath];	Too slow, this will be done at the end of this function
-//
-//										[albumTable reloadData];	WARNING ! You are not in the main thread.... You cannot modify the GUI, this will be done in outlineViewRefresh
-//
-										[context unlock];
 									}
 									
 									// add the file to the album
-									//NSLog(@"add the file to the album");
 									if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
 									{
-										//NSLog(@"this is not a smart album");
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
-										
-//										[self outlineViewRefresh];	WARNING ! You are not in the main thread.... You cannot modify the GUI. This will be done later
 									}
 								}
 							}
@@ -849,6 +841,9 @@ static BOOL FORCEREBUILD = NO;
 						}
 					}
 					[curFile release];
+					
+					[curDict release];
+					curDict = 0L;
 				}
 				[pool release];
 			}
@@ -1032,13 +1027,18 @@ static BOOL FORCEREBUILD = NO;
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
     managedObjectContext = [[NSManagedObjectContext alloc] init];
     [managedObjectContext setPersistentStoreCoordinator: coordinator];
+	
 
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error]){	// NSSQLiteStoreType - NSXMLStoreType
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+	{	// NSSQLiteStoreType - NSXMLStoreType
       localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
+	
+	[coordinator release];
+	
     return managedObjectContext;
 }
 
@@ -1726,15 +1726,11 @@ long        i;
 	if( DoIt)
 	{
         NSMutableArray				*filesArray;
-		NSManagedObjectContext		*context = [self managedObjectContext];
-		NSManagedObjectModel		*model = [self managedObjectModel];
-		
-		[context lock];
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
 		[wait showWindow:self];
 		
-        filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+        filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
         		
 		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 		
@@ -1753,8 +1749,25 @@ long        i;
 			if ([fileType isEqual:NSFileTypeRegular] && [[[pathname lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == NO)
 			{
 				[filesArray addObject:itemPath];
+				
+				if( FORCEREBUILD == YES && [filesArray count] >= 10000)
+				{
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
+					
+					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
+					
+					[filesArray release];
+					filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+					
+					[pool release];
+				}
 			}
 		}
+		
+		NSManagedObjectContext		*context = [self managedObjectContext];
+		NSManagedObjectModel		*model = [self managedObjectModel];
+		
+		[context lock];
 		
 		NSArray*	addedFiles = 0L;
 		
@@ -1794,11 +1807,11 @@ long        i;
 					if( i % 50 == 0) [step2 incrementBy:1];
 				}
 			}
-			
-			[filesArray release];
 			[step2 close];
 			[step2 release];
 		}
+		
+		[filesArray release];
 		
 		NSLog( @"FORCEREBUILD: %d", FORCEREBUILD);
 		

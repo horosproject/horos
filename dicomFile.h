@@ -56,6 +56,7 @@
 - (long) getHeight;
 - (long) NoOfSeries;
 - (id) init:(NSString*) f;
+- (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly;
 - (NSString*) patientUID;
 - (NSMutableDictionary *)dicomElements;
 - (id)elementForKey:(id)key;

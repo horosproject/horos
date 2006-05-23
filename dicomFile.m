@@ -2364,7 +2364,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return returnValue;
 }
 
-- (id) init:(NSString*) f
+
+- (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {
 	id returnVal = 0L;
 	
@@ -2398,39 +2399,55 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		dicomElements = [[NSMutableDictionary dictionary] retain];
 		
-		if( [self getFVTiffFile] == 0) // this needs to happen before getImageFile, since a FVTiff is a legal tiff and getImageFile will try to read it
+		if( DICOMOnly)
 		{
-			returnVal = self;
-		}
-		else if( [self getImageFile] == 0)
-		{
-			returnVal = self;
-		}
-		else if ([self getPluginFile] == 0)
-		{
-			returnVal = self;
-		}
-		else if( [self getBioradPicFile] == 0)
-		{
-			returnVal = self;
-		}
-		else if( [self getAnalyze] == 0)
-		{
-			returnVal = self;
-		}
-		else if( [self getLSM] == 0)
-		{
-			returnVal = self;
-		}
-		else if( [self getDicomFile:NO] == 0)
-		{
-			returnVal = self;
+			if( [self getDicomFile:NO] == 0)
+			{
+				returnVal = self;
+			}
+			else
+			{
+				[self release];
+				
+				returnVal = 0L;
+			}
 		}
 		else
 		{
-			[self release];
-			
-			returnVal = 0L;
+			if( [self getFVTiffFile] == 0) // this needs to happen before getImageFile, since a FVTiff is a legal tiff and getImageFile will try to read it
+			{
+				returnVal = self;
+			}
+			else if( [self getImageFile] == 0)
+			{
+				returnVal = self;
+			}
+			else if ([self getPluginFile] == 0)
+			{
+				returnVal = self;
+			}
+			else if( [self getBioradPicFile] == 0)
+			{
+				returnVal = self;
+			}
+			else if( [self getAnalyze] == 0)
+			{
+				returnVal = self;
+			}
+			else if( [self getLSM] == 0)
+			{
+				returnVal = self;
+			}
+			else if( [self getDicomFile:NO] == 0)
+			{
+				returnVal = self;
+			}
+			else
+			{
+				[self release];
+				
+				returnVal = 0L;
+			}
 		}
 	}
 	
@@ -2445,7 +2462,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return returnVal;
 }
 
-
+- (id) init:(NSString*) f
+{
+	return [self init:f	DICOMOnly:NO];
+}
 
 - (void) dealloc
 {
