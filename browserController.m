@@ -677,7 +677,7 @@ static BOOL FORCEREBUILD = NO;
 								
 								NSArray		*seriesArray = [[study valueForKey:@"series"] allObjects];
 								
-								NSLog([curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]);
+								//NSLog([curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]);
 								
 								index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
 								if( index == NSNotFound)
@@ -1699,11 +1699,12 @@ long        i;
 				[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
 			}
 			FORCEREBUILD = YES;
+			managedObjectContext = 0L;
 		}
 	}
 	else
 	{
-		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes. 'Complete Rebuild' will delete all albums, comments and status. For large database (more than 500K images), it is recommended to use the 'Complete Rebuild'", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Complete Rebuild",nil));
+		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes. 'Complete Rebuild' will delete all albums, comments and status. For large database (more than 500K images), it is recommended to use the 'Complete Rebuild'.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Complete Rebuild",nil));
 		
 		if( result == NSAlertOtherReturn || result == NSAlertDefaultReturn)
 		{
@@ -1718,6 +1719,7 @@ long        i;
 			}
 			
 			FORCEREBUILD = YES;
+			managedObjectContext = 0L;
 		}
     }
 	
