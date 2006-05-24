@@ -1325,7 +1325,7 @@ static BOOL FORCEREBUILD = NO;
     return managedObjectModel;
 }
 
-- (NSManagedObjectContext *) managedObjectContext
+- (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary
 {
     NSError *error = 0L;
     NSString *localizedDescription;
@@ -1334,6 +1334,8 @@ static BOOL FORCEREBUILD = NO;
 	if( currentDatabasePath == 0L) return 0L;
 	
     if (managedObjectContext) return managedObjectContext;
+	
+	if( loadIfNecessary == NO) return 0L;
 	
 	fileManager = [NSFileManager defaultManager];
 	
@@ -1353,6 +1355,11 @@ static BOOL FORCEREBUILD = NO;
 	[coordinator release];
 	
     return managedObjectContext;
+}
+
+- (NSManagedObjectContext *) managedObjectContext
+{
+	return [self managedObjectContextLoadIfNecessary: YES];
 }
 
 - (void) addDICOMDIR:(NSString*) dicomdir :(NSMutableArray*) files

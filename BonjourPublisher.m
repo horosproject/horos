@@ -344,23 +344,25 @@ extern NSString * documentsDirectory();
 				[context unlock];
 				
 				//NSLog(@"URL:%@", object);
-				
-				if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
-				else
+				if( item)
 				{
-					if( [key isEqualToString: @"reportURL"] == YES)
+					if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
+					else
 					{
-						if( value == 0L)
+						if( [key isEqualToString: @"reportURL"] == YES)
 						{
-							[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:0L];
+							if( value == 0L)
+							{
+								[[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:0L];
+							}
+							else if( [[key pathComponents] count] == 1)
+							{
+								value = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [value lastPathComponent]];
+							}
 						}
-						else if( [[key pathComponents] count] == 1)
-						{
-							value = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [value lastPathComponent]];
-						}
+						
+						[item setValue: value forKeyPath: key];
 					}
-					
-					[item setValue: value forKeyPath: key];
 				}
 				
 				[interfaceOsiriX refreshDatabase: 0L];

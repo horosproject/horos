@@ -190,7 +190,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
-
+- (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
 - (NSTimeInterval) databaseLastModification;
