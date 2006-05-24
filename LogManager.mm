@@ -61,7 +61,7 @@ LogManager *currentLogManager;
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];	
+		NSManagedObjectContext *context = 0L;
 		NSFileManager *manager = [NSFileManager defaultManager];
 		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
 		NSString *path;
@@ -84,11 +84,12 @@ LogManager *currentLogManager;
 		logNumberReceived[ 0] = 0;
 		logEndTime[ 0] = 0;
 		
-		[context lock];
+		
 		
 		NS_DURING
 		while (path = [enumerator nextObject]){
-			if ([[path pathExtension] isEqualToString: @"log"]) {
+			if ([[path pathExtension] isEqualToString: @"log"])
+			{
 				
 				NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
 				NSString *newfile = [file stringByAppendingString:@"reading"];
@@ -116,6 +117,12 @@ LogManager *currentLogManager;
 					
 					fclose (pFile);
 					remove( [newfile UTF8String]);
+					
+					if( context == 0L)
+					{
+						context = [[BrowserController currentBrowser] managedObjectContext];
+						[context lock];
+					}
 					
 					if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 					{

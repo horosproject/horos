@@ -184,6 +184,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 }
 
 + (BrowserController*) currentBrowser;
++ (void) addFilesToDatabaseSafe: (NSArray*) newFilesArray context:(NSManagedObjectContext*) context model:(NSManagedObjectModel*) model databasePath:(NSString*) INpath COMMENTSAUTOFILL:(BOOL) COMMENTSAUTOFILL;
 
 - (NSManagedObjectModel *)managedObjectModel;
 - (NSManagedObjectContext *)managedObjectContext;

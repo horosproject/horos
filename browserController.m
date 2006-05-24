@@ -98,8 +98,6 @@ Version 2.3
 #import "BonjourBrowser.h"
 
 
-extern BOOL hasMacOSXTiger();
-extern NSLock *PapyrusLock;
 
 #define DATABASEVERSION @"1.5"
 
@@ -125,12 +123,18 @@ static mach_port_t	gMasterPort;
 static NSString *albumDragType = @"Osirix Album drag";
 static Wait *waitSendWindow = 0L;
 
-extern NSString				*documentsDirectory();
-extern NSMutableArray		*preProcessPlugins;
+extern BOOL hasMacOSXTiger();
+extern NSString					*documentsDirectory();
+
+extern NSMutableArray			*preProcessPlugins;
 extern NSMutableDictionary		*reportPlugins;
-extern AppController		*appController;
-extern NSMutableDictionary	*plugins, *pluginsDict;
-extern NSThread				*mainThread;
+extern AppController			*appController;
+extern NSMutableDictionary		*plugins, *pluginsDict;
+extern NSThread					*mainThread;
+extern BOOL						NEEDTOREBUILD;
+extern NSMutableDictionary		*DATABASECOLUMNS;
+extern NSLock					*PapyrusLock;
+
 
 NSString	*iPodDirectory = 0L;
 long		DATABASEINDEX;
@@ -330,8 +334,6 @@ static BOOL			DICOMDIRCDMODE = NO;
 
 		NSArray*	statesArray = 0L;
 
-extern  BOOL					NEEDTOREBUILD;
-extern	NSMutableDictionary		*DATABASECOLUMNS;
 
 static BOOL FORCEREBUILD = NO;
 
@@ -399,7 +401,45 @@ static BOOL FORCEREBUILD = NO;
 	}
 }
 
-+ (void) addFilesToDatabaseSafe: (NSArray*) newFilesArray onlyDICOM: (BOOL) onlyDICOM waitDialog:(Wait*) splash context:(NSManagedObjectContext*) context model:(NSManagedObjectModel*) model databasePath:(NSString*) INpath COMMENTSAUTOFILL:(BOOL) COMMENTSAUTOFILL
+- (void) callAddFilesToDatabaseSafe: (NSArray*) newFilesArray
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSFileManager		*fm = [NSFileManager defaultManager];
+	NSString			*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+	NSString			*arrayFile = [tempDirectory stringByAppendingPathComponent:@"array.plist"];
+	NSString			*databaseFile = [tempDirectory stringByAppendingPathComponent:@"database.plist"];
+	NSString			*modelFile = [tempDirectory stringByAppendingPathComponent:@"model.plist"];
+	
+	[fm removeFileAtPath:arrayFile handler:0L];
+	[fm removeFileAtPath:databaseFile handler:0L];
+	[fm removeFileAtPath:modelFile handler:0L];
+	
+	[newFilesArray writeToFile:arrayFile atomically: YES];
+	[[documentsDirectory() stringByAppendingString:DATABASEFPATH] writeToFile:databaseFile atomically: YES];
+	
+	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
+	[allBundles addObject: [NSBundle mainBundle]];
+	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
+    [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES];
+    [allBundles release];
+	
+	NSTask *theTask = [[NSTask alloc] init];
+	
+	[theTask setCurrentDirectoryPath: tempDirectory];
+	[theTask setArguments: [NSArray arrayWithObjects:arrayFile, databaseFile, modelFile, 0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/SafeDBRebuild"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
+	
+	[fm removeFileAtPath:arrayFile handler:0L];
+	[fm removeFileAtPath:databaseFile handler:0L];
+	[fm removeFileAtPath:modelFile handler:0L];
+	
+	[pool release];
+}
+
++ (void) addFilesToDatabaseSafe: (NSArray*) newFilesArray context:(NSManagedObjectContext*) context model:(NSManagedObjectModel*) model databasePath:(NSString*) INpath COMMENTSAUTOFILL:(BOOL) COMMENTSAUTOFILL
 {
 	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
@@ -479,20 +519,6 @@ static BOOL FORCEREBUILD = NO;
 					curFile = 0L;
 				}
 				else curDict = [curDict retain];
-				
-				if( onlyDICOM)
-				{
-					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO)
-					{
-						[curDict release];
-						curDict = 0L;
-					}
-				}
-				
-				if( splash)
-				{
-					if( (ii++) % 30 == 0) [splash incrementBy:1];
-				}
 				
 				if( curDict != 0L)
 				{
@@ -739,13 +765,6 @@ static BOOL FORCEREBUILD = NO;
 		[curStudyID release];
 		[curSerieID release];
 		
-		if( splash)
-		{
-			[splash close];
-			[splash release];
-			splash = 0L;
-		}
-		
 		[context setStalenessInterval: 0];
 		[context unlock];
 	}
@@ -773,8 +792,6 @@ static BOOL FORCEREBUILD = NO;
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
-	NSString				*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
-	NSString				*tempPlistFile = [tempDirectory stringByAppendingPathComponent:@"curFile.plist"];
 	
 	if( safeProcess)
 	{
@@ -843,33 +860,7 @@ static BOOL FORCEREBUILD = NO;
 				DicomFile		*curFile = 0L;
 				NSDictionary	*curDict = 0L;
 				
-				if( safeProcess)
-				{
-					NSFileManager	*fm = [NSFileManager defaultManager];
-					[fm removeFileAtPath:tempPlistFile handler:0L];
-					
-					NSTask *theTask = [[NSTask alloc] init];
-					
-					[theTask setCurrentDirectoryPath: tempDirectory];
-					[theTask setArguments: [NSArray arrayWithObject:newFile]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/SafeDBRebuild"]];
-					[theTask launch];
-					[theTask waitUntilExit];
-					[theTask release];
-					
-					curDict = [NSDictionary dictionaryWithContentsOfFile: tempPlistFile];
-					[fm removeFileAtPath:tempPlistFile handler:0L];
-					
-					if( curDict == 0L)
-					{
-						NSLog( @"Error with this file: %@.", newFile);
-//						[fm removeFileAtPath: newFile handler:0L];
-					}
-				}
-				else
-				{
-					curFile = [[DicomFile alloc] init: newFile];
-				}
+				curFile = [[DicomFile alloc] init: newFile];
 				
 				if(curFile == 0L && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 				{
@@ -2055,7 +2046,7 @@ long        i;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
 		[wait showWindow:self];
 		
-        filesArray = [[NSMutableArray alloc] initWithCapacity: 50000];
+        filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
         		
 		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 		
@@ -2063,30 +2054,50 @@ long        i;
 		BOOL		isDir = YES;
 		if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
 		
-		NSString    *pathname;
-		NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:aPath];
+		// In the DATABASE FOLDER, we have only folders! Delete all files that are wrongly there.... and then scan these folders containing the DICOM files
 		
-		while (pathname = [enumer nextObject])
+		NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		for( i = 0; i < [dirContent count]; i++)
 		{
-			NSString * itemPath = [aPath stringByAppendingPathComponent:pathname];
-			id fileType = [[enumer fileAttributes] objectForKey:NSFileType];
-			
-			if ([fileType isEqual:NSFileTypeRegular] && [[[pathname lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"] == NO)
+			NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
+			id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey:NSFileType];
+			if ([fileType isEqual:NSFileTypeRegular])
 			{
-				[filesArray addObject:itemPath];
-				
-				if( FORCEREBUILD == YES && [filesArray count] >= 50000)
-				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool init] alloc];
-					
-					[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
-					
-					[filesArray release];
-					filesArray = [[NSMutableArray alloc] initWithCapacity: 50000];
-					
-					[pool release];
-				}
+				[[NSFileManager defaultManager] removeFileAtPath:itemPath handler: 0L];
 			}
+		}
+		
+		
+		if( FORCEREBUILD)
+		{
+			[managedObjectContext release];
+			managedObjectContext = 0L;
+		}
+		
+		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		for( i = 0; i < [dirContent count]; i++)
+		{
+			NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+			
+			NSString	*curDir = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
+			NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]]];
+			long		z;
+			
+			for( z = 0;  z < [subDir count]; z++)
+			{
+				if( [[subDir objectAtIndex: z] characterAtIndex: 0] != '.')
+					[filesArray addObject: [curDir stringByAppendingPathComponent: [subDir objectAtIndex: z]]];
+			}
+			
+			if( FORCEREBUILD == YES)
+			{
+				[self callAddFilesToDatabaseSafe: filesArray];
+				
+				[filesArray release];
+				filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+			}
+
+			[pool release];
 		}
 		
 		NSArray*	addedFiles = 0L;
@@ -2094,10 +2105,6 @@ long        i;
 		if( FORCEREBUILD == NO)
 		{
 			addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES] valueForKey:@"completePath"];
-		}
-		else
-		{
-			[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO];
 		}
 		
 		[wait close];
@@ -2138,6 +2145,7 @@ long        i;
 		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
 		
 		[splash showWindow:self];
+		
 		
 		NSManagedObjectContext		*context = [self managedObjectContext];
 		NSManagedObjectModel		*model = [self managedObjectModel];
@@ -2246,6 +2254,7 @@ long        i;
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	if( isCurrentDatabaseBonjour) return;
+	if( managedObjectContext == 0L) return;
 	
 	// Logs cleaning
 	
@@ -3039,6 +3048,7 @@ long        i;
 {
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
+	if( managedObjectContext == 0L) return;
 	
 	if( isCurrentDatabaseBonjour)
 	{
@@ -3070,6 +3080,7 @@ long        i;
 
 -(void) refreshDatabase:(id) sender
 {
+	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	
@@ -4488,6 +4499,7 @@ long        i;
 -(void) previewPerformAnimation:(id) sender
 {
     // Wait loading all images !!!
+	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
 	if( [animationCheck state] == NSOffState) return;
     if( threadWillRunning == YES) return;
@@ -4714,6 +4726,7 @@ long        i;
 	long		i;
 	
 	if( bonjourDownloading) return;
+	if( managedObjectContext == 0L) return;
 	
 	if( loadPreviewIndex < [previewPix count])
 	{
@@ -7744,6 +7757,7 @@ static BOOL needToRezoom;
 -(void) checkIncoming:(id) sender
 {
 	if( isCurrentDatabaseBonjour) return;
+	if( managedObjectContext == 0L) return;
 	
 	if( [checkIncomingLock tryLock])
 	{
