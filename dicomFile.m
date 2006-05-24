@@ -199,8 +199,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			CHECKFORLAVIM = NO;
 		}
 		
-//		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
-//		else NSLog( @"NO Use Papyrus");
+		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
+		else NSLog( @"NO Use Papyrus");
 	}
 }
 
