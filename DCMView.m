@@ -1795,6 +1795,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 {
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
 	{
+		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
+		[self setCursorForView: tool];
+				 
 		if( [[[self window] windowController] is2DViewer] == YES)
 		{
 			BOOL update = NO;
