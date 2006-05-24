@@ -1797,6 +1797,31 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
 		[self setCursorForView: tool];
+		
+		if ([[[[self window] windowController] roiLock] tryLock])
+		{
+			BOOL update = NO;
+			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
+			{
+				if (suppress_labels == NO) update = YES;
+				suppress_labels = YES;
+			}
+			else
+			{
+				if (suppress_labels == YES) update = YES;
+				suppress_labels = NO;
+			}		
+				
+			if (update == YES)
+			{	
+				NSNotificationCenter *nc;
+				nc = [NSNotificationCenter defaultCenter];
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
+				[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
+				[self setNeedsDisplay:YES];
+			}
+			[[[[self window] windowController] roiLock] unlock];
+		}
 	}
 }
 
@@ -2220,6 +2245,7 @@ static long scrollMode;
 			
 			BOOL roiFound = NO;
 			
+			if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
 			for( i = 0; i < [curRoiList count]; i++)
 			{
 				if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
@@ -2240,7 +2266,7 @@ static long scrollMode;
 				}
 			}
 			
-			if (([event modifierFlags] & NSShiftKeyMask))
+			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
 			{
 				if( selected != -1)
 				{
@@ -2767,7 +2793,7 @@ static long scrollMode;
 						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
 					}
 				}
-				else if (([event modifierFlags] & NSCommandKeyMask))
+				else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
 				{
 					NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
 					rotatePoint.y = size.size.height - start.y ;
@@ -3398,6 +3424,12 @@ static long scrollMode;
     return curImage;
 }
 
+- (BOOL) suppressLabels
+{
+	return suppress_labels;
+}
+
+
 - (void) prepareOpenGL
 {
 
@@ -3481,7 +3513,9 @@ static long scrollMode;
 	currentToolRight = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTRIGHTTOOL"];
 	thickSlabMode = 0;
 	thickSlabStacks = 0;
-		
+	
+	suppress_labels = NO;
+	
     NSLog(@"DCMView alloc");
 
     // Init pixel format attribs
@@ -5683,7 +5717,7 @@ static long scrollMode;
 				glScalef( 1.f, [curDCM pixelRatio], 1.f);
 				
 				// Draw ROIs
-				BOOL drawROI = YES;
+				BOOL drawROI = NO;
 				
 				if( [[[self window] windowController] is2DViewer] == YES) drawROI = [[[[self window] windowController] roiLock] tryLock];
 				
@@ -5697,16 +5731,19 @@ static long scrollMode;
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
 					
-					for( i = 0; i < [curRoiList count]; i++)
+					if (!suppress_labels)
 					{
-						[[curRoiList objectAtIndex:i] drawTextualData];
+						for( i = 0; i < [curRoiList count]; i++)
+						{
+							[[curRoiList objectAtIndex:i] drawTextualData];
+						}
 					}
 					
 					[rectArray release];
 					rectArray = 0L;
 				}
 				
-				if( [[[self window] windowController] is2DViewer] == YES) [[[[self window] windowController] roiLock] unlock];
+				if(drawROI) [[[[self window] windowController] roiLock] unlock];
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				

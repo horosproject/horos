@@ -114,6 +114,8 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
     
     short           currentTool, currentToolRight;
     
+	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
+
 	NSString		*shortDateString;
 	NSDictionary	*localeDictionnary;
 
@@ -242,6 +244,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) setIndexWithReset:(short) index :(BOOL)sizeToFit;
 - (void) setDCM:(NSMutableArray*) c :(NSArray*)d :(NSMutableArray*)e :(short) firstImage :(char) type :(BOOL) reset;
 - (short) curImage;
+- (BOOL) suppressLabels;
 - (void) sendSyncMessage:(short) inc;
 - (void) setQuartzExtreme:(BOOL) set;
 - (void) loadTextures;

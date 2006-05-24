@@ -1675,7 +1675,7 @@ return rect;
 				if (![curView eraserFlag]) val = 0xFF;
 				else val = 0x00;
 				
-				if( modifier & NSCommandKeyMask)
+				if( modifier & NSCommandKeyMask && !(modifier & NSShiftKeyMask))
 				{
 					if( val == 0xFF) val = 0;
 					else val = 0xFF;
@@ -2230,7 +2230,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
-	if( moved)	// Draw bezier line
+	if( moved && ![curView suppressLabels])	// Draw bezier line
 	{
 		glLoadIdentity();
 		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
