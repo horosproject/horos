@@ -1795,10 +1795,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 {
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
 	{
-		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
-		[self setCursorForView: tool];
-		
-		if ([[[[self window] windowController] roiLock] tryLock])
+		if( [[[self window] windowController] is2DViewer] == YES)
 		{
 			BOOL update = NO;
 			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
@@ -1812,15 +1809,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				suppress_labels = NO;
 			}		
 				
-			if (update == YES)
-			{	
-				NSNotificationCenter *nc;
-				nc = [NSNotificationCenter defaultCenter];
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"];
-				[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
-				[self setNeedsDisplay:YES];
-			}
-			[[[[self window] windowController] roiLock] unlock];
+			if (update == YES) [self setNeedsDisplay:YES];
 		}
 	}
 }
@@ -3637,7 +3626,7 @@ static long scrollMode;
     
 	cross.x = cross.y = -9999;
 	
-	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
+	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	
