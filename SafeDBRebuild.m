@@ -48,12 +48,12 @@ int main(int argc, const char *argv[])
 		NSString					*f = [NSString stringWithCString:argv[ 1]];
 		NSString					*p = [NSString stringWithCString:argv[ 2]];
 		NSString					*m = [NSString stringWithCString:argv[ 3]];
-				
+		
+		NSLog( @"Start Process");
+		
 		NSArray	*newFilesArray = [NSArray arrayWithContentsOfFile: f];
-		NSLog( f);
 
 		NSString *INpath = [NSString stringWithContentsOfFile: p];
-		NSLog( p);
 		
 		// Preferences
 		NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
@@ -61,7 +61,6 @@ int main(int argc, const char *argv[])
 		
 		// Context & Model
 		
-		NSLog( m);
 		model = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [NSString stringWithContentsOfFile: m]]];
 		
 		
@@ -86,6 +85,8 @@ int main(int argc, const char *argv[])
 		[model release];
 		[context release];
 	}
+	
+	NSLog( @"End Process");
 	
 	[pool release];
 	

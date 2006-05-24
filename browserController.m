@@ -2075,13 +2075,23 @@ long        i;
 		}
 		
 		
+		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		
+		
+		Wait	*forceRebuildProgress = 0L;
+		
 		if( FORCEREBUILD)
 		{
 			[managedObjectContext release];
 			managedObjectContext = 0L;
+			
+			forceRebuildProgress = [[Wait alloc] initWithString: NSLocalizedString(@"Adding files...", nil)];
+			[forceRebuildProgress showWindow:self];
+			[[forceRebuildProgress progress] setMaxValue:[dirContent count]];
 		}
 		
-		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+		NSLog( @"Start Rebuild");
+				
 		for( i = 0; i < [dirContent count]; i++)
 		{
 			NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
@@ -2102,6 +2112,8 @@ long        i;
 				
 				[filesArray release];
 				filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+				
+				[forceRebuildProgress incrementBy:1];
 			}
 
 			[pool release];
@@ -2113,6 +2125,14 @@ long        i;
 		{
 			addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES] valueForKey:@"completePath"];
 		}
+		else
+		{
+			[forceRebuildProgress close];
+			[forceRebuildProgress release];
+			forceRebuildProgress = 0L;
+		}
+		
+		NSLog( @"End Rebuild");
 		
 		[wait close];
 		[wait release];
