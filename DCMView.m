@@ -2629,8 +2629,16 @@ static long scrollMode;
 	[self mouseDown: event];
 }
 
-- (void) rightMouseDown:(NSEvent *)event
-{
+- (void) rightMouseDown:(NSEvent *)event {
+	
+	if ( pluginOverridesMouse ) {
+		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
+		[nc postNotificationName: @"PLUGINrightMouseDown" object: self userInfo: userInfo];
+		return;
+	}
+		
 	[self mouseDown: event];
 	
 //    if( dcmPixList)
@@ -2644,10 +2652,10 @@ static long scrollMode;
 //		originOffsetRegistrationStart = originOffsetRegistration;
 //    }
 }
+
 //added by lpysher 4/22/04. Mimics single click to open contextual menu.
 - (void) rightMouseUp:(NSEvent *)event {
-	NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 
@@ -2668,8 +2676,17 @@ static long scrollMode;
 	[self mouseDragged:(NSEvent *)event];
 }
 
-- (void)rightMouseDragged:(NSEvent *)event
-{
+- (void)rightMouseDragged:(NSEvent *)event {
+	
+	if ( pluginOverridesMouse ) {
+		[self mouseMoved: event];	// Update some variables...
+		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
+		[nc postNotificationName: @"PLUGINrightMouseDragged" object: self userInfo: userInfo];
+		return;
+	}
+	
 	[self mouseDragged:(NSEvent *)event];
 }
 
@@ -2720,7 +2737,7 @@ static long scrollMode;
 			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			
-			tempPt.y = size.size.height - tempPt.y ;
+			tempPt.y = size.size.height - tempPt.y;
 			tempPt = [self ConvertFromView2GL:tempPt];
 			
 			for( i = 0; i < [curRoiList count]; i++)
@@ -7390,6 +7407,10 @@ BOOL	lowRes = NO;
 		}
 		[self resizeWindowToScale:resizeScale];
 	}
+}
+
+- (void)subDrawRect: (NSRect)aRect {  // Subclassable, default does nothing.
+	return;
 }
 
 @end

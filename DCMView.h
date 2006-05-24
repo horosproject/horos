@@ -324,4 +324,5 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) roiSelected:(NSNotification*) note;
 - (void) setStartWLWW;
 - (void) stopROIEditing;
+- (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 @end
