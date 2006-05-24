@@ -8352,6 +8352,8 @@
 		CECBFF1207539E3900576814 /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
 		CECBFF2207539E3900576814 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CECBFF2307539E3900576814 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
+		CECCEF670A242D4200EFE5A8 /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBCCDA505643A4C00A4E47A /* browserController.m */; };
+		CECCEF6E0A242D8700EFE5A8 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CECD6B8A09643A8800F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
 		CECD6B8B09643A8900F200AC /* MatrixContextual.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0936B80963D63800C6A2CA /* MatrixContextual.h */; };
 		CECD6B8E09643A9300F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
@@ -12504,6 +12506,7 @@
 			files = (
 				AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */,
 				AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */,
+				CECCEF6E0A242D8700EFE5A8 /* DotMacKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25278,6 +25281,7 @@
 				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
 				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
 				ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */,
+				CECCEF670A242D4200EFE5A8 /* browserController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26918,6 +26922,10 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)",
+				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -26943,6 +26951,10 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				DEPLOYMENT_LOCATION = YES;
 				DSTROOT = "$(BUILD_DIR)/build/Development/OsiriX/Contents/MacOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
