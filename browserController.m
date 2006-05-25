@@ -454,7 +454,7 @@ static BOOL FORCEREBUILD = NO;
 	
 	[context lock];
 	
-	[context setStalenessInterval: 1];
+	[context setStalenessInterval: 120];
 	
 	// Find all current studies
 	
@@ -534,7 +534,7 @@ static BOOL FORCEREBUILD = NO;
 							index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curDict objectForKey: @"studyID"]];
 							if( index == NSNotFound)
 							{
-															// Fields
+								// Fields
 								study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:context];
 								[study setValue:today forKey:@"dateAdded"];
 							
@@ -811,7 +811,7 @@ static BOOL FORCEREBUILD = NO;
 	ii = 0;
 	[context lock];
 	
-	[context setStalenessInterval: 1];
+	[context setStalenessInterval: 120];
 	
 	// Find all current studies
 	
@@ -1990,11 +1990,14 @@ SElement		*theGroupP;
 	return filesOutput;
 }
 
-
-- (void) ReBuildDatabase:(id) sender        // CLEAN DATABASE
+- (IBAction) endReBuildDatabase:(id) sender
 {
-BOOL        available, DoIt = NO;
-long        i;
+	BOOL        available, DoIt = NO;
+	long        i;
+
+	[NSApp endSheet: rebuildWindow];
+	[rebuildWindow orderOut: self];
+
 
 	if( isCurrentDatabaseBonjour)
 	{
@@ -2274,6 +2277,35 @@ long        i;
     }
 	
 	FORCEREBUILD = NO;
+}
+
+- (IBAction) ReBuildDatabase: (id)sender
+{
+	long i;
+	long totalFiles = 0;
+	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+	for( i = 0; i < [dirContent count]; i++)
+	{
+		NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
+		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey: NSFileReferenceCount] intValue];
+	}
+
+	[noOfFilesToRebuild setIntValue: totalFiles];
+
+	long totalSeconds = totalFiles * 90 / 10000;
+	long hours = (totalSeconds / 3600);
+	long minutes = ((totalSeconds / 60) - hours*60);
+	long seconds = (totalSeconds % 60);
+
+	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat:@"%i hour(s), %i minutes", hours, minutes]];
+	else [estimatedTime setStringValue:[NSString stringWithFormat:@"%i minutes", minutes]];
+	
+	[NSApp beginSheet: rebuildWindow
+			modalForWindow: [self window]
+			modalDelegate: nil
+			didEndSelector: nil
+			contextInfo: nil];
 }
 
 - (void) autoCleanDatabaseDate:(id) sender

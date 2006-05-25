@@ -135,6 +135,10 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	
 	IBOutlet NSDrawer				*albumDrawer;
 	
+	IBOutlet NSWindow				*rebuildWindow;
+	IBOutlet NSMatrix				*rebuildMode, *rebuildType;
+	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild;
+	
 	IBOutlet NSWindow				*customTimeIntervalWindow;
 	IBOutlet NSDatePicker			*customStart, *customEnd, *customStart2, *customEnd2;
 	IBOutlet NSView					*timeIntervalView;
@@ -252,7 +256,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (IBAction) createDatabase:(id) sender;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour;
 
-- (void) ReBuildDatabase:(id) sender;
+- (IBAction) endReBuildDatabase:(id) sender;
+- (IBAction) ReBuildDatabase:(id) sender;
 - (long) COLUMN;
 - (BOOL) is2DViewer;
 - (void) previewSliderAction:(id) sender;

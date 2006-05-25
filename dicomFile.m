@@ -200,7 +200,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 		
 		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
-		else NSLog( @"NO Use Papyrus");
+		else NSLog( @"Use OsiriX Framework");
 	}
 }
 
