@@ -634,10 +634,15 @@ static BOOL FORCEREBUILD = NO;
 							/*******************************************/
 							/*********** Find image object *************/
 							
+							BOOL			iPod = NO, local = NO;
+							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+							{
+								local = YES;
+							}
+							
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 							
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
-						//	index = [[imagesArray valueForKey:@"instanceNumber"] indexOfObject:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]]];
 							if( index == NSNotFound)
 							{
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
@@ -645,24 +650,8 @@ static BOOL FORCEREBUILD = NO;
 								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								
-								BOOL			iPod = NO, local = NO;
-								if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
-								{
-									local = YES;
-									[image setValue: [newFile lastPathComponent] forKey:@"path"];
-								}
-								else
-								{
-									if( iPodDirectory)
-									{
-										if( [iPodDirectory length] < [newFile length])
-										{
-											if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES) iPod = YES;
-										}
-									}
-									
-									[image setValue:newFile forKey:@"path"];
-								}
+								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
+								else [image setValue:newFile forKey:@"path"];
 								
 								[image setValue:[NSNumber numberWithBool:iPod] forKey:@"iPod"];
 								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
@@ -724,7 +713,6 @@ static BOOL FORCEREBUILD = NO;
 									if (album == nil)
 									{
 										NSString *name = [curDict valueForKey:@"album"];
-										
 										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
 										[album setValue:name forKey:@"name"];
 									}
@@ -740,6 +728,12 @@ static BOOL FORCEREBUILD = NO;
 							else
 							{
 								image = [imagesArray objectAtIndex: index];
+								
+								if( local)	// Delete this file, it's already in the DB folder
+								{
+									if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+										[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+								}
 							}
 						}
 					}
@@ -1037,10 +1031,25 @@ static BOOL FORCEREBUILD = NO;
 							/*******************************************/
 							/*********** Find image object *************/
 							
+							BOOL			iPod = NO, local = NO;
+							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
+							{
+								local = YES;
+							}
+							else
+							{
+								if( iPodDirectory)
+								{
+									if( [iPodDirectory length] < [newFile length])
+									{
+										if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES) iPod = YES;
+									}
+								}
+							}
+							
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 							
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
-						//	index = [[imagesArray valueForKey:@"instanceNumber"] indexOfObject:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]]];
 							if( index == NSNotFound)
 							{
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
@@ -1048,24 +1057,8 @@ static BOOL FORCEREBUILD = NO;
 								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								
-								BOOL			iPod = NO, local = NO;
-								if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
-								{
-									local = YES;
-									[image setValue: [newFile lastPathComponent] forKey:@"path"];
-								}
-								else
-								{
-									if( iPodDirectory)
-									{
-										if( [iPodDirectory length] < [newFile length])
-										{
-											if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES) iPod = YES;
-										}
-									}
-									
-									[image setValue:newFile forKey:@"path"];
-								}
+								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
+								else [image setValue:newFile forKey:@"path"];
 								
 								[image setValue:[NSNumber numberWithBool:iPod] forKey:@"iPod"];
 								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
@@ -1145,8 +1138,15 @@ static BOOL FORCEREBUILD = NO;
 							else
 							{
 								image = [imagesArray objectAtIndex: index];
-								if( produceAddedFiles) 
+								
+								if( produceAddedFiles)
 									[addedImagesArray addObject: image];
+									
+								if( local)	// Delete this file, it's already in the DB folder
+								{
+									if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+										[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+								}
 							}
 						}
 					}
@@ -2122,11 +2122,9 @@ SElement		*theGroupP;
 			[pool release];
 		}
 		
-		NSArray*	addedFiles = 0L;
-		
 		if( FORCEREBUILD == NO)
 		{
-			addedFiles = [[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:YES] valueForKey:@"completePath"];
+			[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];
 		}
 		else
 		{
@@ -2140,34 +2138,6 @@ SElement		*theGroupP;
 		[wait close];
 		[wait release];
 		
-		if( addedFiles)
-		{
-			Wait *step2 = [[Wait alloc] initWithString: NSLocalizedString(@"Step 2: Removing unreadable files...", 0L)];
-			[step2 showWindow:self];
-			
-			[[step2 progress] setMaxValue:[filesArray count]/50];
-			
-			if( [addedFiles count] != [filesArray count])
-			{
-				long i;
-				
-				NSLog( @"[addedFiles count] != [filesArray count]");
-				
-				for( i = 0; i < [filesArray count]; i++)
-				{
-					if( [addedFiles containsObject: [filesArray objectAtIndex: i]] == NO)
-					{
-						NSLog( @"Remove file: %@", [filesArray objectAtIndex: i]);
-						[[NSFileManager defaultManager] removeFileAtPath:[filesArray objectAtIndex: i] handler:nil];
-					}
-					
-					if( i % 50 == 0) [step2 incrementBy:1];
-				}
-			}
-			[step2 close];
-			[step2 release];
-		}
-		
 		[filesArray release];
 		
 		NSLog( @"FORCEREBUILD: %d", FORCEREBUILD);
@@ -2175,7 +2145,6 @@ SElement		*theGroupP;
 		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
 		
 		[splash showWindow:self];
-		
 		
 		NSManagedObjectContext		*context = [self managedObjectContext];
 		NSManagedObjectModel		*model = [self managedObjectModel];
@@ -7763,20 +7732,6 @@ static BOOL needToRezoom;
 			
 			if( addedFiles)
 			{
-				if( [addedFiles count] != [filesArray count])
-				{
-					long i;
-					
-					for( i = 0; i < [filesArray count]; i++)
-					{
-						if( [addedFiles containsObject: [filesArray objectAtIndex: i]] == NO)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:[filesArray objectAtIndex: i] handler:nil];
-						}
-					}
-				}
-				
-				[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
 			}
 			else	// Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
 			{
@@ -7802,13 +7757,6 @@ static BOOL needToRezoom;
 		[filesArray release];
 	}
 	[checkIncomingLock unlock];
-	
-
-//	// inform user, that there are files in this folder
-//	if(numNotReadAbleFiles > 0)						NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//	{NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//		NSRunCriticalAlertPanel(NSLocalizedString(@"Import", nil), NSLocalizedString(@"There were some not readable files. These can be found in the NOTREADABLE Folder.", nil), NSLocalizedString(@"OK",nil),nil, nil);
-//	}NO !!!!!!!! YOU CANNOT ACCESS THE GUI IF YOU ARE NOT IN THE MAIN THREAD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
 	[pool release];
 }
