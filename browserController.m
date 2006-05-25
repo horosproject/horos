@@ -477,7 +477,6 @@ static BOOL FORCEREBUILD = NO;
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
 		
-		[context setStalenessInterval: 0];
 		[context unlock];
 		
 		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
@@ -765,7 +764,6 @@ static BOOL FORCEREBUILD = NO;
 		[curStudyID release];
 		[curSerieID release];
 		
-		[context setStalenessInterval: 0];
 		[context unlock];
 	}
 }
@@ -836,7 +834,7 @@ static BOOL FORCEREBUILD = NO;
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
 		managedObjectContext = 0L;
-		[context setStalenessInterval: 0];
+		[context setStalenessInterval: 1200];
 		[context unlock];
 		
 		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
@@ -1203,7 +1201,7 @@ static BOOL FORCEREBUILD = NO;
 			lastSaved = [NSDate timeIntervalSinceReferenceDate];
 		}
 		
-		[context setStalenessInterval: 0];
+		[context setStalenessInterval: 1200];
 		[context unlock];
 		
 		if( addFailed == NO)
@@ -1353,6 +1351,8 @@ static BOOL FORCEREBUILD = NO;
     }
 	
 	[coordinator release];
+	
+	[managedObjectContext setStalenessInterval: 1200];
 	
     return managedObjectContext;
 }
