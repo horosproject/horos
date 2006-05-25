@@ -23,6 +23,34 @@ NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L;
 NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
+short					Altivec = 0;
+
+#if __ppc__
+// ALTIVEC FUNCTIONS
+void InverseLongs(register vector unsigned int *unaligned_input, register long size)
+{
+	register long						i = size / 4;
+	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
+	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( long )- 1 ) );
+	
+	while(i-- > 0)
+	{
+		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapLongs);
+	}
+}
+
+void InverseShorts( register vector unsigned short *unaligned_input, register long size)
+{
+	register long						i = size / 8;
+	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
+	register vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
+	
+	while(i-- > 0)
+	{
+		*unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapShorts);
+	}
+}
+#endif
 
 NSString* convertDICOM( NSString *inputfile)
 {
@@ -32,6 +60,10 @@ NSString* convertDICOM( NSString *inputfile)
 int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
+	
+	#if __ppc__
+	Altivec = 1;
+	#endif
 	
 	Papy3Init();
 	
