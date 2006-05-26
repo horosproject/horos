@@ -899,7 +899,6 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 - (void)dealloc 
 {
-	[self save:nil];
 	[_callingAET release];
 	[_calledAET release];
 	[_hostname release];
@@ -1577,20 +1576,4 @@ NS_ENDHANDLER
 - (void)abort{
 	_shouldAbort = YES;
 }
-
-- (void)save:(id)sender{
-	NSError *error = 0L;
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	
-	[context lock];
-	if (![context  save: &error])
-	{
-		NSString *localizedDescription = [error localizedDescription];
-		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Error saving: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
-		[[NSApplication sharedApplication] presentError:error];
-	}
-	[context unlock];
-}
-
-
 @end

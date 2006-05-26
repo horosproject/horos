@@ -317,14 +317,6 @@
 		7E5975D908845D8800762AEF /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
 		7E5975DA08845D9100762AEF /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		7E5975DB08845D9200762AEF /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
-		7E5975DC08845D9800762AEF /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
-		7E5975DD08845D9900762AEF /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
-		7E59760F0884608800762AEF /* NetworkListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E59760D0884608800762AEF /* NetworkListener.h */; };
-		7E5976100884608800762AEF /* NetworkListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E59760E0884608800762AEF /* NetworkListener.m */; };
-		7E5976110884608800762AEF /* NetworkListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E59760D0884608800762AEF /* NetworkListener.h */; };
-		7E5976120884608800762AEF /* NetworkListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E59760E0884608800762AEF /* NetworkListener.m */; };
-		7E5976130884608800762AEF /* NetworkListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E59760D0884608800762AEF /* NetworkListener.h */; };
-		7E5976140884608800762AEF /* NetworkListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E59760E0884608800762AEF /* NetworkListener.m */; };
 		7E5DC07C078AF4FB009D04DF /* DCMQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E5DC07D078AF4FB009D04DF /* DCMQueryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */; };
 		7E5DC084078AF523009D04DF /* DCMRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -982,6 +974,12 @@
 		AB94E72606343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		AB94E72706343D91003E4C48 /* MutableArrayCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB94E72306343D91003E4C48 /* MutableArrayCategory.m */; };
 		AB94E72806343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
+		AB9750930A27266000BC23EB /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
+		AB9750940A27266100BC23EB /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
+		AB9750CA0A2732E900BC23EB /* NetworkMoveDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */; };
+		AB9750CB0A2732EA00BC23EB /* NetworkMoveDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */; };
+		AB9751080A273A0D00BC23EB /* OsiriXSCPDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */; };
+		AB9751090A273A0D00BC23EB /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		AB9DCD7B09A9C47800AA19E7 /* ReportTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */; };
 		AB9DCD7C09A9C47800AA19E7 /* ReportTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */; };
 		AB9DCD7D09A9C47800AA19E7 /* ReportTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */; };
@@ -1355,14 +1353,6 @@
 		BF17E9800887662400ECF621 /* NetworkMoveDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */; };
 		BF17E9810887662400ECF621 /* NetworkMoveDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */; };
 		BF17E9820887662400ECF621 /* NetworkMoveDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */; };
-		BF17E9830887662400ECF621 /* NetworkMoveDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */; };
-		BF17E9840887662400ECF621 /* NetworkMoveDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */; };
-		BF17E9870887687200ECF621 /* NetworkSendDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E9850887687200ECF621 /* NetworkSendDataHandler.h */; };
-		BF17E9880887687200ECF621 /* NetworkSendDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E9860887687200ECF621 /* NetworkSendDataHandler.m */; };
-		BF17E9890887687200ECF621 /* NetworkSendDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E9850887687200ECF621 /* NetworkSendDataHandler.h */; };
-		BF17E98A0887687200ECF621 /* NetworkSendDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E9860887687200ECF621 /* NetworkSendDataHandler.m */; };
-		BF17E98B0887687200ECF621 /* NetworkSendDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E9850887687200ECF621 /* NetworkSendDataHandler.h */; };
-		BF17E98C0887687200ECF621 /* NetworkSendDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF17E9860887687200ECF621 /* NetworkSendDataHandler.m */; };
 		BF1833D109AD833D0046C295 /* FlipHorizontal.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */; };
 		BF1833D209AD833D0046C295 /* FlipVertical.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833D009AD833D0046C295 /* FlipVertical.tif */; };
 		BF1833D309AD833D0046C295 /* FlipHorizontal.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */; };
@@ -1575,8 +1565,6 @@
 		BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
 		BF7A838209B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
 		BF7A838309B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
-		BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
-		BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
 		BF7DEA9309D1F77500A332B8 /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14C06BF2C4F00C7EF1E /* jmorecfg8.h */; };
 		BF7DEA9409D1F77500A332B8 /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14D06BF2C4F00C7EF1E /* jpegint8.h */; };
 		BF7DEA9509D1F77600A332B8 /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14E06BF2C4F00C7EF1E /* jpeglib8.h */; };
@@ -9153,8 +9141,6 @@
 		7E56938506500791001A9762 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/SmartAlbum.nib; sourceTree = "<group>"; };
 		7E569397065007D6001A9762 /* SmartWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartWindowController.h; sourceTree = "<group>"; };
 		7E569398065007D6001A9762 /* SmartWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmartWindowController.m; sourceTree = "<group>"; };
-		7E59760D0884608800762AEF /* NetworkListener.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NetworkListener.h; sourceTree = "<group>"; };
-		7E59760E0884608800762AEF /* NetworkListener.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NetworkListener.m; sourceTree = "<group>"; };
 		7E5DC07A078AF4FB009D04DF /* DCMQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMQueryNode.h; path = Networking/DCMQueryNode.h; sourceTree = "<group>"; };
 		7E5DC07B078AF4FB009D04DF /* DCMQueryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMQueryNode.m; path = Networking/DCMQueryNode.m; sourceTree = "<group>"; };
 		7E5DC082078AF523009D04DF /* DCMRootQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMRootQueryNode.h; path = Networking/DCMRootQueryNode.h; sourceTree = "<group>"; };
@@ -9654,8 +9640,6 @@
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
 		BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NetworkMoveDataHandler.h; sourceTree = "<group>"; };
 		BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NetworkMoveDataHandler.m; sourceTree = "<group>"; };
-		BF17E9850887687200ECF621 /* NetworkSendDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NetworkSendDataHandler.h; sourceTree = "<group>"; };
-		BF17E9860887687200ECF621 /* NetworkSendDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NetworkSendDataHandler.m; sourceTree = "<group>"; };
 		BF17E98D088768CA00ECF621 /* LogArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogArrayController.h; sourceTree = "<group>"; };
 		BF17E98E088768CA00ECF621 /* LogArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LogArrayController.m; sourceTree = "<group>"; };
 		BF17E98F088768CA00ECF621 /* LogTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LogTableView.h; sourceTree = "<group>"; };
@@ -13895,12 +13879,8 @@
 				BF17E98E088768CA00ECF621 /* LogArrayController.m */,
 				BF17E98F088768CA00ECF621 /* LogTableView.h */,
 				BF17E990088768CA00ECF621 /* LogTableView.m */,
-				BF17E9850887687200ECF621 /* NetworkSendDataHandler.h */,
-				BF17E9860887687200ECF621 /* NetworkSendDataHandler.m */,
 				BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */,
 				BF17E97E0887662400ECF621 /* NetworkMoveDataHandler.m */,
-				7E59760D0884608800762AEF /* NetworkListener.h */,
-				7E59760E0884608800762AEF /* NetworkListener.m */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
 				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */,
 				BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */,
@@ -16999,11 +16979,9 @@
 				CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */,
 				CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */,
 				7E5975D808845D8700762AEF /* OsiriXSCPDataHandler.h in Headers */,
-				7E59760F0884608800762AEF /* NetworkListener.h in Headers */,
 				A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */,
 				A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */,
 				BF17E97F0887662400ECF621 /* NetworkMoveDataHandler.h in Headers */,
-				BF17E9870887687200ECF621 /* NetworkSendDataHandler.h in Headers */,
 				7EBE4B2708917A7500FC1C36 /* LogTableView.h in Headers */,
 				7E1123E008A7CBA20037819D /* LogArrayController.h in Headers */,
 				CE88575E08AF938800B72DA7 /* ROIVolumeView.h in Headers */,
@@ -18813,10 +18791,6 @@
 				CEE1923308636FA100DED1F0 /* DicomImage.h in Headers */,
 				CE9DD28D086B35050058DD2A /* DicomStudy.h in Headers */,
 				CE9DD28E086B35050058DD2A /* DicomSeries.h in Headers */,
-				7E5975DC08845D9800762AEF /* OsiriXSCPDataHandler.h in Headers */,
-				7E5976130884608800762AEF /* NetworkListener.h in Headers */,
-				BF17E9830887662400ECF621 /* NetworkMoveDataHandler.h in Headers */,
-				BF17E98B0887687200ECF621 /* NetworkSendDataHandler.h in Headers */,
 				CE142045088D4FFD00C7FD83 /* BonjourBrowser.h in Headers */,
 				CE142047088D4FFE00C7FD83 /* BonjourPublisher.h in Headers */,
 				7EBE4B2A08917A8900FC1C36 /* LogTableView.h in Headers */,
@@ -20427,7 +20401,6 @@
 				BFBF496109B6828E00545F5E /* oftypes.h in Headers */,
 				BFBF496209B6828E00545F5E /* ofuoset.h in Headers */,
 				BFC9C2AD09B697DB003717B1 /* DCMTKVerifySCU.h in Headers */,
-				BF7A838409B8D1C20051F091 /* DCMTKStoreSCU.h in Headers */,
 				3A2D126209BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */,
 				3A2D126409BC9AF000CCBC80 /* MSRGWindowController.h in Headers */,
 				A9523D1A09BDB4890070CBD5 /* etkErrorAPI.hpp in Headers */,
@@ -20455,6 +20428,9 @@
 				BF90551E09EB4985009C30D1 /* MoveManager.h in Headers */,
 				BFF5D24409F93B3F0077E16B /* LogManager.h in Headers */,
 				BF9999040A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
+				AB9750940A27266100BC23EB /* DCMTKStoreSCU.h in Headers */,
+				AB9750CA0A2732E900BC23EB /* NetworkMoveDataHandler.h in Headers */,
+				AB9751090A273A0D00BC23EB /* OsiriXSCPDataHandler.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20632,9 +20608,7 @@
 				CE9DD28A086B35050058DD2A /* DicomSeries.h in Headers */,
 				CE0B46CA087D2B910052E309 /* VRPROFlyThruAdapter.h in Headers */,
 				7E5975DA08845D9100762AEF /* OsiriXSCPDataHandler.h in Headers */,
-				7E5976110884608800762AEF /* NetworkListener.h in Headers */,
 				BF17E9810887662400ECF621 /* NetworkMoveDataHandler.h in Headers */,
-				BF17E9890887687200ECF621 /* NetworkSendDataHandler.h in Headers */,
 				CE142049088D500300C7FD83 /* BonjourBrowser.h in Headers */,
 				CE14204B088D500400C7FD83 /* BonjourPublisher.h in Headers */,
 				7EBE4B2808917A7B00FC1C36 /* LogTableView.h in Headers */,
@@ -23872,11 +23846,9 @@
 				CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */,
 				CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */,
 				7E5975D908845D8800762AEF /* OsiriXSCPDataHandler.m in Sources */,
-				7E5976100884608800762AEF /* NetworkListener.m in Sources */,
 				A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */,
 				A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */,
 				BF17E9800887662400ECF621 /* NetworkMoveDataHandler.m in Sources */,
-				BF17E9880887687200ECF621 /* NetworkSendDataHandler.m in Sources */,
 				7EBE4B2608917A7200FC1C36 /* LogTableView.m in Sources */,
 				7E1123DF08A7CB9F0037819D /* LogArrayController.m in Sources */,
 				CE88576008AF938800B72DA7 /* ROIVolumeController.mm in Sources */,
@@ -24436,10 +24408,6 @@
 				CEE1923208636FA100DED1F0 /* DicomImage.m in Sources */,
 				CE9DD28C086B35050058DD2A /* DicomStudy.m in Sources */,
 				CE9DD28F086B35050058DD2A /* DicomSeries.m in Sources */,
-				7E5975DD08845D9900762AEF /* OsiriXSCPDataHandler.m in Sources */,
-				7E5976140884608800762AEF /* NetworkListener.m in Sources */,
-				BF17E9840887662400ECF621 /* NetworkMoveDataHandler.m in Sources */,
-				BF17E98C0887687200ECF621 /* NetworkSendDataHandler.m in Sources */,
 				CE142044088D4FFC00C7FD83 /* BonjourBrowser.m in Sources */,
 				CE142046088D4FFE00C7FD83 /* BonjourPublisher.m in Sources */,
 				7EBE4B2B08917A8A00FC1C36 /* LogTableView.m in Sources */,
@@ -24793,7 +24761,6 @@
 				BFBF495C09B6828E00545F5E /* ofthread.cc in Sources */,
 				BFBF495E09B6828E00545F5E /* oftime.cc in Sources */,
 				BFC9C2AE09B697DB003717B1 /* DCMTKVerifySCU.mm in Sources */,
-				BF7A838509B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
 				3A2D126509BC9AF000CCBC80 /* MSRGWindowController.m in Sources */,
 				A9523D1D09BDB4890070CBD5 /* etkRegistration.cpp in Sources */,
 				A9523D2009BDB4890070CBD5 /* etkMatrix.cpp in Sources */,
@@ -24820,6 +24787,9 @@
 				BF8B2A4A09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
 				BFF5D24509F93B3F0077E16B /* LogManager.mm in Sources */,
 				BF9999050A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
+				AB9750930A27266000BC23EB /* DCMTKStoreSCU.mm in Sources */,
+				AB9750CB0A2732EA00BC23EB /* NetworkMoveDataHandler.m in Sources */,
+				AB9751080A273A0D00BC23EB /* OsiriXSCPDataHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25091,9 +25061,7 @@
 				CE9DD28B086B35050058DD2A /* DicomSeries.m in Sources */,
 				CE0B46C9087D2B910052E309 /* VRPROFlyThruAdapter.m in Sources */,
 				7E5975DB08845D9200762AEF /* OsiriXSCPDataHandler.m in Sources */,
-				7E5976120884608800762AEF /* NetworkListener.m in Sources */,
 				BF17E9820887662400ECF621 /* NetworkMoveDataHandler.m in Sources */,
-				BF17E98A0887687200ECF621 /* NetworkSendDataHandler.m in Sources */,
 				CE142048088D500200C7FD83 /* BonjourBrowser.m in Sources */,
 				CE14204A088D500400C7FD83 /* BonjourPublisher.m in Sources */,
 				7EBE4B2908917A7F00FC1C36 /* LogTableView.m in Sources */,

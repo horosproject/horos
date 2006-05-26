@@ -596,8 +596,6 @@ extern BrowserController *browserWindow;
 		
 		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
 		
-		[context lock];
-		
 		findArray = [context executeFetchRequest:request error:&error];
 		
 		if (error) {
@@ -608,8 +606,6 @@ extern BrowserController *browserWindow;
 			[findArray retain];
 			cond = EC_Normal;
 		}
-		
-		[context unlock];
 	}
 	else{
 		findArray = nil;
@@ -649,8 +645,6 @@ extern BrowserController *browserWindow;
 	error = 0L;
 	
 	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
-	
-	[context lock];
 	
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -694,8 +688,6 @@ extern BrowserController *browserWindow;
 		}
 		cond = EC_Normal;
 	}
-	
-	[context unlock];
 	
 	moveArray = [paths copy];
 	[paths release];	

@@ -58,7 +58,7 @@ MODIFICATION HISTORY
 
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
-#import "NetworkListener.h"
+//#import "NetworkListener.h"
 #import "DCMTKQueryRetrieveSCP.h"
 
 #import "AppControllerDCMTKCategory.h"
@@ -87,7 +87,7 @@ short					Altivec;
 
 AppController			*appController = 0L;
 
-NetworkListener			*storeSCP = 0L;
+//NetworkListener			*storeSCP = 0L;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = 0L;
 
 NSLock					*PapyrusLock = 0L;			// Papyrus is NOT thread-safe
@@ -942,14 +942,14 @@ NSRect screenFrame()
 		}
 		
 		// Kill OsiriX framework listener
-		if( storeSCP)
-		{
-			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
-			
-			[storeSCP stop];
-			[storeSCP release];
-			storeSCP = 0L;
-		}
+//		if( storeSCP)
+//		{
+//			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+//			
+//			[storeSCP stop];
+//			[storeSCP release];
+//			storeSCP = 0L;
+//		}
 		
 		//make sure that there exist a receiver folder at @"folder" path
 		NSString            *path = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
@@ -966,25 +966,25 @@ NSRect screenFrame()
 		{
 			[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
 		}
-		else
-		{
-			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
-			
-			//DCM framework storescp
-			//NSAutoreleasePool allows retaining storeSCP NetworkListener object, having it persist after the [pool release]
-			
-			NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-			
-			int debugLevel = 0;
-			NSMutableDictionary *params = [NSMutableDictionary dictionary];
-			[params setObject: [NSNumber numberWithInt:debugLevel] forKey: @"debugLevel"];
-			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"calledAET"];
-			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
-			[params setObject: path  forKey: @"folder"];
-			storeSCP = [[NetworkListener listenWithParameters:params] retain];
-
-			[pool release];
-		}
+//		else
+//		{
+//			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+//			
+//			//DCM framework storescp
+//			//NSAutoreleasePool allows retaining storeSCP NetworkListener object, having it persist after the [pool release]
+//			
+//			NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+//			
+//			int debugLevel = 0;
+//			NSMutableDictionary *params = [NSMutableDictionary dictionary];
+//			[params setObject: [NSNumber numberWithInt:debugLevel] forKey: @"debugLevel"];
+//			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"calledAET"];
+//			[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+//			[params setObject: path  forKey: @"folder"];
+//			storeSCP = [[NetworkListener listenWithParameters:params] retain];
+//
+//			[pool release];
+//		}
 	}
 
 	NS_HANDLER

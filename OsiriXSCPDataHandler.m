@@ -156,7 +156,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				
 				error = 0L;
 				NSManagedObjectContext	*context = [browserWindow managedObjectContext];
-				[context lock];
 				NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 				
 				if (error) 
@@ -217,8 +216,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 				
 					[scpDelegate sendCommand:moveResponse data:[DCMObject dcmObject] forAffectedSOPClassUID:[moveRequest affectedSOPClassUID]];
 				}
-				
-				[context unlock];
 			}
 			else{
 				DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
@@ -269,7 +266,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		NS_DURING
 		error = 0L;
 		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
-		[context lock];
 		NSArray *fetchArray = [context executeFetchRequest:request error:&error];
 		if (!error && [fetchArray count]) {
 			unsigned short remaining = [fetchArray count];
@@ -337,8 +333,6 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			if (error)
 				NSLog(@"Fetch error: %@", [error description]);
 		}
-		
-		[context unlock];
 		
 		//NSLog(@"Find response: %@", [response description]);
 		NS_HANDLER
@@ -758,64 +752,61 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	return imageObject;
 }
 
-- (void)setStatus:(unsigned short)moveStatus  numberSent:(int)numberSent numberError:(int)numberErrors{
-		
-
-	DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
-	priority:[moveRequest priority]
-	messageIDBeingRespondedTo:[moveRequest messageIDBeingRespondedTo]
-	remainingSuboperations:(unsigned short)(numberMoving - numberSent - numberErrors)
-	completedSuboperations:(unsigned short)numberSent
-	failedSuboperations:(unsigned short)numberErrors
-	warningSuboperations:0x0000
-	status:moveStatus];
-		
-	//NSLog(@"Move status: %@", [moveResponse description]);
-	//Move status is being sent incorrectly when Pending causing premature closure of Association. Need to fix
-	//[scpDelegate sendCommand:moveResponse data:[DCMObject dcmObject] forAffectedSOPClassUID:[moveRequest affectedSOPClassUID]];		
-	//Antoine - Is this line really useful? It is causing a Broken Pipe Error.......
-	
-	
-}
-
-- (void)updateReceiveStatus:(NSDictionary *)userInfo{
-	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:YES];
-}
-
-- (void)updateLogEntry:(NSDictionary *)userInfo{
-
-	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
-	
-	if(debugLevel > 0) 
-		NSLog(@"update receive log: %@", [userInfo description]);
-	
-	[userInfo retain];
-	NS_DURING
-	if (!logEntry)
-	{
-		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
-		[context lock];
-		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context] retain];
-		[logEntry setValue:[NSDate date] forKey:@"startTime"];
-		[logEntry setValue:@"Receive" forKey:@"type"];
-		[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
-		[logEntry setValue:[userInfo objectForKey:@"PatientName"] forKey:@"patientName"];
-		[logEntry setValue:[userInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];
-		
-		[context unlock];		
-	}
-	[logEntry setValue:[userInfo objectForKey:@"Message"] forKey:@"message"];
-	[logEntry setValue:[userInfo objectForKey:@"NumberReceived"] forKey:@"numberImages"];
-	[logEntry setValue:[userInfo objectForKey:@"NumberReceived"  ] forKey:@"numberSent"];
-	[logEntry setValue:[userInfo objectForKey:@"ErrorCount"] forKey:@"numberError"];
-	[logEntry setValue:[NSDate date] forKey:@"endTime"];
-	//if (([[userInfo objectForKey:@"NumberReceived"] intValue] % 10 == 0) || ([[userInfo objectForKey:@"Message"] isEqualToString:@"Complete"]))
-	//	[browserWindow saveDatabase:nil];
-	NS_HANDLER
-		NSLog(@"exception while updating receive status: %@", [localException name]);
-	NS_ENDHANDLER
-	[userInfo release];
-}
+//- (void)setStatus:(unsigned short)moveStatus  numberSent:(int)numberSent numberError:(int)numberErrors{
+//		
+//
+//	DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
+//	priority:[moveRequest priority]
+//	messageIDBeingRespondedTo:[moveRequest messageIDBeingRespondedTo]
+//	remainingSuboperations:(unsigned short)(numberMoving - numberSent - numberErrors)
+//	completedSuboperations:(unsigned short)numberSent
+//	failedSuboperations:(unsigned short)numberErrors
+//	warningSuboperations:0x0000
+//	status:moveStatus];
+//		
+//	//NSLog(@"Move status: %@", [moveResponse description]);
+//	//Move status is being sent incorrectly when Pending causing premature closure of Association. Need to fix
+//	//[scpDelegate sendCommand:moveResponse data:[DCMObject dcmObject] forAffectedSOPClassUID:[moveRequest affectedSOPClassUID]];		
+//	//Antoine - Is this line really useful? It is causing a Broken Pipe Error.......
+//	
+//	
+//}
+//
+//- (void)updateReceiveStatus:(NSDictionary *)userInfo{
+//	[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:YES];
+//}
+//
+//- (void)updateLogEntry:(NSDictionary *)userInfo{
+//
+//	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+//	
+//	if(debugLevel > 0) 
+//		NSLog(@"update receive log: %@", [userInfo description]);
+//	
+//	[userInfo retain];
+//	NS_DURING
+//	if (!logEntry)
+//	{
+//		NSManagedObjectContext	*context = [browserWindow managedObjectContext];
+//		logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context] retain];
+//		[logEntry setValue:[NSDate date] forKey:@"startTime"];
+//		[logEntry setValue:@"Receive" forKey:@"type"];
+//		[logEntry setValue:[userInfo objectForKey:@"CallingAET"] forKey:@"originName"];
+//		[logEntry setValue:[userInfo objectForKey:@"PatientName"] forKey:@"patientName"];
+//		[logEntry setValue:[userInfo objectForKey:@"StudyDescription"] forKey:@"studyName"];
+//	}
+//	[logEntry setValue:[userInfo objectForKey:@"Message"] forKey:@"message"];
+//	[logEntry setValue:[userInfo objectForKey:@"NumberReceived"] forKey:@"numberImages"];
+//	[logEntry setValue:[userInfo objectForKey:@"NumberReceived"  ] forKey:@"numberSent"];
+//	[logEntry setValue:[userInfo objectForKey:@"ErrorCount"] forKey:@"numberError"];
+//	[logEntry setValue:[NSDate date] forKey:@"endTime"];
+//	//if (([[userInfo objectForKey:@"NumberReceived"] intValue] % 10 == 0) || ([[userInfo objectForKey:@"Message"] isEqualToString:@"Complete"]))
+//	//	[browserWindow saveDatabase:nil];
+//	NS_HANDLER
+//		NSLog(@"exception while updating receive status: %@", [localException name]);
+//	NS_ENDHANDLER
+//	[userInfo release];
+//}
 
 
 -(NSTimeInterval)endOfDay:(DCMCalendarDate *)day{

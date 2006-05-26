@@ -35,7 +35,7 @@ LogManager *currentLogManager;
 - (id)init{
 	if (self = [super init]){
 		_currentLogs = [[NSMutableDictionary alloc] init];
-		_timer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
+		_timer = [[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 	}
 	return self;
 }
@@ -62,8 +62,9 @@ LogManager *currentLogManager;
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
 		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-		
 		if( context == 0L) return;
+		
+		BOOL locked = NO;
 		
 		NSFileManager *manager = [NSFileManager defaultManager];
 		NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath:[self logFolder]];
@@ -87,12 +88,15 @@ LogManager *currentLogManager;
 		logNumberReceived[ 0] = 0;
 		logEndTime[ 0] = 0;
 		
-		[context lock];
-		
 		NS_DURING
 		while (path = [enumerator nextObject]){
 			if ([[path pathExtension] isEqualToString: @"log"])
 			{
+				if( locked == NO)
+				{
+					[context lock];
+					locked = YES;
+				}
 				
 				NSString *file = [[self logFolder] stringByAppendingPathComponent:path];
 				NSString *newfile = [file stringByAppendingString:@"reading"];
@@ -152,7 +156,8 @@ LogManager *currentLogManager;
 			NSLog(@"Exception while checking logs: %@", [localException description]);
 		NS_ENDHANDLER
 		
-		[context unlock];
+		if( locked)
+			[context unlock];
 	}
 }
 
