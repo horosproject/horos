@@ -1764,10 +1764,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( NEEDTOREBUILD)
 		{
-			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
-			
-			if( result == NSAlertDefaultReturn) [self ReBuildDatabase:self];
-			
+			[self ReBuildDatabase:self];
 			NEEDTOREBUILD = NO;
 		}
 		else

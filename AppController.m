@@ -1997,7 +1997,12 @@ static BOOL initialized = NO;
 		
 		// CREATE A TEMPORATY FILE DURING STARTUP
 		NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) NEEDTOREBUILD = YES;
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+			
+			if( result == NSAlertDefaultReturn) NEEDTOREBUILD = YES;
+		}
 		
 		[path writeToFile:path atomically:NO];
 		
