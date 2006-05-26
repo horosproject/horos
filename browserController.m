@@ -2040,12 +2040,19 @@ SElement		*theGroupP;
 		{
 			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
 		}
-		
-		[managedObjectContext release];
-		managedObjectContext = 0L;
+
+	}
+	else
+	{
+		[self saveDatabase:currentDatabasePath];
 	}
 
-
+		
+	[managedObjectContext release];
+	managedObjectContext = 0L;
+	
+	[databaseOutline reloadData];
+	
 	NSMutableArray				*filesArray;
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
@@ -2094,7 +2101,7 @@ SElement		*theGroupP;
 	}
 	
 	NSLog( @"Start Rebuild");
-			
+	
 	for( i = 0; i < [dirContent count]; i++)
 	{
 		NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
@@ -2260,20 +2267,20 @@ SElement		*theGroupP;
 
 	[noOfFilesToRebuild setIntValue: totalFiles];
 	
-	long durationFor10000;
+	long durationFor1000;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMFILE"] == NO)
 	{
-		durationFor10000 = 180;
+		durationFor1000 = 18;
 		[warning setHidden: NO];
 	}
 	else
 	{
-		durationFor10000 = 90;
+		durationFor1000 = 9;
 		[warning setHidden: YES];
 	}
 	
-	long totalSeconds = totalFiles * durationFor10000 / 10000;
+	long totalSeconds = totalFiles * durationFor1000 / 1000;
 	long hours = (totalSeconds / 3600);
 	long minutes = ((totalSeconds / 60) - hours*60);
 	long seconds = (totalSeconds % 60);
@@ -3674,6 +3681,8 @@ SElement		*theGroupP;
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
 {
+	if( managedObjectContext == 0L) return 0L;
+
 	if( item == 0L) 
 	{
 		return [outlineViewArray objectAtIndex: index];
@@ -3696,6 +3705,8 @@ SElement		*theGroupP;
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
+	if( managedObjectContext == 0L) return 0L;
+	
 	if (!item)
 	{
 		return [outlineViewArray count];
@@ -3712,7 +3723,8 @@ SElement		*theGroupP;
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-
+	if( managedObjectContext == 0L) return 0L;
+	
 	// *********************************************
 	//	PLUGINS
 	// *********************************************
