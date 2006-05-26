@@ -335,7 +335,7 @@ static BOOL			DICOMDIRCDMODE = NO;
 		NSArray*	statesArray = 0L;
 
 
-static BOOL FORCEREBUILD = NO;
+static BOOL COMPLETEREBUILD = NO;
 
 + (BrowserController*) currentBrowser { return browserWindow;}
 
@@ -1714,7 +1714,7 @@ static BOOL FORCEREBUILD = NO;
 		NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database will be deleted (no images are lost).", nil), nil, nil, nil);
 		[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
 		NEEDTOREBUILD = YES;
-		FORCEREBUILD = YES;
+		COMPLETEREBUILD = YES;
 	}
 }
 
@@ -1764,7 +1764,9 @@ static BOOL FORCEREBUILD = NO;
 		
 		if( NEEDTOREBUILD)
 		{
-			[self ReBuildDatabase:self];
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+			
+			if( result == NSAlertDefaultReturn) [self ReBuildDatabase:self];
 			
 			NEEDTOREBUILD = NO;
 		}
@@ -1992,264 +1994,260 @@ SElement		*theGroupP;
 
 - (IBAction) endReBuildDatabase:(id) sender
 {
-	BOOL        available, DoIt = NO;
-	long        i;
-
 	[NSApp endSheet: rebuildWindow];
 	[rebuildWindow orderOut: self];
+	
+	if( [sender tag])
+	{
+//		switch( [rebuildMode selectedTag])
+//		{
+//			case 0:
+//				REBUILDEXTERNALPROCESS = NO;
+//			break;
+//			
+//			case 1:
+//				REBUILDEXTERNALPROCESS = YES;
+//			break;
+//		}
+		
+		switch( [rebuildType selectedTag])
+		{
+			case 0:
+				COMPLETEREBUILD = YES;
+			break;
+			
+			case 1:
+				COMPLETEREBUILD = NO;
+			break;
+		}
+		
+		[self ReBuildDatabase: self];
+	}
+}
+
+- (IBAction) ReBuildDatabase:(id) sender
+{
+	BOOL        available;
+	long        i;
+	
+	if( isCurrentDatabaseBonjour) return;
+	
+	BOOL REBUILDEXTERNALPROCESS = YES;
+	
+	if( COMPLETEREBUILD)	// Delete the database file
+	{
+		if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
+		{
+			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
+		}
+		
+		[managedObjectContext release];
+		managedObjectContext = 0L;
+	}
 
 
+	NSMutableArray				*filesArray;
+	
+	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
+	[wait showWindow:self];
+	
+	filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+			
+	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
+	
+	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+	BOOL		isDir = YES;
+	long		totalFiles = 0;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
+	
+	// In the DATABASE FOLDER, we have only folders! Delete all files that are wrongly there.... and then scan these folders containing the DICOM files
+	
+	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+	for( i = 0; i < [dirContent count]; i++)
+	{
+		NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
+		id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey:NSFileType];
+		if ([fileType isEqual:NSFileTypeRegular])
+		{
+			[[NSFileManager defaultManager] removeFileAtPath:itemPath handler: 0L];
+		}
+		
+		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey: NSFileReferenceCount] intValue];
+	}
+	
+	[wait close];
+	[wait release];
+
+	dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+	
+	
+	Wait	*REBUILDEXTERNALPROCESSProgress = 0L;
+	
+	if( REBUILDEXTERNALPROCESS)
+	{
+		[managedObjectContext release];
+		managedObjectContext = 0L;
+		
+		REBUILDEXTERNALPROCESSProgress = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt:totalFiles]]]];
+		[REBUILDEXTERNALPROCESSProgress showWindow:self];
+		[[REBUILDEXTERNALPROCESSProgress progress] setMaxValue: totalFiles];
+	}
+	
+	NSLog( @"Start Rebuild");
+			
+	for( i = 0; i < [dirContent count]; i++)
+	{
+		NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+		
+		NSString	*curDir = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
+		NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]]];
+		long		z;
+		
+		for( z = 0;  z < [subDir count]; z++)
+		{
+			if( [[subDir objectAtIndex: z] characterAtIndex: 0] != '.')
+				[filesArray addObject: [curDir stringByAppendingPathComponent: [subDir objectAtIndex: z]]];
+		}
+		
+		if( REBUILDEXTERNALPROCESS)
+		{
+			[self callAddFilesToDatabaseSafe: filesArray];
+			
+			[filesArray release];
+			filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
+			
+			[REBUILDEXTERNALPROCESSProgress incrementBy: [[[[NSFileManager defaultManager] fileAttributesAtPath: curDir traverseLink: NO] objectForKey: NSFileReferenceCount] intValue]];
+		}
+		
+		[pool release];
+	}
+	
+	if( REBUILDEXTERNALPROCESS == NO)
+	{
+		[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];
+	}
+	else
+	{
+		[REBUILDEXTERNALPROCESSProgress close];
+		[REBUILDEXTERNALPROCESSProgress release];
+		REBUILDEXTERNALPROCESSProgress = 0L;
+	}
+	
+	NSLog( @"End Rebuild");
+
+	[filesArray release];
+	
+	Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
+	
+	[splash showWindow:self];
+	
+	NSManagedObjectContext		*context = [self managedObjectContext];
+	NSManagedObjectModel		*model = [self managedObjectModel];
+	
+	[context lock];
+	
+	NSFetchRequest	*dbRequest;
+	NSError			*error = 0L;
+	
+	if( COMPLETEREBUILD == NO)
+	{
+		// FIND ALL images, and REMOVE non-available images
+		
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		error = 0L;
+		NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		[[splash progress] setMaxValue:[imagesArray count]/50];
+		
+		// Find unavailable files
+		for( i = 0; i < [imagesArray count]; i++)
+		{
+			NSManagedObject       *aFile = [imagesArray objectAtIndex:i];
+			
+			FILE *fp;
+			
+			fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
+			if( fp)
+			{
+				fclose( fp);
+			}
+			else [context deleteObject: aFile];
+			
+			if( i % 50 == 0) [splash incrementBy:1];
+		}
+	}
+
+	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	error = 0L;
+	NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	if ([seriesArray count] > 0)
+	{
+		for( i = 0; i < [seriesArray count]; i++)
+		{
+			if( [[[seriesArray objectAtIndex: i] valueForKey:@"noFiles"] intValue] == 0)
+			{
+				[context deleteObject: [seriesArray objectAtIndex: i]];
+			}
+		}
+	}
+	
+	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	error = 0L;
+	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+	NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()];
+	
+	if ([studiesArray count] > 0)
+	{
+		for( i = 0; i < [studiesArray count]; i++)
+		{
+			BOOL deleted = NO;
+			
+			if( [[[studiesArray objectAtIndex: i] valueForKey:@"series"] count] == 0)
+			{
+				deleted = YES;
+				[context deleteObject: [studiesArray objectAtIndex: i]];
+			}
+			
+			if( [[[studiesArray objectAtIndex: i] valueForKey:@"noFiles"] intValue] == 0)
+			{
+				if( deleted == NO) [context deleteObject: [studiesArray objectAtIndex: i]];
+			}
+			
+			// SCAN THE STUDIES FOR REPORTS
+			NSString	*reportPath;
+			
+			reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename:[studiesArray objectAtIndex: i]]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [[studiesArray objectAtIndex: i] setValue:reportPath forKey:@"reportURL"];
+			
+			reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename:[studiesArray objectAtIndex: i]]];
+			if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [[studiesArray objectAtIndex: i] setValue:reportPath forKey:@"reportURL"];
+		}
+	}
+	
+	[self saveDatabase: currentDatabasePath];
+	
+	[self outlineViewRefresh];
+	[splash close];
+	[splash release];
+	
+	[context unlock];
+}
+
+- (IBAction) ReBuildDatabaseSheet: (id)sender
+{
 	if( isCurrentDatabaseBonjour)
 	{
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Cannot rebuild a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
-	
-	if( NEEDTOREBUILD)
-	{
-		if( FORCEREBUILD) DoIt = YES;
-		else
-		{
-			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
-			
-			if( result == NSAlertOtherReturn || result == NSAlertDefaultReturn)
-			{
-				DoIt = YES;
-			}
-		}
-		
-		if( DoIt)
-		{
-			if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
-			{
-				[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
-			}
-			FORCEREBUILD = YES;
-			managedObjectContext = 0L;
-		}
-	}
-	else
-	{
-		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Are you sure you want to rebuild the local database? It can take several minutes. 'Complete Rebuild' will delete all albums, comments and status. For large database (more than 500'000 images), it is recommended to use the 'Complete Rebuild'.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Complete Rebuild",nil));
-		
-		if( result == NSAlertOtherReturn || result == NSAlertDefaultReturn)
-		{
-			DoIt = YES;
-		}
-		
-		if( result == NSAlertOtherReturn)
-		{
-			if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
-			{
-				[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
-			}
-			
-			FORCEREBUILD = YES;
-			managedObjectContext = 0L;
-		}
-    }
-	
-	if( DoIt)
-	{
-        NSMutableArray				*filesArray;
-		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Step 1: Checking files...", nil)];
-		[wait showWindow:self];
-		
-        filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-        		
-		// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
-		
-		NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-		BOOL		isDir = YES;
-		if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
-		
-		// In the DATABASE FOLDER, we have only folders! Delete all files that are wrongly there.... and then scan these folders containing the DICOM files
-		
-		NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-		for( i = 0; i < [dirContent count]; i++)
-		{
-			NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
-			id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey:NSFileType];
-			if ([fileType isEqual:NSFileTypeRegular])
-			{
-				[[NSFileManager defaultManager] removeFileAtPath:itemPath handler: 0L];
-			}
-		}
-		
-		
-		dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
-		
-		
-		Wait	*forceRebuildProgress = 0L;
-		
-		if( FORCEREBUILD)
-		{
-			[managedObjectContext release];
-			managedObjectContext = 0L;
-			
-			forceRebuildProgress = [[Wait alloc] initWithString: NSLocalizedString(@"Adding files...", nil)];
-			[forceRebuildProgress showWindow:self];
-			[[forceRebuildProgress progress] setMaxValue:[dirContent count]];
-		}
-		
-		NSLog( @"Start Rebuild");
-				
-		for( i = 0; i < [dirContent count]; i++)
-		{
-			NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-			
-			NSString	*curDir = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
-			NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]]];
-			long		z;
-			
-			for( z = 0;  z < [subDir count]; z++)
-			{
-				if( [[subDir objectAtIndex: z] characterAtIndex: 0] != '.')
-					[filesArray addObject: [curDir stringByAppendingPathComponent: [subDir objectAtIndex: z]]];
-			}
-			
-			if( FORCEREBUILD == YES)
-			{
-				[self callAddFilesToDatabaseSafe: filesArray];
-				
-				[filesArray release];
-				filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
-				
-				[forceRebuildProgress incrementBy:1];
-			}
 
-			[pool release];
-		}
-		
-		if( FORCEREBUILD == NO)
-		{
-			[[self addFilesToDatabase: filesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO] valueForKey:@"completePath"];
-		}
-		else
-		{
-			[forceRebuildProgress close];
-			[forceRebuildProgress release];
-			forceRebuildProgress = 0L;
-		}
-		
-		NSLog( @"End Rebuild");
-		
-		[wait close];
-		[wait release];
-		
-		[filesArray release];
-		
-		NSLog( @"FORCEREBUILD: %d", FORCEREBUILD);
-		
-		Wait  *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 3: Cleaning Database...", 0L)];
-		
-		[splash showWindow:self];
-		
-		NSManagedObjectContext		*context = [self managedObjectContext];
-		NSManagedObjectModel		*model = [self managedObjectModel];
-		
-		[context lock];
-		
-		NSFetchRequest	*dbRequest;
-		NSError			*error = 0L;
-		
-		if( FORCEREBUILD == NO)
-		{
-			// FIND ALL images, and REMOVE non-available images
-			
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			error = 0L;
-			NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
-			
-			[[splash progress] setMaxValue:[imagesArray count]/50];
-			
-			// Find unavailable files
-			for( i = 0; i < [imagesArray count]; i++)
-			{
-				NSManagedObject       *aFile = [imagesArray objectAtIndex:i];
-				
-				FILE *fp;
-				
-				fp = fopen( [[aFile valueForKey:@"completePath"] UTF8String], "r");
-				if( fp)
-				{
-					fclose( fp);
-				}
-				else [context deleteObject: aFile];
-				
-				if( i % 50 == 0) [splash incrementBy:1];
-			}
-		}
-
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		error = 0L;
-		NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-		
-		if ([seriesArray count] > 0)
-		{
-			for( i = 0; i < [seriesArray count]; i++)
-			{
-				if( [[[seriesArray objectAtIndex: i] valueForKey:@"noFiles"] intValue] == 0)
-				{
-					[context deleteObject: [seriesArray objectAtIndex: i]];
-				}
-			}
-		}
-		
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		error = 0L;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		NSString	*basePath = [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()];
-		
-		if ([studiesArray count] > 0)
-		{
-			for( i = 0; i < [studiesArray count]; i++)
-			{
-				BOOL deleted = NO;
-				
-				if( [[[studiesArray objectAtIndex: i] valueForKey:@"series"] count] == 0)
-				{
-					deleted = YES;
-					[context deleteObject: [studiesArray objectAtIndex: i]];
-				}
-				
-				if( [[[studiesArray objectAtIndex: i] valueForKey:@"noFiles"] intValue] == 0)
-				{
-					if( deleted == NO) [context deleteObject: [studiesArray objectAtIndex: i]];
-				}
-				
-				// SCAN THE STUDIES FOR REPORTS
-				NSString	*reportPath;
-				
-				reportPath = [basePath stringByAppendingFormat:@"%@.doc",[Reports getUniqueFilename:[studiesArray objectAtIndex: i]]];
-				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [[studiesArray objectAtIndex: i] setValue:reportPath forKey:@"reportURL"];
-				
-				reportPath = [basePath stringByAppendingFormat:@"%@.rtf",[Reports getUniqueFilename:[studiesArray objectAtIndex: i]]];
-				if( [[NSFileManager defaultManager] fileExistsAtPath: reportPath]) [[studiesArray objectAtIndex: i] setValue:reportPath forKey:@"reportURL"];
-			}
-		}
-		
-		[self saveDatabase: currentDatabasePath];
-		
-		[self outlineViewRefresh];
-		[splash close];
-		[splash release];
-		
-		[context unlock];
-    }
-	
-	FORCEREBUILD = NO;
-}
-
-- (IBAction) ReBuildDatabase: (id)sender
-{
 	long i;
 	long totalFiles = 0;
 	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
@@ -2261,8 +2259,21 @@ SElement		*theGroupP;
 	}
 
 	[noOfFilesToRebuild setIntValue: totalFiles];
-
-	long totalSeconds = totalFiles * 90 / 10000;
+	
+	long durationFor10000;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMFILE"] == NO)
+	{
+		durationFor10000 = 180;
+		[warning setHidden: NO];
+	}
+	else
+	{
+		durationFor10000 = 90;
+		[warning setHidden: YES];
+	}
+	
+	long totalSeconds = totalFiles * durationFor10000 / 10000;
 	long hours = (totalSeconds / 3600);
 	long minutes = ((totalSeconds / 60) - hours*60);
 	long seconds = (totalSeconds % 60);
@@ -6660,7 +6671,7 @@ static BOOL needToRezoom;
 			currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
 			
 			NEEDTOREBUILD = YES;
-			FORCEREBUILD = YES;
+			COMPLETEREBUILD = YES;
 		}
 		
 		[self setFixedDocumentsDirectory];
