@@ -1538,6 +1538,28 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     }
 }
 
+
+- (void)flagsChanged:(NSEvent *)event {
+	if( [[[self window] windowController] is2DViewer] == YES)
+	{
+		BOOL update = NO;
+		if (([event modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
+		{
+			if (suppress_labels == NO) update = YES;
+			suppress_labels = YES;
+		}
+		else
+		{
+			if (suppress_labels == YES) update = YES;
+			suppress_labels = NO;
+		}		
+			
+		if (update == YES) [self setNeedsDisplay:YES];
+	}
+	[super flagsChanged:event];
+}
+
+
 - (void)mouseUp:(NSEvent *)event {
 
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -1797,23 +1819,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
 		[self setCursorForView: tool];
-		
-		if( [[[self window] windowController] is2DViewer] == YES)
-		{
-			BOOL update = NO;
-			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
-			{
-				if (suppress_labels == NO) update = YES;
-				suppress_labels = YES;
-			}
-			else
-			{
-				if (suppress_labels == YES) update = YES;
-				suppress_labels = NO;
-			}		
-				
-			if (update == YES) [self setNeedsDisplay:YES];
-		}
 	}
 }
 
