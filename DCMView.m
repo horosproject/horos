@@ -2416,7 +2416,7 @@ static long scrollMode;
 						}
 						
 						// Create aliases of current ROI to the entire series
-						if (([event modifierFlags] & NSShiftKeyMask))
+						if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
 						{
 							for( i = 0; i < [dcmRoiList count]; i++)
 							{
