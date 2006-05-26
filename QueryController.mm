@@ -132,8 +132,6 @@ static NSString *Modality = @"Modality";
 	id aServer;
 	if ([servers indexOfSelectedItem] >= 0)
 	{
-		[self clearQuery: self];
-	
 		[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
 		
 		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
@@ -158,7 +156,9 @@ static NSString *Modality = @"Modality";
 
 		NSString *filterValue = [[searchField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
-		QueryArrayController	*previousQuery = queryManager;
+		[queryManager release];
+		queryManager = nil;
+		[outlineView reloadData];
 		
 		queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
 		// add filters as needed
