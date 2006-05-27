@@ -208,8 +208,16 @@
 			NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
 			
 			theRecord = [[serverList objectAtIndex:rowIndex] mutableCopy];
-
-			[theRecord setObject:anObject forKey:[aTableColumn identifier]];
+			
+			if( [[aTableColumn identifier] isEqualToString:@"AETitle"])
+			{
+				NSString	*aet = anObject;
+	
+				if( [aet length] >= 16) aet = [aet substringToIndex: 16];
+	
+				[theRecord setObject:aet forKey:[aTableColumn identifier]];
+			}
+			else [theRecord setObject:anObject forKey:[aTableColumn identifier]];
 			
 			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
 			

@@ -384,20 +384,15 @@ static NSString *Modality = @"Modality";
 -(void) retrieve:(id)sender
 {
 	id object = [sender itemAtRow:[sender selectedRow]];	
-
-//	WaitRendering	*wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Start retrieving: %@", nil), [object valueForKey:@"name"]]];
-//	[wait showWindow:self];
-//
-//	[NSThread sleepUntilDate : [NSDate dateWithTimeIntervalSinceNow: 1]];
-//
-//	[wait close];
-//	[wait release];
-
-    [NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject:object];
+	
+//	[self performRetrieve: object];
+	
+	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject:object];
 }
 
 - (void)performRetrieve:(id)object{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	[object retain];
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[queryManager parameters]];
 	NSLog(@"retrieve params: %@", [dictionary description]);
@@ -405,6 +400,7 @@ static NSString *Modality = @"Modality";
 		[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 		[object move:dictionary];
 	}
+	[object release];
 	[pool release];
 }
 

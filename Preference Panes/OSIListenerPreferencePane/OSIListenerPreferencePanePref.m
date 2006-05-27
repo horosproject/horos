@@ -171,8 +171,17 @@ char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setInteger:[[logDurationPopup selectedItem] tag]  forKey:@"LOGCLEANINGDAYS"];
 }
 
-- (IBAction)setAE:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setObject:[aeTitleField stringValue] forKey:@"AETITLE"];
+- (IBAction)setAE:(id)sender
+{
+	NSString	*aet;
+	
+	if( [[aeTitleField stringValue] length] >= 16) aet = [[aeTitleField stringValue] substringToIndex: 16];
+	else aet = [aeTitleField stringValue];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:aet forKey:@"AETITLE"];
+	
+	[aeTitleField setStringValue: aet];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:[portField stringValue] forKey:@"AEPORT"];
 }
 
