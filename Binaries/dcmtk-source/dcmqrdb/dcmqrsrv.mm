@@ -1151,8 +1151,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             if (options_.debug_)
                 ASC_dumpParameters(assoc->params, COUT);
         }
-
-        if (options_.singleProcess_)
+		
+		if (options_.singleProcess_)
         {
             /* don't spawn a sub-process to handle the association */
             cond = handleAssociation(assoc, options_.correctUIDPadding_);

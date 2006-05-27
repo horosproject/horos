@@ -77,10 +77,11 @@ static NSString *Modality = @"Modality";
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
-		if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
+		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
+		
 			NSError						*error = 0L;
 			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
@@ -94,12 +95,15 @@ static NSString *Modality = @"Modality";
 			studyArray = [context executeFetchRequest:request error:&error];
 			if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"numberOfImages"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
 			{
-				[cell setFont: [NSFont fontWithName:@"LucidaSans-Italic" size: 13]];
+				[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
 			}
-			else [cell setFont: [NSFont fontWithName:@"LucidaSans-Demi" size: 13]];
+			else [(ImageAndTextCell *)cell setImage: 0L];
 			
 			[context unlock];
 		}
+		else [(ImageAndTextCell *)cell setImage: 0L];
+		
+		[cell setFont: [NSFont boldSystemFontOfSize:13]];
 	}
 }
 
@@ -377,8 +381,18 @@ static NSString *Modality = @"Modality";
 	[outlineView reloadData];
 }
 
--(void) retrieve:(id)sender{
-	id object = [sender itemAtRow:[sender selectedRow]];
+-(void) retrieve:(id)sender
+{
+	id object = [sender itemAtRow:[sender selectedRow]];	
+
+//	WaitRendering	*wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Start retrieving: %@", nil), [object valueForKey:@"name"]]];
+//	[wait showWindow:self];
+//
+//	[NSThread sleepUntilDate : [NSDate dateWithTimeIntervalSinceNow: 1]];
+//
+//	[wait close];
+//	[wait release];
+
     [NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject:object];
 }
 
@@ -555,6 +569,8 @@ static NSString *Modality = @"Modality";
     [outlineView setDelegate: self];
 	[outlineView setTarget: self];
 	[outlineView setDoubleAction:@selector(retrieve:)];
+	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
+	[[outlineView tableColumnWithIdentifier:@"name"] setDataCell:cellName];
 	
 	//set up Query Keys
 	currentQueryKey = PatientName;
