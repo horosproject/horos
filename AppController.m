@@ -1798,6 +1798,9 @@ static BOOL initialized = NO;
 		// ** AutoPlay
 		[defaultValues setObject: @"YES" forKey: @"AutoPlayAnimation"];
 		
+		// ** KeepStudiesOfSamePatientTogether
+		[defaultValues setObject: @"NO" forKey: @"KeepStudiesOfSamePatientTogether"];
+		
 		// ** USEPAPYRUSDCMPIX
 		[defaultValues setObject: @"YES" forKey: @"USEPAPYRUSDCMPIX"];
 		

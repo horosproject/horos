@@ -2992,6 +2992,21 @@ SElement		*theGroupP;
 	error = 0L;
 	outlineViewArray = [context executeFetchRequest:request error:&error];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"])
+	{
+		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
+		
+		for( i = 0; i < [outlineViewArray count] ; i++)
+		{
+			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@) AND (name == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientID"], [[outlineViewArray objectAtIndex: i] valueForKey:@"name"]]];
+		}
+		
+		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
+		error = 0L;
+		outlineViewArray = [context executeFetchRequest:request error:&error];
+	}
+	
+	
 	long images = 0;
 	for( i = 0; i < [outlineViewArray count]; i++) images += [[[outlineViewArray objectAtIndex: i] valueForKey:@"noFiles"] intValue];
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [numFmt stringForObjectValue:[NSNumber numberWithInt:images]]];
