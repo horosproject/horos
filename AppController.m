@@ -1799,7 +1799,7 @@ static BOOL initialized = NO;
 		[defaultValues setObject: @"YES" forKey: @"AutoPlayAnimation"];
 		
 		// ** KeepStudiesOfSamePatientTogether
-		[defaultValues setObject: @"NO" forKey: @"KeepStudiesOfSamePatientTogether"];
+		[defaultValues setObject: @"YES" forKey: @"KeepStudiesOfSamePatientTogether"];
 		
 		// ** USEPAPYRUSDCMPIX
 		[defaultValues setObject: @"YES" forKey: @"USEPAPYRUSDCMPIX"];

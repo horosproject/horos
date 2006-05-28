@@ -151,6 +151,7 @@ extern BrowserController	*browserWindow;
 	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[[note object] integerForKey: @"HIDEPATIENTNAME"]) refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[[note object] objectForKey: @"COLUMNSDATABASE"]] == NO) refreshColumns = YES;	
 	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[[note object] integerForKey: @"SERIESORDER"]) refreshDatabase = YES;
+	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[[note object] integerForKey: @"KeepStudiesOfSamePatientTogether"]) refreshDatabase = YES;
 	
 	[previousDefaults release];
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];

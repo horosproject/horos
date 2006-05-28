@@ -17,6 +17,7 @@
 
 @interface OSIDatabasePreferencePanePref : NSPreferencePane 
 {
+	IBOutlet NSButton		*displayAllStudies;
 	IBOutlet NSMatrix		*locationMatrix;
 	IBOutlet NSTextField	*locationURLField;
 	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
@@ -34,7 +35,7 @@
 	IBOutlet NSTextField	*commentsGroup, *commentsElement;
 	
 	// Auto-Cleaning
-	
+
 	IBOutlet NSButton		*older, *deleteOriginal;
 	IBOutlet NSMatrix		*olderType;
 	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
@@ -63,4 +64,5 @@
 - (void)setSplitMultiEchoMR:(BOOL)value;
 - (BOOL)combineProjectionSeries;
 - (void)setCombineProjectionSeries:(BOOL)value;
+- (IBAction) setDisplayAllStudiesAlbum:(id) sender;
 @end

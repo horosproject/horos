@@ -86,7 +86,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	
     volatile BOOL           shouldDie, threadRunning, threadWillRunning, bonjourDownloading;
 	
-	NSArray							*outlineViewArray;
+	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
 	NSArray							*allColumns;
 	

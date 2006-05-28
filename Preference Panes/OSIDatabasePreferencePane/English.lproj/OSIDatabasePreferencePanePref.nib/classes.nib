@@ -18,6 +18,7 @@
                 setAutoComments = id; 
                 setCopyDatabaseMode = id; 
                 setCopyDatabaseOnOff = id; 
+                setDisplayAllStudiesAlbum = id; 
                 setDisplayPatientName = id; 
                 setLocalizerOnOff = id; 
                 setLocation = id; 
@@ -38,6 +39,7 @@
                 copyDatabaseModeMatrix = NSMatrix; 
                 copyDatabaseOnOffButton = NSButton; 
                 deleteOriginal = NSButton; 
+                displayAllStudies = NSButton; 
                 freeSpace = NSButton; 
                 freeSpaceSize = NSPopUpButton; 
                 freeSpaceType = NSMatrix; 

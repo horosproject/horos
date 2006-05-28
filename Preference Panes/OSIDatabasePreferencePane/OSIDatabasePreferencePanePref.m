@@ -161,7 +161,10 @@ Version 2.3
 	
 	//setup GUI
 	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]];
-
+	
+	if( displayAllStudies == 0L) NSLog(@"error");
+	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
+	
 	long locationValue = [defaults integerForKey:@"DATABASELOCATION"];
 //	if (locationValue == 0)
 //		[locationURLField setHidden:YES];
@@ -234,6 +237,11 @@ Version 2.3
 	
 	[defaults setObject:[[reportsPluginsMenu selectedItem] title] forKey:@"REPORTSPLUGIN"];
 }
+
+ - (IBAction) setDisplayAllStudiesAlbum:(id) sender
+ {
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"KeepStudiesOfSamePatientTogether"];
+ }
 
 - (IBAction) setAutoComments:(id) sender
 {

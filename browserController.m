@@ -2992,7 +2992,7 @@ SElement		*theGroupP;
 	error = 0L;
 	outlineViewArray = [context executeFetchRequest:request error:&error];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"])
+	if( [albumTable selectedRow] > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
 	{
 		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 		
@@ -3003,7 +3003,14 @@ SElement		*theGroupP;
 		
 		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
 		error = 0L;
+		[originalOutlineViewArray release];
+		originalOutlineViewArray = [outlineViewArray retain];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
+	}
+	else
+	{
+		[originalOutlineViewArray release];
+		originalOutlineViewArray = 0L;
 	}
 	
 	
@@ -3843,7 +3850,12 @@ SElement		*theGroupP;
 	
 	if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
 	{
-		[cell setFont: [NSFont boldSystemFontOfSize:12]];
+		if( originalOutlineViewArray)
+		{
+			if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
+			else [cell setFont: [NSFont systemFontOfSize:12]];
+		}
+		else [cell setFont: [NSFont boldSystemFontOfSize:12]];
 		
 		if( [[tableColumn identifier] isEqualToString:@"name"])
 		{
