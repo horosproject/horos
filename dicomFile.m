@@ -409,8 +409,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NoOfFrames = 1;
 	
-	
-	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES ||
 		[extension isEqualToString:@"png"] == YES ||
@@ -605,6 +603,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
 				Movie			mov = [movie QTMovie];
 				TimeValue		aTime = 0L;

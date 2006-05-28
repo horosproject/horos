@@ -121,7 +121,8 @@ DCMNetServiceDelegate *_netServiceDelegate;
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	if( [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
+	NSLog( [sender name]);
+	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
