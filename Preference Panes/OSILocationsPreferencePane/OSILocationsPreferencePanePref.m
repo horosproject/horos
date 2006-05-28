@@ -83,37 +83,41 @@
 	}
 	stringEncoding = [[defaults stringForKey:@"STRINGENCODING"] retain];
 	int tag = 0;
-	 if( stringEncoding  == @"ISO_IR 192")	//UTF8
+	 if( [stringEncoding isEqualToString: @"ISO_IR 192"])	//UTF8
 		tag = 0;
-	else if ( stringEncoding == @"ISO_IR 100")
+	else if ( [stringEncoding isEqualToString: @"ISO_IR 100"])
 		tag = 1;
-	else if( stringEncoding == @"ISO_IR 101")
+	else if( [stringEncoding isEqualToString: @"ISO_IR 101"])
 		tag =  2;
-	else if( stringEncoding == @"ISO_IR 109")	
+	else if( [stringEncoding isEqualToString: @"ISO_IR 109"])	
 		tag =  3;
-	else if( stringEncoding ==	@"ISO_IR 110")
+	else if( [stringEncoding isEqualToString: @"ISO_IR 110"])
 		tag =  4;
-	else if( stringEncoding ==@"ISO_IR 127")	
+	else if( [stringEncoding isEqualToString: @"ISO_IR 127"])	
 		tag =  5 ;
-	else if( stringEncoding  == @"ISO_IR 144")		
+	else if( [stringEncoding isEqualToString: @"ISO_IR 144"])		
 		tag =  6;
-	else if( stringEncoding == @"ISO_IR 126")	
+	else if( [stringEncoding isEqualToString: @"ISO_IR 126"])	
 		tag =  7;
-	else if( stringEncoding == @"ISO_IR 138")		
+	else if( [stringEncoding isEqualToString: @"ISO_IR 138"])		
 		tag =  8 ;
-	else if( stringEncoding == @"GB18030")	
+	else if( [stringEncoding isEqualToString: @"GB18030"])	
 		tag =  9;
-	
-	else if( stringEncoding == @"ISO 2022 IR 149")
+	else if( [stringEncoding isEqualToString: @"ISO 2022 IR 149"])
 		tag =  10;
-	else if( stringEncoding  == @"ISO 2022 IR 13")	
+	else if( [stringEncoding isEqualToString: @"ISO 2022 IR 13"])	
 		tag =  11;
-	else if( stringEncoding == @"ISO_IR 13"	)	
+	else if( [stringEncoding isEqualToString: @"ISO_IR 13"])	
 		tag =  12 ;
-	else if( stringEncoding == @"ISO 2022 IR 87")	
+	else if( [stringEncoding isEqualToString: @"ISO 2022 IR 87"])	
 		tag =  13 ;
-	else if( stringEncoding == @"ISO_IR 1166")
+	else if( [stringEncoding isEqualToString: @"ISO_IR 1166"])
 		tag =  14 ;
+	else
+	{
+		[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 100" forKey:@"STRINGENCODING"];
+		tag = 1;
+	}
 			
 	[characterSetPopup selectItemAtIndex:tag];	
 }
@@ -321,7 +325,6 @@
 
 - (IBAction) setStringEncoding:(id)sender{
 	NSString *encoding;
-	//int encoding = [[sender selectedItem] tag];
 
 	switch ([[sender selectedItem] tag]){
 		case 0: encoding = @"ISO_IR 192";
