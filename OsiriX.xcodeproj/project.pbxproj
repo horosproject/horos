@@ -974,6 +974,9 @@
 		AB94E72606343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		AB94E72706343D91003E4C48 /* MutableArrayCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB94E72306343D91003E4C48 /* MutableArrayCategory.m */; };
 		AB94E72806343D91003E4C48 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
+		AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
+		AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
+		AB95C03B0A2B08ED00380C65 /* FileNotFound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB95C0380A2B08ED00380C65 /* FileNotFound.tif */; };
 		AB9750930A27266000BC23EB /* DCMTKStoreSCU.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF7A837F09B8D1C20051F091 /* DCMTKStoreSCU.mm */; };
 		AB9750940A27266100BC23EB /* DCMTKStoreSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */; };
 		AB9750CA0A2732E900BC23EB /* NetworkMoveDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E97D0887662400ECF621 /* NetworkMoveDataHandler.h */; };
@@ -9480,6 +9483,7 @@
 		AB92A3A70642B32D0048DC15 /* SmallLogo.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallLogo.tif; sourceTree = "<group>"; };
 		AB94E72306343D91003E4C48 /* MutableArrayCategory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MutableArrayCategory.m; sourceTree = "<group>"; };
 		AB94E72406343D91003E4C48 /* MutableArrayCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MutableArrayCategory.h; sourceTree = "<group>"; };
+		AB95C0380A2B08ED00380C65 /* FileNotFound.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileNotFound.tif; sourceTree = "<group>"; };
 		AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = ReportTemplate.rtf; path = Binaries/ReportTemplate.rtf; sourceTree = "<group>"; };
 		ABA71D3D06726B1800335A62 /* OsiriX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABA71D3F06726B1800335A62 /* OsiriX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -13498,6 +13502,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				AB95C0380A2B08ED00380C65 /* FileNotFound.tif */,
 				CE5D33B309E1C26400CC6884 /* add-large.tif */,
 				CE5D33B409E1C26400CC6884 /* minus-large.tif */,
 				A9C63A9B09BD7C5D00E312AE /* cerveau_icon.jpg */,
@@ -22805,6 +22810,7 @@
 				ABC3994609F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1D0A1B641F002A353A /* small_sharedSmartAlbum.tiff in Resources */,
 				ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
+				AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23068,6 +23074,7 @@
 				ABC3994409F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF59FD0A1B63F4002A353A /* BonesRemovalCursor.tif in Resources */,
 				ABCB1B2F0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
+				AB95C03B0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23331,6 +23338,7 @@
 				ABC3994509F52842000A6508 /* OSIPETPreferencePane.prefPane in Resources */,
 				ABDF5A1C0A1B6406002A353A /* BonesRemovalCursor.tif in Resources */,
 				ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
+				AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

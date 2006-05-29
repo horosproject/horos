@@ -4874,7 +4874,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 			}
 			
 			if( thumbnail == 0L) thumbnail = [dcmPix getImage];
-			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"Osirix.icns"];
+			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
 		
 			[previewPixThumbnails addObject: thumbnail];
 			if( StoreThumbnailsInDB && computeThumbnail)
@@ -4890,7 +4890,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 		{					
 			dcmPix = [[DCMPix alloc] myinitEmpty];
 			[previewPix addObject: dcmPix];
-			[previewPixThumbnails addObject: [NSImage imageNamed: @"Osirix.icns"]];
+			[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
 			
 			[dcmPix release];
 		}

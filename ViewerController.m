@@ -1698,15 +1698,22 @@ int sortROIByName(id roi1, id roi2, void *context)
 						if( dcmPix)
 						{
 							xNSImage *img = [dcmPix computeWImage:YES :0 :0];
-							[cell setImage: img];
 							
-							if( StoreThumbnailsInDB)
+							if( img)
 							{
-								[[images objectAtIndex:i] setObject: img forKey: @"thumbnail"];
+								[cell setImage: img];
+								
+								if( StoreThumbnailsInDB)
+								{
+									[[images objectAtIndex:i] setObject: img forKey: @"thumbnail"];
+								}
 							}
+							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
 							
 							[dcmPix release];
 						}
+						else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+						
 					}
 					else [cell setImage: img];
 				}
