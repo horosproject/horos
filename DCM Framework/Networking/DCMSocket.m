@@ -78,7 +78,7 @@
 - (id)initWithAddress:(NSData *)addr {
 	int socketFD = -1;
 	
-	struct addrinfo *result = (struct addrinfo *)[addr bytes];
+//	struct addrinfo *result = (struct addrinfo *)[addr bytes];
 	
 	//int family = result->ai_family;
 	/*

@@ -3524,7 +3524,7 @@ SElement		*theGroupP;
 			
 			if( [nonLocalImagesPath  count] > 0)
 			{
-				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove exams", 0L), NSLocalizedString(@"Some of the selected exams are not stored in the Database folder. Do you want to only remove the links ofthese exams from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
+				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove exams", 0L), NSLocalizedString(@"Some of the selected exams are not stored in the Database folder. Do you want to only remove the links of these exams from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
 			}
 			else result = NSAlertDefaultReturn;
 			
