@@ -417,9 +417,9 @@ OSErr VRObject_CreateObjectTrack (Movie theSrcMovie, Track theObjectTrack, Media
 	
 	myObjectSampleData.viewDuration = EndianU32_NtoB(myDuration);
 	
-	myObjectSampleData.minPan = EndianU32_NtoB (0);
-	myObjectSampleData.maxPan = EndianU32_NtoB (360);
-	myObjectSampleData.defaultPan = EndianU32_NtoB (0);
+	myObjectSampleData.minPan =  (0);
+	myObjectSampleData.maxPan =  (360);
+	myObjectSampleData.defaultPan =  (0);
 	
 	switch( maxFrames)
 	{
