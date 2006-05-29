@@ -1,0 +1,34 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = PluginFilter; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = PowerScribeFilter; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_window" = NSWindow; }; 
+            SUPERCLASS = ReportPluginFilter; 
+        }, 
+        {CLASS = ReportPluginFilter; LANGUAGE = ObjC; SUPERCLASS = PluginFilter; }, 
+        {
+            ACTIONS = {chooseAction = id; }; 
+            CLASS = SRArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
+            ACTIONS = {endSheet = id; }; 
+            CLASS = StructuredReportController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {endSheet = id; }; 
+            CLASS = StructuredReportFilter; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_window" = NSWindow; }; 
+            SUPERCLASS = ReportPluginFilter; 
+        }
+    ); 
+    IBVersion = 1; 
+}

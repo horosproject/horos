@@ -7901,10 +7901,10 @@ static BOOL needToRezoom;
 {
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
-	
+	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	if( item)
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == 0L) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
+		if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == 0L) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
 		{
 			NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil), nil, nil, nil);
 			return;
@@ -7921,7 +7921,7 @@ static BOOL needToRezoom;
 		//	PLUGINS
 		// *********************************************
 		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
+		if( reportsMode == 3)
 		{
 			NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
 					
@@ -7957,13 +7957,18 @@ static BOOL needToRezoom;
 				
 				if( localFile != 0L && [[NSFileManager defaultManager] fileExistsAtPath:localFile] == YES)
 				{
-					[[NSWorkspace sharedWorkspace] openFile: localFile];
+					if (reportsMode < 3)
+						[[NSWorkspace sharedWorkspace] openFile: localFile];
+					else {
+						//structured report code here
+						//Osirix will open DICOM Structured Reports
+					}
 				}
 				else
 				{
 					Reports	*report = [[Reports alloc] init];
 					
-					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP/", documentsDirectory()] type:[[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]];
+					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP/", documentsDirectory()] type:reportsMode];
 					
 					[bonjourBrowser sendFile:[studySelected valueForKey:@"reportURL"] index: [bonjourServicesList selectedRow]-1];
 					
@@ -7992,13 +7997,19 @@ static BOOL needToRezoom;
 				// Is there a Report URL ? If yes, open it; If no, create a new one
 				if( [studySelected valueForKey:@"reportURL"] != 0L && [[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]] == YES)
 				{
-					[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
+					if (reportsMode < 3)
+						[[NSWorkspace sharedWorkspace] openFile: [studySelected valueForKey:@"reportURL"]];
+					else {
+						//structured report code here
+						//Osirix will open DICOM Structured Reports
+					}
+					
 				}
 				else
 				{
 					Reports	*report = [[Reports alloc] init];
 					
-					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:[[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]];
+					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];
 					
 					[report release];
 				}
