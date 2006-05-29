@@ -55,7 +55,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	NSMutableArray			*sendQueue;
 	NSMutableDictionary		*bonjourReportFilesToCheck;
 	
-    NSMutableArray          *previewPix;
+    NSMutableArray          *previewPix, *previewPixThumbnails;
 	
 	NSMutableArray			*draggedItems;
 		

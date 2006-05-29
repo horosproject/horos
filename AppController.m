@@ -1692,7 +1692,10 @@ static BOOL initialized = NO;
 		[defaultValues setObject:@"0" forKey:@"points3DcolorGreen"];
 		[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
 		[defaultValues setObject:@"1.0" forKey:@"points3DcolorAlpha"];
-	
+		
+		
+		[defaultValues setObject:@"NO" forKey:@"StoreThumbnailsInDB"];
+		
 		// *************
 		// AUTO-CLEANING
 		// *************

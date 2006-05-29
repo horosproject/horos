@@ -4511,9 +4511,6 @@ SElement		*theGroupP;
 							int     row, column;
 							
 							[imageView getWLWW:&wl :&ww];
-						
-						//	xNSImage *img = [dcmPix computeWImage:YES :ww :wl];
-						//	[cell setImage: img];
 							
 							[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 							[dcmPix release];
@@ -4534,9 +4531,6 @@ SElement		*theGroupP;
 							int     row, column;
 							
 							[imageView getWLWW:&wl :&ww];
-						
-						//	xNSImage *img = [dcmPix computeWImage:YES :ww :wl];
-						//	[cell setImage: img];
 							
 							[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 							[dcmPix release];
@@ -4564,9 +4558,6 @@ SElement		*theGroupP;
 					int     row, column;
 					
 					[imageView getWLWW:&wl :&ww];
-				
-				//	xNSImage *img = [dcmPix computeWImage:YES :ww :wl];
-				//	[cell setImage: img];
 					
 					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 					[dcmPix release];
@@ -4689,7 +4680,10 @@ SElement		*theGroupP;
 	loadPreviewIndex = 0;
 	
 	[previewPix release];
+	[previewPixThumbnails release];
+	
 	previewPix = [[NSMutableArray alloc] initWithCapacity:0];
+	previewPixThumbnails = [[NSMutableArray alloc] initWithCapacity:0];
 		
 	if( COLUMN == 0) NSLog(@"COLUMN = 0, ERROR");
 	
@@ -4731,9 +4725,13 @@ SElement		*theGroupP;
 			return;
 		}
 
-		DCMPix *pix = [previewPix objectAtIndex: i];
-		NSImage *img = [pix getImage];
-		NSString *modality = [[pix imageObj] valueForKey: @"modality"];
+		DCMPix		*pix = [previewPix objectAtIndex: i];
+		NSImage		*img = 0L;
+		
+		img = [previewPixThumbnails objectAtIndex: i];
+		if( img == 0L) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == 0L");
+		
+		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
 		
 		if ( img || [modality isEqualToString: @"RTSTRUCT"] ) {
 			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
@@ -4840,7 +4838,8 @@ SElement		*theGroupP;
 - (void) matrixLoadIcons:(NSArray*) files
 {
 NSAutoreleasePool               *pool=[[NSAutoreleasePool alloc] init];
-long                           i, subGroupCount = 1, position = 0;
+long							i, subGroupCount = 1, position = 0;
+BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 
     threadWillRunning = NO;
     threadRunning = YES;
@@ -4848,21 +4847,25 @@ long                           i, subGroupCount = 1, position = 0;
 	for( i = 0; i < [files count];i++)
 	{
 		DCMPix*     dcmPix;
+		NSImage		*thumbnail = 0L;
+		BOOL		computeThumbnail = NO;
+		
+		if( StoreThumbnailsInDB)
+		{
+			thumbnail = [[files objectAtIndex:i] valueForKey:@"thumbnail"];
+			if( thumbnail == 0L) computeThumbnail = YES;
+		}
 		
 		dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
 		
 		if( dcmPix)
 		{
-			[dcmPix computeWImage:YES :0 :0];
-			[previewPix addObject: dcmPix];
-			
-			
-			if( [dcmPix getImage] == 0L)
+			if( thumbnail == 0L)
 			{
-				NSLog(@"getImage == 0L");
+				[dcmPix computeWImage:YES :0 :0];
+				if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
+				[dcmPix revert];	// <- Kill the raw data
 			}
-			
-			[dcmPix revert];	// <- Kill the raw data
 			
 			if (shouldDie == YES)
 			{
@@ -4870,12 +4873,25 @@ long                           i, subGroupCount = 1, position = 0;
 				NSLog(@"LoadPreview should die");
 			}
 			
+			if( thumbnail == 0L) thumbnail = [dcmPix getImage];
+			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"Osirix.icns"];
+		
+			[previewPixThumbnails addObject: thumbnail];
+			if( StoreThumbnailsInDB && computeThumbnail)
+			{
+				[[files objectAtIndex:i] setObject: thumbnail forKey: @"thumbnail"];
+			}
+			
+			[previewPix addObject: dcmPix];
+			
 			[dcmPix release];
 		}
 		else
 		{					
 			dcmPix = [[DCMPix alloc] myinitEmpty];
 			[previewPix addObject: dcmPix];
+			[previewPixThumbnails addObject: [NSImage imageNamed: @"Osirix.icns"]];
+			
 			[dcmPix release];
 		}
 	}

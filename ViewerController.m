@@ -1574,6 +1574,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	NSError					*error = 0L;
 	long					i, x, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
+	BOOL					StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 	
 	BOOL visible = [self checkFrameSize];
 	
@@ -1683,14 +1684,31 @@ int sortROIByName(id roi1, id roi2, void *context)
 				
 				if( visible)
 				{
-					DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[browserWindow isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+					NSImage	*img = 0L;
 					
-					if( dcmPix)
+					if( StoreThumbnailsInDB)
 					{
-						xNSImage *img = [dcmPix computeWImage:YES :0 :0];
-						[cell setImage: img];
-						[dcmPix release];
+						img = [[images objectAtIndex: i] valueForKey:@"thumbnail"];
 					}
+					
+					if( img == 0L)
+					{
+						DCMPix*     dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: i] valueForKey:@"completePath"] :0 :0 :0L :0 :[[[images objectAtIndex: i] valueForKeyPath:@"series.id"] intValue] isBonjour:[browserWindow isCurrentDatabaseBonjour] imageObj:[images objectAtIndex: i]];
+						
+						if( dcmPix)
+						{
+							xNSImage *img = [dcmPix computeWImage:YES :0 :0];
+							[cell setImage: img];
+							
+							if( StoreThumbnailsInDB)
+							{
+								[[images objectAtIndex:i] setObject: img forKey: @"thumbnail"];
+							}
+							
+							[dcmPix release];
+						}
+					}
+					else [cell setImage: img];
 				}
 				
 				index++;
