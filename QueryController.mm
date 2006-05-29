@@ -385,8 +385,6 @@ static NSString *Modality = @"Modality";
 {
 	id object = [sender itemAtRow:[sender selectedRow]];	
 	
-//	[self performRetrieve: object];
-	
 	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject:object];
 }
 

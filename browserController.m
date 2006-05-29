@@ -1722,6 +1722,13 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	long        i;
 	
+	shouldDie = YES;
+	NSDate *now = [NSDate date];
+	while (threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
+	{
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+	}
+	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	
 	NSString	*DBVersion;
