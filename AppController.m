@@ -1680,7 +1680,7 @@ static BOOL initialized = NO;
 		[defaultValues setObject:@"1.0" forKey:@"points3DcolorAlpha"];
 		
 		
-		[defaultValues setObject:@"NO" forKey:@"StoreThumbnailsInDB"];
+		[defaultValues setObject:@"YES" forKey:@"StoreThumbnailsInDB"];
 		[defaultValues setObject:@"YES" forKey:@"DisplayDICOMOverlays"];
 		
 		

@@ -4861,14 +4861,14 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 				if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
 				[dcmPix revert];	// <- Kill the raw data
 			}
-						
+			
 			if( thumbnail == 0L) thumbnail = [dcmPix getImage];
 			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
 		
 			[previewPixThumbnails addObject: thumbnail];
 			if( StoreThumbnailsInDB && computeThumbnail)
 			{
-				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentation] forKey:@"thumbnail"];
+				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			}
 			
 			[previewPix addObject: dcmPix];

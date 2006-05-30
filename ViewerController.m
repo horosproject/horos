@@ -1705,7 +1705,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 								
 								if( StoreThumbnailsInDB)
 								{
-									[[[images objectAtIndex:i] valueForKey: @"series"] setValue: [img TIFFRepresentation] forKey:@"thumbnail"];
+									[[[images objectAtIndex:i] valueForKey: @"series"] setValue: [img TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 								}
 							}
 							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
