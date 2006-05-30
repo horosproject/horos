@@ -83,8 +83,6 @@ NSRect screenFrame();
 //---------------------------------------------
 - (IBAction) help: (id) sender;
 - (IBAction) openOsirixWikiWebPage: (id) sender;
-- (IBAction) openOsirixBugReporter: (id) sender;
-- (IBAction) openOsirixFeatureRequest: (id) sender;
 //=============================================
 
 #pragma mark-
