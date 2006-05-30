@@ -6857,11 +6857,11 @@ int i,j,l;
 
 - (void)displayDICOMOverlays: (id)sender
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"])
-		[[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"DisplayDICOMOverlays"];
-	else
-		[[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"DisplayDICOMOverlays"];
-		
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"])
+//		[[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"DisplayDICOMOverlays"];
+//	else
+//		[[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"DisplayDICOMOverlays"];
+//		
 	[self revertSeries: self];
 }
 

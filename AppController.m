@@ -2156,9 +2156,6 @@ static BOOL initialized = NO;
 		
 	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
 	[self startDICOMBonjourSearch];
-	
-	[displayDICOMOverlaysMenuItem setState: [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"]];
-	
 }
 
 - (IBAction) updateViews:(id) sender {
