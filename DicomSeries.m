@@ -45,7 +45,7 @@
 	else return @"";
 }
 
-- (NSNumber *)noFiles
+- (NSNumber *) noFiles
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] == 0)
 	{

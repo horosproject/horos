@@ -673,7 +673,7 @@ static BOOL COMPLETEREBUILD = NO;
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-//								[seriesTable setValue: 0L forKey:@"thumbnail"];
+								[seriesTable setValue: 0L forKey:@"thumbnail"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -1081,7 +1081,7 @@ static BOOL COMPLETEREBUILD = NO;
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-//								[seriesTable setValue: 0L forKey:@"thumbnail"];
+								[seriesTable setValue: 0L forKey:@"thumbnail"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -3540,7 +3540,7 @@ SElement		*theGroupP;
 						{
 							[seriesArray addObject: series];
 							[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
-//							[series setValue: 0L forKey:@"thumbnail"];
+							[series setValue: 0L forKey:@"thumbnail"];
 						}
 						
 						// ********* STUDY

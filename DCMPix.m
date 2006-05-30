@@ -3948,37 +3948,52 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 	}
 	
-	oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
-	oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
-	oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
-	
-	oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-	oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
-	oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
-	oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
-	NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
-	
-	if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+	if( [dcmObject attributeValueForKey: @"6000,0010"])
 	{
-		if( oData) free( oData);
-		oData = malloc( oRows*oColumns);
-		
-		unsigned short *pixels = [data bytes];
-		char			valBit [ 16];
-		char			mask = 1;
-		int				i, x;
-		
-		for ( i = 0; i < oColumns*oRows/16; i++)
-		{
-			unsigned short	octet = pixels[ i];
+		oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
 			
-			for (x = 0; x < 16;x ++)
+		if( [dcmObject attributeValueForKey: @"6000,0011"])
+			oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
+		
+		if( [dcmObject attributeValueForKey: @"6000,0040"])
+			oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
+		
+		if( [dcmObject attributeValueForKey: @"6000,0050"])
+		{
+			oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+			oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+		}
+		
+		if( [dcmObject attributeValueForKey: @"6000,0100"])
+			oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
+		
+		if( [dcmObject attributeValueForKey: @"6000,0102"])
+			oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
+			
+		NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
+		
+		if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+		{
+			if( oData) free( oData);
+			oData = malloc( oRows*oColumns);
+			
+			unsigned short *pixels = [data bytes];
+			char			valBit [ 16];
+			char			mask = 1;
+			int				i, x;
+			
+			for ( i = 0; i < oColumns*oRows/16; i++)
 			{
-				valBit[ x] = octet & mask ? 1 : 0;
-				octet = octet >> 1;
+				unsigned short	octet = pixels[ i];
 				
-				if( valBit[ x]) oData[ i*16 + x] = 0xFF;
-				else oData[ i*16 + x] = 0;
+				for (x = 0; x < 16;x ++)
+				{
+					valBit[ x] = octet & mask ? 1 : 0;
+					octet = octet >> 1;
+					
+					if( valBit[ x]) oData[ i*16 + x] = 0xFF;
+					else oData[ i*16 + x] = 0;
+				}
 			}
 		}
 	}
