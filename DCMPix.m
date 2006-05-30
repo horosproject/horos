@@ -3948,7 +3948,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 	}
 	
-	if( [dcmObject attributeValueForKey: @"6000,0010"])
+	if( [dcmObject attributeValueForKey: @"6000,0010"] && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
 	{
 		oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
 			
