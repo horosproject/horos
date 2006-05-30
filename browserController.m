@@ -4861,13 +4861,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 				if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
 				[dcmPix revert];	// <- Kill the raw data
 			}
-			
-			if (shouldDie == YES)
-			{
-				i = [files count];
-				NSLog(@"LoadPreview should die");
-			}
-			
+						
 			if( thumbnail == 0L) thumbnail = [dcmPix getImage];
 			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
 		
@@ -4880,6 +4874,12 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 			[previewPix addObject: dcmPix];
 			
 			[dcmPix release];
+			
+			if (shouldDie == YES)
+			{
+				i = [files count];
+				NSLog(@"LoadPreview should die");
+			}
 		}
 		else
 		{					
@@ -4895,6 +4895,8 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 	
     threadRunning = NO;
     shouldDie = NO;
+	
+	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: NO];
 	
     [pool release];
 }
