@@ -96,28 +96,28 @@
 		doc->setReferringPhysiciansName([[_study valueForKey:@"referringPhysician"] UTF8String]);
 	
 	doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-	doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("DT.01", OFFIS_CODING_SCHEME_DESIGNATOR, "Radiology Report"));
+	doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report"));
 	if (_physician) {
 		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_PName, DSRTypes::AM_belowCurrent);
-		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.04", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Name"));
+		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121008", "DCM", "Person Observer Name"));
 		doc->getTree().getCurrentContentItem().setStringValue([_physician UTF8String]);
 	}
 	
 	if ([_study valueForKey:@"institutionName"]) {
 		doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
-		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IHE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Observer Organization Name"));
+		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121009", "DCM", "Person Observer's Organization Name"));
 		doc->getTree().getCurrentContentItem().setStringValue([[_study valueForKey:@"institutionName"] UTF8String]);
 	}
 	
 	if (_history) {
 		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
-		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.01", OFFIS_CODING_SCHEME_DESIGNATOR, "History"));
+		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121060", "DCM", "History"));
 		doc->getTree().getCurrentContentItem().setStringValue([_history UTF8String]);
 	}
 	
 	if ([_findings count] > 0) {
 	    doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
-		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.06", OFFIS_CODING_SCHEME_DESIGNATOR, "Findings"));
+		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121070", "DCM", "Findings"));
 		NSEnumerator *enumerator = [_findings objectEnumerator];
 		NSDictionary *dict;
 		BOOL first = YES;
@@ -134,7 +134,7 @@
 				}
 				else
 					doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
-				doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
+				doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121071", "DCM", "Finding"));
 				doc->getTree().getCurrentContentItem().setStringValue([finding UTF8String]);
 			}
 		}
@@ -147,7 +147,7 @@
 	if ([_conclusions count] > 0) {
 		doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
 		//SH.07 is probably wrong. I'm not sure how to get the right values here.
-		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("SH.07", OFFIS_CODING_SCHEME_DESIGNATOR, "Conclusions"));
+		doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121072", "DCM", "Impressions"));
 		NSEnumerator *enumerator = [_conclusions objectEnumerator];
 		NSDictionary *dict;
 		BOOL first = YES;
@@ -161,7 +161,7 @@
 			else
 				doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
 			NSString *conclusion = [dict objectForKey:@"conclusion"];			
-			doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.08", OFFIS_CODING_SCHEME_DESIGNATOR, "Conclusion"));
+			doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121073", "DCM", "Impression"));
 			doc->getTree().getCurrentContentItem().setStringValue([conclusion UTF8String]);
 		}
 		
@@ -172,7 +172,7 @@
 	
 	/***** Exmaple of code to add a reference image **************
 	doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
-    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
+    doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180", DCM, "Key Images"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(SOPClassUID, SOPInstanceUID));
     doc->getCurrentRequestedProcedureEvidence().addItem(const OFString &studyUID, const OFString &seriesUID, const OFString &sopClassUID, const OFString &instanceUID);
 	*/
