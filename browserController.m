@@ -99,7 +99,7 @@ Version 2.3
 
 
 
-#define DATABASEVERSION @"1.5"
+#define DATABASEVERSION @"2.0"
 
 #define DATABASEPATH @"/DATABASE/"
 #define DATABASEFPATH @"/DATABASE"
@@ -673,6 +673,7 @@ static BOOL COMPLETEREBUILD = NO;
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								[seriesTable setValue: 0L forKey:@"thumbnail"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -1080,6 +1081,7 @@ static BOOL COMPLETEREBUILD = NO;
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+								[seriesTable setValue: 0L forKey:@"thumbnail"];
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
@@ -1578,7 +1580,10 @@ static BOOL COMPLETEREBUILD = NO;
 		NSArray	*previousEntities = [previousModel entities];
 		NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
 		NSArray					*properties;
-
+		
+		[currentContext setStalenessInterval: 1];
+		[previousContext setStalenessInterval: 1];
+		
 		// ALBUMS
 		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[previousModel entitiesByName] objectForKey:@"Album"]];
@@ -3535,6 +3540,7 @@ SElement		*theGroupP;
 						{
 							[seriesArray addObject: series];
 							[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+							[series setValue: 0L forKey:@"thumbnail"];
 						}
 						
 						// ********* STUDY

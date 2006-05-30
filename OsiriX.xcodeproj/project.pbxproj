@@ -1140,6 +1140,9 @@
 		ABBDAEBB06407CF90016210A /* VRMakeObject.c in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.c */; };
 		ABBDAEBD06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
 		ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
+		ABBDE6710A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
+		ABBDE6720A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
+		ABBDE6730A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */; };
 		ABBFDA40063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABBFDA41063480490011BD0A /* Deployment-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBFDA3F063480490011BD0A /* Deployment-Info.plist */; };
 		ABC3939F09F51D6B000A6508 /* OSI3DPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */; };
@@ -9584,6 +9587,7 @@
 		ABBCCDA605643A4C00A4E47A /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = browserController.h; sourceTree = "<group>"; };
 		ABBDAEB906407CF90016210A /* VRMakeObject.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = VRMakeObject.c; sourceTree = "<group>"; };
 		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
+		ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel1.5.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel1.5.mom; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3938C09F51D6B000A6508 /* OSI3DPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSI3DPreferencePane.prefPane; path = "Preference Panes/OSI3DPreferencePane/build/Development/OSI3DPreferencePane.prefPane"; sourceTree = "<group>"; };
 		ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSI3DPreferencePane.xcodeproj; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.xcodeproj"; sourceTree = "<group>"; };
@@ -16566,6 +16570,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */,
+				ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */,
 			);
 			name = "Previous DB Models";
 			sourceTree = "<group>";
@@ -22859,6 +22864,7 @@
 				ABCB1B2D0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 				AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290500A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
+				ABBDE6710A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23124,6 +23130,7 @@
 				ABCB1B2F0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 				AB95C03B0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290520A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
+				ABBDE6730A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23389,6 +23396,7 @@
 				ABCB1B2E0A21FB72008EB2E8 /* SafeDBRebuild in Resources */,
 				AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290510A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
+				ABBDE6720A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
