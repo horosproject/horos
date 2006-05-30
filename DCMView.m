@@ -1541,9 +1541,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void)flagsChanged:(NSEvent *)event
 {
-	long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
-	[self setCursorForView: tool];
-	
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		BOOL update = NO;
@@ -1562,7 +1559,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 	[super flagsChanged:event];
 }
-
 
 - (void)mouseUp:(NSEvent *)event {
 
@@ -1817,14 +1813,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[im release];
 } 
 
-//- (void) checkMouseModifiers:(id) sender
-//{
-//	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
-//	{
-//		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
-//		[self setCursorForView: tool];
-//	}
-//}
+- (void) checkMouseModifiers:(id) sender
+{
+	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
+	{
+		long tool = [self getTool: [[NSApplication sharedApplication] currentEvent]];
+		[self setCursorForView: tool];
+	}
+}
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
@@ -3638,7 +3634,7 @@ static long scrollMode;
     
 	cross.x = cross.y = -9999;
 	
-//	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
+	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	
@@ -3650,9 +3646,9 @@ static long scrollMode;
 	if( [notification object] == [self window])
 	{
 	//	NSLog( @"windowWillClose - NSView level");
-//		[mouseModifiers invalidate];
-//		[mouseModifiers release];
-//		mouseModifiers = 0L;
+		[mouseModifiers invalidate];
+		[mouseModifiers release];
+		mouseModifiers = 0L;
 		
 		[[NSNotificationCenter defaultCenter] removeObserver: self];
 	}
