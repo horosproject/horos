@@ -4847,7 +4847,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 		
 		if( StoreThumbnailsInDB)
 		{
-			thumbnail = [[files objectAtIndex:i] valueForKey:@"thumbnail"];
+			thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
 			if( thumbnail == 0L) computeThumbnail = YES;
 		}
 		
@@ -4874,7 +4874,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 			[previewPixThumbnails addObject: thumbnail];
 			if( StoreThumbnailsInDB && computeThumbnail)
 			{
-				[[files objectAtIndex:i] setObject: thumbnail forKey: @"thumbnail"];
+				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentation] forKey:@"thumbnail"];
 			}
 			
 			[previewPix addObject: dcmPix];

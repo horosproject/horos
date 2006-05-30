@@ -21,10 +21,8 @@
 @interface DicomSeries : NSManagedObject {
 }
 
-
 - (NSSet *)paths;
 - (NSSet *)keyImages;
 - (NSArray *)sortedImages;
 - (NSString *)dicomSeriesInstanceUID;
-
 @end

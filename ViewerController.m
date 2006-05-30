@@ -1688,7 +1688,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 					
 					if( StoreThumbnailsInDB)
 					{
-						img = [[images objectAtIndex: i] valueForKey:@"thumbnail"];
+						img = [[[NSImage alloc] initWithData: [[images objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
 					}
 					
 					if( img == 0L)
@@ -1705,7 +1705,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 								
 								if( StoreThumbnailsInDB)
 								{
-									[[images objectAtIndex:i] setObject: img forKey: @"thumbnail"];
+									[[[images objectAtIndex:i] valueForKey: @"series"] setValue: [img TIFFRepresentation] forKey:@"thumbnail"];
 								}
 							}
 							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
