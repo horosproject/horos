@@ -4243,7 +4243,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			{
 				for( x = 0; x < oColumns; x++)
 				{
-					if( oData[ y * oRows + x])
+					if( oData[ y * oColumns + x])
 					{
 						rgbData[ y * width*4 + x*4 + 1] = 0xFF;
 						rgbData[ y * width*4 + x*4 + 2] = 0xFF;
@@ -4339,7 +4339,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			{
 				for( x = 0; x < oColumns; x++)
 				{
-					if( oData[ y * oRows + x]) fImage[ y * width + x] = 0xFF;
+					if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
 				}
 			}
 		}
@@ -5884,7 +5884,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				{
 					for( x = 0; x < oColumns; x++)
 					{
-						if( oData[ y * oRows + x])
+						if( oData[ y * oColumns + x])
 						{
 							rgbData[ y * width*4 + x*4 + 1] = 0xFF;
 							rgbData[ y * width*4 + x*4 + 2] = 0xFF;
@@ -5979,7 +5979,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				{
 					for( x = 0; x < oColumns; x++)
 					{
-						if( oData[ y * oRows + x]) fImage[ y * width + x] = 0xFF;
+						if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
 					}
 				}
 			}
