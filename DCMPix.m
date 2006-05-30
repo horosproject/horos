@@ -4995,6 +4995,71 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
+				// Get values needed for SUV calcs:
+		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0054);
+		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0) {
+			val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
+			if( val) units = val? [[NSString stringWithCString:val->a] retain] : nil;
+			else units = 0L;
+			
+			val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
+			if( val) decayCorrection = val? [[NSString stringWithCString:val->a] retain] : nil;
+			else decayCorrection = 0L;
+			
+			val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
+			if( val) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : nil;
+			else decayFactor = 1.0;
+			
+			//  Note: Following def for papRadiopharmaceuticalInformationSequence is off by 6!!!!
+			val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequence + 6, &pos, &elemType );
+			
+			// Loop over sequence to find injected dose
+			
+			if ( val != NULL)
+			{
+				if( val->sq != NULL )
+				{
+					Papy_List	*dcmList = val->sq->object->item;
+					while (dcmList != NULL) {
+						SElement *gr = (SElement *)dcmList->object->group;
+						if ( gr->group == 0x0018 )
+						{
+							val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
+							radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
+							
+							val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
+							if( val)
+							{
+								NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
+								NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
+								
+								radiopharmaceuticalStartTime = [[NSDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+								
+								[cd release];
+								[cc release];
+							}
+							
+							val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
+							halflife = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
+							break;
+						}
+						dcmList = dcmList->next;
+					}
+				}
+						
+				float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
+			
+				if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
+			
+				// End of SUV required values
+			}
+
+			theErr = Papy3GroupFree (&theGroupP, TRUE);
+		}
+		
+		// End SUV			
+		
+		
 		// Is it a new MR/CT multi-frame exam?
 		if ((err = Papy3GotoGroupNb (fileNb, 0x5200)) == 0)
 		{
@@ -5316,72 +5381,61 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 			}//endif ...groupOverlay 0x5200 read
 		}//endif ...groupOverlay 0x5200 found
-
-		// Get values needed for SUV calcs:
-
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0054);
 		
-		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0) {
-			val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
-			if( val) units = val? [[NSString stringWithCString:val->a] retain] : nil;
-			else units = 0L;
+		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x6000);
+		if(  theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		{
+			val = Papy3GetElement (theGroupP, papOverlayRows6000Gr, &nbVal, &elemType);
+			if (val != NULL) oRows	= val->us;
 			
-			val = Papy3GetElement (theGroupP, papDecayCorrectionGr, &pos, &elemType );
-			if( val) decayCorrection = val? [[NSString stringWithCString:val->a] retain] : nil;
-			else decayCorrection = 0L;
+			val = Papy3GetElement (theGroupP, papOverlayColumns6000Gr, &nbVal, &elemType);
+			if (val != NULL) oColumns	= val->us;
 			
-			val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-			if( val) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : nil;
-			else decayFactor = 1.0;
+//			val = Papy3GetElement (theGroupP, papNumberofFramesinOverlayGr, &nbVal, &elemType);
+//			if (val != NULL) oRows	= val->us;
 			
-			//  Note: Following def for papRadiopharmaceuticalInformationSequence is off by 6!!!!
-			val = Papy3GetElement (theGroupP, papRadiopharmaceuticalInformationSequence + 6, &pos, &elemType );
+			val = Papy3GetElement (theGroupP, papOverlayTypeGr, &nbVal, &elemType);
+			if (val != NULL) oType	= val->a[ 0];
 			
-			// Loop over sequence to find injected dose
-			
-			if ( val != NULL)
+			val = Papy3GetElement (theGroupP, papOriginGr, &nbVal, &elemType);
+			if (val != NULL)
 			{
-				if( val->sq != NULL )
+				oOrigin[ 0]	= val->us;
+				val++;
+				oOrigin[ 1]	= val->us;
+			}
+			
+			val = Papy3GetElement (theGroupP, papOverlayBitsAllocatedGr, &nbVal, &elemType);
+			if (val != NULL) oBits	= val->us;
+			
+			val = Papy3GetElement (theGroupP, papBitPositionGr, &nbVal, &elemType);
+			if (val != NULL) oBitPosition	= val->us;
+			
+			val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
+			if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+			{
+				oData = malloc( oRows*oColumns);
+				
+				unsigned short *pixels = val->ow;
+				char			valBit [ 16];
+				char			mask = 1;
+				int				x;
+				
+				for ( i = 0; i < oColumns*oRows/16; i++)
 				{
-					Papy_List	*dcmList = val->sq->object->item;
-					while (dcmList != NULL) {
-						SElement *gr = (SElement *)dcmList->object->group;
-						if ( gr->group == 0x0018 )
-						{
-							val = Papy3GetElement (gr, papRadionuclideTotalDoseGr, &pos, &elemType );
-							radionuclideTotalDose = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
-							
-							val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
-							if( val)
-							{
-								NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
-								NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
-								
-								radiopharmaceuticalStartTime = [[NSDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-								
-								[cd release];
-								[cc release];
-							}
-							
-							val = Papy3GetElement (gr, papRadionuclideHalfLifeGr, &pos, &elemType );
-							halflife = val? [[NSString stringWithCString:val->a] floatValue] : 0.0;
-							break;
-						}
-						dcmList = dcmList->next;
+					unsigned short	octet = pixels[ i];
+					
+					for (x = 0; x < 16;x ++)
+					{
+						valBit[ x] = octet & mask ? 1 : 0;
+						octet = octet >> 1;
+						
+						if( valBit[ x]) oData[ i*16 + x] = 0xFF;
+						else oData[ i*16 + x] = 0;
 					}
 				}
-						
-				float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
-			
-				if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
-			
-				// End of SUV required values
 			}
-
-			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
-		
-		// End SUV			
 		
 		// Compute normal vector
 			
@@ -5771,6 +5825,25 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}
 			else fImage = (float*) oImage;
 			oImage = 0L;
+			
+			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			{
+				unsigned char	*rgbData = (unsigned char*) fImage;
+				long			y, x;
+				
+				for( y = 0; y < oRows; y++)
+				{
+					for( x = 0; x < oColumns; x++)
+					{
+						if( oData[ y * oRows + x])
+						{
+							rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+							rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+							rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -5847,6 +5920,19 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					free(oImage);
 				}
 				oImage = 0L;
+			}
+			
+			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			{
+				long			y, x;
+				
+				for( y = 0; y < oRows; y++)
+				{
+					for( x = 0; x < oColumns; x++)
+					{
+						if( oData[ y * oRows + x]) fImage[ y * width + x] = 0xFF;
+					}
+				}
 			}
 		}
 		//***********
@@ -7820,6 +7906,8 @@ float			iwl, iww;
 	
 	[checking release];
 	checking = 0L;
+	
+	if( oData) free( oData);
 	
     [super dealloc];
 }

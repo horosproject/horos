@@ -1493,7 +1493,7 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	if( isCurrentDatabaseBonjour == NO)
 		[self saveDatabase: currentDatabasePath];
-	
+		
 	[currentDatabasePath release];
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
@@ -1721,12 +1721,12 @@ static BOOL COMPLETEREBUILD = NO;
 -(void) loadDatabase:(NSString*) path
 {
 	long        i;
-	
-	shouldDie = YES;
-	NSDate *now = [NSDate date];
-	while (threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
+
+	if( threadRunning)
 	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		shouldDie = YES;
+		while (threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+		shouldDie = NO;
 	}
 	
 	[albumTable selectRow:0 byExtendingSelection:NO];
@@ -2449,14 +2449,11 @@ SElement		*theGroupP;
 				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
 				{														// Stop thread
 					if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-					if( threadRunning == YES)
+					if( threadRunning)
 					{
 						shouldDie = YES;
-						NSDate *now = [NSDate date];
-						while (threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
-						{
-							[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-						}
+						while (threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+						shouldDie = NO;
 					}
 					
 					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
@@ -3321,10 +3318,8 @@ SElement		*theGroupP;
 			if( threadRunning == YES)
 			{
 				shouldDie = YES;
-				while( threadRunning == YES)
-				{
-					[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				}
+				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+				shouldDie = NO;
 			}
 			
 			threadWillRunning = YES;
@@ -3449,11 +3444,8 @@ SElement		*theGroupP;
 			if( threadRunning == YES)
 			{
 				shouldDie = YES;
-				NSDate *now = [NSDate date];
-				while( threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
-				{
-					[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				}
+				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+				shouldDie = NO;
 			}
 			
 			for( x = 0; x < [selectedRows count] ; x++)
@@ -3498,11 +3490,8 @@ SElement		*theGroupP;
 			if( threadRunning == YES)
 			{
 				shouldDie = YES;
-				NSDate *now = [NSDate date];
-				while( threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
-				{
-					[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				}
+				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+				shouldDie = NO;
 			}
 			
 			// Try to find images that aren't stored in the local database
@@ -5286,11 +5275,8 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 				if( threadRunning == YES)
 				{
 					shouldDie = YES;
-					NSDate *now = [NSDate date];
-					while( threadRunning == YES && [[NSDate date] timeIntervalSinceDate:now] < 2.0)
-					{
-						[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-					}
+					while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+					shouldDie = NO;
 				}
 				
 				[context deleteObject: [[self albumArray]  objectAtIndex: [albumTable selectedRow]]];
@@ -7162,17 +7148,14 @@ static BOOL needToRezoom;
 	return YES;
 }
 
-
 - (BOOL) is2DViewer
 {
 	return NO;
 }
 
-
 - (IBAction)customizeViewerToolBar:(id)sender {
     [toolbar runCustomizationPalette:sender];
 }
-
 
 - (void)addHelpMenu
 {
@@ -7186,12 +7169,8 @@ static BOOL needToRezoom;
 	[helpMenu addItem: [NSMenuItem separatorItem]];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"User Manual", nil) action: @selector(help:) keyEquivalent: @""];
 	[helpMenu addItemWithTitle: NSLocalizedString(@"Online Documentation", nil) action: @selector(openOsirixWikiWebPage:) keyEquivalent: @""];
-	[helpMenu addItem: [NSMenuItem separatorItem]];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Report Bug", nil) action: @selector(openOsirixBugReporter:) keyEquivalent :@""];
-	[helpMenu addItemWithTitle: NSLocalizedString(@"Request Feature", nil) action: @selector(openOsirixFeatureRequest:) keyEquivalent :@""];
 	[helpMenu release];
 }
-
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 

@@ -6855,6 +6855,17 @@ int i,j,l;
 }
 
 
+- (void)displayDICOMOverlays: (id)sender
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"])
+		[[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"DisplayDICOMOverlays"];
+	else
+		[[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"DisplayDICOMOverlays"];
+		
+	[self revertSeries: self];
+}
+
+
 #pragma mark-
 #pragma mark 4.1.6 Fixed graphical layer
 

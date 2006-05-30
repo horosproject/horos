@@ -746,7 +746,6 @@ NSRect screenFrame()
 	[[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"QuickManual" ofType:@"pdf"]];
 }
 
-
 -(IBAction)openOsirixWikiWebPage:(id)sender{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://en.wikibooks.org/wiki/Online_Osirix_Documentation"]];
 }
@@ -754,19 +753,6 @@ NSRect screenFrame()
 -(IBAction)openOsirixDiscussion:(id)sender{
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://groups.yahoo.com/group/osirix/"]];
 }
-
-
-- (IBAction) openOsirixBugReporter: (id) sender
-{
-	[[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: @"http://sourceforge.net/tracker/?func=add&group_id=107249&atid=647131"]];
-}
-
-
-- (IBAction) openOsirixFeatureRequest: (id) sender
-{
-	[[NSWorkspace sharedWorkspace] openURL: [NSURL URLWithString: @"http://sourceforge.net/tracker/?func=add&group_id=107249&atid=647134"]];
-}
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
@@ -1695,6 +1681,8 @@ static BOOL initialized = NO;
 		
 		
 		[defaultValues setObject:@"NO" forKey:@"StoreThumbnailsInDB"];
+		[defaultValues setObject:@"YES" forKey:@"DisplayDICOMOverlays"];
+		
 		
 		// *************
 		// AUTO-CLEANING
@@ -2168,6 +2156,8 @@ static BOOL initialized = NO;
 		
 	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
 	[self startDICOMBonjourSearch];
+	
+	[displayDICOMOverlaysMenuItem setState: [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"]];
 	
 }
 

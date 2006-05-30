@@ -26,6 +26,7 @@
                 browserController = BrowserController; 
                 dbMenu = NSMenu; 
                 dbWindow = NSWindow; 
+                displayDICOMOverlaysMenuItem = NSMenuItem; 
                 filtersMenu = NSMenu; 
                 othersMenu = NSMenu; 
                 roisMenu = NSMenu; 
@@ -191,6 +192,7 @@
                 copySettingsToOthers = id; 
                 customizeViewerToolBar = id; 
                 dilateSelectedBrushROI = id; 
+                displayDICOMOverlays = id; 
                 erodeSelectedBrushROI = id; 
                 export2PACS = id; 
                 export2iPhoto = id; 

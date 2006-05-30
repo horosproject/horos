@@ -95,6 +95,11 @@
 	float				radionuclideTotalDose, radionuclideTotalDoseCorrected, patientsWeight, decayFactor;
 	NSDate				*acquisitionTime, *radiopharmaceuticalStartTime;
 	float				halflife;
+	
+	// DICOM params for Overlays - 0x6000 group
+	
+	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
+	unsigned char		*oData;
 }
 
 // Is it an RGB image (ARGB) or float image?

@@ -42,7 +42,7 @@ NSRect screenFrame();
 	IBOutlet NSMenu					*roisMenu;
 	IBOutlet NSMenu					*othersMenu;
 	IBOutlet NSMenu					*dbMenu;
-	IBOutlet NSMenuItem				*syncSeriesMenuItem;
+	IBOutlet NSMenuItem				*syncSeriesMenuItem, *displayDICOMOverlaysMenuItem;
 	IBOutlet NSWindow				*dbWindow;
 		
     SplashScreen					*splashController;
