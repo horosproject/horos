@@ -3238,40 +3238,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	fclose( fp);
 }
 
--(void) revert
-{
-	if( fImage == 0L) return;
-	
-	[checking lock];
-	
-	SUVConverted = NO;
-	fullww = 0;
-	fullwl = 0;
-	
-	[acquisitionTime release];					acquisitionTime = 0L;
-	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = 0L;
-	[convertedDICOM release];					convertedDICOM = 0L;
-	[repetitiontime release];					repetitiontime = 0L;
-	[echotime release];							echotime = 0L;
-	[protocolName release];						protocolName = 0L;
-	[viewPosition release];						viewPosition = 0L;
-	[patientPosition release];					patientPosition = 0L;
-	[units release];							units = 0L;
-	[decayCorrection release];					decayCorrection = 0L;
-	
-	if( fVolImage == 0L)
-	{
-		if( fImage != 0L)
-		{
-			free(fImage);
-			fImage = 0L;
-		}
-	}
-	fImage = 0L;
-	
-	[checking unlock];
-}
-
 - (void) checkSUV
 {
 	hasSUV = NO;
@@ -3982,6 +3948,41 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 	}
 	
+	oRows = [[dcmObject attributeValueForKey: @"6000,0010"] intValue];
+	oColumns = [[dcmObject attributeValueForKey: @"6000,0011"] intValue];
+	oType = [[dcmObject attributeValueForKey: @"6000,0040"] characterAtIndex: 0];
+	
+	oOrigin[ 0] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+	oOrigin[ 1] = [[dcmObject attributeValueForKey: @"6000,0050"] intValue];
+	oBits = [[dcmObject attributeValueForKey: @"6000,0100"] intValue];
+	oBitPosition = [[dcmObject attributeValueForKey: @"6000,0102"] intValue];
+	NSData	*data = [dcmObject attributeValueForKey: @"6000,3000"];
+	
+	if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+	{
+		if( oData) free( oData);
+		oData = malloc( oRows*oColumns);
+		
+		unsigned short *pixels = [data bytes];
+		char			valBit [ 16];
+		char			mask = 1;
+		int				i, x;
+		
+		for ( i = 0; i < oColumns*oRows/16; i++)
+		{
+			unsigned short	octet = pixels[ i];
+			
+			for (x = 0; x < 16;x ++)
+			{
+				valBit[ x] = octet & mask ? 1 : 0;
+				octet = octet >> 1;
+				
+				if( valBit[ x]) oData[ i*16 + x] = 0xFF;
+				else oData[ i*16 + x] = 0;
+			}
+		}
+	}
+	
 	// Get values needed for SUV calcs:
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	else patientsWeight = 0.0;
@@ -4217,6 +4218,25 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 		else fImage = (float*) oImage;
 		oImage = 0L;
+		
+		if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+		{
+			unsigned char	*rgbData = (unsigned char*) fImage;
+			long			y, x;
+			
+			for( y = 0; y < oRows; y++)
+			{
+				for( x = 0; x < oColumns; x++)
+				{
+					if( oData[ y * oRows + x])
+					{
+						rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+						rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+						rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+					}
+				}
+			}
+		}
 	}
 	else
 	{
@@ -4294,6 +4314,19 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			free(oImage);
 			oImage = 0L;
+		}
+		
+		if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+		{
+			long			y, x;
+			
+			for( y = 0; y < oRows; y++)
+			{
+				for( x = 0; x < oColumns; x++)
+				{
+					if( oData[ y * oRows + x]) fImage[ y * width + x] = 0xFF;
+				}
+			}
 		}
 	}
 	
@@ -5414,6 +5447,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
 			if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
 			{
+				if( oData) free( oData);
 				oData = malloc( oRows*oColumns);
 				
 				unsigned short *pixels = val->ow;
@@ -7869,6 +7903,40 @@ float			iwl, iww;
 	}
 	
 	updateToBeApplied = YES;
+}
+
+-(void) revert
+{
+	if( fImage == 0L) return;
+	
+	[checking lock];
+	
+	SUVConverted = NO;
+	fullww = 0;
+	fullwl = 0;
+	
+	[acquisitionTime release];					acquisitionTime = 0L;
+	[radiopharmaceuticalStartTime release];		radiopharmaceuticalStartTime = 0L;
+	[convertedDICOM release];					convertedDICOM = 0L;
+	[repetitiontime release];					repetitiontime = 0L;
+	[echotime release];							echotime = 0L;
+	[protocolName release];						protocolName = 0L;
+	[viewPosition release];						viewPosition = 0L;
+	[patientPosition release];					patientPosition = 0L;
+	[units release];							units = 0L;
+	[decayCorrection release];					decayCorrection = 0L;
+	
+	if( fVolImage == 0L)
+	{
+		if( fImage != 0L)
+		{
+			free(fImage);
+			fImage = 0L;
+		}
+	}
+	fImage = 0L;
+	
+	[checking unlock];
 }
 
 - (void) dealloc
