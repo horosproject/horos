@@ -8748,34 +8748,41 @@ static BOOL needToRezoom;
 	error = 0L;
 	NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	if( [imagesArray count] > 0)
+	@try
 	{
-		NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
-		NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
-		
-		for( i = 0; i < [[NSApp windows] count]; i++)
+		if( [imagesArray count] > 0)
 		{
-			if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
-		}
-	
-		// Find unavailable files
-		for( i = 0; i < [imagesArray count]; i++)
-		{
-			NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
+			NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
+			NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
 			
-			// Is a viewer containing this study opened? -> close it
-			for( x = 0; x < [viewersList count]; x++)
+			for( i = 0; i < [[NSApp windows] count]; i++)
 			{
-				if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+				if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
+			}
+		
+			// Find unavailable files
+			for( i = 0; i < [imagesArray count]; i++)
+			{
+				NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
+				
+				// Is a viewer containing this study opened? -> close it
+				for( x = 0; x < [viewersList count]; x++)
 				{
-					[[[viewersList objectAtIndex: x] window] close];
+					if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+					{
+						[[[viewersList objectAtIndex: x] window] close];
+					}
 				}
+				
+				[context deleteObject: study];
 			}
 			
-			[context deleteObject: study];
+			[self saveDatabase: currentDatabasePath];
 		}
-		
-		[self saveDatabase: currentDatabasePath];
+	}
+	@catch( NSException *ne)
+	{
+		NSLog( @"RemoveAllMounted");
 	}
 	
 	[context unlock];
@@ -8824,31 +8831,36 @@ static BOOL needToRezoom;
 
 		[[splash progress] setMaxValue:[imagesArray count]/50];
 		
-		
-		// Find unavailable files
-		for( i = 0; i < [imagesArray count]; i++)
+		@try
 		{
-			if( [[[imagesArray objectAtIndex:i] valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
+			// Find unavailable files
+			for( i = 0; i < [imagesArray count]; i++)
 			{
-				NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
-				
-				needsUpdate = YES;
-				
-				// Is a viewer containing this study opened? -> close it
-				for( x = 0; x < [viewersList count]; x++)
+				if( [[[imagesArray objectAtIndex:i] valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
 				{
-					if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+					NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
+					
+					needsUpdate = YES;
+					
+					// Is a viewer containing this study opened? -> close it
+					for( x = 0; x < [viewersList count]; x++)
 					{
-						[[[viewersList objectAtIndex: x] window] close];
+						if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+						{
+							[[[viewersList objectAtIndex: x] window] close];
+						}
 					}
+					
+					[context deleteObject: study];
 				}
 				
-				[context deleteObject: study];
+				if( i % 50 == 0) [splash incrementBy:1];
 			}
-			
-			if( i % 50 == 0) [splash incrementBy:1];
 		}
-
+		@catch( NSException *ne)
+		{
+			NSLog( @"Unmount exception");
+		}
 		
 		[splash close];
 		[splash release];
