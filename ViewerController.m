@@ -6968,6 +6968,8 @@ int i,j,l;
 				
 				if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
 				
+				if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
+				
 				if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
 				{
 					if(		[[[imageView curDCM] repetitiontime] isEqualToString: [[[vC imageView] curDCM] repetitiontime]] == NO || 
@@ -6996,31 +6998,40 @@ int i,j,l;
 			{
 				if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
 				{
-					if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
+					if( [[vC modality] isEqualToString:[self modality]])
 					{
-						if( [imageView scaleValue] != 0)
+						if( [imageView pixelSpacing] != 0 && [[vC imageView] pixelSpacing] != 0)
 						{
-							fValue = [imageView scaleValue] / [imageView pixelSpacing];
-							[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
+							if( [imageView scaleValue] != 0)
+							{
+								fValue = [imageView scaleValue] / [imageView pixelSpacing];
+								[[vC imageView] setScaleValue: fValue * [[vC imageView] pixelSpacing]];
+							}
 						}
-					}
-					else
-					{
-						if( [imageView scaleValue] != 0)
-							[[vC imageView] setScaleValue: [imageView scaleValue]];
+						else
+						{
+							if( [imageView scaleValue] != 0)
+								[[vC imageView] setScaleValue: [imageView scaleValue]];
+						}
 					}
 				}
 			}
 			
 			if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
 			{
-				NSPoint pan;
-				
-				pan = [imageView origin];
-				[[vC imageView] setOrigin: NSMakePoint( pan.x, pan.y)];
-				
-				fValue = [imageView rotation];
-				[[vC imageView] setRotation: fValue];
+				if( [[vC modality] isEqualToString:[self modality]])
+				{
+					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+					{
+						NSPoint pan;
+					
+						pan = [imageView origin];
+						[[vC imageView] setOrigin: NSMakePoint( pan.x, pan.y)];
+					
+						fValue = [imageView rotation];
+						[[vC imageView] setRotation: fValue];
+					}
+				}
 			}
 		}
 		
