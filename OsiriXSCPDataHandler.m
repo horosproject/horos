@@ -499,7 +499,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"SeriesInstanceUID"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID == %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", value];
 			} 
 			else if ([[[attr attrTag] name] isEqualToString:@"SeriesDescription"]) {
 				value = [attr value];
@@ -705,8 +705,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	else
 		[seriesObject setAttributeValues:[NSMutableArray array] forName:@"SeriesNumber"];
 			
-	if ([fetchedObject valueForKey:@"seriesInstanceUID"])
-		[seriesObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"seriesInstanceUID"]] forName:@"SeriesInstanceUID"];
+	if ([fetchedObject valueForKey:@"seriesDICOMUID"])
+		[seriesObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"seriesDICOMUID"]] forName:@"SeriesInstanceUID"];
 	return seriesObject;
 }
 

@@ -1804,6 +1804,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( seriesNo) [dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]]  forKey:@"seriesNumber"];
 				
 				val = Papy3GetElement (theGroupP, papSeriesInstanceUIDGr, &nbVal, &itemType);
+				if( val != NULL) [dicomElements setObject:[NSString stringWithCString:val->a] forKey:@"seriesDICOMUID"];
+				
 				if (val != NULL) serieID = [[NSString alloc] initWithCString:val->a];
 				else serieID = [[NSString alloc] initWithString:name];
 				
@@ -2215,9 +2217,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			seriesNo = [[NSString alloc] initWithString: @"0"];
 		[dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]] forKey:@"seriesNumber"];
 			
-		if (serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain]) {
+		if (serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain])
+		{
+			[dicomElements setObject: serieID forKey:@"seriesDICOMUID"];
 		}
-			//[dicomElements setObject:serieID  forKey:@"seriesID"];
 			
 		if (studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"StudyInstanceUID"] forKey:@"studyID"];

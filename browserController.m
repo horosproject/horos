@@ -608,6 +608,7 @@ static BOOL COMPLETEREBUILD = NO;
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];
 									
+									if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
 									[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
@@ -1000,6 +1001,7 @@ static BOOL COMPLETEREBUILD = NO;
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];
 									
+									if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
 									[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];

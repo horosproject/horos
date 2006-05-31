@@ -170,16 +170,16 @@ extern NSString * documentsDirectory();
     
 	[connectionLock lock];
 	
-	NSFileHandle		*incomingConnection = [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
-	NSData				*readData;
-	NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
-	NSMutableData		*representationToSend = 0L;
-	
-	[[aNotification object] acceptConnectionInBackgroundAndNotify];
-	
-	if( incomingConnection)
+	@try
 	{
-		@try
+		NSFileHandle		*incomingConnection = [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
+		NSData				*readData;
+		NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
+		NSMutableData		*representationToSend = 0L;
+		
+		[[aNotification object] acceptConnectionInBackgroundAndNotify];
+		
+		if( incomingConnection)
 		{
 			// Waiting for incomming message (6 first bytes)
 			while ( [data length] < 6 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -567,17 +567,15 @@ extern NSString * documentsDirectory();
 					[representationToSend appendBytes:string length: strlen( string)+1];
 				}
 			}
+			
+			[incomingConnection writeData:representationToSend];
+			[incomingConnection closeFile];
 		}
-		
-		@catch( NSException *ne)
-		{
-		
-		}
-		
-		[incomingConnection writeData:representationToSend];
-		[incomingConnection closeFile];
 	}
-	
+	@catch( NSException *ne)
+	{
+		NSLog( @"catch in ConnectionReceived");
+	}
 	[connectionLock unlock];
 	
 	[pool release];
