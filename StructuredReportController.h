@@ -27,6 +27,8 @@
 	NSString *_physician;
 	NSString *_history;
 	id _study;
+	NSURL *_url;
+	NSXMLDocument *_xml;
 	
 	
 }

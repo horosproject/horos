@@ -74,26 +74,43 @@
 
 - (void)createReportExportHTML:(BOOL)html{
 	NSLog(@"Create report");
-	NSString *patientID = [_study valueForKey:@"patientID"];
+	
 	DSRDocument *doc = new DSRDocument();
 	NSLog(@"study: %@", [_study description]);
 	doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 	doc->setSpecificCharacterSet("ISO_IR 192"); //UTF 8 string encoding
 	doc->createNewSeriesInStudy([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
-	
+	//Study Description
 	if ([_study valueForKey:@"studyName"])
 		doc->setStudyDescription([[_study valueForKey:@"studyName"] UTF8String]);
+	//Series Description
 	doc->setSeriesDescription("OsiriX Structured Report");
+	//Patient Name
 	if ([_study valueForKey:@"name"] )
 		doc->setPatientsName([[_study valueForKey:@"name"] UTF8String]);
+	// Patient DOB
 	if ([_study valueForKey:@"dateOfBirth"])
 		doc->setPatientsBirthDate([[[_study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
+	//Patient Sex
 	if ([_study valueForKey:@"patientSex"])
 		doc->setPatientsSex([[_study valueForKey:@"patientSex"] UTF8String]);
+	//Patient ID
+	NSString *patientID = [_study valueForKey:@"patientID"];
 	if ([patientID UTF8String])
 		doc->setPatientID([patientID UTF8String]);
+	//Referring Physician
 	if ([_study valueForKey:@"referringPhysician"])
 		doc->setReferringPhysiciansName([[_study valueForKey:@"referringPhysician"] UTF8String]);
+	//StudyID	
+	if ([_study valueForKey:@"id"]) {
+		NSString *studyID = [(NSNumber *)[_study valueForKey:@"id"] stringValue];
+		doc->setStudyID([studyID UTF8String]);
+	}
+	//Accession Number
+	if ([_study valueForKey:@"accessionNumber"])
+		doc->setAccessionNumber([[_study valueForKey:@"accessionNumber"] UTF8String]);
+	//Series Number
+	doc->setSeriesNumber("5001");
 	
 	doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 	doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report"));
