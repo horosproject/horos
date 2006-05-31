@@ -97,6 +97,8 @@ Version 2.3
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 
+#import "StructuredReportController.h"
+
 
 
 #define DATABASEVERSION @"2.0"
@@ -7991,6 +7993,10 @@ static BOOL needToRezoom;
 					else {
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
+						if (!structuredReportController)
+							structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
+						else
+							[structuredReportController setStudy:studySelected]; 
 					}
 					
 				}
