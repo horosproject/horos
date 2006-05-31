@@ -1544,6 +1544,24 @@
 		BF432BFB09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */; };
 		BF432BFC09E31CD800AC322E /* DCMTKRootQueryNode.h in Headers */ = {isa = PBXBuildFile; fileRef = BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */; };
 		BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */; };
+		BF47CBD00A2E31B100700AA9 /* viewHTML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */; };
+		BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCE0A2E31B100700AA9 /* viewSR.tif */; };
+		BF47CBD20A2E31B100700AA9 /* viewXML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCF0A2E31B100700AA9 /* viewXML.tif */; };
+		BF47CBD30A2E31B100700AA9 /* viewHTML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */; };
+		BF47CBD40A2E31B100700AA9 /* viewSR.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCE0A2E31B100700AA9 /* viewSR.tif */; };
+		BF47CBD50A2E31B100700AA9 /* viewXML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCF0A2E31B100700AA9 /* viewXML.tif */; };
+		BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */; };
+		BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCE0A2E31B100700AA9 /* viewSR.tif */; };
+		BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF47CBCF0A2E31B100700AA9 /* viewXML.tif */; };
+		BF47CC220A2E3BC500700AA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF47CBF20A2E3BC500700AA9 /* WebKit.framework */; };
+		BF47CC230A2E3BC500700AA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF47CBF20A2E3BC500700AA9 /* WebKit.framework */; };
+		BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF47CBF20A2E3BC500700AA9 /* WebKit.framework */; };
+		BF47CC330A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
+		BF47CC340A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
+		BF47CC350A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
+		BF47CC360A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
+		BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF47CC310A2E4AD800700AA9 /* StructuredReport.h */; };
+		BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */; };
 		BF4885A70766BD4D00F30E57 /* DCMPresentationDataValue.h in Headers */ = {isa = PBXBuildFile; fileRef = BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF4885A80766BD4D00F30E57 /* DCMPresentationDataValue.m in Sources */ = {isa = PBXBuildFile; fileRef = BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */; };
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
@@ -8673,6 +8691,23 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFEA964B0A2CECBF00AFBE03 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFEA964C0A2CECBF00AFBE03 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9692,6 +9727,12 @@
 		BF432BEC09E31C0F00AC322E /* DCMTKImageQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKImageQueryNode.mm; sourceTree = "<group>"; };
 		BF432BF609E31CD700AC322E /* DCMTKRootQueryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKRootQueryNode.h; sourceTree = "<group>"; };
 		BF432BF709E31CD700AC322E /* DCMTKRootQueryNode.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKRootQueryNode.mm; sourceTree = "<group>"; };
+		BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTML.tif; sourceTree = "<group>"; };
+		BF47CBCE0A2E31B100700AA9 /* viewSR.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewSR.tif; sourceTree = "<group>"; };
+		BF47CBCF0A2E31B100700AA9 /* viewXML.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXML.tif; sourceTree = "<group>"; };
+		BF47CBF20A2E3BC500700AA9 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
+		BF47CC310A2E4AD800700AA9 /* StructuredReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructuredReport.h; sourceTree = "<group>"; };
+		BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructuredReport.mm; sourceTree = "<group>"; };
 		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
 		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
@@ -12382,6 +12423,7 @@
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
 				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
+				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12462,6 +12504,7 @@
 				BFBF3AAC09B681F500545F5E /* libz.dylib in Frameworks */,
 				AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290B00A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
+				BF47CC230A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12553,6 +12596,7 @@
 				BFBF3AA809B681F500545F5E /* libz.dylib in Frameworks */,
 				AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290AF0A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
+				BF47CC220A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12595,6 +12639,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF47CBF20A2E3BC500700AA9 /* WebKit.framework */,
 				BF62909A0A2B80A800BB0B62 /* AddressBook.framework */,
 				AB52E5C70A19D93500726305 /* Security.framework */,
 				CEA656CB094EF64300D4E5E5 /* vli3.framework */,
@@ -13535,6 +13580,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				BF47CBCD0A2E31B100700AA9 /* viewHTML.tif */,
+				BF47CBCE0A2E31B100700AA9 /* viewSR.tif */,
+				BF47CBCF0A2E31B100700AA9 /* viewXML.tif */,
 				AB95C0380A2B08ED00380C65 /* FileNotFound.tif */,
 				CE5D33B309E1C26400CC6884 /* add-large.tif */,
 				CE5D33B409E1C26400CC6884 /* minus-large.tif */,
@@ -13858,6 +13906,8 @@
 				BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */,
 				BF6290750A2B7E8600BB0B62 /* SRArrayController.h */,
 				BF6290760A2B7E8600BB0B62 /* SRArrayController.m */,
+				BF47CC310A2E4AD800700AA9 /* StructuredReport.h */,
+				BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -18671,6 +18721,7 @@
 				BF9999000A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
 				BF62905B0A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF62907B0A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
+				BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20486,6 +20537,7 @@
 				AB9751090A273A0D00BC23EB /* OsiriXSCPDataHandler.h in Headers */,
 				BF6290590A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF6290790A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
+				BF47CC350A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22306,6 +22358,7 @@
 				BF9999020A1E695800F50753 /* DCMTKPrintSCU.h in Headers */,
 				BF6290570A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF6290770A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
+				BF47CC330A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22434,6 +22487,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFEA964B0A2CECBF00AFBE03 /* Development */,
+				BFEA964C0A2CECBF00AFBE03 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -22865,6 +22924,9 @@
 				AB95C0390A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290500A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
 				ABBDE6710A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
+				BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */,
+				BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */,
+				BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23131,6 +23193,9 @@
 				AB95C03B0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290520A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
 				ABBDE6730A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
+				BF47CBD30A2E31B100700AA9 /* viewHTML.tif in Resources */,
+				BF47CBD40A2E31B100700AA9 /* viewSR.tif in Resources */,
+				BF47CBD50A2E31B100700AA9 /* viewXML.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23397,6 +23462,9 @@
 				AB95C03A0A2B08ED00380C65 /* FileNotFound.tif in Resources */,
 				BF6290510A2B7CC400BB0B62 /* StructuredReport.nib in Resources */,
 				ABBDE6720A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
+				BF47CBD00A2E31B100700AA9 /* viewHTML.tif in Resources */,
+				BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */,
+				BF47CBD20A2E31B100700AA9 /* viewXML.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24295,6 +24363,7 @@
 				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
 				BF62905C0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF62907C0A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
+				BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24860,6 +24929,7 @@
 				AB9751080A273A0D00BC23EB /* OsiriXSCPDataHandler.m in Sources */,
 				BF62905A0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF62907A0A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
+				BF47CC360A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25515,6 +25585,7 @@
 				BF9999030A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
 				BF6290580A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF6290780A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
+				BF47CC340A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,9 +17,17 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {
-            ACTIONS = {endSheet = id; }; 
+            ACTIONS = {endSheet = id; setView = id; }; 
             CLASS = StructuredReportController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {
+                htmlView = id; 
+                srView = id; 
+                viewControl = id; 
+                webView = id; 
+                xmlOutlineView = id; 
+                xmlView = id; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {

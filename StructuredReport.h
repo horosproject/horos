@@ -1,8 +1,9 @@
 //
-//  StructuredReportController.h
+//  StructuredReport.h
 //  OsiriX
 //
-//  Created by Lance Pysher on 5/29/06.
+//  Created by Lance Pysher on 5/31/06.
+
 /*=========================================================================
   Program:   OsiriX
 
@@ -18,43 +19,21 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import <WebKit/WebKit.h>
-#import <AddressBook/AddressBook.h>
 
 
-@class StructuredReport;
+#undef verify
+#include "dsrdoc.h"
 
-
-@interface StructuredReportController : NSWindowController {
-
+@interface StructuredReport : NSObject {
+	id _study;
+	DSRDocument *_doc;
 	NSArray *_findings;
 	NSArray *_conclusions;
 	NSString *_physician;
 	NSString *_history;
-	id _study;
-	NSURL *_url;
-	NSXMLDocument *_xml;
-
-	//DSRDocument *_doc;
-	IBOutlet NSSegmentedControl *viewControl;
-	IBOutlet NSView *srView;
-	IBOutlet NSView *xmlView;
-	IBOutlet NSView *htmlView;
-	IBOutlet WebView *webView;
-	IBOutlet NSOutlineView *xmlOutlineView;
-	NSToolbar *toolbar;
-	NSView *_contentView;
-	StructuredReport *_report;
-	
-	
-	
 }
 
 - (id)initWithStudy:(id)study;
-- (void)setStudy:(id)study;
-- (BOOL)createReportForStudy:(id)study;
--(IBAction)endSheet:(id)sender;
-- (void)createReportExportHTML:(BOOL)html;
 
 - (NSArray *)findings;
 - (void)setFindings:(NSArray *)findings;
@@ -65,8 +44,15 @@
 - (NSString *)history;
 - (void)setHistory:(NSString *)history;
 
-- (NSView *)contentView;
-- (void)setContentView:(NSView *)contentView;
+- (BOOL)fileExists;
 
-- (void) setupToolbar;
+- (void)createReport;
+- (void)writeHTML;
+- (void)writeXML;
+- (void)readXML;
+- (NSString *)xmlPath;
+- (NSString *)htmlPath;
+- (NSString *)srPath;
+- (void)createReport;
+
 @end

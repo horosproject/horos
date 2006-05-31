@@ -20,7 +20,8 @@
 #import "StructuredReportController.h"
 
 #import "browserController.h"
-#import "AddressBook/AddressBook.h"
+#import "StructuredReport.h"
+
 
 #undef verify
 
@@ -30,6 +31,9 @@
 #include "dsrdoc.h"
 #include "dcuid.h"
 #include "dcfilefo.h"
+
+static NSString *ViewControlToolbarItem = @"viewControl";
+static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 
 
 @implementation StructuredReportController
@@ -41,11 +45,20 @@
 	return self;
 }
 
+- (void)setStudy:(id)study{
+	[self createReportForStudy:study];
+}
+
+- (void)windowDidLoad{
+	[self setupToolbar];
+}
+
 - (void)dealloc{
 	[_findings release];
 	[_conclusions release];
 	[_physician release];
 	[_study release];
+	[_report release];
 	[super dealloc];
 }
 
@@ -53,24 +66,24 @@
 	ABPerson *me = [[ABAddressBook sharedAddressBook] me];
 	[self setPhysician:[NSString stringWithFormat: @"%@^%@", [me valueForProperty:kABLastNameProperty] ,[me valueForProperty:kABFirstNameProperty]]]; 
 
-	//[_window  makeKeyAndOrderFront:self];
+	[[self window]  makeKeyAndOrderFront:self];
+	[self setFindings:nil];
+	[self setConclusions:nil];
+	
+	[_report release];
+	_report = [[StructuredReport alloc] initWithStudy:_study];
+	/*
 	[NSApp beginSheet:[self window] 
 		modalForWindow:[[BrowserController currentBrowser] window]
 		modalDelegate:self 
 		didEndSelector:nil
 		contextInfo:nil];
-	_study = [study retain];
+	*/
+	_study = [study retain];	
 	return YES;
 }
 
--(IBAction)endSheet:(id)sender{	
-	if ([sender tag] == 0)
-		[self createReportExportHTML:NO];
-	else if ([sender tag] == 2)
-		[self createReportExportHTML:YES];
-	[NSApp endSheet:[self window]];
-	[[self window] close];
-}
+
 
 - (void)createReportExportHTML:(BOOL)html{
 	NSLog(@"Create report");
@@ -253,5 +266,68 @@
 	_history = [history retain];
 }
 
+- (NSView *)contentView{
+	return _contentView;
+}
+
+- (void)setContentView:(NSView *)contentView{
+	_contentView = contentView;
+}
+
+-(IBAction)setView:(id)sender{
+	switch ([sender selectedSegment]){
+		case 0: [self setContentView:htmlView];
+			break;
+		case 1: [self setContentView:srView];
+			break;
+		case 2: [self setContentView:xmlView];
+			break;
+		default: [self setContentView:htmlView];
+	}
+}
+
+#pragma mark-
+#pragma mark Toolbar functions
+
+// ============================================================
+// NSToolbar Related Methods
+// ============================================================
+
+- (void) setupToolbar {
+	toolbar = [[NSToolbar alloc] initWithIdentifier:SRToolbarIdentifier];
+	[toolbar setDelegate:self];
+	[toolbar setAllowsUserCustomization:NO];
+	[toolbar setVisible:YES];
+	[[self window] setToolbar:toolbar];
+	[[self window] setShowsToolbarButton:NO];
+}
+
+- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+    // Required delegate method:  Given an item identifier, this method returns an item 
+    // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
+	
+	NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
+	if ([itemIdent isEqualToString: ViewControlToolbarItem]) {
+		[toolbarItem setLabel: NSLocalizedString(@"View Report", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report Style", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"View Report as html, xml, DICOM", nil)];
+		[toolbarItem setView:viewControl];
+	}
+	return [toolbarItem autorelease];
+}
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
+    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
+    // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
+    // user chooses to revert to the default items this set will be used 
+	return [NSArray arrayWithObject:ViewControlToolbarItem];
+}
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
+    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
+    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
+    // The set of allowed items is used to construct the customization palette 
+	return [NSArray arrayWithObject:ViewControlToolbarItem];
+}
 
 @end

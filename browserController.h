@@ -35,6 +35,7 @@
 @class MyOutlineView;
 @class DCMView;
 @class DCMPix;
+@class StructuredReportController;
 
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
@@ -185,6 +186,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	char							cfixedDocumentsDirectory[ 1024];
 	
 	NSTimeInterval					databaseLastModification;
+	
+	StructuredReportController		*structuredReportController;
 }
 
 + (BrowserController*) currentBrowser;
