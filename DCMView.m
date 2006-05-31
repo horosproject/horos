@@ -5717,6 +5717,7 @@ static long scrollMode;
 				BOOL drawROI = NO;
 				
 				if( [[[self window] windowController] is2DViewer] == YES) drawROI = [[[[self window] windowController] roiLock] tryLock];
+				else drawROI = YES;
 				
 				if( drawROI)
 				{
@@ -5740,7 +5741,7 @@ static long scrollMode;
 					rectArray = 0L;
 				}
 				
-				if(drawROI) [[[[self window] windowController] roiLock] unlock];
+				if( drawROI && [[[self window] windowController] is2DViewer] == YES) [[[[self window] windowController] roiLock] unlock];
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				
