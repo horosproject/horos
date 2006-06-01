@@ -39,7 +39,8 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 @implementation StructuredReportController
 
 - (id)initWithStudy:(id)study{
-	if (self = [super initWithWindowNibName:@"StructuredReport"]) {
+	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
+		NSLog(@"init SR Controller");
 		[self createReportForStudy:study];
 	}
 	return self;
@@ -50,6 +51,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (void)windowDidLoad{
+	NSLog(@"SR Window did load");
 	[self setupToolbar];
 }
 
@@ -63,6 +65,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (BOOL)createReportForStudy:(id)study{
+	NSLog(@"create report");
 	ABPerson *me = [[ABAddressBook sharedAddressBook] me];
 	[self setPhysician:[NSString stringWithFormat: @"%@^%@", [me valueForProperty:kABLastNameProperty] ,[me valueForProperty:kABFirstNameProperty]]]; 
 
@@ -79,6 +82,10 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 		didEndSelector:nil
 		contextInfo:nil];
 	*/
+	if ([_report fileExists])
+		[self setContentView:htmlView];
+	else
+		[self setContentView:srView];
 	_study = [study retain];	
 	return YES;
 }
@@ -284,6 +291,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 			break;
 		default: [self setContentView:htmlView];
 	}
+	[[self window] setContentView:_contentView];
 }
 
 #pragma mark-
@@ -294,6 +302,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 // ============================================================
 
 - (void) setupToolbar {
+	NSLog(@"Setup Toolbar");
 	toolbar = [[NSToolbar alloc] initWithIdentifier:SRToolbarIdentifier];
 	[toolbar setDelegate:self];
 	[toolbar setAllowsUserCustomization:NO];
@@ -312,6 +321,8 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report Style", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"View Report as html, xml, DICOM", nil)];
 		[toolbarItem setView:viewControl];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([viewControl frame]), NSHeight([viewControl frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([viewControl frame]), NSHeight([viewControl frame]))];
 	}
 	return [toolbarItem autorelease];
 }

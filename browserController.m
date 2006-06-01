@@ -8002,11 +8002,19 @@ static BOOL needToRezoom;
 				}
 				else
 				{
-					Reports	*report = [[Reports alloc] init];
-					
-					[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];
-					
-					[report release];
+					if (reportsMode < 3) {
+						Reports	*report = [[Reports alloc] init];					
+						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];					
+						[report release];
+					}
+					else {
+						//structured report code here
+						//Osirix will open DICOM Structured Reports
+						if (!structuredReportController)
+							structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
+						else
+							[structuredReportController setStudy:studySelected]; 
+					}
 				}
 			}
 		}
