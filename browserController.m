@@ -5878,6 +5878,9 @@ static BOOL needToRezoom;
 {
 	if( [[aNotification object] isEqual: albumTable])
 	{
+		// Clear search field
+		[self setSearchString:nil];
+		
 		[self outlineViewRefresh];
 	}
 	
