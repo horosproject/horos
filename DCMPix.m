@@ -58,6 +58,9 @@ extern void vmin(vector float *a, vector float *b, vector float *r, long size);
 extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 void vmax8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
 void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
+#else
+extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
+extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
 #endif
 extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
 extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
@@ -7382,11 +7385,14 @@ float			iwl, iww;
 								else vmin( (vector float *)fNext, (vector float *)fImage, (vector float *)fResult, height * width);
 							}
 							else
-							#endif
 							{
 								if( stackMode == 2) vmaxNoAltivec(fNext, fImage, fResult, height * width);
 								else vminNoAltivec(fNext, fImage, fResult, height * width);
 							}
+							#else
+							if( stackMode == 2) vmaxIntel( (vFloat *)fNext, (vFloat *)fImage, (vFloat *)fResult, height * width);
+							else vminIntel( (vFloat *)fNext, (vFloat *)fImage, (vFloat *)fResult, height * width);
+							#endif
 						}
 						
 						for( i = 2; i < stack; i++)
@@ -7407,11 +7413,14 @@ float			iwl, iww;
 										else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
 									}
 									else
-									#endif
 									{
 										if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
 										else vminNoAltivec(fResult, fNext, fResult, height * width);
 									}
+									#else
+									if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+									else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+									#endif
 								}
 							}
 						}

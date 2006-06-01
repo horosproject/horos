@@ -414,6 +414,25 @@ void vmin8(vector float *a, vector float *b, vector float *r, long size)
 		*r++ = vec_min( *a++, *b++);
 	}
 }
+#else
+void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
+{
+	long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = _mm_max_ps( *a++, *b++);
+	}
+}
+void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size)
+{
+	long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = _mm_min_ps( *a++, *b++);
+	}
+}
 #endif
 
 void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size)
@@ -435,7 +454,6 @@ void vsubtractNoAltivec( float *a,  float *b,  float *r, long size)
 		*r++ = *a++ - *b++;
 	}
 }
-
 
 void vmaxNoAltivec(float *a, float *b, float *r, long size)
 {

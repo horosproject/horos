@@ -29,19 +29,23 @@
 static		float				deg2rad = 3.14159265358979/180.0; 
 static		NSTimeInterval		interval = 0;
 
+extern "C"
+{
 #ifdef __ppc__
 extern short	Altivec;
 extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 extern void vmin(vector float *a, vector float *b, vector float *r, long size);
 extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
 extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
+#else
+extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
+extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
 #endif
-
 extern void vminNoAltivec( float *a,  float *b,  float *r, long size);
 extern void vmaxNoAltivec(float *a, float *b, float *r, long size);
 extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
 extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
-
+}
 
 
 typedef struct {
@@ -79,50 +83,50 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
    return(q);
 }
 
-#ifdef __ppc__
-void vmax(vector float *a, vector float *b, vector float *r, long size)
-{
-		long i = size / 4;
-	
-		while(i-- > 0)
-		{
-			*r++ = vec_max( *a++, *b++);
-		}
-}
-
-
-void vmin(vector float *a, vector float *b, vector float *r, long size)
-{
-	long i = size / 4;
-	
-	while(i-- > 0)
-	{
-		*r++ = vec_min( *a++, *b++);
-	}
-}
-#endif
-
-void vmaxNoAltivec(float *a, float *b, float *r, long size)
-{
-	long i = size;
-	
-	while(i-- > 0)
-	{
-		if( *a > *b) { *r++ = *a++; b++; }
-		else { *r++ = *b++; a++; }
-	}
-}
-
-void vminNoAltivec( float *a,  float *b,  float *r, long size)
-{
-	long i = size;
-	
-	while(i-- > 0)
-	{
-		if( *a < *b) { *r++ = *a++; b++; }
-		else { *r++ = *b++; a++; }
-	}
-}
+//#ifdef __ppc__
+//void vmax(vector float *a, vector float *b, vector float *r, long size)
+//{
+//		long i = size / 4;
+//	
+//		while(i-- > 0)
+//		{
+//			*r++ = vec_max( *a++, *b++);
+//		}
+//}
+//
+//
+//void vmin(vector float *a, vector float *b, vector float *r, long size)
+//{
+//	long i = size / 4;
+//	
+//	while(i-- > 0)
+//	{
+//		*r++ = vec_min( *a++, *b++);
+//	}
+//}
+//#endif
+//
+//void vmaxNoAltivec(float *a, float *b, float *r, long size)
+//{
+//	long i = size;
+//	
+//	while(i-- > 0)
+//	{
+//		if( *a > *b) { *r++ = *a++; b++; }
+//		else { *r++ = *b++; a++; }
+//	}
+//}
+//
+//void vminNoAltivec( float *a,  float *b,  float *r, long size)
+//{
+//	long i = size;
+//	
+//	while(i-- > 0)
+//	{
+//		if( *a < *b) { *r++ = *a++; b++; }
+//		else { *r++ = *b++; a++; }
+//	}
+//}
 
 @implementation MPR2DView
 
@@ -1798,11 +1802,14 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 							else vmin((vector float*)imResult, (vector float*)im, (vector float*)imResult, height * width);
 						}
 						else
-						#endif
 						{
 							if( thickSlabMode == 2) vmaxNoAltivec(imResult,im,imResult, height * width);
 							else vminNoAltivec(imResult,im,imResult, height * width);
 						}
+						#else
+						if( thickSlabMode == 2) vmaxIntel((vFloat*) imResult, (vFloat*)im, (vFloat*)imResult, height * width);
+						else vminIntel((vFloat*)imResult, (vFloat*)im, (vFloat*)imResult, height * width);
+						#endif
 					break;
 				}
 				im = imResult;
