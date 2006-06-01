@@ -23,9 +23,10 @@
 	IBOutlet NSMatrix			*dicomdirModeMatrix,
 								*stillMovieModeMatrix;
 								
-	IBOutlet id					burnOsirixCheck,
-								burnSupplementaryFolderCheck,
-								supplementaryFolderPath;
+	IBOutlet NSButton			*burnOsirixCheck;
+	IBOutlet NSButton			*supplementaryFolderCheck;
+								
+	IBOutlet NSTextField		*supplementaryFolderPath;
 								
 	IBOutlet SFAuthorizationView	*_authView;
 }
@@ -37,5 +38,5 @@
 - (IBAction)setStillMovieMode:(id)sender;
 - (IBAction)setBurnOsirixApplication:(id)sender;
 - (IBAction)chooseSupplementaryBurnPath:(id)sender;
-
+- (IBAction)setBurnSupplementaryFolder:(id)sender;
 @end

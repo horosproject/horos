@@ -87,8 +87,8 @@
 	[dicomdirModeMatrix selectCellWithTag: [defaults boolForKey:@"USEDICOMDIR"]];
 	[stillMovieModeMatrix selectCellWithTag: [defaults integerForKey:@"STILLMOVIEMODE"]];
 
-	[burnOsirixCheck setIntValue: [[[NSUserDefaults standardUserDefaults] objectForKey: @"Burn Osirix Application"] intValue]];
-	[burnSupplementaryFolderCheck setIntValue: [[[NSUserDefaults standardUserDefaults] objectForKey: @"Burn Supplementary Folder"] intValue]];
+	[burnOsirixCheck setIntValue: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"]];
+	[supplementaryFolderCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"]];
 	[supplementaryFolderPath setStringValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]];
 }
 

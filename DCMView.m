@@ -3710,7 +3710,9 @@ static long scrollMode;
 
 -(void) becomeMainWindow
 {
-	if( [curDCM thickSlabMode]) [self setFusion: thickSlabMode :-1];
+//	if( [curDCM thickSlabMode]) [self setFusion: thickSlabMode :-1];
+//	
+	[self setFusion: thickSlabMode :-1];
 
 	NSLog(@"BecomeMainWindow");
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
