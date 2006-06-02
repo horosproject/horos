@@ -35,21 +35,39 @@
 - (id)initWithStudy:(id)study{
 	if (self = [super init]){
 		_doc = new DSRDocument();
+		_study = [study retain];
+		if ([self fileExists]) {
+			DcmFileFormat fileformat;
+			OFCondition status = fileformat.loadFile([[self srPath] UTF8String]);
+			if (status.good())
+				status = _doc->read(*fileformat.getDataset());
+			if (status.good()) {
+				[self writeXML];
+				[self writeHTML];
+			}			
+		}			
 	}
 	return self;
 }
 
 - (void)dealloc{
 	delete _doc;
+	[_study release];
+	[_findings release];
+	[_conclusions release];
+	[_physician release];
+	[_history release];
+	[_xmlDoc release];
 	[super dealloc];
 }
 
-- (NSArray *)findings{
-	
+- (NSArray *)findings{	
 	if (!_findings)
 		_findings = [[NSArray alloc] init];
 	return _findings;
 }
+
+
 - (void)setFindings:(NSArray *)findings{
 	//NSLog(@"setFindings: %@", [findings description]);
 	[_findings release];
@@ -90,11 +108,31 @@
 	return NO;
 }
 
-- (void)createReport{
-	NSLog(@"Create report");
-	
+- (void)checkCharacterSet
+{ // check extended character set
+	const char *defaultCharset = "latin-1";
+	const char *charset = _doc->getSpecificCharacterSet();
+	if ((charset == NULL || strlen(charset) == 0) && _doc->containsExtendedCharacters())
+	{
+	  // we have an unspecified extended character set
+		OFString charset(defaultCharset);
+		if (charset == "latin-1") _doc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+		else if (charset == "latin-2") _doc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
+		else if (charset == "latin-3") _doc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
+		else if (charset == "latin-4") _doc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
+		else if (charset == "latin-5") _doc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
+		else if (charset == "cyrillic") _doc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
+		else if (charset == "arabic") _doc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
+		else if (charset == "greek") _doc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
+		else if (charset == "hebrew") _doc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
 
+	}
+}
+
+- (void)createReport{
+	NSLog(@"Create report");	
 	NSLog(@"study: %@", [_study description]);
+	
 	_doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 	_doc->setSpecificCharacterSet("ISO_IR 192"); //UTF 8 string encoding
 	_doc->createNewSeriesInStudy([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -220,29 +258,55 @@
 	OFCondition status = _doc->write(*fileformat.getDataset());
 	NSString *path = [[dbPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"dcm"];
 	status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
-	[_study setValue: path ForKey:@"reportURL"];
+	[_study setValue: path forKey:@"reportURL"];
 
+}
+
+- (void)convertXMLToSR{
+	if (_doc)
+		delete _doc;
+	_doc = new DSRDocument();
+	_doc->readXML([[self xmlPath] UTF8String], nil);
 }
 
 - (void)writeHTML{
-	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;
-	NSString *tempPath = @"/tmp";
-	NSString *path = [[tempPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"html"];		
-				ofstream stream([path UTF8String]);
+	[self checkCharacterSet];
+	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
+	ofstream stream([[self htmlPath] UTF8String]);
 	_doc->renderHTML(stream, renderFlags, NULL);
 }
+
 - (void)writeXML{
+	size_t writeFlags = 0;		
+	[self checkCharacterSet];
+	ofstream stream([[self xmlPath] UTF8String]);
+	_doc->writeXML(stream, writeFlags);
 }
+
+
 - (void)readXML{
+	[_xmlDoc release];
+	NSURL *url = [NSURL fileURLWithPath:[self xmlPath]];; 
+	NSError *error;
+	_xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:(NSURL *)url options:nil error:(NSError **)error];
 }
+
+
 - (NSString *)xmlPath{
-	return nil;
+	NSString *tempPath = @"/tmp";
+	NSString *path = [[tempPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"xml"];
 }
 - (NSString *)htmlPath{
- return nil;
+ 	NSString *tempPath = @"/tmp";
+	NSString *path = [[tempPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"html"];
 }
 - (NSString *)srPath{
-	return nil;
+	if (![_study valueForKey:@"reportURL"]) {
+		NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"REPORTS"];
+		NSString *path = [[dbPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"dcm"];
+		return path;
+	}
+	return [_study valueForKey:@"reportURL"];
 }
 
 

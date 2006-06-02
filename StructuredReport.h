@@ -31,6 +31,7 @@
 	NSArray *_conclusions;
 	NSString *_physician;
 	NSString *_history;
+	NSXMLDocument *_xmlDoc;
 }
 
 - (id)initWithStudy:(id)study;
@@ -45,6 +46,7 @@
 - (void)setHistory:(NSString *)history;
 
 - (BOOL)fileExists;
+- (void)checkCharacterSet;
 
 - (void)createReport;
 - (void)writeHTML;
@@ -54,5 +56,7 @@
 - (NSString *)htmlPath;
 - (NSString *)srPath;
 - (void)createReport;
+- (void)convertXMLToSR;
+
 
 @end
