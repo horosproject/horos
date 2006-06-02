@@ -3299,6 +3299,8 @@ SElement		*theGroupP;
 	
 	if( item)
 	{
+		QDDisplayWaitCursor( true);
+		
 		/**********
 		post notification of new selected item. Can be used by plugins to update RIS connection
 		**********/
@@ -3368,6 +3370,8 @@ SElement		*theGroupP;
 			[previousItem release];
 			previousItem = [item retain];
 		}
+		
+		QDDisplayWaitCursor( false);
 	}
 	else
 	{
