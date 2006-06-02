@@ -27,7 +27,7 @@
 	
 	float				*Ycache;
 	
-	NSLock				*cacheLock;
+	NSConditionLock		*resliceLock;
 }
 
 // init

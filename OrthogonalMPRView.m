@@ -170,6 +170,7 @@
 //	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
 //	crossPositionY = y;
 	[self setCrossPositionY: y];
+	
 	[controller reslice: x:  y: self];
 }
 

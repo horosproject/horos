@@ -128,7 +128,7 @@
 		[xReslicedView setPixList : xReslicedDCMPixList :originalDCMFilesList];
 		[yReslicedView setPixList : yReslicedDCMPixList :originalDCMFilesList];
 		
-		// WLWW
+//		// WLWW
 		float wl, ww;
 		[originalView getWLWW:&wl :&ww];
 		[xReslicedView adjustWLWW:wl :ww];
