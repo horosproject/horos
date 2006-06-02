@@ -1335,6 +1335,356 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo:  [NSDictionary dictionaryWithObject:@"slider" forKey:@"action"]];
 }
 
+-(void) computeFinalViewForSlice:(NSNumber*) numb
+{
+	vtkImageData	*tempIm;
+	DCMView			*oView = [[[self window] windowController] originalView];
+	int				uu = [numb intValue];
+	
+	float angle = [oView angle];
+	float angle2 = [perpendicularView angle];
+	
+	tempIm = rotate->GetOutput();
+	tempIm->Update();
+	
+	if( tempIm)
+	{
+		int				imExtent[ 6];
+		float			swl, sww;
+		long			width, height;
+		NSPoint			ttO, ttOffset;
+		
+		tempIm->GetWholeExtent( imExtent);
+//		NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
+		
+		float *im = (float*) tempIm->GetScalarPointer();
+		
+		double		space[ 3], origin[ 3];
+		
+		tempIm->GetSpacing( space);
+		tempIm->GetOrigin( origin);
+//			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+		
+		width = imExtent[ 1]-imExtent[ 0]+1;
+		height = imExtent[ 3]-imExtent[ 2]+1;
+		
+		if( thickSlabCount > 1 && uu == 0)
+		{
+			imResult = (float*) malloc( width * height * sizeof(float));
+			BlockMoveData( im, imResult, height*width*sizeof(float));
+			
+			if(thickSlabMode == 4 || thickSlabMode == 5)
+			{
+				BOOL flip;
+						
+				fullVolume = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
+				BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
+				
+				if( thickSlabMode == 4) flip = YES;
+				else flip = NO;
+				
+				[thickSlabCtl setImageData :width :height :100 :space[0] :space[1] :space[2] :flip];
+			}
+		}
+		else if( thickSlabCount > 1)
+		{
+			switch( thickSlabMode)
+			{
+				case 4:
+				case 5:
+					if( fullVolume != 0L)
+					{
+						BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
+					}
+				break;
+				
+				case 1:		// Mean
+					vadd( imResult, 1, im, 1, imResult, 1, height * width);
+					
+					if( uu == thickSlabCount -1) //The last one!
+					{
+						float   invCount = 1.0f/(float)thickSlabCount;
+						
+						vsmul( imResult, 1, &invCount, imResult, 1, height * width);
+					}
+				break;
+				
+				
+				case 2:		// Maximum IP
+				case 3:		// Minimum IP
+					#if __ppc__
+					if( Altivec)
+					{
+						if( thickSlabMode == 2) vmax((vector float*) imResult, (vector float*)im, (vector float*)imResult, height * width);
+						else vmin((vector float*)imResult, (vector float*)im, (vector float*)imResult, height * width);
+					}
+					else
+					{
+						if( thickSlabMode == 2) vmaxNoAltivec(imResult,im,imResult, height * width);
+						else vminNoAltivec(imResult,im,imResult, height * width);
+					}
+					#else
+					if( thickSlabMode == 2) vmaxIntel((vFloat*) imResult, (vFloat*)im, (vFloat*)imResult, height * width);
+					else vminIntel((vFloat*)imResult, (vFloat*)im, (vFloat*)imResult, height * width);
+					#endif
+				break;
+			}
+			im = imResult;
+		}
+		
+		if( uu == thickSlabCount - 1)
+		{
+			DCMPix*		mypix;
+			
+			if( fullVolume != 0L && blendingController == 0L && (thickSlabMode == 4 || thickSlabMode == 5))
+			{
+				unsigned char   *rgbaImage;
+				
+				[thickSlabCtl setImageSource: fullVolume :thickSlabCount];
+				
+				[oView getWLWW:&swl :&sww];
+				[thickSlabCtl setWLWW: swl: sww];
+				
+				rgbaImage = [thickSlabCtl renderSlab];
+				
+				free( fullVolume);
+				
+				mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+				[mypix setFixed8bitsWLWW:YES];
+				free( rgbaImage);
+			}
+			else
+			{
+				mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+				[mypix copySUVfrom: firstObject];
+			}
+			[finalPixList removeAllObjects];
+			[finalPixList addObject: mypix];
+			[mypix release];
+			
+			//NSLog(@"spacing:%2.2f %2.2f", space[0], space[1]);
+			
+			if( firstTime)
+			{
+				firstTime = NO;
+				[finalView setDCM:finalPixList :filesList :0L :0 :'i' :YES];
+				[finalView setStringID:@"FinalView"];
+			//	[finalView setRotation: 90];
+				
+				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
+				ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
+				[finalView setOrigin: ttO];
+			}
+			
+			ttOffset.x = origin[ 0]*[finalView scaleValue]/space[0];
+			ttOffset.y = -origin[ 1]*[finalView scaleValue]/space[1];
+			[finalView setOriginOffset: ttOffset];
+			[finalView setIndex:0];
+			[oView getWLWW:&swl :&sww];
+			
+			[finalView setWLWW:swl :sww];
+			
+			// COMPUTE NEW COSINES TABLE FOR ORIENTATION INFORMATIONS (H, F, L, R, ...)
+			{
+				float newOrientation[ 9], newOrigin[ 3];
+				float rotangle;
+				long  i;
+
+				for( i=0;i<9;i++) newOrientation[i] = vectors[i];
+			
+				XYZ v1, v2, v3;
+				
+				v1.x = newOrientation[ 0];  v1.y = newOrientation[ 1];  v1.z = newOrientation[ 2];
+				v2.x = newOrientation[ 3];  v2.y = newOrientation[ 4];  v2.z = newOrientation[ 5];
+				v3.x = newOrientation[ 6];  v3.y = newOrientation[ 7];  v3.z = newOrientation[ 8];
+
+				v1 = ArbitraryRotate( v1, 90*deg2rad, v2);
+				v3 = ArbitraryRotate( v3, 90*deg2rad, v2);
+
+				v2 = ArbitraryRotate( v2, (270 - angle)*deg2rad, v1);
+				v3 = ArbitraryRotate( v3, (270 - angle)*deg2rad, v1);
+				
+				v1 = ArbitraryRotate( v1, -angle2*deg2rad, v2);
+				v3 = ArbitraryRotate( v3, -angle2*deg2rad, v2);
+
+				v1 = ArbitraryRotate( v1, -90*deg2rad, v3);
+				v2 = ArbitraryRotate( v2, -90*deg2rad, v3);
+				
+				newOrientation[ 0] = v1.x;  newOrientation[ 1] = v1.y;  newOrientation[ 2] = v1.z;
+				newOrientation[ 3] = v2.x;  newOrientation[ 4] = v2.y;  newOrientation[ 5] = v2.z;
+				newOrientation[ 6] = v3.x;  newOrientation[ 7] = v3.y;  newOrientation[ 8] = v3.z;
+				
+				[(DCMPix*)[finalPixList objectAtIndex:0] setOrientation: newOrientation];
+				
+				newOrigin[0] = origin[0];	newOrigin[1] = origin[1];	newOrigin[2] = origin[2];
+			
+			//	newOrigin[0] = temp[ 0];// - newOrigin[0];
+			//	newOrigin[1] = temp[ 1];// - newOrigin[1];
+			//	newOrigin[2] = temp[ 2];// - newOrigin[2];
+			
+//				newOrigin[0] = origin[0] * vectors[0] + origin[1] * vectors[1] + origin[2]*vectors[2];
+//				newOrigin[1] = origin[0] * vectors[3] + origin[1] * vectors[4] + origin[2]*vectors[5];
+//				newOrigin[2] = origin[0] * vectors[6] + origin[1] * vectors[7] + origin[2]*vectors[8];
+			
+			
+				[(DCMPix*)[finalPixList objectAtIndex:0] setOrigin: newOrigin];
+			}
+
+		}
+		
+		// BLENDING VIEW
+		if( blendingController == 0L)
+		{
+			[finalView setBlending: 0L];
+		}
+		else
+		{
+			tempIm = blendingRotate->GetOutput();
+			tempIm->Update();
+			
+			tempIm->GetWholeExtent( imExtent);
+		//	NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
+			im = (float*) tempIm->GetScalarPointer();
+			
+			if( thickSlabCount > 1 && uu == 0)
+			{
+				imResultBlending = (float*) malloc( width * height * sizeof(float));
+				BlockMoveData( im, imResultBlending, height*width*sizeof(float));
+				
+				if(thickSlabMode == 4 || thickSlabMode == 5)
+				{
+					BOOL flip;
+							
+					fullVolumeBlending = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
+					BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
+					
+					if( thickSlabMode == 4) flip = YES;
+					else flip = NO;
+					
+				//	[thickSlabCtl setImageData :width :height :100 :space[0] :space[1] :space[2] :flip];
+				}
+			}
+			else if( thickSlabCount > 1)
+			{
+				switch( thickSlabMode)
+				{
+					case 4:
+					case 5:
+						if( fullVolumeBlending != 0L)
+						{
+							BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
+						}
+					break;
+					
+					case 1:		// Mean
+						vadd( imResultBlending, 1, im, 1, imResultBlending, 1, height * width);
+						
+						if( uu == thickSlabCount -1) //The last one!
+						{
+							float   invCount = 1.0f/(float)thickSlabCount;
+							
+							vsmul( imResultBlending, 1, &invCount, imResultBlending, 1, height * width);
+						}
+					break;
+					
+					
+					case 2:		// Maximum IP
+					case 3:		// Minimum IP
+						#if __ppc__
+						if( Altivec)
+						{
+							if( thickSlabMode == 2) vmax((vector float*) imResultBlending, (vector float*)im, (vector float*)imResultBlending, height * width);
+							else vmin((vector float*)imResultBlending, (vector float*)im, (vector float*)imResultBlending, height * width);
+						}
+						else
+						#endif
+						{
+							if( thickSlabMode == 2) vmaxNoAltivec(imResultBlending,im,imResultBlending, height * width);
+							else vminNoAltivec(imResultBlending,im,imResultBlending, height * width);
+						}
+					break;
+				}
+				im = imResultBlending;
+			}
+			
+			
+			tempIm->GetSpacing( space);
+			tempIm->GetOrigin( origin);
+	//		NSLog(@"OriginBlending: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+			
+			if( uu == thickSlabCount - 1)
+			{
+				if( fullVolumeBlending != 0L && (thickSlabMode == 4 || thickSlabMode == 5))
+				{
+					unsigned char   *rgbaImage;
+					
+					[thickSlabCtl setImageSource: fullVolume :thickSlabCount];
+					[thickSlabCtl setImageBlendingSource: fullVolumeBlending];
+					
+					[[blendingController imageView] getWLWW:&swl :&sww];
+					[thickSlabCtl setBlendingWLWW:swl :sww];
+					
+					[oView getWLWW:&swl :&sww];
+					[thickSlabCtl setWLWW: swl: sww];
+					
+					
+					
+					rgbaImage = [thickSlabCtl renderSlab];
+					
+					free( fullVolume);
+					free( fullVolumeBlending);
+					
+					DCMPix* mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+					[mypix setFixed8bitsWLWW:YES];
+					free( rgbaImage);
+					
+			//		[(DCMPix*)[finalPixList objectAtIndex:0] setOrientation: newOrientation];
+					
+					[finalPixList removeAllObjects];
+					[finalPixList addObject: mypix];
+					[mypix release];
+					
+					[finalView setBlending: 0L];
+				//	[finalView setWLWW:swl :sww];
+					[finalView setIndex:0];
+				}
+				else
+				{
+					DCMPix*		mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :imExtent[ 1]-imExtent[ 0]+1 :imExtent[ 3]-imExtent[ 2]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+					[mypix copySUVfrom: firstObject];
+					
+					[finalPixListBlending removeAllObjects];
+					[finalPixListBlending addObject: mypix];
+					[mypix release];
+					
+					if( firstTimeBlending)
+					{
+						firstTimeBlending = NO;
+						[finalViewBlending setDCM:finalPixListBlending :filesList :0L :0 :'i' :YES];
+						[finalViewBlending setStringID:@"FinalViewBlending"];
+					//	[finalView setRotation: 90];
+					
+						NSPoint tt = { -origin[ 0]*[finalViewBlending scaleValue]/space[0], origin[ 1]*[finalViewBlending scaleValue]/space[1]};
+						[finalViewBlending setOrigin: tt];
+					}
+					
+					NSPoint tt = { origin[ 0]*[finalViewBlending scaleValue]/space[0], -origin[ 1]*[finalViewBlending scaleValue]/space[1]};
+					[finalViewBlending setOriginOffset: tt];
+					[finalViewBlending setIndex:0];
+					//[finalViewBlending setCLUT:red :green: blue];
+					
+					[[blendingController imageView] getWLWW:&swl :&sww];
+					[finalViewBlending setWLWW:swl :sww];
+					
+					[finalView setBlending: finalViewBlending];
+					[finalView setIndex:0];
+					[finalView blendingPropagate];
+				}
+			}
+		}
+	}
+}
+
 -(void) crossMove: (NSNotification*) note
 {
 	float			oX, oY, oZ;
@@ -1342,11 +1692,10 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	float			temp[ 3];
 	DCMView			*oView = [[[self window] windowController] originalView];
 	BOOL			highRes, noPerOffset = NO;
-	long			thickSlabCount;
 	float			thickSlabLowRes = 1.0;
 	long			uu;
 	vtkImageData	*tempIm;
-	float			*imResult = 0L, *imResultBlending = 0L, *fullVolume = 0L, *fullVolumeBlending = 0L;
+//	float			*imResult = 0L, *imResultBlending = 0L, *fullVolume = 0L, *fullVolumeBlending = 0L;
 	
 	//NSLog(@"start");
 	
@@ -1720,352 +2069,26 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	
 	fullVolume = 0L;
 	fullVolumeBlending = 0L;
+	imResult  = 0L;
+	imResultBlending = 0L;
+	
+	
+//	// Create a scheduler
+//	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+//	[sched setDelegate: self];
+//	
+//	// Create the work units. These can be anything. We will use NSNumbers
+//	NSMutableSet *unitsSet = [NSMutableSet set];
+//	for ( i = 0; i < stackMax; i++ )
+//	{
+//		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], 0L]];
+//	}
+//	// Perform work schedule
+//	[sched performScheduleForWorkUnits:unitsSet];
+	
 	for( uu = 0; uu < thickSlabCount; uu++)
-	{		
-		tempIm = rotate->GetOutput();
-		//rotate->Update();
-		tempIm->Update();
-		
-//		double		dddd[ 3];
-//		rotate->GetOutputOrigin( dddd);
-//		NSLog(@"Origin: %f %f %f", dddd[ 0], dddd[ 1], dddd[ 2]);
-		
-		if( tempIm)
-		{
-			int				imExtent[ 6];
-			float			swl, sww;
-			long			width, height;
-			NSPoint			ttO, ttOffset;
-			
-			tempIm->GetWholeExtent( imExtent);
-	//		NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
-			
-			float *im = (float*) tempIm->GetScalarPointer();
-			
-			double		space[ 3], origin[ 3];
-			
-			tempIm->GetSpacing( space);
-			tempIm->GetOrigin( origin);
-//			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
-			
-			width = imExtent[ 1]-imExtent[ 0]+1;
-			height = imExtent[ 3]-imExtent[ 2]+1;
-			
-			if( thickSlabCount > 1 && uu == 0)
-			{
-				imResult = (float*) malloc( width * height * sizeof(float));
-				BlockMoveData( im, imResult, height*width*sizeof(float));
-				
-				if(thickSlabMode == 4 || thickSlabMode == 5)
-				{
-					BOOL flip;
-							
-					fullVolume = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
-					BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
-					
-					if( thickSlabMode == 4) flip = YES;
-					else flip = NO;
-					
-					[thickSlabCtl setImageData :width :height :100 :space[0] :space[1] :space[2] :flip];
-				}
-			}
-			else if( thickSlabCount > 1)
-			{
-				switch( thickSlabMode)
-				{
-					case 4:
-					case 5:
-						if( fullVolume != 0L)
-						{
-							BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
-						}
-					break;
-					
-					case 1:		// Mean
-						vadd( imResult, 1, im, 1, imResult, 1, height * width);
-						
-						if( uu == thickSlabCount -1) //The last one!
-						{
-							float   invCount = 1.0f/(float)thickSlabCount;
-							
-							vsmul( imResult, 1, &invCount, imResult, 1, height * width);
-						}
-					break;
-					
-					
-					case 2:		// Maximum IP
-					case 3:		// Minimum IP
-						#if __ppc__
-						if( Altivec)
-						{
-							if( thickSlabMode == 2) vmax((vector float*) imResult, (vector float*)im, (vector float*)imResult, height * width);
-							else vmin((vector float*)imResult, (vector float*)im, (vector float*)imResult, height * width);
-						}
-						else
-						{
-							if( thickSlabMode == 2) vmaxNoAltivec(imResult,im,imResult, height * width);
-							else vminNoAltivec(imResult,im,imResult, height * width);
-						}
-						#else
-						if( thickSlabMode == 2) vmaxIntel((vFloat*) imResult, (vFloat*)im, (vFloat*)imResult, height * width);
-						else vminIntel((vFloat*)imResult, (vFloat*)im, (vFloat*)imResult, height * width);
-						#endif
-					break;
-				}
-				im = imResult;
-			}
-			
-			if( uu == thickSlabCount - 1)
-			{
-				DCMPix*		mypix;
-				
-				if( fullVolume != 0L && blendingController == 0L && (thickSlabMode == 4 || thickSlabMode == 5))
-				{
-					unsigned char   *rgbaImage;
-					
-					[thickSlabCtl setImageSource: fullVolume :thickSlabCount];
-					
-					[oView getWLWW:&swl :&sww];
-					[thickSlabCtl setWLWW: swl: sww];
-					
-					rgbaImage = [thickSlabCtl renderSlab];
-					
-					free( fullVolume);
-					
-					mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
-					[mypix setFixed8bitsWLWW:YES];
-					free( rgbaImage);
-				}
-				else
-				{
-					mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
-					[mypix copySUVfrom: firstObject];
-				}
-				[finalPixList removeAllObjects];
-				[finalPixList addObject: mypix];
-				[mypix release];
-				
-				//NSLog(@"spacing:%2.2f %2.2f", space[0], space[1]);
-				
-				if( firstTime)
-				{
-					firstTime = NO;
-					[finalView setDCM:finalPixList :filesList :0L :0 :'i' :YES];
-					[finalView setStringID:@"FinalView"];
-				//	[finalView setRotation: 90];
-					
-					ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
-					ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
-					[finalView setOrigin: ttO];
-				}
-				
-				ttOffset.x = origin[ 0]*[finalView scaleValue]/space[0];
-				ttOffset.y = -origin[ 1]*[finalView scaleValue]/space[1];
-				[finalView setOriginOffset: ttOffset];
-				[finalView setIndex:0];
-				[oView getWLWW:&swl :&sww];
-				
-				[finalView setWLWW:swl :sww];
-				
-				// COMPUTE NEW COSINES TABLE FOR ORIENTATION INFORMATIONS (H, F, L, R, ...)
-				{
-					float newOrientation[ 9], newOrigin[ 3];
-					float rotangle;
-					long  i;
-
-					for( i=0;i<9;i++) newOrientation[i] = vectors[i];
-				
-					XYZ v1, v2, v3;
-					
-					v1.x = newOrientation[ 0];  v1.y = newOrientation[ 1];  v1.z = newOrientation[ 2];
-					v2.x = newOrientation[ 3];  v2.y = newOrientation[ 4];  v2.z = newOrientation[ 5];
-					v3.x = newOrientation[ 6];  v3.y = newOrientation[ 7];  v3.z = newOrientation[ 8];
-
-					v1 = ArbitraryRotate( v1, 90*deg2rad, v2);
-					v3 = ArbitraryRotate( v3, 90*deg2rad, v2);
-
-					v2 = ArbitraryRotate( v2, (270 - angle)*deg2rad, v1);
-					v3 = ArbitraryRotate( v3, (270 - angle)*deg2rad, v1);
-					
-					v1 = ArbitraryRotate( v1, -angle2*deg2rad, v2);
-					v3 = ArbitraryRotate( v3, -angle2*deg2rad, v2);
-
-					v1 = ArbitraryRotate( v1, -90*deg2rad, v3);
-					v2 = ArbitraryRotate( v2, -90*deg2rad, v3);
-					
-					newOrientation[ 0] = v1.x;  newOrientation[ 1] = v1.y;  newOrientation[ 2] = v1.z;
-					newOrientation[ 3] = v2.x;  newOrientation[ 4] = v2.y;  newOrientation[ 5] = v2.z;
-					newOrientation[ 6] = v3.x;  newOrientation[ 7] = v3.y;  newOrientation[ 8] = v3.z;
-					
-					[(DCMPix*)[finalPixList objectAtIndex:0] setOrientation: newOrientation];
-					
-					newOrigin[0] = origin[0];	newOrigin[1] = origin[1];	newOrigin[2] = origin[2];
-				
-				//	newOrigin[0] = temp[ 0];// - newOrigin[0];
-				//	newOrigin[1] = temp[ 1];// - newOrigin[1];
-				//	newOrigin[2] = temp[ 2];// - newOrigin[2];
-				
-//				newOrigin[0] = origin[0] * vectors[0] + origin[1] * vectors[1] + origin[2]*vectors[2];
-//				newOrigin[1] = origin[0] * vectors[3] + origin[1] * vectors[4] + origin[2]*vectors[5];
-//				newOrigin[2] = origin[0] * vectors[6] + origin[1] * vectors[7] + origin[2]*vectors[8];
-				
-				
-					[(DCMPix*)[finalPixList objectAtIndex:0] setOrigin: newOrigin];
-				}
-
-			}
-			
-			// BLENDING VIEW
-			if( blendingController == 0L)
-			{
-				[finalView setBlending: 0L];
-			}
-			else
-			{
-				tempIm = blendingRotate->GetOutput();
-				tempIm->Update();
-				
-				tempIm->GetWholeExtent( imExtent);
-			//	NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
-				im = (float*) tempIm->GetScalarPointer();
-				
-				if( thickSlabCount > 1 && uu == 0)
-				{
-					imResultBlending = (float*) malloc( width * height * sizeof(float));
-					BlockMoveData( im, imResultBlending, height*width*sizeof(float));
-					
-					if(thickSlabMode == 4 || thickSlabMode == 5)
-					{
-						BOOL flip;
-								
-						fullVolumeBlending = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
-						BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
-						
-						if( thickSlabMode == 4) flip = YES;
-						else flip = NO;
-						
-					//	[thickSlabCtl setImageData :width :height :100 :space[0] :space[1] :space[2] :flip];
-					}
-				}
-				else if( thickSlabCount > 1)
-				{
-					switch( thickSlabMode)
-					{
-						case 4:
-						case 5:
-							if( fullVolumeBlending != 0L)
-							{
-								BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
-							}
-						break;
-						
-						case 1:		// Mean
-							vadd( imResultBlending, 1, im, 1, imResultBlending, 1, height * width);
-							
-							if( uu == thickSlabCount -1) //The last one!
-							{
-								float   invCount = 1.0f/(float)thickSlabCount;
-								
-								vsmul( imResultBlending, 1, &invCount, imResultBlending, 1, height * width);
-							}
-						break;
-						
-						
-						case 2:		// Maximum IP
-						case 3:		// Minimum IP
-							#if __ppc__
-							if( Altivec)
-							{
-								if( thickSlabMode == 2) vmax((vector float*) imResultBlending, (vector float*)im, (vector float*)imResultBlending, height * width);
-								else vmin((vector float*)imResultBlending, (vector float*)im, (vector float*)imResultBlending, height * width);
-							}
-							else
-							#endif
-							{
-								if( thickSlabMode == 2) vmaxNoAltivec(imResultBlending,im,imResultBlending, height * width);
-								else vminNoAltivec(imResultBlending,im,imResultBlending, height * width);
-							}
-						break;
-					}
-					im = imResultBlending;
-				}
-				
-				
-				tempIm->GetSpacing( space);
-				tempIm->GetOrigin( origin);
-		//		NSLog(@"OriginBlending: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
-				
-				if( uu == thickSlabCount - 1)
-				{
-					if( fullVolumeBlending != 0L && (thickSlabMode == 4 || thickSlabMode == 5))
-					{
-						unsigned char   *rgbaImage;
-						
-						[thickSlabCtl setImageSource: fullVolume :thickSlabCount];
-						[thickSlabCtl setImageBlendingSource: fullVolumeBlending];
-						
-						[[blendingController imageView] getWLWW:&swl :&sww];
-						[thickSlabCtl setBlendingWLWW:swl :sww];
-						
-						[oView getWLWW:&swl :&sww];
-						[thickSlabCtl setWLWW: swl: sww];
-						
-						
-						
-						rgbaImage = [thickSlabCtl renderSlab];
-						
-						free( fullVolume);
-						free( fullVolumeBlending);
-						
-						DCMPix* mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
-						[mypix setFixed8bitsWLWW:YES];
-						free( rgbaImage);
-						
-				//		[(DCMPix*)[finalPixList objectAtIndex:0] setOrientation: newOrientation];
-						
-						[finalPixList removeAllObjects];
-						[finalPixList addObject: mypix];
-						[mypix release];
-						
-						[finalView setBlending: 0L];
-					//	[finalView setWLWW:swl :sww];
-						[finalView setIndex:0];
-					}
-					else
-					{
-						DCMPix*		mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :imExtent[ 1]-imExtent[ 0]+1 :imExtent[ 3]-imExtent[ 2]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
-						[mypix copySUVfrom: firstObject];
-						
-						[finalPixListBlending removeAllObjects];
-						[finalPixListBlending addObject: mypix];
-						[mypix release];
-						
-						if( firstTimeBlending)
-						{
-							firstTimeBlending = NO;
-							[finalViewBlending setDCM:finalPixListBlending :filesList :0L :0 :'i' :YES];
-							[finalViewBlending setStringID:@"FinalViewBlending"];
-						//	[finalView setRotation: 90];
-						
-							NSPoint tt = { -origin[ 0]*[finalViewBlending scaleValue]/space[0], origin[ 1]*[finalViewBlending scaleValue]/space[1]};
-							[finalViewBlending setOrigin: tt];
-						}
-						
-						NSPoint tt = { origin[ 0]*[finalViewBlending scaleValue]/space[0], -origin[ 1]*[finalViewBlending scaleValue]/space[1]};
-						[finalViewBlending setOriginOffset: tt];
-						[finalViewBlending setIndex:0];
-						//[finalViewBlending setCLUT:red :green: blue];
-						
-						[[blendingController imageView] getWLWW:&swl :&sww];
-						[finalViewBlending setWLWW:swl :sww];
-						
-						[finalView setBlending: finalViewBlending];
-						[finalView setIndex:0];
-						[finalView blendingPropagate];
-					}
-				}
-			}
-		}
+	{	
+		[self computeFinalViewForSlice: [NSNumber numberWithInt:uu]];
 		
 		if( highRes)
 		{
@@ -2077,6 +2100,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 	}
 	
+	
 //	NSLog(@"B");
 	
 	if( imResult) free( imResult);
@@ -2087,11 +2111,11 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	{
 		[self performSelector :@selector( crossStopMoving:) withObject :[note object] afterDelay :1.0];
 	}
-//	NSLog(@"%f", (float)interval);
-	
-//	NSLog(@"end");
-	
-//	[self setNeedsDisplay:YES];
+}
+
+-(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
+{
+	[scheduler release];
 }
 
 //-(void) computeSlice

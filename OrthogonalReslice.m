@@ -102,13 +102,6 @@
 	[resliceLock release];
 }
 
--(void) performReslice:(DCMPix*) curPix axe:(long) axe
-{
-	NSArray				*pixList = originalDCMPixList;	// Contains a list of DCMPix objects: they contain the pixels of current series
-	long				y, i;
-	
-}
-
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
 {
 	DCMPix					*firstPix = [originalDCMPixList objectAtIndex: 0];

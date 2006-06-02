@@ -78,7 +78,11 @@ typedef char* vtkLineWidget;
 
 #import "ThickSlabController.h"
 
-@interface MPR2DView : NSOpenGLView //VTKView
+#import "Schedulable.h"
+#import "Scheduler.h"
+#import "StaticScheduler.h"
+
+@interface MPR2DView : NSOpenGLView <Schedulable>
 {
 	float				blendingAxis[ 3], blendingAngle, blendingAxis2[ 3], blendingAngle2;
 	BOOL				negVector;
@@ -149,6 +153,9 @@ typedef char* vtkLineWidget;
 	IBOutlet NSPopUpButton  *OpacityPopup;
 	
 	BOOL					mouseUpMessagePending;
+	
+	float					*imResult, *imResultBlending, *fullVolume, *fullVolumeBlending;
+	long					thickSlabCount;
 }
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(void) adjustWLWW: (float) iwl :(float) iww :(NSString*) mode;
