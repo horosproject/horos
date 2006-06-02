@@ -21,6 +21,7 @@
             CLASS = StructuredReportController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                buttonView = id; 
                 htmlView = id; 
                 srView = id; 
                 viewControl = id; 

@@ -36,7 +36,9 @@
 	if (self = [super init]){
 		_doc = new DSRDocument();
 		_study = [study retain];
+		_reportHasChanged = YES;
 		if ([self fileExists]) {
+			_reportHasChanged = NO;			
 			DcmFileFormat fileformat;
 			OFCondition status = fileformat.loadFile([[self srPath] UTF8String]);
 			if (status.good())
@@ -44,7 +46,8 @@
 			if (status.good()) {
 				[self writeXML];
 				[self writeHTML];
-			}			
+			}
+			
 		}			
 	}
 	return self;
@@ -72,6 +75,7 @@
 	//NSLog(@"setFindings: %@", [findings description]);
 	[_findings release];
 	_findings = [findings retain];
+	_reportHasChanged = YES;
 }
 
 - (NSArray *)conclusions{
@@ -83,6 +87,7 @@
 	//NSLog(@"setConclusions: %@", [conclusions description]);
 	[_conclusions release];
 	_conclusions = [conclusions retain];
+	_reportHasChanged = YES;
 }
 
 - (NSString *)physician{
@@ -91,6 +96,7 @@
 - (void)setPhysician:(NSString *)physician{
 	[_physician release];
 	_physician = [physician retain];
+	_reportHasChanged = YES;
 }
 
 - (NSString *)history{
@@ -100,6 +106,7 @@
 - (void)setHistory:(NSString *)history{
 	[_history release];
 	_history = [history retain];
+	_reportHasChanged = YES;
 }
 
 - (BOOL)fileExists{
@@ -259,7 +266,7 @@
 	NSString *path = [[dbPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"dcm"];
 	status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
 	[_study setValue: path forKey:@"reportURL"];
-
+	_reportHasChanged = NO;
 }
 
 - (void)convertXMLToSR{
@@ -270,10 +277,13 @@
 }
 
 - (void)writeHTML{
-	[self checkCharacterSet];
-	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
-	ofstream stream([[self htmlPath] UTF8String]);
-	_doc->renderHTML(stream, renderFlags, NULL);
+	if (_reportHasChanged) 
+		[self createReport];
+		[self checkCharacterSet];
+		size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
+		ofstream stream([[self htmlPath] UTF8String]);
+		_doc->renderHTML(stream, renderFlags, NULL);
+	
 }
 
 - (void)writeXML{
@@ -286,7 +296,7 @@
 
 - (void)readXML{
 	[_xmlDoc release];
-	NSURL *url = [NSURL fileURLWithPath:[self xmlPath]];; 
+	NSURL *url = [NSURL fileURLWithPath:[self xmlPath]]; 
 	NSError *error;
 	_xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:(NSURL *)url options:nil error:(NSError **)error];
 }
@@ -295,10 +305,12 @@
 - (NSString *)xmlPath{
 	NSString *tempPath = @"/tmp";
 	NSString *path = [[tempPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"xml"];
+	return path;
 }
 - (NSString *)htmlPath{
  	NSString *tempPath = @"/tmp";
 	NSString *path = [[tempPath stringByAppendingPathComponent:[_study valueForKey:@"studyInstanceUID"]] stringByAppendingPathExtension:@"html"];
+	return path;
 }
 - (NSString *)srPath{
 	if (![_study valueForKey:@"reportURL"]) {
@@ -308,6 +320,10 @@
 	}
 	return [_study valueForKey:@"reportURL"];
 }
+
+//- (NSMXLDocument *)xmlDoc{
+//	return _xmlDoc;
+//}
 
 
 	

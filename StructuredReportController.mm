@@ -53,6 +53,10 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (void)windowDidLoad{
 	NSLog(@"SR Window did load");
 	[self setupToolbar];
+	if ([_report fileExists])
+		[self setContentView:htmlView];
+	else
+		[self setContentView:srView];
 }
 
 - (void)dealloc{
@@ -284,14 +288,23 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 -(IBAction)setView:(id)sender{
 	switch ([sender selectedSegment]){
 		case 0: [self setContentView:htmlView];
+				[_report writeHTML];
+				NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
+				[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 			break;
 		case 1: [self setContentView:srView];
 			break;
-		case 2: [self setContentView:xmlView];
-			break;
+		//case 2: [self setContentView:xmlView];
+		//	break;
 		default: [self setContentView:htmlView];
 	}
 	[[self window] setContentView:_contentView];
+	[_contentView addSubview:buttonView];
+}
+
+- (NSXMLDocument *)xmlDoc{
+	//return [_report xml];
+	return nil;
 }
 
 #pragma mark-

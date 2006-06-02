@@ -40,6 +40,7 @@
 	IBOutlet NSView *srView;
 	IBOutlet NSView *xmlView;
 	IBOutlet NSView *htmlView;
+	IBOutlet NSView *buttonView;
 	IBOutlet WebView *webView;
 	IBOutlet NSOutlineView *xmlOutlineView;
 	NSToolbar *toolbar;
@@ -48,12 +49,13 @@
 	
 	
 	
+	
 }
 
 - (id)initWithStudy:(id)study;
 - (void)setStudy:(id)study;
 - (BOOL)createReportForStudy:(id)study;
--(IBAction)endSheet:(id)sender;
+//-(IBAction)endSheet:(id)sender;
 - (void)createReportExportHTML:(BOOL)html;
 
 - (NSArray *)findings;
@@ -69,4 +71,5 @@
 - (void)setContentView:(NSView *)contentView;
 
 - (void) setupToolbar;
+- (NSXMLDocument *)xmlDoc;
 @end

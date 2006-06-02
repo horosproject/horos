@@ -32,6 +32,7 @@
 	NSString *_physician;
 	NSString *_history;
 	NSXMLDocument *_xmlDoc;
+	BOOL _reportHasChanged;
 }
 
 - (id)initWithStudy:(id)study;
@@ -57,6 +58,7 @@
 - (NSString *)srPath;
 - (void)createReport;
 - (void)convertXMLToSR;
+//- (NSMXLDocument *)xmlDoc;
 
 
 @end
