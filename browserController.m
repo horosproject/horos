@@ -8001,10 +8001,10 @@ static BOOL needToRezoom;
 					else {
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
-						if (!structuredReportController)
-							structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
-						else
-							[structuredReportController setStudy:studySelected]; 
+						//Release Old Controller
+						if (structuredReportController)
+							[structuredReportController release];
+						structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
 					}
 					
 				}
@@ -8018,10 +8018,10 @@ static BOOL needToRezoom;
 					else {
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
-						if (!structuredReportController)
-							structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
-						else
-							[structuredReportController setStudy:studySelected]; 
+						//Release Old Controller
+						if (structuredReportController)
+							[structuredReportController release];
+						structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
 					}
 				}
 			}
