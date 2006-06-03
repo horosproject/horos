@@ -1214,6 +1214,7 @@ static BOOL COMPLETEREBUILD = NO;
 		{
 			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
 			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector( outlineViewRefresh:) withObject:0L waitUntilDone:YES];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
