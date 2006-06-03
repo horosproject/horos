@@ -15,6 +15,27 @@
 #import "OrthogonalReslice.h"
 #import "WaitRendering.h"
 
+#include <Accelerate/Accelerate.h>
+//
+//void MyBlockMoveData( float* src, float* dst, long size)
+//{
+//	size /= 2;
+//	while( size-- > 0)
+//	{
+//		*dst++ = *src++;
+//		*dst++ = *src++;
+//	}
+//} 
+//
+//inline void MyBlockMoveData( vFloat* src, vFloat* dst, long size)
+//{
+//	size /= 4;
+//	while( size-- > 0)
+//	{
+//		*dst++ = *src++;
+//	}
+//} 
+
 @implementation OrthogonalReslice
 
 - (id) init
@@ -100,6 +121,9 @@
 	[self yReslice:x];
 	[resliceLock lockWhenCondition: 1];
 	[resliceLock release];
+	
+//	[self yReslice:x];
+//	[self xReslice:y];
 }
 
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
@@ -318,10 +342,14 @@
 					srcP = [[pixList objectAtIndex: y] fImage] + i * newX;
 						
 					dstP = curPixfImage + (newY-y-1) * newX;
-					
+
 					BlockMoveData(	srcP,
 									dstP,
-									newX * sizeof( float));
+									newX *sizeof(float));
+					
+//					MyBlockMoveData(	srcP,
+//									dstP,
+//									newX );
 				}
 			}
 			else
@@ -334,7 +362,7 @@
 						
 					BlockMoveData(	srcP,
 									curPixfImage + y * newX,
-									newX * sizeof( float));
+									newX);
 				}
 			}
 			
@@ -403,11 +431,10 @@
 					{
 						srcP = Ycache + y*newTotal*newX + i * w;
 						dstP = curPixfImage + (newY-y-1) * newX;
-						
+
 						BlockMoveData(	srcP,
 										dstP,
-										newX * sizeof( float));
-										
+										newX *sizeof(float));
 					}
 				}
 				else
@@ -417,9 +444,10 @@
 					for( y = 0; y < newY; y++)
 					{
 						srcP = Ycache + y*newTotal*newX + i * newTotal;
+						
 						BlockMoveData(	srcP,
 										curPixfImage + y * newX,
-										newX * sizeof( float));
+										newX *sizeof(float));
 					}
 				}
 			}

@@ -1106,7 +1106,7 @@ extern NSString * documentsDirectory();
 	
 	if( maxMovieIndex > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Quicktime Export", nil), NSLocalizedString(@"Should I export the temporal series or only the current image?", nil), NSLocalizedString(@"Current Image", nil), NSLocalizedString(@"Temporal Series", nil), 0L) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Export", nil), NSLocalizedString(@"Should I export the temporal series or only the current image?", nil), NSLocalizedString(@"Current Image", nil), NSLocalizedString(@"Temporal Series", nil), 0L) == NSAlertDefaultReturn)
 		{
 			export4DData = NO;
 		}
