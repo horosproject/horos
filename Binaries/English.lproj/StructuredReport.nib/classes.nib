@@ -17,7 +17,7 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {
-            ACTIONS = {endSheet = id; setView = id; }; 
+            ACTIONS = {cancel = id; export = id; save = id; setView = id; }; 
             CLASS = StructuredReportController; 
             LANGUAGE = ObjC; 
             OUTLETS = {

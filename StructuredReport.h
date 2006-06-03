@@ -31,8 +31,10 @@
 	NSArray *_conclusions;
 	NSString *_physician;
 	NSString *_history;
+	NSString *_sopInstanceUID;
 	NSXMLDocument *_xmlDoc;
 	BOOL _reportHasChanged;
+	BOOL _isEditable;
 }
 
 - (id)initWithStudy:(id)study;
@@ -45,6 +47,8 @@
 - (void)setPhysician:(NSString *)physician;
 - (NSString *)history;
 - (void)setHistory:(NSString *)history;
+- (void)save;
+- (void)export:(NSString *)path;
 
 - (BOOL)fileExists;
 - (void)checkCharacterSet;

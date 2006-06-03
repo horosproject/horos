@@ -19,7 +19,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-#import <AddressBook/AddressBook.h>
+
 
 
 @class StructuredReport;
@@ -27,10 +27,6 @@
 
 @interface StructuredReportController : NSWindowController {
 
-	NSArray *_findings;
-	NSArray *_conclusions;
-	NSString *_physician;
-	NSString *_history;
 	id _study;
 	NSURL *_url;
 	NSXMLDocument *_xml;
@@ -72,4 +68,8 @@
 
 - (void) setupToolbar;
 - (NSXMLDocument *)xmlDoc;
+
+- (IBAction)export:(id)sender;
+- (IBAction)save:(id)sender;
+- (IBAction)cancel:(id)sender;
 @end
