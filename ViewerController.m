@@ -781,11 +781,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (void) setWindowTitle:(id) sender
 {
-	NSString	*loading = [NSString stringWithString:@""];
+	NSString	*loading = [NSString stringWithString:@"         "];
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
 	{
-		loading = [NSString stringWithFormat:NSLocalizedString(@"Loading (%2.f%%) - ", nil), loadingPercentage * 100.];
+		loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
 		
 		if( loadingPercentage != 1) [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
 	}
@@ -806,11 +806,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 		{
 			if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-				[[self window] setTitle: [NSString stringWithFormat: @"%@%@ - %@ (%@) - %@ (%@)", loading, [curImage valueForKeyPath:@"series.study.name"], [bod descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [bod descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 			else
-				[[self window] setTitle: [NSString stringWithFormat: @"%@%@ - %@ (%@)", loading, [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+				[[self window] setTitle: [NSString stringWithFormat: @"%@ - %@ (%@)%@", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 		}	
-		else [[self window] setTitle: [NSString stringWithFormat: @"%@%@ (%@)", loading, [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]]];
+		else [[self window] setTitle: [NSString stringWithFormat: @"%@ (%@)%@", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue], loading]];
 	}
 }
 
