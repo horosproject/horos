@@ -2065,7 +2065,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 	}
 	
-//	NSLog(@"A");
+	NSLog(@"A");
 	
 	fullVolume = 0L;
 	fullVolumeBlending = 0L;
@@ -2079,13 +2079,17 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 //	
 //	// Create the work units. These can be anything. We will use NSNumbers
 //	NSMutableSet *unitsSet = [NSMutableSet set];
-//	for ( i = 0; i < stackMax; i++ )
+//	for( uu = 0; uu < thickSlabCount; uu++)
 //	{
-//		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], 0L]];
+//		[unitsSet addObject: [NSNumber numberWithInt:uu]];
 //	}
 //	// Perform work schedule
 //	[sched performScheduleForWorkUnits:unitsSet];
-	
+//	
+//	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//		
+//	[sched release];
+		
 	for( uu = 0; uu < thickSlabCount; uu++)
 	{	
 		[self computeFinalViewForSlice: [NSNumber numberWithInt:uu]];
@@ -2101,7 +2105,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	}
 	
 	
-//	NSLog(@"B");
+	NSLog(@"B");
 	
 	if( imResult) free( imResult);
 	if( imResultBlending) free( imResultBlending);
@@ -2111,11 +2115,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	{
 		[self performSelector :@selector( crossStopMoving:) withObject :[note object] afterDelay :1.0];
 	}
-}
-
--(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
-{
-	[scheduler release];
 }
 
 //-(void) computeSlice

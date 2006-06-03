@@ -7177,6 +7177,14 @@ float			iwl, iww;
 	
 	if( newWW !=0 || newWL != 0)
     {
+		if( fullww > 256)
+		{
+			if( newWW < 1) newWW = 2;
+			
+			newWW = (int) newWW;
+			newWL = (int) newWL;
+		}
+		
         if( newWW < 0.001) newWW = 0.001;
         
         ww = newWW;
