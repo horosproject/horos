@@ -100,6 +100,11 @@
 	
 	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
 	unsigned char		*oData;
+	
+	//
+	
+	float				*fFinalResult;
+	volatile long		wlwwThreads;
 }
 
 // Is it an RGB image (ARGB) or float image?

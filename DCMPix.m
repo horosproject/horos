@@ -7168,6 +7168,68 @@ fullww = (pixmax - pixmin);
 	return val;
 }
 
+- (void) computeMax:(NSDictionary*) dict
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	float				*fNext = NULL;
+	float				*fResult = malloc( height * width * sizeof(float));
+	long				i, from = [[dict objectForKey: @"from"] intValue], to = [[dict objectForKey: @"to"] intValue];
+	
+	BlockMoveData( fImage, fResult, height * width * sizeof(float));
+
+	for( i = from; i < to; i++)
+	{
+		long res;
+		if( stackDirection) res = pixPos-i;
+		else res = pixPos+i;
+		
+		if( res < [pixArray count] && res >= 0)
+		{
+			fNext = [[pixArray objectAtIndex: res] fImage];
+			if( fNext)
+			{
+				#if __ppc__
+				if( Altivec)
+				{
+					if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+					else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+				}
+				else
+				{
+					if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
+					else vminNoAltivec(fResult, fNext, fResult, height * width);
+				}
+				#else
+				if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+				else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+				#endif
+			}
+		}
+	}
+	
+	#if __ppc__
+	if( Altivec)
+	{
+		if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
+		else vmin( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
+	}
+	else
+	{
+		if( stackMode == 2) vmaxNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
+		else vminNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
+	}
+	#else
+	if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
+	else vminIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
+	#endif
+	
+	wlwwThreads--;
+	
+	free( fResult);
+	
+	[pool release];
+}
+
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
 long			i;
@@ -7375,75 +7437,35 @@ float			iwl, iww;
 				if( isRGB == NO)
 				{
 					float *fNext = NULL;
-					float *fResult = malloc( height * width * sizeof(float));
 					
-					long next;
-					if( stackDirection) next = pixPos-1;
-					else next = pixPos+1;
+					fFinalResult = malloc( height * width * sizeof(float));
 					
-					if( next < [pixArray count]  && next >= 0)
+					BlockMoveData( fImage, fFinalResult, height * width * sizeof(float));
+					
+					long from , to, processors = MPProcessors();
+					
+					wlwwThreads = processors;
+					
+					for( i = 0; i < processors-1; i++)
 					{
-						fNext = [[pixArray objectAtIndex: next] fImage];
-						if( fNext)
-						{
-							#if __ppc__
-							if( Altivec)
-							{
-								if( stackMode == 2) vmax( (vector float *)fNext, (vector float *)fImage, (vector float *)fResult, height * width);
-								else vmin( (vector float *)fNext, (vector float *)fImage, (vector float *)fResult, height * width);
-							}
-							else
-							{
-								if( stackMode == 2) vmaxNoAltivec(fNext, fImage, fResult, height * width);
-								else vminNoAltivec(fNext, fImage, fResult, height * width);
-							}
-							#else
-							if( stackMode == 2) vmaxIntel( (vFloat *)fNext, (vFloat *)fImage, (vFloat *)fResult, height * width);
-							else vminIntel( (vFloat *)fNext, (vFloat *)fImage, (vFloat *)fResult, height * width);
-							#endif
-						}
-						
-						for( i = 2; i < stack; i++)
-						{
-							long res;
-							if( stackDirection) res = pixPos-i;
-							else res = pixPos+i;
-							
-							if( res < [pixArray count] && res >= 0)
-							{
-								fNext = [[pixArray objectAtIndex: res] fImage];
-								if( fNext)
-								{
-									#if __ppc__
-									if( Altivec)
-									{
-										if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
-										else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
-									}
-									else
-									{
-										if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
-										else vminNoAltivec(fResult, fNext, fResult, height * width);
-									}
-									#else
-									if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
-									else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
-									#endif
-								}
-							}
-						}
+						from = i * stack / processors;
+						to = (i+1) * stack / processors;
+						[NSThread detachNewThreadSelector: @selector(computeMax:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
 					}
-					else
-					{
-						BlockMoveData( fImage, fResult, height * width * sizeof(float));
-					}
+					
+					from = i * stack / processors;
+					to = (i+1) * stack / processors;
+					
+					[self computeMax: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];
+					
+					while( wlwwThreads != 0) {};
 					
 					float   *inputfImage;
 				
 					// ** SUBTRACTION
 				
-					if( subtractedfImage) inputfImage = [self subtractImages: fResult :subtractedfImage];
-					else inputfImage = fResult;
+					if( subtractedfImage) inputfImage = [self subtractImages: fFinalResult :subtractedfImage];
+					else inputfImage = fFinalResult;
 				
 					// Convert to 8 bits
 					
@@ -7463,7 +7485,7 @@ float			iwl, iww;
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					
 					if( subtractedfImage) free( inputfImage);
-					free( fResult);
+					free( fFinalResult);
 				}
 				else		// RGB MIP !
 				{
