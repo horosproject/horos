@@ -47,18 +47,50 @@
 			if (status.good())
 				status = _doc->read(*fileformat.getDataset());
 			if (status.good()) {
-				[self writeXML];
-				[self writeHTML];
+				//[self writeXML];
+				//[self writeHTML];
 			}
 			// If we are the manfacturer we can edit.
-			if (strcmp("osirix", _doc->getManufacturer()) == 0){
-				//go to physician/observer
+			if (strcmp("OsiriX", _doc->getManufacturer()) == 0){
+				//go to physician/observer				
 				DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("121008", "DCM", "Person Observer Name");
 				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
-				if (_doc->getTree().getCurrentContentItem().getCodeValue() ==codedEntryValue) {
+				DSRCodedEntryValue currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
+				if (currentCodedEntryValue == codedEntryValue) {
 					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
 					[self setPhysician:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
 				}
+				//go to observer / Institution
+				// nothing to do yet
+				
+				//go to history
+				codedEntryValue = DSRCodedEntryValue("121060", "DCM", "History");
+				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
+				currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
+				if (currentCodedEntryValue == codedEntryValue) {
+					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setHistory:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
+				}
+				
+				//findings
+				
+				codedEntryValue = DSRCodedEntryValue("121070", "DCM", "Findings");
+				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
+				currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
+				if (currentCodedEntryValue == codedEntryValue) {
+					NSMutableArray *findings = [NSMutableArray array];
+					//get all the findings
+					codedEntryValue = DSRCodedEntryValue("121071", "DCM", "Finding");
+					_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
+					currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
+					if (currentCodedEntryValue == codedEntryValue) {
+					}
+					// get the rest. Need a loop here
+					_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse);
+						
+					
+				}
+
 			}
 			else {
 				_isEditable = NO;
@@ -103,7 +135,8 @@
 			_doc->setSeriesNumber("5001");
 			
 			_doc->setManufacturer("OsiriX");
-				}			
+		}
+		[self writeHTML];			
 	}
 	return self;
 }
@@ -194,9 +227,9 @@
 
 - (void)createReport{
 	if (_isEditable) {
-		NSLog(@"Create report");	
-		NSLog(@"study: %@", [_study description]);
-		//DSRDocumentTree tree = _doc->getTree();
+		//NSLog(@"Create report");	
+		//NSLog(@"study: %@", [_study description]);
+		
 		//clear old content
 		_doc->getTree().clear();
 				
@@ -226,11 +259,11 @@
 			NSEnumerator *enumerator = [_findings objectEnumerator];
 			NSDictionary *dict;
 			BOOL first = YES;
-			NSLog(@"findings: %@", [_findings description]);
+			//NSLog(@"findings: %@", [_findings description]);
 			
 			while (dict = [enumerator nextObject]) {
 				NSString *finding = [dict objectForKey:@"finding"];
-				NSLog(@"finding: %@", finding);
+				//NSLog(@"finding: %@", finding);
 				if (finding){
 					if (first) {
 						// go down one level if first Finding

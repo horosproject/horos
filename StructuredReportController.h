@@ -62,6 +62,8 @@
 - (void)setPhysician:(NSString *)physician;
 - (NSString *)history;
 - (void)setHistory:(NSString *)history;
+- (id)report;
+- (void)setReport:(id)report;
 
 - (NSView *)contentView;
 - (void)setContentView:(NSView *)contentView;
