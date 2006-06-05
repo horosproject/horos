@@ -1685,6 +1685,17 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	}
 }
 
+-(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
+{
+	NSEnumerator *enumerator = [workUnits objectEnumerator];
+	NSNumber	*object;
+	
+	while (object = [enumerator nextObject])
+	{
+		[self computeFinalViewForSlice : object];
+	}
+}
+
 -(void) crossMove: (NSNotification*) note
 {
 	float			oX, oY, oZ;
@@ -2065,8 +2076,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		}
 	}
 	
-	NSLog(@"A");
-	
 	fullVolume = 0L;
 	fullVolumeBlending = 0L;
 	imResult  = 0L;
@@ -2085,11 +2094,12 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 //	}
 //	// Perform work schedule
 //	[sched performScheduleForWorkUnits:unitsSet];
+
 //	
 //	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 //		
 //	[sched release];
-		
+	
 	for( uu = 0; uu < thickSlabCount; uu++)
 	{	
 		[self computeFinalViewForSlice: [NSNumber numberWithInt:uu]];
@@ -2103,9 +2113,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			sliceTransform->Translate(0, 0, [firstObject pixelSpacingX]*thickSlabGap*thickSlabLowRes);
 		}
 	}
-	
-	
-	NSLog(@"B");
 	
 	if( imResult) free( imResult);
 	if( imResultBlending) free( imResultBlending);

@@ -105,6 +105,7 @@
 	
 	float				*fFinalResult;
 	volatile long		wlwwThreads;
+	NSLock				*maxResultLock;
 }
 
 // Is it an RGB image (ARGB) or float image?

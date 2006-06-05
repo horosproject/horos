@@ -7168,14 +7168,83 @@ fullww = (pixmax - pixmin);
 	return val;
 }
 
+#if __ppc__
 - (void) computeMax:(int) from to:(int) to
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	if( to > from)
+	{
+		float				*fNext = NULL;
+		float				*fResult = malloc( height * width * sizeof(float));
+		long				i;
+		BOOL				first = YES;
+		
+		for( i = from; i < to; i++)
+		{
+			long res;
+			if( stackDirection) res = pixPos-i;
+			else res = pixPos+i;
+			
+			if( res < [pixArray count] && res >= 0)
+			{
+				fNext = [[pixArray objectAtIndex: res] fImage];
+				if( fNext)
+				{
+					if( first)
+					{
+						BlockMoveData( fNext, fResult, height * width * sizeof(float));
+						first = NO;
+					}
+					else
+					{
+						#if __ppc__
+						if( Altivec)
+						{
+							if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+							else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+						}
+						else
+						{
+							if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
+							else vminNoAltivec(fResult, fNext, fResult, height * width);
+						}
+						#else
+						if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+						else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+						#endif
+					}
+				}
+			}
+		}
+		
+		if( first == NO)
+		{
+			[maxResultLock lock];
+			#if __ppc__
+			if( Altivec)
+			{
+				if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
+				else vmin( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
+			}
+			else
+			{
+				if( stackMode == 2) vmaxNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
+				else vminNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
+			}
+			#else
+			if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
+			else vminIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
+			#endif
+			[maxResultLock unlock];
+		}
+		free( fResult);
+	}
+	wlwwThreads++;
+}
+#else
+- (void) computeMax:(int) from to:(int) to
+{
 	float				*fNext = NULL;
-//	float				*fResult = malloc( height * width * sizeof(float));
 	long				i;
-	
-//	BlockMoveData( fImage, fResult, height * width * sizeof(float));
 
 	for( i = from; i < to; i++)
 	{
@@ -7206,29 +7275,10 @@ fullww = (pixmax - pixmin);
 			}
 		}
 	}
-	
-//	#if __ppc__
-//	if( Altivec)
-//	{
-//		if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
-//		else vmin( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
-//	}
-//	else
-//	{
-//		if( stackMode == 2) vmaxNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
-//		else vminNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
-//	}
-//	#else
-//	if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
-//	else vminIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
-//	#endif
-	
-	wlwwThreads--;
-	
-//	free( fResult);
-	
-	[pool release];
+		
+	wlwwThreads++;
 }
+#endif
 
 - (void) computeMaxThread:(NSDictionary*) dict
 {
@@ -7448,27 +7498,32 @@ float			iwl, iww;
 					float *fNext = NULL;
 					
 					fFinalResult = malloc( height * width * sizeof(float));
-					
 					BlockMoveData( fImage, fFinalResult, height * width * sizeof(float));
 					
 					long from , to, processors = MPProcessors();
 					
-					wlwwThreads = processors;
+					wlwwThreads = 0;
 					
-					for( i = 0; i < processors-1; i++)
+					if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
+					
+					if( stack > 20)
 					{
+						for( i = 0; i < processors-1; i++)
+						{
+							from = i * stack / processors;
+							if( from == 0) from++;
+							to = (i+1) * stack / processors;
+							[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
+						}
+						
 						from = i * stack / processors;
-						if( from == 0) from++;
 						to = (i+1) * stack / processors;
-						[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
+						
+						[self computeMax: from to: to];
+						
+						while( wlwwThreads != processors) {};
 					}
-					
-					from = i * stack / processors;
-					to = (i+1) * stack / processors;
-					
-					[self computeMax: from to: to];
-					
-					while( wlwwThreads != 0) {};
+					else [self computeMax: 1 to: stack];
 					
 					float   *inputfImage;
 				
@@ -8040,6 +8095,8 @@ float			iwl, iww;
 	checking = 0L;
 	
 	if( oData) free( oData);
+	
+	[maxResultLock release];
 	
     [super dealloc];
 }
