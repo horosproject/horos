@@ -286,10 +286,57 @@
 		}
 	}
 	
+	if( axe == 0)		// X - RESLICE
+	{
+		if( sign > 0)
+				[lastPix orientation: orientation];
+		else
+				[firstPix orientation: orientation];
+		
+		if( sign > 0)
+		{
+			// Y Vector = Normal Vector
+			orientation[ 3] = orientation[ 6] * -sign;
+			orientation[ 4] = orientation[ 7] * -sign;
+			orientation[ 5] = orientation[ 8] * -sign;
+		}
+		else
+		{
+			// Y Vector = Normal Vector
+			orientation[ 3] = orientation[ 6] * sign;
+			orientation[ 4] = orientation[ 7] * sign;
+			orientation[ 5] = orientation[ 8] * sign;
+		}
+	}
+	else
+	{
+		if( sign > 0)
+				[lastPix orientation: orientation];
+		else
+				[firstPix orientation: orientation];
+		
+		// Y Vector = Normal Vector
+		orientation[ 0] = orientation[ 3];
+		orientation[ 1] = orientation[ 4];
+		orientation[ 2] = orientation[ 5];
+		
+		if( sign > 0)
+		{
+			orientation[ 3] = orientation[ 6] * -sign;
+			orientation[ 4] = orientation[ 7] * -sign;
+			orientation[ 5] = orientation[ 8] * -sign;
+		}
+		else
+		{
+			orientation[ 3] = orientation[ 6] * sign;
+			orientation[ 4] = orientation[ 7] * sign;
+			orientation[ 5] = orientation[ 8] * sign;
+		}
+	}
+	
 	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
 		if( i < 0) i = 0;
-		if( i >= newTotal) i = newTotal-1;
 		
 		if( axe == 0)		// X - RESLICE
 		{
@@ -330,63 +377,6 @@
 		
 		if( axe == 0)		// X - RESLICE
 		{
-			long	rowBytes = [firstPix pwidth];
-			float	*srcPtr;
-			
-			if( sign > 0)
-			{
-				float *srcP, *dstP, *curPixfImage = [curPix fImage];
-				
-				for( y = 0; y < newY; y++)
-				{
-					srcP = [[pixList objectAtIndex: y] fImage] + i * newX;
-						
-					dstP = curPixfImage + (newY-y-1) * newX;
-
-					BlockMoveData(	srcP,
-									dstP,
-									newX *sizeof(float));
-					
-//					MyBlockMoveData(	srcP,
-//									dstP,
-//									newX );
-				}
-			}
-			else
-			{
-				float *srcP, *curPixfImage = [curPix fImage];
-				
-				for( y = 0; y < newY; y++)
-				{
-					srcP = [[pixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
-						
-					BlockMoveData(	srcP,
-									curPixfImage + y * newX,
-									newX);
-				}
-			}
-			
-			
-			if( sign > 0)
-					[lastPix orientation: orientation];
-			else
-					[firstPix orientation: orientation];
-			
-			if( sign > 0)
-			{
-				// Y Vector = Normal Vector
-				orientation[ 3] = orientation[ 6] * -sign;
-				orientation[ 4] = orientation[ 7] * -sign;
-				orientation[ 5] = orientation[ 8] * -sign;
-			}
-			else
-			{
-				// Y Vector = Normal Vector
-				orientation[ 3] = orientation[ 6] * sign;
-				orientation[ 4] = orientation[ 7] * sign;
-				orientation[ 5] = orientation[ 8] * sign;
-			}
-			
 			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
 			
 			[curPix setPixelSpacingX: newXSpace];
@@ -413,12 +403,86 @@
 			[curPix setSliceInterval: [firstPix pixelSpacingY]];
 			[curPix setOrigin: origin];
 		}
+		else
+		{
+			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
+			
+			[curPix setPixelSpacingX: newXSpace];
+			[curPix setPixelSpacingY: newYSpace];
+			
+			[curPix setPixelRatio:  newYSpace / newXSpace];
+			
+			[curPix orientation: orientation];
+			if( sign > 0)
+			{
+				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
+				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
+				origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
+			}
+			else
+			{
+				origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
+				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
+				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
+			}
+			
+			[curPix setSliceLocation: origin[ 0]];
+			[curPix setSliceThickness: [firstPix pixelSpacingX]];
+			[curPix setSliceInterval: [firstPix pixelSpacingY]];
+			
+			[curPix setOrigin: origin];
+		}
+	}
+	
+	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
+	{
+		if( i < 0) i = 0;
+		if( i >= newTotal) i = newTotal-1;
+		
+		if( axe == 0)		// X - RESLICE
+		{
+			long	rowBytes = [firstPix pwidth];
+			float	*srcPtr;
+			
+			curPix = [newPixListX objectAtIndex: stack];
+			
+			if( sign > 0)
+			{
+				float *srcP, *dstP, *curPixfImage = [curPix fImage];
+				
+				for( y = 0; y < newY; y++)
+				{
+					srcP = [[pixList objectAtIndex: y] fImage] + i * newX;
+						
+					dstP = curPixfImage + (newY-y-1) * newX;
+
+					BlockMoveData(	srcP,
+									dstP,
+									newX *sizeof(float));
+				}
+			}
+			else
+			{
+				float *srcP, *curPixfImage = [curPix fImage];
+				
+				for( y = 0; y < newY; y++)
+				{
+					srcP = [[pixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
+						
+					BlockMoveData(	srcP,
+									curPixfImage + y * newX,
+									newX);
+				}
+			}
+		}
 		else									// Y - RESLICE
 		{
 			register float	*srcPtr;
 			register float	*dstPtr;
 			register long	rowBytes = [firstPix pwidth];
-
+			
+			curPix = [newPixListY objectAtIndex: stack];
+			
 			if( Ycache)
 			{
 				if( sign > 0)
@@ -473,59 +537,10 @@
 					}
 				}
 			}
-			
-			if( sign > 0)
-					[lastPix orientation: orientation];
-			else
-					[firstPix orientation: orientation];
-			
-			// Y Vector = Normal Vector
-			orientation[ 0] = orientation[ 3];
-			orientation[ 1] = orientation[ 4];
-			orientation[ 2] = orientation[ 5];
-			
-			if( sign > 0)
-			{
-				orientation[ 3] = orientation[ 6] * -sign;
-				orientation[ 4] = orientation[ 7] * -sign;
-				orientation[ 5] = orientation[ 8] * -sign;
-			}
-			else
-			{
-				orientation[ 3] = orientation[ 6] * sign;
-				orientation[ 4] = orientation[ 7] * sign;
-				orientation[ 5] = orientation[ 8] * sign;
-			}
-			
-			[curPix setOrientation: orientation];	// Normal vector is recomputed in this procedure
-			
-			[curPix setPixelSpacingX: newXSpace];
-			[curPix setPixelSpacingY: newYSpace];
-			
-			[curPix setPixelRatio:  newYSpace / newXSpace];
-			
-			[curPix orientation: orientation];
-			if( sign > 0)
-			{
-				origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * -sign;
-				origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * -sign;
-				origin[ 2] = [lastPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * -sign;
-			}
-			else
-			{
-				origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingX]) * orientation[ 6] * sign;
-				origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingX]) * orientation[ 7] * sign;
-				origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingX]) * orientation[ 8] * sign;
-			}
-			[curPix setSliceLocation: origin[ 0]];
-			[curPix setSliceThickness: [firstPix pixelSpacingX]];
-			[curPix setSliceInterval: [firstPix pixelSpacingY]];
-			
-			[curPix setOrigin: origin];
 		}
 	}
 			
-	if (axe==0)
+	if (axe == 0)
 	{
 		[xReslicedDCMPixList setArray:newPixListX];
 	}
