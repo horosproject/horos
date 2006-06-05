@@ -7019,7 +7019,7 @@ int i,j,l;
 			
 			if( ( vectorsA[ 6]) == (vectorsB[ 6]) && (vectorsA[ 7]) == (vectorsB[ 7]) && (vectorsA[ 8]) == (vectorsB[ 8]) && curvedController == 0L)
 			{
-				if( [[vC modality] isEqualToString:[self modality]])
+			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				{
 					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 					{
