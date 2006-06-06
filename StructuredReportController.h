@@ -39,29 +39,22 @@
 	IBOutlet NSView *buttonView;
 	IBOutlet WebView *webView;
 	IBOutlet NSOutlineView *xmlOutlineView;
+	IBOutlet NSView *accessoryView;
 	NSToolbar *toolbar;
 	NSView *_contentView;
 	StructuredReport *_report;
-	
-	
-	
+	NSArray *_reports;
+	int _exportStyle;
+	NSString *_exportExtension;
 	
 }
 
 - (id)initWithStudy:(id)study;
 - (void)setStudy:(id)study;
 - (BOOL)createReportForStudy:(id)study;
-//-(IBAction)endSheet:(id)sender;
-- (void)createReportExportHTML:(BOOL)html;
 
-- (NSArray *)findings;
-- (void)setFindings:(NSArray *)findings;
-- (NSArray *)conclusions;
-- (void)setConclusions:(NSArray *)conclusions;
-- (NSString *)physician;
-- (void)setPhysician:(NSString *)physician;
-- (NSString *)history;
-- (void)setHistory:(NSString *)history;
+
+
 - (id)report;
 - (void)setReport:(id)report;
 
@@ -74,4 +67,8 @@
 - (IBAction)export:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)cancel:(id)sender;
+- (int)exportStyle;
+- (void)setExportStyle:(int)style;
+//- (NSString *)exportExtension;
+//- (void)setExportExtension:(NSString *)extension;
 @end

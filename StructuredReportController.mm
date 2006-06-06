@@ -41,6 +41,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (id)initWithStudy:(id)study{
 	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
 		[self createReportForStudy:study];
+		//[self setExportExtension:@"dcm"];
 	}
 	return self;
 }
@@ -50,7 +51,6 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (void)windowDidLoad{
-	NSLog(@"SR Window did load");
 	[self setupToolbar];
 	if ([_report fileExists])
 		[self setContentView:htmlView];
@@ -61,6 +61,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (void)dealloc{
 	[_study release];
 	[_report release];
+	[_exportExtension release];
 	[super dealloc];
 }
 
@@ -85,34 +86,12 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 	return YES;
 }
 
-
-- (NSArray *)findings{
-	return [_report findings];
+- (id)report{
+	return _report;
 }
-- (void)setFindings:(NSArray *)findings{
-	[_report setFindings:findings];
-}
-
-- (NSArray *)conclusions{
-	return [_report conclusions];
-}
-- (void)setConclusions:(NSArray *)conclusions{
-	[_report setConclusions:(NSArray *)conclusions];
-}
-
-- (NSString *)physician{
-	return [_report physician];
-}
-- (void)setPhysician:(NSString *)physician{
-	[_report setPhysician:(NSString *)physician];
-}
-
-- (NSString *)history{
-	return [_report history];
-}
-
-- (void)setHistory:(NSString *)history{
-	[_report setHistory:history];
+- (void)setReport:(id)report{
+	[_report release];
+	_report = [report retain];
 }
 
 - (NSView *)contentView{
@@ -121,17 +100,20 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 
 - (void)setContentView:(NSView *)contentView{
 	_contentView = contentView;
-	//[_contentView setNeedsDisplay:YES];
 	[[self window] setContentView:_contentView];
 	[_contentView addSubview:buttonView];
+	if ([_contentView isEqual:htmlView]) {
+		[_report writeHTML];
+		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
+		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+	}
+		
+
 }
 
 -(IBAction)setView:(id)sender{
 	switch ([sender selectedSegment]){
 		case 0: [self setContentView:htmlView];
-				[_report writeHTML];
-				NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
-				[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 			break;
 		case 1: [self setContentView:srView];
 			break;
@@ -195,7 +177,47 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (IBAction)export:(id)sender{
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setAllowedFileTypes:[NSArray arrayWithObjects:@"dcm", @"xml", @"htm", nil]];
+	[savePanel setAllowsOtherFileTypes:NO];
+	[savePanel setCanCreateDirectories:YES];
+	[savePanel setCanSelectHiddenExtension:YES];
+	[savePanel setExtensionHidden:YES];
+	[savePanel setTitle:NSLocalizedString(@"Export Report", nil)];
+	[savePanel setAccessoryView:accessoryView];
+	if ([savePanel runModal] == NSFileHandlingPanelOKButton) {
+		NSString *filename = [[savePanel filename] stringByDeletingPathExtension];
+		NSString *extension;
+		switch (_exportStyle) {
+			case 0: extension = @"dcm";
+					break;
+			case 1: extension = @"htm";
+					break;
+			case 2: extension = @"xml";
+					break;
+			default: extension = @"dcm";
+		}
+		filename = [filename stringByAppendingPathExtension:extension];
+		[_report export:filename];
+	}
 }
+
+- (int)exportStyle{
+	return _exportStyle;
+}
+- (void)setExportStyle:(int)style{
+	_exportStyle = style;
+}
+/*
+- (NSString *)exportExtension{
+	return _exportExtension;
+}
+
+- (void)setExportExtension:(NSString *)extension{
+	[_exportExtension release];
+	_exportExtension = [extension retain];
+}
+*/
 
 - (IBAction)save:(id)sender{
 	[_report save];

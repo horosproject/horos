@@ -30,6 +30,7 @@
 #include "dsrdoc.h"
 #include "dcuid.h"
 #include "dcfilefo.h"
+#include "dsrtypes.h"
 
 
 @implementation StructuredReport
@@ -38,7 +39,7 @@
 	if (self = [super init]){
 		_doc = new DSRDocument();
 		_study = [study retain];
-		_reportHasChanged = YES;
+		_reportHasChanged = NO;
 		_isEditable = YES;
 		if ([self fileExists]) {
 			_reportHasChanged = NO;			
@@ -46,59 +47,115 @@
 			OFCondition status = fileformat.loadFile([[self srPath] UTF8String]);
 			if (status.good())
 				status = _doc->read(*fileformat.getDataset());
-			if (status.good()) {
-				//[self writeXML];
-				//[self writeHTML];
-			}
+
 			// If we are the manfacturer we can edit.
 			if (strcmp("OsiriX", _doc->getManufacturer()) == 0){
-				//go to physician/observer				
+				
+				//completion flag
+			//	if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
+			//		[self setComplete:YES];
+			//	else
+			//		[self setComplete:NO];
+					
+				//Verification Flag
+				//if (strcmp(_doc->getVerificationFlagDescription(),"VERIFIED") == 1)
+				//	[self setComplete:YES];
+				//else
+					[self setVerified:NO];
+					
+				//go to physician/observer		
 				DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("121008", "DCM", "Person Observer Name");
-				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
-				DSRCodedEntryValue currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
-				if (currentCodedEntryValue == codedEntryValue) {
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 ){
 					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
 					[self setPhysician:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
 				}
 				//go to observer / Institution
-				// nothing to do yet
+				codedEntryValue = DSRCodedEntryValue("121009", "DCM", "Person Observer's Organization Name");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 ){
+					OFString institution = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setInstitution:[NSString stringWithCString:institution.c_str() encoding:NSUTF8StringEncoding]];
+				}
 				
 				//go to history
 				codedEntryValue = DSRCodedEntryValue("121060", "DCM", "History");
-				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
-				currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
-				if (currentCodedEntryValue == codedEntryValue) {
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
 					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
 					[self setHistory:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
 				}
 				
-				//findings
+				//Request
+				codedEntryValue = DSRCodedEntryValue("121062", "DCM", "Request");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+					OFString request = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setRequest:[NSString stringWithCString:request.c_str() encoding:NSUTF8StringEncoding]];
+				}
 				
+				//Procedure
+				codedEntryValue = DSRCodedEntryValue("121064", "DCM", "Current Procedure Descriptions");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+					codedEntryValue = DSRCodedEntryValue("121065", "DCM", "Procedure Description");
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+						OFString procedureDescription = _doc->getTree().getCurrentContentItem().getStringValue();
+						[self setProcedureDescription:[NSString stringWithCString:procedureDescription.c_str() encoding:NSUTF8StringEncoding]];
+					}
+				}
+				
+				//findings
 				codedEntryValue = DSRCodedEntryValue("121070", "DCM", "Findings");
-				_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
-				currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
-				if (currentCodedEntryValue == codedEntryValue) {
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
 					NSMutableArray *findings = [NSMutableArray array];
 					//get all the findings
 					codedEntryValue = DSRCodedEntryValue("121071", "DCM", "Finding");
-					_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue);
-					currentCodedEntryValue = _doc->getTree().getCurrentContentItem().getConceptName();
-					if (currentCodedEntryValue == codedEntryValue) {
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+						OFString finding = _doc->getTree().getCurrentContentItem().getStringValue();
+						[findings addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:finding.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"finding"]];
+						// get the rest. Need a loop here
+						while(_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse) > 0) {
+							finding = _doc->getTree().getCurrentContentItem().getStringValue();
+							[findings addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:finding.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"finding"]];
+						}
 					}
-					// get the rest. Need a loop here
-					_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse);
-						
-					
+					//[self setFindings:findings];
+					_findings = [findings retain];
 				}
+				
+				//Impressions
+				codedEntryValue = DSRCodedEntryValue("121072", "DCM", "Impressions");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+					NSMutableArray *impressions = [NSMutableArray array];
+					//get all the impressions
+					codedEntryValue = DSRCodedEntryValue("121073", "DCM", "Impression");
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+						OFString impression = _doc->getTree().getCurrentContentItem().getStringValue();
+						[impressions addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:impression.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"conclusion"]];
+						// get the rest. Need a loop here
+						while(_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse) > 0) {
+							impression = _doc->getTree().getCurrentContentItem().getStringValue();
+							[impressions addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:impression.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"conclusion"]];
+							
+						}
 
+					}
+					//[self setConclusions:impressions];
+					_conclusions = [impressions retain];
+				}
 			}
 			else {
 				_isEditable = NO;
 			}
+
 		}
 		else {
 			ABPerson *me = [[ABAddressBook sharedAddressBook] me];
-			[self setPhysician:[NSString stringWithFormat: @"%@^%@", [me valueForProperty:kABLastNameProperty] ,[me valueForProperty:kABFirstNameProperty]]]; 
+			[self setPhysician:[NSString stringWithFormat: @"%@^%@", [me valueForProperty:kABLastNameProperty] ,[me valueForProperty:kABFirstNameProperty]]];
+			[self setInstitution:[_study valueForKey:@"institutionName"]];
+			[self setRequest:[NSString stringWithFormat:@"%@ %@", [_study valueForKey:@"modality"], [_study valueForKey:@"studyName"]]];
+			//Not sure what to suggest for history and technique
+			   
 			_doc->createNewDocument(DSRTypes::DT_BasicTextSR);
 			_doc->setSpecificCharacterSet("ISO_IR 192"); //UTF 8 string encoding
 			_doc->createNewSeriesInStudy([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -118,16 +175,16 @@
 				_doc->setPatientsSex([[_study valueForKey:@"patientSex"] UTF8String]);
 			//Patient ID
 			NSString *patientID = [_study valueForKey:@"patientID"];
-			if ([patientID UTF8String])
+			if (patientID)
 				_doc->setPatientID([patientID UTF8String]);
 			//Referring Physician
 			if ([_study valueForKey:@"referringPhysician"])
 				_doc->setReferringPhysiciansName([[_study valueForKey:@"referringPhysician"] UTF8String]);
 			//StudyID	
-			//if ([_study valueForKey:@"id"]) {
-			//	NSString *studyID = [(NSNumber *)[_study valueForKey:@"id"] stringValue];
-			//	_doc->setStudyID([studyID UTF8String]);
-			//}
+			if ([_study valueForKey:@"id"]) {
+				NSString *studyID = [_study valueForKey:@"id"];
+				_doc->setStudyID([studyID UTF8String]);
+			}
 			//Accession Number
 			if ([_study valueForKey:@"accessionNumber"])
 				_doc->setAccessionNumber([[_study valueForKey:@"accessionNumber"] UTF8String]);
@@ -135,8 +192,7 @@
 			_doc->setSeriesNumber("5001");
 			
 			_doc->setManufacturer("OsiriX");
-		}
-		[self writeHTML];			
+		}	
 	}
 	return self;
 }
@@ -150,6 +206,9 @@
 	[_history release];
 	[_xmlDoc release];
 	[_sopInstanceUID release];
+	[_request release];
+	[_procedureDescription release];
+	[_institution release];
 	[super dealloc];
 }
 
@@ -161,7 +220,6 @@
 
 
 - (void)setFindings:(NSArray *)findings{
-	//NSLog(@"setFindings: %@", [findings description]);
 	[_findings release];
 	_findings = [findings retain];
 	_reportHasChanged = YES;
@@ -173,7 +231,6 @@
 	return _conclusions;
 }
 - (void)setConclusions:(NSArray *)conclusions{
-	//NSLog(@"setConclusions: %@", [conclusions description]);
 	[_conclusions release];
 	_conclusions = [conclusions retain];
 	_reportHasChanged = YES;
@@ -198,6 +255,49 @@
 	_reportHasChanged = YES;
 }
 
+- (NSString *)request{
+	return _request;
+}
+- (void)setRequest:(NSString *)request{
+	[_request release];
+	_request = [request retain];
+	_reportHasChanged = YES;
+}
+
+- (NSString *)procedureDescription{
+	return _procedureDescription;
+}
+
+- (void)setProcedureDescription:(NSString *)procedureDescription{
+	[_procedureDescription release];
+	_procedureDescription = [procedureDescription retain];
+	_reportHasChanged = YES;
+}
+	
+- (NSString *)institution{
+	return _institution;
+}
+- (void)setInstitution:(NSString *)institution{
+	[_institution release];
+	_institution = [institution retain];
+	_reportHasChanged = YES;
+}
+
+- (BOOL)complete{
+	return _complete;
+}
+- (void)setComplete:(BOOL)complete{
+	_complete = complete;
+	_reportHasChanged = YES;
+}
+- (BOOL)verified{
+	return _verified;
+}
+- (void)setVerified:(BOOL)verified{
+	_verified = verified;
+	_reportHasChanged = YES;
+}
+	
 - (BOOL)fileExists{
 	if ([_study valueForKey:@"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath:[_study valueForKey:@"reportURL"]])
 		return YES;
@@ -241,10 +341,10 @@
 			_doc->getTree().getCurrentContentItem().setStringValue([_physician UTF8String]);
 		}
 		
-		if ([_study valueForKey:@"institutionName"]) {
+		if (_institution) {
 			_doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text);
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121009", "DCM", "Person Observer's Organization Name"));
-			_doc->getTree().getCurrentContentItem().setStringValue([[_study valueForKey:@"institutionName"] UTF8String]);
+			_doc->getTree().getCurrentContentItem().setStringValue([_institution UTF8String]);
 		}
 		
 		if (_history) {
@@ -253,17 +353,32 @@
 			_doc->getTree().getCurrentContentItem().setStringValue([_history UTF8String]);
 		}
 		
+		if (_request){
+			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
+			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121062", "DCM", "Request"));
+			_doc->getTree().getCurrentContentItem().setStringValue([_request UTF8String]);
+		}
+		
+		if (_procedureDescription){
+			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121064", "DCM", "Current Procedure Descriptions"));
+			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
+			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121065", "DCM", "Procedure Description"));
+			_doc->getTree().getCurrentContentItem().setStringValue([_procedureDescription UTF8String]);
+			//go back up in tree
+			_doc->getTree().goUp();
+			
+		}
+		
 		if ([_findings count] > 0) {
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121070", "DCM", "Findings"));
 			NSEnumerator *enumerator = [_findings objectEnumerator];
 			NSDictionary *dict;
 			BOOL first = YES;
-			//NSLog(@"findings: %@", [_findings description]);
 			
 			while (dict = [enumerator nextObject]) {
 				NSString *finding = [dict objectForKey:@"finding"];
-				//NSLog(@"finding: %@", finding);
 				if (finding){
 					if (first) {
 						// go down one level if first Finding
@@ -276,11 +391,12 @@
 					_doc->getTree().getCurrentContentItem().setStringValue([finding UTF8String]);
 				}
 			}
+			//go back up in tree
+			_doc->getTree().goUp();
 			
 		}
 		
-			//go back up in tree
-			_doc->getTree().goUp();
+			
 			
 		if ([_conclusions count] > 0) {
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
@@ -302,11 +418,11 @@
 				_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121073", "DCM", "Impression"));
 				_doc->getTree().getCurrentContentItem().setStringValue([conclusion UTF8String]);
 			}
-			
+			//go back up in tree
+			_doc->getTree().goUp();
 		}
 		
-		//go back up in tree
-		_doc->getTree().goUp();
+	
 		
 		/***** Exmaple of code to add a reference image **************
 		_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
@@ -333,10 +449,25 @@
 - (void)export:(NSString *)path{
 	NSString *extension = [path pathExtension];
 	if ([extension isEqualToString:@"dcm"]) {
+		DcmFileFormat fileformat;	
+		OFCondition status = _doc->write(*fileformat.getDataset());
+		if (status.good()) 
+			status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
 	}
 	else if ([extension isEqualToString:@"xml"]){
+		size_t writeFlags = 0;		
+		[self checkCharacterSet];
+		ofstream stream([path UTF8String]);
+		_doc->writeXML(stream, writeFlags);
 	}
 	else if ([extension isEqualToString:@"htm"] || [extension isEqualToString:@"html"]){
+		if (_reportHasChanged) {
+			[self createReport];
+		}
+		[self checkCharacterSet];
+		size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
+		ofstream stream([path UTF8String]);
+		_doc->renderHTML(stream, renderFlags, NULL);
 	}
 }
 
@@ -350,12 +481,11 @@
 - (void)writeHTML{
 	if (_reportHasChanged) {
 		[self createReport];
-		[self checkCharacterSet];
-		size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
-		ofstream stream([[self htmlPath] UTF8String]);
-		_doc->renderHTML(stream, renderFlags, NULL);
 	}
-	
+	[self checkCharacterSet];
+	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
+	ofstream stream([[self htmlPath] UTF8String]);
+	_doc->renderHTML(stream, renderFlags, NULL);	
 }
 
 - (void)writeXML{
@@ -364,6 +494,8 @@
 	ofstream stream([[self xmlPath] UTF8String]);
 	_doc->writeXML(stream, writeFlags);
 }
+
+
 
 
 - (void)readXML{

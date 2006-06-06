@@ -32,9 +32,14 @@
 	NSString *_physician;
 	NSString *_history;
 	NSString *_sopInstanceUID;
+	NSString *_request;
+	NSString *_procedureDescription;
+	NSString *_institution;
 	NSXMLDocument *_xmlDoc;
 	BOOL _reportHasChanged;
 	BOOL _isEditable;
+	BOOL _complete;
+	BOOL _verified;
 }
 
 - (id)initWithStudy:(id)study;
@@ -47,6 +52,18 @@
 - (void)setPhysician:(NSString *)physician;
 - (NSString *)history;
 - (void)setHistory:(NSString *)history;
+- (NSString *)request;
+- (void)setRequest:(NSString *)request;
+- (NSString *)procedureDescription;
+- (void)setProcedureDescription:(NSString *)procedureDescription;
+- (NSString *)institution;
+- (void)setInstitution:(NSString *)institution;
+- (BOOL)complete;
+- (void)setComplete:(BOOL)complete;
+- (BOOL)verified;
+- (void)setVerified:(BOOL)verified;
+
+
 - (void)save;
 - (void)export:(NSString *)path;
 
