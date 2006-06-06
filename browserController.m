@@ -5949,6 +5949,7 @@ static BOOL needToRezoom;
 		
 		while( enoughMemory == NO)
 		{
+			BOOL memTestFailed = NO;
 			mem = 0;
 			memBlock = 0;
 			
@@ -5977,14 +5978,18 @@ static BOOL needToRezoom;
 					}
 				}
 				
+				NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+				unsigned char* testPtr = malloc( (memBlock * sizeof(float)) + 4096);
+				if( testPtr == 0L) memTestFailed = YES;
+				else free( testPtr);
+				
 				memBlockSize[ x] = memBlock;
+				
 			} //end for
 			
 			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
-			NSLog(@"Test memory for: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
 			
-			unsigned char* testPtr = malloc( (mem * sizeof(float)) + 1024);
-			if( testPtr == 0L)
+			if( memTestFailed)
 			{
 				NSLog(@"Test memory failed -> sub-sampling");
 				
@@ -6011,9 +6016,6 @@ static BOOL needToRezoom;
 				toOpenArray = newArray;
 			}
 			else enoughMemory = YES;
-
-			free( testPtr);
-			testPtr = 0L;
 		} //end while
 		
 		int result = NSAlertDefaultReturn;
@@ -6040,26 +6042,26 @@ static BOOL needToRezoom;
 		{
 			if( movieViewer == NO)
 			{
-				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
-				
-				fVolumePtr = malloc(mem * sizeof(float));
-				if( fVolumePtr == 0L)
-				{
-					NSArray	*winList = [NSApp windows];
-					for( i = 0; i < [winList count]; i++)
-					{
-						if([[winList objectAtIndex:i] isMiniaturized])
-						{
-							[[winList objectAtIndex:i] deminiaturize:self];
-						}
-					}
-					
-					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
-					notEnoughMemory = YES;
-				}
-
-				free( fVolumePtr);	// We will allocate each block independently !
-				fVolumePtr = 0L;	
+//				NSLog(@"I will try to allocate: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
+//				
+//				fVolumePtr = malloc(mem * sizeof(float));
+//				if( fVolumePtr == 0L)
+//				{
+//					NSArray	*winList = [NSApp windows];
+//					for( i = 0; i < [winList count]; i++)
+//					{
+//						if([[winList objectAtIndex:i] isMiniaturized])
+//						{
+//							[[winList objectAtIndex:i] deminiaturize:self];
+//						}
+//					}
+//					
+//					NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series",@"Your computer doesn't have enough RAM to load this series"), NSLocalizedString(@"OK",nil), nil, nil);
+//					notEnoughMemory = YES;
+//				}
+//
+//				free( fVolumePtr);	// We will allocate each block independently !
+//				fVolumePtr = 0L;	
 			}
 			else
 			{

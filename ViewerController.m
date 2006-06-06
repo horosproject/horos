@@ -790,7 +790,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 		if( loadingPercentage != 1) [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
 	}
 	
-	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+	NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
 	
 	if( [[[curImage valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"])
 	{
@@ -7527,6 +7527,8 @@ int i,j,l;
 	
 	[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
 	[imageView setIndex:[imageView curImage]];
+	
+	[self setWindowTitle: self];
 }
 
 - (void) moviePosSliderAction:(id) sender
