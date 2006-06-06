@@ -3050,8 +3050,8 @@ static ViewerController *draggedController = 0L;
 	[subtractOnOff setState: NSOffState];
 	[popFusion selectItemAtIndex:0];
 	[convPopup selectItemAtIndex:0];
-	[stacksFusion setIntValue:2];
-	[sliderFusion setIntValue:1];
+	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
+	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
 	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
@@ -4693,7 +4693,7 @@ NSMutableArray		*array;
 	}
 	else [OpacityPopup setEnabled:NO];
 	
-	[imageView setFusion:m :-1];
+	[imageView setFusion:m :[sliderFusion intValue]];
 	
 	for ( x = 0; x < maxMovieIndex; x++)
 	{
@@ -4701,7 +4701,7 @@ NSMutableArray		*array;
 		{
 			for ( i = 0; i < [pixList[ x] count]; i ++)
 			{
-				[[pixList[ x] objectAtIndex:i] setFusion:m :-1 :-1];
+				[[pixList[ x] objectAtIndex:i] setFusion:m :[sliderFusion intValue] :-1];
 			}
 		}
 	}
@@ -4746,6 +4746,8 @@ NSMutableArray		*array;
 	}
 	
 	[stacksFusion setIntValue:[sender intValue]];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:@"stackThickness"];
 	
 	[imageView sendSyncMessage:1];
 }
@@ -9019,8 +9021,8 @@ int i,j,l;
 	
     [[self window] performZoom:self];
 	
-	[stacksFusion setIntValue:2];
-	[sliderFusion setIntValue:1];
+	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
+	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
 
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2

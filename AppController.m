@@ -1798,6 +1798,10 @@ static BOOL initialized = NO;
 		// ** SURVEYDONE
 		[defaultValues setObject: @"NO" forKey: @"SURVEYDONE3"];
 		
+		// ** stackThickness
+		[defaultValues setObject: @"20" forKey: @"stackThickness"];
+		[defaultValues setObject: @"20" forKey: @"stackThicknessOrthoMPR"];
+		
 		// ** ROUTINGACTIVATED
 		[defaultValues setObject:@"NO" forKey:@"ROUTINGACTIVATED"];
 		

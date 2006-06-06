@@ -4801,33 +4801,35 @@ static long scrollMode;
 		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 	}
 	
-	if( [curDCM isRGB]) sprintf (cstr, "X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB);
-	else sprintf (cstr, "X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue);
-	[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
-	
-	if( blendingView)
+	if( mouseXPos != 0 && mouseYPos != 0)
 	{
-		if( [[blendingView curDCM] isRGB]) sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB);
-		else sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue);
+		if( [curDCM isRGB]) sprintf (cstr, "X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB);
+		else sprintf (cstr, "X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue);
 		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
-	}
-				
-								
-	if( [curDCM displaySUVValue])
-	{
-		if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
+		
+		if( blendingView)
 		{
-			sprintf (cstr, "SUV: %.2f", [self getSUV] );
+			if( [[blendingView curDCM] isRGB]) sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB);
+			else sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue);
 			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
 		}
-	}
-	
-	if( blendingView)
-	{
-		if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+		
+		if( [curDCM displaySUVValue])
 		{
-			sprintf (cstr, "SUV (fused image): %.2f", [self getBlendedSUV] );
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
+			{
+				sprintf (cstr, "SUV: %.2f", [self getSUV] );
+				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			}
+		}
+		
+		if( blendingView)
+		{
+			if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+			{
+				sprintf (cstr, "SUV (fused image): %.2f", [self getBlendedSUV] );
+				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			}
 		}
 	}
 	
@@ -4878,32 +4880,35 @@ static long scrollMode;
 	
 	if( stringID == 0L || [stringID isEqualToString:@"OrthogonalMPRVIEW"] || [stringID isEqualToString:@"FinalView"])
 	{
-		float location[ 3 ];
-		
-		if( [curDCM stack] > 1)
+		if( mouseXPos != 0 && mouseYPos != 0)
 		{
-			long maxVal;
-		
-			if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
-			else maxVal = curImage+([curDCM stack]-1)/2;
+			float location[ 3 ];
 			
-			if( maxVal < 0) maxVal = 0;
-			if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+			if( [curDCM stack] > 1)
+			{
+				long maxVal;
 			
-			[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+				if( flippedData) maxVal = curImage-([curDCM stack]-1)/2;
+				else maxVal = curImage+([curDCM stack]-1)/2;
+				
+				if( maxVal < 0) maxVal = 0;
+				if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
+				
+				[[dcmPixList objectAtIndex: maxVal] convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+			}
+			else
+			{
+				[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
+			}
+			
+			if(fabs(location[0]) < 1.0 && location[0] != 0.0)
+				sprintf (cstr, "X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+			else
+				sprintf (cstr, "X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]);
+			
+			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			yRaster -= stringSize.height;
 		}
-		else
-		{
-			[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];
-		}
-		
-		if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-			sprintf (cstr, "X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
-		else
-			sprintf (cstr, "X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]);
-		
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
-		yRaster -= stringSize.height;
 	}
 	
 	// Thickness

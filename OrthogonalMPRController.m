@@ -653,6 +653,8 @@
 	
 	[self saveCrossPositions];
 	[self reslice:originalCrossPositionX :originalCrossPositionY :originalView];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:thickSlab forKey:@"stackThicknessOrthoMPR"];
 }
 
 #pragma mark-

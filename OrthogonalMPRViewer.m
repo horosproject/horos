@@ -131,8 +131,9 @@ NSString * documentsDirectory();
 	displayResliceAxes = 1;
 	
 	// thick slab
-	[thickSlabTextField setStringValue:[NSString stringWithFormat:@"%d",2]];
-	[thickSlabSlider setMinValue:2];
+	[thickSlabTextField setIntValue:[[NSUserDefaults standardUserDefaults] integerForKey:@"stackThicknessOrthoMPR"]];
+	[thickSlabSlider setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThicknessOrthoMPR"]];
+	[thickSlabSlider setMinValue: 2];
 	//NSLog(@"maxValue : %d",[controller maxThickSlab]);
 	//[thickSlabSlider setMaxValue:[controller maxThickSlab]];
 	//[thickSlabSlider setMaxValue:40];
