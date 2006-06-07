@@ -52,10 +52,10 @@
 			if (strcmp("OsiriX", _doc->getManufacturer()) == 0){
 				
 				//completion flag
-			//	if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
-			//		[self setComplete:YES];
-			//	else
-			//		[self setComplete:NO];
+				if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
+					[self setComplete:YES];
+				else
+					[self setComplete:NO];
 					
 				//Verification Flag
 				//if (strcmp(_doc->getVerificationFlagDescription(),"VERIFIED") == 1)
