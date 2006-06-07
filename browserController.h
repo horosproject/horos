@@ -74,7 +74,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
     
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *bonjourRunLoopTimer;
+    NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *bonjourRunLoopTimer, *deleteQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
@@ -188,10 +188,17 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	NSTimeInterval					databaseLastModification;
 	
 	StructuredReportController		*structuredReportController;
+	
+	NSMutableArray					*deleteQueueArray;
+	NSLock							*deleteQueue;
 }
 
 + (BrowserController*) currentBrowser;
 + (void) addFilesToDatabaseSafe: (NSArray*) newFilesArray context:(NSManagedObjectContext*) context model:(NSManagedObjectModel*) model databasePath:(NSString*) INpath COMMENTSAUTOFILL:(BOOL) COMMENTSAUTOFILL;
+
+- (void) emptyDeleteQueueThread;
+- (void) emptyDeleteQueue:(id) sender;
+- (void) addFileToDeleteQueue:(NSString*) file;
 
 - (NSManagedObjectModel *)managedObjectModel;
 - (NSManagedObjectContext *)managedObjectContext;

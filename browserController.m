@@ -6758,6 +6758,8 @@ static BOOL needToRezoom;
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:16.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60*2 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
+		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
+		
 		bonjourRunLoopTimer = 0L;
 		
 		loadPreviewIndex = 0;
@@ -7107,6 +7109,8 @@ static BOOL needToRezoom;
 	
 	[self removeAllMounted];
 	
+	[self emptyDeleteQueueThread];
+	
     [self release];
 }
 
@@ -7198,6 +7202,46 @@ static BOOL needToRezoom;
 
 #pragma mark-
 #pragma mark DICOM Network & Files functions
+
+- (void) emptyDeleteQueueThread
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+	int i;
+	
+	[deleteQueue lock];
+	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
+	[deleteQueueArray removeAllObjects];
+	[deleteQueue unlock];
+	
+	NSLog(@"delete Queue start");
+	
+	for( i = 0; i < [copyArray count]; i++)
+		[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
+	
+	NSLog(@"delete Queue end");
+	
+	[pool release];
+}
+
+- (void) emptyDeleteQueue:(id) sender
+{
+	if( deleteQueueArray != 0L && deleteQueue != 0L)
+	{
+		if( [deleteQueueArray count] > 0)
+			[NSThread detachNewThreadSelector:@selector(emptyDeleteQueueThread) toTarget:self withObject:0L];
+	}
+}
+
+- (void) addFileToDeleteQueue:(NSString*) file
+{
+	if( deleteQueueArray == 0L) deleteQueueArray = [[NSMutableArray array] retain];
+	if( deleteQueue == 0L) deleteQueue = [[NSLock alloc] init];
+
+	[deleteQueue lock];
+	[deleteQueueArray addObject: file];
+	[deleteQueue unlock];
+}
 
 - (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found
 {

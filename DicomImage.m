@@ -33,7 +33,6 @@ Version 2.3
 
 -(NSString*) completePath
 {
-	
 	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 	{
 		NSString	*path = [self primitiveValueForKey:@"path"];
@@ -47,7 +46,7 @@ Version 2.3
 			val /= 10000;
 			val++;
 			val *= 10000;
-
+			
 			if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
 				return [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/TIF/%@", path];
 			else {
@@ -67,18 +66,31 @@ Version 2.3
 	{
 		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath:[self valueForKey:@"completePath"] handler:nil];
+			[[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
 			
 			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
 			
 			if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
 			{
-				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
 			}
 			else if([pathExtension isEqualToString:@"zip"])		// ZIP -> DELETE XML
 			{
-				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
 			}
+			
+//			[[NSFileManager defaultManager] removeFileAtPath:[self valueForKey:@"completePath"] handler:nil];
+//			
+//			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
+//			
+//			if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+//			{
+//				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+//			}
+//			else if([pathExtension isEqualToString:@"zip"])		// ZIP -> DELETE XML
+//			{
+//				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
+//			}
 		}
 	}
 	return delete;
