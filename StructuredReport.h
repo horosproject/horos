@@ -35,6 +35,8 @@
 	NSString *_request;
 	NSString *_procedureDescription;
 	NSString *_institution;
+	NSString *_verifyOberverName;
+	NSString *_verifyOberverOrganization;
 	NSXMLDocument *_xmlDoc;
 	BOOL _reportHasChanged;
 	BOOL _isEditable;
@@ -58,6 +60,10 @@
 - (void)setProcedureDescription:(NSString *)procedureDescription;
 - (NSString *)institution;
 - (void)setInstitution:(NSString *)institution;
+- (NSString *)verifyOberverName;
+- (void)setVerifyOberverName:(NSString *)verifyOberverName;
+- (NSString *)verifyOberverOrganization;
+- (void)setVerifyOberverOrganization:(NSString *)verifyOberverOrganization;
 - (BOOL)complete;
 - (void)setComplete:(BOOL)complete;
 - (BOOL)verified;

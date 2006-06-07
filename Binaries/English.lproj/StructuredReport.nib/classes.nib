@@ -17,7 +17,7 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {
-            ACTIONS = {cancel = id; export = id; save = id; setView = id; }; 
+            ACTIONS = {cancel = id; endVerify = id; export = id; save = id; setView = id; }; 
             CLASS = StructuredReportController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -25,6 +25,7 @@
                 buttonView = id; 
                 htmlView = id; 
                 srView = id; 
+                verifyPanel = id; 
                 viewControl = id; 
                 webView = id; 
                 xmlOutlineView = id; 

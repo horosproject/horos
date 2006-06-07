@@ -33,6 +33,8 @@
 #include "dsrtypes.h"
 
 
+
+
 @implementation StructuredReport
 
 - (id)initWithStudy:(id)study{
@@ -52,15 +54,16 @@
 			if (strcmp("OsiriX", _doc->getManufacturer()) == 0){
 				
 				//completion flag
-				if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
+				if (_doc->getCompletionFlag() == DSRTypes::CF_Complete)
+				//if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
 					[self setComplete:YES];
 				else
 					[self setComplete:NO];
 					
 				//Verification Flag
-				//if (strcmp(_doc->getVerificationFlagDescription(),"VERIFIED") == 1)
-				//	[self setComplete:YES];
-				//else
+				if (_doc->getVerificationFlag()  == DSRTypes::VF_Verified)
+					[self setVerified:YES];
+				else
 					[self setVerified:NO];
 					
 				//go to physician/observer		
@@ -209,6 +212,8 @@
 	[_request release];
 	[_procedureDescription release];
 	[_institution release];
+	[_verifyOberverOrganization release];
+	[_verifyOberverName release];
 	[super dealloc];
 }
 
@@ -283,12 +288,30 @@
 	_reportHasChanged = YES;
 }
 
+- (NSString *)verifyOberverName{
+	return _verifyOberverName;
+}
+- (void)setVerifyOberverName:(NSString *)verifyOberverName{
+	[_verifyOberverName release];
+	_verifyOberverName = [verifyOberverName retain];
+}
+- (NSString *)verifyOberverOrganization{
+	return _verifyOberverOrganization;
+}
+- (void)setVerifyOberverOrganization:(NSString *)verifyOberverOrganization{
+	[_verifyOberverOrganization release];
+	_verifyOberverOrganization = [verifyOberverOrganization retain];
+}
+
 - (BOOL)complete{
 	return _complete;
 }
 - (void)setComplete:(BOOL)complete{
 	_complete = complete;
 	_reportHasChanged = YES;
+	if (_complete == NO)
+		[self setVerified:NO];
+
 }
 - (BOOL)verified{
 	return _verified;
@@ -296,6 +319,8 @@
 - (void)setVerified:(BOOL)verified{
 	_verified = verified;
 	_reportHasChanged = YES;
+	if (_verified == YES)
+		[self setComplete:YES];
 }
 	
 - (BOOL)fileExists{
@@ -330,7 +355,24 @@
 		//NSLog(@"Create report");	
 		//NSLog(@"study: %@", [_study description]);
 		
-		//clear old content
+		//set Completion flag
+		
+		if (_complete) {
+			_doc->completeDocument("COMPLETE");
+		}
+		// new a new reference if changing from complete to partial
+		else if (_doc->getCompletionFlag() == DSRTypes::CF_Complete){
+			_doc->createRevisedVersion(OFFalse);
+		}
+		
+		if (_verified && _doc->getVerificationFlag()  != DSRTypes::VF_Verified) {
+			//Need to add verification
+			
+		}
+		else if (!_verified && _doc->getVerificationFlag()  != DSRTypes::VF_Verified) 
+			_doc->createRevisedVersion(OFFalse);
+
+		//clear old content	
 		_doc->getTree().clear();
 				
 		_doc->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
