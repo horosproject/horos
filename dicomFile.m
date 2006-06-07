@@ -48,7 +48,7 @@
 
 
 extern NSString * convertDICOM( NSString *inputfile);
-extern NSMutableDictionary *fileFormatPlugins;
+extern NSMutableDictionary *fileFormatPlugins, *preProcessPlugins;
 extern NSLock	*PapyrusLock;
 
 long gGlobaluniqueID = 0;
@@ -178,7 +178,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			
-			CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
+			if( [AppController isHUG])
+			{
+				CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
+			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
@@ -1357,11 +1360,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a)
 									{
 										album = [NSString stringWithCString:theValueP->a];
-								
-										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										
+										if( [album length] >= 2)
 										{
-											album = [album substringFromIndex:2];
-											[dicomElements setObject:album forKey:@"album"];
+											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+											{
+												album = [album substringFromIndex:2];
+												[dicomElements setObject:album forKey:@"album"];
+											}
 										}
 									}
 								}
@@ -1391,11 +1397,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a)
 									{
 										album = [NSString stringWithCString:theValueP->a];
-								
-										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										
+										if( [album length] >= 2)
 										{
-											album = [album substringFromIndex:2];
-											[dicomElements setObject:album forKey:@"album"];
+											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+											{
+												album = [album substringFromIndex:2];
+												[dicomElements setObject:album forKey:@"album"];
+											}
 										}
 									}
 								}
@@ -1410,11 +1419,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a)
 									{
 										album = [NSString stringWithCString:theValueP->a];
-								
-										if( [[album substringToIndex:2] isEqualToString: @"LV"])
+										
+										if( [album length] >= 2)
 										{
-											album = [album substringFromIndex:2];
-											[dicomElements setObject:album forKey:@"album"];
+											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+											{
+												album = [album substringFromIndex:2];
+												[dicomElements setObject:album forKey:@"album"];
+											}
 										}
 									}
 								}
@@ -2037,22 +2049,25 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				field = [dcmObject attributeValueForKey: @"0020,4000"];
 				if( field)
 				{
-					if( [[field substringToIndex:2] isEqualToString: @"LV"])
-						album = [field substringFromIndex:2];
+					if( [field length] >= 2)
+						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+							album = [field substringFromIndex:2];
 				}
 				
 				field = [dcmObject attributeValueForKey: @"0040,0280"];
 				if( field)
 				{
-					if( [[field substringToIndex:2] isEqualToString: @"LV"])
-						album = [field substringFromIndex:2];
+					if( [field length] >= 2)
+						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+							album = [field substringFromIndex:2];
 				}
 				
 				field = [dcmObject attributeValueForKey: @"0040,1400"];
 				if( field)
 				{
-					if( [[field substringToIndex:2] isEqualToString: @"LV"])
-						album = [field substringFromIndex:2];
+					if( [field length] >= 2)
+						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+							album = [field substringFromIndex:2];
 				}
 				
 				if( album) [dicomElements setObject:album forKey:@"album"];
