@@ -180,7 +180,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			if( [AppController isHUG])
 			{
-				CHECKFORLAVIM = [AppController isHUG];	// HUG SPECIFIC, Thanks... Antoine Rosset
+				if( [preProcessPlugins objectForKey: @"LavimAnonymize"])
+					CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
 			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool

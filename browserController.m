@@ -3609,7 +3609,6 @@ SElement		*theGroupP;
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
 		[wait showWindow:self];
 		
-		
 		[self saveDatabase: currentDatabasePath];
 		// Remove series without images !
 		for( i = 0; i < [seriesArray count]; i++)
