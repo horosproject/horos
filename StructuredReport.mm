@@ -55,7 +55,6 @@
 				
 				//completion flag
 				if (_doc->getCompletionFlag() == DSRTypes::CF_Complete)
-				//if (strcmp (_doc->getCompletionFlagDescription(), "COMPLETE") == 1)
 					[self setComplete:YES];
 				else
 					[self setComplete:NO];
@@ -195,6 +194,10 @@
 			_doc->setSeriesNumber("5001");
 			
 			_doc->setManufacturer("OsiriX");
+			
+			// get KeyImages
+			_keyImages = [[_study keyImages] retain];
+			
 		}	
 	}
 	return self;
@@ -214,6 +217,7 @@
 	[_institution release];
 	[_verifyOberverOrganization release];
 	[_verifyOberverName release];
+	[_keyImages release];
 	[super dealloc];
 }
 
@@ -322,6 +326,14 @@
 	if (_verified == YES)
 		[self setComplete:YES];
 }
+
+- (NSArray *)keyImages{
+	return _keyImages;
+}
+- (void)setKeyImages:(NSArray *)keyImages{
+	[_keyImages release];
+	_keyImages = [keyImages retain];
+}
 	
 - (BOOL)fileExists{
 	if ([_study valueForKey:@"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath:[_study valueForKey:@"reportURL"]])
@@ -356,20 +368,21 @@
 		//NSLog(@"study: %@", [_study description]);
 		
 		//set Completion flag
-		
-		if (_complete) {
-			_doc->completeDocument("COMPLETE");
-		}
 		// new a new reference if changing from complete to partial
-		else if (_doc->getCompletionFlag() == DSRTypes::CF_Complete){
-			_doc->createRevisedVersion(OFFalse);
+		if (_doc->getCompletionFlag() == DSRTypes::CF_Complete && !_complete) {
+						_doc->createRevisedVersion(OFFalse);
+		}		
+		else if (_complete){
+			_doc->completeDocument("COMPLETE");
 		}
 		
 		if (_verified && _doc->getVerificationFlag()  != DSRTypes::VF_Verified) {
 			//Need to add verification
-			
+			const OFString von = OFString([_verifyOberverName UTF8String]);
+			const OFString voo = OFString([_verifyOberverOrganization UTF8String]);
+			_doc->verifyDocument(von, voo);
 		}
-		else if (!_verified && _doc->getVerificationFlag()  != DSRTypes::VF_Verified) 
+		else if (!_verified && _doc->getVerificationFlag()  == DSRTypes::VF_Verified) 
 			_doc->createRevisedVersion(OFFalse);
 
 		//clear old content	
@@ -442,7 +455,7 @@
 			
 		if ([_conclusions count] > 0) {
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
-			//SH.07 is probably wrong. I'm not sure how to get the right values here.
+			
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121072", "DCM", "Impressions"));
 			NSEnumerator *enumerator = [_conclusions objectEnumerator];
 			NSDictionary *dict;
@@ -464,8 +477,28 @@
 			_doc->getTree().goUp();
 		}
 		
-	
-		
+		// add keyImages
+		/*
+		if ([_keyImages count] > 0){
+			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
+			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180", DCM, "Key Images"));
+			NSEnumerator *enumerator = [_conclusions objectEnumerator];
+			id image;
+			BOOL first = YES;
+			while (image = [enumerator nextObject]){
+			
+				if (first) {
+					// go down one level if first Finding
+					_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
+					first = NO;
+				}
+				else
+					_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+				
+			}
+			
+		}
+		*/
 		/***** Exmaple of code to add a reference image **************
 		_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
 		_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180", DCM, "Key Images"));

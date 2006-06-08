@@ -29,6 +29,7 @@
 	DSRDocument *_doc;
 	NSArray *_findings;
 	NSArray *_conclusions;
+	NSArray *_keyImages;
 	NSString *_physician;
 	NSString *_history;
 	NSString *_sopInstanceUID;
@@ -68,6 +69,8 @@
 - (void)setComplete:(BOOL)complete;
 - (BOOL)verified;
 - (void)setVerified:(BOOL)verified;
+- (NSArray *)keyImages;
+- (void)setKeyImages:(NSArray *)keyImages;
 
 
 - (void)save;
