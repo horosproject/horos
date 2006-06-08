@@ -71,6 +71,7 @@
 - (void)setVerified:(BOOL)verified;
 - (NSArray *)keyImages;
 - (void)setKeyImages:(NSArray *)keyImages;
+- (BOOL)isEditable;
 
 
 - (void)save;

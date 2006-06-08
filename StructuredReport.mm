@@ -145,6 +145,10 @@
 					//[self setConclusions:impressions];
 					_conclusions = [impressions retain];
 				}
+				
+				//get key Images. If none load from study
+				// get KeyImages
+				_keyImages = [[_study keyImages] retain];
 			}
 			else {
 				_isEditable = NO;
@@ -341,6 +345,13 @@
 	return NO;
 }
 
+- (BOOL)isEditable{
+	// if the verify flags are both verified we cannot edit
+	if (_verified && _doc->getVerificationFlag() == DSRTypes::VF_Verified)
+		return NO;
+	return _isEditable;
+}
+
 - (void)checkCharacterSet
 { // check extended character set
 	const char *defaultCharset = "latin-1";
@@ -363,7 +374,7 @@
 }
 
 - (void)createReport{
-	if (_isEditable) {
+	if ([self isEditable]) {
 		//NSLog(@"Create report");	
 		//NSLog(@"study: %@", [_study description]);
 		
@@ -376,11 +387,12 @@
 			_doc->completeDocument("COMPLETE");
 		}
 		
-		if (_verified && _doc->getVerificationFlag()  != DSRTypes::VF_Verified) {
+		if (_verified && _doc->getVerificationFlag() != DSRTypes::VF_Verified) {
 			//Need to add verification
 			const OFString von = OFString([_verifyOberverName UTF8String]);
 			const OFString voo = OFString([_verifyOberverOrganization UTF8String]);
 			_doc->verifyDocument(von, voo);
+			
 		}
 		else if (!_verified && _doc->getVerificationFlag()  == DSRTypes::VF_Verified) 
 			_doc->createRevisedVersion(OFFalse);
@@ -454,8 +466,7 @@
 			
 			
 		if ([_conclusions count] > 0) {
-			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
-			
+			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);			
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121072", "DCM", "Impressions"));
 			NSEnumerator *enumerator = [_conclusions objectEnumerator];
 			NSDictionary *dict;
@@ -478,27 +489,42 @@
 		}
 		
 		// add keyImages
-		/*
+		
 		if ([_keyImages count] > 0){
+			NSLog(@"Add key Images");
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
-			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180", DCM, "Key Images"));
-			NSEnumerator *enumerator = [_conclusions objectEnumerator];
+			//_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180"," DCM", "Key Images"));
+			NSEnumerator *enumerator = [_keyImages objectEnumerator];
 			id image;
 			BOOL first = YES;
 			while (image = [enumerator nextObject]){
-			
+				NSLog(@"key image %@", [image description]);
+				OFString studyUID = OFString([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
+				OFString seriesUID = OFString([[image valueForKeyPath:@"series.seriesInstanceUID"]  UTF8String]);
+				OFString instanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
+				DcmFileFormat fileformat;
+				OFCondition status = fileformat.loadFile([[image valueForKey:@"completePath"] UTF8String]);
+				OFString sopClassUID;
+				if (status.good()){
+					fileformat.getDataset()->findAndGetOFString(DCM_SOPClassUID, sopClassUID).good();
+				}
+				
 				if (first) {
-					// go down one level if first Finding
 					_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
 					first = NO;
 				}
-				else
+				else{
 					_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+				}
 				
+				_doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(sopClassUID, instanceUID));
+				_doc->getCurrentRequestedProcedureEvidence().addItem(studyUID, seriesUID, sopClassUID, instanceUID);
 			}
-			
+			//go back up in tree
+			_doc->getTree().goUp();
 		}
-		*/
+		
 		/***** Exmaple of code to add a reference image **************
 		_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
 		_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180", DCM, "Key Images"));
@@ -511,7 +537,8 @@
 }
 
 - (void)save{
-	
+	if (_reportHasChanged)
+		[self createReport];
 	DcmFileFormat fileformat;	
 	OFCondition status = _doc->write(*fileformat.getDataset());
 	if (status.good()) 
@@ -522,6 +549,8 @@
 }
 
 - (void)export:(NSString *)path{
+	if (_reportHasChanged)
+		[self createReport];
 	NSString *extension = [path pathExtension];
 	if ([extension isEqualToString:@"dcm"]) {
 		DcmFileFormat fileformat;	
@@ -536,9 +565,6 @@
 		_doc->writeXML(stream, writeFlags);
 	}
 	else if ([extension isEqualToString:@"htm"] || [extension isEqualToString:@"html"]){
-		if (_reportHasChanged) {
-			[self createReport];
-		}
 		[self checkCharacterSet];
 		size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
 		ofstream stream([path UTF8String]);

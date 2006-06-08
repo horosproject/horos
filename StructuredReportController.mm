@@ -205,19 +205,11 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (int)exportStyle{
 	return _exportStyle;
 }
+
 - (void)setExportStyle:(int)style{
 	_exportStyle = style;
 }
-/*
-- (NSString *)exportExtension{
-	return _exportExtension;
-}
 
-- (void)setExportExtension:(NSString *)extension{
-	[_exportExtension release];
-	_exportExtension = [extension retain];
-}
-*/
 
 - (IBAction)save:(id)sender{
 	[_report save];
@@ -227,5 +219,24 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (IBAction)cancel:(id)sender{
 	[[self window] close];
 }
+
+- (BOOL)verified{
+	return [_report verified];	
+}
+- (void)setVerified:(BOOL)verified{
+	if (verified == YES) 
+		//run verifyPanel
+		[NSApp beginSheet:verifyPanel modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	else
+		[_report setVerified:(BOOL)verified];
+}
+
+- (IBAction) endVerify:(id)sender{
+	[NSApp endSheet:verifyPanel];
+	[verifyPanel close];
+	if ([sender tag] == 0)
+		[_report setVerified:YES];
+}
+		
 
 @end

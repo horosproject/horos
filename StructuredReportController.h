@@ -40,6 +40,7 @@
 	IBOutlet WebView *webView;
 	IBOutlet NSOutlineView *xmlOutlineView;
 	IBOutlet NSView *accessoryView;
+	IBOutlet NSPanel *verifyPanel;
 	NSToolbar *toolbar;
 	NSView *_contentView;
 	StructuredReport *_report;
@@ -69,6 +70,9 @@
 - (IBAction)cancel:(id)sender;
 - (int)exportStyle;
 - (void)setExportStyle:(int)style;
+- (BOOL)verified;
+- (void)setVerified:(BOOL)verified;
+- (IBAction)endVerify:(id)sender;
 //- (NSString *)exportExtension;
 //- (void)setExportExtension:(NSString *)extension;
 @end
