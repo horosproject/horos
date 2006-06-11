@@ -40,50 +40,50 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 
 - (id)initWithStudy:(id)study{
 	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
-		[self createReportForStudy:study];
-		//[self setExportExtension:@"dcm"];
+		[self setReport:[self createReportForStudy:study]];
+		_study = [study retain];	
+		[self setReports:[NSArray arrayWithObject:
+			[NSMutableDictionary dictionaryWithObjects:
+			[NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]]]];
+		[[self window]  makeKeyAndOrderFront:self];
 	}
 	return self;
 }
 
 - (void)setStudy:(id)study{
-	[self createReportForStudy:study];
+		[self setReport:[self createReportForStudy:study]];
+		[_study release];
+		_study = [study retain];	
+		[_reports release];
+		_reports = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]];
+	
 }
 
 - (void)windowDidLoad{
 	[self setupToolbar];
 	if ([_report fileExists])
-		[self setContentView:htmlView];
+		[self setTabIndex:0];
 	else
-		[self setContentView:srView];
+		[self setTabIndex:1];
+	
+
 }
 
 - (void)dealloc{
-	[_study release];
+	//[_study release];
 	[_report release];
-	[_exportExtension release];
+	[_reports release];
 	[super dealloc];
 }
 
-- (BOOL)createReportForStudy:(id)study{
-	NSLog(@"create report");
-	[_report release];
-	_report = [[StructuredReport alloc] initWithStudy:study];
+- (StructuredReport *)createReportForStudy:(id)study{
+	NSLog(@"crearteStudy: %@", [study description]);
+	StructuredReport *report;
+	//[_report release];
+	report = [[[StructuredReport alloc] initWithStudy:study] autorelease];
 	
-	/*
-	[NSApp beginSheet:[self window] 
-		modalForWindow:[[BrowserController currentBrowser] window]
-		modalDelegate:self 
-		didEndSelector:nil
-		contextInfo:nil];
-	*/
-	[[self window]  makeKeyAndOrderFront:self];
-	if ([_report fileExists])
-		[self setContentView:htmlView];
-	else
-		[self setContentView:srView];
-	_study = [study retain];	
-	return YES;
+	NSLog(@"create Report: %@", [report description]);
+	return report;
 }
 
 - (id)report{
@@ -92,40 +92,19 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 - (void)setReport:(id)report{
 	[_report release];
 	_report = [report retain];
+	if ([_report fileExists])
+		[self setTabIndex:0];
+	else
+		[self setTabIndex:1];
+
 }
 
 - (NSView *)contentView{
 	return _contentView;
 }
 
-- (void)setContentView:(NSView *)contentView{
-	_contentView = contentView;
-	[[self window] setContentView:_contentView];
-	[_contentView addSubview:buttonView];
-	if ([_contentView isEqual:htmlView]) {
-		[_report writeHTML];
-		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
-		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
-	}
-		
-
-}
-
--(IBAction)setView:(id)sender{
-	switch ([sender selectedSegment]){
-		case 0: [self setContentView:htmlView];
-			break;
-		case 1: [self setContentView:srView];
-			break;
-		//case 2: [self setContentView:xmlView];
-		//	break;
-		default: [self setContentView:htmlView];
-	}
-
-}
 
 - (NSXMLDocument *)xmlDoc{
-	//return [_report xml];
 	return nil;
 }
 
@@ -166,14 +145,14 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
     // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
-	return [NSArray arrayWithObject:ViewControlToolbarItem];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-	return [NSArray arrayWithObject:ViewControlToolbarItem];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, nil];
 }
 
 - (IBAction)export:(id)sender{
@@ -236,6 +215,37 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 	[verifyPanel close];
 	if ([sender tag] == 0)
 		[_report setVerified:YES];
+}
+
+- (int)tabIndex{
+	return _tabIndex;
+}
+- (void)setTabIndex:(int)tabIndex{
+	_tabIndex = tabIndex;
+	if (_tabIndex == 0) {
+		[_report writeHTML];
+		NSLog(@"Report for xml: %@", [_report description]);
+		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
+		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+	}
+	
+}
+
+- (NSArray *)reports{
+	NSLog(@"reports: %@", [_reports description]);
+	return _reports;
+}
+- (void)setReports:(NSArray *)reports{
+	[_reports release];
+	_reports = [reports retain];
+}
+
+- (NSIndexSet *)reportIndex{
+	return [NSIndexSet indexSetWithIndex:0];
+}
+- (void)setReportIndex:(NSIndexSet *)indexSet{
+	int index = [indexSet firstIndex];
+	//[self setReport:[self createReportForStudy:[[_reports objectAtIndex:index] objectForKey:@"study"]]];
 }
 		
 

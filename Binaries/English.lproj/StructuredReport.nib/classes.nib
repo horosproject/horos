@@ -22,9 +22,6 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 accessoryView = id; 
-                buttonView = id; 
-                htmlView = id; 
-                srView = id; 
                 verifyPanel = id; 
                 viewControl = id; 
                 webView = id; 

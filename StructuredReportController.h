@@ -43,16 +43,18 @@
 	IBOutlet NSPanel *verifyPanel;
 	NSToolbar *toolbar;
 	NSView *_contentView;
-	StructuredReport *_report;
+		StructuredReport *_report;
 	NSArray *_reports;
 	int _exportStyle;
 	NSString *_exportExtension;
+	int _tabIndex;
+	
 	
 }
 
 - (id)initWithStudy:(id)study;
 - (void)setStudy:(id)study;
-- (BOOL)createReportForStudy:(id)study;
+- (StructuredReport *)createReportForStudy:(id)study;
 
 
 
@@ -60,7 +62,7 @@
 - (void)setReport:(id)report;
 
 - (NSView *)contentView;
-- (void)setContentView:(NSView *)contentView;
+
 
 - (void) setupToolbar;
 - (NSXMLDocument *)xmlDoc;
@@ -73,6 +75,12 @@
 - (BOOL)verified;
 - (void)setVerified:(BOOL)verified;
 - (IBAction)endVerify:(id)sender;
-//- (NSString *)exportExtension;
-//- (void)setExportExtension:(NSString *)extension;
+- (int)tabIndex;
+- (void)setTabIndex:(int)tabIndex;
+- (NSArray *)reports;
+- (void)setReports:(NSArray *)reports;
+- (NSIndexSet *)reportIndex;
+- (void)setReportIndex:(NSIndexSet *)indexSet;
+
+
 @end
