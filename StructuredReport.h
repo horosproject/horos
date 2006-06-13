@@ -46,6 +46,7 @@
 }
 
 - (id)initWithStudy:(id)study;
+- (id)initWithStudy:(id)study contentsOfFile:(NSString *)file;
 
 - (NSArray *)findings;
 - (void)setFindings:(NSArray *)findings;
@@ -72,6 +73,10 @@
 - (NSArray *)keyImages;
 - (void)setKeyImages:(NSArray *)keyImages;
 - (BOOL)isEditable;
+- (NSDate *)contentDate;
+- (void)setContentData:(NSDate *)date;
+- (NSString *)title;
+- (void)setTitle:(NSString *)title;
 
 
 - (void)save;

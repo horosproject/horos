@@ -207,6 +207,178 @@
 	return self;
 }
 
+- (id)initWithStudy:(id)study contentsOfFile:(NSString *)file{
+	if (self = [super init]){
+		_doc = new DSRDocument();
+		_study = [study retain];
+		_reportHasChanged = NO;
+		_isEditable = YES;
+		if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
+			_reportHasChanged = NO;			
+			DcmFileFormat fileformat;
+			OFCondition status = fileformat.loadFile([file UTF8String]);
+			if (status.good())
+				status = _doc->read(*fileformat.getDataset());
+
+			// If we are the manfacturer we can edit.
+			if (strcmp("OsiriX", _doc->getManufacturer()) == 0){
+				
+				//completion flag
+				if (_doc->getCompletionFlag() == DSRTypes::CF_Complete)
+					[self setComplete:YES];
+				else
+					[self setComplete:NO];
+					
+				//Verification Flag
+				if (_doc->getVerificationFlag()  == DSRTypes::VF_Verified)
+					[self setVerified:YES];
+				else
+					[self setVerified:NO];
+					
+				//go to physician/observer		
+				DSRCodedEntryValue codedEntryValue = DSRCodedEntryValue("121008", "DCM", "Person Observer Name");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 ){
+					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setPhysician:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
+				}
+				//go to observer / Institution
+				codedEntryValue = DSRCodedEntryValue("121009", "DCM", "Person Observer's Organization Name");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0 ){
+					OFString institution = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setInstitution:[NSString stringWithCString:institution.c_str() encoding:NSUTF8StringEncoding]];
+				}
+				
+				//go to history
+				codedEntryValue = DSRCodedEntryValue("121060", "DCM", "History");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+					OFString observer = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setHistory:[NSString stringWithCString:observer.c_str() encoding:NSUTF8StringEncoding]];
+				}
+				
+				//Request
+				codedEntryValue = DSRCodedEntryValue("121062", "DCM", "Request");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+					OFString request = _doc->getTree().getCurrentContentItem().getStringValue();
+					[self setRequest:[NSString stringWithCString:request.c_str() encoding:NSUTF8StringEncoding]];
+				}
+				
+				//Procedure
+				codedEntryValue = DSRCodedEntryValue("121064", "DCM", "Current Procedure Descriptions");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+					codedEntryValue = DSRCodedEntryValue("121065", "DCM", "Procedure Description");
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0){
+						OFString procedureDescription = _doc->getTree().getCurrentContentItem().getStringValue();
+						[self setProcedureDescription:[NSString stringWithCString:procedureDescription.c_str() encoding:NSUTF8StringEncoding]];
+					}
+				}
+				
+				//findings
+				codedEntryValue = DSRCodedEntryValue("121070", "DCM", "Findings");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+					NSMutableArray *findings = [NSMutableArray array];
+					//get all the findings
+					codedEntryValue = DSRCodedEntryValue("121071", "DCM", "Finding");
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+						OFString finding = _doc->getTree().getCurrentContentItem().getStringValue();
+						[findings addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:finding.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"finding"]];
+						// get the rest. Need a loop here
+						while(_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse) > 0) {
+							finding = _doc->getTree().getCurrentContentItem().getStringValue();
+							[findings addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:finding.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"finding"]];
+						}
+					}
+					//[self setFindings:findings];
+					_findings = [findings retain];
+				}
+				
+				//Impressions
+				codedEntryValue = DSRCodedEntryValue("121072", "DCM", "Impressions");
+				if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+					NSMutableArray *impressions = [NSMutableArray array];
+					//get all the impressions
+					codedEntryValue = DSRCodedEntryValue("121073", "DCM", "Impression");
+					if (_doc->getTree().gotoNamedNode (codedEntryValue, OFTrue, OFTrue) > 0) {
+						OFString impression = _doc->getTree().getCurrentContentItem().getStringValue();
+						[impressions addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:impression.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"conclusion"]];
+						// get the rest. Need a loop here
+						while(_doc->getTree().gotoNextNamedNode (codedEntryValue, OFFalse) > 0) {
+							impression = _doc->getTree().getCurrentContentItem().getStringValue();
+							[impressions addObject: [NSDictionary dictionaryWithObject:[NSString stringWithCString:impression.c_str() encoding:NSUTF8StringEncoding]
+								forKey:@"conclusion"]];
+							
+						}
+
+					}
+					//[self setConclusions:impressions];
+					_conclusions = [impressions retain];
+				}
+				
+				//get key Images. If none load from study
+				// get KeyImages
+				_keyImages = [[_study keyImages] retain];
+			}
+			else {
+				_isEditable = NO;
+			}
+
+		}
+		// if file Path is nil
+		else {
+			ABPerson *me = [[ABAddressBook sharedAddressBook] me];
+			[self setPhysician:[NSString stringWithFormat: @"%@^%@", [me valueForProperty:kABLastNameProperty] ,[me valueForProperty:kABFirstNameProperty]]];
+			[self setInstitution:[_study valueForKey:@"institutionName"]];
+			[self setRequest:[NSString stringWithFormat:@"%@ %@", [_study valueForKey:@"modality"], [_study valueForKey:@"studyName"]]];
+			//Not sure what to suggest for history and technique
+			   
+			_doc->createNewDocument(DSRTypes::DT_BasicTextSR);
+			_doc->setSpecificCharacterSet("ISO_IR 192"); //UTF 8 string encoding
+			_doc->createNewSeriesInStudy([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
+			//Study Description
+			if ([_study valueForKey:@"studyName"])
+				_doc->setStudyDescription([[_study valueForKey:@"studyName"] UTF8String]);
+			//Series Description
+			_doc->setSeriesDescription("OsiriX Structured Report");
+			//Patient Name
+			if ([_study valueForKey:@"name"] )
+				_doc->setPatientsName([[_study valueForKey:@"name"] UTF8String]);
+			// Patient DOB
+			if ([_study valueForKey:@"dateOfBirth"])
+				_doc->setPatientsBirthDate([[[_study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
+			//Patient Sex
+			if ([_study valueForKey:@"patientSex"])
+				_doc->setPatientsSex([[_study valueForKey:@"patientSex"] UTF8String]);
+			//Patient ID
+			NSString *patientID = [_study valueForKey:@"patientID"];
+			if (patientID)
+				_doc->setPatientID([patientID UTF8String]);
+			//Referring Physician
+			if ([_study valueForKey:@"referringPhysician"])
+				_doc->setReferringPhysiciansName([[_study valueForKey:@"referringPhysician"] UTF8String]);
+			//StudyID	
+			if ([_study valueForKey:@"id"]) {
+				NSString *studyID = [_study valueForKey:@"id"];
+				_doc->setStudyID([studyID UTF8String]);
+			}
+			//Accession Number
+			if ([_study valueForKey:@"accessionNumber"])
+				_doc->setAccessionNumber([[_study valueForKey:@"accessionNumber"] UTF8String]);
+			//Series Number
+			_doc->setSeriesNumber("5001");
+			
+			_doc->setManufacturer("OsiriX");
+			
+			// get KeyImages
+			_keyImages = [[_study keyImages] retain];
+			
+		}	
+	}
+	return self;
+
+}
+
 - (void)dealloc{
 	delete _doc;
 	[_study release];
@@ -337,6 +509,29 @@
 - (void)setKeyImages:(NSArray *)keyImages{
 	[_keyImages release];
 	_keyImages = [keyImages retain];
+}
+
+- (NSDate *)contentDate{
+	NSDate *date = nil;
+	const char *contentDate = _doc->getContentDate();
+	if (contentDate != NULL) {
+		NSString *dateString = [NSString stringWithUTF8String:contentDate];
+		date = [NSCalendarDate dateWithString:dateString calendarFormat:@"%Y%m%d"];
+	}
+	
+	return date;
+}
+- (void)setContentData:(NSDate *)date{
+}
+- (NSString *)title{
+	NSString *title = nil;
+	const char *seriesDescription = _doc->getSeriesDescription();
+	if (seriesDescription != NULL)
+		title = [NSString stringWithUTF8String:seriesDescription];
+	return title;
+}
+- (void)setTitle:(NSString *)title{
+
 }
 	
 - (BOOL)fileExists{
@@ -493,7 +688,6 @@
 		if ([_keyImages count] > 0){
 			NSLog(@"Add key Images");
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
-			//_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180"," DCM", "Key Images"));
 			NSEnumerator *enumerator = [_keyImages objectEnumerator];
 			id image;
