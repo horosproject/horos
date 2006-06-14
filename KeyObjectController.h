@@ -21,7 +21,16 @@
 
 
 @interface KeyObjectController : NSWindowController {
-
+	int _title;
+	NSString *_keyDescription;
+	id _study;
 }
+- (id)initWithStudy:(id)study;
+- (int) title;
+- (void)setTitle:(int)title;
+- (NSString *) keyDescription;
+- (void)setKeyDescription:(NSString *)keyDescription;
+
+- (IBAction)closeWindow:(id)sender;
 
 @end

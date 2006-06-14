@@ -31,5 +31,6 @@
  - (id) initWithStudy:(id)study  title:(int)title   description:(NSString *)description;
  - (BOOL)writeFileAtPath:(NSString *)path;
  - (BOOL)writeHTMLAtPath:(NSString *)path;
+ - (NSString *)sopInstanceUID;
 
 @end

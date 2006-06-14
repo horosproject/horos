@@ -84,7 +84,7 @@
 				break;
 			case 113003:	codeMeaning = "For Surgery";
 				break;
-			case 113004:	codeMeaning = "For teaching";
+			case 113004:	codeMeaning = "For Teaching";
 				break;
 			case 113005:	codeMeaning = "For Conference";
 				break;
@@ -203,6 +203,12 @@
 	if ( _doc->renderHTML(stream, renderFlags, NULL).good())	
 		return YES;	
 	return NO;
+}
+
+ - (NSString *)sopInstanceUID{
+	const char *sop = _doc->getStudyInstanceUID();
+	NSString *sopInstanceUID = [NSString stringWithUTF8String:sop];
+	return sopInstanceUID;
 }
 
 @end
