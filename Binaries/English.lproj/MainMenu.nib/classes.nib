@@ -190,6 +190,7 @@
                 closeSelectedBrushROI = id; 
                 coView = id; 
                 copySettingsToOthers = id; 
+                createKeyObjectNote = id; 
                 customizeViewerToolBar = id; 
                 dilateSelectedBrushROI = id; 
                 displayDICOMOverlays = id; 

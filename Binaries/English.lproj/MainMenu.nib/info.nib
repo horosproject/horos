@@ -15,11 +15,11 @@
 		<key>11606</key>
 		<string>565 522 150 68 0 0 1280 832 </string>
 		<key>12309</key>
-		<string>633 564 173 70 0 0 1440 878 </string>
+		<string>873 776 173 70 0 0 1920 1178 </string>
 		<key>1580</key>
 		<string>850 353 220 815 0 0 1920 1178 </string>
 		<key>29</key>
-		<string>732 834 561 44 0 0 1440 878 </string>
+		<string>814 1131 561 44 0 0 1920 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
@@ -27,8 +27,8 @@
 	<array/>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>12309</integer>
 		<integer>29</integer>
+		<integer>12309</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8I1119</string>

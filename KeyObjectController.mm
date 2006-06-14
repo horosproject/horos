@@ -27,6 +27,7 @@
 - (id)initWithStudy:(id)study{
 	if (self = [super initWithWindowNibName:@"KeyObjectReport"])
 		_study = [study retain];
+		_title = 113000; // Of Interest
 	
 	return self;
 }
@@ -53,6 +54,7 @@
 
 - (IBAction)closeWindow:(id)sender{
 	if ([sender tag] == 0){
+		NSLog(@"close Window");
 		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
 		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription];
@@ -70,8 +72,8 @@
 		[ko writeFileAtPath:path];
 		[ko release];
 	}
-	[NSApp endSheet:[self window]];
-	[[self window] close];
+	[NSApp endSheet:[self window] returnCode:0];
+	//[[self window] close];
 	
 }
 

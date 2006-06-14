@@ -83,6 +83,8 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "HornRegistration.h"
 #import "ITKTransform.h"
 
+#import "KeyObjectController.h"
+
 @class VRPROController;
 
 extern	NSMutableDictionary		*plugins, *pluginsDict;
@@ -10248,6 +10250,19 @@ sourceRef);
 - (void)setStandardRect:(NSRect)rect{
 	standardRect = rect;
 	
+}
+
+#pragma mark-
+#pragma mark Key Objects
+- (IBAction)createKeyObjectNote:(id)sender{
+	id study = [[imageView seriesObj] valueForKey:@"study"];
+	KeyObjectController *controller = [[KeyObjectController alloc] initWithStudy:(id)study];
+	[NSApp beginSheet:[controller window]  modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(keyObjectSheetDidEnd:returnCode:contextInfo:) contextInfo:controller];
+}
+
+- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+	NSLog(@"sheet did end");
+	[(KeyObjectController *)contextInfo release];
 }
 
 
