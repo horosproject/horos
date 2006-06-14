@@ -26,9 +26,12 @@
 	id _study;
 	DSRDocument *_doc;
 	NSArray *_keyImages;
+	NSString *_keyDescription;
+	int _title;
 }
 
  - (id) initWithStudy:(id)study  title:(int)title   description:(NSString *)description;
+ - (void)createKO;
  - (BOOL)writeFileAtPath:(NSString *)path;
  - (BOOL)writeHTMLAtPath:(NSString *)path;
  - (NSString *)sopInstanceUID;

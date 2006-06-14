@@ -10261,8 +10261,7 @@ sourceRef);
 }
 
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
-	NSLog(@"sheet did end");
-	[(KeyObjectController *)contextInfo release];
+	[contextInfo autorelease];
 }
 
 

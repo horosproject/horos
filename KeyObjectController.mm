@@ -25,10 +25,11 @@
 @implementation KeyObjectController
 
 - (id)initWithStudy:(id)study{
-	if (self = [super initWithWindowNibName:@"KeyObjectReport"])
+	if (self = [super initWithWindowNibName:@"KeyObjectReport"]) {
 		_study = [study retain];
 		_title = 113000; // Of Interest
-	
+		NSLog(@"init Key Object controller");
+	}
 	return self;
 }
 
@@ -50,30 +51,50 @@
 - (void)setKeyDescription:(NSString *)keyDescription{
 	[_keyDescription release];
 	_keyDescription = [keyDescription retain];
+	NSLog(@"set description: %@",keyDescription);
 }
 
 - (IBAction)closeWindow:(id)sender{
 	if ([sender tag] == 0){
+		NS_DURING
 		NSLog(@"close Window");
 		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
-		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription];
-		NSString *sopInstanceUID = [ko sopInstanceUID];
+
+		NSLog(@"create folders");
 		NSString *rootFolder = [[BrowserController currentBrowser] documentsDirectory];
 		path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
 		NSFileManager *defaultManager = [NSFileManager defaultManager];
 		BOOL isDir;
-		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir))
+		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir)) {
+			NSLog(@"create study Folder");
 			[defaultManager createDirectoryAtPath:path attributes:nil];
-		path = [rootFolder stringByAppendingPathComponent:@"KEYOBJECTS"];
-		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir))
+		}
+		path = [path stringByAppendingPathComponent:@"KEYOBJECTS"];
+		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir)) {
+			NSLog(@"create KEYOBJECTS folder");
 			[defaultManager createDirectoryAtPath:(NSString *)path attributes:nil];
-		path = [rootFolder stringByAppendingPathComponent:sopInstanceUID];
-		[ko writeFileAtPath:path];
-		[ko release];
+		}
+		
+		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription];
+		NSLog(@"KO %@ retain count: %d",[ko description],  [ko retainCount]);
+		NSString *sopInstanceUID = [ko sopInstanceUID];
+		//NSString *sopInstanceUID = @"1111.11.11.11";
+		path = [path stringByAppendingPathComponent:sopInstanceUID];
+		NSLog(@"Write file: %@", path);
+		if (ko) {
+			NSLog(@"ko: %@", [ko description]);
+			[ko writeFileAtPath:path];
+			[ko release];
+		}
+		NSLog(@"end close Window");
+		NS_HANDLER
+			NSLog(@"exception: %@", [localException description]);
+		NS_ENDHANDLER
+		
 	}
 	[NSApp endSheet:[self window] returnCode:0];
-	//[[self window] close];
+	[[self window] close];
 	
 }
 

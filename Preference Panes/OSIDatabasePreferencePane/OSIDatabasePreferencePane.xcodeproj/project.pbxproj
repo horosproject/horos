@@ -19,6 +19,23 @@
 		CE75CA4B0A23AAFA00D22E9E /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE75CA4A0A23AAFA00D22E9E /* PreferencePaneController.h */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFE0CDA90A3F3DAE00923923 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFE0CDAA0A3F3DAE00923923 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXFileReference section */
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -169,6 +186,12 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F10087587FF007FFD6F /* Build configuration list for PBXProject "OSIDatabasePreferencePane" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFE0CDA90A3F3DAE00923923 /* Development */,
+				BFE0CDAA0A3F3DAE00923923 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* OSIDatabasePreferencePane */;
 			projectDirPath = "";
