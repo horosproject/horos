@@ -16,6 +16,8 @@
 
 Version 2.3
 	20060116	LP	Added CombineProjectionSeries and splitMultiechoMR options
+Version 2.4
+	20060608	LP	Added DICOM SR option for reports
 	
 *****************************************************************************************************/
 

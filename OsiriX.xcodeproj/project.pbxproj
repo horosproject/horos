@@ -1342,6 +1342,21 @@
 		BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
 		BF01AA23078CF6C80037222F /* DCMCMoveResponseDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF01AA24078CF6C80037222F /* DCMCMoveResponseDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */; };
+		BF038E800A3FB49700663EBB /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
+		BF038E810A3FB49700663EBB /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
+		BF038E820A3FB49700663EBB /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
+		BF038E830A3FB49700663EBB /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
+		BF038E840A3FB49700663EBB /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
+		BF038E850A3FB49700663EBB /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
+		BF038E860A3FB49700663EBB /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
+		BF038E870A3FB49700663EBB /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
+		BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7C0A3FB49700663EBB /* KeyObjectController.h */; };
+		BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */; };
+		BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */ = {isa = PBXBuildFile; fileRef = BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */; };
+		BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */; };
+		BF038E900A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */; };
+		BF038E910A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */; };
+		BF038E920A3FB6CF00663EBB /* KeyObjectReport.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */; };
 		BF03E55D07BEFFC500100045 /* DCMCFindResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -9675,6 +9690,11 @@
 		BF00C95906F3F43900715191 /* DCMCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCursor.m; sourceTree = "<group>"; };
 		BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCMoveResponseDataHandler.h; path = Networking/DCMCMoveResponseDataHandler.h; sourceTree = "<group>"; };
 		BF01AA22078CF6C80037222F /* DCMCMoveResponseDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCMoveResponseDataHandler.m; path = Networking/DCMCMoveResponseDataHandler.m; sourceTree = "<group>"; };
+		BF038E7C0A3FB49700663EBB /* KeyObjectController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectController.h; sourceTree = "<group>"; };
+		BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectController.mm; sourceTree = "<group>"; };
+		BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KeyObjectReport.h; sourceTree = "<group>"; };
+		BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectReport.mm; sourceTree = "<group>"; };
+		BF038E8F0A3FB6CE00663EBB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/KeyObjectReport.nib; sourceTree = "<group>"; };
 		BF03E55B07BEFFC500100045 /* DCMCFindResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCFindResponse.h; sourceTree = "<group>"; };
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
@@ -12773,6 +12793,7 @@
 				BF1745CB08E0C57300822756 /* LogWindow.nib */,
 				7E075C540951FADD004B9D6F /* Send.nib */,
 				BF62904A0A2B7CC400BB0B62 /* StructuredReport.nib */,
+				BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
@@ -13891,6 +13912,10 @@
 				BF6290760A2B7E8600BB0B62 /* SRArrayController.m */,
 				BF47CC310A2E4AD800700AA9 /* StructuredReport.h */,
 				BF47CC320A2E4AD900700AA9 /* StructuredReport.mm */,
+				BF038E7C0A3FB49700663EBB /* KeyObjectController.h */,
+				BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */,
+				BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */,
+				BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -18705,6 +18730,8 @@
 				BF62905B0A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF62907B0A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
 				BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */,
+				BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */,
+				BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20521,6 +20548,8 @@
 				BF6290590A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF6290790A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
 				BF47CC350A2E4AD900700AA9 /* StructuredReport.h in Headers */,
+				BF038E800A3FB49700663EBB /* KeyObjectController.h in Headers */,
+				BF038E820A3FB49700663EBB /* KeyObjectReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22342,6 +22371,8 @@
 				BF6290570A2B7D5000BB0B62 /* StructuredReportController.h in Headers */,
 				BF6290770A2B7E8600BB0B62 /* SRArrayController.h in Headers */,
 				BF47CC330A2E4AD900700AA9 /* StructuredReport.h in Headers */,
+				BF038E840A3FB49700663EBB /* KeyObjectController.h in Headers */,
+				BF038E860A3FB49700663EBB /* KeyObjectReport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22904,6 +22935,7 @@
 				BF47CBD60A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */,
+				BF038E900A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23173,6 +23205,7 @@
 				BF47CBD30A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD40A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD50A2E31B100700AA9 /* viewXML.tif in Resources */,
+				BF038E920A3FB6CF00663EBB /* KeyObjectReport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23442,6 +23475,7 @@
 				BF47CBD00A2E31B100700AA9 /* viewHTML.tif in Resources */,
 				BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD20A2E31B100700AA9 /* viewXML.tif in Resources */,
+				BF038E910A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24341,6 +24375,8 @@
 				BF62905C0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF62907C0A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
 				BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
+				BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */,
+				BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24907,6 +24943,8 @@
 				BF62905A0A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF62907A0A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
 				BF47CC360A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
+				BF038E810A3FB49700663EBB /* KeyObjectController.mm in Sources */,
+				BF038E830A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25563,6 +25601,8 @@
 				BF6290580A2B7D5000BB0B62 /* StructuredReportController.mm in Sources */,
 				BF6290780A2B7E8600BB0B62 /* SRArrayController.m in Sources */,
 				BF47CC340A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
+				BF038E850A3FB49700663EBB /* KeyObjectController.mm in Sources */,
+				BF038E870A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25818,6 +25858,14 @@
 				ABCB2D340655B186006C5630 /* English */,
 			);
 			name = SearchWindow.nib;
+			sourceTree = "<group>";
+		};
+		BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF038E8F0A3FB6CE00663EBB /* English */,
+			);
+			name = KeyObjectReport.nib;
 			sourceTree = "<group>";
 		};
 		BF1745CB08E0C57300822756 /* LogWindow.nib */ = {

@@ -123,6 +123,7 @@
                 clutAction = id; 
                 computeSum = id; 
                 convMatrixAction = id; 
+                createKeyObjectNote = id; 
                 dilateSelectedBrushROI = id; 
                 dilateSelectedBrushROIWithRadius = id; 
                 endBlendingType = id; 
