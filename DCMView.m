@@ -2942,11 +2942,12 @@ static long scrollMode;
 
         if (tool == tZoom)
         {
-			[self setScaleValue: (startScaleValue + (current.y - start.y)/50.)];
-//            scaleValue = startScaleValue + (current.y - start.y)/50.;
-//            
-//            if( scaleValue < 0.01) scaleValue = 0.01;
-//            if( scaleValue > 100) scaleValue = 100;
+			[self setScaleValue: (startScaleValue + (current.y - start.y) / (80.))];
+			
+//          scaleValue = startScaleValue + (current.y - start.y)/50.;
+//          
+//          if( scaleValue < 0.01) scaleValue = 0.01;
+//          if( scaleValue > 100) scaleValue = 100;
 
 			origin.x = ((originStart.x * scaleValue) / startScaleValue);
 			origin.y = ((originStart.y * scaleValue) / startScaleValue);
