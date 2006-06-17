@@ -2093,6 +2093,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	*moved = NO;
 	
+	dRect.origin.x += 8;
+	dRect.origin.y += 8;
+	
 	for( i = 0; i < [rectArray count]; i++)
 	{
 		NSRect	curRect = [[rectArray objectAtIndex: i] rectValue];
@@ -2223,6 +2226,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		}
 		
 		tPt = [curView ConvertFromGL2View: tPt];
+		
 		drawRect.origin = tPt;
 	}
 	

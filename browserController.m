@@ -341,7 +341,6 @@ static BOOL COMPLETEREBUILD = NO;
 
 + (BrowserController*) currentBrowser { return browserWindow;}
 
-
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
@@ -424,6 +423,8 @@ static BOOL COMPLETEREBUILD = NO;
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
     [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES];
     [allBundles release];
+	
+	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	NSTask *theTask = [[NSTask alloc] init];
 	
@@ -2866,6 +2867,7 @@ SElement		*theGroupP;
 	NSString			*description = [NSString string];
 	NSIndexSet			*selectedRowIndexes =  [databaseOutline selectedRowIndexes];
 	NSMutableArray		*previousObjects = [NSMutableArray arrayWithCapacity:0];
+	BOOL				filtered = NO;
 	
 	unsigned index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
@@ -2909,6 +2911,7 @@ SElement		*theGroupP;
 		}
 		
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
+		filtered = YES;
 	}
 	else description = [description stringByAppendingFormat:NSLocalizedString(@"No album selected", nil)];
 	
@@ -2936,6 +2939,7 @@ SElement		*theGroupP;
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [timeIntervalStart descriptionWithCalendarFormat:sdf timeZone:0L locale:locale]];
 		}
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
+		filtered = YES;
 	}
 	
 	// ********************
@@ -2997,6 +3001,7 @@ SElement		*theGroupP;
 		*/
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [self filterPredicate], 0L]];
 		description = [description stringByAppendingString: [self filterPredicateDescription]];
+		filtered = YES;
 	}
 	
 	[request setPredicate: predicate];
@@ -3006,7 +3011,7 @@ SElement		*theGroupP;
 	error = 0L;
 	outlineViewArray = [context executeFetchRequest:request error:&error];
 	
-	if( [albumTable selectedRow] > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
 	{
 		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 		
@@ -4843,9 +4848,15 @@ SElement		*theGroupP;
 NSAutoreleasePool               *pool=[[NSAutoreleasePool alloc] init];
 long							i, subGroupCount = 1, position = 0;
 BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
+BOOL							imageLevel = NO;
 
     threadWillRunning = NO;
     threadRunning = YES;
+	
+	if( [files count] > 1)
+	{
+		if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+	}
 	
 	for( i = 0; i < [files count];i++)
 	{
@@ -4853,7 +4864,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 		NSImage		*thumbnail = 0L;
 		BOOL		computeThumbnail = NO;
 		
-		if( StoreThumbnailsInDB)
+		if( StoreThumbnailsInDB && !imageLevel)
 		{
 			thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
 			if( thumbnail == 0L) computeThumbnail = YES;
@@ -4874,7 +4885,7 @@ BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForK
 			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
 		
 			[previewPixThumbnails addObject: thumbnail];
-			if( StoreThumbnailsInDB && computeThumbnail)
+			if( StoreThumbnailsInDB && computeThumbnail && !imageLevel)
 			{
 				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			}
@@ -6809,6 +6820,8 @@ static BOOL needToRezoom;
 	[oMatrix setDelegate:self];
 	[oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
 	[oMatrix setFocusRingType: NSFocusRingTypeExterior];
+	[oMatrix renewRows:0 columns: 0];
+	[oMatrix sizeToCells];
 	
 	[imageView setTheMatrix:oMatrix];
 	
@@ -7213,13 +7226,15 @@ static BOOL needToRezoom;
 	[deleteQueueArray removeAllObjects];
 	[deleteQueue unlock];
 	
-	NSLog(@"delete Queue start");
-	
-	for( i = 0; i < [copyArray count]; i++)
-		[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
-	
-	NSLog(@"delete Queue end");
-	
+	if( [copyArray count])
+	{
+		NSLog(@"delete Queue start");
+		
+		for( i = 0; i < [copyArray count]; i++)
+			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
+		
+		NSLog(@"delete Queue end");
+	}
 	[pool release];
 }
 

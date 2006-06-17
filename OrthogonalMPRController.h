@@ -70,6 +70,7 @@
 - (void) restoreViewsFrame;
 - (void) toggleDisplayResliceAxes: (id) sender;
 - (void) resetImage;
+- (void) scaleToFit;
 
 - (NSMutableArray*) originalDCMPixList;
 - (void) scaleToFit : (id) destination;

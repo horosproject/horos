@@ -8623,6 +8623,7 @@
 		CEE47B5C0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
 		CEE47B5D0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
 		CEE47B5E0838D138009FCE86 /* vtkVolumeProMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEE47B5B0838D138009FCE86 /* vtkVolumeProMapper.cxx */; };
+		CEE5E3790A3C6D8100DE4AEE /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.m */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
 		CEE619F00912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
 		CEE619F10912C73000C31D78 /* OrientationWidget.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tiff */; };
@@ -8705,23 +8706,6 @@
 		CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		BFE0D2830A40A1C700923923 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		BFE0D2840A40A1C700923923 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
@@ -22518,12 +22502,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				BFE0D2830A40A1C700923923 /* Development */,
-				BFE0D2840A40A1C700923923 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -25054,6 +25032,7 @@
 				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
 				ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */,
 				CECCEF670A242D4200EFE5A8 /* browserController.m in Sources */,
+				CEE5E3790A3C6D8100DE4AEE /* AppController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

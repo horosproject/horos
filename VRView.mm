@@ -4110,7 +4110,7 @@ public:
 	
 	[self setCLUT:0L :0L :0L];
 	
-	[self setShadingValues:0.2 :0.8 :0.5 :10];
+	[self setShadingValues:0.15 :0.9 :0.3 :15];
 
 //	volumeProperty->ShadeOn();
     volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();

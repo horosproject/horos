@@ -48,7 +48,7 @@
 
 
 extern NSString * convertDICOM( NSString *inputfile);
-extern NSMutableDictionary *fileFormatPlugins, *preProcessPlugins;
+extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
 
 long gGlobaluniqueID = 0;
@@ -178,15 +178,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			
-			if( [AppController isHUG])
+			if( [AppController isLAVIM])
 			{
-				if( [preProcessPlugins objectForKey: @"LavimAnonymize"])
-					CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
+				CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
+				NSLog( @"LAVIM !");
 			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
-			NSDictionary	*dict = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"];
+			NSMutableDictionary	*dict = [AppController getDefaults];
+			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
 			
 			DEFAULTSSET = YES;
 			

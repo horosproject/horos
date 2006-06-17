@@ -159,6 +159,8 @@ NSString * documentsDirectory();
              object: nil];
 	[nc postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
+	
+	
 	return self;
 }
 
@@ -427,6 +429,8 @@ NSString * documentsDirectory();
 {
 	[controller showViews:sender];
 	[super showWindow:sender];
+	
+	[controller scaleToFit];
 }
 
 - (void) windowWillClose:(NSNotification *)notification
@@ -588,6 +592,8 @@ NSString * documentsDirectory();
 			[splitView adjustSubviews];
 		//	[controller scaleToFit:[controller originalView]];
 			[[self window] makeFirstResponder:[controller originalView]];
+			
+			[[controller originalView] scaleToFit];
 		}
 		else if (index==1)
 		{
@@ -596,6 +602,8 @@ NSString * documentsDirectory();
 			[splitView adjustSubviews];
 		//	[controller scaleToFit:[controller xReslicedView]];
 			[[self window] makeFirstResponder:[controller xReslicedView]];
+			
+			[[controller xReslicedView] scaleToFit];
 		}
 		else if (index==2)
 		{
@@ -604,6 +612,8 @@ NSString * documentsDirectory();
 			[splitView adjustSubviews];
 		//	[controller scaleToFit:[controller yReslicedView]];
 			[[self window] makeFirstResponder:[controller yReslicedView]];
+			
+			[[controller yReslicedView] scaleToFit];
 		}
 		[splitView setNeedsDisplay:YES];
 	}

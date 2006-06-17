@@ -6040,6 +6040,8 @@ int i,j,l;
 {
 	long i, x;
 	
+	if( [roiList[curMovieIndex] count] <= [imageView curImage]) return;
+	
 	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
@@ -7952,6 +7954,8 @@ int i,j,l;
 		
 		[self exportQuicktimeIn: [[quicktimeMode selectedCell] tag] :from :to :interval];
 	}
+	
+	[self adjustSlider];
 }
 
 - (IBAction) exportQuicktimeSlider:(id) sender
@@ -7963,6 +7967,8 @@ int i,j,l;
 	else [imageView setIndex:  [sender intValue]-1];
 	
 	[imageView sendSyncMessage:1];
+	
+	[self adjustSlider];
 }
 
 - (void) exportQuicktime:(id) sender
@@ -7982,8 +7988,8 @@ int i,j,l;
 	[quicktimeFrom setIntValue: 1];
 	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
 	
-	[quicktimeFrom performClick: self];	// Will update the text field
 	[quicktimeTo performClick: self];	// Will update the text field
+	[quicktimeFrom performClick: self];	// Will update the text field
 	[quicktimeInterval performClick: self];	// Will update the text field
 	
 	[self setCurrentdcmExport: quicktimeMode];
@@ -8135,6 +8141,7 @@ int i,j,l;
 					
 					[imageView sendSyncMessage:1];
 					[imageView display];
+					[self adjustSlider];
 					
 					{
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -8146,13 +8153,12 @@ int i,j,l;
 				[splash incrementBy: 1];
 			}
 			
-			[imageView setIndex: curImage];
-			[imageView display];
-			
 			[splash close];
 			[splash release];
 		}
 	}
+	
+	[self adjustSlider];
 }
 
 -(void) exportRAW:(id) sender
@@ -8217,6 +8223,8 @@ int i,j,l;
 	else [imageView setIndex:  [sender intValue]-1];
 	
 	[imageView sendSyncMessage:1];
+	
+	[self adjustSlider];
 }
 
 - (void) exportDICOMFile:(id) sender
@@ -8233,8 +8241,8 @@ int i,j,l;
 	[dcmFrom setIntValue: 1];
 	[dcmTo setIntValue: [pixList[ curMovieIndex] count]];
 	
-	[dcmFrom performClick: self];	// Will update the text field
 	[dcmTo performClick: self];	// Will update the text field
+	[dcmFrom performClick: self];	// Will update the text field
 	[dcmInterval performClick: self];	// Will update the text field
 	
 	[self setCurrentdcmExport: dcmSelection];
@@ -10003,9 +10011,17 @@ long i;
 		
 		if( [browserWindow isCurrentDatabaseBonjour])
 		{
-			while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+			while( [ThreadLoadImageLock tryLock] == NO)
+			{
+				[browserWindow bonjourRunLoop: self];
+				
+			}
 		}
-		else [ThreadLoadImageLock lock];
+		else
+		{
+			while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+		}
+		
 		[ThreadLoadImageLock unlock];
 		
 		while( loadingPercentage != 1)

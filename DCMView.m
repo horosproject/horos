@@ -1863,7 +1863,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		mouseYPos = 0;							// otherwise update mouseXPos, mouseYPos, pixelMouseValue
 		pixelMouseValue = 0;
 		
-		if( imageLocation.x >= 0 && imageLocation.x < [curDCM pwidth])
+		if( imageLocation.x >= 0 && imageLocation.x < [curDCM pwidth])	//&& NSPointInRect( eventLocation, size)) <- this doesn't work in MPR Ortho
 		{
 			if( imageLocation.y >= 0 && imageLocation.y < [curDCM pheight])
 			{

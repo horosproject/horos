@@ -885,10 +885,10 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 {
 	float ambient, diffuse, specular, specularpower;
 	
-	ambient = 0.2;
-	diffuse = 0.8;
-	specular = 0.6;
-	specularpower = 10;
+	ambient = 0.15;
+	diffuse = 0.9;
+	specular = 0.3;
+	specularpower = 15;
 	
 	[[shadingForm cellAtIndex: 0] setFloatValue: ambient];
 	[[shadingForm cellAtIndex: 1] setFloatValue: diffuse];

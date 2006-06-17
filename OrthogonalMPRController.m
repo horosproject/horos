@@ -55,6 +55,7 @@
 												selector: @selector(changeWLWW:)
 												name: @"changeWLWW"
 												object: nil];
+
 	}
 	
 	return self;

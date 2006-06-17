@@ -60,7 +60,7 @@ NSString* convertDICOM( NSString *inputfile)
 int main(int argc, const char *argv[])
 {
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
-	
+		
 	#if __ppc__
 	Altivec = 1;
 	#endif

@@ -131,7 +131,7 @@
 		
 		NSString *key = [[view filterKeyPopup] titleOfSelectedItem];
 		// Modality	
-		if ([key isEqualToString:@"Modality"])
+		if ([key isEqualToString:NSLocalizedString(@"Modality", 0L)])
 		{
 			switch ([[view searchTypePopup] indexOfSelectedItem]) {
 				case osiCR: value = @"CR";
@@ -166,7 +166,7 @@
 			predicateString = [NSString stringWithFormat:@"modality like[c] \"%@\"", value];
 		}
 		// Study status	
-		else if ([key isEqualToString:@"Study Status"])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Status", 0L)])
 		{
 			switch ([[view searchTypePopup] indexOfSelectedItem]) {
 				case empty: value = @"0";
@@ -241,23 +241,23 @@
 			value = [[view valueField] stringValue];
 		}
 		
-		if ([key isEqualToString:@"Patient Name"])
+		if ([key isEqualToString:NSLocalizedString(@"Patient Name", 0L)])
 			key = @"name";
-		else if ([key isEqualToString:@"Patient ID"])
+		else if ([key isEqualToString:NSLocalizedString(@"Patient ID", 0L)])
 			key = @"patientID";
-		else if ([key isEqualToString:@"Study ID"])
+		else if ([key isEqualToString:NSLocalizedString(@"Study ID", 0L)])
 			key = @"id";
-		else if ([key isEqualToString:@"Study Description"])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Description", 0L)])
 			key = @"studyName";
-		else if ([key isEqualToString:@"Referring Physician"])
+		else if ([key isEqualToString:NSLocalizedString(@"Referring Physician", 0L)])
 			key = @"referringPhysician";
-		else if ([key isEqualToString:@"Performing Physician"])
+		else if ([key isEqualToString:NSLocalizedString(@"Performing Physician", 0L)])
 			key = @"performingPhysician";
-		else if ([key isEqualToString:@"Institution"])	
+		else if ([key isEqualToString:NSLocalizedString(@"Institution", 0L)])	
 			key = @"institutionName";
-		else if ([key isEqualToString:@"Comments"])	
+		else if ([key isEqualToString:NSLocalizedString(@"Comments", 0L)])	
 			key = @"comment";
-		else if ([key isEqualToString:@"Study Status"])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Status", 0L)])
 		{
 			key = @"stateText";
 			predicateString = [NSString stringWithFormat:@"stateText == %d", [value intValue]];
