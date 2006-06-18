@@ -1235,6 +1235,11 @@ NSString * documentsDirectory();
 			[toolsMatrix selectCellWithTag:8];
 		}
 		
+		[originalSplitView resizeSubviewsWithOldSize:[originalSplitView bounds].size];
+		[xReslicedSplitView resizeSubviewsWithOldSize:[xReslicedSplitView bounds].size];
+		[yReslicedSplitView resizeSubviewsWithOldSize:[yReslicedSplitView bounds].size];
+		[modalitySplitView resizeSubviewsWithOldSize:[modalitySplitView bounds].size];
+	
 		isFullWindow = NO;
 	}
 	else
@@ -1270,18 +1275,38 @@ NSString * documentsDirectory();
 		{
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:YES];
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:2] isCollapsed:YES];
+			
 		}
 		else if(index==2)
 		{
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:YES];
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:1] isCollapsed:YES];
 		}
+		
+		[originalSplitView resizeSubviewsWithOldSize:[originalSplitView bounds].size];
+		[xReslicedSplitView resizeSubviewsWithOldSize:[xReslicedSplitView bounds].size];
+		[yReslicedSplitView resizeSubviewsWithOldSize:[yReslicedSplitView bounds].size];
+		[modalitySplitView resizeSubviewsWithOldSize:[modalitySplitView bounds].size];
+		
+		if (index==0)
+		{
+			[[CTController originalView] scaleToFit];
+			[[CTController originalView] blendingPropagate];
+		}
+		else if (index==1)
+		{
+			[[CTController xReslicedView] scaleToFit];
+			[[CTController xReslicedView] blendingPropagate];
+			
+		}
+		else if(index==2)
+		{
+			[[CTController yReslicedView] scaleToFit];
+			[[CTController yReslicedView] blendingPropagate];
+		}
+		
 		isFullWindow = YES;
 	}
-	[originalSplitView resizeSubviewsWithOldSize:[originalSplitView bounds].size];
-	[xReslicedSplitView resizeSubviewsWithOldSize:[xReslicedSplitView bounds].size];
-	[yReslicedSplitView resizeSubviewsWithOldSize:[yReslicedSplitView bounds].size];
-	[modalitySplitView resizeSubviewsWithOldSize:[modalitySplitView bounds].size];
 	
 	[modalitySplitView setNeedsDisplay:YES];
 }
