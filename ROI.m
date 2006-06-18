@@ -2161,7 +2161,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
 		
-		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height , 3);
+		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3);
 		
 		NSPoint tPt;
 		
