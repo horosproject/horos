@@ -2534,8 +2534,6 @@ SElement		*theGroupP;
 
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
-	[outlineViewArray release];
-	
 	NSError				*error = 0L;
 	long				i;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -2685,6 +2683,7 @@ SElement		*theGroupP;
 	NSManagedObjectContext *context = [self managedObjectContext];
 	[context lock];
 	error = 0L;
+	[outlineViewArray release];
 	outlineViewArray = [context executeFetchRequest:request error:&error];
 	
 	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)

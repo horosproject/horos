@@ -176,7 +176,10 @@ NSString * documentsDirectory();
 	fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
 	sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
 	sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
-		
+	
+	if( fistCTSlice + sliceRangeCT > [pix count])  sliceRangeCT = [pix count] - fistCTSlice;
+	if( fistPETSlice + sliceRangePET > [[bC pixList] count])  sliceRangePET = [[bC pixList] count] - fistPETSlice;
+	
 	// initialisations
 	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
 	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : vC : nil : self];
