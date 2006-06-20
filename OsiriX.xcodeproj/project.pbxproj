@@ -1189,6 +1189,9 @@
 		ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
 		ABD1A8720619E68B00C5B670 /* ROIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD1A86E0619E68B00C5B670 /* ROIWindow.h */; };
 		ABD1A8730619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
+		ABD4D2370A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
+		ABD4D2380A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
+		ABD4D2390A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */ = {isa = PBXBuildFile; fileRef = ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */; };
 		ABD578EB0623179E00616F39 /* HistogramWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD578E90623179E00616F39 /* HistogramWindow.m */; };
 		ABD578EC0623179E00616F39 /* HistogramWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD578EA0623179E00616F39 /* HistogramWindow.h */; };
 		ABD578ED0623179E00616F39 /* HistogramWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD578E90623179E00616F39 /* HistogramWindow.m */; };
@@ -9653,6 +9656,7 @@
 		ABCCF3050614176500DBD16C /* jmorecfg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = jmorecfg.h; path = Papyrus3/JpegDir/JpgLossy/jmorecfg.h; sourceTree = "<group>"; };
 		ABD1A86E0619E68B00C5B670 /* ROIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROIWindow.h; sourceTree = "<group>"; };
 		ABD1A86F0619E68B00C5B670 /* ROIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROIWindow.m; sourceTree = "<group>"; };
+		ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel2.0.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel2.0.mom; sourceTree = "<group>"; };
 		ABD578E90623179E00616F39 /* HistogramWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = HistogramWindow.m; sourceTree = "<group>"; };
 		ABD578EA0623179E00616F39 /* HistogramWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = HistogramWindow.h; sourceTree = "<group>"; };
 		ABD5790806231FEF00616F39 /* HistoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoView.h; sourceTree = "<group>"; };
@@ -16653,6 +16657,7 @@
 			children = (
 				CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */,
 				ABBDE6700A2C4BAA0031C204 /* OsiriXDB_Previous_DataModel1.5.mom */,
+				ABD4D2360A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom */,
 			);
 			name = "Previous DB Models";
 			sourceTree = "<group>";
@@ -22963,6 +22968,7 @@
 				BF47CBD70A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD80A2E31B100700AA9 /* viewXML.tif in Resources */,
 				BF038E900A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */,
+				ABD4D2390A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23233,6 +23239,7 @@
 				BF47CBD40A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD50A2E31B100700AA9 /* viewXML.tif in Resources */,
 				BF038E920A3FB6CF00663EBB /* KeyObjectReport.nib in Resources */,
+				ABD4D2380A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23503,6 +23510,7 @@
 				BF47CBD10A2E31B100700AA9 /* viewSR.tif in Resources */,
 				BF47CBD20A2E31B100700AA9 /* viewXML.tif in Resources */,
 				BF038E910A3FB6CE00663EBB /* KeyObjectReport.nib in Resources */,
+				ABD4D2370A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

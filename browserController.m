@@ -101,7 +101,7 @@ Version 2.3
 
 
 
-#define DATABASEVERSION @"2.0"
+#define DATABASEVERSION @"2.1"
 
 #define DATABASEPATH @"/DATABASE/"
 #define DATABASEFPATH @"/DATABASE"
@@ -680,6 +680,7 @@ static BOOL COMPLETEREBUILD = NO;
 									[seriesTable setValue:today forKey:@"dateAdded"];
 									
 									if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
+									if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesDescription" stringByAppendingString:SeriesNum]] forKey:@"name"];
 									[seriesTable setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];

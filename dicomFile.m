@@ -1441,6 +1441,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
+				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
+				if (val != NULL)
+				{
+					[dicomElements setObject:[NSString stringWithCString:val->a] forKey:@"SOPClassUID"];
+				}
+				
 				val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
 				if (val != NULL)
 				{
@@ -2249,7 +2255,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfFrames = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
 		else
 			NoOfFrames = 1;
-			
+		
+		if( [dcmObject attributeValueWithName:@"SOPClassUID"])
+			[dicomElements setObject:[dcmObject attributeValueWithName:@"SOPClassUID"] forKey:@"SOPClassUID"];
+		
 		if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]){
 			NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
