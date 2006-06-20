@@ -26719,7 +26719,6 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = SafeDBRebuild;
 				SYMROOT = build;
-				ZERO_LINK = YES;
 			};
 			name = Development;
 		};
