@@ -7827,7 +7827,8 @@ static BOOL needToRezoom;
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
+				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+				[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				tempPath = [path stringByAppendingPathComponent:name];
 			}
 			
@@ -7877,7 +7878,7 @@ static BOOL needToRezoom;
 				tempPath = [tempPath stringByAppendingPathComponent:name];
 			}
 			
-			tempPath = [tempPath stringByAppendingFormat:@" - %@", [curImage valueForKeyPath: @"series.id"]];
+			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
 			// Find the DICOM-SERIE folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -7892,7 +7893,7 @@ static BOOL needToRezoom;
 			if (!addDICOMDIR)
 				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
 			else
-				dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo];
+				dest = [NSString stringWithFormat:@"%@/%3.3d%4.4d", tempPath, serieCount, imageNo];
 			
 			t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
@@ -8164,7 +8165,7 @@ static BOOL needToRezoom;
 						
 						tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
 						
-						tempPath = [tempPath stringByAppendingFormat:@" - %@", [curImage valueForKeyPath: @"series.id"]];
+						tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 						// Find the DICOM-SERIE folder
 						if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 						
@@ -8394,7 +8395,7 @@ static BOOL needToRezoom;
 						
 						tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
 						
-						tempPath = [tempPath stringByAppendingFormat:@" - %@", [curImage valueForKeyPath: @"series.id"]];
+						tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 						// Find the DICOM-SERIE folder
 						if( ![mySession fileExistsAtPath:tempPath]) [mySession createDirectoryAtPath:tempPath attributes:nil];
 						
