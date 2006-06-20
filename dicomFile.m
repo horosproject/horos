@@ -26,10 +26,8 @@
 #import <OsiriX/DCMSequenceAttribute.h>
 #import "DCMObjectDBImport.h"
 #import "AppController.h"
- #import "DICOMToNSString.h"
-
-
-
+#import "DICOMToNSString.h"
+#import "DefaultsOsiriX.h"
 
 /************  Modifications *************************************************************************************
 *	Version 2.3
@@ -178,15 +176,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			
-			if( [AppController isLAVIM])
+			if( [DefaultsOsiriX isLAVIM])
 			{
 				CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
-				NSLog( @"LAVIM !");
 			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
-			NSMutableDictionary	*dict = [AppController getDefaults];
+			NSMutableDictionary	*dict = [DefaultsOsiriX getDefaults];
 			[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
 			
 			DEFAULTSSET = YES;

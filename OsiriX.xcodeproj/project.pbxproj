@@ -900,6 +900,24 @@
 		AB6AC64B0624AC5200AFC7AF /* VRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6430624AC5200AFC7AF /* VRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		AB6AC64C0624AC5200AFC7AF /* VRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6440624AC5200AFC7AF /* VRController.h */; };
 		AB6AC64D0624AC5200AFC7AF /* VRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6450624AC5200AFC7AF /* VRController.mm */; };
+		AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
+		AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
+		AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AB6FF5820A47CF4500C501F0 /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
+		AB6FF5830A47CF4500C501F0 /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
+		AB6FF5840A47CF4600C501F0 /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
+		AB6FF5850A47CF4600C501F0 /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */; };
+		AB6FF5860A47CF4700C501F0 /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */; };
+		AB6FF5890A47CF8700C501F0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
+		AB6FF58D0A47CFE000C501F0 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
+		AB6FF5970A47D08000C501F0 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */; };
+		AB6FF5980A47D08000C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
+		AB6FF5990A47D08000C501F0 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */; };
+		AB6FF59A0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
+		AB6FF59B0A47D08000C501F0 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */; };
+		AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
+		AB6FF5A90A47D0EF00C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
+		AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		AB726C86063F3AD500787EF6 /* QTExportVR.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB726C85063F3AD500787EF6 /* QTExportVR.icns */; };
 		AB726C87063F3AD500787EF6 /* QTExportVR.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB726C85063F3AD500787EF6 /* QTExportVR.icns */; };
 		AB73E13806497EDA00545980 /* PreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB73E13606497EDA00545980 /* PreviewView.h */; };
@@ -8373,8 +8391,6 @@
 		CECBFF1207539E3900576814 /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
 		CECBFF2207539E3900576814 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CECBFF2307539E3900576814 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
-		CECCEF670A242D4200EFE5A8 /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBCCDA505643A4C00A4E47A /* browserController.m */; };
-		CECCEF6E0A242D8700EFE5A8 /* DotMacKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CECD6B8A09643A8800F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
 		CECD6B8B09643A8900F200AC /* MatrixContextual.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0936B80963D63800C6A2CA /* MatrixContextual.h */; };
 		CECD6B8E09643A9300F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
@@ -9498,6 +9514,8 @@
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Wait.m; sourceTree = "<group>"; };
+		AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsOsiriX.h; sourceTree = "<group>"; };
+		AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsOsiriX.m; sourceTree = "<group>"; };
 		AB726C85063F3AD500787EF6 /* QTExportVR.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = QTExportVR.icns; sourceTree = "<group>"; };
 		AB73E13606497EDA00545980 /* PreviewView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PreviewView.h; sourceTree = "<group>"; };
 		AB73E13706497EDA00545980 /* PreviewView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PreviewView.m; sourceTree = "<group>"; };
@@ -12517,7 +12535,11 @@
 			files = (
 				AB32FAE30A21C0FB007D44C3 /* OsiriX.framework in Frameworks */,
 				AB3200080A21C338007D44C3 /* Foundation.framework in Frameworks */,
-				CECCEF6E0A242D8700EFE5A8 /* DotMacKit.framework in Frameworks */,
+				AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */,
+				AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */,
+				AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */,
+				AB6FF5890A47CF8700C501F0 /* QuickTime.framework in Frameworks */,
+				AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13525,6 +13547,8 @@
 				CE0936B90963D63800C6A2CA /* MatrixContextual.m */,
 				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
+				AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */,
+				AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -18732,6 +18756,7 @@
 				BF47CC370A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 				BF038E880A3FB49700663EBB /* KeyObjectController.h in Headers */,
 				BF038E8A0A3FB49700663EBB /* KeyObjectReport.h in Headers */,
+				AB6FF59B0A47D08000C501F0 /* DefaultsOsiriX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20550,6 +20575,7 @@
 				BF47CC350A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 				BF038E800A3FB49700663EBB /* KeyObjectController.h in Headers */,
 				BF038E820A3FB49700663EBB /* KeyObjectReport.h in Headers */,
+				AB6FF5990A47D08000C501F0 /* DefaultsOsiriX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22373,6 +22399,7 @@
 				BF47CC330A2E4AD900700AA9 /* StructuredReport.h in Headers */,
 				BF038E840A3FB49700663EBB /* KeyObjectController.h in Headers */,
 				BF038E860A3FB49700663EBB /* KeyObjectReport.h in Headers */,
+				AB6FF5970A47D08000C501F0 /* DefaultsOsiriX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24377,6 +24404,7 @@
 				BF47CC380A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 				BF038E890A3FB49700663EBB /* KeyObjectController.mm in Sources */,
 				BF038E8B0A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
+				AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24945,6 +24973,7 @@
 				BF47CC360A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 				BF038E810A3FB49700663EBB /* KeyObjectController.mm in Sources */,
 				BF038E830A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
+				AB6FF59A0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25030,7 +25059,13 @@
 				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
 				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
 				ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */,
-				CECCEF670A242D4200EFE5A8 /* browserController.m in Sources */,
+				AB6FF5820A47CF4500C501F0 /* DicomDirInitRecords.c in Sources */,
+				AB6FF5830A47CF4500C501F0 /* DicomDirInit.c in Sources */,
+				AB6FF5840A47CF4600C501F0 /* DicomDirFiles.c in Sources */,
+				AB6FF5850A47CF4600C501F0 /* DicomDirDataSetWrite.c in Sources */,
+				AB6FF5860A47CF4700C501F0 /* DicomDirDatasetRead.c in Sources */,
+				AB6FF58D0A47CFE000C501F0 /* FVTiff.m in Sources */,
+				AB6FF5A90A47D0EF00C501F0 /* DefaultsOsiriX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25603,6 +25638,7 @@
 				BF47CC340A2E4AD900700AA9 /* StructuredReport.mm in Sources */,
 				BF038E850A3FB49700663EBB /* KeyObjectController.mm in Sources */,
 				BF038E870A3FB49700663EBB /* KeyObjectReport.mm in Sources */,
+				AB6FF5980A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26708,6 +26744,11 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -26738,6 +26779,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INSTALL_PATH = /;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

@@ -60,7 +60,6 @@ NSRect screenFrame();
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 + (id) sharedAppController;
-+ (NSMutableDictionary*) getDefaults;
 - (void) terminate :(id) sender;
 - (void) restartSTORESCP;
 - (void) startSTORESCP:(id) sender;
@@ -107,8 +106,6 @@ NSRect screenFrame();
 
 #pragma mark-
 #pragma mark Geneva University Hospital (HUG) specific function
-+ (BOOL) isHUG;
-+ (BOOL) isLAVIM;
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
 @end
