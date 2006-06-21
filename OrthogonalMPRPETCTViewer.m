@@ -1470,40 +1470,26 @@ NSString * documentsDirectory();
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:2] isCollapsed:YES];
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:1] isCollapsed:YES];
 			[[self window] makeFirstResponder:[sender originalView]];
+			[[sender originalView] scaleToFit];
+			if ([sender isEqual:PETCTController]) [[sender originalView] blendingPropagate];
 		}
 		else if (index==1)
 		{
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:2] isCollapsed:YES];
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:YES];
 			[[self window] makeFirstResponder:[sender xReslicedView]];
+			[[sender xReslicedView] scaleToFit];
+			if ([sender isEqual:PETCTController]) [[sender xReslicedView] blendingPropagate];
 		}
 		else if (index==2)
 		{
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:1] isCollapsed:YES];
 			[modalitySplitView setSubview:[[modalitySplitView subviews] objectAtIndex:0] isCollapsed:YES];
 			[[self window] makeFirstResponder:[sender yReslicedView]];
-		}
-	
-		[originalSplitView resizeSubviewsWithOldSize:[originalSplitView bounds].size];
-		[xReslicedSplitView resizeSubviewsWithOldSize:[xReslicedSplitView bounds].size];
-		[yReslicedSplitView resizeSubviewsWithOldSize:[yReslicedSplitView bounds].size];
-		[modalitySplitView resizeSubviewsWithOldSize:[modalitySplitView bounds].size];
-		
-		if (index==0)
-		{
-			[[sender originalView] scaleToFit];
-			if ([sender isEqual:PETCTController]) [[sender originalView] blendingPropagate];
-		}
-		else if (index==1)
-		{
-			[[sender xReslicedView] scaleToFit];
-			if ([sender isEqual:PETCTController]) [[sender xReslicedView] blendingPropagate];
-		}
-		else if (index==2)
-		{
 			[[sender yReslicedView] scaleToFit];
 			if ([sender isEqual:PETCTController]) [[sender yReslicedView] blendingPropagate];
 		}
+		
 		isFullWindow = YES;
 	}
 	

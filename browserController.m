@@ -2975,6 +2975,10 @@ SElement		*theGroupP;
 
 - (void) outlineViewSelectionDidChange:(NSNotification *)aNotification
 {
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	
+	[context lock];
+	
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
@@ -3062,6 +3066,8 @@ SElement		*theGroupP;
 		[previousItem release];
 		previousItem = 0L;
 	}
+	
+	[context unlock];
 }
 
 -(void) delItemMatrix: (NSManagedObject*) obj
@@ -7866,12 +7872,16 @@ static BOOL needToRezoom;
 				
 				tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			}
-			else {
+			else
+			{
 				NSMutableString *name;
-				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
-				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
+//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
+//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
+//				else
+//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
+				
+				name = [NSMutableString stringWithString: [[[curImage valueForKeyPath: @"series.id"] stringValue] uppercaseString]];
+				
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];  
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
