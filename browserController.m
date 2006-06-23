@@ -4566,11 +4566,15 @@ SElement		*theGroupP;
 		if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
 	}
 	
+	[context unlock];
+	
 	for( i = 0; i < [files count];i++)
 	{
 		DCMPix*     dcmPix;
 		NSImage		*thumbnail = 0L;
 		BOOL		computeThumbnail = NO;
+		
+		[context lock];
 		
 		if( StoreThumbnailsInDB && !imageLevel)
 		{
@@ -4598,6 +4602,8 @@ SElement		*theGroupP;
 				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			}
 			
+			[context unlock];
+			
 			[previewPix addObject: dcmPix];
 			
 			[dcmPix release];
@@ -4609,7 +4615,9 @@ SElement		*theGroupP;
 			}
 		}
 		else
-		{					
+		{
+			[context unlock];
+			
 			dcmPix = [[DCMPix alloc] myinitEmpty];
 			[previewPix addObject: dcmPix];
 			[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
@@ -4618,7 +4626,7 @@ SElement		*theGroupP;
 		}
 	}
 	
-	[context unlock];
+	
 	
     threadRunning = NO;
     shouldDie = NO;
