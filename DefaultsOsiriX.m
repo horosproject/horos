@@ -576,7 +576,11 @@ static NSString *hostName = @"";
 	}
 			
 	// ** BESTRENDERING
+	#if __ppc__
 	[defaultValues setObject:@"1.6" forKey:@"BESTRENDERING"];
+	#else
+	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
+	#endif
 
 	// ** OPENVIEWER
 	[defaultValues setObject:@"1" forKey:@"OPENVIEWER"];

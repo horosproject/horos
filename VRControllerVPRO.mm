@@ -587,7 +587,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		
 		if( undodata[ i])
 		{
-			BlockMoveData( data, undodata[ i], memSize);
+			memcpy( undodata[ i], data, memSize);
 		}
 		else NSLog(@"Undo failed... not enough memory");
 	}

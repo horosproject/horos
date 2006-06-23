@@ -1498,6 +1498,12 @@ public:
 	else
 	{
 		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
+		
+		#if __ppc__
+		volumeProperty->SetShade( 0);
+		#else
+		volumeProperty->SetShade( 1);
+		#endif
 	}
 }
 
@@ -3487,7 +3493,10 @@ public:
 	if( f != LOD)
 	{
 		LOD = f;
+		
+		#if __ppc__
 		LOD += 0.5;
+		#endif
 		if( LOD < 1.5) LOD = 1.5;
 		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -4120,7 +4129,10 @@ public:
 //	compositeFunction->SetCompositeMethodToClassifyFirst();
 //	compositeFunction = vtkVolumeRayCastMIPFunction::New();
 	
-	LOD = 2.5;
+	LOD = 2.0;
+	#if __ppc__
+	LOD += 0.5;
+	#endif
 	
 	volume = vtkVolume::New();
     volume->SetProperty( volumeProperty);
