@@ -107,18 +107,11 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	IBOutlet NSButton				*bonjourSharingCheck, *bonjourPasswordCheck;
 	BonjourPublisher				*bonjourPublisher;
 	BonjourBrowser					*bonjourBrowser;
-
-    IBOutlet NSProgressIndicator    *working;
+	
 	IBOutlet NSSlider				*animationSlider;
 	IBOutlet NSButton				*animationCheck;
     
-   
     IBOutlet PreviewView			*imageView;
-//	IBOutlet NSWindow				*serverWindow;
-//	IBOutlet NSTextField			*noImages;
-//	IBOutlet NSComboBox				*serverList;
-//	IBOutlet NSPopUpButton			*syntaxListOsiriX, *syntaxListOffis;
-//	IBOutlet NSMatrix				*DICOMSendTool;
 	
 	IBOutlet NSWindow				*subSeriesWindow;
 	IBOutlet NSMatrix				*subSeriesMatrix;
@@ -204,6 +197,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
+- (NSArray*) imagesArray: (NSManagedObject*) item anyObjectIfPossible: (BOOL) any;
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;

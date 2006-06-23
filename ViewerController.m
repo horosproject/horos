@@ -1622,7 +1622,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 		{
 			NSManagedObject		*curStudy = [studiesArray objectAtIndex: x];
 			NSArray				*series = [browserWindow childrenArray: curStudy];
-			NSArray				*images = [browserWindow imagesArray: curStudy];
+			NSArray				*images = [browserWindow imagesArray: curStudy anyObjectIfPossible:YES];
 			
 			if( [series count] != [images count])
 			{

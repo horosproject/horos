@@ -2885,7 +2885,7 @@ SElement		*theGroupP;
 	return 0L;
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item
+- (NSArray*) imagesArray: (NSManagedObject*) item anyObjectIfPossible: (BOOL) any
 {
 	NSArray			*childrenArray = [self childrenArray: item];
 	NSMutableArray	*imagesPathArray = 0L;
@@ -2900,18 +2900,43 @@ SElement		*theGroupP;
 	{
 		imagesPathArray = [NSMutableArray arrayWithCapacity: [childrenArray count]];
 		
+		BOOL anyObject = NO;
+		
+		if( any)
+		{
+			anyObject = YES;
+			
+			for( i = 0; i < [childrenArray count]; i++)
+			{
+				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = NO;
+			}
+		}
+		
 		for( i = 0; i < [childrenArray count]; i++)
 		{
-			NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
-			// Get the middle image of the series
-			if( [seriesArray count] > 0)
-				[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+			if( anyObject)
+			{
+				NSManagedObject	*obj = [[[childrenArray objectAtIndex: i] valueForKey:@"images"] anyObject];
+				if( obj) [imagesPathArray addObject: obj];
+			}
+			else
+			{
+				NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
+				
+				// Get the middle image of the series
+				if( [seriesArray count] > 0)
+					[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+			}
 		}
 	}
 	
 	return imagesPathArray;
 }
 
+- (NSArray*) imagesArray: (NSManagedObject*) item
+{
+	return [self imagesArray: item anyObjectIfPossible: YES];
+}
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item
 {
@@ -2974,11 +2999,7 @@ SElement		*theGroupP;
 }
 
 - (void) outlineViewSelectionDidChange:(NSNotification *)aNotification
-{
-	NSManagedObjectContext	*context = [self managedObjectContext];
-	
-	[context lock];
-	
+{	
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	
@@ -3023,6 +3044,7 @@ SElement		*theGroupP;
 			[animationSlider setEnabled:NO];
 			[animationSlider setIntValue:0];
 			
+			
 			NSArray			*children = [self childrenArray: item];
 			NSMutableArray	*imagePaths = [NSMutableArray arrayWithCapacity: 0];
 			
@@ -3042,7 +3064,7 @@ SElement		*theGroupP;
 			
 			[self matrixInit: [matrixViewArray count]];
 			
-			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: [self imagesArray: item]];
+			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: item];
 			
 			if( previousItem == item)
 			{
@@ -3067,7 +3089,7 @@ SElement		*theGroupP;
 		previousItem = 0L;
 	}
 	
-	[context unlock];
+	
 }
 
 -(void) delItemMatrix: (NSManagedObject*) obj
@@ -4363,8 +4385,6 @@ SElement		*theGroupP;
 	
 	long	i, minrow;
 	
-	[working startAnimation:self];
-	
 	setDCMDone = NO;
 	loadPreviewIndex = 0;
 	
@@ -4422,7 +4442,8 @@ SElement		*theGroupP;
 		
 		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
 		
-		if ( img || [modality isEqualToString: @"RTSTRUCT"] ) {
+		if ( img || [modality isEqualToString: @"RTSTRUCT"] )
+		{
 			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 			[cell setTransparent:NO];
 			[cell setEnabled:YES];
@@ -4468,7 +4489,7 @@ SElement		*theGroupP;
 				if( [index count] >= 1) {
 					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
 					
-					[imageView setDCM:previewPix :[self imagesArray: aFile] :0L :[[oMatrix selectedCell] tag] :'i' :YES];	//
+					[imageView setDCM:previewPix :[self imagesArray: aFile anyObjectIfPossible: YES] :0L :[[oMatrix selectedCell] tag] :'i' :YES];	//
 					[imageView setStringID:@"previewDatabase"];
 					setDCMDone = YES;
 				}
@@ -4524,13 +4545,19 @@ SElement		*theGroupP;
 	}
 }
 
-- (void) matrixLoadIcons:(NSArray*) files
+- (void) matrixLoadIcons:(NSManagedObject*) item
 {
-NSAutoreleasePool               *pool=[[NSAutoreleasePool alloc] init];
-long							i, subGroupCount = 1, position = 0;
-BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
-BOOL							imageLevel = NO;
+	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
+	[item retain];
+	
+	long							i, subGroupCount = 1, position = 0;
+	BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
+	BOOL							imageLevel = NO;
 
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	[context lock];
+	NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
+	
     threadWillRunning = NO;
     threadRunning = YES;
 	
@@ -4591,12 +4618,14 @@ BOOL							imageLevel = NO;
 		}
 	}
 	
-	[working stopAnimation:self];
+	[context unlock];
 	
     threadRunning = NO;
     shouldDie = NO;
 	
-	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: NO];
+	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
+	
+	[item release];
 	
     [pool release];
 }
