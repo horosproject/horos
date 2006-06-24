@@ -4570,7 +4570,7 @@ SElement		*theGroupP;
 		if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
 	}
 	
-	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];
+	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
 	
 	[context unlock];
 	
@@ -4605,9 +4605,6 @@ SElement		*theGroupP;
 			{
 				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			}
-			
-			
-			
 			[previewPix addObject: dcmPix];
 			
 			[dcmPix release];
@@ -4620,8 +4617,6 @@ SElement		*theGroupP;
 		}
 		else
 		{
-			
-			
 			dcmPix = [[DCMPix alloc] myinitEmpty];
 			[previewPix addObject: dcmPix];
 			[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
@@ -4630,14 +4625,12 @@ SElement		*theGroupP;
 		}
 	}
 	
-	
-	
     threadRunning = NO;
     shouldDie = NO;
 	
-	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
-	
 	[item release];
+	
+	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
 	
     [pool release];
 }
