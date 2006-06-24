@@ -2996,6 +2996,8 @@ static ViewerController *draggedController = 0L;
 	// Load new data
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
+	mask = 0;
+	[subtractIm setIntValue: 1];
 	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
@@ -3429,14 +3431,8 @@ static ViewerController *draggedController = 0L;
 	{
 		// subtraction asked for
 		
-		// mask contains the cardinality of the mask. At initialization, set to 1 (segond image)
-		// curImage contains the image in the series to which the mask will be applied
 		[imageView setSubtraction: mask :subOffset];
 		
-		//needs to to to frame 3 ?
-		if ([imageView curImage] < (mask + 1)) firstAfterMask=(mask + 1);
-		else firstAfterMask=[imageView curImage];		
-
 		float	iww;
 		[imageView getWLWW:&wlBeforeSubtract :&iww];
 		
@@ -3451,24 +3447,28 @@ static ViewerController *draggedController = 0L;
 		[imageView getWLWW:&iwl :&iww];
 		[imageView setWLWW: wlBeforeSubtract :iww];
 	}
-	[imageView setIndex:firstAfterMask];
+	
+	[imageView setIndex: mask];
+	
 	[self adjustSlider];
 }
 
-
 - (IBAction) subtractCurrent:(id) sender
-{
+{	
+	mask = [imageView curImage];
+	
+	[imageView setSubtraction: mask :subOffset];
+	
 	if( [subtractOnOff state] == NSOffState)
 	{
 		[subtractOnOff setState: NSOnState];
 		[self subtractSwitch:subtractOnOff];
 	}
 	
-	mask = [imageView curImage];
-	[imageView setSubtraction: mask :subOffset];
+	if( [imageView flippedData]) [subtractIm setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+	else [subtractIm setIntValue: mask+1];
 	
-	[subtractIm setIntValue: mask+1];
-	[imageView setIndex:[imageView curImage]+1];
+	[imageView setIndex: [imageView curImage]];
 	[self adjustSlider];
 }
 
@@ -3601,6 +3601,8 @@ static ViewerController *draggedController = 0L;
 	[self adjustSlider];
 	
 	[imageView sendSyncMessage:1];
+	
+	
 }
 
 -(float) computeInterval
@@ -3715,6 +3717,8 @@ static ViewerController *draggedController = 0L;
 							[[pixList[ x] objectAtIndex: i] setID: i];
 						}
 					}
+					
+					mask = [pixList[ curMovieIndex] count] - mask -1;
 					
 					[self flipDataSeries: self];
 				}
@@ -8986,7 +8990,8 @@ int i,j,l;
 	ThreadLoadImage = NO;
 	
 	subOffset.y = subOffset.x = 0;
-	mask = 1;
+	
+	mask = 0;
 	
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
