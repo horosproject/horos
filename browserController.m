@@ -4440,6 +4440,8 @@ SElement		*theGroupP;
 		img = [previewPixThumbnails objectAtIndex: i];
 		if( img == 0L) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == 0L");
 		
+		[managedObjectContext lock];
+		
 		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
 		
 		if ( img || [modality isEqualToString: @"RTSTRUCT"] )
@@ -4507,6 +4509,8 @@ SElement		*theGroupP;
 			[cell setBezelStyle:NSShadowlessSquareBezelStyle];
 			[cell setTag:i];
 		}
+		
+		[managedObjectContext unlock];
 	}
 	[oMatrix setNeedsDisplay:YES];
 }
@@ -4566,6 +4570,8 @@ SElement		*theGroupP;
 		if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
 	}
 	
+	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];
+	
 	[context unlock];
 	
 	for( i = 0; i < [files count];i++)
@@ -4573,8 +4579,6 @@ SElement		*theGroupP;
 		DCMPix*     dcmPix;
 		NSImage		*thumbnail = 0L;
 		BOOL		computeThumbnail = NO;
-		
-		[context lock];
 		
 		if( StoreThumbnailsInDB && !imageLevel)
 		{
@@ -4602,7 +4606,7 @@ SElement		*theGroupP;
 				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			}
 			
-			[context unlock];
+			
 			
 			[previewPix addObject: dcmPix];
 			
@@ -4616,7 +4620,7 @@ SElement		*theGroupP;
 		}
 		else
 		{
-			[context unlock];
+			
 			
 			dcmPix = [[DCMPix alloc] myinitEmpty];
 			[previewPix addObject: dcmPix];

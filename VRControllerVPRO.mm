@@ -782,6 +782,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	if( [sender tag] == 0)
 	{
 		[view setShadingValues: savedambient :saveddiffuse :savedspecular :savedspecularpower];
+		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", savedambient, saveddiffuse, savedspecular, savedspecularpower]];
 	}
 	
 	[view setNeedsDisplay: YES];
