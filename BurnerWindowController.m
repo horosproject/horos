@@ -84,7 +84,10 @@ extern BrowserController  *browserWindow;
 	[self setup:nil];
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
+	runBurnAnimation = NO;
+	
 	[filesToBurn release];	
 	//NSLog(@"Burner dealloc");	
 	[super dealloc];
@@ -159,7 +162,11 @@ extern BrowserController  *browserWindow;
 {
 	if (!(isExtracting || isSettingUpBurn || burning))
 	{
+		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		
 		cdName = [[nameField stringValue] retain];
+		
+		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		if (cdName != nil) {
 			runBurnAnimation = YES;
@@ -517,7 +524,7 @@ extern BrowserController  *browserWindow;
 	
 	NSTask              *theTask;
 	//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", subFolder,  nil];
+	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", burnFolder,  nil];
 	//NSLog(@"burn args: %@", [theArguments description]);
 	theTask = [[NSTask alloc] init];
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
@@ -527,7 +534,7 @@ extern BrowserController  *browserWindow;
 
 	[theTask launch];
 	[theTask waitUntilExit];
-	
+	[theTask release];
 }
 
 - (void)addDicomdir{

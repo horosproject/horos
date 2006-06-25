@@ -8016,6 +8016,7 @@ static BOOL needToRezoom;
 
 					[theTask launch];
 					[theTask waitUntilExit];
+					[theTask release];
 				}
 			}
 		}

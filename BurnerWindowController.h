@@ -20,7 +20,7 @@
 @class DRTrack;
 
 @interface BurnerWindowController : NSWindowController {
-	BOOL burning;
+	volatile BOOL burning;
 	NSMutableArray *nodeArray;
 	NSMutableArray *files;
 	float burnSize;
@@ -34,16 +34,13 @@
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
 	int burnAnimationIndex;
-	BOOL runBurnAnimation;
-	BOOL isExtracting;
-	BOOL isSettingUpBurn;
-	BOOL isThrobbing;
+	volatile BOOL runBurnAnimation;
+	volatile BOOL isExtracting;
+	volatile BOOL isSettingUpBurn;
+	volatile BOOL isThrobbing;
 	NSArray *filesToBurn;
 	BOOL _releaseAfterBurn;
 	BOOL _multiplePatients;
-	
-	
-
 }
 -(id) initWithFiles:(NSArray *)theFiles;
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects releaseAfterBurn:(BOOL)releaseAfterBurn;
