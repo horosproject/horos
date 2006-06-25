@@ -91,5 +91,6 @@
 
 - (void) offFullScreen;
 - (IBAction) fullScreenMenu: (id) sender;
-
+- (long) movieFrames;
+- (void) setMovieFrame: (long) l;
 @end

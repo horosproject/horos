@@ -554,6 +554,16 @@ public:
 		break;
 	}
 	
+	if( [[[self window] windowController] movieFrames] > 1)
+	{	
+		short movieIndex = [cur intValue];
+		
+		while( movieIndex >= [[[self window] windowController] movieFrames]) movieIndex -= [[[self window] windowController] movieFrames];
+		if( movieIndex < 0) movieIndex = 0;
+		
+		[[[self window] windowController] setMovieFrame: movieIndex];
+	}
+	
 	return [self nsimageQuicktime];
 }
 
@@ -721,6 +731,12 @@ public:
 			long			i;
 			DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 			
+			if( [[[self window] windowController] movieFrames] > 1)
+			{
+				numberOfFrames /= [[[self window] windowController] movieFrames];
+				numberOfFrames *= [[[self window] windowController] movieFrames];
+			}
+			
 			Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: numberOfFrames];
@@ -731,6 +747,16 @@ public:
 			
 			for( i = 0; i < numberOfFrames; i++)
 			{
+				if( [[[self window] windowController] movieFrames] > 1)
+				{	
+					short movieIndex = i;
+			
+					while( movieIndex >= [[[self window] windowController] movieFrames]) movieIndex -= [[[self window] windowController] movieFrames];
+					if( movieIndex < 0) movieIndex = 0;
+			
+					[[[self window] windowController] setMovieFrame: movieIndex];
+				}
+			
 				if( croppingBox->GetEnabled()) croppingBox->Off();
 			//	aRenderer->RemoveActor(outlineRect);
 				aRenderer->RemoveActor(textX);
@@ -812,6 +838,12 @@ public:
 		if( croppingBox->GetEnabled()) croppingBox->Off();
 	//	aRenderer->RemoveActor(outlineRect);
 		aRenderer->RemoveActor(textX);
+		
+		if( [[[self window] windowController] movieFrames] > 1)
+		{
+			numberOfFrames /= [[[self window] windowController] movieFrames];
+			numberOfFrames *= [[[self window] windowController] movieFrames];
+		}
 		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		

@@ -464,7 +464,17 @@ MODIFICATION HISTORY
 		if( val > [framesSlider maxValue]) val = 0;
 		
 		curMovieIndex = val;
-
+		
+		if( [[self window3DController] movieFrames] > 1)
+		{	
+			short movieIndex = curMovieIndex;
+		
+			while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
+			if( movieIndex < 0) movieIndex = 0;
+		
+			[[self window3DController] setMovieFrame: movieIndex];
+		}
+		
 		[framesSlider setIntValue:curMovieIndex];
 	//	[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
 		[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
@@ -477,7 +487,15 @@ MODIFICATION HISTORY
 {
 	if( [[exportFormat selectedCell] tag] == 0)
 	{
-		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame:maxFrame:) :[FT numberOfFrames]];	
+		long numberOfFrames = [FT numberOfFrames];
+		
+		if( [[self window3DController] movieFrames] > 1)
+		{
+			numberOfFrames /= [[self window3DController] movieFrames];
+			numberOfFrames *= [[self window3DController] movieFrames];
+		}
+		
+		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame:maxFrame:) :numberOfFrames];	
 		[mov generateMovie: YES  :NO :[[[[self window3DController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov dealloc];
 	}
@@ -485,18 +503,35 @@ MODIFICATION HISTORY
 	{
 		long			i;
 		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
+		long numberOfFrames = [FT numberOfFrames];
+		
+		if( [[self window3DController] movieFrames] > 1)
+		{
+			numberOfFrames /= [[self window3DController] movieFrames];
+			numberOfFrames *= [[self window3DController] movieFrames];
+		}
 		
 		Wait *progress = [[Wait alloc] initWithString:@"Creating a DICOM series"];
 		[progress showWindow:self];
-		[[progress progress] setMaxValue: [FT numberOfFrames]];
+		[[progress progress] setMaxValue: numberOfFrames];
 		
 		[dcmSequence setSeriesNumber:8500 + [[NSCalendarDate date] minuteOfHour] ];
 		[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
 		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] sourceFile]];
 				
-		for( i = 0; i < [FT numberOfFrames]; i++)
+		for( i = 0; i < numberOfFrames; i++)
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
+			if( [[self window3DController] movieFrames] > 1)
+			{	
+				short movieIndex = i;
+		
+				while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
+				if( movieIndex < 0) movieIndex = 0;
+		
+				[[self window3DController] setMovieFrame: movieIndex];
+			}
 			
 			[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: i]];
 			[FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]];
@@ -532,7 +567,18 @@ MODIFICATION HISTORY
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
-	if( [cur intValue] != -1){
+	if( [cur intValue] != -1)
+	{
+		if( [[self window3DController] movieFrames] > 1)
+		{	
+			short movieIndex = [cur intValue];
+		
+			while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
+			if( movieIndex < 0) movieIndex = 0;
+		
+			[[self window3DController] setMovieFrame: movieIndex];
+		}
+	
 		[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex: [cur intValue]]];
 		return [[FTAdapter getCurrentCameraImage: [[LOD selectedCell] tag]] retain];
 	}
