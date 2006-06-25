@@ -2900,20 +2900,17 @@ SElement		*theGroupP;
 	{
 		imagesPathArray = [NSMutableArray arrayWithCapacity: [childrenArray count]];
 		
-		BOOL anyObject = NO;
-		
-		if( any)
-		{
-			anyObject = YES;
-			
-			for( i = 0; i < [childrenArray count]; i++)
-			{
-				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = NO;
-			}
-		}
-		
 		for( i = 0; i < [childrenArray count]; i++)
 		{
+			BOOL anyObject = NO;
+		
+			if( any)
+			{
+				anyObject = YES;
+			
+				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = NO;
+			}
+			
 			if( anyObject)
 			{
 				NSManagedObject	*obj = [[[childrenArray objectAtIndex: i] valueForKey:@"images"] anyObject];
