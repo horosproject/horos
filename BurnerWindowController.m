@@ -39,7 +39,8 @@ extern BrowserController  *browserWindow;
 {
     if (self = [super initWithWindowNibName:@"BurnViewer"]) {
 		
-	
+		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		
 		files = [theFiles retain];
 		burning = NO;
 		
@@ -49,7 +50,9 @@ extern BrowserController  *browserWindow;
 }
 
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects releaseAfterBurn:(BOOL)releaseAfterBurn{
-	if (self = [super initWithWindowNibName:@"BurnViewer"]) {
+	if (self = [super initWithWindowNibName:@"BurnViewer"])
+	{
+		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		files = [theFiles retain];
 		NSEnumerator *enumerator = [managedObjects objectEnumerator];
@@ -154,14 +157,14 @@ extern BrowserController  *browserWindow;
 //Actions
 -(IBAction)burn:(id)sender
 {
-	if (!(isExtracting || isSettingUpBurn || burning)) {
+	if (!(isExtracting || isSettingUpBurn || burning))
+	{
 		cdName = [[nameField stringValue] retain];
 		
 		if (cdName != nil) {
 			runBurnAnimation = YES;
 			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
 			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
-			
 		}
 		else
 			NSBeginAlertSheet(@"Burn Warning" , @"OK", nil, nil, nil, nil, nil, nil, nil,@"Please add CD name");
@@ -398,7 +401,7 @@ extern BrowserController  *browserWindow;
 {
 	NSLog(@"Burner windowShouldClose");
 	
-	if (burning)
+	if ((isExtracting || isSettingUpBurn || burning))
 		return NO;
 	else {
 		NSFileManager *manager = [NSFileManager defaultManager];
@@ -514,7 +517,7 @@ extern BrowserController  *browserWindow;
 	
 	NSTask              *theTask;
 	//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", burnFolder,  nil];
+	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", subFolder,  nil];
 	//NSLog(@"burn args: %@", [theArguments description]);
 	theTask = [[NSTask alloc] init];
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
@@ -554,11 +557,10 @@ extern BrowserController  *browserWindow;
 		//NSLog(@"copy File: %@", newPath);
 		//[manager createSymbolicLinkAtPath:newPath pathContent:file];
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-		if (![[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]])
-		//if ([[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax]])
+//		if (![[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]])
 			[manager copyPath:file toPath:newPath handler:nil];
-		else
-			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
+//		else
+//			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
 		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Copying: %@", [newPath lastPathComponent]] waitUntilDone:YES];
 		[newFiles addObject:newPath];
 		[pool release];
@@ -613,8 +615,6 @@ extern BrowserController  *browserWindow;
 		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
 	NS_ENDHANDLER
 }
-
-
 
 
 - (void)estimateFolderSize: (id) object {
