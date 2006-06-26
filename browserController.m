@@ -3352,6 +3352,8 @@ SElement		*theGroupP;
 	NSEnumerator	*enumerator			= [columnsDatabase keyEnumerator];
 	NSString		*key;
 	
+	[managedObjectContext lock];
+	
 	while( key = [enumerator nextObject])
 	{
 		long index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
@@ -3371,6 +3373,8 @@ SElement		*theGroupP;
 			}
 		}
 	}
+	
+	[managedObjectContext unlock];
 }
 
 //- (void) columnsMenuAction:(id) sender
@@ -3412,49 +3416,65 @@ SElement		*theGroupP;
 - (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
 {
 	if( managedObjectContext == 0L) return 0L;
-
+	
+	id returnVal = 0L;
+	
+	[managedObjectContext lock];
+	
 	if( item == 0L) 
 	{
-		return [outlineViewArray objectAtIndex: index];
+		returnVal = [outlineViewArray objectAtIndex: index];
 	}
 	else
 	{
-		return [[self childrenArray: item] objectAtIndex: index];
+		returnVal = [[self childrenArray: item] objectAtIndex: index];
 	}
 	
-	return 0L;
+	[managedObjectContext unlock];
+	
+	return returnVal;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
-{	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) return NO;
-	else return YES;
+{
+	BOOL returnVal = NO;
 	
-	return NO;
+	[managedObjectContext lock];
+	
+	if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = NO;
+	else returnVal = YES;
+	
+	[managedObjectContext unlock];
+	
+	return returnVal;
 }
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
 	if( managedObjectContext == 0L) return 0L;
 	
+	int returnVal = 0;
+	
+	[managedObjectContext lock];
+	
 	if (!item)
 	{
-		return [outlineViewArray count];
+		returnVal = [outlineViewArray count];
 	}
 	else
 	{
-		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) return 0;
-		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) return [[item valueForKey:@"images"] count];
-		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) return [[item valueForKey:@"series"] count];
+		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
+		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"images"] count];
+		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
 	}
 	
-	return 0;
+	[managedObjectContext unlock];
+	
+	return returnVal;
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+- (id)intOutlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( managedObjectContext == 0L) return 0L;
-	
 	// *********************************************
 	//	PLUGINS
 	// *********************************************
@@ -3535,9 +3555,24 @@ SElement		*theGroupP;
 	return [item valueForKey: [tableColumn identifier]];
 }
 
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	if( managedObjectContext == 0L) return 0L;
+	
+	[managedObjectContext lock];
+	
+	id returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+	
+	[managedObjectContext unlock];
+	
+	return returnVal;
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
 	DatabaseIsEdited = NO;
+	
+	[managedObjectContext lock];
 	
 	if( isCurrentDatabaseBonjour)
 	{
@@ -3545,6 +3580,8 @@ SElement		*theGroupP;
 	}
 	
 	[item setValue:object forKey:[tableColumn identifier]];
+	
+	[managedObjectContext unlock];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors
@@ -3659,6 +3696,8 @@ SElement		*theGroupP;
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
+	[managedObjectContext lock];
+	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	
 	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
@@ -3670,13 +3709,19 @@ SElement		*theGroupP;
 		image = [matrixViewArray objectAtIndex: 0];
 		if( [[image valueForKey:@"type"] isEqualToString:@"Image"]) [self findAndSelectFile: 0L image: image shouldExpand :NO];
 	}
+	
+	[managedObjectContext unlock];
 }
 
 - (void)outlineViewItemWillExpand:(NSNotification *)notification
 {
+	[managedObjectContext lock];
+	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	
 	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
+	
+	[managedObjectContext unlock];
 }
 
 - (MyOutlineView*) databaseOutline {return databaseOutline;}
@@ -4546,13 +4591,23 @@ SElement		*theGroupP;
 	long							i, subGroupCount = 1, position = 0;
 	BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 	BOOL							imageLevel = NO;
-
-	NSManagedObjectContext	*context = [self managedObjectContext];
-	[context lock];
-	NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
 	
-    threadWillRunning = NO;
-    threadRunning = YES;
+	threadWillRunning = NO;
+	threadRunning = YES;
+
+	while( [managedObjectContext tryLock] == NO)
+	{
+		if( shouldDie == YES)
+		{
+			[item release];
+			[pool release];
+			shouldDie = NO;
+			threadRunning = NO;
+			return;
+		}
+	}
+	
+	NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
 	
 	if( [files count] > 1)
 	{
@@ -4561,7 +4616,7 @@ SElement		*theGroupP;
 	
 	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
 	
-	if( imageLevel)	[context unlock];
+	if( imageLevel)	[managedObjectContext unlock];
 	
 	for( i = 0; i < [files count];i++)
 	{
@@ -4615,7 +4670,7 @@ SElement		*theGroupP;
 		}
 	}
 	
-	if( imageLevel == NO)	[context unlock];
+	if( imageLevel == NO)	[managedObjectContext unlock];
 	
     threadRunning = NO;
     shouldDie = NO;
