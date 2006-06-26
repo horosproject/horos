@@ -2724,6 +2724,8 @@ SElement		*theGroupP;
 	}
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
 	
+	[context unlock];
+	
 	[databaseOutline reloadData];
 	
 	for( i = 0; i < [outlineViewArray count]; i++)
@@ -2747,8 +2749,6 @@ SElement		*theGroupP;
 	[databaseDescription setStringValue: description];
 	
 	[albumTable reloadData];
-	
-	[context unlock];
 }
 
 -(void) checkBonjourUpToDateThread:(id) sender
@@ -3563,6 +3563,10 @@ SElement		*theGroupP;
 	[cell setHighlighted: NO];
 	[(ImageAndTextCell *)cell setImage: 0L];
 	
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	
+	[context lock];
+	
 	if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
 	{
 		if( originalOutlineViewArray)
@@ -3620,7 +3624,9 @@ SElement		*theGroupP;
 	else [cell setFont: [NSFont boldSystemFontOfSize:10]];
 	
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
-
+	
+	[context unlock];
+	
 // doesn't work with NSPopupButtonCell	
 //	if ([outlineView isEqual:databaseOutline])
 //	{
@@ -4559,7 +4565,7 @@ SElement		*theGroupP;
 	
 	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
 	
-	[context unlock];
+	if( imageLevel)	[context unlock];
 	
 	for( i = 0; i < [files count];i++)
 	{
@@ -4573,7 +4579,8 @@ SElement		*theGroupP;
 			if( thumbnail == 0L) computeThumbnail = YES;
 		}
 		
-		dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
+		dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
+		//[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue]
 		
 		if( dcmPix)
 		{
@@ -4611,6 +4618,8 @@ SElement		*theGroupP;
 			[dcmPix release];
 		}
 	}
+	
+	if( imageLevel == NO)	[context unlock];
 	
     threadRunning = NO;
     shouldDie = NO;
