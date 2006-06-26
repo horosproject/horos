@@ -796,8 +796,7 @@ static BOOL COMPLETEREBUILD = NO;
 									int i;
 									for(i=0 ; i<[albumArray count] ; i++)
 									{
-										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"]
-												isEqualToString: [curDict valueForKey:@"album"]])
+										if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"] isEqualToString: [curDict valueForKey:@"album"]])
 										{
 											album = [albumArray objectAtIndex: i];
 										}
@@ -805,9 +804,23 @@ static BOOL COMPLETEREBUILD = NO;
 									
 									if (album == nil)
 									{
-										NSString *name = [curDict valueForKey:@"album"];
-										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-										[album setValue:name forKey:@"name"];
+//										NSString *name = [curDict valueForKey:@"album"];
+//										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+//										[album setValue:name forKey:@"name"];
+										
+										for(i=0 ; i<[albumArray count] ; i++)
+										{
+											if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"] isEqualToString: @"other"])
+											{
+												album = [albumArray objectAtIndex: i];
+											}
+										}
+										
+										if (album == nil)
+										{
+											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+											[album setValue:@"other" forKey:@"name"];
+										}
 									}
 									
 									// add the file to the album

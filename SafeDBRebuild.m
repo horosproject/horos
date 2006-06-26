@@ -332,9 +332,23 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 									
 									if (album == nil)
 									{
-										NSString *name = [curDict valueForKey:@"album"];
-										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-										[album setValue:name forKey:@"name"];
+//										NSString *name = [curDict valueForKey:@"album"];
+//										album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+//										[album setValue:name forKey:@"name"];
+										
+										for(i=0 ; i<[albumArray count] ; i++)
+										{
+											if([[[albumArray objectAtIndex: i] valueForKeyPath:@"name"] isEqualToString: @"other"])
+											{
+												album = [albumArray objectAtIndex: i];
+											}
+										}
+										
+										if (album == nil)
+										{
+											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+											[album setValue:@"other" forKey:@"name"];
+										}
 									}
 									
 									// add the file to the album
