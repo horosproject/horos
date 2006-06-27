@@ -83,7 +83,18 @@ extern NSLock	*PapyrusLock;
 			if([self checkForLAVIM] )
 			{
 				NSString	*album = 0L;
-				dataset->findAndGetString(DCM_ImageComments, string, OFFalse); 
+				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good()){
+					album = [NSString stringWithCString:string];					
+					if( [album length] >= 2)
+					{
+						if( [[album substringToIndex:2] isEqualToString: @"LV"])
+						{
+							album = [album substringFromIndex:2];
+							[dicomElements setObject:album forKey:@"album"];
+						}
+					}
+
+				} 
 			}
 		}
 				
