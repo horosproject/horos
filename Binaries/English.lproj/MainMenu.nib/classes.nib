@@ -60,6 +60,7 @@
                 databaseWindow = id; 
                 delItem = id; 
                 deleteReport = id; 
+                emptyDeleteQueue = id; 
                 endCustomInterval = id; 
                 endReBuildDatabase = id; 
                 executeFilterDB = id; 
@@ -122,6 +123,7 @@
                 exportAccessoryView = NSView; 
                 imageTileMenu = NSMenu; 
                 imageView = PreviewView; 
+                incomingProgress = NSProgressIndicator; 
                 mainWindow = NSWindow; 
                 newAlbum = NSWindow; 
                 newAlbumName = NSTextField; 
@@ -134,7 +136,6 @@
                 rdPixelForm = NSForm; 
                 rdPixelTypeMatrix = NSMatrix; 
                 rdVoxelForm = NSForm; 
-                rebuildMode = NSMatrix; 
                 rebuildType = NSMatrix; 
                 rebuildWindow = NSWindow; 
                 searchField = NSSearchField; 
@@ -153,7 +154,6 @@
                 urlString = NSTextField; 
                 urlWindow = NSWindow; 
                 warning = NSTextField; 
-                working = NSProgressIndicator; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

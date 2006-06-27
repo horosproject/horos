@@ -130,7 +130,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	IBOutlet NSDrawer				*albumDrawer;
 	
 	IBOutlet NSWindow				*rebuildWindow;
-	IBOutlet NSMatrix				*rebuildMode, *rebuildType;
+	IBOutlet NSMatrix				*rebuildType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
 	
 	IBOutlet NSWindow				*customTimeIntervalWindow;
@@ -184,6 +184,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	
 	NSMutableArray					*deleteQueueArray;
 	NSLock							*deleteQueue;
+	
+	IBOutlet NSProgressIndicator	*incomingProgress;
 }
 
 + (BrowserController*) currentBrowser;

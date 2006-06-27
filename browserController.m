@@ -465,6 +465,8 @@ static BOOL COMPLETEREBUILD = NO;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	
+	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+	
 	if( safeProcess)
 	{
 		NSLog( @"safe Process DB process");
@@ -909,6 +911,8 @@ static BOOL COMPLETEREBUILD = NO;
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
 	}
+	
+	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	if( addFailed)
 	{
@@ -7002,7 +7006,7 @@ static BOOL needToRezoom;
 	
 	if( [copyArray count])
 	{
-		NSLog(@"delete Queue start");
+		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		
 		for( i = 0; i < [copyArray count]; i++)
 			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
@@ -7472,6 +7476,8 @@ static BOOL needToRezoom;
 	NSArray			*RoutingCalendarsArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"ROUTING CALENDARS"];
 	long			i;
 	
+	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+	
 	//NSLog(@"Scan folder START");
 	
 	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
@@ -7660,6 +7666,8 @@ static BOOL needToRezoom;
 		[filesArray release];
 	}
 	[checkIncomingLock unlock];
+	
+	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	[pool release];
 }

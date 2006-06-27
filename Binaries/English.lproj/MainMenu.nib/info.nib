@@ -3,53 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>IBDocumentLocation</key>
-	<string>15 5 837 627 0 0 1440 878 </string>
+	<string>69 55 356 240 0 0 1440 878 </string>
 	<key>IBEditorPositions</key>
 	<dict>
-		<key>11361</key>
-		<string>669 636 581 301 0 0 1920 1178 </string>
-		<key>11581</key>
-		<string>576 549 287 74 0 0 1440 878 </string>
-		<key>11583</key>
-		<string>1097 368 156 144 0 0 1920 1178 </string>
-		<key>11606</key>
-		<string>565 522 150 68 0 0 1280 832 </string>
-		<key>12309</key>
-<<<<<<< .mine
-		<string>633 551 173 70 0 0 1440 878 </string>
-=======
-		<string>873 776 173 70 0 0 1920 1178 </string>
->>>>>>> .r624
-		<key>1580</key>
-		<string>850 353 220 815 0 0 1920 1178 </string>
 		<key>29</key>
-		<string>814 1131 561 44 0 0 1920 1178 </string>
+		<string>69 300 561 44 0 0 1440 878 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
-	<key>IBLockedObjects</key>
-	<array/>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>29</integer>
-		<integer>12309</integer>
-<<<<<<< .mine
 		<integer>885</integer>
 		<integer>29</integer>
-=======
->>>>>>> .r624
 	</array>
 	<key>IBSystem Version</key>
 	<string>8I1119</string>
-	<key>IBUserGuides</key>
-	<dict>
-		<key>AnnetteWindow</key>
-		<dict>
-			<key>guideLocations</key>
-			<array/>
-			<key>guidesLocked</key>
-			<string>NO</string>
-		</dict>
-	</dict>
 </dict>
 </plist>
