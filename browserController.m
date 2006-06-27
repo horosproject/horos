@@ -6510,7 +6510,7 @@ static BOOL needToRezoom;
 		previousNoOfFiles = 0;
 		previousItem = 0L;
 		
-		searchType = 0;
+		searchType = 7;
 		timeIntervalType = 0;
 		timeIntervalStart = timeIntervalEnd = 0L;
 		
@@ -9369,7 +9369,7 @@ static BOOL needToRezoom;
     } 
 	else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
 	{
-		[toolbarItem setLabel: NSLocalizedString(@"Search by Patient Name", nil)];
+		[toolbarItem setLabel: NSLocalizedString(@"Search by All Fields", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
 		
@@ -9836,8 +9836,11 @@ static BOOL needToRezoom;
 		{
 			switch(searchType)
 			{
+				case 7:			// All fields 
+					description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: All fields = %@", nil), _searchString];
+				break;
+				
 				case 0:			// Patient Name
-
 					description = [[NSString alloc] initWithFormat: NSLocalizedString(@" / Search: Patient's name = %@", nil), _searchString];
 				break;
 				
@@ -9876,13 +9879,19 @@ static BOOL needToRezoom;
 - (NSPredicate *)createFilterPredicate{
 	NSPredicate *predicate = nil;
 	NSString *description = nil;
+	NSString	*s;
 	
 	if ([_searchString length] > 0)
 		{
 			switch(searchType)
 			{
+				case 7:			// All Fields
+					s = [NSString stringWithFormat:@"*%@*", _searchString];
+					
+					predicate = [NSPredicate predicateWithFormat: @"(name LIKE[c] %@) OR (patientID LIKE[c] %@) OR (id LIKE[c] %@) OR (comment LIKE[c] %@) OR (studyName LIKE[c] %@) OR (modality LIKE[c] %@) OR (accessionNumber LIKE[c] %@)", s, s, s, s, s, s, s];
+				break;
+				
 				case 0:			// Patient Name
-					// ANY studies.name LIKE[c] "**" AND name == ""
 					predicate = [NSPredicate predicateWithFormat: @"name LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
