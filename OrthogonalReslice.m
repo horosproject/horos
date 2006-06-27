@@ -115,6 +115,7 @@
 // processors
 - (void) reslice : (long) x : (long) y
 {
+	NSLog(@"aaa");
 	resliceLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
 	[NSThread detachNewThreadSelector:@selector(xResliceThread:) toTarget:self withObject: [NSNumber numberWithInt: y]];
@@ -582,5 +583,11 @@
 {
 	sign = -sign;
 } 
+
+- (void)freeYCache;
+{
+	if(Ycache) free(Ycache);
+	Ycache = 0L;
+}
 
 @end

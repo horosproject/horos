@@ -6870,6 +6870,12 @@ fullww = (pixmax - pixmin);
 	updateToBeApplied = YES;
 }
 
+- (void)setSourceFile:(NSString*)s;
+{
+	[srcFile release];
+	srcFile = [s retain];
+}
+
 -(NSString*) sourceFile
 {
 	return srcFile;

@@ -1,0 +1,58 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                alwaysSyncMenu = id; 
+                changeFont = id; 
+                flipHorizontal = id; 
+                flipVertical = id; 
+                resetImagePresentationState = id; 
+                resetSeriesPresentationState = id; 
+                roiLoadFromXMLFiles = id; 
+                sliderAction = id; 
+                sliderAction2DMPR = id; 
+                sliderRGBFactor = id; 
+            }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = LLScoutView; LANGUAGE = ObjC; SUPERCLASS = OrthogonalMPRView; }, 
+        {
+            ACTIONS = {
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+            }; 
+            CLASS = LLScoutViewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {mprController = OrthogonalMPRController; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                blendingPropagate = id; 
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+                fullWindowView = id; 
+                showViews = id; 
+                toggleDisplayResliceAxes = id; 
+            }; 
+            CLASS = OrthogonalMPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                originalView = OrthogonalMPRView; 
+                viewer = id; 
+                xReslicedView = OrthogonalMPRView; 
+                yReslicedView = OrthogonalMPRView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {CLASS = SMDoubleSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
+        {CLASS = SMDoubleSliderCell; LANGUAGE = ObjC; SUPERCLASS = NSSliderCell; }
+    ); 
+    IBVersion = 1; 
+}

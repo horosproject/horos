@@ -224,6 +224,7 @@
 -(void) CheckLoad;
 -(void) setFusion:(short) m :(short) s :(short) direction;
 -(short) stack;
+- (void)setSourceFile:(NSString*)s;
 -(NSString*) sourceFile;
 -(void) setUpdateToApply;
 -(void) revert;

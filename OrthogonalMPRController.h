@@ -53,6 +53,8 @@
 - (void) showViews:(id)sender;
 
 // accessors
+- (OrthogonalReslice*) reslicer;
+-(void)setReslicer:(OrthogonalReslice*)newReslicer;
 - (OrthogonalMPRView*) originalView;
 - (OrthogonalMPRView*) xReslicedView;
 - (OrthogonalMPRView*) yReslicedView;

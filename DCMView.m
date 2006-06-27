@@ -3269,6 +3269,24 @@ static long scrollMode;
 	}
 }
 
+- (void)discretelySetWLWW:(float)wl :(float)ww;
+{
+    [curDCM changeWLWW :wl : ww];
+    
+    curWW = [curDCM ww];
+    curWL = [curDCM wl];
+	
+    [self loadTextures];
+    [self setNeedsDisplay:YES];
+	
+	//set value for Series Object Presentation State
+	if( [curDCM SUVConverted] == NO)
+	{
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+	}
+}
+
 -(void) setFusion:(short) mode :(short) stacks
 {
 	long i, x;

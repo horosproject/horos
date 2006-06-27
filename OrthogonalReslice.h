@@ -51,5 +51,6 @@
 - (void) setThickSlab : (short) newThickSlab;
 
 - (void) flipVolume;
+- (void)freeYCache;
 
 @end

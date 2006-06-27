@@ -73,6 +73,7 @@
 - (void) updateToolbarItems;
 
 // Tools Selection
+- (IBAction) resetImage:(id) sender;
 - (IBAction) changeTool:(id) sender;
 
 // NSToolbar Related Methods

@@ -82,6 +82,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 
 #import "HornRegistration.h"
 #import "ITKTransform.h"
+#import "LLScoutViewer.h"
 
 #import "KeyObjectController.h"
 
@@ -4949,6 +4950,16 @@ NSMutableArray		*array;
 		case 8:		// 3D Registration
 		
 		break;
+		
+		case 9: // LL
+		{
+			[self checkEverythingLoaded];
+			[blendedwin checkEverythingLoaded];
+			LLScoutViewer *llScoutViewer;
+			llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
+			[llScoutViewer showWindow:self];
+		}
+
 	}
 	
 	blendedwin = 0L;

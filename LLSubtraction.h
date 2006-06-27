@@ -1,0 +1,36 @@
+//
+//  LLSubtraction.h
+//  OsiriX
+//
+//  Created by Joris Heuberger on 10/05/06.
+//  Copyright 2006 HUG. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+#import "DCMPix.h"
+#import "DCMView.h"
+
+#import "Schedulable.h"
+#import "Scheduler.h"
+#import "StaticScheduler.h"
+
+@interface LLSubtraction : NSObject {
+
+}
+
++ (void)subtractBuffer:(float*)bufferB to:(float*)bufferA withWidth:(long)width height:(long)height minValueA:(int)minA maxValueA:(int)maxA minValueB:(int)minB maxValueB:(int)maxB minValueSubtraction:(int)minS maxValueSubtraction:(int)maxS displayBones:(BOOL)displayBones bonesThreshold:(int)bonesThreshold;
++ (void)subtractBuffer:(float*)bufferB to:(float*)bufferA withWidth:(long)width height:(long)height;
++ (void)subtractDCMPix:(DCMPix*)pixB to:(DCMPix*)pixA minValueA:(int)minA maxValueA:(int)maxA minValueB:(int)minB maxValueB:(int)maxB minValueSubtraction:(int)minS maxValueSubtraction:(int)maxS displayBones:(BOOL)displayBones bonesThreshold:(int)bonesThreshold;
++ (void)subtractDCMPix:(DCMPix*)pixB to:(DCMPix*)pixA;
++ (void)subtractDCMView:(DCMView*)viewB to:(DCMView*)viewA;
+
++ (void)removeSmallConnectedPartInBuffer:(float*)buffer withWidth:(long)width height:(long)height;
++ (void)removeSmallConnectedPartDCMPix:(DCMPix*)pix;
+
++ (void)erodeBuffer:(unsigned char*)buffer withWidth:(int)width height:(int)height structuringElementRadius:(int)structuringElementRadius;
++ (void)dilateBuffer:(unsigned char*)buffer withWidth:(int)width height:(int)height structuringElementRadius:(int)structuringElementRadius;
++ (void)erode:(float*)buffer withWidth:(long)width height:(long)height structuringElementRadius:(int)structuringElementRadius;
++ (void)dilate:(float*)buffer withWidth:(long)width height:(long)height structuringElementRadius:(int)structuringElementRadius;
++ (void)close:(float*)buffer withWidth:(long)width height:(long)height structuringElementRadius:(int)structuringElementRadius;
+
+@end

@@ -691,6 +691,13 @@
 	return reslicer;
 }
 
+-(void)setReslicer:(OrthogonalReslice*)newReslicer;
+{
+	if(reslicer) [reslicer release];
+	reslicer = newReslicer;
+	[reslicer retain];
+}
+
 - (NSMutableArray*) originalDCMPixList
 {
 	return originalDCMPixList;

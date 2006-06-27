@@ -1,0 +1,143 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                alwaysSyncMenu = id; 
+                changeFont = id; 
+                flipHorizontal = id; 
+                flipVertical = id; 
+                resetImagePresentationState = id; 
+                resetSeriesPresentationState = id; 
+                roiLoadFromXMLFiles = id; 
+                sliderAction = id; 
+                sliderAction2DMPR = id; 
+                sliderRGBFactor = id; 
+            }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = LLMPRController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = OrthogonalMPRController; 
+        }, 
+        {
+            CLASS = LLMPRView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {viewer = LLMPRViewer; }; 
+            SUPERCLASS = OrthogonalMPRView; 
+        }, 
+        {
+            ACTIONS = {
+                defaultValuesParametersSliders = id; 
+                produce3DResult = id; 
+                produceResultInMemory = id; 
+                resetParametersSliders = id; 
+                setBonesThreshold = id; 
+                setClosingRadius = id; 
+                setDilatationRadius = id; 
+                setParameterValue = id; 
+                showParametersPanel = id; 
+                toggleDisplayBones = id; 
+            }; 
+            CLASS = LLMPRViewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                bonesThresholdSlider = NSSlider; 
+                bonesThresholdTextField = NSTextField; 
+                closingRadiusTextField = NSTextField; 
+                dilatationRadiusTextField = NSTextField; 
+                displayBonesButton = NSButton; 
+                injectedMPRController = LLMPRController; 
+                injectedMaxValueSlider = NSSlider; 
+                injectedMaxValueTextField = NSTextField; 
+                injectedMinValueSlider = NSSlider; 
+                injectedMinValueTextField = NSTextField; 
+                notInjectedMaxValueSlider = NSSlider; 
+                notInjectedMaxValueTextField = NSTextField; 
+                notInjectedMinValueSlider = NSSlider; 
+                notInjectedMinValueTextField = NSTextField; 
+                parametersPanel = NSPanel; 
+                subtractedOriginalView = DCMView; 
+                subtractedXReslicedView = DCMView; 
+                subtractedYReslicedView = DCMView; 
+                subtractionMaxValueSlider = NSSlider; 
+                subtractionMaxValueTextField = NSTextField; 
+                subtractionMinValueSlider = NSSlider; 
+                subtractionMinValueTextField = NSTextField; 
+                thickSlabModePopUp = NSPopUpButton; 
+                xShiftTextField = NSTextField; 
+                yShiftTextField = NSTextField; 
+                zShiftTextField = NSTextField; 
+            }; 
+            SUPERCLASS = OrthogonalMPRViewer; 
+        }, 
+        {
+            ACTIONS = {
+                blendingPropagate = id; 
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+                fullWindowView = id; 
+                showViews = id; 
+                toggleDisplayResliceAxes = id; 
+            }; 
+            CLASS = OrthogonalMPRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                originalView = OrthogonalMPRView; 
+                viewer = id; 
+                xReslicedView = OrthogonalMPRView; 
+                yReslicedView = OrthogonalMPRView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {
+            ACTIONS = {
+                blendingPropagateOriginal = id; 
+                blendingPropagateX = id; 
+                blendingPropagateY = id; 
+                changeFromAndToBounds = id; 
+                changeTool = id; 
+                customizeViewerToolBar = id; 
+                endExportDICOMFileSettings = id; 
+                roiDeleteAll = id; 
+                setCurrentPosition = id; 
+                setCurrentdcmExport = id; 
+                setThickSlab = id; 
+                setThickSlabMode = id; 
+            }; 
+            CLASS = OrthogonalMPRViewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                OpacityPopup = NSPopUpButton; 
+                ThickSlabView = NSView; 
+                WLWWView = NSView; 
+                clutPopup = NSPopUpButton; 
+                controller = OrthogonalMPRController; 
+                dcmBox = NSBox; 
+                dcmExportWindow = NSWindow; 
+                dcmFormat = NSMatrix; 
+                dcmFrom = NSSlider; 
+                dcmFromTextField = NSTextField; 
+                dcmInterval = NSSlider; 
+                dcmIntervalTextField = NSTextField; 
+                dcmSelection = NSMatrix; 
+                dcmSeriesName = NSTextField; 
+                dcmTo = NSSlider; 
+                dcmToTextField = NSTextField; 
+                splitView = NSSplitView; 
+                thickSlabSlider = NSSlider; 
+                thickSlabTextField = NSTextField; 
+                toolsMatrix = NSMatrix; 
+                toolsView = NSView; 
+                wlwwPopup = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
