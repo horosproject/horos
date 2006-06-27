@@ -48,9 +48,7 @@
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
-
 long gGlobaluniqueID = 0;
-
 
 static BOOL DEFAULTSSET = NO;
 static BOOL USEPAPYRUSDCMFILE;
@@ -61,6 +59,7 @@ static BOOL combineProjectionSeries;
 static BOOL	CHECKFORLAVIM;
 static int COMMENTSGROUP;
 static int COMMENTSELEMENT;
+
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
 {
@@ -2772,6 +2771,34 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	
 	return self;
+}
+
+- (BOOL)autoFillComments{
+	return COMMENTSAUTOFILL;
+}
+
+- (BOOL)splitMultiEchoMR{
+	return splitMultiEchoMR;
+}
+
+- (BOOL) noLocalizer{
+	return NOLOCALIZER;
+}
+
+- (BOOL)combineProjectionSeries{
+	return combineProjectionSeries;
+}
+
+- (BOOL)checkForLAVIM{
+	return CHECKFORLAVIM;
+}
+
+- (int)commentsGroup {
+	return COMMENTSGROUP;
+}
+
+- (int)commentsElement {
+	return COMMENTSELEMENT;
 }
 
 @end

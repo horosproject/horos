@@ -1546,11 +1546,12 @@ PapyShort       fileNb, theErr;
 SElement		*theGroupP;
 
 	[PapyrusLock lock];
-	
+	NSLog(@"is %@ DICOM", file);
     fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
     if (fileNb < 0)
     {
         readable = NO;
+		NSLog(@"NOT READABLE");
     }
     else
     {
@@ -1558,6 +1559,7 @@ SElement		*theGroupP;
 		if( Papy3GroupRead (fileNb, &theGroupP) < 0)
 		{
             readable = NO;
+			NSLog(@"no group 8 read");
         }
         else Papy3GroupFree (&theGroupP, TRUE);
         
@@ -1565,7 +1567,10 @@ SElement		*theGroupP;
     }
 	
 	[PapyrusLock unlock];
-	
+	if (readable)
+		NSLog(@"%@ is DICOM", file);
+	else
+		NSLog(@"%@ is not DICOM", file);
 	//some valid dicom files are rejected by papy
     if (!readable)
 		return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]];

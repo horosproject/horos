@@ -39,6 +39,7 @@
 	long				NoOfSeries;
     
 	NSMutableDictionary *dicomElements;
+	
 }
 // file functions
 + (BOOL) isTiffFile:(NSString *) file;
@@ -66,4 +67,11 @@
 
 - (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f;
 
+- (BOOL)autoFillComments;
+- (BOOL)splitMultiEchoMR;
+- (BOOL) noLocalizer;
+- (BOOL)combineProjectionSeries;
+- (BOOL)checkForLAVIM;
+- (int)commentsGroup ;
+- (int)commentsElement ;
 @end
