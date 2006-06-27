@@ -100,7 +100,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	
 	injectedMinValue = 10;
 	injectedMaxValue = 500;
-	notInjectedMinValue = 0;
+	notInjectedMinValue = -30;
 	notInjectedMaxValue = 100;
 	subtractionMinValue = 20;
 	subtractionMaxValue = 500;
