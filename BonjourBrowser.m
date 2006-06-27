@@ -714,7 +714,7 @@ volatile static BOOL threadIsRunning = NO;
 	
 	if( succeed)
 	{
-		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT*5];
 		
 		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 		{

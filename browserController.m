@@ -4624,6 +4624,8 @@ SElement		*theGroupP;
 		}
 	}
 	
+	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+	
 	NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
 	
 	if( [files count] > 1)
@@ -4693,6 +4695,8 @@ SElement		*theGroupP;
     shouldDie = NO;
 	
 	[item release];
+	
+	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
 	
