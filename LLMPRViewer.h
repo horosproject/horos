@@ -16,9 +16,11 @@
 #import "Scheduler.h"
 #import "StaticScheduler.h"
 
+@class LLDCMView;
+
 @interface LLMPRViewer : OrthogonalMPRViewer <Schedulable> {
 	IBOutlet LLMPRController	*injectedMPRController;
-	IBOutlet DCMView			*subtractedOriginalView, *subtractedXReslicedView, *subtractedYReslicedView;
+	IBOutlet LLDCMView			*subtractedOriginalView, *subtractedXReslicedView, *subtractedYReslicedView;
 	float						*subtractedOriginalBuffer, *subtractedXReslicedBuffer, *subtractedYReslicedBuffer;
 	int							xShift, yShift, zShift;
 	ViewerController			*notInjectedViewer;
@@ -53,6 +55,8 @@
 - (void)produceResultData:(NSMutableData**)volumeData pixList:(NSMutableArray*)pix;
 - (void)produceResultInMemory:(id)sender;
 - (void)produce3DResult:(id)sender;
+
+- (void)blendingPropagate:(LLDCMView*)sender;
 
 - (void)showParametersPanel:(id)sender;
 - (IBAction)setParameterValue:(id)sender;

@@ -37,7 +37,7 @@
 			else bufferA[curPixel] = -1000;	//AIR
 			
 			if(displayBones && bufferA[curPixel]<=-1000 && pixelB>bonesThreshold)
-				bufferA[curPixel] = 1000; // BONE
+				bufferA[curPixel] = pixelB+500; // BONE
 		}
 	}
 }

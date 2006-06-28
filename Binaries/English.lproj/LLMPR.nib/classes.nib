@@ -19,6 +19,12 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = LLDCMView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {viewer = LLMPRViewer; }; 
+            SUPERCLASS = DCMView; 
+        }, 
+        {
             CLASS = LLMPRController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = OrthogonalMPRController; 

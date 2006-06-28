@@ -10,7 +10,7 @@
 #import "LLMPRViewer.h"
 #import "LLSubtraction.h"
 #import "LLMPRView.h"
-#import "LLMPRView.h"
+#import "LLDCMView.h"
 #import "ITKSegmentation3D.h"
 #import "AppController.h"
 #import "VRController.h"
@@ -106,8 +106,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	subtractionMaxValue = 500;
 	
 	closingRadius = 2;
-	displayBones=NO;
-	bonesThreshold=200;
+	displayBones = NO;
+	bonesThreshold = 200;
 	
 	return self;
 }
@@ -168,6 +168,22 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		if( displayResliceAxes >= 3) displayResliceAxes = 0;
 		[controller toggleDisplayResliceAxes:self];
 		[injectedMPRController toggleDisplayResliceAxes:self];
+	}
+}
+
+- (void)blendingPropagate:(LLDCMView*)sender;
+{
+	if ([sender isEqual:subtractedOriginalView])
+	{	
+		[self blendingPropagateOriginal:sender];
+	}
+	else if ([sender isEqual:subtractedXReslicedView])
+	{
+		[self blendingPropagateX:sender];
+	}
+	else if ([sender isEqual:subtractedYReslicedView])
+	{
+		[self blendingPropagateY:sender];
 	}
 }
 
