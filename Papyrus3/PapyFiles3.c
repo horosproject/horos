@@ -133,7 +133,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
     
     
     iResult = papNoError;
-//	printf("papy3open: %s\n", inNameP);
+
     if (inToOpen)
     {
       /* open the file */
@@ -238,7 +238,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                     /* it could still be a non-part 10 DICOM file */
                     /* so try to get the modality element, if everything works fine */
                     /* assume it is the case */
-//					printf("check for group 8\n");
+
                     /* reset the file pointer at the begining of the file */
                     theErr = Papy3FSeek (theFp, (int) SEEK_SET, (PapyLong) 0L);
       
@@ -262,18 +262,18 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                     if (iResult == papNoError)
                     {
                       /* try to extract the modality */
-//					  printf("check modality\n");
+
                       theValP = Papy3GetElement (theGroupP, papModalityGr, &theNbVal, &theElemType);
                       if (theValP != NULL)
                       {
                         ExtractModality (theValP, theFileNb);
                         thePapyrusFile = DICOM_NOT10; /* non-part 10 DICOM file */
-//						printf("have modality DICOM_NOT10\n");
+
                       }
                       else
                       {
                         thePapyrusFile = DICOM10; /* neither a DICOM file nor a PAPYRUS one */
-//						printf("not dicom\n");
+
                       } /* theValp NULL */
     
                       /* free the group 8 */
@@ -293,7 +293,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                   } /* if ...could it be a non-part 10 DICOM file ? */
                   else  /* is it a DICOMDIR file? */
                   {
-//					printf("Is it a dicomdir\n");
+
                     ExtractDicomdirFromPath (inNameP, theFilename);
                     if (theFilename [0] != '\0' &&
                         ((strncmp ((char*) theFilename, "dicomdir", 8) == 0) ||
@@ -378,11 +378,6 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                           if ((theErr = ExtractGroup28Information (theFileNb)) < 0)
                           {
 								iResult = theErr;
-							//	printf("extract group 28 info ");
-							//	if (iResult == papNoError)
-							//		printf("no Error \n");
-							//	else
-							//		printf("Error \n");	
                           }
 						  
 						  
@@ -398,7 +393,7 @@ Papy3FileOpen (char *inNameP, PAPY_FILE inVRefNum, int inToOpen, void* inFSSpec)
                             if ((theErr = ExtractDicomDataSetInformation3 (theFileNb)) < 0)
                             {
 								iResult = theErr;
-//								printf("extract ExtractDicomDataSetInformation\n");
+
                             }
                           } /* if */
 							
