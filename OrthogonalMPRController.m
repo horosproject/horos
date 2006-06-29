@@ -202,6 +202,7 @@
 	{
 		// scale
 		[originalView setScaleValue:originalScaleValue];
+		NSLog(@"originalScaleValue : %f", originalScaleValue);
 		// rotation
 		[originalView setRotation:originalRotation];
 		// origin

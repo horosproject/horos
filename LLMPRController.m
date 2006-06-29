@@ -52,7 +52,7 @@
 		return;
 	if([[notification object] thickSlab]!=[self thickSlab] || [[notification object] thickSlabMode]!=[self thickSlabMode])
 		return;
-//NSLog(@"- (void) resliceFromNotification: (NSNotification*) notification;");		
+	
 	OrthogonalMPRView *sender;
 	if ([[[notification userInfo] objectForKey:@"view"] isEqualTo:@"originalView"])
 		sender = originalView;
@@ -86,7 +86,7 @@
 	int i, s, minI, maxI;
 	DCMPix *curPix;
 	
-	NSLog(@"pixListRange.location : %d .. pixListRange.length : %d", pixListRange.location, pixListRange.length);
+	//NSLog(@"pixListRange.location : %d .. pixListRange.length : %d", pixListRange.location, pixListRange.length);
 	
 	if ([view isEqualTo:originalView])
 	{
@@ -112,8 +112,8 @@
 						pixelMax = currentPixel;
 						zz = res;
 					}
-					NSLog(@"zz : %d", zz);
-					NSLog(@"pixelMax : %f", pixelMax);
+					//NSLog(@"zz : %d", zz);
+					//NSLog(@"pixelMax : %f", pixelMax);
 				}
 			}
 		}
@@ -148,8 +148,8 @@
 					pixelMax = currentPixel;
 					yy = i;
 				}
-				NSLog(@"i : %d", i);
-				NSLog(@"pixelMax : %f", pixelMax);
+				//NSLog(@"i : %d", i);
+				//NSLog(@"pixelMax : %f", pixelMax);
 			}
 		}
 	}
@@ -183,8 +183,8 @@
 					pixelMax = currentPixel;
 					xx = i;
 				}
-				NSLog(@"i : %d", i);
-				NSLog(@"pixelMax : %f", pixelMax);
+				//NSLog(@"i : %d", i);
+				//NSLog(@"pixelMax : %f", pixelMax);
 			}
 		}
 	}
@@ -198,7 +198,7 @@
 }
 
 - (void) dealloc {
-	NSLog(@"LLMPR Controller dealloc");
+	//NSLog(@"LLMPR Controller dealloc");
 	[super dealloc];
 }
 

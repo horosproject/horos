@@ -89,7 +89,7 @@
 }
 
 - (void) dealloc {
-	NSLog(@"LLMPR View dealloc");
+	//NSLog(@"LLMPR View dealloc");
 	[super dealloc];
 }
 

@@ -121,7 +121,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)dealloc
 {	
-	NSLog(@"LLMPRViewer dealloc");
+	//NSLog(@"LLMPRViewer dealloc");
 	if(subtractedOriginalBuffer)
 	{
 		free(subtractedOriginalBuffer);
@@ -173,6 +173,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)blendingPropagate:(LLDCMView*)sender;
 {
+	//NSLog(@"LLMPRViewer blendingPropagate");
 	if ([sender isEqual:subtractedOriginalView])
 	{	
 		[self blendingPropagateOriginal:sender];
@@ -309,7 +310,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)changeWLWW:(NSNotification*)note;
 {
-NSLog(@"LLMPRViewer changeWLWW");
 //	if([[[injectedMPRController originalView] dcmPixList] count]==0 || [[[injectedMPRController xReslicedView] dcmPixList] count]==0 || [[[injectedMPRController yReslicedView] dcmPixList] count]==0) return;
 //	if([[[controller originalView] dcmPixList] count]==0 || [[[controller xReslicedView] dcmPixList] count]==0 || [[[controller yReslicedView] dcmPixList] count]==0) return;
 //	if([[subtractedOriginalView dcmPixList] count]==0 || [[subtractedXReslicedView dcmPixList] count]==0 || [[subtractedYReslicedView dcmPixList] count]==0) return;
@@ -339,6 +339,7 @@ NSLog(@"LLMPRViewer changeWLWW");
 {
 	[injectedMPRController resetImage];
 	[super resetImage:sender];
+	[self refreshSubtractedViews];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification
@@ -353,7 +354,7 @@ NSLog(@"LLMPRViewer changeWLWW");
 
 - (void) resliceFromNotification: (NSNotification*) notification;
 {
-NSLog(@"LLMPRViewer resliceFromNotification");
+//NSLog(@"LLMPRViewer resliceFromNotification");
 	if(injectedMPRController==nil) return;
 	if(controller==nil) return;
 	
@@ -372,6 +373,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 
 - (void)refreshSubtractedViews;
 {
+//NSLog(@"LLMPRViewer refreshSubtractedViews");
 	NSAutoreleasePool *tempPool;
 	
 	DCMPix *curPix;
@@ -443,12 +445,12 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 		[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
 		[LLSubtraction close:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
 		//[LLSubtraction removeSmallConnectedPartDCMPix:newAxialPix];
-
+				
 		[axialPixList addObject:newAxialPix];
 		[newAxialPix release];
 	}
 	//[tempPool release];
-	
+
 	[subtractedOriginalView setDCM:axialPixList :nil :nil :0 :'i' :YES];
 	
 	for( i = 0; i < [axialPixList count]; i++)
@@ -457,11 +459,11 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	}
 	[subtractedOriginalView setFusion:thickSlabMode :thickSlab];
 	
-	fValue = [[controller originalView] scaleValue] / [[controller originalView] pixelSpacing];
-	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
-	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
-	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
-	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
+//	fValue = [[controller originalView] scaleValue] / [[controller originalView] pixelSpacing];
+//	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
+//	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
+//	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
+//	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
 	
 	[axialPixList release];
 //	[newAxialPix release];
@@ -530,7 +532,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 		[newCoronalPix release];
 	}
 	//[tempPool release];
-	
+
 	[subtractedXReslicedView setDCM:coronalPixList :nil :nil :[[injectedMPRController xReslicedView] curImage] :'i' :YES];
 	
 	for( i = 0; i < [coronalPixList count]; i++)
@@ -540,11 +542,11 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	
 	[subtractedXReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController xReslicedView] thickSlabX]];
 	
-	fValue = [[controller xReslicedView] scaleValue] / [[controller xReslicedView] pixelSpacing];
-	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
-	[subtractedXReslicedView setRotation: [[controller xReslicedView] rotation]];
-	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
-	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
+//	fValue = [[controller xReslicedView] scaleValue] / [[controller xReslicedView] pixelSpacing];
+//	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
+//	[subtractedXReslicedView setRotation: [[controller xReslicedView] rotation]];
+//	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
+//	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
 		
 	[coronalPixList release];
 //	[newCoronalPix release];
@@ -614,9 +616,9 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 		[newSagitalPix release];
 	}
 	//[tempPool release];
-	
+
 	[subtractedYReslicedView setDCM:sagitalPixList :nil :nil :[[injectedMPRController yReslicedView] curImage] :'i' :YES];
-	
+
 	for( i = 0; i < [sagitalPixList count]; i++)
 	{
 		[[sagitalPixList objectAtIndex: i] setArrayPix: sagitalPixList :i];
@@ -624,12 +626,12 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	
 	[subtractedYReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController yReslicedView] thickSlabX]];
 	
-	fValue = [[controller yReslicedView] scaleValue] / [[controller yReslicedView] pixelSpacing];
-	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
-	[subtractedYReslicedView setRotation: [[controller yReslicedView] rotation]];
-	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
-	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
-	
+//	fValue = [[controller yReslicedView] scaleValue] / [[controller yReslicedView] pixelSpacing];
+//	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
+//	[subtractedYReslicedView setRotation: [[controller yReslicedView] rotation]];
+//	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
+//	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
+
 	[sagitalPixList release];
 //	[newSagitalPix release];
 	
@@ -1042,7 +1044,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	long			mem = 0;
 	
 	int maxI = ([[controller originalDCMPixList] count] > [pixList count]) ? [pixList count] : [[controller originalDCMPixList] count] ;
-	NSLog(@"maxI: %d", maxI);
+	//NSLog(@"maxI: %d", maxI);
 	for( i = 0; i < maxI; i++)
 	{
 		curPix = [pixList objectAtIndex: i];
@@ -1050,7 +1052,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	}
 	
 	fVolumePtr = malloc(mem);
-	NSLog(@"mem: %d", mem);
+	//NSLog(@"mem: %d", mem);
 
 	if( fVolumePtr)
 	{		
@@ -1141,13 +1143,13 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	
 	if([*volumeData length]< mem || [pix count]==0)
 	{
-		NSLog(@"Not enough memory");
+		//NSLog(@"Not enough memory");
 		NSRunCriticalAlertPanel(@"Memory Error", @"Not enough memory", @"OK", nil, nil);
 	}
 	else
 	{
-		NSLog(@"[volumeData length] : %d", [*volumeData length]);
-		NSLog(@"[pix count] : %d", [pix count]);
+		//NSLog(@"[volumeData length] : %d", [*volumeData length]);
+		//NSLog(@"[pix count] : %d", [pix count]);
 	}
 }
 
@@ -1218,7 +1220,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 	
 	NSMutableArray * newFileArray = [NSMutableArray arrayWithArray:[[[self viewer] fileList] subarrayWithRange:NSMakeRange(0,[pix count])]];
 	
-	NSLog(@"new2DViewer");
+	//NSLog(@"new2DViewer");
 	ViewerController *new2DViewer;
 	new2DViewer = [[self viewer] newWindow:pix :newFileArray :volumeData];
 	
@@ -1447,7 +1449,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 {
 	dilatationRadius = [sender intValue];
 	[dilatationRadiusTextField setIntValue:dilatationRadius-1];
-	NSLog(@"setDilatationRadius : %d", dilatationRadius);
+	//NSLog(@"setDilatationRadius : %d", dilatationRadius);
 	[self refreshSubtractedViews];
 }
 
@@ -1455,7 +1457,7 @@ NSLog(@"LLMPRViewer resliceFromNotification");
 {
 	closingRadius = [sender intValue];
 	[closingRadiusTextField setIntValue:closingRadius-1];
-	NSLog(@"setClosingRadius : %d", closingRadius);
+	//NSLog(@"setClosingRadius : %d", closingRadius);
 	[self refreshSubtractedViews];
 }
 

@@ -980,7 +980,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 //		if( [[[self window] windowController] is2DViewer] == YES)
 //			[[[self window] windowController] propagateSettings];
-			
+		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
@@ -1536,7 +1536,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		if( [[[self window] windowController] is2DViewer] == YES)
 			[[[self window] windowController] propagateSettings];
-			
+		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
     }
@@ -2637,7 +2637,7 @@ static long scrollMode;
 			
 			if( [[[self window] windowController] is2DViewer] == YES)
 				[[[self window] windowController] propagateSettings];
-				
+			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 			
