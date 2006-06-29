@@ -1458,8 +1458,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					characterSet = [NSString stringWithCString:val->a];
 					
 					encoding = [NSString encodingForDICOMCharacterSet:characterSet];
-					
-
 				}
 				
 				val = Papy3GetElement (theGroupP, papImageTypeGr, &nbVal, &itemType);

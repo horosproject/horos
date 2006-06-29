@@ -714,7 +714,10 @@ volatile static BOOL threadIsRunning = NO;
 	
 	if( succeed)
 	{
-		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT*5];
+		NSDate	*timeout;
+		
+		if( [[object valueForKey:@"msg"] isEqualToString:@"DATAB"]) timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT*5];
+		else timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
 		
 		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 		{
