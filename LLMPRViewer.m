@@ -459,11 +459,11 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	}
 	[subtractedOriginalView setFusion:thickSlabMode :thickSlab];
 	
-//	fValue = [[controller originalView] scaleValue] / [[controller originalView] pixelSpacing];
-//	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
-//	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
-//	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
-//	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
+	fValue = [[controller originalView] scaleValue] / [[controller originalView] pixelSpacing];
+	[subtractedOriginalView setScaleValue: fValue * [subtractedOriginalView pixelSpacing]];
+	[subtractedOriginalView setRotation: [[controller originalView] rotation]];
+	[subtractedOriginalView setOrigin: [[controller originalView] origin]];
+	[subtractedOriginalView setOriginOffset: [[controller originalView] originOffset]];
 	
 	[axialPixList release];
 //	[newAxialPix release];
@@ -542,11 +542,11 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	
 	[subtractedXReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController xReslicedView] thickSlabX]];
 	
-//	fValue = [[controller xReslicedView] scaleValue] / [[controller xReslicedView] pixelSpacing];
-//	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
-//	[subtractedXReslicedView setRotation: [[controller xReslicedView] rotation]];
-//	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
-//	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
+	fValue = [[controller xReslicedView] scaleValue] / [[controller xReslicedView] pixelSpacing];
+	[subtractedXReslicedView setScaleValue: fValue * [subtractedXReslicedView pixelSpacing]];
+	[subtractedXReslicedView setRotation: [[controller xReslicedView] rotation]];
+	[subtractedXReslicedView setOrigin: [[controller xReslicedView] origin]];
+	[subtractedXReslicedView setOriginOffset: [[controller xReslicedView] originOffset]];
 		
 	[coronalPixList release];
 //	[newCoronalPix release];
@@ -626,11 +626,11 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	
 	[subtractedYReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController yReslicedView] thickSlabX]];
 	
-//	fValue = [[controller yReslicedView] scaleValue] / [[controller yReslicedView] pixelSpacing];
-//	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
-//	[subtractedYReslicedView setRotation: [[controller yReslicedView] rotation]];
-//	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
-//	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
+	fValue = [[controller yReslicedView] scaleValue] / [[controller yReslicedView] pixelSpacing];
+	[subtractedYReslicedView setScaleValue: fValue * [subtractedYReslicedView pixelSpacing]];
+	[subtractedYReslicedView setRotation: [[controller yReslicedView] rotation]];
+	[subtractedYReslicedView setOrigin: [[controller yReslicedView] origin]];
+	[subtractedYReslicedView setOriginOffset: [[controller yReslicedView] originOffset]];
 
 	[sagitalPixList release];
 //	[newSagitalPix release];
