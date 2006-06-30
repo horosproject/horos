@@ -66,8 +66,6 @@ Version 2.3
 	{
 		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 		{
-			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
-			
 			[[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
 			
 			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
@@ -81,18 +79,7 @@ Version 2.3
 				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"]];
 			}
 			
-//			[[NSFileManager defaultManager] removeFileAtPath:[self valueForKey:@"completePath"] handler:nil];
-//			
-//			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
-//			
-//			if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-//			{
-//				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-//			}
-//			else if([pathExtension isEqualToString:@"zip"])		// ZIP -> DELETE XML
-//			{
-//				[[NSFileManager defaultManager] removeFileAtPath:[[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"] handler:nil];
-//			}
+			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
 		}
 	}
 	return delete;
