@@ -669,23 +669,28 @@ extern BrowserController *browserWindow;
 		Create symbolic links. 
 		Will allow us to convert the sytax on copies if necessary
 		*/
+		
 		//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
-		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
+//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
+//		
+//		NSFileManager *fileManager = [NSFileManager defaultManager];
+//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
+//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
+//			NSLog(@"created temp Folder: %@", tempMoveFolder);
+//		
+//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
+//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
+//		NSString *path;
+//		while (path = [tempEnumerator nextObject]) {
+//			NSString *lastPath = [path lastPathComponent];
+//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
+//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
+//			[paths addObject:newPath];
+//		}
 		
-		NSFileManager *fileManager = [NSFileManager defaultManager];
-		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
-		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
-			NSLog(@"created temp Folder: %@", tempMoveFolder);
+		[paths release];
+		paths = [tempMoveArray copy];
 		
-		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
-		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
-		NSString *path;
-		while (path = [tempEnumerator nextObject]) {
-			NSString *lastPath = [path lastPathComponent];
-			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
-			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
-			[paths addObject:newPath];
-		}
 		cond = EC_Normal;
 	}
 	moveArray = [paths copy];
