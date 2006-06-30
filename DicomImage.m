@@ -61,13 +61,13 @@ Version 2.3
 
 - (BOOL)validateForDelete:(NSError **)error
 {
-	BOOL isDeleted = [self isDeleted];
-	
 	BOOL delete = [super validateForDelete:(NSError **)error];
-	if (delete && isDeleted == NO)
+	if (delete)
 	{
 		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 		{
+			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
+			
 			[[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
 			
 			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
