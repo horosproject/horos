@@ -954,6 +954,9 @@
 		AB6AC64B0624AC5200AFC7AF /* VRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6430624AC5200AFC7AF /* VRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		AB6AC64C0624AC5200AFC7AF /* VRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6440624AC5200AFC7AF /* VRController.h */; };
 		AB6AC64D0624AC5200AFC7AF /* VRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6450624AC5200AFC7AF /* VRController.mm */; };
+		AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
+		AB6B75EB0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
+		AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -9594,6 +9597,7 @@
 		AB6AC6430624AC5200AFC7AF /* VRView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRView.mm; sourceTree = "<group>"; };
 		AB6AC6440624AC5200AFC7AF /* VRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRController.h; sourceTree = "<group>"; };
 		AB6AC6450624AC5200AFC7AF /* VRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRController.mm; sourceTree = "<group>"; };
+		AB6B75DE0A53F60600F0CA8F /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Wait.m; sourceTree = "<group>"; };
@@ -12533,6 +12537,7 @@
 				AB52E5FC0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290B10A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC240A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
+				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12614,6 +12619,7 @@
 				AB52E5FA0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290B00A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC230A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
+				AB6B75EB0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12710,6 +12716,7 @@
 				AB52E5FB0A19D93500726305 /* Security.framework in Frameworks */,
 				BF6290AF0A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC220A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
+				AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12764,6 +12771,7 @@
 				CEF0E4BB06AEC91F001FF9E5 /* Message.framework */,
 				AB5E1A300595697700C48BEB /* Accelerate.framework */,
 				ABFF0970056D92460066794C /* QuickTime.framework */,
+				AB6B75DE0A53F60600F0CA8F /* QTKit.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,

@@ -995,7 +995,8 @@ public:
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
 //		[mov generateMovie: YES  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
-		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];		
+		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		
 		[mov dealloc];
 	}
 }
@@ -4456,7 +4457,6 @@ public:
 	buf = (unsigned char*) malloc( *width * *height * *spp * *bpp/8);
 	if( buf)
 	{
-		//[[self openGLContext] makeCurrentContext];
 		[self getVTKRenderWindow]->MakeCurrent();
 		glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 		

@@ -14,7 +14,7 @@
 
 
 
-
+#import <QTKit/QTKit.h>
 #import "QuicktimeExport.h"
 #import "Wait.h"
 
@@ -306,6 +306,122 @@ if (theGWorld)
 	
 return err;
 } 
+
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
+{
+    NSSavePanel     *panel = [NSSavePanel savePanel];
+	NSString		*fileName;
+	long			result;
+	
+	PRODUCEFILES = produceFiles;
+	
+	if( PRODUCEFILES)
+	{
+		result = NSFileHandlingPanelOKButton;
+		
+		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: 0L];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: 0L];
+		
+		fileName = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
+	}
+	else
+	{
+		[panel setCanSelectHiddenExtension:YES];
+		[panel setRequiredFileType:@"mov"];
+		
+		result = [panel runModalForDirectory:0L file:name];
+		
+		fileName = [panel filename];
+	}
+	
+	if( result == NSFileHandlingPanelOKButton)
+	{
+		int				maxImage, myState, curSample = 0;
+		Handle			dataRef = NULL;
+		OSType			dataRefType;
+		DataHandler		dataHandler;
+		
+		QTNewDataReferenceFromFullPathCFString((CFStringRef) [fileName stringByAppendingString:@"temp"], kQTNativeDefaultPathStyle, 0, &dataRef, &dataRefType);
+		
+		Movie    qtMovie    = nil;
+		CreateMovieStorage (dataRef,
+							dataRefType,
+							0,
+							smSystemScript,
+							newMovieActive,
+							&dataHandler,
+							&qtMovie);
+		
+		// instantiate a QTMovie from our QuickTime movie
+		QTMovie *mMovie = [QTMovie movieWithQuickTimeMovie:qtMovie disposeWhenDone:YES error:nil];
+		// mark the movie as editable
+		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+		[mMovie retain];
+		
+	//    im = [object performSelector: selector withObject: [NSNumber numberWithLong:-1] withObject:[NSNumber numberWithLong: numberOfFrames]];
+			
+		long long timeValue = 30;
+		long timeScale = 600;
+
+		QTTime curTime = QTMakeTime(timeValue, timeScale);
+
+		Wait    *wait = [[Wait alloc] initWithString:0L :NO];
+		[wait showWindow:self];
+		
+		// For each sample...
+		maxImage = numberOfFrames;
+
+		[wait setCancel:YES];
+		[[wait progress] setMaxValue:maxImage];
+		
+		NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
+														QTAddImageCodecType,
+														[NSNumber numberWithLong:codecHighQuality],
+														QTAddImageCodecQuality,
+														nil];
+		
+		for (curSample = 0; curSample < maxImage; curSample++) 
+		{
+			[wait incrementBy:1];
+			
+			NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
+			
+			if( PRODUCEFILES == NO)
+			{
+				[mMovie addImage:im forDuration:curTime withAttributes: myDict];
+			}
+			else
+			{
+				NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curSample];
+				
+				[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
+			}
+						
+			[im release];
+			
+			if( [wait aborted]) curSample = maxImage;
+		}
+		
+		[wait close];
+		
+		[wait release];
+		
+		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+		
+		if( openIt == YES && PRODUCEFILES == NO)
+		{
+			NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+			[ws openFile:fileName];
+		}
+		
+		[mMovie release];
+		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+		
+		return fileName;
+	}
+	
+	return 0L;
+}
 
 -(short) QTVideo_CreateMyVideoTrack:(Movie) theMovie :(Rect *) trackFrame
 {
