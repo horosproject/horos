@@ -785,6 +785,10 @@
 		AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		AB28B93605B79D5E00A9906C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
+		AB2A8CAB0A557654002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
+		AB2A8CAC0A557654002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
+		AB2A8CAD0A557657002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
+		AB2A8CAE0A557657002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
 		AB2C24E20677861300A08910 /* PluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C24E00677861300A08910 /* PluginFilter.m */; };
 		AB2C24E30677861300A08910 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; };
 		AB2C24E40677861300A08910 /* PluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C24E00677861300A08910 /* PluginFilter.m */; };
@@ -12380,7 +12384,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };
@@ -20722,6 +20726,7 @@
 				A93CFFCE0A516A5100078038 /* LLSubtraction.h in Headers */,
 				BF2425550A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C130A52A54D004C5E0A /* LLDCMView.h in Headers */,
+				AB2A8CAE0A557657002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22555,6 +22560,7 @@
 				A93CFFC00A516A5100078038 /* LLSubtraction.h in Headers */,
 				BF2425530A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C0F0A52A54D004C5E0A /* LLDCMView.h in Headers */,
+				AB2A8CAC0A557654002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25157,6 +25163,7 @@
 				A93CFFCF0A516A5100078038 /* LLSubtraction.m in Sources */,
 				BF2425560A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C140A52A54D004C5E0A /* LLDCMView.m in Sources */,
+				AB2A8CAD0A557657002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25831,6 +25838,7 @@
 				A93CFFC10A516A5100078038 /* LLSubtraction.m in Sources */,
 				BF2425540A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C100A52A54D004C5E0A /* LLDCMView.m in Sources */,
+				AB2A8CAB0A557654002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

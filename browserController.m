@@ -3234,6 +3234,9 @@ SElement		*theGroupP;
 			
 			NSMutableArray	*objectsToDelete = [NSMutableArray arrayWithCapacity: 0], *nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
 			
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
+			[wait showWindow:self];
+			
 			if( matrixThumbnails)
 			{
 				[self filesForDatabaseMatrixSelection: objectsToDelete];
@@ -3245,6 +3248,9 @@ SElement		*theGroupP;
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			
+			[wait close];
+			[wait release];
+			
 			NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
 			
 			if( [nonLocalImagesPath  count] > 0)
@@ -3252,6 +3258,9 @@ SElement		*theGroupP;
 				result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove exams", 0L), NSLocalizedString(@"Some of the selected exams are not stored in the Database folder. Do you want to only remove the links of these exams from the database or also delete the original files?", 0L), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
 			}
 			else result = NSAlertDefaultReturn;
+			
+			wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
+			[wait showWindow:self];
 			
 			if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
 			{
@@ -3326,6 +3335,9 @@ SElement		*theGroupP;
 					}
 				}
 			}
+			
+			[wait close];
+			[wait release];
 		}
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
