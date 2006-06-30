@@ -645,7 +645,7 @@ extern BrowserController *browserWindow;
 	error = 0L;
 	
 	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
-	
+	[context lock];
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	OFCondition cond;
@@ -688,9 +688,11 @@ extern BrowserController *browserWindow;
 		}
 		cond = EC_Normal;
 	}
-	
 	moveArray = [paths copy];
 	[paths release];	
+	
+	[context unlock];
+	
 	//NSLog(@"Move array: %@", [moveArray description]);
 	moveEnumerator = [[moveArray objectEnumerator] retain];
 	[pool release];

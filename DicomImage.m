@@ -61,8 +61,10 @@ Version 2.3
 
 - (BOOL)validateForDelete:(NSError **)error
 {
+	BOOL isDeleted = [self isDeleted];
+	
 	BOOL delete = [super validateForDelete:(NSError **)error];
-	if (delete)
+	if (delete && isDeleted == NO)
 	{
 		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 		{

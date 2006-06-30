@@ -6887,6 +6887,14 @@ static BOOL needToRezoom;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	
+	[self emptyDeleteQueueThread];
+	
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	
 	[self syncReportsIfNecessary: previousBonjourIndex];
 	
 	[sourcesSplitView saveDefault:@"SPLITSOURCE"];
@@ -6919,7 +6927,7 @@ static BOOL needToRezoom;
 	
 	[self removeAllMounted];
 	
-	[self emptyDeleteQueueThread];
+	
 	
     [self release];
 }
@@ -7019,6 +7027,7 @@ static BOOL needToRezoom;
 	
 	int i;
 	
+	[deleteInProgress lock];
 	[deleteQueue lock];
 	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
 	[deleteQueueArray removeAllObjects];
@@ -7027,12 +7036,11 @@ static BOOL needToRezoom;
 	if( [copyArray count])
 	{
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
-		
 		for( i = 0; i < [copyArray count]; i++)
 			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
-		
 		NSLog(@"delete Queue end");
 	}
+	[deleteInProgress unlock];
 	[pool release];
 }
 
@@ -7041,7 +7049,13 @@ static BOOL needToRezoom;
 	if( deleteQueueArray != 0L && deleteQueue != 0L)
 	{
 		if( [deleteQueueArray count] > 0)
-			[NSThread detachNewThreadSelector:@selector(emptyDeleteQueueThread) toTarget:self withObject:0L];
+		{
+			if( [deleteInProgress tryLock])
+			{
+				[deleteInProgress unlock];
+				[NSThread detachNewThreadSelector:@selector(emptyDeleteQueueThread) toTarget:self withObject:0L];
+			}
+		}
 	}
 }
 
@@ -7049,6 +7063,7 @@ static BOOL needToRezoom;
 {
 	if( deleteQueueArray == 0L) deleteQueueArray = [[NSMutableArray array] retain];
 	if( deleteQueue == 0L) deleteQueue = [[NSLock alloc] init];
+	if( deleteInProgress == 0L) deleteInProgress = [[NSLock alloc] init];
 
 	[deleteQueue lock];
 	[deleteQueueArray addObject: file];

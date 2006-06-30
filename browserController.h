@@ -183,7 +183,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	StructuredReportController		*structuredReportController;
 	
 	NSMutableArray					*deleteQueueArray;
-	NSLock							*deleteQueue;
+	NSLock							*deleteQueue, *deleteInProgress;
 	
 	IBOutlet NSProgressIndicator	*incomingProgress;
 }
