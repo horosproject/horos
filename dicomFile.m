@@ -1262,11 +1262,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 -(short) getDicomFile :(BOOL) forceConverted
 {
-	NSLog(@"Get Dicom");
 	// For Testing purposes to override Papyrus
 	if (!USEPAPYRUSDCMFILE)
-		return [self getDicomFileDCMTK];
-		//return [self decodeDICOMFileWithDCMFramework];
+		//return [self getDicomFileDCMTK];
+		return [self decodeDICOMFileWithDCMFramework];
 	
 	int					itemType;
 	long				cardiacTime = -1;
@@ -2340,7 +2339,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {
 	id returnVal = 0L;
-	NSLog(@"Init dicomFile: %d", DICOMOnly);
+//	NSLog(@"Init dicomFile: %d", DICOMOnly);
 	if( self = [super init])
 	{
 		[DicomFile setDefaults];
