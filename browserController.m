@@ -445,7 +445,6 @@ static BOOL COMPLETEREBUILD = NO;
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
 {
 	if( isCurrentDatabaseBonjour) return 0L;
-
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
@@ -1540,7 +1539,7 @@ static BOOL COMPLETEREBUILD = NO;
 
 -(BOOL) isDICOMFile:(NSString *) file
 {
-
+return [DicomFile isDICOMFile:file];
 BOOL            readable = YES;
 PapyShort       fileNb, theErr;
 SElement		*theGroupP;
@@ -1566,13 +1565,10 @@ SElement		*theGroupP;
     }
 	
 	[PapyrusLock unlock];
-//	if (readable)
-//		NSLog(@"%@ is DICOM", file);
-//	else
-//		NSLog(@"%@ is not DICOM", file);
+
 	//some valid dicom files are rejected by papy
     if (!readable)
-		return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]];
+		return [DicomFile isDICOMFile:file];
     return readable;
 }
 
@@ -2900,7 +2896,8 @@ SElement		*theGroupP;
 		[sortid release];
 		[sortdate release];
 		
-		return [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+		//return [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+		return [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
 	}
 
 	return 0L;
@@ -3498,7 +3495,8 @@ SElement		*theGroupP;
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
 		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"images"] count];
-		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
+		//if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
+		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"imageSeries"] count];
 	}
 	
 	[managedObjectContext unlock];
@@ -3569,7 +3567,8 @@ SElement		*theGroupP;
 			else
 				name = [item valueForKey:@"name"];
 			
-			return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
+			//return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
+			return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
 	
@@ -3832,7 +3831,8 @@ SElement		*theGroupP;
 		// DICOM & others
 		[appController setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
 		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
-		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
 		{
 			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
 		}
@@ -6312,7 +6312,8 @@ static BOOL needToRezoom;
 	{
 		[appController setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
 		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
-		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
 		{
 			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
 		}
