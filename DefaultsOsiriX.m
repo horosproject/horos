@@ -550,7 +550,7 @@ static NSString *hostName = @"";
 	long	pVRAM;
 //		
 	pVRAM = [self vramSize]  / (1024L * 1024L);
-	NSLog(@"VRAM: %d MB", pVRAM);
+//	NSLog(@"VRAM: %d MB", pVRAM);
 	
 	// ** MAX3DTEXTURE
 	// ** MAX3DTEXTURESHADING
