@@ -17,6 +17,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DicomStudy.h"
 
+
 @interface DicomStudy : NSManagedObject
 {
 }
@@ -24,5 +25,11 @@
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
 - (NSSet *) keyImages;
+- (NSArray *)imageSeries;
+- (NSArray *)reportSeries;
+- (NSArray *)keyObjectSeries;
+- (NSArray *)presentationStateSeries;
+- (NSArray *)waveFormSeries;
+
 
 @end

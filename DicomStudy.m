@@ -24,6 +24,7 @@ Version 2.3
 ****************************************************************************************************/
 
 #import "DicomStudy.h"
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 
 @implementation DicomStudy
 
@@ -115,6 +116,71 @@ Version 2.3
 		[set unionSet:[object keyImages]];
 	return set;
 }
+
+//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+
+- (NSArray *)imageSeries{
+	NSArray *array = [self valueForKeyPath: @"series"] ;
+	//return array;
+	
+	NSMutableArray *newArray = [NSMutableArray array];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject]){
+		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
+			[newArray addObject:series];
+	}
+	return newArray;
+}
+
+- (NSArray *)reportSeries{
+	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSMutableArray *newArray = [NSMutableArray array];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject]){
+		if ([DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]])
+			[newArray addObject:series];
+	}
+	return newArray;
+}
+- (NSArray *)keyObjectSeries{
+	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSMutableArray *newArray = [NSMutableArray array];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject]){
+		if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
+			[newArray addObject:series];
+	}
+	return newArray;
+}
+
+- (NSArray *)presentationStateSeries{
+	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSMutableArray *newArray = [NSMutableArray array];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject]){
+		if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
+			[newArray addObject:series];
+	}
+	return newArray;
+}
+
+- (NSArray *)waveFormSeries{
+	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSMutableArray *newArray = [NSMutableArray array];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject]){
+		if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
+			[newArray addObject:series];
+	}
+	return newArray;
+}
+
 	
 
 

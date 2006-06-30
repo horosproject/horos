@@ -1263,9 +1263,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 -(short) getDicomFile :(BOOL) forceConverted
 {
 	// For Testing purposes to override Papyrus
-	if (!USEPAPYRUSDCMFILE)
-		//return [self getDicomFileDCMTK];
-		return [self decodeDICOMFileWithDCMFramework];
+	//if (!USEPAPYRUSDCMFILE)
+		return [self getDicomFileDCMTK];
+		//return [self decodeDICOMFileWithDCMFramework];
 	
 	int					itemType;
 	long				cardiacTime = -1;
