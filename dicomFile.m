@@ -53,7 +53,7 @@ extern NSLock	*PapyrusLock;
 long gGlobaluniqueID = 0;
 
 static BOOL DEFAULTSSET = NO;
-static BOOL USEPAPYRUSDCMFILE;
+static int TOOLKITPARSER;
 static BOOL COMMENTSAUTOFILL;
 static BOOL splitMultiEchoMR;
 static BOOL NOLOCALIZER;
@@ -165,13 +165,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	if( DEFAULTSSET == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"USEPAPYRUSDCMFILE"])
+		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"TOOLKITPARSER"])
 		{
 			NSUserDefaults *sd = [NSUserDefaults standardUserDefaults];
 			
 			DEFAULTSSET = YES;
 			
-			USEPAPYRUSDCMFILE = [sd boolForKey: @"USEPAPYRUSDCMFILE"];
+			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
 			
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
@@ -193,7 +193,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			DEFAULTSSET = YES;
 			
-			USEPAPYRUSDCMFILE = [[dict objectForKey: @"USEPAPYRUSDCMFILE"] intValue];
+			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 			
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
@@ -206,8 +206,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			CHECKFORLAVIM = NO;
 		}
 		
-		if( USEPAPYRUSDCMFILE) NSLog( @"Use Papyrus");
-		else NSLog( @"Use DCMTK");
+		NSLog( @"Toolkit:%d", TOOLKITPARSER);
 	}
 }
 
@@ -1259,14 +1258,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	return -1;
 }
-
--(short) getDicomFile :(BOOL) forceConverted
+		
+-(short) getDicomFilePapyrus :(BOOL) forceConverted
 {
-	// For Testing purposes to override Papyrus
-	//if (!USEPAPYRUSDCMFILE)
-		return [self getDicomFileDCMTK];
-		//return [self decodeDICOMFileWithDCMFramework];
-	
 	int					itemType;
 	long				cardiacTime = -1;
 	short				x, theErr;
@@ -1974,11 +1968,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		if( forceConverted == NO)
 		{
-			return [self getDicomFile: YES];
+			return [self getDicomFilePapyrus: YES];
 		}
 	}
 	
 	return -1;			// failed
+}
+
+-(short) getDicomFile
+{
+	if( TOOLKITPARSER == 0) return [self decodeDICOMFileWithDCMFramework];
+	if( TOOLKITPARSER == 1) return [self getDicomFilePapyrus: NO];
+	if( TOOLKITPARSER == 2) return [self getDicomFileDCMTK];
 }
 
 -(short) decodeDICOMFileWithDCMFramework
@@ -2372,7 +2373,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( DICOMOnly)
 		{
-			if( [self getDicomFile:NO] == 0)
+			if( [self getDicomFile] == 0)
 			{
 				returnVal = self;
 			}
@@ -2409,7 +2410,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				returnVal = self;
 			}
-			else if( [self getDicomFile:NO] == 0)
+			else if( [self getDicomFile] == 0)
 			{
 				returnVal = self;
 			}

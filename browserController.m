@@ -1977,7 +1977,7 @@ SElement		*theGroupP;
 	
 	long durationFor1000;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMFILE"] == NO)
+	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER"] == 0)
 	{
 		durationFor1000 = 18;
 		[warning setHidden: NO];
@@ -1992,6 +1992,8 @@ SElement		*theGroupP;
 	long hours = (totalSeconds / 3600);
 	long minutes = ((totalSeconds / 60) - hours*60);
 	long seconds = (totalSeconds % 60);
+
+	if( minutes < 1) minutes = 1;
 
 	if( hours) [estimatedTime setStringValue:[NSString stringWithFormat:@"%i hour(s), %i minutes", hours, minutes]];
 	else [estimatedTime setStringValue:[NSString stringWithFormat:@"%i minutes", minutes]];

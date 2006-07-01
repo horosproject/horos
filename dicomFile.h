@@ -69,7 +69,7 @@
 - (short) decodeDICOMFileWithDCMFramework;
 
 - (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f;
-
+-(short) getDicomFile;
 - (BOOL)autoFillComments;
 - (BOOL)splitMultiEchoMR;
 - (BOOL) noLocalizer;

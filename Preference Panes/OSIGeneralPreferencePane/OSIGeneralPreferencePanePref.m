@@ -92,7 +92,7 @@
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 	
 	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX"]];
-	[parserMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMFILE"]];
+	[parserMatrix selectCellWithTag: [defaults integerForKey: @"TOOLKITPARSER"]];
 }
 
 - (IBAction) setReader: (id) sender
@@ -102,7 +102,7 @@
 
 - (IBAction) setParser: (id) sender
 {
-	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEPAPYRUSDCMFILE"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"TOOLKITPARSER"];
 }
 
 -(IBAction)setCheckUpdates:(id)sender{

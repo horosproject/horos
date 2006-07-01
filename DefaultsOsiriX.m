@@ -613,8 +613,8 @@ static NSString *hostName = @"";
 	// ** USEPAPYRUSDCMPIX
 	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMPIX"];
 	
-	// ** USEPAPYRUSDCMFILE
-	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMFILE"];
+	// ** TOOLKITPARSER
+	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
 	
 	// ** SINGLEPROCESS
 	[defaultValues setObject: @"0" forKey: @"SINGLEPROCESS"];
