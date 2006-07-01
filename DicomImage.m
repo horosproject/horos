@@ -24,6 +24,9 @@ Version 2.3
 #import "browserController.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
+
+extern NSString * documentsDirectory();
+
 @implementation DicomImage
 
 -(NSString*) uniqueFilename	// Return a 'unique' filename that identify this image...
@@ -41,16 +44,16 @@ Version 2.3
 		{
 			NSString	*extension = [path pathExtension];
 			long		val = [[path stringByDeletingPathExtension] intValue];
-			NSString	*dbLocation = [[BrowserController currentBrowser] currentDatabasePath];
+			NSString	*dbLocation = [[BrowserController currentBrowser] fixedDocumentsDirectory];
 			
 			val /= 10000;
 			val++;
 			val *= 10000;
 			
 			if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-				return [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/TIF/%@", path];
+				return [dbLocation stringByAppendingFormat:@"/DATABASE/TIF/%@", path];
 			else {
-				return [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
+				return [dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
 			}
 		}
 		
