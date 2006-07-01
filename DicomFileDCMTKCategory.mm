@@ -43,7 +43,7 @@ extern NSLock	*PapyrusLock;
 }
 
 -(short) getDicomFileDCMTK{
-	NSLog(@"get DicomFileDCMTK");
+//	NSLog(@"get DicomFileDCMTK");
 	int					itemType;
 	long				cardiacTime = -1;
 	short				x, theErr;
