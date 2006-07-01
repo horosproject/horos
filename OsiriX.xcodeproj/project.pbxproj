@@ -4343,6 +4343,7 @@
 		CE2FE58E0753A4A4005C4F80 /* VRVPRO.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2FE58A0753A4A4005C4F80 /* VRVPRO.nib */; };
 		CE3422CC0946237A00CCEA2A /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
 		CE3422CD0946237A00CCEA2A /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
+		CE3476470A56A2AF003E23A4 /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		CE37F9470925D1CC000A14CA /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
 		CE37F9480925D1CE000A14CA /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
 		CE37F9490925D20F000A14CA /* LogArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98D088768CA00ECF621 /* LogArrayController.h */; };
@@ -25256,6 +25257,7 @@
 				AB6FF5860A47CF4700C501F0 /* DicomDirDatasetRead.c in Sources */,
 				AB6FF58D0A47CFE000C501F0 /* FVTiff.m in Sources */,
 				AB6FF5A90A47D0EF00C501F0 /* DefaultsOsiriX.m in Sources */,
+				CE3476470A56A2AF003E23A4 /* DicomFileDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
