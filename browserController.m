@@ -1539,7 +1539,7 @@ static BOOL COMPLETEREBUILD = NO;
 
 -(BOOL) isDICOMFile:(NSString *) file
 {
-return [DicomFile isDICOMFile:file];
+//return [DicomFile isDICOMFile:file];
 BOOL            readable = YES;
 PapyShort       fileNb, theErr;
 SElement		*theGroupP;

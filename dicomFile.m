@@ -252,7 +252,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 + (BOOL) isDICOMFile:(NSString *) file
 {
 	//return [DicomFile isDICOMFileDCMTK:file]; 
-	return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]];
+	// return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]]; <- This is EXTREMELY slow with large files like XA, CR: You have to read the ENTIRE file to test it.
 	BOOL            readable = YES;
 	PapyShort       fileNb, theErr;
 
