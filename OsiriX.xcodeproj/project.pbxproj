@@ -4171,6 +4171,94 @@
 		CE0E08EB06A106D700F2C01C /* ThickSlabController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE0E08E706A106D700F2C01C /* ThickSlabController.mm */; };
 		CE0E08FF06A1075000F2C01C /* ThickSlab.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE0E08FD06A1075000F2C01C /* ThickSlab.nib */; };
 		CE0E090006A1075100F2C01C /* ThickSlab.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE0E08FD06A1075000F2C01C /* ThickSlab.nib */; };
+		CE0F3BF60A56A62000D54F38 /* dcxfer.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5309B6827F00545F5E /* dcxfer.cc */; };
+		CE0F3BF70A56A62100D54F38 /* dcvrut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5109B6827F00545F5E /* dcvrut.cc */; };
+		CE0F3BF80A56A62200D54F38 /* dcvrus.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4F09B6827F00545F5E /* dcvrus.cc */; };
+		CE0F3BF90A56A62200D54F38 /* dcvrulup.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4D09B6827F00545F5E /* dcvrulup.cc */; };
+		CE0F3BFA0A56A62300D54F38 /* dcvrul.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4B09B6827F00545F5E /* dcvrul.cc */; };
+		CE0F3BFB0A56A62400D54F38 /* dcvrtm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4709B6827F00545F5E /* dcvrtm.cc */; };
+		CE0F3BFC0A56A62500D54F38 /* dcvrui.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4909B6827F00545F5E /* dcvrui.cc */; };
+		CE0F3BFD0A56A62600D54F38 /* dcvrst.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4509B6827F00545F5E /* dcvrst.cc */; };
+		CE0F3BFE0A56A62800D54F38 /* dcvrss.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4309B6827F00545F5E /* dcvrss.cc */; };
+		CE0F3BFF0A56A62B00D54F38 /* dcvrsl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B4109B6827F00545F5E /* dcvrsl.cc */; };
+		CE0F3C000A56A62C00D54F38 /* dcvrsh.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3F09B6827F00545F5E /* dcvrsh.cc */; };
+		CE0F3C010A56A62D00D54F38 /* dcvrpobw.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3D09B6827F00545F5E /* dcvrpobw.cc */; };
+		CE0F3C020A56A62D00D54F38 /* dcvrpn.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3B09B6827F00545F5E /* dcvrpn.cc */; };
+		CE0F3C030A56A62E00D54F38 /* dcvrof.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3909B6827E00545F5E /* dcvrof.cc */; };
+		CE0F3C040A56A62F00D54F38 /* dcvrobow.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3709B6827E00545F5E /* dcvrobow.cc */; };
+		CE0F3C050A56A62F00D54F38 /* dcvrlt.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3509B6827E00545F5E /* dcvrlt.cc */; };
+		CE0F3C060A56A63000D54F38 /* dcvrlo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3309B6827E00545F5E /* dcvrlo.cc */; };
+		CE0F3C070A56A63000D54F38 /* dcvris.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B3109B6827E00545F5E /* dcvris.cc */; };
+		CE0F3C080A56A63100D54F38 /* dcvrfl.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2F09B6827E00545F5E /* dcvrfl.cc */; };
+		CE0F3C090A56A63200D54F38 /* dcvrfd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2D09B6827E00545F5E /* dcvrfd.cc */; };
+		CE0F3C0A0A56A63200D54F38 /* dcvrdt.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2B09B6827E00545F5E /* dcvrdt.cc */; };
+		CE0F3C0B0A56A63300D54F38 /* dcvrds.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2909B6827E00545F5E /* dcvrds.cc */; };
+		CE0F3C0C0A56A63400D54F38 /* dcvrda.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2709B6827E00545F5E /* dcvrda.cc */; };
+		CE0F3C0D0A56A63500D54F38 /* dcvrcs.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2509B6827E00545F5E /* dcvrcs.cc */; };
+		CE0F3C0E0A56A63500D54F38 /* dcvrat.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2309B6827E00545F5E /* dcvrat.cc */; };
+		CE0F3C0F0A56A63600D54F38 /* dcvras.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B2109B6827E00545F5E /* dcvras.cc */; };
+		CE0F3C100A56A63700D54F38 /* dcvrae.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1F09B6827E00545F5E /* dcvrae.cc */; };
+		CE0F3C110A56A63A00D54F38 /* dcvr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1D09B6827E00545F5E /* dcvr.cc */; };
+		CE0F3C120A56A63A00D54F38 /* dcvm.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1B09B6827E00545F5E /* dcvm.cc */; };
+		CE0F3C130A56A63B00D54F38 /* dcuid.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1909B6827E00545F5E /* dcuid.cc */; };
+		CE0F3C140A56A63C00D54F38 /* dctypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1709B6827E00545F5E /* dctypes.cc */; };
+		CE0F3C150A56A63C00D54F38 /* dctagkey.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1409B6827E00545F5E /* dctagkey.cc */; };
+		CE0F3C160A56A63D00D54F38 /* dctag.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1209B6827E00545F5E /* dctag.cc */; };
+		CE0F3C170A56A63E00D54F38 /* dcswap.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B1009B6827E00545F5E /* dcswap.cc */; };
+		CE0F3C180A56A63E00D54F38 /* dcstack.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0E09B6827E00545F5E /* dcstack.cc */; };
+		CE0F3C190A56A63F00D54F38 /* dcsequen.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0C09B6827E00545F5E /* dcsequen.cc */; };
+		CE0F3C1A0A56A64000D54F38 /* dcrlerp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0A09B6827E00545F5E /* dcrlerp.cc */; };
+		CE0F3C1B0A56A64000D54F38 /* dcrleerg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0809B6827E00545F5E /* dcrleerg.cc */; };
+		CE0F3C1C0A56A64100D54F38 /* dcrledrg.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0509B6827E00545F5E /* dcrledrg.cc */; };
+		CE0F3C1D0A56A64200D54F38 /* dcrlecp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0209B6827E00545F5E /* dcrlecp.cc */; };
+		CE0F3C1E0A56A64300D54F38 /* dcrlecce.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B0009B6827E00545F5E /* dcrlecce.cc */; };
+		CE0F3C1F0A56A64300D54F38 /* dcrleccd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFE09B6827E00545F5E /* dcrleccd.cc */; };
+		CE0F3C200A56A64400D54F38 /* dcpxitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFC09B6827E00545F5E /* dcpxitem.cc */; };
+		CE0F3C210A56A64500D54F38 /* dcpixseq.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AFA09B6827E00545F5E /* dcpixseq.cc */; };
+		CE0F3C220A56A64700D54F38 /* dcpixel.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF809B6827E00545F5E /* dcpixel.cc */; };
+		CE0F3C230A56A64800D54F38 /* dcpcache.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF609B6827E00545F5E /* dcpcache.cc */; };
+		CE0F3C240A56A64900D54F38 /* dcostrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF309B6827D00545F5E /* dcostrmz.cc */; };
+		CE0F3C250A56A64900D54F38 /* dcostrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AF109B6827D00545F5E /* dcostrmf.cc */; };
+		CE0F3C260A56A64A00D54F38 /* dcostrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEF09B6827D00545F5E /* dcostrmb.cc */; };
+		CE0F3C270A56A64B00D54F38 /* dcostrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AED09B6827D00545F5E /* dcostrma.cc */; };
+		CE0F3C280A56A64C00D54F38 /* dcobject.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AEA09B6827D00545F5E /* dcobject.cc */; };
+		CE0F3C290A56A64C00D54F38 /* dcmetinf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE809B6827D00545F5E /* dcmetinf.cc */; };
+		CE0F3C2A0A56A64D00D54F38 /* dclist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE609B6827D00545F5E /* dclist.cc */; };
+		CE0F3C2B0A56A64D00D54F38 /* dcitem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE409B6827D00545F5E /* dcitem.cc */; };
+		CE0F3C2C0A56A64E00D54F38 /* dcistrmz.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE209B6827D00545F5E /* dcistrmz.cc */; };
+		CE0F3C2D0A56A64F00D54F38 /* dcistrmf.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AE009B6827D00545F5E /* dcistrmf.cc */; };
+		CE0F3C2E0A56A64F00D54F38 /* dcistrmb.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADE09B6827D00545F5E /* dcistrmb.cc */; };
+		CE0F3C2F0A56A65000D54F38 /* dcistrma.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADC09B6827D00545F5E /* dcistrma.cc */; };
+		CE0F3C300A56A65000D54F38 /* dchashdi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ADA09B6827D00545F5E /* dchashdi.cc */; };
+		CE0F3C320A56A65200D54F38 /* dcerror.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD609B6827D00545F5E /* dcerror.cc */; };
+		CE0F3C330A56A65600D54F38 /* dcelem.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD409B6827D00545F5E /* dcelem.cc */; };
+		CE0F3C340A56A65700D54F38 /* dcdirrec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD209B6827D00545F5E /* dcdirrec.cc */; };
+		CE0F3C350A56A65800D54F38 /* dcdictbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD109B6827D00545F5E /* dcdictbi.cc */; };
+		CE0F3C360A56A65900D54F38 /* dcdict.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACF09B6827D00545F5E /* dcdict.cc */; };
+		CE0F3C370A56A65900D54F38 /* dcdicent.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACD09B6827D00545F5E /* dcdicent.cc */; };
+		CE0F3C380A56A65A00D54F38 /* dcdicdir.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ACB09B6827D00545F5E /* dcdicdir.cc */; };
+		CE0F3C390A56A65B00D54F38 /* dcdebug.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC709B6827D00545F5E /* dcdebug.cc */; };
+		CE0F3C3A0A56A65B00D54F38 /* dcddirif.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC509B6827D00545F5E /* dcddirif.cc */; };
+		CE0F3C3B0A56A65C00D54F38 /* dcdatset.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC309B6827D00545F5E /* dcdatset.cc */; };
+		CE0F3C3C0A56A65D00D54F38 /* dccodec.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AC109B6827D00545F5E /* dccodec.cc */; };
+		CE0F3C3D0A56A65D00D54F38 /* dcchrstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABF09B6827D00545F5E /* dcchrstr.cc */; };
+		CE0F3C3E0A56A66200D54F38 /* dcbytstr.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3ABD09B6827D00545F5E /* dcbytstr.cc */; };
+		CE0F422D0A56A88000D54F38 /* oftime.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6909B6828B00545F5E /* oftime.cc */; };
+		CE0F422E0A56A88D00D54F38 /* ofcmdln.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E4609B6828A00545F5E /* ofcmdln.cc */; };
+		CE0F422F0A56A88E00D54F38 /* ofconapp.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E4809B6828A00545F5E /* ofconapp.cc */; };
+		CE0F42330A56A8A600D54F38 /* ofcond.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E4A09B6828A00545F5E /* ofcond.cc */; };
+		CE0F42340A56A8A600D54F38 /* ofconfig.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E4C09B6828A00545F5E /* ofconfig.cc */; };
+		CE0F42350A56A8A600D54F38 /* ofconsol.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E4E09B6828A00545F5E /* ofconsol.cc */; };
+		CE0F42360A56A8A600D54F38 /* ofcrc32.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5009B6828A00545F5E /* ofcrc32.cc */; };
+		CE0F42370A56A8A600D54F38 /* ofdate.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5209B6828A00545F5E /* ofdate.cc */; };
+		CE0F42380A56A8A600D54F38 /* ofdatime.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5409B6828A00545F5E /* ofdatime.cc */; };
+		CE0F42390A56A8A600D54F38 /* offname.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5609B6828A00545F5E /* offname.cc */; };
+		CE0F423A0A56A8A600D54F38 /* oflist.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5909B6828B00545F5E /* oflist.cc */; };
+		CE0F423B0A56A8A600D54F38 /* oflogfil.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E5B09B6828B00545F5E /* oflogfil.cc */; };
+		CE0F423C0A56A8A600D54F38 /* ofstd.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6109B6828B00545F5E /* ofstd.cc */; };
+		CE0F423D0A56A8A600D54F38 /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
+		CE0F423E0A56A8A600D54F38 /* ofthread.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6709B6828B00545F5E /* ofthread.cc */; };
+		CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */; };
 		CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139008EDD5FD005B15E1 /* libvtkHybrid.a */; };
 		CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139108EDD5FD005B15E1 /* libvtkVolumeRendering.a */; };
@@ -4344,6 +4432,7 @@
 		CE3422CC0946237A00CCEA2A /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
 		CE3422CD0946237A00CCEA2A /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE3422CA0946237A00CCEA2A /* libvtksys.a */; };
 		CE3476470A56A2AF003E23A4 /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
+		CE34764B0A56A2DF003E23A4 /* dcfilefo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD809B6827D00545F5E /* dcfilefo.cc */; };
 		CE37F9470925D1CC000A14CA /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
 		CE37F9480925D1CE000A14CA /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
 		CE37F9490925D20F000A14CA /* LogArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF17E98D088768CA00ECF621 /* LogArrayController.h */; };
@@ -12639,6 +12728,7 @@
 				AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */,
 				AB6FF5890A47CF8700C501F0 /* QuickTime.framework in Frameworks */,
 				AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */,
+				CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25258,6 +25348,94 @@
 				AB6FF58D0A47CFE000C501F0 /* FVTiff.m in Sources */,
 				AB6FF5A90A47D0EF00C501F0 /* DefaultsOsiriX.m in Sources */,
 				CE3476470A56A2AF003E23A4 /* DicomFileDCMTKCategory.mm in Sources */,
+				CE34764B0A56A2DF003E23A4 /* dcfilefo.cc in Sources */,
+				CE0F3BF60A56A62000D54F38 /* dcxfer.cc in Sources */,
+				CE0F3BF70A56A62100D54F38 /* dcvrut.cc in Sources */,
+				CE0F3BF80A56A62200D54F38 /* dcvrus.cc in Sources */,
+				CE0F3BF90A56A62200D54F38 /* dcvrulup.cc in Sources */,
+				CE0F3BFA0A56A62300D54F38 /* dcvrul.cc in Sources */,
+				CE0F3BFB0A56A62400D54F38 /* dcvrtm.cc in Sources */,
+				CE0F3BFC0A56A62500D54F38 /* dcvrui.cc in Sources */,
+				CE0F3BFD0A56A62600D54F38 /* dcvrst.cc in Sources */,
+				CE0F3BFE0A56A62800D54F38 /* dcvrss.cc in Sources */,
+				CE0F3BFF0A56A62B00D54F38 /* dcvrsl.cc in Sources */,
+				CE0F3C000A56A62C00D54F38 /* dcvrsh.cc in Sources */,
+				CE0F3C010A56A62D00D54F38 /* dcvrpobw.cc in Sources */,
+				CE0F3C020A56A62D00D54F38 /* dcvrpn.cc in Sources */,
+				CE0F3C030A56A62E00D54F38 /* dcvrof.cc in Sources */,
+				CE0F3C040A56A62F00D54F38 /* dcvrobow.cc in Sources */,
+				CE0F3C050A56A62F00D54F38 /* dcvrlt.cc in Sources */,
+				CE0F3C060A56A63000D54F38 /* dcvrlo.cc in Sources */,
+				CE0F3C070A56A63000D54F38 /* dcvris.cc in Sources */,
+				CE0F3C080A56A63100D54F38 /* dcvrfl.cc in Sources */,
+				CE0F3C090A56A63200D54F38 /* dcvrfd.cc in Sources */,
+				CE0F3C0A0A56A63200D54F38 /* dcvrdt.cc in Sources */,
+				CE0F3C0B0A56A63300D54F38 /* dcvrds.cc in Sources */,
+				CE0F3C0C0A56A63400D54F38 /* dcvrda.cc in Sources */,
+				CE0F3C0D0A56A63500D54F38 /* dcvrcs.cc in Sources */,
+				CE0F3C0E0A56A63500D54F38 /* dcvrat.cc in Sources */,
+				CE0F3C0F0A56A63600D54F38 /* dcvras.cc in Sources */,
+				CE0F3C100A56A63700D54F38 /* dcvrae.cc in Sources */,
+				CE0F3C110A56A63A00D54F38 /* dcvr.cc in Sources */,
+				CE0F3C120A56A63A00D54F38 /* dcvm.cc in Sources */,
+				CE0F3C130A56A63B00D54F38 /* dcuid.cc in Sources */,
+				CE0F3C140A56A63C00D54F38 /* dctypes.cc in Sources */,
+				CE0F3C150A56A63C00D54F38 /* dctagkey.cc in Sources */,
+				CE0F3C160A56A63D00D54F38 /* dctag.cc in Sources */,
+				CE0F3C170A56A63E00D54F38 /* dcswap.cc in Sources */,
+				CE0F3C180A56A63E00D54F38 /* dcstack.cc in Sources */,
+				CE0F3C190A56A63F00D54F38 /* dcsequen.cc in Sources */,
+				CE0F3C1A0A56A64000D54F38 /* dcrlerp.cc in Sources */,
+				CE0F3C1B0A56A64000D54F38 /* dcrleerg.cc in Sources */,
+				CE0F3C1C0A56A64100D54F38 /* dcrledrg.cc in Sources */,
+				CE0F3C1D0A56A64200D54F38 /* dcrlecp.cc in Sources */,
+				CE0F3C1E0A56A64300D54F38 /* dcrlecce.cc in Sources */,
+				CE0F3C1F0A56A64300D54F38 /* dcrleccd.cc in Sources */,
+				CE0F3C200A56A64400D54F38 /* dcpxitem.cc in Sources */,
+				CE0F3C210A56A64500D54F38 /* dcpixseq.cc in Sources */,
+				CE0F3C220A56A64700D54F38 /* dcpixel.cc in Sources */,
+				CE0F3C230A56A64800D54F38 /* dcpcache.cc in Sources */,
+				CE0F3C240A56A64900D54F38 /* dcostrmz.cc in Sources */,
+				CE0F3C250A56A64900D54F38 /* dcostrmf.cc in Sources */,
+				CE0F3C260A56A64A00D54F38 /* dcostrmb.cc in Sources */,
+				CE0F3C270A56A64B00D54F38 /* dcostrma.cc in Sources */,
+				CE0F3C280A56A64C00D54F38 /* dcobject.cc in Sources */,
+				CE0F3C290A56A64C00D54F38 /* dcmetinf.cc in Sources */,
+				CE0F3C2A0A56A64D00D54F38 /* dclist.cc in Sources */,
+				CE0F3C2B0A56A64D00D54F38 /* dcitem.cc in Sources */,
+				CE0F3C2C0A56A64E00D54F38 /* dcistrmz.cc in Sources */,
+				CE0F3C2D0A56A64F00D54F38 /* dcistrmf.cc in Sources */,
+				CE0F3C2E0A56A64F00D54F38 /* dcistrmb.cc in Sources */,
+				CE0F3C2F0A56A65000D54F38 /* dcistrma.cc in Sources */,
+				CE0F3C300A56A65000D54F38 /* dchashdi.cc in Sources */,
+				CE0F3C320A56A65200D54F38 /* dcerror.cc in Sources */,
+				CE0F3C330A56A65600D54F38 /* dcelem.cc in Sources */,
+				CE0F3C340A56A65700D54F38 /* dcdirrec.cc in Sources */,
+				CE0F3C350A56A65800D54F38 /* dcdictbi.cc in Sources */,
+				CE0F3C360A56A65900D54F38 /* dcdict.cc in Sources */,
+				CE0F3C370A56A65900D54F38 /* dcdicent.cc in Sources */,
+				CE0F3C380A56A65A00D54F38 /* dcdicdir.cc in Sources */,
+				CE0F3C390A56A65B00D54F38 /* dcdebug.cc in Sources */,
+				CE0F3C3A0A56A65B00D54F38 /* dcddirif.cc in Sources */,
+				CE0F3C3B0A56A65C00D54F38 /* dcdatset.cc in Sources */,
+				CE0F3C3C0A56A65D00D54F38 /* dccodec.cc in Sources */,
+				CE0F3C3D0A56A65D00D54F38 /* dcchrstr.cc in Sources */,
+				CE0F3C3E0A56A66200D54F38 /* dcbytstr.cc in Sources */,
+				CE0F422D0A56A88000D54F38 /* oftime.cc in Sources */,
+				CE0F422E0A56A88D00D54F38 /* ofcmdln.cc in Sources */,
+				CE0F422F0A56A88E00D54F38 /* ofconapp.cc in Sources */,
+				CE0F42330A56A8A600D54F38 /* ofcond.cc in Sources */,
+				CE0F42340A56A8A600D54F38 /* ofconfig.cc in Sources */,
+				CE0F42350A56A8A600D54F38 /* ofconsol.cc in Sources */,
+				CE0F42360A56A8A600D54F38 /* ofcrc32.cc in Sources */,
+				CE0F42370A56A8A600D54F38 /* ofdate.cc in Sources */,
+				CE0F42380A56A8A600D54F38 /* ofdatime.cc in Sources */,
+				CE0F42390A56A8A600D54F38 /* offname.cc in Sources */,
+				CE0F423A0A56A8A600D54F38 /* oflist.cc in Sources */,
+				CE0F423B0A56A8A600D54F38 /* oflogfil.cc in Sources */,
+				CE0F423C0A56A8A600D54F38 /* ofstd.cc in Sources */,
+				CE0F423D0A56A8A600D54F38 /* ofstring.cc in Sources */,
+				CE0F423E0A56A8A600D54F38 /* ofthread.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26957,8 +27135,6 @@
 					"$(SRCROOT)",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -26976,6 +27152,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = SafeDBRebuild;
 				SYMROOT = build;
+				ZERO_LINK = NO;
 			};
 			name = Development;
 		};
