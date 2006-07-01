@@ -1537,40 +1537,6 @@ static BOOL COMPLETEREBUILD = NO;
 	return retError;
 }
 
--(BOOL) isDICOMFile:(NSString *) file
-{
-//return [DicomFile isDICOMFile:file];
-BOOL            readable = YES;
-PapyShort       fileNb, theErr;
-SElement		*theGroupP;
-
-	[PapyrusLock lock];
-    fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
-    if (fileNb < 0)
-    {
-        readable = NO;
-		NSLog(@"NOT READABLE");
-    }
-    else
-    {
-		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
-		if( Papy3GroupRead (fileNb, &theGroupP) < 0)
-		{
-            readable = NO;
-			NSLog(@"no group 8 read");
-        }
-        else Papy3GroupFree (&theGroupP, TRUE);
-        
-        Papy3FileClose (fileNb, TRUE);
-    }
-	
-	[PapyrusLock unlock];
-
-	//some valid dicom files are rejected by papy
-    if (!readable)
-		return [DicomFile isDICOMFile:file];
-    return readable;
-}
 
 -(NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput
 {
@@ -7561,10 +7527,13 @@ static BOOL needToRezoom;
 				}
 				else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 				{
+					BOOL	isDicomFile;
 					NSString *dstPath;
 					dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
-					//NSLog(@"have file: %@", srcPath);
-					if( [self isDICOMFile :srcPath] == YES		||
+					
+					isDicomFile = [DicomFile isDICOMFile :srcPath];
+					
+					if( isDicomFile == YES		||
 						(([DicomFile isFVTiffFile:srcPath]		||
 						[DicomFile isTiffFile:srcPath]			||
 						[DicomFile isXMLDescriptedFile:srcPath]	||
@@ -7573,7 +7542,7 @@ static BOOL needToRezoom;
 					{
 //						dstPath = [self getNewFileDatabasePath:@"dcm"];
 						
-						if ([self isDICOMFile :srcPath])
+						if (isDicomFile)
 						{
 							dstPath = [self getNewFileDatabasePath:@"dcm"];
 						}

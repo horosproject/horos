@@ -6023,23 +6023,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 - (BOOL) isDICOMFile:(NSString *) file
 {
 BOOL            readable = YES;
-PapyShort       fileNb, theErr;
 
 	if( imageObj)
 	{
-		if( [[imageObj valueForKey:@"fileType"] isEqualToString:@"DICOM"] == NO)
-			readable = NO;
+		if( [[imageObj valueForKey:@"fileType"] isEqualToString:@"DICOM"] == NO) readable = NO;
 	}
 	else
 	{
-		[PapyrusLock lock];
-		fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
-		if (fileNb < 0)
-		{
-			readable = NO;
-		}
-		else Papy3FileClose (fileNb, TRUE);
-		[PapyrusLock unlock];
+		readable = [DicomFile isDICOMFile: file];
     }
 	
     return readable;
