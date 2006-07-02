@@ -197,8 +197,6 @@ extern NSLock	*PapyrusLock;
 		}
 		
 		else if (dataset->findAndGetString(DCM_StudyDate, string, OFFalse).good() && string != NULL){
-			if  (strlen(string) > 0)
-				NSLog(@"StudyDate %s", string);
 			NSString	*studyDate = [[NSString alloc] initWithCString:string];
 			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
@@ -531,12 +529,8 @@ extern NSLock	*PapyrusLock;
 		{
 			return 0;   // success
 		}
-		
-		
 	}
-	NSLog(@"SeriesID: %@", serieID);
-	if (status.good())
-		return 0;
+	
 	return-1;
 }
 

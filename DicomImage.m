@@ -29,6 +29,12 @@ extern NSString * documentsDirectory();
 
 @implementation DicomImage
 
+- (void) dealloc
+{
+	[completePathCache release];
+	[super dealloc];
+}
+
 -(NSString*) uniqueFilename	// Return a 'unique' filename that identify this image...
 {
 	return [NSString stringWithFormat:@"%@ %@",[self valueForKey:@"sopInstanceUID"], [self valueForKey:@"instanceNumber"]];
@@ -36,6 +42,8 @@ extern NSString * documentsDirectory();
 
 -(NSString*) completePath
 {
+	if( completePathCache) return completePathCache;
+	
 	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 	{
 		NSString	*path = [self primitiveValueForKey:@"path"];
@@ -51,12 +59,13 @@ extern NSString * documentsDirectory();
 			val *= 10000;
 			
 			if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-				return [dbLocation stringByAppendingFormat:@"/DATABASE/TIF/%@", path];
+				completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/TIF/%@", path] retain];
 			else {
-				return [dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
+				completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path] retain];
 			}
+			
+			return completePathCache;
 		}
-		
 	}
 	
 	return [self primitiveValueForKey:@"path"];

@@ -17,7 +17,9 @@
 
 @class DCMSequenceAttribute;
 
-@interface DicomImage : NSManagedObject {
+@interface DicomImage : NSManagedObject
+{
+	NSString	*completePathCache;
 }
 
 -(NSString*) uniqueFilename;
