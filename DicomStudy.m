@@ -121,7 +121,7 @@ Version 2.3
 
 
 - (NSArray *)imageSeries{
-	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	//return array;
 	
 	NSMutableArray *newArray = [NSMutableArray array];
@@ -135,7 +135,7 @@ Version 2.3
 }
 
 - (NSArray *)reportSeries{
-	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
@@ -145,8 +145,19 @@ Version 2.3
 	}
 	return newArray;
 }
+
+- (NSArray *)structuredReports{
+	NSArray *array = [self primitiveValueForKey:@"reportSeries"];
+	NSMutableSet *set = [NSMutableSet set];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject])
+		[set unionSet:[series primitiveValueForKey:@"images"]];
+	return [set allObjects];
+}
+
 - (NSArray *)keyObjectSeries{
-	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
@@ -157,8 +168,18 @@ Version 2.3
 	return newArray;
 }
 
+- (NSArray *)keyObjects{
+	NSArray *array = [self primitiveValueForKey:@"keyObjectSeries"];
+	NSMutableSet *set = [NSMutableSet set];
+	NSEnumerator *enumerator = [array objectEnumerator];
+	id series;
+	while (series = [enumerator nextObject])
+		[set unionSet:[series primitiveValueForKey:@"images"]];
+	return [set allObjects];
+}
+
 - (NSArray *)presentationStateSeries{
-	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
@@ -170,7 +191,7 @@ Version 2.3
 }
 
 - (NSArray *)waveFormSeries{
-	NSArray *array = [self valueForKeyPath: @"series"] ;
+	NSArray *array = [self primitiveValueForKey: @"series"] ;
 	NSMutableArray *newArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;

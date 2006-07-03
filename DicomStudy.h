@@ -27,7 +27,9 @@
 - (NSSet *) keyImages;
 - (NSArray *)imageSeries;
 - (NSArray *)reportSeries;
+- (NSArray *)structuredReports;
 - (NSArray *)keyObjectSeries;
+- (NSArray *)keyObjects;
 - (NSArray *)presentationStateSeries;
 - (NSArray *)waveFormSeries;
 
