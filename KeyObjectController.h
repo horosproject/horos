@@ -24,6 +24,7 @@
 	int _title;
 	NSString *_keyDescription;
 	id _study;
+	NSString *_seriesUID;
 }
 - (id)initWithStudy:(id)study;
 - (int) title;

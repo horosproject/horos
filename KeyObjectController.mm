@@ -20,6 +20,7 @@
 #import "KeyObjectController.h"
 #import "KeyObjectReport.h"
 #import "browserController.h"
+#import "DicomStudy.h"
 
 
 @implementation KeyObjectController
@@ -29,6 +30,8 @@
 		_study = [study retain];
 		_title = 113000; // Of Interest
 		NSLog(@"init Key Object controller");
+		NSArray *series = [study keyObjectSeries];
+		_seriesUID = [series valueForKey:@"seriesInstanceUID"];
 	}
 	return self;
 }
@@ -36,6 +39,7 @@
 - (void)dealloc{
 	[_study release];
 	[_keyDescription release];
+	[_seriesUID release];
 	[super dealloc];
 }
 
@@ -61,9 +65,12 @@
 		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
 
-		NSLog(@"create folders");
+//		NSLog(@"create folders");
+		//Save to INCOMING		
 		NSString *rootFolder = [[BrowserController currentBrowser] documentsDirectory];
-		path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
+		//path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
+		path = [[rootFolder stringByAppendingPathComponent:@"INCOMING"] stringByAppendingPathComponent:studyInstanceUID];
+		/*
 		NSFileManager *defaultManager = [NSFileManager defaultManager];
 		BOOL isDir;
 		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir)) {
@@ -75,19 +82,19 @@
 			NSLog(@"create KEYOBJECTS folder");
 			[defaultManager createDirectoryAtPath:(NSString *)path attributes:nil];
 		}
-		
-		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription];
-		NSLog(@"KO %@ retain count: %d",[ko description],  [ko retainCount]);
+		*/
+		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription seriesUID:_seriesUID];
+	//	NSLog(@"KO %@ retain count: %d",[ko description],  [ko retainCount]);
 		NSString *sopInstanceUID = [ko sopInstanceUID];
 		//NSString *sopInstanceUID = @"1111.11.11.11";
 		path = [path stringByAppendingPathComponent:sopInstanceUID];
-		NSLog(@"Write file: %@", path);
+//		NSLog(@"Write file: %@", path);
 		if (ko) {
 			NSLog(@"ko: %@", [ko description]);
 			[ko writeFileAtPath:path];
 			[ko release];
 		}
-		NSLog(@"end close Window");
+	//	NSLog(@"end close Window");
 		NS_HANDLER
 			NSLog(@"exception: %@", [localException description]);
 		NS_ENDHANDLER

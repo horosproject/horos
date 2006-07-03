@@ -28,9 +28,13 @@
 	NSArray *_keyImages;
 	NSString *_keyDescription;
 	int _title;
+	NSString *_seriesUID;
 }
 
- - (id) initWithStudy:(id)study  title:(int)title   description:(NSString *)description;
+ - (id) initWithStudy:(id)study  
+				title:(int)title   
+				description:(NSString *)keyDescription
+				seriesUID:(NSString *)seriesUID;
  - (void)createKO;
  - (BOOL)writeFileAtPath:(NSString *)path;
  - (BOOL)writeHTMLAtPath:(NSString *)path;

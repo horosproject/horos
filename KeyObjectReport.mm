@@ -32,11 +32,15 @@
 
 
 @implementation KeyObjectReport
- - (id) initWithStudy:(id)study  title:(int)title   description:(NSString *)keyDescription{
+- (id) initWithStudy:(id)study  
+				title:(int)title   
+				description:(NSString *)keyDescription
+				seriesUID:(NSString *)seriesUID{
 	if (self = [super init]){
 		_study = [study retain];
 		_keyDescription = [keyDescription retain];
 		_title = title;
+		_seriesUID = [seriesUID retain];
 		[self createKO];
 	}
 	return self;
@@ -47,7 +51,7 @@
 	_doc = new DSRDocument(DSRTypes::DT_KeyObjectDoc);
 	_doc->setSpecificCharacterSet("ISO_IR 192"); //UTF 8 string encoding
 	_doc->createNewSeriesInStudy([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
-	
+
 	//Study Description
 	if ([_study valueForKey:@"studyName"])
 		_doc->setStudyDescription([[_study valueForKey:@"studyName"] UTF8String]);
@@ -216,6 +220,7 @@
 	[_study release];
 	[_keyImages release];
 	[_keyDescription release];
+	[_seriesUID release];
 	[super dealloc];
 	
 }
@@ -229,6 +234,11 @@
 	OFCondition status = _doc->write(*fileformat.getDataset());
 	if (status.good())  {
 		//NSLog(@"have dcmdataset");
+		//Set SeriesUID
+		if (_seriesUID)
+			fileformat.getDataset()->putAndInsertString	(DCM_SeriesInstanceUID,
+									[_seriesUID UTF8String],
+									OFTrue);
 		status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
 	}
 	else {
