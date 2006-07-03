@@ -784,16 +784,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		
 		long xc, yc;
-		if( fontL == labelFontListGL)
-		{
-			xc = x+2;
-			yc = y-3-12;
-		}
-		else
-		{
-			xc = x+2;
-			yc = y-3-[[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"];
-		}
+		xc = x+2;
+		yc = y+1-[stringTex texSize].height;
 		glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
 		[stringTex drawAtPoint:NSMakePoint( xc+1, yc+1)];
 		
