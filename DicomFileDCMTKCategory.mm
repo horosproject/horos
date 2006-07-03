@@ -460,7 +460,7 @@ extern NSLock	*PapyrusLock;
 		//Columns
 		
 		unsigned short columns = 0;
-		if (dataset->findAndGetUint16(DCM_Rows, columns, OFFalse).good()){
+		if (dataset->findAndGetUint16(DCM_Columns, columns, OFFalse).good()){
 			width = columns/2;
 			width *=2;
 		}

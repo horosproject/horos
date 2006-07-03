@@ -5750,6 +5750,7 @@ static BOOL needToRezoom;
 					for( i = 0; i < [loadList count]; i++)
 					{
 						curFile = [loadList objectAtIndex: i];
+						
 						mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 					}

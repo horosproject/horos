@@ -146,8 +146,9 @@
 		[borderColor set]; 
 		NSFrameRect (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
 	}
-	[textColor set]; 
-	[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)]; // draw at offset position
+	[textColor set];
+	[string drawAtPoint:NSMakePoint (marginSize.width, marginSize.height)];
+		
 	bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
 	[image unlockFocus];
 	texSize.width = [bitmap size].width;
