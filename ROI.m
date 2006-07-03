@@ -229,7 +229,6 @@ GLenum glReportError (void)
 			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-			[font release];
 		}
     }
 	
@@ -297,6 +296,7 @@ GLenum glReportError (void)
 	[name release];
 	[comments release];
 	[stringTex release];
+	[stanStringAttrib release];
 	
 	[_roiSeriesInstanceUID release];
 	[_sopInstanceUID release];
@@ -487,7 +487,6 @@ GLenum glReportError (void)
 			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-			[font release];
 			
 			name = [[NSString alloc] initWithString:@"Double-Click to edit"];
 			
@@ -1946,7 +1945,6 @@ return rect;
 			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
 			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-			[font release];
 			
 			[self setName:name];
 		}
@@ -2495,39 +2493,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			
-//			glDisable (GL_DEPTH_TEST); // ensure text is not remove by deoth buffer test.
-//			glEnable (GL_BLEND); // for text fading
-//			glBlendFunc (GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // ditto
 			glEnable (GL_TEXTURE_RECTANGLE_EXT);
-//			
-//			float width = [curView frame].size.width;
-//			float height = [curView frame].size.height;
-//			
-//			// set orthograhic 1:1  pixel transform in local view coords
-//			glGetIntegerv (GL_MATRIX_MODE, &matrixMode);
-//			glMatrixMode (GL_PROJECTION);
-//			glPushMatrix();
-//				glLoadIdentity ();
-//				glMatrixMode (GL_MODELVIEW);
-//				glPushMatrix();
-//					glLoadIdentity ();
-//					glScalef (2.0f / width, -2.0f /  height, 1.0f);
-//					glTranslatef (-width / 2.0f, -height / 2.0f, 0.0f);
-//					
-//					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-//					
-					if( stringTex == 0L) [self setName: name];
-					
-					[stringTex drawAtPoint:tPt];
 			
-					// reset orginal martices
-//				glPopMatrix(); // GL_MODELVIEW
-//				glMatrixMode (GL_PROJECTION);
-//			glPopMatrix();
-//			glMatrixMode (matrixMode);
-
+			if( stringTex == 0L) [self setName: name];
+			[stringTex drawAtPoint:tPt];
+			
 			glDisable (GL_TEXTURE_RECTANGLE_EXT);
-//			glDisable (GL_BLEND);
 			
 			glColor3f (1.0f, 1.0f, 1.0f);
 		break;

@@ -25,7 +25,7 @@ Version 2.3
 
 
 #import <DCMView.h>
-
+#import "StringTexture.h"
 #import <DCMPix.h>
 #import "ROI.h"
 #import "NSFont_OpenGL.h"
@@ -745,33 +745,89 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[self setXFlipped: !xFlipped];
 }
 
+- (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray
+{
+	long i = 0, temp = 0;
+	
+	while( cstr[ i] != 0)
+	{
+		temp += fontSizeArray[ cstr[ i]];
+		i++;
+	}
+	return temp;
+}
+
+- (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
+{
+	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
+	return [attrString size];
+}
+
+- (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right
+{
+	if( 0)
+	{
+		NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+		
+		if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
+		else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
+		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+		
+		StringTexture *stringTex = [[StringTexture alloc] initWithString:[NSString stringWithCString: cstrOut] withAttributes:stanStringAttrib];
+		
+		[stringTex genTexture];
+		
+		if( right) x -= [stringTex texSize].width;
+		
+		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+		glEnable (GL_TEXTURE_RECTANGLE_EXT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		if( fontL == labelFontListGL) [stringTex drawAtPoint:NSMakePoint(x-5,y-3-12)];
+		else [stringTex drawAtPoint:NSMakePoint(x-5,y-3-[[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"])];
+		glDisable(GL_BLEND);
+		glDisable (GL_TEXTURE_RECTANGLE_EXT);
+		[stringTex release];
+	}
+	else
+	{
+		if( right)
+		{
+			if( fontL == labelFontListGL) x -= [self lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
+			else x -= [self lengthOfString:cstrOut forFont:fontListGLSize] + 2;
+		}
+		unsigned char	*lstr = (unsigned char*) cstrOut;
+		
+		if (fontColor)
+			glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
+		else
+			glColor4f (0.0, 0.0, 0.0, 1.0);
+
+		glRasterPos3d (x+1, y+1, 0);
+		
+		GLint i = 0;
+		while (lstr [i])
+		{
+			long val = lstr[i++] - ' ';
+			if( val < 150 && val >= 0) glCallList (fontL+val);
+		}
+		
+		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+		glRasterPos3d (x, y, 0);
+		
+		i = 0;
+		while (lstr [i])
+		{
+			long val = lstr[i++] - ' ';
+			if( val < 150 && val >= 0) glCallList (fontL+val);
+		}
+	}
+}
+
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y
 {
-	unsigned char	*lstr = (unsigned char*) cstrOut;
-	
-	if (fontColor)
-		glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
-	else
-		glColor4f (0.0, 0.0, 0.0, 1.0);
-
-    glRasterPos3d (x+1, y+1, 0);
-	
-    GLint i = 0;
-    while (lstr [i])
-	{
-		long val = lstr[i++] - ' ';
-		if( val < 150 && val >= 0) glCallList (fontL+val);
-	}
-	
-    glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-    glRasterPos3d (x, y, 0);
-	
-    i = 0;
-    while (lstr [i])
-	{
-		long val = lstr[i++] - ' ';
-		if( val < 150 && val >= 0) glCallList (fontL+val);
-	}
+	[self DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: NO];
 }
 
 - (short) currentTool {return currentTool;}
@@ -5219,8 +5275,8 @@ static long scrollMode;
 			char	string[ 256];
 			[self getLossyCString: nsstring : string];
 			
-			xRaster = size.size.width - ([self lengthOfString:string forFont:fontListGLSize] + 2);
-			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5229,8 +5285,8 @@ static long scrollMode;
 			char	string[ 256];
 			[self getLossyCString: [file valueForKeyPath:@"series.study.patientID"] : string];
 			
-			xRaster = size.size.width - ([self lengthOfString:string forFont:fontListGLSize] + 2);
-			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5243,8 +5299,8 @@ static long scrollMode;
 			char	string[ 256];
 			[self getLossyCString: [file valueForKeyPath:@"series.study.studyName"] : string];
 			
-			xRaster = size.size.width - ([self lengthOfString:string forFont:fontListGLSize] + 2);
-			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5253,8 +5309,8 @@ static long scrollMode;
 			char	string[ 256];
 			[self getLossyCString: [file valueForKeyPath:@"series.study.id"] : string];
 			
-			xRaster = size.size.width - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5262,8 +5318,8 @@ static long scrollMode;
 		{
 			cptr = (char*) [[[file valueForKeyPath:@"series.id"] stringValue] UTF8String];
 			
-			xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5272,8 +5328,8 @@ static long scrollMode;
 			float repetitiontime = [[curDCM repetitiontime] floatValue];
 			float echotime = [[curDCM echotime] floatValue];
 			cptr = (char*) [[NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime] UTF8String];
-			xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5282,8 +5338,8 @@ static long scrollMode;
 			char	string[ 256];
 			[self getLossyCString: [curDCM protocolName] : string];
 			
-			xRaster = size.size.width - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height];
+			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: string : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5293,8 +5349,8 @@ static long scrollMode;
 		if( date && [date yearOfCommonEra] != 3000)
 		{
 			cptr = (char*) [[date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]] UTF8String];	//	DDP localized from "%a %m/%d/%Y" 
-			xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster];
+			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES];
 			yRaster -= (stringSize.height + stringSize.height/10);
 		}
 		//yRaster -= 12;
@@ -5303,8 +5359,8 @@ static long scrollMode;
 		if( date && [date yearOfCommonEra] != 3000)
 		{
 			cptr = (char*) [[date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]] UTF8String];	//	DDP localized from "%I:%M %p" 
-			xRaster = size.size.width - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster];
+			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES];
 			yRaster -= (stringSize.height + stringSize.height/10);
 		}
 	}
@@ -5463,24 +5519,24 @@ static long scrollMode;
 					if( curWW < 50)
 					{
 						sprintf (cstr, "%0.4f", curWL - curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - -133];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES];
 						
 						sprintf (cstr, "%0.4f", curWL);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - 0];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES];
 						
 						sprintf (cstr, "%0.4f", curWL + curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - 120];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES];
 					}
 					else
 					{
 						sprintf (cstr, "%0.0f", curWL - curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - -133];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES];
 						
 						sprintf (cstr, "%0.0f", curWL);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - 0];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES];
 						
 						sprintf (cstr, "%0.0f", curWL + curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1 - [self lengthOfString:cstr forFont:labelFontListGLSize]: heighthalf - 120];
+						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES];
 					}
 				} //clutBars == barOrigin || clutBars == barBoth
 				
@@ -6942,25 +6998,6 @@ BOOL	lowRes = NO;
 		else
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];
 	}
-}
-
-- (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray
-{
-	long i = 0, temp = 0;
-	
-	while( cstr[ i] != 0)
-	{
-		temp += fontSizeArray[ cstr[ i]];
-		i++;
-	}
-	return temp;
-}
-
-- (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
-{
-	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
-	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
-	return [attrString size];
 }
 
 - (BOOL)becomeFirstResponder{	

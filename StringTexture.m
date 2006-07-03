@@ -135,6 +135,9 @@
 	}
 	image = [[NSImage alloc] initWithSize:frameSize];
 	[image lockFocus];
+	
+	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
+	
 	if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
 		[boxColor set]; 
 		NSRectFill (NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height));
