@@ -161,7 +161,7 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
     updateDisplay(progress);
 
     if (progress->state == DIMSE_StoreEnd) {
-
+		/*
         if (!options_.ignoreStoreData_ && rsp->DimseStatus == STATUS_Success) {
             if ((imageDataSet)&&(*imageDataSet)) {
                 checkRequestAgainstDataset(req, NULL, *imageDataSet, rsp, correctUIDPadding);
@@ -169,7 +169,7 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
                 checkRequestAgainstDataset(req, imageFileName, NULL, rsp, correctUIDPadding);
             }
         }
-
+		*/
         if (!options_.ignoreStoreData_ && rsp->DimseStatus == STATUS_Success) {
             if ((imageDataSet)&&(*imageDataSet)) {
                 writeToFile(dcmff, fileName, rsp);
