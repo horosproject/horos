@@ -1068,12 +1068,8 @@ static BOOL COMPLETEREBUILD = NO;
 	NSMutableArray				*result		= Nil;
 	DicomDirParser				*parsed		= [[DicomDirParser alloc] init: dicomdir];
 
+	[parsed parseArray: files];
 
-	[files retain];							// DDP (060112): I think files may be autoreleased during recursive call to _testForValidFilePath
-	result = [parsed parseArray: files];
-	[files release];						// See if this retain/release bracket stops this.
-
-//	[files addObjectsFromArray:result];
 	[parsed release];
 }
 

@@ -33,11 +33,6 @@ NSString * documentsDirectory();
 
 - (NSMutableArray*) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
 {
-
-// (DDP 060112): Can cause an EXC_BAD_ACCESS crash on second recursive call at [... uppercaseString], being investigated.
-// Suggests an autoreleased variable... which I've tried to prevent with a retain/release bracket in [browserController addDICOMDIR].
-
-//	NSMutableArray			*correctCaseDicomFileArray	= [NSMutableArray arrayWithCapacity: 100];
 	NSString				*filePath					= nil;
 	NSString				*cutFilePath				= nil;
 	NSArray					*fileNames					= nil;
@@ -115,12 +110,13 @@ NSString * documentsDirectory();
 				i++;
 			}
 			
-			file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
+			if( i-start-1 > 0)
+			{
+				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
+				[result addObject: file];
+			}
 			
-			[result addObject: file];
-
 			
-
 			/*if( firstFile)
 			{
 				firstFile = NO;
@@ -167,6 +163,7 @@ NSString * documentsDirectory();
     [aTask setArguments:theArguments];
     
     [aTask launch];
+	[aTask waitUntilExit];
     
     while ([inData=[[newPipe fileHandleForReading] availableData] length]>0) 
     { 
