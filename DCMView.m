@@ -786,7 +786,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 //			NSLog(@"stringTextureCache size: %d", [stringTextureCache count]);
 		}
-
 		
 		if( right) x -= [stringTex texSize].width;
 		
