@@ -768,14 +768,30 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 {
 	if( stringTex)
 	{
+		if( stringTextureCache == 0L) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
+		
+		StringTexture *stringTex = 0L;
+
 		NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 		
 		if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
 		else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
 		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-		
-		StringTexture *stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
-		[stringTex genTexture];
+
+		if( [stringTextureCache objectForKey: str])
+		{
+			stringTex = [stringTextureCache objectForKey: str];
+		}
+		else
+		{
+			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
+			[stringTex genTexture];
+			[stringTextureCache setObject:stringTex forKey:str];
+			[stringTex release];
+			
+			NSLog(@"stringTextureCache: %d", [stringTextureCache count]);
+		}
+
 		
 		if( right) x -= [stringTex texSize].width;
 		
@@ -794,7 +810,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		glDisable(GL_BLEND);
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
-		[stringTex release];
 	}
 	else
 	{
@@ -1148,7 +1163,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	if( colorBuf) free( colorBuf);
 	if( blendingColorBuf) free( blendingColorBuf);
 	
-	if( curRoiList) [curRoiList release];
+	[curRoiList release];
 	curRoiList = 0L;
 	
 	[dcmRoiList release];
@@ -1161,7 +1176,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 //	[self clearGLContext];
 	
-	if( cursor) [cursor release];
+	[cursor release];
+	[stringTextureCache release];
 	
     [super dealloc];
 }

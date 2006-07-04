@@ -186,6 +186,8 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	NSCursor		*cursor;
 	BOOL			cursorSet;
 	NSPoint			display2DPoint;
+	
+	NSMutableDictionary	*stringTextureCache;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
