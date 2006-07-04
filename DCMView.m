@@ -770,26 +770,21 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		if( stringTextureCache == 0L) stringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		
-		StringTexture *stringTex = 0L;
-
-		NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+		StringTexture *stringTex = [stringTextureCache objectForKey: str];
+		if( stringTex == 0L)
+		{
+			NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 		
-		if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
-		else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
-		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+			if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
+			else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
+			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 
-		if( [stringTextureCache objectForKey: str])
-		{
-			stringTex = [stringTextureCache objectForKey: str];
-		}
-		else
-		{
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
 			[stringTex genTexture];
 			[stringTextureCache setObject:stringTex forKey:str];
 			[stringTex release];
 			
-			NSLog(@"stringTextureCache: %d", [stringTextureCache count]);
+//			NSLog(@"stringTextureCache size: %d", [stringTextureCache count]);
 		}
 
 		
