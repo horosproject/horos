@@ -33,6 +33,7 @@
 {
 	[super init];
 	cgl_ctx = NULL;
+	antialiasing = NO;
 	texName = 0;
 	texSize.width = 0.0f;
 	texSize.height = 0.0f;
@@ -122,6 +123,11 @@
 	return staticFrame;
 }
 
+- (void) setAntiAliasing:(BOOL) a
+{
+	antialiasing = a;
+}
+
 - (void) genTexture; // generates the texture without drawing texture to current context
 {
 	NSImage * image;
@@ -136,7 +142,7 @@
 	image = [[NSImage alloc] initWithSize:frameSize];
 	[image lockFocus];
 	
-	[[NSGraphicsContext currentContext] setShouldAntialias: NO];
+	[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing];
 	
 	if ([boxColor alphaComponent]) { // this should be == 0.0f but need to make sure
 		[boxColor set]; 

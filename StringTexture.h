@@ -33,6 +33,7 @@
 	BOOL staticFrame; // default in NO
 	NSSize marginSize; // offset or frame size, default is 4 width 2 height
 	NSSize frameSize; // offset or frame size, default is 4 width 2 height
+	BOOL antialiasing;
 }
 
 // this API requires a current rendering context and all operations will be performed in regards to thar context
@@ -76,6 +77,6 @@
 - (void) setTextColor:(NSColor *)color; // set default text color
 - (void) setBoxColor:(NSColor *)color; // set default text color
 - (void) setBorderColor:(NSColor *)color; // set default text color
-
+- (void) setAntiAliasing:(BOOL) a;
 @end
 

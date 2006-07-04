@@ -6969,6 +6969,9 @@ BOOL	lowRes = NO;
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
 	stringSize = [self sizeOfString:@"B" forFont:fontGL];
 	
+	[stringTextureCache release];
+	stringTextureCache = 0L;
+	
 	[self setNeedsDisplay:YES];
 }
 

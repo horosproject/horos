@@ -1884,6 +1884,7 @@ return rect;
 		else
 		{
 			stringTex = [[StringTexture alloc] initWithString:name withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:color.red / 65535. green:color.green / 65535. blue:color.blue / 65535. alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			[stringTex setAntiAliasing: YES];
 		}
 		
 		rect.size = [stringTex frameSize];
@@ -2147,37 +2148,40 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
 	{
-//		glEnable(GL_POLYGON_SMOOTH);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-		
-		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
-		
-		glLoadIdentity();
-		
-		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
-		
-		gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3);
-		
-		NSPoint tPt;
-		
-		tPt.x = drawRect.origin.x + 4;
-		tPt.y = drawRect.origin.y + (12 + 2);
-		
-		long line = 0;
-		
-		[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
-		[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
-		[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
-		[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
-		[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
-		
-//		glDisable(GL_POLYGON_SMOOTH);
-		glDisable(GL_BLEND);
-		
-		[curView applyImageTransformation];
+		if( type != tText)
+		{
+			glEnable(GL_POLYGON_SMOOTH);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+			
+			if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+			else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+			
+			glLoadIdentity();
+			
+			glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
+			
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3);
+			
+			NSPoint tPt;
+			
+			tPt.x = drawRect.origin.x + 4;
+			tPt.y = drawRect.origin.y + (12 + 2);
+			
+			long line = 0;
+			
+			[self glStr: (unsigned char*)line1 : tPt.x : tPt.y : line];	if( line1[0]) line++;
+			[self glStr: (unsigned char*)line2 : tPt.x : tPt.y : line];	if( line2[0]) line++;
+			[self glStr: (unsigned char*)line3 : tPt.x : tPt.y : line];	if( line3[0]) line++;
+			[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
+			[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
+			
+			glDisable(GL_POLYGON_SMOOTH);
+			glDisable(GL_BLEND);
+			
+			[curView applyImageTransformation];
+		}
 	}
 	else
 	{
@@ -2491,10 +2495,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			GLint matrixMode;
 			
-			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			
 			glEnable (GL_TEXTURE_RECTANGLE_EXT);
 			
+			glEnable(GL_BLEND);
+			if( opacity > 0.5) opacity = 1.0;
+			if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			
+			glColor4f (0, 0, 0, opacity);
+			[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1)];
+			
+			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 			if( stringTex == 0L) [self setName: name];
 			[stringTex drawAtPoint:tPt];
 			
