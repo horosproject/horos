@@ -507,6 +507,7 @@ extern BrowserController  *browserWindow;
 			title = [dcmObject attributeValueWithName:@"PatientsName"];		
 		}
 	}
+	else title = @"no name";
 	[self setCDTitle:[title uppercaseString]];
 	[pool release];
 

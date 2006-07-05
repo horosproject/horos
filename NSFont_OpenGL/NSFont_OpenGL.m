@@ -187,17 +187,14 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	NSMutableArray  *curArray;
 	long *curSizeArray;
 	
-	if( imageArray == 0L)
+	if( imageArray == 0L && preview == NO)
 	{
-		// INIT FONTS
-		fontGL = [NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]];
-		if( fontGL) [NSFont initFontImage:' ' count:150 font:fontGL previewFont:NO];
+		[NSFont initFontImage:' ' count:150 font:self previewFont:NO];
 	}
 	
-	if( imageArrayPreview == 0L)
+	if( imageArrayPreview == 0L && preview == YES)
 	{
-		fontGL = [NSFont systemFontOfSize:12];
-		if( fontGL) [NSFont initFontImage:' ' count:150 font:fontGL previewFont:YES];
+		[NSFont initFontImage:' ' count:150 font:self previewFont:YES];
 	}
 
 	if( preview) 

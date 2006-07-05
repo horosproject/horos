@@ -192,6 +192,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
 - (void) applyImageTransformation;
+- (void) initFont;
 - (NSMutableArray*) rectArray;
 -(BOOL) flippedData;
 -(void) setFlippedData:(BOOL) f;

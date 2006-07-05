@@ -52,37 +52,6 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
     {
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		[[dcmObject description] writeToFile: [panel filename] atomically:NO];
-	/*
-		NSTask          *aTask;
-		NSMutableArray  *theArguments = [NSMutableArray array];
-		NSPipe          *newPipe = [NSPipe pipe];
-		NSData          *inData = nil;
-		NSString        *s = @"";
-		
-		// create the subprocess
-		aTask = [[NSTask alloc] init];
-		
-		[aTask setStandardOutput:newPipe];
-		
-		// set the subprocess to start a ping session
-		[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-		[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdump"]];
-		[theArguments addObject:srcFile];
-		
-		[aTask setArguments:theArguments];
-		
-		[aTask launch];
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.5]];
-		
-		s = [[NSString alloc] initWithData: [[newPipe fileHandleForReading] readDataToEndOfFile] encoding: NSISOLatin1StringEncoding];
-		
-		[aTask waitUntilExit];
-		
-		[aTask interrupt];
-		aTask = nil;
-		
-		[s writeToFile: [panel filename] atomically:NO];
-		*/
     }
 }
 

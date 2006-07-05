@@ -20,19 +20,16 @@
 
 @implementation PreviewView
 
-- (id)initWithFrame:(NSRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-		glDeleteLists (fontListGL, 150);
-		
-		fontListGL = glGenLists (150);
-		fontGL = [NSFont systemFontOfSize:10];
-		[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :YES];
-		stringSize = [self sizeOfString:@"B" forFont:fontGL];
-    }
-    return self;
+- (void) initFont
+{
+	fontListGL = glGenLists (150);
+	fontGL = [NSFont systemFontOfSize: 12];
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :YES];
+	stringSize = [self sizeOfString:@"B" forFont:fontGL];
 }
 
+- (void) changeGLFontNotification:(NSNotification*) note
+{
 
-
+}
 @end

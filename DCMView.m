@@ -3581,6 +3581,15 @@ static long scrollMode;
 	}
 }
 
+- (void) initFont
+{
+	fontListGL = glGenLists (150);
+	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
+	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
+	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+}
+
 - (id)initWithFrameInt:(NSRect)frameRect
 {
 	long i;
@@ -3723,15 +3732,8 @@ static long scrollMode;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	fontColor = nil;
 	
-//	NSLog(@"font alloc");
-	fontListGL = glGenLists (150);
-	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
-	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
-//	[fontGL makeGLDisplayListFirst:0x03BC count:1 base: fontListGL - 0x03BC + 0xB5 :fontListGLSize :NO];
-	stringSize = [self sizeOfString:@"B" forFont:fontGL];
-	
-//	NSLog(@"label Font alloc");
+	[self initFont];
+		
 	labelFontListGL = glGenLists (150);
 	labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
 	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :YES];
