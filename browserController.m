@@ -359,9 +359,9 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		subFolderInt = 10000L * ((DATABASEINDEX / 10000L) +1);
 		
-		if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-			subFolder = [NSString stringWithFormat:@"%@TIF", OUTpath];
-		else
+//		if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
+//			subFolder = [NSString stringWithFormat:@"%@TIF", OUTpath];
+//		else
 			subFolder = [NSString stringWithFormat:@"%@%d", OUTpath, subFolderInt];
 
 		if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
@@ -1702,16 +1702,6 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( isCurrentDatabaseBonjour) return;
 	
-	// Wait if there is something in the delete queue
-	[deleteInProgress lock];
-	[deleteInProgress unlock];
-	
-	[self emptyDeleteQueueThread];
-	
-	[deleteInProgress lock];
-	[deleteInProgress unlock];
-	//
-
 	BOOL REBUILDEXTERNALPROCESS = YES;
 	
 	if( COMPLETEREBUILD)	// Delete the database file
@@ -1934,6 +1924,16 @@ static BOOL COMPLETEREBUILD = NO;
 		NSRunInformationalAlertPanel(NSLocalizedString(@"Database Cleaning", 0L), NSLocalizedString(@"Cannot rebuild a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 		return;
 	}
+
+	// Wait if there is something in the delete queue
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	
+	[self emptyDeleteQueueThread];
+	
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	//
 
 	long i;
 	long totalFiles = 0;
