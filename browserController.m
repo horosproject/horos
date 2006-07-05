@@ -2932,6 +2932,31 @@ static BOOL COMPLETEREBUILD = NO;
 	return [[self imagesArray: item] valueForKey: @"completePath"];
 }
 
+- (void) deleteEmptyFoldersForDatabaseOutlineSelection
+{
+	NSEnumerator		*rowEnumerator = [databaseOutline selectedRowEnumerator];
+	NSNumber			*row;
+	NSManagedObject		*curObj;
+	NSManagedObjectContext	*context = [self managedObjectContext];
+
+	while (row = [rowEnumerator nextObject]) 
+	{
+		curObj = [databaseOutline itemAtRow:[row intValue]];
+		
+		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+		{
+			if( [[curObj valueForKey:@"images"] count] == 0)
+				[context deleteObject: curObj];
+		}
+		
+		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+		{
+			if( [[curObj valueForKey:@"imageSeries"] count] == 0)
+				[context deleteObject: curObj];
+		}
+	}
+}
+
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
 {
 	long				i, x, type;
@@ -3215,17 +3240,10 @@ static BOOL COMPLETEREBUILD = NO;
 			}
 			else
 			{
+				[self deleteEmptyFoldersForDatabaseOutlineSelection];
 				[self filesForDatabaseOutlineSelection: objectsToDelete];
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
-			
-//			if( [objectsToDelete count] == 0)
-//			{
-//				// Is it an empty study/series selected?
-//				NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-//				
-//				[context deleteObject: aFile];
-//			}
 			
 			[wait close];
 			[wait release];
