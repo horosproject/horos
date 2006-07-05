@@ -1702,6 +1702,16 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( isCurrentDatabaseBonjour) return;
 	
+	// Wait if there is something in the delete queue
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	
+	[self emptyDeleteQueueThread];
+	
+	[deleteInProgress lock];
+	[deleteInProgress unlock];
+	//
+
 	BOOL REBUILDEXTERNALPROCESS = YES;
 	
 	if( COMPLETEREBUILD)	// Delete the database file
