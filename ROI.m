@@ -2150,7 +2150,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		if( type != tText)
 		{
-			glEnable(GL_POLYGON_SMOOTH);
+			//glEnable(GL_POLYGON_SMOOTH);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -2177,7 +2177,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[self glStr: (unsigned char*)line4 : tPt.x : tPt.y : line];	if( line4[0]) line++;
 			[self glStr: (unsigned char*)line5 : tPt.x : tPt.y : line];	if( line5[0]) line++;
 			
-			glDisable(GL_POLYGON_SMOOTH);
+			//glDisable(GL_POLYGON_SMOOTH);
 			glDisable(GL_BLEND);
 			
 			[curView applyImageTransformation];
