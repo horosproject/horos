@@ -3219,6 +3219,14 @@ static BOOL COMPLETEREBUILD = NO;
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			
+//			if( [objectsToDelete count] == 0)
+//			{
+//				// Is it an empty study/series selected?
+//				NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+//				
+//				[context deleteObject: aFile];
+//			}
+			
 			[wait close];
 			[wait release];
 			
@@ -3328,7 +3336,7 @@ static BOOL COMPLETEREBUILD = NO;
 		// Remove studies without series !
 		for( i = 0; i < [studiesArray count]; i++)
 		{
-			if( [[[studiesArray objectAtIndex: i] valueForKey:@"series"] count] == 0)
+			if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
 			{
 				[context deleteObject: [studiesArray objectAtIndex: i]];
 			}
