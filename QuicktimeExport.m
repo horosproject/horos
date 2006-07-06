@@ -564,10 +564,13 @@ return err;
 //														[NSNumber numberWithLong:codecHighQuality],
 //														QTAddImageCodecQuality,
 //														nil];
+//		NSDictionary *myDict =
+//			[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
+//			QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality],
+//			QTAddImageCodecQuality, nil];
+			
 		NSDictionary *myDict =
-			[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
-			QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality],
-			QTAddImageCodecQuality, nil];
+			[NSDictionary dictionaryWithObject: @"tiff" forKey: QTAddImageCodecType];
 		
 		for (curSample = 0; curSample < maxImage; curSample++) 
 		{
