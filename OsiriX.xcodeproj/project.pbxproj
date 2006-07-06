@@ -1476,6 +1476,12 @@
 		BF2425540A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		BF2425550A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */; };
 		BF2425560A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
+		BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
+		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
+		BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
+		BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
+		BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
+		BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
 		BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF34857A0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
 		BF34857B0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
@@ -9916,6 +9922,8 @@
 		BF19256A0762958D009C6832 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMAbstractSyntaxUID.m; path = Networking/DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
 		BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomFileDCMTKCategory.h; sourceTree = "<group>"; };
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
+		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
+		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
 		BF3485770951270C00B05AD2 /* SendController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendController.m; sourceTree = "<group>"; };
@@ -16924,6 +16932,8 @@
 				CE9DD281086B35050058DD2A /* DicomStudy.h */,
 				CE9DD283086B35050058DD2A /* DicomSeries.m */,
 				CE9DD282086B35050058DD2A /* DicomSeries.h */,
+				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
+				BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -18989,6 +18999,7 @@
 				BFA7D2180A51D1460013F76E /* BrowserControllerDCMTKCategory.h in Headers */,
 				BF2425510A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
+				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20818,6 +20829,7 @@
 				BF2425550A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C130A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				AB2A8CAE0A557657002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
+				BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22652,6 +22664,7 @@
 				BF2425530A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C0F0A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				AB2A8CAC0A557654002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
+				BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24676,6 +24689,7 @@
 				BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
+				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25255,6 +25269,7 @@
 				BF2425560A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C140A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				AB2A8CAD0A557657002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
+				BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26019,6 +26034,7 @@
 				BF2425540A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C100A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				AB2A8CAB0A557654002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
+				BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
