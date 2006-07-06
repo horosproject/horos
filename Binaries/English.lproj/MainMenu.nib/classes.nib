@@ -289,6 +289,12 @@
         }, 
         {CLASS = PreviewView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
         {
+            CLASS = QuicktimeExport; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {object = id; test = NSView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
             ACTIONS = {
                 AddOpacity = id; 
                 ConvertToBWMenu = id; 

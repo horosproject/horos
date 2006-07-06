@@ -20,11 +20,14 @@
 
 @interface QuicktimeExport : NSObject {
 
-	id				object;
-	SEL				selector;
-	long			numberOfFrames;
-	unsigned long   codec;
-	long			quality;
+	id						object;
+	SEL						selector;
+	long					numberOfFrames;
+	unsigned long			codec;
+	long					quality;
+	
+	IBOutlet NSView			*view;
+	IBOutlet NSPopUpButton	*type;
 }
 
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;

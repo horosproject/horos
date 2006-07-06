@@ -8130,6 +8130,9 @@
 		CEA337BF06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
+		CEAD06B40A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
+		CEAD06B50A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
+		CEAD06B60A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
 		CEAF4ECD089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEAF4ECE089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
@@ -12458,6 +12461,7 @@
 		CEA65654094EF57000D4E5E5 /* vli.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli.h; sourceTree = "<group>"; };
 		CEA656CB094EF64300D4E5E5 /* vli3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vli3.framework; path = VolumePRO/vli3.framework; sourceTree = "<group>"; };
 		CEA65731094EF6FD00D4E5E5 /* vli3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli3.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli3.h; sourceTree = "<group>"; };
+		CEAD06B30A5D438E0028C212 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/QuicktimeExport.nib; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
@@ -12977,6 +12981,7 @@
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
+				CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */,
 				3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */,
 				CE3BF8E7098543F20000D64F /* PETCT.nib */,
 				CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */,
@@ -23231,6 +23236,7 @@
 				ABD4D2390A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF920A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF930A516A3500078038 /* LLScoutView.nib in Resources */,
+				CEAD06B40A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23504,6 +23510,7 @@
 				ABD4D2380A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF960A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF970A516A3500078038 /* LLScoutView.nib in Resources */,
+				CEAD06B50A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23777,6 +23784,7 @@
 				ABD4D2370A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF940A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF950A516A3500078038 /* LLScoutView.nib in Resources */,
+				CEAD06B60A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26434,6 +26442,14 @@
 				CE9762EF08FABD6E00E6F8B0 /* English */,
 			);
 			name = ROIManager.nib;
+			sourceTree = "<group>";
+		};
+		CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAD06B30A5D438E0028C212 /* English */,
+			);
+			name = QuicktimeExport.nib;
 			sourceTree = "<group>";
 		};
 		CEDE5B6B07F206FA003034B6 /* ROIDefaults.nib */ = {

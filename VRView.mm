@@ -972,9 +972,8 @@ public:
 -(IBAction) endQuicktimeSettings:(id) sender
 {
 	[export3DWindow orderOut:sender];
-	
 	[NSApp endSheet:export3DWindow returnCode:[sender tag]];
-	
+
 	numberOfFrames = [framesSlider intValue];
 	bestRenderingMode = [[quality selectedCell] tag];
 	
@@ -994,11 +993,12 @@ public:
 	
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
-//		[mov generateMovie: YES  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+//		[mov createMovieQTKit:YES :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov dealloc];
 	}
+	
 }
 
 - (void) exportDICOMFile:(id) sender
@@ -4498,6 +4498,8 @@ public:
 		[TIFFRep release];
 	}
 	
+	[NSOpenGLContext clearCurrentContext];
+	
 	return buf;
 }
 
@@ -4507,12 +4509,12 @@ public:
 	long				width, height, i, x, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*dataPtr;
-	
+
 	dataPtr = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
-	
+
 	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;
 	else colorSpace = NSCalibratedWhiteColorSpace;
-	
+
 	rep = [[[NSBitmapImageRep alloc]
 			 initWithBitmapDataPlanes:0L
 						   pixelsWide:width
@@ -4524,42 +4526,15 @@ public:
 					   colorSpaceName:colorSpace
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
-	
-	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
-	
-//	//Add the small OsiriX logo at the bottom right of the image
-//	NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
-//	NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [logo TIFFRepresentation]];
-//	
-//	for( i = 0; i < [TIFFRep pixelsHigh]; i++)
-//	{
-//		unsigned char	*srcPtr = ([TIFFRep bitmapData] + i*[TIFFRep bytesPerRow]);
-//		unsigned char	*dstPtr = ([rep bitmapData] + (height - [TIFFRep pixelsHigh] + i)*[rep bytesPerRow] + ((width-10)*3 - [TIFFRep bytesPerRow]));
-//		
-//		x = [TIFFRep bytesPerRow]/3;
-//		while( x-->0)
-//		{
-//			if( srcPtr[ 0] != 0 || srcPtr[ 1] != 0 || srcPtr[ 2] != 0)
-//			{
-//				dstPtr[ 0] = srcPtr[ 0];
-//				dstPtr[ 1] = srcPtr[ 1];
-//				dstPtr[ 2] = srcPtr[ 2];
-//			}
-//			
-//			dstPtr += 3;
-//			srcPtr += 3;
-//		}
-//	}
-//	
-//	[TIFFRep release];
 
-	
-     NSImage *image = [[NSImage alloc] init];
-     [image addRepresentation:rep];
-     
-	 free( dataPtr);
+	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
+		
+	 NSImage *image = [[NSImage alloc] init];
+	 [image addRepresentation:rep];
 	 
-    return image;
+	free( dataPtr);
+	
+	return image;
 }
 
 -(void) switchOrientationWidget:(id) sender

@@ -73,6 +73,8 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 {
 	[super init];
 	
+	[NSBundle loadNibNamed:@"QuicktimeExport" owner:self];
+	
 	object = o;
 	selector = s;
 	numberOfFrames = f;
@@ -307,12 +309,190 @@ if (theGWorld)
 return err;
 } 
 
+- (NSArray *)availableComponents
+{
+	NSMutableArray *array = [NSMutableArray array];
+	
+	ComponentDescription cd;
+	Component c;
+	
+	cd.componentType = MovieExportType;
+	cd.componentSubType = kQTFileTypeMovie;
+	cd.componentManufacturer = kAppleManufacturer;
+	cd.componentFlags = hasMovieExportUserInterface;
+	cd.componentFlagsMask = hasMovieExportUserInterface;
+	c = FindNextComponent( 0, &cd );
+	
+	if( c)
+	{
+		Handle name = NewHandle(4);
+		ComponentDescription exportCD;
+		
+		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
+		{
+			unsigned char *namePStr = (unsigned char*) *name;
+			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			
+			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+				nameStr, @"name",
+				[NSData dataWithBytes:&c length:sizeof(c)], @"component",
+				[NSNumber numberWithLong:exportCD.componentType], @"type",
+				[NSNumber numberWithLong:exportCD.componentSubType], @"subtype",
+				[NSNumber numberWithLong:exportCD.componentManufacturer], @"manufacturer",
+				nil];
+			[array addObject:dictionary];
+			[nameStr release];
+		}
+		
+		DisposeHandle(name);
+	}
+	
+	cd.componentType = MovieExportType;
+	cd.componentSubType = kQTFileTypeAVI;
+	cd.componentManufacturer = kAppleManufacturer;
+	cd.componentFlags = hasMovieExportUserInterface;
+	cd.componentFlagsMask = hasMovieExportUserInterface;
+	c = FindNextComponent( 0, &cd );
+	
+	if( c)
+	{
+		Handle name = NewHandle(4);
+		ComponentDescription exportCD;
+		
+		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
+		{
+			unsigned char *namePStr = (unsigned char*) *name;
+			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			
+			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+				nameStr, @"name",
+				[NSData dataWithBytes:&c length:sizeof(c)], @"component",
+				[NSNumber numberWithLong:exportCD.componentType], @"type",
+				[NSNumber numberWithLong:exportCD.componentSubType], @"subtype",
+				[NSNumber numberWithLong:exportCD.componentManufacturer], @"manufacturer",
+				nil];
+			[array addObject:dictionary];
+			[nameStr release];
+		}
+		
+		DisposeHandle(name);
+	}
+	
+	cd.componentType = MovieExportType;
+	cd.componentSubType = kQTFileTypeMP4;
+	cd.componentManufacturer = kAppleManufacturer;
+	cd.componentFlags = hasMovieExportUserInterface;
+	cd.componentFlagsMask = hasMovieExportUserInterface;
+	c = FindNextComponent( 0, &cd );
+	
+	if( c)
+	{
+		Handle name = NewHandle(4);
+		ComponentDescription exportCD;
+		
+		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
+		{
+			unsigned char *namePStr = (unsigned char*) *name;
+			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			
+			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+				nameStr, @"name",
+				[NSData dataWithBytes:&c length:sizeof(c)], @"component",
+				[NSNumber numberWithLong:exportCD.componentType], @"type",
+				[NSNumber numberWithLong:exportCD.componentSubType], @"subtype",
+				[NSNumber numberWithLong:exportCD.componentManufacturer], @"manufacturer",
+				nil];
+			[array addObject:dictionary];
+			[nameStr release];
+		}
+		
+		DisposeHandle(name);
+	}
+	
+	return array;
+}
+
+- (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
+{
+	Component c;
+	
+	memcpy(&c, [[component objectForKey:@"component"] bytes], sizeof(c));
+	
+	MovieExportComponent exporter = OpenComponent(c);
+	Boolean canceled;
+	
+	Movie theMovie = [aMovie quickTimeMovie] ;
+	TimeValue duration = GetMovieDuration(theMovie) ;
+	
+	ComponentResult err;
+//	// MovieExportSetSettingsFromAtomContainer coding example
+//	ComponentInstance sc;
+//	QTAtomContainer compressorData;
+//	SCSpatialSettings ss;
+//	sc = OpenDefaultComponent(StandardCompressionType, StandardCompressionSubType);
+//	ss.codecType = kJPEGCodecType;
+//	ss.codec = 0L;
+//	ss.depth = 0;
+//	ss.spatialQuality = codecHighQuality;
+//	err = SCSetInfo(sc, scSpatialSettingsType, &ss);
+//	err = SCGetSettingsAsAtomContainer(sc, &compressorData);
+//	MovieExportSetSettingsFromAtomContainer (exporter, compressorData);
+	
+	err = MovieExportDoUserDialog(exporter, theMovie, NULL, 0, duration, &canceled);
+	if(err)
+	{
+		NSLog(@"Got error %d when calling MovieExportDoUserDialog");
+		CloseComponent(exporter);
+		return nil;
+	}
+	if(canceled)
+	{
+		CloseComponent(exporter);
+		return nil;
+	}
+	
+	QTAtomContainer settings;
+	err = MovieExportGetSettingsAsAtomContainer(exporter, &settings);
+	if(err)
+	{
+		NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer");
+		CloseComponent(exporter);
+		return nil;
+	}
+	NSData *data = [NSData dataWithBytes:*settings length:GetHandleSize(settings)];
+	DisposeHandle(settings);
+
+	CloseComponent(exporter);
+	
+	return data;
+}
+
+- (BOOL) writeMovie:(QTMovie *)movie toFile:(NSString *)file withComponent:(NSDictionary *)component withExportSettings:(NSData *)exportSettings
+{
+	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithBool:YES], QTMovieExport,
+		[component objectForKey:@"subtype"], QTMovieExportType,
+		[component objectForKey:@"manufacturer"], QTMovieExportManufacturer,
+		exportSettings, QTMovieExportSettings,
+		nil];
+	
+	BOOL result = [movie writeToFile:file withAttributes:attributes];
+	if(!result)
+	{
+		NSLog(@"Couldn't write movie to file");
+		return NO;
+	}
+	
+	return YES;
+}
+
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
 	NSString		*fileName;
 	long			result;
-	
+	NSArray			*exportTypes = [self availableComponents];
+
 	PRODUCEFILES = produceFiles;
 	
 	if( PRODUCEFILES)
@@ -329,6 +509,11 @@ return err;
 		[panel setCanSelectHiddenExtension:YES];
 		[panel setRequiredFileType:@"mov"];
 		
+		[panel setAccessoryView: view];
+		[type removeAllItems];
+				
+		[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
+
 		result = [panel runModalForDirectory:0L file:name];
 		
 		fileName = [panel filename];
@@ -374,11 +559,15 @@ return err;
 		[wait setCancel:YES];
 		[[wait progress] setMaxValue:maxImage];
 		
-		NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
-														QTAddImageCodecType,
-														[NSNumber numberWithLong:codecHighQuality],
-														QTAddImageCodecQuality,
-														nil];
+//		NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys:@"mp4v",
+//														QTAddImageCodecType,
+//														[NSNumber numberWithLong:codecHighQuality],
+//														QTAddImageCodecQuality,
+//														nil];
+		NSDictionary *myDict =
+			[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
+			QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality],
+			QTAddImageCodecQuality, nil];
 		
 		for (curSample = 0; curSample < maxImage; curSample++) 
 		{
@@ -401,12 +590,14 @@ return err;
 			
 			if( [wait aborted]) curSample = maxImage;
 		}
-		
 		[wait close];
 		
 		[wait release];
 		
-		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
+		[self writeMovie:mMovie toFile:fileName withComponent:[exportTypes objectAtIndex: [type indexOfSelectedItem]] withExportSettings: [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]]];
+		
+//		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 		
 		if( openIt == YES && PRODUCEFILES == NO)
 		{

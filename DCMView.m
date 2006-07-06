@@ -830,6 +830,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
 		
 		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+		
 		glRasterPos3d (x, y, 0);
 		
 		i = 0;
