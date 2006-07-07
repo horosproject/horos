@@ -4392,7 +4392,8 @@ static long scrollMode;
 		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
 		maxTextureSize = maxNOPTDTextureSize;
 	}
-	else if( f_ext_texture_rectangle)
+	else
+	if( f_ext_texture_rectangle)
 	{
 	//	NSLog(@"Rectangular Texturing!");
 		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
@@ -4695,6 +4696,7 @@ static long scrollMode;
 			}
 			offsetX += currTextureWidth; // offset drawing position for next texture horizontally
 	}
+	
     glDisable (TEXTRECTMODE); // done with texturing
 }
 
@@ -5426,7 +5428,7 @@ static long scrollMode;
 		
 		// Make this context current
 		[[self openGLContext] makeCurrentContext];
-		[[self openGLContext] update];
+//		[[self openGLContext] update];
 		
 		NSRect size = [self frame];
 		
@@ -6877,7 +6879,7 @@ static long scrollMode;
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW...
 					}
 				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 						
@@ -6912,7 +6914,6 @@ static long scrollMode;
 				//  since we are overlapping the effective texture used is 2 texels less than texture width
             }
     }
-    
     glDisable (TEXTRECTMODE);
 	
 	return texture;
@@ -7006,7 +7007,6 @@ BOOL	lowRes = NO;
 - (void)loadTextures
 {
     [[self openGLContext] makeCurrentContext];
-    [[self openGLContext] update];
 	
 	pTextureName = [self loadTextureIn:pTextureName blending:NO colorBuf:&colorBuf textureX:&textureX textureY:&textureY redTable: redTable greenTable:greenTable blueTable:blueTable];
 	
@@ -7017,6 +7017,7 @@ BOOL	lowRes = NO;
 		else
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];
 	}
+//	[[self openGLContext] flushBuffer];
 }
 
 - (BOOL)becomeFirstResponder{	

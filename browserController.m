@@ -1721,6 +1721,8 @@ static BOOL COMPLETEREBUILD = NO;
 	[managedObjectContext release];
 	managedObjectContext = 0L;
 	
+	[checkIncomingLock lock];
+	
 	[databaseOutline reloadData];
 	
 	NSMutableArray				*filesArray;
@@ -1914,6 +1916,7 @@ static BOOL COMPLETEREBUILD = NO;
 	[splash close];
 	[splash release];
 	
+	[checkIncomingLock unlock];
 	[context unlock];
 }
 
