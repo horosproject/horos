@@ -4328,6 +4328,7 @@ static long scrollMode;
     
     // init desired caps to max values
     f_ext_texture_rectangle = YES;
+    f_arb_texture_rectangle = YES;
     f_ext_client_storage = YES;
     f_ext_packed_pixel = YES;
     f_ext_texture_edge_clamp = YES;
@@ -4350,6 +4351,8 @@ static long scrollMode;
     // compare capabilities based on extension string and GL version
     f_ext_texture_rectangle = 
             f_ext_texture_rectangle && strstr ((const char *) strExtension, "GL_EXT_texture_rectangle");
+    f_arb_texture_rectangle = 
+            f_arb_texture_rectangle && strstr ((const char *) strExtension, "GL_ARB_texture_rectangle");
     f_ext_client_storage = 
             f_ext_client_storage && strstr ((const char *) strExtension, "GL_APPLE_client_storage");
     f_ext_packed_pixel = 
@@ -4383,7 +4386,13 @@ static long scrollMode;
     else
             edgeClampParam = GL_CLAMP; // clamp texture coords to [0, 1]
 			
-	if( f_ext_texture_rectangle)
+	if( f_arb_texture_rectangle && f_ext_texture_rectangle)
+	{
+	//	NSLog(@"ARB Rectangular Texturing!");
+		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
+		maxTextureSize = maxNOPTDTextureSize;
+	}
+	else if( f_ext_texture_rectangle)
 	{
 	//	NSLog(@"Rectangular Texturing!");
 		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
@@ -6826,8 +6835,9 @@ static long scrollMode;
     *tY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
 	
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
-	
-    glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
+		
+//	glTextureRangeAPPLE(TEXTRECTMODE, [curDCM rowBytes] * [curDCM pheight], [curDCM baseAddr]);
+	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
             for (x = 0; x < *tX; x++) // for all horizontal textures
@@ -6856,14 +6866,19 @@ static long scrollMode;
 					
 					currHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 					glBindTexture (TEXTRECTMODE, texture[k++]);
-			   //     if (fAGPTexturing)
-			   //             glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 0.0f); // AGP texturing
-			   //     else
-							 glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f); //TRES IMPORTANT, POUR LES IMAGE RGB, ETC!!!!! en relation avec le GL_UNPACK_ROW_LENGTH...
+					
+			//     if (fAGPTexturing)
+			//             glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 0.0f); // AGP texturing
+			//     else
+						 glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f); //TRES IMPORTANT, POUR LES IMAGE RGB, ETC!!!!! en relation avec le GL_UNPACK_ROW_LENGTH...
 								
 					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-						
+					
+					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
+					{
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
+					}
 				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 						
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])

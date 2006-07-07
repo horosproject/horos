@@ -173,6 +173,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
     long			textureHeight; // total height of texels with cover image (including any border on image, but not internal texture overlaps)
     
 	BOOL			f_ext_texture_rectangle; // is texture rectangle extension supported
+	BOOL			f_arb_texture_rectangle; // is texture rectangle extension supported
 	BOOL			f_ext_client_storage; // is client storage extension supported
 	BOOL			f_ext_packed_pixel; // is packed pixel extension supported
 	BOOL			f_ext_texture_edge_clamp; // is SGI texture edge clamp extension supported
