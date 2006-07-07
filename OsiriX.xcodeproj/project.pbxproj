@@ -8130,9 +8130,6 @@
 		CEA337BF06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
-		CEAD06B40A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
-		CEAD06B50A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
-		CEAD06B60A5D438E0028C212 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */; };
 		CEAF4ECD089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEAF4ECE089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
@@ -8862,6 +8859,9 @@
 		CEF6A442080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
 		CEF6A443080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
 		CEF6A444080324E0001A8BF7 /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
+		CEF989590A5E457D00D29732 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF989570A5E457D00D29732 /* QuicktimeExport.nib */; };
+		CEF9895A0A5E457D00D29732 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF989570A5E457D00D29732 /* QuicktimeExport.nib */; };
+		CEF9895B0A5E457D00D29732 /* QuicktimeExport.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF989570A5E457D00D29732 /* QuicktimeExport.nib */; };
 		CEF9E7CB0811B64D00412C8A /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
 		CEF9E7CC0811B64D00412C8A /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
 		CEF9E7CD0811B64D00412C8A /* Schedulable.h in Headers */ = {isa = PBXBuildFile; fileRef = CEF9E7CA0811B64D00412C8A /* Schedulable.h */; };
@@ -12461,7 +12461,6 @@
 		CEA65654094EF57000D4E5E5 /* vli.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli.h; sourceTree = "<group>"; };
 		CEA656CB094EF64300D4E5E5 /* vli3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vli3.framework; path = VolumePRO/vli3.framework; sourceTree = "<group>"; };
 		CEA65731094EF6FD00D4E5E5 /* vli3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vli3.h; path = VolumePRO/vli3.framework/Versions/A/Headers/vli3.h; sourceTree = "<group>"; };
-		CEAD06B30A5D438E0028C212 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/QuicktimeExport.nib; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
@@ -12535,6 +12534,7 @@
 		CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		CEF30FD00945DEA300824A2B /* windows.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = windows.tif; sourceTree = "<group>"; };
 		CEF6A441080324E0001A8BF7 /* 3DCut.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DCut.tif; sourceTree = "<group>"; };
+		CEF989580A5E457D00D29732 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/QuicktimeExport.nib; sourceTree = "<group>"; };
 		CEF9E7CA0811B64D00412C8A /* Schedulable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Schedulable.h; sourceTree = "<group>"; };
 		CEF9E7D00811B66500412C8A /* Scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scheduler.h; sourceTree = "<group>"; };
 		CEF9E7D60811B67D00412C8A /* Scheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scheduler.m; sourceTree = "<group>"; };
@@ -12981,7 +12981,7 @@
 				ABBB639A0635874D00D9531F /* DCMTK */,
 				ABBB647A063587B200D9531F /* Icons */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
-				CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */,
+				CEF989570A5E457D00D29732 /* QuicktimeExport.nib */,
 				3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */,
 				CE3BF8E7098543F20000D64F /* PETCT.nib */,
 				CE3BF8E9098543F20000D64F /* OrthogonalMPR.nib */,
@@ -23236,7 +23236,7 @@
 				ABD4D2390A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF920A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF930A516A3500078038 /* LLScoutView.nib in Resources */,
-				CEAD06B40A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
+				CEF989590A5E457D00D29732 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23510,7 +23510,7 @@
 				ABD4D2380A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF960A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF970A516A3500078038 /* LLScoutView.nib in Resources */,
-				CEAD06B50A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
+				CEF9895A0A5E457D00D29732 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23784,7 +23784,7 @@
 				ABD4D2370A47EF9D002DF55E /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				A93CFF940A516A3500078038 /* LLMPR.nib in Resources */,
 				A93CFF950A516A3500078038 /* LLScoutView.nib in Resources */,
-				CEAD06B60A5D438E0028C212 /* QuicktimeExport.nib in Resources */,
+				CEF9895B0A5E457D00D29732 /* QuicktimeExport.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26444,14 +26444,6 @@
 			name = ROIManager.nib;
 			sourceTree = "<group>";
 		};
-		CEAD06B20A5D438E0028C212 /* QuicktimeExport.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CEAD06B30A5D438E0028C212 /* English */,
-			);
-			name = QuicktimeExport.nib;
-			sourceTree = "<group>";
-		};
 		CEDE5B6B07F206FA003034B6 /* ROIDefaults.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -26474,6 +26466,14 @@
 				CEF0E52906AEDB32001FF9E5 /* English */,
 			);
 			name = Survey.nib;
+			sourceTree = "<group>";
+		};
+		CEF989570A5E457D00D29732 /* QuicktimeExport.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEF989580A5E457D00D29732 /* English */,
+			);
+			name = QuicktimeExport.nib;
 			sourceTree = "<group>";
 		};
 		CEFCA9C908AF9CC500ADBE64 /* ROIVolume.nib */ = {

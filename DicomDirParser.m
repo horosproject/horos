@@ -163,9 +163,8 @@ NSString * documentsDirectory();
     [aTask setArguments:theArguments];
     
     [aTask launch];
-	[aTask waitUntilExit];
     
-    while ([inData=[[newPipe fileHandleForReading] availableData] length]>0) 
+    while ([inData=[[newPipe fileHandleForReading] availableData] length]>0 || [aTask isRunning]) 
     { 
         s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
     }
