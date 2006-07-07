@@ -2144,9 +2144,30 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	return dRect;
 }
 
+- (BOOL) isTextualDataDisplayed
+{
+	BOOL drawTextBox = NO;
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected)
+	{
+		drawTextBox = YES;
+	}
+	
+	if( mode == ROI_selectedModify || mode == ROI_drawing)
+	{
+		if(	type == tOPolygon ||
+			type == tCPolygon ||
+			type == tPencil ||
+			type == tPlain) drawTextBox = NO;
+			
+	}
+
+	return drawTextBox;
+}
+
 - (void) drawTextualData
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+	if( [self isTextualDataDisplayed])
 	{
 		if( type != tText)
 		{
@@ -2377,7 +2398,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+			if( [self isTextualDataDisplayed])
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
@@ -2435,7 +2456,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+			if( [self isTextualDataDisplayed])
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
@@ -2642,7 +2663,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			// TEXT
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify || mode == ROI_drawing)
+			if( [self isTextualDataDisplayed])
 			{
 				NSPoint tPt = [self lowerRightPoint];
 				long	line = 0;
@@ -2690,7 +2711,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+				if( [self isTextualDataDisplayed])
 				{
 					NSPoint			tPt = [self lowerRightPoint];
 					long			line = 0;
@@ -2754,7 +2775,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			// TEXT
 			
 			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+			if( [self isTextualDataDisplayed])
 			{
 				NSPoint			tPt = [self lowerRightPoint];
 				long			line = 0;
@@ -2805,7 +2826,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type == tCPolygon || type == tPencil)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+				if( [self isTextualDataDisplayed])
 				{
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
@@ -2845,7 +2866,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			else if( type == tOPolygon)
 			{
 				line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+				if( [self isTextualDataDisplayed])
 				{
 					NSPoint tPt = [self lowerRightPoint];
 					long	line = 0;
@@ -2888,7 +2909,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if( [points count] == 3)
 				{
 					line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected  || mode == ROI_selectedModify)
+					if( [self isTextualDataDisplayed])
 					{
 						NSPoint tPt = [self lowerRightPoint];
 						long	line = 0;
