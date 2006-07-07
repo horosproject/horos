@@ -23,6 +23,6 @@
 }
 
 - (id) init:(NSString*) file;
-- (NSMutableArray*) parseArray:(NSMutableArray*) files;
+- (void) parseArray:(NSMutableArray*) files;
 
 @end

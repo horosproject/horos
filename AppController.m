@@ -1907,9 +1907,7 @@ static BOOL initialized = NO;
 			rows = 2;
 		}
 	}
-
-		
-		
+	
 	//excess viewers. Need to add spaces to accept
 	while (viewerCount > (rows * columns)){
 		float ratio = ((float)columns/(float)rows)/numberOfMonitors;
@@ -1998,13 +1996,17 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
-
+			
 			if (monitorIndex < extraViewers || extraViewers == 0) 
 				frame.size.width /= viewersPerScreen;
 			else
 				frame.size.width /= (viewersPerScreen - 1);
-				
+			
 			frame.origin.x += (frame.size.width * viewerPosition);
+			if( i == viewerCount-1)
+			{
+				frame.size.width = [screen visibleFrame].size.width - frame.origin.x;
+			}
 			
 			frame.size.height /= rows;
 			frame.origin.y += frame.size.height * ((rows - 1) - row);

@@ -31,7 +31,7 @@ NSString * documentsDirectory();
 
 //————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (NSMutableArray*) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
+- (void) _testForValidFilePath: (NSMutableArray*) dicomdirFileList path: (NSString*) startDirectory files: (NSMutableArray*) files
 {
 	NSString				*filePath					= nil;
 	NSString				*cutFilePath				= nil;
@@ -41,9 +41,7 @@ NSString * documentsDirectory();
 	NSFileManager			*fileManager				= [NSFileManager defaultManager];
 	int						i							= 0;
 	
-	
-	if (startDirectory==Nil || files==Nil)
-		return (files);
+	if (startDirectory==Nil || files==Nil) return;
 	
 	fileNames = [fileManager directoryContentsAtPath: startDirectory];
 	for (i = 0; i < [fileNames count] && [files count] < [dicomdirFileList count]; i++)
@@ -80,15 +78,14 @@ NSString * documentsDirectory();
 			}
 		}
 	}
-	return files;
 }
 
 
 //————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (NSMutableArray*) parseArray:(NSMutableArray*) files
+- (void) parseArray:(NSMutableArray*) files
 {
-	NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray *result = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	long			i, start, length;
 	char			*buffer;
 	BOOL			firstFile = YES, addExtension = NO;
@@ -115,24 +112,12 @@ NSString * documentsDirectory();
 				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
 				[result addObject: file];
 			}
-			
-			
-			/*if( firstFile)
-			{
-				firstFile = NO;
-				if( [[NSFileManager defaultManager] fileExistsAtPath:file] == NO) addExtension = YES;
-			}
-			
-			if( addExtension) file = [file stringByAppendingString: @".DCM"];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath:file] == YES) [result addObject: file];*/
 		}
 		
 		i++;
 	}
-	return [self _testForValidFilePath: result path: dirpath files: files];	
 	
-	//return result;
+	[self _testForValidFilePath: result path: dirpath files: files];	
 }
 
 -(id) init:(NSString*) srcFile
@@ -165,11 +150,11 @@ NSString * documentsDirectory();
     [aTask launch];
     
     while ([inData=[[newPipe fileHandleForReading] availableData] length]>0 || [aTask isRunning]) 
-    { 
-        s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
+    {
+		s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
     }
 	
-    [aTask interrupt];
+    [aTask waitUntilExit];
 	[aTask release];
     aTask = nil;
 	

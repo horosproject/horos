@@ -773,8 +773,10 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		StringTexture *stringTex = [stringTextureCache objectForKey: str];
 		if( stringTex == 0L)
 		{
+			if( [stringTextureCache count] > 100) [stringTextureCache removeAllObjects];
+			
 			NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-		
+			
 			if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
 			else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
@@ -783,8 +785,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			[stringTex genTexture];
 			[stringTextureCache setObject:stringTex forKey:str];
 			[stringTex release];
-			
-//			NSLog(@"stringTextureCache size: %d", [stringTextureCache count]);
 		}
 		
 		if( right) x -= [stringTex texSize].width;
@@ -4874,6 +4874,7 @@ static long scrollMode;
 	long		yRaster = 1, xRaster;
 	char		cstr [ 512], *cptr;
 	BOOL		fullText = YES;
+	NSString	*tempString;
 	
 	if( stringID && [stringID isEqualToString:@"OrthogonalMPRVIEW"] == YES)
 	{
@@ -4893,8 +4894,8 @@ static long scrollMode;
 	
 	if( fullText)
 	{
-		sprintf (cstr, "Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]);
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height rightAlignment: NO useStringTexture: YES];
 
 		sprintf (cstr, "View size: %ld x %ld", (long) size.size.width, (long) size.size.height);
 		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
@@ -5078,7 +5079,7 @@ static long scrollMode;
 		 }	 
 
 		 // Position
-		 [self DrawNSStringGL: nsstring : fontListGL :4 :yRaster];	 
+		 [self DrawNSStringGL: nsstring : fontListGL :4 :yRaster rightAlignment: NO useStringTexture: YES];
 		 yRaster -= stringSize.height;	 
 	}
 	
@@ -5116,8 +5117,6 @@ static long scrollMode;
 		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
 		yRaster -= stringSize.height;
 	}
-	
-	
 	
 	// Determine Anterior, Posterior, Left, Right, Head, Foot
 	char	string[ 10];
@@ -5324,7 +5323,7 @@ static long scrollMode;
 			cptr = (char*) [[[file valueForKeyPath:@"series.id"] stringValue] UTF8String];
 			
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: NO];
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5334,14 +5333,14 @@ static long scrollMode;
 			float echotime = [[curDCM echotime] floatValue];
 			cptr = (char*) [[NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime] UTF8String];
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: NO];
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
 		if( [curDCM protocolName] != 0L)
 		{
 			xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
-			[self DrawNSStringGL: [curDCM protocolName] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: NO];
+			[self DrawNSStringGL: [curDCM protocolName] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5352,7 +5351,7 @@ static long scrollMode;
 		{
 			cptr = (char*) [[date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]] UTF8String];	//	DDP localized from "%a %m/%d/%Y" 
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
+			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 			yRaster -= (stringSize.height + stringSize.height/10);
 		}
 		//yRaster -= 12;
