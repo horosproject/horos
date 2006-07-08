@@ -4514,7 +4514,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
 		
-		if ( img || [modality isEqualToString: @"RTSTRUCT"] )
+		if( img || [modality isEqualToString: @"RTSTRUCT"])
 		{
 			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
 			[cell setTransparent:NO];
@@ -4556,12 +4556,14 @@ static BOOL COMPLETEREBUILD = NO;
 			
 			[cell setImage: img];
 						
-			if( setDCMDone == NO && i >= [[oMatrix selectedCell] tag]) {
+			if( setDCMDone == NO)
+			{
 				NSIndexSet  *index = [databaseOutline selectedRowIndexes];
-				if( [index count] >= 1) {
+				if( [index count] >= 1)
+				{
 					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
 					
-					[imageView setDCM:previewPix :[self imagesArray: aFile anyObjectIfPossible: YES] :0L :[[oMatrix selectedCell] tag] :'i' :YES];	//
+					[imageView setDCM:previewPix :[self imagesArray: aFile anyObjectIfPossible: YES] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
 					[imageView setStringID:@"previewDatabase"];
 					setDCMDone = YES;
 				}
