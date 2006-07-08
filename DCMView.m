@@ -4405,11 +4405,6 @@ static long scrollMode;
 		TEXTRECTMODE = GL_TEXTURE_2D;
 	}
 	
-//	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"TEXTURELIMIT"])
-//	{
-//		if (maxTextureSize > [[NSUserDefaults standardUserDefaults] integerForKey: @"TEXTURELIMIT"])
-//			maxTextureSize = [[NSUserDefaults standardUserDefaults] integerForKey: @"TEXTURELIMIT"];
-//	}	
 }
 
 -(void) setCrossCoordinatesPer:(float) val

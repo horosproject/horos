@@ -4434,9 +4434,9 @@ public:
 	return theIm;
 }
 
--(NSImage*) nsimageQuicktime:(BOOL) renderingMode
+-(NSImage*) nsimageQuicktime:(BOOL) renderingModec
 {
-	bestRenderingMode = renderingMode;
+	bestRenderingMode = renderingModec;
 	return [self nsimageQuicktime];
 }
 
@@ -4458,6 +4458,7 @@ public:
 	if( buf)
 	{
 		[self getVTKRenderWindow]->MakeCurrent();
+		
 		glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
 		
 		long rowBytes = *width**spp**bpp/8;

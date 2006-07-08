@@ -737,9 +737,6 @@ static NSString *hostName = @"";
 	// ** LASTURL
 	[defaultValues setObject: @"http://homepage.mac.com/rossetantoine/internet.dcm" forKey: @"LASTURL"];
 	
-	// ** TEXTURELIMIT
-	[defaultValues setObject: @"0" forKey: @"TEXTURELIMIT"];
-	
 	// ** MAPPERMODEVR
 	[defaultValues setObject: @"0" forKey: @"MAPPERMODEVR"];
 	
