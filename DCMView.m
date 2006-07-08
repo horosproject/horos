@@ -4389,14 +4389,14 @@ static long scrollMode;
 			
 	if( f_arb_texture_rectangle && f_ext_texture_rectangle)
 	{
-	//	NSLog(@"ARB Rectangular Texturing!");
+		NSLog(@"ARB Rectangular Texturing!");
 		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_ARB;
 		maxTextureSize = maxNOPTDTextureSize;
 	}
 	else
 	if( f_ext_texture_rectangle)
 	{
-	//	NSLog(@"Rectangular Texturing!");
+		NSLog(@"Rectangular Texturing!");
 		TEXTRECTMODE = GL_TEXTURE_RECTANGLE_EXT;
 		maxTextureSize = maxNOPTDTextureSize;
 	}
@@ -6837,7 +6837,7 @@ static long scrollMode;
 	
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
 		
-//	glTextureRangeAPPLE(TEXTRECTMODE, [curDCM rowBytes] * [curDCM pheight], [curDCM baseAddr]);
+//	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight, [curDCM baseAddr]);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
@@ -6878,7 +6878,7 @@ static long scrollMode;
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW...
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW...
 					}
 				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 						
