@@ -24,7 +24,6 @@
 #import <OsiriX/DCMNetworking.h>
 #import "browserController.h"
 
-extern BrowserController *browserWindow; 
 
 
 @implementation NetworkMoveDataHandler
@@ -50,12 +49,15 @@ extern BrowserController *browserWindow;
 - (void)updateLogEntry:(DCMObject *)object
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+	if( context == 0L) return;
 	
 	[object retain];
 	NS_DURING
 	
 		if (!logEntry) {
-			logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:[browserWindow managedObjectContext]] retain];
+			logEntry = [[NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context] retain];
 			[logEntry setValue:[NSDate date] forKey:@"startTime"];
 			[logEntry setValue:@"Move" forKey:@"type"];
 			[logEntry setValue:calledAET forKey:@"originName"];

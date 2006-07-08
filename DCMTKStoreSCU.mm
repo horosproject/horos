@@ -1541,7 +1541,9 @@ NS_ENDHANDLER
 		
 		if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 		
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+		if( context == 0L) return;
+		
 		[context lock];
 		
 		if (!_logEntry) {		

@@ -788,6 +788,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
 		
 		if( right) x -= [stringTex texSize].width;
+		else x -= 5;
 		
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
 		glEnable(GL_BLEND);
@@ -4883,7 +4884,7 @@ static long scrollMode;
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
 	long		yRaster = 1, xRaster;
-	char		cstr [ 512], *cptr;
+//	char		cstr [ 512], *cptr;
 	BOOL		fullText = YES;
 	NSString	*tempString;
 	
@@ -4907,30 +4908,30 @@ static long scrollMode;
 	{
 		tempString = [NSString stringWithFormat: @"Image size: %ld x %ld", (long) [curDCM pwidth], (long) [curDCM pheight]];
 		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height rightAlignment: NO useStringTexture: YES];
-
-		sprintf (cstr, "View size: %ld x %ld", (long) size.size.width, (long) size.size.height);
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		
+		tempString = [NSString stringWithFormat: @"View size: %ld x %ld", (long) size.size.width, (long) size.size.height];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 	}
 	
 	if( mouseXPos != 0 && mouseYPos != 0)
 	{
-		if( [curDCM isRGB]) sprintf (cstr, "X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB);
-		else sprintf (cstr, "X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue);
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		if( [curDCM isRGB]) tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+		else tempString = [NSString stringWithFormat: @"X: %d px Y: %d px Value: %2.2f", (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 		
 		if( blendingView)
 		{
-			if( [[blendingView curDCM] isRGB]) sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB);
-			else sprintf (cstr, "Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue);
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+			if( [[blendingView curDCM] isRGB]) tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+			else tempString = [NSString stringWithFormat: @"Fused Image : X: %d px Y: %d px Value: %2.2f", (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 		}
 		
 		if( [curDCM displaySUVValue])
 		{
 			if( [curDCM hasSUV] == YES && [curDCM SUVConverted] == NO)
 			{
-				sprintf (cstr, "SUV: %.2f", [self getSUV] );
-				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+				tempString = [NSString stringWithFormat: @"SUV: %.2f", [self getSUV]];
+				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 			}
 		}
 		
@@ -4938,8 +4939,8 @@ static long scrollMode;
 		{
 			if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
 			{
-				sprintf (cstr, "SUV (fused image): %.2f", [self getBlendedSUV] );
-				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+				tempString = [NSString stringWithFormat: @"SUV (fused image): %.2f", [self getBlendedSUV]];
+				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 			}
 		}
 	}
@@ -4958,9 +4959,9 @@ static long scrollMode;
 	
 //	if( fullText)
 	{
-		if( lww < 50) sprintf (cstr, "WL: %0.4f WW: %0.4f", lwl, lww);
-		else sprintf (cstr, "WL: %ld WW: %ld", (long) lwl, (long) lww);
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+		if( lww < 50) tempString = [NSString stringWithFormat: @"WL: %0.4f WW: %0.4f", lwl, lww];
+		else tempString = [NSString stringWithFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 		
 		if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES)// && [[[self window] windowController] is2DViewer] == YES)
 		{
@@ -4968,8 +4969,8 @@ static long scrollMode;
 			{
 				float min = lwl - lww/2, max = lwl + lww/2;
 				
-				sprintf (cstr, "From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2);
-				[self DrawCStringGL: cstr : fontListGL :4 :yRaster++ * stringSize.height];
+				tempString = [NSString stringWithFormat: @"From: %d %% (%0.2f) to: %d %% (%0.2f)", (long) (min * 100. / [curDCM maxValueOfSeries]), lwl - lww/2, (long) (max * 100. / [curDCM maxValueOfSeries]), lwl + lww/2];
+				[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 			}
 		}
 		
@@ -5013,11 +5014,11 @@ static long scrollMode;
 			}
 			
 			if(fabs(location[0]) < 1.0 && location[0] != 0.0)
-				sprintf (cstr, "X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5);
+				tempString = [NSString stringWithFormat: @"X: %2.2f %cm Y: %2.2f %cm Z: %2.2f %cm", location[0] * 1000.0, 0xB5, location[1] * 1000.0, 0xB5, location[2] * 1000.0, 0xB5];
 			else
-				sprintf (cstr, "X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]);
+				tempString = [NSString stringWithFormat: @"X: %2.2f mm Y: %2.2f mm Z: %2.2f mm", location[0], location[1], location[2]];
 			
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 			yRaster -= stringSize.height;
 		}
 	}
@@ -5052,14 +5053,14 @@ static long scrollMode;
 			if( vv < 1.0 && vv != 0.0)
 			{
 				if( fabs( pp) < 1.0 && pp != 0.0)
-					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5);
+					tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", fabs( vv * 1000.0), 0xB5, pp * 1000.0, 0xB5];
 				else
-					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp);
+					tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", fabs( vv * 1000.0), 0xB5, pp];
 			}
 			else
-				sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp);
+				tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", fabs( vv), pp];
 			
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 			yRaster -= stringSize.height;
 		}
 		else if( fullText)
@@ -5067,14 +5068,14 @@ static long scrollMode;
 			if ([curDCM sliceThickness] < 1.0 && [curDCM sliceThickness] != 0.0)
 			{
 				if( fabs( [curDCM sliceLocation]) < 1.0 && [curDCM sliceLocation] != 0.0)
-					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5);
+					tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f %cm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation] * 1000.0, 0xB5];
 				else
-					sprintf (cstr, "Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]);
+					tempString = [NSString stringWithFormat: @"Thickness: %0.2f %cm Location: %0.2f mm", [curDCM sliceThickness] * 1000.0, 0xB5, [curDCM sliceLocation]];
 			}
 			else
-				sprintf (cstr, "Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]);
+				tempString = [NSString stringWithFormat: @"Thickness: %0.2f mm Location: %0.2f mm", [curDCM sliceThickness], [curDCM sliceLocation]];
 			
-			[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 			yRaster -= stringSize.height;
 		}
 	} 
@@ -5097,8 +5098,8 @@ static long scrollMode;
 	if( fullText)
 	{
 		// Zoom
-		sprintf (cstr, "Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360));
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		tempString = [NSString stringWithFormat: @"Zoom: %0.0f%% Angle: %0.0f", (float) scaleValue*100.0, (float) ((long) rotation % 360)];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 		yRaster -= stringSize.height;
 	}
 	
@@ -5114,18 +5115,18 @@ static long scrollMode;
 		if( maxVal < 0) maxVal = 0;
 		if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count];
 		
-		if( flippedData) sprintf (cstr, "Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]);
-		else sprintf (cstr, "Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]);
+		if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) [dcmPixList count] - curImage, [dcmPixList count] - maxVal, (long) [dcmPixList count]];
+		else tempString = [NSString stringWithFormat: @"Im: %ld-%ld/%ld", (long) curImage+1, maxVal, (long) [dcmPixList count]];
 		
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 		yRaster -= stringSize.height;
 	} 
 	else if( fullText)
 	{
-		if( flippedData) sprintf (cstr, "Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]);
-		else sprintf (cstr, "Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]);
+		if( flippedData) tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) [dcmPixList count] - curImage, (long) [dcmPixList count]];
+		else tempString = [NSString stringWithFormat: @"Im: %ld/%ld", (long) curImage+1, (long) [dcmPixList count]];
 		
-		[self DrawCStringGL: cstr : fontListGL :4 :yRaster];
+		[self DrawNSStringGL: tempString : fontListGL :4 :yRaster];
 		yRaster -= stringSize.height;
 	}
 	
@@ -5331,10 +5332,8 @@ static long scrollMode;
 		
 		if( [file valueForKeyPath:@"series.id"])
 		{
-			cptr = (char*) [[[file valueForKeyPath:@"series.id"] stringValue] UTF8String];
-			
-			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+			xRaster = size.size.width;
+			[self DrawNSStringGL: [[file valueForKeyPath:@"series.id"] stringValue] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5342,9 +5341,9 @@ static long scrollMode;
 		{
 			float repetitiontime = [[curDCM repetitiontime] floatValue];
 			float echotime = [[curDCM echotime] floatValue];
-			cptr = (char*) [[NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime] UTF8String];
+			tempString = [NSString stringWithFormat:@"TR: %.2f, TE: %.2f", repetitiontime, echotime];
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+			[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 			yRaster += (stringSize.height + stringSize.height/10);
 		}
 		
@@ -5360,9 +5359,9 @@ static long scrollMode;
 		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
 		{
-			cptr = (char*) [[date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]] UTF8String];	//	DDP localized from "%a %m/%d/%Y" 
+			tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]];	//	DDP localized from "%a %m/%d/%Y" 
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
+			[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 			yRaster -= (stringSize.height + stringSize.height/10);
 		}
 		//yRaster -= 12;
@@ -5370,9 +5369,9 @@ static long scrollMode;
 		if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
 		{
-			cptr = (char*) [[date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]] UTF8String];	//	DDP localized from "%I:%M %p" 
+			tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];	//	DDP localized from "%I:%M %p" 
 			xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
-			[self DrawCStringGL: cptr : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
+			[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
 			yRaster -= (stringSize.height + stringSize.height/10);
 		}
 	}
@@ -5502,7 +5501,7 @@ static long scrollMode;
 					float			heighthalf = size.size.height/2 - 1;
 					float			widthhalf = size.size.width/2 - 1;
 					long			yRaster = 1, xRaster, i;
-					char			cstr [400], *cptr;
+					NSString		*tempString = 0L;
 					
 					#define BARPOSX1 50.f
 					#define BARPOSX2 20.f
@@ -5530,25 +5529,25 @@ static long scrollMode;
 					
 					if( curWW < 50)
 					{
-						sprintf (cstr, "%0.4f", curWL - curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 						
-						sprintf (cstr, "%0.4f", curWL);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 						
-						sprintf (cstr, "%0.4f", curWL + curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
 					}
 					else
 					{
-						sprintf (cstr, "%0.0f", curWL - curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
 						
-						sprintf (cstr, "%0.0f", curWL);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 						
-						sprintf (cstr, "%0.0f", curWL + curWW/2);
-						[self DrawCStringGL: cstr : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
 					}
 				} //clutBars == barOrigin || clutBars == barBoth
 				
@@ -5557,11 +5556,11 @@ static long scrollMode;
 					if( clutBars == barFused || clutBars == barBoth)
 					{
 						unsigned char	*bred, *bgreen, *bblue;
-						float	heighthalf = size.size.height/2 - 1;
-						float	widthhalf = size.size.width/2 - 1;
-						long	yRaster = 1, xRaster, i;
-						float	bwl, bww;
-						char	cstr [400], *cptr;
+						float			heighthalf = size.size.height/2 - 1;
+						float			widthhalf = size.size.width/2 - 1;
+						long			yRaster = 1, xRaster, i;
+						float			bwl, bww;
+						NSString		*tempString = 0L;
 						
 						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 						{
@@ -5599,25 +5598,25 @@ static long scrollMode;
 						
 						if( curWW < 50)
 						{
-							sprintf (cstr, "%0.4f", bwl - bww/2);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 							
-							sprintf (cstr, "%0.4f", bwl);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 							
-							sprintf (cstr, "%0.4f", bwl + bww/2);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 						}
 						else
 						{
-							sprintf (cstr, "%0.0f", bwl - bww/2);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
 							
-							sprintf (cstr, "%0.0f", bwl);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
 							
-							sprintf (cstr, "%0.0f", bwl + bww/2);
-							[self DrawCStringGL: cstr : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
 						}
 					}
 				} //blendingView
