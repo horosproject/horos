@@ -6872,7 +6872,7 @@ static long scrollMode;
 			//             glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 0.0f); // AGP texturing
 			//     else
 						 glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f); //TRES IMPORTANT, POUR LES IMAGE RGB, ETC!!!!! en relation avec le GL_UNPACK_ROW_LENGTH...
-								
+					
 					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 					
