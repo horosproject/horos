@@ -6879,7 +6879,6 @@ static long scrollMode;
 					{
 //						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1		
 					}
-				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 						
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
 					{
