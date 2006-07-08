@@ -3720,7 +3720,7 @@ static long scrollMode;
     blendingFactor = 0.5;
 	
     long swap = 1;  // LIMIT SPEED TO VBL if swap == 1
-    [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
+//    [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
 	[self FindMinimumOpenGLCapabilities];
     
@@ -6110,7 +6110,7 @@ static long scrollMode;
 		//[super reshape];
 
 		[[self openGLContext] makeCurrentContext];
-		[[self openGLContext] update];
+//		[[self openGLContext] update];
 
 	//	[self setIndex:curImage];
 
@@ -6878,7 +6878,7 @@ static long scrollMode;
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW...
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW... Related to swap NSOpenGLCPSwapInterval
 					}
 				//		glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 						
@@ -7016,7 +7016,6 @@ BOOL	lowRes = NO;
 		else
 			blendingTextureName = [blendingView loadTextureIn:blendingTextureName blending:YES colorBuf:&blendingColorBuf textureX:&blendingTextureX textureY:&blendingTextureY redTable:0L greenTable:0L blueTable:0L];
 	}
-//	[[self openGLContext] flushBuffer];
 }
 
 - (BOOL)becomeFirstResponder{	
