@@ -735,6 +735,7 @@ static BOOL COMPLETEREBUILD = NO;
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
 							if( index == NSNotFound)
 							{
+								needDBRefresh = YES;
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
 								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
 								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
@@ -1407,6 +1408,8 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		[splash close];
 		[splash release];
+		
+		needDBRefresh = YES;
 	}
 	else
 	{
@@ -2837,13 +2840,16 @@ static BOOL COMPLETEREBUILD = NO;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	
-	if( [checkIncomingLock tryLock])
+	if( needDBRefresh)
 	{
-	//	NSLog(@"lock refreshDatabase");
-		[self outlineViewRefresh];
-		[checkIncomingLock unlock];
+		if( [checkIncomingLock tryLock])
+		{
+			needDBRefresh = NO;
+			[self outlineViewRefresh];
+			[checkIncomingLock unlock];
+		}
+		else NSLog(@"refreshDatabase locked...");
 	}
-	else NSLog(@"refreshDatabase locked...");
 }
 
 - (NSArray*) childrenArray: (NSManagedObject*) item
@@ -5027,7 +5033,10 @@ static BOOL COMPLETEREBUILD = NO;
 		[albumTable selectRow:[[self albumArray] indexOfObject: album] byExtendingSelection: NO];
 		
 		[context unlock];
+		
+		needDBRefresh = YES;
 	}
+	
 	[smartWindowController release];
 }
 
@@ -5077,7 +5086,7 @@ static BOOL COMPLETEREBUILD = NO;
 				[albumTable reloadData];
 				
 				[context unlock];
-			//	[albumTable selectRow:[[self albumArray] indexOfObject: album] byExtendingSelection: NO];
+				needDBRefresh = YES;
 			}
 		}
 		break;
@@ -6569,7 +6578,7 @@ static BOOL needToRezoom;
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 		
 		timer = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
-		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
+		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:16.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60*2 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];

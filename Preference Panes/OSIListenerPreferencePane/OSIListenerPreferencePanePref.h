@@ -29,7 +29,7 @@
 	IBOutlet NSFormCell *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
-	IBOutlet NSTextField *extrastorescp;
+	IBOutlet NSTextField *extrastorescp, *checkIntervalField;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
 	
@@ -48,4 +48,5 @@
 - (IBAction)setExtraStoreSCP:(id)sender;
 - (IBAction)setSingleProcess:(id)sender;
 - (IBAction)setLogDuration:(id)sender;
+- (IBAction)setCheckInterval:(id) sender;
 @end

@@ -87,6 +87,11 @@ char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setObject:[extrastorescp stringValue] forKey:@"STORESCPEXTRA"];
 }
 
+-(IBAction) setCheckInterval:(id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[checkIntervalField intValue] forKey:@"LISTENERCHECKINTERVAL"];
+}
+
 -(IBAction) helpstorescp:(id) sender
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString: @"http://support.dcmtk.org/docs/storescp.html"]];
@@ -165,6 +170,8 @@ char *GetPrivateIP()
 	[listenerOnOffAnonymize setState:[defaults boolForKey:@"ANONYMIZELISTENER"]];
 	
 	[logDurationPopup selectItemWithTag: [defaults integerForKey:@"LOGCLEANINGDAYS"]];
+	
+	[checkIntervalField setIntValue: [defaults integerForKey:@"LISTENERCHECKINTERVAL"]];
 }
 
 - (IBAction)setLogDuration:(id)sender

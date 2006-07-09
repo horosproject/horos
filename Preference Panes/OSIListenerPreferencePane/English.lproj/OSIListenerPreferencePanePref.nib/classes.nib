@@ -17,6 +17,7 @@
                 helpstorescp = id; 
                 setAE = id; 
                 setAnonymizeListenerOnOff = id; 
+                setCheckInterval = id; 
                 setDeleteFileMode = id; 
                 setExtraStoreSCP = id; 
                 setGenerateLogs = id; 
@@ -32,6 +33,7 @@
                 "_authView" = SFAuthorizationView; 
                 aeForm = NSForm; 
                 aeTitleField = NSFormCell; 
+                checkIntervalField = NSTextField; 
                 deleteFileModeMatrix = NSMatrix; 
                 extrastorescp = NSTextField; 
                 generateLogsButton = NSButton; 
