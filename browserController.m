@@ -7037,6 +7037,14 @@ static BOOL needToRezoom;
 #pragma mark-
 #pragma mark DICOM Network & Files functions
 
+- (void) resetListenerTimer
+{
+	[IncomingTimer invalidate];
+	[IncomingTimer release];
+	
+	IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
+}
+
 - (void) emptyDeleteQueueThread
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];

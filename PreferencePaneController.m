@@ -176,6 +176,7 @@ extern BrowserController	*browserWindow;
 	if( recomputePETBlending)
 		[DCMView computePETBlendingCLUT];
 	
+	[[BrowserController currentBrowser] resetListenerTimer];
 	[[BrowserController currentBrowser] setNetworkLogs];
 	
 	[DicomFile resetDefaults];
