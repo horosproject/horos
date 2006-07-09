@@ -2699,7 +2699,7 @@ static BOOL COMPLETEREBUILD = NO;
 	[outlineViewArray release];
 	outlineViewArray = [context executeFetchRequest:request error:&error];
 	
-	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
 	{
 		NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 		
@@ -2736,6 +2736,7 @@ static BOOL COMPLETEREBUILD = NO;
 		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
 	}
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
+	[outlineViewArray retain];
 	
 	[context unlock];
 	
@@ -2744,7 +2745,6 @@ static BOOL COMPLETEREBUILD = NO;
 	for( i = 0; i < [outlineViewArray count]; i++)
 	{
 		if( [[[outlineViewArray objectAtIndex: i] valueForKey:@"expanded"] boolValue]) [databaseOutline expandItem: [outlineViewArray objectAtIndex: i]];
-		else [databaseOutline collapseItem: [outlineViewArray objectAtIndex: i]];
 	}
 	
 	if( [previousObjects count] > 0)
