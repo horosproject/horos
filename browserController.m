@@ -1183,6 +1183,7 @@ static BOOL COMPLETEREBUILD = NO;
 					[studies addObject: [object valueForKeyPath:@"series.study"]];
 				}
 				
+				needDBRefresh = YES;
 				[self outlineViewRefresh];
 			}
 		}
@@ -2360,8 +2361,6 @@ static BOOL COMPLETEREBUILD = NO;
 	searchType = [sender tag];
 	//create new Filter Predicate when changing searchType ans set searchString to nil;
 	[self setSearchString:nil];
-	//[self setFilterPredicate:[self createFilterPredicate]];
-	[self outlineViewRefresh];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
@@ -2554,7 +2553,11 @@ static BOOL COMPLETEREBUILD = NO;
 	NSString			*description = [NSString string];
 	NSIndexSet			*selectedRowIndexes =  [databaseOutline selectedRowIndexes];
 	NSMutableArray		*previousObjects = [NSMutableArray arrayWithCapacity:0];
+	NSArray				*albumArrayContent = 0L;
 	BOOL				filtered = NO;
+	
+	if( needDBRefresh) [albumNoOfStudiesCache removeAllObjects];
+	needDBRefresh = NO;
 	
 	unsigned index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
@@ -2590,14 +2593,14 @@ static BOOL COMPLETEREBUILD = NO;
 		{
 			subPredicate = [self smartAlbumPredicate: album];
 			description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
+			predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 		}
 		else
 		{
-			subPredicate = [NSPredicate predicateWithFormat: @"ANY albums.name == %@", albumName];
+			albumArrayContent = [[album valueForKey:@"studies"] allObjects];
 			description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
 		}
 		
-		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, 0L]];
 		filtered = YES;
 	}
 	else description = [description stringByAppendingFormat:NSLocalizedString(@"No album selected", nil)];
@@ -2632,60 +2635,9 @@ static BOOL COMPLETEREBUILD = NO;
 	// ********************
 	// SEARCH FIELD
 	// ********************
-
-	//if ([_searchString length] > 0)
+	
 	if ([self filterPredicate])
 	{
-	/*
-		switch( searchType)
-		{
-			case 0:			// Patient Name
-				// ANY studies.name LIKE[c] "**" AND name == ""
-				subPredicate = [NSPredicate predicateWithFormat: @"name LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat: NSLocalizedString(@" / Search: Patient's name = %@", nil), _searchString];
-			break;
-			
-			case 1:			// Patient ID
-				subPredicate = [NSPredicate predicateWithFormat: @"patientID LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat:@" / Search: Patient's ID = %@", _searchString];
-			break;
-			
-			case 2:			// Study/Series ID
-				subPredicate = [NSPredicate predicateWithFormat: @"id LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat:@" / Search: Study's ID = %@", _searchString];
-			break;
-			
-			case 3:			// Comments
-				subPredicate = [NSPredicate predicateWithFormat: @"comment LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat: NSLocalizedString(@" / Search: Comments = %@", nil), _searchString];
-			break;
-			
-			case 4:			// Study Description
-				subPredicate = [NSPredicate predicateWithFormat: @"studyName LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat: NSLocalizedString(@" / Search: Study Description = %@", nil), _searchString];
-			break;
-			
-			case 5:			// Modality
-				subPredicate = [NSPredicate predicateWithFormat:  @"modality LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				
-				description = [description stringByAppendingFormat: NSLocalizedString(@" / Search: Modality = %@", nil), _searchString];
-			break;
-			
-			case 6:			// Accession Number 
-				subPredicate = [NSPredicate predicateWithFormat:  @"accessionNumber LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
-				description = [description stringByAppendingFormat: NSLocalizedString(@" / Search: Accession Number = %@", nil), _searchString];
-			break;
-			
-			case 100:			// Advanced
-				
-			break;
-		}
-		*/
 		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, [self filterPredicate], 0L]];
 		description = [description stringByAppendingString: [self filterPredicateDescription]];
 		filtered = YES;
@@ -2697,7 +2649,9 @@ static BOOL COMPLETEREBUILD = NO;
 	[context lock];
 	error = 0L;
 	[outlineViewArray release];
-	outlineViewArray = [context executeFetchRequest:request error:&error];
+	
+	if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
+	else outlineViewArray = [context executeFetchRequest:request error:&error];
 	
 	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
 	{
@@ -2719,7 +2673,6 @@ static BOOL COMPLETEREBUILD = NO;
 		[originalOutlineViewArray release];
 		originalOutlineViewArray = 0L;
 	}
-	
 	
 	long images = 0;
 	for( i = 0; i < [outlineViewArray count]; i++) images += [[[outlineViewArray objectAtIndex: i] valueForKey:@"noFiles"] intValue];
@@ -2860,7 +2813,6 @@ static BOOL COMPLETEREBUILD = NO;
 	{
 		if( [checkIncomingLock tryLock])
 		{
-			needDBRefresh = NO;
 			[self outlineViewRefresh];
 			[checkIncomingLock unlock];
 		}
@@ -3163,6 +3115,8 @@ static BOOL COMPLETEREBUILD = NO;
 		NSRunAlertPanel( NSLocalizedString(@"Bonjour Database", nil),  NSLocalizedString(@"You cannot modify a Bonjour shared database.", nil), nil, nil, nil);
 		return;
 	}
+	
+	needDBRefresh = YES;
 	
 	[animationCheck setState: NSOffState];
 	
@@ -5044,13 +4998,15 @@ static BOOL COMPLETEREBUILD = NO;
 		[album setValue:format forKey:@"predicateString"];
 		
 		[self saveDatabase: currentDatabasePath];
+		
+		needDBRefresh = YES;
 		[albumTable reloadData];
 		
 		[albumTable selectRow:[[self albumArray] indexOfObject: album] byExtendingSelection: NO];
 		
 		[context unlock];
 		
-		needDBRefresh = YES;
+		[self outlineViewRefresh];
 	}
 	
 	[smartWindowController release];
@@ -5099,10 +5055,11 @@ static BOOL COMPLETEREBUILD = NO;
 				
 				[self saveDatabase: currentDatabasePath];
 				
+				needDBRefresh = YES;
 				[albumTable reloadData];
 				
 				[context unlock];
-				needDBRefresh = YES;
+				[self outlineViewRefresh];
 			}
 		}
 		break;
@@ -5140,6 +5097,7 @@ static BOOL COMPLETEREBUILD = NO;
 			
 			[self saveDatabase: currentDatabasePath];
 			
+			[albumNoOfStudiesCache removeAllObjects];
 			[albumTable reloadData];
 			
 			[context unlock];
@@ -5253,6 +5211,7 @@ static BOOL needToRezoom;
 				
 				[self outlineViewRefresh];
 				
+				[albumNoOfStudiesCache removeAllObjects];
 				[albumTable reloadData];
 				
 				[context unlock];
@@ -5373,42 +5332,58 @@ static BOOL needToRezoom;
 	{
 		if([[aTableColumn identifier] isEqualToString:@"no"])
 		{
-			if( rowIndex == 0)
+			int albumNo = [[self albumArray] count];
+			
+			if( albumNoOfStudiesCache == 0L || [albumNoOfStudiesCache count] != albumNo || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
 			{
-				// Find all studies
-				NSError			*error = 0L;
-				NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-				NSManagedObjectContext *context = [self managedObjectContext];
-				[context lock];
-				error = 0L;
-				NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-				[context unlock];
+				if( albumNoOfStudiesCache == 0L || [albumNoOfStudiesCache count] != albumNo)
+				{
+					[albumNoOfStudiesCache release];
+					
+					albumNoOfStudiesCache = [[NSMutableArray alloc] initWithCapacity: albumNo];
+					int i;
+					for( i = 0; i < albumNo; i++) [albumNoOfStudiesCache addObject:@""];
+				}
 				
-				return [NSString stringWithFormat:@"%@",  [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
-			}
-			else
-			{
-				NSManagedObject	*object = [[self albumArray]  objectAtIndex: rowIndex];
-				
-				if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
+				if( rowIndex == 0)
 				{
 					// Find all studies
 					NSError			*error = 0L;
 					NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-					[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 					NSManagedObjectContext *context = [self managedObjectContext];
 					[context lock];
 					error = 0L;
 					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 					[context unlock];
 					
-					return [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
+					[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 				}
-				else return [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]];
+				else
+				{
+					NSManagedObject	*object = [[self albumArray]  objectAtIndex: rowIndex];
+					
+					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
+					{
+						// Find all studies
+						NSError			*error = 0L;
+						NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+						[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+						[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+						NSManagedObjectContext *context = [self managedObjectContext];
+						[context lock];
+						error = 0L;
+						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+						[context unlock];
+						
+						[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+					}
+					else [albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
+				}
 			}
+			
+			return [albumNoOfStudiesCache objectAtIndex: rowIndex];
 		}
 		else
 		{
@@ -5569,6 +5544,7 @@ static BOOL needToRezoom;
 			
 			[self saveDatabase: currentDatabasePath];
 			
+			[albumNoOfStudiesCache replaceObjectAtIndex:row withObject:@""];
 			[tableView reloadData];
 		}
 		
@@ -5724,8 +5700,6 @@ static BOOL needToRezoom;
 	{
 		// Clear search field
 		[self setSearchString:nil];
-		
-		[self outlineViewRefresh];
 	}
 	
 	if( [[aNotification object] isEqual: bonjourServicesList])

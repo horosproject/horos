@@ -85,6 +85,8 @@ enum queueStatus{QueueHasData, QueueEmpty};
     
 	BOOL					setDCMDone, mountedVolume, needDBRefresh;
 	
+	NSMutableArray			*albumNoOfStudiesCache;
+	
     volatile BOOL           shouldDie, threadRunning, threadWillRunning, bonjourDownloading;
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;

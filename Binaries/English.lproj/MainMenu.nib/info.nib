@@ -8,6 +8,8 @@
 	<dict>
 		<key>11583</key>
 		<string>69 300 162 182 0 0 1440 878 </string>
+		<key>1580</key>
+		<string>610 53 220 815 0 0 1440 878 </string>
 		<key>29</key>
 		<string>69 300 561 44 0 0 1440 878 </string>
 	</dict>
@@ -17,6 +19,7 @@
 	<array>
 		<integer>29</integer>
 		<integer>11583</integer>
+		<integer>1580</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8J2135a</string>
