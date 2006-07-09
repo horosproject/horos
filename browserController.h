@@ -274,7 +274,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;
 
-
+- (void) resetListenerTimer;
 - (IBAction) smartAlbumHelpButton:(id) sender;
 
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;

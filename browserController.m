@@ -466,6 +466,18 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
 	
+//	#define RANDOMFILES
+	
+	#ifdef RANDOMFILES
+	NSMutableArray	*randomArray = [NSMutableArray array];
+	for( i = 0; i < 5000; i++)
+	{
+		[randomArray addObject:@"yahoo/google/osirix/microsoft"];
+	}
+	newFilesArray = randomArray;
+	enumerator = [newFilesArray objectEnumerator];
+	#endif
+	
 	if( safeProcess)
 	{
 		NSLog( @"safe Process DB process");
@@ -533,7 +545,11 @@ static BOOL COMPLETEREBUILD = NO;
 				DicomFile		*curFile = 0L;
 				NSDictionary	*curDict = 0L;
 				
+				#ifdef RANDOMFILES
+				curFile = [[DicomFile alloc] initRandom];
+				#else
 				curFile = [[DicomFile alloc] init: newFile];
+				#endif
 				
 				if(curFile == 0L && [[newFile pathExtension] isEqualToString:@"zip"] == YES)
 				{

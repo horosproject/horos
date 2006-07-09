@@ -411,6 +411,43 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		return -1;
 }
 
+// For testing purposes only. Can quickly generate very large database to test performances
+-(short) getRandom
+{
+	height = 512;
+	width = 512;
+
+	imageID = [[NSString alloc] initWithString: [[NSDate date] description]];
+	serieID = [[NSString alloc] initWithString: [[NSDate date] description]];
+	studyID = [[NSString alloc] initWithFormat:@"%d", random()];
+
+	name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+	patientID = [[NSString alloc] initWithString:name];
+	study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+	Modality = [[NSString alloc] initWithString:@"RD"];
+	date = [[NSCalendarDate date] retain];
+	serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+	fileType = [[NSString stringWithString:@"IMAGE"] retain];
+
+	NoOfSeries = 1;
+	NoOfFrames = 1;
+	
+	[dicomElements setObject:studyID forKey:@"studyID"];
+	[dicomElements setObject:study forKey:@"studyDescription"];
+	[dicomElements setObject:date forKey:@"studyDate"];
+	[dicomElements setObject:Modality forKey:@"modality"];
+	[dicomElements setObject:patientID forKey:@"patientID"];
+	[dicomElements setObject:name forKey:@"patientName"];
+	[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+	[dicomElements setObject:serieID forKey:@"seriesID"];
+	[dicomElements setObject:name forKey:@"seriesDescription"];
+	[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+	[dicomElements setObject:imageID forKey:@"SOPUID"];
+	[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+	[dicomElements setObject:fileType forKey:@"fileType"];
+
+	return 0;
+}
 
 -(short) getImageFile
 {
@@ -2339,6 +2376,56 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return returnValue;
 }
 
+- (id) initRandom
+{
+	id returnVal = 0L;
+//	NSLog(@"Init dicomFile: %d", DICOMOnly);
+	if( self = [super init])
+	{
+		[DicomFile setDefaults];
+		
+		//width and height need to greater than 0 or get validation errors
+		
+		width = 1;
+		height = 1;
+		name = 0L;
+		study = 0L;
+		serie = 0L;
+		date = 0L;
+		Modality = 0L;
+		filePath = [[NSString alloc] initWithFormat:@"protp/aksidkoa/saodkireks/ksidjaiskd/orkerofk%d", random()];
+		SOPUID = 0L;
+		fileType = 0L;
+		NoOfSeries = 1;
+		
+		[filePath retain];
+		
+		studyID = 0L;
+		serieID = 0L;
+		imageID = 0L;
+		patientID = 0L;
+		studyIDs = 0L;
+		seriesNo = 0L;
+		imageType = 0L;
+		
+		dicomElements = [[NSMutableDictionary dictionary] retain];
+		
+		if( [self getRandom] == 0)
+		{
+			returnVal = self;
+		}
+	}
+	
+	if( returnVal)
+	{
+		[dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
+		[dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
+		[dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
+		[dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+	}
+	
+	return returnVal;
+}
 
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly
 {

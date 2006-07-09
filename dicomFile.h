@@ -61,6 +61,7 @@
 - (long) NoOfSeries;
 - (id) init:(NSString*) f;
 - (id) init:(NSString*) f DICOMOnly:(BOOL) DICOMOnly;
+- (id) initRandom;
 - (NSString*) patientUID;
 - (NSMutableDictionary *)dicomElements;
 - (id)elementForKey:(id)key;
