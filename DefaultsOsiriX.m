@@ -533,7 +533,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"" forKey:@"STORESCPEXTRA"];
 	
 	// ** ROITEXTIFSELECTED
-//		[defaultValues setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
+	[defaultValues setObject:@"0" forKey:@"ROITEXTIFSELECTED"];
 	
 	// ** STORESCP
 	[defaultValues setObject:@"1" forKey: @"STORESCP"];
