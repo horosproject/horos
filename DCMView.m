@@ -6830,8 +6830,9 @@ static long scrollMode;
     *tY = GetTextureNumFromTextureDim (textureHeight, maxTextureSize, false, f_ext_texture_rectangle); //OVERLAP
 	
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
-		
-	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight, [curDCM baseAddr]);
+	
+//	NSLog( @"%d %d - No Of Textures: %d", textureWidth, textureHeight, *tX * *tY);
+	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight * 4, [curDCM baseAddr]);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
@@ -6862,17 +6863,18 @@ static long scrollMode;
 					currHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 					glBindTexture (TEXTRECTMODE, texture[k++]);
 					
-			//     if (fAGPTexturing)
-			//             glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 0.0f); // AGP texturing
-			//     else
-						 glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f); //TRES IMPORTANT, POUR LES IMAGE RGB, ETC!!!!! en relation avec le GL_UNPACK_ROW_LENGTH...
+					glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 					
 					if (f_ext_client_storage) glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);	// Incompatible with GL_TEXTURE_STORAGE_HINT_APPLE
 					else  glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-//						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1		
+						if( textureWidth > 1024 && textureHeight > 1024)
+						{
+							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
+						}
+						else glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CLIENT_APPLE);
 					}
 						
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
