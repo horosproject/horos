@@ -6870,11 +6870,11 @@ static long scrollMode;
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-						if( textureWidth > 1024 && textureHeight > 1024)
+						if( textureWidth > 2048 && textureHeight > 2048)
 						{
 							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
-						else glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CLIENT_APPLE);
+						//else glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CLIENT_APPLE);
 					}
 						
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
