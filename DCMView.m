@@ -6832,6 +6832,7 @@ static long scrollMode;
 	texture = (GLuint *) malloc ((long) sizeof (GLuint) * *tX * *tY);
 	
 //	NSLog( @"%d %d - No Of Textures: %d", textureWidth, textureHeight, *tX * *tY);
+	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
 	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight * 4, [curDCM baseAddr]);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
@@ -6874,7 +6875,6 @@ static long scrollMode;
 						{
 							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
-						//else glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CLIENT_APPLE);
 					}
 						
 					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
