@@ -2689,7 +2689,6 @@ static BOOL COMPLETEREBUILD = NO;
 		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
 	}
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
-	[outlineViewArray retain];
 	
 	[context unlock];
 	
