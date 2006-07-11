@@ -112,6 +112,9 @@
 	[[mprController xReslicedView] scaleToFit];
 	[mprController setWLWW:400 :1200];
 	
+	[[mprController originalView] setFusion:0 :1];
+	[[mprController originalView] setThickSlabXY:0 :0];
+	
 	[self setTopLimit:(int)[dcmPixList count]*0.66 bottomLimit:(int)[dcmPixList count]*0.33];
 }
 

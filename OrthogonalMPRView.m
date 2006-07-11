@@ -163,7 +163,7 @@
 
 - (void) setCrossPosition: (long) x: (long) y
 {
-//	x = (x<0)? 0 : x;
+//	cx = (x<0)? 0 : x;
 //	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
 //	crossPositionX = x;
 	[self setCrossPositionX: x];
@@ -536,7 +536,7 @@
 			}
 			else
 			{
-				NSLog(@"nobody contains this f**king Point");
+				NSLog(@"nobody contains this Point");
 				return;
 			}
 

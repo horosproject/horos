@@ -41,7 +41,6 @@
 
 - (void) resliceFromNotification: (NSNotification*) notification;
 {
-//NSLog(@"LLMPRController resliceFromNotification");
 	if([[notification object] isEqualTo:self])
 		return;
 	if(originalView==nil || xReslicedView==nil || yReslicedView==nil)
@@ -60,7 +59,7 @@
 		sender = xReslicedView;
 	else if ([[[notification userInfo] objectForKey:@"view"] isEqualTo:@"yReslicedView"])
 		sender = yReslicedView;
-	
+		
 	[sender setCrossPositionX:[[[notification userInfo] objectForKey:@"x"] intValue]];
 	[sender setCrossPositionY:[[[notification userInfo] objectForKey:@"y"] intValue]];
 	[super reslice: [[[notification userInfo] objectForKey:@"x"] intValue]: [[[notification userInfo] objectForKey:@"y"] intValue]: sender];
@@ -195,6 +194,7 @@
 -(void)setPixListRange:(NSRange)range;
 {
 	pixListRange = range;
+	//NSLog(@"pixListRange.location : %d .. pixListRange.length : %d", pixListRange.location, pixListRange.length);
 }
 
 - (void) dealloc {

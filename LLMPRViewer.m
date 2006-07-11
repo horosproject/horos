@@ -672,7 +672,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	thickSlabMode = mode;
 	[thickSlabModePopUp selectItemWithTag:mode];
 	thickSlab = [thickSlabSlider intValue];
-
+	
 	[self refreshSubtractedViews];
 }
 
