@@ -21,6 +21,7 @@
 
 #import "browserController.h"
 #import "StructuredReport.h"
+#import "DicomStudy.h"
 
 
 #undef verify
@@ -42,9 +43,28 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
 		[self setReport:[self createReportForStudy:study]];
 		_study = [study retain];	
-		[self setReports:[NSArray arrayWithObject:
-			[NSMutableDictionary dictionaryWithObjects:
-			[NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]]]];
+		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];
+		id  series;
+		NSMutableSet *set = [NSMutableSet set];
+		while (series = [enumerator nextObject]){
+			NSSet *children = [series valueForKey:@"images"];
+			if (children)
+				[set unionSet:children];
+		}
+		NSArray *reports = [set allObjects];
+		enumerator = [reports objectEnumerator];
+		id report;
+		NSMutableArray *reportsArray = [NSMutableArray array];
+		while (report = [enumerator nextObject]) {
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects: 
+				[NSArray arrayWithObjects:study, [study valueForKey:@"name"], [report valueForKey:@"completePath"], nil] 
+			forKeys:[NSArray arrayWithObjects: @"study", @"report", @"path", nil]];
+			[reportsArray  addObject:dict];
+		}
+		[self setReports: reportsArray];
+	//	[self setReports:[NSArray arrayWithObject:
+	//	[NSMutableDictionary dictionaryWithObjects: [NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] 
+	//		forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]]]];
 		[[self window]  makeKeyAndOrderFront:self];
 	}
 	return self;
@@ -77,12 +97,12 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (StructuredReport *)createReportForStudy:(id)study{
-	NSLog(@"crearteStudy: %@", [study description]);
+	//NSLog(@"crearteStudy: %@", [study description]);
 	StructuredReport *report;
 	//[_report release];
 	report = [[[StructuredReport alloc] initWithStudy:study] autorelease];
 	
-	NSLog(@"create Report: %@", [report description]);
+	//NSLog(@"create Report: %@", [report description]);
 	return report;
 }
 
