@@ -786,6 +786,83 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 @implementation DCMPix
 
+- (NSImage*) image
+{
+	unsigned char		*buf = 0L;
+	long				i;
+	NSImage				*imageRep = 0L;
+	NSBitmapImageRep	*rep;
+
+	if( [self isRGB] == YES)
+	{
+		i = width * height * 3;
+		buf = malloc( i);
+		if( buf)
+		{
+			unsigned char *dst = buf, *src = (unsigned char*) [self baseAddr];
+			i = width * height;
+			
+			// CONVERT ARGB TO RGB
+			while( i-- > 0)
+			{
+				src++;
+				*dst++ = *src++;
+				*dst++ = *src++;
+				*dst++ = *src++;
+			}
+		}
+		
+		rep = [[[NSBitmapImageRep alloc]
+			 initWithBitmapDataPlanes:0L
+						   pixelsWide:width
+						   pixelsHigh:height
+						bitsPerSample:8
+					  samplesPerPixel:3
+							 hasAlpha:NO
+							 isPlanar:NO
+					   colorSpaceName:NSCalibratedRGBColorSpace
+						  bytesPerRow:width*3
+						 bitsPerPixel:24] autorelease];
+						 
+		BlockMoveData( buf, [rep bitmapData], height*width*3);
+	
+		imageRep = [[[NSImage alloc] init] autorelease];
+		[imageRep addRepresentation:rep];
+     
+		free( buf);
+	}
+	else
+	{
+		i = width * height;
+		buf = malloc( i);
+		if( buf)
+		{
+			BlockMoveData( baseAddr, buf, width*height);
+		}
+		
+		rep = [[[NSBitmapImageRep alloc]
+			 initWithBitmapDataPlanes:0L
+						   pixelsWide:width
+						   pixelsHigh:height
+						bitsPerSample:8
+					  samplesPerPixel:1
+							 hasAlpha:NO
+							 isPlanar:NO
+					   colorSpaceName:NSCalibratedWhiteColorSpace
+						  bytesPerRow:width
+						 bitsPerPixel:8] autorelease];
+		
+		BlockMoveData( buf, [rep bitmapData], height*width);
+	
+		imageRep = [[[NSImage alloc] init] autorelease];
+		[imageRep addRepresentation:rep];
+     
+		free( buf);
+	}
+	
+	return imageRep;
+}
+
 - (unsigned char *) ConvertYbrToRgb: (unsigned char *) ybrImage :(int) w :(int) h :(long) theKind :(char) planarConfig
 {
   long			loop, size;

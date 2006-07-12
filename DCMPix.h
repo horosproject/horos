@@ -204,6 +204,7 @@
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (xNSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
+- (NSImage*) image;
 - (void) changeWLWW:(float)newWL :(float)newWW;
 - (xNSImage*) getImage;
 - (char*) baseAddr;

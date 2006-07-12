@@ -4893,7 +4893,11 @@ static BOOL COMPLETEREBUILD = NO;
 	NSMenuItem		*item, *subItem;
 	int				i = 0;
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as JPEG Files", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -6654,7 +6658,11 @@ static BOOL needToRezoom;
 	// NSMenu for DatabaseOutline
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
 	NSMenuItem *exportItem, *sendItem, *burnItem, *anonymizeItem, *keyImageItem;
-	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export Files", @"Export Files") action: @selector(exportDICOMFile:) keyEquivalent:@""];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as JPEG Files", 0L) action: @selector(exportJPEG:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
@@ -7308,8 +7316,10 @@ static BOOL needToRezoom;
 					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
 					
 					if( newfilesArray == filesArray) mountedVolume = YES;
-					
-					filesArray = newfilesArray;
+					else
+					{
+						filesArray = newfilesArray;
+					}
 					
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
 					
@@ -7915,6 +7925,123 @@ static BOOL needToRezoom;
 				}
 			}
 		}
+	}
+}
+
+- (void) exportJPEG:(id) sender
+{
+	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
+	long				previousSeries = -1;
+	long				serieCount		= 0;
+	
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
+	
+	NSLog( [sender description]);
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
+	}
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	
+	[sPanel setCanChooseDirectories:YES];
+	[sPanel setCanChooseFiles:NO];
+	[sPanel setAllowsMultipleSelection:NO];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the Quicktime/JPEG files:",0L)];
+	[sPanel setPrompt: NSLocalizedString(@"Choose",0L)];
+	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
+	[sPanel setCanCreateDirectories:YES];
+	
+	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
+	{
+		int					i, t;
+		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
+		Wait                *splash = [[Wait alloc] initWithString:@"Export..."];
+		BOOL				addDICOMDIR = [addDICOMDIRButton state];
+				
+		[splash showWindow:self];
+		[[splash progress] setMaxValue:[filesToExport count]];
+
+		for( i = 0; i < [filesToExport count]; i++)
+		{
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+			NSString *extension = @"jpg";
+			
+			NSString *tempPath;
+			
+			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
+			
+			// Find the PATIENT folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			else
+			{
+				if( i == 0)
+				{
+					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+				}
+			}
+				
+			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
+
+			// Find the STUDY folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+			
+			// Find the SERIES folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
+			
+			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+			{
+				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
+				serieCount++;
+			}
+			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
+			
+			t = 2;
+			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
+			{
+				if (!addDICOMDIR)
+					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+				else
+					dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
+				t++;
+			}
+			
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePath"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			
+			if( dcmPix)
+			{
+				float curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+				float curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				
+				if( curWW != 0)
+					[dcmPix checkImageAvailble :curWW :curWL];
+				else
+					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				NSArray *representations = [[dcmPix image] representations];
+				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+				[bitmapData writeToFile:dest atomically:YES];
+				
+				[dcmPix release];
+			}
+			
+			[splash incrementBy:1];
+			[pool release];
+		}
+		
+		//close progress window	
+		[splash close];
+		[splash release];
 	}
 }
 
