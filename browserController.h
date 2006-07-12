@@ -362,6 +362,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 
 - (IBAction) generateReport: (id) sender;
 - (IBAction) deleteReport: (id) sender;
+- (IBAction)srReports: (id)sender;
 
 
 

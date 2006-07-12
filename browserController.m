@@ -7895,9 +7895,7 @@ static BOOL needToRezoom;
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
 						//Release Old Controller
-						if (structuredReportController)
-							[structuredReportController release];
-						structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
+						[self srReports:sender];
 					}
 					
 				}
@@ -7912,13 +7910,26 @@ static BOOL needToRezoom;
 						//structured report code here
 						//Osirix will open DICOM Structured Reports
 						//Release Old Controller
-						if (structuredReportController)
-							[structuredReportController release];
-						structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
+						[self srReports:sender];
 					}
 				}
 			}
 		}
+	}
+}
+
+- (IBAction)srReports: (id)sender{
+	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
+	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];			
+	NSManagedObject *studySelected;
+	if (item) {	
+		if ([[[item entity] name] isEqual:@"Study"])
+			studySelected = item;
+		else
+			studySelected = [item valueForKey:@"study"];
+		if (structuredReportController)
+			[structuredReportController release];
+		structuredReportController = [[StructuredReportController alloc] initWithStudy:studySelected];
 	}
 }
 

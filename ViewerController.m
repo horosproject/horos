@@ -10296,5 +10296,8 @@ sourceRef);
 	[contextInfo autorelease];
 }
 
+- (IBAction)keyObjectNotes:(id)sender{
+}
+
 
 @end

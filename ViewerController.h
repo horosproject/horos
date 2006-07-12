@@ -444,5 +444,6 @@
 #pragma mark Key Objects
 - (IBAction)createKeyObjectNote:(id)sender;
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo;
+- (IBAction)keyObjectNotes:(id)sender;
 
 @end
