@@ -373,7 +373,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)refreshSubtractedViews;
 {
-//NSLog(@"LLMPRViewer refreshSubtractedViews");
 	NSAutoreleasePool *tempPool;
 	
 	DCMPix *curPix;
@@ -385,7 +384,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	float fValue;
 	NSMutableArray *axialPixList, *coronalPixList, *sagitalPixList;
 	int i, minI, maxI;
-	
+
 	// axial
 	if(thickSlabMode != 0)
 	{
@@ -393,14 +392,15 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		maxI = minI + thickSlab;
 		
 		minI = (minI<0)? 0: minI;
-		maxI = (maxI>=[[[injectedMPRController originalView] curDCM] pheight])? [[[injectedMPRController originalView] curDCM] pheight]-1 : maxI;
+		//maxI = (maxI>=[[[injectedMPRController originalView] curDCM] pheight])? [[[injectedMPRController originalView] curDCM] pheight]-1 : maxI;
+		maxI = (maxI>=[[[injectedMPRController originalView] dcmPixList] count])? [[[injectedMPRController originalView] dcmPixList] count]-1 : maxI;
 	}
 	else
 	{
 		minI = [[injectedMPRController originalView] curImage];
 		maxI = minI + 1;
 	}
-	
+
 	axialPixList = [[NSMutableArray alloc] initWithCapacity:maxI-minI];
 	DCMPix *newAxialPix;
 	
@@ -467,7 +467,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	
 	[axialPixList release];
 //	[newAxialPix release];
-	
+
 	// coronal
 	if(thickSlabMode != 0)
 	{
@@ -482,7 +482,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		minI = 0;
 		maxI = 1;
 	}
-	
+
 	coronalPixList = [[NSMutableArray alloc] initWithCapacity:maxI-minI];
 	DCMPix *newCoronalPix;
 	
@@ -494,7 +494,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	resample = (xShift%4 != 0) || (zShift%4 != 0);
 	
 	//tempPool = [[NSAutoreleasePool alloc] init];
-	for(i=0; i<[[[injectedMPRController xReslicedView] dcmPixList] count]; i++)
+	//for(i=0; i<[[[injectedMPRController xReslicedView] dcmPixList] count]; i++)
+	for(i=0; i<maxI-minI; i++)
 	{
 		curPix = [[[injectedMPRController xReslicedView] dcmPixList] objectAtIndex:i];
 		buffer = [curPix fImage];
@@ -539,7 +540,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	{
 		[[coronalPixList objectAtIndex: i] setArrayPix: coronalPixList :i];
 	}
-	
 	[subtractedXReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController xReslicedView] thickSlabX]];
 	
 	fValue = [[controller xReslicedView] scaleValue] / [[controller xReslicedView] pixelSpacing];
@@ -550,7 +550,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		
 	[coronalPixList release];
 //	[newCoronalPix release];
-	
+
 	// sagital
 		
 	if(thickSlabMode != 0)
@@ -578,7 +578,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	resample = (yShift%4 != 0) || (zShift%4 != 0);
 	
 	//tempPool = [[NSAutoreleasePool alloc] init];
-	for(i=0; i<[[[injectedMPRController yReslicedView] dcmPixList] count]; i++)
+	//for(i=0; i<[[[injectedMPRController yReslicedView] dcmPixList] count]; i++)
+	for(i=0; i<maxI-minI; i++)
 	{
 		curPix = [[[injectedMPRController yReslicedView] dcmPixList] objectAtIndex:i];
 		buffer = [curPix fImage];
@@ -623,7 +624,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	{
 		[[sagitalPixList objectAtIndex: i] setArrayPix: sagitalPixList :i];
 	}
-	
 	[subtractedYReslicedView setFusion:thickSlabMode :[(LLMPRView*)[injectedMPRController yReslicedView] thickSlabX]];
 	
 	fValue = [[controller yReslicedView] scaleValue] / [[controller yReslicedView] pixelSpacing];
@@ -653,25 +653,28 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)_setThickSlabMode:(int)mode;
 {
+	thickSlabMode = mode;
+	
 	if(mode==0)
 	{
-		[injectedMPRController setThickSlab:0];
-		[controller setThickSlab:0];
 		[thickSlabSlider setIntValue:0];
 		[thickSlabTextField setIntValue:2];
 		[thickSlabSlider setEnabled:NO];
+		thickSlab = [thickSlabSlider intValue];
+		[injectedMPRController setThickSlab:0];
+		[controller setThickSlab:0];
 	}
 	else
 	{
-		[injectedMPRController setThickSlabMode : mode];
+		thickSlab = [thickSlabSlider intValue];
 		[injectedMPRController setThickSlab: [thickSlabSlider intValue]];
-		[controller setThickSlabMode : mode];
 		[controller setThickSlab: [thickSlabSlider intValue]];
 		[thickSlabSlider setEnabled:YES];
 	}
-	thickSlabMode = mode;
+	
+	[injectedMPRController setThickSlabMode : mode];
+	[controller setThickSlabMode : mode];
 	[thickSlabModePopUp selectItemWithTag:mode];
-	thickSlab = [thickSlabSlider intValue];
 	
 	[self refreshSubtractedViews];
 }
