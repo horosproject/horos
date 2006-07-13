@@ -4896,7 +4896,11 @@ static BOOL COMPLETEREBUILD = NO;
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
-	
+
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as Quicktime Files", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as JPEG Files", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -6659,6 +6663,10 @@ static BOOL needToRezoom;
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
 	NSMenuItem *exportItem, *sendItem, *burnItem, *anonymizeItem, *keyImageItem;
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as Quicktime Files", 0L) action: @selector(exportQuicktime:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
