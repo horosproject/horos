@@ -279,7 +279,7 @@ Version 2.3
 					replacement = [[firstColumnValues cellWithTag:[cell tag]] objectValue];
 				else
 					replacement = [[secondColumnValues cellWithTag:[cell tag]] objectValue];
-				if ([replacement length] <= 0) {
+				if ([replacement isKindOfClass:[NSString class]] && [replacement length] <= 0) {
 					//NSLog(@"Replacement Length: %d", [replacement length]);
 					replacement = nil;
 			//

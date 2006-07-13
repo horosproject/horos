@@ -7225,9 +7225,6 @@ static BOOL needToRezoom;
 						// !!! on MAC OS X the pathes are casesensitive and in a dicomdir the pathes
 						// are stored in uppercase
 						aPath = [self _findFirstDicomdirOnCDMedia: aPath found: FALSE];
-
-						
-						//aPath = [aPath stringByAppendingPathComponent:@"DICOMDIR"];
 						
 						if( [[NSFileManager defaultManager] fileExistsAtPath:aPath])
 						{
@@ -7979,8 +7976,12 @@ static BOOL needToRezoom;
 			{
 				if( i == 0)
 				{
-					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					}
+					else break;
 				}
 			}
 				
@@ -8137,8 +8138,12 @@ static BOOL needToRezoom;
 			{
 				if( i == 0)
 				{
-					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					}
+					else break;
 				}
 			}
 			if (!addDICOMDIR)		
@@ -8473,8 +8478,12 @@ static BOOL needToRezoom;
 						{
 							if( x == 0)
 							{
-								[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-								[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+									[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+								}
+								else break;
 							}
 						}
 						
@@ -8704,8 +8713,12 @@ static BOOL needToRezoom;
 						{
 							if( i == 0)
 							{
-								[mySession removeFileAtPath:tempPath handler:nil];
-								[mySession createDirectoryAtPath:tempPath attributes:nil];
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+								{
+									[mySession removeFileAtPath:tempPath handler:nil];
+									[mySession createDirectoryAtPath:tempPath attributes:nil];
+								}
+								else break;
 							}
 						}
 			

@@ -54,6 +54,8 @@ Version 2.3
 
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 
+@class OrthogonalMPRPETCTView;
+
 #define BS 10.
 
 //#define TEXTRECTMODE GL_TEXTURE_2D
@@ -6871,9 +6873,9 @@ static long scrollMode;
 					
 					if (f_arb_texture_rectangle && f_ext_texture_rectangle)
 					{
-						if( textureWidth > 2048 && textureHeight > 2048)
+						if( textureWidth > 2048 && textureHeight > 2048 || [self class] == [OrthogonalMPRPETCTView class])
 						{
-							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
+							glTexParameteri (TEXTRECTMODE, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);		//<- this produce 'artefacts' when changing WL&WW for small matrix in RGB images... if	GL_UNPACK_CLIENT_STORAGE_APPLE is set to 1
 						}
 					}
 						
@@ -6890,7 +6892,6 @@ static long scrollMode;
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
 					
-			//		if( [curDCM thickSlabMode] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					#if __BIG_ENDIAN__
 					if( [curDCM isRGB] == YES || [curDCM thickSlabMode] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
