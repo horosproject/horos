@@ -248,33 +248,37 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                const size_t flags,
                                                OFConsole * /*logStream*/) const
 {
+	//get rid of hyperlinik unitl we can get a valid one
     /* reference: image */
-    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
-    docStream << "?image=" << SOPClassUID << "+" << SOPInstanceUID;
+   // docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    //docStream << "?image=" << SOPClassUID << "+" << SOPInstanceUID;
     /* reference: pstate */
-    if (PresentationState.isValid())
-    {
-        docStream << "&pstate=" << PresentationState.getSOPClassUID();
-        docStream << "+" << PresentationState.getSOPInstanceUID();
-    }
+    //if (PresentationState.isValid())
+   // {
+   //     docStream << "&pstate=" << PresentationState.getSOPClassUID();
+    //    docStream << "+" << PresentationState.getSOPInstanceUID();
+   // }
     /* reference: frames */
-    if (!FrameList.isEmpty())
-    {
-        docStream << "&frames=";
-        FrameList.print(docStream, 0 /*flags*/, '+');
-    }
-    docStream << "\">";
+   // if (!FrameList.isEmpty())
+   // {
+   //     docStream << "&frames=";
+   //     FrameList.print(docStream, 0 /*flags*/, '+');
+   // }
+   // docStream << "\">";
     /* text: image */
     const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     if (modality != NULL)
         docStream << modality;
     else
-        docStream << "unknown";
-    docStream << " image";
+        docStream << "unknown ";
+    docStream << " image ";
+	//add UID after image
+	docStream << SOPInstanceUID;
     /* text: pstate */
     if (PresentationState.isValid())
         docStream << " with GSPS";
-    docStream << "</a>";
+	//don't need ending /a if no hyperlin'
+   // docStream << "</a>";
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)

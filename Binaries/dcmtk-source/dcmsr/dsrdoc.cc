@@ -1192,10 +1192,17 @@ void DSRDocument::renderHTMLReferenceList(ostream &stream,
             OFString sopClass, sopInstance;
             if (!refList.getSOPClassUID(sopClass).empty() && !refList.getSOPInstanceUID(sopInstance).empty())
             {
-                stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
-                stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
-                stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), tmpString);
-                stream << "</a></td>" << endl;
+				//no hyperlink unti I can have a validkink
+               // stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+               // stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
+                //stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), tmpString);
+                //stream << "</a></td>" << endl;
+				
+				/*OsiriX reference */
+				stream << "<td>";
+				stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), tmpString);
+				stream <<  " " << sopInstance;
+				stream << "</td>" << endl;
             } else
                 stream << "<td><i>invalid document reference</i></td>" << endl;
             i++;

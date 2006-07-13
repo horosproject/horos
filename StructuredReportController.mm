@@ -23,6 +23,9 @@
 #import "StructuredReport.h"
 #import "DicomStudy.h"
 #import"ViewerController.h"
+#import "AppController.h"
+
+extern AppController *appController;
 
 
 #undef verify
@@ -238,7 +241,11 @@ static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
 }
 
 - (IBAction)showKeyImages:(id)sender{
-	//ViewerController *viewerController = [[ViewerController alloc] newWindow:[NSMutableArray arrayWithObject:[_report keyImages]] :nil :nil];
+	BrowserController *browser = [BrowserController currentBrowser];
+	[appController setCurrentHangingProtocolForModality:nil description:nil];
+	NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
+	[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	
+	[NSApp sendAction: @selector(tileWindows:) to:0L from: browser];
 }
 
 - (IBAction)printDocument:(id)sender{
