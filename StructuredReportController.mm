@@ -22,6 +22,7 @@
 #import "browserController.h"
 #import "StructuredReport.h"
 #import "DicomStudy.h"
+#import"ViewerController.h"
 
 
 #undef verify
@@ -35,14 +36,15 @@
 
 static NSString *ViewControlToolbarItem = @"viewControl";
 static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
+static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
 
 
 @implementation StructuredReportController
 
 - (id)initWithStudy:(id)study{
 	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
-		[self setReport:[self createReportForStudy:study]];
-		_study = [study retain];	
+		_study = [study retain];
+		
 		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];
 		id  series;
 		NSMutableSet *set = [NSMutableSet set];
@@ -57,14 +59,19 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 		NSMutableArray *reportsArray = [NSMutableArray array];
 		while (report = [enumerator nextObject]) {
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects: 
-				[NSArray arrayWithObjects:study, [study valueForKey:@"name"], [report valueForKey:@"completePath"], nil] 
+				[NSArray arrayWithObjects:study, [report valueForKey:@"date"], [report valueForKey:@"completePath"], nil] 
 			forKeys:[NSArray arrayWithObjects: @"study", @"report", @"path", nil]];
 			[reportsArray  addObject:dict];
 		}
 		[self setReports: reportsArray];
-	//	[self setReports:[NSArray arrayWithObject:
-	//	[NSMutableDictionary dictionaryWithObjects: [NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] 
-	//		forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]]]];
+		if ([reportsArray count] > 0) {
+			_reportIndex = 	[[NSIndexSet indexSetWithIndex:0] retain];
+			id sr =  [self createReportForStudy:[[_reports objectAtIndex:0] objectForKey:@"study"] path:[[_reports objectAtIndex:0] objectForKey:@"path"]];
+			[self setReport:sr];
+		}		
+		else
+			[self setReport:[self createReportForStudy:study]];
+		
 		[[self window]  makeKeyAndOrderFront:self];
 	}
 	return self;
@@ -90,19 +97,24 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (void)dealloc{
-	//[_study release];
+	[_reportIndex release];
 	[_report release];
 	[_reports release];
+	[_study release];
 	[super dealloc];
 }
 
 - (StructuredReport *)createReportForStudy:(id)study{
-	//NSLog(@"crearteStudy: %@", [study description]);
+	return [self createReportForStudy:(id)study path:nil];
+}
+
+- (StructuredReport *)createReportForStudy:(id)study path:(NSString *)path{
 	StructuredReport *report;
-	//[_report release];
-	report = [[[StructuredReport alloc] initWithStudy:study] autorelease];
-	
-	//NSLog(@"create Report: %@", [report description]);
+	//NSLog(@"createReport at Path: %@", path);
+	if (path) 
+		report = [[[StructuredReport alloc] initWithStudy:study contentsOfFile:path] autorelease];
+	else
+		report = [[[StructuredReport alloc] initWithStudy:study] autorelease];
 	return report;
 }
 
@@ -136,7 +148,6 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 // ============================================================
 
 - (void) setupToolbar {
-	NSLog(@"Setup Toolbar");
 	toolbar = [[NSToolbar alloc] initWithIdentifier:SRToolbarIdentifier];
 	[toolbar setDelegate:self];
 	[toolbar setAllowsUserCustomization:NO];
@@ -158,6 +169,13 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([viewControl frame]), NSHeight([viewControl frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([viewControl frame]), NSHeight([viewControl frame]))];
 	}
+	else if ([itemIdent isEqualToString: keyImagesToolbarIdentifier]) {
+		[toolbarItem setImage:[NSImage imageNamed:keyImagesToolbarIdentifier]];
+		[toolbarItem setLabel: NSLocalizedString(@"Key Images", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Key Images Button", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"View Key Images", nil)];
+		[toolbarItem setAction:@selector(showKeyImages:)];
+	}
 	return [toolbarItem autorelease];
 }
 
@@ -165,14 +183,14 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
     // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
-	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, nil];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier, nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, nil];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier, nil];
 }
 
 - (IBAction)export:(id)sender{
@@ -219,6 +237,14 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 	[[self window] close];
 }
 
+- (IBAction)showKeyImages:(id)sender{
+	//ViewerController *viewerController = [[ViewerController alloc] newWindow:[NSMutableArray arrayWithObject:[_report keyImages]] :nil :nil];
+}
+
+- (IBAction)printDocument:(id)sender{
+	[webView print:sender];
+}
+
 - (BOOL)verified{
 	return [_report verified];	
 }
@@ -252,7 +278,7 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (NSArray *)reports{
-	NSLog(@"reports: %@", [_reports description]);
+	//NSLog(@"reports: %@", [_reports description]);
 	return _reports;
 }
 - (void)setReports:(NSArray *)reports{
@@ -261,11 +287,15 @@ static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 }
 
 - (NSIndexSet *)reportIndex{
-	return [NSIndexSet indexSetWithIndex:0];
+	return _reportIndex;
 }
+
 - (void)setReportIndex:(NSIndexSet *)indexSet{
 	int index = [indexSet firstIndex];
-	//[self setReport:[self createReportForStudy:[[_reports objectAtIndex:index] objectForKey:@"study"]]];
+	id report = [self createReportForStudy:[[_reports objectAtIndex:index] objectForKey:@"study"] path:[[_reports objectAtIndex:index] objectForKey:@"path"]];
+	[self setReport:report];
+	[_reportIndex release];
+	_reportIndex = [indexSet retain];
 }
 		
 

@@ -48,6 +48,7 @@
 	int _exportStyle;
 	NSString *_exportExtension;
 	int _tabIndex;
+	NSIndexSet *_reportIndex;
 	
 	
 }
@@ -55,6 +56,7 @@
 - (id)initWithStudy:(id)study;
 - (void)setStudy:(id)study;
 - (StructuredReport *)createReportForStudy:(id)study;
+- (StructuredReport *)createReportForStudy:(id)study path:(NSString *)path;
 
 
 
@@ -70,6 +72,9 @@
 - (IBAction)export:(id)sender;
 - (IBAction)save:(id)sender;
 - (IBAction)cancel:(id)sender;
+- (IBAction)showKeyImages:(id)sender;
+- (IBAction)printDocument:(id)sender;
+
 - (int)exportStyle;
 - (void)setExportStyle:(int)style;
 - (BOOL)verified;

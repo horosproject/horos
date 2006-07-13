@@ -27,8 +27,8 @@
 @interface StructuredReport : NSObject {
 	id _study;
 	DSRDocument *_doc;
-	NSArray *_findings;
-	NSArray *_conclusions;
+	NSMutableArray *_findings;
+	NSMutableArray *_conclusions;
 	NSArray *_keyImages;
 	NSString *_physician;
 	NSString *_history;
@@ -38,6 +38,7 @@
 	NSString *_institution;
 	NSString *_verifyOberverName;
 	NSString *_verifyOberverOrganization;
+	NSString *_path;
 	NSXMLDocument *_xmlDoc;
 	BOOL _reportHasChanged;
 	BOOL _isEditable;
@@ -49,9 +50,9 @@
 - (id)initWithStudy:(id)study contentsOfFile:(NSString *)file;
 
 - (NSArray *)findings;
-- (void)setFindings:(NSArray *)findings;
+- (void)setFindings:(NSMutableArray *)findings;
 - (NSArray *)conclusions;
-- (void)setConclusions:(NSArray *)conclusions;
+- (void)setConclusions:(NSMutableArray *)conclusions;
 - (NSString *)physician;
 - (void)setPhysician:(NSString *)physician;
 - (NSString *)history;
@@ -92,9 +93,11 @@
 - (NSString *)xmlPath;
 - (NSString *)htmlPath;
 - (NSString *)srPath;
-- (void)createReport;
+
 - (void)convertXMLToSR;
 //- (NSMXLDocument *)xmlDoc;
+- (NSArray *)referencedObjects;
+- (NSArray *)keyImages;
 
 
 @end
