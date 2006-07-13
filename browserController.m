@@ -93,7 +93,7 @@ Version 2.3
 #import "Reports.h"
 #import "LogManager.h"
 #import "DCMTKStoreSCU.h"
-
+#import <QTKit/QTKit.h>
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 
@@ -7925,6 +7925,167 @@ static BOOL needToRezoom;
 	}
 }
 
+- (void) writeMovie: (NSArray*) imagesArray name: (NSString*) fileName
+{
+	int				maxImage, myState, curSample = 0;
+	Handle			dataRef = NULL;
+	OSType			dataRefType;
+	DataHandler		dataHandler;
+	Movie			qtMovie = NULL;
+	
+	QTNewDataReferenceFromFullPathCFString((CFStringRef) [fileName stringByAppendingString:@"temp"], kQTNativeDefaultPathStyle, 0, &dataRef, &dataRefType);
+	
+	CreateMovieStorage (dataRef,
+						dataRefType,
+						0,
+						smSystemScript,
+						newMovieActive,
+						&dataHandler,
+						&qtMovie);
+	
+	QTMovie *mMovie = [QTMovie movieWithQuickTimeMovie:qtMovie disposeWhenDone:YES error:nil];
+	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+	
+	long long timeValue = 30;
+	long timeScale = 600;
+	
+	QTTime curTime = QTMakeTime(timeValue, timeScale);
+	
+	NSDictionary *myDict =	[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
+							QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality],
+							QTAddImageCodecQuality, nil];
+	
+	for (curSample = 0; curSample < [imagesArray count]; curSample++) 
+	{
+		[mMovie addImage:[imagesArray objectAtIndex: curSample] forDuration:curTime withAttributes: myDict];
+	}
+	
+	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+}
+
+- (void) exportQuicktime:(id) sender
+{
+	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
+	long				previousSeries = -1;
+	
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
+	
+	NSLog( [sender description]);
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
+	}
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	
+	[sPanel setCanChooseDirectories:YES];
+	[sPanel setCanChooseFiles:NO];
+	[sPanel setAllowsMultipleSelection:NO];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the Quicktime files:",0L)];
+	[sPanel setPrompt: NSLocalizedString(@"Choose",0L)];
+	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
+	[sPanel setCanCreateDirectories:YES];
+	
+	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
+	{
+		int					i, t;
+		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
+		Wait                *splash = [[Wait alloc] initWithString:@"Export..."];
+		BOOL				addDICOMDIR = [addDICOMDIRButton state];
+		NSMutableArray		*imagesArray = [NSMutableArray array];
+		NSString			*tempPath, *previousPath = 0L;
+		
+		[splash showWindow:self];
+		[[splash progress] setMaxValue:[filesToExport count]];
+
+		for( i = 0; i < [filesToExport count]; i++)
+		{
+			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+			NSString *extension = 0L;
+			
+			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
+			
+			// Find the PATIENT folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			else
+			{
+				if( i == 0)
+				{
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					}
+					else break;
+				}
+			}
+				
+			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
+			
+			// Find the STUDY folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+						
+			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+			{
+				if( [imagesArray count] > 1)
+				{
+					[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+				}
+				else if( [imagesArray count] == 1)
+				{
+					NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
+					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+					[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+				}
+				
+				[imagesArray removeAllObjects];
+				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
+			}
+			
+			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+			
+			previousPath = [NSString stringWithString: tempPath];
+			
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePath"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			
+			if( dcmPix)
+			{
+				float curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+				float curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				
+				if( curWW != 0)
+					[dcmPix checkImageAvailble :curWW :curWL];
+				else
+					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				[imagesArray addObject: [dcmPix image]];
+				[dcmPix release];
+			}
+			
+			[splash incrementBy:1];
+		}
+		
+		if( [imagesArray count] > 1)
+		{
+			[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+		}
+		else if( [imagesArray count] == 1)
+		{
+			NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
+			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+			[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+		}
+		
+		[splash close];
+		[splash release];
+	}
+}
+
 - (void) exportJPEG:(id) sender
 {
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
@@ -7945,7 +8106,7 @@ static BOOL needToRezoom;
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
 	[sPanel setAllowsMultipleSelection:NO];
-	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the Quicktime/JPEG files:",0L)];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the JPEG files:",0L)];
 	[sPanel setPrompt: NSLocalizedString(@"Choose",0L)];
 	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
 	[sPanel setCanCreateDirectories:YES];
