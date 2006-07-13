@@ -7962,6 +7962,8 @@ static BOOL needToRezoom;
 	
 	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+	
+	CloseMovieStorage( dataHandler);
 }
 
 - (void) exportQuicktime:(id) sender

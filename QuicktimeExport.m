@@ -609,6 +609,9 @@ return err;
 		}
 		
 		[mMovie release];
+		
+		CloseMovieStorage( dataHandler);
+		
 		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 		
 		return fileName;
