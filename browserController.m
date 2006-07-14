@@ -2822,10 +2822,14 @@ static BOOL COMPLETEREBUILD = NO;
 		int i;
 		NSArray	*a = [self albumArray];
 		
-		for( i = 0; i < [a count]; i++)
+		if( [a count] == [albumNoOfStudiesCache count])
 		{
-			if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+			for( i = 0; i < [a count]; i++)
+			{
+				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+			}
 		}
+		
 		[albumTable reloadData];
 	}
 }
@@ -5718,6 +5722,12 @@ static BOOL needToRezoom;
 	{
 		// Clear search field
 		[self setSearchString:nil];
+		
+		if( [albumTable selectedRow] < [albumNoOfStudiesCache count])
+		{
+			[albumNoOfStudiesCache replaceObjectAtIndex: [albumTable selectedRow]  withObject:@""];
+		}
+		[albumTable reloadData];
 	}
 	
 	if( [[aNotification object] isEqual: bonjourServicesList])
