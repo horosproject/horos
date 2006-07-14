@@ -7951,6 +7951,8 @@ static BOOL needToRezoom;
 						&dataHandler,
 						&qtMovie);
 	
+	DisposeHandle(dataRef);
+	
 	QTMovie *mMovie = [QTMovie movieWithQuickTimeMovie:qtMovie disposeWhenDone:YES error:nil];
 	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 	
@@ -7972,6 +7974,7 @@ static BOOL needToRezoom;
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 	
 	CloseMovieStorage( dataHandler);
+	
 }
 
 - (void) exportQuicktime:(id) sender
@@ -8065,10 +8068,16 @@ static BOOL needToRezoom;
 			
 			if( dcmPix)
 			{
-				float curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-				float curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				float curWW = 0;
+				float curWL = 0;
 				
-				if( curWW != 0)
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+				{
+					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				}
+				
+				if( curWW != 0 && curWW !=curWL)
 					[dcmPix checkImageAvailble :curWW :curWL];
 				else
 					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
@@ -8192,14 +8201,20 @@ static BOOL needToRezoom;
 			
 			if( dcmPix)
 			{
-				float curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-				float curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				float curWW = 0;
+				float curWL = 0;
 				
-				if( curWW != 0)
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+				{
+					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				}
+				
+				if( curWW != 0 && curWW !=curWL)
 					[dcmPix checkImageAvailble :curWW :curWL];
 				else
 					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
-				
+									
 				NSArray *representations = [[dcmPix image] representations];
 				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 				[bitmapData writeToFile:dest atomically:YES];

@@ -537,6 +537,8 @@ return err;
 							&dataHandler,
 							&qtMovie);
 		
+		DisposeHandle(dataRef);
+		
 		// instantiate a QTMovie from our QuickTime movie
 		QTMovie *mMovie = [QTMovie movieWithQuickTimeMovie:qtMovie disposeWhenDone:YES error:nil];
 		// mark the movie as editable
