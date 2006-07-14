@@ -2817,6 +2817,17 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 		else NSLog(@"refreshDatabase locked...");
 	}
+	else
+	{
+		int i;
+		NSArray	*a = [self albumArray];
+		
+		for( i = 0; i < [a count]; i++)
+		{
+			if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+		}
+		[albumTable reloadData];
+	}
 }
 
 - (NSArray*) childrenArray: (NSManagedObject*) item
@@ -8214,7 +8225,7 @@ static BOOL needToRezoom;
 					[dcmPix checkImageAvailble :curWW :curWL];
 				else
 					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
-									
+				
 				NSArray *representations = [[dcmPix image] representations];
 				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 				[bitmapData writeToFile:dest atomically:YES];
