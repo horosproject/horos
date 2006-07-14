@@ -1657,6 +1657,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 
+	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
@@ -1915,6 +1916,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
@@ -2184,6 +2186,7 @@ static long scrollMode;
 
 - (void)mouseDown:(NSEvent *)event
 {
+	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
@@ -2554,6 +2557,7 @@ static long scrollMode;
 {
 	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
 	
+	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
@@ -2826,6 +2830,7 @@ static long scrollMode;
 
 - (void)mouseDragged:(NSEvent *)event
 {
+	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
