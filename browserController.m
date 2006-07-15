@@ -749,10 +749,35 @@ static BOOL COMPLETEREBUILD = NO;
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 							
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
+							if( index != NSNotFound)
+							{
+								BOOL	isDirectory;
+								
+								image = [imagesArray objectAtIndex: index];
+								
+								// Does this image contain a valid image path? If not replace it, with the new one
+								if( [[NSFileManager defaultManager] fileExistsAtPath:[image valueForKey:@"completePath"] isDirectory:&isDirectory])
+								{
+									if( produceAddedFiles)
+									[addedImagesArray addObject: image];
+									
+									if( local)	// Delete this file, it's already in the DB folder
+									{
+										if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+									}
+								}
+								else
+								{
+									index = NSNotFound;
+									[image clearComplePathCache];
+								}
+							}
+							else image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+							
 							if( index == NSNotFound)
 							{
 								needDBRefresh = YES;
-								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
 								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
 								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
@@ -847,19 +872,6 @@ static BOOL COMPLETEREBUILD = NO;
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
 									}
-								}
-							}
-							else
-							{
-								image = [imagesArray objectAtIndex: index];
-								
-								if( produceAddedFiles)
-									[addedImagesArray addObject: image];
-									
-								if( local)	// Delete this file, it's already in the DB folder
-								{
-									if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-										[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
 								}
 							}
 						}
@@ -1755,23 +1767,23 @@ static BOOL COMPLETEREBUILD = NO;
 	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 	
 	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+	NSString	*incomingPath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 	BOOL		isDir = YES;
 	long		totalFiles = 0;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
 	
-	// In the DATABASE FOLDER, we have only folders! Delete all files that are wrongly there.... and then scan these folders containing the DICOM files
+	// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
 	
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	for( i = 0; i < [dirContent count]; i++)
 	{
 		NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
-		id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey:NSFileType];
+		id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
 		if ([fileType isEqual:NSFileTypeRegular])
 		{
-			[[NSFileManager defaultManager] removeFileAtPath:itemPath handler: 0L];
+			[[NSFileManager defaultManager] movePath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] handler: 0L];
 		}
-		
-		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey: NSFileReferenceCount] intValue];
+		else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
 	}
 	
 	[wait close];
@@ -1815,7 +1827,7 @@ static BOOL COMPLETEREBUILD = NO;
 			[filesArray release];
 			filesArray = [[NSMutableArray alloc] initWithCapacity: 10000];
 			
-			[REBUILDEXTERNALPROCESSProgress incrementBy: [[[[NSFileManager defaultManager] fileAttributesAtPath: curDir traverseLink: NO] objectForKey: NSFileReferenceCount] intValue]];
+			[REBUILDEXTERNALPROCESSProgress incrementBy: [[[[NSFileManager defaultManager] fileAttributesAtPath: curDir traverseLink: YES] objectForKey: NSFileReferenceCount] intValue]];
 		}
 		
 		[pool release];
@@ -1932,6 +1944,9 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	[self saveDatabase: currentDatabasePath];
 	
+	// EMPTY THE INCOMING FOLDER
+	[self checkIncomingThread: self];
+	
 	[self outlineViewRefresh];
 	[splash close];
 	[splash release];
@@ -1965,7 +1980,7 @@ static BOOL COMPLETEREBUILD = NO;
 	for( i = 0; i < [dirContent count]; i++)
 	{
 		NSString * itemPath = [aPath stringByAppendingPathComponent: [dirContent objectAtIndex: i]];
-		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: NO] objectForKey: NSFileReferenceCount] intValue];
+		totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
 	}
 
 	[noOfFilesToRebuild setIntValue: totalFiles];

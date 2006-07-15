@@ -262,6 +262,29 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
 							
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
+							if( index != NSNotFound)
+							{
+								BOOL	isDirectory;
+								
+								image = [imagesArray objectAtIndex: index];
+								
+								// Does this image contain a valid image path? If not replace it, with the new one
+								if( [[NSFileManager defaultManager] fileExistsAtPath:[image valueForKey:@"completePath"] isDirectory:&isDirectory])
+								{
+									if( local)	// Delete this file, it's already in the DB folder
+									{
+										if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
+											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+									}
+								}
+								else
+								{
+									index = NSNotFound;
+									[image clearComplePathCache];
+								}
+							}
+							else image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+							
 							if( index == NSNotFound)
 							{
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
@@ -357,16 +380,6 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 										NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];	
 										[studies addObject: [image valueForKeyPath:@"series.study"]];
 									}
-								}
-							}
-							else
-							{
-								image = [imagesArray objectAtIndex: index];
-								
-								if( local)	// Delete this file, it's already in the DB folder
-								{
-									if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-										[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
 								}
 							}
 						}

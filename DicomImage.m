@@ -40,6 +40,12 @@ extern NSString * documentsDirectory();
 	return [NSString stringWithFormat:@"%@ %@",[self valueForKey:@"sopInstanceUID"], [self valueForKey:@"instanceNumber"]];
 }
 
+- (void) clearComplePathCache
+{
+	[completePathCache release];
+	completePathCache = 0L;
+}
+
 -(NSString*) completePath
 {
 	if( completePathCache) return completePathCache;
