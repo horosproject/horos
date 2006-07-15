@@ -1944,10 +1944,17 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	[self saveDatabase: currentDatabasePath];
 	
+	[splash close];
+	[splash release];
+	
+	splash = [[Wait alloc] initWithString: NSLocalizedString(@"Step 4: Checking INCOMING folder...", 0L)];
+	[splash showWindow:self];
+	
 	// EMPTY THE INCOMING FOLDER
 	[self checkIncomingThread: self];
 	
 	[self outlineViewRefresh];
+	
 	[splash close];
 	[splash release];
 	
