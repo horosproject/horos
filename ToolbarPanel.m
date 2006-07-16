@@ -73,6 +73,9 @@ extern BOOL USETOOLBARPANEL;
 
 - (void)windowDidBecomeMain:(NSNotification *)aNotification
 {
+	return;
+
+
 	if( [aNotification object] == [self window])
 	{
 		return;

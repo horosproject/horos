@@ -6117,7 +6117,8 @@ static BOOL needToRezoom;
 	long				numberImages, multiSeries = 1;
 	BOOL				movieError = NO, multiFrame = NO;
 	
-
+	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+	[wait showWindow:self];
 	
     cells = [oMatrix selectedCells];
 	
@@ -6248,6 +6249,9 @@ static BOOL needToRezoom;
 	
 	//if( x > 1) 
 	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	
+	[wait close];
+	[wait release];
 }
 
 
@@ -8042,7 +8046,7 @@ static BOOL needToRezoom;
 	{
 		int					i, t;
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
-		Wait                *splash = [[Wait alloc] initWithString:@"Export..." :NO];
+		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L) :NO];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 		NSMutableArray		*imagesArray = [NSMutableArray array];
 		NSString			*tempPath, *previousPath = 0L;
@@ -8171,7 +8175,7 @@ static BOOL needToRezoom;
 	{
 		int					i, t;
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
-		Wait                *splash = [[Wait alloc] initWithString:@"Export..."];
+		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 				
 		[splash showWindow:self];
@@ -8314,7 +8318,7 @@ static BOOL needToRezoom;
 	{
 		int					i, t;
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
-		Wait                *splash = [[Wait alloc] initWithString:@"Export..."];
+		Wait                *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Export...", 0L)];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 				
 		[splash showWindow:self];

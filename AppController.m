@@ -2034,10 +2034,10 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	for( i = 0; i < [viewersList count]; i++)
-	{
-		[[viewersList objectAtIndex: i] showWindow:self];
-	}
+//	for( i = 0; i < [viewersList count]; i++)
+//	{
+//		[[viewersList objectAtIndex: i] showWindow:self];
+//	}
 	
 //	[[viewersList lastObject] makeKeyAndOrderFront:self];
 //	[[viewersList lastObject] makeMainWindow];
