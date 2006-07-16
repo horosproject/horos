@@ -1443,6 +1443,12 @@
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
+		BF1584080A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
+		BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
+		BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
+		BF15840B0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
+		BF15840C0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
+		BF15840D0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
 		BF1745CD08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CE08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CF08E0C57400822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
@@ -8896,6 +8902,23 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFDE5A980A52D018005B5367 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFDE5A990A52D018005B5367 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9911,6 +9934,8 @@
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
 		BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCMoveResponse.m; sourceTree = "<group>"; };
+		BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyObjectPopupController.h; sourceTree = "<group>"; };
+		BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectPopupController.mm; sourceTree = "<group>"; };
 		BF1745CC08E0C57300822756 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/LogWindow.nib; sourceTree = "<group>"; };
 		BF1745D208E0C7E200822756 /* LogWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogWindowController.h; sourceTree = "<group>"; };
 		BF1745D308E0C7E200822756 /* LogWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogWindowController.m; sourceTree = "<group>"; };
@@ -14179,6 +14204,8 @@
 				BF038E7D0A3FB49700663EBB /* KeyObjectController.mm */,
 				BF038E7E0A3FB49700663EBB /* KeyObjectReport.h */,
 				BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */,
+				BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */,
+				BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -19010,6 +19037,7 @@
 				BF2425510A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
+				BF15840C0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20840,6 +20868,7 @@
 				A9944C130A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				AB2A8CAE0A557657002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 				BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
+				BF1584080A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22675,6 +22704,7 @@
 				A9944C0F0A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				AB2A8CAC0A557654002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 				BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
+				BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22803,6 +22833,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFDE5A980A52D018005B5367 /* Development */,
+				BFDE5A990A52D018005B5367 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -24706,6 +24742,7 @@
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
+				BF15840D0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25286,6 +25323,7 @@
 				A9944C140A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				AB2A8CAD0A557657002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
+				BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26051,6 +26089,7 @@
 				A9944C100A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				AB2A8CAB0A557654002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
+				BF15840B0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
