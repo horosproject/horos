@@ -902,11 +902,17 @@ int sortROIByName(id roi1, id roi2, void *context)
 }
 
 
-- (void)setWindowFrame:(NSRect)rect{
-	[self setStandardRect:rect];
-	[[self window] setFrame:rect display:YES];				
-	[[self window] orderFront:self];	
-	[[self imageView] scaleToFit];
+- (void)setWindowFrame:(NSRect)rect
+{
+	NSRect	curRect = [[self window] frame];
+	
+	if( NSEqualRects( curRect, rect) == NO)
+	{
+		[self setStandardRect:rect];
+		[[self window] setFrame:rect display:YES];				
+		[[self window] orderFront:self];
+		[[self imageView] scaleToFit];
+	}
 }
 
 

@@ -1862,7 +1862,7 @@ static BOOL initialized = NO;
 	BOOL				tileDone = NO, origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect				screenRect =  screenFrame();
 	
-	int					numberOfMonitors = [[self viewerScreens] count];	
+	int					keyWindow = 0, numberOfMonitors = [[self viewerScreens] count];	
 
 	NSLog(@"tile Windows");
 	
@@ -1874,6 +1874,8 @@ static BOOL initialized = NO;
 		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
 			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			
+			if( [[winList objectAtIndex:i] isKeyWindow]) keyWindow = [viewersList count]-1;
 		}
 	}
 	
@@ -2019,18 +2021,20 @@ static BOOL initialized = NO;
 		NSLog(@"NO tiling");
 		tileDone = NO;
 	}
-
-	if( [viewersList count] >= 1)
-		[[[viewersList lastObject] window] makeKeyAndOrderFront:self];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
-	[[viewersList lastObject] propagateSettings];
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
+	if( [viewersList count] > 0)
 	{
-		for( i = 0; i < [viewersList count]; i++)
+		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
+		[[viewersList objectAtIndex: keyWindow] propagateSettings];
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"])
 		{
-			[[viewersList objectAtIndex: i] autoHideMatrix];
+			for( i = 0; i < [viewersList count]; i++)
+			{
+				[[viewersList objectAtIndex: i] autoHideMatrix];
+			}
 		}
 	}
 	
