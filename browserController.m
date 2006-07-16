@@ -7982,9 +7982,9 @@ static BOOL needToRezoom;
 	
 	CreateMovieStorage (dataRef,
 						dataRefType,
-						0,
+						'TVOD',
 						smSystemScript,
-						newMovieActive,
+						newMovieDontInteractWithUser,
 						&dataHandler,
 						&qtMovie);
 	
@@ -7999,7 +7999,7 @@ static BOOL needToRezoom;
 	QTTime curTime = QTMakeTime(timeValue, timeScale);
 	
 	NSDictionary *myDict =	[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
-							QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality],
+							QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality],
 							QTAddImageCodecQuality, nil];
 	
 	for (curSample = 0; curSample < [imagesArray count]; curSample++) 
@@ -8042,7 +8042,7 @@ static BOOL needToRezoom;
 	{
 		int					i, t;
 		NSString			*dest, *path = [[sPanel filenames] objectAtIndex:0];
-		Wait                *splash = [[Wait alloc] initWithString:@"Export..."];
+		Wait                *splash = [[Wait alloc] initWithString:@"Export..." :NO];
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 		NSMutableArray		*imagesArray = [NSMutableArray array];
 		NSString			*tempPath, *previousPath = 0L;
