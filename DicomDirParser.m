@@ -60,8 +60,7 @@ NSString * documentsDirectory();
 				cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
 				for (j = 0; j < [dicomdirFileList count] && !found; j++)
 				{
-					NSString *cutUpperFilePathName = [[[dicomdirFileList objectAtIndex: j] uppercaseString] stringByDeletingPathExtension];
-					if ([cutFilePath isEqualToString: cutUpperFilePathName])
+					if ([cutFilePath isEqualToString: [dicomdirFileList objectAtIndex: j]])
 					{
 						[files addObject: filePath];
 						found = TRUE;
@@ -110,7 +109,7 @@ NSString * documentsDirectory();
 			if( i-start-1 > 0)
 			{
 				file = [dirpath stringByAppendingString:[NSString stringWithCString: &(buffer[start+1]) length:i-start-1]];
-				[result addObject: file];
+				[result addObject: [[file uppercaseString] stringByDeletingPathExtension]];
 			}
 		}
 		
