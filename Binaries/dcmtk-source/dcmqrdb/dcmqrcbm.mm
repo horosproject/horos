@@ -33,6 +33,7 @@
 
 #include <Cocoa/Cocoa.h>
 #include"DCMNetServiceDelegate.h"
+#import "SendController.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrcbm.h"
@@ -357,7 +358,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 	ASC_setPresentationAddresses(params, localHostName, 
 		dstHostNamePlusPort);
 	ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
-
+	//E_TransferSyntax pSyntax = preferredSyntax(dstAETitle);
 	cond = addAllStoragePresentationContexts(params);
 	if (cond.bad()) {
 	    DimseCondition::dump(cond);
@@ -570,6 +571,165 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 		
 	[pool release];
     return OFTrue;
+}
+
+E_TransferSyntax preferredSyntax(const char *dstAE){
+	E_TransferSyntax preferredSyntax = EXS_LittleEndianExplicit;
+	NSString *destination = [NSString stringWithUTF8String:dstAE];
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSArray *destinations = [defaults arrayForKey:@"SERVERS"];
+	NSEnumerator *enumerator = [destinations objectEnumerator];
+	NSDictionary *server;
+	while (server = [enumerator nextObject]){
+		if ([[server objectForKey:@"AETitle"] isEqualToString:destination]) {
+			NSNumber *tsIndex = [server objectForKey:@"Transfer Syntax"];
+			switch ([tsIndex intValue] ) {
+				case SendExplicitLittleEndian: preferredSyntax = EXS_LittleEndianExplicit;
+					break;
+				case SendJPEG2000Lossless: preferredSyntax = EXS_JPEG2000LosslessOnly;
+					break;
+				case SendJPEG2000Lossy10:  
+				case SendJPEG2000Lossy20: 
+				case SendJPEG2000Lossy50: preferredSyntax = EXS_JPEG2000;
+						break;
+				case SendJPEGLossless: preferredSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+					break; 
+				case SendJPEGLossy9: 
+				case SendJPEGLossy8: 
+				case SendJPEGLossy7: preferredSyntax = EXS_JPEGProcess2_4TransferSyntax;
+					break;
+				case SendImplicitLittleEndian: preferredSyntax = EXS_LittleEndianImplicit;
+					break;
+				case SendRLE: preferredSyntax = EXS_RLELossless;
+					break;
+				case SendExplicitBigEndian: preferredSyntax = EXS_BigEndianExplicit;
+					break;
+				case SendBZip: preferredSyntax = EXS_DeflatedLittleEndianExplicit;
+					break;		
+			}
+			break;
+		}			
+	}
+	return preferredSyntax;
+}
+
+OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params, E_TransferSyntax preferredSyntax){
+  // this would be the place to add support for compressed transfer syntaxes
+    OFCondition cond = EC_Normal;
+
+    int i;
+    int pid = 1;
+
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    int numTransferSyntaxes = 0;
+
+
+    switch (preferredSyntax)
+    {
+      case EXS_LittleEndianImplicit:
+        /* we only support Little Endian Implicit */
+        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_LittleEndianExplicit:
+        /* we prefer Little Endian Explicit */
+        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
+      case EXS_BigEndianExplicit:
+        /* we prefer Big Endian Explicit */
+        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
+    case EXS_JPEGProcess14SV1TransferSyntax:
+      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEGProcess1TransferSyntax:
+      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEGProcess2_4TransferSyntax:
+      /* we prefer JPEGExtended (default lossy for 12 bit images) */
+      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEG2000LosslessOnly:
+      /* we prefer JPEG 2000 lossless */
+      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEG2000:
+      /* we prefer JPEG 2000 lossy or lossless */
+      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+#ifdef WITH_ZLIB
+    case EXS_DeflatedLittleEndianExplicit:
+      /* we prefer deflated transmission */
+      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+#endif
+    case EXS_RLELossless:
+      /* we prefer RLE Lossless */
+      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    default:
+        /* We prefer explicit transfer syntaxes.
+         * If we are running on a Little Endian machine we prefer
+         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+         */
+        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+        {
+          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
+        break;
+    }
+
+        
+    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
+	cond = ASC_addPresentationContext(
+	    params, pid, dcmLongSCUStorageSOPClassUIDs[i],
+	    transferSyntaxes, numTransferSyntaxes);
+	pid += 2;	/* only odd presentation context id's */
+    }
+    return cond;
+
 }
 
 OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params)
