@@ -1176,36 +1176,43 @@ static BOOL COMPLETEREBUILD = NO;
     
     if (result == NSOKButton) 
     {
-		NSArray	*newImages = [self addFilesAndFolderToDatabase: [oPanel filenames]];
-		
-		// Are we adding new files in a album?
-		
-		//can't add to smart Album
-		if( [albumTable selectedRow] > 0)
+		if( [[oPanel filenames] count] == 1 && [[[[oPanel filenames] objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
 		{
-			NSManagedObject *album = [[self albumArray] objectAtIndex: [albumTable selectedRow]];
-			
-			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			{
-				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-				
-				for( i = 0; i < [newImages count]; i++)
-				{
-					NSManagedObject		*object = [newImages objectAtIndex: i];
-					[studies addObject: [object valueForKeyPath:@"series.study"]];
-				}
-				
-				needDBRefresh = YES;
-				[self outlineViewRefresh];
-			}
+			[self openDatabaseIn: [[oPanel filenames] objectAtIndex: 0] Bonjour:NO];
 		}
-		
-		if( [newImages count] > 0)
-		{
-			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+		else
+		{	
+			NSArray	*newImages = [self addFilesAndFolderToDatabase: [oPanel filenames]];
 			
-			[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
-			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+			// Are we adding new files in a album?
+			
+			//can't add to smart Album
+			if( [albumTable selectedRow] > 0)
+			{
+				NSManagedObject *album = [[self albumArray] objectAtIndex: [albumTable selectedRow]];
+				
+				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+				{
+					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+					
+					for( i = 0; i < [newImages count]; i++)
+					{
+						NSManagedObject		*object = [newImages objectAtIndex: i];
+						[studies addObject: [object valueForKeyPath:@"series.study"]];
+					}
+					
+					needDBRefresh = YES;
+					[self outlineViewRefresh];
+				}
+			}
+			
+			if( [newImages count] > 0)
+			{
+				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+				
+				[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+			}
 		}
 	}
 }

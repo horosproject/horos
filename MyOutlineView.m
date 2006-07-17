@@ -273,7 +273,7 @@ extern     BrowserController  *browserWindow;
 			//we have a list of file names in an NSData object
             NSArray				*fileArray = [[paste propertyListForType:@"NSFilenamesPboardType"] retain];
 			
-			if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"dat"])  // It's a database file!
+			if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
 			{
 				[browserWindow openDatabaseIn: [fileArray objectAtIndex: 0] Bonjour:NO];
 			}

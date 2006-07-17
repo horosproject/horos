@@ -160,7 +160,10 @@
 						break;
 				case osiXA: value = @"XA";
 						break;
-				default: value = [[view valueField] stringValue];
+				default:
+					value = [[view valueField] stringValue];
+					if( [value isEqualToString:@""]) value = @"OT";
+				break;
 			}
 			
 			predicateString = [NSString stringWithFormat:@"modality like[c] \"%@\"", value];
