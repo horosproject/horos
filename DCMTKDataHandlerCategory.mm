@@ -619,7 +619,8 @@ extern BrowserController *browserWindow;
 	 
 }
 
-- (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset{
+- (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSManagedObjectModel *model = [browserWindow managedObjectModel];
 	NSError *error = 0L;
@@ -691,6 +692,8 @@ extern BrowserController *browserWindow;
 		[paths release];
 		paths = [tempMoveArray copy];
 		
+		NSLog( @"will move: %d", [paths count]);
+		
 		cond = EC_Normal;
 	}
 	moveArray = [paths copy];
@@ -735,12 +738,14 @@ extern BrowserController *browserWindow;
 - (OFCondition)nextMoveObject:(char *)imageFileName{
 	NSString *path;
 	//NSLog(@"nextMOveObject: %@", [moveEnumerator description]);
-	if (path = [moveEnumerator nextObject]) {
+	if (path = [moveEnumerator nextObject])
+	{
 		//NSLog(@"move path: %@", path);
 		strcpy(imageFileName, [path cStringUsingEncoding:[NSString defaultCStringEncoding]]);
 	}
-	else {
-		//NSLog(@"No path");
+	else
+	{
+		NSLog(@"No path");
 		return EC_IllegalParameter;
 	}
 	return EC_Normal;

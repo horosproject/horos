@@ -919,7 +919,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
     }
 	
 	*numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
-	//NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
+//	NSLog(@"next Move response: %d", *numberOfRemainingSubOperations);
 	 status->setStatus(STATUS_Pending);
 	 /**** Goto the next matching image number  *****/
 	if( handle -> dataHandler == 0L)
@@ -966,9 +966,17 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 			//}
 		// }
 		
+		if (cond.good())
+		{
 		
+		}
+		else
+		{
+			NSLog( @"Error");
+		}
 		
 	}
+	else NSLog( @"Error");
 
 	//read file to get SOPClass and SOPInstanceUIDs
 	
@@ -1277,16 +1285,19 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 
     const char *m = dcmSOPClassUIDToModality(SOPClassUID);
     if (m==NULL) m = "XX";
-    sprintf(prefix, "%s_", m);
+    sprintf(prefix, "%s_%d_", m, getpid());	// getpid is very important, to be sure that this filename is UNIQUE, if multiple associations are currently running
 	
 	seed++;
-	unsigned seedvalue = seed +  (unsigned int) time (NULL);
+	
+	unsigned seedvalue = seed;
     newImageFileName[0] = 0; // return empty string in case of error
 	
 	char dir[ 1024];
 	sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedDocumentsDirectory], "TEMP");
-	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename)) return DcmQROsiriXDatabaseError;
-	
+	if (! fnamecreator.makeFilename(seedvalue, dir, prefix, ".dcm", filename))
+	{
+		return DcmQROsiriXDatabaseError;
+	}
     strcpy(newImageFileName, filename.c_str());
 	
     return EC_Normal;
