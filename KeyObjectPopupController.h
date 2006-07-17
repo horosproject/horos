@@ -33,7 +33,8 @@
 - (void)setReports:(NSArray *)reports;
 - (NSMenu *)menu;
 - (void)setMenu:(NSMenu *)menu;
-- (void)willPopup:(NSNotification *)note;
+- (void)willPopUp:(NSNotification *)note;
+- (IBAction)useKeyObjectNote:(id)sender;
 
 
 

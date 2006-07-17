@@ -85,6 +85,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "LLScoutViewer.h"
 
 #import "KeyObjectController.h"
+#import "KeyObjectPopupController.h"
 
 @class VRPROController;
 
@@ -863,7 +864,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	[[self window] setInitialFirstResponder: imageView];
 	[self createDCMViewMenu];
-	
+	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
+	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 	seriesView = [[[studyView seriesViews] objectAtIndex:0] retain];
 	imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 }
@@ -1449,6 +1451,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 		
 	[roiLock release];
 	
+	[keyObjectPopupController release];
+	
     [super dealloc];
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
@@ -1489,14 +1493,14 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask) 
 	{
-		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: [keyImageDisplay tag]];
+		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		[self matrixPreviewSelectCurrentSeries];
 	}
 	else
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
-			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: [keyImageDisplay tag]];
+			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 }
 
@@ -2013,11 +2017,11 @@ static ViewerController *draggedController = 0L;
 	}
 	else if (c == NSLeftArrowFunctionKey && ([event modifierFlags] & NSCommandKeyMask))
 	{
-		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : -1 :self :YES keyImagesOnly: [keyImageDisplay tag]];
+		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : -1 :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else if (c == NSRightArrowFunctionKey && ([event modifierFlags] & NSCommandKeyMask))
 	{
-		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : 1 :self :YES keyImagesOnly: [keyImageDisplay tag]];
+		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] : 1 :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
 	else
     {
@@ -2912,7 +2916,7 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView setCurrentTool: tWL];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:toolsMatrix userInfo: 0L];
-		
+	displayOnlyKeyImages = NO;
 	return self;
 
 }
@@ -3134,7 +3138,7 @@ static ViewerController *draggedController = 0L;
 	
 	// Is it only key images?
 	NSArray	*images = fileList[ 0];
-	BOOL onlyKeyImages = YES;
+	BOOL onlyKeyImages = YES;	
 	
 	for( i = 0; i < [images count]; i++)
 	{
@@ -3142,6 +3146,12 @@ static ViewerController *draggedController = 0L;
 		if( [[image valueForKey:@"isKeyImage"] boolValue] == NO) onlyKeyImages = NO;
 	}
 	
+	displayOnlyKeyImages = onlyKeyImages; 
+	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
+
+		
+		
+	/*
 	if( onlyKeyImages)
 	{
 		[keyImageDisplay setTag: 1];
@@ -3152,7 +3162,7 @@ static ViewerController *draggedController = 0L;
 		[keyImageDisplay setTag: 0];
 		[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
 	}
-	
+	*/
 	[imageView becomeMainWindow];	// This will send the image sync order !
 	
 	windowWillClose = NO;
@@ -10010,7 +10020,7 @@ long i;
 
 -(IBAction) loadPatient:(id) sender
 {
-	[browserWindow loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: [keyImageDisplay tag]];
+	[browserWindow loadNextPatient:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 
 -(IBAction) loadSerie:(id) sender
@@ -10018,9 +10028,9 @@ long i;
 	if( [sender tag] == 3)
 	{
 		[[sender selectedItem] setImage:0L];
-		[browserWindow loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: [keyImageDisplay tag]];
+		[browserWindow loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
-	else [browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: [keyImageDisplay tag]];
+	else [browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
 }
 - (BOOL) isEverythingLoaded
 {
@@ -10122,17 +10132,18 @@ long i;
 	
 	[self checkEverythingLoaded];
 	
+	displayOnlyKeyImages = [keyImagePopUpButton indexOfSelectedItem];
 	if( series)
 	{
-		if( [keyImageDisplay tag] == 1)
+		if(!displayOnlyKeyImages)
 		{
 			// ALL IMAGES ARE DISPLAYED
-			[keyImageDisplay setTag: 0];
-			[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
+			//[keyImageDisplay setTag: 0];
+			//[keyImageDisplay setTitle: NSLocalizedString(@"Key Images", nil)];
 			
 			NSArray	*images = [browserWindow childrenArray: series];
-			
-			[browserWindow openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: [keyImageDisplay tag]];
+			[browserWindow openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
+			//[browserWindow openViewerFromImages :[NSArray arrayWithObject: images] movie: NO viewer :self keyImagesOnly: tag];
 		}
 		else
 		{
@@ -10154,10 +10165,10 @@ long i;
 			}
 			else
 			{
-				[keyImageDisplay setTag: 1];
-				[keyImageDisplay setTitle: NSLocalizedString(@"All images", nil)];
-				
-				[browserWindow openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: [keyImageDisplay tag]];
+				//[keyImageDisplay setTag: 1];
+				//[keyImageDisplay setTitle: NSLocalizedString(@"All images", nil)];
+				[browserWindow openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: displayOnlyKeyImages];
+				//[browserWindow openViewerFromImages :[NSArray arrayWithObject: keyImagesArray] movie: NO viewer :self keyImagesOnly: tag];
 			}
 		}
 	}
@@ -10304,9 +10315,14 @@ sourceRef);
 
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
 	[contextInfo autorelease];
+	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 }
 
 - (IBAction)keyObjectNotes:(id)sender{
+}
+
+- (BOOL)displayOnlyKeyImages{
+	return displayOnlyKeyImages;
 }
 
 

@@ -29,6 +29,7 @@
 @class ImageView;
 @class CurvedMPR;
 @class DICOMExport;
+@class KeyObjectPopupController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -209,6 +210,10 @@
 	IBOutlet NSTextField	*structuringElementRadiusTextField;
 	IBOutlet NSButton		*brushROIFilterOptionsAllWithSameName;
 	IBOutlet NSButton		*brushROIFilterOptionsOKButton;
+	IBOutlet NSPopUpButton	*keyImagePopUpButton;
+	
+	KeyObjectPopupController *keyObjectPopupController;
+	BOOL					displayOnlyKeyImages;
 }
 
 // Create a new 2D Viewer
@@ -445,5 +450,6 @@
 - (IBAction)createKeyObjectNote:(id)sender;
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo;
 - (IBAction)keyObjectNotes:(id)sender;
+- (BOOL)displayOnlyKeyImages;
 
 @end

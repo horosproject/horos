@@ -169,7 +169,7 @@ Version 2.3
 }
 
 - (NSArray *)keyObjects{
-	NSArray *array = [self primitiveValueForKey:@"keyObjectSeries"];
+	NSArray *array = [self keyObjectSeries];
 	NSMutableSet *set = [NSMutableSet set];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;

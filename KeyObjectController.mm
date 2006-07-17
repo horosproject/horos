@@ -65,36 +65,23 @@
 		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
 
-//		NSLog(@"create folders");
+
 		//Save to INCOMING		
 		NSString *rootFolder = [[BrowserController currentBrowser] documentsDirectory];
 		//path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
-		path = [[rootFolder stringByAppendingPathComponent:@"INCOMING"] stringByAppendingPathComponent:studyInstanceUID];
-		/*
-		NSFileManager *defaultManager = [NSFileManager defaultManager];
-		BOOL isDir;
-		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir)) {
-			NSLog(@"create study Folder");
-			[defaultManager createDirectoryAtPath:path attributes:nil];
-		}
-		path = [path stringByAppendingPathComponent:@"KEYOBJECTS"];
-		if (!([defaultManager fileExistsAtPath:path isDirectory:&isDir] && &isDir)) {
-			NSLog(@"create KEYOBJECTS folder");
-			[defaultManager createDirectoryAtPath:(NSString *)path attributes:nil];
-		}
-		*/
+		path = [rootFolder stringByAppendingPathComponent:@"INCOMING"];
+
 		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription seriesUID:_seriesUID];
-	//	NSLog(@"KO %@ retain count: %d",[ko description],  [ko retainCount]);
 		NSString *sopInstanceUID = [ko sopInstanceUID];
-		//NSString *sopInstanceUID = @"1111.11.11.11";
+	
 		path = [path stringByAppendingPathComponent:sopInstanceUID];
-//		NSLog(@"Write file: %@", path);
+		NSLog(@"Write file: %@", path);
 		if (ko) {
 			NSLog(@"ko: %@", [ko description]);
 			[ko writeFileAtPath:path];
 			[ko release];
 		}
-	//	NSLog(@"end close Window");
+
 		NS_HANDLER
 			NSLog(@"exception: %@", [localException description]);
 		NS_ENDHANDLER

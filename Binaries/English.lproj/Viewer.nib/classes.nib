@@ -264,6 +264,7 @@
                 imageSelection = NSMatrix; 
                 keyImageCheck = NSButton; 
                 keyImageDisplay = NSButton; 
+                keyImagePopUpButton = NSPopUpButton; 
                 keyImages = NSView; 
                 loopButton = NSButton; 
                 matrixName = NSTextField; 

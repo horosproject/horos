@@ -13,17 +13,17 @@
 		<key>1052</key>
 		<string>647 547 145 78 0 0 1440 878 </string>
 		<key>1204</key>
-		<string>669 545 102 82 0 0 1440 878 </string>
+		<string>909 770 102 82 0 0 1920 1178 </string>
 		<key>14</key>
-		<string>652 544 135 84 0 0 1440 878 </string>
+		<string>892 769 135 84 0 0 1920 1178 </string>
 		<key>21</key>
-		<string>694 763 211 88 0 0 1600 1178 </string>
+		<string>854 767 211 88 0 0 1920 1178 </string>
 		<key>372</key>
-		<string>721 762 158 82 0 0 1600 1178 </string>
+		<string>881 770 158 82 0 0 1920 1178 </string>
 		<key>382</key>
 		<string>569 518 141 76 0 0 1280 832 </string>
 		<key>475</key>
-		<string>727 764 145 77 0 0 1600 1178 </string>
+		<string>887 772 145 77 0 0 1920 1178 </string>
 		<key>505</key>
 		<string>546 640 187 74 0 0 1280 1002 </string>
 		<key>537</key>
@@ -46,12 +46,10 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>828</integer>
-		<integer>372</integer>
 		<integer>5</integer>
-		<integer>475</integer>
+		<integer>1204</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8J135</string>
+	<string>8J2135</string>
 </dict>
 </plist>
