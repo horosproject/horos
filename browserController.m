@@ -5411,18 +5411,27 @@ static BOOL needToRezoom;
 					
 					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
 					{
-						// Find all studies
-						NSError			*error = 0L;
-						NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-						[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-						[dbRequest setPredicate: [self smartAlbumPredicate: object]];
-						NSManagedObjectContext *context = [self managedObjectContext];
-						[context lock];
-						error = 0L;
-						NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-						[context unlock];
+						@try
+						{
+							// Find all studies
+							NSError			*error = 0L;
+							NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+							[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+							[dbRequest setPredicate: [self smartAlbumPredicate: object]];
+							NSManagedObjectContext *context = [self managedObjectContext];
+							[context lock];
+							error = 0L;
+							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+							[context unlock];
+							
+							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+						}
 						
-						[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+						@catch( NSException *ne)
+						{
+							NSLog(@"exception: %@", [ne description]);
+							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
+						}
 					}
 					else [albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
 				}
@@ -6657,6 +6666,8 @@ static BOOL needToRezoom;
 
 -(void) awakeFromNib
 {
+	@try
+	{
 	long i;
 	
 	NSTableColumn		*tableColumn = nil;
@@ -6938,6 +6949,14 @@ static BOOL needToRezoom;
 	[[NSConnection defaultConnection] setRootObject:self];
 //start timer for monitoring incoming logs on main thread
 	[LogManager currentLogManager];
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog(@"exception: %@", [ne description]);
+		NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
+		[path writeToFile:path atomically:NO];
+	}
 }
 
 - (IBAction)customize:(id)sender {
