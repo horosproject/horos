@@ -88,8 +88,8 @@
 }
 
 - (IBAction)useKeyObjectNote:(id)sender{
-	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	int index = [_popupButton indexOfSelectedItem] - 5;
+	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	if (index > -1) {
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
 		NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
