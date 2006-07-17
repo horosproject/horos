@@ -13,7 +13,7 @@
 		<key>1052</key>
 		<string>647 547 145 78 0 0 1440 878 </string>
 		<key>1204</key>
-		<string>909 770 102 82 0 0 1920 1178 </string>
+		<string>749 762 102 82 0 0 1600 1178 </string>
 		<key>14</key>
 		<string>892 769 135 84 0 0 1920 1178 </string>
 		<key>21</key>
@@ -46,10 +46,11 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
+		<integer>828</integer>
 		<integer>5</integer>
 		<integer>1204</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8J2135</string>
+	<string>8J135</string>
 </dict>
 </plist>
