@@ -183,6 +183,8 @@
 				default: value = [[view valueField] stringValue];
 			}
 			
+			if( [value isEqualToString:@""]) value = @"0";
+			
 			predicateString = [NSString stringWithFormat:@"stateText == \"%@\"", value];
 		}		
 		// Dates		
@@ -268,6 +270,8 @@
 		
 		if( predicateString == 0L)
 		{
+			if( [value isEqualToString:@""]) value = @"OT";
+			
 			switch( searchType)
 			{
 				case searchContains:			predicateString = [NSString stringWithFormat:@"%@ like[c] \"*%@*\"", key, value];		break;
@@ -277,7 +281,6 @@
 									{
 										if([[[view valueField] stringValue] isEqualToString:@""]) value = [NSString stringWithString: @"<empty>"];
 										predicateString = [NSString stringWithFormat:@"%@ like[c] \"%@\"", key, value];	break;
-									
 									}
 			}
 		}
