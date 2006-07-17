@@ -884,6 +884,10 @@ volatile static BOOL threadIsRunning = NO;
 
 - (NSString*) getDatabaseFile:(int) index
 {
+	BOOL newConnection = NO;
+	
+	if( serviceBeingResolvedIndex != index) newConnection = YES;
+	
 	[BonjourBrowser waitForLock: lock];
 	
 	[dbFileName release];
@@ -901,7 +905,7 @@ volatile static BOOL threadIsRunning = NO;
 			return 0L;
 		}
 		
-		if( serviceBeingResolvedIndex != index)
+		if( newConnection)
 		{
 			[self connectToServer: index message:@"ISPWD"];
 		}
@@ -927,7 +931,7 @@ volatile static BOOL threadIsRunning = NO;
 					[lock unlock];
 					
 					NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", 0L), NSLocalizedString( @"Wrong password.", 0L), nil, nil, nil);
-					
+					serviceBeingResolvedIndex = -1;
 					return 0L;
 				}
 			}

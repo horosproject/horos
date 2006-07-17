@@ -226,7 +226,7 @@ extern NSString * documentsDirectory();
 				
 				long val = 0;
 				
-				if( pswd) val = 1;
+				if( pswd) val = NSSwapHostLongToBig(1);
 				else val = 0;
 				
 				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(long)];
@@ -249,7 +249,7 @@ extern NSString * documentsDirectory();
 				
 				if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == 0L)
 				{
-					val = 1;
+					val = NSSwapHostLongToBig(1);
 				}
 				
 				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(long)];

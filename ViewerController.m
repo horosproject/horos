@@ -5556,6 +5556,8 @@ int i,j,l;
 	
 	[name retain];
 	
+	[imageView stopROIEditing];
+	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
 		DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
