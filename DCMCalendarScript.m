@@ -27,7 +27,10 @@
 		NSString *script = [NSString stringWithFormat:@"set the source_calendar to \"%@\"\n%@", calendar, rootScript];
 		compiledScript = [[NSAppleScript alloc] initWithSource:script];
 		NSDictionary *errorInfo;
-		[compiledScript compileAndReturnError:nil];
+		
+		//Important:  You should access NSAppleScript only from the main thread.
+		[compiledScript performSelectorOnMainThread:@selector(compileAndReturnError:) withObject:nil waitUntilDone: YES];
+//		[compiledScript compileAndReturnError:nil];
 	}
 	return self;
 }
@@ -37,8 +40,8 @@
 	[super dealloc];
 }
 
-- (NSMutableArray *)routingDestination{
-	NSMutableArray *routingDestination = [NSMutableArray array];
+- (void) routingDestination: (NSMutableArray*) routingDestination
+{
 	NSAppleEventDescriptor *description  = [compiledScript executeAndReturnError:nil];
 	NSString *route = [description stringValue];
 	if (route && ![route isEqualToString: @""]) {
@@ -49,11 +52,18 @@
 			NSMutableArray *routeParams = [NSMutableArray arrayWithArray:[nextRoute componentsSeparatedByString:@":"]];
 			[routingDestination addObject:routeParams];
 		}
-		
-		return routingDestination;
 	}
-	//NSLog(@"No route");
-	return nil;
+}
+
+- (NSMutableArray *)routingDestination
+{
+	NSMutableArray *routingDestination = [NSMutableArray array];
+	
+	//Important:  You should access NSAppleScript only from the main thread.
+	[self performSelectorOnMainThread:@selector(routingDestination:) withObject:routingDestination waitUntilDone: YES];
+	
+	if( [routingDestination count] > 0) return routingDestination;
+	else return nil;
 }
 
 @end
