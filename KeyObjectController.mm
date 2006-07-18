@@ -31,7 +31,16 @@
 		_title = 113000; // Of Interest
 		NSLog(@"init Key Object controller");
 		NSArray *series = [study keyObjectSeries];
-		_seriesUID = [series valueForKey:@"seriesInstanceUID"];
+		
+		// Lance, you should check following lines... There was a crash here before.
+		
+		if( [series count] > 0)
+			_seriesUID = [[[series objectAtIndex: 0] valueForKey:@"seriesInstanceUID"] retain];
+		else
+		{
+			_seriesUID = @"Ug?";
+			_seriesUID = [_seriesUID retain];
+		}
 	}
 	return self;
 }
