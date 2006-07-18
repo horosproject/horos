@@ -956,7 +956,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	//verbose option set to true for now
 	opt_verbose=OFFalse;
-	opt_showPresentationContexts=OFTrue;
+	opt_showPresentationContexts=OFFalse;
 	
 	//debug code off for now
 	opt_debug = OFFalse;
@@ -1029,7 +1029,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 #endif
 
 	//default should be False
-	opt_proposeOnlyRequiredPresentationContexts = OFTrue;
+	opt_proposeOnlyRequiredPresentationContexts = OFFalse;
 	//opt_combineProposedTransferSyntaxes = OFTrue;
 	
 #ifdef WITH_ZLIB
@@ -1146,15 +1146,17 @@ NS_DURING
       char sopInstanceUID[128];
       OFBool ignoreName;
 	  
-	       /* finally parse filenames */
+	 /* finally parse filenames */
 	 //populate temp folder Just symbolic links for the moment for testing
-		for (int i=0; i < paramCount; i++)
+	  for (int i=0; i < paramCount; i++)
       {
-		NSString *file = [_filesToSend objectAtIndex:i];
-		NSString *lastPath = [file lastPathComponent];
-		NSString *newPath = [tempFolder stringByAppendingPathComponent:lastPath];
-		[fileManager createSymbolicLinkAtPath:newPath pathContent:file];
-		[paths addObject:newPath];
+//		NSString *file = [_filesToSend objectAtIndex:i];
+//		NSString *lastPath = [file lastPathComponent];
+//		NSString *newPath = [tempFolder stringByAppendingPathComponent:lastPath];
+//		[fileManager createSymbolicLinkAtPath:newPath pathContent:file];
+//		[paths addObject:newPath];
+
+		[paths addObject:[_filesToSend objectAtIndex:i]];
 	  }
 	  
 	   for (int i=0; i < paramCount; i++)
