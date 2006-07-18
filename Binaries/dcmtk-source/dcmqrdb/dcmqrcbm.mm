@@ -358,7 +358,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 	ASC_setPresentationAddresses(params, localHostName, 
 		dstHostNamePlusPort);
 	ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
-	//E_TransferSyntax pSyntax = preferredSyntax(dstAETitle);
+	
 	cond = addAllStoragePresentationContexts(params);
 	if (cond.bad()) {
 	    DimseCondition::dump(cond);
@@ -376,15 +376,15 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 				      &subAssoc);
 	if (cond.bad()) {
 	    if (cond == DUL_ASSOCIATIONREJECTED) {
-		T_ASC_RejectParameters rej;
+			T_ASC_RejectParameters rej;
 
-		ASC_getRejectParameters(params, &rej);
-		DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Rejected");
-		ASC_printRejectParameters(stderr, &rej);
-		fprintf(stderr, "\n");
+			ASC_getRejectParameters(params, &rej);
+			DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Rejected");
+			ASC_printRejectParameters(stderr, &rej);
+			fprintf(stderr, "\n");
 	    } else {
-		DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Request Failed:");
-		DimseCondition::dump(cond);
+			DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Request Failed:");
+			DimseCondition::dump(cond);
 		
 	    }
 	}
@@ -441,8 +441,14 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
     bzero(subImgFileName, sizeof(subImgFileName));
     bzero(subImgSOPClass, sizeof(subImgSOPClass));
     bzero(subImgSOPInstance, sizeof(subImgSOPInstance));
+	// need to determine which TS will be used. May not be the same as our preferred TS.
 
     /* get DB response */
+	/*
+		Currently nextMoveResponse will decompress the image if necessary
+		when the file is read to get SOPInstance and SOPClass. It would be nice to only open the file once.
+		This may not be feasible.
+	*/
     dbcond = dbHandle.nextMoveResponse(
 	subImgSOPClass, subImgSOPInstance, subImgFileName,
 	&nRemaining, dbStatus);
@@ -552,6 +558,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 			//theirAET = [server name];
 			hostname = [server hostName];
 			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:netService]];
+			preferredTS = EXS_LittleEndianExplicit;
 			
 		}
 		else {
@@ -559,12 +566,45 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 			//theirAET = [server objectForKey:@"AETitle"];
 			hostname = [server objectForKey:@"Address"];
 			port = [server objectForKey:@"Port"];
+			//set preferred Syntax
+			NSNumber *tsIndex = [server objectForKey:@"Transfer Syntax"];
+			if (tsIndex) {
+				switch ([tsIndex intValue] ) {
+					case SendExplicitLittleEndian: preferredTS = EXS_LittleEndianExplicit;
+						break;
+					case SendJPEG2000Lossless: preferredTS = EXS_JPEG2000LosslessOnly;
+						break;
+					case SendJPEG2000Lossy10:  
+					case SendJPEG2000Lossy20: 
+					case SendJPEG2000Lossy50: preferredTS = EXS_JPEG2000;
+							break;
+					case SendJPEGLossless: preferredTS = EXS_JPEGProcess14SV1TransferSyntax;
+						break; 
+					case SendJPEGLossy9: 
+					case SendJPEGLossy8: 
+					case SendJPEGLossy7: preferredTS = EXS_JPEGProcess2_4TransferSyntax;
+						break;
+					case SendImplicitLittleEndian: preferredTS = EXS_LittleEndianImplicit;
+						break;
+					case SendRLE: preferredTS = EXS_RLELossless;
+						break;
+					case SendExplicitBigEndian: preferredTS = EXS_BigEndianExplicit;
+						break;
+					case SendBZip: preferredTS = EXS_DeflatedLittleEndianExplicit;
+						break;		
+				}
+			}
+			else
+				preferredTS = EXS_LittleEndianExplicit;
+
 		}	
 		
 		*dstPort = [port intValue];
 		strcpy(dstPeer, [hostname cStringUsingEncoding:NSISOLatin1StringEncoding]);
-		//dstPeer = (char *)[hostname cStringUsingEncoding:NSISOLatin1StringEncoding];
-		//NSLog(@"dstPeer: %s", dstPeer);
+		
+		
+				
+
 	}
 	else
 		return OFFalse;
@@ -573,45 +613,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
     return OFTrue;
 }
 
-E_TransferSyntax preferredSyntax(const char *dstAE){
-	E_TransferSyntax preferredSyntax = EXS_LittleEndianExplicit;
-	NSString *destination = [NSString stringWithUTF8String:dstAE];
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	NSArray *destinations = [defaults arrayForKey:@"SERVERS"];
-	NSEnumerator *enumerator = [destinations objectEnumerator];
-	NSDictionary *server;
-	while (server = [enumerator nextObject]){
-		if ([[server objectForKey:@"AETitle"] isEqualToString:destination]) {
-			NSNumber *tsIndex = [server objectForKey:@"Transfer Syntax"];
-			switch ([tsIndex intValue] ) {
-				case SendExplicitLittleEndian: preferredSyntax = EXS_LittleEndianExplicit;
-					break;
-				case SendJPEG2000Lossless: preferredSyntax = EXS_JPEG2000LosslessOnly;
-					break;
-				case SendJPEG2000Lossy10:  
-				case SendJPEG2000Lossy20: 
-				case SendJPEG2000Lossy50: preferredSyntax = EXS_JPEG2000;
-						break;
-				case SendJPEGLossless: preferredSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-					break; 
-				case SendJPEGLossy9: 
-				case SendJPEGLossy8: 
-				case SendJPEGLossy7: preferredSyntax = EXS_JPEGProcess2_4TransferSyntax;
-					break;
-				case SendImplicitLittleEndian: preferredSyntax = EXS_LittleEndianImplicit;
-					break;
-				case SendRLE: preferredSyntax = EXS_RLELossless;
-					break;
-				case SendExplicitBigEndian: preferredSyntax = EXS_BigEndianExplicit;
-					break;
-				case SendBZip: preferredSyntax = EXS_DeflatedLittleEndianExplicit;
-					break;		
-			}
-			break;
-		}			
-	}
-	return preferredSyntax;
-}
+
 
 OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC_Parameters *params, E_TransferSyntax preferredSyntax){
   // this would be the place to add support for compressed transfer syntaxes

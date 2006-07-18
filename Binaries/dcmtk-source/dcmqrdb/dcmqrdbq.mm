@@ -905,6 +905,18 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::cancelFindRequest (DcmQueryRet
 /************************************
 			MOVE
 **************************************/
+//have preferred Syntax for move
+OFCondition nextMoveResponse(
+      char *SOPClassUID,
+      char *SOPInstanceUID,
+      char *imageFileName,
+	  E_TransferSyntax preferredTS,
+      unsigned short *numberOfRemainingSubOperations,
+      DcmQueryRetrieveDatabaseStatus *status)
+{
+	  
+	return (EC_Normal) ;
+}
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
                 char            *SOPClassUID,
@@ -940,23 +952,19 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		/* figure out which of the accepted presentation contexts should be used */
 		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 		//on the fly conversion:
-		//currently we will convert everything to EXS_LittleEndianExplicit. Eventually this should be the preferred sntacx for the destination
+		//currently we will convert everything to EXS_LittleEndianExplicit. Eventually this should be the preferred syntax for the destination
 		E_TransferSyntax moveTransferSyntax = EXS_LittleEndianExplicit;
 		T_ASC_PresentationContextID presId;
 		DcmXfer preferredXfer(moveTransferSyntax);
 		OFBool status = YES;
-		//presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, preferredXfer.getXferID());
-		//T_ASC_PresentationContext pc;
-		//ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
-		//DcmXfer propoesdTransfer(pc.acceptedTransferSyntax);
-		// if (presId != 0) {
+
 			
-			if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
+		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
 				// do nothing
-			}
-			else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
+		}
+		else if (filexfer.isEncapsulated() && preferredXfer.isNotEncapsulated()) {
 				cond = decompressFileFormat(fileformat, imageFileName);
-			}
+		}
 			//else if (filexfer.isNotEncapsulated() && preferredXfer.isEncapsulated()) {
 			//	status = compressFile(fileformat, fname);
 			//}

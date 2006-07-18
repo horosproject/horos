@@ -224,6 +224,15 @@ public:
       char *imageFileName,
       unsigned short *numberOfRemainingSubOperations,
       DcmQueryRetrieveDatabaseStatus *status);
+	  
+OFCondition nextMoveResponse(
+      char *SOPClassUID,
+      char *SOPInstanceUID,
+      char *imageFileName,
+	  E_TransferSyntax preferredTS,
+      unsigned short *numberOfRemainingSubOperations,
+      DcmQueryRetrieveDatabaseStatus *status);
+
   
   /** cancel the ongoing MOVE request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
