@@ -2825,6 +2825,22 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
+-(void) refreshSmartAlbums
+{
+	int i;
+	NSArray	*a = [self albumArray];
+	
+	if( [a count] == [albumNoOfStudiesCache count])
+	{
+		for( i = 0; i < [a count]; i++)
+		{
+			if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
+		}
+	}
+	
+	[albumTable reloadData];
+}
+
 -(void) refreshDatabase:(id) sender
 {
 	if( managedObjectContext == 0L) return;
@@ -2840,21 +2856,7 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 		else NSLog(@"refreshDatabase locked...");
 	}
-	else
-	{
-		int i;
-		NSArray	*a = [self albumArray];
-		
-		if( [a count] == [albumNoOfStudiesCache count])
-		{
-			for( i = 0; i < [a count]; i++)
-			{
-				if( [[[a objectAtIndex: i] valueForKey:@"smartAlbum"] boolValue] == YES) [albumNoOfStudiesCache replaceObjectAtIndex:i withObject:@""];
-			}
-		}
-		
-		[albumTable reloadData];
-	}
+	else [self refreshSmartAlbums];
 }
 
 - (NSArray*) childrenArray: (NSManagedObject*) item
@@ -3628,6 +3630,8 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	[item setValue:object forKey:[tableColumn identifier]];
+	
+	[self refreshSmartAlbums];
 	
 	[managedObjectContext unlock];
 }

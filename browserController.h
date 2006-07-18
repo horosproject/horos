@@ -300,7 +300,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (void) matrixInit:(long) noOfImages;
 - (IBAction) albumButtons: (id)sender;
 - (NSArray*) albumArray;
-
+- (void) refreshSmartAlbums;
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item;
 
