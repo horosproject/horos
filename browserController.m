@@ -2673,8 +2673,18 @@ static BOOL COMPLETEREBUILD = NO;
 	error = 0L;
 	[outlineViewArray release];
 	
-	if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
-	else outlineViewArray = [context executeFetchRequest:request error:&error];
+	@try
+	{
+		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
+		else outlineViewArray = [context executeFetchRequest:request error:&error];
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog(@"exception: %@", [ne description]);
+		[request setPredicate: [NSPredicate predicateWithValue:YES]];
+		outlineViewArray = [context executeFetchRequest:request error:&error];
+	}
 	
 	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
 	{
@@ -5415,6 +5425,9 @@ static BOOL needToRezoom;
 					
 					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
 					{
+						NSManagedObjectContext *context = [self managedObjectContext];
+						[context lock];
+						
 						@try
 						{
 							// Find all studies
@@ -5422,11 +5435,9 @@ static BOOL needToRezoom;
 							NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 							[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 							[dbRequest setPredicate: [self smartAlbumPredicate: object]];
-							NSManagedObjectContext *context = [self managedObjectContext];
-							[context lock];
+							
 							error = 0L;
 							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-							[context unlock];
 							
 							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 						}
@@ -5436,6 +5447,8 @@ static BOOL needToRezoom;
 							NSLog(@"exception: %@", [ne description]);
 							[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject:@"err"];
 						}
+						
+						[context unlock];
 					}
 					else [albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
 				}
