@@ -903,7 +903,6 @@ int sortROIByName(id roi1, id roi2, void *context)
 		return screenRect;
 }
 
-
 - (void)setWindowFrame:(NSRect)rect
 {
 	NSRect	curRect = [[self window] frame];

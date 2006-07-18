@@ -1447,8 +1447,6 @@
 		BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
 		BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
 		BF15840B0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
-		BF15840C0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
-		BF15840D0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
 		BF1745CD08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CE08E0C57300822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
 		BF1745CF08E0C57400822756 /* LogWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF1745CB08E0C57300822756 /* LogWindow.nib */; };
@@ -7947,6 +7945,8 @@
 		CE4E00BF0830B72F008DAFAE /* Revert.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tiff */; };
 		CE4E00C00830B72F008DAFAE /* Revert.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tiff */; };
 		CE4E00C10830B72F008DAFAE /* Revert.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tiff */; };
+		CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
+		CE51509F0A6AD2CC00408C38 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
 		CE52264D077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE52264E077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
 		CE52264F077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
@@ -19020,7 +19020,7 @@
 				BF2425510A51D39500D3D76B /* DicomFileDCMTKCategory.h in Headers */,
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
-				BF15840C0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
+				CE51509F0A6AD2CC00408C38 /* KeyObjectPopupController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24719,7 +24719,7 @@
 				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
 				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
-				BF15840D0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
+				CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

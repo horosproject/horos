@@ -2602,7 +2602,7 @@ public:
 				else
 				{
 					if( isRGB == NO)
-						vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, valueFactor, 0);
+						vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 				}
 				[self setNeedsDisplay:YES];
 			}
@@ -2972,7 +2972,7 @@ public:
 	else
 	{
 		if( isRGB == NO)
-			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, valueFactor, 0);
+			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -3627,10 +3627,10 @@ public:
 				if( [blendingFirstObject maxValueOfSeries] > 4000)
 				{
 					blendingValueFactor = 4000. / [blendingFirstObject maxValueOfSeries];
-					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, blendingValueFactor, 0);
+					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 				else
-					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, blendingValueFactor, 0);
+					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 			}
 		}
 		
@@ -3835,7 +3835,7 @@ public:
 	else
 	{
 		srcf.data = data;
-		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, valueFactor, 0);
+		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 		
 		validBox = [VRView getCroppingBox: a :volume :croppingBox];
 	
