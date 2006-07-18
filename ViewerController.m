@@ -10164,6 +10164,7 @@ long i;
 			if( [keyImagesArray count] == 0)
 			{
 				NSRunAlertPanel(NSLocalizedString(@"Key Images", nil), NSLocalizedString(@"No key images have been selected in this series.", nil), nil, nil, nil);
+				[keyImagePopUpButton selectItemAtIndex: 0];
 			}
 			else
 			{
