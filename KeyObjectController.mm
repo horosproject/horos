@@ -36,11 +36,6 @@
 		
 		if( [series count] > 0)
 			_seriesUID = [[[series objectAtIndex: 0] valueForKey:@"seriesInstanceUID"] retain];
-		else
-		{
-			_seriesUID = @"Ug?";
-			_seriesUID = [_seriesUID retain];
-		}
 	}
 	return self;
 }
