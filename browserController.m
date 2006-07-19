@@ -8296,9 +8296,9 @@ static NSArray*	openSubSeriesArray = 0L;
 					else break;
 				}
 			}
-				
-			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
 			
+			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
+
 			// Find the STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 						
@@ -8436,8 +8436,8 @@ static NSArray*	openSubSeriesArray = 0L;
 					else break;
 				}
 			}
-				
-			tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
+			
+			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
 
 			// Find the STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -8606,14 +8606,14 @@ static NSArray*	openSubSeriesArray = 0L;
 				}
 			}
 			if (!addDICOMDIR)		
-				tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
+				tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
 			else {				
 				NSMutableString *name;
-				if ([[curImage valueForKeyPath: @"series.study.studyName"] length] > 8 )
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.studyName"] substringToIndex:7] uppercaseString]];
+				if ([[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
+					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
 				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.studyName"]uppercaseString]];
-					
+					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.id"] uppercaseString]];
+				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 				

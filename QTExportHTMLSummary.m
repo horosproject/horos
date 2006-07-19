@@ -119,7 +119,7 @@ extern NSString *documentsDirectory();
 		{
 			seriesName = [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKeyPath: @"name"]];
 			[seriesName replaceOccurrencesOfString:@"/" withString:@"_" options:NSLiteralSearch range:NSMakeRange(0, [seriesName length])];
-			fileName = [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]];
+			fileName = [NSMutableString stringWithFormat:@"%@ - %@", [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"], [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
 			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKeyPath: @"id"]];
 
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
