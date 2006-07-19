@@ -6554,7 +6554,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		if( max < [loadList count]) max = [loadList count];
 		
-		if( from > to) from = to;
+		if( from >= to) from = to-1;
 		if( from < 0) from = 0;
 		if( to < 0) to = 0;
 	}
@@ -6600,7 +6600,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: NO];
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  (mem  / (1024*1024)) * sizeof(float)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  (mem * sizeof(float)) / (1024*1024)]];
 	}
 	else
 	{
@@ -6608,7 +6608,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: YES];
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", (mem / (1024*1024)) * sizeof(float)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", (mem* sizeof(float)) / (1024*1024)]];
 	}
 }
 
