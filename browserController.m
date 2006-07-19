@@ -5880,7 +5880,7 @@ static BOOL needToRezoom;
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
 		}
 		
-		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		if (([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : 0L] == NO))
 		{
 			toOpenArray = [self openSubSeries: toOpenArray];
 		}
@@ -6610,6 +6610,9 @@ static NSArray*	openSubSeriesArray = 0L;
 
 	[subSeriesFrom setIntValue: 1];
 	[subSeriesTo setIntValue: [[toOpenArray objectAtIndex:0] count]];
+	[subSeriesSlider setIntValue: 2];
+	[subSeriesIntervalText setIntValue: 2];
+	[subSeriesInterval setState: NSOffState];
 	
 	[NSApp beginSheet: subSeriesWindow
 				modalForWindow: [self window]
