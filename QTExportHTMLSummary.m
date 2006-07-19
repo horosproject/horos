@@ -98,7 +98,8 @@ extern NSString *documentsDirectory();
 	int i, imagesCount = 0;
 	long previousSeries = -1;
 	
-	NSMutableString *fileName, *seriesName, *studyDate;
+	NSMutableString *fileName, *seriesName;
+	NSString *studyDate, *studyTime;
 	NSString *extension;
 
 	BOOL lastImageOfSeries, lastImageOfStudy;
@@ -126,7 +127,7 @@ extern NSString *documentsDirectory();
 			[fileName appendFormat:@".%@",extension];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:fileName options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_name%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
-			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[NSString stringWithFormat:@"%d",[[series objectAtIndex:i] valueForKeyPath: @"id"]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[NSString stringWithFormat:@"%@",[[series objectAtIndex:i] valueForKeyPath: @"id"]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempSeriesList appendString:tempListItemTemplate];
 			imagesCount = 0;
 			
@@ -144,8 +145,10 @@ extern NSString *documentsDirectory();
 				tempStudyBlockStart = [NSMutableString stringWithString:studyBlockStart];
 				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_name%" withString:[[series objectAtIndex:i] valueForKeyPath:@"study.studyName"] options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
 				studyDate = [[[series objectAtIndex:i] valueForKeyPath:@"study.date"] descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey:NSShortDateFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
+				studyTime = [[[series objectAtIndex:i] valueForKeyPath:@"study.date"] descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey:NSTimeFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
+				
 				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_date%" withString:studyDate options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
-				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_time%" withString:studyDate options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
+				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_time%" withString:studyTime options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
 				[tempStudyBlock appendString:tempStudyBlockStart];
 				[tempStudyBlock appendString:tempSeriesList];
 				[tempStudyBlock appendString:studyBlockEnd];
