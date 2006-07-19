@@ -15,6 +15,7 @@
         {
             ACTIONS = {
                 chooseSupplementaryBurnPath = id; 
+                setBurnHtml = id; 
                 setBurnOsirixApplication = id; 
                 setBurnSupplementaryFolder = id; 
                 setDicomdirMode = id; 

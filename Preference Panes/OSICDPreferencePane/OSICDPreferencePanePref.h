@@ -38,6 +38,7 @@
 - (IBAction)setDicomdirMode:(id)sender;
 - (IBAction)setStillMovieMode:(id)sender;
 - (IBAction)setBurnOsirixApplication:(id)sender;
+- (IBAction)setBurnHtml:(id)sender;
 - (IBAction)chooseSupplementaryBurnPath:(id)sender;
 - (IBAction)setBurnSupplementaryFolder:(id)sender;
 @end

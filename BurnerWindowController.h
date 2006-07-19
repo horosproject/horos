@@ -23,6 +23,7 @@
 	volatile BOOL burning;
 	NSMutableArray *nodeArray;
 	NSMutableArray *files;
+	NSArray	*dbObjects;
 	float burnSize;
 	IBOutlet NSTableView *filesTableView;
 	IBOutlet NSTextField *nameField;

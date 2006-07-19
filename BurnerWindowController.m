@@ -55,6 +55,7 @@ extern BrowserController  *browserWindow;
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		files = [theFiles retain];
+		dbObjects = [managedObjects retain];
 		NSEnumerator *enumerator = [managedObjects objectEnumerator];
 		id managedObject;
 		id patient = nil;
@@ -88,7 +89,8 @@ extern BrowserController  *browserWindow;
 {
 	runBurnAnimation = NO;
 	
-	[filesToBurn release];	
+	[filesToBurn release];
+	[dbObjects release];
 	//NSLog(@"Burner dealloc");	
 	[super dealloc];
 }
@@ -538,6 +540,11 @@ extern BrowserController  *browserWindow;
 	[theTask release];
 }
 
+- (void) produceHtml:(NSString*) burnFolder
+{
+	[[BrowserController currentBrowser] exportQuicktimeInt:dbObjects :burnFolder :YES];
+}
+
 - (void)addDicomdir{
 	//NSLog(@"add Dicomdir");
 	NS_DURING
@@ -597,6 +604,11 @@ extern BrowserController  *browserWindow;
 		NSString *iRadPath = [[NSBundle mainBundle] bundlePath];
 		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"Writing Osirix application" waitUntilDone:YES];
 		[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
+	}
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"])
+	{
+		[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
 	}
 		
 // Look for and if present copy a second folder for eg windows viewer or html files.
