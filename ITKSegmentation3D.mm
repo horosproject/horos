@@ -522,6 +522,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		InternalImageType::SizeType radius;
 		radius[0] = [[parameters objectAtIndex:2] intValue];
 		radius[1] = [[parameters objectAtIndex:2] intValue];
+		// masu 2006-07-19 radius[2] was undefinied -> crash!
+		radius[2] = [[parameters objectAtIndex:2] intValue];
+		// masu end
 		neighborhoodFilter->SetRadius(radius);
 		
 		neighborhoodFilter->SetReplaceValue(255);
