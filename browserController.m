@@ -5797,7 +5797,7 @@ static BOOL needToRezoom;
 #pragma mark-
 #pragma mark Open 2D/4D Viewer functions
 
-- (BOOL) computeEnoughMemory:(NSArray*) toOpenArray :(int*) requiredMem
+- (BOOL) computeEnoughMemory:(NSArray*) toOpenArray :(unsigned long*) requiredMem
 {
 	BOOL enoughMemory = YES;
 	unsigned long mem = 0, memBlock = 0, x, i;
@@ -6547,18 +6547,20 @@ static NSArray*	openSubSeriesArray = 0L;
 	from = [subSeriesFrom intValue]-1;
 	to = [subSeriesTo intValue];
 	
+	int max = 0;
 	for( x = 0; x < [toOpenArray count]; x++)
 	{
 		NSArray *loadList = [toOpenArray objectAtIndex: x];
 		
+		if( max < [loadList count]) max = [loadList count];
+		
 		if( from > to) from = to;
-		
 		if( from < 0) from = 0;
-		if( from >= [loadList count]) from = [loadList count];
-		
 		if( to < 0) to = 0;
-		if( to >= [loadList count]) to = [loadList count];
 	}
+	
+	if( from > max) from = max;
+	if( to > max) to = max;
 	
 	[subSeriesFrom setIntValue: from+1];
 	[subSeriesTo setIntValue: to];
@@ -6566,6 +6568,12 @@ static NSArray*	openSubSeriesArray = 0L;
 	for( x = 0; x < [toOpenArray count]; x++)
 	{
 		NSArray *loadList = [toOpenArray objectAtIndex: x];
+		
+		from = [subSeriesFrom intValue]-1;
+		to = [subSeriesTo intValue];
+		
+		if( from >= [loadList count]) from = [loadList count];
+		if( to >= [loadList count]) to = [loadList count];
 		
 		NSArray *imagesArray = [NSArray array];
 		for( i = from; i < to; i++)
@@ -6584,7 +6592,7 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (IBAction) checkMemory:(id) sender
 {
-	int mem;
+	unsigned long mem;
 	
 	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem])
 	{
@@ -6592,7 +6600,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: NO];
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  mem  * sizeof(float) / (1024*1024)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  (mem  / (1024*1024)) * sizeof(float)]];
 	}
 	else
 	{
@@ -6600,7 +6608,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: YES];
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", mem  * sizeof(float) / (1024*1024)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", (mem / (1024*1024)) * sizeof(float)]];
 	}
 }
 
