@@ -5796,6 +5796,50 @@ static BOOL needToRezoom;
 #pragma mark-
 #pragma mark Open 2D/4D Viewer functions
 
+- (BOOL) computeEnoughMemory:(NSArray*) toOpenArray :(int*) requiredMem
+{
+	BOOL enoughMemory = YES;
+	unsigned long mem = 0, memBlock = 0, x, i;
+	unsigned char* testPtr[ 800];
+	
+	for( x = 0; x < [toOpenArray count]; x++)
+	{
+		memBlock = 0;				
+		NSArray* loadList = [toOpenArray objectAtIndex: x];
+		NSManagedObject*  curFile = [loadList objectAtIndex: 0];
+		
+		if( [loadList count] == 1 && ( [[curFile valueForKey:@"numberOfFrames"] intValue] > 1 || [[curFile valueForKey:@"numberOfSeries"] intValue] > 1))  //     **We selected a multi-frame image !!!
+		{
+			mem += [[curFile valueForKey:@"width"] intValue]* [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+			memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue] * [[curFile valueForKey:@"numberOfFrames"] intValue];
+		}
+		else
+		{
+			for( i = 0; i < [loadList count]; i++)
+			{
+				curFile = [loadList objectAtIndex: i];
+				
+				mem += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+				memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
+			}
+		}
+		
+		NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
+		testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+		if( testPtr[ x] == 0L) enoughMemory = NO;
+		
+	} //end for
+	
+	for( x = 0; x < [toOpenArray count]; x++)
+	{
+		if( testPtr[ x]) free( testPtr[ x]);
+	}
+	
+	if( requiredMem) *requiredMem = mem;
+	
+	return enoughMemory;
+}
+
 - (void) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
 	NS_DURING
@@ -5833,6 +5877,11 @@ static BOOL needToRezoom;
 			}
 			
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
+		}
+		
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+		{
+			toOpenArray = [self openSubSeries: toOpenArray];
 		}
 		
 // NS_DURING (2) Compute Required Memory
@@ -5936,7 +5985,7 @@ static BOOL needToRezoom;
 		
 		BOOL		notEnoughMemory = NO;
 		
-		if( result == NSAlertDefaultReturn)
+		if( result == NSAlertDefaultReturn && toOpenArray != 0L)
 		{
 			if( movieViewer == NO)
 			{
@@ -6481,24 +6530,109 @@ static BOOL needToRezoom;
 	[self viewerDICOMInt:YES dcmFile: selectedItems viewer:0L];
 }
 
-- (IBAction) endOpenSubSeries:(id) sender
+static NSArray*	openSubSeriesArray = 0L;
+
+-(NSArray*) produceNewArray: (NSArray*) toOpenArray
 {
-	[NSApp endSheet: subSeriesWindow];
-	[subSeriesWindow orderOut: self];
+	NSArray *newArray = [NSArray array];
+		
+	int from, to, interval, x, i;
 	
-	if( [sender tag] == 1)
+	if( [subSeriesInterval state] == NSOnState) interval = [subSeriesSlider intValue];
+	else interval = 1;
+	
+	[subSeriesIntervalText setIntValue: [subSeriesSlider intValue]];
+	
+	from = [subSeriesFrom intValue]-1;
+	to = [subSeriesTo intValue];
+	
+	for( x = 0; x < [toOpenArray count]; x++)
 	{
+		NSArray *loadList = [toOpenArray objectAtIndex: x];
+		
+		if( from > to) from = to;
+		
+		if( from < 0) from = 0;
+		if( from >= [loadList count]) from = [loadList count];
+		
+		if( to < 0) to = 0;
+		if( to >= [loadList count]) to = [loadList count];
+	}
 	
+	[subSeriesFrom setIntValue: from+1];
+	[subSeriesTo setIntValue: to];
+	
+	for( x = 0; x < [toOpenArray count]; x++)
+	{
+		NSArray *loadList = [toOpenArray objectAtIndex: x];
+		
+		NSArray *imagesArray = [NSArray array];
+		for( i = from; i < to; i++)
+		{
+			NSManagedObject	*image = [loadList objectAtIndex: i];
+			
+			if( i % interval == 0)	imagesArray = [imagesArray arrayByAddingObject: image];
+		}
+		
+		if( [imagesArray count] > 0)
+			newArray = [newArray arrayByAddingObject: imagesArray];
+	}
+	
+	return newArray;
+}
+
+- (IBAction) checkMemory:(id) sender
+{
+	int mem;
+	
+	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem])
+	{
+		[notEnoughMem setHidden: YES];
+		[enoughMem setHidden: NO];
+		[subSeriesOKButton setEnabled: YES];
+		
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  mem  * sizeof(float) / (1024*1024)]];
+	}
+	else
+	{
+		[notEnoughMem setHidden: NO];
+		[enoughMem setHidden: YES];
+		[subSeriesOKButton setEnabled: NO];
+		
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", mem  * sizeof(float) / (1024*1024)]];
 	}
 }
 
-- (IBAction) openSubSeries: (id)sender
+- (NSArray*) openSubSeries: (NSArray*) toOpenArray
 {
+	openSubSeriesArray = [toOpenArray retain];
+
+	[subSeriesFrom setIntValue: 1];
+	[subSeriesTo setIntValue: [[toOpenArray objectAtIndex:0] count]];
+	
 	[NSApp beginSheet: subSeriesWindow
 				modalForWindow: [self window]
 				modalDelegate: nil
 				didEndSelector: nil
 				contextInfo: nil];
+	
+	[self checkMemory: self];
+	
+	int result = [NSApp runModalForWindow: subSeriesWindow];
+	
+	[NSApp endSheet: subSeriesWindow];
+	[subSeriesWindow orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		[openSubSeriesArray release];
+		
+		return [self produceNewArray: toOpenArray];
+	}
+	
+	[openSubSeriesArray release];
+	
+	return 0L;
 }
 
 

@@ -116,9 +116,10 @@ enum queueStatus{QueueHasData, QueueEmpty};
     IBOutlet PreviewView			*imageView;
 	
 	IBOutlet NSWindow				*subSeriesWindow;
-	IBOutlet NSMatrix				*subSeriesMatrix;
-	IBOutlet NSTextField			*subSeriesFrom, *subSeriesTo;
+	IBOutlet NSButton				*subSeriesInterval, *subSeriesOKButton;
+	IBOutlet NSTextField			*subSeriesFrom, *subSeriesTo, *subSeriesIntervalText, *memoryMessage;
 	IBOutlet NSSlider				*subSeriesSlider;
+	IBOutlet NSBox					*enoughMem, *notEnoughMem;
 	
 	IBOutlet NSWindow				*bonjourPasswordWindow;
 	IBOutlet NSTextField			*password;
@@ -337,7 +338,9 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSButton*) bonjourSharingCheck;
 - (NSButton*) bonjourPasswordCheck;
 - (void) bonjourRunLoop:(id) sender;
--(void) checkIncomingThread:(id) sender;
+- (void) checkIncomingThread:(id) sender;
+- (NSArray*) openSubSeries: (NSArray*) toOpenArray;
+- (IBAction) checkMemory:(id) sender;
 
 //DB plugins
 - (void)executeFilterDB:(id)sender;

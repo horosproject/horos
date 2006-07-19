@@ -3617,16 +3617,16 @@ public:
 			
 			if( [blendingFirstObject SUVConverted])
 			{
-				blendingValueFactor = 4000. / [blendingFirstObject maxValueOfSeries];
+				blendingValueFactor = 5000. / [blendingFirstObject maxValueOfSeries];
 				blendingOFFSET16 = 0;
 				
 				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 			}
 			else
 			{
-				if( [blendingFirstObject maxValueOfSeries] > 4000)
+				if( [blendingFirstObject maxValueOfSeries] > 5000)
 				{
-					blendingValueFactor = 4000. / [blendingFirstObject maxValueOfSeries];
+					blendingValueFactor = 5000. / [blendingFirstObject maxValueOfSeries];
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 				else
@@ -4002,16 +4002,16 @@ public:
 		
 		if( [firstObject SUVConverted])
 		{
-			valueFactor = 4000. / [firstObject maxValueOfSeries];
+			valueFactor = 5000. / [firstObject maxValueOfSeries];
 			OFFSET16 = 0;
 			
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 		}
 		else
 		{
-			if( [firstObject maxValueOfSeries] > 4000)
+			if( [firstObject maxValueOfSeries] > 5000)
 			{
-				valueFactor = 4000. / [firstObject maxValueOfSeries];
+				valueFactor = 5000. / [firstObject maxValueOfSeries];
 			
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 			}

@@ -54,6 +54,8 @@
                 bonjourRunLoop = id; 
                 bonjourServiceClicked = id; 
                 burnDICOM = id; 
+                checkIncomingThread = id; 
+                checkMemory = id; 
                 createDatabase = id; 
                 customIntervalNow = id; 
                 customize = id; 
@@ -88,6 +90,7 @@
                 showLogWindow = id; 
                 showhide = id; 
                 smartAlbumHelpButton = id; 
+                srReports = id; 
                 storeSCPComplete = id; 
                 toggleBonjourSharing = id; 
                 viewerDICOM = id; 
@@ -119,15 +122,18 @@
                 editSmartAlbum = NSWindow; 
                 editSmartAlbumName = NSTextField; 
                 editSmartAlbumQuery = NSTextField; 
+                enoughMem = NSBox; 
                 estimatedTime = NSTextField; 
                 exportAccessoryView = NSView; 
                 imageTileMenu = NSMenu; 
                 imageView = PreviewView; 
                 incomingProgress = NSProgressIndicator; 
                 mainWindow = NSWindow; 
+                memoryMessage = NSTextField; 
                 newAlbum = NSWindow; 
                 newAlbumName = NSTextField; 
                 noOfFilesToRebuild = NSTextField; 
+                notEnoughMem = NSBox; 
                 oMatrix = NSMatrix; 
                 password = NSTextField; 
                 rdAccessory = NSView; 
@@ -145,7 +151,9 @@
                 splitViewHorz = NSSplitView; 
                 splitViewVert = NSSplitView; 
                 subSeriesFrom = NSTextField; 
-                subSeriesMatrix = NSMatrix; 
+                subSeriesInterval = NSButton; 
+                subSeriesIntervalText = NSTextField; 
+                subSeriesOKButton = NSButton; 
                 subSeriesSlider = NSSlider; 
                 subSeriesTo = NSTextField; 
                 subSeriesWindow = NSWindow; 
