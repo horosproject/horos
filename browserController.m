@@ -2678,7 +2678,8 @@ static BOOL COMPLETEREBUILD = NO;
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
 		
-		[albumNoOfStudiesCache replaceObjectAtIndex:[albumTable selectedRow] withObject:[NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
+		if( [albumNoOfStudiesCache count] > [albumTable selectedRow])
+			[albumNoOfStudiesCache replaceObjectAtIndex:[albumTable selectedRow] withObject:[NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
 	}
 	
 	@catch( NSException *ne)
