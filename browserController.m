@@ -8301,7 +8301,12 @@ static NSArray*	openSubSeriesArray = 0L;
 
 			// Find the STUDY folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-						
+
+			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+
 			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
 			{
 				if( [imagesArray count] > 1)
@@ -8315,14 +8320,22 @@ static NSArray*	openSubSeriesArray = 0L;
 					[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
 				}
 				
+				//
+				if(createHTML)
+				{
+					NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
+					if( thumbnail)
+					{
+						NSData *bitmapData = 0L;
+						NSArray *representations = [thumbnail representations];
+						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+						[bitmapData writeToFile:[tempPath stringByAppendingString:@"_thumb.jpg"] atomically:YES];
+					}
+				}
+				
 				[imagesArray removeAllObjects];
 				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
 			}
-			
-			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
-			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
-			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
 			previousPath = [NSString stringWithString: tempPath];
 			
@@ -8351,14 +8364,6 @@ static NSArray*	openSubSeriesArray = 0L;
 			[splash incrementBy:1];
 		}
 		
-		if(createHTML)
-		{
-			QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
-			[htmlExport setPatientsDictionary:htmlExportDictionary];
-			[htmlExport setPath:path];
-			[htmlExport createHTMLfiles];
-		}
-		
 		if( [imagesArray count] > 1)
 		{
 			[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
@@ -8368,6 +8373,14 @@ static NSArray*	openSubSeriesArray = 0L;
 			NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
 			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 			[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+		}
+		
+		if(createHTML)
+		{
+			QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
+			[htmlExport setPatientsDictionary:htmlExportDictionary];
+			[htmlExport setPath:path];
+			[htmlExport createHTMLfiles];
 		}
 		
 		[splash close];
