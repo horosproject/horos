@@ -206,7 +206,7 @@ void CopyNSImageToGWorld(NSImage *image, GWorldPtr gWorldPtr)
         if ([imageRepresentation isKindOfClass:[NSBitmapImageRep class]])
         {
             unsigned char* bitMapDataPtr = [(NSBitmapImageRep *)imageRepresentation bitmapData];
-
+			
             if ((bitMapDataPtr != nil) && (pixBaseAddr != nil))
             {
                 int i,j;

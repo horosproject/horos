@@ -2677,6 +2677,8 @@ static BOOL COMPLETEREBUILD = NO;
 	{
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
+		
+		[albumNoOfStudiesCache replaceObjectAtIndex:[albumTable selectedRow] withObject:[NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
 	}
 	
 	@catch( NSException *ne)
@@ -2857,7 +2859,7 @@ static BOOL COMPLETEREBUILD = NO;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	
-	if( needDBRefresh)
+	if( needDBRefresh || [[[[self albumArray] objectAtIndex: [albumTable selectedRow]] valueForKey:@"smartAlbum"] boolValue] == YES)
 	{
 		if( [checkIncomingLock tryLock])
 		{
