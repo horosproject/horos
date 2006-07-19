@@ -2858,6 +2858,7 @@ static BOOL COMPLETEREBUILD = NO;
 	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
+	if( [databaseOutline editedRow] != -1) return;
 	
 	if( needDBRefresh || [[[[self albumArray] objectAtIndex: [albumTable selectedRow]] valueForKey:@"smartAlbum"] boolValue] == YES)
 	{
@@ -3643,7 +3644,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	[item setValue:object forKey:[tableColumn identifier]];
 	
-	[self refreshSmartAlbums];
+	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
 	[managedObjectContext unlock];
 }
@@ -5844,6 +5845,7 @@ static BOOL needToRezoom;
 			BOOL memTestFailed = NO;
 			mem = 0;
 			memBlock = 0;
+			unsigned char* testPtr[ 800];
 			
 			for( x = 0; x < [toOpenArray count]; x++)
 			{
@@ -5872,13 +5874,16 @@ static BOOL needToRezoom;
 				}
 				
 				NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
-				unsigned char* testPtr = malloc( (memBlock * sizeof(float)) + 4096);
-				if( testPtr == 0L) memTestFailed = YES;
-				else free( testPtr);
-				
+				testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
+				if( testPtr[ x] == 0L) memTestFailed = YES;
 				memBlockSize[ x] = memBlock;
 				
 			} //end for
+			
+			for( x = 0; x < [toOpenArray count]; x++)
+			{
+				if( testPtr[ x]) free( testPtr[ x]);
+			}
 			
 			// TEST MEMORY : IF NOT ENOUGH -> REDUCE SAMPLING
 			
