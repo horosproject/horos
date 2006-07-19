@@ -88,6 +88,7 @@
 	[stillMovieModeMatrix selectCellWithTag: [defaults integerForKey:@"STILLMOVIEMODE"]];
 
 	[burnOsirixCheck setIntValue: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"]];
+	[burnHtmlCheck setIntValue: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]];
 	[supplementaryFolderCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"]];
 	[supplementaryFolderPath setStringValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"]];
 }
@@ -105,6 +106,9 @@
 }
 - (IBAction)setStillMovieMode:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey:@"STILLMOVIEMODE"];
+}
+- (IBAction)setBurnHtml:(id)sender{
+	[[NSUserDefaults standardUserDefaults] setBool: [sender state] forKey:@"Burn html"];
 }
 - (IBAction)setBurnOsirixApplication:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool: [sender state] forKey:@"Burn Osirix Application"];

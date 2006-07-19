@@ -26,6 +26,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_authView" = SFAuthorizationView; 
+                burnHtmlCheck = NSButton; 
                 burnOsirixCheck = NSButton; 
                 dicomdirModeMatrix = NSMatrix; 
                 mountOnOffButton = NSButton; 

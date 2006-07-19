@@ -24,6 +24,7 @@
 								*stillMovieModeMatrix;
 								
 	IBOutlet NSButton			*burnOsirixCheck;
+	IBOutlet NSButton			*burnHtmlCheck;
 	IBOutlet NSButton			*supplementaryFolderCheck;
 								
 	IBOutlet NSTextField		*supplementaryFolderPath;

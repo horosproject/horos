@@ -8583,6 +8583,7 @@ static NSArray*	openSubSeriesArray = 0L;
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
 				
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
+				[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
@@ -8621,6 +8622,7 @@ static NSArray*	openSubSeriesArray = 0L;
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+				[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				tempPath = [tempPath stringByAppendingPathComponent:name];
 			}
 				
@@ -8647,7 +8649,8 @@ static NSArray*	openSubSeriesArray = 0L;
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
 				
-				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];  
+				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
+				[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];  
 				[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
 				[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];

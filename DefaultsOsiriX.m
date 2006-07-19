@@ -696,6 +696,9 @@ static NSString *hostName = @"";
 	// ** Burn Osirix Application	
 	[defaultValues setObject: @"1" forKey: @"Burn Osirix Application"];
 	
+	// ** Burn html	
+	[defaultValues setObject: @"1" forKey: @"Burn html"];
+	
 	// ** Burn Supplementary Folder	
 	[defaultValues setObject: @"0" forKey: @"Burn Supplementary Folder"];
 	

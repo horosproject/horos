@@ -166,8 +166,6 @@ extern BrowserController	*browserWindow;
 			showRestartNeeded = NO;
 			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", 0L), NSLocalizedString( @"Restart OsiriX to apply these changes.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
 		}
-		
-		//[appController restartSTORESCP];
 	}
 		
 	if (refreshColumns)	
