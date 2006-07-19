@@ -5800,7 +5800,7 @@ static BOOL needToRezoom;
 - (BOOL) computeEnoughMemory:(NSArray*) toOpenArray :(unsigned long*) requiredMem
 {
 	BOOL enoughMemory = YES;
-	unsigned long mem = 0, memBlock = 0, x, i;
+	unsigned long long mem = 0, memBlock = 0, x, i;
 	unsigned char* testPtr[ 800];
 	
 	for( x = 0; x < [toOpenArray count]; x++)
@@ -5835,6 +5835,9 @@ static BOOL needToRezoom;
 	{
 		if( testPtr[ x]) free( testPtr[ x]);
 	}
+	
+	mem /= 1024;
+	mem /= 1024;
 	
 	if( requiredMem) *requiredMem = mem;
 	
@@ -6600,7 +6603,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: NO];
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  (mem * sizeof(float)) / (1024*1024)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Enough Memory ! (%d MB needed)",  mem * sizeof(float)]];
 	}
 	else
 	{
@@ -6608,7 +6611,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[enoughMem setHidden: YES];
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", (mem* sizeof(float)) / (1024*1024)]];
+		[memoryMessage setStringValue: [NSString stringWithFormat: @"Not Enough Memory ! (%d MB needed)", mem* sizeof(float)]];
 	}
 }
 
