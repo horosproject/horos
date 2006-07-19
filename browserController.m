@@ -8243,6 +8243,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[addDICOMDIRButton setTitle:@"Create HTML pages"];
 	[addDICOMDIRButton sizeToFit];
+	
 	[sPanel setAccessoryView:exportAccessoryView];
 	
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)

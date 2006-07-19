@@ -8,6 +8,8 @@
 	<dict>
 		<key>11583</key>
 		<string>69 300 162 182 0 0 1440 878 </string>
+		<key>12309</key>
+		<string>682 767 235 70 0 0 1600 1178 </string>
 		<key>1580</key>
 		<string>610 53 220 815 0 0 1440 878 </string>
 		<key>29</key>
@@ -18,8 +20,9 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>12366</integer>
+		<integer>12309</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8J2135</string>
+	<string>8J135</string>
 </dict>
 </plist>
