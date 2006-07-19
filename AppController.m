@@ -1219,101 +1219,128 @@ static BOOL initialized = NO;
 {
 	@try
 	{
-	if ( self == [AppController class] && initialized == NO)
-	{
-		if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
+		if ( self == [AppController class] && initialized == NO)
 		{
-			[AppController cleanOsiriXSubProcesses];
-			
-			initialized = YES;
-			
-			long	i;
-			
-			srandom(time(NULL));
-			
-		//	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
-			
-			mainThread  = [NSThread currentThread];
-						
-			Altivec = HasAltiVec();
-			//	if( Altivec == 0)
+			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
+			{
+				[AppController cleanOsiriXSubProcesses];
+				
+				initialized = YES;
+				
+				long	i;
+				
+				srandom(time(NULL));
+				
+			//	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
+				
+				mainThread  = [NSThread currentThread];
+							
+				Altivec = HasAltiVec();
+				//	if( Altivec == 0)
+				//	{
+				//		NSRunCriticalAlertPanel(@"Hardware Info", @"This application is optimized for Altivec - Velocity Engine unit, available only on G4/G5 processors.", @"OK", nil, nil);
+				//		exit(0);
+				//	}
+				
+				if (hasMacOSXTiger() == NO)
+				{
+					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", 0L), NSLocalizedString(@"This application requires MacOS X 10.4 or higher. Please upgrade your operating system.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
+					exit(0);
+				}
+				
+				NSLog(@"Number of processors: %d", MPProcessors ());
+				
+			//	if( hasMacOSXVersion() == NO)
 			//	{
-			//		NSRunCriticalAlertPanel(@"Hardware Info", @"This application is optimized for Altivec - Velocity Engine unit, available only on G4/G5 processors.", @"OK", nil, nil);
+			//		NSRunCriticalAlertPanel(@"Software Error", @"This application requires MacOS X 10.3 or higher. Please upgrade your operating system.", @"OK", nil, nil);
 			//		exit(0);
 			//	}
-			
-			if (hasMacOSXTiger() == NO)
-			{
-				NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", 0L), NSLocalizedString(@"This application requires MacOS X 10.4 or higher. Please upgrade your operating system.", 0L), NSLocalizedString(@"OK", 0L), nil, nil);
-				exit(0);
-			}
-			
-			NSLog(@"Number of processors: %d", MPProcessors ());
-			
-		//	if( hasMacOSXVersion() == NO)
-		//	{
-		//		NSRunCriticalAlertPanel(@"Software Error", @"This application requires MacOS X 10.3 or higher. Please upgrade your operating system.", @"OK", nil, nil);
-		//		exit(0);
-		//	}
-			
-		//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
-		//	{
-		//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the last version from OsiriX web site!", @"OK", nil, nil);
-		//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
-		//		exit(0);
-		//	}
 				
-			//	switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rWe need your help! Send us comments, bugs and ideas!\r\rI need supporting emails to prove utility of OsiriX!\r\rThanks!", @"Continue", @"Send an email", @"Web Site"))
+			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
-			//		case 0:
-			//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@bluewin.ch?subject=OsiriX&cc=lpysher@mac.com,luca.spadola@mac.com,Osman.Ratib@sim.hcuge.ch"]];
-			//		break;
-			//		
-			//		case -1:
-			//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
-			//		break;
+			//		NSRunCriticalAlertPanel(@"Update needed!", @"This version of OsiriX is outdated. Please download the last version from OsiriX web site!", @"OK", nil, nil);
+			//		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+			//		exit(0);
 			//	}
-			
-			[[PluginManager alloc] init];
-			
-			// ** REGISTER DEFAULTS DICTIONARY
-			
-			[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
-			
-			// CREATE A TEMPORATY FILE DURING STARTUP
-			NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-			{
-				int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+					
+				//	switch( NSRunInformationalAlertPanel(@"OsiriX", @"Thank you for using OsiriX!\rWe need your help! Send us comments, bugs and ideas!\r\rI need supporting emails to prove utility of OsiriX!\r\rThanks!", @"Continue", @"Send an email", @"Web Site"))
+				//	{
+				//		case 0:
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:rossetantoine@bluewin.ch?subject=OsiriX&cc=lpysher@mac.com,luca.spadola@mac.com,Osman.Ratib@sim.hcuge.ch"]];
+				//		break;
+				//		
+				//		case -1:
+				//			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
+				//		break;
+				//	}
 				
-				if( result == NSAlertDefaultReturn) NEEDTOREBUILD = YES;
+				[[PluginManager alloc] init];
+				
+				// ** REGISTER DEFAULTS DICTIONARY
+				
+				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
+				
+				// CREATE A TEMPORATY FILE DURING STARTUP
+				NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+				{
+					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+					
+					if( result == NSAlertDefaultReturn) NEEDTOREBUILD = YES;
+				}
+				
+				[path writeToFile:path atomically:NO];
+				
+				NSString *reportsDirectory = [documentsDirectory() stringByAppendingString:@"/REPORTS/"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
+
+				// DELETE & CREATE THE TEMP DIRECTORY...
+				NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
+				
+				NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:dumpDirectory attributes:nil];
+				
+				// CHECK IF THE REPORT TEMPLATE IS AVAILABLE
+				
+				NSString *reportFile;
+				
+				reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"] handler:0L];
+
+				reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
+				
+				// CHECK FOR THE HTML TEMPLATES DIRECTORY
+				
+				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
+				
+				// CHECK FOR THE HTML TEMPLATES
+				
+				NSString *templateFile;
+				
+				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
+				NSLog(templateFile);
+				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+
+				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
+				NSLog(templateFile);
+				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+					
+				// CHECK FOR THE HTML EXTRA DIRECTORY
+				
+				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
+					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
+				
 			}
-			
-			[path writeToFile:path atomically:NO];
-			
-			NSString *reportsDirectory = [documentsDirectory() stringByAppendingString:@"/REPORTS/"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
-
-			// DELETE & CREATE THE TEMP DIRECTORY...
-			NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
-			
-			NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:dumpDirectory attributes:nil];
-			
-			// CHECK IF THE REPORT TEMPLATE IS AVAILABLE
-			
-			NSString *reportFile;
-			
-			reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-				[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"] handler:0L];
-
-			reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"];
-			if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-				[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
-		}
 		}
 	}
 	@catch( NSException *ne)

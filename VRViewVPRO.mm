@@ -3575,7 +3575,11 @@ public:
 	
 //	data8 = (char*) malloc( dst8.height * dst8.width * sizeof(char));
 	data8 = (char*) malloc( dst8.height * dst8.width * sizeof(short));
-	
+	if( data8 == 0L)
+	{
+		[pix release];
+		return -1;
+	}
 	dst8.data = data8;
 	
 	if( isRGB) srcf.data = dataFRGB;

@@ -563,6 +563,18 @@
 		A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
 		A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */; };
 		A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
+		A95B98A40A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
+		A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */; };
+		A95B98A60A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
+		A95B98A70A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */; };
+		A95B98A80A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
+		A95B98A90A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */; };
+		A95B98AC0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */; };
+		A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
+		A95B98AE0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */; };
+		A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
+		A95B98B00A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */; };
+		A95B98B10A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */; };
 		A981599F09AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A009AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
 		A98159A109AC6B25003FF1FB /* bonesRemoval.tif in Resources */ = {isa = PBXBuildFile; fileRef = A981599E09AC6B25003FF1FB /* bonesRemoval.tif */; };
@@ -9530,6 +9542,10 @@
 		A9523D1709BDB4890070CBD5 /* etkError.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkError.cpp; sourceTree = "<group>"; };
 		A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
 		A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
+		A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QTExportHTMLSummary.h; sourceTree = "<group>"; };
+		A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QTExportHTMLSummary.m; sourceTree = "<group>"; };
+		A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportPatientsTemplate.html; sourceTree = "<group>"; };
+		A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportStudiesTemplate.html; sourceTree = "<group>"; };
 		A981599E09AC6B25003FF1FB /* bonesRemoval.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonesRemoval.tif; sourceTree = "<group>"; };
 		A9944C0D0A52A54C004C5E0A /* LLDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLDCMView.h; sourceTree = "<group>"; };
 		A9944C0E0A52A54D004C5E0A /* LLDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLDCMView.m; sourceTree = "<group>"; };
@@ -12995,6 +13011,8 @@
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
+				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
+				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
 				CE7DECC208F05F1500763A70 /* Previous DB Models */,
 				7E5E9259072FEE86007683A2 /* iCal script.applescript */,
 				CEBD8A4B0875B029000E42D6 /* Pane */,
@@ -13799,6 +13817,8 @@
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
 				AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */,
 				AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */,
+				A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */,
+				A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */,
 			);
 			name = Utilities;
 			sourceTree = SOURCE_ROOT;
@@ -19031,6 +19051,7 @@
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				CE51509F0A6AD2CC00408C38 /* KeyObjectPopupController.h in Headers */,
+				A95B98A40A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20862,6 +20883,7 @@
 				AB2A8CAE0A557657002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 				BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				BF1584080A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
+				A95B98A80A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22698,6 +22720,7 @@
 				AB2A8CAC0A557654002B11A7 /* BrowserControllerDCMTKCategory.h in Headers */,
 				BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
+				A95B98A60A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23268,6 +23291,8 @@
 				BF8449030A65F407000E9830 /* smallKey.tif in Resources */,
 				AB7CB7B20A6E3886008DFCC9 /* error.png in Resources */,
 				AB7CB7B60A6E3922008DFCC9 /* smile.png in Resources */,
+				A95B98AC0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
+				A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23545,6 +23570,8 @@
 				BF8449040A65F407000E9830 /* smallKey.tif in Resources */,
 				AB7CB7B10A6E3886008DFCC9 /* error.png in Resources */,
 				AB7CB7B50A6E3922008DFCC9 /* smile.png in Resources */,
+				A95B98B00A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
+				A95B98B10A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23822,6 +23849,8 @@
 				BF8449050A65F407000E9830 /* smallKey.tif in Resources */,
 				AB7CB7B00A6E3886008DFCC9 /* error.png in Resources */,
 				AB7CB7B40A6E3922008DFCC9 /* smile.png in Resources */,
+				A95B98AE0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
+				A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24736,6 +24765,7 @@
 				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */,
+				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25317,6 +25347,7 @@
 				AB2A8CAD0A557657002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
+				A95B98A90A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26083,6 +26114,7 @@
 				AB2A8CAB0A557654002B11A7 /* BrowserControllerDCMTKCategory.mm in Sources */,
 				BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				BF15840B0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
+				A95B98A70A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

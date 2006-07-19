@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>%patient_name%</title>
+  </head>
+  <body>
+    <h1>%patient_name%</h1>
+	<hr />
+	%study_i_start%
+	<h2>%study_i_name% - %study_i_date% %study_i_time%</h2>
+	<ul>
+		%series_i_start%
+		<li><a href="%series_i_file%">%series_i_name%</a> %series_i_id%</li>
+		%series_i_end%
+	</ul>
+	<hr />
+	%study_i_end%
+	<i>%footer_string%</i>
+  </body>
+</html>

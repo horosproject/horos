@@ -99,7 +99,7 @@ Version 2.3
 
 #import "StructuredReportController.h"
 
-
+#import "QTExportHTMLSummary.h"
 
 #define DATABASEVERSION @"2.1"
 
@@ -8241,6 +8241,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
 	[sPanel setCanCreateDirectories:YES];
 	
+	[addDICOMDIRButton setTitle:@"Create HTML pages"];
+	[addDICOMDIRButton sizeToFit];
+	[sPanel setAccessoryView:exportAccessoryView];
+	
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
 	{
 		int					i, t;
@@ -8249,6 +8253,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		BOOL				addDICOMDIR = [addDICOMDIRButton state];
 		NSMutableArray		*imagesArray = [NSMutableArray array];
 		NSString			*tempPath, *previousPath = 0L;
+
+		BOOL				createHTML = [addDICOMDIRButton state];
+	
+		NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
 		
 		[splash showWindow:self];
 		[[splash progress] setMaxValue:[filesToExport count]];
@@ -8259,6 +8267,19 @@ static NSArray*	openSubSeriesArray = 0L;
 			NSString *extension = 0L;
 			
 			tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
+			
+			NSMutableArray *htmlExportSeriesArray;
+			if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]])
+			{
+				htmlExportSeriesArray = [NSMutableArray array];
+				[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
+				[htmlExportDictionary setObject:htmlExportSeriesArray forKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
+			}
+			else
+			{
+				htmlExportSeriesArray = [htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
+				[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
+			}
 			
 			// Find the PATIENT folder
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
@@ -8329,6 +8350,14 @@ static NSArray*	openSubSeriesArray = 0L;
 			[splash incrementBy:1];
 		}
 		
+		if(createHTML)
+		{
+			QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
+			[htmlExport setPatientsDictionary:htmlExportDictionary];
+			[htmlExport setPath:path];
+			[htmlExport createHTMLfiles];
+		}
+		
 		if( [imagesArray count] > 1)
 		{
 			[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
@@ -8343,6 +8372,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		[splash close];
 		[splash release];
 	}
+	[addDICOMDIRButton setTitle:@"Add DICOMDIR"];
+	[addDICOMDIRButton sizeToFit];
 }
 
 - (void) exportJPEG:(id) sender
