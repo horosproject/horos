@@ -14,6 +14,8 @@
 	NSString *rootPath;
 }
 
++(NSString*)nonNilString:(NSString*)aString;
+
 #pragma mark-
 #pragma mark HTML template
 - (void)readTemplates;
