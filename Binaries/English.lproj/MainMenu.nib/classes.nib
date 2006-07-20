@@ -218,9 +218,8 @@
                 flyThruButton = id; 
                 flyThruButtonMenu = id; 
                 fullScreenMenu = id; 
+                keyboardAndMenuSubtract = id; 
                 loadSerie = id; 
-                myAction = id; 
-                myAction1 = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
                 resetImage = id; 
@@ -250,6 +249,7 @@
                 sendMail = id; 
                 setBackgroundColor = id; 
                 setDefaultToolMenu = id; 
+                setKeyImage = id; 
                 setMode = id; 
                 setOffset = id; 
                 setROITool = id; 
