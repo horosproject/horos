@@ -8238,6 +8238,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSMutableArray		*imagesArray = [NSMutableArray array];
 	NSString			*tempPath, *previousPath = 0L;
 	long				previousSeries = -1;
+	NSString			*previousStudy = @"";
 	BOOL				createHTML = html;
 
 	NSMutableDictionary *htmlExportDictionary = [NSMutableDictionary dictionary];
@@ -8281,15 +8282,20 @@ static NSArray*	openSubSeriesArray = 0L;
 		}
 		
 		tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
-
+		if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
+		{
+			previousStudy = [curImage valueForKeyPath: @"series.study.id"];
+			previousSeries = -1;
+		}
+		
 		// Find the STUDY folder
 		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-
+		
 		NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
 		[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
 		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
-
+		
 		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
 		{
 			if( [imagesArray count] > 1)

@@ -113,6 +113,8 @@ extern NSString *documentsDirectory();
 			lastImageOfSeries = YES;
 		else if([[[series objectAtIndex:i] valueForKey: @"id"] intValue] != [[[series objectAtIndex:i+1] valueForKey: @"id"] intValue])
 			lastImageOfSeries = YES;
+		else if([[[series objectAtIndex:i] valueForKeyPath: @"study.id"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.id"]] == NO)
+			lastImageOfSeries = YES;
 		else
 			lastImageOfSeries = NO;
 		
@@ -138,9 +140,9 @@ extern NSString *documentsDirectory();
 			
 			if(i==[series count]-1)
 				lastImageOfStudy = YES;
-			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] intValue] != [[[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"] intValue])
+			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
 				lastImageOfStudy = YES;
-			else if([[series objectAtIndex:i] valueForKeyPath: @"study.studyName"] != [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyName"])
+			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyName"]isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyName"]] == NO)
 				lastImageOfStudy = YES;
 			else
 				lastImageOfStudy = NO;
