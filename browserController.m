@@ -9397,6 +9397,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSManagedObjectModel		*model = [self managedObjectModel];
 	
 	[context lock];
+	[checkIncomingLock lock];
+	DatabaseIsEdited = YES;
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
@@ -9404,7 +9406,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSError	*error = 0L;
 	NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
 //	NSMutableArray *studiesArray = [NSMutableArray arrayWithCapacity:0];
-	
+
+	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
+	[splash showWindow:self];
+
 	if( [imagesArray count] > 0)
 	{
 		NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
@@ -9414,9 +9419,6 @@ static NSArray*	openSubSeriesArray = 0L;
 			if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
 		}
 		
-		Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
-		[splash showWindow:self];
-
 		[[splash progress] setMaxValue:[imagesArray count]/50];
 		
 		@try
@@ -9450,9 +9452,6 @@ static NSArray*	openSubSeriesArray = 0L;
 			NSLog( @"Unmount exception");
 		}
 		
-		[splash close];
-		[splash release];
-				
 		if( needsUpdate)
 		{
 			[self saveDatabase: currentDatabasePath];
@@ -9461,7 +9460,12 @@ static NSArray*	openSubSeriesArray = 0L;
 		[self outlineViewRefresh];
 	}
 	
+	[splash close];
+	[splash release];
+
+	[checkIncomingLock unlock];
 	[context unlock];
+	DatabaseIsEdited = NO;
 }
 
 - (void)storeSCPComplete:(id)sender{
