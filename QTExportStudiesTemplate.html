@@ -8,13 +8,13 @@
     <title>%patient_name%</title>
   </head>
   <body>
-    <h1>%patient_name%</h1>
+    <h1>%patient_name%, %patient_dateOfBirth%</h1>
 	<hr />
 	%study_i_start%
-	<h2>%study_i_name% - %study_i_date% %study_i_time%</h2>
+	<h2>%study_i_name% (%study_i_id%) - %study_i_date% %study_i_time%</h2>
 	<ul>
 		%series_i_start%
-		<li><a href="%series_i_file%">%series_i_name%</a> %series_i_id%</li>
+		<li><a href="%series_i_file%"><img src="%series_i_thumbnail%" alt="%series_i_name%" style="border-style: none; margin: 5px; vertical-align: middle;" /></a><a href="%series_i_file%">%series_i_name%</a> (%series_i_id%) %series_i_images_count% images</li>
 		%series_i_end%
 	</ul>
 	<hr />

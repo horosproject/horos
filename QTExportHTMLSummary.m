@@ -73,6 +73,7 @@ extern NSString *documentsDirectory();
 	NSMutableString *tempExamsHTML = [NSMutableString stringWithString:examsListTemplate];
 	// simple replacements
 	[tempExamsHTML replaceOccurrencesOfString:@"%patient_name%" withString:[[series objectAtIndex:0] valueForKeyPath:@"study.name"] options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
+	[tempExamsHTML replaceOccurrencesOfString:@"%patient_dateOfBirth%" withString:[[[series objectAtIndex:0] valueForKeyPath:@"study.dateOfBirth"] descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey:NSShortDateFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]] options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
 	[tempExamsHTML replaceOccurrencesOfString:@"%footer_string%" withString:NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a>",nil) options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
 	
 	// look for the study html block structure
@@ -98,7 +99,7 @@ extern NSString *documentsDirectory();
 	int i, imagesCount = 0;
 	long previousSeries = -1;
 	
-	NSMutableString *fileName, *seriesName;
+	NSMutableString *fileName, *seriesName, *thumbnailName;
 	NSString *studyDate, *studyTime;
 	NSString *extension;
 
@@ -121,13 +122,17 @@ extern NSString *documentsDirectory();
 			[seriesName replaceOccurrencesOfString:@"/" withString:@"_" options:NSLiteralSearch range:NSMakeRange(0, [seriesName length])];
 			fileName = [NSMutableString stringWithFormat:@"%@ - %@", [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"], [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
 			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKeyPath: @"id"]];
-
+			
+			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
+			
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
 			extension = (imagesCount>1)? @"mov": @"jpg";
 			[fileName appendFormat:@".%@",extension];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:fileName options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_thumbnail%" withString:thumbnailName options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_name%" withString:seriesName options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_id%" withString:[NSString stringWithFormat:@"%@",[[series objectAtIndex:i] valueForKeyPath: @"id"]] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
+			[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_images_count%" withString:[NSString stringWithFormat:@"%d",imagesCount] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 			[tempSeriesList appendString:tempListItemTemplate];
 			imagesCount = 0;
 			
@@ -149,6 +154,7 @@ extern NSString *documentsDirectory();
 				
 				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_date%" withString:studyDate options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
 				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_time%" withString:studyTime options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
+				[tempStudyBlockStart replaceOccurrencesOfString:@"%study_i_id%" withString:[[series objectAtIndex:i] valueForKeyPath:@"study.id"] options:NSLiteralSearch range:NSMakeRange(0, [tempStudyBlockStart length])];
 				[tempStudyBlock appendString:tempStudyBlockStart];
 				[tempStudyBlock appendString:tempSeriesList];
 				[tempStudyBlock appendString:studyBlockEnd];
