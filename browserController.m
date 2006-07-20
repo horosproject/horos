@@ -5859,7 +5859,12 @@ static BOOL needToRezoom;
 - (void) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
 	NS_DURING
-		unsigned long		memBlockSize[ 200], memBlock, mem;
+		// masu 2006-07-19
+		// size of array should be size of toOpenArray - was:
+		// unsigned long		memBlockSize[ 200]; 
+		unsigned long		memBlockSize[[toOpenArray count]]; 
+		unsigned long		memBlockSize[ 200],
+		unsigned long		memBlock, mem;
 		long				x, i;
 	//	long				z;
 		NSArray				*loadList = 0L;
@@ -6028,7 +6033,10 @@ static BOOL needToRezoom;
 			}
 			else
 			{
-				char*		memBlockTestPtr[ 200];
+				// masu 2006-07-19
+				// this array might be to small- was:
+				//char*		memBlockTestPtr[ 200];
+				char*		memBlockTestPtr[[toOpenArray count]];
 				
 				NSLog(@"4D Viewer TOTAL: %d Mb", (mem * sizeof(float)) / (1024 * 1024));
 				for( x = 0; x < [toOpenArray count]; x++)
