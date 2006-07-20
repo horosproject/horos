@@ -185,7 +185,10 @@
 - (float) cineRate;
 - (void) setSubtractionOffset:(NSPoint) o;
 - (void) setSubtractedfImage :(float*) s;
+- (float*) subtractedfImage;
+-(NSPoint) subtractionOffset;
 -(float*) subtractImages :(float*) input :(float*) subfImage;
+
 -(void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (NSString*) repetitiontime;
 - (NSString*) echotime;

@@ -2899,7 +2899,6 @@ static ViewerController *draggedController = 0L;
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	[self setPixelList:f fileList:d volumeData:v];
-	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self
@@ -3010,8 +3009,8 @@ static ViewerController *draggedController = 0L;
 	// Load new data
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
-	mask = 0;
-	[subtractIm setIntValue: 1];
+	mask = 1;
+	[subtractIm setIntValue: 2];
 	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
@@ -3256,7 +3255,7 @@ static ViewerController *draggedController = 0L;
 	{
 		for( i = 0 ; i < [pixList[ x] count]; i++)
 		{
-			if( stopThreadLoadImage == NO)
+			if( stopThreadLoadImage == NO) //there is no interrruption
 			{
 				if ([fileList[ x] count] == [pixList[ x] count]) // I'm not quite sure what this line does, but I'm afraid to take it out. 
 					[browserWindow getLocalDCMPath:[fileList[ x] objectAtIndex: i] : 2]; // Anyway, we are not guarantied to have as many files as pixs, so that is why I put in the if() - Joel
@@ -3281,15 +3280,20 @@ static ViewerController *draggedController = 0L;
 		
 	if( stopThreadLoadImage == NO)
 	{
+		long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
+		long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
+		enableSubtraction = TRUE;
 		for( x = 0; x < maxMovieIndex; x++)
 		{
 			for( i = 0 ; i < [pixList[ x] count]; i++)
 			{
 				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+				if ( moviePixWidth != [[pixList[ x] objectAtIndex: i] pwidth]) enableSubtraction = FALSE;
+				if ( moviePixHeight != [[pixList[ x] objectAtIndex: i] pheight]) enableSubtraction = FALSE;
 			}
 		}
 	}
-	
+	if (enableSubtraction) NSLog(@"regular-sized frames, subtraction enabled");
 	ThreadLoadImage = NO;
 	if( stopThreadLoadImage == YES)
 	{
@@ -3314,6 +3318,7 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	NSLog(@"LOADING: All images loaded");
+	
 	
 	if( stopThreadLoadImage == NO)
 	{
@@ -3443,75 +3448,178 @@ static ViewerController *draggedController = 0L;
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark 4.1.1.2. Mask Subtraction
+// four methods (subtractSwitch, subtractCurrent, keyboardAndMenuSubtract, and subtractStepper)
+// provide the logics for keyboard numeric panel, menu 2DViewer>subtraction and tool subtraction GUI.
+// They are enabled only if enableSubtraction (which is calculated in ViewerController -(void) loadImageData:(id) sender)
+// is set to TRUE
+// All these controllers point to one or the other DCMView
+//		-setSubtraction: (long) mask
+//		-setSubOffset: (NSPoint)subOffset
 
 - (IBAction) subtractSwitch:(id) sender
 {
-	short firstAfterMask;
-	if( [sender state])
+	if (enableSubtraction)
 	{
-		// subtraction asked for
-		
-		[imageView setSubtraction: mask :subOffset];
-		
-		float	iww;
-		[imageView getWLWW:&wlBeforeSubtract :&iww];
-		
-		[imageView setWLWW: 0 :iww];
+		if( [sender state])
+		{	// subtraction asked for
+			[imageView setSubtraction: mask];
+			
+			//	In the following abandoned lines, it was thought arbitrarily to keep the same window width
+			//	and apply it from a window level 0
+			//	This leaves us with a poor DSA image
+			//	and an incorrect window when going back to unsubtracted image
+
+			//  float	iww;
+			//  [imageView getWLWW:&wlBeforeSubtract :&iww];
+			//	[imageView setWLWW: 0 :iww];
+			
+			//	it is better to transform the result of the subtraction in order it
+			//  to fit perfectly in the same window width and level as the image without subtraction
+			//	this needs to be done directly in the subtraction engine
+		}
+		else
+		{	// without subtraction
+			[imageView setSubtraction: -1];
+			
+			//	float	iwl, iww;		
+			//	[imageView getWLWW:&iwl :&iww];
+			//	[imageView setWLWW: wlBeforeSubtract :iww];
+		}	
+		[imageView setIndex: [imageView curImage]];//refresh viewer
 	}
-	else
-	{
-		[imageView setSubtraction: -1 :subOffset];
-		
-		float	iwl, iww;
-		
-		[imageView getWLWW:&iwl :&iww];
-		[imageView setWLWW: wlBeforeSubtract :iww];
-	}
-	
-	[imageView setIndex: mask];
-	
-	[self adjustSlider];
 }
 
 - (IBAction) subtractCurrent:(id) sender
 {	
-	mask = [imageView curImage];
-	
-	[imageView setSubtraction: mask :subOffset];
-	
-	if( [subtractOnOff state] == NSOffState)
+	if (enableSubtraction)
 	{
-		[subtractOnOff setState: NSOnState];
-		[self subtractSwitch:subtractOnOff];
+		mask = [imageView curImage];//mask is a class variable
+		[subtractOnOff setState: NSOnState]; //"on"
+		if( [imageView flippedData]) [subtractIm setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+		else [subtractIm setIntValue: mask+1];//actualizing mask info in the viewer
+		[self subtractSwitch: subtractOnOff];//subtract
 	}
-	
-	if( [imageView flippedData]) [subtractIm setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-	else [subtractIm setIntValue: mask+1];
-	
-	[imageView setIndex: [imageView curImage]];
-	[self adjustSlider];
 }
 
+-(void) keyboardAndMenuSubtract:(id) sender
+{
+	if (enableSubtraction)
+	{
+		switch( [sender tag])
+				{
+				case 0: //subtract
+					[subtractOnOff setState: ![subtractOnOff state]]; //change state
+					[self subtractSwitch:subtractOnOff]; //call subtract method
+				break;
 
+				case 1://SW
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+
+				case 2://S
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+				
+				case 3://SE
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+				
+				case 4://W
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+				
+				case 5://mask
+					[self subtractCurrent:sender];
+				break;
+
+				case 6://E
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+								
+				case 7://NW
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+
+				case 8://N
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+				
+				case 9://NE
+					if( [subtractOnOff state] == NSOnState)
+						{
+						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[imageView setSubOffset :subOffset];
+						[imageView setIndex:[imageView curImage]];
+						}
+				break;
+				}
+	}	
+
+}
 - (IBAction) subtractStepper:(id) sender
 {
-	switch( [sender tag])
+	if (enableSubtraction)
 	{
-		case 0:
-			subOffset.x = [sender floatValue];
-			[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) subOffset.x]];
-		break;
+		if( [subtractOnOff state] == NSOnState)
+		{
+			switch( [sender tag])
+			{
+			// from steppers in subtraction tool
+					
+				case 10://tag for x stepper
+					subOffset.x = [sender floatValue];
+					[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) subOffset.x]];
+				break;
+			
+				case 11://tag for y stepper
+					subOffset.y = [sender floatValue];
+					[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) subOffset.y]];
+				break;	
+
+			}
 		
-		case 1:
-			subOffset.y = [sender floatValue];
-			[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) subOffset.y]];
-		break;
-	}
-	
-	if( [subtractOnOff state] == NSOnState)
-	{
-		[imageView setSubtraction: mask :subOffset];
-		[imageView setIndex:[imageView curImage]];
+			[imageView setSubOffset :subOffset];
+			[imageView setIndex:[imageView curImage]];
+		}
 	}
 }
 

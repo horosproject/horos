@@ -3657,8 +3657,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	unsigned short		clutDepthR, clutDepthG, clutDepthB;
 	short imageNb = frameNo;
 	unsigned short	*shortRed, *shortGreen, *shortBlue;
-	//if (DEBUG)
-	//	NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);
+	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);
 	
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 	if ( dcmObject == nil ) {
@@ -6176,7 +6175,8 @@ BOOL            readable = YES;
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMPIX"])
 			{
-				success = [self loadDICOMPapyrus];
+				success = [self 
+				loadDICOMPapyrus];
 				//only try again if is strict DICOM
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
@@ -6833,6 +6833,7 @@ BOOL            readable = YES;
 
 -(void) CheckLoad
 {
+// uses DCMPix class variable NSString *srcFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
 	[checking lock];
 	
 	[self CheckLoadIn];
@@ -7018,23 +7019,29 @@ fullww = (pixmax - pixmin);
 
 -(float*) subtractImages :(float*) input :(float*) subfImage
 {
-	long	i = height * width;
+	long	i = height * width;	
 	float   *result = malloc( height * width * sizeof(float));
-	
+/*
 	if( subOffset.x == 0 && subOffset.y == 0)
 	{
 		#if __ppc__
-		if( Altivec) vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		if( Altivec) 
+		vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
 		else
 		#endif
 		vsubtractNoAltivec(input, subfImage, result, i);
 	}
 	else
 	{
+*/
 		long	x, y;
 		long	offsetX = subOffset.x, offsetY = -subOffset.y;
 		long	startheight, subheight, startwidth, subwidth;
 		float   *tempIn, *tempOut, *tempResult;
+		float maxDifference = -1024;
+		float minDifference = 1024;
+		float maxInput = -1024;
+		float minInput = 1024;
 		
 		if( offsetY > 0) { startheight = offsetY;   subheight = height;}
 		else { startheight = 0; subheight = height + offsetY;}
@@ -7050,10 +7057,31 @@ fullww = (pixmax - pixmin);
 			x = subwidth - startwidth-1;
 			while( x-->0)
 			{
-				*tempResult++ = *tempIn++ - *tempOut++;
+				if (minInput > *tempIn) minInput = *tempIn;
+				if (maxInput < *tempIn) maxInput = *tempIn;
+			
+				*tempResult = (*tempIn++ - *tempOut++);
+				if (minDifference > *tempResult) minDifference = *tempResult;
+				if (maxDifference < *tempResult) maxDifference = *tempResult;
+
+				*tempResult++;
+								
 			}
 		}
+//	}
+//before finding vectorial solution
+	NSLog(@"minInput:%d",minInput);
+	NSLog(@"maxInput:%d",maxInput);
+	NSLog(@"minDifference:%d",minDifference);
+	NSLog(@"maxDifference:%d",maxDifference);
+	float ratio = (maxInput-minInput)/(maxDifference-minDifference);
+	float translation = minInput-minDifference;
+	tempResult = result;
+	for (y = 0; y < i ; y++) 
+	{
+		*tempResult++ = (*tempResult * ratio) + translation;
 	}
+
 	return result;
 }
 
@@ -7394,9 +7422,11 @@ fullww = (pixmax - pixmin);
 long			i;
 float			iwl, iww;
 
-	[self CheckLoad]; 
+[self CheckLoad]; 
 	
-	if( newWW !=0 || newWL != 0)
+	
+	
+	if( newWW !=0 || newWL != 0)   // new values to be applied
     {
 		if( fullww > 256)
 		{
@@ -7411,13 +7441,15 @@ float			iwl, iww;
         ww = newWW;
         wl = newWL;
     }
-	else
+	else                          // need to compute best values... problem with subtraction performed afterwards
 	{
 		[self computePixMinPixMax];
 		
 		ww = fullww;
 		wl = fullwl;
 	}
+	
+	// --------------------------------
     
 	if( fixed8bitsWLWW)
 	{
@@ -7430,11 +7462,14 @@ float			iwl, iww;
 		iwl = wl;
 	}
 	
+	// ----------------------------------------------------------- iww, iwl contain computMinPixMax or newWW, newWL
+    
     if( baseAddr)
     {
 		updateToBeApplied = NO;
-		
-        [self CheckLoad]; 
+		[self CheckLoad];   
+    /* ----------------------------------------------------------- already applied inconditionaly above
+
 		
 		if( ww == 0 && wl == 0) 
 		{
@@ -7442,44 +7477,50 @@ float			iwl, iww;
 			iww = ww = fullww;
 			iwl = wl = fullwl;
 		}
-		// NSLog(@"WLWW");
-
+    */
+	//NSLog(@"WLWW");
+	
 		register float				 min, max, diff;
 		
         min = iwl - iww / 2; //if (min < 0 ) min = 0;
         max = iwl + iww / 2;
         diff = max - min;
 		
-		//***********
+		//------------------------------------------------------------ min, max, (diff) defined. These are the values used to downsample
 		
-		if( isRGB == NO)
+		/* =========================================================== thickslab
+		
+		stackMode defines how to compose the frames.
+		for each mode there are on the one side the RGB method and on the other the fImage method.
+		20060710 JF:  gathered fImage cases first, and RGB cases second 
+		*/
+		
+		if( isRGB == NO) //fImage case
 		{
 			thickSlabMode = NO;
 			[self setRowBytes: width];
-		}
 		
-		// ** STACK IMAGES
-		if( stackMode > 0 && stack >= 1)
-		{
-			long	countstack = 1;
-			BOOL	flip;
-			
-			switch( stackMode)
+			// = STACK IMAGES thickslab
+			if( stackMode > 0 && stack >= 1)
 			{
-				case 4:		// Volume Rendering
-				case 5:
-				if( isRGB == NO)
+				long			countstack = 1;
+				BOOL			flip = NO; // case 5
+				long			stacksize;
+				unsigned char   *rgbaImage;
+				float *fNext = NULL;
+				float *fResult = malloc( height * width * sizeof(float));
+				long	i;
+				long next;
+				vImage_Buffer srcf, dst8;
+				
+				switch( stackMode)
 				{
-					long			i, stacksize;
-					unsigned char   *rgbaImage;
-					
-					// Create the VR Rendering Window
+					case 4:		// Volume Rendering
+							flip = YES;
+					case 5:		// Create the VR Rendering Window
 					
 					if( thickSlab)
-					{					
-						if( stackMode == 4) flip = YES;
-						else flip = NO;
-						
+					{											
 						if( stackDirection)
 						{
 							if( pixPos-stack < 0) stacksize = pixPos+1; 
@@ -7502,18 +7543,12 @@ float			iwl, iww;
 						[self setRowBytes: width*4];
 						[self setBaseAddr: (char*) rgbaImage];  //malloc( width * height * 4)];
 					}
-				//	[self changeWLWW:127 :256];
-				}
-				break;
-				
-				case 1:		// Moyenne
-				if( isRGB == NO)
-				{
-					float *fNext = NULL;
-					float *fResult = malloc( height * width * sizeof(float));
+					//  in case of thickSlab==NO, nothing happens
+					//	[self changeWLWW:127 :256];
+					break;
+					// -----------------------------------------------------------------------------------------------------
+					case 1:	;	// Mean
 
-					long	i;
-					long next;
 					if( stackDirection) next = pixPos-1;
 					else next = pixPos+1;
 					
@@ -7546,7 +7581,6 @@ float			iwl, iww;
 					
 					// Convert to 8 bits
 					
-					vImage_Buffer srcf, dst8;
 					
 					srcf.height = height;
 					srcf.width = width;
@@ -7562,12 +7596,129 @@ float			iwl, iww;
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max*countstack, min*countstack, 0);
 					
 					free( fResult);
-				}
-				else	// RGB MEAN: WE DONT SUPPORT IT FOR NOW...
-				{
-					vImage_Buffer   src, dst;
-					Pixel_8			convTable[256];
-					long			i, diff = max - min, val;
+					break;
+					// ------------------------------------------------------------------------------------------------
+					case 2:		// Maximum IP
+					case 3:;		// Minimum IP
+					
+					fFinalResult = malloc( height * width * sizeof(float));
+					BlockMoveData( fImage, fFinalResult, height * width * sizeof(float));
+
+					//multiprocessor acceleration
+					long processors = MPProcessors();
+					if (processors > 1 && stack > 20)
+					{
+						long from , to;
+						
+						wlwwThreads = 0;
+						
+						if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
+						
+							for( i = 0; i < processors-1; i++)
+							{
+								from = i * stack / processors;
+								if( from == 0) from++;
+								to = (i+1) * stack / processors;
+								[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
+							}
+							
+							from = i * stack / processors;
+							to = (i+1) * stack / processors;
+							
+							[self computeMax: from to: to];
+							
+							while( wlwwThreads != processors) {};
+					}
+					else 
+					{
+							[self computeMax: 1 to: stack];
+					}
+				
+					// ** SUBTRACTION
+					// 20060711 JF put the result of subtraction directly in srcf.data
+					
+//					float   *inputfImage;				
+//					if( subtractedfImage) inputfImage = [self subtractImages: fFinalResult :subtractedfImage];
+//					else inputfImage = fFinalResult;
+
+				
+					// Convert to 8 bits					
+
+					srcf.height = height;
+					srcf.width = width;
+					srcf.rowBytes = width*sizeof(float);
+					
+					dst8.height = height;
+					dst8.width = width;
+					dst8.rowBytes = rowBytes;
+					
+					dst8.data = baseAddr;
+//					srcf.data = inputfImage;
+					if( subtractedfImage)
+							srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+					else
+							srcf.data = fFinalResult;
+					
+					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+					
+					free( fFinalResult);
+//					if( subtractedfImage) free( inputfImage);
+					break;
+				} //end of switch
+				
+			}
+			// ---------------------------------------------------------------------------------------------------
+			else	// No images fusion
+			{
+				
+				// ** SUBTRACTION
+				// 20060711 JF put the result of subtraction directly in srcf.data
+				//				float   *inputfImage;
+				//				if( subtractedfImage) inputfImage = [self subtractImages: fImage :subtractedfImage];
+				//				else inputfImage = fImage;
+				
+				vImage_Buffer srcf, dst8;
+				
+				srcf.height = height;
+				srcf.width = width;
+				srcf.rowBytes = width*sizeof(float);
+				//srcf.data = inputfImage;
+				if( subtractedfImage) srcf.data = [self subtractImages: fImage :subtractedfImage];
+				else srcf.data = fImage;
+				
+				dst8.height = height;
+				dst8.width = width;
+				dst8.rowBytes = rowBytes;
+				dst8.data = baseAddr;
+				
+				//NSLog( @"max = %f, min = %f", max, min);
+				
+				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+				
+//				if( subtractedfImage) free( inputfImage);
+			}
+		}	
+	else
+		{
+	// ========================================================================= isRGB==YES
+		if( stackMode > 0 && stack >= 1)
+		{
+			long	countstack = 1;
+			BOOL	flip;
+			vImage_Buffer   src, dst;
+			Pixel_8			convTable[256];
+			long			i, diff = max - min, val;
+			unsigned char	*fNext = NULL,
+							*fResult = malloc( height * width * sizeof(char)*4);
+			long next;
+
+			switch( stackMode)
+			{
+				case 4:		// Volume Rendering
+				case 5:
+				break;
+				case 1:		// Moyenne
+
 
 					for(i = 0; i < 256; i++)
 					{
@@ -7588,77 +7739,12 @@ float			iwl, iww;
 					dst.data = baseAddr;
 					
 					vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
-				}
 				break;
-				
+				// ------------------------------------------------------------------------------------------------
 				case 2:		// Maximum IP
 				case 3:		// Minimum IP
-				if( isRGB == NO)
-				{
-					float *fNext = NULL;
+
 					
-					fFinalResult = malloc( height * width * sizeof(float));
-					BlockMoveData( fImage, fFinalResult, height * width * sizeof(float));
-					
-					long from , to, processors = MPProcessors();
-					
-					wlwwThreads = 0;
-					
-					if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
-					
-					if( stack > 20)
-					{
-						for( i = 0; i < processors-1; i++)
-						{
-							from = i * stack / processors;
-							if( from == 0) from++;
-							to = (i+1) * stack / processors;
-							[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
-						}
-						
-						from = i * stack / processors;
-						to = (i+1) * stack / processors;
-						
-						[self computeMax: from to: to];
-						
-						while( wlwwThreads != processors) {};
-					}
-					else [self computeMax: 1 to: stack];
-					
-					float   *inputfImage;
-				
-					// ** SUBTRACTION
-				
-					if( subtractedfImage) inputfImage = [self subtractImages: fFinalResult :subtractedfImage];
-					else inputfImage = fFinalResult;
-				
-					// Convert to 8 bits
-					
-					vImage_Buffer srcf, dst8;
-					
-					srcf.height = height;
-					srcf.width = width;
-					srcf.rowBytes = width*sizeof(float);
-					
-					dst8.height = height;
-					dst8.width = width;
-					dst8.rowBytes = rowBytes;
-					
-					dst8.data = baseAddr;
-					srcf.data = inputfImage;
-					
-					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-					
-					if( subtractedfImage) free( inputfImage);
-					free( fFinalResult);
-				}
-				else		// RGB MIP !
-				{
-					unsigned char
-						*fNext = NULL,
-						*fResult = malloc( height * width * sizeof(char)*4);
-					
-					long next;
 					if( stackDirection) next = pixPos-1;
 					else next = pixPos+1;
 					
@@ -7729,9 +7815,6 @@ float			iwl, iww;
 				
 					// Convert to RGB WL & WW
 					
-					vImage_Buffer   src, dst;
-					Pixel_8			convTable[256];
-					long			i, diff = max - min, val;
 
 					for(i = 0; i < 256; i++)
 					{
@@ -7755,15 +7838,13 @@ float			iwl, iww;
 					
 				//	if( subtractedfImage) free( inputfImage);
 					free( fResult);
-				}
-				break;
-			}
-			
+				
+				break;			
+			} //end of switch
+		// ---------------------------------------------------------------------------------------------------
 		}
 		else	// No images fusion
 		{
-			if( isRGB)
-			{
 				vImage_Buffer   src, dst;
 				Pixel_8			convTable[256];
 				long			i, diff = max - min, val;
@@ -7787,35 +7868,11 @@ float			iwl, iww;
 				dst.data = baseAddr;
 				
 				vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
-			}
-			else
-			{
-				float   *inputfImage;
-				
-				// ** SUBTRACTION
-				
-				if( subtractedfImage) inputfImage = [self subtractImages: fImage :subtractedfImage];
-				else inputfImage = fImage;
-				
-				vImage_Buffer srcf, dst8;
-				
-				srcf.height = height;
-				srcf.width = width;
-				srcf.rowBytes = width*sizeof(float);
-				srcf.data = inputfImage;
-				
-				dst8.height = height;
-				dst8.width = width;
-				dst8.rowBytes = rowBytes;
-				dst8.data = baseAddr;
-				
-				//NSLog( @"max = %f, min = %f", max, min);
-				
-				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-				
-				if( subtractedfImage) free( inputfImage);
-			}
 		}
+
+}
+		// ================================================================= end of isRGB==YES
+		
 		
 		// Convolution
 		if( convolution)
@@ -8093,6 +8150,8 @@ float			iwl, iww;
 
 -(BOOL) updateToApply { return updateToBeApplied;}
 
+//----------------------------------------setters & getters subtractedfImage, subOffset-----------------------
+/*
 -(void) setSubtractedfImage :(float*) s
 {
 	updateToBeApplied = YES;
@@ -8104,6 +8163,30 @@ float			iwl, iww;
 	updateToBeApplied = YES;
 	subOffset = o;
 }
+*/
+-(float*) subtractedfImage
+{
+	return subtractedfImage;
+}
+
+-(NSPoint) subtractionOffset
+{
+	return subOffset;
+}
+
+- (void) setSubtractedfImage:(float*) s;
+{
+	subtractedfImage = s;
+	updateToBeApplied = YES;
+}
+
+- (void) setSubOffset:(NSPoint) o;
+{
+	subOffset = o;
+	updateToBeApplied = YES;
+}
+
+//---------------------------------------------------------------------------------------------------------------
 
 -(void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 {

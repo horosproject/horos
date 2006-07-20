@@ -3488,25 +3488,35 @@ static long scrollMode;
 	[curDCM changeWLWW :curWL: curWW];
 }
 
-- (void) setSubtraction:(long) imID :(NSPoint) offset
+- (void) setSubtraction:(long) imID
 {
-	long i;
-	
+// imID contains -1 in case of no subtraction or image ID in case of subtraction
+	long i;	
 	for ( i = 0; i < [dcmPixList count]; i ++)
 	{
-		if( imID >= 0)
+		if( imID >= 0) //subtraction asked for, imID = mask index
 		{
-			if( [[dcmPixList objectAtIndex:imID] pheight] == [[dcmPixList objectAtIndex:i] pheight] &&
-				[[dcmPixList objectAtIndex:imID] pwidth] == [[dcmPixList objectAtIndex:i] pwidth])
-				{
+		//	already taken care of in ViewerControler with BOOL enableSubtraction
+		//	if( [[dcmPixList objectAtIndex:imID] pheight] == [[dcmPixList objectAtIndex:i] pheight] &&
+		//		[[dcmPixList objectAtIndex:imID] pwidth] == [[dcmPixList objectAtIndex:i] pwidth])
+		//		{
 					[[dcmPixList objectAtIndex:i] setSubtractedfImage: [[dcmPixList objectAtIndex:imID] fImage]];
-					[[dcmPixList objectAtIndex:i] setSubtractionOffset: offset];
-				}
+		//		}
 		}
-		else
+		else //no subtraction
 		{
 			[[dcmPixList objectAtIndex:i] setSubtractedfImage: 0L];
 		}
+	}
+}
+
+- (void) setSubOffset:(NSPoint) offset
+{
+	//gets here when subtraction is active and a pixelShift was asked for
+	long i;	
+	for ( i = 0; i < [dcmPixList count]; i ++)
+	{
+		[[dcmPixList objectAtIndex:i] setSubOffset: offset];
 	}
 }
 
