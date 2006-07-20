@@ -42,6 +42,8 @@ Version 2.3
 	20060308	RBR	Added test for RTSTRUCT in matrixNewIcon.  Write button icon indicating RTSTRUCT rather than error button.
 	20060309	LP	added databaseWindow: to close all viewers
 	20060607	LP Converted routing to DCMTK
+	20060720	MS	openViewerWithImages caused some problems with large series. App became unstable and crashed from time to time
+					memBlockTestPtr & memBlockSize arrays were limited to 200
 
 */
 
@@ -5863,7 +5865,7 @@ static BOOL needToRezoom;
 		// size of array should be size of toOpenArray - was:
 		// unsigned long		memBlockSize[ 200]; 
 		unsigned long		memBlockSize[[toOpenArray count]]; 
-		unsigned long		memBlockSize[ 200],
+
 		unsigned long		memBlock, mem;
 		long				x, i;
 	//	long				z;
