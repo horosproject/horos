@@ -4676,81 +4676,89 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	}
 	
-	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
-	
-	NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
-	
-	if( [files count] > 1)
-	{
-		if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+	@try
+	{	
+		[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+		
+		NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
+		
+		if( [files count] > 1)
+		{
+			if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+		}
+		
+		for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
+		
+		if( imageLevel)	[managedObjectContext unlock];
+		
+		for( i = 0; i < [files count];i++)
+		{
+			DCMPix*     dcmPix;
+			NSImage		*thumbnail = 0L;
+			BOOL		computeThumbnail = NO;
+			
+			if( StoreThumbnailsInDB && !imageLevel)
+			{
+				thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
+				if( thumbnail == 0L) computeThumbnail = YES;
+			}
+			
+			dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
+			//[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue]
+			
+			if( dcmPix)
+			{
+				if( thumbnail == 0L)
+				{
+					[dcmPix computeWImage:YES :0 :0];
+					if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
+					[dcmPix revert];	// <- Kill the raw data
+				}
+				
+				if( thumbnail == 0L) thumbnail = [dcmPix getImage];
+				if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
+			
+				[previewPixThumbnails addObject: thumbnail];
+				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel)
+				{
+					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+				}
+				[previewPix addObject: dcmPix];
+				
+				[dcmPix release];
+				
+				if (shouldDie == YES)
+				{
+					i = [files count];
+					NSLog(@"LoadPreview should die");
+				}
+			}
+			else
+			{
+				dcmPix = [[DCMPix alloc] myinitEmpty];
+				[previewPix addObject: dcmPix];
+				[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
+				
+				[dcmPix release];
+			}
+		}
+		
+		if( imageLevel == NO)	[managedObjectContext unlock];
+		
+		threadRunning = NO;
+		shouldDie = NO;
+		
+		[item release];
+		
+		[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
+		
+		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
 	}
 	
-	for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
-	
-	if( imageLevel)	[managedObjectContext unlock];
-	
-	for( i = 0; i < [files count];i++)
+	@catch( NSException *ne)
 	{
-		DCMPix*     dcmPix;
-		NSImage		*thumbnail = 0L;
-		BOOL		computeThumbnail = NO;
-		
-		if( StoreThumbnailsInDB && !imageLevel)
-		{
-			thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
-			if( thumbnail == 0L) computeThumbnail = YES;
-		}
-		
-		dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
-		//[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue]
-		
-		if( dcmPix)
-		{
-			if( thumbnail == 0L)
-			{
-				[dcmPix computeWImage:YES :0 :0];
-				if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
-				[dcmPix revert];	// <- Kill the raw data
-			}
-			
-			if( thumbnail == 0L) thumbnail = [dcmPix getImage];
-			if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-		
-			[previewPixThumbnails addObject: thumbnail];
-			if( StoreThumbnailsInDB && computeThumbnail && !imageLevel)
-			{
-				[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
-			}
-			[previewPix addObject: dcmPix];
-			
-			[dcmPix release];
-			
-			if (shouldDie == YES)
-			{
-				i = [files count];
-				NSLog(@"LoadPreview should die");
-			}
-		}
-		else
-		{
-			dcmPix = [[DCMPix alloc] myinitEmpty];
-			[previewPix addObject: dcmPix];
-			[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
-			
-			[dcmPix release];
-		}
+		NSLog(@"matrixLoadIcons exception: %@", [ne description]);
 	}
-	
-	if( imageLevel == NO)	[managedObjectContext unlock];
-	
-    threadRunning = NO;
-    shouldDie = NO;
-	
-	[item release];
-	
-	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
-	
-	[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
 	
     [pool release];
 }
