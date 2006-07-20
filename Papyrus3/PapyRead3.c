@@ -2418,7 +2418,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     
   } /* if ...overlay or UINOverlay group */
   
-  if (inPapyGrNb % 2 != 0) 			/* is it a shadow group ? */
+  if (inPapyGrNb % 2 != 0 && inPapyGrNb != 0x7053) 			/* is it a shadow group ? */
   {
     theShadow = TRUE; 
     
@@ -2426,7 +2426,6 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     for (i = 0; i < 0x00FF; i++) theEnabledShadow [i] = FALSE;
   } /* then */
   else theShadow = FALSE;
-    
   
   theArrElemP = ioGroupP;
   

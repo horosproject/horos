@@ -508,6 +508,9 @@ InitGroupNbAndSize3 ()
  
   gArrGroup [(int) UINOVERLAY].number 	= 0x6001;
   gArrGroup [(int) UINOVERLAY].size	= papEndUINOverlay;
+  
+  gArrGroup [(int) Group7053].number 	= 0x7053;
+  gArrGroup [(int) Group7053].size	= papEndGroup7053;
 
   gArrGroup [(int) Group7FE0].number	= 0x7FE0;
   gArrGroup [(int) Group7FE0].size	= papEndGroup7FE0;
@@ -2698,6 +2701,9 @@ InitGroup3 (int inGroupEnum, SElement *ioElemP)
       break;
     case Group6000 :
       init_group6000 (ioElemP);
+      break;
+	case Group7053 :
+      init_group7053 (ioElemP);
       break;
     case Group7FE0 :
       init_group7FE0 (ioElemP);

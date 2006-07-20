@@ -1372,6 +1372,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								}
 							}
 						}
+						theErr = Papy3GroupFree (&theGroupP, TRUE);
 					}
 				}
 				

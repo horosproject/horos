@@ -18906,6 +18906,39 @@ init_group6000 (SElement ioElem [])
 
 } /* endof init_group6000 */
 
+/********************************************************************************/
+/*										*/
+/*	init_group7053 : initializes the elements of the group 7053		*/
+/*										*/
+/********************************************************************************/
+
+void
+init_group7053 (SElement ioElem [])
+{
+  SElement	*theWrkP;
+
+  theWrkP = &ioElem [papGroupLength];
+  theWrkP->group = 0x7053;
+  theWrkP->element = 0x0000;
+  theWrkP->length = 0L;
+  theWrkP->vr = UL;
+  theWrkP->vm = "1";
+  theWrkP->type_t = RET;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+  
+  theWrkP = &ioElem [papSUVFactor7053Gr];
+  theWrkP->group = 0x7053;
+  theWrkP->element = 0x1000;
+  theWrkP->length = 0L;
+  theWrkP->vr = DS;
+  theWrkP->vm = "1";
+  theWrkP->type_t = T3;
+  theWrkP->nb_val = 0;
+  theWrkP->value = NULL;
+
+} /* endof init_group7053 */
+
 
 /******************************************************************************/
 /*									      */

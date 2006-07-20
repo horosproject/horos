@@ -82,6 +82,7 @@ Group5200,
 Group5400,
 Group6000,
 UINOVERLAY,
+Group7053,
 Group7FE0,
 END_GROUP
 };

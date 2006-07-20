@@ -7320,6 +7320,7 @@ BOOL	lowRes = NO;
 {
 	if( [[blendingView curDCM] SUVConverted]) return blendingPixelMouseValue;
 	
+	if( [[[blendingView curDCM] units] isEqualToString:@"CNTS"]) return blendingPixelMouseValue * [[blendingView curDCM] philipsFactor];
 	return blendingPixelMouseValue * [[blendingView curDCM] patientsWeight] * 1000. / [[blendingView curDCM] radionuclideTotalDoseCorrected];
 }
 
@@ -7327,7 +7328,8 @@ BOOL	lowRes = NO;
 {
 	if( [curDCM SUVConverted]) return pixelMouseValue;
 	
-	return pixelMouseValue * [curDCM patientsWeight] * 1000. / [curDCM radionuclideTotalDoseCorrected];
+	if( [[curDCM units] isEqualToString:@"CNTS"]) return pixelMouseValue * [curDCM philipsFactor];
+	else return pixelMouseValue * [curDCM patientsWeight] * 1000. / [curDCM radionuclideTotalDoseCorrected];
 }
 
 - (float)mouseXPos {

@@ -3322,7 +3322,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 {
 	hasSUV = NO;
 	
-	if ( ![[self units] isEqualToString: @"BQML"] ) return;  // Must be BQ/cc
+	if ( ![[self units] isEqualToString: @"BQML"] && ![[self units] isEqualToString: @"CNTS"] ) return;  // Must be BQ/cc
+	
+	if( [[self units] isEqualToString: @"CNTS"] && philipsFactor == 0.0) return;
 	
 	if ( [self decayCorrection] == nil ) return;
 	
@@ -4109,6 +4111,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
 	}
 	// Loop over sequence to find injected dose
+	
+	if( [dcmObject attributeValueForKey: @"7053,1000"])
+	{
+		philipsFactor = [[NSString stringWithUTF8String:[[dcmObject attributeValueForKey: @"7053,1000"] bytes]] floatValue];
+		NSLog( @"philipsFactor = %f", philipsFactor);
+	}
+	
 	// End SUV		
 	
 	// Compute normal vector
@@ -5564,6 +5573,23 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					}
 				}
 			}
+			err = Papy3GroupFree (&theGroupP, TRUE);
+		}
+		
+		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x7053);
+		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+		{
+			val = Papy3GetElement (theGroupP, papSUVFactor7053Gr, &nbVal, &elemType);
+			
+			if( nbVal > 0)
+			{
+				if( val->a)
+				{
+					philipsFactor = [[NSString stringWithCString: val->a] floatValue];
+					NSLog( @"philipsFactor = %f", philipsFactor);
+				}
+			}
+			err = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
 		// Compute normal vector
@@ -8260,6 +8286,11 @@ float			iwl, iww;
 - (void) setSUVConverted: (BOOL) v
 {
 	SUVConverted = v;
+}
+
+- (float) philipsFactor
+{
+	return philipsFactor;
 }
 
 - (BOOL) hasSUV

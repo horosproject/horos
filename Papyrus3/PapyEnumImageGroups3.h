@@ -2094,6 +2094,14 @@ papUINOverlaySequenceGr,
 papEndUINOverlay
 };
 
+/*	7053	 Group 7053 */
+
+enum {
+/* papGroupLength */
+papSUVFactor7053Gr = 1,
+papEndGroup7053
+};
+
 /*	Group7FE0		*/
 
 enum {

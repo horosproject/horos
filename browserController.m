@@ -4676,10 +4676,11 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	}
 	
+	
+	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+	
 	@try
-	{	
-		[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
-		
+	{
 		NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
 		
 		if( [files count] > 1)
@@ -4749,8 +4750,7 @@ static BOOL COMPLETEREBUILD = NO;
 		shouldDie = NO;
 		
 		[item release];
-		
-		[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
+		item = 0L;
 		
 		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
 	}
@@ -4758,7 +4758,11 @@ static BOOL COMPLETEREBUILD = NO;
 	@catch( NSException *ne)
 	{
 		NSLog(@"matrixLoadIcons exception: %@", [ne description]);
+		[managedObjectContext unlock];
+		[item release];
 	}
+	
+	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
     [pool release];
 }

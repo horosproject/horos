@@ -45,7 +45,7 @@
     char                *baseAddr;
     
     long                height, width, rowBytes;
-    float				ww, wl;
+    float				ww, wl, philipsFactor;
 	long				imID, imTot;
 	float				fullww, fullwl;
     float               sliceInterval, pixelSpacingX, pixelSpacingY, sliceLocation, sliceThickness, pixelRatio;
@@ -240,6 +240,8 @@
 - (void) setMaxValueOfSeries: (float) f;
 
 // Accessor methods needed for SUV calculations
+
+-(float) philipsFactor;
 
 -(float) patientsWeight;
 -(void) setPatientsWeight : (float) v;

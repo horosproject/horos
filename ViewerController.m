@@ -6711,11 +6711,14 @@ int i,j,l;
 	
 	if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
 	if( [[imageView curDCM] patientsWeight] <= 0) return;
+	if( [[imageView curDCM] hasSUV] == NO) return;
 	
 	if( [[imageView curDCM] SUVConverted] == NO)
 	{
 		updatewlww = YES;
-		updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
+		
+		if( [[[imageView curDCM] units] isEqualToString:@"CNTS"]) updatefactor = [[imageView curDCM] philipsFactor];
+		else updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
 	}
 	
 	maxValueOfSeries = 0;
@@ -6729,7 +6732,12 @@ int i,j,l;
 			if( [pix SUVConverted] == NO)
 			{
 				float	*imageData = [pix fImage];
-				float	factor = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
+				float	factor;
+				if( [[pix units] isEqualToString:@"CNTS"])	// Philips
+				{
+					factor = [pix philipsFactor];
+				}
+				else factor = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
 				
 				i = [pix pheight] * [pix pwidth];
 				
