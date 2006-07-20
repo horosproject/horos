@@ -62,6 +62,8 @@
 - (IBAction)setParameterValue:(id)sender;
 - (IBAction)resetParametersSliders:(id)sender;
 - (IBAction)defaultValuesParametersSliders:(id)sender;
+- (IBAction)saveParametersValuesAsDefault:(id)sender;
+- (void)setInitialDefaultParametersValues;
 - (int)injectedMinValue;
 - (int)injectedMaxValue;
 - (int)notInjectedMinValue;

@@ -98,13 +98,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	yShift = 0;
 	zShift = 0;
 	
-	injectedMinValue = 10;
-	injectedMaxValue = 500;
-	notInjectedMinValue = -30;
-	notInjectedMaxValue = 100;
-	subtractionMinValue = 20;
-	subtractionMaxValue = 500;
-	
+	[self setInitialDefaultParametersValues];
+		
 	closingRadius = 2;
 	displayBones = NO;
 	bonesThreshold = 200;
@@ -1342,12 +1337,13 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (IBAction)defaultValuesParametersSliders:(id)sender;
 {
-	[injectedMinValueSlider setIntValue:10];
-	[injectedMaxValueSlider setIntValue:500];
-	[notInjectedMinValueSlider setIntValue:0];
-	[notInjectedMaxValueSlider setIntValue:100];
-	[subtractionMinValueSlider setIntValue:20];
-	[subtractionMaxValueSlider setIntValue:500];
+	NSDictionary *defaultValues = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"];
+	[injectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMinValue"] intValue]];
+	[injectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMaxValue"] intValue]];
+	[notInjectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMinValue"] intValue]];
+	[notInjectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMaxValue"] intValue]];
+	[subtractionMinValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMinValue"] intValue]];
+	[subtractionMaxValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMaxValue"] intValue]];
 	
 	[injectedMinValueSlider setNeedsDisplay:YES];
 	[injectedMaxValueSlider setNeedsDisplay:YES];
@@ -1357,6 +1353,44 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[subtractionMaxValueSlider setNeedsDisplay:YES];
 	
 	[self setParameterValue:self];
+}
+
+- (IBAction)saveParametersValuesAsDefault:(id)sender;
+{
+	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
+	
+	[parametersValues setValue:[NSNumber numberWithInt:[injectedMinValueSlider intValue]] forKey:@"injectedMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:[injectedMaxValueSlider intValue]] forKey:@"injectedMaxValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMinValueSlider intValue]] forKey:@"notInjectedMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMaxValueSlider intValue]] forKey:@"notInjectedMaxValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMinValueSlider intValue]] forKey:@"subtractionMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMaxValueSlider intValue]] forKey:@"subtractionMaxValue"];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
+}
+
+- (void)setInitialDefaultParametersValues;
+{
+	injectedMinValue = 10;
+	injectedMaxValue = 500;
+	notInjectedMinValue = -30;
+	notInjectedMaxValue = 100;
+	subtractionMinValue = 20;
+	subtractionMaxValue = 500;
+
+	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"])
+		return;
+		
+	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
+	
+	[parametersValues setValue:[NSNumber numberWithInt:injectedMinValue] forKey:@"injectedMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:injectedMaxValue] forKey:@"injectedMaxValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMinValue] forKey:@"notInjectedMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMaxValue] forKey:@"notInjectedMaxValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:subtractionMinValue] forKey:@"subtractionMinValue"];
+	[parametersValues setValue:[NSNumber numberWithInt:subtractionMaxValue] forKey:@"subtractionMaxValue"];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
 }
 
 - (int)injectedMinValue;

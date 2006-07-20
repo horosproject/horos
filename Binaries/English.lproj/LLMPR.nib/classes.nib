@@ -37,10 +37,12 @@
         }, 
         {
             ACTIONS = {
+                blendingPropagate = id; 
                 defaultValuesParametersSliders = id; 
                 produce3DResult = id; 
                 produceResultInMemory = id; 
                 resetParametersSliders = id; 
+                saveParametersValuesAsDefault = id; 
                 setBonesThreshold = id; 
                 setClosingRadius = id; 
                 setDilatationRadius = id; 
@@ -66,9 +68,9 @@
                 notInjectedMinValueSlider = NSSlider; 
                 notInjectedMinValueTextField = NSTextField; 
                 parametersPanel = NSPanel; 
-                subtractedOriginalView = DCMView; 
-                subtractedXReslicedView = DCMView; 
-                subtractedYReslicedView = DCMView; 
+                subtractedOriginalView = LLDCMView; 
+                subtractedXReslicedView = LLDCMView; 
+                subtractedYReslicedView = LLDCMView; 
                 subtractionMaxValueSlider = NSSlider; 
                 subtractionMaxValueTextField = NSTextField; 
                 subtractionMinValueSlider = NSSlider; 
