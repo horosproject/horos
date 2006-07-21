@@ -73,6 +73,7 @@
 - (IBAction)save:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (IBAction)showKeyImages:(id)sender;
+- (IBAction)addKeyImages:(id)sender;
 - (IBAction)printDocument:(id)sender;
 
 - (int)exportStyle;

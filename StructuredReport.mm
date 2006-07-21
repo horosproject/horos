@@ -354,9 +354,11 @@
 - (NSArray *)keyImages{
 	return _keyImages;
 }
+
 - (void)setKeyImages:(NSArray *)keyImages{
 	[_keyImages release];
 	_keyImages = [keyImages retain];
+	[self setComplete:NO];
 }
 
 - (NSDate *)contentDate{
@@ -665,19 +667,21 @@
 
 - (NSArray *)referencedObjects{
 	NSMutableArray *references = [NSMutableArray array];
+	NSArray *imagesArray = nil;
+	NS_DURING
 	DSRDocumentTreeNode *node = NULL; 
-		//DSRDocumentTree  *tree = doc->getTree();
 		/* iterate over all nodes */ 
 	do { 
             node = OFstatic_cast(DSRDocumentTreeNode *, _doc->getTree().getNode()); 
             if (node->getValueType() == DSRTypes::VT_Image) {
 			//image node get SOPCInstance
-			DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
-			OFString sopInstance = imageNode->getSOPInstanceUID();
-			NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
-			if (uid)
-				[references addObject:uid];
-			
+				DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
+				OFString sopInstance = imageNode->getSOPInstanceUID();
+				if (!sopInstance.empty()) {
+					NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
+					if (uid)
+						[references addObject:uid];
+				}			
 			}
 	} while (_doc->getTree().iterate()); 
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
@@ -686,7 +690,7 @@
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
 	NSPredicate *predicate = [NSPredicate predicateWithValue:NO];
 	NSError *error = 0L;
-	NSArray *imagesArray = nil;
+	
 	NSEnumerator *enumerator = [references objectEnumerator];
 	id reference;
 	while (reference = [enumerator nextObject]){
@@ -694,7 +698,8 @@
 	}
 	[dbRequest setPredicate: predicate];
 	imagesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
-	//NSLog (@"keyImages: %@", [imagesArray description]);
+	NS_HANDLER
+	NS_ENDHANDLER
 	return imagesArray;
 }
 

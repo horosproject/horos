@@ -4166,6 +4166,9 @@
 		BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
 		BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763C0677FDA700F242F3 /* tagDictionary.plist */; };
 		BFEB767F0678071400F242F3 /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB767E0678071400F242F3 /* DCMUIDs.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
+		BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
+		BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
 		BFF27D4C0787AEC400D8766D /* DCMMoveSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1700785D70A00806344 /* DCMMoveSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
 		BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8920,6 +8923,23 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFE2C9A20A6BFCBB00D73142 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFE2C9A30A6BFCBB00D73142 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -11173,6 +11193,7 @@
 		BFEB763B0677FDA700F242F3 /* nameDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = nameDictionary.plist; sourceTree = "<group>"; };
 		BFEB763C0677FDA700F242F3 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = tagDictionary.plist; sourceTree = "<group>"; };
 		BFEB767E0678071400F242F3 /* DCMUIDs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMUIDs.h; sourceTree = "<group>"; };
+		BFED84AA0A717E2500119174 /* smallKeyPlus.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKeyPlus.tif; sourceTree = "<group>"; };
 		BFF5D23E09F93B3F0077E16B /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogManager.h; sourceTree = "<group>"; };
 		BFF5D23F09F93B3F0077E16B /* LogManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LogManager.mm; sourceTree = "<group>"; };
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
@@ -13878,6 +13899,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				BFED84AA0A717E2500119174 /* smallKeyPlus.tif */,
 				AB7CB7B30A6E3922008DFCC9 /* smile.png */,
 				AB7CB7AF0A6E3886008DFCC9 /* error.png */,
 				BF8449020A65F407000E9830 /* smallKey.tif */,
@@ -22849,6 +22871,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFE2C9A20A6BFCBB00D73142 /* Development */,
+				BFE2C9A30A6BFCBB00D73142 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -23293,6 +23321,7 @@
 				AB7CB7B60A6E3922008DFCC9 /* smile.png in Resources */,
 				A95B98AC0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
+				BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23572,6 +23601,7 @@
 				AB7CB7B50A6E3922008DFCC9 /* smile.png in Resources */,
 				A95B98B00A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98B10A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
+				BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23851,6 +23881,7 @@
 				AB7CB7B40A6E3922008DFCC9 /* smile.png in Resources */,
 				A95B98AE0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
+				BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,6 +40,7 @@ extern AppController *appController;
 static NSString *ViewControlToolbarItem = @"viewControl";
 static NSString *SRToolbarIdentifier = @"SRWindowToolbar";
 static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
+static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 
 
 @implementation StructuredReportController
@@ -179,6 +180,14 @@ static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
 		[toolbarItem setToolTip: NSLocalizedString(@"View Key Images", nil)];
 		[toolbarItem setAction:@selector(showKeyImages:)];
 	}
+		else if ([itemIdent isEqualToString: addKeyImagesToolbarIdentifier]) {
+		[toolbarItem setImage:[NSImage imageNamed:addKeyImagesToolbarIdentifier]];
+		[toolbarItem setLabel: NSLocalizedString(@"Add Key Images", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Add Key Images Button", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Add Key Images", nil)];
+		[toolbarItem setAction:@selector(addKeyImages:)];
+	}
+	
 	return [toolbarItem autorelease];
 }
 
@@ -186,14 +195,14 @@ static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
     // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
-	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier, nil];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier,addKeyImagesToolbarIdentifier, nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
     // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
     // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
     // The set of allowed items is used to construct the customization palette 
-	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier, nil];
+	return [NSArray arrayWithObjects:ViewControlToolbarItem, NSToolbarPrintItemIdentifier, keyImagesToolbarIdentifier, addKeyImagesToolbarIdentifier, nil];
 }
 
 - (IBAction)export:(id)sender{
@@ -246,6 +255,10 @@ static NSString *keyImagesToolbarIdentifier = @"smallKey.tif";
 	NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
 	[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	
 	[NSApp sendAction: @selector(tileWindows:) to:0L from: browser];
+}
+
+- (IBAction)addKeyImages:(id)sender{
+	[_report setKeyImages:[(NSSet *)[_study keyImages] allObjects]];
 }
 
 - (IBAction)printDocument:(id)sender{
