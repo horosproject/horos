@@ -30,8 +30,10 @@ Version 2.3
 #import "MutableArrayCategory.h"
 
 #import  "BrowserController.h"
+
 extern BrowserController  *browserWindow;
 
+NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
 
@@ -196,8 +198,8 @@ extern BrowserController  *browserWindow;
 		[cdName release];
 		//if ([title length] > 8)
 		//	title = [title substringToIndex:8];
-		cdName = [title retain];
-		[nameField setStringValue:cdName];
+		cdName = [asciiString(title) retain];
+		[nameField setStringValue: cdName];
 	}
 }
 
