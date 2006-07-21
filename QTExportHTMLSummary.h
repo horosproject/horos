@@ -13,7 +13,7 @@ extern NSString* asciiString (NSString* name);
 @interface QTExportHTMLSummary : NSObject {
 	NSString *patientsListTemplate, *examsListTemplate; // whole template
 	NSDictionary *patientsDictionary;
-	NSString *rootPath;
+	NSString *rootPath, *footerString;
 }
 
 +(NSString*)nonNilString:(NSString*)aString;

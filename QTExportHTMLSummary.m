@@ -22,6 +22,7 @@ extern NSString *documentsDirectory();
 	if (![super init])
 		return;
 	[self readTemplates];
+	footerString = NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display the images",nil);
 	return self;
 }
 
@@ -42,7 +43,7 @@ extern NSString *documentsDirectory();
 	// simple replacements
 	[tempPatientHTML replaceOccurrencesOfString:@"%page_title%" withString:NSLocalizedString(@"Patients list",nil) options:NSLiteralSearch range:NSMakeRange(0, [tempPatientHTML length])];
 	[tempPatientHTML replaceOccurrencesOfString:@"%patient_list_string%" withString:NSLocalizedString(@"Patients list",nil) options:NSLiteralSearch range:NSMakeRange(0, [tempPatientHTML length])];
-	[tempPatientHTML replaceOccurrencesOfString:@"%footer_string%" withString:NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a>",nil) options:NSLiteralSearch range:NSMakeRange(0, [tempPatientHTML length])];
+	[tempPatientHTML replaceOccurrencesOfString:@"%footer_string%" withString:footerString options:NSLiteralSearch range:NSMakeRange(0, [tempPatientHTML length])];
 	
 	NSLog(@"look for the patients list html structure");
 	// look for the patients list html structure
@@ -87,7 +88,7 @@ extern NSString *documentsDirectory();
 	// simple replacements
 	[tempExamsHTML replaceOccurrencesOfString:@"%patient_name%" withString:[QTExportHTMLSummary nonNilString:[[series objectAtIndex:0] valueForKeyPath:@"study.name"]] options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
 	[tempExamsHTML replaceOccurrencesOfString:@"%patient_dateOfBirth%" withString:[QTExportHTMLSummary nonNilString:[[[series objectAtIndex:0] valueForKeyPath:@"study.dateOfBirth"] descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey:NSShortDateFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]] options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
-	[tempExamsHTML replaceOccurrencesOfString:@"%footer_string%" withString:NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a>",nil) options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
+	[tempExamsHTML replaceOccurrencesOfString:@"%footer_string%" withString:footerString options:NSLiteralSearch range:NSMakeRange(0, [tempExamsHTML length])];
 	
 	// look for the study html block structure
 	NSArray *components = [tempExamsHTML componentsSeparatedByString:@"%study_i_start%"];
