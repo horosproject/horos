@@ -2637,8 +2637,6 @@ static BOOL COMPLETEREBUILD = NO;
 			albumArrayContent = [[album valueForKey:@"studies"] allObjects];
 			description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
 		}
-		
-		filtered = YES;
 	}
 	else description = [description stringByAppendingFormat:NSLocalizedString(@"No album selected", nil)];
 	
@@ -2692,8 +2690,10 @@ static BOOL COMPLETEREBUILD = NO;
 		if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
 		else outlineViewArray = [context executeFetchRequest:request error:&error];
 		
-		if( [albumNoOfStudiesCache count] > [albumTable selectedRow])
+		if( [albumNoOfStudiesCache count] > [albumTable selectedRow] && filtered == NO)
+		{
 			[albumNoOfStudiesCache replaceObjectAtIndex:[albumTable selectedRow] withObject:[NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]]];
+		}
 	}
 	
 	@catch( NSException *ne)
@@ -2702,6 +2702,8 @@ static BOOL COMPLETEREBUILD = NO;
 		[request setPredicate: [NSPredicate predicateWithValue:YES]];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
 	}
+	
+	if( [albumTable selectedRow] > 0) filtered = YES;
 	
 	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0 && [outlineViewArray count] < 300)
 	{
