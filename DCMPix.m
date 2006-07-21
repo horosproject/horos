@@ -868,7 +868,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
   long			loop, size;
   unsigned char		*pYBR, *pRGB;
   unsigned char		*theRGB;
-  int			y, y1, b, r;
+  int			y, y1, r;
   
   
   // the planar configuration should be set to 0 whenever
@@ -882,6 +882,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
   pRGB = theRGB;
   size = (long) w * (long) h;
   
+  int32_t R, G, B;
+   uint8_t a;
+   uint8_t b;
+   uint8_t c;
+
+  
   switch (planarConfig)
   {
     case 0 : // all pixels stored one after the other
@@ -892,20 +898,40 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
           for (loop = 0L, pYBR = ybrImage; loop < size; loop++, pYBR += 3)
           {
             // get the Y, B and R channels from the original image
-            y = (int) pYBR [0];
+//            y = (int) pYBR [0];
+//            b = (int) pYBR [1];
+//            r = (int) pYBR [2];
+
+			a = (int) pYBR [0];
             b = (int) pYBR [1];
-            r = (int) pYBR [2];
-            
+            c = (int) pYBR [2];
+
+         R = 38142 *(a-16) + 52298 *(c -128);
+         G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+         B = 38142 *(a-16) + 66093 *(b -128);
+
+         R = (R+16384)>>15;
+         G = (G+16384)>>15;
+         B = (B+16384)>>15;
+
+         if (R < 0)   R = 0;
+         if (G < 0)   G = 0;
+         if (B < 0)   B = 0;
+         if (R > 255) R = 255;
+         if (G > 255) G = 255;
+         if (B > 255) B = 255;
+
+
             // red
-            *pRGB = (unsigned char) (y + (1.402 *  r));
+            *pRGB = R;	//(unsigned char) (y + (1.402 *  r));
             pRGB++;	// move the ptr to the Green
             
             // green
-            *pRGB = (unsigned char) (y - (0.344 * b) - (0.714 * r));
+            *pRGB = G;	//(unsigned char) (y - (0.344 * b) - (0.714 * r));
             pRGB++;	// move the ptr to the Blue
             
             // blue
-            *pRGB = (unsigned char) (y + (1.772 * b));
+            *pRGB = B;	//(unsigned char) (y + (1.772 * b));
             pRGB++;	// move the ptr to the next Red
             
           } // for ...loop on the elements of the image to convert
@@ -974,16 +1000,36 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
       // loop on the pixels of the image
       for (loop = 0L; loop < size; loop++, pY++, pB++, pR++)
       {
+		a = (int) *pY;
+		b = (int) *pB;
+		c = (int) *pR;
+
+         R = 38142 *(a-16) + 52298 *(c -128);
+         G = 38142 *(a-16) - 26640 *(c -128) - 12845 *(b -128);
+         B = 38142 *(a-16) + 66093 *(b -128);
+
+         R = (R+16384)>>15;
+         G = (G+16384)>>15;
+         B = (B+16384)>>15;
+
+         if (R < 0)   R = 0;
+         if (G < 0)   G = 0;
+         if (B < 0)   B = 0;
+         if (R > 255) R = 255;
+         if (G > 255) G = 255;
+         if (B > 255) B = 255;
+	  
+	  
         // red
-        *pRGB = (unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
+        *pRGB = R;	//(unsigned char) ((int) *pY + (1.402 *  (int) *pR) - 179.448);
         pRGB++;	// move the ptr to the Green
             
         // green
-        *pRGB = (unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
+        *pRGB = G;	//(unsigned char) ((int) *pY - (0.344 * (int) *pB) - (0.714 * (int) *pR) + 135.45);
         pRGB++;	// move the ptr to the Blue
             
         // blue
-        *pRGB = (unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
+        *pRGB = B;	//(unsigned char) ((int) *pY + (1.772 * (int) *pB) - 226.8);
         pRGB++;	// move the ptr to the next Red
             
       } // for ...loop on the elements of the image to convert
