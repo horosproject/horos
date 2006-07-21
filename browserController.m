@@ -8334,6 +8334,9 @@ static NSArray*	openSubSeriesArray = 0L;
 			if(createHTML)
 			{
 				NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
+				if(!thumbnail)
+					thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Empty.tif"]];
+
 				if( thumbnail)
 				{
 					NSData *bitmapData = 0L;
