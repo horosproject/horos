@@ -64,7 +64,7 @@ extern NSString *documentsDirectory();
 	while (series = [enumerator nextObject])
 	{
 		tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
-		linkToPatientPage = [[[series objectAtIndex:0] valueForKeyPath:@"study.name"] stringByAppendingString:@"/index.html"];
+		linkToPatientPage = [ asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingString:@"/index.html"];
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_page%" withString:[QTExportHTMLSummary nonNilString:linkToPatientPage] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 		patientName = [[series objectAtIndex:0] valueForKeyPath:@"study.name"];
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_name%" withString:[QTExportHTMLSummary nonNilString:patientName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
@@ -112,8 +112,8 @@ extern NSString *documentsDirectory();
 	int i, imagesCount = 0;
 	long previousSeries = -1;
 	
-	NSMutableString *fileName, *seriesName, *thumbnailName;
-	NSString *studyDate, *studyTime;
+	NSMutableString *fileName, *thumbnailName;
+	NSString *studyDate, *studyTime, *seriesName;
 	NSString *extension;
 
 	BOOL lastImageOfSeries, lastImageOfStudy;
@@ -133,9 +133,8 @@ extern NSString *documentsDirectory();
 		
 		if(lastImageOfSeries)
 		{
-			seriesName = [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKeyPath: @"name"]];
-			[seriesName replaceOccurrencesOfString:@"/" withString:@"_" options:NSLiteralSearch range:NSMakeRange(0, [seriesName length])];
-			fileName = [NSMutableString stringWithFormat:@"%@ - %@", [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"], [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
+			seriesName = asciiString( [NSMutableString stringWithString:[[series objectAtIndex:i] valueForKeyPath: @"name"]]);
+			fileName = [NSMutableString stringWithFormat:@"%@ - %@", asciiString( [[series objectAtIndex:i] valueForKeyPath:@"study.studyName"]), [[series objectAtIndex:i] valueForKeyPath:@"study.id"]];
 			[fileName appendFormat:@"/%@_%@", seriesName, [[series objectAtIndex:i] valueForKeyPath: @"id"]];
 			
 			thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
@@ -210,13 +209,12 @@ extern NSString *documentsDirectory();
 	
 	NSEnumerator *enumerator = [patientsDictionary objectEnumerator];
 	id series;
-	NSMutableString *seriesName;
+	NSString *seriesName;
 	int i =0;
 	while (series = [enumerator nextObject])
 	{
 		i++;
-		seriesName = [NSMutableString stringWithString:[[series objectAtIndex:0] valueForKeyPath: @"study.name"]];
-		[seriesName replaceOccurrencesOfString:@"/" withString:@"_" options:NSLiteralSearch range:NSMakeRange(0, [seriesName length])];
+		seriesName = asciiString( [NSMutableString stringWithString:[[series objectAtIndex:0] valueForKeyPath: @"study.name"]]);
 		NSString *htmlContent = [self fillStudiesListTemplatesForSeries:series];
 		[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/index.html",seriesName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
 	}

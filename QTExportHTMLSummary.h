@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString* asciiString (NSString* name);
+
 @interface QTExportHTMLSummary : NSObject {
 	NSString *patientsListTemplate, *examsListTemplate; // whole template
 	NSDictionary *patientsDictionary;

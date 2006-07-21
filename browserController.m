@@ -302,6 +302,18 @@ BOOL GetAdditionalVolumeInfo(char *bsdName)
 	return result;
 }
 
+NSString* asciiString (NSString* name)
+{
+	NSMutableString	*outString;
+
+	NSData		*asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+	
+	outString = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
+	[outString replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [outString length])];
+	
+	return outString;
+}
+
 @interface BrowserController (private)
 
 - (NSString*) _findFirstDicomdirOnCDMedia: (NSString*)startDirectory found:(BOOL) found;
@@ -5865,7 +5877,6 @@ static BOOL needToRezoom;
 		// size of array should be size of toOpenArray - was:
 		// unsigned long		memBlockSize[ 200]; 
 		unsigned long		memBlockSize[[toOpenArray count]]; 
-
 		unsigned long		memBlock, mem;
 		long				x, i;
 	//	long				z;
@@ -8261,7 +8272,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
 		NSString *extension = 0L;
 		
-		tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"]];
+		tempPath = [path stringByAppendingPathComponent: asciiString( [curImage valueForKeyPath: @"series.study.name"])];
 		
 		NSMutableArray *htmlExportSeriesArray;
 		if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]])
@@ -8291,7 +8302,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			}
 		}
 		
-		tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
+		tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]];
 		if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
 		{
 			previousStudy = [curImage valueForKeyPath: @"series.study.id"];
@@ -8301,7 +8312,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		// Find the STUDY folder
 		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		
-		NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+		NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
 		[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
 		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
@@ -8625,7 +8636,7 @@ static NSArray*	openSubSeriesArray = 0L;
 					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
 				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 				
 				[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
 				[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
