@@ -818,8 +818,8 @@ NSRect screenFrame()
     i = [presetsMenu numberOfItems];
     while(i-- > 0) [presetsMenu removeItemAtIndex:0];   
 	
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""]; 
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+	[presetsMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"]; 
+	[presetsMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
 	[presetsMenu addItemWithTitle:NSLocalizedString(@"Other", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
 	[presetsMenu addItem: [NSMenuItem separatorItem]];
 	
