@@ -6224,12 +6224,12 @@ BOOL            readable = YES;
 				success = [self 
 				loadDICOMPapyrus];
 				//only try again if is strict DICOM
-				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
 			}
 			else{
 				success = [self loadDICOMDCMFramework];
-				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
+				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:srcFile]])
 					success = [self loadDICOMPapyrus];
 			}
 			
