@@ -3743,15 +3743,23 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	int				elemType, depth, pixmin, pixmax, realwidth, realheight, j;
-	BOOL			fSetClut = NO, fSetClut16 = NO;
-	unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	int					elemType, depth, pixmin, pixmax, realwidth, realheight, j;
+	BOOL				fSetClut = NO, fSetClut16 = NO;
+	unsigned char		*clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
 	unsigned short		clutEntryR, clutEntryG, clutEntryB;
 	unsigned short		clutDepthR, clutDepthG, clutDepthB;
-	short imageNb = frameNo;
-	unsigned short	*shortRed, *shortGreen, *shortBlue;
+	short				imageNb = frameNo, ee, maxFrame = 1;
+	unsigned short		*shortRed, *shortGreen, *shortBlue;
 	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);
+	
+	if( pixArray != 0L && frameNo > 0)
+	{
+		while( fImage == 0L) {};
+		[pool release];
+		return YES;
+	}
+
 	
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 	if ( dcmObject == nil ) {
@@ -4152,7 +4160,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( oData) free( oData);
 			oData = malloc( oRows*oColumns);
 			
-			unsigned short *pixels = [data bytes];
+			unsigned short *pixels = (unsigned short*) [data bytes];
 			char			valBit [ 16];
 			char			mask = 1;
 			int				i, x;
@@ -4234,318 +4242,344 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		sliceLocation = originZ;
 	}
 	
-	//get PixelData
-	if ([dcmObject attributeValueWithName:@"PixelData"]) {
-		DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
-		NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
-		oImage =  malloc([pixData length]);			
-		[pixData getBytes:oImage];
-		//NSLog(@"image size: %d", ( height * width * 2));
-		//NSLog(@"Data size: %d", [pixData length]);
-		
-	}
-	if( oImage == 0L)
-		//create empty image
+	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
+	
+	if( pixArray == 0L) maxFrame = 1;
+	
+	for( ee = 0; ee < maxFrame; ee++)
 	{
-		NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-		//NSLog(@"image size: %d", ( height * width * 2));
-		oImage = malloc( height * width * 2);
-		//gArrPhotoInterpret [fileNb] = MONOCHROME2;
-		int i = 0;
-		long yo = 0;
-		for( i = 0 ; i < height * width; i++)
-		{
-			oImage[ i] = yo++;
-			if( yo>= width) yo = 0;
-		}
-	}
-	isRGB = NO;
-	inverseVal = NO;
-	
-	NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];
-	if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound){
-		inverseVal = YES;
-		savedWL = -savedWL;
-	}
-	/*
-	 else if ( [colorspace hasPrefix:@"MONOCHROME2"]){
-		 inverseVal = NO;
-		 savedWL = savedWL;
-	 }
-	 */
-	if ( [colorspace hasPrefix:@"YBR"])
-		isRGB = YES;
-	
-	if ( [colorspace hasPrefix:@"PALETTE"]) {	
-		//converted to 8 bit by Dcm Framework
-		depth = 8;
-		isRGB = YES;
-		NSLog(@"Palette depth conveted to 8 bit");
-	}
-	if ([colorspace rangeOfString:@"RGB"].location != NSNotFound){
-		isRGB = YES;	
-	}
-	
-	/******** dcm Object will do this **********/
-	
-	if ([colorspace rangeOfString:@"YBR"].location != NSNotFound){
-		fPlanarConf = 0;	//convertYbrToRgb -> planar is converted
-		isRGB = YES;
-	}
-	
-	if (isRGB == YES)
-	{
-		//NSLog(@"is RGB");		
-		unsigned char   *ptr, *tmpImage;
-		long			loop, totSize;
+		NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
 		
-		isRGB = YES;
+		DCMPix	*imPix = 0L;
 		
-		// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
-		//NSLog(@"height %d width %d loop should be: %d", height , realwidth, (long) height * (long) realwidth);
-		totSize = (long) ((long) height * (long) realwidth * 4L);
-		tmpImage = malloc (totSize);
-		ptr   = tmpImage;
-		loop = totSize/4;
-		//NSLog(@"loop %d", loop);
-		//loop = (long) height * (long) realwidth;
-		if( depth > 8) // RGB - 16 bits
+		if( maxFrame > 1)
 		{
-			unsigned short   *bufPtr;
-			bufPtr = (unsigned short*) oImage;
-			{
-				while( loop-- > 0)
-				{
-					*ptr++	= 255;			//ptr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-												//if (loop % 5000 == 0)
-												//NSLog(@"loop: %d", loop);
-				}
-			}
+			imPix = [pixArray objectAtIndex: ee];
+			[imPix copyFromOther: self];
 		}
 		else
 		{
-			//NSLog(@"Convert to ARGB 8 bit");
-			unsigned char   *bufPtr;
-			bufPtr = (unsigned char*) oImage;
+			imPix = self;
+			ee = imageNb;
+		}
+		
+		//get PixelData
+		if ([dcmObject attributeValueWithName:@"PixelData"]) {
+			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
+			NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
+			//NSLog( @"%d %d", ee, [pixData length]);
+			oImage =  malloc([pixData length]);	
+			[pixData getBytes:oImage];
+			//NSLog(@"image size: %d", ( height * width * 2));
+			//NSLog(@"Data size: %d", [pixData length]);
+			
+		}
+		if( oImage == 0L)
+			//create empty image
+		{
+			NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
+			//NSLog(@"image size: %d", ( height * width * 2));
+			oImage = malloc( height * width * 2);
+			//gArrPhotoInterpret [fileNb] = MONOCHROME2;
+			int i = 0;
+			long yo = 0;
+			for( i = 0 ; i < height * width; i++)
 			{
-				//loop = totSize/4;
-				while( loop-- > 0)
-				{
-					*ptr++	= 255;			//ptr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-					*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
-				}
+				oImage[ i] = yo++;
+				if( yo>= width) yo = 0;
 			}
 		}
-		free(oImage);
-		oImage = (short*) tmpImage;
-	}			
-	else if( depth == 8)	// Black & White 8 bit image -> 16 bits image
-	{
-		unsigned char   *bufPtr;
-		short			*ptr, *tmpImage;
-		long			loop, totSize;
+		isRGB = NO;
+		inverseVal = NO;
 		
-		totSize = (long) ((long) height * (long) realwidth * 2L);
-		tmpImage = malloc( totSize);
-		
-		bufPtr = (unsigned char*) oImage;
-		ptr    = tmpImage;
-		
-		loop = totSize/2;
-		while( loop-- > 0)
-		{
-			*ptr++ = *bufPtr++;
-			//	ptr++; bufPtr ++;
+		NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];
+		if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound){
+			inverseVal = YES;
+			savedWL = -savedWL;
 		}
-		free(oImage);
-		//efree3 ((void **) &oImage);
-		oImage =  (short*) tmpImage;
-	}
-	
-	if( realwidth != width)
-	{
-		//NSLog(@"Update width: %d realWidth: %d ", width, realwidth);
-		if( isRGB)
-		{
-			int i;
-			char	*ptr = (char*) oImage;
-			for( i = 0; i < height;i++)
-			{
-				memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
-			}
+		/*
+		 else if ( [colorspace hasPrefix:@"MONOCHROME2"]){
+			 inverseVal = NO;
+			 savedWL = savedWL;
+		 }
+		 */
+		if ( [colorspace hasPrefix:@"YBR"])
+			isRGB = YES;
+		
+		if ( [colorspace hasPrefix:@"PALETTE"]) {	
+			//converted to 8 bit by Dcm Framework
+			depth = 8;
+			isRGB = YES;
+			NSLog(@"Palette depth conveted to 8 bit");
 		}
-		else
+		if ([colorspace rangeOfString:@"RGB"].location != NSNotFound){
+			isRGB = YES;	
+		}
+		
+		/******** dcm Object will do this **********/
+		
+		if ([colorspace rangeOfString:@"YBR"].location != NSNotFound){
+			fPlanarConf = 0;	//convertYbrToRgb -> planar is converted
+			isRGB = YES;
+		}
+		
+		if (isRGB == YES)
 		{
-			if( depth == 32)
+			//NSLog(@"is RGB");		
+			unsigned char   *ptr, *tmpImage;
+			long			loop, totSize;
+			
+			isRGB = YES;
+			
+			// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
+			//NSLog(@"height %d width %d loop should be: %d", height , realwidth, (long) height * (long) realwidth);
+			totSize = (long) ((long) height * (long) realwidth * 4L);
+			tmpImage = malloc (totSize);
+			ptr   = tmpImage;
+			loop = totSize/4;
+			//NSLog(@"loop %d", loop);
+			//loop = (long) height * (long) realwidth;
+			if( depth > 8) // RGB - 16 bits
 			{
-				int i;
-				for( i = 0; i < height;i++)
+				unsigned short   *bufPtr;
+				bufPtr = (unsigned short*) oImage;
 				{
-					memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
+					while( loop-- > 0)
+					{
+						*ptr++	= 255;			//ptr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+													//if (loop % 5000 == 0)
+													//NSLog(@"loop: %d", loop);
+					}
 				}
 			}
 			else
 			{
-				int i;					
-				for( i = 0; i < height;i++)
+				//NSLog(@"Convert to ARGB 8 bit");
+				unsigned char   *bufPtr;
+				bufPtr = (unsigned char*) oImage;
 				{
-					memmove( oImage + i*width, oImage + i*realwidth, width*2);
+					//loop = totSize/4;
+					while( loop-- > 0)
+					{
+						*ptr++	= 255;			//ptr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+						*ptr++	= *bufPtr++;		//ptr++;  bufPtr++;
+					}
 				}
 			}
-		}
-		//NSLog(@"Updated width");
-	}
-	
-	
-	
-	//***********
-	
-	if( isRGB)
-	{
-		if( fVolImage)
-		{
-			fImage = fVolImage;
-			BlockMoveData( oImage, fImage,width*height*sizeof(float));
 			free(oImage);
-		}
-		else fImage = (float*) oImage;
-		oImage = 0L;
-		
-		if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			oImage = (short*) tmpImage;
+		}			
+		else if( depth == 8)	// Black & White 8 bit image -> 16 bits image
 		{
-			unsigned char	*rgbData = (unsigned char*) fImage;
-			long			y, x;
+			unsigned char   *bufPtr;
+			short			*ptr, *tmpImage;
+			long			loop, totSize;
 			
-			for( y = 0; y < oRows; y++)
+			totSize = (long) ((long) height * (long) realwidth * 2L);
+			tmpImage = malloc( totSize);
+			
+			bufPtr = (unsigned char*) oImage;
+			ptr    = tmpImage;
+			
+			loop = totSize/2;
+			while( loop-- > 0)
 			{
-				for( x = 0; x < oColumns; x++)
+				*ptr++ = *bufPtr++;
+				//	ptr++; bufPtr ++;
+			}
+			free(oImage);
+			//efree3 ((void **) &oImage);
+			oImage =  (short*) tmpImage;
+		}
+		
+		if( realwidth != width)
+		{
+			//NSLog(@"Update width: %d realWidth: %d ", width, realwidth);
+			if( isRGB)
+			{
+				int i;
+				char	*ptr = (char*) oImage;
+				for( i = 0; i < height;i++)
 				{
-					if( oData[ y * oColumns + x])
+					memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
+				}
+			}
+			else
+			{
+				if( depth == 32)
+				{
+					int i;
+					for( i = 0; i < height;i++)
 					{
-						rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-						rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-						rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+						memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
+					}
+				}
+				else
+				{
+					int i;					
+					for( i = 0; i < height;i++)
+					{
+						memmove( oImage + i*width, oImage + i*realwidth, width*2);
+					}
+				}
+			}
+			//NSLog(@"Updated width");
+		}
+		
+		
+		
+		//***********
+		
+		if( isRGB)
+		{
+			if( imPix->fVolImage)
+			{
+				imPix->fImage = imPix->fVolImage;
+				BlockMoveData( oImage, imPix->fImage,width*height*sizeof(float));
+				free(oImage);
+			}
+			else imPix->fImage = (float*) oImage;
+			oImage = 0L;
+			
+			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			{
+				unsigned char	*rgbData = (unsigned char*) imPix->fImage;
+				long			y, x;
+				
+				for( y = 0; y < oRows; y++)
+				{
+					for( x = 0; x < oColumns; x++)
+					{
+						if( oData[ y * oColumns + x])
+						{
+							rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+							rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+							rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+						}
 					}
 				}
 			}
 		}
-	}
-	else
-	{
-		//NSLog(@"not RGB");
-		if( depth == 32)
+		else
 		{
-			unsigned long	*uslong = (unsigned long*) oImage;
-			long			*slong = (long*) oImage;
-			float			*tDestF;
-			
-			if( fVolImage)
+			//NSLog(@"not RGB");
+			if( depth == 32)
 			{
-				tDestF = fImage = fVolImage;
+				unsigned long	*uslong = (unsigned long*) oImage;
+				long			*slong = (long*) oImage;
+				float			*tDestF;
+				
+				if( imPix->fVolImage)
+				{
+					tDestF = imPix->fImage = imPix->fVolImage;
+				}
+				else
+				{
+					tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
+				}
+				
+				if( fIsSigned > 0)
+				{
+					long x = height * width;
+					while( x-->0)
+					{
+						*tDestF++ = ((float) (*slong++)) * slope + offset;
+					}
+				}
+				else
+				{
+					long x = height * width;
+					while( x-->0)
+					{
+						*tDestF++ = ((float) (*uslong++)) * slope + offset;
+					}
+				}
+				
+				free(oImage);
+				oImage = 0L;
 			}
 			else
 			{
-				tDestF = fImage = malloc(width*height*sizeof(float) + 100);
+				vImage_Buffer src16, dstf;
+				dstf.height = src16.height = height;
+				dstf.width = src16.width = width;
+				src16.rowBytes = width*2;
+				dstf.rowBytes = width*sizeof(float);
+				
+				src16.data = oImage;
+				
+				if( imPix->fVolImage)
+				{
+					imPix->fImage = imPix->fVolImage;
+				}
+				else
+				{
+					imPix->fImage = malloc(width*height*sizeof(float) + 100);
+				}
+				
+				dstf.data = imPix->fImage;
+				
+				if( inverseVal) slope *= -1.;
+				
+				
+				
+				if( fIsSigned > 0)
+				{
+					vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+				}
+				else
+				{
+					
+					vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+					//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+				}
+				
+				free(oImage);
+				oImage = 0L;
 			}
 			
-			if( fIsSigned > 0)
+			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
 			{
-				long x = height * width;
-				while( x-->0)
+				long			y, x;
+				
+				for( y = 0; y < oRows; y++)
 				{
-					*tDestF++ = ((float) (*slong++)) * slope + offset;
+					for( x = 0; x < oColumns; x++)
+					{
+						if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
+					}
 				}
 			}
-			else
-			{
-				long x = height * width;
-				while( x-->0)
-				{
-					*tDestF++ = ((float) (*uslong++)) * slope + offset;
-				}
-			}
+		}
+		
+		if( pixmin == 0 && pixmax == 0)
+		{
 			
-			free(oImage);
-			oImage = 0L;
+			wl = 0;
+			ww = 0; //Computed later, only if needed
 		}
 		else
 		{
-			vImage_Buffer src16, dstf;
-			dstf.height = src16.height = height;
-			dstf.width = src16.width = width;
-			src16.rowBytes = width*2;
-			dstf.rowBytes = width*sizeof(float);
 			
-			src16.data = oImage;
-			
-			if( fVolImage)
-			{
-				fImage = fVolImage;
-			}
-			else
-			{
-				fImage = malloc(width*height*sizeof(float) + 100);
-			}
-			
-			dstf.data = fImage;
-			
-			if( inverseVal) slope *= -1.;
-			
-			
-			
-			if( fIsSigned > 0)
-			{
-				vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-			}
-			else
-			{
-				
-				vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-				//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
-			}
-			
-			free(oImage);
-			oImage = 0L;
+			wl = pixmin + (pixmax - pixmin)/2;
+			ww = (pixmax - pixmin);
 		}
 		
-		if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+		if( savedWW != 0)
 		{
-			long			y, x;
 			
-			for( y = 0; y < oRows; y++)
-			{
-				for( x = 0; x < oColumns; x++)
-				{
-					if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
-				}
-			}
+			wl = savedWL;
+			ww = savedWW;
 		}
+		
+		[subPool release];
 	}
 	
-	if( pixmin == 0 && pixmax == 0)
-	{
-		
-		wl = 0;
-		ww = 0; //Computed later, only if needed
-	}
-	else
-	{
-		
-		wl = pixmin + (pixmax - pixmin)/2;
-		ww = (pixmax - pixmin);
-	}
-	
-	if( savedWW != 0)
-	{
-		
-		wl = savedWL;
-		ww = savedWW;
-	}
 	[pool release];
 	return YES;
 }
@@ -4561,7 +4595,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
-
+	
+	if( pixArray != 0L && frameNo > 0)
+	{
+		while( fImage == 0L) {};
+		return YES;
+	}
+	
 	[PapyrusLock lock];
 
 	if( convertedDICOM)
@@ -5711,10 +5751,25 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			sliceLocation = originZ;
 		}
 		
-//		for( ee = 0; ee < maxFrame; ee++)
+		if( pixArray == 0L) maxFrame = 1;
+		
+		for( ee = 0; ee < maxFrame; ee++)
 		{
+			DCMPix	*imPix = 0L;
+			
+			if( maxFrame > 1)
+			{
+				imPix = [pixArray objectAtIndex: ee];
+				[imPix copyFromOther: self];
+			}
+			else
+			{
+				imPix = self;
+				ee = imageNb-1;
+			}
+			
 			// position the file pointer to the begining of the data set 
-			err = Papy3GotoNumber (fileNb, (PapyShort) imageNb, DataSetID);
+			err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
 			
 			// then goto group 0x7FE0 
 			if ((err = Papy3GotoGroupNb (fileNb, 0x7FE0)) == 0)
@@ -5724,12 +5779,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				{
 					if( gArrCompression [fileNb] == JPEG_LOSSLESS && gArrPhotoInterpret [fileNb] == RGB)
 					{
-						oImage = (short *) [self UncompressDICOM :srcFile :imageNb];
+						oImage = (short *) [self UncompressDICOM :srcFile :ee+1];
 					}
 					else
 					{
 						// PIXEL DATA 
-						oImage = (short *)Papy3GetPixelData (fileNb, imageNb, theGroupP, ImagePixel);
+						oImage = (short *)Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
 					}
 					
 					if( oImage == 0L) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
@@ -6059,28 +6114,21 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				} // endif ...group 7FE0 read 
 			}
 			
-			[PapyrusLock lock];
-			
-			// close and free the file and the associated allocated memory 
-			Papy3FileClose (fileNb, TRUE);
-			
-			[PapyrusLock unlock];
-			
 			//***********
 			if( isRGB)
 			{
-				if( fVolImage)
+				if( imPix->fVolImage)
 				{
-					fImage = fVolImage;
-					BlockMoveData( oImage, fImage,width*height*sizeof(float));
+					imPix->fImage = imPix->fVolImage;
+					BlockMoveData( oImage, imPix->fImage,width*height*sizeof(float));
 					free(oImage);
 				}
-				else fImage = (float*) oImage;
+				else imPix->fImage = (float*) oImage;
 				oImage = 0L;
 				
 				if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
 				{
-					unsigned char	*rgbData = (unsigned char*) fImage;
+					unsigned char	*rgbData = (unsigned char*) imPix->fImage;
 					long			y, x;
 					
 					for( y = 0; y < oRows; y++)
@@ -6105,13 +6153,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					long			*slong = (long*) oImage;
 					float			*tDestF;
 					
-					if( fVolImage)
+					if( imPix->fVolImage)
 					{
-						tDestF = fImage = fVolImage;
+						tDestF = imPix->fImage = imPix->fVolImage;
 					}
 					else
 					{
-						tDestF = fImage = malloc(width*height*sizeof(float) + 100);
+						tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
 					}
 					
 					if( fIsSigned)
@@ -6147,16 +6195,16 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						
 						src16.data = oImage;
 						
-						if( fVolImage)
+						if( imPix->fVolImage)
 						{
-							fImage = fVolImage;
+							imPix->fImage = imPix->fVolImage;
 						}
 						else
 						{
-							fImage = malloc(width*height*sizeof(float) + 100);
+							imPix->fImage = malloc(width*height*sizeof(float) + 100);
 						}
 						
-						dstf.data = fImage;
+						dstf.data = imPix->fImage;
 						
 						if( inverseVal) slope *= -1.;
 						
@@ -6182,7 +6230,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					{
 						for( x = 0; x < oColumns; x++)
 						{
-							if( oData[ y * oColumns + x]) fImage[ y * width + x] = 0xFF;
+							if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
 						}
 					}
 				}
@@ -6213,6 +6261,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( clutGreen) free( clutGreen);
 			if( clutBlue) free( clutBlue);
 		}
+		
+		[PapyrusLock lock];
+		
+		// close and free the file and the associated allocated memory 
+		Papy3FileClose (fileNb, TRUE);
+			
+		[PapyrusLock unlock];
+
 		
 		return YES;
 	}
