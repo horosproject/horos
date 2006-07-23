@@ -248,6 +248,51 @@ extern     BrowserController  *browserWindow;
 	return NO;
 }
 
+- (void) terminateDrag:(NSArray*) fileArray
+{
+	long	i;
+	
+	if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
+	{
+		[browserWindow openDatabaseIn: [fileArray objectAtIndex: 0] Bonjour:NO];
+	}
+	else
+	{
+		NSArray	*newImages = [browserWindow addFilesAndFolderToDatabase: fileArray];
+		
+		// Are we adding new files in a album?
+
+		//can't add to smart Album
+		if( [[browserWindow albumTable] selectedRow] > 0)
+		{
+			NSManagedObject *album = [[browserWindow albumArray] objectAtIndex: [[browserWindow albumTable] selectedRow]];
+			
+			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+			{
+				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+				
+				for( i = 0; i < [newImages count]; i++)
+				{
+					NSManagedObject		*object = [newImages objectAtIndex: i];
+					[studies addObject: [object valueForKeyPath:@"series.study"]];
+				}
+				
+				[browserWindow outlineViewRefresh];
+			}
+		}
+		
+		if( [newImages count] > 0)
+		{
+			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+				
+			[self selectRow: [self rowForItem: object] byExtendingSelection: NO];
+			[self scrollRowToVisible: [self selectedRow]];
+		}
+	}
+	
+	[fileArray release];
+}
+
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender
 {
     NSPasteboard *paste = [sender draggingPasteboard];
@@ -273,45 +318,7 @@ extern     BrowserController  *browserWindow;
 			//we have a list of file names in an NSData object
             NSArray				*fileArray = [[paste propertyListForType:@"NSFilenamesPboardType"] retain];
 			
-			if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
-			{
-				[browserWindow openDatabaseIn: [fileArray objectAtIndex: 0] Bonjour:NO];
-			}
-			else
-			{
-				NSArray	*newImages = [browserWindow addFilesAndFolderToDatabase: fileArray];
-				
-				// Are we adding new files in a album?
-		
-				//can't add to smart Album
-				if( [[browserWindow albumTable] selectedRow] > 0)
-				{
-					NSManagedObject *album = [[browserWindow albumArray] objectAtIndex: [[browserWindow albumTable] selectedRow]];
-					
-					if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-					{
-						NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-						
-						for( i = 0; i < [newImages count]; i++)
-						{
-							NSManagedObject		*object = [newImages objectAtIndex: i];
-							[studies addObject: [object valueForKeyPath:@"series.study"]];
-						}
-						
-						[browserWindow outlineViewRefresh];
-					}
-				}
-				
-				if( [newImages count] > 0)
-				{
-					NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-						
-					[self selectRow: [self rowForItem: object] byExtendingSelection: NO];
-					[self scrollRowToVisible: [self selectedRow]];
-				}
-			}
-			
-			[fileArray release];
+			[self performSelector:@selector(terminateDrag:) withObject:fileArray afterDelay:0.1];
 		}
         else
         {
@@ -319,7 +326,6 @@ extern     BrowserController  *browserWindow;
             NSAssert(NO, @"This can't happen");
         }
     }
-    [self setNeedsDisplay:YES];    //redraw us with the new image
 }
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {

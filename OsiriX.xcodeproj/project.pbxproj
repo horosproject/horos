@@ -8923,23 +8923,6 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		BFE2C9A20A6BFCBB00D73142 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		BFE2C9A30A6BFCBB00D73142 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -22871,12 +22854,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				BFE2C9A20A6BFCBB00D73142 /* Development */,
-				BFE2C9A30A6BFCBB00D73142 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
