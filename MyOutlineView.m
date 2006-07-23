@@ -326,6 +326,7 @@ extern     BrowserController  *browserWindow;
             NSAssert(NO, @"This can't happen");
         }
     }
+    [self setNeedsDisplay:YES];
 }
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {

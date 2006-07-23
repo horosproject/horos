@@ -46,7 +46,7 @@
 }
 
 - (id)initWithContentsOfFile:(NSString *)file lastGroup:(unsigned short)lastGroup{
-	NSData *aData = [NSData dataWithContentsOfFile:file];
+	NSData *aData = [NSData dataWithContentsOfMappedFile:file];
 	return [self initWithData:aData lastGroup:(unsigned short)lastGroup] ;
 }
 

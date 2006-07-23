@@ -381,7 +381,7 @@ PixelRepresentation
 
 - (id)initWithContentsOfFile:(NSString *)file decodingPixelData:(BOOL)decodePixelData{
 	if([[NSFileManager defaultManager] fileExistsAtPath:file] == NO) return 0L;
-	NSData *aData = [NSData dataWithContentsOfFile:file];
+	NSData *aData = [NSData dataWithContentsOfMappedFile:file];
 	return [self initWithData:aData decodingPixelData:decodePixelData] ;
 }
 
