@@ -265,9 +265,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	[PapyrusLock unlock];
 	
-	 if (!readable)
+	if (!readable)
+	{
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
-		
+	}	
     return readable;
 }
 
