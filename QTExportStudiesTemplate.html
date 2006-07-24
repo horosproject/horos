@@ -6,19 +6,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>%patient_name%</title>
+	<link href="../html-extra/style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>%patient_name%, %patient_dateOfBirth%</h1>
-	<hr />
-	%study_i_start%
-	<h2>%study_i_name% (%study_i_id%) - %study_i_date% %study_i_time%</h2>
-	<ul>
-		%series_i_start%
-		<li><a href="%series_i_file%"><img src="%series_i_thumbnail%" alt="%series_i_name%" style="border-style: none; margin: 5px; vertical-align: middle;" /></a><a href="%series_i_file%">%series_i_name%</a> (%series_i_id%) %series_i_images_count% images</li>
-		%series_i_end%
-	</ul>
-	<hr />
-	%study_i_end%
-	<i>%footer_string%</i>
+	<div id='content'>
+		<h1>%patient_name%, %patient_dateOfBirth%</h1>
+		<hr />
+		%study_i_start%
+		<h2>%study_i_name% (%study_i_id%) - %study_i_date% %study_i_time%</h2>
+		<ul>
+			%series_i_start%
+			<li><a href="%series_i_file%"><img src="%series_i_thumbnail%" alt="%series_i_name%"/></a><a href="%series_i_file%">%series_i_name%</a> (%series_i_id%) %series_i_images_count% images</li>
+			%series_i_end%
+		</ul>
+		<hr />
+		%study_i_end%
+		<div id='back'>
+			<a href="../index.html"> &lt; Back to patients list</a>
+		</div>
+		<div id='footer'>
+			<i>%footer_string%</i>
+		</div>
+	</div>
   </body>
 </html>

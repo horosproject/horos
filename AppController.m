@@ -1339,7 +1339,11 @@ static BOOL initialized = NO;
 				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
 					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
-				
+					
+				// CSS file
+				NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
 			}
 		}
 	}

@@ -588,6 +588,9 @@
 		A99B7ECC0885A620004328C0 /* BonjourPublisher.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5008858D31004328C0 /* BonjourPublisher.h */; };
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5408858D4F004328C0 /* BonjourBrowser.h */; };
+		A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */; };
+		A9A9F4C20A74C9A9005A1CA7 /* QTExportStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */; };
+		A9A9F4C30A74C9A9005A1CA7 /* QTExportStyle.css in Resources */ = {isa = PBXBuildFile; fileRef = A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */; };
 		A9B4119D0890423C00913770 /* osirix16x16.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tiff */; };
 		A9B4119E0890423C00913770 /* osirix16x16.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tiff */; };
 		A9B4119F0890423C00913770 /* osirix16x16.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tiff */; };
@@ -9556,6 +9559,7 @@
 		A99B7E5108858D31004328C0 /* BonjourPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourPublisher.m; sourceTree = "<group>"; };
 		A99B7E5408858D4F004328C0 /* BonjourBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourBrowser.h; sourceTree = "<group>"; };
 		A99B7E5508858D4F004328C0 /* BonjourBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourBrowser.m; sourceTree = "<group>"; };
+		A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = QTExportStyle.css; sourceTree = "<group>"; };
 		A9B4119C0890423C00913770 /* osirix16x16.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = osirix16x16.tiff; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tiff; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tiff; sourceTree = "<group>"; };
@@ -13017,6 +13021,7 @@
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
+				A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */,
 				CE7DECC208F05F1500763A70 /* Previous DB Models */,
 				7E5E9259072FEE86007683A2 /* iCal script.applescript */,
 				CEBD8A4B0875B029000E42D6 /* Pane */,
@@ -23299,6 +23304,7 @@
 				A95B98AC0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */,
+				A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23579,6 +23585,7 @@
 				A95B98B00A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98B10A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */,
+				A9A9F4C30A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23859,6 +23866,7 @@
 				A95B98AE0A6E65C900E476D4 /* QTExportPatientsTemplate.html in Resources */,
 				A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */,
+				A9A9F4C20A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

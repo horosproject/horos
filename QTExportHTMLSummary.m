@@ -28,7 +28,7 @@ extern NSString *documentsDirectory();
 	if (![super init])
 		return;
 	[self readTemplates];
-	footerString = NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display the images",nil);
+	footerString = NSLocalizedString(@"Made with <a href='http://homepage.mac.com/rossetantoine/osirix/' target='_blank'>OsiriX</a><br />Requires <a href='http://www.apple.com/quicktime/' target='_blank'>QuickTime</a> to display some of the images",nil);
 	return self;
 }
 
@@ -232,8 +232,8 @@ extern NSString *documentsDirectory();
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *htmlExtraDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/html-extra/"];
 	NSArray *directoryContent = [fileManager subpathsAtPath:htmlExtraDirectory];
-	if([directoryContent count])
-		[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingString:@"/html-extra/"] handler:NO];
+	//if([directoryContent count])
+	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingString:@"/html-extra/"] handler:NO];
 }
 
 #pragma mark-
