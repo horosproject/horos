@@ -402,179 +402,179 @@ WriteFile (j_compress_ptr inCinfo, PapyULong inDataCount, PAPY_FILE inFp,
 
 PapyShort JPEGLossyEncodeImage (PapyShort inFileNb, int inQuality, PapyUChar *outJpegFilename, PapyUChar *inImageBuffP, PapyUChar **outJPEGDataP, PapyULong *outJPEGsizeP,int inImageHeight, int inImageWidth, int inDepth, int inSaveJpeg)
 {
-  struct jpeg_compress_struct	theCInfo;
-  struct jpeg_error_mgr 	theJerr;
-  PAPY_FILE		        theFp = NULL;
-
-/* #ifdef SAVE_JPEG		*/
-  void 			*theFSSpecP; 
-  PAPY_FILE		theVRefNum;
-  char			theFilename [512];
-/* #endif             */
-
-  JSAMPROW		theRowPointer [1];		/* pointer to JSAMPLE row[s] */
-  int			theRowStride;			/* physical row width in image buffer */
-  unsigned int		j;
-  PapyULong		theDataCount;
-  PapyUChar		*theJPEGBuffP;
-  PapyUShort		*theImBuffP;
-
-
-  /* Temporary routine for Compression evaluation (DAB) */
-#ifdef SAVE_RAW
-  PAPY_FILE		theFps;	
-  void 			*theFSSpecsP;
-  PAPY_FILE		theVRefNums;
-  char			theFilenames [20];
-  long			theSizer;
-  PapyUChar		*theValTempP, *theFinalValP, *theFinaleValP;
-  PapyUChar		theHigh, theLow;
-  int			is, js;
-  
-  
-  strcpy((char *) theFilenames, "data.raw");
-
-  theFSSpecsP   = NULL;
-  theValTempP   = (PapyUChar *) inImageBuffP;
-  theFinalValP  = (PapyUChar *) inImageBuffP;
-  theFinaleValP = (PapyUChar *) inImageBuffP;
-
-#ifdef TO_SWAP
-  if (inDepth == 16)
-  {
-    for (js = 0; js < inImageHeight; js++) 
-    {
-      for (is = 0; is < inImageWidth; is++) 
-      {
-	theLow        = *theValTempP;
-	theValTempP++;
-	theHigh       = *theValTempP;
-	theValTempP++;
-	*theFinalValP = theHigh;
-	theFinalValP++;
-	*theFinalValP = theLow;
-	theFinalValP++;
-      } /* for ...is */
-    } /* for ...js */
-  } /* if ... depth = 16 */
-#endif /* TO_SWAP */
-
-  if (Papy3FCreate ((char *) theFilenames, theVRefNums, &theFps, &theFSSpecsP) != 0) 
-    RETURN (papFileCreationFailed);
-
-  if (Papy3FOpen ((char *) theFilenames, 'w', theVRefNums, &theFps, &theFSSpecsP) != 0) 
-    RETURN (papOpenFile);
-
-  if (inDepth == 16) 
-    theSizer = (long) (inImageWidth * inImageHeight * 2);
-  else 
-    theSizer = (long) (inImageWidth * inImageHeight);
-
-  if (Papy3FWrite (theFps, (PapyULong *) &theSizer, 1L, (void *) theFinaleValP) != 0) 
-    RETURN (papWriteFile);
-
-  Papy3FClose (&theFps);
-  
-#endif /* SAVE_RAW */
-
-
-  /* Step 1: allocate and initialize JPEG compression object */
-
-  theCInfo.err = jpeg_std_error (&theJerr);
-  jpeg_create_compress (&theCInfo); 
-
-  /* Step 2: specify data destination (eg, a file) */
-
-/* #ifdef SAVE_JPEG */
-
-  if (inSaveJpeg)
-  {
-    if (outJpegFilename == NULL)
-      strcpy ((char *) theFilename, "data.jpeg");
-    else
-      strcpy ((char *) theFilename, (const char *) outJpegFilename);
-    theFSSpecP = NULL;
-    if (Papy3FCreate ((char *) theFilename, theVRefNum, &theFp, &theFSSpecP) != 0) 
-      RETURN (papFileCreationFailed);
-
-    if (Papy3FOpen ((char *) theFilename, 'w', theVRefNum, &theFp, &theFSSpecP) != 0) 
-      RETURN (papOpenFile);
-  } /* endif */
-
-/* #endif */
-
-  jpeg_stdio_dest ((j_compress_ptr) &theCInfo, (PAPY_FILE *) &theFp); 
-
-  /* Step 3: set parameters for compression */
-
-  theCInfo.image_width  = inImageWidth; 	/* image width and height, in pixels */
-  theCInfo.image_height = inImageHeight;
-
-  if (gArrPhotoInterpret [inFileNb] == MONOCHROME1 ||
-    gArrPhotoInterpret [inFileNb] == MONOCHROME2)
-  {
-    theCInfo.input_components = 1;		/* # of color components per pixel */
-    theCInfo.in_color_space   = JCS_GRAYSCALE; 	/* colorspace of input image */
-  }
-
-  if (gArrPhotoInterpret [inFileNb] == RGB)
-  {
-    theCInfo.input_components = 3;		/* # of color components per pixel */
-    theCInfo.in_color_space = JCS_RGB;
-  /* theCInfo.out_color_space = JCS_YCbCr; */
-  }
-
-  jpeg_set_defaults ((j_compress_ptr) &theCInfo);
-  jpeg_set_quality (&theCInfo, inQuality, TRUE); /* limit to baseline-JPEG values */
-
-  /* Step 4: Start compressor */
-
-  jpeg_start_compress (&theCInfo, TRUE); 
-
-  /* Step 5: while (scan lines remain to be written) */
-  if (inDepth == 16)
-    theImBuffP = (PapyUShort *) inImageBuffP;
-
-
-  theRowStride = inImageWidth * theCInfo.input_components;
-  j = 0;
-  while (j < theCInfo.image_height) 
-  {
-    /* printf("next_scanline; %d", j); */
-    if (inDepth == 8)
-      theRowPointer [0] = (unsigned char *) (& inImageBuffP [j * theRowStride]);
-    else
-      theRowPointer [0] = (unsigned char *) (& theImBuffP [j * theRowStride]);
-    
-    /*(void) jpeg_write_scanlines(&theCInfo, theRowPointer, 1); */
-    j += (int) jpeg_write_scanlines (&theCInfo, theRowPointer, 1);
-  } /* while */
-
-  /* Step 6: Finish compression */
-
-  jpeg_finish_compress (&theCInfo);
-
-    /* Step 5b: Fill JPEG Buffer */
-
-  theDataCount = (PapyULong) ((inImageWidth * inImageHeight) - 
-			      theCInfo.dest->free_in_buffer + 5);
-  theJPEGBuffP = (PapyUChar *) ecalloc3 ((PapyULong) theDataCount, (PapyULong) sizeof (PapyUChar));
-  WriteFile (&theCInfo, theDataCount, (PAPY_FILE) theFp, (PapyUChar *) theJPEGBuffP, inSaveJpeg);
-  *outJPEGDataP = (PapyUChar *) theJPEGBuffP;
-  *outJPEGsizeP = theDataCount;
-
-/* #ifdef SAVE_JPEG */
-  if (inSaveJpeg)
-    Papy3FClose (&theFp);
-/* #endif */
-
-  /* We can use jpeg_abort to release memory and reset global_state */
-  jpeg_abort( (j_common_ptr) &theCInfo);
-
-  /* Step 7: release JPEG compression object */
-
-  jpeg_destroy_compress (&theCInfo);
-
+//  struct jpeg_compress_struct	theCInfo;
+//  struct jpeg_error_mgr 	theJerr;
+//  PAPY_FILE		        theFp = NULL;
+//
+///* #ifdef SAVE_JPEG		*/
+//  void 			*theFSSpecP; 
+//  PAPY_FILE		theVRefNum;
+//  char			theFilename [512];
+///* #endif             */
+//
+//  JSAMPROW		theRowPointer [1];		/* pointer to JSAMPLE row[s] */
+//  int			theRowStride;			/* physical row width in image buffer */
+//  unsigned int		j;
+//  PapyULong		theDataCount;
+//  PapyUChar		*theJPEGBuffP;
+//  PapyUShort		*theImBuffP;
+//
+//
+//  /* Temporary routine for Compression evaluation (DAB) */
+//#ifdef SAVE_RAW
+//  PAPY_FILE		theFps;	
+//  void 			*theFSSpecsP;
+//  PAPY_FILE		theVRefNums;
+//  char			theFilenames [20];
+//  long			theSizer;
+//  PapyUChar		*theValTempP, *theFinalValP, *theFinaleValP;
+//  PapyUChar		theHigh, theLow;
+//  int			is, js;
+//  
+//  
+//  strcpy((char *) theFilenames, "data.raw");
+//
+//  theFSSpecsP   = NULL;
+//  theValTempP   = (PapyUChar *) inImageBuffP;
+//  theFinalValP  = (PapyUChar *) inImageBuffP;
+//  theFinaleValP = (PapyUChar *) inImageBuffP;
+//
+//#ifdef TO_SWAP
+//  if (inDepth == 16)
+//  {
+//    for (js = 0; js < inImageHeight; js++) 
+//    {
+//      for (is = 0; is < inImageWidth; is++) 
+//      {
+//	theLow        = *theValTempP;
+//	theValTempP++;
+//	theHigh       = *theValTempP;
+//	theValTempP++;
+//	*theFinalValP = theHigh;
+//	theFinalValP++;
+//	*theFinalValP = theLow;
+//	theFinalValP++;
+//      } /* for ...is */
+//    } /* for ...js */
+//  } /* if ... depth = 16 */
+//#endif /* TO_SWAP */
+//
+//  if (Papy3FCreate ((char *) theFilenames, theVRefNums, &theFps, &theFSSpecsP) != 0) 
+//    RETURN (papFileCreationFailed);
+//
+//  if (Papy3FOpen ((char *) theFilenames, 'w', theVRefNums, &theFps, &theFSSpecsP) != 0) 
+//    RETURN (papOpenFile);
+//
+//  if (inDepth == 16) 
+//    theSizer = (long) (inImageWidth * inImageHeight * 2);
+//  else 
+//    theSizer = (long) (inImageWidth * inImageHeight);
+//
+//  if (Papy3FWrite (theFps, (PapyULong *) &theSizer, 1L, (void *) theFinaleValP) != 0) 
+//    RETURN (papWriteFile);
+//
+//  Papy3FClose (&theFps);
+//  
+//#endif /* SAVE_RAW */
+//
+//
+//  /* Step 1: allocate and initialize JPEG compression object */
+//
+//  theCInfo.err = jpeg_std_error (&theJerr);
+//  jpeg_create_compress (&theCInfo); 
+//
+//  /* Step 2: specify data destination (eg, a file) */
+//
+///* #ifdef SAVE_JPEG */
+//
+//  if (inSaveJpeg)
+//  {
+//    if (outJpegFilename == NULL)
+//      strcpy ((char *) theFilename, "data.jpeg");
+//    else
+//      strcpy ((char *) theFilename, (const char *) outJpegFilename);
+//    theFSSpecP = NULL;
+//    if (Papy3FCreate ((char *) theFilename, theVRefNum, &theFp, &theFSSpecP) != 0) 
+//      RETURN (papFileCreationFailed);
+//
+//    if (Papy3FOpen ((char *) theFilename, 'w', theVRefNum, &theFp, &theFSSpecP) != 0) 
+//      RETURN (papOpenFile);
+//  } /* endif */
+//
+///* #endif */
+//
+//  jpeg_stdio_dest ((j_compress_ptr) &theCInfo, (PAPY_FILE *) &theFp); 
+//
+//  /* Step 3: set parameters for compression */
+//
+//  theCInfo.image_width  = inImageWidth; 	/* image width and height, in pixels */
+//  theCInfo.image_height = inImageHeight;
+//
+//  if (gArrPhotoInterpret [inFileNb] == MONOCHROME1 ||
+//    gArrPhotoInterpret [inFileNb] == MONOCHROME2)
+//  {
+//    theCInfo.input_components = 1;		/* # of color components per pixel */
+//    theCInfo.in_color_space   = JCS_GRAYSCALE; 	/* colorspace of input image */
+//  }
+//
+//  if (gArrPhotoInterpret [inFileNb] == RGB)
+//  {
+//    theCInfo.input_components = 3;		/* # of color components per pixel */
+//    theCInfo.in_color_space = JCS_RGB;
+//  /* theCInfo.out_color_space = JCS_YCbCr; */
+//  }
+//
+//  jpeg_set_defaults ((j_compress_ptr) &theCInfo);
+//  jpeg_set_quality (&theCInfo, inQuality, TRUE); /* limit to baseline-JPEG values */
+//
+//  /* Step 4: Start compressor */
+//
+//  jpeg_start_compress (&theCInfo, TRUE); 
+//
+//  /* Step 5: while (scan lines remain to be written) */
+//  if (inDepth == 16)
+//    theImBuffP = (PapyUShort *) inImageBuffP;
+//
+//
+//  theRowStride = inImageWidth * theCInfo.input_components;
+//  j = 0;
+//  while (j < theCInfo.image_height) 
+//  {
+//    /* printf("next_scanline; %d", j); */
+//    if (inDepth == 8)
+//      theRowPointer [0] = (unsigned char *) (& inImageBuffP [j * theRowStride]);
+//    else
+//      theRowPointer [0] = (unsigned char *) (& theImBuffP [j * theRowStride]);
+//    
+//    /*(void) jpeg_write_scanlines(&theCInfo, theRowPointer, 1); */
+//    j += (int) jpeg_write_scanlines (&theCInfo, theRowPointer, 1);
+//  } /* while */
+//
+//  /* Step 6: Finish compression */
+//
+//  jpeg_finish_compress (&theCInfo);
+//
+//    /* Step 5b: Fill JPEG Buffer */
+//
+//  theDataCount = (PapyULong) ((inImageWidth * inImageHeight) - 
+//			      theCInfo.dest->free_in_buffer + 5);
+//  theJPEGBuffP = (PapyUChar *) ecalloc3 ((PapyULong) theDataCount, (PapyULong) sizeof (PapyUChar));
+//  WriteFile (&theCInfo, theDataCount, (PAPY_FILE) theFp, (PapyUChar *) theJPEGBuffP, inSaveJpeg);
+//  *outJPEGDataP = (PapyUChar *) theJPEGBuffP;
+//  *outJPEGsizeP = theDataCount;
+//
+///* #ifdef SAVE_JPEG */
+//  if (inSaveJpeg)
+//    Papy3FClose (&theFp);
+///* #endif */
+//
+//  /* We can use jpeg_abort to release memory and reset global_state */
+//  jpeg_abort( (j_common_ptr) &theCInfo);
+//
+//  /* Step 7: release JPEG compression object */
+//
+//  jpeg_destroy_compress (&theCInfo);
+//
   return (0);
 
 } /* endof JPEGLossyEncodeImage */

@@ -226,7 +226,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 //  /* decompress the image line by line 16 bits */
 //  else if (inDepth == 16)
   {
-  
+
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
       (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
