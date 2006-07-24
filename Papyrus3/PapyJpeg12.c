@@ -150,15 +150,15 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   
   /* We set up the normal JPEG error routines, then override error_exit. */
   theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
-  theJErr.pub.error_exit = my_error_exit;
+//  theJErr.pub.error_exit = my_error_exit;
   /* Establish the setjmp return context for my_error_exit to use. */
-#ifdef Mac
-  if (setjmp (theJErr.setjmp_buffer)) 
-  {
-    jpeg_destroy_decompress (&theCInfo);
-    return 0;
-  }/* if */
-#endif
+//#ifdef Mac
+//  if (setjmp (theJErr.setjmp_buffer)) 
+//  {
+//    jpeg_destroy_decompress (&theCInfo);
+//    return 0;
+//  }/* if */
+//#endif
 
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
@@ -181,63 +181,64 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   (void) jpeg_start_decompress (&theCInfo);
 
   /* JSAMPLEs per row in output buffer */
-  theRowStride = theCInfo.output_width * theCInfo.output_components;
-  if (inDepth == 16) 
-    theRowStride *= 2;
+  theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
+//  if (inDepth == 16) 
+  //  theRowStride *= 2;
     
   /* allocate a one-row-high sample array that will go away when done with image */  
-  if (inDepth == 16)
+//  if (inDepth == 16)
   {
     theBuffer16P = (PapyUShort *) emalloc3 ((PapyULong) theRowStride);
     theWrkCh16P = (PapyUShort *) ioImage8P;
   }
-  else
-  {
-    theBuffer8P = (PapyUChar *) emalloc3 ((PapyULong) theRowStride);
-    theWrkCh8P  = (PapyUChar *) ioImage8P;
-  }
+//  else
+//  {
+//    theBuffer8P = (PapyUChar *) emalloc3 ((PapyULong) theRowStride);
+//    theWrkCh8P  = (PapyUChar *) ioImage8P;
+//  }
 
   theWrkChP = (PapyUChar *) ioImage8P;
 
   theLimit = theCInfo.output_width * theCInfo.output_components;
 
-  /* decompress the image line by line 8 bits */
-  if (inDepth == 8)
+//  /* decompress the image line by line 8 bits */
+//  if (inDepth == 8)
+//  {
+//    while (theCInfo.output_scanline < theCInfo.output_height) 
+//    {
+//      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
+//      
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//      //  if (theCInfo.out_color_space == JCS_GRAYSCALE)
+//        //  if (theBuffer8P [theLoop] > 255) 
+//          //  theBuffer8P [theLoop] = 255;
+//            
+//        *theWrkChP = (PapyUChar) theBuffer8P [theLoop]; 
+//        theWrkChP++;  
+//      } /* for */
+//
+//    } /* while ...line by line decompression of the image */
+//    
+//    /* frees the row used by the decompressor */
+//    efree3 ((void **) &theBuffer8P);
+//  } /* if ...depth = 8 */
+//
+//  /* decompress the image line by line 16 bits */
+//  else if (inDepth == 16)
   {
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-      //  if (theCInfo.out_color_space == JCS_GRAYSCALE)
-        //  if (theBuffer8P [theLoop] > 255) 
-          //  theBuffer8P [theLoop] = 255;
-            
-        *theWrkChP = (PapyUChar) theBuffer8P [theLoop]; 
-        theWrkChP++;  
-      } /* for */
-
-    } /* while ...line by line decompression of the image */
-    
-    /* frees the row used by the decompressor */
-    efree3 ((void **) &theBuffer8P);
-  } /* if ...depth = 8 */
-
-  /* decompress the image line by line 16 bits */
-  else if (inDepth == 16)
-  {
-    while (theCInfo.output_scanline < theCInfo.output_height) 
-    {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer16P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-        *theWrkCh16P = theBuffer16P [theLoop];
-        theWrkCh16P++;
-      } /* for */
+      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
+	  theWrkCh16P+=theLimit;
+	  
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//        *theWrkCh16P = theBuffer16P [theLoop];
+//        theWrkCh16P++;
+//      } /* for */
 
     } /* while ...line by line decompression of the image */
     

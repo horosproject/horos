@@ -453,13 +453,16 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
  
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer16P, 1);
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-        *theWrkCh16P = theBuffer16P [theLoop];
-        theWrkCh16P++;
-      } /* for */
+      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
+	  theWrkCh16P += theLimit;
+//	  
+//	  
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//        *theWrkCh16P = theBuffer16P [theLoop];
+//        theWrkCh16P++;
+//      } /* for */
 
     } /* while ...line by line decompression of the image */
     

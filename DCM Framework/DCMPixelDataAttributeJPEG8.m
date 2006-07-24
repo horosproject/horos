@@ -460,14 +460,15 @@ if (DEBUG)
  
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
+      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh8P, 1);
+	  theWrkCh8P += theLimit;
 	  
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-        *theWrkCh8P = theBuffer8P [theLoop];
-        theWrkCh8P++;
-      } /* for */
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//        *theWrkCh8P = theBuffer8P [theLoop];
+//        theWrkCh8P++;
+//      } /* for */
 
     } /* while ...line by line decompression of the image */
     

@@ -1517,6 +1517,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 				theErr = ExtractJPEGlossy16 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
 			break;
 			case 12:
+			case 10:
 				theErr = ExtractJPEGlossy12 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
 			break;
 			default:
