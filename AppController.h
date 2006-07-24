@@ -108,5 +108,9 @@ NSRect screenFrame();
 #pragma mark Geneva University Hospital (HUG) specific function
 - (void) HUGVerifyComPACSPlugin;
 - (void) HUGDisableBonjourFeature;
+
+#pragma mark-
+#pragma mark HTML Templates
++ (void)checkForHTMLTemplates;
 @end
 

@@ -1314,36 +1314,38 @@ static BOOL initialized = NO;
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
 				
+				[AppController checkForHTMLTemplates];
+				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
-				
-				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
-					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
-				
-				// CHECK FOR THE HTML TEMPLATES
-				
-				NSString *templateFile;
-				
-				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
-				NSLog(templateFile);
-				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
-
-				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
-				NSLog(templateFile);
-				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
-					
-				// CHECK FOR THE HTML EXTRA DIRECTORY
-				
-				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
-					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
-					
-				// CSS file
-				NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
+//				
+//				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
+//					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
+//				
+//				// CHECK FOR THE HTML TEMPLATES
+//				
+//				NSString *templateFile;
+//				
+//				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
+//				NSLog(templateFile);
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+//
+//				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
+//				NSLog(templateFile);
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+//					
+//				// CHECK FOR THE HTML EXTRA DIRECTORY
+//				
+//				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
+//					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
+//					
+//				// CSS file
+//				NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
+//				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
 			}
 		}
 	}
@@ -2222,5 +2224,38 @@ static BOOL initialized = NO;
 	[[browserController bonjourSourcesBox] setNeedsDisplay:YES];
 }
 
+
+#pragma mark-
+#pragma mark HTML Templates
++ (void)checkForHTMLTemplates;
+{
+	// directory
+	NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
+	
+	// HTML templates
+	NSString *templateFile;
+
+	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
+	NSLog(templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+
+	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
+	NSLog(templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+		
+	// HTML-extra directory
+	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
+		[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
+		
+	// CSS file
+	NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];
+}
 
 @end

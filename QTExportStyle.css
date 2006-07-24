@@ -69,7 +69,7 @@ li a:hover, a:active {
 }
 
 #content {
-	text-align: center;
+	text-align: left;
 	margin: auto;
 	width: 500px;
 	background: #ffffff;

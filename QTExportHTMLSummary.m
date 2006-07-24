@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "QTExportHTMLSummary.h"
+#import "AppController.h"
 
 extern NSString *documentsDirectory();
 
@@ -37,7 +38,9 @@ extern NSString *documentsDirectory();
 
 - (void)readTemplates;
 {
+	[AppController checkForHTMLTemplates];
 	patientsListTemplate = [NSString stringWithContentsOfFile:[documentsDirectory() stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportPatientsTemplate.html"]];
+	[AppController checkForHTMLTemplates];
 	examsListTemplate = [NSString stringWithContentsOfFile:[documentsDirectory() stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportStudiesTemplate.html"]];
 }
 
