@@ -5815,7 +5815,11 @@ static BOOL needToRezoom;
 	{
 		[self syncReportsIfNecessary: previousBonjourIndex];
 		
+		[albumNoOfStudiesCache removeAllObjects];
+		
 		[self bonjourServiceClicked: bonjourServicesList];
+		
+		[self setSearchString:nil];
 		
 		previousBonjourIndex = [bonjourServicesList selectedRow]-1;
 	}
