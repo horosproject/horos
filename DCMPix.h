@@ -183,7 +183,6 @@
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 - (void) imageArithmeticSubtraction:(DCMPix*) sub;
 - (float) cineRate;
-- (void) setSubtractionOffset:(NSPoint) o;
 - (void) setSubtractedfImage :(float*) s;
 - (float*) subtractedfImage;
 - (NSPoint) subtractionOffset;

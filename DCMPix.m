@@ -4243,6 +4243,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	}
 	
 	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
+	if( maxFrame == 0) maxFrame = 1;
 	
 	if( pixArray == 0L) maxFrame = 1;
 	
@@ -4598,7 +4599,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	if( pixArray != 0L && frameNo > 0)
 	{
-		while( fImage == 0L) {};
+		while( fImage == 0L) [NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		return YES;
 	}
 	
@@ -4625,29 +4626,25 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						fileNb = -1;
 					}
 				}
-			}
-			
-			if( fileNb < 0)
-			{
-				if( [[[srcFile pathExtension] lowercaseString] isEqualToString:@"dcm"] || fileNb != papNotPapyrusFile)
+				
+				if( gArrCompression [fileNb] == JPEG_LOSSLESS && gArrPhotoInterpret [fileNb] == RGB)
 				{
-					NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( srcFile)];
-					
-					convertedDICOM = [convertDICOM( srcFile) retain];
-					
-//						if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile] == NO)
-//						{
-//							convertedDICOM = [convertDICOM( srcFile) retain];
-//						}
-//						else
-//						{
-//							NSLog(@"It's here!");
-//							convertedDICOM = [outputfile retain];
-//						}
-					
-					fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
+					Papy3FileClose (fileNb, TRUE);
+					fileNb = -1;
 				}
 			}
+			
+//			if( fileNb < 0)
+//			{
+//				if( [[[srcFile pathExtension] lowercaseString] isEqualToString:@"dcm"] || fileNb != papNotPapyrusFile)
+//				{
+//					NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( srcFile)];
+//					
+//					convertedDICOM = [convertDICOM( srcFile) retain];
+//					
+//					fileNb = Papy3FileOpen ( (char*) [convertedDICOM UTF8String], (PAPY_FILE) 0, TRUE, 0);
+//				}
+//			}
 		}
 	}
 	
@@ -6329,15 +6326,14 @@ BOOL            readable = YES;
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMPIX"])
 			{
-				success = [self 
-				loadDICOMPapyrus];
+				success = [self loadDICOMPapyrus];
 				//only try again if is strict DICOM
-				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:srcFile]])
+				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
 			}
 			else{
 				success = [self loadDICOMDCMFramework];
-				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:srcFile]])
+				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMPapyrus];
 			}
 			
