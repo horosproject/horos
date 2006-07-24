@@ -4615,25 +4615,18 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		else
 		{
 			fileNb = Papy3FileOpen ( (char*) [srcFile UTF8String], (PAPY_FILE) 0, TRUE, 0);
-			if( fileNb >= 0)
-			{
-				if( gArrCompression[fileNb] == JPEG_LOSSLESS || gArrCompression[fileNb] == JPEG_LOSSY)
-				{
-					NSLog(@"Allocated Bits: %d", gx0028BitsAllocated [fileNb]);
-					if( gx0028BitsAllocated [fileNb] != 8 || [[NSUserDefaults standardUserDefaults] boolForKey: @"DCMTKJPEG"])
-					{
-						Papy3FileClose (fileNb, TRUE);
-						fileNb = -1;
-					}
-				}
-				
-				if( gArrCompression [fileNb] == JPEG_LOSSLESS && gArrPhotoInterpret [fileNb] == RGB)
-				{
-					Papy3FileClose (fileNb, TRUE);
-					fileNb = -1;
-				}
-			}
-			
+//			if( fileNb >= 0)
+//			{
+//				if( gArrCompression[fileNb] == JPEG_LOSSLESS || gArrCompression[fileNb] == JPEG_LOSSY)
+//				{
+//					NSLog(@"Allocated Bits: %d", gx0028BitsAllocated [fileNb]);
+//					if( gx0028BitsAllocated [fileNb] != 8 || [[NSUserDefaults standardUserDefaults] boolForKey: @"DCMTKJPEG"])
+//					{
+//						Papy3FileClose (fileNb, TRUE);
+//						fileNb = -1;
+//					}
+//				}
+//			}
 //			if( fileNb < 0)
 //			{
 //				if( [[[srcFile pathExtension] lowercaseString] isEqualToString:@"dcm"] || fileNb != papNotPapyrusFile)

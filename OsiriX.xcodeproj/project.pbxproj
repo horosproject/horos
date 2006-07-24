@@ -4438,6 +4438,18 @@
 		CE1606660769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE16066A0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
+		CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
+		CE16A6A80A755124001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
+		CE16A6AB0A755124001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
+		CE16A6DC0A755292001C27C4 /* PapyJpeg8.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6A20A755124001C27C4 /* PapyJpeg8.c */; };
+		CE16A6FA0A7552E0001C27C4 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
+		CE16A6FC0A7552E0001C27C4 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		CE16A6FD0A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
+		CE16A6FE0A7552E0001C27C4 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		CE16A6FF0A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
+		CE16A7000A7552E0001C27C4 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		CE16A7010A7552E0001C27C4 /* PapyJpeg16.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */; };
 		CE1CFD4408202E80002DDA97 /* VRControllerVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */; };
 		CE1CFD4508202E81002DDA97 /* VRControllerVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */; };
 		CE1D97CF0883B65E005A3A22 /* FlyThru.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1D97CE0883B65E005A3A22 /* FlyThru.tif */; };
@@ -11243,6 +11255,9 @@
 		CE1113F208EDD61B005B15E1 /* libitknetlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libitknetlib.a; path = ITK180/bin/libitknetlib.a; sourceTree = "<group>"; };
 		CE1335E806B02DC000B7FC03 /* iChat.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iChat.icns; sourceTree = "<group>"; };
 		CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = "VR Muscles-Bones.plist"; sourceTree = "<group>"; };
+		CE16A6A20A755124001C27C4 /* PapyJpeg8.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyJpeg8.c; path = Papyrus3/PapyJpeg8.c; sourceTree = "<group>"; };
+		CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyJpeg12.c; path = Papyrus3/PapyJpeg12.c; sourceTree = "<group>"; };
+		CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyJpeg16.c; path = Papyrus3/PapyJpeg16.c; sourceTree = "<group>"; };
 		CE1D97CE0883B65E005A3A22 /* FlyThru.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlyThru.tif; sourceTree = "<group>"; };
 		CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DatabaseWindow.icns; sourceTree = "<group>"; };
 		CE1F010707321F9800DE5DE9 /* ITKRegistration.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKRegistration.h; sourceTree = "<group>"; };
@@ -14176,6 +14191,9 @@
 				AB0BD5BC05646BBF00BED927 /* PapyInitModules3.c */,
 				AB0BD5BD05646BBF00BED927 /* PapyList3.c */,
 				AB7D5E5A0669A698000C16AE /* jasper.h */,
+				CE16A6A20A755124001C27C4 /* PapyJpeg8.c */,
+				CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */,
+				CE16A6F90A7552E0001C27C4 /* PapyJpeg16.c */,
 				AB0BD5BF05646BBF00BED927 /* PapyRead3.c */,
 				AB0BD5C005646BBF00BED927 /* PapyUtils3.c */,
 				AB0BD5C105646BBF00BED927 /* PapyVars3.c */,
@@ -24782,6 +24800,9 @@
 				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				CE51509E0A6AD2CB00408C38 /* KeyObjectPopupController.mm in Sources */,
 				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
+				CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */,
+				CE16A6FA0A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
+				CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25364,6 +25385,9 @@
 				BF2684400A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
 				A95B98A90A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
+				CE16A6A80A755124001C27C4 /* PapyJpeg8.c in Sources */,
+				CE16A6FC0A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
+				CE16A6FD0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25545,6 +25569,9 @@
 				CE0F423C0A56A8A600D54F38 /* ofstd.cc in Sources */,
 				CE0F423D0A56A8A600D54F38 /* ofstring.cc in Sources */,
 				CE0F423E0A56A8A600D54F38 /* ofthread.cc in Sources */,
+				CE16A6DC0A755292001C27C4 /* PapyJpeg8.c in Sources */,
+				CE16A7000A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
+				CE16A7010A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26131,6 +26158,9 @@
 				BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
 				BF15840B0A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */,
 				A95B98A70A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
+				CE16A6AB0A755124001C27C4 /* PapyJpeg8.c in Sources */,
+				CE16A6FE0A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
+				CE16A6FF0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

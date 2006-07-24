@@ -51,7 +51,10 @@
 #endif
 
 
-
+extern PapyShort ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth);
+extern PapyShort ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth);
+extern PapyShort ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth);
+		  
 extern short Altivec;
 
 #if __ppc__
@@ -122,7 +125,7 @@ ExtractJPEGlosslessDicom (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong i
   PapyUShort	theGroup, theElement;
   PapyULong	  i, thePos, theLength;
   
-  fprintf(stdout, "JPEG lossless");
+  fprintf(stdout, "JPEG lossless\r");
 /*  
   void 		*aFSSpec;
   PAPY_FILE	tmpFile;
@@ -272,177 +275,169 @@ my_error_exit (j_common_ptr ioCInfo)
 /* 	return : the image							*/
 /*										*/
 /********************************************************************************/
-void ExtractJPEGLossyQuicktime( FILE *file);
-
-static short  alreadyUncompressing = FALSE;
-
-PapyShort
-ExtractJPEGlossy (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart,
-		  PapyULong *inOffsetTableP, int inImageNb, int inDepth)
-{
-  struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
-  struct jpeg_decompress_struct	theCInfo;
-  PapyUChar			theTmpBuf [256];
-  PapyUChar			*theTmpBufP;
-  PapyUShort			theGroup, theElement;
-  PapyShort			theErr = 0;
-  PapyULong			i, thePos, theLimit;
-  int 				theRowStride;	 	/* physical row width in output buffer */
-  int				theLoop;
-  PapyUChar			*theWrkChP; 		/* ptr to the image */
-  PapyUChar			*theWrkCh8P; 		/* ptr to the image 8 bits */
-  PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
-  PapyUShort			*theBuffer16P;
-  PapyUChar			*theBuffer8P;
-   
-  fprintf(stdout, "JPEG lossy");
-  while( alreadyUncompressing == TRUE)
-  {
-  }
-  alreadyUncompressing = TRUE;
-  
-  /* position the file pointer to the begining of the image */
-  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
-  
-  /* read 8 chars from the file */
-  theTmpBufP = (PapyUChar *) &theTmpBuf [0];
-  i = 8L; 					/* grNb, elemNb & elemLength */
-  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
-  {
-    Papy3FClose (&gPapyFile [inFileNb]);
-    RETURN (theErr);
-  } /* if */
-    
-  thePos     = 0L;
-  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-    
-  /* Pixel data fragment not found when expected */
-  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
+//static short  alreadyUncompressing = FALSE;
+//
+//PapyShort
+//ExtractJPEGlossy (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart,
+//		  PapyULong *inOffsetTableP, int inImageNb, int inDepth)
+//{
+//  struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
+//  struct jpeg_decompress_struct	theCInfo;
+//  PapyUChar			theTmpBuf [256];
+//  PapyUChar			*theTmpBufP;
+//  PapyUShort			theGroup, theElement;
+//  PapyShort			theErr = 0;
+//  PapyULong			i, thePos, theLimit;
+//  int 				theRowStride;	 	/* physical row width in output buffer */
+//  int				theLoop;
+//  PapyUChar			*theWrkChP; 		/* ptr to the image */
+//  PapyUChar			*theWrkCh8P; 		/* ptr to the image 8 bits */
+//  PapyUShort			*theWrkCh16P; 		/* ptr to the image 16 bits */
+//  PapyUShort			*theBuffer16P;
+//  PapyUChar			*theBuffer8P;
+//   
+//  fprintf(stdout, "JPEG lossy");
+//  while( alreadyUncompressing == TRUE)
+//  {
+//  }
+//  alreadyUncompressing = TRUE;
 //  
+//  /* position the file pointer to the begining of the image */
+//  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
 //  
-//  ExtractJPEGLossyQuicktime( gPapyFile [inFileNb]);
+//  /* read 8 chars from the file */
+//  theTmpBufP = (PapyUChar *) &theTmpBuf [0];
+//  i = 8L; 					/* grNb, elemNb & elemLength */
+//  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
+//  {
+//    Papy3FClose (&gPapyFile [inFileNb]);
+//    RETURN (theErr);
+//  } /* if */
+//    
+//  thePos     = 0L;
+//  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//    
+//  /* Pixel data fragment not found when expected */
+//  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
 //  
+//  /* We set up the normal JPEG error routines, then override error_exit. */
+//  theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
+//  theJErr.pub.error_exit = my_error_exit;
+//  /* Establish the setjmp return context for my_error_exit to use. */
+//#ifdef Mac
+//  if (setjmp (theJErr.setjmp_buffer)) 
+//  {
+//    jpeg_destroy_decompress (&theCInfo);
+//    return 0;
+//  }/* if */
+//#endif
+//
+//  /* initialize the JPEG decompression object */
+//  jpeg_create_decompress (&theCInfo);
+//
+//  /* specify the data source */
+//  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
 //  
+//  /* read file parameter */
+//  (void) jpeg_read_header (&theCInfo, TRUE);
+//
+//  if (theCInfo.data_precision == 12)
+//  {
+//	jpeg_destroy_decompress (&theCInfo);
+//	return papBadArgument;
+//  }
+//
+//  if (gArrPhotoInterpret [inFileNb] == MONOCHROME1 ||
+//      gArrPhotoInterpret [inFileNb] == MONOCHROME2)
+//    theCInfo.out_color_space = JCS_GRAYSCALE;
+//
+//  if (gArrPhotoInterpret [inFileNb] == RGB)
+//    theCInfo.out_color_space = JCS_RGB;
+//  /* theCInfo.out_color_space = JCS_YCbCr; */
+//    
+//  /* start the decompressor (set the decompression default params) */
+//  (void) jpeg_start_decompress (&theCInfo);
+//
+//  /* JSAMPLEs per row in output buffer */
+//  theRowStride = theCInfo.output_width * theCInfo.output_components;
+//  if (inDepth == 16) 
+//    theRowStride *= 2;
+//    
+//  /* allocate a one-row-high sample array that will go away when done with image */  
+//  if (inDepth == 16)
+//  {
+//    theBuffer16P = (PapyUShort *) emalloc3 ((PapyULong) theRowStride);
+//    theWrkCh16P = (PapyUShort *) ioImage8P;
+//  }
+//  else
+//  {
+//    theBuffer8P = (PapyUChar *) emalloc3 ((PapyULong) theRowStride);
+//    theWrkCh8P  = (PapyUChar *) ioImage8P;
+//  }
+//
+//  theWrkChP = (PapyUChar *) ioImage8P;
+//
+//  theLimit = theCInfo.output_width * theCInfo.output_components;
+//
+//  /* decompress the image line by line 8 bits */
+//  if (inDepth == 8)
+//  {
+//    while (theCInfo.output_scanline < theCInfo.output_height) 
+//    {
+//      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
+//      
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//      //  if (theCInfo.out_color_space == JCS_GRAYSCALE)
+//        //  if (theBuffer8P [theLoop] > 255) 
+//          //  theBuffer8P [theLoop] = 255;
+//            
+//        *theWrkChP = (PapyUChar) theBuffer8P [theLoop]; 
+//        theWrkChP++;  
+//      } /* for */
+//
+//    } /* while ...line by line decompression of the image */
+//    
+//    /* frees the row used by the decompressor */
+//    efree3 ((void **) &theBuffer8P);
+//  } /* if ...depth = 8 */
+//
+//  /* decompress the image line by line 16 bits */
+//  else if (inDepth == 16)
+//  {
+//    while (theCInfo.output_scanline < theCInfo.output_height) 
+//    {
+//      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer16P, 1);
+//      
+//      /* put the scanline in the image */
+//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
+//      {
+//        *theWrkCh16P = theBuffer16P [theLoop];
+//        theWrkCh16P++;
+//      } /* for */
+//
+//    } /* while ...line by line decompression of the image */
+//    
+//    /* frees the row used by the decompressor */
+//    efree3 ((void **) &theBuffer16P);
+//  } /* else ...depth = 16 bits */
+//    
+//  /* tell the JPEG decompressor we have finish the decompression */  
+//  (void) jpeg_finish_decompress (&theCInfo);
 //  
-  
-  /* We set up the normal JPEG error routines, then override error_exit. */
-  theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
-  theJErr.pub.error_exit = my_error_exit;
-  /* Establish the setjmp return context for my_error_exit to use. */
-#ifdef Mac
-  if (setjmp (theJErr.setjmp_buffer)) 
-  {
-    jpeg_destroy_decompress (&theCInfo);
-    return 0;
-  }/* if */
-#endif
-
-  /* initialize the JPEG decompression object */
-  jpeg_create_decompress (&theCInfo);
-
-  /* specify the data source */
-  jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
-  
-  /* read file parameter */
-  (void) jpeg_read_header (&theCInfo, TRUE);
-
-  if (theCInfo.data_precision == 12)
-  {
-	jpeg_destroy_decompress (&theCInfo);
-	return papBadArgument;
-  }
-
-  if (gArrPhotoInterpret [inFileNb] == MONOCHROME1 ||
-      gArrPhotoInterpret [inFileNb] == MONOCHROME2)
-    theCInfo.out_color_space = JCS_GRAYSCALE;
-
-  if (gArrPhotoInterpret [inFileNb] == RGB)
-    theCInfo.out_color_space = JCS_RGB;
-  /* theCInfo.out_color_space = JCS_YCbCr; */
-    
-  /* start the decompressor (set the decompression default params) */
-  (void) jpeg_start_decompress (&theCInfo);
-
-  /* JSAMPLEs per row in output buffer */
-  theRowStride = theCInfo.output_width * theCInfo.output_components;
-  if (inDepth == 16) 
-    theRowStride *= 2;
-    
-  /* allocate a one-row-high sample array that will go away when done with image */  
-  if (inDepth == 16)
-  {
-    theBuffer16P = (PapyUShort *) emalloc3 ((PapyULong) theRowStride);
-    theWrkCh16P = (PapyUShort *) ioImage8P;
-  }
-  else
-  {
-    theBuffer8P = (PapyUChar *) emalloc3 ((PapyULong) theRowStride);
-    theWrkCh8P  = (PapyUChar *) ioImage8P;
-  }
-
-  theWrkChP = (PapyUChar *) ioImage8P;
-
-  theLimit = theCInfo.output_width * theCInfo.output_components;
-
-  /* decompress the image line by line 8 bits */
-  if (inDepth == 8)
-  {
-    while (theCInfo.output_scanline < theCInfo.output_height) 
-    {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-      //  if (theCInfo.out_color_space == JCS_GRAYSCALE)
-        //  if (theBuffer8P [theLoop] > 255) 
-          //  theBuffer8P [theLoop] = 255;
-            
-        *theWrkChP = (PapyUChar) theBuffer8P [theLoop]; 
-        theWrkChP++;  
-      } /* for */
-
-    } /* while ...line by line decompression of the image */
-    
-    /* frees the row used by the decompressor */
-    efree3 ((void **) &theBuffer8P);
-  } /* if ...depth = 8 */
-
-  /* decompress the image line by line 16 bits */
-  else if (inDepth == 16)
-  {
-    while (theCInfo.output_scanline < theCInfo.output_height) 
-    {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer16P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-        *theWrkCh16P = theBuffer16P [theLoop];
-        theWrkCh16P++;
-      } /* for */
-
-    } /* while ...line by line decompression of the image */
-    
-    /* frees the row used by the decompressor */
-    efree3 ((void **) &theBuffer16P);
-  } /* else ...depth = 16 bits */
-    
-  /* tell the JPEG decompressor we have finish the decompression */  
-  (void) jpeg_finish_decompress (&theCInfo);
-  
-  /* MAL added : cf Example.c */
-  /* Step 8: Release JPEG decompression object */
-
-  /* This is an important step since it will release a good deal of memory. */
-  jpeg_destroy_decompress(&theCInfo);
-	
-  alreadyUncompressing = FALSE;
-	
-  return theErr;
-
-} /* endof ExtractJPEGlossy */
+//  /* MAL added : cf Example.c */
+//  /* Step 8: Release JPEG decompression object */
+//
+//  /* This is an important step since it will release a good deal of memory. */
+//  jpeg_destroy_decompress(&theCInfo);
+//	
+//  alreadyUncompressing = FALSE;
+//	
+//  return theErr;
+//
+//} /* endof ExtractJPEGlossy */
 
 
 #include "jasper.h"
@@ -1503,9 +1498,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     /********************************************************************/
     if (gArrCompression [inFileNb] == JPEG_LOSSLESS)
     {
- //     theErr = ExtractJPEGlossy (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, 
-//                              (int) gx0028BitsAllocated [inFileNb]);
-
       if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
         theErr = ExtractJPEGlosslessDicom (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb);
       else /* little-endian-explicit VR */
@@ -1518,10 +1510,21 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     /*******************     Lossy JPEG     *****************************/
     /********************************************************************/
     else if (gArrCompression [inFileNb] == JPEG_LOSSY)
-    {	
-      theErr = ExtractJPEGlossy (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, 
-                              (int) gx0028BitsAllocated [inFileNb]);
-//		theErr = -1;
+    {
+		switch( gx0028BitsStored [inFileNb])
+		{
+			case 16:
+				theErr = ExtractJPEGlossy16 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+			case 12:
+				theErr = ExtractJPEGlossy12 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+			default:
+			case 8:
+				theErr = ExtractJPEGlossy8 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+		}
+			
     } /* if ...JPEG lossy */
 
 #ifdef MAYO_WAVE    
