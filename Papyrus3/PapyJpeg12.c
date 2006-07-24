@@ -121,12 +121,10 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   PapyUShort			*theBuffer16P;
   PapyUChar			*theBuffer8P;
    
-  fprintf(stdout, "JPEG lossy");
   while( alreadyUncompressing == TRUE)
   {
   }
   alreadyUncompressing = TRUE;
-  
   fprintf(stdout, "ExtractJPEGlossy12\r");
   
   /* position the file pointer to the begining of the image */
@@ -228,6 +226,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 //  /* decompress the image line by line 16 bits */
 //  else if (inDepth == 16)
   {
+  
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
       (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);

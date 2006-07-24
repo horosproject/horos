@@ -121,7 +121,6 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   PapyUShort			*theBuffer16P;
   PapyUChar			*theBuffer8P;
    
-  fprintf(stdout, "JPEG lossy");
   while( alreadyUncompressing == TRUE)
   {
   }
