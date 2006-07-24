@@ -4720,8 +4720,7 @@ static BOOL COMPLETEREBUILD = NO;
 				if( thumbnail == 0L) computeThumbnail = YES;
 			}
 			
-			dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
-			//[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue]
+			dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
 			
 			if( dcmPix)
 			{
