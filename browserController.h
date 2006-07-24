@@ -196,7 +196,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (void) emptyDeleteQueueThread;
 - (void) emptyDeleteQueue:(id) sender;
 - (void) addFileToDeleteQueue:(NSString*) file;
-
+- (NSString*) getNewFileDatabasePath: (NSString*) extension;
 - (NSManagedObjectModel *)managedObjectModel;
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
@@ -281,6 +281,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray;
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames;
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
