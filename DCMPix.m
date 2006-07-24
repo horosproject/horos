@@ -6983,7 +6983,8 @@ BOOL            readable = YES;
 
 -(void) CheckLoad
 {
-// uses DCMPix class variable NSString *srcFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
+	// uses DCMPix class variable NSString *srcFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
+
 	[checking lock];
 	
 	[self CheckLoadIn];
