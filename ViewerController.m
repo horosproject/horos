@@ -9169,16 +9169,17 @@ int i,j,l;
 	
     [d retain];
     fileList[ 0] = d;
-
+	
 	// Create empty ROI Lists
 	roiList[0] = [[NSMutableArray alloc] initWithCapacity: 0];
 	for( i = 0; i < [pixList[0] count]; i++)
 	{
 		[roiList[0] addObject:[NSMutableArray arrayWithCapacity:0]];
 	}
+	
+	
 	//
 	[self loadROI: 0];
-	
 	
 	[self setupToolbar];
 	
