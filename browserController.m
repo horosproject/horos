@@ -7268,6 +7268,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		if( [result count])
 		{
 			[databaseOutline selectRow: [databaseOutline rowForItem: [result objectAtIndex: 0]] byExtendingSelection: NO];
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 		}
     }
 }
