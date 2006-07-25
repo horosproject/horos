@@ -125,7 +125,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   {
   }
   alreadyUncompressing = TRUE;
-  fprintf(stdout, "ExtractJPEGlossy12 Start\r");
+  fprintf(stdout, "ExtractJPEGlossy12\r");
   
   /* position the file pointer to the begining of the image */
   Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
@@ -249,8 +249,6 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   jpeg_destroy_decompress(&theCInfo);
 	
   alreadyUncompressing = FALSE;
-
-  fprintf(stdout, "ExtractJPEGlossy12 Out\r");
 
   return theErr;
 
