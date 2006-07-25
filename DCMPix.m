@@ -6324,7 +6324,9 @@ BOOL            readable = YES;
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
 			}
-			else{
+			else
+			{
+				
 				success = [self loadDICOMDCMFramework];
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMPapyrus];

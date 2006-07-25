@@ -1152,7 +1152,9 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 
 - (void)closeAllWindows:(NSNotification *)note{
-	if (![[note object] isEqual:self]) {
+	if (![[note object] isEqual:self])
+	{
+		if( FullScreenOn == YES ) [self fullScreenMenu: self];
 		NSLog(@"close");
 		[[self window] close];
 	}

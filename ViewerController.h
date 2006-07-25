@@ -421,7 +421,7 @@
 - (short) curMovieIndex;
 - (id) findiChatButton;
 - (void) convertPETtoSUV;
-
+- (IBAction) fullScreenMenu:(id) sender;
 - (void)exportTextFieldDidChange:(NSNotification *)note;
 
 #pragma mark-
