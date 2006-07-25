@@ -211,18 +211,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   {
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-      //  if (theCInfo.out_color_space == JCS_GRAYSCALE)
-        //  if (theBuffer8P [theLoop] > 255) 
-          //  theBuffer8P [theLoop] = 255;
-            
-        *theWrkChP = (PapyUChar) theBuffer8P [theLoop]; 
-        theWrkChP++;  
-      } /* for */
+      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkChP, 1);
+      theWrkChP += theLimit;
 
     } /* while ...line by line decompression of the image */
     
@@ -235,14 +225,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
   {
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer16P, 1);
-      
-      /* put the scanline in the image */
-      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-      {
-        *theWrkCh16P = theBuffer16P [theLoop];
-        theWrkCh16P++;
-      } /* for */
+      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
+      theWrkCh16P += theLimit;
 
     } /* while ...line by line decompression of the image */
     

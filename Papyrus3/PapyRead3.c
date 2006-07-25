@@ -1449,9 +1449,9 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
           theTmpBufP  = (unsigned char *) &theTmpBuf [0];
           if ((theErr = (PapyShort) Papy3FRead (theFp, &i, 1L, theTmpBufP)) < 0)
           {
-	    theErr = Papy3FClose (&theFp);
-	    efree3 ((void **) &theOffsetTableP);
-	    return NULL;
+			theErr = Papy3FClose (&theFp);
+			efree3 ((void **) &theOffsetTableP);
+			return NULL;
           } /* if */
         
           thePos = 0L;
@@ -1501,10 +1501,25 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     /********************************************************************/
     if (gArrCompression [inFileNb] == JPEG_LOSSLESS)
     {
-      if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
-        theErr = ExtractJPEGlosslessDicom (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb);
-      else /* little-endian-explicit VR */
-        theErr = ExtractJPEGlosslessPap (inFileNb, theBufP, thePixelStart, theElemP->length);
+		switch( gx0028BitsStored [inFileNb])
+		{
+			case 16:
+				theErr = ExtractJPEGlossy16 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+			case 12:
+			case 10:
+				theErr = ExtractJPEGlossy12 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+			default:
+			case 8:
+				theErr = ExtractJPEGlossy8 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb]);
+			break;
+		}
+	
+//      if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
+//        theErr = ExtractJPEGlosslessDicom (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb);
+//      else /* little-endian-explicit VR */
+//        theErr = ExtractJPEGlosslessPap (inFileNb, theBufP, thePixelStart, theElemP->length);
 //	theErr = -1;
     } /* if ...JPEG lossless */
 

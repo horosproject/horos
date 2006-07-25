@@ -125,7 +125,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   {
   }
   alreadyUncompressing = TRUE;
-  fprintf(stdout, "ExtractJPEGlossy12\r");
+  fprintf(stdout, "ExtractJPEGlossy12 Start\r");
   
   /* position the file pointer to the begining of the image */
   Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
@@ -163,7 +163,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 
   /* specify the data source */
   jpeg_stdio_src (&theCInfo, gPapyFile [inFileNb]);
-  
+
   /* read file parameter */
   (void) jpeg_read_header (&theCInfo, TRUE);
 
@@ -174,12 +174,13 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   if (gArrPhotoInterpret [inFileNb] == RGB)
     theCInfo.out_color_space = JCS_RGB;
   /* theCInfo.out_color_space = JCS_YCbCr; */
-    
+
+	  
   /* start the decompressor (set the decompression default params) */
   (void) jpeg_start_decompress (&theCInfo);
 
   /* JSAMPLEs per row in output buffer */
-  theRowStride = theCInfo.output_width * theCInfo.output_components * 2;
+  theRowStride = theCInfo.output_width * theCInfo.output_components *2;
 //  if (inDepth == 16) 
   //  theRowStride *= 2;
     
@@ -200,8 +201,8 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   theLimit = theCInfo.output_width * theCInfo.output_components;
 
 //  /* decompress the image line by line 8 bits */
-//  if (inDepth == 8)
-//  {
+  if (inDepth == 8)
+  {
 //    while (theCInfo.output_scanline < theCInfo.output_height) 
 //    {
 //      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theBuffer8P, 1);
@@ -221,23 +222,16 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 //    
 //    /* frees the row used by the decompressor */
 //    efree3 ((void **) &theBuffer8P);
-//  } /* if ...depth = 8 */
-//
-//  /* decompress the image line by line 16 bits */
-//  else if (inDepth == 16)
+  } /* if ...depth = 8 */
+
+  /* decompress the image line by line 16 bits */
+  else if (inDepth == 16)
   {
 
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
-      (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
-	  theWrkCh16P+=theLimit;
-	  
-//      /* put the scanline in the image */
-//      for (theLoop = 0; theLoop < (int) theLimit; theLoop ++)
-//      {
-//        *theWrkCh16P = theBuffer16P [theLoop];
-//        theWrkCh16P++;
-//      } /* for */
+	  jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh16P, 1);
+	  theWrkCh16P += theLimit;
 
     } /* while ...line by line decompression of the image */
     
@@ -255,7 +249,9 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   jpeg_destroy_decompress(&theCInfo);
 	
   alreadyUncompressing = FALSE;
-	
+
+  fprintf(stdout, "ExtractJPEGlossy12 Out\r");
+
   return theErr;
 
 } /* endof ExtractJPEGlossy */

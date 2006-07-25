@@ -426,6 +426,7 @@ if (DEBUG)
 	NSMutableData					*rawData = nil ;
 	//initialize jpeg decompressor
 	
+	NSLog(@"decompress JPEG 8 frame length: %d", [jpegData length]);
 
 		
 	theCInfo.err = jpeg_std_error (&theJErr);
