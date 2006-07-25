@@ -17,7 +17,7 @@
 extern NSString* asciiString (NSString* name);
 
 @interface QTExportHTMLSummary : NSObject {
-	NSString *patientsListTemplate, *examsListTemplate; // whole template
+	NSString *patientsListTemplate, *examsListTemplate, *seriesTemplate; // whole template
 	NSDictionary *patientsDictionary;
 	NSString *rootPath, *footerString;
 }
@@ -29,6 +29,7 @@ extern NSString* asciiString (NSString* name);
 - (void)readTemplates;
 - (NSString*)fillPatientsListTemplates;
 - (NSString*)fillStudiesListTemplatesForSeries:(NSArray*) series;
+- (NSString*)fillSeriesTemplatesForSeries:(NSManagedObject*)series numberOfImages:(int)imagesCount;
 
 #pragma mark-
 #pragma mark HTML file creation
@@ -36,6 +37,7 @@ extern NSString* asciiString (NSString* name);
 - (void)createHTMLPatientsList;
 - (void)createHTMLStudiesList;
 - (void)createHTMLExtraDirectory;
+- (void)createHTMLSeriesPage:(NSManagedObject*)series numberOfImages:(int)imagesCount outPutFileName:(NSString*)fileName;
 
 #pragma mark-
 #pragma mark setters

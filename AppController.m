@@ -2246,7 +2246,12 @@ static BOOL initialized = NO;
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
-		
+
+	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportSeriesTemplate.html"];
+	NSLog(templateFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:0L];
+	
 	// HTML-extra directory
 	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)

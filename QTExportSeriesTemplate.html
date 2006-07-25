@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>%series_name%</title>
+	<link href="../../html-extra/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+	<div id='content'>
+		<h1>%patient_name%, %patient_dateOfBirth%</h1>
+		<hr />
+		<h2>%series_name% (%series_id%) %series_images_count% images</h2>
+			<div id="series_img">
+			%series_img%
+			<img src="%series_file_path%" alt="%series_name%" />
+			%series_img%
+			%series_mov%
+			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="512" height="512">
+				<param name="src" value="%series_file_path%" />
+				<param name="controller" value="true" />
+				<param name="autoplay" value="false" />
+				<!--[if !IE]>-->
+				<object type="video/quicktime" data="%series_file_path%" width="512" height="512">
+			    	<param name="autoplay" value="false" />
+			    	<param name="controller" value="true" />
+			  	</object>
+			  	<!--<![endif]-->
+			</object>
+			%series_mov%
+			</div>
+		<hr />
+		<div id='back'>
+			<a href="../index.html"> &lt; Back to %patient_name%'s studies</a>
+		</div>
+		<div id='footer'>
+			<i>%footer_string%</i>
+		</div>
+	</div>
+  </body>
+</html>

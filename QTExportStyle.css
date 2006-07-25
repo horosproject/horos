@@ -71,10 +71,14 @@ li a:hover, a:active {
 #content {
 	text-align: left;
 	margin: auto;
-	width: 500px;
+	width: 600px;
 	background: #ffffff;
 	padding: 50px;
 	border: thin solid #999966;
+}
+
+#series_img {
+	text-align: center;
 }
 
 #back {

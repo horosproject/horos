@@ -450,6 +450,9 @@
 		A91CE49E098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE49F098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE4A0098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
+		A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
+		A926BFCA0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
+		A926BFCB0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
 		A932B959094D722D0085B58A /* EndoscopyViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A932B957094D722D0085B58A /* EndoscopyViewer.h */; };
 		A932B95A094D722D0085B58A /* EndoscopyViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = A932B958094D722D0085B58A /* EndoscopyViewer.m */; };
 		A932B95B094D722D0085B58A /* EndoscopyViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = A932B957094D722D0085B58A /* EndoscopyViewer.h */; };
@@ -10073,6 +10076,7 @@
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
+		A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportSeriesTemplate.html; sourceTree = "<group>"; };
 		A932B957094D722D0085B58A /* EndoscopyViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyViewer.h; sourceTree = "<group>"; };
 		A932B958094D722D0085B58A /* EndoscopyViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyViewer.m; sourceTree = "<group>"; };
 		A932BAE9094D87C90085B58A /* EndoscopyVRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyVRController.h; sourceTree = "<group>"; };
@@ -13530,6 +13534,7 @@
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
+				A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */,
 				A9A9F4C00A74C9A9005A1CA7 /* QTExportStyle.css */,
 				CE7DECC208F05F1500763A70 /* Previous DB Models */,
 				7E5E9259072FEE86007683A2 /* iCal script.applescript */,
@@ -23867,6 +23872,7 @@
 				A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
+				A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24148,6 +24154,7 @@
 				A95B98B10A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C30A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
+				A926BFCB0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24429,6 +24436,7 @@
 				A95B98AF0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C20A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
+				A926BFCA0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
