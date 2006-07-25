@@ -38,8 +38,11 @@
 #include <math.h>
 
 #include "setjmp.h"
-#include "jpegless.h"       /* interface for JPEG lossless decompressor */
-#include "jpeglib.h"	    /* interface for JPEG lossy decompressor */
+//#include "jpegless.h"       /* interface for JPEG lossless decompressor */
+//#include "jpeglib.h"	    /* interface for JPEG lossy decompressor */
+#include "jinclude16.h"
+#include "jpeglib16.h"
+#include "jerror16.h"
 
 #ifdef MAYO_WAVE
 #include "Mayo.h"	/* interface for wavelet decompressor */
