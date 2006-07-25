@@ -8455,160 +8455,6 @@
 		CEA337BF06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
-		CEAF1C460A757BD000A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10606BF2C4E00C7EF1E /* jaricom.c */; };
-		CEAF1C470A757BD000A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */; };
-		CEAF1C480A757BD000A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10806BF2C4E00C7EF1E /* jcapistd.c */; };
-		CEAF1C490A757BD000A0D729 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10906BF2C4E00C7EF1E /* jcarith.c */; };
-		CEAF1C4A0A757BD000A0D729 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10A06BF2C4E00C7EF1E /* jccoefct.c */; };
-		CEAF1C4B0A757BD000A0D729 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10B06BF2C4E00C7EF1E /* jccolor.c */; };
-		CEAF1C4C0A757BD000A0D729 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10C06BF2C4E00C7EF1E /* jcdctmgr.c */; };
-		CEAF1C4D0A757BD000A0D729 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10D06BF2C4F00C7EF1E /* jcdiffct.c */; };
-		CEAF1C4E0A757BD000A0D729 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10E06BF2C4F00C7EF1E /* jchuff.c */; };
-		CEAF1C4F0A757BD000A0D729 /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB10F06BF2C4F00C7EF1E /* jchuff8.h */; };
-		CEAF1C500A757BD000A0D729 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11006BF2C4F00C7EF1E /* jcinit.c */; };
-		CEAF1C510A757BD000A0D729 /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11106BF2C4F00C7EF1E /* jclhuff.c */; };
-		CEAF1C520A757BD000A0D729 /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11206BF2C4F00C7EF1E /* jclossls.c */; };
-		CEAF1C530A757BD000A0D729 /* jclossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11306BF2C4F00C7EF1E /* jclossy.c */; };
-		CEAF1C540A757BD000A0D729 /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */; };
-		CEAF1C550A757BD000A0D729 /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */; };
-		CEAF1C560A757BD000A0D729 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */; };
-		CEAF1C570A757BD000A0D729 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E /* jcodec.c */; };
-		CEAF1C580A757BD000A0D729 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */; };
-		CEAF1C590A757BD000A0D729 /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */; };
-		CEAF1C5A0A757BD000A0D729 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */; };
-		CEAF1C5B0A757BD000A0D729 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11B06BF2C4F00C7EF1E /* jcphuff.c */; };
-		CEAF1C5C0A757BD000A0D729 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11C06BF2C4F00C7EF1E /* jcpred.c */; };
-		CEAF1C5D0A757BD000A0D729 /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11D06BF2C4F00C7EF1E /* jcprepct.c */; };
-		CEAF1C5E0A757BD000A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11E06BF2C4F00C7EF1E /* jcsample.c */; };
-		CEAF1C5F0A757BD000A0D729 /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11F06BF2C4F00C7EF1E /* jcscale.c */; };
-		CEAF1C600A757BD000A0D729 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12006BF2C4F00C7EF1E /* jcshuff.c */; };
-		CEAF1C610A757BD000A0D729 /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12106BF2C4F00C7EF1E /* jctrans.c */; };
-		CEAF1C620A757BD000A0D729 /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12206BF2C4F00C7EF1E /* jdapimin.c */; };
-		CEAF1C630A757BD000A0D729 /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12306BF2C4F00C7EF1E /* jdapistd.c */; };
-		CEAF1C640A757BD000A0D729 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12406BF2C4F00C7EF1E /* jdarith.c */; };
-		CEAF1C650A757BD000A0D729 /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12506BF2C4F00C7EF1E /* jdatadst.c */; };
-		CEAF1C660A757BD000A0D729 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12606BF2C4F00C7EF1E /* jdatasrc.c */; };
-		CEAF1C670A757BD000A0D729 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12706BF2C4F00C7EF1E /* jdcoefct.c */; };
-		CEAF1C680A757BD000A0D729 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12806BF2C4F00C7EF1E /* jdcolor.c */; };
-		CEAF1C690A757BD000A0D729 /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12906BF2C4F00C7EF1E /* jdct8.h */; };
-		CEAF1C6A0A757BD000A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12A06BF2C4F00C7EF1E /* jddctmgr.c */; };
-		CEAF1C6B0A757BD000A0D729 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12B06BF2C4F00C7EF1E /* jddiffct.c */; };
-		CEAF1C6C0A757BD000A0D729 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12C06BF2C4F00C7EF1E /* jdhuff.c */; };
-		CEAF1C6D0A757BD000A0D729 /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */; };
-		CEAF1C6E0A757BD000A0D729 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */; };
-		CEAF1C6F0A757BD000A0D729 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */; };
-		CEAF1C700A757BD000A0D729 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */; };
-		CEAF1C710A757BD000A0D729 /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */; };
-		CEAF1C720A757BD000A0D729 /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */; };
-		CEAF1C730A757BD000A0D729 /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */; };
-		CEAF1C740A757BD000A0D729 /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13406BF2C4F00C7EF1E /* jdmaster.c */; };
-		CEAF1C750A757BD000A0D729 /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13506BF2C4F00C7EF1E /* jdmerge.c */; };
-		CEAF1C760A757BD000A0D729 /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13606BF2C4F00C7EF1E /* jdphuff.c */; };
-		CEAF1C770A757BD000A0D729 /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13706BF2C4F00C7EF1E /* jdpostct.c */; };
-		CEAF1C780A757BD000A0D729 /* jdpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13806BF2C4F00C7EF1E /* jdpred.c */; };
-		CEAF1C790A757BD000A0D729 /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13906BF2C4F00C7EF1E /* jdsample.c */; };
-		CEAF1C7A0A757BD000A0D729 /* jdscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13A06BF2C4F00C7EF1E /* jdscale.c */; };
-		CEAF1C7B0A757BD000A0D729 /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13B06BF2C4F00C7EF1E /* jdshuff.c */; };
-		CEAF1C7C0A757BD000A0D729 /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13C06BF2C4F00C7EF1E /* jdtrans.c */; };
-		CEAF1C7D0A757BD000A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13D06BF2C4F00C7EF1E /* jerror.c */; };
-		CEAF1C7E0A757BD000A0D729 /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB13E06BF2C4F00C7EF1E /* jerror8.h */; };
-		CEAF1C7F0A757BD000A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13F06BF2C4F00C7EF1E /* jfdctflt.c */; };
-		CEAF1C800A757BD000A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14006BF2C4F00C7EF1E /* jfdctfst.c */; };
-		CEAF1C810A757BD000A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14106BF2C4F00C7EF1E /* jfdctint.c */; };
-		CEAF1C820A757BD000A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14206BF2C4F00C7EF1E /* jidctflt.c */; };
-		CEAF1C830A757BD000A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14306BF2C4F00C7EF1E /* jidctfst.c */; };
-		CEAF1C840A757BD000A0D729 /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14406BF2C4F00C7EF1E /* jidctint.c */; };
-		CEAF1C850A757BD000A0D729 /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14506BF2C4F00C7EF1E /* jidctred.c */; };
-		CEAF1C860A757BD000A0D729 /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14606BF2C4F00C7EF1E /* jinclude8.h */; };
-		CEAF1C870A757BD000A0D729 /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14706BF2C4F00C7EF1E /* jlossls8.h */; };
-		CEAF1C880A757BD000A0D729 /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14806BF2C4F00C7EF1E /* jlossy8.h */; };
-		CEAF1C890A757BD000A0D729 /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14906BF2C4F00C7EF1E /* jmemmgr.c */; };
-		CEAF1C8A0A757BD000A0D729 /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14A06BF2C4F00C7EF1E /* jmemnobs.c */; };
-		CEAF1C8B0A757BD000A0D729 /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14B06BF2C4F00C7EF1E /* jmemsys8.h */; };
-		CEAF1C8C0A757BD000A0D729 /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14C06BF2C4F00C7EF1E /* jmorecfg8.h */; };
-		CEAF1C8D0A757BD000A0D729 /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14D06BF2C4F00C7EF1E /* jpegint8.h */; };
-		CEAF1C8E0A757BD000A0D729 /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14E06BF2C4F00C7EF1E /* jpeglib8.h */; };
-		CEAF1C8F0A757BD000A0D729 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14F06BF2C4F00C7EF1E /* jquant1.c */; };
-		CEAF1C900A757BD000A0D729 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15006BF2C4F00C7EF1E /* jquant2.c */; };
-		CEAF1C910A757BD000A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15106BF2C4F00C7EF1E /* jutils.c */; };
-		CEAF1C920A757BD000A0D729 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB15206BF2C4F00C7EF1E /* jversion8.h */; };
-		CEAF1C930A757BD000A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10606BF2C4E00C7EF1E /* jaricom.c */; };
-		CEAF1C940A757BD000A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */; };
-		CEAF1C950A757BD000A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10806BF2C4E00C7EF1E /* jcapistd.c */; };
-		CEAF1C960A757BD000A0D729 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10906BF2C4E00C7EF1E /* jcarith.c */; };
-		CEAF1C970A757BD000A0D729 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10A06BF2C4E00C7EF1E /* jccoefct.c */; };
-		CEAF1C980A757BD000A0D729 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10B06BF2C4E00C7EF1E /* jccolor.c */; };
-		CEAF1C990A757BD000A0D729 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10C06BF2C4E00C7EF1E /* jcdctmgr.c */; };
-		CEAF1C9A0A757BD000A0D729 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10D06BF2C4F00C7EF1E /* jcdiffct.c */; };
-		CEAF1C9B0A757BD000A0D729 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB10E06BF2C4F00C7EF1E /* jchuff.c */; };
-		CEAF1C9C0A757BD000A0D729 /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB10F06BF2C4F00C7EF1E /* jchuff8.h */; };
-		CEAF1C9D0A757BD000A0D729 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11006BF2C4F00C7EF1E /* jcinit.c */; };
-		CEAF1C9E0A757BD000A0D729 /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11106BF2C4F00C7EF1E /* jclhuff.c */; };
-		CEAF1C9F0A757BD000A0D729 /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11206BF2C4F00C7EF1E /* jclossls.c */; };
-		CEAF1CA00A757BD000A0D729 /* jclossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11306BF2C4F00C7EF1E /* jclossy.c */; };
-		CEAF1CA10A757BD000A0D729 /* jcmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11406BF2C4F00C7EF1E /* jcmainct.c */; };
-		CEAF1CA20A757BD000A0D729 /* jcmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11506BF2C4F00C7EF1E /* jcmarker.c */; };
-		CEAF1CA30A757BD000A0D729 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11606BF2C4F00C7EF1E /* jcmaster.c */; };
-		CEAF1CA40A757BD000A0D729 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11706BF2C4F00C7EF1E /* jcodec.c */; };
-		CEAF1CA50A757BD000A0D729 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11806BF2C4F00C7EF1E /* jcomapi.c */; };
-		CEAF1CA60A757BD000A0D729 /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB11906BF2C4F00C7EF1E /* jconfig8.h */; };
-		CEAF1CA70A757BD000A0D729 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11A06BF2C4F00C7EF1E /* jcparam.c */; };
-		CEAF1CA80A757BD000A0D729 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11B06BF2C4F00C7EF1E /* jcphuff.c */; };
-		CEAF1CA90A757BD000A0D729 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11C06BF2C4F00C7EF1E /* jcpred.c */; };
-		CEAF1CAA0A757BD000A0D729 /* jcprepct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11D06BF2C4F00C7EF1E /* jcprepct.c */; };
-		CEAF1CAB0A757BD000A0D729 /* jcsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11E06BF2C4F00C7EF1E /* jcsample.c */; };
-		CEAF1CAC0A757BD000A0D729 /* jcscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB11F06BF2C4F00C7EF1E /* jcscale.c */; };
-		CEAF1CAD0A757BD000A0D729 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12006BF2C4F00C7EF1E /* jcshuff.c */; };
-		CEAF1CAE0A757BD000A0D729 /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12106BF2C4F00C7EF1E /* jctrans.c */; };
-		CEAF1CAF0A757BD000A0D729 /* jdapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12206BF2C4F00C7EF1E /* jdapimin.c */; };
-		CEAF1CB00A757BD000A0D729 /* jdapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12306BF2C4F00C7EF1E /* jdapistd.c */; };
-		CEAF1CB10A757BD000A0D729 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12406BF2C4F00C7EF1E /* jdarith.c */; };
-		CEAF1CB20A757BD000A0D729 /* jdatadst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12506BF2C4F00C7EF1E /* jdatadst.c */; };
-		CEAF1CB30A757BD000A0D729 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12606BF2C4F00C7EF1E /* jdatasrc.c */; };
-		CEAF1CB40A757BD000A0D729 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12706BF2C4F00C7EF1E /* jdcoefct.c */; };
-		CEAF1CB50A757BD000A0D729 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12806BF2C4F00C7EF1E /* jdcolor.c */; };
-		CEAF1CB60A757BD000A0D729 /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12906BF2C4F00C7EF1E /* jdct8.h */; };
-		CEAF1CB70A757BD000A0D729 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12A06BF2C4F00C7EF1E /* jddctmgr.c */; };
-		CEAF1CB80A757BD000A0D729 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12B06BF2C4F00C7EF1E /* jddiffct.c */; };
-		CEAF1CB90A757BD000A0D729 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12C06BF2C4F00C7EF1E /* jdhuff.c */; };
-		CEAF1CBA0A757BD000A0D729 /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */; };
-		CEAF1CBB0A757BD000A0D729 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */; };
-		CEAF1CBC0A757BD000A0D729 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */; };
-		CEAF1CBD0A757BD000A0D729 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */; };
-		CEAF1CBE0A757BD000A0D729 /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */; };
-		CEAF1CBF0A757BD000A0D729 /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */; };
-		CEAF1CC00A757BD000A0D729 /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */; };
-		CEAF1CC10A757BD000A0D729 /* jdmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13406BF2C4F00C7EF1E /* jdmaster.c */; };
-		CEAF1CC20A757BD000A0D729 /* jdmerge.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13506BF2C4F00C7EF1E /* jdmerge.c */; };
-		CEAF1CC30A757BD000A0D729 /* jdphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13606BF2C4F00C7EF1E /* jdphuff.c */; };
-		CEAF1CC40A757BD000A0D729 /* jdpostct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13706BF2C4F00C7EF1E /* jdpostct.c */; };
-		CEAF1CC50A757BD000A0D729 /* jdpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13806BF2C4F00C7EF1E /* jdpred.c */; };
-		CEAF1CC60A757BD000A0D729 /* jdsample.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13906BF2C4F00C7EF1E /* jdsample.c */; };
-		CEAF1CC70A757BD000A0D729 /* jdscale.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13A06BF2C4F00C7EF1E /* jdscale.c */; };
-		CEAF1CC80A757BD000A0D729 /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13B06BF2C4F00C7EF1E /* jdshuff.c */; };
-		CEAF1CC90A757BD000A0D729 /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13C06BF2C4F00C7EF1E /* jdtrans.c */; };
-		CEAF1CCA0A757BD000A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13D06BF2C4F00C7EF1E /* jerror.c */; };
-		CEAF1CCB0A757BD000A0D729 /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB13E06BF2C4F00C7EF1E /* jerror8.h */; };
-		CEAF1CCC0A757BD000A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13F06BF2C4F00C7EF1E /* jfdctflt.c */; };
-		CEAF1CCD0A757BD000A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14006BF2C4F00C7EF1E /* jfdctfst.c */; };
-		CEAF1CCE0A757BD000A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14106BF2C4F00C7EF1E /* jfdctint.c */; };
-		CEAF1CCF0A757BD000A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14206BF2C4F00C7EF1E /* jidctflt.c */; };
-		CEAF1CD00A757BD000A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14306BF2C4F00C7EF1E /* jidctfst.c */; };
-		CEAF1CD10A757BD000A0D729 /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14406BF2C4F00C7EF1E /* jidctint.c */; };
-		CEAF1CD20A757BD000A0D729 /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14506BF2C4F00C7EF1E /* jidctred.c */; };
-		CEAF1CD30A757BD000A0D729 /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14606BF2C4F00C7EF1E /* jinclude8.h */; };
-		CEAF1CD40A757BD000A0D729 /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14706BF2C4F00C7EF1E /* jlossls8.h */; };
-		CEAF1CD50A757BD000A0D729 /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14806BF2C4F00C7EF1E /* jlossy8.h */; };
-		CEAF1CD60A757BD000A0D729 /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14906BF2C4F00C7EF1E /* jmemmgr.c */; };
-		CEAF1CD70A757BD000A0D729 /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14A06BF2C4F00C7EF1E /* jmemnobs.c */; };
-		CEAF1CD80A757BD000A0D729 /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14B06BF2C4F00C7EF1E /* jmemsys8.h */; };
-		CEAF1CD90A757BD000A0D729 /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14C06BF2C4F00C7EF1E /* jmorecfg8.h */; };
-		CEAF1CDA0A757BD000A0D729 /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14D06BF2C4F00C7EF1E /* jpegint8.h */; };
-		CEAF1CDB0A757BD000A0D729 /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB14E06BF2C4F00C7EF1E /* jpeglib8.h */; };
-		CEAF1CDC0A757BD000A0D729 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB14F06BF2C4F00C7EF1E /* jquant1.c */; };
-		CEAF1CDD0A757BD000A0D729 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15006BF2C4F00C7EF1E /* jquant2.c */; };
-		CEAF1CDE0A757BD000A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB15106BF2C4F00C7EF1E /* jutils.c */; };
-		CEAF1CDF0A757BD000A0D729 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB15206BF2C4F00C7EF1E /* jversion8.h */; };
 		CEAF1D2F0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
 		CEAF1D300A757C3200A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		CEAF1D310A757C3200A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
@@ -21535,19 +21381,6 @@
 				BF26843F0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				BF1584080A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
 				A95B98A80A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
-				CEAF1C4F0A757BD000A0D729 /* jchuff8.h in Headers */,
-				CEAF1C590A757BD000A0D729 /* jconfig8.h in Headers */,
-				CEAF1C690A757BD000A0D729 /* jdct8.h in Headers */,
-				CEAF1C6D0A757BD000A0D729 /* jdhuff8.h in Headers */,
-				CEAF1C7E0A757BD000A0D729 /* jerror8.h in Headers */,
-				CEAF1C860A757BD000A0D729 /* jinclude8.h in Headers */,
-				CEAF1C870A757BD000A0D729 /* jlossls8.h in Headers */,
-				CEAF1C880A757BD000A0D729 /* jlossy8.h in Headers */,
-				CEAF1C8B0A757BD000A0D729 /* jmemsys8.h in Headers */,
-				CEAF1C8C0A757BD000A0D729 /* jmorecfg8.h in Headers */,
-				CEAF1C8D0A757BD000A0D729 /* jpegint8.h in Headers */,
-				CEAF1C8E0A757BD000A0D729 /* jpeglib8.h in Headers */,
-				CEAF1C920A757BD000A0D729 /* jversion8.h in Headers */,
 				CEAF1D380A757C3200A0D729 /* jchuff16.h in Headers */,
 				CEAF1D420A757C3200A0D729 /* jconfig16.h in Headers */,
 				CEAF1D520A757C3200A0D729 /* jdct16.h in Headers */,
@@ -23421,19 +23254,6 @@
 				BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */,
 				A95B98A60A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
-				CEAF1C9C0A757BD000A0D729 /* jchuff8.h in Headers */,
-				CEAF1CA60A757BD000A0D729 /* jconfig8.h in Headers */,
-				CEAF1CB60A757BD000A0D729 /* jdct8.h in Headers */,
-				CEAF1CBA0A757BD000A0D729 /* jdhuff8.h in Headers */,
-				CEAF1CCB0A757BD000A0D729 /* jerror8.h in Headers */,
-				CEAF1CD30A757BD000A0D729 /* jinclude8.h in Headers */,
-				CEAF1CD40A757BD000A0D729 /* jlossls8.h in Headers */,
-				CEAF1CD50A757BD000A0D729 /* jlossy8.h in Headers */,
-				CEAF1CD80A757BD000A0D729 /* jmemsys8.h in Headers */,
-				CEAF1CD90A757BD000A0D729 /* jmorecfg8.h in Headers */,
-				CEAF1CDA0A757BD000A0D729 /* jpegint8.h in Headers */,
-				CEAF1CDB0A757BD000A0D729 /* jpeglib8.h in Headers */,
-				CEAF1CDF0A757BD000A0D729 /* jversion8.h in Headers */,
 				CEAF1D850A757C3200A0D729 /* jchuff16.h in Headers */,
 				CEAF1D8F0A757C3200A0D729 /* jconfig16.h in Headers */,
 				CEAF1D9F0A757C3200A0D729 /* jdct16.h in Headers */,
@@ -26210,70 +26030,6 @@
 				CE16A6A80A755124001C27C4 /* PapyJpeg8.c in Sources */,
 				CE16A6FC0A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
 				CE16A6FD0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
-				CEAF1C460A757BD000A0D729 /* jaricom.c in Sources */,
-				CEAF1C470A757BD000A0D729 /* jcapimin.c in Sources */,
-				CEAF1C480A757BD000A0D729 /* jcapistd.c in Sources */,
-				CEAF1C490A757BD000A0D729 /* jcarith.c in Sources */,
-				CEAF1C4A0A757BD000A0D729 /* jccoefct.c in Sources */,
-				CEAF1C4B0A757BD000A0D729 /* jccolor.c in Sources */,
-				CEAF1C4C0A757BD000A0D729 /* jcdctmgr.c in Sources */,
-				CEAF1C4D0A757BD000A0D729 /* jcdiffct.c in Sources */,
-				CEAF1C4E0A757BD000A0D729 /* jchuff.c in Sources */,
-				CEAF1C500A757BD000A0D729 /* jcinit.c in Sources */,
-				CEAF1C510A757BD000A0D729 /* jclhuff.c in Sources */,
-				CEAF1C520A757BD000A0D729 /* jclossls.c in Sources */,
-				CEAF1C530A757BD000A0D729 /* jclossy.c in Sources */,
-				CEAF1C540A757BD000A0D729 /* jcmainct.c in Sources */,
-				CEAF1C550A757BD000A0D729 /* jcmarker.c in Sources */,
-				CEAF1C560A757BD000A0D729 /* jcmaster.c in Sources */,
-				CEAF1C570A757BD000A0D729 /* jcodec.c in Sources */,
-				CEAF1C580A757BD000A0D729 /* jcomapi.c in Sources */,
-				CEAF1C5A0A757BD000A0D729 /* jcparam.c in Sources */,
-				CEAF1C5B0A757BD000A0D729 /* jcphuff.c in Sources */,
-				CEAF1C5C0A757BD000A0D729 /* jcpred.c in Sources */,
-				CEAF1C5D0A757BD000A0D729 /* jcprepct.c in Sources */,
-				CEAF1C5E0A757BD000A0D729 /* jcsample.c in Sources */,
-				CEAF1C5F0A757BD000A0D729 /* jcscale.c in Sources */,
-				CEAF1C600A757BD000A0D729 /* jcshuff.c in Sources */,
-				CEAF1C610A757BD000A0D729 /* jctrans.c in Sources */,
-				CEAF1C620A757BD000A0D729 /* jdapimin.c in Sources */,
-				CEAF1C630A757BD000A0D729 /* jdapistd.c in Sources */,
-				CEAF1C640A757BD000A0D729 /* jdarith.c in Sources */,
-				CEAF1C650A757BD000A0D729 /* jdatadst.c in Sources */,
-				CEAF1C660A757BD000A0D729 /* jdatasrc.c in Sources */,
-				CEAF1C670A757BD000A0D729 /* jdcoefct.c in Sources */,
-				CEAF1C680A757BD000A0D729 /* jdcolor.c in Sources */,
-				CEAF1C6A0A757BD000A0D729 /* jddctmgr.c in Sources */,
-				CEAF1C6B0A757BD000A0D729 /* jddiffct.c in Sources */,
-				CEAF1C6C0A757BD000A0D729 /* jdhuff.c in Sources */,
-				CEAF1C6E0A757BD000A0D729 /* jdinput.c in Sources */,
-				CEAF1C6F0A757BD000A0D729 /* jdlhuff.c in Sources */,
-				CEAF1C700A757BD000A0D729 /* jdlossls.c in Sources */,
-				CEAF1C710A757BD000A0D729 /* jdlossy.c in Sources */,
-				CEAF1C720A757BD000A0D729 /* jdmainct.c in Sources */,
-				CEAF1C730A757BD000A0D729 /* jdmarker.c in Sources */,
-				CEAF1C740A757BD000A0D729 /* jdmaster.c in Sources */,
-				CEAF1C750A757BD000A0D729 /* jdmerge.c in Sources */,
-				CEAF1C760A757BD000A0D729 /* jdphuff.c in Sources */,
-				CEAF1C770A757BD000A0D729 /* jdpostct.c in Sources */,
-				CEAF1C780A757BD000A0D729 /* jdpred.c in Sources */,
-				CEAF1C790A757BD000A0D729 /* jdsample.c in Sources */,
-				CEAF1C7A0A757BD000A0D729 /* jdscale.c in Sources */,
-				CEAF1C7B0A757BD000A0D729 /* jdshuff.c in Sources */,
-				CEAF1C7C0A757BD000A0D729 /* jdtrans.c in Sources */,
-				CEAF1C7D0A757BD000A0D729 /* jerror.c in Sources */,
-				CEAF1C7F0A757BD000A0D729 /* jfdctflt.c in Sources */,
-				CEAF1C800A757BD000A0D729 /* jfdctfst.c in Sources */,
-				CEAF1C810A757BD000A0D729 /* jfdctint.c in Sources */,
-				CEAF1C820A757BD000A0D729 /* jidctflt.c in Sources */,
-				CEAF1C830A757BD000A0D729 /* jidctfst.c in Sources */,
-				CEAF1C840A757BD000A0D729 /* jidctint.c in Sources */,
-				CEAF1C850A757BD000A0D729 /* jidctred.c in Sources */,
-				CEAF1C890A757BD000A0D729 /* jmemmgr.c in Sources */,
-				CEAF1C8A0A757BD000A0D729 /* jmemnobs.c in Sources */,
-				CEAF1C8F0A757BD000A0D729 /* jquant1.c in Sources */,
-				CEAF1C900A757BD000A0D729 /* jquant2.c in Sources */,
-				CEAF1C910A757BD000A0D729 /* jutils.c in Sources */,
 				CEAF1D2F0A757C3200A0D729 /* jaricom.c in Sources */,
 				CEAF1D300A757C3200A0D729 /* jcapimin.c in Sources */,
 				CEAF1D310A757C3200A0D729 /* jcapistd.c in Sources */,
@@ -27209,70 +26965,6 @@
 				CE16A6AB0A755124001C27C4 /* PapyJpeg8.c in Sources */,
 				CE16A6FE0A7552E0001C27C4 /* PapyJpeg12.c in Sources */,
 				CE16A6FF0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
-				CEAF1C930A757BD000A0D729 /* jaricom.c in Sources */,
-				CEAF1C940A757BD000A0D729 /* jcapimin.c in Sources */,
-				CEAF1C950A757BD000A0D729 /* jcapistd.c in Sources */,
-				CEAF1C960A757BD000A0D729 /* jcarith.c in Sources */,
-				CEAF1C970A757BD000A0D729 /* jccoefct.c in Sources */,
-				CEAF1C980A757BD000A0D729 /* jccolor.c in Sources */,
-				CEAF1C990A757BD000A0D729 /* jcdctmgr.c in Sources */,
-				CEAF1C9A0A757BD000A0D729 /* jcdiffct.c in Sources */,
-				CEAF1C9B0A757BD000A0D729 /* jchuff.c in Sources */,
-				CEAF1C9D0A757BD000A0D729 /* jcinit.c in Sources */,
-				CEAF1C9E0A757BD000A0D729 /* jclhuff.c in Sources */,
-				CEAF1C9F0A757BD000A0D729 /* jclossls.c in Sources */,
-				CEAF1CA00A757BD000A0D729 /* jclossy.c in Sources */,
-				CEAF1CA10A757BD000A0D729 /* jcmainct.c in Sources */,
-				CEAF1CA20A757BD000A0D729 /* jcmarker.c in Sources */,
-				CEAF1CA30A757BD000A0D729 /* jcmaster.c in Sources */,
-				CEAF1CA40A757BD000A0D729 /* jcodec.c in Sources */,
-				CEAF1CA50A757BD000A0D729 /* jcomapi.c in Sources */,
-				CEAF1CA70A757BD000A0D729 /* jcparam.c in Sources */,
-				CEAF1CA80A757BD000A0D729 /* jcphuff.c in Sources */,
-				CEAF1CA90A757BD000A0D729 /* jcpred.c in Sources */,
-				CEAF1CAA0A757BD000A0D729 /* jcprepct.c in Sources */,
-				CEAF1CAB0A757BD000A0D729 /* jcsample.c in Sources */,
-				CEAF1CAC0A757BD000A0D729 /* jcscale.c in Sources */,
-				CEAF1CAD0A757BD000A0D729 /* jcshuff.c in Sources */,
-				CEAF1CAE0A757BD000A0D729 /* jctrans.c in Sources */,
-				CEAF1CAF0A757BD000A0D729 /* jdapimin.c in Sources */,
-				CEAF1CB00A757BD000A0D729 /* jdapistd.c in Sources */,
-				CEAF1CB10A757BD000A0D729 /* jdarith.c in Sources */,
-				CEAF1CB20A757BD000A0D729 /* jdatadst.c in Sources */,
-				CEAF1CB30A757BD000A0D729 /* jdatasrc.c in Sources */,
-				CEAF1CB40A757BD000A0D729 /* jdcoefct.c in Sources */,
-				CEAF1CB50A757BD000A0D729 /* jdcolor.c in Sources */,
-				CEAF1CB70A757BD000A0D729 /* jddctmgr.c in Sources */,
-				CEAF1CB80A757BD000A0D729 /* jddiffct.c in Sources */,
-				CEAF1CB90A757BD000A0D729 /* jdhuff.c in Sources */,
-				CEAF1CBB0A757BD000A0D729 /* jdinput.c in Sources */,
-				CEAF1CBC0A757BD000A0D729 /* jdlhuff.c in Sources */,
-				CEAF1CBD0A757BD000A0D729 /* jdlossls.c in Sources */,
-				CEAF1CBE0A757BD000A0D729 /* jdlossy.c in Sources */,
-				CEAF1CBF0A757BD000A0D729 /* jdmainct.c in Sources */,
-				CEAF1CC00A757BD000A0D729 /* jdmarker.c in Sources */,
-				CEAF1CC10A757BD000A0D729 /* jdmaster.c in Sources */,
-				CEAF1CC20A757BD000A0D729 /* jdmerge.c in Sources */,
-				CEAF1CC30A757BD000A0D729 /* jdphuff.c in Sources */,
-				CEAF1CC40A757BD000A0D729 /* jdpostct.c in Sources */,
-				CEAF1CC50A757BD000A0D729 /* jdpred.c in Sources */,
-				CEAF1CC60A757BD000A0D729 /* jdsample.c in Sources */,
-				CEAF1CC70A757BD000A0D729 /* jdscale.c in Sources */,
-				CEAF1CC80A757BD000A0D729 /* jdshuff.c in Sources */,
-				CEAF1CC90A757BD000A0D729 /* jdtrans.c in Sources */,
-				CEAF1CCA0A757BD000A0D729 /* jerror.c in Sources */,
-				CEAF1CCC0A757BD000A0D729 /* jfdctflt.c in Sources */,
-				CEAF1CCD0A757BD000A0D729 /* jfdctfst.c in Sources */,
-				CEAF1CCE0A757BD000A0D729 /* jfdctint.c in Sources */,
-				CEAF1CCF0A757BD000A0D729 /* jidctflt.c in Sources */,
-				CEAF1CD00A757BD000A0D729 /* jidctfst.c in Sources */,
-				CEAF1CD10A757BD000A0D729 /* jidctint.c in Sources */,
-				CEAF1CD20A757BD000A0D729 /* jidctred.c in Sources */,
-				CEAF1CD60A757BD000A0D729 /* jmemmgr.c in Sources */,
-				CEAF1CD70A757BD000A0D729 /* jmemnobs.c in Sources */,
-				CEAF1CDC0A757BD000A0D729 /* jquant1.c in Sources */,
-				CEAF1CDD0A757BD000A0D729 /* jquant2.c in Sources */,
-				CEAF1CDE0A757BD000A0D729 /* jutils.c in Sources */,
 				CEAF1D7C0A757C3200A0D729 /* jaricom.c in Sources */,
 				CEAF1D7D0A757C3200A0D729 /* jcapimin.c in Sources */,
 				CEAF1D7E0A757C3200A0D729 /* jcapistd.c in Sources */,
