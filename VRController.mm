@@ -785,6 +785,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 {
 	if([note object] == viewer2D)
 	{
+		[self offFullScreen];
 		[[self window] close];
 	}
 }

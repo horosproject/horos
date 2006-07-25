@@ -566,6 +566,7 @@ static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 	{
 		if( [v pixList] == pixList[ i])
 		{
+			[self offFullScreen];
 			[self close];
 			return;
 		}

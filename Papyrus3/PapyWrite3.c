@@ -959,9 +959,9 @@ Papy3PutImage (PapyShort inFileNb, SElement *inGrOrModP, int inElement, PapyUSho
       JPEGLossyEncodeImage (inFileNb, 80, NULL, (PapyUChar *) inValP, (PapyUChar **) &theCompPixP, 
 	 		    (PapyULong *) &inSize, (int) inRows, (int) inColumns, (int) inDepth, FALSE);
 	
-    else if (gArrCompression [inFileNb] == JPEG_LOSSLESS)
-      JPEGLosslessEncodeImage ((PapyUShort *) inValP, (PapyUChar **) &theCompPixP,
-			       (PapyULong *) &inSize, (int) inColumns, (int) inRows, (int) inDepth);
+//    else if (gArrCompression [inFileNb] == JPEG_LOSSLESS)
+//      JPEGLosslessEncodeImage ((PapyUShort *) inValP, (PapyUChar **) &theCompPixP,
+//			       (PapyULong *) &inSize, (int) inColumns, (int) inRows, (int) inDepth);
 
 #ifdef MAYO_WAVE
     else if (gArrCompression [inFileNb] == MAYO_WAVELET)

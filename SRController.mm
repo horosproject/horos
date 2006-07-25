@@ -341,6 +341,7 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 {
 	if([note object] == viewer2D)
 	{
+		[self offFullScreen];
 		[[self window] close];
 	}
 }

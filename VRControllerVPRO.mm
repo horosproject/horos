@@ -662,6 +662,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		if( [v pixList] == pixList[ i])
 		{
+			[self offFullScreen];
 			[self close];
 			return;
 		}

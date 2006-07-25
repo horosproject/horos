@@ -882,16 +882,6 @@
 		AB34223F05DD53B8000B8B72 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		AB34224005DD53B8000B8B72 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
 		AB34224205DD53B8000B8B72 /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
-		AB34224305DD53B8000B8B72 /* decompoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EB05646C0C00BED927 /* decompoptimise.c */; };
-		AB34224405DD53B8000B8B72 /* huffcoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */; };
-		AB34224505DD53B8000B8B72 /* huffdoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */; };
-		AB34224605DD53B8000B8B72 /* pmreadoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */; };
-		AB34224705DD53B8000B8B72 /* jpegutil.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EF05646C0D00BED927 /* jpegutil.c */; };
-		AB34224805DD53B8000B8B72 /* mcu.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F005646C0D00BED927 /* mcu.c */; };
-		AB34224905DD53B8000B8B72 /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F105646C0D00BED927 /* predict.c */; };
-		AB34224A05DD53B8000B8B72 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
-		AB34224B05DD53B8000B8B72 /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
-		AB34224C05DD53B8000B8B72 /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
 		AB34224E05DD53B8000B8B72 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97324FDCFA39411CA2CEA /* AppKit.framework */; };
 		AB34224F05DD53B8000B8B72 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB38FC99057A9B050041FEBB /* AGL.framework */; };
 		AB34225005DD53B8000B8B72 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
@@ -1292,16 +1282,6 @@
 		ABE33389063D627800C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
 		ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
-		ABE469210A76278300327466 /* decompoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EB05646C0C00BED927 /* decompoptimise.c */; };
-		ABE469220A76278300327466 /* huffcoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */; };
-		ABE469230A76278300327466 /* huffdoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */; };
-		ABE469240A76278300327466 /* pmreadoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */; };
-		ABE469250A76278300327466 /* jpegutil.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EF05646C0D00BED927 /* jpegutil.c */; };
-		ABE469260A76278300327466 /* mcu.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F005646C0D00BED927 /* mcu.c */; };
-		ABE469270A76278300327466 /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F105646C0D00BED927 /* predict.c */; };
-		ABE469280A76278300327466 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
-		ABE469290A76278300327466 /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
-		ABE4692A0A76278300327466 /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
 		ABE4692F0A7627FD00327466 /* libvtkjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139208EDD5FD005B15E1 /* libvtkjpeg.a */; };
 		ABE46EC90A76389500327466 /* libitkjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E308EDD61B005B15E1 /* libitkjpeg12.a */; };
 		ABE46ECB0A76389600327466 /* libitkjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113DD08EDD61B005B15E1 /* libitkjpeg16.a */; };
@@ -1710,16 +1690,6 @@
 		ABEA83FB0A21BF740094CAEF /* PapyGetGlobalVar3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B905646BBF00BED927 /* PapyGetGlobalVar3.c */; };
 		ABEA83FC0A21BF740094CAEF /* PapyFiles3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B705646BBF00BED927 /* PapyFiles3.c */; };
 		ABEA83FD0A21BF740094CAEF /* PapyError3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B605646BBF00BED927 /* PapyError3.c */; };
-		ABEA83FE0A21BF7A0094CAEF /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
-		ABEA83FF0A21BF7A0094CAEF /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
-		ABEA84000A21BF7A0094CAEF /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
-		ABEA84010A21BF7B0094CAEF /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F105646C0D00BED927 /* predict.c */; };
-		ABEA84020A21BF7B0094CAEF /* mcu.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F005646C0D00BED927 /* mcu.c */; };
-		ABEA84030A21BF7B0094CAEF /* jpegutil.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EF05646C0D00BED927 /* jpegutil.c */; };
-		ABEA84040A21BF7C0094CAEF /* pmreadoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */; };
-		ABEA84050A21BF7C0094CAEF /* huffdoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */; };
-		ABEA84060A21BF7D0094CAEF /* huffcoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */; };
-		ABEA84070A21BF7D0094CAEF /* decompoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EB05646C0C00BED927 /* decompoptimise.c */; };
 		ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.m */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
@@ -9143,16 +9113,6 @@
 		CECB043107539E3900576814 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		CECB043207539E3900576814 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
 		CECB043307539E3900576814 /* WaitRendering.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB218B805CF1E9300D8B619 /* WaitRendering.m */; };
-		CECB043407539E3900576814 /* decompoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EB05646C0C00BED927 /* decompoptimise.c */; };
-		CECB043507539E3900576814 /* huffcoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */; };
-		CECB043607539E3900576814 /* huffdoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */; };
-		CECB043707539E3900576814 /* pmreadoptimise.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */; };
-		CECB043807539E3900576814 /* jpegutil.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5EF05646C0D00BED927 /* jpegutil.c */; };
-		CECB043907539E3900576814 /* mcu.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F005646C0D00BED927 /* mcu.c */; };
-		CECB043A07539E3900576814 /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F105646C0D00BED927 /* predict.c */; };
-		CECB043B07539E3900576814 /* read.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F205646C0D00BED927 /* read.c */; };
-		CECB043C07539E3900576814 /* write.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F305646C0D00BED927 /* write.c */; };
-		CECB043D07539E3900576814 /* pnmtoljpoptimisebug.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */; };
 		CECB043E07539E3900576814 /* MPR2DController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB39177305EA75F600E29DD2 /* MPR2DController.mm */; };
 		CECB043F07539E3900576814 /* MPR2DView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB39177505EA75F600E29DD2 /* MPR2DView.mm */; };
 		CECB044007539E3900576814 /* ROI.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7D0BB40615F94D00890872 /* ROI.m */; };
@@ -10197,16 +10157,6 @@
 		AB0BD5E005646BE500BED927 /* DicomDirFiles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirFiles.c; path = Papyrus3/DicomDir/DicomDirFiles.c; sourceTree = "<group>"; };
 		AB0BD5E105646BE500BED927 /* DicomDirInit.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirInit.c; path = Papyrus3/DicomDir/DicomDirInit.c; sourceTree = "<group>"; };
 		AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = DicomDirInitRecords.c; path = Papyrus3/DicomDir/DicomDirInitRecords.c; sourceTree = "<group>"; };
-		AB0BD5EB05646C0C00BED927 /* decompoptimise.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = decompoptimise.c; path = Papyrus3/JpegDir/JpgLless/decompoptimise.c; sourceTree = "<group>"; };
-		AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = huffcoptimisebug.c; path = Papyrus3/JpegDir/JpgLless/huffcoptimisebug.c; sourceTree = "<group>"; };
-		AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = huffdoptimise.c; path = Papyrus3/JpegDir/JpgLless/huffdoptimise.c; sourceTree = "<group>"; };
-		AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pmreadoptimise.c; path = Papyrus3/JpegDir/JpgLless/pmreadoptimise.c; sourceTree = "<group>"; };
-		AB0BD5EF05646C0D00BED927 /* jpegutil.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = jpegutil.c; path = Papyrus3/JpegDir/JpgLless/jpegutil.c; sourceTree = "<group>"; };
-		AB0BD5F005646C0D00BED927 /* mcu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mcu.c; path = Papyrus3/JpegDir/JpgLless/mcu.c; sourceTree = "<group>"; };
-		AB0BD5F105646C0D00BED927 /* predict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = predict.c; path = Papyrus3/JpegDir/JpgLless/predict.c; sourceTree = "<group>"; };
-		AB0BD5F205646C0D00BED927 /* read.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = read.c; path = Papyrus3/JpegDir/JpgLless/read.c; sourceTree = "<group>"; };
-		AB0BD5F305646C0D00BED927 /* write.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = write.c; path = Papyrus3/JpegDir/JpgLless/write.c; sourceTree = "<group>"; };
-		AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pnmtoljpoptimisebug.c; path = Papyrus3/JpegDir/JpgLless/pnmtoljpoptimisebug.c; sourceTree = "<group>"; };
 		AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyFileSystemUnix3.c; path = Papyrus3/PapyFileSystemUnix3.c; sourceTree = "<group>"; };
 		AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = PapyEallocUnix3.c; path = Papyrus3/PapyEallocUnix3.c; sourceTree = "<group>"; };
 		AB0CA45F05BE159500F52729 /* ColorTransferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTransferView.h; sourceTree = "<group>"; };
@@ -14128,23 +14078,6 @@
 			name = DicomDir;
 			sourceTree = "<group>";
 		};
-		AB0BD5EA05646C0000BED927 /* jpeglossless */ = {
-			isa = PBXGroup;
-			children = (
-				AB0BD5EB05646C0C00BED927 /* decompoptimise.c */,
-				AB0BD5EC05646C0D00BED927 /* huffcoptimisebug.c */,
-				AB0BD5ED05646C0D00BED927 /* huffdoptimise.c */,
-				AB0BD5EE05646C0D00BED927 /* pmreadoptimise.c */,
-				AB0BD5EF05646C0D00BED927 /* jpegutil.c */,
-				AB0BD5F005646C0D00BED927 /* mcu.c */,
-				AB0BD5F105646C0D00BED927 /* predict.c */,
-				AB0BD5F205646C0D00BED927 /* read.c */,
-				AB0BD5F305646C0D00BED927 /* write.c */,
-				AB0BD5F405646C0D00BED927 /* pnmtoljpoptimisebug.c */,
-			);
-			name = jpeglossless;
-			sourceTree = "<group>";
-		};
 		AB154F8A0627414000BD57AF /* SR 3D */ = {
 			isa = PBXGroup;
 			children = (
@@ -14618,7 +14551,6 @@
 			isa = PBXGroup;
 			children = (
 				CEDB14A70768392E00375F65 /* Headers */,
-				AB0BD5EA05646C0000BED927 /* jpeglossless */,
 				AB0BD5DC05646BDC00BED927 /* DicomDir */,
 				AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */,
 				AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */,
@@ -25298,16 +25230,6 @@
 				CE16A6A50A755124001C27C4 /* PapyJpeg8.c in Sources */,
 				CE16A6FB0A7552E0001C27C4 /* PapyJpeg16.c in Sources */,
 				AB853A510A76135D00B6C909 /* PapyJpeg12.c in Sources */,
-				ABE469210A76278300327466 /* decompoptimise.c in Sources */,
-				ABE469220A76278300327466 /* huffcoptimisebug.c in Sources */,
-				ABE469230A76278300327466 /* huffdoptimise.c in Sources */,
-				ABE469240A76278300327466 /* pmreadoptimise.c in Sources */,
-				ABE469250A76278300327466 /* jpegutil.c in Sources */,
-				ABE469260A76278300327466 /* mcu.c in Sources */,
-				ABE469270A76278300327466 /* predict.c in Sources */,
-				ABE469280A76278300327466 /* read.c in Sources */,
-				ABE469290A76278300327466 /* write.c in Sources */,
-				ABE4692A0A76278300327466 /* pnmtoljpoptimisebug.c in Sources */,
 				ABE46F910A76410F00327466 /* jaricom.c in Sources */,
 				ABE46F920A76410F00327466 /* jcapimin.c in Sources */,
 				ABE46F930A76410F00327466 /* jcapistd.c in Sources */,
@@ -25551,16 +25473,6 @@
 				AB34223F05DD53B8000B8B72 /* main.m in Sources */,
 				AB34224005DD53B8000B8B72 /* ColorTransferView.m in Sources */,
 				AB34224205DD53B8000B8B72 /* WaitRendering.m in Sources */,
-				AB34224305DD53B8000B8B72 /* decompoptimise.c in Sources */,
-				AB34224405DD53B8000B8B72 /* huffcoptimisebug.c in Sources */,
-				AB34224505DD53B8000B8B72 /* huffdoptimise.c in Sources */,
-				AB34224605DD53B8000B8B72 /* pmreadoptimise.c in Sources */,
-				AB34224705DD53B8000B8B72 /* jpegutil.c in Sources */,
-				AB34224805DD53B8000B8B72 /* mcu.c in Sources */,
-				AB34224905DD53B8000B8B72 /* predict.c in Sources */,
-				AB34224A05DD53B8000B8B72 /* read.c in Sources */,
-				AB34224B05DD53B8000B8B72 /* write.c in Sources */,
-				AB34224C05DD53B8000B8B72 /* pnmtoljpoptimisebug.c in Sources */,
 				AB39177B05EA75F600E29DD2 /* MPR2DController.mm in Sources */,
 				AB39177D05EA75F600E29DD2 /* MPR2DView.mm in Sources */,
 				AB7D0BB80615F94D00890872 /* ROI.m in Sources */,
@@ -26254,16 +26166,6 @@
 				ABEA83FB0A21BF740094CAEF /* PapyGetGlobalVar3.c in Sources */,
 				ABEA83FC0A21BF740094CAEF /* PapyFiles3.c in Sources */,
 				ABEA83FD0A21BF740094CAEF /* PapyError3.c in Sources */,
-				ABEA83FE0A21BF7A0094CAEF /* pnmtoljpoptimisebug.c in Sources */,
-				ABEA83FF0A21BF7A0094CAEF /* write.c in Sources */,
-				ABEA84000A21BF7A0094CAEF /* read.c in Sources */,
-				ABEA84010A21BF7B0094CAEF /* predict.c in Sources */,
-				ABEA84020A21BF7B0094CAEF /* mcu.c in Sources */,
-				ABEA84030A21BF7B0094CAEF /* jpegutil.c in Sources */,
-				ABEA84040A21BF7C0094CAEF /* pmreadoptimise.c in Sources */,
-				ABEA84050A21BF7C0094CAEF /* huffdoptimise.c in Sources */,
-				ABEA84060A21BF7D0094CAEF /* huffcoptimisebug.c in Sources */,
-				ABEA84070A21BF7D0094CAEF /* decompoptimise.c in Sources */,
 				ABEA84510A21C0630094CAEF /* dicomFile.m in Sources */,
 				AB32FB2B0A21C270007D44C3 /* DCMObjectDBImport.m in Sources */,
 				ABCB20C60A220349008EB2E8 /* DICOMToNSString.m in Sources */,
@@ -26482,16 +26384,6 @@
 				CECB043107539E3900576814 /* main.m in Sources */,
 				CECB043207539E3900576814 /* ColorTransferView.m in Sources */,
 				CECB043307539E3900576814 /* WaitRendering.m in Sources */,
-				CECB043407539E3900576814 /* decompoptimise.c in Sources */,
-				CECB043507539E3900576814 /* huffcoptimisebug.c in Sources */,
-				CECB043607539E3900576814 /* huffdoptimise.c in Sources */,
-				CECB043707539E3900576814 /* pmreadoptimise.c in Sources */,
-				CECB043807539E3900576814 /* jpegutil.c in Sources */,
-				CECB043907539E3900576814 /* mcu.c in Sources */,
-				CECB043A07539E3900576814 /* predict.c in Sources */,
-				CECB043B07539E3900576814 /* read.c in Sources */,
-				CECB043C07539E3900576814 /* write.c in Sources */,
-				CECB043D07539E3900576814 /* pnmtoljpoptimisebug.c in Sources */,
 				CECB043E07539E3900576814 /* MPR2DController.mm in Sources */,
 				CECB043F07539E3900576814 /* MPR2DView.mm in Sources */,
 				CECB044007539E3900576814 /* ROI.m in Sources */,

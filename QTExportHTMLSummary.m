@@ -209,7 +209,7 @@ extern NSString *documentsDirectory();
 	[tempHTML replaceOccurrencesOfString:@"%series_id%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%@",[series valueForKeyPath: @"id"]]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 	[tempHTML replaceOccurrencesOfString:@"%series_images_count%" withString:[QTExportHTMLSummary nonNilString:[NSString stringWithFormat:@"%d", imagesCount]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 
-	NSMutableString *studyName = asciiString([series valueForKeyPath:@"study.studyName"]);
+	NSString *studyName = asciiString([series valueForKeyPath:@"study.studyName"]);
 	NSMutableString *fileName = [NSMutableString stringWithFormat:@"./%@_%@", asciiString([NSMutableString stringWithString:[series valueForKeyPath: @"name"]]), [series valueForKeyPath: @"id"]];
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
 	[fileName appendFormat:@".%@",extension];

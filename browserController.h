@@ -187,6 +187,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 	
 	NSMutableArray					*deleteQueueArray;
 	NSLock							*deleteQueue, *deleteInProgress;
+	NSMutableString					*pressedKeys;
 	
 	IBOutlet NSProgressIndicator	*incomingProgress;
 }

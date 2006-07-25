@@ -118,88 +118,88 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 /*										*/
 /********************************************************************************/
 
-PapyShort
-ExtractJPEGlosslessDicom (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong inPixelStart,
-		     	  PapyULong *inOffsetTableP, int inImageNb)
-{
-  PapyUChar	  theTmpBuf [256];
-  PapyUChar	  *theTmpBufP;
-  PapyShort	  theErr;
-  PapyUShort	theGroup, theElement;
-  PapyULong	  i, thePos, theLength;
-  
-  fprintf(stdout, "JPEG lossless\r");
-/*  
-  void 		*aFSSpec;
-  PAPY_FILE	tmpFile;
-  PapyUChar	*myBufPtr;
-*/
-  
-  /* position the file pointer at the begining of the pixel datas */
-  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
-  
-  /* read 8 chars from the file */
-  theTmpBufP = (PapyUChar *) &theTmpBuf [0];
-  i = 8L; 					/* grNb, elemNb & elemLength */
-  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
-  {
-    Papy3FClose (&gPapyFile [inFileNb]);
-    RETURN (theErr);
-  } /* if */
-    
-  thePos     = 0L;
-  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-    
-  /* extract the element length */
-  theLength = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  
-  /* if length is 0xFFFFFFFF (undefined) we have to extract it HERE !!! */
-  
-  /* Pixel data fragment not found when expected */
-  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
-  
-  /******/
-  /* extract the compressed datas from the file and put it in temp file */
-  /******/
-  
-  /* first : create a new file and opens it */
-  /* avoid to create more than one image */
-    /* allocate the buffer to store the temp compressed datas */
-    /* read the compressed stream from the file */
-    /* and put it in the temp file */
-    /* close the temp file */
-    /* and free the allocated memory */
-    /* then reset the file pointer to its previous position */
-/*    
-  strcpy ((char *) theTmpBufP, "Compressed.jpg");
-  theErr = Papy3FCreate ((char *) theTmpBufP, 0, NULL, &aFSSpec);
-  if (theErr == 0)
-  {
-    theErr = Papy3FOpen   (NULL, 'w', 0, &tmpFile, &aFSSpec);
-  
-    myBufPtr = (PapyUChar *) emalloc3 (theLength + 1L);
-  
-    theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, myBufPtr);
-  
-    theErr = (PapyShort) Papy3FWrite (tmpFile, &theLength, 1L, (void *) myBufPtr);
-  
-    theErr = Papy3FClose (&tmpFile);
-    efree3 ((void **) &myBufPtr);
-  
-    theErr = (PapyShort) Papy3FSeek (gPapyFile [inFileNb], SEEK_CUR, - (PapyLong) theLength);
-  } /* if ...no error creating the temp file */
-  
-  /******/
-  /******/
-    
-  /* Get ready to receive decompressed rows */
-  JPEGLosslessDecodeImage (gPapyFile [inFileNb], (PapyUShort *) outBufferP, 
-  			   gx0028BitsAllocated [inFileNb], theLength);
-
-  return 0;
-  
-} /* endof ExtractJPEGlosslessDicom */
+//PapyShort
+//ExtractJPEGlosslessDicom (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong inPixelStart,
+//		     	  PapyULong *inOffsetTableP, int inImageNb)
+//{
+//  PapyUChar	  theTmpBuf [256];
+//  PapyUChar	  *theTmpBufP;
+//  PapyShort	  theErr;
+//  PapyUShort	theGroup, theElement;
+//  PapyULong	  i, thePos, theLength;
+//  
+//  fprintf(stdout, "JPEG lossless\r");
+///*  
+//  void 		*aFSSpec;
+//  PAPY_FILE	tmpFile;
+//  PapyUChar	*myBufPtr;
+//*/
+//  
+//  /* position the file pointer at the begining of the pixel datas */
+//  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (inPixelStart + inOffsetTableP [inImageNb - 1]));
+//  
+//  /* read 8 chars from the file */
+//  theTmpBufP = (PapyUChar *) &theTmpBuf [0];
+//  i = 8L; 					/* grNb, elemNb & elemLength */
+//  if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
+//  {
+//    Papy3FClose (&gPapyFile [inFileNb]);
+//    RETURN (theErr);
+//  } /* if */
+//    
+//  thePos     = 0L;
+//  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//    
+//  /* extract the element length */
+//  theLength = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  
+//  /* if length is 0xFFFFFFFF (undefined) we have to extract it HERE !!! */
+//  
+//  /* Pixel data fragment not found when expected */
+//  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
+//  
+//  /******/
+//  /* extract the compressed datas from the file and put it in temp file */
+//  /******/
+//  
+//  /* first : create a new file and opens it */
+//  /* avoid to create more than one image */
+//    /* allocate the buffer to store the temp compressed datas */
+//    /* read the compressed stream from the file */
+//    /* and put it in the temp file */
+//    /* close the temp file */
+//    /* and free the allocated memory */
+//    /* then reset the file pointer to its previous position */
+///*    
+//  strcpy ((char *) theTmpBufP, "Compressed.jpg");
+//  theErr = Papy3FCreate ((char *) theTmpBufP, 0, NULL, &aFSSpec);
+//  if (theErr == 0)
+//  {
+//    theErr = Papy3FOpen   (NULL, 'w', 0, &tmpFile, &aFSSpec);
+//  
+//    myBufPtr = (PapyUChar *) emalloc3 (theLength + 1L);
+//  
+//    theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &theLength, 1L, myBufPtr);
+//  
+//    theErr = (PapyShort) Papy3FWrite (tmpFile, &theLength, 1L, (void *) myBufPtr);
+//  
+//    theErr = Papy3FClose (&tmpFile);
+//    efree3 ((void **) &myBufPtr);
+//  
+//    theErr = (PapyShort) Papy3FSeek (gPapyFile [inFileNb], SEEK_CUR, - (PapyLong) theLength);
+//  } /* if ...no error creating the temp file */
+//  
+//  /******/
+//  /******/
+//    
+//  /* Get ready to receive decompressed rows */
+//  JPEGLosslessDecodeImage (gPapyFile [inFileNb], (PapyUShort *) outBufferP, 
+//  			   gx0028BitsAllocated [inFileNb], theLength);
+//
+//  return 0;
+//  
+//} /* endof ExtractJPEGlosslessDicom */
 
 
 
@@ -212,21 +212,21 @@ ExtractJPEGlosslessDicom (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong i
 /*										*/
 /********************************************************************************/
 
-PapyShort
-ExtractJPEGlosslessPap (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong inPixelStart,
-		     	PapyULong inLength)
-{
-  /* position the file pointer at the begining of the pixel datas */
-  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) inPixelStart);
-    
-  /* Get ready to receive decompressed rows */
-  JPEGLosslessDecodeImage (gPapyFile [inFileNb], (PapyUShort *) outBufferP, 
-  			   gx0028BitsAllocated [inFileNb], inLength);
-  
-  return 0;
-  
-} /* endof ExtractJPEGlosslessPap */
-
+//PapyShort
+//ExtractJPEGlosslessPap (PapyShort inFileNb, PapyUChar *outBufferP, PapyULong inPixelStart,
+//		     	PapyULong inLength)
+//{
+//  /* position the file pointer at the begining of the pixel datas */
+//  Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) inPixelStart);
+//    
+//  /* Get ready to receive decompressed rows */
+//  JPEGLosslessDecodeImage (gPapyFile [inFileNb], (PapyUShort *) outBufferP, 
+//  			   gx0028BitsAllocated [inFileNb], inLength);
+//  
+//  return 0;
+//  
+//} /* endof ExtractJPEGlosslessPap */
+//
 
 
 /********************************************************************************/

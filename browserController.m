@@ -6779,6 +6779,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		
+		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		numFmt = [[NSNumberFormatter alloc] init];
 		[numFmt setLocale: [NSLocale currentLocale]];
 		[numFmt setFormat:@"0"];
@@ -7258,11 +7259,18 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
     else
     {
-        [super keyDown:event];
+		[pressedKeys appendString: [event characters]];
+		
+		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+		
+		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
+		
+		if( [result count])
+		{
+			[databaseOutline selectRow: [databaseOutline rowForItem: [result objectAtIndex: 0]] byExtendingSelection: NO];
+		}
     }
 }
-
-
 
 -(void) updateCurrentImage:(NSNotification *)note{
 	int i;
