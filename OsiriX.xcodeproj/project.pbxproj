@@ -734,13 +734,8 @@
 		AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB38FC99057A9B050041FEBB /* AGL.framework */; };
 		AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */; };
 		AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		AB28B4E305B79B3800A9906C /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
 		AB28B4F605B79B9600A9906C /* PapyFileSystemUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD73505646ED100BED927 /* PapyFileSystemUnix3.c */; };
 		AB28B51005B79C7C00A9906C /* PapyList3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5BD05646BBF00BED927 /* PapyList3.c */; };
-		AB28B88605B79CCB00A9906C /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */; };
-		AB28B88705B79CCC00A9906C /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */; };
-		AB28B88805B79CCD00A9906C /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
-		AB28B88905B79CCE00A9906C /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
 		AB28B88A05B79CD000A9906C /* PapyEallocUnix3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD75705646FD800BED927 /* PapyEallocUnix3.c */; };
 		AB28B88B05B79CD100A9906C /* PapyDataSetWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5B405646BBF00BED927 /* PapyDataSetWrite3.c */; };
 		AB28B88C05B79CD200A9906C /* PapyDataSetRead3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3C0505ADD50F001411D1 /* PapyDataSetRead3.c */; };
@@ -8307,6 +8302,11 @@
 		CE6C77F009739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6C77F109739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77F209739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
+		CE6D47720A76B22C0034A4B4 /* DicomDirInitRecords.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E205646BE500BED927 /* DicomDirInitRecords.c */; };
+		CE6D47730A76B22D0034A4B4 /* DicomDirInit.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E105646BE500BED927 /* DicomDirInit.c */; };
+		CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5E005646BE500BED927 /* DicomDirFiles.c */; };
+		CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DF05646BE500BED927 /* DicomDirDataSetWrite.c */; };
+		CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5DE05646BE500BED927 /* DicomDirDatasetRead.c */; };
 		CE6D6F30098139E7009F0B5A /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 		CE6E2CB206CAE45A00BC7907 /* PlotView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAE06CAE45A00BC7907 /* PlotView.h */; };
 		CE6E2CB306CAE45A00BC7907 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
@@ -24723,11 +24723,6 @@
 				AB28B8C505B79CF300A9906C /* PapyError3.c in Sources */,
 				AB28B51005B79C7C00A9906C /* PapyList3.c in Sources */,
 				AB28B4F605B79B9600A9906C /* PapyFileSystemUnix3.c in Sources */,
-				AB28B4E305B79B3800A9906C /* DicomDirInit.c in Sources */,
-				AB28B88605B79CCB00A9906C /* DicomDirDatasetRead.c in Sources */,
-				AB28B88705B79CCC00A9906C /* DicomDirDataSetWrite.c in Sources */,
-				AB28B88805B79CCD00A9906C /* DicomDirFiles.c in Sources */,
-				AB28B88905B79CCE00A9906C /* DicomDirInitRecords.c in Sources */,
 				AB28B88A05B79CD000A9906C /* PapyEallocUnix3.c in Sources */,
 				AB28B88B05B79CD100A9906C /* PapyDataSetWrite3.c in Sources */,
 				AB28B88C05B79CD200A9906C /* PapyDataSetRead3.c in Sources */,
@@ -25422,6 +25417,11 @@
 				ABE471140A76412700327466 /* jquant1.c in Sources */,
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
+				CE6D47720A76B22C0034A4B4 /* DicomDirInitRecords.c in Sources */,
+				CE6D47730A76B22D0034A4B4 /* DicomDirInit.c in Sources */,
+				CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */,
+				CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */,
+				CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
