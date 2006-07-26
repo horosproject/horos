@@ -4365,10 +4365,7 @@ static BOOL withReset = NO;
 								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 								[dcmPix release];
 								
-								if( withReset)
-								{
-									[imageView setIndexWithReset:[cell tag] :YES];
-								}
+								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
 								else [imageView setIndex:[cell tag]];
 							}
 						}
@@ -4392,7 +4389,8 @@ static BOOL withReset = NO;
 								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 								[dcmPix release];
 								
-								[imageView setIndex:[cell tag]];
+								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
+								else [imageView setIndex:[cell tag]];
 							}
 						}
 					}

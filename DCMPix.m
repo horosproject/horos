@@ -6310,7 +6310,7 @@ BOOL            readable = YES;
 		
 		if( [self isDICOMFile: srcFile])
 		{
-//			if (DEBUG)
+			if (DEBUG)
 				NSLog(@"checkLoad isDICOM: %@", srcFile);
 			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
@@ -7068,7 +7068,7 @@ BOOL            readable = YES;
 		
 		i = width * height;
 		
-		NSLog(@"vmax: %f vmin: %f", pixmax, pixmin);
+//		NSLog(@"vmax: %f vmin: %f", pixmax, pixmin);
 		
 		#define INTERVAL 4
 		
