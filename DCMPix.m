@@ -6310,7 +6310,7 @@ BOOL            readable = YES;
 		
 		if( [self isDICOMFile: srcFile])
 		{
-			if (DEBUG)
+//			if (DEBUG)
 				NSLog(@"checkLoad isDICOM: %@", srcFile);
 			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS

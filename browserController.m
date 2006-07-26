@@ -2940,20 +2940,19 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		for( i = 0; i < [childrenArray count]; i++)
 		{
-			int anyObject = preferredObject;
+			int whichObject = preferredObject;
 			
 			if( preferredObject == oFirstForFirst)
 			{
 				if( i != 0) preferredObject = oAny;
 			}
 			
-			if( preferredObject == oAny)
+			if( preferredObject != oMiddle)
 			{
-				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = oMiddle;
-				else anyObject = oAny;
+				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) whichObject = oMiddle;
 			}
 			
-			switch( anyObject)
+			switch( whichObject)
 			{
 				case oAny:
 				{
@@ -4344,7 +4343,7 @@ static BOOL COMPLETEREBUILD = NO;
 					if( [images count] > 1) noOfImages = [images count];
 					else noOfImages = [[[images objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue];
 					
-					if( [images count] > 1)
+					if( [images count] > 1 || noOfImages == 1)
 					{
 						animate = YES;
 						
@@ -4371,20 +4370,23 @@ static BOOL COMPLETEREBUILD = NO;
 					{
 						animate = YES;
 						
-						DCMPix*     dcmPix = 0L;
-						dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[sender intValue] :noOfImages :0L :[sender intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
-						
-						if( dcmPix)
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex:0] valueForKey:@"completePath"]] == NO || [[imageView curDCM] frameNo] != [sender intValue])
 						{
-							float   wl, ww;
-							int     row, column;
+							DCMPix*     dcmPix = 0L;
+							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[sender intValue] :noOfImages :0L :[sender intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
 							
-							[imageView getWLWW:&wl :&ww];
-							
-							[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-							[dcmPix release];
-							
-							[imageView setIndex:[cell tag]];
+							if( dcmPix)
+							{
+								float   wl, ww;
+								int     row, column;
+								
+								[imageView getWLWW:&wl :&ww];
+								
+								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+								[dcmPix release];
+								
+								[imageView setIndex:[cell tag]];
+							}
 						}
 					}
 				}
@@ -4484,21 +4486,6 @@ static BOOL COMPLETEREBUILD = NO;
 	
     if( [theCell tag] >= 0)
     {
-        NSManagedObject		*dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-        
-        if( [oMatrix getRow:&row column:&column ofCell:theCell] == YES)
-        {
-			NSArray	*pathsArray = [self imagesPathArray: dcmFile];
-			
-			index = [theCell tag];
-			
-            if( pathsArray != 0L)
-			{
-				if( [[dcmFile valueForKey:@"type"] isEqualToString: @"study"]) [imageView setIndex: index];
-				else [imageView setIndexWithReset: index :YES];
-			}
-        }
-		
 		[self initAnimationSlider];
     }
 }
