@@ -7751,7 +7751,6 @@ float			iwl, iww;
 
 					//multiprocessor acceleration
 					
-					// vDSP_vmax
 					
 					long processors = MPProcessors();
 					if (processors > 1 && stack > 20)

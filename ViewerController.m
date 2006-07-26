@@ -3607,12 +3607,12 @@ static ViewerController *draggedController = 0L;
 			{
 			// from steppers in subtraction tool
 					
-				case 10://tag for x stepper
+				case 0://tag for x stepper
 					subOffset.x = [sender floatValue];
 					[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) subOffset.x]];
 				break;
 			
-				case 11://tag for y stepper
+				case 1://tag for y stepper
 					subOffset.y = [sender floatValue];
 					[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) subOffset.y]];
 				break;	
