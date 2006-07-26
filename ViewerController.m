@@ -3569,7 +3569,7 @@ static ViewerController *draggedController = 0L;
 					if( [subtractOnOff state] == NSOnState)
 						{
 						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
 						[imageView setSubOffset :subOffset];
 						[imageView setIndex:[imageView curImage]];
 						}
@@ -3578,7 +3578,7 @@ static ViewerController *draggedController = 0L;
 				case 8://N
 					if( [subtractOnOff state] == NSOnState)
 						{
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
 						[imageView setSubOffset :subOffset];
 						[imageView setIndex:[imageView curImage]];
 						}
@@ -3588,7 +3588,7 @@ static ViewerController *draggedController = 0L;
 					if( [subtractOnOff state] == NSOnState)
 						{
 						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.y]];
+						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
 						[imageView setSubOffset :subOffset];
 						[imageView setIndex:[imageView curImage]];
 						}
