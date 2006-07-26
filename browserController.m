@@ -2070,6 +2070,8 @@ static BOOL COMPLETEREBUILD = NO;
 		[checkIncomingLock unlock];
 	}
 	
+	[self buildAllThumbnails: self];
+	
 	if( [defaults boolForKey:@"AUTOCLEANINGDATE"])
 	{
 		if( [defaults boolForKey: @"AUTOCLEANINGDATEPRODUCED"] == YES || [defaults boolForKey: @"AUTOCLEANINGDATEOPENED"] == YES)
@@ -4687,6 +4689,71 @@ static BOOL withReset = NO;
 		
 		loadPreviewIndex = i;
 	}
+}
+
+- (void) buildThumbnail:(NSManagedObject*) series
+{
+	if( [series valueForKey:@"thumbnail"] == 0L)
+	{
+		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+		
+		NSArray	*files = [self imagesArray: series];
+		NSManagedObject *image = [files objectAtIndex: [files count]/2];
+	
+		DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+	
+		if( dcmPix)
+		{
+			[dcmPix computeWImage:YES :0 :0];
+			NSImage *thumbnail = [dcmPix getImage];
+			if( thumbnail)
+			{
+				[series setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+			}
+			[dcmPix release];
+		}
+		
+		[pool release];
+	}
+}
+
+- (IBAction) buildAllThumbnails:(id) sender
+{
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	NSManagedObjectModel	*model = [self managedObjectModel];
+	long i;
+	
+	[context lock];
+	[checkIncomingLock lock];
+	DatabaseIsEdited = YES;
+	
+	@try
+	{	
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		NSError	*error = 0L;
+		NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+		
+		int maxSeries = [seriesArray count];
+		
+		if( maxSeries > 300) maxSeries = 300;	// We will continue next time...
+		
+		for( i = 0; i < maxSeries; i++)
+		{
+			if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
+				[self buildThumbnail: [seriesArray objectAtIndex: i]];
+		}
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+	}
+	
+	[context unlock];
+	[checkIncomingLock unlock];
+	DatabaseIsEdited = NO;
 }
 
 - (void) matrixLoadIcons:(NSManagedObject*) item

@@ -343,6 +343,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) checkIncomingThread:(id) sender;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;
 - (IBAction) checkMemory:(id) sender;
+- (IBAction) buildAllThumbnails:(id) sender;
 
 //DB plugins
 - (void)executeFilterDB:(id)sender;
