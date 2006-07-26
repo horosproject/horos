@@ -112,7 +112,7 @@ Version 2.3
 #define ERRPATH @"/NOT READABLE/"
 
 enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
-
+enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 BrowserController  *browserWindow = 0L;
 
@@ -2923,7 +2923,7 @@ static BOOL COMPLETEREBUILD = NO;
 	return 0L;
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item anyObjectIfPossible: (BOOL) any
+- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject
 {
 	NSArray			*childrenArray = [self childrenArray: item];
 	NSMutableArray	*imagesPathArray = 0L;
@@ -2940,27 +2940,45 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		for( i = 0; i < [childrenArray count]; i++)
 		{
-			BOOL anyObject = NO;
-		
-			if( any)
-			{
-				anyObject = YES;
+			int anyObject = preferredObject;
 			
-				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = NO;
+			if( preferredObject == oFirstForFirst)
+			{
+				if( i != 0) preferredObject = oAny;
 			}
 			
-			if( anyObject)
+			if( preferredObject == oAny)
 			{
-				NSManagedObject	*obj = [[[childrenArray objectAtIndex: i] valueForKey:@"images"] anyObject];
-				if( obj) [imagesPathArray addObject: obj];
+				if( [[childrenArray objectAtIndex: i] valueForKey:@"thumbnail"] == 0L) anyObject = oMiddle;
+				else anyObject = oAny;
 			}
-			else
+			
+			switch( anyObject)
 			{
-				NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
+				case oAny:
+				{
+					NSManagedObject	*obj = [[[childrenArray objectAtIndex: i] valueForKey:@"images"] anyObject];
+					if( obj) [imagesPathArray addObject: obj];
+				}
+				break;
+				case oMiddle:
+				{
+					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
 				
-				// Get the middle image of the series
-				if( [seriesArray count] > 0)
-					[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+					// Get the middle image of the series
+					if( [seriesArray count] > 0)
+						[imagesPathArray addObject: [seriesArray objectAtIndex: [seriesArray count]/2]];
+				}
+				break;
+				case oFirstForFirst:
+				{
+					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
+					
+					// Get the middle image of the series
+					if( [seriesArray count] > 0)
+						[imagesPathArray addObject: [seriesArray objectAtIndex: 0]];
+				}
+				break;
 			}
 		}
 	}
@@ -2970,7 +2988,7 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (NSArray*) imagesArray: (NSManagedObject*) item
 {
-	return [self imagesArray: item anyObjectIfPossible: YES];
+	return [self imagesArray: item preferredObject: oAny];
 }
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item
@@ -4330,20 +4348,23 @@ static BOOL COMPLETEREBUILD = NO;
 					{
 						animate = YES;
 						
-						DCMPix*     dcmPix = 0L;
-						dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"] :[sender intValue] :[images count] :0L :0 :[[[images objectAtIndex: [sender intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [sender intValue]]];
-						
-						if( dcmPix)
-						{
-							float   wl, ww;
-							int     row, column;
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"]] == NO)
+						{						
+							DCMPix*     dcmPix = 0L;
+							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"] :[sender intValue] :[images count] :0L :0 :[[[images objectAtIndex: [sender intValue]] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: [sender intValue]]];
 							
-							[imageView getWLWW:&wl :&ww];
-							
-							[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-							[dcmPix release];
-						
-							[imageView setIndex:[cell tag]];
+							if( dcmPix)
+							{
+								float   wl, ww;
+								int     row, column;
+								
+								[imageView getWLWW:&wl :&ww];
+								
+								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+								[dcmPix release];
+								
+								[imageView setIndex:[cell tag]];
+							}
 						}
 					}
 					else if( noOfImages > 1)	// It's a multi-frame single image
@@ -4610,7 +4631,7 @@ static BOOL COMPLETEREBUILD = NO;
 				{
 					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
 					
-					[imageView setDCM:previewPix :[self imagesArray: aFile anyObjectIfPossible: YES] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
+					[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
 					[imageView setStringID:@"previewDatabase"];
 					setDCMDone = YES;
 				}
@@ -4697,7 +4718,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	@try
 	{
-		NSArray	*files = [self imagesArray: item anyObjectIfPossible:YES];
+		NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
 		
 		if( [files count] > 1)
 		{

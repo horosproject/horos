@@ -6312,6 +6312,7 @@ BOOL            readable = YES;
 		{
 			if (DEBUG)
 				NSLog(@"checkLoad isDICOM: %@", srcFile);
+			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMPIX"])

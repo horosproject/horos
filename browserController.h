@@ -202,7 +202,7 @@ enum queueStatus{QueueHasData, QueueEmpty};
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
-- (NSArray*) imagesArray: (NSManagedObject*) item anyObjectIfPossible: (BOOL) any;
+- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject;
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;

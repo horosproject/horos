@@ -1089,7 +1089,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		dcmPixList = c;
 		[dcmPixList retain];
 		volumicSeries = YES;
-		if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
+		if( [stringID isEqualToString:@"previewDatabase"] == NO)
+			if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList objectAtIndex: [dcmPixList count]-1] sliceLocation]) volumicSeries = NO;
     }
 	
 	if( dcmFilesList != d)
