@@ -4596,11 +4596,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	PapyUShort		clutEntryR, clutEntryG, clutEntryB;
 	PapyUShort		clutDepthR, clutDepthG, clutDepthB;
 	
-	if( pixArray != 0L && frameNo > 0)
-	{
-		while( fImage == 0L) [NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
-		return YES;
-	}
+//	if( pixArray != 0L && frameNo > 0)
+//	{
+//		while( fImage == 0L) [NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+//		return YES;
+//	}
 	
 	[PapyrusLock lock];
 
@@ -5740,18 +5740,18 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			sliceLocation = originZ;
 		}
 		
-		if( pixArray == 0L) maxFrame = 1;
+//		if( pixArray == 0L) maxFrame = 1;
 		
-		for( ee = 0; ee < maxFrame; ee++)
+//		for( ee = 0; ee < maxFrame; ee++)
 		{
 			DCMPix	*imPix = 0L;
 			
-			if( maxFrame > 1)
-			{
-				imPix = [pixArray objectAtIndex: ee];
-				[imPix copyFromOther: self];
-			}
-			else
+//			if( maxFrame > 1)
+//			{
+//				imPix = [pixArray objectAtIndex: ee];
+//				[imPix copyFromOther: self];
+//			}
+//			else
 			{
 				imPix = self;
 				ee = imageNb-1;
