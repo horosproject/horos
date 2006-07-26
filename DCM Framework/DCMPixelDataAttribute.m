@@ -2929,7 +2929,13 @@ NS_ENDHANDLER
 		else{
 		int numberofPlanes = [[_dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];			
 		if (numberofPlanes > 0 && numberofPlanes <= 4)
-			data = [self interleavePlanesInData:data];
+			{
+				if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] ||
+				[transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] )
+				{
+				}
+				else data = [self interleavePlanesInData:data];
+			}
 		}
 		
 

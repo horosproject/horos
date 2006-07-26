@@ -4273,7 +4273,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			[pixData getBytes:oImage];
 			//NSLog(@"image size: %d", ( height * width * 2));
 			//NSLog(@"Data size: %d", [pixData length]);
-			
 		}
 		if( oImage == 0L)
 			//create empty image
@@ -5767,15 +5766,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				// read group 0x7FE0 from the file 
 				if ((err = Papy3GroupRead (fileNb, &theGroupP)) > 0) 
 				{
-					if( gArrCompression [fileNb] == JPEG_LOSSLESS && gArrPhotoInterpret [fileNb] == RGB)
+					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
 					{
-						oImage = (short *) [self UncompressDICOM :srcFile :ee+1];
+						if(gArrPhotoInterpret [fileNb] == RGB) fPlanarConf = 0;
 					}
-					else
-					{
-						// PIXEL DATA 
-						oImage = (short *)Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
-					}
+					
+					// PIXEL DATA 
+					oImage = (short *)Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
 					
 					if( oImage == 0L) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
 					{
@@ -7070,6 +7067,8 @@ BOOL            readable = YES;
 		
 		i = width * height;
 		
+		NSLog(@"vmax: %f vmin: %f", pixmax, pixmin);
+		
 		#define INTERVAL 4
 		
 		i /= INTERVAL;					//Check only 1 on INTERVAL pixels...
@@ -7091,8 +7090,8 @@ BOOL            readable = YES;
 		}
 	}
 
-fullwl = pixmin + (pixmax - pixmin)/2;
-fullww = (pixmax - pixmin);
+	fullwl = pixmin + (pixmax - pixmin)/2;
+	fullww = (pixmax - pixmin);
 }
 
 -(short) stack
