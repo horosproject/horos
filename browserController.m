@@ -112,7 +112,6 @@ Version 2.3
 #define ERRPATH @"/NOT READABLE/"
 
 enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
-enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 BrowserController  *browserWindow = 0L;
 
@@ -4257,6 +4256,8 @@ static BOOL COMPLETEREBUILD = NO;
 #pragma mark-
 #pragma mark Thumbnails Matrix & Preview functions
 
+static BOOL withReset = NO;
+
 - (void) initAnimationSlider
 {
 	BOOL	animate = NO;
@@ -4316,7 +4317,9 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	}
 	
+	withReset = YES;
 	[self previewSliderAction: animationSlider];
+	withReset = NO;
 }
 
 - (void) previewSliderAction:(id) sender
@@ -4362,7 +4365,11 @@ static BOOL COMPLETEREBUILD = NO;
 								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
 								[dcmPix release];
 								
-								[imageView setIndex:[cell tag]];
+								if( withReset)
+								{
+									[imageView setIndexWithReset:[cell tag] :YES];
+								}
+								else [imageView setIndex:[cell tag]];
 							}
 						}
 					}
@@ -4486,6 +4493,14 @@ static BOOL COMPLETEREBUILD = NO;
 	
     if( [theCell tag] >= 0)
     {
+		 NSManagedObject         *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+		 
+		 if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO)
+		 {
+			index = [theCell tag];
+			[imageView setIndex: index];
+		 }
+		
 		[self initAnimationSlider];
     }
 }

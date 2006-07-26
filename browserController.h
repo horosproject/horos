@@ -41,6 +41,7 @@
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
+enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 @interface BrowserController : NSWindowController//NSObject
 {
