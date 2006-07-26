@@ -178,8 +178,36 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
       gArrPhotoInterpret [inFileNb] == MONOCHROME2)
     theCInfo.out_color_space = JCS_GRAYSCALE;
 
-  if (gArrPhotoInterpret [inFileNb] == RGB)
-    theCInfo.out_color_space = JCS_RGB;
+	switch (theCInfo.num_components)
+	{
+		case 1:
+			theCInfo.jpeg_color_space = JCS_GRAYSCALE;
+			theCInfo.out_color_space = JCS_GRAYSCALE;
+		break;
+    
+		case 3:
+			if (theCInfo.saw_JFIF_marker)
+			{
+				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
+			}
+			else if (theCInfo.saw_Adobe_marker)
+			{
+				switch (theCInfo.Adobe_transform)
+				{
+					case 0:
+						theCInfo.jpeg_color_space = JCS_RGB;
+					break;
+					case 1:
+						theCInfo.jpeg_color_space = JCS_YCbCr;
+					break;
+					default:
+						theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
+					break;
+				}
+			}
+			else theCInfo.jpeg_color_space = JCS_RGB;
+		break;
+	}
   /* theCInfo.out_color_space = JCS_YCbCr; */
     
   /* start the decompressor (set the decompression default params) */

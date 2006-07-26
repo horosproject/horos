@@ -438,11 +438,42 @@ if (DEBUG)
 	if (_samplesPerPixel == 1)
 		theCInfo.out_color_space = JCS_GRAYSCALE;
 
-	if (_samplesPerPixel == 3)
+
+	switch (theCInfo.num_components)
 	{
-		//theCInfo.jpeg_color_space = JCS_RGB;
-		theCInfo.out_color_space = JCS_RGB;
+		case 1:
+			theCInfo.jpeg_color_space = JCS_GRAYSCALE;
+			theCInfo.out_color_space = JCS_GRAYSCALE;
+		break;
+    
+		case 3:
+			if (theCInfo.saw_JFIF_marker)
+			{
+				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
+			}
+			else if (theCInfo.saw_Adobe_marker)
+			{
+				switch (theCInfo.Adobe_transform)
+				{
+					case 0:
+						theCInfo.jpeg_color_space = JCS_RGB;
+					break;
+					case 1:
+						theCInfo.jpeg_color_space = JCS_YCbCr;
+					break;
+					default:
+						theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
+					break;
+				}
+			}
+			else theCInfo.jpeg_color_space = JCS_RGB;
+		break;
 	}
+//	if (_samplesPerPixel == 3)
+//	{
+//		//theCInfo.jpeg_color_space = JCS_RGB;
+//		theCInfo.out_color_space = JCS_RGB;
+//	}
 	
 	//start decompress	
 	 (void) jpeg_start_decompress (&theCInfo);
