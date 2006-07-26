@@ -4858,10 +4858,12 @@ NSMutableArray		*array;
 
 - (void) popFusionAction:(id) sender
 {
+	int tag = [[sender selectedItem] tag];
+	
 	[self checkEverythingLoaded];
 	[self computeInterval];
 	
-	[self setFusionMode: [[sender selectedItem] tag]];
+	[self setFusionMode: tag];
 }
 
 - (void) sliderFusionAction:(id) sender
