@@ -77,6 +77,15 @@ li a:hover, a:active {
 	border: thin solid #999966;
 }
 
+#content_series {
+	text-align: left;
+	margin: auto;
+	width: auto;
+	background: #ffffff;
+	padding: 50px;
+	border: thin solid #999966;
+}
+
 #series_img {
 	text-align: center;
 }
