@@ -814,6 +814,7 @@ static BOOL COMPLETEREBUILD = NO;
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
 								[image setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
+								if( mountedVolume) [seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 							
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
@@ -9456,15 +9457,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	[context lock];
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 	NSError	*error = 0L;
-	error = 0L;
-	NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
+	NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
 	
 	@try
 	{
-		if( [imagesArray count] > 0)
+		if( [seriesArray count] > 0)
 		{
 			NSMutableArray			*studiesArray = [NSMutableArray arrayWithCapacity:0];
 			NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
@@ -9475,9 +9475,9 @@ static NSArray*	openSubSeriesArray = 0L;
 			}
 		
 			// Find unavailable files
-			for( i = 0; i < [imagesArray count]; i++)
+			for( i = 0; i < [seriesArray count]; i++)
 			{
-				NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
+				NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
 				
 				// Is a viewer containing this study opened? -> close it
 				for( x = 0; x < [viewersList count]; x++)
@@ -9527,16 +9527,15 @@ static NSArray*	openSubSeriesArray = 0L;
 	DatabaseIsEdited = YES;
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 	NSError	*error = 0L;
-	NSArray *imagesArray = [context executeFetchRequest:dbRequest error:&error];
-//	NSMutableArray *studiesArray = [NSMutableArray arrayWithCapacity:0];
+	NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
 
 	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
 	[splash showWindow:self];
 
-	if( [imagesArray count] > 0)
+	if( [seriesArray count] > 0)
 	{
 		NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
 		
@@ -9545,16 +9544,17 @@ static NSArray*	openSubSeriesArray = 0L;
 			if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
 		}
 		
-		[[splash progress] setMaxValue:[imagesArray count]/50];
+		[[splash progress] setMaxValue:[seriesArray count]/50];
 		
 		@try
 		{
 			// Find unavailable files
-			for( i = 0; i < [imagesArray count]; i++)
+			for( i = 0; i < [seriesArray count]; i++)
 			{
-				if( [[[imagesArray objectAtIndex:i] valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
+				NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"series"] anyObject];
+				if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
 				{
-					NSManagedObject	*study = [[imagesArray objectAtIndex:i] valueForKeyPath:@"series.study"];
+					NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
 					
 					needsUpdate = YES;
 					
