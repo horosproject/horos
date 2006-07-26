@@ -18,12 +18,12 @@
 			<img src="%series_file_path%" alt="%series_name%" />
 			%series_img%
 			%series_mov%
-			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="512" height="512">
+			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="%width%" height="%height%">
 				<param name="src" value="%series_file_path%" />
 				<param name="controller" value="true" />
 				<param name="autoplay" value="false" />
 				<!--[if !IE]>-->
-				<object type="video/quicktime" data="%series_file_path%" width="512" height="512">
+				<object type="video/quicktime" data="%series_file_path%" width="%width%" height="%height%">
 			    	<param name="autoplay" value="false" />
 			    	<param name="controller" value="true" />
 			  	</object>

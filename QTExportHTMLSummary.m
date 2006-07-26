@@ -222,14 +222,17 @@ extern NSString *documentsDirectory();
 	if(imagesCount>1)
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_mov%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%@", [[[series valueForKeyPath:@"images.width"] allObjects] objectAtIndex:0]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
+		[tempHTML replaceOccurrencesOfString:@"%height%" withString:[NSString stringWithFormat:@"%d", [[[[series valueForKeyPath:@"images.height"] allObjects] objectAtIndex:0] intValue]+15] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])]; // +15 is for the movie's controller
 		components = [tempHTML componentsSeparatedByString:@"%series_img%"];
+		
 	}
 	else
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_img%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		components = [tempHTML componentsSeparatedByString:@"%series_mov%"];
 	}
-
+	
 	NSMutableString *filledTemplate;
 	filledTemplate = [NSMutableString stringWithString:[components objectAtIndex:0]];
 	[filledTemplate appendString:[components objectAtIndex:2]];
