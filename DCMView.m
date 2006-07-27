@@ -7391,7 +7391,7 @@ BOOL	lowRes = NO;
 
 - (NSManagedObject *)seriesObj
 {
-	if( stringID == 0L)
+	if( stringID == 0L || [stringID isEqualToString:@"previewDatabase"])
 	{
 		if( curDCM) return [curDCM seriesObj];
 		else return 0L;
