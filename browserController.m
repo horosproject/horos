@@ -6967,6 +6967,9 @@ static NSArray*	openSubSeriesArray = 0L;
 
 -(void) awakeFromNib
 {
+	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting...", nil)];
+	[wait showWindow:self];
+	
 	@try
 	{
 	long i;
@@ -7258,6 +7261,9 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
 		[path writeToFile:path atomically:NO];
 	}
+	
+	[wait close];
+	[wait release];
 }
 
 - (IBAction)customize:(id)sender {
