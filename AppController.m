@@ -2040,7 +2040,7 @@ static BOOL initialized = NO;
 			frame.origin.x += (frame.size.width * viewerPosition);
 			if( i == viewerCount-1)
 			{
-				frame.size.width = [screen visibleFrame].size.width - frame.origin.x;
+				frame.size.width = [screen visibleFrame].size.width;
 			}
 			
 			frame.size.height /= rows;
