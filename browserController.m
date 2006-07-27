@@ -9551,7 +9551,7 @@ static NSArray*	openSubSeriesArray = 0L;
 			// Find unavailable files
 			for( i = 0; i < [seriesArray count]; i++)
 			{
-				NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"series"] anyObject];
+				NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
 				if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
 				{
 					NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
