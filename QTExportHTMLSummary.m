@@ -73,7 +73,9 @@ extern NSString *documentsDirectory();
 	while (series = [enumerator nextObject])
 	{
 		tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
-		linkToPatientPage = [ asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingString:@"/index.html"];
+		//linkToPatientPage = [asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingString:@"/index.html"];
+		linkToPatientPage = [NSString stringWithFormat:@"./%@/%@", asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]), @"index.html"];
+		
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_page%" withString:[QTExportHTMLSummary nonNilString:linkToPatientPage] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
 		patientName = [[series objectAtIndex:0] valueForKeyPath:@"study.name"];
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_name%" withString:[QTExportHTMLSummary nonNilString:patientName] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
