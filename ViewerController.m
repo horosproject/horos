@@ -8359,7 +8359,6 @@ int i,j,l;
     }
 }
 
-
 - (IBAction) setCurrentdcmExport:(id) sender
 {
 	if( [[sender selectedCell] tag] == 1) [self checkView: dcmBox :YES];
@@ -8369,18 +8368,20 @@ int i,j,l;
 	else [self checkView: quicktimeBox :NO];
 }
 
-
 - (IBAction) exportDICOMSlider:(id) sender
 {
-	[dcmFromText takeIntValueFrom: dcmFrom];
-	[dcmToText takeIntValueFrom: dcmTo];
-	
-	if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
-	else [imageView setIndex:  [sender intValue]-1];
-	
-	[imageView sendSyncMessage:1];
-	
-	[self adjustSlider];
+	if( [[dcmSelection selectedCell] tag] == 1)
+	{
+		[dcmFromText takeIntValueFrom: dcmFrom];
+		[dcmToText takeIntValueFrom: dcmTo];
+		
+		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+		else [imageView setIndex:  [sender intValue]-1];
+		
+		[imageView sendSyncMessage:1];
+		
+		[self adjustSlider];
+	}
 }
 
 - (void) exportDICOMFile:(id) sender
