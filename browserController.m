@@ -4738,7 +4738,7 @@ static BOOL withReset = NO;
 		
 		int maxSeries = [seriesArray count];
 		
-		if( maxSeries > 100) maxSeries = 100;	// We will continue next time...
+		if( maxSeries > 50) maxSeries = 50;	// We will continue next time...
 		
 		for( i = 0; i < maxSeries; i++)
 		{
