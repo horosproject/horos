@@ -190,6 +190,7 @@ extern NSString * documentsDirectory();
 				
 				// we send the database SQL file
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
+				
 				representationToSend = [NSMutableData dataWithData: [[NSFileManager defaultManager] contentsAtPath:databasePath]];
 				
 			//	NSLog( [incomingConnection description]);
@@ -539,7 +540,9 @@ extern NSString * documentsDirectory();
 						NSString	*extension = [path pathExtension];
 						
 						long val = [[path stringByDeletingPathExtension] intValue];
-						NSString *dbLocation = [[BrowserController currentBrowser] currentDatabasePath];
+						
+						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
+						//[documentsDirectory() stringByAppendingString:@"/Database.sql"];	//[[BrowserController currentBrowser] currentDatabasePath];
 						
 						val /= 10000;
 						val++;
