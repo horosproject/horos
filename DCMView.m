@@ -7547,4 +7547,25 @@ BOOL	lowRes = NO;
 	return;
 }
 
++ (BOOL) display2DMPRLines
+{
+	return display2DMPRLines;
+}
+
++ (unsigned char*) PETredTable
+{
+	return PETredTable;
+}
+
++ (unsigned char*) PETgreenTable
+{
+	return PETgreenTable;
+}
+
++ (unsigned char*) PETblueTable
+{
+	return PETblueTable;
+}
+
+
 @end

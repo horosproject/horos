@@ -219,7 +219,8 @@
 }
 
 // Create a new 2D Viewer
-- (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
++ (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
+- (void) CloseViewerNotification: (NSNotification*) note;
 
 // Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object
 -(ViewerController*) blendedWindow;
@@ -263,6 +264,9 @@
 
 // Delete ALL ROIs of current series
 - (IBAction) roiDeleteAll:(id) sender;
+
+// methods to access global variables
++ (long) numberOf2DViewer;
 
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch

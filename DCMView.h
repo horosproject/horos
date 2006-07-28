@@ -296,7 +296,13 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (float)mouseXPos;
 - (float)mouseYPos;
 - (GLuint)fontListGL;
+- (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY;
+- (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;
+- (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
+- (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
+- (void) drawTextualData:(NSRect) size :(long) annotations;
+- (void) draw2DPointMarker;
 - (void) setSyncro:(long) s;
 - (long) syncro;
 - (NSFont*)fontGL;
@@ -336,4 +342,10 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) setStartWLWW;
 - (void) stopROIEditing;
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
+
+// methodes to access global variables (for plugins)
++ (BOOL) display2DMPRLines;
++ (unsigned char*) PETredTable;
++ (unsigned char*) PETgreenTable;
++ (unsigned char*) PETblueTable;
 @end

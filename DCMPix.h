@@ -211,6 +211,8 @@
 - (xNSImage*) getImage;
 - (char*) baseAddr;
 - (void) setBaseAddr :( char*) ptr;
+- (void) orientation:(float*) c;
+- (void) setOrientation:(float*) c;
 - (void) dealloc;
 - (short*) oImage;
 //- (void) killImage;

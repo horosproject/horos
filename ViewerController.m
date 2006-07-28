@@ -870,7 +870,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 }
 
-- (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
++ (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
     ViewerController *win = [[ViewerController alloc] viewCinit:f :d :v];
 	
@@ -1470,6 +1470,12 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	return [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.modality"];
 }
+
++ (long) numberOf2DViewer
+{
+	return numberOf2DViewer;
+}
+
 
 #pragma mark-
 #pragma mark 2. window subdivision
