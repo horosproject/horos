@@ -3992,11 +3992,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	NSString *columns = [dcmObject attributeValueWithName:@"Columns"];
 	
 	height = [rows intValue];
+	realheight= height;
+	height /= 2;
+	height *= 2;
 	width =  [columns intValue];
 	realwidth = width;
 	width = realwidth/2;
-	width *=2;
-				
+	width *= 2;
+	
 	//PixelRepresentation
 	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
 	
@@ -4440,7 +4443,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( imPix->fVolImage)
 			{
 				imPix->fImage = imPix->fVolImage;
-				BlockMoveData( oImage, imPix->fImage,width*height*sizeof(float));
+				BlockMoveData( oImage, imPix->fImage,realwidth*height*sizeof(float));
 				free(oImage);
 			}
 			else imPix->fImage = (float*) oImage;
