@@ -8388,6 +8388,8 @@ float			iwl, iww;
 	}
 	fImage = 0L;
 	
+	if( baseAddr) free( baseAddr);
+	
 	[checking unlock];
 }
 

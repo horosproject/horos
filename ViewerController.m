@@ -9016,6 +9016,19 @@ int i,j,l;
 #pragma mark-
 #pragma mark 4.5.3 3D
 
+- clear8bitRepresentations
+{
+	int i, x;
+	
+	for( i = 0; i < curMovieIndex; i++)
+	{
+		for( x = 0; x < [pixList[ i] count]; x++)
+		{
+			[[pixList[ i] objectAtIndex:x] clear8bitRepresentation];
+		}
+	}
+}
+
 -(float*) volumePtr
 {
 	return  (float*) [volumeData[ curMovieIndex] bytes];
@@ -9483,6 +9496,7 @@ int i,j,l;
 	long i;
 	
 	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
