@@ -318,7 +318,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	
 	// MEMORY TEST: The renderer needs to have the volume in short
 	{
-		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 4L * 1024L * 1024L);
+		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 4UL * 1024UL * 1024UL);
 		if( testPtr == 0L)
 		{
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
