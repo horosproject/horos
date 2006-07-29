@@ -766,7 +766,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 			dstf.data = data;
 			src16.data = undodata[ i];
 			
-			vImageConvert_16UToF( &src16, &dstf, -[view offset], [view valueFactor], 0);
+			vImageConvert_16UToF( &src16, &dstf, -[view offset], 1./[view valueFactor], 0);
 			
 			//BlockMoveData( undodata[ i], data, memSize);
 		}
