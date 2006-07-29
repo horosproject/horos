@@ -4557,6 +4557,16 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
+- (long) offset
+{
+	return OFFSET16;
+}
+
+- (float) valueFactor
+{
+	return valueFactor;
+}
+
 #pragma mark-
 #pragma mark Cursors
 

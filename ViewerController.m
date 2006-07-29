@@ -4947,9 +4947,11 @@ NSMutableArray		*array;
 - (IBAction) endBlendingType:(id) sender
 {
 	long i;
-		
+	
 	[blendingTypeWindow orderOut:sender];
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
+	
+	[self clear8bitRepresentations];
 	
 	switch( [sender tag])
 	{
@@ -9018,13 +9020,16 @@ int i,j,l;
 
 - clear8bitRepresentations
 {
+	// This function will free about 1/4 of the data
+
 	int i, x;
 	
-	for( i = 0; i < curMovieIndex; i++)
+	for( i = 0; i < maxMovieIndex; i++)
 	{
 		for( x = 0; x < [pixList[ i] count]; x++)
 		{
-			[[pixList[ i] objectAtIndex:x] kill8bitsImage];
+			if( [pixList[ i] objectAtIndex:x] != [imageView curDCM])
+				[[pixList[ i] objectAtIndex:x] kill8bitsImage];
 		}
 	}
 }
@@ -9497,7 +9502,6 @@ int i,j,l;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	return;
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9561,6 +9565,7 @@ int i,j,l;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9601,6 +9606,7 @@ int i,j,l;
 -(IBAction) segmentationTest:(id) sender
 {
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9625,6 +9631,7 @@ int i,j,l;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9702,6 +9709,7 @@ int i,j,l;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9771,6 +9779,7 @@ int i,j,l;
 -(IBAction) SRViewer:(id) sender
 {
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9887,6 +9896,7 @@ int i,j,l;
 long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9944,6 +9954,7 @@ long i;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -9990,6 +10001,7 @@ long i;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 			
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -10078,6 +10090,7 @@ long i;
 	long i;
 	
 	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 			
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
@@ -10122,6 +10135,7 @@ long i;
 //	long i;
 //	
 //	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];
 //	
 //	if( [self computeInterval] == 0 ||
 //		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||

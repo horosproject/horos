@@ -307,4 +307,6 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume*) volume;
 -(void) setCursorForView: (long) tool;
+- (long) offset;
+- (float) valueFactor;
 @end

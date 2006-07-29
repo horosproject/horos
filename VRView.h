@@ -381,7 +381,8 @@ typedef char* vtkMyCallbackVR;
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D;
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (IBAction) switchToSeriesRadio:(id) sender;
-
+- (long) offset;
+- (float) valueFactor;
 - (void) setViewportResizable: (BOOL) boo;
 
 - (void) setRotate: (BOOL) r;

@@ -592,7 +592,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
 		float*	data = (float*) [volumeData[ i] bytes];
-		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
+		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( short);
 		
 		if( undodata[ i] == 0L)
 		{
@@ -601,7 +601,22 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		
 		if( undodata[ i])
 		{
-			memcpy( undodata[ i], data, memSize);
+			vImage_Buffer srcf, dst16;
+			
+			srcf.height = [firstObject pheight] * [pixList[ i] count];
+			srcf.width = [firstObject pwidth];
+			srcf.rowBytes = [firstObject pwidth] * sizeof(float);
+			
+			dst16.height = [firstObject pheight] * [pixList[ i] count];
+			dst16.width = [firstObject pwidth];
+			dst16.rowBytes = [firstObject pwidth] * sizeof(short);
+			
+			dst16.data = undodata[ i];
+			srcf.data = data;
+			
+			vImageConvert_FTo16U( &srcf, &dst16, -[view offset], 1./[view valueFactor], 0);
+			
+//			memcpy( undodata[ i], data, memSize);
 		}
 		else NSLog(@"Undo failed... not enough memory");
 	}
@@ -617,17 +632,77 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		if( undodata[ i])
 		{
-			DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
-			float*	data = (float*) [volumeData[ i] bytes];
-			long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
-			float*	cpy = data;
+//			DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
+//			float*	data = (float*) [volumeData[ i] bytes];
+//			long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
+//			float*	cpy = data;
 			
-			BlockMoveData( undodata[ i], data, memSize);
+			vImage_Buffer src16, dstf;
+			
+			src16.height = [firstObject pheight] * [pixList[ i] count];
+			src16.width = [firstObject pwidth];
+			src16.rowBytes = [firstObject pwidth] * sizeof(short);
+			
+			dstf.height = [firstObject pheight] * [pixList[ i] count];
+			dstf.width = [firstObject pwidth];
+			dstf.rowBytes = [firstObject pwidth] * sizeof(float);
+			
+			dstf.data = data;
+			src16.data = undodata[ i];
+			
+			vImageConvert_16UToF( &src16, &dstf, -[view offset], [view valueFactor], 0);
+			
+			//BlockMoveData( undodata[ i], data, memSize);
 		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ i] userInfo: 0];
 	}
 }
+
+//- (void) prepareUndo
+//{
+//	long i;
+//	
+//	for( i = 0; i < maxMovieIndex; i++)
+//	{
+//		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
+//		float*	data = (float*) [volumeData[ i] bytes];
+//		long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
+//		
+//		if( undodata[ i] == 0L)
+//		{
+//			undodata[ i] = (float*) malloc( memSize);
+//		}
+//		
+//		if( undodata[ i])
+//		{
+//			memcpy( undodata[ i], data, memSize);
+//		}
+//		else NSLog(@"Undo failed... not enough memory");
+//	}
+//}
+//
+//- (IBAction) undo:(id) sender
+//{
+//	long i;
+//	
+//	NSLog(@"undo");
+//	
+//	for( i = 0; i < maxMovieIndex; i++)
+//	{
+//		if( undodata[ i])
+//		{
+//			DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
+//			float*	data = (float*) [volumeData[ i] bytes];
+//			long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
+//			float*	cpy = data;
+//			
+//			BlockMoveData( undodata[ i], data, memSize);
+//		}
+//		
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ i] userInfo: 0];
+//	}
+//}
 
 -(void) dealloc
 {

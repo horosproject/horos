@@ -4886,6 +4886,16 @@ public:
 	isViewportResizable = boo;
 }
 
+- (long) offset
+{
+	return OFFSET16;
+}
+
+- (float) valueFactor
+{
+	return valueFactor;
+}
+
 // 3D points
 #pragma mark-
 #pragma mark 3D Points
