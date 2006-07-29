@@ -8086,14 +8086,12 @@ float			iwl, iww;
 //	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
 }
 
-/*
-- (void) killImage
+- (void) kill8bitsImage
 {
-	NSLog(@"NOT USEFUL....");
     [image release];
 	baseAddr = 0L;
 	image = 0L;
-}*/
+}
 
 - (void) checkImageAvailble:(float)newWW :(float)newWL
 {
@@ -8387,8 +8385,6 @@ float			iwl, iww;
 		}
 	}
 	fImage = 0L;
-	
-	if( baseAddr) free( baseAddr);
 	
 	[checking unlock];
 }

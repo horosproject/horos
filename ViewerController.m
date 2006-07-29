@@ -9024,7 +9024,7 @@ int i,j,l;
 	{
 		for( x = 0; x < [pixList[ i] count]; x++)
 		{
-			[[pixList[ i] objectAtIndex:x] clear8bitRepresentation];
+			[[pixList[ i] objectAtIndex:x] kill8bitsImage];
 		}
 	}
 }
@@ -9496,7 +9496,8 @@ int i,j,l;
 	long i;
 	
 	[self checkEverythingLoaded];
-//	[self clear8bitRepresentations];
+	[self clear8bitRepresentations];
+	return;
 	
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||

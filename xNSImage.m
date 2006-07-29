@@ -27,7 +27,7 @@
 	{
 		NSLog(@"data == 0L ????");
     }
-	free( data);
+	else free( data);
     data = 0L;
         
 //    [bitmapRep release];

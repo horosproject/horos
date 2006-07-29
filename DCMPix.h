@@ -215,7 +215,7 @@
 - (void) setOrientation:(float*) c;
 - (void) dealloc;
 - (short*) oImage;
-//- (void) killImage;
+- (void) kill8bitsImage;
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
 - (long) rowBytes;
 - (void) setRowBytes:(long) rb;
