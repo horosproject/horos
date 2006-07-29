@@ -327,6 +327,21 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     unsigned long   i;
     short           err = 0;
 	BOOL			testInterval = YES;
+    DCMPix			*firstObject = [pix objectAtIndex:0];
+	
+	// MEMORY TEST: The renderer needs to have the volume in short
+	{
+		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 4UL * 1024UL * 1024UL);
+		if( testPtr == 0L)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+			return 0L;
+		}
+		else
+		{
+			free( testPtr);
+		}
+	}
 	
 	for( i = 0; i < 100; i++) undodata[ i] = 0L;
 	
@@ -339,7 +354,6 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	pixList[0] = pix;
 	volumeData[0] = vData;
 	
-    DCMPix  *firstObject = [pixList[0] objectAtIndex:0];
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);

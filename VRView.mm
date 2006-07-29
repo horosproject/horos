@@ -3611,6 +3611,12 @@ public:
 			blendingDst8.rowBytes = [blendingFirstObject pwidth] * sizeof(short);
 			
 			blendingData8 = (char*) malloc( blendingDst8.height * blendingDst8.width * sizeof(short));
+			if( blendingData8 == 0L)
+			{
+				[blendingPixList release];
+				blendingController = 0L;
+				return;
+			}
 			
 			blendingDst8.data = blendingData8;
 			blendingSrcf.data = blendingData;
@@ -3996,6 +4002,7 @@ public:
 		dst8.rowBytes = [firstObject pwidth] * sizeof(short);
 		
 		data8 = (char*) malloc( dst8.height * dst8.width * sizeof(short));
+		if( data8 == 0L) return -1;
 		
 		dst8.data = data8;
 		srcf.data = data;

@@ -314,6 +314,22 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
     unsigned long   i;
     short           err = 0;
 	BOOL			testInterval = YES;
+	DCMPix			*firstObject = [pix objectAtIndex: 0];
+	
+	// MEMORY TEST: The renderer needs to have the volume in short
+	{
+		char	*testPtr = (char*) malloc( [firstObject pwidth] * [firstObject pheight] * [pix count] * sizeof( short) + 4L * 1024L * 1024L);
+		if( testPtr == 0L)
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+			return 0L;
+		}
+		else
+		{
+			free( testPtr);
+		}
+	}
+	
 	
 	style = [m retain];
 	
@@ -333,7 +349,6 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 	pixList[0] = pix;
 	volumeData[0] = vData;
 	
-    DCMPix  *firstObject = [pixList[0] objectAtIndex:0];
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	// Find Minimum Value
@@ -412,6 +427,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
+		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
         [self dealloc];
         return 0L;
     }
