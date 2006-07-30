@@ -220,6 +220,7 @@
 
 // Create a new 2D Viewer
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
+- (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
 - (void) CloseViewerNotification: (NSNotification*) note;
 
 // Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object

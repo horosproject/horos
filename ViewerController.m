@@ -883,6 +883,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 	return win;
 }
 
+- (ViewerController *) newWindow:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
+{
+	return [ViewerController newWindow:f :d :v];
+}
+
 - (void) tileWindows
 {
 	[appController tileWindows: self];
