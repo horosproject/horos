@@ -6324,12 +6324,42 @@ BOOL            readable = YES;
 				//only try again if is strict DICOM
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMDCMFramework];
+					
+				if (success == NO)
+				{
+					convertedDICOM = [convertDICOM( srcFile) retain];
+					success = [self loadDICOMPapyrus];
+					
+					if( success == YES && imageObj != 0L)
+					{
+						if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
+							[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+						}
+					}
+				}
 			}
 			else
 			{
 				success = [self loadDICOMDCMFramework];
 				if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]])
 					success = [self loadDICOMPapyrus];
+				
+				if (success == NO)
+				{
+					convertedDICOM = [convertDICOM( srcFile) retain];
+					success = [self loadDICOMDCMFramework];
+					
+					if( success == YES && imageObj != 0L)
+					{
+						if( [[imageObj valueForKey:@"inDatabaseFolder"] boolValue])
+						{
+							[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
+							[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+						}
+					}
+				}
 			}
 			
 			[self checkSUV];
