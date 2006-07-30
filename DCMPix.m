@@ -6336,6 +6336,9 @@ BOOL            readable = YES;
 						{
 							[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
 							[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+							
+							[convertedDICOM release];
+							convertedDICOM = 0L;
 						}
 					}
 				}
@@ -6357,6 +6360,9 @@ BOOL            readable = YES;
 						{
 							[[NSFileManager defaultManager] removeFileAtPath:srcFile handler: 0L];
 							[[NSFileManager defaultManager] movePath:convertedDICOM toPath:srcFile handler: 0L];
+							
+							[convertedDICOM release];
+							convertedDICOM = 0L;
 						}
 					}
 				}
