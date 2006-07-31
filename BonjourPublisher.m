@@ -164,20 +164,17 @@ extern NSString * documentsDirectory();
 //  return result;
 //}
 
-- (void)connectionReceived:(NSNotification *)aNotification
+- (void) subConnectionReceived:(NSFileHandle *)incomingConnection
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash (remplissage memoire) - Antoine
-    
-	[connectionLock lock];
+	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
+	
+	[incomingConnection retain];
 	
 	@try
 	{
-		NSFileHandle		*incomingConnection = [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem];
 		NSData				*readData;
 		NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
 		NSMutableData		*representationToSend = 0L;
-		
-		[[aNotification object] acceptConnectionInBackgroundAndNotify];
 		
 		if( incomingConnection)
 		{
@@ -579,7 +576,21 @@ extern NSString * documentsDirectory();
 	{
 		NSLog( @"catch in ConnectionReceived");
 	}
+	
+	[incomingConnection release];
 	[connectionLock unlock];
+	
+	[mPool release];
+}
+
+- (void) connectionReceived:(NSNotification *)aNotification
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];		// <- Keep this line, very important to avoid memory crash - Antoine
+    
+	[connectionLock lock];
+	
+	[[aNotification object] acceptConnectionInBackgroundAndNotify];
+	[NSThread detachNewThreadSelector: @selector (subConnectionReceived:) toTarget: self withObject: [[aNotification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem]];
 	
 	[pool release];
 }
