@@ -449,10 +449,12 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 
 - (void)listenForAbort:(id)handler{
+	[[_waitSendWindow window] orderOut:self];
 	[storeSCU abort];
 }
 
-- (void)abort{
+- (void)abort
+{
 	[self listenForAbort:nil];
 }
 

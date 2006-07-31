@@ -132,7 +132,7 @@
 {
 	aborted = YES;
 	[_target abort];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMAbortSendNotification" object:nil];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMAbortSendNotification" object:self];
 	[NSApp stopModal];
 }
 
