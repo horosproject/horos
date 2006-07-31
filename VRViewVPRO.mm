@@ -242,6 +242,292 @@ public:
 	}
 }
 
+- (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: (float) maxOpacity minValue: (float) minValue
+{
+	// world point
+	double	*worldPointClicked;
+	aRenderer->SetDisplayPoint( x, y, 0);
+	aRenderer->DisplayToWorld();
+	worldPointClicked = aRenderer->GetWorldPoint();
+
+	worldPointClicked[0] /= factor;
+	worldPointClicked[1] /= factor;
+	worldPointClicked[2] /= factor;
+	
+	// transform matrix
+	vtkMatrix4x4 *ActorMatrix = volume->GetUserMatrix();
+	vtkTransform *Transform = vtkTransform::New();
+	Transform->SetMatrix(ActorMatrix);
+	Transform->Push();
+	
+	// camera view plane normal
+	double cameraViewPlaneNormal[3];
+	aCamera->GetViewPlaneNormal(cameraViewPlaneNormal);
+	// camera position
+	double cameraPosition[3];
+	aCamera->GetPosition(cameraPosition);
+	cameraPosition[0] /= factor;
+	cameraPosition[1] /= factor;
+	cameraPosition[2] /= factor;
+	
+	float o[9];
+	[firstObject orientation: o];
+	
+	double cameraProjObj[3];
+	cameraProjObj[0] =	cameraViewPlaneNormal[0] * o[0]
+						+ cameraViewPlaneNormal[1] * o[1]
+						+ cameraViewPlaneNormal[2] * o[2];
+	cameraProjObj[1] =	cameraViewPlaneNormal[0] * o[3]
+						+ cameraViewPlaneNormal[1] * o[4]
+						+ cameraViewPlaneNormal[2] * o[5];
+	cameraProjObj[2] =	cameraViewPlaneNormal[0] * o[6]
+						+ cameraViewPlaneNormal[1] * o[7]
+						+ cameraViewPlaneNormal[2] * o[8];
+	
+	long stackOrientation, stackMax;
+	if( fabs(cameraProjObj[0]) > fabs(cameraProjObj[1]) && fabs(cameraProjObj[0]) > fabs(cameraProjObj[2]))
+	{
+		stackOrientation = 0; //NSLog(@"X Stack");
+		stackMax = [firstObject pwidth];
+	}
+	else if( fabs(cameraProjObj[1]) > fabs(cameraProjObj[0]) && fabs(cameraProjObj[1]) > fabs(cameraProjObj[2]))
+	{
+		stackOrientation = 1; //NSLog(@"Y Stack");
+		stackMax = [firstObject pheight];
+	}
+	else
+	{
+		stackOrientation = 2; //NSLog(@"Z Stack");
+		stackMax = [pixList count];
+	}
+			
+	if(aCamera->GetParallelProjection())
+	{				
+		cameraPosition[0] = worldPointClicked[0] + cameraViewPlaneNormal[0];
+		cameraPosition[1] = worldPointClicked[1] + cameraViewPlaneNormal[1];
+		cameraPosition[2] = worldPointClicked[2] + cameraViewPlaneNormal[2];
+	}
+	
+	// the two points defining the line going through the volume
+	float	point1[3], point2[3];
+	point1[0] = cameraPosition[0];
+	point1[1] = cameraPosition[1];
+	point1[2] = cameraPosition[2];
+		// Go beyond the object...
+	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
+	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
+	point2[2] = cameraPosition[2] + (worldPointClicked[2] - cameraPosition[2])*5000.;
+	
+	// volume position
+	double volumePosition[3];
+	volume->GetPosition(volumePosition);
+	volumePosition[0] /= factor;
+	volumePosition[1] /= factor;
+	volumePosition[2] /= factor;
+
+	float point1ToVolume[3];
+	point1ToVolume[0] = fabs(volumePosition[0]-point1[0]);
+	point1ToVolume[1] = fabs(volumePosition[1]-point1[1]);
+	point1ToVolume[2] = fabs(volumePosition[2]-point1[2]);
+	
+	float point1ToNextPosition[3];
+	switch(stackOrientation)
+	{
+		case 0:
+			point1ToNextPosition[0] = fabs(volumePosition[0] + [firstObject pixelSpacingX] - point1[0]);
+			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
+			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+		break;
+		case 1:
+			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
+			point1ToNextPosition[1] = fabs(volumePosition[1] + [firstObject pixelSpacingY] - point1[1]);
+			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+		break;
+		case 2:
+			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
+			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
+			point1ToNextPosition[2] = fabs(volumePosition[2] + [firstObject sliceInterval] - point1[2]);	
+		break;
+	}
+		
+	float distancePoint1ToVolume, distancePoint1ToNextPosition;
+	distancePoint1ToVolume = sqrt(point1ToVolume[0]*point1ToVolume[0]+point1ToVolume[1]*point1ToVolume[1]+point1ToVolume[2]*point1ToVolume[2]);
+	distancePoint1ToNextPosition = sqrt(point1ToNextPosition[0]*point1ToNextPosition[0]
+										+point1ToNextPosition[1]*point1ToNextPosition[1]
+										+point1ToNextPosition[2]*point1ToNextPosition[2]);
+	
+	BOOL direction = distancePoint1ToVolume < distancePoint1ToNextPosition;
+	
+	long p, n;
+	BOOL pointFound = NO;
+	float opacitySum = 0.0;
+	float maxValue = -99999;
+	int blendMode;
+	if( volumeMapper) blendMode = volumeMapper->GetBlendMode();
+	if( textureMapper) blendMode = textureMapper->GetBlendMode();
+				
+	for( p = 0; p < stackMax; p++)
+	{
+		n = (direction)? p : (stackMax-1)-p;
+		
+		float currentPoint[3], planeVector[3];
+		switch(stackOrientation)
+		{
+			case 0:
+				currentPoint[0] = n * [firstObject pixelSpacingX];
+				currentPoint[1] = 0;
+				currentPoint[2] = 0;
+											
+				planeVector[0] = o[0];
+				planeVector[1] = o[1];
+				planeVector[2] = o[2];
+			break;
+			
+			case 1:
+				currentPoint[0] = 0;
+				currentPoint[1] = n * [firstObject pixelSpacingY];
+				currentPoint[2] = 0;
+				
+				planeVector[0] = o[3];
+				planeVector[1] = o[4];
+				planeVector[2] = o[5];
+			break;
+			
+			case 2:
+				currentPoint[0] = 0;
+				currentPoint[1] = 0;
+				currentPoint[2] = n * [firstObject sliceInterval];
+				
+				planeVector[0] = o[6];
+				planeVector[1] = o[7];
+				planeVector[2] = o[8];
+			break;
+		}
+			
+		currentPoint[0] += volumePosition[0];
+		currentPoint[1] += volumePosition[1];
+		currentPoint[2] += volumePosition[2];
+		
+		Transform->TransformPoint(currentPoint,currentPoint);
+		
+		float resultPt[3];
+			
+		if( intersect3D_SegmentPlane(point2, point1, planeVector, currentPoint, resultPt))
+		{
+			// Convert this 3D point to 2D point projected in the plane
+			float tempPoint3D[3];
+			
+			Transform->Inverse();
+			Transform->TransformPoint(resultPt,tempPoint3D);
+			Transform->Inverse();
+			
+			tempPoint3D[0] -= volumePosition[0];
+			tempPoint3D[1] -= volumePosition[1];
+			tempPoint3D[2] -= volumePosition[2];
+			
+			tempPoint3D[0] /= [firstObject pixelSpacingX];
+			tempPoint3D[1] /= [firstObject pixelSpacingY];
+			tempPoint3D[2] /= [firstObject sliceInterval];
+			
+			// convert to long
+			long ptInt[3];
+			ptInt[0] = (long) (tempPoint3D[0] + 0.5);
+			ptInt[1] = (long) (tempPoint3D[1] + 0.5);
+			ptInt[2] = (long) (tempPoint3D[2] + 0.5);
+
+			if(needToFlip) 
+			{
+				ptInt[2] = [pixList count] - ptInt[2] -1;
+			}
+			
+			long currentSliceNumber, xPosition, yPosition;
+			DCMPix *currentDCMPix;
+			float *imageBuffer;
+			float currentPointValue;
+								
+			currentSliceNumber = ptInt[2];
+			if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pixList count])
+			{
+				currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+				imageBuffer = [currentDCMPix fImage];
+				xPosition = ptInt[0];
+				yPosition = ptInt[1];
+				
+				currentPointValue = imageBuffer[xPosition+yPosition*[currentDCMPix pwidth]];
+
+				float currentOpacity = currentPointValue;
+				currentOpacity = currentOpacity - (wl - ww/2);
+				currentOpacity /= ww;
+				if( currentOpacity < 0) currentOpacity = 0;
+				if( currentOpacity > 1.0) currentOpacity = 1.0;
+				if( textureMapper->GetBlendMode() != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND)
+				
+				if( blendMode != vtkVolumeMapper::MAXIMUM_INTENSITY_BLEND)
+				{
+					// Volume Rendering Mode
+					
+					opacitySum += opacityTransferFunction->GetValue( currentOpacity*255.0);
+				//	opacitySum += opacityTransferFunction->GetValue( (currentPointValue + OFFSET16));
+					
+					if( minValue)
+					{
+						pointFound = currentPointValue >= minValue;
+						pointFound = pointFound && opacitySum >= maxOpacity;
+					}
+					else
+						pointFound = opacitySum >= maxOpacity;
+					
+					if( pointFound)
+					{
+						*val = currentPointValue;
+						
+						pix[ 0] = ptInt[ 0];
+						pix[ 1] = ptInt[ 1];
+						pix[ 2] = ptInt[ 2];
+						
+						position[ 0] = resultPt[0];
+						position[ 1] = resultPt[1];
+						position[ 2] = resultPt[2];
+						
+						p = stackMax;	// stop the 'for loop'
+					}
+				}
+				else
+				{
+					if( currentPointValue > maxValue)
+					{
+						if( minValue)
+						{
+							pointFound = currentPointValue >= minValue;
+						}
+						else pointFound = YES;
+						
+						maxValue = currentPointValue;
+						*val = currentPointValue;
+						
+						pix[ 0] = ptInt[ 0];
+						pix[ 1] = ptInt[ 1];
+						pix[ 2] = ptInt[ 2];
+						
+						position[ 0] = resultPt[0];
+						position[ 1] = resultPt[1];
+						position[ 2] = resultPt[2];
+					}
+				}
+			}
+		}
+	}
+	
+	Transform->Delete();
+	
+	return pointFound;
+}
+
+- (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val
+{
+	[self get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: 1.1 minValue: 0];
+}
+
 - (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
 {
 	char orientationX;
@@ -1538,7 +1824,7 @@ public:
     NSPoint		mouseLoc, mouseLocPre, mouseLocStart;
 	short		tool;
 	
-	if ([theEvent clickCount] > 1) rotate = !rotate;
+//	if ([theEvent clickCount] > 1) rotate = !rotate;
 	
 	noWaitDialog = YES;
 	tool = currentTool;
@@ -4564,7 +4850,7 @@ public:
 
 - (float) valueFactor
 {
-	return valueFactor;
+	return 1.0;
 }
 
 #pragma mark-

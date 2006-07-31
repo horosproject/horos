@@ -632,8 +632,8 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		if( undodata[ i])
 		{
-//			DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
-//			float*	data = (float*) [volumeData[ i] bytes];
+			DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
+			float*	data = (float*) [volumeData[ i] bytes];
 //			long	memSize = [firstObject pwidth] * [firstObject pheight] * [pixList[ i] count] * sizeof( float);
 //			float*	cpy = data;
 			
