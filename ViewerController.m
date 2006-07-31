@@ -2100,6 +2100,16 @@ static ViewerController *draggedController = 0L;
 	[quicktimeInterval performClick: self];	// Will update the text field
 }
 
+// functions s that plugins can also play with globals
++ (ViewerController *) draggedController
+{
+	return draggedController;
+}
++ (void) setDraggedController:(ViewerController *) controller
+{
+	draggedController = controller;
+}
+
 
 #pragma mark-
 #pragma mark 4. toolbox space
