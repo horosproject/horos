@@ -559,21 +559,23 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			NSArray *pointsStringArray = [xml objectForKey: @"ROIPoints"];
 			NSMutableArray *pointsArray = [NSMutableArray arrayWithCapacity: 0];
 			
-			int j;
-			for ( j = 0; j < [pointsStringArray count]; j++ ) {
-				MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
-				[pointsArray addObject: pt];
+			if( [pointsStringArray count] > 0)
+			{
+				int j;
+				for ( j = 0; j < [pointsStringArray count]; j++ ) {
+					MyPoint *pt = [MyPoint point: NSPointFromString( [pointsStringArray objectAtIndex: j] )];
+					[pointsArray addObject: pt];
+				}
+				
+				[roi setPoints: pointsArray];
+				[roi setROIMode: ROI_selected];
+				[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
+				
+				[curRoiList addObject: roi];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
 			}
 			
-			[roi setPoints: pointsArray];
-			[roi setROIMode: ROI_selected];
-			[roi setRoiFont: labelFontListGL :labelFontListGLSize :self];
-			
-			[curRoiList addObject: roi];
 			[roi release];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object: roi userInfo: nil];
-			
 		}
 	}
 	

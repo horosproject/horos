@@ -6370,10 +6370,27 @@ int i,j,l;
 				
 				if( [[roiPropaMode selectedCell] tag] == 1) 
 				{
-					startImage = [imageView curImage];
-					upToImage = [roiPropaDest floatValue];
+					int pos, to;
+					
+					pos = [imageView curImage];
+					
+					if( [imageView flippedData]) to = [pixList[curMovieIndex] count] -1 - [roiPropaDest floatValue];
+					else to = [roiPropaDest floatValue];
+					
+					startImage = pos;
+					upToImage = to;
+					
+					if( startImage > upToImage)
+					{
+						startImage = to;
+						upToImage = pos;
+					}
 					
 					if( upToImage > [pixList[curMovieIndex] count]) upToImage = [pixList[curMovieIndex] count];
+					if( startImage > [pixList[curMovieIndex] count]) startImage = [pixList[curMovieIndex] count];
+					
+					if( upToImage < 0) upToImage = 0;
+					if( startImage < 0) startImage = 0;
 				}
 				else
 				{

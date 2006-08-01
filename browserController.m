@@ -7429,6 +7429,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[IncomingTimer invalidate];
 	[IncomingTimer release];
 	
+	NSLog( @"Listener check: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]);
+	
 	IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 }
 
