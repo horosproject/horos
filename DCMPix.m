@@ -1169,7 +1169,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						if( xx >= 0 && xx < width && yy >= 0 && yy < height)
 						{
 							float	*curPix = &fImage[ (yy * width) + xx];
-							values[ count] = fImage[ width*y + x];
+							values[ count] = *curPix;	//fImage[ width*y + x];
 							
 							if( locations)
 							{

@@ -1433,8 +1433,14 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 //    [[fileList[0] objectAtIndex:0] setViewer: nil forSerie:[[pixList[ 0] objectAtIndex:0] serieNo]];
 
+	int x, z;
 	for( i = 0; i < maxMovieIndex; i++)
 	{
+		for( x = 0; x < [roiList[ i] count] ; x++)
+		{
+			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
+		}
 		[roiList[ i] release];
 		[pixList[ i] release];
 		[fileList[ i] release];
@@ -1454,7 +1460,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[thickSlab release];
 	
 	[curvedController release];
-		
+	
 	[roiLock release];
 	
 	[keyObjectPopupController release];
