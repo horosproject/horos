@@ -200,7 +200,7 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 //  return 0;
 //  
 //} /* endof ExtractJPEGlosslessDicom */
-
+//
 
 
 /********************************************************************************/

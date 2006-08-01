@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-#define TIMEOUT	5
+static long TIMEOUT	= 5;
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -709,15 +709,15 @@ volatile static BOOL threadIsRunning = NO;
 	BOOL				succeed;
 	NSRunLoop			*run = [NSRunLoop currentRunLoop];
 	
+	if( [[object valueForKey:@"msg"] isEqualToString:@"DATAB"]) TIMEOUT = 20;
+	else TIMEOUT = 5;
+	
 	resolved = NO;
 	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
 	
 	if( succeed)
 	{
-		NSDate	*timeout;
-		
-		if( [[object valueForKey:@"msg"] isEqualToString:@"DATAB"]) timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT*5];
-		else timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
 		
 		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 		{
