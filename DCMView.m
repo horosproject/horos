@@ -2270,8 +2270,12 @@ static long scrollMode;
 			}
 			else thickDCM = 0L;
 			
+			int pos;
+			if( flippedData) pos = [dcmPixList count] -1 -curImage;
+			else pos = curImage;
+			
 			NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
-																							[NSNumber numberWithLong:curImage],@"Pos",
+																							[NSNumber numberWithLong: pos],@"Pos",
 																							[NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]],@"Location", 
 																							[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"], @"studyID", 
 																							curDCM, @"DCMPix",
@@ -3806,8 +3810,14 @@ static long scrollMode;
 		}
 		else thickDCM = 0L;
 		
+		int pos;
+		if( flippedData) pos = [dcmPixList count] -1 -curImage;
+		else pos = curImage;
+		
+		if( flippedData) inc = -inc;
+		
         NSDictionary *instructions = [[[NSDictionary alloc] initWithObjectsAndKeys:     self, @"view",
-																						[NSNumber numberWithLong:curImage],@"Pos",
+																						[NSNumber numberWithLong:pos],@"Pos",
                                                                                         [NSNumber numberWithLong:inc], @"Direction",
 																						[NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]],@"Location", 
 																						[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"], @"studyID", 
@@ -4124,7 +4134,8 @@ static long scrollMode;
 			// Absolute Vodka
 			if( syncro == syncroABS && point3D == NO && syncSeriesIndex == -1)
 			{
-				curImage = pos;
+				if( flippedData) curImage = [dcmPixList count] -1 -pos;
+				else curImage = pos;
 				
 				//NSLog(@"Abs");
 				
@@ -4192,7 +4203,8 @@ static long scrollMode;
 				}
 				else if( volumicSeries == NO && [otherView volumicSeries] == NO)	// For example time or functional series
 				{
-					curImage = pos;
+					if( flippedData) curImage = [dcmPixList count] -1 -pos;
+					else curImage = pos;
 					
 					//NSLog(@"Not volumic...");
 					
@@ -4204,7 +4216,8 @@ static long scrollMode;
 			// Relative
 			 if( syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
 			 {
-				curImage += diff;
+				if( flippedData) curImage -= diff;
+				else curImage += diff;
 				
 				//NSLog(@"Rel");
 				
@@ -5830,10 +5843,14 @@ static long scrollMode;
 				
 				if( drawROI)
 				{
+					BOOL resetData = NO;
+					if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
+				
 					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					long i;
 					for( i = 0; i < [curRoiList count]; i++)
 					{
+						if( resetData) [[curRoiList objectAtIndex:i] recompute];
 						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
 						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
