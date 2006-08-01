@@ -916,7 +916,7 @@ NS_ENDHANDLER
 	{
 		if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Find Failed", nil), [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"Find Failed", nil), [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
 		}
 				
         if (_verbose) {
