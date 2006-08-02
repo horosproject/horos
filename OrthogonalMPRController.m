@@ -22,7 +22,7 @@
 
 - (void) applyOrientation
 {
-	NSLog( @"%d", orientationVector);
+	
 	switch( orientationVector)
 	{
 		case 1:
@@ -36,6 +36,14 @@
 		case 2:
 			[xReslicedView setYFlipped: YES];
 			[yReslicedView setRotation: 90];
+		break;
+		
+		case 4:
+			// Classic Axial
+		break;
+		
+		default:
+			NSLog( @"Orientation Unknown: %d", orientationVector);
 		break;
 	}
 }
