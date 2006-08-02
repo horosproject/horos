@@ -20,6 +20,26 @@
 
 @implementation OrthogonalMPRController
 
+- (void) applyOrientation
+{
+	NSLog( @"%d", orientationVector);
+	switch( orientationVector)
+	{
+		case 1:
+			[xReslicedView setXFlipped: YES];
+			[xReslicedView setRotation: 90];
+			
+			[yReslicedView setXFlipped: YES];
+			[yReslicedView setRotation: 90];
+		break;
+		
+		case 2:
+			[xReslicedView setYFlipped: YES];
+			[yReslicedView setRotation: 90];
+		break;
+	}
+}
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 {
 	if (self = [super init])
@@ -55,7 +75,9 @@
 												selector: @selector(changeWLWW:)
 												name: @"changeWLWW"
 												object: nil];
-
+		
+		orientationVector = [vC orientationVector];
+		[self applyOrientation];
 	}
 	
 	return self;
@@ -230,6 +252,8 @@
 	}
 
 	[self loadROIonReslicedViews: [originalView crossPositionX]: [originalView crossPositionY]];
+	
+	[self applyOrientation];
 	
 	// needs display
 	[originalView setNeedsDisplay:YES];
@@ -448,24 +472,26 @@
 {
 	[originalView setOrigin: NSMakePoint( 0, 0)];
 	[originalView scaleToFit];
-	[originalView setRotation: 0];
 	[originalView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
+	[originalView setRotation: 0];
 	[originalView setXFlipped:NO];
 	[originalView setYFlipped:NO];
 	
 	[xReslicedView setOrigin: NSMakePoint( 0, 0)];
 	[xReslicedView scaleToFit];
-	[xReslicedView setRotation: 0];
 	[xReslicedView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
-	[xReslicedView setXFlipped:NO];
-	[xReslicedView setYFlipped:NO];
+//	[xReslicedView setRotation: 0];
+//	[xReslicedView setXFlipped:NO];
+//	[xReslicedView setYFlipped:NO];
 		
 	[yReslicedView setOrigin: NSMakePoint( 0, 0)];
 	[yReslicedView scaleToFit];
-	[yReslicedView setRotation: 0];
 	[yReslicedView setWLWW:[[originalView curDCM] savedWL] :[[originalView curDCM] savedWW]];
-	[yReslicedView setXFlipped:NO];
-	[yReslicedView setYFlipped:NO];
+//	[yReslicedView setRotation: 0];
+//	[yReslicedView setXFlipped:NO];
+//	[yReslicedView setYFlipped:NO];
+
+	[self applyOrientation];
 }
 
 - (void) scrollTool: (long) from : (long) to : (id) sender

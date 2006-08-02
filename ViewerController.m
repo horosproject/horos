@@ -3762,6 +3762,11 @@ static ViewerController *draggedController = 0L;
 	
 }
 
+-(short) orientationVector
+{
+	return orientationVector;
+}
+
 -(float) computeInterval
 {
 	float				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
@@ -3785,11 +3790,14 @@ static ViewerController *draggedController = 0L;
 		{
 			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 			{
-				NSLog(@"Saggital");
+				NSLog(@"Sagittal");
 				interval = [[pixList[ curMovieIndex] objectAtIndex:0] originX] - [[pixList[ curMovieIndex] objectAtIndex:1] originX];
 				
 				if( vectors[6] > 0) interval = -( interval);
 				else interval = ( interval);
+				
+				if( vectors[6] > 0) orientationVector = eSagittalPos;
+				else orientationVector = eSagittalNeg;
 			}
 			
 			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
@@ -3799,6 +3807,9 @@ static ViewerController *draggedController = 0L;
 				
 				if( vectors[7] > 0) interval = -( interval);
 				else interval = ( interval);
+				
+				if( vectors[7] > 0) orientationVector = eCoronalPos;
+				else orientationVector = eCoronalNeg;
 			}
 			
 			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
@@ -3808,6 +3819,9 @@ static ViewerController *draggedController = 0L;
 				
 				if( vectors[8] > 0) interval = -( interval);
 				else interval = ( interval);
+				
+				if( vectors[8] > 0) orientationVector = eAxialPos;
+				else orientationVector = eAxialNeg;
 			}
 			
 			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!

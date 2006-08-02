@@ -471,7 +471,7 @@
 						
 					BlockMoveData(	srcP,
 									curPixfImage + y * newX,
-									newX);
+									newX *sizeof(float));
 				}
 			}
 		}

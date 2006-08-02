@@ -35,6 +35,16 @@
 #import "Scheduler.h"
 #import "StaticScheduler.h"
 
+enum
+{
+	eSagittalPos = 0,		// 0
+	eSagittalNeg,			// 1
+	eCoronalPos,			// 2
+	eCoronalNeg,			// 3
+	eAxialPos,				// 4
+	eAxialNeg				// 5
+};
+
 @interface ViewerController : NSWindowController  <Schedulable>
 {
 	NSLock	*ThreadLoadImageLock;
@@ -179,7 +189,7 @@
 	NSMutableArray			*fileList[200];
     NSMutableArray          *pixList[200], *roiList[200];
 	NSData					*volumeData[200];
-	short					curMovieIndex, maxMovieIndex;
+	short					curMovieIndex, maxMovieIndex, orientationVector;
     NSToolbar               *toolbar;
 	
 	float					direction, loadingPercentage;
@@ -428,7 +438,7 @@
 - (void) convertPETtoSUV;
 - (IBAction) fullScreenMenu:(id) sender;
 - (void)exportTextFieldDidChange:(NSNotification *)note;
-
+- (short) orientationVector;
 // functions s that plugins can also play with globals
 + (ViewerController *) draggedController;
 + (void) setDraggedController:(ViewerController *) controller;

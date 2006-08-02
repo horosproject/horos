@@ -24,6 +24,7 @@
 	float						sign;
 	
 	long						originalCrossPositionX, originalCrossPositionY, xReslicedCrossPositionX, xReslicedCrossPositionY, yReslicedCrossPositionX, yReslicedCrossPositionY;
+	long						orientationVector;
 	
 	IBOutlet OrthogonalMPRView	*originalView, *xReslicedView, *yReslicedView;
 
