@@ -27,15 +27,15 @@
 	{
 		case 1:
 			[xReslicedView setXFlipped: YES];
-			[xReslicedView setRotation: 90];
+			if( [xReslicedView rotation] == 0) [xReslicedView setRotation: 90];
 			
 			[yReslicedView setXFlipped: YES];
-			[yReslicedView setRotation: 90];
+			if( [yReslicedView rotation] == 0) [yReslicedView setRotation: 90];
 		break;
 		
 		case 2:
 			[xReslicedView setYFlipped: YES];
-			[yReslicedView setRotation: 90];
+			if( [yReslicedView rotation] == 0) [yReslicedView setRotation: 90];
 		break;
 		
 		case 4:
