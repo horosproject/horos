@@ -337,7 +337,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	return 0L;
 }
 
-+ (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height 
++ (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints
 {
 	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 	
@@ -394,13 +394,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			[tempArray addObject: [MyPoint point: NSMakePoint(p[0], p[1])]];
 		}
 		
-		#define MAXPOINTSEXTRACT 100
-		
 		long roiResolution = 1;
 		
-		if( [tempArray count] > MAXPOINTSEXTRACT)
+		if( [tempArray count] > numPoints)
 		{
-			long newroiResolution = [tempArray count] / MAXPOINTSEXTRACT;
+			long newroiResolution = [tempArray count] / numPoints;
 			
 			newroiResolution++;
 			
@@ -429,6 +427,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	return tempArray;
 }
 
++ (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height
+{
+   [self extractContour:map width:width height:height numPoints: 100];
+}
 -(void) dealloc
 {
 	[itkImage dealloc];
