@@ -130,6 +130,43 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 @implementation MPR2DView
 
+-(void) setOrientationVector:(long) x
+{
+	orientationVector = x;
+}
+
+- (void) applyOrientation
+{
+	DCMView		*oView = [[[self window] windowController] originalView];
+
+	NSLog( @"Orientation: %d", orientationVector);
+	switch( orientationVector)
+	{
+		case 1:
+			[finalView setRotation: 90];
+			[finalViewBlending setRotation: 90];
+			
+			[perpendicularView setMPRAngle: 180];
+		break;
+		
+		case 2:
+			[perpendicularView setRotation: 180];
+			[oView setMPRAngle: 180];
+			
+			[finalView setRotation: 180];
+			[finalViewBlending setRotation: 180];
+		break;
+		
+		case 4:
+			[perpendicularView setRotation: 90];
+		break;
+		
+		default:
+			NSLog( @"Orientation Unknown: %d", orientationVector);
+		break;
+	}
+}
+
 -(void) normalize: (float *)v : (float *)v2
 {
 	float length = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
@@ -1470,6 +1507,8 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 				[finalView setDCM:finalPixList :filesList :0L :0 :'i' :YES];
 				[finalView setStringID:@"FinalView"];
 			//	[finalView setRotation: 90];
+			
+				[self applyOrientation];
 				
 				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
 				ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
@@ -1663,6 +1702,8 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 						[finalViewBlending setDCM:finalPixListBlending :filesList :0L :0 :'i' :YES];
 						[finalViewBlending setStringID:@"FinalViewBlending"];
 					//	[finalView setRotation: 90];
+					
+						[self applyOrientation];
 					
 						NSPoint tt = { -origin[ 0]*[finalViewBlending scaleValue]/space[0], origin[ 1]*[finalViewBlending scaleValue]/space[1]};
 						[finalViewBlending setOrigin: tt];
@@ -1907,7 +1948,9 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 				//firstTime = NO;
 				[perpendicularView setDCM:perPixList :filesList :0L :0 :'i' :YES];
 				[perpendicularView setStringID:@"Perpendicular"];
-				[perpendicularView setRotation: 90];
+			//	[perpendicularView setRotation: 90];
+				
+				[self applyOrientation];
 				
 //				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
 //					ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
@@ -2470,10 +2513,12 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
   aRenderer->GetActiveCamera()->ParallelProjectionOn();
   aRenderer->ResetCamera();
   aRenderer->GetActiveCamera()->SetParallelScale(1.5);  */
-
+	
 	[[[[self window] windowController] originalView] setMPRAngle: 0.0];
 	[perpendicularView setMPRAngle: 0.0];
-
+	
+	[self applyOrientation];
+	
 	[[[[self window] windowController] originalView] setCross: 0 :0 :YES];
 	
     return error;

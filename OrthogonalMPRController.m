@@ -22,7 +22,6 @@
 
 - (void) applyOrientation
 {
-	
 	switch( orientationVector)
 	{
 		case 1:

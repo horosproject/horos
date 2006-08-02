@@ -10030,7 +10030,7 @@ long i;
 			[popFusion selectItemAtIndex:0];
 			
 			
-			viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController];
+			viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];
 			
 			for( i = 1; i < maxMovieIndex; i++)
 			{

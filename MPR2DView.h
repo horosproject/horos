@@ -86,6 +86,7 @@ typedef char* vtkLineWidget;
 {
 	float				blendingAxis[ 3], blendingAngle, blendingAxis2[ 3], blendingAngle2;
 	BOOL				negVector;
+	long				orientationVector;
 	
 	vtkTransform		*sliceTransform, *blendingSliceTransform, *perpendicularSliceTransform;
 
@@ -184,4 +185,5 @@ typedef char* vtkLineWidget;
 -(void) rotateOriginal :(float) angle;
 -(void) rotatePerpendicular :(float) angle;
 -(PreviewView*) finalView;
+-(void) setOrientationVector:(long) x;
 @end

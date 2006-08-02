@@ -350,7 +350,7 @@ extern NSString * documentsDirectory();
 
 -(NSMutableArray*) pixList { return pixList[0];}
 
--(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
     unsigned long   i;
     short           err = 0;
@@ -431,16 +431,13 @@ extern NSString * documentsDirectory();
 	[originalView setDCM:pixList[0] :files :0L :[pixList[0] count]/2 :'i' :YES];
 	[originalView setStringID:@"Original"];
 	
-	
+	[view setOrientationVector: [vC orientationVector]];
     err = [view setPixSource:pixList[0] :files :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
         [self dealloc];
         return 0L;
     }
-	
-	
-	
 	
 //	[view setPlaneSource: originalView : perpendicularView];
 	
@@ -536,6 +533,11 @@ extern NSString * documentsDirectory();
 	[[self window] setInitialFirstResponder: originalView];
 	
     return self;
+}
+
+-(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC
+{
+	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC :0L];
 }
 
 -(void) save3DState
