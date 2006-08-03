@@ -707,7 +707,7 @@ volatile static BOOL threadIsRunning = NO;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	BOOL				succeed;
-	NSRunLoop			*run = [NSRunLoop currentRunLoop];
+	
 	
 	if( [[object valueForKey:@"msg"] isEqualToString:@"DATAB"]) TIMEOUT = 20;
 	else TIMEOUT = 5;
@@ -717,7 +717,8 @@ volatile static BOOL threadIsRunning = NO;
 	
 	if( succeed)
 	{
-		NSDate	*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		NSDate			*timeout = [NSDate dateWithTimeIntervalSinceNow: TIMEOUT];
+		NSRunLoop		*run = [NSRunLoop currentRunLoop];
 		
 		while( resolved == NO && [timeout timeIntervalSinceNow] >= 0)
 		{
