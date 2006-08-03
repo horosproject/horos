@@ -7261,10 +7261,13 @@ BOOL            readable = YES;
 	float ratio = (maxInput-minInput)/(maxDifference-minDifference);
 	float translation = minInput-minDifference;
 	tempResult = result;
-	for (y = 0; y < i ; y++) 
-	{
-		*tempResult++ = (*tempResult * ratio) + translation;
-	}
+	
+// For version 2.5, to avoid the black/white flickering - ANR
+
+//	for (y = 0; y < i ; y++) 
+//	{
+//		*tempResult++ = (*tempResult * ratio) + translation;
+//	}
 
 	return result;
 }

@@ -3487,6 +3487,8 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subtractSwitch:(id) sender
 {
+	[self checkEverythingLoaded];
+	
 	if (enableSubtraction)
 	{
 		if( [sender state])
@@ -3520,6 +3522,8 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subtractCurrent:(id) sender
 {	
+	[self checkEverythingLoaded];
+	
 	if (enableSubtraction)
 	{
 		mask = [imageView curImage];//mask is a class variable
@@ -7775,7 +7779,9 @@ int i,j,l;
     NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
     short           val;
     
-	if( [self isEverythingLoaded] == NO) return;
+//	if( [self isEverythingLoaded] == NO) return;
+	
+	if( loadingPercentage < 0.5) return;
 	
     if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
@@ -7808,7 +7814,9 @@ int i,j,l;
     NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
     short           val;
     
-	if( [self isEverythingLoaded] == NO) return;
+//	if( [self isEverythingLoaded] == NO) return;
+	
+	if( loadingPercentage < 0.5) return;
 	
 	if( [pixList[ curMovieIndex] count] <= 1)
 	{
