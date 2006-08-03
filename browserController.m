@@ -9534,8 +9534,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSManagedObjectContext		*context = [self managedObjectContext];
 	NSManagedObjectModel		*model = [self managedObjectModel];
 	
-	[context lock];
 	[checkIncomingLock lock];
+	[context lock];
 	DatabaseIsEdited = YES;
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
