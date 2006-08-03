@@ -4724,36 +4724,40 @@ static BOOL withReset = NO;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	long i;
 	
-	[context lock];
-	[checkIncomingLock lock];
-	DatabaseIsEdited = YES;
-	
-	@try
-	{	
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
-		NSError	*error = 0L;
-		NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-		
-		int maxSeries = [seriesArray count];
-		
-		if( maxSeries > 50) maxSeries = 50;	// We will continue next time...
-		
-		for( i = 0; i < maxSeries; i++)
-		{
-			if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
-				[self buildThumbnail: [seriesArray objectAtIndex: i]];
-		}
-	}
-	
-	@catch( NSException *ne)
+	if( [checkIncomingLock tryLock])
 	{
-		NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+		if( [context tryLock])
+		{
+			DatabaseIsEdited = YES;
+			
+			@try
+			{	
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+				NSError	*error = 0L;
+				NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+				
+				int maxSeries = [seriesArray count];
+				
+				if( maxSeries > 50) maxSeries = 50;	// We will continue next time...
+				
+				for( i = 0; i < maxSeries; i++)
+				{
+					if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
+						[self buildThumbnail: [seriesArray objectAtIndex: i]];
+				}
+			}
+			
+			@catch( NSException *ne)
+			{
+				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+			}
+			
+			[context unlock];
+		}
+		[checkIncomingLock unlock];
 	}
-	
-	[context unlock];
-	[checkIncomingLock unlock];
 	DatabaseIsEdited = NO;
 }
 
