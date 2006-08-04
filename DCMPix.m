@@ -3942,7 +3942,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
 	
 	if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
-	if (!cineRate)	cineRate = 1000/ [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
+	if (!cineRate)
+	{
+		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
+			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
+	}
 	
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
