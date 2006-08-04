@@ -7037,6 +7037,8 @@ BOOL            readable = YES;
 {
     [self CheckLoad];
 	
+	if( baseAddr == 0L) [self computeWImage: NO: ww :wl];
+	
     return baseAddr;
 }
 

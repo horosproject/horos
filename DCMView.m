@@ -6829,19 +6829,19 @@ static long scrollMode;
 		}
 		*colorBufPtr = malloc( [curDCM rowBytes] * [curDCM pheight] * 4);
 		
-		vImage_Buffer src, dest;
+		vImage_Buffer src8, dest8;
 		
-		src.height = [curDCM pheight];
-		src.width = [curDCM pwidth];
-		src.rowBytes = [curDCM rowBytes];
-		src.data = [curDCM baseAddr];
+		src8.height = [curDCM pheight];
+		src8.width = [curDCM pwidth];
+		src8.rowBytes = [curDCM rowBytes];
+		src8.data = [curDCM baseAddr];
 		
-		dest.height = [curDCM pheight];
-		dest.width = [curDCM pwidth];
-		dest.rowBytes = [curDCM rowBytes]*4;
-		dest.data = *colorBufPtr;
+		dest8.height = [curDCM pheight];
+		dest8.width = [curDCM pwidth];
+		dest8.rowBytes = [curDCM rowBytes]*4;
+		dest8.data = *colorBufPtr;
 		
-		vImageConvert_Planar8toARGB8888(&src, &src, &src, &src, &dest, 0);
+		vImageConvert_Planar8toARGB8888(&src8, &src8, &src8, &src8, &dest8, 0);
 		
 		if( redFactor != 1.0 || greenFactor != 1.0 || blueFactor != 1.0)
 		{
@@ -6854,9 +6854,10 @@ static long scrollMode;
 				cgreenTable[ i] = gT[ i] * greenFactor;
 				cblueTable[ i] = bT[ i] * blueFactor;
 			}
-			vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
+			vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 		}
-		else vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
+		else vImageTableLookUp_ARGB8888( &dest8, &dest8,
+		 (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 	
 //	glDisable(GL_TEXTURE_2D);
