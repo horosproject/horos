@@ -6757,7 +6757,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[subSeriesInterval setState: NSOffState];
 	
 	[NSApp beginSheet: subSeriesWindow
-				modalForWindow: [self window]
+				modalForWindow:	[NSApp mainWindow]					//[self window]
 				modalDelegate: nil
 				didEndSelector: nil
 				contextInfo: nil];
