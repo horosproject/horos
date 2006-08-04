@@ -209,7 +209,7 @@
 			_doc->setManufacturer("OsiriX");
 			
 			// get KeyImages
-			_keyImages = [[_study keyImages] retain];
+			_keyImages = [[[_study keyImages]   allObjects] retain];
 			
 		}	
 	}
@@ -533,14 +533,14 @@
 		// add keyImages
 		
 		if ([_keyImages count] > 0){
-			NSLog(@"Add key Images");
+			//NSLog(@"Add key Images");
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180"," DCM", "Key Images"));
 			NSEnumerator *enumerator = [_keyImages objectEnumerator];
 			id image;
 			BOOL first = YES;
 			while (image = [enumerator nextObject]){
-				NSLog(@"key image %@", [image description]);
+				//NSLog(@"key image %@", [image description]);
 				OFString studyUID = OFString([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
 				OFString seriesUID = OFString([[image valueForKeyPath:@"series.seriesInstanceUID"]  UTF8String]);
 				OFString instanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);

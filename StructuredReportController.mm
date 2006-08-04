@@ -252,13 +252,31 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 - (IBAction)showKeyImages:(id)sender{
 	BrowserController *browser = [BrowserController currentBrowser];
 	[appController setCurrentHangingProtocolForModality:nil description:nil];
-	NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
-	[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	
-	[NSApp sendAction: @selector(tileWindows:) to:0L from: browser];
+	if ([[_report keyImages] count] > 0) {
+		NSArray *images = [NSMutableArray arrayWithObject:[_report keyImages]];
+		[browser openViewerFromImages :images movie: nil viewer :nil keyImagesOnly:NO];	
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: browser];
+	}
+	else {
+		NSAlert *alert = [NSAlert alertWithError:nil];
+		[alert setMessageText:NSLocalizedString(@"No key Images to display.", nil)];
+		[alert addButtonWithTitle:@"OK"];
+		[alert runModal];
+	}
+		
 }
 
 - (IBAction)addKeyImages:(id)sender{
-	[_report setKeyImages:[(NSSet *)[_study keyImages] allObjects]];
+	
+	NSAlert *alert = [NSAlert alertWithError:nil];
+	[alert setMessageText:NSLocalizedString(@"Replace Images with current Key Images?", nil)];
+	[alert addButtonWithTitle:@"OK"];
+	[alert addButtonWithTitle:@"Cancel"];
+	if ([alert runModal] == NSAlertFirstButtonReturn ) {
+		NSArray *images = [(NSSet *)[_study keyImages] allObjects];
+		[_report setKeyImages:images];
+	}
+	
 }
 
 - (IBAction)printDocument:(id)sender{
@@ -290,7 +308,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_tabIndex = tabIndex;
 	if (_tabIndex == 0) {
 		[_report writeHTML];
-		NSLog(@"Report for xml: %@", [_report description]);
+		//NSLog(@"Report for xml: %@", [_report description]);
 		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
 		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 	}
