@@ -472,5 +472,6 @@ enum
 - (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo;
 - (IBAction)keyObjectNotes:(id)sender;
 - (BOOL)displayOnlyKeyImages;
+- (BOOL)isKeyImage:(int)index;
 
 @end

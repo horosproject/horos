@@ -5072,7 +5072,20 @@ static long scrollMode;
 	glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
 	glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
-
+	
+	//draw line around edge for key Images only in 2D Viewer
+	
+	if ([[[self window] windowController] isMemberOfClass:[ViewerController class]] && [[[self window] windowController] isKeyImage:curImage]) {
+		glLineWidth(1.0);
+		glColor3f (1.0f, 1.0f, 0.0f);
+		glBegin(GL_LINE_LOOP);
+			glVertex2f(1.0,                                      1.0);
+			glVertex2f(1.0,                   size.size.height - 1.0);
+			glVertex2f(size.size.width - 1.0, size.size.height - 1.0);
+			glVertex2f(size.size.width - 1.0,                    1.0);
+		glEnd();
+	}
+	
 	glColor3f (0.0f, 0.0f, 0.0f);
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(1.0);

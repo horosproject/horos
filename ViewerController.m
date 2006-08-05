@@ -10398,6 +10398,7 @@ long i;
 {
 	[keyImageCheck setState: ![keyImageCheck state]];
 	[self keyImageCheckBox: keyImageCheck];
+	[imageView setNeedsDisplay:YES];
 }
 
 
@@ -10412,6 +10413,10 @@ long i;
 	{
 		[keyImageCheck setState: NSOffState];
 	}
+}
+
+- (BOOL)isKeyImage:(int)index{
+	return [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:index]] valueForKey:@"isKeyImage"] boolValue];
 }
 
 #pragma mark-
