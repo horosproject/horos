@@ -4376,8 +4376,10 @@ static BOOL withReset = NO;
 					else if( noOfImages > 1)	// It's a multi-frame single image
 					{
 						animate = YES;
-						
-						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex:0] valueForKey:@"completePath"]] == NO || [[imageView curDCM] frameNo] != [sender intValue])
+
+						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex:0] valueForKey:@"completePath"]] == NO
+							|| [[imageView curDCM] frameNo] != [sender intValue]
+							|| [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
 							DCMPix*     dcmPix = 0L;
 							dcmPix = [[DCMPix alloc] myinit: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[sender intValue] :noOfImages :0L :[sender intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[images objectAtIndex: 0]];
