@@ -35,7 +35,7 @@
 		// Lance, you should check following lines... There was a crash here before.
 		
 		if( [series count] > 0)
-			_seriesUID = [[[series objectAtIndex: 0] valueForKey:@"seriesInstanceUID"] retain];
+			_seriesUID = [[[series objectAtIndex: 0] valueForKey:@"seriesDICOMUID"] retain];
 	}
 	return self;
 }

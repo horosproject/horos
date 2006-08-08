@@ -542,7 +542,7 @@
 			while (image = [enumerator nextObject]){
 				//NSLog(@"key image %@", [image description]);
 				OFString studyUID = OFString([[_study valueForKey:@"studyInstanceUID"] UTF8String]);
-				OFString seriesUID = OFString([[image valueForKeyPath:@"series.seriesInstanceUID"]  UTF8String]);
+				OFString seriesUID = OFString([[image valueForKeyPath:@"series.seriesDICOMUID"]  UTF8String]);
 				OFString instanceUID = OFString([[image valueForKey:@"sopInstanceUID"] UTF8String]);
 				DcmFileFormat fileformat;
 				OFCondition status = fileformat.loadFile([[image valueForKey:@"completePath"] UTF8String]);
