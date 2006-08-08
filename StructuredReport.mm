@@ -32,6 +32,7 @@
 #include "dcfilefo.h"
 #include "dsrtypes.h"
 #include "dsrimgtn.h"
+#include "dsrdoctr.h"
 
 
 
@@ -358,6 +359,7 @@
 - (void)setKeyImages:(NSArray *)keyImages{
 	[_keyImages release];
 	_keyImages = [keyImages retain];
+	_reportHasChanged = YES;
 	[self setComplete:NO];
 }
 
@@ -533,7 +535,7 @@
 		// add keyImages
 		
 		if ([_keyImages count] > 0){
-			//NSLog(@"Add key Images");
+			NSLog(@"Add key Images to report");
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
 			_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("121180"," DCM", "Key Images"));
 			NSEnumerator *enumerator = [_keyImages objectEnumerator];
@@ -577,9 +579,12 @@
 	OFCondition status = _doc->write(*fileformat.getDataset());
 	if (status.good()) 
 		status = fileformat.saveFile([[self srPath] UTF8String], EXS_LittleEndianExplicit);
-	
-//	if (status.good()) 
-//		[_study setValue:[self srPath] forKey:@"reportURL"];
+		
+	if (status.good()) 
+		NSLog(@"Report saved: %@", [self srPath]);
+	else
+		NSLog(@"Report not saved: %@", [self srPath]);
+
 }
 
 - (void)export:(NSString *)path{
@@ -670,10 +675,12 @@
 	NSArray *imagesArray = nil;
 	NS_DURING
 	DSRDocumentTreeNode *node = NULL; 
+	//_doc->getTree().print(cout, 0);
+	_doc->getTree().gotoRoot ();
 		/* iterate over all nodes */ 
 	do { 
-            node = OFstatic_cast(DSRDocumentTreeNode *, _doc->getTree().getNode()); 
-            if (node->getValueType() == DSRTypes::VT_Image) {
+            node = OFstatic_cast(DSRDocumentTreeNode *, _doc->getTree().getNode());			
+            if (node != NULL && node->getValueType() == DSRTypes::VT_Image) {
 			//image node get SOPCInstance
 				DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
 				OFString sopInstance = imageNode->getSOPInstanceUID();
@@ -683,6 +690,7 @@
 						[references addObject:uid];
 				}			
 			}
+			
 	} while (_doc->getTree().iterate()); 
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
 	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
