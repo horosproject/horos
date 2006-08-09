@@ -44,6 +44,12 @@ Version 2.3
 	20060607	LP Converted routing to DCMTK
 	20060720	MS	openViewerWithImages caused some problems with large series. App became unstable and crashed from time to time
 					memBlockTestPtr & memBlockSize arrays were limited to 200
+					
+Version 2.5
+
+	20060809	DDP	Increased auto-delete safe buffer to 7 days from the time a study is added to a database.
+				DDP	Renamed clearComplePathCache to clearCompletePathCache, as per DicomImage.
+				DDP	Included DicomImage.h and typed image to be a DicomImage* rather than just NSManagedObject in addFilesToDatabase (reduces compile warnings).
 
 */
 
@@ -52,6 +58,7 @@ Version 2.3
 #import "PreviewView.h"
 #import "QueryController.h"
 #import "AnonymizerWindowController.h"
+#import "DicomImage.h"
 #import "DCMPix.h"
 
 #import "AppController.h"
@@ -463,7 +470,8 @@ static BOOL COMPLETEREBUILD = NO;
 	NSDate					*today = [NSDate date];
 	NSError					*error = 0L;
 	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
-	NSManagedObject			*image, *seriesTable, *study, *album;
+	NSManagedObject			*seriesTable, *study, *album;
+	DicomImage				*image;
 	long					ii, i, x;
 	unsigned				index;
 	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
@@ -783,7 +791,7 @@ static BOOL COMPLETEREBUILD = NO;
 								else
 								{
 									index = NSNotFound;
-									[image clearComplePathCache];
+									[image clearCompletePathCache];
 								}
 							}
 							else image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
@@ -2149,10 +2157,10 @@ static BOOL COMPLETEREBUILD = NO;
 					}
 				}
 				
-				for (i = 0; i<[toBeRemoved count];i++)					// Check if studies are in an album or added today.  If so don't autoclean that study from the database (DDP: 051108).
+				for (i = 0; i<[toBeRemoved count];i++)					// Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
 				{
 					if ( [[[toBeRemoved objectAtIndex: i] valueForKey: @"albums"] count] > 0 ||
-					  [[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*24.0 )  // within 24 hours
+					  [[[toBeRemoved objectAtIndex: i] valueForKey: @"dateAdded"] timeIntervalSinceNow] > -60*60*7*24.0 )  // within 7 days
 					{
 						[toBeRemoved removeObjectAtIndex: i];
 						i--;

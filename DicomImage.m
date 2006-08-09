@@ -15,7 +15,12 @@
 /***************************************** Modifications *********************************************
 
 Version 2.3
-	20051221 LP Added outline for graphicAnnotationSequence. this allow creation of a DICOM Presentation state IOD for export
+
+	20051221	LP	Added outline for graphicAnnotationSequence. this allow creation of a DICOM Presentation state IOD for export
+	
+Version 2.5
+
+	20060809	DDP	Renamed clearComplePathCache to clearCompletePathCache
 	
 *******************************************************************************************************/
 
@@ -40,7 +45,7 @@ extern NSString * documentsDirectory();
 	return [NSString stringWithFormat:@"%@ %@",[self valueForKey:@"sopInstanceUID"], [self valueForKey:@"instanceNumber"]];
 }
 
-- (void) clearComplePathCache
+- (void) clearCompletePathCache
 {
 	[completePathCache release];
 	completePathCache = 0L;

@@ -25,6 +25,6 @@
 -(NSString*) uniqueFilename;
 -(NSSet*) paths;
 -(NSString*) completePath;
--(void) clearComplePathCache;
+-(void) clearCompletePathCache;
 -(DCMSequenceAttribute*) graphicAnnotationSequence;
 @end
