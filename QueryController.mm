@@ -406,7 +406,7 @@ static NSString *Modality = @"Modality";
 {
 	[modalityQueryFilter release];
 	
-	if ( [[[sender selectedCell] title] isEqualToString:@"All"] == NO)
+	if ( [[sender selectedCell] tag] != 3)
 	{
 		modalityQueryFilter = [[QueryFilter queryFilterWithObject:[[sender selectedCell] title] ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 	}
