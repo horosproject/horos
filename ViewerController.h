@@ -81,9 +81,28 @@ enum
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
 	
-			 NSPoint		subOffset;
-			 long			mask;
+	IBOutlet NSView         *subCtrlView;
 			 BOOL			enableSubtraction;
+	IBOutlet NSButton		*subCtrlOnOff;
+			 long			subCtrlMaskID;
+			 NSPoint		subCtrlMinMax;
+	IBOutlet NSTextField	*subCtrlMaskText;
+
+			 NSPoint		subCtrlOffset;
+	IBOutlet NSButton		*sc1;
+	IBOutlet NSButton		*sc2;
+	IBOutlet NSButton		*sc3;
+	IBOutlet NSButton		*sc4;
+	IBOutlet NSButton		*sc5;
+	IBOutlet NSButton		*sc6;
+	IBOutlet NSButton		*sc7;
+	IBOutlet NSButton		*sc8;
+	IBOutlet NSButton		*sc9;
+
+    IBOutlet NSSlider       *subCtrlZero;
+    IBOutlet NSSlider       *subCtrlGamma;
+    IBOutlet NSSlider       *subCtrlPercent;
+	IBOutlet NSButton		*subCtrlSharpenButton;
 
 			 long			speedometer;
 		 
@@ -96,9 +115,6 @@ enum
 	IBOutlet NSButton		*keyImageDisplay;
 	IBOutlet NSButton		*keyImageCheck;
 	
-	IBOutlet NSButton		*subtractOnOff;
-	IBOutlet NSView         *subtractView;
-	IBOutlet NSTextField	*XOffset, *YOffset, *subtractIm;
 	
 	IBOutlet NSWindow		*ThickIntervalWindow;
     IBOutlet NSTextField    *customInterval;
@@ -302,9 +318,16 @@ enum
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (IBAction) export2PACS:(id) sender;
-- (IBAction) subtractCurrent:(id) sender;
-- (IBAction) subtractStepper:(id) sender;
-- (IBAction) subtractSwitch:(id) sender;
+
+- (IBAction) subCtrlOnOff:(id) sender;
+- (IBAction) subCtrlNewMask:(id) sender;
+- (IBAction) subCtrlOffset:(id) sender;
+- (IBAction) subCtrlSliders:(id) sender;
+- (int) threeTestsFivePosibilities: (int) f;
+- (void) offsetMatrixSetting: (int) twentyFiveCodes;
+- (IBAction) subSumSlider:(id) sender;
+- (IBAction) subSharpen:(id) sender;
+
 - (void) loadROI:(long) mIndex;
 - (void) saveROI:(long) mIndex;
 - (id) findPlayStopButton;
