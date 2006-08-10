@@ -2068,6 +2068,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 -(id) myinitEmpty
 {
+	//NSLog(@"myInitEmpty");
 	displaySUVValue = NO;
 	fixed8bitsWLWW = NO;
 	checking = [[NSLock alloc] init];
@@ -2118,7 +2119,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
-	
+	//NSLog(@"initwithdata");
 	if( self = [super init])
     {
 		acquisitionTime = 0L;
@@ -2256,26 +2257,26 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 -(long) serieNo { return serieNo;}
 -(BOOL) generated { return generated;}
 
+
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
+// doesn't load pix data, only initializes instance variables
 	if( hello == NO)
 		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return 0L;
 		
     if( self = [super init])
     {
-		generated = NO;
-		displaySUVValue = NO;
-		
-		subtractedfImage = 0L;
-		subOffset.x = subOffset.y = 0;
-		
-		imageObj = [iO retain];
+		//-------------------------received parameters
+		srcFile = s;
+		imID = pos;
+		imTot = tot;
+		fVolImage = ptr;
+		frameNo = f;
+		serieNo = ss;
 		isBonjour = hello;
-		
-		acquisitionTime = 0L;
-		radiopharmaceuticalStartTime = 0L;
-		radionuclideTotalDose = 0;
-		radionuclideTotalDoseCorrected = 0;
+		imageObj = [iO retain];
+
+		//---------------------------------various
 		maxValueOfSeries = 0;
 		fixed8bitsWLWW = NO;
 		savedWL = savedWW = 0;
@@ -2289,13 +2290,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		image = 0L;
 		oImage = 0L;
 		fImage = 0L;
-		fVolImage = ptr;
 		baseAddr = 0L;
-		imID = pos;
-		imTot = tot;
-		srcFile = s;
-		frameNo = f;
-		serieNo = ss;
 		isRGB = NO;
 		nonDICOM = NO;
 		fullwl = fullww = 0;
@@ -2304,7 +2299,23 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		protocolName = 0L;
 		viewPosition = 0L;
 		patientPosition = 0L;
+
+		//---------------------------------radiotherapy
+		generated = NO;
+		displaySUVValue = NO;
+		acquisitionTime = 0L;
+		radiopharmaceuticalStartTime = 0L;
+		radionuclideTotalDose = 0;
+		radionuclideTotalDoseCorrected = 0;
 		
+		//----------------------------------angio
+		// subtractedfImage = 0L;
+		subPixOffset.x = subPixOffset.y = 0;
+		subtractedfPercent = 1;
+		subtractedfZero = 0.9;
+		subGammaFunction = vImageCreateGammaFunction(1.2, kvImageGamma_UseGammaValue_half_precision, 0 );	
+
+		//----------------------------------orientation		
 		orientation[ 0] = 1;
 		orientation[ 1] = 0;
 		orientation[ 2] = 0;
@@ -3740,6 +3751,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	}  // Loop over ROIContourSequence
 	
 } // end createROIsFromRTSTRUCT
+
+#pragma mark-
+#pragma mark loading images with DCM framework or Osiris
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
@@ -7042,6 +7056,8 @@ BOOL            readable = YES;
     return baseAddr;
 }
 
+# pragma mark-
+
 -(void) orientation:(float*) c
 {
 	long i;
@@ -7171,7 +7187,7 @@ BOOL            readable = YES;
 	long	i = height * width;
 	float   *result = malloc( height * width * sizeof(float));
 	
-	if( subOffset.x == 0 && subOffset.y == 0)
+	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
 		#if __ppc__
 		if( Altivec ) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
@@ -7182,7 +7198,7 @@ BOOL            readable = YES;
 	else
 	{
 		long	x, y;
-		long	offsetX = subOffset.x, offsetY = -subOffset.y;
+		long	offsetX = subPixOffset.x, offsetY = -subPixOffset.y;
 		long	startheight, subheight, startwidth, subwidth;
 		float   *tempIn, *tempOut, *tempResult;
 		
@@ -7206,100 +7222,6 @@ BOOL            readable = YES;
 	}
 	return result;
 }
-
--(float*) subtractImages :(float*) input :(float*) subfImage
-{
-	long	i = height * width;	
-	float   *result = malloc( height * width * sizeof(float));
-/*
-	if( subOffset.x == 0 && subOffset.y == 0)
-	{
-		#if __ppc__
-		if( Altivec) 
-		vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
-		else
-		#endif
-		vsubtractNoAltivec(input, subfImage, result, i);
-	}
-	else
-	{
-*/
-		long	x, y;
-		long	offsetX = subOffset.x, offsetY = -subOffset.y;
-		long	startheight, subheight, startwidth, subwidth;
-		float   *tempIn, *tempOut, *tempResult;
-		float maxDifference = -1024;
-		float minDifference = 1024;
-		float maxInput = -1024;
-		float minInput = 1024;
-		
-		if( offsetY > 0) { startheight = offsetY;   subheight = height;}
-		else { startheight = 0; subheight = height + offsetY;}
-
-		if( offsetX > 0) { startwidth = offsetX;   subwidth = width;}
-		else { startwidth = 0; subwidth = width + offsetX;}
-		
-		for( y = startheight; y < subheight; y++)
-		{
-			tempResult = result + y*width;
-			tempIn = input + y*width;
-			tempOut = subfImage + (y-offsetY)*width - offsetX;
-			x = subwidth - startwidth-1;
-			while( x-->0)
-			{
-				if (minInput > *tempIn) minInput = *tempIn;
-				if (maxInput < *tempIn) maxInput = *tempIn;
-			
-				*tempResult = (*tempIn++ - *tempOut++);
-				if (minDifference > *tempResult) minDifference = *tempResult;
-				if (maxDifference < *tempResult) maxDifference = *tempResult;
-
-				*tempResult++;
-								
-			}
-		}
-//	}
-//before finding vectorial solution
-	NSLog(@"minInput:%d",minInput);
-	NSLog(@"maxInput:%d",maxInput);
-	NSLog(@"minDifference:%d",minDifference);
-	NSLog(@"maxDifference:%d",maxDifference);
-	float ratio = (maxInput-minInput)/(maxDifference-minDifference);
-	float translation = minInput-minDifference;
-	tempResult = result;
-	
-// For version 2.5, to avoid the black/white flickering - ANR
-
-//	for (y = 0; y < i ; y++) 
-//	{
-//		*tempResult++ = (*tempResult * ratio) + translation;
-//	}
-
-	return result;
-}
-
--(void) imageArithmeticSubtraction:(DCMPix*) sub
-{
-	float   *temp;
-	
-	temp = [self subtractImages: fImage :[sub fImage]];
-	
-	BlockMoveData( temp, fImage, height * width * sizeof(float));
-	
-	free( temp);
-}
-
--(void) imageArithmeticMultiplication:(DCMPix*) sub
-{
-	float   *temp;
-	
-	temp = [self multiplyImages: fImage :[sub fImage]];
-	
-	BlockMoveData( temp, fImage, height * width * sizeof(float));
-	
-	free( temp);
-}
-
 
 - (void) ConvertToBW:(long) mode
 {
@@ -7610,8 +7532,92 @@ BOOL            readable = YES;
 	[pool release];
 }
 
+#pragma mark-
+#pragma mark subtraction and changeWLWW
+
+-(void) imageArithmeticMultiplication:(DCMPix*) sub
+{
+	float   *temp;	
+	temp = [self multiplyImages: fImage :[sub fImage]];	
+	BlockMoveData( temp, fImage, height * width * sizeof(float));	
+	free( temp);
+}
+
+-(void) imageArithmeticSubtraction:(DCMPix*) sub
+{
+	float   *temp = [sub fImage];
+	vDSP_vsub (temp,1,fImage,1,fImage,1,height * width * sizeof(float));
+	free( temp);
+}
+
+
+//----------------------------Subtraction parameters copied to each Pix---------------------------
+
+- (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z	
+{
+	subtractedfPercent = p;
+	subtractedfZero = z - 0.8 + (p*0.8);
+	//subGammaFunction is a pointer which refers to the current gamma for the series
+	subGammaFunction = vImageCreateGammaFunction(g, kvImageGamma_UseGammaValue_half_precision, 0 );	
+	updateToBeApplied = YES;
+}
+
+-(NSPoint) subPixOffset {return subPixOffset;}
+- (void) setSubPixOffset:(NSPoint) subOffset;
+{
+	subPixOffset = subOffset;
+	updateToBeApplied = YES;
+}
+
+//----- Min and Max of the subtracted result of all the Pix of the series for a given subfImage------
+
+-(NSPoint) subMinMax:(float*)input :(float*)subfImage
+{
+	long			i			= height * width;	
+	float			*result		= malloc( i * sizeof(float));
+	vDSP_vsub (subfImage,1,input,1,result,1,i);				//mask - frame
+	vDSP_minv (result,1,&subMinMax.x,i);					//black pixel	
+	vDSP_minv (result,1,&subMinMax.y,i);					//black pixel	
+	return subMinMax;
+}
+
+- (void) setSubtractedfImage:(float*)mask :(NSPoint)smm
+{
+	subtractedfImage = mask;
+	subMinMax = smm;	
+	updateToBeApplied = YES;
+}
+
+//------------------------------------------subtraction--------------------------------------------
+
+-(float*) subtractImages:(float*)input :(float*)subfImage
+{
+	long			i			= height * width;	
+	float			*result		= malloc( i * sizeof(float));
+	long firstPixel = subPixOffset.y * width - subPixOffset.x;			//pixel shift
+	long lengthToBeCopied = i - abs(firstPixel + firstPixel);	
+	if (firstPixel > 0)
+		{
+		float *firstSourcePixel;
+		firstSourcePixel = subfImage + firstPixel;
+		vDSP_vsmul (firstSourcePixel,1,&subtractedfPercent,result,1,lengthToBeCopied);//result= % mask
+		}
+	else
+		{
+		float *firstResultPixel;
+		firstResultPixel = result + firstPixel;
+		vDSP_vsmul (subfImage,1,&subtractedfPercent,firstResultPixel,1,lengthToBeCopied);//result= % mask
+		}
+	vDSP_vsub (result,1,input,1,result,1,lengthToBeCopied);				//mask - frame
+	float ratio = fabs(subMinMax.y-subMinMax.x);						//normalize [-0.5...]
+	vDSP_vsdiv (result,1,&ratio,result,1,i);
+	vDSP_vsadd (result,1,&subtractedfZero,result,1,i);					//normalize [0...n]
+	return result;
+}
+
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
+NSLog(@"changeWLWW");
 long			i;
 float			iwl, iww;
 
@@ -7677,8 +7683,11 @@ float			iwl, iww;
 		
         min = iwl - iww / 2; //if (min < 0 ) min = 0;
         max = iwl + iww / 2;
-        diff = max - min;
+//        diff = max - min;  //is this a register thing ??? doesn't calculate diff right !!! By the way diff isn't ever used afterwards...
 		
+		//these classes field is used in the subtraction method.
+		fImageBlackPoint = min;
+		fImageWhitePoint = max;
 		//------------------------------------------------------------ min, max, (diff) defined. These are the values used to downsample
 		
 		/* =========================================================== thickslab
@@ -7687,6 +7696,7 @@ float			iwl, iww;
 		for each mode there are on the one side the RGB method and on the other the fImage method.
 		20060710 JF:  gathered fImage cases first, and RGB cases second 
 		*/
+#pragma mark !isRGB (->fImage)
 		
 		if( isRGB == NO) //fImage case
 		{
@@ -7828,36 +7838,39 @@ float			iwl, iww;
 					{
 							[self computeMax: 1 to: stack];
 					}
-				
-					// ** SUBTRACTION
-					// 20060711 JF put the result of subtraction directly in srcf.data
-					
-//					float   *inputfImage;				
-//					if( subtractedfImage) inputfImage = [self subtractImages: fFinalResult :subtractedfImage];
-//					else inputfImage = fFinalResult;
 
+					//-----------------------------------
 				
-					// Convert to 8 bits					
+					// ** SUBTRACTION + Convert to 8 bits					
+
+					vImage_Error vIerr;
+					// vImage_Buffer srcf, dst8;    already defined
+					dst8.height = height;
+					dst8.width = width;
+					dst8.rowBytes = rowBytes;					
+					dst8.data = baseAddr;
 
 					srcf.height = height;
 					srcf.width = width;
 					srcf.rowBytes = width*sizeof(float);
 					
-					dst8.height = height;
-					dst8.width = width;
-					dst8.rowBytes = rowBytes;
-					
-					dst8.data = baseAddr;
-//					srcf.data = inputfImage;
 					if( subtractedfImage)
-							srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+						{
+						srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+						vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+						}
 					else
-							srcf.data = fFinalResult;
-					
+						{
+						srcf.data = fFinalResult;
+						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+						}
+						
+/*					CODE BEFORE VIMAGE USE	
+					if( subtractedfImage) srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+					else srcf.data = fFinalResult;					
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-					
+*/					
 					free( fFinalResult);
-//					if( subtractedfImage) free( inputfImage);
 					break;
 				} //end of switch
 				
@@ -7865,37 +7878,33 @@ float			iwl, iww;
 			// ---------------------------------------------------------------------------------------------------
 			else	// No images fusion
 			{
-				
-				// ** SUBTRACTION
-				// 20060711 JF put the result of subtraction directly in srcf.data
-				//				float   *inputfImage;
-				//				if( subtractedfImage) inputfImage = [self subtractImages: fImage :subtractedfImage];
-				//				else inputfImage = fImage;
-				
+				vImage_Error vIerr;
 				vImage_Buffer srcf, dst8;
-				
-				srcf.height = height;
-				srcf.width = width;
-				srcf.rowBytes = width*sizeof(float);
-				//srcf.data = inputfImage;
-				if( subtractedfImage) srcf.data = [self subtractImages: fImage :subtractedfImage];
-				else srcf.data = fImage;
-				
+
 				dst8.height = height;
 				dst8.width = width;
 				dst8.rowBytes = rowBytes;
 				dst8.data = baseAddr;
+
+				srcf.height = height;
+				srcf.width = width;
+				srcf.rowBytes = width*sizeof(float);
 				
-				//NSLog( @"max = %f, min = %f", max, min);
-				
-				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-				
-//				if( subtractedfImage) free( inputfImage);
+				if( subtractedfImage)
+					{
+					srcf.data = [self subtractImages: fImage :subtractedfImage];
+					vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+					}
+				else
+					{
+					srcf.data = fImage;
+					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+					}
 			}
 		}	
 	else
 		{
-	// ========================================================================= isRGB==YES
+#pragma mark isRGB
 		if( stackMode > 0 && stack >= 1)
 		{
 			long	countstack = 1;
@@ -8131,12 +8140,9 @@ float			iwl, iww;
 //	NSLog([ NSString stringWithFormat: @"%d", ((long) (endTime - startTime))/1000 ]);
 }
 
-- (void) kill8bitsImage
-{
-    [image release];
-	baseAddr = 0L;
-	image = 0L;
-}
+#pragma mark-
+
+
 
 - (void) checkImageAvailble:(float)newWW :(float)newWL
 {
@@ -8237,6 +8243,7 @@ float			iwl, iww;
 			CreateIconFrom16( fImage, bitmapData, height, width, rowBytes, newWL, newWW, isRGB);
 		}
 	}
+	// necesary to refresh DCMView of the browser
 	else [self changeWLWW: newWL : newWW];
 	
 	if( smallIcon)
@@ -8343,43 +8350,7 @@ float			iwl, iww;
 
 -(BOOL) updateToApply { return updateToBeApplied;}
 
-//----------------------------------------setters & getters subtractedfImage, subOffset-----------------------
-/*
--(void) setSubtractedfImage :(float*) s
-{
-	updateToBeApplied = YES;
-	subtractedfImage = s;
-}
 
--(void) setSubtractionOffset:(NSPoint) o
-{
-	updateToBeApplied = YES;
-	subOffset = o;
-}
-*/
--(float*) subtractedfImage
-{
-	return subtractedfImage;
-}
-
--(NSPoint) subtractionOffset
-{
-	return subOffset;
-}
-
-- (void) setSubtractedfImage:(float*) s;
-{
-	subtractedfImage = s;
-	updateToBeApplied = YES;
-}
-
-- (void) setSubOffset:(NSPoint) o;
-{
-	subOffset = o;
-	updateToBeApplied = YES;
-}
-
-//---------------------------------------------------------------------------------------------------------------
 
 -(void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
 {
@@ -8478,7 +8449,8 @@ float			iwl, iww;
 }
 
 // Accessor methods needed for SUV calculations
-
+#pragma mark-
+#pragma mark SUV
 - (NSString *)units {
 	return units;
 }

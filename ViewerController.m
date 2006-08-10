@@ -2387,9 +2387,9 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setToolTip: NSLocalizedString(@"Subtraction module", nil)];
 	
 	// Use a custom view, a text field, for the search item 
-	[toolbarItem setView: subtractView];
-	[toolbarItem setMinSize:NSMakeSize(NSWidth([subtractView frame]), NSHeight([subtractView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([subtractView frame]),NSHeight([subtractView frame]))];
+	[toolbarItem setView: subCtrlView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([subCtrlView frame]), NSHeight([subCtrlView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([subCtrlView frame]),NSHeight([subCtrlView frame]))];
     }
 	else if([itemIdent isEqualToString: WLWWToolbarItemIdentifier]) {
 //	NSMenu *submenu = nil;
@@ -2961,6 +2961,9 @@ static ViewerController *draggedController = 0L;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
 
+
+
+
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
@@ -2971,9 +2974,11 @@ static ViewerController *draggedController = 0L;
 	{
 		NSLog( @"changeImageData not possible with other post-processing windows opened");
 		return;
-	}
-	
+	}	
 	windowWillClose = YES;
+	
+	
+	
 	
 	if( previousColumns != 1 || previousRows != 1)
 	{
@@ -2982,6 +2987,9 @@ static ViewerController *draggedController = 0L;
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
 	}
+	
+	
+	
 	
 	// Release previous data
 	
@@ -3035,11 +3043,10 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
-	// Load new data
+	// Load new data (JF: previously curMovieIndex=0 maxMovieIndex=1  subCtrlMaskID=-1)
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
-	mask = 1;
-	[subtractIm setIntValue: 2];
+	subCtrlMaskID = -2;
 	
 	volumeData[ 0] = v;
 	[volumeData[ 0] retain];
@@ -3092,8 +3099,8 @@ static ViewerController *draggedController = 0L;
 		[speedSlider setEnabled:YES];
         [slider setEnabled:YES];
 	}
-    
-	[subtractOnOff setState: NSOffState];
+    //jacques : init aparencia 2Dviewer
+	[subCtrlOnOff setState: NSOffState];
 	[popFusion selectItemAtIndex:0];
 	[convPopup selectItemAtIndex:0];
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
@@ -3307,22 +3314,6 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 		
-	if( stopThreadLoadImage == NO)
-	{
-		long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
-		long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
-		enableSubtraction = TRUE;
-		for( x = 0; x < maxMovieIndex; x++)
-		{
-			for( i = 0 ; i < [pixList[ x] count]; i++)
-			{
-				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
-				if ( moviePixWidth != [[pixList[ x] objectAtIndex: i] pwidth]) enableSubtraction = FALSE;
-				if ( moviePixHeight != [[pixList[ x] objectAtIndex: i] pheight]) enableSubtraction = FALSE;
-			}
-		}
-	}
-	if (enableSubtraction) NSLog(@"regular-sized frames, subtraction enabled");
 	ThreadLoadImage = NO;
 	if( stopThreadLoadImage == YES)
 	{
@@ -3332,9 +3323,95 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	[ThreadLoadImageLock unlock];
-	
+
+#pragma mark modality dependant code, once images are already displayed in 2D viewer
 	if( stopThreadLoadImage == NO)
 	{
+#pragma mark XA
+	enableSubtraction = FALSE;
+	if([[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"XA"] == YES)
+	{
+		NSLog(@"XA");
+		long runSize = [pixList[ 0] count];
+		if(runSize > 1)
+		{
+			long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
+			long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
+
+			if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
+
+			long j;
+			for( j = 0 ; j < runSize; j++)
+			{
+				[[pixList[ x] objectAtIndex: j] setMaxValueOfSeries: maxValueOfSeries];
+				if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
+				if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
+			}
+
+			if (enableSubtraction) 
+			{
+				subCtrlMaskID = 1;
+				[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
+		
+		
+		
+				//define min and max value of the subtraction
+				long subCtrlMin = 1024;
+				long subCtrlMax = 0;
+				long i;
+				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+						{
+							subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																								:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+											];
+							if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+							if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+						}
+				subCtrlMinMax.x = subCtrlMin;
+				subCtrlMinMax.y = subCtrlMax;
+		
+				[subCtrlOnOff setState: NSOnState]; //"on"
+				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+				{
+					[[[imageView dcmPixList]objectAtIndex:i]	setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
+				}
+				
+				
+				
+				// 5x5 convolution
+				NSDictionary   *aConv;
+				NSArray			*array;
+				long			size;
+				long			nomalization;
+				short			matrix[25];
+				
+				aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
+				
+				nomalization = [[aConv objectForKey:@"Normalization"] longValue];
+				size = [[aConv objectForKey:@"Size"] longValue];
+				array = [aConv objectForKey:@"Matrix"];
+				
+				for( i = 0; i < size*size; i++)
+				{
+					matrix[i] = [[array objectAtIndex: i] longValue];
+				}				
+
+				[imageView setConv:matrix :size: nomalization];
+				[subCtrlSharpenButton setState: NSOnState];
+				
+				
+			
+				//slider pos
+				[imageView setIndex: 2]; //go to frame 2 
+				[self setImageIndex: 2]; //adjust frame index
+
+			}
+		}
+	}
+
+
+#pragma mark PET	
+
 		if( isPET)
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
@@ -3477,183 +3554,347 @@ static ViewerController *draggedController = 0L;
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark 4.1.1.2. Mask Subtraction
-// four methods (subtractSwitch, subtractCurrent, keyboardAndMenuSubtract, and subtractStepper)
-// provide the logics for keyboard numeric panel, menu 2DViewer>subtraction and tool subtraction GUI.
-// They are enabled only if enableSubtraction (which is calculated in ViewerController -(void) loadImageData:(id) sender)
+// These methods are enabled only if enableSubtraction
+//(which is calculated in ViewerController -(void) loadImageData:(id) sender)
 // is set to TRUE
-// All these controllers point to one or the other DCMView
-//		-setSubtraction: (long) mask
-//		-setSubOffset: (NSPoint)subOffset
 
-- (IBAction) subtractSwitch:(id) sender
+- (IBAction) subCtrlOnOff:(id) sender
 {
 	[self checkEverythingLoaded];
 	
 	if (enableSubtraction)
 	{
-		if( [sender state])
-		{	// subtraction asked for
-			[imageView setSubtraction: mask];
-			
-			//	In the following abandoned lines, it was thought arbitrarily to keep the same window width
-			//	and apply it from a window level 0
-			//	This leaves us with a poor DSA image
-			//	and an incorrect window when going back to unsubtracted image
+		//asked from menu (tag=0) or keyboard (tag=15 => asked from button)
+		if( [sender tag] == 0 ) [subCtrlOnOff setState: ![subCtrlOnOff state]]; //"on"
 
-			//  float	iww;
-			//  [imageView getWLWW:&wlBeforeSubtract :&iww];
-			//	[imageView setWLWW: 0 :iww];
-			
-			//	it is better to transform the result of the subtraction in order it
-			//  to fit perfectly in the same window width and level as the image without subtraction
-			//	this needs to be done directly in the subtraction engine
-		}
-		else
-		{	// without subtraction
-			[imageView setSubtraction: -1];
-			
-			//	float	iwl, iww;		
-			//	[imageView getWLWW:&iwl :&iww];
-			//	[imageView setWLWW: wlBeforeSubtract :iww];
-		}	
-		[imageView setIndex: [imageView curImage]];//refresh viewer
-	}
-}
-
-- (IBAction) subtractCurrent:(id) sender
-{	
-	[self checkEverythingLoaded];
-	
-	if (enableSubtraction)
-	{
-		mask = [imageView curImage];//mask is a class variable
-		[subtractOnOff setState: NSOnState]; //"on"
-		if( [imageView flippedData]) [subtractIm setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-		else [subtractIm setIntValue: mask+1];//actualizing mask info in the viewer
-		[self subtractSwitch: subtractOnOff];//subtract
-	}
-}
-
--(void) keyboardAndMenuSubtract:(id) sender
-{
-	if (enableSubtraction)
-	{
-		switch( [sender tag])
+		long i;	
+		
+		if([subCtrlOnOff state])			// subtraction asked for
+			{	
+				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
 				{
-				case 0: //subtract
-					[subtractOnOff setState: ![subtractOnOff state]]; //change state
-					[self subtractSwitch:subtractOnOff]; //call subtract method
-				break;
+					[[[imageView dcmPixList]objectAtIndex:i]	setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
+				}
+			}	
+				
+		else //without subtraction
+			{				
+			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+				{
+					[[[imageView dcmPixList] objectAtIndex:i]	setSubtractedfImage:0L :subCtrlMinMax];
+				}
+			}
+		[imageView setIndex: [imageView curImage]]; //refresh viewer only
+	}
+}
 
+- (IBAction) subCtrlNewMask:(id) sender
+{
+	if (enableSubtraction) 
+	{				
+		if( [imageView flippedData]) subCtrlMaskID = [pixList[ curMovieIndex] count] - [imageView curImage] -1;
+		else                         subCtrlMaskID = [imageView curImage];//starts at 1;
+		
+		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"%d", (subCtrlMaskID+1)]];//changes tool text
+		
+		//---------------------------------------define min value of the subtraction
+		long subCtrlMin = 1024;
+		long subCtrlMax = 0;
+		long i;
+		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+				{
+					subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																						:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+								    ];
+					if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+					if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+				}
+		subCtrlMinMax.x = subCtrlMin;
+		subCtrlMinMax.y = subCtrlMax;
+		
+		[subCtrlOnOff setState: NSOnState]; //"on"
+		[self subCtrlOnOff: subCtrlOnOff];//subtracts
+	}
+}
+
+- (IBAction) subCtrlOffset:(id) sender
+{
+	if(enableSubtraction)
+	{
+		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
+		{
+		subCtrlOffset = [  [[imageView dcmPixList] objectAtIndex:[imageView curImage]]  subPixOffset];
+		NSLog(@"subPixOffset before x:%f y:%f", subCtrlOffset.x, subCtrlOffset.y);
+		switch( [sender tag]) //same tags in the main menu and in the subtraction tool
+				{
 				case 1://SW
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						--subCtrlOffset.x;
+						--subCtrlOffset.y;
 				break;
 
 				case 2://S
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						--subCtrlOffset.y;
 				break;
 				
-				case 3://SE
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+				case 3://SE						
+						++subCtrlOffset.x;
+						--subCtrlOffset.y;
 				break;
 				
 				case 4://W
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						--subCtrlOffset.x;
 				break;
 				
-				case 5://mask
-					[self subtractCurrent:sender];
+				case 5://No Pixel shift
+						subCtrlOffset.x = 0;
+						subCtrlOffset.y = 0;
 				break;
 
 				case 6://E
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						++subCtrlOffset.x;
 				break;
 								
 				case 7://NW
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) --subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						--subCtrlOffset.x;
+						++subCtrlOffset.y;
 				break;
 
 				case 8://N
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
+						++subCtrlOffset.y;
 				break;
 				
 				case 9://NE
-					if( [subtractOnOff state] == NSOnState)
-						{
-						[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) ++subOffset.x]];
-						[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) ++subOffset.y]];
-						[imageView setSubOffset :subOffset];
-						[imageView setIndex:[imageView curImage]];
-						}
-				break;
+						++subCtrlOffset.x;
+						++subCtrlOffset.y;
+				break;				
 				}
+				//NSLog(@"subCtrlOffset x:%f :y:%f",subCtrlOffset.x, subCtrlOffset.y);
+		}
+
+	if ((subCtrlOffset.x > -30) && (subCtrlOffset.x < 30) && (subCtrlOffset.y > -30) && (subCtrlOffset.y < 30))
+		{
+		//write changes in dcmPixList
+		long i;	
+		for ( i = 0; i < [[imageView dcmPixList] count]; i ++) [[[imageView dcmPixList] objectAtIndex:i] setSubPixOffset: subCtrlOffset];
+		//refresh tool
+		[self offsetMatrixSetting:([self threeTestsFivePosibilities: (int)subCtrlOffset.y] * 5) + [self threeTestsFivePosibilities: (int)subCtrlOffset.x]];		
+		//refresh window image
+		[imageView setIndex:[imageView curImage]];
+		}
 	}	
 
 }
-- (IBAction) subtractStepper:(id) sender
-{
-	if (enableSubtraction)
-	{
-		if( [subtractOnOff state] == NSOnState)
-		{
-			switch( [sender tag])
-			{
-			// from steppers in subtraction tool
-					
-				case 0://tag for x stepper
-					subOffset.x = [sender floatValue];
-					[XOffset setStringValue: [NSString stringWithFormat:@"X: %d", (long) subOffset.x]];
-				break;
-			
-				case 1://tag for y stepper
-					subOffset.y = [sender floatValue];
-					[YOffset setStringValue: [NSString stringWithFormat:@"Y: %d", (long) subOffset.y]];
-				break;	
 
-			}
-		
-			[imageView setSubOffset :subOffset];
-			[imageView setIndex:[imageView curImage]];
+- (int) threeTestsFivePosibilities: (int) f
+{
+	//  -2  -1  0  1  2
+	//   0   1  4  2  3
+	if (f == 0) return 4;
+	else
+	{
+		if (abs(f) > 1)
+		{
+			if (f > 1) return 3;
+			else return 0;
+		}
+		else
+		{
+			if (f == 1) return 2;
+			else return 1;
 		}
 	}
+}
+
+- (void) offsetMatrixSetting: (int) twentyFiveCodes
+{
+		switch(twentyFiveCodes)
+	{
+	// On stronger than Off
+	//----------------------------------------------------------------------------------  y=-2
+	case 0://x=-2 (On On Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];	//On
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];	//On
+	break;
+	case 1://x=-1 (On Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 4:// x=0 (Off Off Off)
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 2://x=1 
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 3:// x=2 
+			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+
+	break;//------------------------------------------------------------------------------y=-1	
+	case 5://x=-2 (On On Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];	//On
+	break;
+	case 6://x=-1 (On Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 9:// x=0 (Off Off Off)
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 7://x=1 y=-1
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	case 8:// x=2 y=-1
+			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+
+	break;//--------------------------------------------------------------------------------y=0
+	case 20://x=-2 (On On Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOffState];	//Off
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+	break;
+	case 21://x=-1 (On Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 24:// x=0 (Off Off Off)
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOffState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 22://x=1 (Off Off On)
+			[sc7 setState: NSOffState];	[sc8 setState: NSOffState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+	break;
+	case 23:// x=2 (Off On On)
+			[sc7 setState: NSOffState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+
+	break;//-------------------------------------------------------------------------------y=1
+	case 10://x=-2 (On On Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];	//On
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOffState];	//Off
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+	break;
+	case 11://x=-1 (On Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 14:// x=0 (Off Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOffState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 12://x=1 (Off Off On)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOffState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+	break;
+	case 13:// x=2 (Off On On)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOffState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+
+	break;//------------------------------------------------------------------------------ y=2
+	case 15://x=-2 (On On Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];	//On
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];	//On
+			[sc1 setState: NSOnState];	[sc2 setState: NSOnState];	[sc3 setState: NSOffState];	//Off
+	break;
+	case 16://x=-1 (On Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOnState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 19:// x=0 (Off Off Off)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOffState];
+	break;
+	case 17://x=1 (Off Off On)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOffState];	[sc3 setState: NSOnState];
+	break;
+	case 18:// x=2 (Off On On)
+			[sc7 setState: NSOnState];	[sc8 setState: NSOnState];	[sc9 setState: NSOnState];
+			[sc4 setState: NSOnState];	[sc5 setState: NSOnState];	[sc6 setState: NSOnState];
+			[sc1 setState: NSOffState];	[sc2 setState: NSOnState];	[sc3 setState: NSOnState];
+	break;
+	}
+
+}
+
+- (IBAction) subCtrlSliders:(id) sender	
+{
+	if(enableSubtraction)
+	{
+		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
+		{
+			long i;				
+			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+				{
+				[[[imageView dcmPixList] objectAtIndex:i]
+														setSubSlidersPercent:	[subCtrlPercent floatValue]
+														gamma:					[subCtrlGamma floatValue] 
+														zero:					[subCtrlZero floatValue]
+				];
+				}
+				NSLog(@"percent:%f   gamma:%f  zero:%f",[subCtrlPercent floatValue],[subCtrlGamma floatValue],[subCtrlZero floatValue]);
+			[imageView setIndex:[imageView curImage]]; //refresh window image
+		}
+	}
+}
+
+- (IBAction) subSumSlider:(id) sender
+{
+	[self setFusionMode: 3];
+	long x, i;
+	
+	[imageView setFusion:-1 :[sender intValue]];
+	
+	for ( x = 0; x < maxMovieIndex; x++)
+	{
+		if( x != curMovieIndex) // [imageView setFusion] already did it for current serie!
+		{
+			for ( i = 0; i < [pixList[ x] count]; i ++)
+			{
+				[[pixList[ x] objectAtIndex:i] setFusion:-1 :[sender intValue] :-1];
+			}
+		}
+	}
+	
+	[stacksFusion setIntValue:[sender intValue]];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:@"stackThickness"];
+	
+	[imageView sendSyncMessage:1];
+
+}
+
+- (IBAction) subSharpen:(id) sender
+{
+if ([sender state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
+else								[self ApplyConvString:@"No Filter"];
 }
 
 #pragma mark-
@@ -3892,8 +4133,8 @@ static ViewerController *draggedController = 0L;
 							[[pixList[ x] objectAtIndex: i] setID: i];
 						}
 					}
-					
-					mask = [pixList[ curMovieIndex] count] - mask -1;
+NSLog(@"was mask... needs controling everything OK");					
+					subCtrlMaskID = [pixList[ curMovieIndex] count] - subCtrlMaskID -1;
 					
 					[self flipDataSeries: self];
 				}
@@ -4247,6 +4488,7 @@ static float oldsetww, oldsetwl;
 
 -(void) ApplyConvString:(NSString*) str
 {
+NSLog(@"ApplyConvString");
 	if( [str isEqualToString:NSLocalizedString(@"No Filter", nil)] == YES)
 	{
 		[imageView setConv:0L :0: 0];
@@ -4554,9 +4796,9 @@ short				matrix[25];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 	
-	float   iwl, iww;
-	[imageView getWLWW:&iwl :&iww];
-	[imageView setWLWW:iwl :iww];
+//JF not necesary	float   iwl, iww;
+//JF not necesary	[imageView getWLWW:&iwl :&iww];
+//JF not necesary	[imageView setWLWW:iwl :iww];
 }
 
 - (void) CLUTChanged: (NSNotification*) note
@@ -7741,7 +7983,10 @@ int i,j,l;
 	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
 }
 
--(NSSlider*) moviePosSlider {return moviePosSlider;}
+-(NSSlider*) moviePosSlider
+{
+return moviePosSlider;
+}
 
 - (void) setMovieIndex: (short) i
 {
@@ -9208,6 +9453,7 @@ int i,j,l;
 
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v
 {
+	NSLog(@"setPixelList");
 	long i;
 	
 	speedometer = 0;
@@ -9226,12 +9472,12 @@ int i,j,l;
 	ROINamesArray = 0L;
 	ThreadLoadImage = NO;
 	
-	subOffset.y = subOffset.x = 0;
+	subCtrlOffset.y = subCtrlOffset.x = 0;
 	
-	mask = 0;
+//	subCtrlMaskID = 1;
 	
-	curMovieIndex = 0;
-	maxMovieIndex = 1;
+//	curMovieIndex = 0;
+//	maxMovieIndex = 1;
 	blendingController = 0L;
 	
 	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
@@ -10243,6 +10489,7 @@ long i;
 
 -(IBAction) loadSerie:(id) sender
 {
+	// tag=-1 backwards, tag=1 forwards, tag=3 ???
 	if( [sender tag] == 3)
 	{
 		[[sender selectedItem] setImage:0L];

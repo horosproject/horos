@@ -120,8 +120,10 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	NSDictionary	*localeDictionnary;
 
     NSPoint         start, originStart, originOffsetStart, previous;
+	
     float			startWW, curWW, startMin, startMax;
     float			startWL, curWL;
+	
     NSSize          scaleStart, scaleInit;
     
 	BOOL			convolution;
@@ -216,10 +218,11 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 -(void) multiply:(DCMView*) bV;
 -(void) setBlendingMode:(long) f;
 - (GLuint *) loadTextureIn:(GLuint *) texture blending:(BOOL) blending colorBuf: (unsigned char**) colorBufPtr textureX:(long*) tX textureY:(long*) tY redTable:(unsigned char*) rT greenTable:(unsigned char*) gT blueTable:(unsigned char*) bT;
-//- (void) setSubtraction:(long) imID :(NSPoint) offset;
+/*			DCMView proxy not necesary between ViewerController and DCMPix
 - (void) setSubtraction:(long) imID;
-- (void) setSubOffset:(NSPoint) offset;
-
+- (NSPoint) subOffset;
+- (void) setSubOffset:(NSPoint) subCtrlOffset;
+*/
 - (BOOL)xFlipped;
 - (void)setXFlipped: (BOOL)v;
 - (BOOL)yFlipped;
@@ -236,9 +239,11 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromGL2View:(NSPoint) a;
 - (void) cross3D:(float*) x :(float*) y :(float*) z;
+
 - (void) setWLWW:(float) wl :(float) ww;
 - (void)discretelySetWLWW:(float)wl :(float)ww;
 - (void) getWLWW:(float*) wl :(float*) ww;
+
 - (void) setConv:(short*) matrix :(short) size :(short) norm;
 - (void) setCLUT:( unsigned char*) r :(unsigned char*) g :(unsigned char*) b;
 - (void) setCurrentTool:(short)i;

@@ -218,7 +218,6 @@
                 flyThruButton = id; 
                 flyThruButtonMenu = id; 
                 fullScreenMenu = id; 
-                keyboardAndMenuSubtract = id; 
                 loadSerie = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
@@ -254,6 +253,9 @@
                 setOffset = id; 
                 setROITool = id; 
                 startMSRG = id; 
+                subCtrlNewMask = id; 
+                subCtrlOffset = id; 
+                subCtrlOnOff = id; 
                 syncronize = id; 
             }; 
             CLASS = FirstResponder; 

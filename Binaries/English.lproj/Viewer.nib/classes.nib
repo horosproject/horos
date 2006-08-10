@@ -25,10 +25,14 @@
         }, 
         {
             ACTIONS = {
+                "" = id; 
                 calibrate = id; 
                 setBlendingFactor = id; 
                 sliderAction = id; 
                 sliderRGBFactor = id; 
+                subCtrlNewMask = id; 
+                subCtrlOffset = id; 
+                subCtrlOnOff = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
@@ -41,6 +45,7 @@
             OUTLETS = {matrix = NSMatrix; }; 
             SUPERCLASS = NSButtonCell; 
         }, 
+        {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = NSLevelIndicator; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             ACTIONS = {renderButton = id; }; 
@@ -151,6 +156,7 @@
                 exportQuicktimeSlider = id; 
                 keyImageCheckBox = id; 
                 keyImageDisplayButton = id; 
+                keyObjectNotes = id; 
                 loadPatient = id; 
                 loadSerie = id; 
                 moviePosSliderAction = id; 
@@ -178,9 +184,12 @@
                 speedSliderAction = id; 
                 startMSRG = id; 
                 startMSRGWithAutomaticBounding = id; 
-                subtractCurrent = id; 
-                subtractStepper = id; 
-                subtractSwitch = id; 
+                subCtrlNewMask = id; 
+                subCtrlOffset = id; 
+                subCtrlOnOff = id; 
+                subCtrlSliders = id; 
+                subSharpen = id; 
+                subSumSlider = id; 
                 updateImage = id; 
                 updateSetWLWW = id; 
             }; 
@@ -205,8 +214,6 @@
                 StatusView = NSView; 
                 ThickIntervalWindow = NSWindow; 
                 WLWWView = NSView; 
-                XOffset = NSTextField; 
-                YOffset = NSTextField; 
                 addCLUTWindow = NSWindow; 
                 addConvWindow = NSWindow; 
                 addOpacityWindow = NSWindow; 
@@ -300,6 +307,15 @@
                 roiRenameName = NSTextField; 
                 roiRenameWindow = NSWindow; 
                 roiSetPixWindow = NSWindow; 
+                sc1 = NSButton; 
+                sc2 = NSButton; 
+                sc3 = NSButton; 
+                sc4 = NSButton; 
+                sc5 = NSButton; 
+                sc6 = NSButton; 
+                sc7 = NSButton; 
+                sc8 = NSButton; 
+                sc9 = NSButton; 
                 serieView = NSView; 
                 setROI4DSeries = NSButton; 
                 setWLWWWindow = NSWindow; 
@@ -314,9 +330,13 @@
                 structuringElementRadiusSlider = NSSlider; 
                 structuringElementRadiusTextField = NSTextField; 
                 studyView = StudyView; 
-                subtractIm = NSTextField; 
-                subtractOnOff = NSButton; 
-                subtractView = NSView; 
+                subCtrlGamma = NSSlider; 
+                subCtrlMaskText = NSTextField; 
+                subCtrlOnOff = NSButton; 
+                subCtrlPercent = NSSlider; 
+                subCtrlSharpenButton = NSButton; 
+                subCtrlView = NSView; 
+                subCtrlZero = NSSlider; 
                 suvConversion = NSMatrix; 
                 suvForm = NSForm; 
                 toolsMatrix = NSMatrix; 

@@ -13459,6 +13459,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
@@ -13597,7 +13598,6 @@
 			children = (
 				4A16D0970965E15300F82EC4 /* Unit Testing (Cocoa)-Info.plist */,
 				4A16D0A20965E21800F82EC4 /* UnitTestingBase.h */,
-				4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */,
 			);
 			name = "Unit Testing";
 			sourceTree = "<group>";

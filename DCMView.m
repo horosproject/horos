@@ -3492,39 +3492,7 @@ static long scrollMode;
 		}
 	}
 	
-	[curDCM changeWLWW :curWL: curWW];
-}
-
-- (void) setSubtraction:(long) imID
-{
-// imID contains -1 in case of no subtraction or image ID in case of subtraction
-	long i;	
-	for ( i = 0; i < [dcmPixList count]; i ++)
-	{
-		if( imID >= 0) //subtraction asked for, imID = mask index
-		{
-		//	already taken care of in ViewerControler with BOOL enableSubtraction
-		//	if( [[dcmPixList objectAtIndex:imID] pheight] == [[dcmPixList objectAtIndex:i] pheight] &&
-		//		[[dcmPixList objectAtIndex:imID] pwidth] == [[dcmPixList objectAtIndex:i] pwidth])
-		//		{
-					[[dcmPixList objectAtIndex:i] setSubtractedfImage: [[dcmPixList objectAtIndex:imID] fImage]];
-		//		}
-		}
-		else //no subtraction
-		{
-			[[dcmPixList objectAtIndex:i] setSubtractedfImage: 0L];
-		}
-	}
-}
-
-- (void) setSubOffset:(NSPoint) offset
-{
-	//gets here when subtraction is active and a pixelShift was asked for
-	long i;	
-	for ( i = 0; i < [dcmPixList count]; i ++)
-	{
-		[[dcmPixList objectAtIndex:i] setSubOffset: offset];
-	}
+//JF not necesary	[curDCM changeWLWW :curWL: curWW];
 }
 
 - (void) setConv:(short*) m :(short) s :(short) norm
@@ -3850,9 +3818,9 @@ static long scrollMode;
 
 -(void) becomeMainWindow
 {
-//	if( [curDCM thickSlabMode]) [self setFusion: thickSlabMode :-1];
-//	
-	[self setFusion: thickSlabMode :-1];
+//JF not necesary	if( [curDCM thickSlabMode]) [self setFusion: thickSlabMode :-1];
+	
+//JF not necesary	[self setFusion: thickSlabMode :-1];
 
 	NSLog(@"BecomeMainWindow");
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
@@ -7005,7 +6973,8 @@ BOOL	lowRes = NO;
 
 - (void) sliderAction:(id) sender
 {
-	long	x = curImage;
+//NSLog(@"DCMView sliderAction");
+	long	x = curImage;//x = curImage before sliderAction
 
 	if( flippedData) curImage = [dcmPixList count] -1 -[sender intValue];
     else curImage = [sender intValue];

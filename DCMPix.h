@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
+#import <Accelerate/Accelerate.h>
 
 #define USEVIMAGE
 
@@ -35,19 +36,33 @@
     short               *oImage;
 	float				*fImage, *fVolImage;
 	
-	NSPoint				subOffset;
+	float				fImageBlackPoint;
+	float				fImageWhitePoint;
 	float				*subtractedfImage;
+//	float				subMin;
+	NSPoint				subPixOffset;
+	NSPoint				subMinMax;
+	float				subtractedfPercent;
+	float				subtractedfZero;
+	long				*subGammaFunction;
+
 	
     char                *wImage;
 	long				frameNo;
 	long				serieNo;
     
     char                *baseAddr;
+
+	long				imID, imTot;
     
     long                height, width, rowBytes;
+	
+// fixed wlww values
     float				ww, wl, philipsFactor;
-	long				imID, imTot;
 	float				fullww, fullwl;
+	float				savedWL, savedWW;
+
+
     float               sliceInterval, pixelSpacingX, pixelSpacingY, sliceLocation, sliceThickness, pixelRatio;
     
 	float				originX, originY, originZ;
@@ -70,7 +85,6 @@
 	short				normalization;
 	short				kernel[25];
 	
-	float				savedWL, savedWW;
 	
 	short				stack;
 	short				stackMode, pixPos, stackDirection;
@@ -124,6 +138,14 @@
 // WL & WW
 - (float) ww;
 - (float) wl;
+-(float) fullww;
+-(float) fullwl;
+- (long) savedWL;
+- (long) savedWW;
+- (void) changeWLWW:(float)newWL :(float)newWW;
+-(void) computePixMinPixMax;
+- (float) maxValueOfSeries;
+- (void) setMaxValueOfSeries: (float) f;
 
 // Compute ROI data
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
@@ -181,12 +203,21 @@
 - (BOOL) thickSlabMode;
 - (void) ConvertToBW:(long) mode;
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
-- (void) imageArithmeticSubtraction:(DCMPix*) sub;
 - (float) cineRate;
-- (void) setSubtractedfImage :(float*) s;
-- (float*) subtractedfImage;
-- (NSPoint) subtractionOffset;
-- (float*) subtractImages :(float*) input :(float*) subfImage;
+
+// subtraction-multiplication
+//- (float*) subtractedfImage;
+- (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
+
+- (NSPoint) subPixOffset;
+- (void) setSubPixOffset:(NSPoint) subOffset;
+
+- (NSPoint) subMinMax:(float*)input :(float*)subfImage;
+- (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
+- (float*) subtractImages:(float*)input :(float*)subfImage;
+- (void) imageArithmeticSubtraction:(DCMPix*) sub;
+- (void) imageArithmeticMultiplication:(DCMPix*) sub;
+
 - (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (NSString*) repetitiontime;
@@ -207,7 +238,6 @@
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (xNSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
 - (NSImage*) image;
-- (void) changeWLWW:(float)newWL :(float)newWW;
 - (xNSImage*) getImage;
 - (char*) baseAddr;
 - (void) setBaseAddr :( char*) ptr;
@@ -217,6 +247,20 @@
 - (short*) oImage;
 - (void) kill8bitsImage;
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
+-(long) rowBytes;
+-(void) setRowBytes:(long) rb;
+
+
+
+
+-(float) slope;
+-(float) offset;
+-(long) serieNo;
+-(long) Tot;
+-(void) setTot: (long) tot;
+-(void) CheckLoad;
+-(void) setFusion:(short) m :(short) s :(short) direction;
+-(short) stack;
 - (long) rowBytes;
 - (void) setRowBytes:(long) rb;
 - (float) fullww;
@@ -230,6 +274,9 @@
 - (void) setFusion:(short) m :(short) s :(short) direction;
 - (short) stack;
 - (void)setSourceFile:(NSString*)s;
+-(NSString*) sourceFile;
+-(void) setUpdateToApply;
+-(void) revert;
 - (NSString*) sourceFile;
 - (void) setUpdateToApply;
 - (void) revert;
@@ -240,8 +287,6 @@
 - (void) setThickSlabController:( ThickSlabController*) ts;
 - (void) setFixed8bitsWLWW:(BOOL) f;
 - (BOOL) generated;
-- (float) maxValueOfSeries;
-- (void) setMaxValueOfSeries: (float) f;
 
 // Accessor methods needed for SUV calculations
 
