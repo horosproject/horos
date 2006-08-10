@@ -533,11 +533,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					// We HAVE a number with 4 digit at the end of the file!! Make a serie of it!
-					
-					imageID = [[NSString alloc] initWithCString: (char*) strNo];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
-					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -4]];
+					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
+					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
 				else if( strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
@@ -548,9 +546,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[2] = strNo[ 3];
 					strNo[3] = 0;
 					
-					imageID = [[NSString alloc] initWithCString: (char*) strNo];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
-					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -3]];
+					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
+					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
 				else if( strNo[ 2] >= '0' && strNo[ 2] <= '9' && strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
@@ -559,9 +557,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[1] = strNo[ 3];
 					strNo[2] = 0;
 					
-					imageID = [[NSString alloc] initWithCString: (char*) strNo];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
-					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -2]];
+					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
+					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
 				else if( strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
@@ -569,9 +567,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[0] = strNo[ 3];
 					strNo[1] = 0;
 					
-					imageID = [[NSString alloc] initWithCString: (char*) strNo];
-					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
-					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] -1]];
+					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
+					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 				}
 				else
 				{
