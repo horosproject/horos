@@ -14,7 +14,7 @@
 		<string>598 580 403 413 0 0 1600 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
-	<string>446.1</string>
+	<string>443.0</string>
 	<key>IBLockedObjects</key>
 	<array/>
 	<key>IBOpenObjects</key>
@@ -23,14 +23,14 @@
 		<integer>176</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8I1119</string>
+	<string>8J135</string>
 	<key>IBUserGuides</key>
 	<dict>
 		<key>5</key>
 		<dict>
 			<key>guideLocations</key>
 			<array>
-				<string>Horizontal:101.000000</string>
+				<string>Horizontal:726.000000</string>
 			</array>
 			<key>guidesLocked</key>
 			<false/>

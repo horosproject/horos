@@ -105,6 +105,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[_report release];
 	[_reports release];
 	[_study release];
+	[_keyImagesInSeries release];
 	[super dealloc];
 }
 
@@ -335,6 +336,16 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[_reportIndex release];
 	_reportIndex = [indexSet retain];
 }
+
+- (NSArray *) keyImagesInSeries{
+	return _keyImagesInSeries;
+}
+
+- (void) setKeyImagesInSeries:(NSArray *)images{
+	[_keyImagesInSeries release];
+	_keyImagesInSeries = [images retain];
+}
+	
 		
 
 @end

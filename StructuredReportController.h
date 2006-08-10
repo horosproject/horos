@@ -49,6 +49,7 @@
 	NSString *_exportExtension;
 	int _tabIndex;
 	NSIndexSet *_reportIndex;
+	NSArray *_keyImagesInSeries;
 	
 	
 }
@@ -87,6 +88,10 @@
 - (void)setReports:(NSArray *)reports;
 - (NSIndexSet *)reportIndex;
 - (void)setReportIndex:(NSIndexSet *)indexSet;
+
+- (NSArray *) keyImagesInSeries;
+- (void) setKeyImagesInSeries:(NSArray *)images;
+
 
 
 @end
