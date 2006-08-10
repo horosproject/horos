@@ -3263,6 +3263,61 @@ static ViewerController *draggedController = 0L;
 	[self setWindowTitle:self];
 }
 
+- (void) enableSubtraction
+{
+	subCtrlMaskID = 1;
+	[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
+
+
+
+	//define min and max value of the subtraction
+	long subCtrlMin = 1024;
+	long subCtrlMax = 0;
+	long i;
+	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+			{
+				subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																					:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+								];
+				if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+				if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+			}
+	subCtrlMinMax.x = subCtrlMin;
+	subCtrlMinMax.y = subCtrlMax;
+
+	[subCtrlOnOff setState: NSOnState]; //"on"
+	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+	{
+		[[[imageView dcmPixList]objectAtIndex:i] setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
+	}
+	
+	// 5x5 convolution
+	NSDictionary   *aConv;
+	NSArray			*array;
+	long			size;
+	long			nomalization;
+	short			matrix[25];
+	
+	aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
+	
+	nomalization = [[aConv objectForKey:@"Normalization"] longValue];
+	size = [[aConv objectForKey:@"Size"] longValue];
+	array = [aConv objectForKey:@"Matrix"];
+	
+	for( i = 0; i < size*size; i++)
+	{
+		matrix[i] = [[array objectAtIndex: i] longValue];
+	}				
+
+	[imageView setConv:matrix :size: nomalization];
+	[subCtrlSharpenButton setState: NSOnState];
+	
+	
+
+	//slider pos
+	[imageView setIndex: 2]; //go to frame 2 
+	[self setImageIndex: 2]; //adjust frame index
+}
 
 -(void) loadImageData:(id) sender
 {
@@ -3361,61 +3416,8 @@ static ViewerController *draggedController = 0L;
 
 			if (enableSubtraction) 
 			{
-				subCtrlMaskID = 1;
-				[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
-		
-		
-		
-				//define min and max value of the subtraction
-				long subCtrlMin = 1024;
-				long subCtrlMax = 0;
-				long i;
-				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-						{
-							subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
-																								:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
-											];
-							if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-							if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
-						}
-				subCtrlMinMax.x = subCtrlMin;
-				subCtrlMinMax.y = subCtrlMax;
-		
-				[subCtrlOnOff setState: NSOnState]; //"on"
-				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-					[[[imageView dcmPixList]objectAtIndex:i]	setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
-				}
-				
-				
-				
-				// 5x5 convolution
-				NSDictionary   *aConv;
-				NSArray			*array;
-				long			size;
-				long			nomalization;
-				short			matrix[25];
-				
-				aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
-				
-				nomalization = [[aConv objectForKey:@"Normalization"] longValue];
-				size = [[aConv objectForKey:@"Size"] longValue];
-				array = [aConv objectForKey:@"Matrix"];
-				
-				for( i = 0; i < size*size; i++)
-				{
-					matrix[i] = [[array objectAtIndex: i] longValue];
-				}				
-
-				[imageView setConv:matrix :size: nomalization];
-				[subCtrlSharpenButton setState: NSOnState];
-				
-				
-			
-				//slider pos
-				[imageView setIndex: 2]; //go to frame 2 
-				[self setImageIndex: 2]; //adjust frame index
-
+				// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
+				[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
 			}
 		}
 	}

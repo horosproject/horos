@@ -7617,13 +7617,10 @@ BOOL            readable = YES;
 
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
-NSLog(@"changeWLWW");
 long			i;
 float			iwl, iww;
 
-[self CheckLoad]; 
-	
-	
+	[self CheckLoad]; 
 	
 	if( newWW !=0 || newWL != 0)   // new values to be applied
     {
