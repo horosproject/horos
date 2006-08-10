@@ -3313,7 +3313,18 @@ static ViewerController *draggedController = 0L;
 			}
 		}
 	}
-		
+	
+	if( stopThreadLoadImage == NO)	 
+	{	 
+		for( x = 0; x < maxMovieIndex; x++)	 
+		{	 
+			for( i = 0 ; i < [pixList[ x] count]; i++)	 
+			{	 
+				 [[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+			}
+		 }	 
+	}
+	
 	ThreadLoadImage = NO;
 	if( stopThreadLoadImage == YES)
 	{
