@@ -8143,7 +8143,13 @@ float			iwl, iww;
 #pragma mark-
 
 
-
+- (void) kill8bitsImage
+{	 
+	[image release];	 
+	baseAddr = 0L;	 
+	image = 0L;	 
+ }
+ 
 - (void) checkImageAvailble:(float)newWW :(float)newWL
 {
 	[self CheckLoad];

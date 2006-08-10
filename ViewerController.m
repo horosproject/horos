@@ -9474,10 +9474,9 @@ return moviePosSlider;
 	
 	subCtrlOffset.y = subCtrlOffset.x = 0;
 	
-//	subCtrlMaskID = 1;
-	
-//	curMovieIndex = 0;
-//	maxMovieIndex = 1;
+	subCtrlMaskID = -2;
+	curMovieIndex = 0;
+	maxMovieIndex = 1;
 	blendingController = 0L;
 	
 	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
