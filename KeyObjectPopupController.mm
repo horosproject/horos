@@ -68,9 +68,9 @@
 	//update menu
 	NSLog(@"will Popup");
 	// Remove old Report Type Menu Items
-	if ([_menu numberOfItems] > 4) {
+	if ([_menu numberOfItems] > 7) {
 		int i = [_menu numberOfItems] - 1;
-		while (i >= 4) 
+		while (i >= 7) 
 			[_menu removeItemAtIndex:i--];
 	}
 	id study = [[[_viewerController imageView] seriesObj] valueForKey:@"study"];
@@ -79,16 +79,16 @@
 	// Report Type Menu Items
 	NSEnumerator *enumerator = [_reports objectEnumerator];
 	id report;
+	[_menu addItem:[NSMenuItem separatorItem]];
 	while (report = [enumerator nextObject]) {
 		NSMenuItem *item = [[[NSMenuItem alloc] initWithTitle:[report valueForKey:@"keyObjectType"] action:@selector(useKeyObjectNote:) keyEquivalent:@""] autorelease];
 		[_menu addItem:	item];
 		[item setTarget:self];	
 	}
-	[_menu insertItem:[NSMenuItem separatorItem] atIndex:4];
 }
 
 - (IBAction)useKeyObjectNote:(id)sender{
-	int index = [_popupButton indexOfSelectedItem] - 5;
+	int index = [_popupButton indexOfSelectedItem] - 8;
 	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	if (index > -1) {
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
