@@ -4784,9 +4784,9 @@ short				matrix[25];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 	
-//JF not necesary	float   iwl, iww;
-//JF not necesary	[imageView getWLWW:&iwl :&iww];
-//JF not necesary	[imageView setWLWW:iwl :iww];
+	float   iwl, iww;
+	[imageView getWLWW:&iwl :&iww];
+	[imageView setWLWW:iwl :iww];
 }
 
 - (void) CLUTChanged: (NSNotification*) note
