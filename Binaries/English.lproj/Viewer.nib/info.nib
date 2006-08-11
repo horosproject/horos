@@ -13,7 +13,11 @@
 		<key>1052</key>
 		<string>647 547 145 78 0 0 1440 878 </string>
 		<key>1204</key>
+<<<<<<< .mine
+		<string>662 569 116 83 0 0 1440 878 </string>
+=======
 		<string>454 457 116 83 0 0 1024 746 </string>
+>>>>>>> .r938
 		<key>14</key>
 		<string>444 456 135 84 0 0 1024 746 </string>
 		<key>21</key>
@@ -48,9 +52,13 @@
 	<integer>4</integer>
 	<key>IBOpenObjects</key>
 	<array>
+<<<<<<< .mine
+		<integer>1204</integer>
+=======
 		<integer>789</integer>
+>>>>>>> .r938
 	</array>
 	<key>IBSystem Version</key>
-	<string>8J135</string>
+	<string>8J2135</string>
 </dict>
 </plist>
