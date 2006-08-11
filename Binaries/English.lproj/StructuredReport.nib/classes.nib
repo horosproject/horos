@@ -1,5 +1,11 @@
 {
     IBClasses = (
+        {
+            CLASS = AllKeyImagesArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {keyImageMatrix = NSMatrix; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = PluginFilter; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
@@ -22,6 +28,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 accessoryView = id; 
+                allKeyObjectsArrayController = id; 
                 verifyPanel = id; 
                 viewControl = id; 
                 webView = id; 

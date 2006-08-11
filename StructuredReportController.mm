@@ -24,6 +24,7 @@
 #import "DicomStudy.h"
 #import"ViewerController.h"
 #import "AppController.h"
+#import "AllKeyImagesArrayController.h"
 
 extern AppController *appController;
 
@@ -48,7 +49,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 - (id)initWithStudy:(id)study{
 	if (self = [super initWithWindowNibName:@"StructuredReport"]) {	
 		_study = [study retain];
-		
+		_keyImagesInStudy = [[(NSSet *)[study keyImages] allObjects] retain];
 		NSEnumerator *enumerator = [[study valueForKey:@"reportSeries"] objectEnumerator];
 		id  series;
 		NSMutableSet *set = [NSMutableSet set];
@@ -96,6 +97,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		[self setTabIndex:0];
 	else
 		[self setTabIndex:1];
+	[allKeyObjectsArrayController updateMatrix];
 	
 
 }
@@ -105,7 +107,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[_report release];
 	[_reports release];
 	[_study release];
-	[_keyImagesInSeries release];
+	[_keyImagesInStudy release];
 	[super dealloc];
 }
 
@@ -337,13 +339,13 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_reportIndex = [indexSet retain];
 }
 
-- (NSArray *) keyImagesInSeries{
-	return _keyImagesInSeries;
+- (NSArray *) keyImagesInStudy{
+	return _keyImagesInStudy;
 }
 
-- (void) setKeyImagesInSeries:(NSArray *)images{
-	[_keyImagesInSeries release];
-	_keyImagesInSeries = [images retain];
+- (void) setkeyImagesInStudy:(NSArray *)images{
+	[_keyImagesInStudy release];
+	_keyImagesInStudy = [images retain];
 }
 	
 		

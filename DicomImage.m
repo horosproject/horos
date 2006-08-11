@@ -167,16 +167,20 @@ extern NSString * documentsDirectory();
 
 - (NSImage *)image{
 	//[self primitiveValueForKey:@"frameNo"]
-	 DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	 [pix computeWImage:YES :0 :0];
-	 [pix release];
-	 return nil;
+	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+	[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
+	NSImage *thumbnail = (NSImage *)[pix getImage];
+	[pix release];
+	return thumbnail;
+
 }
 - (NSImage *)thumbnail{
-	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :0 isBonjour:NO imageObj:self];
+	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+	//[pix computeWImage:YES :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:YES :0 :0];
+	NSImage *thumbnail = [[(NSImage *)[pix getImage] retain] autorelease];
 	[pix release];
-	return nil;
+	return thumbnail;
 }
 	
 

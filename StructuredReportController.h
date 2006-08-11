@@ -23,7 +23,7 @@
 
 
 @class StructuredReport;
-
+@class AllKeyImagesArrayController;
 
 @interface StructuredReportController : NSWindowController {
 
@@ -49,8 +49,8 @@
 	NSString *_exportExtension;
 	int _tabIndex;
 	NSIndexSet *_reportIndex;
-	NSArray *_keyImagesInSeries;
-	
+	NSArray *_keyImagesInStudy;
+	IBOutlet AllKeyImagesArrayController *allKeyObjectsArrayController;
 	
 }
 
@@ -89,8 +89,8 @@
 - (NSIndexSet *)reportIndex;
 - (void)setReportIndex:(NSIndexSet *)indexSet;
 
-- (NSArray *) keyImagesInSeries;
-- (void) setKeyImagesInSeries:(NSArray *)images;
+- (NSArray *) keyImagesInStudy;
+- (void) setKeyImagesInStudy:(NSArray *)images;
 
 
 
