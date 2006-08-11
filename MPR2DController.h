@@ -62,7 +62,6 @@
 	DICOMExport				*exportDCM;
 }
 
--(void) applyOrientation;
 -(NSSlider*) slider;
 -(void) load3DState;
 -(MPR2DView*) MPR2Dview;
