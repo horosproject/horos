@@ -86,9 +86,8 @@ my_error_exit (j_common_ptr ioCInfo)
   (*ioCInfo->err->output_message) (ioCInfo);
 
   /* Return control to the setjmp point */
-#ifdef Mac
+  
   longjmp (theErr->setjmp_buffer, 1);
-#endif
 
 } /* endofunction my_error_exit */
 
@@ -136,6 +135,7 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   if ((theErr = (PapyShort) Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP)) < 0)
   {
     Papy3FClose (&gPapyFile [inFileNb]);
+	alreadyUncompressing = FALSE;
     RETURN (theErr);
   } /* if */
     
@@ -144,19 +144,21 @@ ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
   theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
     
   /* Pixel data fragment not found when expected */
-  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
+  if ((theGroup != 0xFFFE) || (theElement != 0xE000))
+  {
+	alreadyUncompressing = FALSE;
+	RETURN (papBadArgument);
+  }
   
   /* We set up the normal JPEG error routines, then override error_exit. */
   theCInfo.err 		 = jpeg_std_error (&theJErr.pub);
-//  theJErr.pub.error_exit = my_error_exit;
+  theJErr.pub.error_exit = my_error_exit;
   /* Establish the setjmp return context for my_error_exit to use. */
-//#ifdef Mac
-//  if (setjmp (theJErr.setjmp_buffer)) 
-//  {
-//    jpeg_destroy_decompress (&theCInfo);
-//    return 0;
-//  }/* if */
-//#endif
+  if (setjmp (theJErr.setjmp_buffer)) 
+  {
+    jpeg_destroy_decompress (&theCInfo);
+   return -1;
+  }/* if */
 
   /* initialize the JPEG decompression object */
   jpeg_create_decompress (&theCInfo);
