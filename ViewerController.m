@@ -3285,38 +3285,39 @@ static ViewerController *draggedController = 0L;
 	subCtrlMinMax.x = subCtrlMin;
 	subCtrlMinMax.y = subCtrlMax;
 
-	[subCtrlOnOff setState: NSOnState]; //"on"
-	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-	{
-		[[[imageView dcmPixList]objectAtIndex:i] setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
-	}
+//	ANR - By default it should not be ON
+
+//	[subCtrlOnOff setState: NSOnState]; //"on" By default it should not be ON
+//	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+//	{
+//		[[[imageView dcmPixList]objectAtIndex:i] setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
+//	}
 	
 	// 5x5 convolution
-	NSDictionary   *aConv;
-	NSArray			*array;
-	long			size;
-	long			nomalization;
-	short			matrix[25];
-	
-	aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
-	
-	nomalization = [[aConv objectForKey:@"Normalization"] longValue];
-	size = [[aConv objectForKey:@"Size"] longValue];
-	array = [aConv objectForKey:@"Matrix"];
-	
-	for( i = 0; i < size*size; i++)
-	{
-		matrix[i] = [[array objectAtIndex: i] longValue];
-	}				
-
-	[imageView setConv:matrix :size: nomalization];
-	[subCtrlSharpenButton setState: NSOnState];
-	
-	
-
-	//slider pos
-	[imageView setIndex: 2]; //go to frame 2 
-	[self setImageIndex: 2]; //adjust frame index
+//	NSDictionary   *aConv;
+//	NSArray			*array;
+//	long			size;
+//	long			nomalization;
+//	short			matrix[25];
+//	
+//	aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
+//	
+//	nomalization = [[aConv objectForKey:@"Normalization"] longValue];
+//	size = [[aConv objectForKey:@"Size"] longValue];
+//	array = [aConv objectForKey:@"Matrix"];
+//	
+//	for( i = 0; i < size*size; i++)
+//	{
+//		matrix[i] = [[array objectAtIndex: i] longValue];
+//	}				
+//
+//	[imageView setConv:matrix :size: nomalization];
+//	[subCtrlSharpenButton setState: NSOnState];
+//	
+//
+//	//slider pos
+//	[imageView setIndex: 2]; //go to frame 2 
+//	[self setImageIndex: 2]; //adjust frame index
 }
 
 -(void) loadImageData:(id) sender
