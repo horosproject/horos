@@ -29,6 +29,7 @@ Version 2.5
 #import "browserController.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
+#import "DCMPix.h"
 
 extern NSString * documentsDirectory();
 
@@ -162,6 +163,20 @@ extern NSString * documentsDirectory();
 	}	
 	[pool release];
 	 return graphicAnnotationSequence;
+}
+
+- (NSImage *)image{
+	//[self primitiveValueForKey:@"frameNo"]
+	 DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+	 [pix computeWImage:YES :0 :0];
+	 [pix release];
+	 return nil;
+}
+- (NSImage *)thumbnail{
+	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :0 isBonjour:NO imageObj:self];
+	[pix computeWImage:YES :0 :0];
+	[pix release];
+	return nil;
 }
 	
 

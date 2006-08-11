@@ -241,7 +241,16 @@
 		ss == series number
 		hello == Bonjour
 		imageObj (iO) == image core data object
-*/
+
+- (id) initWithContentsOfFile:(NSString*) s 
+							imageID:(long) pos 
+							numberOfImages:(long) tot 
+							volume:(float*) ptr 
+							frameNumber:(long) f 
+							seriesNumber:(long) ss 
+							isBonjour:(BOOL) hello 
+					imageObj: (NSManagedObject*) iO;
+*/					
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;

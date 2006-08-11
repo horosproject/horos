@@ -27,4 +27,6 @@
 -(NSString*) completePath;
 -(void) clearCompletePathCache;
 -(DCMSequenceAttribute*) graphicAnnotationSequence;
+- (NSImage *)image;
+- (NSImage *)thumbnail;
 @end
