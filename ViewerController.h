@@ -465,6 +465,7 @@ enum
 // functions s that plugins can also play with globals
 + (ViewerController *) draggedController;
 + (void) setDraggedController:(ViewerController *) controller;
+- (void)checkView:(NSView *)aView :(BOOL) OnOff;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

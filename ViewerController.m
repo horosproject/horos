@@ -2380,7 +2380,8 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([patientView frame]), NSHeight([patientView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([patientView frame]), NSHeight([patientView frame]))];
     }
-	else if([itemIdent isEqualToString: SubtractionToolbarItemIdentifier]) {
+	else if([itemIdent isEqualToString: SubtractionToolbarItemIdentifier])
+	{
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Subtraction", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Subtraction", nil)];
@@ -3265,59 +3266,31 @@ static ViewerController *draggedController = 0L;
 
 - (void) enableSubtraction
 {
-	subCtrlMaskID = 1;
-	[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
-
-
-
-	//define min and max value of the subtraction
-	long subCtrlMin = 1024;
-	long subCtrlMax = 0;
-	long i;
-	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-			{
-				subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
-																					:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
-								];
-				if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-				if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
-			}
-	subCtrlMinMax.x = subCtrlMin;
-	subCtrlMinMax.y = subCtrlMax;
-
-//	ANR - By default it should not be ON
-
-//	[subCtrlOnOff setState: NSOnState]; //"on" By default it should not be ON
-//	for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-//	{
-//		[[[imageView dcmPixList]objectAtIndex:i] setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
-//	}
-	
-	// 5x5 convolution
-//	NSDictionary   *aConv;
-//	NSArray			*array;
-//	long			size;
-//	long			nomalization;
-//	short			matrix[25];
-//	
-//	aConv = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:@"5x5 sharpen"];
-//	
-//	nomalization = [[aConv objectForKey:@"Normalization"] longValue];
-//	size = [[aConv objectForKey:@"Size"] longValue];
-//	array = [aConv objectForKey:@"Matrix"];
-//	
-//	for( i = 0; i < size*size; i++)
-//	{
-//		matrix[i] = [[array objectAtIndex: i] longValue];
-//	}				
-//
-//	[imageView setConv:matrix :size: nomalization];
-//	[subCtrlSharpenButton setState: NSOnState];
-//	
-//
-//	//slider pos
-//	[imageView setIndex: 2]; //go to frame 2 
-//	[self setImageIndex: 2]; //adjust frame index
+	if( enableSubtraction)
+	{
+		subCtrlMaskID = 1;
+		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
+		
+		//define min and max value of the subtraction
+		long subCtrlMin = 1024;
+		long subCtrlMax = 0;
+		long i;
+		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+				{
+					subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																						:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+									];
+					if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+					if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+				}
+		subCtrlMinMax.x = subCtrlMin;
+		subCtrlMinMax.y = subCtrlMax;
+		
+		// By default, the tool should not be activated.
+		
+		[self checkView: subCtrlView :YES];
+	}
+	else [self checkView: subCtrlView :NO];
 }
 
 -(void) loadImageData:(id) sender
@@ -3414,14 +3387,11 @@ static ViewerController *draggedController = 0L;
 				if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
 				if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
 			}
-
-			if (enableSubtraction) 
-			{
-				// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
-				[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
-			}
 		}
 	}
+	
+	// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
+	[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
 
 
 #pragma mark PET	
@@ -3599,6 +3569,11 @@ static ViewerController *draggedController = 0L;
 				}
 			}
 		[imageView setIndex: [imageView curImage]]; //refresh viewer only
+	}
+	else
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Subtraction", nil), NSLocalizedString(@"Subtraction works only for XA modality.", nil), nil, nil, nil);
+		[subCtrlOnOff setState: NSOffState];
 	}
 }
 
@@ -4502,7 +4477,6 @@ static float oldsetww, oldsetwl;
 
 -(void) ApplyConvString:(NSString*) str
 {
-NSLog(@"ApplyConvString");
 	if( [str isEqualToString:NSLocalizedString(@"No Filter", nil)] == YES)
 	{
 		[imageView setConv:0L :0: 0];
@@ -10599,6 +10573,8 @@ long i;
 	{
 		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 	}
+	
+	[imageView setNeedsDisplay:YES];
 }
 
 
@@ -10658,7 +10634,6 @@ long i;
 {
 	[keyImageCheck setState: ![keyImageCheck state]];
 	[self keyImageCheckBox: keyImageCheck];
-	[imageView setNeedsDisplay:YES];
 }
 
 

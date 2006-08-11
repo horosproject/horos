@@ -32,18 +32,19 @@ Version 2.4
     NSEnumerator *enumerator;
 	
 	if( aView == _authView) return;
-	
+
     if( [aView isKindOfClass: [NSControl class]])
 	{
        [(NSControl*) aView setEnabled: OnOff];
 	   return;
     }
-
+	
 	// Recursively check all the subviews in the view
     enumerator = [ [aView subviews] objectEnumerator];
     while (view = [enumerator nextObject]) {
         [self checkView:view :OnOff];
     }
+	
 }
 
 - (void) enableControls: (BOOL) val
@@ -174,7 +175,7 @@ Version 2.4
 	[locationMatrix selectCellWithTag:locationValue];
 	[locationURLField setStringValue:[defaults stringForKey:@"DATABASELOCATIONURL"]];
 	
-	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
+//	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
 	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]];
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
@@ -400,7 +401,7 @@ Version 2.4
 }
 - (IBAction)setCopyDatabaseOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"COPYDATABASE"];
-	[copyDatabaseModeMatrix setEnabled:[sender state]];
+//	[copyDatabaseModeMatrix setEnabled:[sender state]];
 }
 - (IBAction)setLocalizerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NOLOCALIZER"];

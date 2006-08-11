@@ -64,5 +64,4 @@
 - (void)setSplitMultiEchoMR:(BOOL)value;
 - (BOOL)combineProjectionSeries;
 - (void)setCombineProjectionSeries:(BOOL)value;
-- (IBAction) setDisplayAllStudiesAlbum:(id) sender;
 @end

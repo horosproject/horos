@@ -5042,7 +5042,7 @@ static long scrollMode;
 	//draw line around edge for key Images only in 2D Viewer
 	
 	if ([[[self window] windowController] isMemberOfClass:[ViewerController class]] && [[[self window] windowController] isKeyImage:curImage]) {
-		glLineWidth(1.0);
+		glLineWidth(2.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(1.0,                                      1.0);
