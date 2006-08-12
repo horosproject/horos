@@ -52,7 +52,7 @@
 #endif
 
 static void (*	EX_funcp) ();
-static int  ExitEnabled = 1;
+static int  ExitEnabled = 0;
 
 
 /*******************************************************************************/

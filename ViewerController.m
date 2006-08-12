@@ -9441,7 +9441,6 @@ return moviePosSlider;
 
 - (void) setPixelList:(NSMutableArray*)f fileList:(NSMutableArray*)d volumeData:(NSData*) v
 {
-	NSLog(@"setPixelList");
 	long i;
 	
 	speedometer = 0;
