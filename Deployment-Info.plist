@@ -113,11 +113,11 @@
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.2.5</string>
+	<string>OsiriX v.2.5.1</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.5</string>
+	<string>2.5.1</string>
 	<key>CFBundleVersion</key>
-	<string>250</string>
+	<string>251</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>

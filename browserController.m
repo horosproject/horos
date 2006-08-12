@@ -2896,7 +2896,11 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 		else NSLog(@"refreshDatabase locked...");
 	}
-	else [self refreshSmartAlbums];
+	else
+	{
+		[self refreshSmartAlbums];
+		[databaseOutline reloadData];
+	}
 }
 
 - (NSArray*) childrenArray: (NSManagedObject*) item
