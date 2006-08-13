@@ -447,15 +447,18 @@ if (DEBUG)
 		break;
     
 		case 3:
-			if (theCInfo.saw_JFIF_marker)
+		{
+			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+			NSString *photometricInterpretation = [attr value];
+			
+			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+			else if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if([photometricInterpretation isEqualToString:@"YBR_FULL"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if (theCInfo.saw_JFIF_marker)
 			{
 				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
-				
-				DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
-				DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-				NSString *photometricInterpretation = [attr value];
-				
-				if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
 			}
 			else if (theCInfo.saw_Adobe_marker)
 			{
@@ -473,6 +476,7 @@ if (DEBUG)
 				}
 			}
 			else theCInfo.jpeg_color_space = JCS_RGB;
+		}
 		break;
 	}
 //	if (_samplesPerPixel == 3)
