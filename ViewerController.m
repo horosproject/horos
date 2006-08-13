@@ -3992,8 +3992,6 @@ else								[self ApplyConvString:@"No Filter"];
 	[self adjustSlider];
 	
 	[imageView sendSyncMessage:1];
-	
-	
 }
 
 -(short) orientationVector
