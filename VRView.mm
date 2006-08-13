@@ -1502,8 +1502,10 @@ public:
 		{
 			[self setShadingValues:[[tempArray objectAtIndex:0] floatValue] :[[tempArray objectAtIndex:1] floatValue] :[[tempArray objectAtIndex:2] floatValue] :[[tempArray objectAtIndex:3] floatValue]];
 		}
-		volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
-
+		
+		if( renderingMode == 0)				// volume rendering
+			volumeProperty->SetShade( [[dict objectForKey:@"ShadingFlag"] longValue]);
+		
 		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
 		
 		if( [[dict objectForKey:@"SUVConverted"] boolValue] == [firstObject SUVConverted])
@@ -1520,8 +1522,7 @@ public:
 		
 		tempArray = [dict objectForKey:@"CameraClipping"];
 		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
-	
-				
+		
 		if( [dict objectForKey:@"Projection"])
 		{
 			[projection selectCellWithTag: [[dict objectForKey:@"Projection"] intValue]];
@@ -1535,7 +1536,8 @@ public:
 		#if __ppc__
 		volumeProperty->SetShade( 0);
 		#else
-		volumeProperty->SetShade( 1);
+		if( renderingMode == 0)				// volume rendering
+			volumeProperty->SetShade( 1);
 		#endif
 	}
 }
