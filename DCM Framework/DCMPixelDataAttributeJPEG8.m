@@ -450,6 +450,12 @@ if (DEBUG)
 			if (theCInfo.saw_JFIF_marker)
 			{
 				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
+				
+				DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
+				DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+				NSString *photometricInterpretation = [attr value];
+				
+				if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
 			}
 			else if (theCInfo.saw_Adobe_marker)
 			{

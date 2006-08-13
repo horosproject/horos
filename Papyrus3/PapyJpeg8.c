@@ -104,7 +104,7 @@ my_error_exit (j_common_ptr ioCInfo)
 static short  alreadyUncompressing = FALSE;
 
 PapyShort
-ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth)
+ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
   struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
   struct jpeg_decompress_struct	theCInfo;
@@ -194,6 +194,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 			if (theCInfo.saw_JFIF_marker)
 			{
 				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
+				
+				if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
 			}
 			else if (theCInfo.saw_Adobe_marker)
 			{

@@ -103,7 +103,7 @@ my_error_exit (j_common_ptr ioCInfo)
 static short  alreadyUncompressing = FALSE;
 
 PapyShort
-ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth)
+ExtractJPEGlossy12 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
 {
   struct SErrorMgr		theJErr;		 /* the JPEG error manager var */
   struct jpeg_decompress_struct	theCInfo;
