@@ -192,8 +192,11 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
     
 		case 3:
 			if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
-			else if( mode == YBR_FULL_422) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if( mode == YBR_FULL) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if(	mode == YBR_FULL_422 ||
+						mode == YBR_RCT ||
+						mode == YBR_ICT ||
+						mode == YBR_PARTIAL_422 ||
+						mode == YBR_FULL) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if (theCInfo.saw_JFIF_marker)
 			{
 				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */

@@ -1259,11 +1259,6 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     		     (PapyULong) (((gx0028BitsAllocated [inFileNb] - 1) / 8) + 1L);
 	}
 
-  if (gArrCompression [inFileNb] == JPEG_LOSSY && 
-      (gArrPhotoInterpret [inFileNb] == YBR_FULL_422 ||
-       gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422))
-    gArrPhotoInterpret [inFileNb] = RGB; /* DAB modification */
-
   /* if it is a RGB or a YBR_FULL image, multiply the bytes to read by 3 */
   if (inModuleId == ImagePixel && 
       (gArrPhotoInterpret [inFileNb] == RGB ||
@@ -1513,6 +1508,13 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			default:
 			case 8:
 				theErr = ExtractJPEGlossy8 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
+				
+				if(		gArrPhotoInterpret [inFileNb] == YBR_FULL  	||
+						gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
+						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
+						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
+						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
 		}
 	
@@ -1541,6 +1543,13 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			default:
 			case 8:
 				theErr = ExtractJPEGlossy8 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
+				
+				if(		gArrPhotoInterpret [inFileNb] == YBR_FULL  	||
+						gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
+						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
+						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
+						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
 		}
 			

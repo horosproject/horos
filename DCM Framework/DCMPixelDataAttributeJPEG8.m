@@ -448,6 +448,8 @@ if (DEBUG)
     
 		case 3:
 		{
+			theCInfo.out_color_space = JCS_RGB;
+			
 			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
 			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
 			NSString *photometricInterpretation = [attr value];
@@ -455,6 +457,8 @@ if (DEBUG)
 			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
 			else if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+			else if([photometricInterpretation isEqualToString:@"YBR_ICT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_FULL"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if (theCInfo.saw_JFIF_marker)
 			{
