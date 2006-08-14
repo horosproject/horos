@@ -3960,25 +3960,35 @@ else								[self ApplyConvString:@"No Filter"];
 	}
 }
 
-- (void) flipData:(char*) ptr :(long) no :(long) size
+- (void) flipData:(char*) ptr :(long) no :(long) x :(long) y
 {
-	long i;
+	long	i, size = x*y;
 	char*	tempData;
 	
-	NSLog(@"flip data");
+//	NSLog(@"flip data-A");
+//	
+//	size *= 4;
+//	tempData = (char*) malloc( size);
+//	for( i = 0; i < no/2; i++)
+//	{
+//		BlockMoveData( ptr + size*i, tempData, size);
+//		BlockMoveData( ptr + size*(no-1-i), ptr + size*i, size);
+//		BlockMoveData( tempData, ptr + size*(no-1-i), size);
+//	}
+//	free( tempData);
+//	
+//	NSLog(@"flip data-B");
 	
-	size *= 4;
+// The vImage version seems about 20% faster on my Core Duo processor.. maybe even faster on dual-dual-Xeon?
 	
-	tempData = (char*) malloc( size);
+	vImage_Buffer src, dest;
+	src.height = dest.height = no;
+	src.width = dest.width = x*y;
+	src.rowBytes = dest.rowBytes = x*y*4;
+	src.data = dest.data = ptr;
+	vImageVerticalReflect_PlanarF ( &src, &dest, 0L);
 	
-	for( i = 0; i < no/2; i++)
-	{
-		BlockMoveData( ptr + size*i, tempData, size);
-		BlockMoveData( ptr + size*(no-1-i), ptr + size*i, size);
-		BlockMoveData( tempData, ptr + size*(no-1-i), size);
-	}
-	
-	free( tempData);
+//	NSLog(@"flip data-C");
 }
 
 - (IBAction) flipDataSeries: (id) sender
@@ -4081,7 +4091,7 @@ else								[self ApplyConvString:@"No Filter"];
 						
 						float	*volumeDataPtr = [firstObject fImage];
 						
-						[self flipData: (char*) volumeDataPtr :[pixList[ x] count] :[firstObject pheight] * [firstObject pwidth]];
+						[self flipData: (char*) volumeDataPtr :[pixList[ x] count] :[firstObject pwidth] :[firstObject pheight]];
 						
 						for(  i = 0 ; i < [pixList[ x] count]; i++)
 						{

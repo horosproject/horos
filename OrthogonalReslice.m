@@ -257,8 +257,24 @@
 			Ycache = malloc( newTotal*newY*newX*sizeof(float));
 			if( Ycache)
 			{
+				NSLog( @"start YCache");
 				WaitRendering *splash = [[WaitRendering alloc] init:@"Preparing data..."];
 				[splash showWindow:self];
+				
+//				vImage_Buffer src, dest;
+//				
+//				src.height = [firstPix pwidth] * [pixList count];
+//				src.width = [firstPix pheight] ;
+//				src.rowBytes = src.width*4;
+//				
+//				dest.height = [firstPix pheight] ;
+//				dest.width = [firstPix pwidth]  * [pixList count];
+//				dest.rowBytes = dest.width*4;
+//				
+//				src.data = [[pixList objectAtIndex: 0] fImage];
+//				dest.data = Ycache;
+//				
+//				vImageRotate90_PlanarF( &src, &dest, kRotate90DegreesClockwise, 0, 0);
 				
 				// Create a scheduler
 				id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
@@ -282,6 +298,8 @@
 				
 				[splash close];
 				[splash release];
+				
+				NSLog( @"end YCache");
 			}
 		}
 	}
@@ -485,6 +503,11 @@
 			
 			if( Ycache)
 			{
+//				BlockMoveData(	Ycache + newY*newX*i,
+//								[curPix fImage],
+//								newX * newY *sizeof(float));
+
+
 				if( sign > 0)
 				{
 					float		*srcP, *dstP, *curPixfImage = [curPix fImage];
