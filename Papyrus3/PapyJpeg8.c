@@ -217,6 +217,8 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 				}
 			}
 			else theCInfo.jpeg_color_space = JCS_RGB;
+			
+			theCInfo.out_color_space = JCS_RGB;
 		break;
 	}
   /* theCInfo.out_color_space = JCS_YCbCr; */
