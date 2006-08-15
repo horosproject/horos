@@ -115,8 +115,8 @@ typedef unsigned short	PapyUShort;		/* 16 bits unsigned short int */
 typedef	int		PapyLong;		/* 32 bits long  int */
 typedef	unsigned int	PapyULong;		/* 32 bits unsigned long  int */
 #else
-typedef	long		PapyLong;		/* 32 bits long  int */
-typedef	unsigned long	PapyULong;		/* 32 bits unsigned long  int */
+typedef	int		PapyLong;		/* 32 bits long  int */
+typedef	unsigned int	PapyULong;		/* 32 bits unsigned long  int */
 #endif
 
 typedef float		PapyFloat;		/* 32 bits float */

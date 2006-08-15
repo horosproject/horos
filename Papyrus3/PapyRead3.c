@@ -1326,7 +1326,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 			  while( ii-- > 0)
 			  {
 				val = (PapyUChar*) theULongP;
-				*theULongP++ = ((unsigned long) (val[3])) << 24 | ((unsigned long) (val[2])) << 16 | ((unsigned long) (val[1])) << 8 | ((unsigned long) (val[0]));
+				*theULongP++ = ((unsigned int) (val[3])) << 24 | ((unsigned int) (val[2])) << 16 | ((unsigned int) (val[1])) << 8 | ((unsigned int) (val[0]));
 			  }
 		  }
 		  #endif
