@@ -2536,8 +2536,8 @@ NS_ENDHANDLER
 	}
 	else if( _pixelDepth == 32)
 	{
-		unsigned long	*uslong = (unsigned long*) [data bytes];
-		long			*slong = (long*) [data bytes];
+		unsigned int	*uslong = (unsigned int*) [data bytes];
+		int				*slong = (int*) [data bytes];
 		floatData = [NSMutableData dataWithLength:[data length]];
 		float			*tDestF = (float *)[floatData mutableBytes];
 	

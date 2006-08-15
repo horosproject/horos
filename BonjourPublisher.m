@@ -235,7 +235,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -260,7 +260,7 @@ extern NSString * documentsDirectory();
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				long fileNo;
 				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
-				fileNo = NSSwapBigLongToHost( fileNo);
+				fileNo = NSSwapBigIntToHost( fileNo);
 				pos += 4;
 				
 				for( i = 0 ; i < fileNo; i++)
@@ -270,7 +270,7 @@ extern NSString * documentsDirectory();
 					
 					long fileSize;
 					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
-					fileSize = NSSwapBigLongToHost( fileSize);
+					fileSize = NSSwapBigIntToHost( fileSize);
 					pos += 4;
 					
 					while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -300,7 +300,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -310,7 +310,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -328,7 +328,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -372,7 +372,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -394,7 +394,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -426,7 +426,7 @@ extern NSString * documentsDirectory();
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 				pos += 4;
 				
 				// We read the string
@@ -436,7 +436,7 @@ extern NSString * documentsDirectory();
 				
 				// We read the data size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &dataSize];	dataSize = NSSwapBigLongToHost( dataSize);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &dataSize];	dataSize = NSSwapBigIntToHost( dataSize);
 				pos += 4;
 				
 				// We read the data
@@ -462,7 +462,7 @@ extern NSString * documentsDirectory();
 				
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
-				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigLongToHost( noOfFiles);
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
 				pos += 4;
 				
 				representationToSend = [NSMutableData dataWithCapacity: 0];
@@ -471,7 +471,7 @@ extern NSString * documentsDirectory();
 				{
 					// We read 4 bytes that contain the string size
 					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 					pos += 4;
 					
 					// We read the string
@@ -500,7 +500,7 @@ extern NSString * documentsDirectory();
 				{
 					// We read 4 bytes that contain the string size
 					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigLongToHost( stringSize);
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
 					pos += 4;
 					
 					// We read the string

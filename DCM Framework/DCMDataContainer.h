@@ -70,8 +70,8 @@
 - (unsigned char)nextUnsignedChar;
 - (unsigned short)nextUnsignedShort;
 - (short)nextSignedShort;
-- (unsigned long)nextUnsignedLong;
-- (long)nextSignedLong;
+- (unsigned int)nextUnsignedLong;
+- (int)nextSignedLong;
 - (unsigned long long)nextUnsignedLongLong;
 - (long long)nextSignedLongLong;
 - (float)nextFloat;

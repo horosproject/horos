@@ -209,7 +209,7 @@ volatile static BOOL threadIsRunning = NO;
 				NSData	*curData = 0L;
 				
 				// The File
-				size = NSSwapBigLongToHost( *((long*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 				pos += 4;
 				curData = [data subdataWithRange: NSMakeRange(pos, size)];
 				pos += size;
@@ -218,7 +218,7 @@ volatile static BOOL threadIsRunning = NO;
 				success = [curData writeToFile: destPath atomically:YES];
 				
 				// The modification date
-				size = NSSwapBigLongToHost( *((long*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 				pos += 4;
 				curData = [data subdataWithRange: NSMakeRange(pos, size)];
 				pos += size;
@@ -241,18 +241,18 @@ volatile static BOOL threadIsRunning = NO;
 				
 				long pos = 0, noOfFiles, size, i;
 				
-				noOfFiles = NSSwapBigLongToHost( *((long*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+				noOfFiles = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 				pos += 4;
 					
 				for( i = 0 ; i < noOfFiles; i++)
 				{
-					size = NSSwapBigLongToHost( *((long*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 					pos += 4;
 					
 					NSData	*curData = [data subdataWithRange: NSMakeRange(pos, size)];
 					pos += size;
 					
-					size = NSSwapBigLongToHost( *((long*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
+					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 					pos += 4;
 					
 					NSString *localPath = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,size)] bytes]];
@@ -290,14 +290,14 @@ volatile static BOOL threadIsRunning = NO;
 			}
 			else if (strcmp( messageToRemoteService, "PASWD") == 0)
 			{
-				long result = NSSwapBigLongToHost( *((long*) [data bytes]));
+				long result = NSSwapBigIntToHost( *((int*) [data bytes]));
 				
 				if( result) wrongPassword = NO;
 				else wrongPassword = YES;
 			}
 			else if (strcmp( messageToRemoteService, "ISPWD") == 0)
 			{
-				long result = NSSwapBigLongToHost( *((long*) [data bytes]));
+				long result = NSSwapBigIntToHost( *((int*) [data bytes]));
 				
 				if( result) isPasswordProtected = YES;
 				else isPasswordProtected = NO;

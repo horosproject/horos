@@ -8263,7 +8263,7 @@ return moviePosSlider;
 		
 		i = GetPixRowBytes(pixMapHandle) * tempRect.bottom /4;
 		
-		unsigned long *argb = (unsigned long*) [rep bitmapData];
+		unsigned int *argb = (unsigned int*) [rep bitmapData];
 		while( i-- > 0)
 		{
 			*argb = (*argb << 8) + 0xFF;

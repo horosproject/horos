@@ -260,28 +260,28 @@
 	return nil;
 }
 
-- (unsigned long)nextUnsignedLong{
+- (unsigned int)nextUnsignedLong{
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		int size = 4;
-		unsigned long *x;
-		x = (unsigned long *)(_ptr + position);
+		unsigned int *x;
+		x = (unsigned int *)(_ptr + position);
 		position += size;
-		return (unsigned long)([self isLittleEndian]) ? NSSwapLittleLongToHost(*x) : NSSwapBigLongToHost(*x) ;
+		return (unsigned int)([self isLittleEndian]) ? NSSwapLittleIntToHost(*x) : NSSwapBigIntToHost(*x) ;
 	}
 	else 
 		[exception raise];
 	return nil;
 }
 
-- (long)nextSignedLong{
+- (int)nextSignedLong{
 	NSException *exception = [self testForLength:4];
 	if (!exception) {
 		int size = 4;
-		signed long *x;
-		x = (signed long *)(_ptr + position);
+		signed int *x;
+		x = (signed int *)(_ptr + position);
 		position += size;
-		return (signed long)([self isLittleEndian]) ? NSSwapLittleLongToHost(*x) : NSSwapBigLongToHost(*x) ;
+		return (signed int)([self isLittleEndian]) ? NSSwapLittleIntToHost(*x) : NSSwapBigIntToHost(*x) ;
 	}
 	else 
 		[exception raise];
