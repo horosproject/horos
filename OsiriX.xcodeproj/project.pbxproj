@@ -2281,6 +2281,24 @@
 		BF9D3B270770AA6A002F0847 /* DCMCompositeResponseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */; };
 		BFA7D2180A51D1460013F76E /* BrowserControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */; };
 		BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */; };
+		BFAA082D0A901AD0002DB3DD /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
+		BFAA082E0A901AD0002DB3DD /* DragMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA082C0A901AD0002DB3DD /* DragMatrix.m */; };
+		BFAA082F0A901AD0002DB3DD /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
+		BFAA08300A901AD0002DB3DD /* DragMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA082C0A901AD0002DB3DD /* DragMatrix.m */; };
+		BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA082B0A901AD0002DB3DD /* DragMatrix.h */; };
+		BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA082C0A901AD0002DB3DD /* DragMatrix.m */; };
+		BFAA08410A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */; };
+		BFAA08420A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */; };
+		BFAA08430A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */; };
+		BFAA08440A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */; };
+		BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */; };
+		BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */; };
+		BFAA0D070A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */; };
+		BFAA0D080A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */; };
+		BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */; };
+		BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */; };
+		BFAA0D0B0A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */; };
+		BFAA0D0C0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */; };
 		BFAEB3FA06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFAEB3FB06BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB3F706BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.m */; };
 		BFAEB40A06BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -10510,6 +10528,12 @@
 		BF9D3B250770AA6A002F0847 /* DCMCompositeResponseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMCompositeResponseHandler.m; path = Networking/DCMCompositeResponseHandler.m; sourceTree = "<group>"; };
 		BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserControllerDCMTKCategory.mm; sourceTree = "<group>"; };
+		BFAA082B0A901AD0002DB3DD /* DragMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrix.h; sourceTree = "<group>"; };
+		BFAA082C0A901AD0002DB3DD /* DragMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragMatrix.m; sourceTree = "<group>"; };
+		BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AllKeyImagesArrayController.h; sourceTree = "<group>"; };
+		BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AllKeyImagesArrayController.m; sourceTree = "<group>"; };
+		BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectedKeyImagesArrayController.h; sourceTree = "<group>"; };
+		BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectedKeyImagesArrayController.m; sourceTree = "<group>"; };
 		BFAEB10506BF2C4E00C7EF1E /* ijg8.dsp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ijg8.dsp; sourceTree = "<group>"; };
 		BFAEB10606BF2C4E00C7EF1E /* jaricom.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jaricom.c; sourceTree = "<group>"; };
 		BFAEB10706BF2C4E00C7EF1E /* jcapimin.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jcapimin.c; sourceTree = "<group>"; };
@@ -14607,6 +14631,8 @@
 		BF6290670A2B7E2900BB0B62 /* Reports */ = {
 			isa = PBXGroup;
 			children = (
+				BFAA083F0A901BDB002DB3DD /* AllKeyImagesArrayController.h */,
+				BFAA08400A901BDB002DB3DD /* AllKeyImagesArrayController.m */,
 				BF6290550A2B7D5000BB0B62 /* StructuredReportController.h */,
 				BF6290560A2B7D5000BB0B62 /* StructuredReportController.mm */,
 				BF6290750A2B7E8600BB0B62 /* SRArrayController.h */,
@@ -14619,6 +14645,10 @@
 				BF038E7F0A3FB49700663EBB /* KeyObjectReport.mm */,
 				BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */,
 				BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */,
+				BFAA082B0A901AD0002DB3DD /* DragMatrix.h */,
+				BFAA082C0A901AD0002DB3DD /* DragMatrix.m */,
+				BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */,
+				BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -19489,6 +19519,9 @@
 				ABE471120A76412700327466 /* jpegint8.h in Headers */,
 				ABE471130A76412700327466 /* jpeglib8.h in Headers */,
 				ABE471170A76412700327466 /* jversion8.h in Headers */,
+				BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */,
+				BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
+				BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21357,6 +21390,9 @@
 				ABE470780A76412600327466 /* jpegint8.h in Headers */,
 				ABE470790A76412600327466 /* jpeglib8.h in Headers */,
 				ABE4707D0A76412600327466 /* jversion8.h in Headers */,
+				BFAA082D0A901AD0002DB3DD /* DragMatrix.h in Headers */,
+				BFAA08410A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
+				BFAA0D0B0A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23230,6 +23266,9 @@
 				ABE470C50A76412700327466 /* jpegint8.h in Headers */,
 				ABE470C60A76412700327466 /* jpeglib8.h in Headers */,
 				ABE470CA0A76412700327466 /* jversion8.h in Headers */,
+				BFAA082F0A901AD0002DB3DD /* DragMatrix.h in Headers */,
+				BFAA08430A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
+				BFAA0D070A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25422,6 +25461,9 @@
 				CE6D47740A76B22D0034A4B4 /* DicomDirFiles.c in Sources */,
 				CE6D47750A76B22E0034A4B4 /* DicomDirDataSetWrite.c in Sources */,
 				CE6D47760A76B22F0034A4B4 /* DicomDirDatasetRead.c in Sources */,
+				BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */,
+				BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
+				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26142,6 +26184,9 @@
 				ABE4707A0A76412600327466 /* jquant1.c in Sources */,
 				ABE4707B0A76412600327466 /* jquant2.c in Sources */,
 				ABE4707C0A76412600327466 /* jutils.c in Sources */,
+				BFAA082E0A901AD0002DB3DD /* DragMatrix.m in Sources */,
+				BFAA08420A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
+				BFAA0D0C0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27057,6 +27102,9 @@
 				ABE470C70A76412700327466 /* jquant1.c in Sources */,
 				ABE470C80A76412700327466 /* jquant2.c in Sources */,
 				ABE470C90A76412700327466 /* jutils.c in Sources */,
+				BFAA08300A901AD0002DB3DD /* DragMatrix.m in Sources */,
+				BFAA08440A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
+				BFAA0D080A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

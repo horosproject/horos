@@ -6,6 +6,12 @@
             OUTLETS = {keyImageMatrix = NSMatrix; }; 
             SUPERCLASS = NSArrayController; 
         }, 
+        {
+            CLASS = DragMatrix; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {arrayController = id; }; 
+            SUPERCLASS = NSMatrix; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = PluginFilter; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 

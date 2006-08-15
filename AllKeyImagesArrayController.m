@@ -21,6 +21,7 @@
 
 #import "AllKeyImagesArrayController.h"
 #import "DicomImage.h"
+#import "DragMatrix.h"
 
 @implementation AllKeyImagesArrayController
 
@@ -29,6 +30,7 @@
 	[super setContent:content];
 	if (keyImageMatrix)
 		[self updateMatrix];
+	[(DragMatrix *)keyImageMatrix setController:self];
 }
 
 
@@ -45,7 +47,8 @@
 	while (image = [enumerator nextObject]) {
 		NSImage *thumbnail = [image thumbnail];
 		if (thumbnail) {
-			NSImageCell *cell = [[[NSImageCell alloc] initImageCell:thumbnail] autorelease];
+			//NSImageCell *cell = [[[NSImageCell alloc] initImageCell:thumbnail] autorelease];
+			NSButtonCell *cell = [[[NSButtonCell alloc] initImageCell:thumbnail] autorelease];
 			[keyImageMatrix addColumnWithCells:[NSArray arrayWithObject:cell]];
 		}
 	}
