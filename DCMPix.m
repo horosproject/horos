@@ -69,9 +69,9 @@ extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
 
 void ConvertFloatToNative (float *theFloat)
 {
-	unsigned long		*myLongPtr;
+	unsigned int		*myLongPtr;
 	
-	myLongPtr = (unsigned long *)theFloat;
+	myLongPtr = (unsigned int *)theFloat;
 	*myLongPtr = EndianU32_LtoN(*myLongPtr);
 }
 
@@ -6568,11 +6568,11 @@ BOOL            readable = YES;
 							
 							case 8:
 							{
-								unsigned long   *bufPtr;
+								unsigned int   *bufPtr;
 								short			*ptr, *tmpImage;
 								long			loop;
 								
-								bufPtr = (unsigned long*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
+								bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
 								ptr    = oImage;
 								
 								loop = totSize/2;

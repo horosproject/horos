@@ -950,7 +950,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						int TAGTYPE = 0;
 						long LENGTH = 0;
 						int MASK = 0x00ff;
-						long MASK2 = 0x000000ff;
+						int MASK2 = 0x000000ff;
 						
 						TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK ) <<0);
 						LENGTH = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
@@ -1032,7 +1032,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					int TAGTYPE = 0;
 					long LENGTH = 0;
 					int MASK = 0x00ff;
-					long MASK2 = 0x000000ff;
+					int MASK2 = 0x000000ff;
 					
 					TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
 					LENGTH = ((TAG1[7] & MASK2) << 24) | ((TAG1[6] & MASK2) << 16) | ((TAG1[5] & MASK2) << 8) | (TAG1[4] & MASK2);
