@@ -139,12 +139,9 @@ NSString* asciiString (NSString* name);
             NSDirectoryEnumerator *direnum = [manager enumeratorAtPath:fname];
             //Loop Through directories
             while (pname = [direnum nextObject]) {
-				//NSLog(@"Pname %@", pname);
                 pathName = [fname stringByAppendingPathComponent:pname]; //make pathanme
                 if ([manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir) { //check for directory
 					if ([DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO]){
-						//if ([dicomDecoder dicomCheckForFile:pathName] > 0) {
-						//NSLog(@"dicomCheck %d", [dicomDecoder dicomCheckForFile:pathName] );
                         [fileNames addObject:pathName];
 					}
                 }
@@ -153,7 +150,6 @@ NSString* asciiString (NSString* name);
         } //if
         //else if ([dicomDecoder dicomCheckForFile:fname] > 0) {
 		else if ([DCMObject objectWithContentsOfFile:fname decodingPixelData:NO]) {	//Pathname
-				//NSLog(@"dicom Check 2");
 				[fileNames addObject:fname];
         }
 		[pool release];
@@ -349,7 +345,7 @@ NSString* asciiString (NSString* name);
 	
 - (void) burnProgressPanelWillBegin:(NSNotification*)aNotification
 {
-	//NSLog(@"burnProgressPanelWillBegin:");
+
 	burning = YES;	// Keep the app from being quit from underneath the burn.
 	isThrobbing = NO;
 	burnAnimationIndex = 0;
@@ -359,9 +355,6 @@ NSString* asciiString (NSString* name);
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
 {
-	//NSLog(@"burnProgressPanelDidFinish:");
-	//[burnAnimationTimer invalidate];
-	//burnAnimationTimer = nil;
 	NSFileManager *manager = [NSFileManager defaultManager];
 	[manager removeFileAtPath:[self folderToBurn] handler:nil];
 	burning = NO;	// OK we can quit now.
@@ -429,47 +422,8 @@ NSString* asciiString (NSString* name);
 	}
 }
 
-//datasource and delegate
-/*
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView{
-	return [files count];
-}
-
-- (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex {
-		return [files objectAtIndex:rowIndex];
-}
 
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)operation{
-	
-	NSPasteboard *pb = [info draggingPasteboard];
-	NSString *type = [pb availableTypeFromArray:[NSArray arrayWithObject:NSFilenamesPboardType]];
-	if ([type isEqualToString:NSFilenamesPboardType]){
-		NSArray *filenames = [pb propertyListForType:NSFilenamesPboardType];
-		//NSLog(@"propertyList %@", filenames);
-		//[self importFiles:filenames];
-		[NSThread detachNewThreadSelector:@selector(importFiles:) toTarget:self withObject:filenames];
-		return YES;
-	}
-	return NO;
-}
-
-- (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)operation{
-	
-	[tableView setDropRow:[tableView numberOfRows]  dropOperation:NSTableViewDropAbove];
-	NSPasteboard *pb = [info draggingPasteboard];
-	NSString *type = [pb availableTypeFromArray:[NSArray arrayWithObject:NSFilenamesPboardType]];
-	//NSLog(@"Validate %@", type);
-	if ([type isEqualToString:NSFilenamesPboardType])
-		return NSDragOperationEvery;
-	
-	return NSDragOperationNone;
-	
-//	return NSDragOperationEvery;
-}
-*/
 
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
@@ -571,31 +525,17 @@ NSString* asciiString (NSString* name);
 	while (file = [enumerator nextObject]) {
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
-		//NSLog(@"copy File: %@", newPath);
-		//[manager createSymbolicLinkAtPath:newPath pathContent:file];
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-//		if (![[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax]])
+		//Don't want Big Endian, May not be readable
+		if ([[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
+			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
+		else
 			[manager copyPath:file toPath:newPath handler:nil];
-//		else
-//			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
 		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Copying: %@", [newPath lastPathComponent]] waitUntilDone:YES];
 		[newFiles addObject:newPath];
 		[pool release];
 	}
 	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"Creating DICOMDIR" waitUntilDone:YES];
-	/*
-	DCMDirectory *directory = [DCMDirectory directory];
-	NSEnumerator *enumerator2 = [newFiles objectEnumerator];
-
-	while (file = [enumerator2 nextObject]) {
-		NSLog(@"Add File to DIDOMDIR: %@", file);
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		[directory addObjectAtPath:file];
-		[pool release];
-	}
-	NSLog(@"Write DICOMDIR");
-	[directory writeToFile:dicomdirPath];
-	*/
 	[self addDICOMDIRUsingDCMTK];
 	int size = 400;
 	
