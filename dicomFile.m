@@ -533,7 +533,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				if( strNo[ 0] >= '0' && strNo[ 0] <= '9' && strNo[ 1] >= '0' && strNo[ 1] <= '9' && strNo[ 2] >= '0' && strNo[ 2] <= '9'  && strNo[ 3] >= '0' && strNo[ 3] <= '9')
 				{
-					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					imageID = [[NSString alloc] initWithCString: (char*) strNo];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 4] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 4]];
 				}
@@ -546,7 +547,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[2] = strNo[ 3];
 					strNo[3] = 0;
 					
-					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					imageID = [[NSString alloc] initWithCString: (char*) strNo];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 3] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 3]];
 				}
@@ -557,7 +559,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[1] = strNo[ 3];
 					strNo[2] = 0;
 					
-					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					imageID = [[NSString alloc] initWithCString: (char*) strNo];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 2] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 2]];
 				}
@@ -567,13 +570,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					strNo[0] = strNo[ 3];
 					strNo[1] = 0;
 					
-					imageID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
+					imageID = [[NSString alloc] initWithCString: (char*) strNo];
+					SOPUID = [[NSString alloc] initWithString: [[tempString substringToIndex: [tempString length] - 1] stringByAppendingString:[NSString stringWithCString: (char*) strNo]]];
 					serieID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 					studyID = [[NSString alloc] initWithString: [tempString substringToIndex: [tempString length] - 1]];
 				}
 				else
 				{
-					studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+					imageID = [[NSString alloc] initWithInt: 0];
+					SOPUID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				}
@@ -619,7 +624,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:serieID forKey:@"seriesID"];
 				[dicomElements setObject:name forKey:@"seriesDescription"];
 				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-				[dicomElements setObject:imageID forKey:@"SOPUID"];
+				[dicomElements setObject:SOPUID forKey:@"SOPUID"];
 				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 				
