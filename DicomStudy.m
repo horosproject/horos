@@ -53,9 +53,9 @@ Version 2.3
 		
 		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
 		
-		if( years < 2)
+		if( years < 1)
 		{
-			if( months < 3) return [NSString stringWithFormat:@"%d d", days];
+			if( months < 1) return [NSString stringWithFormat:@"%d d", days];
 			else return [NSString stringWithFormat:@"%d m", months];
 		}
 		else return [NSString stringWithFormat:@"%d y", years];
