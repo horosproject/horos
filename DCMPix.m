@@ -3753,7 +3753,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 } // end createROIsFromRTSTRUCT
 
 #pragma mark-
-#pragma mark loading images with DCM framework or Osiris
 
 - (BOOL)loadDICOMDCMFramework	// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
@@ -3780,10 +3779,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		[pool release];
 		return NO;
 	}
-
-	//  Open encapsulatedPDFs "			
 	
-	if ([[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) {
+#pragma mark FILE SOP CLASS UID DEPENDANT
+	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
+	
+#pragma mark *pdf
+	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) {
 		NSLog(@"have PDF");
 		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
 		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
@@ -3933,34 +3934,41 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		[pool release];
 		return YES;												 
 	} // end encapsulatedPDF
-	
+
+#pragma mark *RTSTRUCT	
 	//  Check for RTSTRUCT and create ROIs if needed
 	
-	if ( [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] ) {
-		[self createROIsFromRTSTRUCT: dcmObject];
-	}
-	
-	// Image object
-	
-	if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
-	
-	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
-	
-	if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
-	
-	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];
-	
-	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
-	
-	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
-	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
-	
-	if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
-	if (!cineRate)
-	{
-		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
-			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
-	}
+	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] )
+		{
+			[self createROIsFromRTSTRUCT: dcmObject];
+
+		}
+
+			// Image object
+			
+			if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
+			
+			if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
+			
+			if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
+			
+			if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];
+			
+			if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
+			
+			if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
+			if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
+			
+			if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
+			if (!cineRate)
+			{
+				if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
+					cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
+			}	
+
+
+#pragma mark *pixel and image
+
 	
 	originX = 0;	originY = 0;	originZ = 0;
 	NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
@@ -3979,6 +3987,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		for (j = 0 ; j < [iop count]; j++) 
 			orientation[ j] = [[iop objectAtIndex:j] floatValue];
 	}
+
 	
 	offset = 0.0;
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"])
@@ -4070,6 +4079,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		isRGB = YES;			
 	} // endif ...extraction of the color palette
 	
+	
+#pragma mark *MR/CT functional multiframe
+	
 	// Is it a new MR/CT multi-frame exam?
 	DCMSequenceAttribute *sharedFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"SharedFunctionalGroupsSequence"];
 	if (sharedFunctionalGroupsSequence){
@@ -4114,6 +4126,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			//				}
 		}
 	}
+
+
+#pragma mark *per frame
 	
 	// ****** ****** ****** ************************************************************************
 	// PER FRAME
@@ -4151,6 +4166,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 		
 	}
+	
+#pragma mark *tag group 6000
 	
 	if( [dcmObject attributeValueForKey: @"6000,0010"] && [[dcmObject attributeValueForKey: @"6000,0010"] isKindOfClass: [NSNumber class]])
 	{
@@ -4202,6 +4219,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 	}
 	
+#pragma mark *SUV	
+	
 	// Get values needed for SUV calcs:
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"]) patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	else patientsWeight = 0.0;
@@ -4242,8 +4261,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	// End SUV		
 	
+#pragma mark *compute normal vector				
 	// Compute normal vector
-				
+
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
@@ -4262,6 +4282,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	{
 		sliceLocation = originZ;
 	}
+
+
+
+#pragma mark READ PIXEL DATA		
 	
 	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
 	if( maxFrame == 0) maxFrame = 1;
@@ -4270,6 +4294,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	for( ee = 0; ee < maxFrame; ee++)
 	{
+
+#pragma mark *loading a frame		
+
 		NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
 		
 		DCMPix	*imPix = 0L;
@@ -4289,7 +4316,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		if ([dcmObject attributeValueWithName:@"PixelData"]) {
 			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
 			NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
-			//NSLog( @"%d %d", ee, [pixData length]);
+			//NSLog( @"DCM frame ee: %d     pixData length: %d", ee, [pixData length]);
 			oImage =  malloc([pixData length]);	
 			[pixData getBytes:oImage];
 			//NSLog(@"image size: %d", ( height * width * 2));
@@ -4452,8 +4479,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			//NSLog(@"Updated width");
 		}
 		
-		
-		
 		//***********
 		
 		if( isRGB)
@@ -4599,8 +4624,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 		
 		[subPool release];
+
+#pragma mark *after loading a frame
+
+
 	}
 	
+#pragma mark *after all frames are loaded	
+
 	[pool release];
 	return YES;
 }
@@ -5276,8 +5307,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
-		
-				// Get values needed for SUV calcs:
+
+#pragma mark SUV
+
+		// Get values needed for SUV calcs:
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0054);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0) {
 			val = Papy3GetElement (theGroupP, papUnitsGr, &pos, &elemType );
@@ -5341,7 +5374,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		
 		// End SUV			
 		
-		
+#pragma mark MR/CT multiframe		
 		// Is it a new MR/CT multi-frame exam?
 		if ((err = Papy3GotoGroupNb (fileNb, 0x5200)) == 0)
 		{
@@ -5537,7 +5570,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL
 				
-				
+#pragma mark code for each frame				
 				// ****** ****** ****** ************************************************************************
 				// PER FRAME
 				// ****** ****** ****** ************************************************************************
@@ -5664,6 +5697,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			}//endif ...groupOverlay 0x5200 read
 		}//endif ...groupOverlay 0x5200 found
 		
+#pragma mark tag group 6000		
+		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x6000);
 		if(  theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		{
@@ -5721,6 +5756,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			err = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
+#pragma mark PhilipsFactor		
+		
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x7053);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		{
@@ -5737,7 +5774,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			err = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
-		// Compute normal vector
+#pragma mark compute normal vector
 			
 		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 		orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
@@ -5761,6 +5798,23 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			sliceLocation = originZ;
 		}
 		
+		
+#pragma mark read pixel data	
+/* frameNb is an input of myInit(){} and contains 0 !!!
+ * imageNb = frameNb + 1
+ * ee = imageNb -1    =>    ee = frameNb
+ * 
+ * available values at this point in self...
+ * maxFrame = number of Frames
+ * srcFile
+ * default values of myInit
+ * height and width
+ * savedWL and savedWW
+ * pixelRatio and orientation
+ * slope and offset
+ * protocolName
+ * 
+ */	
 //		if( pixArray == 0L) maxFrame = 1;
 		
 //		for( ee = 0; ee < maxFrame; ee++)
@@ -5777,7 +5831,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				imPix = self;
 				ee = imageNb-1;
 			}
-			
+
+//	NSLog( @"PAPY frame ee: %d", ee);
 			// position the file pointer to the begining of the data set 
 			err = Papy3GotoNumber (fileNb, (PapyShort) ee+1, DataSetID);
 			
@@ -6122,6 +6177,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				} // endif ...group 7FE0 read 
 			}
 			
+
+#pragma mark RGB or fPlanar
+
 			//***********
 			if( isRGB)
 			{
