@@ -6987,7 +6987,17 @@ static NSArray*	openSubSeriesArray = 0L;
 
 -(void) awakeFromNib
 {
-	WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting...", nil)];
+	WaitRendering		*wait = 0L;
+	
+	if( sizeof( long) == 8)
+	{
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 64-bit version", nil)];
+	}
+	else
+	{
+		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
+	}
+	
 	[wait showWindow:self];
 	
 	@try

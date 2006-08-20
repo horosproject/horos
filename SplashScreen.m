@@ -121,7 +121,12 @@ BOOL useQuartz() {
 { 
 	[[self window] center];	
 	NSString *currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"];	
-	[version setStringValue: currVersionNumber];	
+	
+	if( sizeof(long) == 8)
+		[version setStringValue: [currVersionNumber stringByAppendingString:@" 64-bit"]];
+	else
+		[version setStringValue: [currVersionNumber stringByAppendingString:@" 32-bit"]];
+		
 	[[self window] setDelegate:self];
 	[[self window] setAlphaValue:0.0];
 	if (useQuartz())	
