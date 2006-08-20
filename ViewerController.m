@@ -1010,6 +1010,14 @@ int sortROIByName(id roi1, id roi2, void *context)
 }
 
 
+- (void)windowDidResize:(NSNotification *)aNotification
+{
+	if( [aNotification object] == [self window])
+	{
+		[self matrixPreviewSelectCurrentSeries];
+	}
+}
+
 - (void) WindowDidResignMainNotification:(NSNotification *)aNotification
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
@@ -1512,8 +1520,12 @@ int sortROIByName(id roi1, id roi2, void *context)
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask) 
 	{
 		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
-		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		
 		[self matrixPreviewSelectCurrentSeries];
+		
+		// For toolbar
+		[[NSNotificationCenter defaultCenter] postNotificationName:NSWindowDidBecomeKeyNotification object:[self window]];
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 	}
 	else
 	{

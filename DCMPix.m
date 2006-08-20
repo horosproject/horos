@@ -8177,6 +8177,8 @@ float			iwl, iww;
 					dst28.data = malloc((height+4) * (rowBytes+4));
 					if( dst28.data != 0L)
 					{
+//						short err = vImageRichardsonLucyDeConvolve_Planar8(&dst8, &dst28, 0, 0, 0, kernel, 0L, kernelsize, kernelsize, 0L, 0L, 0, 10, 0, 1, 0);
+						
 						short err = vImageConvolve_Planar8(&dst8, &dst28, 0, 0, 0, kernel, kernelsize, kernelsize, normalization, 0, kvImageEdgeExtend );
 						if( err) NSLog(@"Error = %d", err);
 						
