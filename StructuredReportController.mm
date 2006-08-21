@@ -284,7 +284,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 }
 
 - (IBAction)printDocument:(id)sender{
-	[webView print:sender];
+	//[self setTabIndex:0];
+	[[[[webView mainFrame] frameView] documentView] print:sender];
 }
 
 - (BOOL)verified{

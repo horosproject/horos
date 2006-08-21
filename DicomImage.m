@@ -168,8 +168,9 @@ extern NSString * documentsDirectory();
 - (NSImage *)image{
 	//[self primitiveValueForKey:@"frameNo"]
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
-	NSImage *thumbnail = (NSImage *)[pix getImage];
+	//[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
+	[pix computeWImage:NO :0 :0];
+	NSImage *thumbnail = (NSImage *)[pix image];
 	[pix release];
 	return thumbnail;
 

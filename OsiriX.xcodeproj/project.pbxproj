@@ -1964,6 +1964,12 @@
 		BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
 		BF4CEBD709CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
 		BF4CEBD809CB736D0073E928 /* dcmqrcnf.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */; };
+		BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
+		BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
+		BF5537800A9A294A00D83CE3 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
+		BF5537810A9A294A00D83CE3 /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
+		BF5537820A9A294A00D83CE3 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = BF55377C0A9A294A00D83CE3 /* PathForImage.h */; };
+		BF5537830A9A294A00D83CE3 /* PathForImage.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF55377D0A9A294A00D83CE3 /* PathForImage.mm */; };
 		BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
 		BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
 		BF5C0189065320A800BAFCF7 /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
@@ -9471,6 +9477,23 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFB49A860A939F8600348CCC /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFB49A870A939F8600348CCC /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -10481,6 +10504,8 @@
 		BF4885A50766BD4D00F30E57 /* DCMPresentationDataValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMPresentationDataValue.h; path = Networking/DCMPresentationDataValue.h; sourceTree = "<group>"; };
 		BF4885A60766BD4D00F30E57 /* DCMPresentationDataValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCMPresentationDataValue.m; path = Networking/DCMPresentationDataValue.m; sourceTree = "<group>"; };
 		BF4CEBD509CB736D0073E928 /* dcmqrcnf.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcnf.mm; sourceTree = "<group>"; };
+		BF55377C0A9A294A00D83CE3 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
+		BF55377D0A9A294A00D83CE3 /* PathForImage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PathForImage.mm; sourceTree = "<group>"; };
 		BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = "<group>"; };
 		BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = "<group>"; };
 		BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCalendarDate.h; sourceTree = "<group>"; };
@@ -14649,6 +14674,8 @@
 				BFAA082C0A901AD0002DB3DD /* DragMatrix.m */,
 				BFAA0D050A916CB6002DB3DD /* SelectedKeyImagesArrayController.h */,
 				BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */,
+				BF55377C0A9A294A00D83CE3 /* PathForImage.h */,
+				BF55377D0A9A294A00D83CE3 /* PathForImage.mm */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -19522,6 +19549,7 @@
 				BFAA08310A901AD0002DB3DD /* DragMatrix.h in Headers */,
 				BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
+				BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21393,6 +21421,7 @@
 				BFAA082D0A901AD0002DB3DD /* DragMatrix.h in Headers */,
 				BFAA08410A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D0B0A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
+				BF5537820A9A294A00D83CE3 /* PathForImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23269,6 +23298,7 @@
 				BFAA082F0A901AD0002DB3DD /* DragMatrix.h in Headers */,
 				BFAA08430A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D070A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
+				BF5537800A9A294A00D83CE3 /* PathForImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23397,6 +23427,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFB49A860A939F8600348CCC /* Development */,
+				BFB49A870A939F8600348CCC /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -25464,6 +25500,7 @@
 				BFAA08320A901AD0002DB3DD /* DragMatrix.m in Sources */,
 				BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
+				BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26187,6 +26224,7 @@
 				BFAA082E0A901AD0002DB3DD /* DragMatrix.m in Sources */,
 				BFAA08420A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D0C0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
+				BF5537830A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27105,6 +27143,7 @@
 				BFAA08300A901AD0002DB3DD /* DragMatrix.m in Sources */,
 				BFAA08440A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D080A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
+				BF5537810A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

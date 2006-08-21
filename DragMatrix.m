@@ -89,12 +89,9 @@ NSString *pasteBoardTypeCover = @"KeyIMages";
 *****************************************************************************/
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender { 
 	[self clearDragDestinationMembers];
-	NSLog(@"Drag Entered");
     if ([sender draggingSource] == self) {
-		NSLog(@"NSDragOperationNone");
 		return NSDragOperationNone;
     } else {
-		NSLog(@"NSDragOperationEvery");
 		return NSDragOperationEvery;
 
     }
@@ -107,7 +104,6 @@ NSString *pasteBoardTypeCover = @"KeyIMages";
  *
 ***************************************************************************/
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender{
-	NSLog(@"prepare drag");
 	return YES;
 }
 
@@ -118,7 +114,6 @@ NSString *pasteBoardTypeCover = @"KeyIMages";
  * result of the dragging.
 *****************************************************************************/
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-	NSLog(@"perform Drag");
 	if ([sender draggingSource] == self)
 		return NO;
 	
@@ -403,7 +398,7 @@ NSString *pasteBoardTypeCover = @"KeyIMages";
 
 
 -(NSArray *)selection{
-	return [arrayController content];
+	return [arrayController selectedObjects];
 }
 
 

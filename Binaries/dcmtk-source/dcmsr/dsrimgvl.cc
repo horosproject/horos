@@ -36,6 +36,7 @@
 
 #include "dsrimgvl.h"
 #include "dsrxmld.h"
+#import "PathForImage.h"
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()
@@ -266,6 +267,16 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
    // }
    // docStream << "\">";
     /* text: image */
+	
+	//create image reference
+	docStream << endl << "<p>" << endl;
+	docStream << "<img src=";
+	//add sop Instance
+	docStream << "\"" <<  pathToJPEG(SOPInstanceUID.c_str()) << "\"";
+	//add width
+	docStream << "width=\"256\">";
+	 docStream << "</p>";
+	
     const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     if (modality != NULL)
         docStream << modality;

@@ -20,6 +20,8 @@
 
 
 #import "SelectedKeyImagesArrayController.h"
+#import "DicomImage.h"
+#import "browserController.h"
 
 
 @implementation SelectedKeyImagesArrayController
@@ -43,7 +45,28 @@
 	while (image = [enumerator nextObject]){
 		if (![[self content] containsObject:image]) {
 			[self addObject:image];
-			[keyImageMatrix addColumn];
+			NSButtonCell *cell = [[[NSButtonCell alloc] initImageCell:[(DicomImage *)image thumbnail]] autorelease];
+			[keyImageMatrix addColumnWithCells:[NSArray arrayWithObject:cell]];
+			//export jpeg to reports folder for html export
+			NSString *path = [[[BrowserController currentBrowser]  fixedDocumentsDirectory] stringByAppendingPathComponent:@"REPORTS"];
+			NSFileManager *defaultManager = [NSFileManager defaultManager];
+			BOOL isDir;
+			//CHECK FOR REPORTS FOLDER
+			if (!([defaultManager	fileExistsAtPath:path isDirectory:&isDir] && isDir))
+				[defaultManager createDirectoryAtPath:path attributes:nil];
+			//CHECK AND CREATE JPEGS SUBFOLDER
+			path = [path stringByAppendingPathComponent:@"JPEGS"];
+			if (!([defaultManager	fileExistsAtPath:path isDirectory:&isDir] && isDir))
+				[defaultManager createDirectoryAtPath:path attributes:nil];
+			//CREATE JPEG FOR HTML VIEWING
+			NSString *imageUID = [NSString stringWithFormat:@"%@", [image valueForKey:@"sopInstanceUID"]];
+			path = [path stringByAppendingPathComponent:imageUID];
+			NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
+			
+			NSBitmapImageRep *rep = (NSBitmapImageRep *)[[image image]  bestRepresentationForDevice:nil] ;
+			NSData *jpeg = [rep representationUsingType:NSJPEGFileType properties:dict];
+			[jpeg writeToFile:path atomically :YES];
+			
 		}
 	}
 	

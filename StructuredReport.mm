@@ -353,6 +353,8 @@
 }
 
 - (NSArray *)keyImages{
+	if (!_keyImages)
+		_keyImages = [[NSArray alloc] init];
 	return _keyImages;
 }
 

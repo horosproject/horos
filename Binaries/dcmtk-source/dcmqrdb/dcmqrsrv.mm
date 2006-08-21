@@ -779,23 +779,23 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
+     //   if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+     //   {
           transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
-		transferSyntaxes[2] = UID_JPEG2000LosslessOnlyTransferSyntax;
-		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;
-		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;		
-		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;
-		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[9] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 10;
+     //     transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+    //    } else {
+    //      transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+    //      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+   //     }
+		transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[2] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[4] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[5] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[6] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[8] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 9;
         break;
     }
 
