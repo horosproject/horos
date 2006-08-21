@@ -2358,7 +2358,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	void* actorPointer = actor;
 	[point3DActorArray addObject:[NSValue valueWithPointer:actorPointer]];
 	aRenderer->AddActor(actor);
-	actor->Delete();
+	//actor->Delete();
 }
 
 - (void) addRandomPoints: (int) n : (int) r
