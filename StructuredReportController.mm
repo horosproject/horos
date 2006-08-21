@@ -277,7 +277,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[alert addButtonWithTitle:@"Cancel"];
 	if ([alert runModal] == NSAlertFirstButtonReturn ) {
 		NSArray *images = [(NSSet *)[_study keyImages] allObjects];
-		[_report setKeyImages:images];
+		//[_report setKeyImages:images];
+		[self setKeyImages:images];
 	}
 	
 }
@@ -343,9 +344,17 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	return _keyImagesInStudy;
 }
 
-- (void) setkeyImagesInStudy:(NSArray *)images{
+- (void)setKeyImagesInStudy:(NSArray *)images{
 	[_keyImagesInStudy release];
 	_keyImagesInStudy = [images retain];
+}
+
+- (NSArray *) keyImages{
+	return [_report keyImages];
+}
+
+- (void) setKeyImages:(NSArray *)keyImages{
+	[_report setKeyImages:keyImages];
 }
 	
 		

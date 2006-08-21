@@ -29,6 +29,11 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {
+            CLASS = SelectedKeyImagesArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = AllKeyImagesArrayController; 
+        }, 
+        {
             ACTIONS = {cancel = id; endVerify = id; export = id; save = id; setView = id; }; 
             CLASS = StructuredReportController; 
             LANGUAGE = ObjC; 

@@ -210,7 +210,7 @@
 			_doc->setManufacturer("OsiriX");
 			
 			// get KeyImages
-			_keyImages = [[[_study keyImages]   allObjects] retain];
+			//_keyImages = [[[_study keyImages]   allObjects] retain];
 			
 		}	
 	}

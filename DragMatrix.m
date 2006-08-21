@@ -21,7 +21,7 @@
 
 float INS_WIDTH = 2;
 float CIRCLE_SIZE = 6;
-NSString *pasteBoardTypeCover = @"Cover";
+NSString *pasteBoardTypeCover = @"KeyIMages";
         
 /*****************************************************************************
  * Function - _scaledImage
@@ -68,6 +68,8 @@ NSString *pasteBoardTypeCover = @"Cover";
     return self;
 }
 
+
+
 /*****************************************************************************
  * Function - clearDragDestinationMembers
  *
@@ -86,12 +88,27 @@ NSString *pasteBoardTypeCover = @"Cover";
  * the caller if we'll accept the object.
 *****************************************************************************/
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender { 
+	[self clearDragDestinationMembers];
+	NSLog(@"Drag Entered");
     if ([sender draggingSource] == self) {
-        [self clearDragDestinationMembers];
-        return NSDragOperationAll;
+		NSLog(@"NSDragOperationNone");
+		return NSDragOperationNone;
     } else {
-        return NSDragOperationNone;
+		NSLog(@"NSDragOperationEvery");
+		return NSDragOperationEvery;
+
     }
+}
+
+/*****************************************************************************
+ * Function - prepareDragOperation (implements NSDraggingDestination)
+ *
+ *
+ *
+***************************************************************************/
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender{
+	NSLog(@"prepare drag");
+	return YES;
 }
 
 /*****************************************************************************
@@ -101,25 +118,21 @@ NSString *pasteBoardTypeCover = @"Cover";
  * result of the dragging.
 *****************************************************************************/
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+	NSLog(@"perform Drag");
+	if ([sender draggingSource] == self)
+		return NO;
+	
     NSPasteboard *pboard;
     NSArray *types;
-
     pboard = [sender draggingPasteboard];
     types = [pboard types];
     if ([types indexOfObject:pasteBoardTypeCover] != NSNotFound) {
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-		/*
-	NSString *keys[4] = {@"srcRow", @"srcCol", @"dstRow", @"dstCol"};
-        NSNumber *objects[4];
-       
-        
-        objects[0] = [NSNumber numberWithInt:srcRow];
-        objects[1] = [NSNumber numberWithInt:srcCol];
-        objects[2] = [NSNumber numberWithInt:dstRow];
-        objects[3] = [NSNumber numberWithInt:dstCol];
-	*/
 		NSDictionary *dict;
-        dict = [NSDictionary dictionaryWithObject:[arrayController selectedObjects] forKey:@"images"];
+		//[arrayController setSelectedObjects:[NSArray arrayWithObject:[[arrayController content] objectAtIndex:srcCol]]];
+		NSArray *array = [[sender draggingSource] selection];
+		//NSLog(@"Selection: 
+        dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
         [nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
     }
     
@@ -157,7 +170,7 @@ NSString *pasteBoardTypeCover = @"Cover";
     int row, column;
     float offsetx;
 
-    if ([sender draggingSource] != self)
+    if ([sender draggingSource] == self)
         return NSDragOperationNone;
     
     // Note that the matrix coordiante system is flipped such that the
@@ -257,6 +270,9 @@ NSString *pasteBoardTypeCover = @"Cover";
     // Note: _scaledImage is function we add to NSImageCell in our category.
     //scaledImage = [[self cellAtRow:srcRow column:srcCol] _scaledImage]; 
     scaledImage = [[self cellAtRow:srcRow column:srcCol] image]; 
+	[self selectCellAtRow:srcRow column:srcCol];
+	[arrayController setSelectionIndex:srcCol];
+	//[arrayController setSelectedObjects:[NSArray arrayWithObject:[[arrayController content] objectAtIndex:srcCol]]];
     theDraggedCellFrame = [self cellFrameAtRow:srcRow column:srcCol]; 
     size = [scaledImage size];
     dragPoint.x = theDraggedCellFrame.origin.x 
@@ -385,8 +401,11 @@ NSString *pasteBoardTypeCover = @"Cover";
     downEvent = [event retain]; 
 } 
 
-- (void) setController:(id)controller{
-	arrayController = controller;
+
+-(NSArray *)selection{
+	return [arrayController content];
 }
+
+
 
 @end

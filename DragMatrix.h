@@ -36,13 +36,15 @@
     NSRect oldDrawRect, newDrawRect;
     BOOL shouldDraw;
     IBOutlet id arrayController;
+	NSArray *selection;
     int srcRow, srcCol, dstRow, dstCol;
 } 
-- (void) setController:(id)controller;
+//- (void) setController:(id)controller;
 // Private
 - (NSEvent*) downEvent; 
 - (void) setDownEvent:(NSEvent *)event; 
 - (void) clearDragDestinationMembers;
+-(NSArray *)selection;
 
 @end
 

@@ -90,7 +90,10 @@
 - (void)setReportIndex:(NSIndexSet *)indexSet;
 
 - (NSArray *) keyImagesInStudy;
-- (void) setKeyImagesInStudy:(NSArray *)images;
+- (void)setKeyImagesInStudy:(NSArray *)images;
+
+- (NSArray *) keyImages;
+- (void) setKeyImages:(NSArray *)keyImages;
 
 
 

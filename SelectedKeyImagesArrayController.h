@@ -20,10 +20,13 @@
 
 
 #import <Cocoa/Cocoa.h>
+#import "AllKeyImagesArrayController.h"
 
 
-@interface SelectedKeyImagesArrayController : NSArrayController {
-	IBOutlet NSMatrix *keyImageMatrix;
+@interface SelectedKeyImagesArrayController : AllKeyImagesArrayController {
+	
 }
+
+- (void)addKeyImages:(NSNotification *)note;
 
 @end
