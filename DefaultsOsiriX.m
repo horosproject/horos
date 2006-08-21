@@ -541,6 +541,8 @@ static NSString *hostName = @"";
 	// ** STORESCP
 	[defaultValues setObject:@"5" forKey: @"LISTENERCHECKINTERVAL"];
 	
+	// ** AUTOTILING
+	[defaultValues setObject:@"1" forKey: @"AUTOTILING"];
 	
 	// ** USEALWAYSTOOLBARPANEL
 	[defaultValues setObject:@"0" forKey: @"USEALWAYSTOOLBARPANEL"];

@@ -6479,17 +6479,11 @@ static BOOL needToRezoom;
 			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
     }
 	
-	
-	// If they are more than 1 window -> tile them
-	NSArray					*winList = [NSApp windows];
-	for( x = 0, i = 0; i < [winList count]; i++)
-	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) x++;
-	}
-	
-	//if( x > 1) 
-	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
-	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	else
+		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+		
 	[wait close];
 	[wait release];
 }
@@ -6643,7 +6637,10 @@ static BOOL needToRezoom;
 	
 	[self openViewerFromImages :[NSArray arrayWithObject:images] movie: nil viewer :nil keyImagesOnly:NO];
 	
-	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	else
+		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 }
 
 - (void) viewerDICOMKeyImages:(id) sender
@@ -6658,7 +6655,10 @@ static BOOL needToRezoom;
 
 	[self openViewerFromImages :[NSArray arrayWithObject:selectedItems] movie: nil viewer :nil keyImagesOnly:YES];
 	
-	[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+	else
+		[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 }
 
 - (void) MovieViewerDICOM:(id) sender

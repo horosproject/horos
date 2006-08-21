@@ -4631,9 +4631,6 @@
 		CE1113FC08EDD61B005B15E1 /* libitktestlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E008EDD61B005B15E1 /* libitktestlib.a */; };
 		CE1113FD08EDD61B005B15E1 /* libITKSpatialObject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E108EDD61B005B15E1 /* libITKSpatialObject.a */; };
 		CE1113FE08EDD61B005B15E1 /* libITKEXPAT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E208EDD61B005B15E1 /* libITKEXPAT.a */; };
-		CE11140008EDD61B005B15E1 /* libitkvnl_algo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E408EDD61B005B15E1 /* libitkvnl_algo.a */; };
-		CE11140108EDD61B005B15E1 /* libitkvnl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E508EDD61B005B15E1 /* libitkvnl.a */; };
-		CE11140208EDD61B005B15E1 /* libitkvnl_inst.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E608EDD61B005B15E1 /* libitkvnl_inst.a */; };
 		CE11140308EDD61B005B15E1 /* libITKAlgorithms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E708EDD61B005B15E1 /* libITKAlgorithms.a */; };
 		CE11140408EDD61B005B15E1 /* libITKBasicFilters.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E808EDD61B005B15E1 /* libITKBasicFilters.a */; };
 		CE11140508EDD61B005B15E1 /* libitkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E908EDD61B005B15E1 /* libitkpng.a */; };
@@ -8263,6 +8260,9 @@
 		CE59FFB409BEA982000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
 		CE59FFB509BEA986000CC7FE /* DICOMToNSString.m in Sources */ = {isa = PBXBuildFile; fileRef = BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */; };
 		CE59FFB609BEA986000CC7FE /* DICOMToNSString.h in Headers */ = {isa = PBXBuildFile; fileRef = BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */; };
+		CE5C0C8A0A935FE0006BC8CA /* libitkvnl_inst.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E608EDD61B005B15E1 /* libitkvnl_inst.a */; };
+		CE5C0C8B0A935FE1006BC8CA /* libitkvnl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E508EDD61B005B15E1 /* libitkvnl.a */; };
+		CE5C0C8C0A935FE1006BC8CA /* libitkvnl_algo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1113E408EDD61B005B15E1 /* libitkvnl_algo.a */; };
 		CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
 		CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
 		CE5D33B709E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
@@ -13145,9 +13145,6 @@
 				CE1113FC08EDD61B005B15E1 /* libitktestlib.a in Frameworks */,
 				CE1113FD08EDD61B005B15E1 /* libITKSpatialObject.a in Frameworks */,
 				CE1113FE08EDD61B005B15E1 /* libITKEXPAT.a in Frameworks */,
-				CE11140008EDD61B005B15E1 /* libitkvnl_algo.a in Frameworks */,
-				CE11140108EDD61B005B15E1 /* libitkvnl.a in Frameworks */,
-				CE11140208EDD61B005B15E1 /* libitkvnl_inst.a in Frameworks */,
 				CE11140308EDD61B005B15E1 /* libITKAlgorithms.a in Frameworks */,
 				CE11140408EDD61B005B15E1 /* libITKBasicFilters.a in Frameworks */,
 				CE11140508EDD61B005B15E1 /* libitkpng.a in Frameworks */,
@@ -13183,6 +13180,9 @@
 				ABE46ECD0A76389700327466 /* libitkjpeg8.a in Frameworks */,
 				ABE46ECF0A76389B00327466 /* libitkgdcm.a in Frameworks */,
 				ABE46ED00A76389B00327466 /* libITKDICOMParser.a in Frameworks */,
+				CE5C0C8A0A935FE0006BC8CA /* libitkvnl_inst.a in Frameworks */,
+				CE5C0C8B0A935FE1006BC8CA /* libitkvnl.a in Frameworks */,
+				CE5C0C8C0A935FE1006BC8CA /* libitkvnl_algo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

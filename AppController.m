@@ -1887,6 +1887,18 @@ static BOOL initialized = NO;
 	return returnRect;
 }
 
+- (void) checkAllWindowsAreVisible:(id) sender
+{
+	NSArray					*winList = [NSApp windows];
+	long					i;
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+			[[winList objectAtIndex:i] makeKeyAndOrderFront:self];
+	}
+}
+
 - (void) tileWindows:(id)sender
 {
 	long				i, j, k;

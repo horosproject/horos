@@ -16,6 +16,7 @@
             ACTIONS = {
                 setAlbumName = id; 
                 setAutoHideMatrixState = id; 
+                setAutoTiling = id; 
                 setExportSize = id; 
                 setMultipleScreens = id; 
                 setNoInterpolation = id; 
@@ -37,6 +38,7 @@
                 openViewerCheck = NSButton; 
                 reverseScrollWheelCheck = NSButton; 
                 sizeMatrix = NSMatrix; 
+                tilingCheck = NSButton; 
                 toolbarPanelMatrix = NSMatrix; 
                 windowSizeMatrix = NSMatrix; 
             }; 

@@ -76,6 +76,7 @@ NSRect screenFrame();
 //===============WINDOW========================
 - (void) tileWindows:(id)sender;
 - (IBAction) closeAllViewers: (id) sender;
+- (void) checkAllWindowsAreVisible:(id) sender;
 //===============HELP==========================
 - (IBAction) sendEmail: (id) sender;
 - (IBAction) openOsirixWebPage: (id) sender;

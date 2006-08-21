@@ -877,9 +877,10 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[win showWindowTransition];
 	[win startLoadImageThread]; // Start async reading of all images
 	
-
-	[appController tileWindows: self];
-
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+		[appController tileWindows: self];
+	else
+		[appController checkAllWindowsAreVisible: self];
 	return win;
 }
 
@@ -1477,8 +1478,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
-	[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
-	[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
+		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	}
 }
 
 
@@ -1525,7 +1529,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 		
 		// For toolbar
 		[[NSNotificationCenter defaultCenter] postNotificationName:NSWindowDidBecomeKeyNotification object:[self window]];
-		[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		else
+			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 	}
 	else
 	{

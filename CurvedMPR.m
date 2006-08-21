@@ -282,7 +282,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[viewerController startLoadImageThread]; // Start async reading of all images
 			[viewerController setCurvedController: self];
 			
-			[appController tileWindows: self];
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+				[appController tileWindows: self];
+			else
+				[appController checkAllWindowsAreVisible:self];
 		}
 		else
 		{
@@ -556,7 +559,10 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[viewerController startLoadImageThread];			// Start async reading of all images
 			[viewerController setCurvedController: self];
 			
-			[appController tileWindows: self];
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+				[appController tileWindows: self];
+			else
+				[appController checkAllWindowsAreVisible:self];
 		}
 		else
 		{
