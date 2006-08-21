@@ -1895,7 +1895,7 @@ static BOOL initialized = NO;
 	for( i = 0; i < [winList count]; i++)
 	{
 		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-			[[winList objectAtIndex:i] makeKeyAndOrderFront:self];
+				[[winList objectAtIndex:i] orderFront:self];
 	}
 }
 
