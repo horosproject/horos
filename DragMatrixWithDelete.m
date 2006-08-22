@@ -25,7 +25,7 @@
 
 - (void)keyDown:(NSEvent *)theEvent{
 	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
-		[[self arrayController] remove:self];
+		[arrayController remove:self];
 	else
 		[super keyDown:(NSEvent *)theEvent];
 	
