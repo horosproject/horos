@@ -10372,7 +10372,11 @@ long i;
 				[[pcviewer CTController] setWLWW:iwl :iww];
 				[[blendingController imageView] getWLWW:&iwl :&iww];
 				[[pcviewer PETController] setWLWW:iwl :iww];
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
+				//[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
+
+				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@ - %@", [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.name"], [studyDate descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
+				
 //  The following methods are NOT defined in their receivers!				
 //				[[pcviewer CTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
