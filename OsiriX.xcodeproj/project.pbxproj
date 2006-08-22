@@ -1727,6 +1727,12 @@
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
+		BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
+		BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
+		BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
+		BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
+		BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
+		BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		BF1584080A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
 		BF1584090A6ABCB0009965C8 /* KeyObjectPopupController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */; };
 		BF15840A0A6ABCB0009965C8 /* KeyObjectPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */; };
@@ -9477,23 +9483,6 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		BFB49A860A939F8600348CCC /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		BFB49A870A939F8600348CCC /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -10458,6 +10447,8 @@
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
 		BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCMoveResponse.m; sourceTree = "<group>"; };
+		BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrixWithDelete.h; sourceTree = "<group>"; };
+		BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragMatrixWithDelete.m; sourceTree = "<group>"; };
 		BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyObjectPopupController.h; sourceTree = "<group>"; };
 		BF1584070A6ABCB0009965C8 /* KeyObjectPopupController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyObjectPopupController.mm; sourceTree = "<group>"; };
 		BF1745CC08E0C57300822756 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/LogWindow.nib; sourceTree = "<group>"; };
@@ -14676,6 +14667,8 @@
 				BFAA0D060A916CB6002DB3DD /* SelectedKeyImagesArrayController.m */,
 				BF55377C0A9A294A00D83CE3 /* PathForImage.h */,
 				BF55377D0A9A294A00D83CE3 /* PathForImage.mm */,
+				BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */,
+				BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -19550,6 +19543,7 @@
 				BFAA08450A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */,
+				BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21422,6 +21416,7 @@
 				BFAA08410A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D0B0A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF5537820A9A294A00D83CE3 /* PathForImage.h in Headers */,
+				BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23299,6 +23294,7 @@
 				BFAA08430A901BDB002DB3DD /* AllKeyImagesArrayController.h in Headers */,
 				BFAA0D070A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF5537800A9A294A00D83CE3 /* PathForImage.h in Headers */,
+				BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23427,12 +23423,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				BFB49A860A939F8600348CCC /* Development */,
-				BFB49A870A939F8600348CCC /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -25501,6 +25491,7 @@
 				BFAA08460A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */,
+				BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26225,6 +26216,7 @@
 				BFAA08420A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D0C0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF5537830A9A294A00D83CE3 /* PathForImage.mm in Sources */,
+				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27144,6 +27136,7 @@
 				BFAA08440A901BDB002DB3DD /* AllKeyImagesArrayController.m in Sources */,
 				BFAA0D080A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF5537810A9A294A00D83CE3 /* PathForImage.mm in Sources */,
+				BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

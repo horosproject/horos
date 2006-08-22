@@ -1,9 +1,8 @@
 //
-//  PathForImage.h
+//  DragMatrixWithDelete.h
 //  OsiriX
 //
 //  Created by Lance Pysher on 8/21/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -19,6 +18,12 @@
 =========================================================================*/
 
 
+#import <Cocoa/Cocoa.h>
+#import "DragMatrix.h"
 
 
-const char *pathToJPEG(const char *sopInstanceUID);
+@interface DragMatrixWithDelete : DragMatrix {
+
+}
+
+@end

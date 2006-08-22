@@ -1,9 +1,8 @@
 //
-//  PathForImage.h
+//  DragMatrixWithDelete.m
 //  OsiriX
 //
 //  Created by Lance Pysher on 8/21/06.
-
 /*=========================================================================
   Program:   OsiriX
 
@@ -19,6 +18,17 @@
 =========================================================================*/
 
 
+#import "DragMatrixWithDelete.h"
 
 
-const char *pathToJPEG(const char *sopInstanceUID);
+@implementation DragMatrixWithDelete
+
+- (void)keyDown:(NSEvent *)theEvent{
+	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
+		[[self arrayController] remove:self];
+	else
+		[super keyDown:(NSEvent *)theEvent];
+	
+}
+
+@end
