@@ -170,7 +170,9 @@ extern NSString * documentsDirectory();
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	//[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:NO :0 :0];
-	NSImage *thumbnail = (NSImage *)[pix image];
+	NSData	*data = [[pix getImage] TIFFRepresentation];
+	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
+
 	[pix release];
 	return thumbnail;
 
@@ -179,7 +181,8 @@ extern NSString * documentsDirectory();
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	//[pix computeWImage:YES :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:YES :0 :0];
-	NSImage *thumbnail = [[(NSImage *)[pix getImage] retain] autorelease];
+	NSData	*data = [[pix getImage] TIFFRepresentation];
+	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 	[pix release];
 	return thumbnail;
 }
