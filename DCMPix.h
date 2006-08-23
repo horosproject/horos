@@ -205,18 +205,19 @@
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 - (float) cineRate;
 
-// subtraction-multiplication
-//- (float*) subtractedfImage;
-- (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
+// drag-drop subtraction-multiplication between series
+- (void) imageArithmeticMultiplication:(DCMPix*) sub;
+- (float*) multiplyImages :(float*) input :(float*) subfImage;
+- (void) imageArithmeticSubtraction:(DCMPix*) sub;
+- (float*) arithmeticSubtractImages :(float*) input :(float*) subfImage;
 
+//DSA
+- (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
 - (NSPoint) subPixOffset;
 - (void) setSubPixOffset:(NSPoint) subOffset;
-
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
-- (void) imageArithmeticSubtraction:(DCMPix*) sub;
-- (void) imageArithmeticMultiplication:(DCMPix*) sub;
 
 - (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;

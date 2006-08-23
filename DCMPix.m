@@ -2312,8 +2312,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		// subtractedfImage = 0L;
 		subPixOffset.x = subPixOffset.y = 0;
 		subtractedfPercent = 1;
-		subtractedfZero = 0.9;
-		subGammaFunction = vImageCreateGammaFunction(1.2, kvImageGamma_UseGammaValue_half_precision, 0 );	
+		subtractedfZero = 0.8;
+		subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );	
 
 		//----------------------------------orientation		
 		orientation[ 0] = 1;
@@ -7240,47 +7240,6 @@ BOOL            readable = YES;
 	return srcFile;
 }
 
--(float*) multiplyImages :(float*) input :(float*) subfImage
-{
-	long	i = height * width;
-	float   *result = malloc( height * width * sizeof(float));
-	
-	if( subPixOffset.x == 0 && subPixOffset.y == 0)
-	{
-		#if __ppc__
-		if( Altivec ) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
-		else
-		#endif
-		vmultiplyNoAltivec(input, subfImage, result, i);
-	}
-	else
-	{
-		long	x, y;
-		long	offsetX = subPixOffset.x, offsetY = -subPixOffset.y;
-		long	startheight, subheight, startwidth, subwidth;
-		float   *tempIn, *tempOut, *tempResult;
-		
-		if( offsetY > 0) { startheight = offsetY;   subheight = height;}
-		else { startheight = 0; subheight = height + offsetY;}
-		
-		if( offsetX > 0) { startwidth = offsetX;   subwidth = width;}
-		else { startwidth = 0; subwidth = width + offsetX;}
-		
-		for( y = startheight; y < subheight; y++)
-		{
-			tempResult = result + y*width;
-			tempIn = input + y*width;
-			tempOut = subfImage + (y-offsetY)*width - offsetX;
-			x = subwidth - startwidth;
-			while( x-->0)
-			{
-				*tempResult++ = *tempIn++ * *tempOut++;
-			}
-		}
-	}
-	return result;
-}
-
 - (void) ConvertToBW:(long) mode
 {
 	if( isRGB == NO) return;
@@ -7601,11 +7560,96 @@ BOOL            readable = YES;
 	free( temp);
 }
 
+-(float*) multiplyImages :(float*) input :(float*) subfImage
+{
+	long	i = height * width;
+	float   *result = malloc( height * width * sizeof(float));
+	
+	if( subPixOffset.x == 0 && subPixOffset.y == 0)
+	{
+		#if __ppc__
+		if( Altivec ) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		else
+		#endif
+		vmultiplyNoAltivec(input, subfImage, result, i);
+	}
+	else
+	{
+		long	x, y;
+		long	offsetX = subPixOffset.x, offsetY = -subPixOffset.y;
+		long	startheight, subheight, startwidth, subwidth;
+		float   *tempIn, *tempOut, *tempResult;
+		
+		if( offsetY > 0) { startheight = offsetY;   subheight = height;}
+		else { startheight = 0; subheight = height + offsetY;}
+		
+		if( offsetX > 0) { startwidth = offsetX;   subwidth = width;}
+		else { startwidth = 0; subwidth = width + offsetX;}
+		
+		for( y = startheight; y < subheight; y++)
+		{
+			tempResult = result + y*width;
+			tempIn = input + y*width;
+			tempOut = subfImage + (y-offsetY)*width - offsetX;
+			x = subwidth - startwidth;
+			while( x-->0)
+			{
+				*tempResult++ = *tempIn++ * *tempOut++;
+			}
+		}
+	}
+	return result;
+}
+
 -(void) imageArithmeticSubtraction:(DCMPix*) sub
 {
-	float   *temp = [sub fImage];
-	vDSP_vsub (temp,1,fImage,1,fImage,1,height * width * sizeof(float));
+//	float   *temp = [sub fImage];
+//	vDSP_vsub (temp,1,fImage,1,fImage,1,height * width * sizeof(float));
+	float   *temp;	
+	temp = [self arithmeticSubtractImages: fImage :[sub fImage]];	
+	BlockMoveData( temp, fImage, height * width * sizeof(float));	
 	free( temp);
+}
+
+-(float*) arithmeticSubtractImages :(float*) input :(float*) subfImage
+{
+	long	i = height * width;
+	float   *result = malloc( height * width * sizeof(float));
+	
+	if( subPixOffset.x == 0 && subPixOffset.y == 0)
+	{
+		#if __ppc__
+		if( Altivec ) vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
+		else
+		#endif
+		vsubtractNoAltivec(input, subfImage, result, i);
+	}
+	else
+	{
+		long	x, y;
+		long	offsetX = subPixOffset.x, offsetY = -subPixOffset.y;
+		long	startheight, subheight, startwidth, subwidth;
+		float   *tempIn, *tempOut, *tempResult;
+		
+		if( offsetY > 0) { startheight = offsetY;   subheight = height;}
+		else { startheight = 0; subheight = height + offsetY;}
+		
+		if( offsetX > 0) { startwidth = offsetX;   subwidth = width;}
+		else { startwidth = 0; subwidth = width + offsetX;}
+		
+		for( y = startheight; y < subheight; y++)
+		{
+			tempResult = result + y*width;
+			tempIn = input + y*width;
+			tempOut = subfImage + (y-offsetY)*width - offsetX;
+			x = subwidth - startwidth;
+			while( x-->0)
+			{
+				*tempResult++ = *tempIn++ - *tempOut++;
+			}
+		}
+	}
+	return result;
 }
 
 
