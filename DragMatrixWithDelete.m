@@ -23,12 +23,22 @@
 
 @implementation DragMatrixWithDelete
 
-- (void)keyDown:(NSEvent *)theEvent{
-	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter)
+
+
+- (BOOL)performKeyEquivalent:(NSEvent *)theEvent{
+	if ([[theEvent characters] characterAtIndex:0] == NSDeleteCharacter) {
 		[arrayController remove:self];
+		return YES;
+	}
 	else
-		[super keyDown:(NSEvent *)theEvent];
-	
+		return NO;
 }
+
+- (void)mouseUp:(NSEvent *)event{
+	[super mouseUp:event];
+	[arrayController select:self];
+}
+
+
 
 @end

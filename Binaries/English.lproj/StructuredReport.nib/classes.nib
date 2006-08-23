@@ -30,6 +30,7 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {
+            ACTIONS = {select = id; }; 
             CLASS = SelectedKeyImagesArrayController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = AllKeyImagesArrayController; 

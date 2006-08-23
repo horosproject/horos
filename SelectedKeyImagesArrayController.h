@@ -28,5 +28,6 @@
 }
 
 - (void)addKeyImages:(NSNotification *)note;
+- (void)select:(id)sender;
 
 @end

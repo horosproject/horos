@@ -72,5 +72,24 @@
 	
 }
 
+- (void)remove:(id)sender{
+	[super remove:sender];
+	[self updateMatrix];
+}
+
+- (void)select:(id)sender{
+	
+	NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+
+	NSArray *cells = [keyImageMatrix selectedCells];
+	NSEnumerator *enumerator = [cells objectEnumerator];
+	NSCell *cell;
+	while (cell = [enumerator nextObject])
+		[indexes addIndex:[cell tag]];
+
+	[self setSelectionIndexes:(NSIndexSet *)indexes];
+}
+	
+
 
 @end
