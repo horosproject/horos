@@ -41,6 +41,7 @@
 	IBOutlet NSOutlineView *xmlOutlineView;
 	IBOutlet NSView *accessoryView;
 	IBOutlet NSPanel *verifyPanel;
+	IBOutlet NSToolbarItem *printItem;
 	NSToolbar *toolbar;
 	NSView *_contentView;
 		StructuredReport *_report;
@@ -50,6 +51,7 @@
 	int _tabIndex;
 	NSIndexSet *_reportIndex;
 	NSArray *_keyImagesInStudy;
+	BOOL _waitingToPrint;
 	IBOutlet AllKeyImagesArrayController *allKeyObjectsArrayController;
 	
 }
@@ -94,6 +96,8 @@
 
 - (NSArray *) keyImages;
 - (void) setKeyImages:(NSArray *)keyImages;
+
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame;
 
 
 

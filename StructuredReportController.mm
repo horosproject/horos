@@ -93,6 +93,8 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 
 - (void)windowDidLoad{
 	[self setupToolbar];
+	[webView setFrameLoadDelegate:self];  
+	_waitingToPrint = NO;
 	if ([_report fileExists])
 		[self setTabIndex:0];
 	else
@@ -183,14 +185,13 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		[toolbarItem setToolTip: NSLocalizedString(@"View Key Images", nil)];
 		[toolbarItem setAction:@selector(showKeyImages:)];
 	}
-		else if ([itemIdent isEqualToString: addKeyImagesToolbarIdentifier]) {
+	else if ([itemIdent isEqualToString: addKeyImagesToolbarIdentifier]) {
 		[toolbarItem setImage:[NSImage imageNamed:addKeyImagesToolbarIdentifier]];
 		[toolbarItem setLabel: NSLocalizedString(@"Add Key Images", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Add Key Images Button", nil)];
 		[toolbarItem setToolTip: NSLocalizedString(@"Add Key Images", nil)];
 		[toolbarItem setAction:@selector(addKeyImages:)];
 	}
-	
 	return [toolbarItem autorelease];
 }
 
@@ -284,8 +285,16 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 }
 
 - (IBAction)printDocument:(id)sender{
-	//[self setTabIndex:0];
-	[[[[webView mainFrame] frameView] documentView] print:sender];
+	[self setTabIndex:0];
+	_waitingToPrint = YES;
+	NSLog(@"print");	
+}
+
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
+	NSLog(@"didFinishLoadForFrame:");
+	if (_waitingToPrint)
+		[[[[webView mainFrame] frameView] documentView] print:sender];
+	_waitingToPrint = NO;
 }
 
 - (BOOL)verified{
@@ -313,11 +322,9 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_tabIndex = tabIndex;
 	if (_tabIndex == 0) {
 		[_report writeHTML];
-		//NSLog(@"Report for xml: %@", [_report description]);
-		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];
+		NSURL *url = [NSURL fileURLWithPath:[_report htmlPath]];		
 		[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
-	}
-	
+	}	
 }
 
 - (NSArray *)reports{
