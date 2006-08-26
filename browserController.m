@@ -7549,11 +7549,12 @@ static NSArray*	openSubSeriesArray = 0L;
 
 -(void) ReadDicomCDRom:(id) sender
 {
+	#if !__LP64__
     kern_return_t		kernResult; 
     OSErr				result = noErr;
     ItemCount			volumeIndex;
 	BOOL				found = NO;
-
+	
     kernResult = IOMasterPort(MACH_PORT_NULL, &gMasterPort);
     if (KERN_SUCCESS != kernResult)
         printf("IOMasterPort returned %d\n", kernResult);
@@ -7764,10 +7765,12 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"No CD or DVD has been found...",@"No CD or DVD has been found..."),NSLocalizedString(@"Please insert a DICOM CD or DVD.",@"Please insert a DICOM CD or DVD."), NSLocalizedString(@"OK",nil), nil, nil);
 	}
+	#endif
 }
 
 -(BOOL) isItCD:(NSArray*) pathFilesComponent
 {
+	#if !__LP64__
 	if( [[[pathFilesComponent objectAtIndex: 1] uppercaseString] isEqualToString:@"VOLUMES"])
 	{
 		kern_return_t		kernResult; 
@@ -7861,6 +7864,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		}
 	}
 	
+	#endif
 	return NO;
 }
 
@@ -8349,6 +8353,7 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void) writeMovie: (NSArray*) imagesArray name: (NSString*) fileName
 {
+	#if !__LP64__
 	int				maxImage, myState, curSample = 0;
 	Handle			dataRef = NULL;
 	OSType			dataRefType;
@@ -8388,7 +8393,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 	
 	CloseMovieStorage( dataHandler);
-	
+	#endif
 }
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html

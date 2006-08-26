@@ -235,7 +235,7 @@ for (curSample = 0; curSample < maxImage; curSample++)
 
     im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
 	
-	UpdateSystemActivity (UsrActivity);	// avoid sleep or screen saver mode
+	UpdateSystemActivity ( 1);	// avoid sleep or screen saver mode
 	
 	if( PRODUCEFILES == NO)
 	{

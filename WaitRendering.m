@@ -142,7 +142,7 @@
 			
 			[currentTimeText setStringValue:[NSString stringWithFormat:@"Elapsed Time:\r%2.2d:%2.2d:%2.2d", hours, minutes, seconds]];
 			
-			UpdateSystemActivity (UsrActivity);	// avoid sleep or screen saver mode
+			UpdateSystemActivity (1);	// avoid sleep or screen saver mode
 		}
 	}
 	

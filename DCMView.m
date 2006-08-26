@@ -669,7 +669,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[self setNeedsDisplay:YES];
 }
 
-- (IBAction)saveDocumentAs:(id)sender{
+- (IBAction)saveDocumentAs:(id)sender
+{
+	#if !__LP64__
    	NSImage *im;	
 	im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];		
     NSFileManager *manager = [NSFileManager defaultManager]; 
@@ -715,6 +717,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
   [manager removeFileAtPath:filePath handler:nil];
   [im release];
+  #endif
 }
 
 -(BOOL)yFlipped{

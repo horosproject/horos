@@ -327,7 +327,7 @@ int GetAllPIDsForProcessName(const char* ProcessName,
     }
 }
 
-#if __ppc__
+#if __ppc__ || __ppc64__
 // ALTIVEC FUNCTIONS
 
 void InverseLongs(register vector unsigned int *unaligned_input, register long size)

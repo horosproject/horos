@@ -12,10 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
-
 #import "MPRView.h"
 
 #import "DCMPix.h"
@@ -27,7 +23,7 @@
 #import "QuicktimeExport.h"
 
 #include "vtkProp3DCollection.h"
-
+#include "Quicktime/ImageCompression.h"
 
 extern short	Altivec;
 
@@ -191,10 +187,11 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 	
 	if( [sender tag])
 	{
-		NSString	*path, *newpath;
-		FSRef		fsref;
-		FSSpec		spec, newspec;
-		QuicktimeExport *mov;
+		#if !__LP64__
+		NSString			*path, *newpath;
+		FSRef				fsref;
+		FSSpec				spec, newspec;
+		QuicktimeExport		*mov;
 		
 		if( numberOfFrames == 10 || numberOfFrames == 20)
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
@@ -226,6 +223,7 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 		[mov dealloc];
 		
 		[[NSWorkspace sharedWorkspace] openFile:path];
+		#endif
 	}
 }
 
@@ -619,7 +617,7 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 					if( thickSlabCount > 1)
 					{
 						imResult = (unsigned char*) malloc( width * height * sizeof(float));
-						BlockMoveData( im, imResult, height*width*sizeof(float));
+						memcpy( imResult, im, height*width*sizeof(float));
 					}
 				}
 				
@@ -1786,9 +1784,9 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 			
 			for( i = 0; i < *height/2; i++)
 			{
-				BlockMoveData( buf + (*height - 1 - i)*rowBytes, tempBuf, rowBytes);
-				BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
-				BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
+				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+				memcpy(buf + i*rowBytes, tempBuf, rowBytes);
 			}
 		}
 	}
@@ -1821,7 +1819,7 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 	
-	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
+	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
 	//Add the small OsiriX logo at the bottom right of the image
 	NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];

@@ -639,6 +639,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"mpeg"] == YES ||
 		[extension isEqualToString:@"avi"] == YES)
 		{
+			#if !__LP64__
 			NSMovie *movie = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] byReference:NO];
 			if( movie)
 			{
@@ -705,6 +706,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				return 0;
 			}
+			#endif
 	}
 	
 	return -1;

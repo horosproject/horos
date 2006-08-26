@@ -588,7 +588,7 @@ short DCMHasAltiVec()
 		//return YES;
 	}
 	finishedConversion:
-	
+	status = status;
 	NS_HANDLER
 		status = NO;
 	NS_ENDHANDLER

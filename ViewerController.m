@@ -144,9 +144,11 @@ static ViewerController *gSelf;
 
 long numberOf2DViewer = 0;
 
-Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long from, long to, long interval);
 NSString * documentsDirectory();
 NSString* convertDICOM( NSString *inputfile);
+
+#if !__LP64__
+Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long from, long to, long interval);
 
 static void CheckError(OSErr err, char *message )
 {
@@ -601,6 +603,8 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
     }
     return theMovie;
 }
+
+#endif
 
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
@@ -8225,6 +8229,7 @@ return moviePosSlider;
 
 #define DATABASEPATH @"/DATABASE/"
 
+#if !__LP64__
 
 -(NSArray*) produceFilesFromMovie: (Movie) mov
 {
@@ -8324,8 +8329,12 @@ return moviePosSlider;
 	return files;
 }
 
+#endif
+
 -(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval
 {
+	#ifdef __LP64__
+	#else
     NSRect          imageSize;
     Rect            trackFrame;
     NSSavePanel     *panel = [NSSavePanel savePanel];
@@ -8406,6 +8415,7 @@ return moviePosSlider;
 	}
 	
 	EXPORT2IPHOTO = NO;
+	#endif
 }
 
 -(IBAction) endQuicktime:(id) sender

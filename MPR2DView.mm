@@ -1408,14 +1408,14 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		if( thickSlabCount > 1 && uu == 0)
 		{
 			imResult = (float*) malloc( width * height * sizeof(float));
-			BlockMoveData( im, imResult, height*width*sizeof(float));
+			memcpy( imResult, im, height*width*sizeof(float));
 			
 			if(thickSlabMode == 4 || thickSlabMode == 5)
 			{
 				BOOL flip;
 						
 				fullVolume = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
-				BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
+				memcpy( fullVolume + width * height * uu, im, width * height * sizeof(float));
 				
 				if( thickSlabMode == 4) flip = YES;
 				else flip = NO;
@@ -1431,11 +1431,12 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 				case 5:
 					if( fullVolume != 0L)
 					{
-						BlockMoveData( im, fullVolume + width * height * uu, width * height * sizeof(float));
+						memcpy( fullVolume + width * height * uu, im, width * height * sizeof(float));
 					}
 				break;
 				
 				case 1:		// Mean
+					#if !__LP64__
 					vadd( imResult, 1, im, 1, imResult, 1, height * width);
 					
 					if( uu == thickSlabCount -1) //The last one!
@@ -1444,6 +1445,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 						
 						vsmul( imResult, 1, &invCount, imResult, 1, height * width);
 					}
+					#endif
 				break;
 				
 				
@@ -1588,14 +1590,14 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			if( thickSlabCount > 1 && uu == 0)
 			{
 				imResultBlending = (float*) malloc( width * height * sizeof(float));
-				BlockMoveData( im, imResultBlending, height*width*sizeof(float));
+				memcpy( imResultBlending, im, height*width*sizeof(float));
 				
 				if(thickSlabMode == 4 || thickSlabMode == 5)
 				{
 					BOOL flip;
 							
 					fullVolumeBlending = (float*) malloc( width * height * sizeof(float) * thickSlabCount);
-					BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
+					memcpy( fullVolumeBlending + width * height * uu, im, width * height * sizeof(float));
 					
 					if( thickSlabMode == 4) flip = YES;
 					else flip = NO;
@@ -1611,11 +1613,12 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 					case 5:
 						if( fullVolumeBlending != 0L)
 						{
-							BlockMoveData( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
+							memcpy( im, fullVolumeBlending + width * height * uu, width * height * sizeof(float));
 						}
 					break;
 					
 					case 1:		// Mean
+						#if !__LP64__
 						vadd( imResultBlending, 1, im, 1, imResultBlending, 1, height * width);
 						
 						if( uu == thickSlabCount -1) //The last one!
@@ -1624,6 +1627,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 							
 							vsmul( imResultBlending, 1, &invCount, imResultBlending, 1, height * width);
 						}
+						#endif
 					break;
 					
 					

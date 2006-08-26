@@ -169,9 +169,12 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F2408758834007FFD6F /* Build configuration list for PBXProject "OSIViewerPreferencePane" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* OSIViewerPreferencePane */;
 			projectDirPath = "";
+			projectRoot = "";
+			shouldCheckCompatibility = 1;
 			targets = (
 				8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */,
 			);

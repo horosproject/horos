@@ -1037,6 +1037,7 @@ public:
 	
 	if( [sender tag])
 	{
+		#if !__LP64__
 		NSString	*path, *newpath;
 		FSRef		fsref;
 		FSSpec		spec, newspec;
@@ -1077,6 +1078,7 @@ public:
 		}
 		
 		[mov dealloc];
+		#endif
 	}
 }
 
@@ -1975,7 +1977,9 @@ public:
 			double	*pp;
 			long	i;
 			
+			#if !__LP64__
 			QDDisplayWaitCursor( true);
+			#endif
 			
 			vtkPoints		*pts = Line2DData->GetPoints();
 		
@@ -2027,14 +2031,16 @@ public:
 				[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
 			
-			QDDisplayWaitCursor( false);
+			//QDDisplayWaitCursor( false);
 		}
 		else if( tool == t3DCut)
 		{
 			double	*pp;
 			long	i;
 			
+			#if !__LP64__
 			QDDisplayWaitCursor( true);
+			#endif
 			
 			// Click point 3D to 2D
 			
@@ -2072,7 +2078,7 @@ public:
 				[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
 			
-			QDDisplayWaitCursor( false);
+			//QDDisplayWaitCursor( false);
 		}
 		else if( tool == tWL)
 		{
@@ -2510,7 +2516,9 @@ public:
 		}
 		else if( tool == tBonesRemoval)
 		{
+			#if !__LP64__
 			QDDisplayWaitCursor( true);
+			#endif
 			
 			NSLog( @"**** Bone Removal Start");
 			// enable Undo
@@ -2608,7 +2616,7 @@ public:
 				}
 				[self setNeedsDisplay:YES];
 			}
-			QDDisplayWaitCursor( false);
+			//QDDisplayWaitCursor( false);
 		}
 		else [super mouseDown:theEvent];
 		
@@ -2677,7 +2685,10 @@ public:
 		}
 		else
 		{
+			#if !__LP64__
 			QDDisplayWaitCursor( true);
+			#endif
+			
 			NSLog(@"Scissor Start");
 //			[[[self window] windowController] prepareUndo];
 			[controller prepareUndo];
@@ -2955,7 +2966,10 @@ public:
 	//[self setNeedsDisplay:YES];
 	
 	NSLog(@"Scissor End");
+	
+	#if !__LP64__
 	QDDisplayWaitCursor( false);
+	#endif
 	
 	// Update everything..
 	ROIUPDATE = NO;
@@ -4476,9 +4490,9 @@ public:
 		
 		for( i = 0; i < *height/2; i++)
 		{
-			BlockMoveData( buf + (*height - 1 - i)*rowBytes, tempBuf, rowBytes);
-			BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
-			BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
+			memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+			memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+			memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 		}
 		
 		//Add the small OsiriX logo at the bottom right of the image
@@ -4537,7 +4551,7 @@ public:
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 
-	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
+	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 		
 	 NSImage *image = [[NSImage alloc] init];
 	 [image addRepresentation:rep];
@@ -4635,7 +4649,7 @@ public:
 			{
 				if( [volumeData length] == volumeSize)
 				{
-					BlockMoveData( [volumeData bytes], data, volumeSize);
+					memcpy( data, [volumeData bytes], volumeSize);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
 					
 					cropcallback->Execute(croppingBox, 0, 0L);

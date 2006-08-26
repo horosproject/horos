@@ -253,7 +253,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 - (IBAction) export3DFileFormat :(id) sender
 {
 	NSSavePanel     *panel = [NSSavePanel savePanel];
-    Movie           theMovie = nil;
 	
 	[panel setCanSelectHiddenExtension:YES];
 	
@@ -370,6 +369,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	if( [sender tag])
 	{
+		#if !__LP64__
 		NSString	*path, *newpath;
 		FSRef		fsref;
 		FSSpec		spec, newspec;
@@ -407,6 +407,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		[mov release];
 		
 		[[NSWorkspace sharedWorkspace] openFile:path];
+		#endif
 	}
 }
 
@@ -2086,9 +2087,9 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			
 			for( i = 0; i < *height/2; i++)
 			{
-				BlockMoveData( buf + (*height - 1 - i)*rowBytes, tempBuf, rowBytes);
-				BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
-				BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
+				memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+				memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+				memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 			}
 		}
 	}
@@ -2121,7 +2122,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 	
-	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
+	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
 	//Add the small OsiriX logo at the bottom right of the image
 	NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];

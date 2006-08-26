@@ -142,9 +142,9 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		curSizeArray[ currentUnichar] = charRect.size.width;
 		[ theImage setSize:charRect.size ];
 		[ theImage lockFocus ];
-		[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
 		[ blackColor set ];
 		[ NSBezierPath fillRect:charRect ];
+		[ [ NSGraphicsContext currentContext ] setShouldAntialias:NO ];
 		[ currentChar drawInRect:charRect withAttributes:attribDict ];
 		[ theImage unlockFocus ];
 
