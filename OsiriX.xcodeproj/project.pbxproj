@@ -1727,6 +1727,12 @@
 		BF03E55E07BEFFC500100045 /* DCMCFindResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */; };
 		BF03E56C07BEFFFF00100045 /* DCMCMoveResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF03E56D07BEFFFF00100045 /* DCMCMoveResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */; };
+		BF06806E0A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */; };
+		BF06806F0A9E602E000F3152 /* viewXMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */; };
+		BF0680700A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */; };
+		BF0680710A9E602E000F3152 /* viewXMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */; };
+		BF0680720A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */; };
+		BF0680730A9E602E000F3152 /* viewXMLSelected.tiff in Resources */ = {isa = PBXBuildFile; fileRef = BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */; };
 		BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
 		BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */ = {isa = PBXBuildFile; fileRef = BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */; };
 		BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */ = {isa = PBXBuildFile; fileRef = BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */; };
@@ -9483,6 +9489,23 @@
 		CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		BFCF714B0A9B9D43005C3028 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		BFCF714C0A9B9D43005C3028 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		4A0FB7DD07C7EF0B0031C757 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -10447,6 +10470,8 @@
 		BF03E55C07BEFFC500100045 /* DCMCFindResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCFindResponse.m; sourceTree = "<group>"; };
 		BF03E56A07BEFFFF00100045 /* DCMCMoveResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCMoveResponse.h; sourceTree = "<group>"; };
 		BF03E56B07BEFFFF00100045 /* DCMCMoveResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCMoveResponse.m; sourceTree = "<group>"; };
+		BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewHTMLSelected.tiff; sourceTree = "<group>"; };
+		BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = viewXMLSelected.tiff; sourceTree = "<group>"; };
 		BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragMatrixWithDelete.h; sourceTree = "<group>"; };
 		BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragMatrixWithDelete.m; sourceTree = "<group>"; };
 		BF1584060A6ABCB0009965C8 /* KeyObjectPopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyObjectPopupController.h; sourceTree = "<group>"; };
@@ -14316,6 +14341,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */,
+				BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */,
 				BFED84AA0A717E2500119174 /* smallKeyPlus.tif */,
 				AB7CB7B30A6E3922008DFCC9 /* smile.png */,
 				AB7CB7AF0A6E3886008DFCC9 /* error.png */,
@@ -23423,6 +23450,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				BFCF714B0A9B9D43005C3028 /* Development */,
+				BFCF714C0A9B9D43005C3028 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -23870,6 +23903,8 @@
 				BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 				A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
+				BF06806E0A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */,
+				BF06806F0A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24152,6 +24187,8 @@
 				BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C30A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 				A926BFCB0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
+				BF0680720A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */,
+				BF0680730A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24434,6 +24471,8 @@
 				BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */,
 				A9A9F4C20A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 				A926BFCA0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
+				BF0680700A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */,
+				BF0680710A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
