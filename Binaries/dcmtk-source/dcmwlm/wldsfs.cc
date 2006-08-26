@@ -761,7 +761,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   lockdata.l_whence=0;
   lockdata.l_start=0;
   lockdata.l_len=0;
-#if SIZEOF_VOID_P == SIZEOF_INT
+#if SIZEOF_VOID_P == SIZEOF_INT && !__LP64__
   // some systems, e.g. NeXTStep, need the third argument for fcntl calls to be
   // casted to int. Other systems, e.g. OSF1-Alpha, won't accept this because int
   // and struct flock * have different sizes. The workaround used here is to use a
@@ -820,7 +820,7 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
   lockdata.l_whence=0;
   lockdata.l_start=0;
   lockdata.l_len=0;
-#if SIZEOF_VOID_P == SIZEOF_INT
+#if SIZEOF_VOID_P == SIZEOF_INT  && !__LP64__
   result = fcntl( handleToReadLockFile, F_SETLKW, (int)(&lockdata) );
 #else
   result = fcntl( handleToReadLockFile, F_SETLKW, &lockdata );

@@ -78,8 +78,12 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 	object = o;
 	selector = s;
 	numberOfFrames = f;
+	
+	#if !__LP64__
 	codec = kJPEGCodecType;
 	quality = codecHighQuality;
+	#endif
+	
 	return self;
 }
 
@@ -138,6 +142,7 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 	[subpool release];
 }
 
+#if !__LP64__
 - (short) QTVideo_AddVideoSamplesToMedia :(Media) theMedia :(Rect *) trackFrame
 {
 	GWorldPtr theGWorld = nil;
@@ -774,4 +779,6 @@ return err;
 	
 	return 0L;
 }
+#endif
+
 @end

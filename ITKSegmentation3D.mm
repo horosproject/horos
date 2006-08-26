@@ -737,9 +737,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			DCMPix			*curPix = [[srcViewer pixList] objectAtIndex: i];
 			
 			if( slice == -1)
-				BlockMove( ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), image2Ddata, imageSize);
+				memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
 			else
-				BlockMove( ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()), image2Ddata, imageSize);
+				memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()), imageSize);
 
 			image2D = vtkImageImport::New();
 			image2D->SetWholeExtent(0, dataExtent[ 1], 0, dataExtent[ 3], 0, 0);

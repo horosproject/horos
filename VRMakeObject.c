@@ -120,6 +120,8 @@
 //
 //////////
 
+#if !__LP64__
+
 #include "VRMakeObject.h"
 OSErr VRObject_ImportVideoTrack (Movie theSrcMovie, Movie theDstMovie, Track *theImageTrack);
 long					gVersionToCreate = kQTVRVersion2;		// the version of the file format we create
@@ -1002,3 +1004,5 @@ void VRObject_ConvertFloatToBigEndian (float *theFloat)
 	myLongPtr = (unsigned long *)theFloat;
 	*myLongPtr = EndianU32_NtoB(*myLongPtr);
 }
+
+#endif

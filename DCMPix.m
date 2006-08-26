@@ -6944,6 +6944,7 @@ BOOL            readable = YES;
 			}
 			else	// It's a Movie ??
 			{
+				#if !__LP64__
 				NSMovie *movie = 0L;
 				
 				if( [extension isEqualToString:@"mov"] == YES ||
@@ -7045,6 +7046,7 @@ BOOL            readable = YES;
 					
 					[movie release];
 				}
+				#endif
 			}
 		}
 		

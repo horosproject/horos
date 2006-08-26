@@ -194,7 +194,7 @@ extern short Altivec;
 		
 		for( i=0; i < count; i++)
 		{
-			BlockMoveData( (unsigned char*) dst8.data + i*size, tempPtr+ (count-i-1)*size, size);
+			memcpy(tempPtr+ (count-i-1)*size,  (unsigned char*) dst8.data + i*size, size);
 		}
 		free( dst8.data);
 		dst8.data = tempPtr;
@@ -217,7 +217,7 @@ extern short Altivec;
 			
 			for( i=0; i < count; i++)
 			{
-				BlockMoveData( (unsigned char*) dst8Blending.data + i*size, tempPtr+ (count-i-1)*size, size);
+				memcpy( tempPtr+ (count-i-1)*size, (unsigned char*) dst8Blending.data + i*size, size);
 			}
 			free( dst8Blending.data);
 			dst8Blending.data = tempPtr;

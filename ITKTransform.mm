@@ -162,7 +162,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	if( fVolumePtr && aBuffer)//&& NO) // '&& NO' because it doesn't work yet. Just a security...
 	{
 		// Copy the source series in the new one !
-		BlockMoveData(aBuffer,fVolumePtr,mem);
+		memcpy(fVolumePtr,aBuffer,mem);
 		NSLog(@"BlockMoveData OK");
 		
 		// Create a NSData object to control the new pointer

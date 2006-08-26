@@ -118,7 +118,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
 	if( err) NSLog(@"%d", err);
 	
-	BlockMoveData(dstBuf.data,buff,bufferWidth*bufferHeight);
+	memcpy(buff, dstBuf.data, bufferWidth*bufferHeight);
 	free( dstBuf.data);
 	free( kernel);
 	
@@ -175,7 +175,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
 	if( err) NSLog(@"%d", err);
 	
-	BlockMoveData(dstBuf.data,buff,bufferWidth*bufferHeight);
+	memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
 	free( dstBuf.data);
 	free( kernel);
 	

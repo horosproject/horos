@@ -176,7 +176,11 @@ AEDesc ernum, erstr;
 id ernumobj, erstrobj;
 
 // Extract the error number and error message from our scripting component.
+#if __LP64__
+ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
+#else
 ok = OSAScriptError(myComponent, kOSAErrorNumber, typeShortInteger, &ernum);
+#endif
 CHECK;
 ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
 CHECK;
