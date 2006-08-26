@@ -191,6 +191,9 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	NSPoint			display2DPoint;
 	
 	NSMutableDictionary	*stringTextureCache;
+	
+	BOOL           _dragInProgress; // Are we drag and dropping
+	NSTimer			*_mouseDownTimer; //Timer to check if mouseDown is Persisiting;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
@@ -353,4 +356,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 + (unsigned char*) PETredTable;
 + (unsigned char*) PETgreenTable;
 + (unsigned char*) PETblueTable;
+
+//Timer method to start drag
+- (void) startDrag:(NSTimer*)theTimer;
 @end

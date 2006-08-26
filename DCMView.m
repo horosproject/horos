@@ -1183,6 +1183,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[cursor release];
 	[stringTextureCache release];
 	
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	
     [super dealloc];
 }
 
@@ -1658,7 +1661,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 }
 
 - (void)mouseUp:(NSEvent *)event {
-
+	// get rid of timer
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	_dragInProgress = NO;
+	
+	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
@@ -2197,6 +2206,14 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
+	NSLog(@"mouseDown");
+	if (_mouseDownTimer) {
+		[_mouseDownTimer invalidate];
+		[_mouseDownTimer release];
+	}
+	_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:nil  repeats:NO] retain];
+	_dragInProgress = NO;
+	
 	
     if( dcmPixList)
     {
@@ -2840,12 +2857,23 @@ static long scrollMode;
 
 - (void)mouseDragged:(NSEvent *)event
 {
+
 	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
 	
+	if (_dragInProgress == NO && [event deltaX] != 0 && [event deltaY] != 0) {
+		[_mouseDownTimer invalidate];
+		[_mouseDownTimer release];
+		_mouseDownTimer = nil;
+	}
+	
+	if (_dragInProgress == YES) return;
+
+	
+		
     if( dcmPixList)
     {
         NSPoint     eventLocation = [event locationInWindow];
@@ -7587,6 +7615,13 @@ BOOL	lowRes = NO;
 + (unsigned char*) PETblueTable
 {
 	return PETblueTable;
+}
+
+- (void) startDrag:(NSTimer*)theTimer{
+	NSLog(@"Fire mouse Down Timer");
+	_dragInProgress = YES;
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
 }
 
 
