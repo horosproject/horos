@@ -611,9 +611,9 @@ int dictSort(id num1, id num2, void *context)
 
 short HasAltiVec ( )
 {
-	Boolean hasAltiVec = 0;
-	OSErr      err;       
-	long      ppcFeatures;
+	Boolean			hasAltiVec = 0;
+	OSErr			err;       
+	SInt32			ppcFeatures;
 	
 	err = Gestalt ( gestaltPowerPCProcessorFeatures, &ppcFeatures );       
 	if ( err == noErr)       
@@ -630,7 +630,7 @@ short HasAltiVec ( )
 BOOL hasMacOSXVersion()
 {
 	OSErr		err;
-	long      osVersion;
+	SInt32      osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
@@ -649,7 +649,7 @@ BOOL hasMacOSXVersion()
 BOOL hasMacOSXTiger()
 {
 	OSErr						err;       
-	long						osVersion;
+	SInt32						osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       

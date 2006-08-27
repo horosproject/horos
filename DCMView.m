@@ -7207,10 +7207,10 @@ BOOL	lowRes = NO;
 	[self setNeedsDisplay:YES];
 }
 
--(void)setTag:(int)aTag{
+-(void)setTag:(NSInteger)aTag{
 	_tag = aTag;
 }
-- (int)tag{
+- (NSInteger)tag{
 	return _tag;
 }
 -(float)curWW{

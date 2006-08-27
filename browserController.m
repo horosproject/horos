@@ -473,7 +473,7 @@ static BOOL COMPLETEREBUILD = NO;
 	NSManagedObject			*seriesTable, *study, *album;
 	DicomImage				*image;
 	long					ii, i, x;
-	unsigned				index;
+	unsigned long			index;
 	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
@@ -2606,7 +2606,7 @@ static BOOL COMPLETEREBUILD = NO;
 	if( needDBRefresh) [albumNoOfStudiesCache removeAllObjects];
 	needDBRefresh = NO;
 	
-	unsigned index = [selectedRowIndexes firstIndex];
+	unsigned long index = [selectedRowIndexes firstIndex];
 	while (index != NSNotFound)
 	{
 		[previousObjects addObject: [databaseOutline itemAtRow: index]];
@@ -6348,7 +6348,7 @@ static BOOL needToRezoom;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
-    int					z, row, column;
+    NSInteger			z, row, column;
 	NSMutableArray		*selectedFilesList;
 	NSArray				*loadList;
     NSArray				*cells;

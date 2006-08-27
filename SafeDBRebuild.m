@@ -62,7 +62,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
 	long					ii, i, x;
 	NSString				*newFile;
-	unsigned				index;
+	NSInteger				index;
 	NSError					*error = 0L;
 	BOOL					addFailed = NO;
 	NSManagedObject			*image, *seriesTable, *study, *album;
