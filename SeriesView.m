@@ -116,11 +116,11 @@
     return NO;
 }
 
-- (int)tag{
+- (long)tag{
 	return tag;
 }
 
-- (void)setTag:(int)theTag{
+- (void)setTag:(long)theTag{
 	tag = theTag;
 }
 

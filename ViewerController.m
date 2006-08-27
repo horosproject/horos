@@ -609,7 +609,7 @@ Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long fro
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
 // use it with sortUsingFunction:context: to order an array of ROIs
-int sortROIByName(id roi1, id roi2, void *context)
+long sortROIByName(id roi1, id roi2, void *context)
 {
     NSString *n1 = [roi1 name];
     NSString *n2 = [roi2 name];
@@ -1782,7 +1782,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 		}
 	}
 	
-	int row, column;
+	long row, column;
 	
 	[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
 	[previewMatrix scrollCellToVisibleAtRow: row column:0];
