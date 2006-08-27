@@ -603,7 +603,7 @@ short DCMHasAltiVec()
 	void *ptr = malloc([data length]);	// Much faster than using the mutableBytes function
 	if( ptr)
 	{
-		BlockMoveData( [data bytes], ptr, [data length]);
+		memcpy( ptr, [data bytes], [data length]);
 		
 		if (NSHostByteOrder() == NS_BigEndian){
 			if (_pixelDepth <= 16 && _pixelDepth > 8) {		
