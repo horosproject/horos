@@ -79,6 +79,8 @@ static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable =
 
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 
+static		NSString					*pasteBoardOsiriX = @"OsiriX pasteboard";
+
 #define CROSS(dest,v1,v2) \
           dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
           dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
@@ -1185,6 +1187,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
+	
+	[destinationImage release];
 	
     [super dealloc];
 }
@@ -7596,6 +7600,8 @@ BOOL	lowRes = NO;
 	return display2DMPRLines;
 }
 
+
+#pragma mark-  PET  Tables
 + (unsigned char*) PETredTable
 {
 	return PETredTable;
@@ -7611,33 +7617,98 @@ BOOL	lowRes = NO;
 	return PETblueTable;
 }
 
+#pragma mark-  Drag and Drop
+
 - (void) startDrag:(NSTimer*)theTimer{
-	NSLog(@"Fire mouse Down Timer");
+	//NSLog(@"Fire mouse Down Timer");
 	_dragInProgress = YES;
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
-    NSPasteboard *pboard; 
-    pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-    [pboard declareTypes:[NSArray arrayWithObject:NSTIFFPboardType]  owner:self];
-	
-	[pboard setData:[[self nsimage: YES] TIFFRepresentation] forType:NSTIFFPboardType];
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
+	NSMutableArray *pbTypes = [NSMutableArray array];
+	// The image we will drag 
+	NSImage *image;
+	if ([event modifierFlags] & NSShiftKeyMask)
+		image = [self nsimage: NO];
+	else
+		image = [self nsimage: YES];
+		
+	// Thumbnail image and position
 	NSPoint event_location = [event locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
 	local_point.x -= 35;
 	local_point.y -= 35;
 	[curDCM computeWImage:YES :0.0 :0.0];
 	NSImage *thumbnail = (NSImage *)[curDCM getImage];
-	[ self dragImage:thumbnail
-		at:local_point
-		offset:dragOffset
-		event:event 
-		pasteboard:pboard 
-		source:self 
-		slideBack:YES];
+		
+				
+	if ([event modifierFlags] & NSAlternateKeyMask)
+		[ pbTypes addObject: NSFilesPromisePboardType];
+	else
+		[pbTypes addObject: NSTIFFPboardType];	
 	
-	
+	if ([self dicomImage]) {
+		[pbTypes addObject:pasteBoardOsiriX];
+		[pboard declareTypes:pbTypes  owner:self];
+		[pboard setData:nil forType:pasteBoardOsiriX]; 
+	}
+	else
+		[pboard declareTypes:pbTypes  owner:self];
+
+		
+	if ([event modifierFlags] & NSAlternateKeyMask) {
+		NSRect imageLocation;
+		local_point = [self convertPoint:event_location fromView:nil];
+		imageLocation.origin =  local_point;
+		imageLocation.size = NSMakeSize(32,32);
+		[pboard setData:nil forType:NSFilesPromisePboardType]; 
+		
+		if (destinationImage)
+			[destinationImage release];
+		destinationImage = [image copy];
+		
+		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"tif"]
+            fromRect:imageLocation
+            source:self
+            slideBack:YES
+            event:event]; 
+			
+
+		
+	} 
+	else {		
+		[pboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+		[ self dragImage:thumbnail
+			at:local_point
+			offset:dragOffset
+			event:event 
+			pasteboard:pboard 
+			source:self 
+			slideBack:YES];
+	}
+		
+}
+
+- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
+	//NSLog(@"dropDestination url: %@", [dropDestination description]);
+	NSString *name = [[self dicomImage] valueForKeyPath:@"series.study.name"];
+	//if (!name)
+	name = @"OsiriX";
+	//NSLog(@"name: %@", name);
+	name = [name stringByAppendingPathExtension:@"tif"];
+	NSArray *array = [NSArray arrayWithObject:name];
+	NSData *data = [destinationImage TIFFRepresentation];
+	//NSLog(@"destination image: %@", [destinationImage description]);
+	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
+	//NSLog(@"url: %@", [url absoluteString]);
+	[data writeToURL:url  atomically:YES];
+	//NSLog(@"Written");
+	//else
+	//NSLog(@"WRITE FAILED");
+	[destinationImage release];
+	return array;
 }
 
 - (void)deleteMouseDownTimer{
@@ -7651,6 +7722,18 @@ BOOL	lowRes = NO;
 - (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
 	return NSDragOperationEvery;
 }
+
+
+
+- (id)dicomImage{
+	return [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
+}
+
+/*
+_ (NSImage *)destinationImage{
+	return destinationImage;
+}
+*/
 
 
 	

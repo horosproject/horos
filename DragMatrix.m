@@ -21,7 +21,7 @@
 
 float INS_WIDTH = 2;
 float CIRCLE_SIZE = 6;
-NSString *pasteBoardTypeCover = @"KeyIMages";
+NSString *pasteBoardTypeCover = @"KeyImages";
         
 /*****************************************************************************
  * Function - _scaledImage
@@ -130,6 +130,7 @@ NSString *pasteBoardTypeCover = @"KeyIMages";
         dict = [NSDictionary dictionaryWithObject:array forKey:@"images"];
         [nc postNotificationName:@"DragMatrixImageMoved" object:self userInfo:dict];
     }
+	
     
     [self clearDragDestinationMembers];
     [self setNeedsDisplay:TRUE];

@@ -194,6 +194,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	
 	BOOL           _dragInProgress; // Are we drag and dropping
 	NSTimer			*_mouseDownTimer; //Timer to check if mouseDown is Persisiting;
+	NSImage			*destinationImage; //image will be dropping
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
@@ -360,4 +361,6 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 //Timer method to start drag
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
+- (id)dicomImage;
+- (NSImage *)destinationImage;
 @end
