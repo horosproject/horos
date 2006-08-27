@@ -6348,7 +6348,7 @@ static BOOL needToRezoom;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
-    NSInteger			z, row, column;
+    unsigned long		z, row, column;
 	NSMutableArray		*selectedFilesList;
 	NSArray				*loadList;
     NSArray				*cells;
