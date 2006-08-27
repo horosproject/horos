@@ -1662,11 +1662,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void)mouseUp:(NSEvent *)event {
 	// get rid of timer
-	[_mouseDownTimer invalidate];
-	[_mouseDownTimer release];
-	_mouseDownTimer = nil;
-	_dragInProgress = NO;
-	
+	[self deleteMouseDownTimer];
+
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -2208,11 +2205,9 @@ static long scrollMode;
 	}
 	NSLog(@"mouseDown");
 	if (_mouseDownTimer) {
-		[_mouseDownTimer invalidate];
-		[_mouseDownTimer release];
+		[self deleteMouseDownTimer];
 	}
-	_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:nil  repeats:NO] retain];
-	_dragInProgress = NO;
+	_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:event  repeats:NO] retain];
 	
 	
     if( dcmPixList)
@@ -2865,9 +2860,7 @@ static long scrollMode;
 	}
 	
 	if (_dragInProgress == NO && [event deltaX] != 0 && [event deltaY] != 0) {
-		[_mouseDownTimer invalidate];
-		[_mouseDownTimer release];
-		_mouseDownTimer = nil;
+		[self deleteMouseDownTimer];
 	}
 	
 	if (_dragInProgress == YES) return;
@@ -5082,6 +5075,7 @@ static long scrollMode;
 			glVertex2f(size.size.width - 1.0,                    1.0);
 		glEnd();
 	}
+		
 	
 	glColor3f (0.0f, 0.0f, 0.0f);
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -7622,7 +7616,46 @@ BOOL	lowRes = NO;
 	_dragInProgress = YES;
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
+	NSEvent *event = (NSEvent *)[theTimer userInfo];
+	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+    NSPasteboard *pboard; 
+    pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+    [pboard declareTypes:[NSArray arrayWithObject:NSTIFFPboardType]  owner:self];
+	
+	[pboard setData:[[self nsimage: YES] TIFFRepresentation] forType:NSTIFFPboardType];
+	NSPoint event_location = [event locationInWindow];
+	NSPoint local_point = [self convertPoint:event_location fromView:nil];
+	local_point.x -= 35;
+	local_point.y -= 35;
+	[curDCM computeWImage:YES :0.0 :0.0];
+	NSImage *thumbnail = (NSImage *)[curDCM getImage];
+	[ self dragImage:thumbnail
+		at:local_point
+		offset:dragOffset
+		event:event 
+		pasteboard:pboard 
+		source:self 
+		slideBack:YES];
+	
+	
 }
+
+- (void)deleteMouseDownTimer{
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	_dragInProgress = NO;
+}
+
+//part of Dragging Source Protocol
+- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+	return NSDragOperationEvery;
+}
+
+
+	
+
+
 
 
 @end

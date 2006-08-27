@@ -359,4 +359,5 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 
 //Timer method to start drag
 - (void) startDrag:(NSTimer*)theTimer;
+- (void)deleteMouseDownTimer;
 @end
