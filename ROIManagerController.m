@@ -92,7 +92,7 @@ PURPOSE.
 - (IBAction)deleteROI:(id)sender
 {
 	int i;
-	NSUInteger index;
+	unsigned long index;
 	NSMutableArray* names = [NSMutableArray arrayWithCapacity:1];
 	NSIndexSet* indexSet = [tableView selectedRowIndexes];
 	index = [indexSet lastIndex];
