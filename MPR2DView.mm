@@ -31,7 +31,7 @@ static		NSTimeInterval		interval = 0;
 
 extern "C"
 {
-#ifdef __ppc__
+#if __ppc__ || __ppc64__
 extern short	Altivec;
 extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 extern void vmin(vector float *a, vector float *b, vector float *r, long size);
@@ -83,7 +83,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
    return(q);
 }
 
-//#ifdef __ppc__
+//#if __ppc__ || __ppc64__
 //void vmax(vector float *a, vector float *b, vector float *r, long size)
 //{
 //		long i = size / 4;
@@ -1451,7 +1451,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 				
 				case 2:		// Maximum IP
 				case 3:		// Minimum IP
-					#if __ppc__
+					#if __ppc__ || __ppc64__
 					if( Altivec)
 					{
 						if( thickSlabMode == 2) vmax((vector float*) imResult, (vector float*)im, (vector float*)imResult, height * width);
@@ -1633,7 +1633,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 					
 					case 2:		// Maximum IP
 					case 3:		// Minimum IP
-						#if __ppc__
+						#if __ppc__ || __ppc64__
 						if( Altivec)
 						{
 							if( thickSlabMode == 2) vmax((vector float*) imResultBlending, (vector float*)im, (vector float*)imResultBlending, height * width);

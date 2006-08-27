@@ -8284,7 +8284,7 @@ return moviePosSlider;
 						  bytesPerRow: GetPixRowBytes(pixMapHandle)
 						 bitsPerPixel: 32] autorelease];
 						 
-		BlockMoveData( pixBaseAddr, [rep bitmapData], GetPixRowBytes(pixMapHandle)*tempRect.bottom);
+		memcpy( [rep bitmapData], pixBaseAddr, GetPixRowBytes(pixMapHandle)*tempRect.bottom);
 		
 		i = GetPixRowBytes(pixMapHandle) * tempRect.bottom /4;
 		

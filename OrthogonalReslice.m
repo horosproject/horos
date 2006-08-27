@@ -474,9 +474,7 @@
 						
 					dstP = curPixfImage + (newY-y-1) * newX;
 
-					BlockMoveData(	srcP,
-									dstP,
-									newX *sizeof(float));
+					memcpy(	dstP, srcP, newX *sizeof(float));
 				}
 			}
 			else
@@ -487,9 +485,7 @@
 				{
 					srcP = [[pixList objectAtIndex: y] fImage] + i * [firstPix pwidth];
 						
-					BlockMoveData(	srcP,
-									curPixfImage + y * newX,
-									newX *sizeof(float));
+					memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
 				}
 			}
 		}
@@ -519,9 +515,7 @@
 						srcP = Ycache + y*newTotal*newX + i * w;
 						dstP = curPixfImage + (newY-y-1) * newX;
 
-						BlockMoveData(	srcP,
-										dstP,
-										newX *sizeof(float));
+						memcpy(	dstP, srcP, newX *sizeof(float));
 					}
 				}
 				else
@@ -532,9 +526,7 @@
 					{
 						srcP = Ycache + y*newTotal*newX + i * newTotal;
 						
-						BlockMoveData(	srcP,
-										curPixfImage + y * newX,
-										newX *sizeof(float));
+						memcpy(	curPixfImage + y * newX, srcP, newX *sizeof(float));
 					}
 				}
 			}

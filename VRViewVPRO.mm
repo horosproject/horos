@@ -580,9 +580,9 @@ public:
 	
 	for( i = 0; i < no/2; i++)
 	{
-		BlockMoveData( ptr + size*i, tempData, size);
-		BlockMoveData( ptr + size*(no-1-i), ptr + size*i, size);
-		BlockMoveData( tempData, ptr + size*(no-1-i), size);
+		memcpy( tempData, ptr + size*i, size);
+		memcpy( ptr + size*i, ptr + size*(no-1-i), size);
+		memcpy( ptr + size*(no-1-i), tempData, size);
 	}
 	
 	free( tempData);
@@ -4494,9 +4494,9 @@ public:
 		
 		for( i = 0; i < *height/2; i++)
 		{
-			BlockMoveData( buf + (*height - 1 - i)*rowBytes, tempBuf, rowBytes);
-			BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
-			BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
+			memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+			memcpy(buf + (*height - 1 - i)*rowBytes,  buf + i*rowBytes, rowBytes);
+			memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 		}
 		
 		//Add the small OsiriX logo at the bottom right of the image
@@ -4553,7 +4553,7 @@ public:
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 	
-	BlockMoveData( dataPtr, [rep bitmapData], height*width*bpp*spp/8);
+	memcpy( [rep bitmapData], dataPtr, height*width*bpp*spp/8);
 	
 //	//Add the small OsiriX logo at the bottom right of the image
 //	NSImage				*logo = [NSImage imageNamed:@"SmallLogo.tif"];
@@ -4659,7 +4659,7 @@ public:
 			{
 				if( [volumeData length] == volumeSize)
 				{
-					BlockMoveData( [volumeData bytes], data, volumeSize);
+					memcpy( data, [volumeData bytes], volumeSize);
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
 				}
 				else NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"No saved data are available.", nil), NSLocalizedString(@"OK", nil), nil, nil);

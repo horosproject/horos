@@ -93,6 +93,7 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 	quality = q;
 }
 
+#if !__LP64__
 - (void) CopyNSImageToGWorld :(NSImage *) image :(GWorldPtr) gWorldPtr
 {
     NSAutoreleasePool *subpool = [[NSAutoreleasePool alloc] init];
@@ -142,7 +143,6 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 	[subpool release];
 }
 
-#if !__LP64__
 - (short) QTVideo_AddVideoSamplesToMedia :(Media) theMedia :(Rect *) trackFrame
 {
 	GWorldPtr theGWorld = nil;

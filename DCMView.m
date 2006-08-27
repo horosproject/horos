@@ -6281,9 +6281,9 @@ static long scrollMode;
 				
 				for( i = 0; i < *height/2; i++)
 				{
-					BlockMoveData( buf + (*height - 1 - i)*rowBytes, tempBuf, rowBytes);
-					BlockMoveData( buf + i*rowBytes, buf + (*height - 1 - i)*rowBytes, rowBytes);
-					BlockMoveData( tempBuf, buf + i*rowBytes, rowBytes);
+					memcpy( tempBuf, buf + (*height - 1 - i)*rowBytes, rowBytes);
+					memcpy( buf + (*height - 1 - i)*rowBytes, buf + i*rowBytes, rowBytes);
+					memcpy( buf + i*rowBytes, tempBuf, rowBytes);
 				}
 				
 				free( tempBuf);
@@ -6440,7 +6440,7 @@ static long scrollMode;
 				buf = malloc( i);
 				if( buf)
 				{
-					BlockMoveData( [curDCM baseAddr], buf, *width**height);
+					memcpy( buf, [curDCM baseAddr], *width**height);
 				}
 			}
 			else	// Give me 16 bits !
@@ -6499,7 +6499,7 @@ static long scrollMode;
 						  bytesPerRow:width*bpp*spp/8
 						 bitsPerPixel:bpp*spp] autorelease];
 	
-	BlockMoveData( data, [rep bitmapData], height*width*bpp*spp/8);
+	memcpy( [rep bitmapData], data, height*width*bpp*spp/8);
 	
 	NSImage *image = [[NSImage alloc] init];
 	[image addRepresentation:rep];

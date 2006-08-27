@@ -1037,16 +1037,16 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 		// copy the axial and coronal views row by row
 		for(i=0; i<heightAx; i++)
 		{
-			BlockMoveData(axialDataPtr+i*widthAx*3,dataPtr+i*(widthAx+widthCor)*3,widthAx*3);
-			BlockMoveData(coronalDataPtr+i*widthCor*3,dataPtr+widthAx*3+i*(widthAx+widthCor)*3,widthCor*3);
+			memcpy(dataPtr+i*(widthAx+widthCor)*3,axialDataPtr+i*widthAx*3,widthAx*3);
+			memcpy(dataPtr+widthAx*3+i*(widthAx+widthCor)*3,coronalDataPtr+i*widthCor*3,widthCor*3);
 		}
 		free(axialDataPtr);
 		free(coronalDataPtr);
 		// copy the sagittal and 3D views row by row
 		for(i=0; i<heightSag; i++)
 		{
-			BlockMoveData(sagittalDataPtr+i*widthSag*3,dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+i*(widthSag+width3D)*3,widthSag*3);
-			BlockMoveData(view3DDataPtr+i*width3D*3,dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+widthSag*3+i*(widthSag+width3D)*3,width3D*3);
+			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+i*(widthSag+width3D)*3,sagittalDataPtr+i*widthSag*3,widthSag*3);
+			memcpy(dataPtr+(heightAx*widthAx+heightCor*widthCor)*3+widthSag*3+i*(widthSag+width3D)*3,view3DDataPtr+i*width3D*3,width3D*3);
 		}
 		free(sagittalDataPtr);
 		free(view3DDataPtr);

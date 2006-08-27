@@ -482,26 +482,22 @@ NSString * documentsDirectory()
 	char	s[1024];
 	FSSpec	spec;
 	FSRef	ref;
-	short	vRefNum;
-	long	dirID;
 	
 	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"])
 	{
 		case 0:
-			if ( FindFolder( kOnAppropriateDisk, kDocumentsFolderType, true, &vRefNum, &dirID ) == noErr )
+			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
 			{
-				FSMakeFSSpec( vRefNum, dirID, (ConstStr255Param)"", &spec );
-				if ( FSpMakeFSRef(&spec, &ref) == noErr )
-				{
-					NSString	*path;
-					BOOL		isDir = YES;
-					FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
-					
-					path = [[NSString stringWithUTF8String:s] stringByAppendingString:@"/OsiriX Data"];
-					if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-					
-					return path;// not sure if s is in UTF8 encoding:  What's opposite of -[NSString fileSystemRepresentation]?
-				}
+				NSString	*path;
+				BOOL		isDir = YES;
+				
+				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
+				
+				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
+				
+				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+				
+				return path;// not sure if s is in UTF8 encoding:  What's opposite of -[NSString fileSystemRepresentation]?
 			}
 			break;
 			

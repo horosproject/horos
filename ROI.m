@@ -435,7 +435,7 @@ GLenum glReportError (void)
 //			}
 //		}
 		
-		BlockMoveData( tBuff, textureBuffer, tHeight*tWidth);
+		memcpy( textureBuffer, tBuff, tHeight*tWidth);
 				
 		color.red = 0.67*65535.;
 		color.green = 0.90*65535.;
@@ -1511,7 +1511,7 @@ return rect;
 		
 		for( y = 0 ; y < textureHeight ; y++)
 		{
-			BlockMoveData( textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureBuffer + (y * textureWidth), textureWidth);
+			memcpy( textureBuffer + (y * textureWidth), textureBuffer + offsetTextureX+ (y+ offsetTextureY)*oldTextureWidth,  textureWidth);
 		}
 		
 		textureUpLeftCornerX += minX;
@@ -3207,7 +3207,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		for(i=0; i<textureHeight; i++)
 		{
 			newBuffer += margin; // skip the left margin pixels
-			BlockMoveData(temptextureBuffer,newBuffer,textureWidth*sizeof(unsigned char));
+			memcpy( newBuffer,temptextureBuffer,textureWidth*sizeof(unsigned char));
 			newBuffer += textureWidth+margin; // move to the next line, skipping the right margin pixels
 			temptextureBuffer += textureWidth; // move to the next line
 		}

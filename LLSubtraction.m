@@ -185,7 +185,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	dstBuf.rowBytes = srcbuf.rowBytes = width;
 	err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
 	if( err) NSLog(@"%d", err);
-	BlockMoveData(dstBuf.data,buffer,width*height);
+	memcpy(buffer,dstBuf.data,width*height);
 	free( dstBuf.data);
 	free( kernel);
 }
@@ -213,7 +213,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	err = vImageDilate_Planar8(&srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
 	if(err) NSLog(@"%d", err);
 	
-	BlockMoveData(dstBuf.data, buffer, width*height);
+	memcpy(buffer, dstBuf.data, width*height);
 	free(dstBuf.data);
 	free(kernel);
 }

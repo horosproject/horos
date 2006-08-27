@@ -51,7 +51,7 @@ extern NSLock	*PapyrusLock;
 extern short		Altivec;
 extern NSMutableDictionary *fileFormatPlugins;
 
-#if __ppc__
+#if __ppc__ || __ppc64__
 extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
 extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
 extern void vmin(vector float *a, vector float *b, vector float *r, long size);
@@ -347,7 +347,7 @@ inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
 {
     int i, j, n = no;
 
-	BlockZero( edgeTable, sizeof(char*) * MAXVERTICAL);
+	memset( edgeTable, 0, sizeof(char*) * MAXVERTICAL);
 
     for (i = 0; i < n; i++)
 	{
@@ -824,7 +824,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						  bytesPerRow:width*3
 						 bitsPerPixel:24] autorelease];
 						 
-		BlockMoveData( buf, [rep bitmapData], height*width*3);
+		memcpy( [rep bitmapData], buf, height*width*3);
 	
 		imageRep = [[[NSImage alloc] init] autorelease];
 		[imageRep addRepresentation:rep];
@@ -837,7 +837,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		buf = malloc( i);
 		if( buf)
 		{
-			BlockMoveData( baseAddr, buf, width*height);
+			memcpy( buf, baseAddr, width*height);
 		}
 		
 		rep = [[[NSBitmapImageRep alloc]
@@ -852,7 +852,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						  bytesPerRow:width
 						 bitsPerPixel:8] autorelease];
 		
-		BlockMoveData( buf, [rep bitmapData], height*width);
+		memcpy( [rep bitmapData], buf, height*width);
 	
 		imageRep = [[[NSImage alloc] init] autorelease];
 		[imageRep addRepresentation:rep];
@@ -2199,10 +2199,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					//	NSLog(@"Allocate a new fImage");
 						for( i =0; i < height; i++)
 						{
-							BlockMoveData( im + i*xDim, fImage + i*width, width*sizeof(float));
+							memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
 						}
 					}
-					else BlockMoveData( im, fImage, width*height*sizeof(float));
+					else memcpy( fImage, im, width*height*sizeof(float));
 				break;
 				
 				case 8:		// RGBA -> argb
@@ -2933,7 +2933,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				fImage = malloc(width*height*sizeof(float) + 100);
 			}
 			
-			BlockMoveData( oImage, fImage, width*height*4);
+			memcpy( fImage, oImage, width*height*4);
 			
 			rowBytes = width * 4;
 		}
@@ -4486,7 +4486,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			if( imPix->fVolImage)
 			{
 				imPix->fImage = imPix->fVolImage;
-				BlockMoveData( oImage, imPix->fImage,realwidth*height*sizeof(float));
+				memcpy( imPix->fImage, oImage, realwidth*height*sizeof(float));
 				free(oImage);
 			}
 			else imPix->fImage = (float*) oImage;
@@ -5969,7 +5969,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						
 						ii = height * realwidth;
 						
-						#if __ppc__
+						#if __ppc__ || __ppc64__
 						if( Altivec)
 						{
 							InverseShorts( (vector unsigned short*) oImage, ii);
@@ -6186,7 +6186,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				if( imPix->fVolImage)
 				{
 					imPix->fImage = imPix->fVolImage;
-					BlockMoveData( oImage, imPix->fImage,width*height*sizeof(float));
+					memcpy( imPix->fImage, oImage, width*height*sizeof(float));
 					free(oImage);
 				}
 				else imPix->fImage = (float*) oImage;
@@ -6609,7 +6609,7 @@ BOOL            readable = YES;
 							break;
 							
 							case 4:
-								BlockMoveData( [fileData bytes] + frameNo*(realheight * realwidth * 2), oImage, realheight * realwidth * 2);
+								memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
 								if( intelByteOrder)
 								{
 									long			loop;
@@ -6654,7 +6654,7 @@ BOOL            readable = YES;
 								
 								for( i = 0; i < height;i++)
 								{
-									BlockMoveData( [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), fImage + i * width, width*sizeof(float));
+									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
 								}
 								
 								free(oImage);
@@ -7032,7 +7032,7 @@ BOOL            readable = YES;
 					for( y = 0 ; y < height; y++)
 					{
 						srcPtr = srcImage + y*rowBytes;
-						BlockMoveData( srcPtr, tmpPtr, width*4);
+						memcpy( tmpPtr, srcPtr, width*4);
 						tmpPtr += width*4;
 					}
 					
@@ -7279,7 +7279,7 @@ BOOL            readable = YES;
 	
 	[self setRGB: NO];
 	
-	BlockMoveData( dstPtr, fImage, height * width * 4);
+	memcpy( fImage, dstPtr, height * width * 4);
 	
 	[self changeWLWW:wl :ww];
 	
@@ -7316,19 +7316,19 @@ BOOL            readable = YES;
 	switch( mode)
 	{
 		case 0: // RED
-			BlockZero( [self fImage], dst8.height * dst8.width * 4);
+			memset( [self fImage], 0, dst8.height * dst8.width * 4);
 			i = dst8.height * dst8.width;
 			while( i-- > 0) dstPtr[ i*4 + 1] = srcPtr[ i];
 		break;
 		
 		case 1: // GREEN
-			BlockZero( [self fImage], dst8.height * dst8.width * 4);
+			memset( [self fImage], 0, dst8.height * dst8.width * 4);
 			i = dst8.height * dst8.width;
 			while( i-- > 0) dstPtr[ i*4 + 2] = srcPtr[ i];
 		break;
 		
 		case 2: // BLUE
-			BlockZero( [self fImage], dst8.height * dst8.width * 4);
+			memset( [self fImage], 0, dst8.height * dst8.width * 4);
 			i = dst8.height * dst8.width;
 			while( i-- > 0) dstPtr[ i*4 + 3] = srcPtr[ i];
 		break;
@@ -7430,7 +7430,7 @@ BOOL            readable = YES;
 	return val;
 }
 
-#if __ppc__
+#if __ppc__ || __ppc64__
 - (void) computeMax:(int) from to:(int) to
 {
 	if( to > from)
@@ -7453,12 +7453,12 @@ BOOL            readable = YES;
 				{
 					if( first)
 					{
-						BlockMoveData( fNext, fResult, height * width * sizeof(float));
+						memcpy( fResult, fNext, height * width * sizeof(float));
 						first = NO;
 					}
 					else
 					{
-						#if __ppc__
+						#if __ppc__ || __ppc64__
 						if( Altivec)
 						{
 							if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
@@ -7481,7 +7481,7 @@ BOOL            readable = YES;
 		if( first == NO)
 		{
 			[maxResultLock lock];
-			#if __ppc__
+			#if __ppc__ || __ppc64__
 			if( Altivec)
 			{
 				if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
@@ -7519,7 +7519,7 @@ BOOL            readable = YES;
 			fNext = [[pixArray objectAtIndex: res] fImage];
 			if( fNext)
 			{
-				#if __ppc__
+				#if __ppc__ || __ppc64__
 				if( Altivec)
 				{
 					if( stackMode == 2) vmax( (vector float *)fFinalResult, (vector float *)fNext, (vector float *)fFinalResult, height * width);
@@ -7558,7 +7558,7 @@ BOOL            readable = YES;
 {
 	float   *temp;	
 	temp = [self multiplyImages: fImage :[sub fImage]];	
-	BlockMoveData( temp, fImage, height * width * sizeof(float));	
+	memcpy( fImage, temp, height * width * sizeof(float));	
 	free( temp);
 }
 
@@ -7569,7 +7569,7 @@ BOOL            readable = YES;
 	
 	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
-		#if __ppc__
+		#if __ppc__ || __ppc64__
 		if( Altivec ) vmultiply( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
 		else
 		#endif
@@ -7609,7 +7609,7 @@ BOOL            readable = YES;
 //	vDSP_vsub (temp,1,fImage,1,fImage,1,height * width * sizeof(float));
 	float   *temp;	
 	temp = [self arithmeticSubtractImages: fImage :[sub fImage]];	
-	BlockMoveData( temp, fImage, height * width * sizeof(float));	
+	memcpy( fImage, temp, height * width * sizeof(float));	
 	free( temp);
 }
 
@@ -7620,7 +7620,7 @@ BOOL            readable = YES;
 	
 	if( subPixOffset.x == 0 && subPixOffset.y == 0)
 	{
-		#if __ppc__
+		#if __ppc__ || __ppc64__
 		if( Altivec ) vsubtract( (vector float *)input, (vector float *)subfImage, (vector float *)result, i);
 		else
 		#endif
@@ -7859,7 +7859,7 @@ float			iwl, iww;
 					if( next < [pixArray count]  && next >= 0)
 					{
 						fNext = [[pixArray objectAtIndex: next] fImage];
-						if( fNext) vadd( fImage, 1, fNext, 1, fResult, 1, height * width);
+						if( fNext) vDSP_vadd( fImage, 1, fNext, 1, fResult, 1, height * width);
 						countstack++;
 						
 						for( i = 2; i < stack; i++)
@@ -7871,14 +7871,14 @@ float			iwl, iww;
 							if( res < [pixArray count] && res >= 0)
 							{
 								fNext = [[pixArray objectAtIndex: res] fImage];
-								if( fNext) vadd( fResult, 1, fNext, 1, fResult, 1, height * width);
+								if( fNext) vDSP_vadd( fResult, 1, fNext, 1, fResult, 1, height * width);
 								countstack++;
 							}
 						}
 					}
 					else
 					{
-						BlockMoveData( fImage, fResult, height * width * sizeof(float));
+						memcpy( fResult, fImage, height * width * sizeof(float));
 					}
 					
 					//rajouter vmull pour la division en floatant... telecharger la doc
@@ -7906,7 +7906,7 @@ float			iwl, iww;
 					case 3:;		// Minimum IP
 					
 					fFinalResult = malloc( height * width * sizeof(float));
-					BlockMoveData( fImage, fFinalResult, height * width * sizeof(float));
+					memcpy( fFinalResult, fImage, height * width * sizeof(float));
 
 					//multiprocessor acceleration
 					
@@ -8058,7 +8058,7 @@ float			iwl, iww;
 						fNext = (unsigned char*) [[pixArray objectAtIndex: next] fImage];
 						if( fNext)
 						{
-							#if __ppc__
+							#if __ppc__ || __ppc64__
 							if( Altivec)
 							{
 								if( stackMode == 2) vmax8( (vector unsigned char *)fNext, (vector unsigned char *)fImage, (vector unsigned char *)fResult, height * width);
@@ -8089,7 +8089,7 @@ float			iwl, iww;
 									fNext = (unsigned char*) [[pixArray objectAtIndex: res] fImage];
 									if( fNext)
 									{
-										#if __ppc__
+										#if __ppc__ || __ppc64__
 										if( Altivec)
 										{
 											if( stackMode == 2) vmax8( (vector unsigned char *)fResult, (vector unsigned char *)fNext, (vector unsigned char *)fResult, height * width);
@@ -8108,7 +8108,7 @@ float			iwl, iww;
 					}
 					else
 					{
-						BlockMoveData( fImage, fResult, height * width * sizeof(char)*4);
+						memcpy( fResult, fImage, height * width * sizeof(char)*4);
 					}
 					
 					float   *inputfImage;
@@ -8292,7 +8292,7 @@ float			iwl, iww;
 	}
 	
     unsigned char *bitmapData = malloc( (rowBytes + 4) * (destHeight+4));
-	BlockZeroUncached( bitmapData, (rowBytes + 4) * (destHeight+4));
+	memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
 	
 	NSBitmapImageRep *bitmapRep;
 	

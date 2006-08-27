@@ -420,7 +420,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		}
 		subtractedOriginalBuffer = malloc(byteCount);
 
-		BlockMoveData(buffer,subtractedOriginalBuffer,byteCount);
+		memcpy(subtractedOriginalBuffer,buffer,byteCount);
 		
 		if(resample)
 		{
@@ -503,7 +503,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		}
 		subtractedXReslicedBuffer = malloc(byteCount);
 		
-		BlockMoveData(buffer,subtractedXReslicedBuffer,byteCount);
+		memcpy(subtractedXReslicedBuffer,buffer,byteCount);
 		
 		if(resample)
 		{
@@ -587,7 +587,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		}
 		subtractedYReslicedBuffer = malloc(byteCount);
 	
-		BlockMoveData(buffer,subtractedYReslicedBuffer,byteCount);
+		memcpy(subtractedYReslicedBuffer,buffer,byteCount);
 
 		if(resample)
 		{
@@ -858,17 +858,17 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			{
 				tempBuffer[i] = -1000;
 			}
-			BlockMoveData(buffer, tempBuffer+y*width, (height-y)*width*sizeof(float));
-			BlockMoveData(tempBuffer, buffer, height*width*sizeof(float));
+			memcpy(tempBuffer+y*width, buffer, (height-y)*width*sizeof(float));
+			memcpy(buffer, tempBuffer, height*width*sizeof(float));
 		}
 		else if (y < 0)
 		{
-			BlockMoveData(buffer-y*width, tempBuffer, (height+y)*width*sizeof(float));
+			memcpy(tempBuffer, buffer-y*width, (height+y)*width*sizeof(float));
 			for(i=(height+y)*width; i<height*width; i++)
 			{
 				tempBuffer[i] = -1000;
 			}
-			BlockMoveData(tempBuffer, buffer, height*width*sizeof(float));
+			memcpy(buffer, tempBuffer, height*width*sizeof(float));
 		}
 
 		// shift X
@@ -878,20 +878,20 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 			{
 				for(j=0; j<x; j++)
 					tempBuffer[i*width+j] = -1000;
-				BlockMoveData(buffer+i*width, tempBuffer+i*width+x, (width-x)*sizeof(float));
+				memcpy(tempBuffer+i*width+x, buffer+i*width, (width-x)*sizeof(float));
 			}
 		}
 		else if(x < 0)
 		{
 			for(i=0; i<height; i++)
 			{
-				BlockMoveData(buffer+i*width-x, tempBuffer+i*width, (width+x)*sizeof(float));
+				memcpy(tempBuffer+i*width, buffer+i*width-x, (width+x)*sizeof(float));
 				for(j=width+x; j<width; j++)
 					tempBuffer[i*width+j] = -1000;
 			}
 		}
 		
-		BlockMoveData(tempBuffer, buffer, height*width*sizeof(float));
+		memcpy(buffer, tempBuffer, height*width*sizeof(float));
 		free(tempBuffer);
 	}
 }
@@ -963,7 +963,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)removeBonesAtX:(int)x y:(int)y z:(int)z;
 {
+	#if !__LP64__
 	QDDisplayWaitCursor( true);
+	#endif
 	
 	[[injectedMPRController reslicer] freeYCache];
 	
@@ -1026,7 +1028,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	[self refreshSubtractedViews];
 	
-	QDDisplayWaitCursor( false);
+	#if !__LP64__
+	QDDisplayWaitCursor( true);
+	#endif
 }
 
 #pragma mark-
@@ -1176,7 +1180,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		buffer = [curPix fImage];
 		byteCount = curWidth*curHeight*sizeof(float);
 		
-		BlockMoveData(buffer,fVolumePtr,byteCount);
+		memcpy(fVolumePtr,buffer,byteCount);
 		
 		BOOL resample = (xShift%4 != 0) || (yShift%4 != 0);
 		

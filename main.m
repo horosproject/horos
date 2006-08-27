@@ -23,8 +23,10 @@
 
 int main(int argc, const char *argv[])
 {
+	#if !__LP64__
     EnterMovies();
-    
+    #endif
+	
     Papy3Init();
     FVTIFFInitialize();
 	

@@ -156,7 +156,7 @@ extern BrowserController	*browserWindow;
 				
 				for( i = 0; i < height; i++)
 				{
-					BlockMoveData( [imageRepresentation bitmapData] + i * [imageRepresentation bytesPerRow], imageData + i * width * [imageRepresentation samplesPerPixel], width * [imageRepresentation samplesPerPixel]);
+					memcpy( imageData + i * width * [imageRepresentation samplesPerPixel], [imageRepresentation bitmapData] + i * [imageRepresentation bytesPerRow], width * [imageRepresentation samplesPerPixel]);
 				}
 			}
 			else imageData = [imageRepresentation bitmapData];

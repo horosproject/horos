@@ -9232,6 +9232,8 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void) loadDICOMFromiDisk:(id) sender
 {
+	#if !__LP64__
+	
 	BOOL				delete, success;
 	long				i;
 	DMMemberAccount		*myDotMacMemberAccount;
@@ -9314,10 +9316,12 @@ static NSArray*	openSubSeriesArray = 0L;
 		else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
 	}
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"No iDisk is currently defined in your system.",@"No iDisk is currently defined in your system."),NSLocalizedString( @"OK",nil),nil, nil);
+	#endif
 }
 
 - (IBAction) sendiDisk:(id) sender
 {
+	#if !__LP64__
 	int					i, t, x, index;
 	BOOL				success = YES;
 	DMMemberAccount		*myDotMacMemberAccount;
@@ -9440,6 +9444,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		}
 	}
 	else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"No iDisk is currently defined in your system.",@"No iDisk is currently defined in your system."), NSLocalizedString(@"OK",nil),nil, nil);
+	#endif
 }
 
 
