@@ -8944,6 +8944,8 @@ static NSArray*	openSubSeriesArray = 0L;
 					[theTask launch];
 					[theTask waitUntilExit];
 					[theTask release];
+					// masu 2008-08-28 relase for pool was missing
+					[pool release];
 				}
 			}
 		}
