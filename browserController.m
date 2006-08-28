@@ -7949,6 +7949,8 @@ static NSArray*	openSubSeriesArray = 0L;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
+	[checkIncomingLock lock];
+	
     NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 	NSString		*ERRpath = [documentsDirectory() stringByAppendingString:ERRPATH];
     NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
@@ -8163,9 +8165,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	if( [checkIncomingLock tryLock])
 	{
-	//	 NSLog(@"lock checkIncoming");
-		 
 		[NSThread detachNewThreadSelector: @selector(checkIncomingThread:) toTarget:self withObject: self];
+		[checkIncomingLock unlock];
 	}
 	else NSLog(@"checkIncoming locked...");
 }
