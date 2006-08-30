@@ -15997,11 +15997,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
   , { 0x0071, 0x0011, 0x0071, 0x0011,
       EVR_OW, "ROI", 1, 1, "OSIRIX",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "NULL" }
+      "OSIRIX" }
 	, { 0x0071, 0x0013, 0x0071, 0x0013,
       EVR_OW, "3DReconstructionData", 1, 1, "OSIRIX",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "NULL" }
+      "OSIRIX" }
 	#endif
 	
   , { 0x0072, 0x0000, 0x0072, 0x0000,
