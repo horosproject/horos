@@ -101,6 +101,7 @@ extern  NSMenu					*fusionPluginsMenu;
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
+static NSString*	PagePadToolbarItemIdentifier		= @"PagePad";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.icns";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	SpeedToolbarItemIdentifier			= @"Speed";
@@ -2179,6 +2180,34 @@ static ViewerController *draggedController = 0L;
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
     }
+	else  if ([itemIdent isEqualToString: PagePadToolbarItemIdentifier]) {
+        
+	[toolbarItem setLabel: NSLocalizedString(@"PagePad", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"PagePad", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Open a PagePad template for the current study", nil)];
+	
+	[toolbarItem setView: PagePad];
+	[toolbarItem setMinSize:NSMakeSize(79, NSHeight([PagePad frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(79, NSHeight([PagePad frame]))];
+/*	
+	[toolbarItem setView: subCtrlView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([subCtrlView frame]), NSHeight([subCtrlView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([subCtrlView frame]),NSHeight([subCtrlView frame]))];
+
+	
+	// By default, in text only mode, a custom items label will be shown as disabled text, but you can provide a 
+	// custom menu of your own by using <item> setMenuFormRepresentation] 
+	submenu = [[[NSMenu alloc] init] autorelease];
+	submenuItem = [[[NSMenuItem alloc] initWithTitle: @"Search Panel" action: @selector(searchUsingSearchPanel:) keyEquivalent: @""] autorelease];
+	menuFormRep = [[[NSMenuItem alloc] init] autorelease];
+
+	[submenu addItem: submenuItem];
+	[submenuItem setTarget: self];
+	[menuFormRep setSubmenu: submenu];
+	[menuFormRep setTitle: [toolbarItem label]];
+	[toolbarItem setMenuFormRepresentation: menuFormRep];
+*/
+    }
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"Email", nil)];
@@ -2625,6 +2654,7 @@ static ViewerController *draggedController = 0L;
 														Send2PACSToolbarItemIdentifier,
 														ExportToolbarItemIdentifier,
 														iPhotoToolbarItemIdentifier,
+														PagePadToolbarItemIdentifier,
 														QTSaveToolbarItemIdentifier,
 														XMLToolbarItemIdentifier,
 														ReconstructionToolbarItemIdentifier,
@@ -8824,6 +8854,39 @@ return moviePosSlider;
 	[imageFormat selectCellWithTag: 2];
 	
 	[self exportImage: sender];
+}
+
+-(IBAction) PagePadCreate:(id) sender
+{
+	//check if the folder PAGES exists in OsiriX document folder
+	NSString *pathToPAGES = [documentsDirectory() stringByAppendingString:@"/PAGES/"];
+	if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPAGES]))
+	[[NSFileManager defaultManager] createDirectoryAtPath:pathToPAGES attributes:nil];
+	
+	//create pathToTemplate
+	NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/"];
+	pathToTemplate = [pathToTemplate stringByAppendingString:[PagePadCombo objectValueOfSelectedItem]];
+	pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
+
+	//pathToPAGES = timeStamp
+	CFDateFormatterRef customDateFormatter = CFDateFormatterCreate (NULL, CFLocaleCopyCurrent(), kCFDateFormatterNoStyle, kCFDateFormatterNoStyle);
+	CFDateFormatterSetFormat(customDateFormatter, @"yyyyMMdd-HHmmss=");
+	pathToPAGES = [pathToPAGES stringByAppendingString: CFDateFormatterCreateStringWithDate (NULL, customDateFormatter, [NSDate date])];
+	CFRelease(customDateFormatter);
+	//pathToPAGES =+ study UID
+	pathToPAGES = [pathToPAGES stringByAppendingString:[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]];
+	//pathToPAGES =+ .pages
+	pathToPAGES = [pathToPAGES stringByAppendingPathExtension:@"pages"];
+	
+	//copy file pathToTemplate to pathToPAGES
+	[[NSFileManager defaultManager] copyPath:pathToTemplate toPath:pathToPAGES handler:0L];
+
+	//open pathToPAGES
+	[[NSWorkspace sharedWorkspace] openFile:pathToPAGES];
+	NSLog(pathToPAGES);
+
+	//back to title default position (this allows to create a new event when the same film is chosen later)
+	[PagePadCombo selectItemAtIndex:0];	
 }
 
 - (void) exportTIFF:(id) sender

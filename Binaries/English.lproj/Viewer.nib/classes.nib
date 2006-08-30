@@ -112,6 +112,7 @@
                 MPR2DViewer = id; 
                 MPRViewer = id; 
                 MoviePlayStop = id; 
+                PagePadCreate = id; 
                 Panel3D = id; 
                 PlayStop = id; 
                 SRViewer = id; 
@@ -207,6 +208,8 @@
                 OpacityName = NSTextField; 
                 OpacityPopup = NSPopUpButton; 
                 OpacityView = OpacityTransferView; 
+                PagePad = NSView; 
+                PagePadCombo = NSComboBox; 
                 RGBFactorsView = NSView; 
                 ReconstructionRoi = NSPopUpButton; 
                 ReconstructionView = NSView; 

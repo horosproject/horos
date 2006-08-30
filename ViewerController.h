@@ -73,8 +73,9 @@ enum
 	IBOutlet NSView         *ConvView;
 	IBOutlet NSView         *FusionView;
 	IBOutlet NSView			*BlendingView;
-	IBOutlet NSView			*movieView, *serieView, *patientView, *iPhotoView, *keyImages;
+	IBOutlet NSView			*movieView, *serieView, *patientView, *iPhotoView, *keyImages, *PagePad;
 	IBOutlet NSView         *RGBFactorsView;
+	IBOutlet NSComboBox		*PagePadCombo;
 	IBOutlet NSTextField    *speedText;
     IBOutlet NSPopUpButton  *wlwwPopup;
     IBOutlet NSPopUpButton  *convPopup;
@@ -415,6 +416,7 @@ enum
 - (IBAction) clutAction:(id)sender;
 - (void) tileWindows;
 -(IBAction) export2iPhoto:(id) sender;
+-(IBAction) PagePadCreate:(id) sender;
 - (void) exportQuicktime:(id) sender;
 - (IBAction) exportQuicktimeSlider:(id) sender;
 - (IBAction) exportDICOMSlider:(id) sender;;
