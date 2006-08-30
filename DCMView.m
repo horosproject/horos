@@ -2211,7 +2211,8 @@ static long scrollMode;
 	if (_mouseDownTimer) {
 		[self deleteMouseDownTimer];
 	}
-	_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:event  repeats:NO] retain];
+	if ([event type] == NSLeftMouseDown)
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:event  repeats:NO] retain];
 	
 	
     if( dcmPixList)
