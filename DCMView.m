@@ -7620,7 +7620,7 @@ BOOL	lowRes = NO;
 #pragma mark-  Drag and Drop
 
 - (void) startDrag:(NSTimer*)theTimer{
-	//NSLog(@"Fire mouse Down Timer");
+	NS_DURING
 	_dragInProgress = YES;
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
@@ -7631,9 +7631,9 @@ BOOL	lowRes = NO;
 	// The image we will drag 
 	NSImage *image;
 	if ([event modifierFlags] & NSShiftKeyMask)
-		image = [self nsimage: NO];
-	else
 		image = [self nsimage: YES];
+	else
+		image = [self nsimage: NO];
 		
 	// Thumbnail image and position
 	NSPoint event_location = [event locationInWindow];
@@ -7669,7 +7669,7 @@ BOOL	lowRes = NO;
 			[destinationImage release];
 		destinationImage = [image copy];
 		
-		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"tif"]
+		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]
             fromRect:imageLocation
             source:self
             slideBack:YES
@@ -7688,26 +7688,24 @@ BOOL	lowRes = NO;
 			source:self 
 			slideBack:YES];
 	}
+	NS_HANDLER
+		NSLog(@"Exception while dragging: %@", [localException description]);
+	NS_ENDHANDLER
+		
 		
 }
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
-	//NSLog(@"dropDestination url: %@", [dropDestination description]);
 	NSString *name = [[self dicomImage] valueForKeyPath:@"series.study.name"];
-	//if (!name)
 	name = @"OsiriX";
-	//NSLog(@"name: %@", name);
-	name = [name stringByAppendingPathExtension:@"tif"];
+	name = [name stringByAppendingPathExtension:@"jpg"];
 	NSArray *array = [NSArray arrayWithObject:name];
-	NSData *data = [destinationImage TIFFRepresentation];
-	//NSLog(@"destination image: %@", [destinationImage description]);
+	NSData *data = [(NSBitmapImageRep *)[destinationImage bestRepresentationForDevice:nil] representationUsingType:NSJPEGFileType 
+		properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
-	//NSLog(@"url: %@", [url absoluteString]);
 	[data writeToURL:url  atomically:YES];
-	//NSLog(@"Written");
-	//else
-	//NSLog(@"WRITE FAILED");
 	[destinationImage release];
+	destinationImage = nil;
 	return array;
 }
 
