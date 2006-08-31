@@ -1467,7 +1467,7 @@ static BOOL initialized = NO;
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
 	if([DefaultsOsiriX isHUG])
 	{
-		if(![[DefaultsOsiriX hostName] isEqualToString: @"lavimarch.hcuge.ch"] && ![[DefaultsOsiriX hostName] isEqualToString: @"drdd-mc19.hcuge.ch"] && ![[DefaultsOsiriX hostName] isEqualToString: @"uin-mc04.hcuge.ch"])
+		if(![[DefaultsOsiriX hostName] isEqualToString: @"lavimarch.hcuge.ch"] && ![[DefaultsOsiriX hostName] isEqualToString: @"drdd-mc19.hcuge.ch"] && ![[DefaultsOsiriX hostName] isEqualToString: @"uin-mc07.hcuge.ch"])
 		{
 			[self HUGDisableBonjourFeature];
 			[self HUGVerifyComPACSPlugin];

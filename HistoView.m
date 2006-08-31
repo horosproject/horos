@@ -55,6 +55,11 @@
     if (self)
 	{
 		curMousePosition = -1;
+		backgroundColor = [NSColor whiteColor];
+		binColor = [NSColor lightGrayColor];
+		selectedBinColor = [NSColor selectedMenuItemColor];
+		textColor = [NSColor blackColor];
+		borderColor = [NSColor grayColor];
     }
     return self;
 }
@@ -92,11 +97,16 @@
 	float					maxX = (boundsRect.origin.x+boundsRect.size.width)/HISTOSIZE;
 	NSString				*trace;
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+//	NSDictionary			*boldFont = [NSDictionary dictionaryWithObjectsAndKeys:	[NSFont labelFontOfSize:10.0],NSFontAttributeName,
+//																					[NSColor blackColor],NSForegroundColorAttributeName,
+//																					paragraphStyle,NSParagraphStyleAttributeName,
+//																					nil];
 	NSDictionary			*boldFont = [NSDictionary dictionaryWithObjectsAndKeys:	[NSFont labelFontOfSize:10.0],NSFontAttributeName,
-																					[NSColor blackColor],NSForegroundColorAttributeName,
+																					textColor,NSForegroundColorAttributeName,
 																					paragraphStyle,NSParagraphStyleAttributeName,
 																					nil];
-	[[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.2 alpha:1.0] set];
+//	[[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.2 alpha:1.0] set];
+	[backgroundColor set];
 	NSRectFill(boundsRect);
 
 	for(index = 0 ; index < dataSize;index++)  
@@ -135,10 +145,15 @@
 		
 		if( index  == curMousePosition) 
 		{
-			[[NSColor redColor] set];
+			//[[NSColor redColor] set];
+			[selectedBinColor set];
 			noAtMouse = value;
 		}
-		else [[NSColor blackColor] set];
+		else
+		{
+			//[[NSColor blackColor] set];
+			[binColor set];
+		}
 		
 		NSRectFill(histRect);
 		
@@ -163,7 +178,59 @@
 	dstRect.origin.x+=4;
 	[trace drawInRect: dstRect withAttributes: boldFont];
 	
-	[[NSColor blackColor] set];
+	//[[NSColor blackColor] set];
+	[borderColor set];
 	NSFrameRectWithWidth(boundsRect, 1.0);
 }
+
+- (NSColor*)backgroundColor
+{
+	return backgroundColor;
+}
+
+- (NSColor*)binColor;
+{
+	return binColor;
+}
+
+- (NSColor*)selectedBinColor;
+{
+	return selectedBinColor;
+}
+
+- (NSColor*)textColor;
+{
+	return textColor;
+}
+
+- (NSColor*)borderColor;
+{
+	return borderColor;
+}
+
+- (void)setBackgroundColor:(NSColor*)aColor;
+{
+	backgroundColor = aColor;
+}
+
+- (void)setBinColor:(NSColor*)aColor;
+{
+	binColor = aColor;
+}
+
+- (void)setSelectedBinColor:(NSColor*)aColor;
+{
+	selectedBinColor = aColor;
+}
+
+- (void)setTextColor:(NSColor*)aColor;
+{
+	textColor = aColor;
+}
+
+- (void)setBorderColor:(NSColor*)aColor;
+{
+	borderColor = aColor;
+}
+
 @end
