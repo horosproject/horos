@@ -362,5 +362,4 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (id)dicomImage;
-- (NSImage *)destinationImage;
 @end

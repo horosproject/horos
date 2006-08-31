@@ -2869,9 +2869,7 @@ static long scrollMode;
 	}
 	
 	if (_dragInProgress == YES) return;
-
 	
-		
     if( dcmPixList)
     {
         NSPoint     eventLocation = [event locationInWindow];
@@ -7641,10 +7639,17 @@ BOOL	lowRes = NO;
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
 	local_point.x -= 35;
 	local_point.y -= 35;
-	[curDCM computeWImage:YES :0.0 :0.0];
-	NSImage *thumbnail = (NSImage *)[curDCM getImage];
-		
-				
+
+	NSSize originalSize = [image size];
+	
+	float ratio = originalSize.width / originalSize.height;
+	
+	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
+
+	[thumbnail lockFocus];
+	[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
+	[thumbnail unlockFocus];
+	
 	if ([event modifierFlags] & NSAlternateKeyMask)
 		[ pbTypes addObject: NSFilesPromisePboardType];
 	else
@@ -7674,10 +7679,7 @@ BOOL	lowRes = NO;
             fromRect:imageLocation
             source:self
             slideBack:YES
-            event:event]; 
-			
-
-		
+            event:event];
 	} 
 	else {		
 		[pboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
@@ -7689,11 +7691,14 @@ BOOL	lowRes = NO;
 			source:self 
 			slideBack:YES];
 	}
+	
+	[image release];
+	
 	NS_HANDLER
 		NSLog(@"Exception while dragging: %@", [localException description]);
 	NS_ENDHANDLER
-		
-		
+	
+	_dragInProgress = NO;
 }
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
@@ -7722,22 +7727,7 @@ BOOL	lowRes = NO;
 	return NSDragOperationEvery;
 }
 
-
-
 - (id)dicomImage{
 	return [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 }
-
-/*
-_ (NSImage *)destinationImage{
-	return destinationImage;
-}
-*/
-
-
-	
-
-
-
-
 @end
