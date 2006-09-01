@@ -786,6 +786,11 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[point3DTextSizesArray release];
 	
 	[cursor release];
+	
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	
+	[destinationImage release];
 		
     [super dealloc];
 }
@@ -793,14 +798,9 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 
 
 - (void)rightMouseDown:(NSEvent *)theEvent
-{
-	
+{	
 	noWaitDialog = YES;
-	
-//	[super rightMouseDown:theEvent];
 	[self mouseDown:theEvent];
-	//if ([theEvent clickCount] > 1) 
-	//	[NSMenu popUpContextMenu:[self menu] withEvent:theEvent forView:self];
 	noWaitDialog = NO;
 }
 
@@ -849,6 +849,150 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	[super otherMouseDown: theEvent];
 }
 
+
+- (void)mouseDragged:(NSEvent *)theEvent{
+	if (_dragInProgress == NO && [theEvent deltaX] != 0 && [theEvent deltaY] != 0) {
+			[self deleteMouseDownTimer];
+		}
+	if (_dragInProgress == YES) return;
+	
+	if (_resizeFrame){
+		NSRect	newFrame = [self frame];
+		NSRect	beforeFrame = [self frame];;
+		
+		NSPoint mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
+		
+		if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
+			mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;
+		
+		if( [[[self window] contentView] frame].size.height - mouseLoc.y*2 < 100)
+			mouseLoc.y = ([[[self window] contentView] frame].size.height - 100) / 2;
+		
+		if( mouseLoc.x < 10)
+			mouseLoc.x = 10;
+		
+		if( mouseLoc.y < 10)
+			mouseLoc.y = 10;
+			
+		newFrame.origin.x = mouseLoc.x;
+		newFrame.origin.y = mouseLoc.y;
+		
+		newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
+		newFrame.size.height = [[[self window] contentView] frame].size.height - mouseLoc.y*2;
+		
+		[self setFrame: newFrame];
+		
+		aCamera->Zoom( beforeFrame.size.height / newFrame.size.height);
+		
+		[[self window] display];
+
+		
+		[self setNeedsDisplay:YES];
+	}	
+	else{
+		int shiftDown;
+		int controlDown;
+		NSPoint mouseLocPre;
+		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];		
+		switch (_tool) {
+			case tRotate:
+				shiftDown  = 0;
+				controlDown = 1;
+				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+				[self computeOrientationText];
+				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+				break;
+			case t3DRotate:
+				shiftDown  = 0;
+				controlDown = 0;		
+				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+				[self computeOrientationText];
+				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+				break;
+			case tTranslate:
+				shiftDown  = 1;
+				controlDown = 0;
+				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+				break;
+			case tZoom:				
+				[self rightMouseDragged:theEvent];
+				break;
+			case tCamera3D:
+
+				aCamera->Yaw( -(mouseLoc.x - _mouseLocStart.x) / 5.);
+				aCamera->Pitch( (mouseLoc.y - _mouseLocStart.y) / 5.);
+				aCamera->ComputeViewPlaneNormal();
+				aCamera->OrthogonalizeViewUp();
+				aRenderer->ResetCameraClippingRange();
+				[self computeOrientationText];
+				_mouseLocStart = mouseLoc;
+				[self setNeedsDisplay:YES];
+				break;
+			default:
+				break;
+		}
+	}	
+}
+
+- (void)rightMouseDragged:(NSEvent *)theEvent{
+	int shiftDown, controlDown;
+	float distance;
+	NSPoint		mouseLoc,  mouseLocPre;
+	mouseLocPre = mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+	switch (_tool) {
+		case tZoom:
+			if( projectionMode != 2){
+				shiftDown = 0;
+				controlDown = 1;				
+				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+				[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+			}
+			else{
+				distance = aCamera->GetDistance();
+				aCamera->Dolly( 1.0 + (_mouseLocStart.y - mouseLocPre.y) / 1200.);
+				aCamera->SetDistance( distance);
+				aCamera->ComputeViewPlaneNormal();
+				aCamera->OrthogonalizeViewUp();
+				aRenderer->ResetCameraClippingRange();
+				_mouseLocStart = mouseLoc;
+				[self setNeedsDisplay:YES];
+			}
+			break;
+	}
+
+}
+
+- (void)mouseUp:(NSEvent *)theEvent{
+	[self deleteMouseDownTimer];
+	
+	switch (_tool) {
+		case tRotate:
+		case t3DRotate:
+		case tTranslate:
+			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+			break;
+		case tZoom:
+			[self rightMouseUp:theEvent];
+			break;
+		default:
+			break;
+	}
+		
+	[super mouseUp:theEvent];
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent{
+	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];	
+	if (_tool == tZoom && ( projectionMode != 2)) {
+		int shiftDown = 0;
+		int controlDown = 1;
+		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+		[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+	}
+		
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
     BOOL		keepOn = YES;
@@ -858,10 +1002,23 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	noWaitDialog = YES;
 	tool = currentTool;
 	
+
+	if ([theEvent type] == NSLeftMouseDown) {
+		if (_mouseDownTimer) {
+			[self deleteMouseDownTimer];
+		}
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
+	}
+
+		
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	_mouseLocStart = mouseLocStart;
 	
 	if( mouseLocStart.x < 10 && mouseLocStart.y < 10)
 	{
+		_resizeFrame = YES;
+		return;
+		/*
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
 		
@@ -920,10 +1077,13 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		}while (keepOn);
 		
 		[self setNeedsDisplay:YES];
+		*/
 	}
 	else
 	{
+		_resizeFrame = NO;
 		tool = [self getTool: theEvent];
+		_tool = tool;
 		[self setCursorForView: tool];
 		
 		if( tool == tRotate)
@@ -935,6 +1095,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			
+			/*
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -956,6 +1117,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					break;
 				}
 			}while (keepOn);
+			*/
 		}
 		else if( tool == t3DRotate)
 		{
@@ -965,8 +1127,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-
-			
+			/*			
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -982,12 +1143,14 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					keepOn = NO;
 					break;
 				case NSPeriodic:
+					NSLog(@"NSPeriodic 3D rotate");
 					[self getInteractor]->InvokeEvent(vtkCommand::TimerEvent, NULL);
 					break;
 				default:
 					break;
 				}
 			}while (keepOn);
+			*/
 		}
 		else if( tool == tTranslate)
 		{
@@ -997,7 +1160,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			
+			/*
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -1018,6 +1181,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					break;
 				}
 			}while (keepOn);
+			*/
 		}
 		else if( tool == tZoom)
 		{
@@ -1029,7 +1193,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
-				
+				/*
 				do {
 					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 					mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -1052,6 +1216,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 						break;
 					}
 				}while (keepOn);
+				*/
 			}
 			else
 			{
@@ -1059,6 +1224,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
 				//if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+				/*
 				do
 				{
 					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -1095,7 +1261,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					
 					mouseLocPre = mouseLoc;
 				}while (keepOn);
-				
+				*/
 				//if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 				
 				[self setNeedsDisplay:YES];
@@ -1108,9 +1274,10 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			
 //			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
-			
+			/*
 			do
 			{
+				
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				switch ([theEvent type])
@@ -1143,6 +1310,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				}
 				mouseLocPre = mouseLoc;
 			}while (keepOn);
+			*/
 			
 //			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
@@ -1194,11 +1362,15 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				}
 			}
 		}
+		else if (_tool == tWL) {
+			NSLog(@"WL do nothing");
+		}
+			
 		else [super mouseDown:theEvent];
 		
 	//	croppingBox->SetHandleSize( 0.005);
 	}
-	
+
 	noWaitDialog = NO;
 }
 
@@ -2876,6 +3048,111 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		[self resetCursorRects];
 		[cursor set];
 	}
+}
+
+#pragma mark-  Drag and Drop
+
+- (void) startDrag:(NSTimer*)theTimer{
+	NS_DURING
+	_dragInProgress = YES;
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	NSEvent *event = (NSEvent *)[theTimer userInfo];
+	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
+	NSMutableArray *pbTypes = [NSMutableArray array];
+	// The image we will drag 
+	NSImage *image;
+	if ([event modifierFlags] & NSShiftKeyMask)
+		image = [self nsimage: YES];
+	else
+		image = [self nsimage: NO];
+		
+	// Thumbnail image and position
+	NSPoint event_location = [event locationInWindow];
+	NSPoint local_point = [self convertPoint:event_location fromView:nil];
+	local_point.x -= 35;
+	local_point.y -= 35;
+
+	NSSize originalSize = [image size];
+	
+	float ratio = originalSize.width / originalSize.height;
+	
+	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
+
+	[thumbnail lockFocus];
+	[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
+	[thumbnail unlockFocus];
+	
+	if ([event modifierFlags] & NSAlternateKeyMask)
+		[ pbTypes addObject: NSFilesPromisePboardType];
+	else
+		[pbTypes addObject: NSTIFFPboardType];	
+	
+
+	[pboard declareTypes:pbTypes  owner:self];
+
+		
+	if ([event modifierFlags] & NSAlternateKeyMask) {
+		NSRect imageLocation;
+		local_point = [self convertPoint:event_location fromView:nil];
+		imageLocation.origin =  local_point;
+		imageLocation.size = NSMakeSize(32,32);
+		[pboard setData:nil forType:NSFilesPromisePboardType]; 
+		
+		if (destinationImage)
+			[destinationImage release];
+		destinationImage = [image copy];
+		
+		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]
+            fromRect:imageLocation
+            source:self
+            slideBack:YES
+            event:event];
+	} 
+	else {		
+		[pboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+		[ self dragImage:thumbnail
+			at:local_point
+			offset:dragOffset
+			event:event 
+			pasteboard:pboard 
+			source:self 
+			slideBack:YES];
+	}
+	
+	[image release];
+	
+	NS_HANDLER
+		NSLog(@"Exception while dragging: %@", [localException description]);
+	NS_ENDHANDLER
+	
+	_dragInProgress = NO;
+}
+
+- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
+	NSString *name = @"OsiriX";
+	name = [name stringByAppendingPathExtension:@"jpg"];
+	NSArray *array = [NSArray arrayWithObject:name];
+	NSData *_data = [(NSBitmapImageRep *)[destinationImage bestRepresentationForDevice:nil] representationUsingType:NSJPEGFileType 
+		properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
+	[_data writeToURL:url  atomically:YES];
+	[destinationImage release];
+	destinationImage = nil;
+	return array;
+}
+
+- (void)deleteMouseDownTimer{
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	_dragInProgress = NO;
+}
+
+//part of Dragging Source Protocol
+- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+	return NSDragOperationEvery;
 }
 
 @end

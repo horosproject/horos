@@ -1666,6 +1666,11 @@ public:
 	
 	[cursor release];
 	
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	
+	[destinationImage release];
+	
     [super dealloc];
 }
 
@@ -1877,6 +1882,228 @@ public:
 	else [pixelInformation setStringValue: @""];
 }
 
+- (void)mouseDragged:(NSEvent *)theEvent{
+	if (_dragInProgress == NO && [theEvent deltaX] != 0 && [theEvent deltaY] != 0) {
+			[self deleteMouseDownTimer];
+		}
+	if (_dragInProgress == YES) return;
+	
+	
+	if (_resizeFrame){
+		NSRect	newFrame = [self frame];
+		NSRect	beforeFrame;
+		NSPoint mouseLoc = [theEvent locationInWindow];
+		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+		beforeFrame = [self frame];
+				
+		if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
+			mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;
+		
+		if( [[[self window] contentView] frame].size.height - mouseLoc.y*2 < 100)
+			mouseLoc.y = ([[[self window] contentView] frame].size.height - 100) / 2;
+
+		if( mouseLoc.x < 10)
+			mouseLoc.x = 10;
+		
+		if( mouseLoc.y < 10)
+			mouseLoc.y = 10;
+			
+		newFrame.origin.x = mouseLoc.x;
+		newFrame.origin.y = mouseLoc.y;
+		
+		newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
+		newFrame.size.height = [[[self window] contentView] frame].size.height - 10 - mouseLoc.y*2;
+		
+		[self setFrame: newFrame];
+		
+		aCamera->Zoom( beforeFrame.size.height / newFrame.size.height);
+		
+		[[self window] display];		
+	}
+	else {
+		NSPoint mouseLocPre, mouseLocStart;
+		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+		float WWAdapter,startlevel, endlevel ;
+		float	startWW = ww, startWL = wl;
+		float	startMin = wl - ww/2, startMax = wl + ww/2;
+		int shiftDown;
+		int controlDown;
+		switch (_tool) {
+			case tWL:			
+					WWAdapter  = startWW / 200.0;
+					
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+					{
+						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+						{
+							case 0:
+								wl =  (startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
+								ww =  (startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
+							break;
+							
+							case 1:
+								endlevel = startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
+								
+								wl =  (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+								ww = endlevel - startMin;
+							break;
+							
+							case 2:
+								endlevel = startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
+								startlevel = startMin + (mouseLoc.x - _mouseLocStart.x) * WWAdapter ;
+								
+								if( startlevel < 0) startlevel = 0;
+								
+								wl = startlevel + (endlevel - startlevel) / 2;
+								ww = endlevel - startlevel;
+							break;
+						}
+					}
+					else
+					{
+						wl =  (startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
+						ww =  (startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
+					}
+					
+					if( ww < 0.1) ww = 0.1;
+					
+					[self setOpacity: currentOpacityArray];
+					
+					if( isRGB)
+						colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
+					else
+						colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
+					
+
+					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+					{
+						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
+						else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+					}
+					else
+					{
+						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
+						else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+					}
+					
+					textWLWW->SetInput( WLWWString);
+					_mouseLocStart = mouseLoc;
+					[self setNeedsDisplay:YES];
+
+				break;
+				
+				case tRotate:
+					shiftDown = 0;
+					controlDown = 1;
+					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+					[self computeOrientationText];
+					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					break;
+				
+				case t3DRotate:
+					shiftDown = 0;
+					controlDown = 0;
+					[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
+					[self computeOrientationText];
+					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					break;
+				case tTranslate:
+					shiftDown = 1;
+					controlDown = 0;
+					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					break;
+				case tZoom:
+					[self rightMouseDragged:theEvent];
+					break;
+				case tCamera3D:
+					mouseLocPre = mouseLocStart = _mouseLocStart;
+					aCamera->Yaw( -(mouseLoc.x - mouseLocPre.x) / 5.);
+					aCamera->Pitch( (mouseLoc.y - mouseLocPre.y) / 5.);
+					aCamera->ComputeViewPlaneNormal();
+					aCamera->OrthogonalizeViewUp();
+					aRenderer->ResetCameraClippingRange();
+					_mouseLocStart = mouseLoc;
+					[self computeOrientationText];
+					
+					[self setNeedsDisplay:YES];
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					break;
+					
+					
+			default:
+				break;
+		}
+	}
+}
+
+- (void)rightMouseDragged:(NSEvent *)theEvent{
+	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+	float distance ;
+	if( projectionMode != 2){
+		int shiftDown = 0;
+		int controlDown = 1;
+		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+		[self computeLength];
+		[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	}
+	else{
+		NSPoint mouseLocPre, mouseLocStart, mouseLoc ;
+		mouseLocPre = mouseLocStart = _mouseLocStart;
+		//current mouse == mouseLoc
+		mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+		distance = aCamera->GetDistance();
+		aCamera->Dolly( 1.0 + (mouseLoc.y - mouseLocPre.y) / 1200.);
+		aCamera->SetDistance( distance);
+		aCamera->ComputeViewPlaneNormal();
+		aCamera->OrthogonalizeViewUp();
+		aRenderer->ResetCameraClippingRange();
+		_mouseLocStart = mouseLoc;
+		[self setNeedsDisplay:YES];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+	}
+}
+
+- (void)mouseUp:(NSEvent *)theEvent{
+	[self deleteMouseDownTimer];
+	if (_resizeFrame) {
+		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	}
+	else {
+		switch (_tool) {
+			case tWL: 
+			case tCamera3D:
+				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+				break;
+			case tRotate:
+			case t3DRotate:
+			case tTranslate:
+				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+				break;
+			case tZoom:
+				[self rightMouseUp:theEvent];
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent{
+	if (_tool == tZoom) {
+		if( projectionMode != 2){
+			[self computeLength];
+			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+		}
+		else
+			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	}
+}
+
 - (void)mouseDown:(NSEvent *)theEvent
 {
     BOOL		keepOn = YES;
@@ -1885,6 +2112,13 @@ public:
 	
 	noWaitDialog = YES;
 	tool = currentTool;
+	
+	if ([theEvent type] == NSLeftMouseDown) {
+		if (_mouseDownTimer) {
+			[self deleteMouseDownTimer];
+		}
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
+	}
 	
 	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
@@ -1906,9 +2140,10 @@ public:
 
 	if( mouseLocStart.x < 10 && mouseLocStart.y < 10 && isViewportResizable)
 	{
+		_resizeFrame = YES;
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
-		
+		/*
 		do
 		{
 			theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -1969,14 +2204,18 @@ public:
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		
 		[self setNeedsDisplay:YES];
+		*/
 	}
 	else
 	{
+		_resizeFrame = NO;
 		tool = [self getTool: theEvent];
+		_tool = tool;
 		[self setCursorForView: tool];
 		
 		if( tool == tMesure)
 		{
+			
 			double	*pp;
 			long	i;
 			
@@ -2040,6 +2279,7 @@ public:
 		}
 		else if( tool == t3DCut)
 		{
+			
 			double	*pp;
 			long	i;
 			
@@ -2093,9 +2333,9 @@ public:
 			float	startMin = wl - ww/2, startMax = wl + ww/2;
 			
 			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
+			_mouseLocStart = mouseLocStart;
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
-			
+			/*
 			do
 			{
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -2202,6 +2442,7 @@ public:
 			}while (keepOn);
 			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+			*/
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 			
 			[self setNeedsDisplay:YES];
@@ -2212,10 +2453,10 @@ public:
 			int controlDown = 1;
 
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
+			_mouseLocStart = mouseLoc;
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			
+			/*
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2238,6 +2479,7 @@ public:
 				}
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 			}while (keepOn);
+			*/
 		}
 		else if( tool == t3DRotate)
 		{
@@ -2256,7 +2498,7 @@ public:
 	
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			
+			/*
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2279,6 +2521,7 @@ public:
 				}
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 			}while (keepOn);
+			*/
 		}
 		else if( tool == tTranslate)
 		{
@@ -2288,7 +2531,7 @@ public:
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			
+			/*
 			do {
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2309,7 +2552,9 @@ public:
 					break;
 				}
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+				
 			}while (keepOn);
+			*/
 		}
 		else if( tool == tZoom)
 		{
@@ -2321,7 +2566,7 @@ public:
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
-				
+				/*
 				do {
 					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
 					mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2355,7 +2600,7 @@ public:
 					}
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 				}while (keepOn);
-				
+				*/
 //				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( 1./([self getResolution] / [firstObject pixelSpacingX]));
 //				
 //				[self setNeedsDisplay:YES];
@@ -2367,7 +2612,7 @@ public:
 				
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
-				
+				/*
 				do
 				{
 					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -2407,9 +2652,11 @@ public:
 					
 					mouseLocPre = mouseLoc;
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+					
 				}while (keepOn);
 				
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+				*/
 //				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 				
 				[self setNeedsDisplay:YES];
@@ -2422,7 +2669,7 @@ public:
 			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
-			
+			/*
 			do
 			{
 				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
@@ -2458,7 +2705,7 @@ public:
 				mouseLocPre = mouseLoc;
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 			}while (keepOn);
-			
+			*/
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 			
@@ -2523,6 +2770,7 @@ public:
 		}
 		else if( tool == tBonesRemoval)
 		{
+			[self deleteMouseDownTimer];
 			#if !__LP64__
 			QDDisplayWaitCursor( true);
 			#endif
@@ -5630,4 +5878,110 @@ public:
 		[cursor set];
 	}
 }
+
+#pragma mark-  Drag and Drop
+
+- (void) startDrag:(NSTimer*)theTimer{
+	NS_DURING
+	_dragInProgress = YES;
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	NSEvent *event = (NSEvent *)[theTimer userInfo];
+	NSSize dragOffset = NSMakeSize(0.0, 0.0);
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
+	NSMutableArray *pbTypes = [NSMutableArray array];
+	// The image we will drag 
+	NSImage *image;
+	if ([event modifierFlags] & NSShiftKeyMask)
+		image = [self nsimage: YES];
+	else
+		image = [self nsimage: NO];
+		
+	// Thumbnail image and position
+	NSPoint event_location = [event locationInWindow];
+	NSPoint local_point = [self convertPoint:event_location fromView:nil];
+	local_point.x -= 35;
+	local_point.y -= 35;
+
+	NSSize originalSize = [image size];
+	
+	float ratio = originalSize.width / originalSize.height;
+	
+	NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
+
+	[thumbnail lockFocus];
+	[image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
+	[thumbnail unlockFocus];
+	
+	if ([event modifierFlags] & NSAlternateKeyMask)
+		[ pbTypes addObject: NSFilesPromisePboardType];
+	else
+		[pbTypes addObject: NSTIFFPboardType];	
+	
+
+	[pboard declareTypes:pbTypes  owner:self];
+
+		
+	if ([event modifierFlags] & NSAlternateKeyMask) {
+		NSRect imageLocation;
+		local_point = [self convertPoint:event_location fromView:nil];
+		imageLocation.origin =  local_point;
+		imageLocation.size = NSMakeSize(32,32);
+		[pboard setData:nil forType:NSFilesPromisePboardType]; 
+		
+		if (destinationImage)
+			[destinationImage release];
+		destinationImage = [image copy];
+		
+		[self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]
+            fromRect:imageLocation
+            source:self
+            slideBack:YES
+            event:event];
+	} 
+	else {		
+		[pboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+		[ self dragImage:thumbnail
+			at:local_point
+			offset:dragOffset
+			event:event 
+			pasteboard:pboard 
+			source:self 
+			slideBack:YES];
+	}
+	
+	[image release];
+	
+	NS_HANDLER
+		NSLog(@"Exception while dragging: %@", [localException description]);
+	NS_ENDHANDLER
+	
+	_dragInProgress = NO;
+}
+
+- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
+	NSString *name = @"OsiriX";
+	name = [name stringByAppendingPathExtension:@"jpg"];
+	NSArray *array = [NSArray arrayWithObject:name];
+	NSData *_data = [(NSBitmapImageRep *)[destinationImage bestRepresentationForDevice:nil] representationUsingType:NSJPEGFileType 
+		properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
+	[_data writeToURL:url  atomically:YES];
+	[destinationImage release];
+	destinationImage = nil;
+	return array;
+}
+
+- (void)deleteMouseDownTimer{
+	[_mouseDownTimer invalidate];
+	[_mouseDownTimer release];
+	_mouseDownTimer = nil;
+	_dragInProgress = NO;
+}
+
+//part of Dragging Source Protocol
+- (unsigned int)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
+	return NSDragOperationEvery;
+}
+
 @end

@@ -276,6 +276,14 @@ typedef char* vtkMyCallbackVR;
 	IBOutlet NSButton			*point3DPropagateToAll, *point3DSetDefault;
 	IBOutlet VRController		*controller;
 	float						point3DDefaultRadius, point3DDefaultColorRed, point3DDefaultColorGreen, point3DDefaultColorBlue, point3DDefaultColorAlpha;
+	
+	BOOL						_dragInProgress;
+	NSTimer						*_mouseDownTimer;
+	NSImage						*destinationImage;
+	
+	NSPoint						_mouseLocStart;  // mouseDown start point
+	BOOL						_resizeFrame;
+	short						_tool;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -396,4 +404,9 @@ typedef char* vtkMyCallbackVR;
 
 // cursors
 -(void) setCursorForView: (long) tool;
+
+//Dragging
+- (void) startDrag:(NSTimer*)theTimer;
+- (void)deleteMouseDownTimer;
+
 @end

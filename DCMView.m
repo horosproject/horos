@@ -2207,7 +2207,7 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
-	NSLog(@"mouseDown");
+	
 	if (_mouseDownTimer) {
 		[self deleteMouseDownTimer];
 	}

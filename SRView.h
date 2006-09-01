@@ -237,6 +237,14 @@ typedef char* vtkPolyDataNormals;
 	IBOutlet NSButton			*point3DPropagateToAll, *point3DSetDefault;
 	IBOutlet SRController		*controller;
 	float						point3DDefaultRadius, point3DDefaultColorRed, point3DDefaultColorGreen, point3DDefaultColorBlue, point3DDefaultColorAlpha;
+	
+	BOOL						_dragInProgress;
+	NSTimer						*_mouseDownTimer;
+	NSImage						*destinationImage;
+	
+	NSPoint						_mouseLocStart;  // mouseDown start point
+	BOOL						_resizeFrame;
+	short						_tool;
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
@@ -313,4 +321,10 @@ typedef char* vtkPolyDataNormals;
 - (IBAction) IBSetSelected3DPointAnnotationSize: (id) sender;
 
 -(void) setCursorForView: (long) tool;
+
+//Dragging
+- (void) startDrag:(NSTimer*)theTimer;
+- (void)deleteMouseDownTimer;
+
+
 @end
