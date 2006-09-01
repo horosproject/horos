@@ -2034,7 +2034,9 @@ public:
 				[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
 			
-			//QDDisplayWaitCursor( false);
+			#if !__LP64__
+			QDDisplayWaitCursor( false);
+			#endif
 		}
 		else if( tool == t3DCut)
 		{
@@ -2081,7 +2083,9 @@ public:
 				[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
 			
-			//QDDisplayWaitCursor( false);
+			#if !__LP64__
+			QDDisplayWaitCursor( false);
+			#endif
 		}
 		else if( tool == tWL)
 		{
@@ -2619,7 +2623,10 @@ public:
 				}
 				[self setNeedsDisplay:YES];
 			}
-			//QDDisplayWaitCursor( false);
+			
+			#if !__LP64__
+			QDDisplayWaitCursor( false);
+			#endif
 		}
 		else [super mouseDown:theEvent];
 		
