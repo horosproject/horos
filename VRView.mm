@@ -2072,12 +2072,14 @@ public:
 	[self deleteMouseDownTimer];
 	if (_resizeFrame) {
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+		[self setNeedsDisplay:YES];
 	}
 	else {
 		switch (_tool) {
 			case tWL: 
 			case tCamera3D:
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+				[self setNeedsDisplay:YES];
 				break;
 			case tRotate:
 			case t3DRotate:
@@ -2100,7 +2102,10 @@ public:
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 		}
 		else
+		{
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+			[self setNeedsDisplay:YES];
+		}
 	}
 }
 
