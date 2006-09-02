@@ -1927,65 +1927,69 @@ public:
 		int shiftDown;
 		int controlDown;
 		switch (_tool) {
-			case tWL:			
-					WWAdapter  = _startWW / 200.0;
-					
-					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+			case tWL:	
+				_startWW = ww;
+				_startWL = wl;
+				_startMin = wl - ww/2;
+				_startMax = wl + ww/2;
+				WWAdapter  = _startWW / 200.0;
+				
+				if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+				{
+					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
-						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-						{
-							case 0:
-								wl =  (_startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
-								ww =  (_startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
-							break;
+						case 0:
+							wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+						break;
+						
+						case 1:
+							endlevel = _startMax + ([theEvent deltaY]) * WWAdapter ;
 							
-							case 1:
-								endlevel = _startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
-								
-								wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-								ww = endlevel - _startMin;
-							break;
+							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							ww = endlevel - _startMin;
+						break;
+						
+						case 2:
+							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
+							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
 							
-							case 2:
-								endlevel = _startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
-								startlevel = _startMin + (mouseLoc.x - _mouseLocStart.x) * WWAdapter ;
-								
-								if( startlevel < 0) startlevel = 0;
-								
-								wl = startlevel + (endlevel - startlevel) / 2;
-								ww = endlevel - startlevel;
-							break;
-						}
+							if( startlevel < 0) startlevel = 0;
+							
+							wl = startlevel + (endlevel - startlevel) / 2;
+							ww = endlevel - startlevel;
+						break;
 					}
-					else
-					{
-						wl =  (_startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
-						ww =  (_startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
-					}
-					
-					if( ww < 0.1) ww = 0.1;
-					
-					[self setOpacity: currentOpacityArray];
-					
-					if( isRGB)
-						colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
-					else
-						colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
-					
+				}
+				else
+				{
+					wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+					ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+				}
+				
+				if( ww < 0.1) ww = 0.1;
+				
+				[self setOpacity: currentOpacityArray];
+				
+				if( isRGB)
+					colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
+				else
+					colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
+				
 
-					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
-					{
-						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
-						else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
-					}
-					else
-					{
-						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-						else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
-					}
-					
-					textWLWW->SetInput( WLWWString);
-					[self setNeedsDisplay:YES];
+				if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+				{
+					if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
+					else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+				}
+				else
+				{
+					if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
+					else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+				}
+				
+				textWLWW->SetInput( WLWWString);
+				[self setNeedsDisplay:YES];
 
 				break;
 				
@@ -2017,8 +2021,8 @@ public:
 					[self rightMouseDragged:theEvent];
 					break;
 				case tCamera3D:
-					aCamera->Yaw( -(mouseLoc.x - _mouseLocStart.x) / 5.);
-					aCamera->Pitch( (mouseLoc.y - _mouseLocStart.y) / 5.);
+					aCamera->Yaw( -([theEvent deltaX]) / 5.);
+					aCamera->Pitch( -([theEvent deltaY]) / 5.);
 					aCamera->ComputeViewPlaneNormal();
 					aCamera->OrthogonalizeViewUp();
 					aRenderer->ResetCameraClippingRange();
