@@ -284,6 +284,8 @@ typedef char* vtkMyCallbackVR;
 	NSPoint						_mouseLocStart;  // mouseDown start point
 	BOOL						_resizeFrame;
 	short						_tool;
+	
+	float						_startWW, _startWL, _startMin, _startMax;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;

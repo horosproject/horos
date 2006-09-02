@@ -2864,7 +2864,7 @@ static long scrollMode;
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
 	
-	if (_dragInProgress == NO && [event deltaX] != 0 && [event deltaY] != 0) {
+	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0)) {
 		[self deleteMouseDownTimer];
 	}
 	

@@ -1883,11 +1883,11 @@ public:
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent{
-	if (_dragInProgress == NO && [theEvent deltaX] != 0 && [theEvent deltaY] != 0) {
+	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
 			[self deleteMouseDownTimer];
 		}
+		
 	if (_dragInProgress == YES) return;
-	
 	
 	if (_resizeFrame){
 		NSRect	newFrame = [self frame];
@@ -1920,37 +1920,35 @@ public:
 		
 		[[self window] display];		
 	}
-	else {
-		NSPoint mouseLocPre, mouseLocStart;
+	else 
+	{
 		NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-		float WWAdapter,startlevel, endlevel ;
-		float	startWW = ww, startWL = wl;
-		float	startMin = wl - ww/2, startMax = wl + ww/2;
+		float WWAdapter, endlevel, startlevel;
 		int shiftDown;
 		int controlDown;
 		switch (_tool) {
 			case tWL:			
-					WWAdapter  = startWW / 200.0;
+					WWAdapter  = _startWW / 200.0;
 					
 					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
 					{
 						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 						{
 							case 0:
-								wl =  (startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
-								ww =  (startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
+								wl =  (_startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
+								ww =  (_startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
 							break;
 							
 							case 1:
-								endlevel = startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
+								endlevel = _startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
 								
-								wl =  (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-								ww = endlevel - startMin;
+								wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+								ww = endlevel - _startMin;
 							break;
 							
 							case 2:
-								endlevel = startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
-								startlevel = startMin + (mouseLoc.x - _mouseLocStart.x) * WWAdapter ;
+								endlevel = _startMax + (mouseLoc.y - _mouseLocStart.y) * WWAdapter ;
+								startlevel = _startMin + (mouseLoc.x - _mouseLocStart.x) * WWAdapter ;
 								
 								if( startlevel < 0) startlevel = 0;
 								
@@ -1961,8 +1959,8 @@ public:
 					}
 					else
 					{
-						wl =  (startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
-						ww =  (startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
+						wl =  (_startWL + (long) (mouseLoc.y - _mouseLocStart.y)*WWAdapter);
+						ww =  (_startWW + (long) (mouseLoc.x - _mouseLocStart.x)*WWAdapter);
 					}
 					
 					if( ww < 0.1) ww = 0.1;
@@ -1987,7 +1985,6 @@ public:
 					}
 					
 					textWLWW->SetInput( WLWWString);
-					_mouseLocStart = mouseLoc;
 					[self setNeedsDisplay:YES];
 
 				break;
@@ -2020,15 +2017,12 @@ public:
 					[self rightMouseDragged:theEvent];
 					break;
 				case tCamera3D:
-					mouseLocPre = mouseLocStart = _mouseLocStart;
-					aCamera->Yaw( -(mouseLoc.x - mouseLocPre.x) / 5.);
-					aCamera->Pitch( (mouseLoc.y - mouseLocPre.y) / 5.);
+					aCamera->Yaw( -(mouseLoc.x - _mouseLocStart.x) / 5.);
+					aCamera->Pitch( (mouseLoc.y - _mouseLocStart.y) / 5.);
 					aCamera->ComputeViewPlaneNormal();
 					aCamera->OrthogonalizeViewUp();
 					aRenderer->ResetCameraClippingRange();
-					_mouseLocStart = mouseLoc;
 					[self computeOrientationText];
-					
 					[self setNeedsDisplay:YES];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 					break;
@@ -2052,9 +2046,8 @@ public:
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
 	else{
-		NSPoint mouseLocPre, mouseLocStart, mouseLoc ;
-		mouseLocPre = mouseLocStart = _mouseLocStart;
-		//current mouse == mouseLoc
+		NSPoint mouseLocPre, mouseLoc ;
+		mouseLocPre = _mouseLocStart;
 		mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 		distance = aCamera->GetDistance();
 		aCamera->Dolly( 1.0 + (mouseLoc.y - mouseLocPre.y) / 1200.);
@@ -2062,7 +2055,6 @@ public:
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
 		aRenderer->ResetCameraClippingRange();
-		_mouseLocStart = mouseLoc;
 		[self setNeedsDisplay:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
@@ -2078,13 +2070,12 @@ public:
 		switch (_tool) {
 			case tWL: 
 			case tCamera3D:
-				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-				[self setNeedsDisplay:YES];
 				break;
 			case tRotate:
 			case t3DRotate:
 			case tTranslate:
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 				break;
 			case tZoom:
 				[self rightMouseUp:theEvent];
@@ -2093,26 +2084,30 @@ public:
 				break;
 		}
 	}
+	
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	[self setNeedsDisplay:YES];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent{
 	if (_tool == tZoom) {
-		if( projectionMode != 2){
+		if( projectionMode != 2)
+		{
 			[self computeLength];
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 		}
-		else
-		{
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-			[self setNeedsDisplay:YES];
-		}
+		
+		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+		[self setNeedsDisplay:YES];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
     BOOL		keepOn = YES;
-    NSPoint		mouseLoc, mouseLocStart, mouseLocPre;
+    NSPoint		mouseLoc, mouseLocPre;
 	short		tool;
 	
 	noWaitDialog = YES;
@@ -2122,17 +2117,18 @@ public:
 		if (_mouseDownTimer) {
 			[self deleteMouseDownTimer];
 		}
+		
 		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:theEvent  repeats:NO] retain];
 	}
 	
-	mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+	mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
 	if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
 	{
 		long	pix[ 3];
 		float	pos[ 3], value;
 		
-		if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
+		if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
 		{
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
 																				[NSNumber numberWithFloat: pos[0]], @"xmm", [NSNumber numberWithFloat: pos[1]], @"ymm", [NSNumber numberWithFloat: pos[2]], @"zmm",
@@ -2143,7 +2139,7 @@ public:
 		return;
 	}
 
-	if( mouseLocStart.x < 10 && mouseLocStart.y < 10 && isViewportResizable)
+	if( _mouseLocStart.x < 10 && _mouseLocStart.y < 10 && isViewportResizable)
 	{
 		_resizeFrame = YES;
 		NSRect	newFrame = [self frame];
@@ -2243,9 +2239,9 @@ public:
 			
 			// Click point 3D to 2D
 			
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
-			aRenderer->SetDisplayPoint( mouseLocStart.x, mouseLocStart.y, 0);
+			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
 			pp = aRenderer->GetWorldPoint();
 			
@@ -2294,9 +2290,9 @@ public:
 			
 			// Click point 3D to 2D
 			
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
-			aRenderer->SetDisplayPoint( mouseLocStart.x, mouseLocStart.y, 0);
+			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
 			aRenderer->DisplayToWorld();
 			pp = aRenderer->GetWorldPoint();
 			
@@ -2334,11 +2330,12 @@ public:
 		}
 		else if( tool == tWL)
 		{
-			float	startWW = ww, startWL = wl;
-			float	startMin = wl - ww/2, startMax = wl + ww/2;
+			_startWW = ww;
+			_startWL = wl;
+			_startMin = wl - ww/2;
+			_startMax = wl + ww/2;
 			
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			_mouseLocStart = mouseLocStart;
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 			/*
 			do
@@ -2450,15 +2447,14 @@ public:
 			*/
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 			
-			[self setNeedsDisplay:YES];
+//			[self setNeedsDisplay:YES];
 		}
 		else if( tool == tRotate)
 		{
 			int shiftDown = 0;
 			int controlDown = 1;
 
-			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			_mouseLocStart = mouseLoc;
+			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 			/*
@@ -2613,7 +2609,7 @@ public:
 			else
 			{
 				// vtkCamera
-				mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
@@ -2664,13 +2660,13 @@ public:
 				*/
 //				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 				
-				[self setNeedsDisplay:YES];
+//				[self setNeedsDisplay:YES];
 			}
 		}
 		else if( tool == tCamera3D)
 		{
 			// vtkCamera
-			mouseLocPre = mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
@@ -2714,7 +2710,7 @@ public:
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 			
-			[self setNeedsDisplay:YES];
+//			[self setNeedsDisplay:YES];
 		}
 		else if( tool == t3Dpoint)
 		{
@@ -2734,7 +2730,7 @@ public:
 			if (![self isAny3DPointSelected])
 			{
 				// add a point on the surface under the mouse click
-				[self throw3DPointOnSurface: mouseLocStart.x : mouseLocStart.y];
+				[self throw3DPointOnSurface: _mouseLocStart.x : _mouseLocStart.y];
 				[self setNeedsDisplay:YES];
 			}
 			else
@@ -2786,12 +2782,12 @@ public:
 			NSLog( @"**** Undo");
 			
 			// clicked point (2D coordinate)
-			mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
 			long	pix[ 3];
 			float	pos[ 3], value;
 	
-			if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value maxOpacity: BONEOPACITY minValue: BONEVALUE])
+			if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value maxOpacity: BONEOPACITY minValue: BONEVALUE])
 			{
 				NSLog( @"**** Bone Raycast");
 

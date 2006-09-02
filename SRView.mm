@@ -851,7 +851,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 
 
 - (void)mouseDragged:(NSEvent *)theEvent{
-	if (_dragInProgress == NO && [theEvent deltaX] != 0 && [theEvent deltaY] != 0) {
+	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
 			[self deleteMouseDownTimer];
 		}
 	if (_dragInProgress == YES) return;
