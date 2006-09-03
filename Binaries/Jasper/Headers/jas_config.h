@@ -116,7 +116,11 @@
 #define SIZEOF_INT 4
 
 /* The size of a `long', as computed by sizeof. */
+#ifdef __LP64__
+#define SIZEOF_LONG 8
+#else
 #define SIZEOF_LONG 4
+#endif
 
 /* The size of a `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
@@ -128,7 +132,11 @@
 #define SIZEOF_UNSIGNED_INT 4
 
 /* The size of a `unsigned long', as computed by sizeof. */
+#ifdef __LP64__
+#define SIZEOF_UNSIGNED_LONG 8
+#else
 #define SIZEOF_UNSIGNED_LONG 4
+#endif
 
 /* The size of a `unsigned long long', as computed by sizeof. */
 #define SIZEOF_UNSIGNED_LONG_LONG 8

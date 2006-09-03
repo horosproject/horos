@@ -741,13 +741,21 @@ typedef unsigned short ushort;
 #define SIZEOF_INT 4
 
 /* The size of a `long', as computed by sizeof. */
+#ifdef __LP64__
+#define SIZEOF_LONG 8
+#else
 #define SIZEOF_LONG 4
+#endif
 
 /* The size of a `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
 /* The size of a `void *', as computed by sizeof. */
+#ifdef __LP64__
+#define SIZEOF_VOID_P 8
+#else
 #define SIZEOF_VOID_P 4
+#endif
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
