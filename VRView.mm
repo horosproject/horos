@@ -1619,9 +1619,7 @@ public:
 	volumeProperty->Delete();
 	compositeFunction->Delete();
 	
-	#if !__LP64__
 	orientationWidget->Delete();
-	#endif
 	
 	if( volumeMapper) volumeMapper->Delete();
 	if( textureMapper) textureMapper->Delete();
@@ -4536,14 +4534,13 @@ public:
 	cube->CubeOn();
 	cube->FaceTextOn();
 
-	#if !__LP64__
+	
 	orientationWidget = vtkOrientationMarkerWidget::New();
 	orientationWidget->SetOrientationMarker( cube );
 	orientationWidget->SetInteractor( [self getInteractor] );
 	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-	orientationWidget->SetEnabled( 1 );
 	orientationWidget->InteractiveOff();
-	#endif
+
 	cube->Delete();
 
 	croppingBox = vtkBoxWidget::New();
@@ -4676,6 +4673,8 @@ public:
 	
 	aRenderer->AddActor2D( Line2DActor);
 	
+	orientationWidget->SetEnabled( 1 );
+		
 	//[VRView getCroppingBox: initialCroppingBoxBounds :volume :croppingBox];
 	
 //	croppingBox->GetProp3D()->GetBounds(initialCroppingBoxBounds);
@@ -4827,8 +4826,6 @@ public:
 {
 	long i;
 	
-	#if !__LP64__
-	
 	if( orientationWidget->GetEnabled())
 	{
 		orientationWidget->Off();
@@ -4839,8 +4836,6 @@ public:
 		orientationWidget->On();
 		for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
 	}
-	
-	#endif
 	
 	[self setNeedsDisplay:YES];
 }

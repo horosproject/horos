@@ -2708,9 +2708,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
 	long			i, x, y, totSize;
 	int				realwidth;
-	long	w, h, row;
-	short   bpp, count, spp;
-	short   cur_page, number_of_pages;
+	int				w, h, row;
+	short			bpp, count, spp;
+	short			cur_page, number_of_pages;
 	
 	isRGB = NO;
 	
