@@ -36,6 +36,7 @@ DCMNetServiceDelegate *_netServiceDelegate;
 }
 
 - (id)init{
+
 	if (self = [super init]){
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];

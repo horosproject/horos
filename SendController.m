@@ -136,6 +136,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[_server release];
 	[_transferSyntaxString release];
 	[_numberFiles release];
+	[_lock lock];
+	[_lock unlock];
 	[_lock release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
@@ -143,6 +145,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (void)releaseSelfWhenDone:(id)sender{
 	[_lock lock];
+	[_lock unlock];
 	[self release];
 }
 
@@ -327,6 +330,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 - (void) sendDICOMFilesOffis:(NSMutableArray *)files
 {
 	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
+	
 	NSMutableArray		*filesToSend = [files retain];
 	
 	NSString *calledAET;
@@ -373,9 +377,11 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[storeSCU release];
 	storeSCU = 0L;
 	
-	[pool release];
+	
 	//need to unlock to allow release of self after send complete
 	[_lock unlock];
+	
+	[pool release];
 	
 }
 
