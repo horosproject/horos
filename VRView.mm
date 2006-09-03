@@ -2049,12 +2049,10 @@ public:
 		[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
-	else{
-		NSPoint mouseLocPre, mouseLoc ;
-		mouseLocPre = _mouseLocStart;
-		mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+	else
+	{
 		distance = aCamera->GetDistance();
-		aCamera->Dolly( 1.0 + (mouseLoc.y - mouseLocPre.y) / 1200.);
+		aCamera->Dolly( 1.0 + (-[theEvent deltaY]) / 1200.);
 		aCamera->SetDistance( distance);
 		aCamera->ComputeViewPlaneNormal();
 		aCamera->OrthogonalizeViewUp();
