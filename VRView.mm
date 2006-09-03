@@ -2707,7 +2707,7 @@ public:
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 			}while (keepOn);
 			*/
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+//			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 //			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
 			
 //			[self setNeedsDisplay:YES];
