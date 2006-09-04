@@ -26,97 +26,110 @@
 
 @interface DCMPix: NSObject <NSCopying>
 {
-	BOOL				nonDICOM;
-	
-	BOOL				isBonjour;
-    NSManagedObject		*imageObj;
-	
+//SOURCES
 	NSString            *srcFile;
+	BOOL				isBonjour;
+	BOOL				nonDICOM;
+
+//BUFFERS	
+	NSArray				*pixArray;
+    NSManagedObject		*imageObj;	
     xNSImage			*image;
     short               *oImage;
 	float				*fImage, *fVolImage;
+    char                *wImage;
 	
+//DICOM TAGS
+
+//	orientation
+	float				originX, originY, originZ;
+	float				orientation[ 9];
+
+//	pixel representation
+	BOOL				fIsSigned;
+	short				bitsAllocated, spp;
+    float               slope, offset;
+
+//	image size
+    long                height, width, rowBytes;
+
+//	window level & width
+	float				savedWL, savedWW;
+
+//	planar configuration
+	long				fPlanarConf;
+    float               pixelSpacingX, pixelSpacingY, pixelRatio;
+
+//	photointerpretation
+	BOOL				isRGB;
+	BOOL				inverseVal;
+
+//--------------------------------------
+
+// DICOM params needed for SUV calculations
+	float				patientsWeight;
+	NSString			*repetitiontime;
+	NSString			*echotime;
+	NSString			*protocolName;
+	NSString			*viewPosition;
+	NSString			*patientPosition;
+	BOOL				hasSUV, SUVConverted;
+	NSString			*units, *decayCorrection;
+	float				decayFactor;
+	float				radionuclideTotalDose;
+	float				radionuclideTotalDoseCorrected;
+	NSDate				*acquisitionTime;
+	NSDate				*radiopharmaceuticalStartTime;
+	float				halflife;
+    float				philipsFactor;
+	BOOL				displaySUVValue;
+
+// DICOM params for Overlays - 0x6000 group	
+	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
+	unsigned char		*oData;
+	
+//	DSA-subtraction	
 	float				fImageBlackPoint;
 	float				fImageWhitePoint;
 	float				*subtractedfImage;
-//	float				subMin;
 	NSPoint				subPixOffset;
 	NSPoint				subMinMax;
 	float				subtractedfPercent;
 	float				subtractedfZero;
 	long				*subGammaFunction;
 
-	
-    char                *wImage;
+//-------------------------------------------------------	
 	long				frameNo;
 	long				serieNo;
-    
+	long				imID, imTot;    
     char                *baseAddr;
 
-	long				imID, imTot;
-    
-    long                height, width, rowBytes;
-	
-// fixed wlww values
-    float				ww, wl, philipsFactor;
-	float				fullww, fullwl;
-	float				savedWL, savedWW;
-
-
-    float               sliceInterval, pixelSpacingX, pixelSpacingY, sliceLocation, sliceThickness, pixelRatio;
-    
-	float				originX, originY, originZ;
-	float				orientation[ 9];
-	
-	BOOL				thickSlabMode;
-	BOOL				isRGB;
-	BOOL				inverseVal;
-	long				fPlanarConf;
-	BOOL				fIsSigned, displaySUVValue;
-	
-	BOOL				fixed8bitsWLWW;
-	
-    float               slope, offset, maxValueOfSeries;
-	
-	float				cineRate;
-	
+//convolution	
 	BOOL				convolution, updateToBeApplied;
 	short				kernelsize;
 	short				normalization;
 	short				kernel[25];
-	
-	
+
+	float				cineRate;
+
+//slice
+    float               sliceInterval, sliceLocation, sliceThickness;
+//stack
 	short				stack;
 	short				stackMode, pixPos, stackDirection;
-	NSArray				*pixArray;
-	
-	NSString			*echotime, *repetitiontime, *convertedDICOM, *protocolName;
-	
-	NSString			*viewPosition, *patientPosition;
-	
-	// ThickSlab
-	
+//thickslab
+    BOOL				thickSlabMode;
 	ThickSlabController *thickSlab;
 	
-	BOOL				generated;
+    float				ww, wl;
+	float				fullww, fullwl;
+	BOOL				fixed8bitsWLWW;	
+    float               maxValueOfSeries;
 	
-	NSLock				*checking;
 	
-	// DICOM params needed for SUV calculations
-	
-	BOOL				hasSUV, SUVConverted;
-	NSString			*units, *decayCorrection;
-	float				radionuclideTotalDose, radionuclideTotalDoseCorrected, patientsWeight, decayFactor;
-	NSDate				*acquisitionTime, *radiopharmaceuticalStartTime;
-	float				halflife;
-	
-	// DICOM params for Overlays - 0x6000 group
-	
-	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
-	unsigned char		*oData;
-	
-	//
-	
+	NSString			*convertedDICOM;	
+	BOOL				generated;	
+	NSLock				*checking;	
 	float				*fFinalResult;
 	volatile long		wlwwThreads;
 	NSLock				*maxResultLock;
@@ -269,6 +282,12 @@
 -(long) rowBytes;
 -(void) setRowBytes:(long) rb;
 
+- (BOOL)loadFileDCMFramework;//Refactoring of loadDICOMDCMFramework
+- (BOOL)loadDICOMDCMFramework;
+- (BOOL) loadDICOMPapyrus;
+- (void) CheckLoadIn;
+- (void) CheckLoad;
+//-(void) CheckLoad;
 
 
 
@@ -277,7 +296,6 @@
 -(long) serieNo;
 -(long) Tot;
 -(void) setTot: (long) tot;
--(void) CheckLoad;
 -(void) setFusion:(short) m :(short) s :(short) direction;
 -(short) stack;
 - (long) rowBytes;
@@ -289,7 +307,6 @@
 - (long) serieNo;
 - (long) Tot;
 - (void) setTot: (long) tot;
-- (void) CheckLoad;
 - (void) setFusion:(short) m :(short) s :(short) direction;
 - (short) stack;
 - (void)setSourceFile:(NSString*)s;
@@ -307,38 +324,30 @@
 - (void) setFixed8bitsWLWW:(BOOL) f;
 - (BOOL) generated;
 
+//Database links
+- (NSManagedObject *)imageObj;
+- (NSManagedObject *)seriesObj;
+
 // Accessor methods needed for SUV calculations
-
--(float) philipsFactor;
-
--(float) patientsWeight;
--(void) setPatientsWeight : (float) v;
-
--(float) halflife;
--(void) setHalflife : (float) v;
-
--(float) radionuclideTotalDose;
--(void) setRadionuclideTotalDose : (float) v;
-
--(float) radionuclideTotalDoseCorrected;
--(void) setRadionuclideTotalDoseCorrected : (float) v;
-
--(NSDate*) acquisitionTime;
--(void) setAcquisitionTime : (NSDate*) d;
-
--(NSDate*) radiopharmaceuticalStartTime;
--(void) setRadiopharmaceuticalStartTime : (NSDate*) d;
-
--(void) setSUVConverted : (BOOL) v;
+- (float) philipsFactor;
+- (float) patientsWeight;
+- (void) setPatientsWeight : (float) v;
+- (float) halflife;
+- (void) setHalflife : (float) v;
+- (float) radionuclideTotalDose;
+- (void) setRadionuclideTotalDose : (float) v;
+- (float) radionuclideTotalDoseCorrected;
+- (void) setRadionuclideTotalDoseCorrected : (float) v;
+- (NSDate*) acquisitionTime;
+- (void) setAcquisitionTime : (NSDate*) d;
+- (NSDate*) radiopharmaceuticalStartTime;
+- (void) setRadiopharmaceuticalStartTime : (NSDate*) d;
+- (void) setSUVConverted : (BOOL) v;
 - (BOOL) SUVConverted;
-
 - (float) decayFactor;
 - (NSString*) units;
 - (NSString*) decayCorrection;
 - (void) setDecayCorrection : (NSString*) s;
-//Database links
-- (NSManagedObject *)imageObj;
-- (NSManagedObject *)seriesObj;
 - (void) checkSUV;
 - (BOOL) hasSUV;
 - (BOOL) displaySUVValue;
