@@ -474,14 +474,19 @@ static NSString *hostName = @"";
 	[defaultValues setObject:[NSMutableArray arrayWithObject:@"Osirix"] forKey:@"ROUTING CALENDARS"];
 	
 	// ** AETITLE
-	NSString *userName = [NSUserName() uppercaseString];
-	if ([userName length] > 4)
-		userName = [userName substringToIndex:4];
-	NSString *computerName = [[[NSHost currentHost] name] uppercaseString];
-	if ([computerName length] > 4)
-		computerName = [computerName substringToIndex:4];
-	NSString *suggestedAE = [NSString stringWithFormat:@"OSIRIX_%@_%@", computerName, userName];
-	[defaultValues setObject: suggestedAE forKey: @"AETITLE"];
+	if( [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"] == 0L)
+	{	
+		NSString *userName = [NSUserName() uppercaseString];
+		if ([userName length] > 4)
+			userName = [userName substringToIndex:4];
+		NSString *computerName = [[[NSHost currentHost] name] uppercaseString];
+		if ([computerName length] > 4)
+			computerName = [computerName substringToIndex:4];
+		NSString *suggestedAE = [NSString stringWithFormat:@"OSIRIX_%@_%@", computerName, userName];
+		[defaultValues setObject: suggestedAE forKey: @"AETITLE"];
+		
+		[[NSUserDefaults standardUserDefaults] setObject: suggestedAE forKey: @"AETITLE"];
+	}
 	//[defaultValues setObject:@"OSIRIX" forKey:@"AETITLE"];
 
 	[defaultValues setObject:@"1.0" forKey:@"points3DcolorRed"];
