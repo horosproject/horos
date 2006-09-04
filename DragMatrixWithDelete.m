@@ -113,8 +113,4 @@ static NSString  *pasteBoardTypeCover = @"KeyImages";
     return YES;
 }
 
-
-
-
-
 @end

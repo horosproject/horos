@@ -25,13 +25,11 @@
 
 @implementation AllKeyImagesArrayController
 
-
 - (void)setContent:(id)content{
 	[super setContent:content];
 	if (keyImageMatrix)
 		[self updateMatrix];
 }
-
 
 - (void)updateMatrix{
 	int columns = [keyImageMatrix numberOfColumns];
@@ -49,12 +47,8 @@
 			[keyImageMatrix addColumnWithCells:[NSArray arrayWithObject:cell]];
 		}
 	}
-	
+	[keyImageMatrix sizeToCells];
 	//keyImageMatrix
-
 }
-	
-
-
 
 @end

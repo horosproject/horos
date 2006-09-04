@@ -19,8 +19,4 @@
 		[self remove:sender];
 }
 
-
-
-
-
 @end

@@ -35,15 +35,12 @@
 	[super dealloc];
 }
 
-
-
-
 - (void)addKeyImages:(NSNotification *)note{
 	NSArray *keyImages = [[note userInfo] objectForKey:@"images"];
 	NSEnumerator *enumerator = [keyImages objectEnumerator];
 	id image;
 	while (image = [enumerator nextObject]){
-		if (![[self content] containsObject:image]) {
+		if (![[self content] containsObject:image]){
 			[self addObject:image];
 			NSButtonCell *cell = [[[NSButtonCell alloc] initImageCell:[(DicomImage *)image thumbnail]] autorelease];
 			[keyImageMatrix addColumnWithCells:[NSArray arrayWithObject:cell]];
@@ -66,19 +63,19 @@
 			NSBitmapImageRep *rep = (NSBitmapImageRep *)[[image image]  bestRepresentationForDevice:nil] ;
 			NSData *jpeg = [rep representationUsingType:NSJPEGFileType properties:dict];
 			[jpeg writeToFile:path atomically :YES];
-			
 		}
 	}
-	
+	[self updateMatrix];
 }
 
-- (void)remove:(id)sender{
+- (void)remove:(id)sender
+{
 	[super remove:sender];
 	[self updateMatrix];
 }
 
-- (void)select:(id)sender{
-	
+- (void)select:(id)sender
+{
 	NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
 
 	NSArray *cells = [keyImageMatrix selectedCells];
@@ -89,7 +86,12 @@
 
 	[self setSelectionIndexes:(NSIndexSet *)indexes];
 }
-	
 
+- (void)updateMatrix{
+	[super updateMatrix];
+	[keyImageMatrix addColumn]; // we need one spot to be able to drag one more image
+	[keyImageMatrix sizeToCells]; // take the size of the matrix with the extra column, thus the scrollbar will be well displayed
+	[keyImageMatrix removeColumn:[keyImageMatrix numberOfColumns]-1]; // we don't actualy need one more button
+}
 
 @end

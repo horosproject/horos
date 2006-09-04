@@ -66,18 +66,19 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects: 
 				[NSArray arrayWithObjects:study, [report valueForKey:@"date"], [report valueForKey:@"completePath"], nil] 
 			forKeys:[NSArray arrayWithObjects: @"study", @"report", @"path", nil]];
-			[reportsArray  addObject:dict];
+			[reportsArray addObject:dict];
 		}
 		[self setReports: reportsArray];
 		if ([reportsArray count] > 0) {
-			_reportIndex = 	[[NSIndexSet indexSetWithIndex:0] retain];
-			id sr =  [self createReportForStudy:[[_reports objectAtIndex:0] objectForKey:@"study"] path:[[_reports objectAtIndex:0] objectForKey:@"path"]];
+			_reportIndex = [[NSIndexSet indexSetWithIndex:0] retain];
+			id sr = [self createReportForStudy:[[_reports objectAtIndex:0] objectForKey:@"study"] path:[[_reports objectAtIndex:0] objectForKey:@"path"]];
 			[self setReport:sr];
 		}		
 		else
 			[self setReport:[self createReportForStudy:study]];
 		
-		[[self window]  makeKeyAndOrderFront:self];
+		[[self window] makeKeyAndOrderFront:self];
+		[allKeyObjectsArrayController updateMatrix];
 	}
 	return self;
 }
@@ -88,7 +89,6 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		_study = [study retain];	
 		[_reports release];
 		_reports = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:study, [study valueForKey:@"name"], nil] forKeys:[NSArray arrayWithObjects: @"study", @"report", nil]];
-	
 }
 
 - (void)windowDidLoad{
@@ -100,8 +100,6 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	else
 		[self setTabIndex:1];
 	[allKeyObjectsArrayController updateMatrix];
-	
-
 }
 
 - (void)dealloc{
@@ -130,6 +128,7 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 - (id)report{
 	return _report;
 }
+
 - (void)setReport:(id)report{
 	[_report release];
 	_report = [report retain];
@@ -137,13 +136,11 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 		[self setTabIndex:0];
 	else
 		[self setTabIndex:1];
-
 }
 
 - (NSView *)contentView{
 	return _contentView;
 }
-
 
 - (NSXMLDocument *)xmlDoc{
 	return nil;
