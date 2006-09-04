@@ -4149,7 +4149,7 @@ else								[self ApplyConvString:@"No Filter"];
 						
 						for(  i = 0 ; i < [pixList[ x] count]; i++)
 						{
-							long offset = ([pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];		//
+							long offset = ([pixList[ x] count]-1-i)*[firstObject pheight] * [firstObject pwidth];
 							
 							[[pixList[ x] objectAtIndex: i] setfImage: volumeDataPtr + offset];
 							[[pixList[ x] objectAtIndex: i] setSliceInterval: interval];
@@ -4184,7 +4184,7 @@ else								[self ApplyConvString:@"No Filter"];
 							[[pixList[ x] objectAtIndex: i] setID: i];
 						}
 					}
-NSLog(@"was mask... needs controling everything OK");					
+					
 					subCtrlMaskID = [pixList[ curMovieIndex] count] - subCtrlMaskID -1;
 					
 					[self flipDataSeries: self];
