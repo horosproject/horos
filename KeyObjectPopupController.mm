@@ -26,7 +26,6 @@
 #import "ViewerController.h"
 #import "DCMView.h"
 
-
 @implementation KeyObjectPopupController
 
 - (id)initWithViewerController:(ViewerController *)controller popup:(NSPopUpButton *)popupButton{
@@ -35,7 +34,7 @@
 		_popupButton = popupButton;
 		_menu = [_popupButton menu];
 		_viewerController = controller;
-		[[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(willPopUp:) name:NSPopUpButtonCellWillPopUpNotification object:[_popupButton cell]];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willPopUp:) name:NSPopUpButtonCellWillPopUpNotification object:[_popupButton cell]];
 	}
 	return self;
 }
@@ -60,18 +59,22 @@
 }
 
 - (void)setMenu:(NSMenu *)menu{
-		[_menu release];
+	[_menu release];
 	_reports = [menu retain];
 }
 
 - (void)willPopUp:(NSNotification *)note{
 	//update menu
 	NSLog(@"will Popup");
+	NSLog(@"[_menu numberOfItems]:  %d", [_menu numberOfItems]);
 	// Remove old Report Type Menu Items
-	if ([_menu numberOfItems] > 7) {
+	if ([_menu numberOfItems] > 4) {
 		int i = [_menu numberOfItems] - 1;
-		while (i >= 7) 
+		while (i >= 4)
+		{
+			NSLog(@"menu itemAtIndex %d: %@", i, [[_menu itemAtIndex:i] title]);
 			[_menu removeItemAtIndex:i--];
+		}
 	}
 	id study = [[[_viewerController imageView] seriesObj] valueForKey:@"study"];
 	[_reports release];
@@ -92,8 +95,8 @@
 	[_popupButton selectItemAtIndex:[_viewerController displayOnlyKeyImages]];
 	if (index > -1) {
 		NSArray *references = [[_reports objectAtIndex:index] referencedObjects];
-		NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
-		NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Image"]];
 		NSPredicate *predicate = [NSPredicate predicateWithValue:NO];
@@ -104,13 +107,11 @@
 		while (reference = [enumerator nextObject]){
 			predicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate, [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", reference], nil]]; 
 		}
-		[dbRequest setPredicate: predicate];
+		[dbRequest setPredicate:predicate];
 		imagesArray = [[context executeFetchRequest:dbRequest error:&error] retain];
-		[[BrowserController currentBrowser] openViewerFromImages :[NSArray arrayWithObject: imagesArray] movie: NO viewer :_viewerController keyImagesOnly: NO];
-
+		[[BrowserController currentBrowser] openViewerFromImages:[NSArray arrayWithObject: imagesArray] movie:NO viewer :_viewerController keyImagesOnly:NO];
 	}
 	NSLog(@"Load key Object reference images: %d", index);
-	
 }
 
 

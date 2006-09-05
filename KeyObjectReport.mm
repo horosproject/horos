@@ -29,13 +29,10 @@
 #include "dcfilefo.h"
 #include "dsrtypes.h"
 
-
-
 @implementation KeyObjectReport
-- (id) initWithStudy:(id)study  
-				title:(int)title   
-				description:(NSString *)keyDescription
-				seriesUID:(NSString *)seriesUID{
+
+- (id) initWithStudy:(id)study title:(int)title description:(NSString *)keyDescription seriesUID:(NSString *)seriesUID
+{
 	if (self = [super init]){
 		_study = [study retain];
 		_keyDescription = [keyDescription retain];
@@ -78,7 +75,7 @@
 		NSString *studyID = [_study valueForKey:@"id"];
 		_doc->setStudyID([studyID UTF8String]);
 	}
-		//Accession Number
+	//Accession Number
 	if ([_study valueForKey:@"accessionNumber"])
 		_doc->setAccessionNumber([[_study valueForKey:@"accessionNumber"] UTF8String]);
 	//Series Number
@@ -141,7 +138,6 @@
 
 	_doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue(codeValue, "DCM", codeMeaning));
 
-		
 	// Description
 	if (_keyDescription) {
 		_doc->getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Text, DSRTypes::AM_belowCurrent);
@@ -149,11 +145,6 @@
 		_doc->getTree().getCurrentContentItem().setStringValue([_keyDescription UTF8String]);
 		_doc->getTree().goUp();
 	}
-	
-
-
-	
-
 	
 	if ([_keyImages count] > 0){
 		//NSLog(@"Add key Images");
@@ -225,7 +216,6 @@
 	
 }
 	
- 
 - (BOOL)writeFileAtPath:(NSString *)path{
 	//NSLog(@"Write file at Path: %@", path);
 	//if (_doc == NULL)

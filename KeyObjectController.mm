@@ -22,7 +22,6 @@
 #import "browserController.h"
 #import "DicomStudy.h"
 
-
 @implementation KeyObjectController
 
 - (id)initWithStudy:(id)study{
@@ -50,12 +49,15 @@
 - (int) title{
 	return _title;
 }
+
 - (void)setTitle:(int)title{
 	_title = title;
 }
+
 - (NSString *) keyDescription{
 	return _keyDescription;
 }
+
 - (void)setKeyDescription:(NSString *)keyDescription{
 	[_keyDescription release];
 	_keyDescription = [keyDescription retain];
@@ -69,13 +71,12 @@
 		NSString *studyInstanceUID = [_study valueForKey:@"studyInstanceUID"];
 		NSString *path;
 
-
 		//Save to INCOMING		
 		NSString *rootFolder = [[BrowserController currentBrowser] documentsDirectory];
 		//path = [[rootFolder stringByAppendingPathComponent:@"REPORTS"] stringByAppendingPathComponent:studyInstanceUID];
 		path = [rootFolder stringByAppendingPathComponent:@"INCOMING"];
 
-		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study  title:_title   description:_keyDescription seriesUID:_seriesUID];
+		KeyObjectReport *ko = [[KeyObjectReport alloc] initWithStudy:_study title:_title description:_keyDescription seriesUID:_seriesUID];
 		NSString *sopInstanceUID = [ko sopInstanceUID];
 	
 		path = [path stringByAppendingPathComponent:sopInstanceUID];
@@ -89,7 +90,6 @@
 		NS_HANDLER
 			NSLog(@"exception: %@", [localException description]);
 		NS_ENDHANDLER
-		
 	}
 	[NSApp endSheet:[self window] returnCode:0];
 	[[self window] close];

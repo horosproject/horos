@@ -9,7 +9,7 @@
 		<key>166</key>
 		<string>609 763 381 82 0 0 1600 1178 </string>
 		<key>76</key>
-		<string>904 737 112 147 0 0 1920 1178 </string>
+		<string>744 713 112 147 0 0 1600 1178 </string>
 		<key>81</key>
 		<string>598 580 403 413 0 0 1600 1178 </string>
 	</dict>
@@ -20,6 +20,7 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>5</integer>
+		<integer>76</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8J135</string>

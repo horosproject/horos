@@ -87,7 +87,8 @@
 	[self setSelectionIndexes:(NSIndexSet *)indexes];
 }
 
-- (void)updateMatrix{
+- (void)updateMatrix
+{
 	[super updateMatrix];
 	[keyImageMatrix addColumn]; // we need one spot to be able to drag one more image
 	[keyImageMatrix sizeToCells]; // take the size of the matrix with the extra column, thus the scrollbar will be well displayed

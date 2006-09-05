@@ -31,11 +31,12 @@
 		[self updateMatrix];
 }
 
-- (void)updateMatrix{
+- (void)updateMatrix
+{
 	int columns = [keyImageMatrix numberOfColumns];
 	while (columns-- > 0)
 		[keyImageMatrix removeColumn:columns];
-
+		
 	NSEnumerator *enumerator = [[self content] objectEnumerator];
 	DicomImage *image;
 	int tag = 0;
@@ -47,8 +48,8 @@
 			[keyImageMatrix addColumnWithCells:[NSArray arrayWithObject:cell]];
 		}
 	}
+	
 	[keyImageMatrix sizeToCells];
-	//keyImageMatrix
 }
 
 @end
