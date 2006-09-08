@@ -7,7 +7,6 @@
 //
 
 #import "SRAnnotation.h"
-#import "ROI.h"
 #import "DCMVIew.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
@@ -45,58 +44,63 @@
  
 	while (aROI = [roisEnumerator nextObject])
 	{
-		document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord);
-		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
+		[self addROI:aROI];
+	}
+}
+
+- (void)addROI:(ROI *)aROI;
+{
+	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord);
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
+	
+	// set the type of the region
+	DSRTypes::E_GraphicType graphicType;
+	
+	switch([aROI type])
+	{
+		case tMesure:
+		case tArrow:
+		case tAngle:
+		case tCPolygon:
+		case tOPolygon:
+		case tPlain:
+		case tPencil:
+			graphicType = DSRTypes::GT_Multipoint;
+		break;
 		
-		// set the type of the region
-		DSRTypes::E_GraphicType graphicType;
+		case t2DPoint:
+		case tText:
+			graphicType = DSRTypes::GT_Point;
+		break;
 		
-		switch([aROI type])
-		{
-			case tMesure:
-			case tArrow:
-			case tAngle:
-			case tCPolygon:
-			case tOPolygon:
-			case tPlain:
-			case tPencil:
-				graphicType = DSRTypes::GT_Multipoint;
-			break;
-			
-			case t2DPoint:
-			case tText:
-				graphicType = DSRTypes::GT_Point;
-			break;
-			
-			case tOval:
-				graphicType = DSRTypes::GT_Ellipse;
-			break;
-			
-			case tROI: // (rectangle)
-				graphicType = DSRTypes::GT_Polyline;
-			break;
-		}
+		case tOval:
+			graphicType = DSRTypes::GT_Ellipse;
+		break;
+		
+		case tROI: // (rectangle)
+			graphicType = DSRTypes::GT_Polyline;
+		break;
+	}
 
-		// set coordinates of the points
-		DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
+	// set coordinates of the points
+	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
 
-		DSRGraphicDataList dsrPointsList = coordinates->getGraphicDataList();
+	DSRGraphicDataList dsrPointsList = coordinates->getGraphicDataList();
 
-		NSMutableArray *roiPointsList = [aROI points];
-		NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
-		id aPoint;
+	NSMutableArray *roiPointsList = [aROI points];
+	NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
+	id aPoint;
 
-		while (aPoint = [roiPointsListEnumerator nextObject])
-		{
-			NSPoint aNSPoint = [aPoint point];
-			dsrPointsList.addItem(aNSPoint.x,aNSPoint.y);
-		}
+	while (aPoint = [roiPointsListEnumerator nextObject])
+	{
+		NSPoint aNSPoint = [aPoint point];
+		dsrPointsList.addItem(aNSPoint.x,aNSPoint.y);
+	}
 
-		// to do : add a reference to the image
-
-		// add the region to the SR
-		document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);
-	}		
+	// to do : add a correct reference to the image
+	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("sopClassUID", "sopInstanceUID"));
+	// add the region to the SR
+	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);	
 }
 
 @end

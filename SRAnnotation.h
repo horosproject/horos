@@ -9,11 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 #include "dsrdoc.h"
+#import "ROI.h"
 
 @interface SRAnnotation : NSObject {
 	DSRDocument *document;
 }
 
 - (void)addROIs:(NSArray *)someROIs;
+- (void)addROI:(ROI *)aROI;
 
 @end
