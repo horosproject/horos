@@ -564,6 +564,12 @@
 		A9523E1F09BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
 		A9523E2009BDB9F70070CBD5 /* HornRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */; };
 		A9523E2109BDB9F70070CBD5 /* HornRegistration.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */; };
+		A95837100AAEBC2A0001D415 /* SRAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = A958370C0AAEBC2A0001D415 /* SRAnnotation.h */; };
+		A95837110AAEBC2A0001D415 /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
+		A95837120AAEBC2A0001D415 /* SRAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = A958370C0AAEBC2A0001D415 /* SRAnnotation.h */; };
+		A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
+		A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */ = {isa = PBXBuildFile; fileRef = A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */; };
+		A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */ = {isa = PBXBuildFile; fileRef = A958370C0AAEBC2A0001D415 /* SRAnnotation.h */; };
 		A95B98A40A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
 		A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */ = {isa = PBXBuildFile; fileRef = A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */; };
 		A95B98A60A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */ = {isa = PBXBuildFile; fileRef = A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */; };
@@ -10111,6 +10117,8 @@
 		A9523D1709BDB4890070CBD5 /* etkError.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = etkError.cpp; sourceTree = "<group>"; };
 		A9523E1A09BDB9F70070CBD5 /* HornRegistration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HornRegistration.h; sourceTree = "<group>"; };
 		A9523E1B09BDB9F70070CBD5 /* HornRegistration.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HornRegistration.mm; sourceTree = "<group>"; };
+		A958370C0AAEBC2A0001D415 /* SRAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRAnnotation.h; sourceTree = "<group>"; };
+		A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SRAnnotation.mm; sourceTree = "<group>"; };
 		A95B98A20A6E65B100E476D4 /* QTExportHTMLSummary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QTExportHTMLSummary.h; sourceTree = "<group>"; };
 		A95B98A30A6E65B100E476D4 /* QTExportHTMLSummary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QTExportHTMLSummary.m; sourceTree = "<group>"; };
 		A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportPatientsTemplate.html; sourceTree = "<group>"; };
@@ -14679,6 +14687,8 @@
 				BF55377D0A9A294A00D83CE3 /* PathForImage.mm */,
 				BF0AAEAD0A9AB2560001C8EB /* DragMatrixWithDelete.h */,
 				BF0AAEAE0A9AB2560001C8EB /* DragMatrixWithDelete.m */,
+				A958370C0AAEBC2A0001D415 /* SRAnnotation.h */,
+				A958370D0AAEBC2A0001D415 /* SRAnnotation.mm */,
 			);
 			name = Reports;
 			sourceTree = "<group>";
@@ -19554,6 +19564,7 @@
 				BFAA0D090A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF55377E0A9A294A00D83CE3 /* PathForImage.h in Headers */,
 				BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
+				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21427,6 +21438,7 @@
 				BFAA0D0B0A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF5537820A9A294A00D83CE3 /* PathForImage.h in Headers */,
 				BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
+				A95837120AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23305,6 +23317,7 @@
 				BFAA0D070A916CB6002DB3DD /* SelectedKeyImagesArrayController.h in Headers */,
 				BF5537800A9A294A00D83CE3 /* PathForImage.h in Headers */,
 				BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
+				A95837100AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25509,6 +25522,7 @@
 				BFAA0D0A0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF55377F0A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 				BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
+				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26234,6 +26248,7 @@
 				BFAA0D0C0A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF5537830A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
+				A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27154,6 +27169,7 @@
 				BFAA0D080A916CB6002DB3DD /* SelectedKeyImagesArrayController.m in Sources */,
 				BF5537810A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 				BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
+				A95837110AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

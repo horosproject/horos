@@ -1,0 +1,19 @@
+//
+//  SRAnnotation.h
+//  OsiriX
+//
+//  Created by joris on 06/09/06.
+//  Copyright 2006 OsiriX Team. All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+#include "dsrdoc.h"
+
+@interface SRAnnotation : NSObject {
+	DSRDocument *document;
+}
+
+- (void)addROIs:(NSArray *)someROIs;
+
+@end

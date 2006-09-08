@@ -240,7 +240,6 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	_exportStyle = style;
 }
 
-
 - (IBAction)save:(id)sender{
 	[_report save];
 	[[self window] close];

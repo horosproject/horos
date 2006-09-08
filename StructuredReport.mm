@@ -34,9 +34,6 @@
 #include "dsrimgtn.h"
 #include "dsrdoctr.h"
 
-
-
-
 @implementation StructuredReport
 
 - (id)initWithStudy:(id)study{
@@ -210,7 +207,7 @@
 			_doc->setManufacturer("OsiriX");
 			
 			// get KeyImages
-			//_keyImages = [[[_study keyImages]   allObjects] retain];
+			//_keyImages = [[[_study keyImages] allObjects] retain];
 			
 		}	
 	}
@@ -241,7 +238,6 @@
 		_findings = [[NSArray alloc] init];
 	return _findings;
 }
-
 
 - (void)setFindings:(NSMutableArray *)findings{
 	[_findings release];
@@ -302,6 +298,7 @@
 - (NSString *)institution{
 	return _institution;
 }
+
 - (void)setInstitution:(NSString *)institution{
 	[_institution release];
 	_institution = [institution retain];
@@ -311,13 +308,16 @@
 - (NSString *)verifyOberverName{
 	return _verifyOberverName;
 }
+
 - (void)setVerifyOberverName:(NSString *)verifyOberverName{
 	[_verifyOberverName release];
 	_verifyOberverName = [verifyOberverName retain];
 }
+
 - (NSString *)verifyOberverOrganization{
 	return _verifyOberverOrganization;
 }
+
 - (void)setVerifyOberverOrganization:(NSString *)verifyOberverOrganization{
 	[_verifyOberverOrganization release];
 	_verifyOberverOrganization = [verifyOberverOrganization retain];
@@ -326,6 +326,7 @@
 - (BOOL)complete{
 	return _complete;
 }
+
 - (void)setComplete:(BOOL)complete{
 	if (_complete == YES && complete == NO) {
 		[_path release];
@@ -335,12 +336,12 @@
 	_reportHasChanged = YES;
 	if (_complete == NO)
 		[self setVerified:NO];
-	
-
 }
+
 - (BOOL)verified{
 	return _verified;
 }
+
 - (void)setVerified:(BOOL)verified{
 	if (_verified == YES && verified == NO) {
 		[_path release];
@@ -375,8 +376,10 @@
 	
 	return date;
 }
+
 - (void)setContentData:(NSDate *)date{
 }
+
 - (NSString *)title{
 	NSString *title = nil;
 	const char *seriesDescription = _doc->getSeriesDescription();
@@ -384,6 +387,7 @@
 		title = [NSString stringWithUTF8String:seriesDescription];
 	return title;
 }
+
 - (void)setTitle:(NSString *)title{
 
 }
@@ -506,10 +510,7 @@
 			}
 			//go back up in tree
 			_doc->getTree().goUp();
-			
 		}
-		
-			
 			
 		if ([_conclusions count] > 0) {
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);			
@@ -535,7 +536,6 @@
 		}
 		
 		// add keyImages
-		
 		if ([_keyImages count] > 0){
 			NSLog(@"Add key Images to report");
 			_doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
@@ -586,7 +586,6 @@
 		NSLog(@"Report saved: %@", [self srPath]);
 	else
 		NSLog(@"Report not saved: %@", [self srPath]);
-
 }
 
 - (void)export:(NSString *)path{
@@ -637,16 +636,12 @@
 	_doc->writeXML(stream, writeFlags);
 }
 
-
-
-
 - (void)readXML{
 	[_xmlDoc release];
 	NSURL *url = [NSURL fileURLWithPath:[self xmlPath]]; 
 	NSError *error;
 	_xmlDoc = [[NSXMLDocument alloc] initWithContentsOfURL:(NSURL *)url options:nil error:(NSError **)error];
 }
-
 
 - (NSString *)xmlPath{
 	NSString *tempPath = @"/tmp";
@@ -681,18 +676,17 @@
 	_doc->getTree().gotoRoot ();
 		/* iterate over all nodes */ 
 	do { 
-            node = OFstatic_cast(DSRDocumentTreeNode *, _doc->getTree().getNode());			
-            if (node != NULL && node->getValueType() == DSRTypes::VT_Image) {
+		node = OFstatic_cast(DSRDocumentTreeNode *, _doc->getTree().getNode());			
+		if (node != NULL && node->getValueType() == DSRTypes::VT_Image) {
 			//image node get SOPCInstance
-				DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
-				OFString sopInstance = imageNode->getSOPInstanceUID();
-				if (!sopInstance.empty()) {
-					NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
-					if (uid)
-						[references addObject:uid];
-				}			
-			}
-			
+			DSRImageTreeNode *imageNode = OFstatic_cast(DSRImageTreeNode *, node);
+			OFString sopInstance = imageNode->getSOPInstanceUID();
+			if (!sopInstance.empty()) {
+				NSString *uid = [NSString stringWithUTF8String:sopInstance.c_str()];
+				if (uid)
+					[references addObject:uid];
+			}			
+		}
 	} while (_doc->getTree().iterate()); 
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
 	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
@@ -712,10 +706,5 @@
 	NS_ENDHANDLER
 	return imagesArray;
 }
-
-
-
-
-	
 
 @end
