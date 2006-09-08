@@ -314,6 +314,160 @@ if (theGWorld)
 return err;
 } 
 
+
+-(short) QTVideo_CreateMyVideoTrack:(Movie) theMovie :(Rect *) trackFrame
+{
+	Track theTrack;
+	Media theMedia;
+	OSErr err = noErr;
+        
+        // 1. Create the track
+        theTrack = NewMovieTrack (theMovie, 		/* movie specifier */
+                            FixRatio((*trackFrame).right,1),  /* width */
+                            FixRatio((*trackFrame).bottom,1), /* height */
+                                                        kNoVolume);  /* trackVolume */
+        
+        // 2. Create the media for the track
+        theMedia = NewTrackMedia (theTrack,		/* track identifier */
+                                VideoMediaType,		/* type of media */
+                                600, 	/* time coordinate system */
+                                nil,			/* data reference - use the file that is associated with the movie  */
+                                0);			/* data reference type */
+
+        // 3. Establish a media-editing session
+        BeginMediaEdits (theMedia);
+
+        // 3a. Add Samples to the media
+        err = [self QTVideo_AddVideoSamplesToMedia: theMedia :trackFrame];
+        
+        // 3b. End media-editing session
+        EndMediaEdits (theMedia);
+
+        // 4. Insert a reference to a media segment into the track
+        InsertMediaIntoTrack (theTrack,		/* track specifier */
+                                0,	/* track start time */
+                                0, 	/* media start time */
+                                GetMediaDuration(theMedia), /* media duration */
+                                X2Fix(1.0));		/* media rate ((Fixed) 0x00010000L) */
+
+    return err;
+} 
+
+- (Movie) CreateMovie: (Rect*) trackFrame :(NSString *) filename
+{
+    Movie theMovie = nil;
+    FSSpec mySpec;
+    short resRefNum = 0;
+    short resId = movieInDataForkResID;
+    OSErr err = noErr;
+    FSRef fsRef;
+
+
+    [filename writeToFile:filename atomically:false];
+    
+    err = getFSRefAtPath(filename, &fsRef);
+    
+    
+    err =FSGetCatalogInfo(&fsRef, 
+                                    kFSCatInfoNone, 
+                                    NULL,
+                                    NULL,
+                                    &mySpec,
+                                    NULL);
+    
+    err = CreateMovieFile (&mySpec, 
+                            'TVOD',
+                            smCurrentScript, 
+                            createMovieFileDeleteCurFile | createMovieFileDontCreateResFile,
+                            &resRefNum, 
+                            &theMovie );
+    if( err == 0)
+    {
+        err = [self QTVideo_CreateMyVideoTrack: theMovie : trackFrame];
+        if( err == noErr)
+        {
+            err = AddMovieResource (theMovie, resRefNum, &resId, QTUtils_ConvertCToPascalString ("testing"));
+            if (resRefNum)
+            {
+                CloseMovieFile (resRefNum);
+            }
+        }
+        else
+        {
+			CloseMovieFile (resRefNum);
+			
+            DisposeMovie( theMovie);
+            theMovie = 0L;
+            
+            FSpDelete( &mySpec);
+        }
+    }
+    else
+    {
+        NSRunAlertPanel(NSLocalizedString(@"Error",nil), NSLocalizedString(@"I cannot create this file... File is busy? opened? not enough place?",nil), nil, nil, nil);
+    }
+    return theMovie;
+}
+
+- (NSString*) generateMovie :(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
+{
+    Rect            trackFrame;
+    NSSavePanel     *panel = [NSSavePanel savePanel];
+    Movie           theMovie = nil;
+	long			result;
+	NSString		*fileName;
+	
+	PRODUCEFILES = produceFiles;
+	
+	if( PRODUCEFILES)
+	{
+		result = NSFileHandlingPanelOKButton;
+		
+		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: 0L];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: 0L];
+		
+		fileName = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
+	}
+	else
+	{
+		[panel setCanSelectHiddenExtension:YES];
+		[panel setRequiredFileType:@"mov"];
+		
+		result = [panel runModalForDirectory:0L file:name];
+		
+		fileName = [panel filename];
+	}
+	
+	if( result == NSFileHandlingPanelOKButton)
+	{
+		trackFrame.top = 0;
+		trackFrame.left = 0;
+		
+		NSImage *im = [object performSelector: selector withObject: [NSNumber numberWithLong:-1] withObject:[NSNumber numberWithLong: numberOfFrames]];
+		
+		trackFrame.bottom = [im size].height;
+		trackFrame.right = [im size].width;
+		
+		theMovie = [self CreateMovie: &trackFrame : fileName];
+		
+		if( theMovie)
+		{
+			if( openIt == YES && PRODUCEFILES == NO)
+			{
+				NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+				[ws openFile:fileName];
+			}
+			
+			DisposeMovie( theMovie);
+			theMovie = 0L;
+			
+			return fileName;
+		}
+	}
+	
+	return 0L;
+}
+
 - (NSArray *)availableComponents
 {
 	NSMutableArray *array = [NSMutableArray array];
@@ -622,159 +776,6 @@ return err;
 		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 		
 		return fileName;
-	}
-	
-	return 0L;
-}
-
--(short) QTVideo_CreateMyVideoTrack:(Movie) theMovie :(Rect *) trackFrame
-{
-	Track theTrack;
-	Media theMedia;
-	OSErr err = noErr;
-        
-        // 1. Create the track
-        theTrack = NewMovieTrack (theMovie, 		/* movie specifier */
-                            FixRatio((*trackFrame).right,1),  /* width */
-                            FixRatio((*trackFrame).bottom,1), /* height */
-                                                        kNoVolume);  /* trackVolume */
-        
-        // 2. Create the media for the track
-        theMedia = NewTrackMedia (theTrack,		/* track identifier */
-                                VideoMediaType,		/* type of media */
-                                600, 	/* time coordinate system */
-                                nil,			/* data reference - use the file that is associated with the movie  */
-                                0);			/* data reference type */
-
-        // 3. Establish a media-editing session
-        BeginMediaEdits (theMedia);
-
-        // 3a. Add Samples to the media
-        err = [self QTVideo_AddVideoSamplesToMedia: theMedia :trackFrame];
-        
-        // 3b. End media-editing session
-        EndMediaEdits (theMedia);
-
-        // 4. Insert a reference to a media segment into the track
-        InsertMediaIntoTrack (theTrack,		/* track specifier */
-                                0,	/* track start time */
-                                0, 	/* media start time */
-                                GetMediaDuration(theMedia), /* media duration */
-                                X2Fix(1.0));		/* media rate ((Fixed) 0x00010000L) */
-
-    return err;
-} 
-
-- (Movie) CreateMovie: (Rect*) trackFrame :(NSString *) filename
-{
-    Movie theMovie = nil;
-    FSSpec mySpec;
-    short resRefNum = 0;
-    short resId = movieInDataForkResID;
-    OSErr err = noErr;
-    FSRef fsRef;
-
-
-    [filename writeToFile:filename atomically:false];
-    
-    err = getFSRefAtPath(filename, &fsRef);
-    
-    
-    err =FSGetCatalogInfo(&fsRef, 
-                                    kFSCatInfoNone, 
-                                    NULL,
-                                    NULL,
-                                    &mySpec,
-                                    NULL);
-    
-    err = CreateMovieFile (&mySpec, 
-                            'TVOD',
-                            smCurrentScript, 
-                            createMovieFileDeleteCurFile | createMovieFileDontCreateResFile,
-                            &resRefNum, 
-                            &theMovie );
-    if( err == 0)
-    {
-        err = [self QTVideo_CreateMyVideoTrack: theMovie : trackFrame];
-        if( err == noErr)
-        {
-            err = AddMovieResource (theMovie, resRefNum, &resId, QTUtils_ConvertCToPascalString ("testing"));
-            if (resRefNum)
-            {
-                CloseMovieFile (resRefNum);
-            }
-        }
-        else
-        {
-			CloseMovieFile (resRefNum);
-			
-            DisposeMovie( theMovie);
-            theMovie = 0L;
-            
-            FSpDelete( &mySpec);
-        }
-    }
-    else
-    {
-        NSRunAlertPanel(NSLocalizedString(@"Error",nil), NSLocalizedString(@"I cannot create this file... File is busy? opened? not enough place?",nil), nil, nil, nil);
-    }
-    return theMovie;
-}
-
-- (NSString*) generateMovie :(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
-{
-    Rect            trackFrame;
-    NSSavePanel     *panel = [NSSavePanel savePanel];
-    Movie           theMovie = nil;
-	long			result;
-	NSString		*fileName;
-	
-	PRODUCEFILES = produceFiles;
-	
-	if( PRODUCEFILES)
-	{
-		result = NSFileHandlingPanelOKButton;
-		
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: 0L];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: 0L];
-		
-		fileName = [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovie.mov"];
-	}
-	else
-	{
-		[panel setCanSelectHiddenExtension:YES];
-		[panel setRequiredFileType:@"mov"];
-		
-		result = [panel runModalForDirectory:0L file:name];
-		
-		fileName = [panel filename];
-	}
-	
-	if( result == NSFileHandlingPanelOKButton)
-	{
-		trackFrame.top = 0;
-		trackFrame.left = 0;
-		
-		NSImage *im = [object performSelector: selector withObject: [NSNumber numberWithLong:-1] withObject:[NSNumber numberWithLong: numberOfFrames]];
-		
-		trackFrame.bottom = [im size].height;
-		trackFrame.right = [im size].width;
-		
-		theMovie = [self CreateMovie: &trackFrame : fileName];
-		
-		if( theMovie)
-		{
-			if( openIt == YES && PRODUCEFILES == NO)
-			{
-				NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-				[ws openFile:fileName];
-			}
-			
-			DisposeMovie( theMovie);
-			theMovie = 0L;
-			
-			return fileName;
-		}
 	}
 	
 	return 0L;

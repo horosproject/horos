@@ -282,7 +282,7 @@
 -(long) rowBytes;
 -(void) setRowBytes:(long) rb;
 
-- (BOOL)loadFileDCMFramework;//Refactoring of loadDICOMDCMFramework
+//- (BOOL)loadFileDCMFramework;//Refactoring of loadDICOMDCMFramework
 - (BOOL)loadDICOMDCMFramework;
 - (BOOL) loadDICOMPapyrus;
 - (void) CheckLoadIn;

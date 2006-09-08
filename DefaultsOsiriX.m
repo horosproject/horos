@@ -37,7 +37,6 @@ static NSString *hostName = @"";
 			{
 				isHcugeCh = YES;
 				hostName = [names objectAtIndex: i];
-				//NSLog(@"hostName : %@", hostName);
 			}
 		}
 		testDone = YES;
