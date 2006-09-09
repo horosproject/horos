@@ -216,6 +216,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSString	*extension = [[file pathExtension] lowercaseString];
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
+		[extension isEqualToString:@"stk"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
 		TIFF* tif = TIFFOpen([file UTF8String], "r");
@@ -458,6 +459,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES ||
+		[extension isEqualToString:@"stk"] == YES ||
 		[extension isEqualToString:@"png"] == YES ||
 		[extension isEqualToString:@"jpg"] == YES ||
 		[extension isEqualToString:@"jpeg"] == YES ||
@@ -475,6 +477,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				NSBitmapImageRep	*rep;
 				
 				if( [extension isEqualToString:@"tiff"] == YES ||
+					[extension isEqualToString:@"stk"] == YES ||
 					[extension isEqualToString:@"tif"] == YES)
 				{
 					TIFF* tif = TIFFOpen([filePath UTF8String], "r");

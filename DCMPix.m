@@ -7652,8 +7652,9 @@ BOOL            readable = YES;
 					otherImage = [[NSImage alloc] initWithContentsOfFile:srcFile];
 				}
 			
-			else if( [extension isEqualToString:@"tiff"] == YES ||
-				[extension isEqualToString:@"tif"] == YES)
+			else if(	[extension isEqualToString:@"tiff"] == YES ||
+						[extension isEqualToString:@"stk"] == YES ||
+						[extension isEqualToString:@"tif"] == YES)
 				{
 					TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
 					if( tif)
