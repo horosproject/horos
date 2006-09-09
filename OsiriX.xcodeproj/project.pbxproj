@@ -1708,6 +1708,9 @@
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
+		B7CDACFB0AB3003300068D70 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
+		B7CDAD020AB30E7700068D70 /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
+		B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
 		BF00C95A06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		BF00C95B06F3F43900715191 /* DCMCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = BF00C95906F3F43900715191 /* DCMCursor.m */; };
 		BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
@@ -10448,6 +10451,9 @@
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
 		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		B7CDAC730AB3003200068D70 /* PAGES */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PAGES; path = Binaries/PAGES; sourceTree = "<group>"; };
+		B7CDAD000AB30E7600068D70 /* page.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = page.tif; sourceTree = "<group>"; };
+		B7CDAD010AB30E7600068D70 /* pdf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = pdf.tif; sourceTree = "<group>"; };
 		BF00C95806F3F43900715191 /* DCMCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMCursor.h; sourceTree = "<group>"; };
 		BF00C95906F3F43900715191 /* DCMCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMCursor.m; sourceTree = "<group>"; };
 		BF01AA21078CF6C80037222F /* DCMCMoveResponseDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCMCMoveResponseDataHandler.h; path = Networking/DCMCMoveResponseDataHandler.h; sourceTree = "<group>"; };
@@ -13614,6 +13620,7 @@
 				ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */,
 				CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */,
 				CEE2144C06B95D3900368199 /* OsiriX.scriptSuite */,
+				B7CDAC730AB3003200068D70 /* PAGES */,
 				7E49AE3A0988345000AEF594 /* DicomImporter.mdimporter */,
 			);
 			name = Resources;
@@ -14481,6 +14488,8 @@
 				7E2BE3F40715DBFB0017898A /* Network.tiff */,
 				7E2BE3FD0715DC0D0017898A /* StartupDisk.tiff */,
 				CEB1DA6608A3B1040058C303 /* smalltrash.tif */,
+				B7CDAD000AB30E7600068D70 /* page.tif */,
+				B7CDAD010AB30E7600068D70 /* pdf.tif */,
 			);
 			name = Icons;
 			path = Binaries/Icons;
@@ -23896,6 +23905,9 @@
 				A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
 				BF06806E0A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */,
 				BF06806F0A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
+				B7CDACFB0AB3003300068D70 /* PAGES in Resources */,
+				B7CDAD020AB30E7700068D70 /* page.tif in Resources */,
+				B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24494,7 +24506,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
