@@ -4719,7 +4719,7 @@ static BOOL withReset = NO;
 		NSLog( @"Build thumbnail for:");
 		NSLog( [image valueForKey:@"completePath"]);
 		DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
-	
+		
 		if( dcmPix)
 		{
 			[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];

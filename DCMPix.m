@@ -6877,6 +6877,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 											tmpImage[y*width*3 + x*3 + 2] = clutBlue[ pixelB];
 										}
 									}
+									bitsAllocated = 8;
 								break;
 							}
 							isRGB = YES;
