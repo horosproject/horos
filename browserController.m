@@ -4714,6 +4714,7 @@ static BOOL withReset = NO;
 		
 		NSArray	*files = [self imagesArray: series];
 		NSManagedObject *image = [files objectAtIndex: [files count]/2];
+		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
 		
 		NSLog( @"Build thumbnail for:");
 		NSLog( [image valueForKey:@"completePath"]);
@@ -4721,6 +4722,9 @@ static BOOL withReset = NO;
 	
 		if( dcmPix)
 		{
+			[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+			[self saveDatabase: currentDatabasePath];
+			
 			[dcmPix computeWImage:YES :0 :0];
 			NSImage *thumbnail = [dcmPix getImage];
 			if( thumbnail)
@@ -6348,7 +6352,14 @@ static BOOL needToRezoom;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
-    unsigned long		z, row, column;
+    unsigned long		z;
+	
+	#if !__LP64__
+	int					row, column;
+	#else
+	long				row, column;
+	#endif
+	
 	NSMutableArray		*selectedFilesList;
 	NSArray				*loadList;
     NSArray				*cells;

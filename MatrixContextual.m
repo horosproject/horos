@@ -19,7 +19,11 @@
 
 - (void) rightMouseDown:(NSEvent *)theEvent
  {
+	#if !__LP64__
 	int row, column;
+	#else
+	long row, column;
+	#endif
  
 	if( [self getRow: &row column: &column forPoint: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
 	{

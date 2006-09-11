@@ -1783,7 +1783,11 @@ long sortROIByName(id roi1, id roi2, void *context)
 		}
 	}
 	
+	#if !__LP64__
+	int row, column;
+	#else
 	long row, column;
+	#endif
 	
 	[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
 	[previewMatrix scrollCellToVisibleAtRow: row column:0];
