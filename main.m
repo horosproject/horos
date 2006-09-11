@@ -30,6 +30,8 @@ int main(int argc, const char *argv[])
     Papy3Init();
     FVTIFFInitialize();
 	
+	static char rev[] = "$Revision$"; 
+	printf( "Revision of this file is %s.\n", rev );
 	
     return NSApplicationMain(argc, argv);
 }

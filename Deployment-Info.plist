@@ -112,10 +112,12 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OsiriX</string>
+	<key>SVNRevision</key>
+	<string>1048</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.2.5.1</string>
+	<string>OsiriX v.2.5.2b</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.5.1</string>
+	<string>2.5.2b</string>
 	<key>CFBundleVersion</key>
 	<string>251</string>
 	<key>CFBundleIconFile</key>
