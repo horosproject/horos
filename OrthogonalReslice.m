@@ -34,7 +34,7 @@
 //	{
 //		*dst++ = *src++;
 //	}
-//} 
+//}
 
 @implementation OrthogonalReslice
 
