@@ -7,10 +7,10 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {myAction = id; }; 
+            ACTIONS = {switchVersion = id; }; 
             CLASS = SplashScreen; 
             LANGUAGE = ObjC; 
-            OUTLETS = {version = NSTextField; view = id; }; 
+            OUTLETS = {version = NSButton; view = id; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

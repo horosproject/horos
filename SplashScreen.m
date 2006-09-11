@@ -10,21 +10,7 @@
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.
-=========================================================================*/
-
-
-/*****************************************************************
-
-MODIFICATION HISTORY
-
-2.3.1
-	20060224	DDP	Disabled Quartz About Box (useQuartz returns NO).
-
 *****************************************************************/
-
-
-
-
 
 #import "SplashScreen.h"
 
@@ -110,27 +96,39 @@ BOOL useQuartz() {
 		
 	return GetAltiVecTypeAvailable();
 }
-
-
-
-
-
 @implementation SplashScreen
 
 - (void)windowDidLoad
 { 
-	[[self window] center];	
-	NSString *currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"];	
-	
-	if( sizeof(long) == 8)
-		[version setStringValue: [currVersionNumber stringByAppendingString:@" 64-bit"]];
-	else
-		[version setStringValue: [currVersionNumber stringByAppendingString:@" 32-bit"]];
+	[[self window] center];
+	versionType  = YES;
+	[self switchVersion: self];
 		
 	[[self window] setDelegate:self];
 	[[self window] setAlphaValue:0.0];
 	if (useQuartz())	
 		[view setAutostartsRendering:YES];
+}
+
+- (IBAction) switchVersion:(id) sender
+{
+	NSString	*currVersionNumber = 0L;
+	
+	if( versionType)
+	{
+		currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"];
+	}
+	else
+	{
+		currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"];
+	}
+	
+	if( sizeof(long) == 8)
+		[version setTitle: [currVersionNumber stringByAppendingString:@" 64-bit"]];
+	else
+		[version setTitle: [currVersionNumber stringByAppendingString:@" 32-bit"]];
+
+	versionType = !versionType;
 }
 
 - (IBAction)showWindow:(id)sender{
@@ -141,7 +139,8 @@ BOOL useQuartz() {
 	//NSLog(@"show Splash screen");
 }
 
-- (void)startRendering{
+- (void)startRendering
+{
 	NSString *path = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"qtz"];
 	[view loadCompositionFromFile:path];
 	[view setAutostartsRendering:YES];

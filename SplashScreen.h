@@ -18,9 +18,14 @@
 
 @interface SplashScreen : NSWindowController
 {
-	IBOutlet	NSTextField *version;
+	IBOutlet	NSButton *version;
 	NSTimer		*timerIn, *timerOut;
 	IBOutlet	id view;
+	BOOL		versionType;
 }
+
 - (void) affiche;
+- (IBAction) switchVersion:(id) sender;
+- (void)startRendering;
+
 @end
