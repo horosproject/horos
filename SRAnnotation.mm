@@ -8,6 +8,7 @@
 
 #import "SRAnnotation.h"
 #import "DCMVIew.h"
+#import "browserController.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -98,9 +99,38 @@
 	}
 
 	// to do : add a correct reference to the image
+	//OFString sopClassUID = OFString([[study valueForKey:@"studyInstanceUID"] UTF8String]);
+	//OFString sopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]); // ?
+	//OFString sopClassUID = OFString([[aROI referencedSOPClassUID] UTF8String]); // ?
+	//OFString sopInstanceUID = OFString([[aROI sopInstanceUID] UTF8String]); // ?
 	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("sopClassUID", "sopInstanceUID"));
 	// add the region to the SR
 	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);	
+}
+
+#pragma mark -
+#pragma mark DICOM write
+			
+- (BOOL)save;
+{
+	DcmFileFormat fileformat;
+	OFCondition status = document->write(*fileformat.getDataset());
+
+	NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
+	// to do : find a correct output file name
+	NSString *path = [[dbPath stringByAppendingPathComponent:@"find_a_name_for_this_file"] stringByAppendingPathExtension:@"dcm"];
+
+	if (status.good())
+	{
+		status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
+		NSLog(@"Report saved: %@", path);
+		return YES;
+	}
+	else
+	{
+		NSLog(@"Report not saved: %@", path);
+		return NO;
+	}
 }
 
 @end

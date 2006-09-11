@@ -17,5 +17,6 @@
 
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
+- (BOOL)save;
 
 @end
