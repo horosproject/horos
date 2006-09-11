@@ -112,6 +112,8 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>OsiriXVP</string>
+	<key>SVNRevision</key>
+	<string>$Rev$ $Date$</string>
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX v.2.5.2b</string>
 	<key>CFBundleShortVersionString</key>
