@@ -2191,8 +2191,8 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setToolTip: NSLocalizedString(@"Open a PagePad template for the current study", nil)];
 	
 	[toolbarItem setView: PagePad];
-	[toolbarItem setMinSize:NSMakeSize(79, NSHeight([PagePad frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(79, NSHeight([PagePad frame]))];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([PagePad frame]), NSHeight([PagePad frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([PagePad frame]), NSHeight([PagePad frame]))];
 /*	
 	[toolbarItem setView: subCtrlView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([subCtrlView frame]), NSHeight([subCtrlView frame]))];
@@ -8869,9 +8869,9 @@ return moviePosSlider;
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
 	
-	//create pathToTemplate as chosen in PagePadCombo
+	//create pathToTemplate
 	NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/PAGES/"];
-	pathToTemplate = [pathToTemplate stringByAppendingString:[PagePadCombo objectValueOfSelectedItem]];
+	pathToTemplate = [pathToTemplate stringByAppendingString:[sender title]];
 	pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 
 	//pathToPAGES = timeStamp
@@ -9054,9 +9054,6 @@ return moviePosSlider;
 
 	//open pathToPAGES
 	[[NSWorkspace sharedWorkspace] openFile:[pathToPAGES stringByAppendingPathExtension:@"pages"]];
-
-	//back to title default position (this allows to create a new event when the same film is chosen later)
-	[PagePadCombo selectItemAtIndex:0];	
 }
 
 - (void) exportTIFF:(id) sender

@@ -75,7 +75,6 @@ enum
 	IBOutlet NSView			*BlendingView;
 	IBOutlet NSView			*movieView, *serieView, *patientView, *iPhotoView, *keyImages, *PagePad;
 	IBOutlet NSView         *RGBFactorsView;
-	IBOutlet NSComboBox		*PagePadCombo;
 	IBOutlet NSTextField    *speedText;
     IBOutlet NSPopUpButton  *wlwwPopup;
     IBOutlet NSPopUpButton  *convPopup;
