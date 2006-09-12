@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #include "dsrdoc.h"
+
 #import "ROI.h"
 
 @interface SRAnnotation : NSObject {

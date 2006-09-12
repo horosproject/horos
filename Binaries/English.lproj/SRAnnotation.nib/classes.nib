@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {endSheet = id; export = id; }; 
+            CLASS = SRAnnotationController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {whichROIsMatrix = NSMatrix; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

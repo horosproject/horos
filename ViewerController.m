@@ -87,6 +87,8 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "KeyObjectController.h"
 #import "KeyObjectPopupController.h"
 
+#import "SRAnnotationController.h"
+
 @class VRPROController;
 
 extern	NSMutableDictionary		*plugins, *pluginsDict;
@@ -6894,6 +6896,12 @@ int i,j,l;
 			[curvedController recompute];
 		}
 	}
+}
+
+- (IBAction)exportAsDICOMSR:(id)sender;
+{
+	SRAnnotationController *srController = [[SRAnnotationController alloc] initWithViewerController:self];
+	[srController beginSheet];
 }
 
 #pragma mark BrushTool and ROI filters

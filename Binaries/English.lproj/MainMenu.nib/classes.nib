@@ -205,6 +205,7 @@
                 erodeSelectedBrushROI = id; 
                 export2PACS = id; 
                 export2iPhoto = id; 
+                exportAsDICOMSR = id; 
                 exportDICOMFile = id; 
                 exportDICOMPACS = id; 
                 exportJPEG = id; 
