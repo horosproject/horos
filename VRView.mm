@@ -2062,14 +2062,18 @@ public:
 
 - (void)mouseUp:(NSEvent *)theEvent{
 	[self deleteMouseDownTimer];
-	if (_resizeFrame) {
-		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+	
+	if (_resizeFrame)
+	{
 		[self setNeedsDisplay:YES];
 	}
 	else {
 		switch (_tool) {
 			case tWL: 
 			case tCamera3D:
+				[self setNeedsDisplay:YES];
 				break;
 			case tRotate:
 			case t3DRotate:
@@ -2081,24 +2085,29 @@ public:
 				[self rightMouseUp:theEvent];
 				break;
 			default:
+				[self setNeedsDisplay:YES];
 				break;
 		}
 	}
 	
-	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-	[self setNeedsDisplay:YES];
+	
+	
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent{
-	if (_tool == tZoom) {
+	if (_tool == tZoom)
+	{
+		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+		
 		if( projectionMode != 2)
 		{
 			[self computeLength];
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 		}
-		
-		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-		[self setNeedsDisplay:YES];
+		else
+		{
+			[self setNeedsDisplay:YES];
+		}
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
