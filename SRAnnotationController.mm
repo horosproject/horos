@@ -18,14 +18,16 @@
 {
 	if(![super initWithWindowNibName:@"SRAnnotation"]) return nil;
 	viewer = [aViewer retain];
-
+	view = [[aViewer imageView] retain];
 	return self;
 }
 
 - (void)dealloc;
 {
+	NSLog(@"SRAnnotationController dealloc");
 	if(annotation) [annotation release];
 	[viewer release];
+	[view release];
 	[super dealloc];
 }
 
@@ -34,14 +36,14 @@
 
 - (void)beginSheet;
 {
-	NSLog(@"[viewer window] : %@", [[viewer window] description]);
-	[NSApp beginSheet:[self window] modalForWindow:[viewer window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[NSApp beginSheet:[self window] modalForWindow:[viewer window] modalDelegate:self didEndSelector:@selector(autorelease) contextInfo:nil];
 }
 
 - (void)endSheet;
 {
 	[[self window] orderOut:nil];
 	[NSApp endSheet:[self window]];
+	[[self window] close];
 }
 
 - (IBAction)endSheet:(id)sender;
@@ -106,7 +108,7 @@
 - (IBAction)export:(id)sender;
 {
 	if(annotation) [annotation release];
-	annotation = [[[SRAnnotation alloc] init] retain];
+	annotation = [[SRAnnotation alloc] init];
 	
 	switch ([[whichROIsMatrix selectedCell] tag])
 	{
