@@ -739,6 +739,7 @@
 		AB154F870627413600BD57AF /* SRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F7F0627413600BD57AF /* SRView.h */; };
 		AB154F880627413600BD57AF /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F800627413600BD57AF /* SRController.mm */; };
 		AB154F890627413600BD57AF /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
+		AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A942B0DF0AB591E000CCADB1 /* SRAnnotationController.mm */; };
 		AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
 		AB1CB35D0618A37E00CD966B /* MyPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.m */; };
 		AB1CB35E0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
@@ -26284,6 +26285,7 @@
 				BF5537830A9A294A00D83CE3 /* PathForImage.mm in Sources */,
 				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
+				AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
