@@ -5248,6 +5248,13 @@ NSMutableArray		*array;
 	
 	if( blendingController)
 	{
+		if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+		{
+			// By default, re-activate 'propagate settings'
+			
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
+		}
+	
 		[imageView setBlending: [blendingController imageView]];
 		[blendingSlider setEnabled:YES];
 		[blendingPercentage setStringValue:[NSString stringWithFormat:@"%0.0f%%", (float) ([blendingSlider floatValue] + 256.) / 5.12]];
