@@ -188,6 +188,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableArray					*deleteQueueArray;
 	NSLock							*deleteQueue, *deleteInProgress;
+	
+	NSMutableArray					*autoroutingQueueArray;
+	NSLock							*autoroutingQueue, *autoroutingInProgress;
+	
 	NSMutableString					*pressedKeys;
 	
 	IBOutlet NSProgressIndicator	*incomingProgress;
@@ -195,6 +199,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 + (BrowserController*) currentBrowser;
 
+- (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
+- (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;
 - (void) emptyDeleteQueue:(id) sender;
 - (void) addFileToDeleteQueue:(NSString*) file;
@@ -370,7 +376,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) deleteReport: (id) sender;
 - (IBAction)srReports: (id)sender;
 
-
+- (IBAction) rebuildThumbnails:(id) sender;
 
 - (NSArray *)databaseSelection;
 - (IBAction)databaseWindow:(id)sender;

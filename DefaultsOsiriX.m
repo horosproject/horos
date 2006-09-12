@@ -608,6 +608,11 @@ static NSString *hostName = @"";
 	[defaultValues setObject: @"20" forKey: @"stackThickness"];
 	[defaultValues setObject: @"20" forKey: @"stackThicknessOrthoMPR"];
 	
+	// ** AUTOROUTINGACTIVATED
+	[defaultValues setObject:@"0" forKey:@"AUTOROUTINGACTIVATED"];
+	
+	
+	
 	// ** ROUTINGACTIVATED
 	[defaultValues setObject:@"0" forKey:@"ROUTINGACTIVATED"];
 	

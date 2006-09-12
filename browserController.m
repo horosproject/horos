@@ -1051,6 +1051,57 @@ static BOOL COMPLETEREBUILD = NO;
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
+#pragma mark Autorouting functions
+
+- (void) OsirixAddToDBNotification:(NSNotification *) note
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+	{
+		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
+		
+		NSDictionary	*autoroutingRules = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"AUTOROUTINGDICTIONARY"];
+		
+		NSEnumerator	*enumerator = [autoroutingRules keyEnumerator];
+		NSString		*routingRuleName = 0L;
+		
+		while ((routingRuleName = [enumerator nextObject]))
+		{
+			NSDictionary	*routingRule = [autoroutingRules objectForKey: routingRuleName];
+		
+			NSManagedObjectContext *context = [self managedObjectContext];
+			[context lock];
+			
+			NSPredicate			*predicate = 0L;
+			
+			predicate = [self smartAlbumPredicateString: @""];
+			
+			NSArray		*result = [newImages filteredArrayUsingPredicate: predicate];
+			
+			if( [result count])
+			{
+				if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
+				if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
+				if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
+				
+				[autoroutingQueue lock];
+				
+				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePath", [routingRule objectForKey:@"server"], @"server"]];
+				
+				[autoroutingQueue unlock];
+			}
+			[context unlock];
+		}
+	}
+}
+
+- (void) processAutorouting
+{
+
+}
+
+//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+#pragma mark-
 #pragma mark Database functions
 
 - (NSTimeInterval) databaseLastModification
@@ -2542,9 +2593,9 @@ static BOOL COMPLETEREBUILD = NO;
 #pragma mark-
 #pragma mark OutlineView functions
 
-- (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album
+- (NSPredicate*) smartAlbumPredicateString:(NSString*) string
 {
-	NSMutableString		*pred = [NSMutableString stringWithString: [album valueForKey:@"predicateString"]];
+	NSMutableString		*pred = [NSMutableString stringWithString: string];
 	
 	// DATES
 	
@@ -2589,6 +2640,11 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	return predicate;
+}
+
+- (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album
+{
+	return [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]];
 }
 
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
@@ -3193,7 +3249,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
--(IBAction) delItem:(id) sender
+- (IBAction) delItem:(id) sender
 {
 	long					i, x, z, row, result;
 	NSManagedObjectContext	*context = [self managedObjectContext];
@@ -4716,22 +4772,25 @@ static BOOL withReset = NO;
 		NSManagedObject *image = [files objectAtIndex: [files count]/2];
 		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
 		
-		NSLog( @"Build thumbnail for:");
-		NSLog( [image valueForKey:@"completePath"]);
-		DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
-		
-		if( dcmPix)
+		if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 		{
+			//By default we put this 'blank' icon
 			[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 			[self saveDatabase: currentDatabasePath];
 			
-			[dcmPix computeWImage:YES :0 :0];
-			NSImage *thumbnail = [dcmPix getImage];
-			if( thumbnail)
+			NSLog( @"Build thumbnail for:");
+			NSLog( [image valueForKey:@"completePath"]);
+			DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+			
+			if( dcmPix)
 			{
-				[series setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+				
+				[dcmPix computeWImage:YES :0 :0];
+				NSImage *thumbnail = [dcmPix getImage];
+				NSData *data = [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5];
+				if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
+				[dcmPix release];
 			}
-			[dcmPix release];
 		}
 		
 		[pool release];
@@ -4760,7 +4819,7 @@ static BOOL withReset = NO;
 				
 				int maxSeries = [seriesArray count];
 				
-				if( maxSeries > 50) maxSeries = 50;	// We will continue next time...
+				if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
 				
 				for( i = 0; i < maxSeries; i++)
 				{
@@ -4779,6 +4838,54 @@ static BOOL withReset = NO;
 		[checkIncomingLock unlock];
 	}
 	DatabaseIsEdited = NO;
+}
+
+- (IBAction) rebuildThumbnails:(id) sender
+{
+	long					i, x, z, row, result;
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	NSManagedObjectModel    *model = [self managedObjectModel];
+	NSError					*error = 0L;
+	
+	[context lock];
+	
+	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
+		
+	if( [databaseOutline selectedRow] >= 0)
+	{
+		//Stop le thread
+		if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
+		if( threadRunning == YES)
+		{
+			shouldDie = YES;
+			while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+			shouldDie = NO;
+		}
+		
+		for( x = 0; x < [selectedRows count] ; x++)
+		{
+			if( x == 0) row = [selectedRows firstIndex];
+			else row = [selectedRows indexGreaterThanIndex: row];
+			
+			NSManagedObject	*object = [databaseOutline itemAtRow: row];
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Study"])
+			{
+				[[self childrenArray: object] setValue:0L forKey:@"thumbnail"];
+			}
+			
+			if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
+			{
+				[object setValue:0L forKey:@"thumbnail"];
+			}
+		}
+	}
+	
+	[self saveDatabase: currentDatabasePath];
+	
+	[self outlineViewRefresh];
+	
+	[context unlock];
 }
 
 - (void) matrixLoadIcons:(NSManagedObject*) item
@@ -6991,6 +7098,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(mainWindowHasChanged:) name: NSWindowDidBecomeMainNotification object: nil];
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(updateCurrentImage:) name: @"DCMNewImageViewResponder" object: nil];
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(ViewFrameDidChange:) name: NSViewFrameDidChangeNotification object: nil];
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(OsirixAddToDBNotification:) name: @"OsirixAddToDBNotification" object: nil];
+		
 	}
 		
 	return self;
@@ -8073,6 +8182,7 @@ static NSArray*	openSubSeriesArray = 0L;
 						if( result == YES)
 						{
 							[filesArray addObject:dstPath];
+							
 							//routing routine
 							
 							if( routineActivated)
@@ -10814,9 +10924,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	return predicate;
 }
 
-
-
-- (NSArray *)databaseSelection{
+- (NSArray *) databaseSelection{
 	long				index;
 	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
 	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];

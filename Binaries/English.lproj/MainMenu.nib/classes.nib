@@ -53,6 +53,7 @@
                 autoCleanDatabaseFreeSpace = id; 
                 bonjourRunLoop = id; 
                 bonjourServiceClicked = id; 
+                buildAllThumbnails = id; 
                 burnDICOM = id; 
                 checkIncomingThread = id; 
                 checkMemory = id; 
@@ -78,6 +79,7 @@
                 previewPerformAnimation = id; 
                 previewSliderAction = id; 
                 queryDICOM = id; 
+                rebuildThumbnails = id; 
                 refreshDatabase = id; 
                 search = id; 
                 selectFilesAndFoldersToAdd = id; 
