@@ -920,9 +920,10 @@ long sortROIByName(id roi1, id roi2, void *context)
 {
 	NSRect	curRect = [[self window] frame];
 	
+	[self setStandardRect:rect];
+	
 	if( NSEqualRects( curRect, rect) == NO)
 	{
-		[self setStandardRect:rect];
 		[[self window] setFrame:rect display:YES];
 		[[self window] orderFront:self];
 		[[self imageView] scaleToFit];
