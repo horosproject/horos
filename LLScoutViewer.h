@@ -35,4 +35,6 @@
 
 - (void)CloseViewerNotification:(NSNotification*)note;
 
+- (BOOL)isStackUpsideDown;
+
 @end

@@ -125,11 +125,20 @@
 
 - (void)setTopLimit:(int)top bottomLimit:(int)bottom;
 {
-	//NSLog(@"setTopLimit:%d bottomLimit:%d", top, bottom);
+	NSLog(@"setTopLimit:%d bottomLimit:%d", top, bottom);
+	
 	int newTopLimit, newBottomLimit;
 	
-	newTopLimit = top;
-	newBottomLimit = bottom;
+//	if([self isStackUpsideDown])
+//	{
+//		newTopLimit = [dcmPixList count] - top;
+//		newBottomLimit = [dcmPixList count] - bottom;
+//	}
+//	else
+//	{
+		newTopLimit = top;
+		newBottomLimit = bottom;
+//	}
 	
 	BOOL topChanged = newTopLimit != topLimit;
 	BOOL bottomChanged = newBottomLimit != bottomLimit;
@@ -176,12 +185,25 @@
 	NSRange pixRange;
 	LLMPRViewer *llViewer;
 	
+	NSLog(@"topLimit: %d, bottomLimit: %d",topLimit, bottomLimit);
+	NSLog(@"[[mprController originalDCMPixList] count]: %d",[[mprController originalDCMPixList] count]);
+	NSLog(@"[dcmPixList count]: %d",[dcmPixList count]);
+	NSLog(@"index: %d",index);
+
+	if([self isStackUpsideDown])
+		NSLog(@"isStackUpsideDown : YES");
+	else
+		NSLog(@"isStackUpsideDown : NO");
+
 	if(index==0)
 	{
-		if([[viewer imageView] flippedData])
+		//if([[viewer imageView] flippedData])
+		if([self isStackUpsideDown])
 		{
-			pixRange.location = topLimit;
-			pixRange.length = [[mprController originalDCMPixList] count] - topLimit;
+//			pixRange.location = topLimit;
+//			pixRange.length = [[mprController originalDCMPixList] count] - topLimit;
+			pixRange.location = [dcmPixList count] - topLimit;
+			pixRange.length = topLimit - bottomLimit;
 		}
 		else
 		{
@@ -192,10 +214,13 @@
 	}
 	else if(index==1)
 	{
-		if([[viewer imageView] flippedData])
+		//if([[viewer imageView] flippedData])
+		if([self isStackUpsideDown])
 		{
-			pixRange.location = bottomLimit;
-			pixRange.length = topLimit - bottomLimit;
+//			pixRange.location = bottomLimit;
+//			pixRange.length = topLimit - bottomLimit;
+			pixRange.location = [dcmPixList count] - bottomLimit; //topLimit;
+			pixRange.length = bottomLimit; //[dcmPixList count] - topLimit;
 		}
 		else
 		{
@@ -206,10 +231,13 @@
 	}
 	else
 	{
-		if([[viewer imageView] flippedData])
+		//if([[viewer imageView] flippedData])
+		if([self isStackUpsideDown])
 		{
+//			pixRange.location = 0;
+//			pixRange.length = bottomLimit;
 			pixRange.location = 0;
-			pixRange.length = bottomLimit;
+			pixRange.length = [dcmPixList count] - topLimit;
 		}
 		else
 		{
@@ -220,6 +248,7 @@
 	}
 
 	NSArray *originalPix, *injectedPix, *originalFiles;
+	NSLog(@"pixRange.location: %d, pixRange.length: %d",pixRange.location, pixRange.length);
 	originalPix = [dcmPixList subarrayWithRange:pixRange];
 	injectedPix = [[blendingViewer pixList:0] subarrayWithRange:pixRange];
 	originalFiles = [dcmFileList subarrayWithRange:pixRange];
@@ -328,6 +357,11 @@
 			return;
 		}
 	}	
+}
+
+- (BOOL)isStackUpsideDown;
+{
+	return ([dcmPixList objectAtIndex:0]-[dcmPixList objectAtIndex:1] < 0);
 }
 
 @end

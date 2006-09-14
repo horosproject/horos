@@ -98,6 +98,10 @@
 		dsrPointsList.addItem(aNSPoint.x,aNSPoint.y);
 	}
 
+//	DCMObject *dcmObject;
+//	dcmObject = [DCMObject objectWithContentsOfFile:filePath decodingPixelData:NO];
+//	OFString sopClassUID = OFString([dcmObject attributeValueWithName:@"sopClassUID"]);
+//	OFString sopInstanceUID = OFString([dcmObject attributeValueWithName:@"sopInstanceUID"]);
 	// to do : add a correct reference to the image
 	//OFString sopClassUID = OFString([[study valueForKey:@"studyInstanceUID"] UTF8String]);
 	//OFString sopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]); // ?
