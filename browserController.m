@@ -5196,6 +5196,22 @@ static BOOL withReset = NO;
 	NSMenuItem		*item, *subItem;
 	int				i = 0;
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", nil)  action:@selector(viewerDICOM:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images in 4D", nil)  action:@selector(MovieViewerDICOM:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Key Images", nil)  action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil)  action:@selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -5233,14 +5249,6 @@ static BOOL withReset = NO;
 	[item release];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Anonymize", nil)  action:@selector(anonymizeDICOM:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Key Images", nil)  action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil)  action:@selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -7175,6 +7183,25 @@ static NSArray*	openSubSeriesArray = 0L;
 	// NSMenu for DatabaseOutline
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
 	NSMenuItem *exportItem, *sendItem, *burnItem, *anonymizeItem, *keyImageItem;
+	
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", 0L) action: @selector(viewerDICOM:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images in 4D", 0L) action: @selector(MovieViewerDICOM:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	//keyImages
+	keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""];
+	[keyImageItem setTarget:self];
+	[menu addItem:keyImageItem];
+	[keyImageItem release];
+	//merged Series
+	keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
+	[keyImageItem setTarget:self];
+	[menu addItem:keyImageItem];
+	[keyImageItem release];
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
@@ -7215,16 +7242,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[anonymizeItem setTarget:self];
 	[menu addItem:anonymizeItem];
 	[anonymizeItem release];
-	//keyImages
-	keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""];
-	[keyImageItem setTarget:self];
-	[menu addItem:keyImageItem];
-	[keyImageItem release];
-	//merged Series
-	keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""];
-	[keyImageItem setTarget:self];
-	[menu addItem:keyImageItem];
-	[keyImageItem release];
 	
 	
 	[databaseOutline setMenu:menu];
