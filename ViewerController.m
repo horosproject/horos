@@ -1660,7 +1660,7 @@ long sortROIByName(id roi1, id roi2, void *context)
 	
 	if ([studiesArray count])
 	{
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
 		

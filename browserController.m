@@ -2027,12 +2027,10 @@ static BOOL COMPLETEREBUILD = NO;
 	[splash close];
 	[splash release];
 	
-	// EMPTY THE INCOMING FOLDER
-	[self checkIncomingThread: self];
-	
 	[self outlineViewRefresh];
 	
 	[checkIncomingLock unlock];
+	
 	[context unlock];
 }
 
