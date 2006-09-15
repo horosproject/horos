@@ -355,4 +355,7 @@
 - (void) copySUVfrom: (DCMPix*) from;
 - (NSString *)setUnits: (NSString *) s;
 - (float) getPixelValueX: (long) x Y:(long) y;
+
+- (NSString *)srcFile;
+
 @end

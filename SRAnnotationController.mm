@@ -54,42 +54,63 @@
 #pragma mark -
 #pragma mark ROIs
 
-- (void)exportAllROIs;
+- (BOOL)exportAllROIs;
 {
-	if(!annotation) return;
+	if(!annotation) return NO;
 	
 	NSMutableArray *rois = [[NSMutableArray alloc] initWithCapacity:0];
 	NSArray *dcmRoiList = [view dcmRoiList];
 	
 	NSEnumerator *enumerator = [dcmRoiList objectEnumerator];
 	id roiListForThisDCMPix;
+	int i, count=0;
 	while (roiListForThisDCMPix = [enumerator nextObject])
 	{
+		for (i=0; i<[roiListForThisDCMPix count]; i++)
+		{
+			[[roiListForThisDCMPix objectAtIndex:i] setPix:[[view dcmPixList] objectAtIndex:i]];
+			count++;
+		}
 		[rois addObjectsFromArray:roiListForThisDCMPix];
 	}
 
 	NSLog(@"exportAllROIs, count : %d", [rois count]);
+	if(!count) return NO;
 	[annotation addROIs:rois];
+	return YES;
 }
 
-- (void)exportAllROIsForCurrentDCMPix;
+- (BOOL)exportAllROIsForCurrentDCMPix;
 {
-	if(!annotation) return;
+	if(!annotation) return NO;
 	
 	NSArray *rois = [[view dcmRoiList] objectAtIndex: [view curImage]];
 	
+	NSEnumerator *enumerator = [rois objectEnumerator];
+	id roi;
+	int count=0;
+	while (roi = [enumerator nextObject])
+	{
+		[roi setPix:[view curDCM]];
+		count++;
+	}
+	
 	NSLog(@"exportAllROIsForCurrentDCMPix, count : %d", [rois count]);
+	if(!count) return NO;
 	[annotation addROIs:rois];
+	return YES;
 }
 
-- (void)exportSelectedROI;
+- (BOOL)exportSelectedROI;
 {
-	if(!annotation) return;
+	if(!annotation) return NO;
 	
 	ROI *roi = [viewer selectedROI];
-	
+	if(!roi) return NO;
+	[roi setPix:[view curDCM]];
 	NSLog(@"exportSelectedROI, name : %@", [roi name]);
 	[annotation addROI:roi];
+	return YES;
 }
 
 #pragma mark -
@@ -107,25 +128,42 @@
 
 - (IBAction)export:(id)sender;
 {
+	NSLog(@"############## SR Annotation ##############");
 	if(annotation) [annotation release];
 	annotation = [[SRAnnotation alloc] init];
+	
+	BOOL result = NO;
+	NSString *alertTitle, *alertMessage;
 	
 	switch ([[whichROIsMatrix selectedCell] tag])
 	{
 		case 0:
-			[self exportSelectedROI];
+			result = [self exportSelectedROI];
+			alertTitle = @"No ROI selected";
+			alertMessage = @"Please select a ROI first.";
 		break;
 		
 		case 1:
-			[self exportAllROIsForCurrentDCMPix];
+			result = [self exportAllROIsForCurrentDCMPix];
+			alertTitle = @"No ROIs";
+			alertMessage = @"There is no ROIs on current image.";
 		break;
 		
 		case 2:
-			[self exportAllROIs];
+			result = [self exportAllROIs];
+			alertTitle = @"No ROIs";
+			alertMessage = @"There is no ROIs on this series.";
 		break;
 	}
-	[self writeResult];
+	
 	[self endSheet];
+	
+	if(result)
+		[self writeResult];
+	else
+		NSRunAlertPanel(NSLocalizedString(alertTitle, nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
+	NSLog(@"!!!!!!!!!!!!!! SR Annotation !!!!!!!!!!!!!!");
 }
 
 @end

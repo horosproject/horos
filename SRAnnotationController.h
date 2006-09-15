@@ -25,9 +25,9 @@
 - (void)endSheet;
 - (IBAction)endSheet:(id)sender;
 
-- (void)exportAllROIs;
-- (void)exportAllROIsForCurrentDCMPix;
-- (void)exportSelectedROI;
+- (BOOL)exportAllROIs;
+- (BOOL)exportAllROIsForCurrentDCMPix;
+- (BOOL)exportSelectedROI;
 
 - (void)writeResult;
 - (IBAction)export:(id)sender;

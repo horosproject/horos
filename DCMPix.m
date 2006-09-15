@@ -9645,4 +9645,9 @@ float			iwl, iww;
 	return [imageObj valueForKey:@"series"];
 }
 
+- (NSString *)srcFile
+{
+	return srcFile;
+}
+
 @end

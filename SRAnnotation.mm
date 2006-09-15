@@ -8,7 +8,9 @@
 
 #import "SRAnnotation.h"
 #import "DCMVIew.h"
+#import "DCMPix.h"
 #import "browserController.h"
+#import "DCMObject.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -24,7 +26,7 @@
 
 	document = new DSRDocument();
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region")); // to do : find a correct concept name
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
 	
 	return self;
 }
@@ -95,19 +97,16 @@
 	while (aPoint = [roiPointsListEnumerator nextObject])
 	{
 		NSPoint aNSPoint = [aPoint point];
+		NSLog(@"add a point : %f, %f", aNSPoint.x,aNSPoint.y);
 		dsrPointsList.addItem(aNSPoint.x,aNSPoint.y);
 	}
 
-//	DCMObject *dcmObject;
-//	dcmObject = [DCMObject objectWithContentsOfFile:filePath decodingPixelData:NO];
-//	OFString sopClassUID = OFString([dcmObject attributeValueWithName:@"sopClassUID"]);
-//	OFString sopInstanceUID = OFString([dcmObject attributeValueWithName:@"sopInstanceUID"]);
-	// to do : add a correct reference to the image
-	//OFString sopClassUID = OFString([[study valueForKey:@"studyInstanceUID"] UTF8String]);
-	//OFString sopInstanceUID = OFString([[aROI referencedSOPInstanceUID] UTF8String]); // ?
-	//OFString sopClassUID = OFString([[aROI referencedSOPClassUID] UTF8String]); // ?
-	//OFString sopInstanceUID = OFString([[aROI sopInstanceUID] UTF8String]); // ?
-	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue("sopClassUID", "sopInstanceUID"));
+	DCMObject *dcmObject;
+	dcmObject = [DCMObject objectWithContentsOfFile:[[aROI pix] srcFile] decodingPixelData:NO];
+	OFString sopClassUID = OFString([[dcmObject attributeValueWithName:@"SOPClassUID"] UTF8String]);
+	OFString sopInstanceUID = OFString([[[[aROI pix] imageObj] valueForKey:@"sopInstanceUID"] UTF8String]);
+
+	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(sopClassUID, sopInstanceUID));
 	// add the region to the SR
 	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);	
 }
@@ -120,9 +119,10 @@
 	DcmFileFormat fileformat;
 	OFCondition status = document->write(*fileformat.getDataset());
 
-	NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
+	//NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
+	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
 	// to do : find a correct output file name
-	NSString *path = [[dbPath stringByAppendingPathComponent:@"find_a_name_for_this_file"] stringByAppendingPathExtension:@"dcm"];
+	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"dcm"];
 
 	if (status.good())
 	{
