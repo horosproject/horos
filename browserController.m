@@ -2796,7 +2796,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	// By default sort by name
 	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
-	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES] autorelease];
+	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
 	NSArray * sortDescriptors;
 	if( [databaseOutline sortDescriptors] == 0L || [[databaseOutline sortDescriptors] count] == 0)
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
@@ -2977,7 +2977,7 @@ static BOOL COMPLETEREBUILD = NO;
 	{
 		// Sort series with "id" & date
 		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
-		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors;
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 0) sortDescriptors = [NSArray arrayWithObjects: sortid, sortdate, 0L];
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"SERIESORDER"] == 1) sortDescriptors = [NSArray arrayWithObjects: sortdate, sortid, 0L];
@@ -4241,7 +4241,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
 	{
-		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
 		
@@ -8279,7 +8279,7 @@ static NSArray*	openSubSeriesArray = 0L;
 						x++;
 					}
 					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-									
+					
 					[[NSFileManager defaultManager] movePath:[filesArray objectAtIndex: i] toPath:dstPath handler:nil];
 				}
 			}
