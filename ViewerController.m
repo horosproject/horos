@@ -3281,6 +3281,11 @@ static ViewerController *draggedController = 0L;
 			}
 		}
 	}
+	//If study ID changed, cancel the fusion, if existing
+	else
+	{
+		if( blendingController) [self ActivateBlending: 0L];
+	}
 	
 	[previousStudyInstanceUID release];
 	[previousPatientUID release];
