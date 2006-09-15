@@ -2077,6 +2077,8 @@ static BOOL initialized = NO;
 				[[viewersList objectAtIndex: i] autoHideMatrix];
 			}
 		}
+		
+		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
 	}
 	
 //	for( i = 0; i < [viewersList count]; i++)

@@ -3006,6 +3006,7 @@ static ViewerController *draggedController = 0L;
 	[imageView setCurrentTool: tWL];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:toolsMatrix userInfo: 0L];
 	displayOnlyKeyImages = NO;
+	
 	return self;
 
 }
@@ -10089,20 +10090,6 @@ return moviePosSlider;
 	
 	[[self window] setInitialFirstResponder: imageView];
 	
-//	[[self window] makeKeyAndOrderFront: self];
-//	i = [[NSApp orderedWindows] indexOfObject: [self window]];
-//	if( i != NSNotFound)
-//	{
-//		i++;
-//		for( ; i < [[NSApp orderedWindows] count]; i++)
-//		{
-//			if( [[[[NSApp orderedWindows] objectAtIndex: i] windowController] isKindOfClass:[ViewerController class]])
-//			{
-//				[[[[[NSApp orderedWindows] objectAtIndex: i] windowController] imageView]  sendSyncMessage:1];
-//			}
-//		}
-//	}
-//	else if( [[self window] isKeyWindow]) [imageView sendSyncMessage:1];
 	NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.stateText"];
 	
 	if( status == 0L) [StatusPopup selectItemWithTitle: @"empty"];
