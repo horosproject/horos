@@ -158,46 +158,46 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 	Handle 			theRes;
 	NSImage *im;
 	long	maxImage;
-                
-            // Create a graphics world
-        err = NewGWorld (&theGWorld,	/* pointer to created gworld */	
-                32,		/* pixel depth */
-                trackFrame, 		/* bounds */
-                nil, 			/* color table */
-                nil,			/* handle to GDevice */ 
-                (GWorldFlags)0);	/* flags */
+				
+			// Create a graphics world
+		err = NewGWorld (&theGWorld,	/* pointer to created gworld */	
+				32,		/* pixel depth */
+				trackFrame, 		/* bounds */
+				nil, 			/* color table */
+				nil,			/* handle to GDevice */ 
+				(GWorldFlags)0);	/* flags */
 
 
-        // Lock the pixels
-        LockPixels (GetGWorldPixMap(theGWorld)/*GetPortPixMap(theGWorld)*/);
+		// Lock the pixels
+		LockPixels (GetGWorldPixMap(theGWorld)/*GetPortPixMap(theGWorld)*/);
 
 
-    ci = OpenDefaultComponent (StandardCompressionType, StandardCompressionSubType);
+	ci = OpenDefaultComponent (StandardCompressionType, StandardCompressionSubType);
 
-    // Do not requite the user to enter the keyframe data
-     long flags;
-     SCGetInfo(ci, scPreferenceFlagsType, &flags);
-     flags &= ~scAllowZeroKeyFrameRate;
-     SCSetInfo(ci, scPreferenceFlagsType, &flags);
-    
-    SCSpatialSettings theDefaultChoice = { codec,
-                                       (CodecComponent)0L,
-                                       0,
-                                       quality };
-    SCSetInfo(ci, scSpatialSettingsType, &theDefaultChoice);
+	// Do not requite the user to enter the keyframe data
+	 long flags;
+	 SCGetInfo(ci, scPreferenceFlagsType, &flags);
+	 flags &= ~scAllowZeroKeyFrameRate;
+	 SCSetInfo(ci, scPreferenceFlagsType, &flags);
 
-    SCTemporalSettings timeSettings;
+	SCSpatialSettings theDefaultChoice = { codec,
+									   (CodecComponent)0L,
+									   0,
+									   quality };
+	SCSetInfo(ci, scSpatialSettingsType, &theDefaultChoice);
+
+	SCTemporalSettings timeSettings;
 	timeSettings.temporalQuality = codecHighQuality;
 
 	timeSettings.frameRate = X2Fix(10.0);
 	timeSettings.keyFrameRate = 1;
-	
+
 	SCSetInfo(ci, scTemporalSettingsType, &timeSettings);
-    
-    im = [object performSelector: selector withObject: [NSNumber numberWithLong:-1] withObject:[NSNumber numberWithLong: numberOfFrames]];
-    
-    [self CopyNSImageToGWorld: im :theGWorld];
-    
+
+	im = [object performSelector: selector withObject: [NSNumber numberWithLong:-1] withObject:[NSNumber numberWithLong: numberOfFrames]];
+
+	[self CopyNSImageToGWorld: im :theGWorld];
+
 	if( PRODUCEFILES == NO)
 	{
 		result = SCSetTestImagePixMap (ci,
@@ -208,40 +208,40 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 		result = SCRequestSequenceSettings (ci);
 	}
 	else result = 0;
-	
-    [im release];
-    if (result < 0 || result == scUserCancelled) return -1;
-	
+
+	[im release];
+	if (result < 0 || result == scUserCancelled) return -1;
+
 	Wait    *wait = [[Wait alloc] initWithString:0L];
 	[wait showWindow:self];
-	
-    SCGetInfo(ci, scTemporalSettingsType, &timeSettings);
 
-result = SCCompressSequenceBegin (ci,
+	SCGetInfo(ci, scTemporalSettingsType, &timeSettings);
+
+	result = SCCompressSequenceBegin (ci,
 				GetGWorldPixMap(theGWorld),
 				0L,
 				&imageDesc);
 
-// Change the current graphics port to the GWorld
-GetGWorld(&oldPort, &oldGDeviceH);
-SetGWorld(theGWorld, nil);
+	// Change the current graphics port to the GWorld
+	GetGWorld(&oldPort, &oldGDeviceH);
+	SetGWorld(theGWorld, nil);
 
-// For each sample...
- maxImage = numberOfFrames;
+	// For each sample...
+	maxImage = numberOfFrames;
 
-[wait setCancel:YES];
-[[wait progress] setMaxValue:maxImage];
+	[wait setCancel:YES];
+	[[wait progress] setMaxValue:maxImage];
 
-for (curSample = 0; curSample < maxImage; curSample++) 
-{
+	for (curSample = 0; curSample < maxImage; curSample++) 
+	{
 	NSAutoreleasePool *subpool = [[NSAutoreleasePool alloc] init];
 
 	NSLog(@"frame: %d", curSample);
 
-    im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
-	
+	im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
+
 	UpdateSystemActivity ( 1);	// avoid sleep or screen saver mode
-	
+
 	if( PRODUCEFILES == NO)
 	{
 		[self CopyNSImageToGWorld :im :theGWorld];
@@ -255,63 +255,63 @@ for (curSample = 0; curSample < maxImage; curSample++)
 			
 			if( curSample == maxImage-1)
 			 // Add sample data and a description to a media
-            err = AddMediaSample(theMedia,	/* media specifier */ 
-                    theRes,	/* handle to sample data - dataIn */
-                    0,		/* specifies offset into data reffered to by dataIn handle */
-                    dataSize, /* number of bytes of sample data to be added */ 
-                    X2Fix( 0.01 / 500.0),		 /* frame duration = 1/10 sec */
-                    (SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
-                    1,	/* number of samples */
-                    notSyncFlag,	/* control flag indicating self-contained samples */
-                    nil);		/* returns a time value where sample was insterted */
+			err = AddMediaSample(theMedia,	/* media specifier */ 
+					theRes,	/* handle to sample data - dataIn */
+					0,		/* specifies offset into data reffered to by dataIn handle */
+					dataSize, /* number of bytes of sample data to be added */ 
+					X2Fix( 0.01 / 500.0),		 /* frame duration = 1/10 sec */
+					(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
+					1,	/* number of samples */
+					notSyncFlag,	/* control flag indicating self-contained samples */
+					nil);		/* returns a time value where sample was insterted */
 			else
-            // Add sample data and a description to a media
-            err = AddMediaSample(theMedia,	/* media specifier */ 
-                    theRes,	/* handle to sample data - dataIn */
-                    0,		/* specifies offset into data reffered to by dataIn handle */
-                    dataSize, /* number of bytes of sample data to be added */ 
-                    X2Fix( 0.01 / Fix2X(timeSettings.frameRate)),		 /* frame duration = 1/10 sec */
-                    (SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
-                    1,	/* number of samples */
-                    notSyncFlag,	/* control flag indicating self-contained samples */
-                    nil);		/* returns a time value where sample was insterted */
+			// Add sample data and a description to a media
+			err = AddMediaSample(theMedia,	/* media specifier */ 
+					theRes,	/* handle to sample data - dataIn */
+					0,		/* specifies offset into data reffered to by dataIn handle */
+					dataSize, /* number of bytes of sample data to be added */ 
+					X2Fix( 0.01 / Fix2X(timeSettings.frameRate)),		 /* frame duration = 1/10 sec */
+					(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
+					1,	/* number of samples */
+					notSyncFlag,	/* control flag indicating self-contained samples */
+					nil);		/* returns a time value where sample was insterted */
+		}
+		else
+		{
+			NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curSample];
+			
+			[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
+		}
+
+
+		[im release];
+
+		[wait incrementBy:1];
+
+		if( [wait aborted])
+		{
+			err = -1;
+			curSample = maxImage;
+		}
+		[subpool release];
 	}
-	else
-	{
-		NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curSample];
 		
-		[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
-	}
-	
-	
-	[im release];
-	
-	[wait incrementBy:1];
+	UnlockPixels (GetGWorldPixMap(theGWorld));
 
-	if( [wait aborted])
+	SetGWorld (oldPort, oldGDeviceH);
+
+	[wait close];
+
+	[wait release];
+
+	// Dealocate our previously alocated handles and GWorld
+
+	if (theGWorld)
 	{
-		err = -1;
-		curSample = maxImage;
+		DisposeGWorld (theGWorld);
 	}
-	[subpool release];
-}
-		
-UnlockPixels (GetGWorldPixMap(theGWorld));
 
-SetGWorld (oldPort, oldGDeviceH);
-
-[wait close];
-
-[wait release];
-
-// Dealocate our previously alocated handles and GWorld
-
-if (theGWorld)
-{
-	DisposeGWorld (theGWorld);
-}
-	
-return err;
+	return err;
 } 
 
 
