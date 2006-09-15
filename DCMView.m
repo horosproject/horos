@@ -4178,7 +4178,7 @@ static long scrollMode;
 							
 							if( fdiff < 0) fdiff = -fdiff;
 							
-							if( fdiff < smallestdiff | smallestdiff == -1)
+							if( fdiff < smallestdiff || smallestdiff == -1)
 							{
 								smallestdiff = fdiff;
 								index = i;

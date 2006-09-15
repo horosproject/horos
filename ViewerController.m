@@ -3021,11 +3021,15 @@ static ViewerController *draggedController = 0L;
 	long		diffWL;
 	long		startWW;
 	long		previousColumns = [imageView columns], previousRows = [imageView rows];
+	
 	NSString	*previousPatientUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] retain];
-
-
-
-
+	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
+	float		previousOrientation[ 9];
+	float		previousLocation = 0;
+	
+	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
+	previousLocation = [[imageView curDCM] sliceLocation];
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 
 	// Check if another post-processing viewer is open : we CANNOT release the fVolumePtr -> OsiriX WILL crash
@@ -3186,8 +3190,6 @@ static ViewerController *draggedController = 0L;
 //		
 //	}
 	
-	
-	
 	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
 		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
@@ -3229,7 +3231,57 @@ static ViewerController *draggedController = 0L;
 	{
 		[self matrixPreviewSelectCurrentSeries];
 	}
-
+	
+	// If same study, same patient and same orientation, try to go the same position (mm) if available
+	if( [previousStudyInstanceUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
+	{
+		float	currentOrientation[ 9];
+		BOOL	equalVector = YES;
+		
+		[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
+		
+		for( i = 0; i < 9; i++)
+		{
+			if( previousOrientation[ i] != currentOrientation[ i]) equalVector = NO;
+		}
+		
+		if( equalVector)
+		{
+			float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+			float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
+			
+			if( start > end)
+			{
+				float temp = end;
+				
+				end = start;
+				start = temp;
+			}
+			
+			if( previousLocation > start && previousLocation < end)
+			{
+				long	index = 0, i;
+				float   smallestdiff = -1, fdiff;
+				
+				for( i = 0; i < [fileList[ 0] count]; i++)
+				{
+					float slicePosition = [[[fileList[ 0] objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
+					
+					fdiff = fabs( slicePosition - previousLocation);
+					
+					if( fdiff < smallestdiff || smallestdiff == -1)
+					{
+						smallestdiff = fdiff;
+						index = i;
+					}
+				}
+				
+				if( index != 0) [self setImageIndex: index];
+			}
+		}
+	}
+	
+	[previousStudyInstanceUID release];
 	[previousPatientUID release];
 	
 	// Is it only key images?
@@ -3244,9 +3296,7 @@ static ViewerController *draggedController = 0L;
 	
 	displayOnlyKeyImages = onlyKeyImages; 
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
-
-		
-		
+	
 	/*
 	if( onlyKeyImages)
 	{
