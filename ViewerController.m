@@ -4405,16 +4405,16 @@ else								[self ApplyConvString:@"No Filter"];
 {
 	if( [sender tag] == 0)
 	{
-		[imageView setWLWW: [wlset intValue] :[wwset intValue]];
+		[imageView setWLWW: [wlset floatValue] :[wwset floatValue]];
 		
-		[fromset setIntValue: [wlset intValue] - [wwset intValue]/2];
-		[toset setIntValue: [wlset intValue] + [wwset intValue]/2];
+		[fromset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] - [wwset floatValue]/2]];
+		[toset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] + [wwset floatValue]/2]];
 	}
 	else
 	{
-		[imageView setWLWW: [fromset intValue] + ([toset intValue] - [fromset intValue])/2 :[toset intValue] - [fromset intValue]];
-		[wlset setIntValue: [fromset intValue] + ([toset intValue] - [fromset intValue])/2];
-		[wwset setIntValue: [toset intValue] - [fromset intValue]];
+		[imageView setWLWW: [fromset floatValue] + ([toset floatValue] - [fromset floatValue])/2 :[toset floatValue] - [fromset floatValue]];
+		[wlset setStringValue: [NSString stringWithFormat:@"%.3f", [fromset floatValue] + ([toset floatValue] - [fromset floatValue])/2]];
+		[wwset setStringValue: [NSString stringWithFormat:@"%.3f", [toset floatValue] - [fromset floatValue]]];
 	}
 }
 
@@ -4430,7 +4430,7 @@ static float oldsetww, oldsetwl;
     
     if( [sender tag])   //User clicks OK Button
     {
-		[imageView setWLWW: [wlset intValue] :[wwset intValue] ];
+		[imageView setWLWW: [wlset floatValue] :[wwset floatValue] ];
     }
 	else
 	{
@@ -4447,11 +4447,11 @@ static float oldsetww, oldsetwl;
 	oldsetww = cww;
 	oldsetwl = cwl;
 	
-    [wlset setStringValue:[NSString stringWithFormat:@"%.0f", cwl ]];
-    [wwset setStringValue:[NSString stringWithFormat:@"%.0f", cww ]];
+    [wlset setStringValue:[NSString stringWithFormat:@"%.3f", cwl ]];
+    [wwset setStringValue:[NSString stringWithFormat:@"%.3f", cww ]];
 	
-	[fromset setIntValue: [wlset floatValue] - [wwset floatValue]/2];
-	[toset setIntValue: [wlset floatValue] + [wwset floatValue]/2];
+	[fromset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] - [wwset floatValue]/2]];
+	[toset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] + [wwset floatValue]/2]];
 	
     [NSApp beginSheet: setWLWWWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }

@@ -1456,7 +1456,7 @@
 		ABE470310A76412600327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB009B6828400545F5E /* jaricom.c */; };
 		ABE470320A76412600327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB109B6828400545F5E /* jcapimin.c */; };
 		ABE470330A76412600327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB209B6828400545F5E /* jcapistd.c */; };
-		ABE470340A76412600327466 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB309B6828400545F5E; };
+		ABE470340A76412600327466 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB309B6828400545F5E /* jcarith.c */; };
 		ABE470350A76412600327466 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB409B6828400545F5E /* jccoefct.c */; };
 		ABE470360A76412600327466 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB509B6828400545F5E /* jccolor.c */; };
 		ABE470370A76412600327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB609B6828400545F5E /* jcdctmgr.c */; };
@@ -1533,7 +1533,7 @@
 		ABE4707E0A76412600327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB009B6828400545F5E /* jaricom.c */; };
 		ABE4707F0A76412600327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB109B6828400545F5E /* jcapimin.c */; };
 		ABE470800A76412600327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB209B6828400545F5E /* jcapistd.c */; };
-		ABE470810A76412600327466 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB309B6828400545F5E; };
+		ABE470810A76412600327466 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB309B6828400545F5E /* jcarith.c */; };
 		ABE470820A76412600327466 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB409B6828400545F5E /* jccoefct.c */; };
 		ABE470830A76412600327466 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB509B6828400545F5E /* jccolor.c */; };
 		ABE470840A76412600327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB609B6828400545F5E /* jcdctmgr.c */; };

@@ -315,7 +315,8 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 
 	slicePt[ 0] = slicePt[ 1] = slicePt[ 2] = 0;
 	line = 0L;
-		
+
+
     return self;
 }
 
@@ -1077,6 +1078,16 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 //		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
+	}
+	else
+	{
+//		[oView setOrigin: NSMakePoint(0,0)];
+//		[perpendicularView setOrigin: NSMakePoint(0,0)];
+//		[finalView setOrigin: NSMakePoint(0,0)];
+//		
+//		[oView scaleToFit];
+//		[perpendicularView scaleToFit];
+//		[finalView scaleToFit];
 	}
 }
 
