@@ -8146,6 +8146,11 @@ BOOL            readable = YES;
 	fullww = (pixmax - pixmin);
 }
 
+-(short) stackMode
+{
+	return stackMode;
+}
+
 -(short) stack
 {
 	if( stackMode == 0) return 1;

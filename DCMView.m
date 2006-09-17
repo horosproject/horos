@@ -6371,13 +6371,19 @@ static long scrollMode;
 	}
 	else				// Pixels contained in memory  -> only RGB or 16 bits data
 	{
+		BOOL	isRGB = [curDCM isRGB];
+		
 		*width = [curDCM pwidth];
 		*height = [curDCM pheight];
 		
-		if( [curDCM thickSlabMode] == YES) force8bits = YES;
-		if( [curDCM stack] > 1) force8bits = YES;
+		if( [curDCM thickSlabMode])
+		{
+			force8bits = YES;
+			
+			if( [curDCM stackMode] == 4 || [curDCM stackMode] == 5) isRGB = YES;
+		}
 		
-		if( [curDCM isRGB] == YES)
+		if( isRGB == YES)
 		{
 			*spp = 3;
 			*bpp = 8;

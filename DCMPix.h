@@ -300,6 +300,7 @@
 -(void) setTot: (long) tot;
 -(void) setFusion:(short) m :(short) s :(short) direction;
 -(short) stack;
+-(short) stackMode;
 - (long) rowBytes;
 - (void) setRowBytes:(long) rb;
 - (float) fullww;
