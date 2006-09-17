@@ -1532,7 +1532,9 @@ static BOOL COMPLETEREBUILD = NO;
 -(void) loadDatabase:(NSString*) path
 {
 	long        i;
-
+	
+	[NSApp closeAllViewers: self];
+	
 	if( threadRunning)
 	{
 		shouldDie = YES;
