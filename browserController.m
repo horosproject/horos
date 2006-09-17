@@ -1533,7 +1533,7 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	long        i;
 	
-	[NSApp closeAllViewers: self];
+	[[AppController sharedAppController] closeAllViewers: self];
 	
 	if( threadRunning)
 	{
