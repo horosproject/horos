@@ -5210,6 +5210,8 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -5222,13 +5224,19 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Toggle images/series displaying", nil)  action:@selector(displayImagesOfSeries:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil)  action:@selector(delItem:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
+	
+	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
 	[contextual addItem:item];
@@ -7200,6 +7208,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	[keyImageItem setTarget:self];
 	[menu addItem:keyImageItem];
 	[keyImageItem release];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
@@ -7212,14 +7223,23 @@ static NSArray*	openSubSeriesArray = 0L;
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Report", 0L) action: @selector(generateReport:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
 	[exportItem release];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Delete", nil) action: @selector(delItem:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
 	[sendItem release];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil) action: @selector(export2PACS:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
