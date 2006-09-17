@@ -3907,16 +3907,18 @@ public:
 			
 			if( [blendingFirstObject SUVConverted])
 			{
-				blendingValueFactor = 5000. / [blendingFirstObject maxValueOfSeries];
+				blendingValueFactor = 4095. / [blendingFirstObject maxValueOfSeries];
 				blendingOFFSET16 = 0;
 				
 				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 			}
 			else
 			{
-				if( [blendingFirstObject maxValueOfSeries] > 5000)
+				if( [blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries] > 4095 || [blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries] < 50)
 				{
-					blendingValueFactor = 5000. / [blendingFirstObject maxValueOfSeries];
+					blendingValueFactor = 4095. / ([blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries]);
+					blendingOFFSET16 = -[blendingFirstObject minValueOfSeries];
+				
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 				else
@@ -4291,19 +4293,23 @@ public:
 		dst8.data = data8;
 		srcf.data = data;
 		
+		NSLog( @"maxValueOfSeries = %f", [firstObject maxValueOfSeries]);
+		NSLog( @"minValueOfSeries = %f", [firstObject minValueOfSeries]);
+		
 		if( [firstObject SUVConverted])
 		{
-			valueFactor = 5000. / [firstObject maxValueOfSeries];
+			valueFactor = 4095. / [firstObject maxValueOfSeries];
 			OFFSET16 = 0;
 			
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 		}
 		else
 		{
-			if( [firstObject maxValueOfSeries] > 5000)
+			if( [firstObject maxValueOfSeries] - [firstObject minValueOfSeries] > 4095 || [firstObject maxValueOfSeries] - [firstObject minValueOfSeries] < 50)
 			{
-				valueFactor = 5000. / [firstObject maxValueOfSeries];
-			
+				valueFactor = 4095. / ([firstObject maxValueOfSeries] - [firstObject minValueOfSeries]);
+				OFFSET16 = -[firstObject minValueOfSeries];
+				
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 			}
 			else
@@ -4542,13 +4548,9 @@ public:
 	propertyEdges->SetColor(0.5, 0.5, 0.5);
 	cube->CubeOn();
 	cube->FaceTextOn();
-
 	
 	orientationWidget = vtkOrientationMarkerWidget::New();
 	orientationWidget->SetOrientationMarker( cube );
-	orientationWidget->SetInteractor( [self getInteractor] );
-	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-	orientationWidget->InteractiveOff();
 
 	cube->Delete();
 
@@ -4682,14 +4684,10 @@ public:
 	
 	aRenderer->AddActor2D( Line2DActor);
 	
+	orientationWidget->SetInteractor( [self getInteractor] );
 	orientationWidget->SetEnabled( 1 );
-		
-	//[VRView getCroppingBox: initialCroppingBoxBounds :volume :croppingBox];
-	
-//	croppingBox->GetProp3D()->GetBounds(initialCroppingBoxBounds);
-//	NSLog(@"initialCroppingBoxBounds : %f, %f, %f, %f, %f, %f", initialCroppingBoxBounds[0], initialCroppingBoxBounds[1], initialCroppingBoxBounds[2], initialCroppingBoxBounds[3], initialCroppingBoxBounds[4], initialCroppingBoxBounds[5]);
-//	volume->GetBounds(initialCroppingBoxBounds);
-//	NSLog(@"initialCroppingBoxBounds : %f, %f, %f, %f, %f, %f", initialCroppingBoxBounds[0], initialCroppingBoxBounds[1], initialCroppingBoxBounds[2], initialCroppingBoxBounds[3], initialCroppingBoxBounds[4], initialCroppingBoxBounds[5]);
+	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
+	orientationWidget->InteractiveOff();
 	
 	[self saView:self];
 	
@@ -4700,7 +4698,6 @@ public:
 
 -(IBAction) SwitchStereoMode :(id) sender
 {
-
 	if( [self renderWindow]->GetStereoRender() == false)
 	{
 		[self renderWindow]->StereoRenderOn();
@@ -5172,7 +5169,7 @@ public:
 	isViewportResizable = boo;
 }
 
-- (long) offset
+- (float) offset
 {
 	return OFFSET16;
 }

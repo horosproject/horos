@@ -124,7 +124,7 @@
     float				ww, wl;
 	float				fullww, fullwl;
 	BOOL				fixed8bitsWLWW;	
-    float               maxValueOfSeries;
+    float               maxValueOfSeries, minValueOfSeries;
 	
 	
 	NSString			*convertedDICOM;	
@@ -159,6 +159,8 @@
 -(void) computePixMinPixMax;
 - (float) maxValueOfSeries;
 - (void) setMaxValueOfSeries: (float) f;
+- (float) minValueOfSeries;
+- (void) setMinValueOfSeries: (float) f;
 
 // Compute ROI data
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;

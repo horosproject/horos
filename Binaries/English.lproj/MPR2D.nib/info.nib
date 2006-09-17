@@ -20,13 +20,13 @@
 		<string>605 517 70 78 0 0 1280 832 </string>
 	</dict>
 	<key>IBFramework Version</key>
-	<string>443.0</string>
+	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>494</integer>
 		<integer>636</integer>
+		<integer>494</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8G1454</string>
+	<string>8J2135a</string>
 </dict>
 </plist>

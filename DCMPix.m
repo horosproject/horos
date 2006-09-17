@@ -2083,6 +2083,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	viewPosition = 0L;
 	patientPosition = 0L;
 	maxValueOfSeries = 0;
+	minValueOfSeries = 0;
 	radiopharmaceuticalStartTime = 0L;
 	acquisitionTime = 0L;
 	radionuclideTotalDose = 0;
@@ -2127,6 +2128,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		radionuclideTotalDose = 0;
 		radionuclideTotalDoseCorrected = 0;
 		maxValueOfSeries = 0;
+		minValueOfSeries = 0;
 		hasSUV = NO;
 		SUVConverted = NO;
 		generated = YES;
@@ -2278,6 +2280,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 		//---------------------------------various
 		maxValueOfSeries = 0;
+		minValueOfSeries = 0;
 		fixed8bitsWLWW = NO;
 		savedWL = savedWW = 0;
 		pixelRatio = 1.0;
@@ -8122,18 +8125,12 @@ BOOL            readable = YES;
 		
 		i = width * height;
 		
-//		NSLog(@"vmax: %f vmin: %f", pixmax, pixmin);
-		
-		#define INTERVAL 4
-		
-		i /= INTERVAL;					//Check only 1 on INTERVAL pixels...
-		i--;
 		while( i-- > 0)
 		{
 			fvalue = *pt;
-			pt += INTERVAL;
+			pt ++;
 			if (fvalue < fmin) fmin = fvalue;
-			else if (fvalue > fmax) fmax = fvalue;
+			if (fvalue > fmax) fmax = fvalue;
 		}
 		
 		pixmax = fmax;
@@ -9619,6 +9616,16 @@ float			iwl, iww;
 	maxValueOfSeries = f;
 }
 
+- (float) minValueOfSeries
+{
+	return minValueOfSeries;
+}
+
+- (void) setMinValueOfSeries: (float) f
+{
+	minValueOfSeries = f;
+}
+
 -(void) copySUVfrom:(DCMPix*) from
 {
 	[self setRadiopharmaceuticalStartTime: [from radiopharmaceuticalStartTime]];
@@ -9631,6 +9638,7 @@ float			iwl, iww;
 	[self setSUVConverted: [from SUVConverted]];
 	[self setDecayCorrection: [from decayCorrection]];
 	[self setMaxValueOfSeries: [from maxValueOfSeries]];
+	[self setMinValueOfSeries: [from minValueOfSeries]];
 	[self setDecayFactor: [from decayFactor]];
 	[self setHalflife: [from halflife]];
 	[self checkSUV];

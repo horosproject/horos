@@ -125,16 +125,16 @@ static float oldsetww, oldsetwl;
 {
 	if( [sender tag] == 0)
 	{
-		[self setWLWW: [wlset intValue] :[wwset intValue]];
+		[self setWLWW: [wlset floatValue] :[wwset floatValue]];
 		
-		[fromset setIntValue: [wlset intValue] - [wwset intValue]/2];
-		[toset setIntValue: [wlset intValue] + [wwset intValue]/2];
+		[fromset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] - [wwset floatValue]/2]];
+		[toset setStringValue: [NSString stringWithFormat:@"%.3f", [wlset floatValue] + [wwset floatValue]/2]];
 	}
 	else
 	{
-		[self setWLWW: [fromset intValue] + ([toset intValue] - [fromset intValue])/2 :[toset intValue] - [fromset intValue]];
-		[wlset setIntValue: [fromset intValue] + ([toset intValue] - [fromset intValue])/2];
-		[wwset setIntValue: [toset intValue] - [fromset intValue]];
+		[self setWLWW: [fromset floatValue] + ([toset floatValue] - [fromset floatValue])/2 :[toset floatValue] - [fromset floatValue]];
+		[wlset setStringValue: [NSString stringWithFormat:@"%.3f", [fromset floatValue] + ([toset floatValue] - [fromset floatValue])/2]];
+		[wwset setStringValue: [NSString stringWithFormat:@"%.3f", [toset floatValue] - [fromset floatValue]]];
 	}
 }
 
@@ -150,11 +150,11 @@ static float oldsetww, oldsetwl;
 	oldsetww = iww;
 	oldsetwl = iwl;
 	
-    [wlset setStringValue:[NSString stringWithFormat:@"%.0f", iwl ]];
-    [wwset setStringValue:[NSString stringWithFormat:@"%.0f", iww ]];
+    [wlset setStringValue:[NSString stringWithFormat:@"%.3f", iwl ]];
+    [wwset setStringValue:[NSString stringWithFormat:@"%.3f", iww ]];
 	
-	[fromset setIntValue: [wlset floatValue] - [wwset floatValue]/2];
-	[toset setIntValue: [wlset floatValue] + [wwset floatValue]/2];
+	[fromset setStringValue:[NSString stringWithFormat:@"%.3f", [wlset floatValue] - [wwset floatValue]/2]];
+	[toset setStringValue:[NSString stringWithFormat:@"%.3f", [wlset floatValue] + [wwset floatValue]/2]];
 	
     [NSApp beginSheet: setWLWWWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
@@ -172,7 +172,7 @@ static float oldsetww, oldsetwl;
     
     if( [sender tag])   //User clicks OK Button
     {
-		[self setWLWW: [wlset intValue] :[wwset intValue] ];
+		[self setWLWW: [wlset floatValue] :[wwset floatValue] ];
     }
 	else
 	{
@@ -189,8 +189,8 @@ static float oldsetww, oldsetwl;
 	
     NSLog(@"endNameWLWW");
     
-    iwl = [wl intValue];
-    iww = [ww intValue];
+    iwl = [wl floatValue];
+    iww = [ww floatValue];
     if (iww == 0) iww = 1;
 
     [addWLWWWindow orderOut: sender];

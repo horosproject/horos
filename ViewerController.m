@@ -3431,7 +3431,8 @@ static ViewerController *draggedController = 0L;
 	
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
-	float maxValueOfSeries = 0;
+	float maxValueOfSeries = -100000;
+	float minValueOfSeries = 100000;
 	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
@@ -3449,6 +3450,7 @@ static ViewerController *draggedController = 0L;
 				[pix CheckLoad];
 				
 				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+				if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 			}
 			
 			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
@@ -3466,7 +3468,8 @@ static ViewerController *draggedController = 0L;
 		{	 
 			for( i = 0 ; i < [pixList[ x] count]; i++)	 
 			{	 
-				 [[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
+				[[pixList[ x] objectAtIndex: i] setMinValueOfSeries: minValueOfSeries];
 			}
 		 }	 
 	}
@@ -3500,7 +3503,6 @@ static ViewerController *draggedController = 0L;
 			long j;
 			for( j = 0 ; j < runSize; j++)
 			{
-				[[pixList[ x] objectAtIndex: j] setMaxValueOfSeries: maxValueOfSeries];
 				if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
 				if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
 			}
@@ -7251,7 +7253,7 @@ int i,j,l;
 	long	y, x, i;
 	BOOL	updatewlww = NO;
 	float	updatefactor;
-	float	maxValueOfSeries = 0;
+	float	maxValueOfSeries = -100000, minValueOfSeries = 100000;
 	
 	if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
 	if( [[imageView curDCM] patientsWeight] <= 0) return;
@@ -7264,8 +7266,6 @@ int i,j,l;
 		if( [[[imageView curDCM] units] isEqualToString:@"CNTS"]) updatefactor = [[imageView curDCM] philipsFactor];
 		else updatefactor = [[imageView curDCM] patientsWeight] * 1000. / [[imageView curDCM] radionuclideTotalDoseCorrected];
 	}
-	
-	maxValueOfSeries = 0;
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{
@@ -7296,6 +7296,7 @@ int i,j,l;
 			[pix computePixMinPixMax];
 			
 			if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+			if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 		}
 	}
 	
@@ -7304,6 +7305,7 @@ int i,j,l;
 		for( x = 0; x < [pixList[y] count]; x++)
 		{
 			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
+			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: minValueOfSeries];
 		}
 	}
 	
@@ -7353,7 +7355,7 @@ int i,j,l;
 			
 			[[NSUserDefaults standardUserDefaults] setInteger: [[suvConversion selectedCell] tag] forKey:@"SUVCONVERSION"];
 			
-			float maxValueOfSeries = 0;
+			float maxValueOfSeries = -100000, minValueOfSeries = 100000;
 			
 			switch( [[suvConversion selectedCell] tag])
 			{
@@ -7367,8 +7369,6 @@ int i,j,l;
 						for( x = 0; x < [pixList[y] count]; x++) [[pixList[y] objectAtIndex: x] setDisplaySUVValue: YES];
 					}
 				case 0: // Do nothing
-				
-					maxValueOfSeries = 0;
 					for( y = 0; y < maxMovieIndex; y++)
 					{
 						for( x = 0; x < [pixList[y] count]; x++)
@@ -7378,6 +7378,7 @@ int i,j,l;
 							[pix computePixMinPixMax];
 							
 							if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+							if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
 						}
 					}
 					
@@ -7386,6 +7387,7 @@ int i,j,l;
 						for( x = 0; x < [pixList[y] count]; x++)
 						{
 							[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
+							[[pixList[y] objectAtIndex: x] setMinValueOfSeries: minValueOfSeries];
 						}
 					}
 				break;

@@ -199,7 +199,7 @@ typedef char* vtkMyCallbackVR;
     float					*data;
 	
 	float					valueFactor, blendingValueFactor;
-	long					OFFSET16, blendingOFFSET16;
+	float					OFFSET16, blendingOFFSET16;
 	
 	unsigned char			*dataFRGB;
 	char					*data8;
@@ -391,7 +391,7 @@ typedef char* vtkMyCallbackVR;
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D;
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (IBAction) switchToSeriesRadio:(id) sender;
-- (long) offset;
+- (float) offset;
 - (float) valueFactor;
 - (void) setViewportResizable: (BOOL) boo;
 
