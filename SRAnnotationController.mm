@@ -121,7 +121,10 @@
 	if(!annotation) return;
 	
 	if([annotation save])
+	{
+		[annotation saveAsHTML];
 		NSLog(@"SR Annotation export done.");
+	}
 	else
 		NSLog(@"SR Annotation export failed.");
 }

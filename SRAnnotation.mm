@@ -25,8 +25,11 @@
 	if (![super init]) return nil;
 
 	document = new DSRDocument();
+	//document->createNewDocument(DSRTypes::DT_BasicTextSR);
+	document->createNewDocument(DSRTypes::DT_ComprehensiveSR);
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
-	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
+	//document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
+	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 	
 	return self;
 }
@@ -53,7 +56,10 @@
 
 - (void)addROI:(ROI *)aROI;
 {
-	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord);
+	NSLog(@"+++ add a ROI : %@", [aROI name]);
+
+	// add the region to the SR
+	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("111030", "DCM", "Image Region"));
 	
 	// set the type of the region
@@ -88,7 +94,7 @@
 	// set coordinates of the points
 	DSRSpatialCoordinatesValue *coordinates = new DSRSpatialCoordinatesValue(graphicType);
 
-	DSRGraphicDataList dsrPointsList = coordinates->getGraphicDataList();
+	DSRGraphicDataList *dsrPointsList = &coordinates->getGraphicDataList();
 
 	NSMutableArray *roiPointsList = [aROI points];
 	NSEnumerator *roiPointsListEnumerator = [roiPointsList objectEnumerator];
@@ -97,18 +103,26 @@
 	while (aPoint = [roiPointsListEnumerator nextObject])
 	{
 		NSPoint aNSPoint = [aPoint point];
-		NSLog(@"add a point : %f, %f", aNSPoint.x,aNSPoint.y);
-		dsrPointsList.addItem(aNSPoint.x,aNSPoint.y);
+		dsrPointsList->addItem(aNSPoint.x,aNSPoint.y);
+		//NSLog(@"add a point : %f, %f", aNSPoint.x,aNSPoint.y);
 	}
-
+	
+//	dsrPointsList.print(cout, 0, '/', '\n');
+//	coordinates->print(cout, 0);
+	
+	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);
+	
+	// image reference
 	DCMObject *dcmObject;
 	dcmObject = [DCMObject objectWithContentsOfFile:[[aROI pix] srcFile] decodingPixelData:NO];
 	OFString sopClassUID = OFString([[dcmObject attributeValueWithName:@"SOPClassUID"] UTF8String]);
 	OFString sopInstanceUID = OFString([[[[aROI pix] imageObj] valueForKey:@"sopInstanceUID"] UTF8String]);
 
+	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
 	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(sopClassUID, sopInstanceUID));
-	// add the region to the SR
-	document->getTree().getCurrentContentItem().setSpatialCoordinates(*coordinates);	
+	document->getTree().goUp(); // go up to the SCOORD element
+	
+	document->getTree().goUp(); // go up to the root element
 }
 
 #pragma mark -
@@ -125,8 +139,10 @@
 	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"dcm"];
 
 	if (status.good())
-	{
 		status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);
+	
+	if (status.good())
+	{
 		NSLog(@"Report saved: %@", path);
 		return YES;
 	}
@@ -135,6 +151,16 @@
 		NSLog(@"Report not saved: %@", path);
 		return NO;
 	}
+}
+
+- (void)saveAsHTML
+{
+	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
+	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"html"];
+	
+	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
+	ofstream stream([path UTF8String]);
+	document->renderHTML(stream, renderFlags, NULL);
 }
 
 @end
