@@ -1747,61 +1747,55 @@ return rect;
 				rect.size.height = pt.y - rect.origin.y;
 				
 				if( modifier & NSShiftKeyMask) rect.size.width = rect.size.height;
-				
-				rtotal = -1;
+					
+					rtotal = -1;
 				Brtotal = -1;
 				action = YES;
-			break;
-			
+				break;
+				
 			case ROI_selected:
 				action = NO;
-			break;
-			
+				break;
+				
 			case ROI_selectedModify:
-			rtotal = -1;
-			Brtotal = -1;
-			if( type == tROI)
-			{
-				NSPoint leftUp, rightUp, leftDown, rightDown;
-				
-				leftUp.x = rect.origin.x;
-				leftUp.y = rect.origin.y;
-				
-				rightUp.x = rect.origin.x + rect.size.width;
-				rightUp.y = rect.origin.y;
-				
-				leftDown.x = rect.origin.x;
-				leftDown.y = rect.origin.y + rect.size.height;
-				
-				rightDown.x = rect.origin.x + rect.size.width;
-				rightDown.y = rect.origin.y + rect.size.height;
-				
-				switch( selectedModifyPoint)
+				rtotal = -1;
+				Brtotal = -1;
+				if( type == tROI)
 				{
-					case 1: leftUp = pt;		rightUp.y = pt.y;		leftDown.x = pt.x;		break;
-					case 4: rightUp = pt;		leftUp.y = pt.y;		rightDown.x = pt.x;		break;
-					case 3: rightDown = pt;		rightUp.x = pt.x;		leftDown.y = pt.y;		break;
-					case 2: leftDown = pt;		leftUp.x = pt.x;		rightDown.y = pt.y;		break;
+					NSPoint leftUp, rightUp, leftDown, rightDown;
+					
+					leftUp.x = rect.origin.x;
+					leftUp.y = rect.origin.y;
+					
+					rightUp.x = rect.origin.x + rect.size.width;
+					rightUp.y = rect.origin.y;
+					
+					leftDown.x = rect.origin.x;
+					leftDown.y = rect.origin.y + rect.size.height;
+					
+					rightDown.x = rect.origin.x + rect.size.width;
+					rightDown.y = rect.origin.y + rect.size.height;
+					
+					switch( selectedModifyPoint)
+					{
+						case 1: leftUp = pt;		rightUp.y = pt.y;		leftDown.x = pt.x;		break;
+						case 4: rightUp = pt;		leftUp.y = pt.y;		rightDown.x = pt.x;		break;
+						case 3: rightDown = pt;		rightUp.x = pt.x;		leftDown.y = pt.y;		break;
+						case 2: leftDown = pt;		leftUp.x = pt.x;		rightDown.y = pt.y;		break;
+					}
+					
+					rect = NSMakeRect( leftUp.x, leftUp.y, (rightDown.x - leftUp.x), (rightDown.y - leftUp.y));
+					
+					action = YES;
 				}
-				
-				rect = NSMakeRect( leftUp.x, leftUp.y, (rightDown.x - leftUp.x), (rightDown.y - leftUp.y));
-				
-//				rect.size.width = pt.x - rect.origin.x;
-//				rect.size.height = pt.y - rect.origin.y;
-//
-//				
-//				if( modifier & NSShiftKeyMask) rect.size.width = rect.size.height;
-				
-				action = YES;
-			}
-			else
-			{
-				rect.size.width = pt.x - rect.origin.x;
-				rect.size.height = pt.y - rect.origin.y;
-				
-				action = YES;
-			}
-			break;
+				else  // tOval
+				{
+					rect.size.height = pt.y - rect.origin.y;
+					rect.size.width = ( modifier & NSShiftKeyMask) ? rect.size.height : pt.x - rect.origin.x;
+					
+					action = YES;
+				}
+				break;
 		}
 	}
 	else if( type == tPencil)
