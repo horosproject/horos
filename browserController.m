@@ -1055,6 +1055,8 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
+	return;
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
@@ -1168,196 +1170,196 @@ static BOOL COMPLETEREBUILD = NO;
 }
 
 
-#pragma mark iCal routing functions
-
-- (void)runSendQueue:(id)object{
-
-	while (YES) {
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		[queueLock lockWhenCondition:QueueHasData];
-		NSArray *destination = [sendQueue objectAtIndex:0];
-		NSString *filesToSend = nil;
-		NSString *syntax = nil;
-		NSDictionary *server = nil;
-		DCMTransferSyntax *ts = nil;
-		NSLog(@"destination count : %d", [destination count]);
-		if ([destination count] == 3) {
-			//old style layout.
-			//get syntax
-			/* 
-			index 0: Server description
-			index 1: TS
-			index 2: file
-			*/
-			
-			syntax = [destination objectAtIndex:1];
-			//get Transfer Syntax and compression in indicated
-			int compression = DCMLosslessQuality;
-			if ([syntax isEqualToString:@"Explicit Little Endian"])
-				ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-			else if ([syntax isEqualToString:@"JPEG 2000 Lossless"])
-				ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
-			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 10:1"]) {
-				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-				compression = DCMHighQuality;
-			}
-			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 20:1"]) {
-				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-				compression = DCMMediumQuality;
-			}
-			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 50:1"]) {
-				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-				compression =  DCMLowQuality;
-			}
-			else if ([syntax isEqualToString:@"JPEG Lossless"])
-				ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
-			else if ([syntax isEqualToString:@"JPEG High Quality (9)"]) {
-				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-				compression = DCMHighQuality;
-			}
-			else if ([syntax isEqualToString:@"JPEG High Quality (8)"]) {
-				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-				compression =  DCMMediumQuality;
-			}
-			else if ([syntax isEqualToString:@"JPEG High Quality (7)"]) {
-				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
-				compression =  DCMLowQuality;
-			}
-		// getServer
-			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-			NSEnumerator			*enumerator			= [serversArray objectEnumerator];
-			NSDictionary			*aServer;
-			
-			
-			while (aServer = [enumerator nextObject]){
-				if ([[aServer objectForKey:@"Description"] isEqualToString:[destination objectAtIndex:0]] )  {
-					server = aServer;
-					break;
-				}
-			}
-			// file path
-			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:2]];
-			// only send if we have a server, Transfer Syntax and file
-			if (server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]]) {	
-
-				NSArray *objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:compression], ts, [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"],    nil];
-				NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", nil];
-				NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
-				DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
-				
-			}
-			else {
-				if (!server)
-					NSLog(@"Routing:Not a valid DICOM destination");
-				if (!ts)
-					NSLog(@"Routing:Not a valid transfer syntax");
-				if (![[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]])
-					NSLog(@"Routing:Invalid File Path");
-			}
-				
-		}
-		
-		else if  ([destination count] == 2){
-			// New style routing.
-			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-			NSEnumerator			*serverEnumerator	= [serversArray objectEnumerator];
-			NSDictionary			*aServer;
-			
-			NSString				*description		= nil;			
-			NSString				*routeName			= [destination objectAtIndex:0];
-			NSArray					*routes				= [[NSUserDefaults standardUserDefaults] arrayForKey:@"RoutingRules"];
-			NSEnumerator			*enumerator			= [routes objectEnumerator];
-			NSDictionary			*aRoute				= nil;
-			NSDictionary			*route				= nil;
-			int compression = DCMLosslessQuality;
-			
-			/* 
-			index 0: Server Description
-			index 2: file
-			*/
-			
-			while (aRoute = [enumerator nextObject]) {				
-				NSString *name = [aRoute objectForKey:@"name"];
-				if ([name isEqualToString:routeName]){
-						route = aRoute;
-						break;
-				}				
-			}
-			
-			//we have a route. Now get info
-			if (route) {
-				description = [route objectForKey:@"Description"];
-				//get server. Also check for Bonjour DICOM. Not added yet
-				while (aServer = [serverEnumerator nextObject]){
-					if ([[aServer objectForKey:@"Description"] isEqualToString:description] )  {
-						server = aServer;
-						break;
-					}
-				}
-			}
-			
-			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:1]];
-			BOOL sendFile = YES;
-			NSArray *rules = [route objectForKey:@"rules"];
-			//need to load DICOM and see if file matches the rules
-			if (rules) {
-				sendFile = NO;
-				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[destination objectAtIndex:1] decodingPixelData:NO];
-				NSEnumerator *ruleEnumerator = [rules objectEnumerator];
-				NSDictionary *rule;
-				while (rule = [ruleEnumerator nextObject]) {
-					int attrIndex = [[rule objectForKey:@"attribute"] intValue];
-					NSString *attrName = nil;
-					NSString *keyValue = [rule objectForKey:@"keyValue"];
-					switch (attrIndex) {
-						case 0: attrName = @"Modality"; break;
-						case 1:	attrName = @"InstitutionName"; break;
-						case 2:	attrName = @"ReferringPhysiciansName"; break;
-						case 3:	attrName = @"PerformingPhysiciansName"; break;
-					}
-					if ([[dcmObject attributeValueWithName:attrName] rangeOfString:keyValue options:NSCaseInsensitiveSearch].location != NSNotFound)
-						sendFile = YES;
-					else
-						sendFile = NO;
-				}
-			}
-
-
-			if (sendFile && server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:1]])
-			{	
-				DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-										calledAET:[server objectForKey:@"AETitle"] 
-										hostname:[server objectForKey:@"Address"] 
-										port:[[server objectForKey:@"Port"] intValue] 
-										filesToSend:(NSArray *)filesToSend
-										transferSyntax:[[server objectForKey:@"Transfer Syntax"] intValue] 
-										compression: 1.0
-										extraParameters:nil];
-				[storeSCU run:self];
-				[storeSCU release];
-				
-				
-			}
-			//NSLog(@"New style Routing Information");
-		}
-		
-		[sendQueue removeObjectAtIndex:0];
-		[queueLock unlockWithCondition:([sendQueue count] ? QueueHasData : QueueEmpty)];
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.04]];
-		[pool release];
-	}	
-}
-
-- (void)addToQueue:(NSArray *)array{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[array retain];
-	[queueLock lock];
-	//NSLog(@"AddToQueue:%@", [array description]);
-	[sendQueue mergeWithArray:array];
-	[queueLock unlockWithCondition:QueueHasData];
-	[array release];
-	[pool release];
-}
+#pragma mark iCal routing functions - will be re-activated with iCal API in MacOS 10.5
+//
+//- (void)runSendQueue:(id)object{
+//
+//	while (YES) {
+//		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//		[queueLock lockWhenCondition:QueueHasData];
+//		NSArray *destination = [sendQueue objectAtIndex:0];
+//		NSString *filesToSend = nil;
+//		NSString *syntax = nil;
+//		NSDictionary *server = nil;
+//		DCMTransferSyntax *ts = nil;
+//		NSLog(@"destination count : %d", [destination count]);
+//		if ([destination count] == 3) {
+//			//old style layout.
+//			//get syntax
+//			/* 
+//			index 0: Server description
+//			index 1: TS
+//			index 2: file
+//			*/
+//			
+//			syntax = [destination objectAtIndex:1];
+//			//get Transfer Syntax and compression in indicated
+//			int compression = DCMLosslessQuality;
+//			if ([syntax isEqualToString:@"Explicit Little Endian"])
+//				ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+//			else if ([syntax isEqualToString:@"JPEG 2000 Lossless"])
+//				ts = [DCMTransferSyntax JPEG2000LosslessTransferSyntax];
+//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 10:1"]) {
+//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//				compression = DCMHighQuality;
+//			}
+//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 20:1"]) {
+//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//				compression = DCMMediumQuality;
+//			}
+//			else if ([syntax isEqualToString:@"JPEG 2000 Lossy 50:1"]) {
+//				ts = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+//				compression =  DCMLowQuality;
+//			}
+//			else if ([syntax isEqualToString:@"JPEG Lossless"])
+//				ts = [DCMTransferSyntax JPEGLosslessTransferSyntax];
+//			else if ([syntax isEqualToString:@"JPEG High Quality (9)"]) {
+//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//				compression = DCMHighQuality;
+//			}
+//			else if ([syntax isEqualToString:@"JPEG High Quality (8)"]) {
+//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//				compression =  DCMMediumQuality;
+//			}
+//			else if ([syntax isEqualToString:@"JPEG High Quality (7)"]) {
+//				ts = [DCMTransferSyntax JPEGExtendedTransferSyntax];
+//				compression =  DCMLowQuality;
+//			}
+//		// getServer
+//			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+//			NSEnumerator			*enumerator			= [serversArray objectEnumerator];
+//			NSDictionary			*aServer;
+//			
+//			
+//			while (aServer = [enumerator nextObject]){
+//				if ([[aServer objectForKey:@"Description"] isEqualToString:[destination objectAtIndex:0]] )  {
+//					server = aServer;
+//					break;
+//				}
+//			}
+//			// file path
+//			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:2]];
+//			// only send if we have a server, Transfer Syntax and file
+//			if (server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]]) {	
+//
+//				NSArray *objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:compression], ts, [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"],    nil];
+//				NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", nil];
+//				NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
+//				DCMStoreSCU *storeSCU = [DCMStoreSCU sendWithParameters:(NSDictionary *)params];
+//				
+//			}
+//			else {
+//				if (!server)
+//					NSLog(@"Routing:Not a valid DICOM destination");
+//				if (!ts)
+//					NSLog(@"Routing:Not a valid transfer syntax");
+//				if (![[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:2]])
+//					NSLog(@"Routing:Invalid File Path");
+//			}
+//				
+//		}
+//		
+//		else if  ([destination count] == 2){
+//			// New style routing.
+//			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+//			NSEnumerator			*serverEnumerator	= [serversArray objectEnumerator];
+//			NSDictionary			*aServer;
+//			
+//			NSString				*description		= nil;			
+//			NSString				*routeName			= [destination objectAtIndex:0];
+//			NSArray					*routes				= [[NSUserDefaults standardUserDefaults] arrayForKey:@"RoutingRules"];
+//			NSEnumerator			*enumerator			= [routes objectEnumerator];
+//			NSDictionary			*aRoute				= nil;
+//			NSDictionary			*route				= nil;
+//			int compression = DCMLosslessQuality;
+//			
+//			/* 
+//			index 0: Server Description
+//			index 2: file
+//			*/
+//			
+//			while (aRoute = [enumerator nextObject]) {				
+//				NSString *name = [aRoute objectForKey:@"name"];
+//				if ([name isEqualToString:routeName]){
+//						route = aRoute;
+//						break;
+//				}				
+//			}
+//			
+//			//we have a route. Now get info
+//			if (route) {
+//				description = [route objectForKey:@"Description"];
+//				//get server. Also check for Bonjour DICOM. Not added yet
+//				while (aServer = [serverEnumerator nextObject]){
+//					if ([[aServer objectForKey:@"Description"] isEqualToString:description] )  {
+//						server = aServer;
+//						break;
+//					}
+//				}
+//			}
+//			
+//			filesToSend = [NSArray arrayWithObject:[destination objectAtIndex:1]];
+//			BOOL sendFile = YES;
+//			NSArray *rules = [route objectForKey:@"rules"];
+//			//need to load DICOM and see if file matches the rules
+//			if (rules) {
+//				sendFile = NO;
+//				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[destination objectAtIndex:1] decodingPixelData:NO];
+//				NSEnumerator *ruleEnumerator = [rules objectEnumerator];
+//				NSDictionary *rule;
+//				while (rule = [ruleEnumerator nextObject]) {
+//					int attrIndex = [[rule objectForKey:@"attribute"] intValue];
+//					NSString *attrName = nil;
+//					NSString *keyValue = [rule objectForKey:@"keyValue"];
+//					switch (attrIndex) {
+//						case 0: attrName = @"Modality"; break;
+//						case 1:	attrName = @"InstitutionName"; break;
+//						case 2:	attrName = @"ReferringPhysiciansName"; break;
+//						case 3:	attrName = @"PerformingPhysiciansName"; break;
+//					}
+//					if ([[dcmObject attributeValueWithName:attrName] rangeOfString:keyValue options:NSCaseInsensitiveSearch].location != NSNotFound)
+//						sendFile = YES;
+//					else
+//						sendFile = NO;
+//				}
+//			}
+//
+//
+//			if (sendFile && server && ts && [[NSFileManager defaultManager] fileExistsAtPath:[destination objectAtIndex:1]])
+//			{	
+//				DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+//										calledAET:[server objectForKey:@"AETitle"] 
+//										hostname:[server objectForKey:@"Address"] 
+//										port:[[server objectForKey:@"Port"] intValue] 
+//										filesToSend:(NSArray *)filesToSend
+//										transferSyntax:[[server objectForKey:@"Transfer Syntax"] intValue] 
+//										compression: 1.0
+//										extraParameters:nil];
+//				[storeSCU run:self];
+//				[storeSCU release];
+//				
+//				
+//			}
+//			//NSLog(@"New style Routing Information");
+//		}
+//		
+//		[sendQueue removeObjectAtIndex:0];
+//		[queueLock unlockWithCondition:([sendQueue count] ? QueueHasData : QueueEmpty)];
+//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.04]];
+//		[pool release];
+//	}	
+//}
+//
+//- (void)addToQueue:(NSArray *)array{
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	[array retain];
+//	[queueLock lock];
+//	//NSLog(@"AddToQueue:%@", [array description]);
+//	[sendQueue mergeWithArray:array];
+//	[queueLock unlockWithCondition:QueueHasData];
+//	[array release];
+//	[pool release];
+//}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
