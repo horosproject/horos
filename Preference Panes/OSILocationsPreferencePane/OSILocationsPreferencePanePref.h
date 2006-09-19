@@ -18,12 +18,11 @@
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSPopUpButton *characterSetPopup;
-	IBOutlet NSTableView *serverTable, *osirixServerTable;
-	NSString  *stringEncoding;
-	NSMutableArray *serverList, *osirixServerList;
-	
-	IBOutlet	NSButton	*addServerDICOM, *addServerSharing;
+	IBOutlet NSPopUpButton	*characterSetPopup;
+	IBOutlet NSTableView	*serverTable, *osirixServerTable;
+	IBOutlet NSButton		*addServerDICOM, *addServerSharing;
+	NSMutableArray			*serverList, *osirixServerList;
+	NSString				*stringEncoding;
 	
 	IBOutlet SFAuthorizationView *_authView;
 }
