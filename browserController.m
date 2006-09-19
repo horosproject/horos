@@ -1055,8 +1055,6 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
-	return;
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
@@ -7623,9 +7621,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	activeReceives = [[NSMutableDictionary dictionary] retain];
 	receiveLog = [[NSMutableArray array] retain];
 	
-	sendQueue = [[NSMutableArray alloc] init];
-	queueLock = [[NSConditionLock alloc] initWithCondition: QueueEmpty];
-	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
+//	sendQueue = [[NSMutableArray alloc] init];
+//	queueLock = [[NSConditionLock alloc] initWithCondition: QueueEmpty];
+//	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
 	
 	// bonjour
 	bonjourPublisher = [[BonjourPublisher alloc] initWithBrowserController:self];
