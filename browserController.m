@@ -1083,7 +1083,7 @@ static BOOL COMPLETEREBUILD = NO;
 				
 				[autoroutingQueue lock];
 				
-				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server"], 0L];
+				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server", 0L]];
 				
 				[autoroutingQueue unlock];
 			}
