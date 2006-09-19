@@ -1055,27 +1055,23 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
-	return;
-	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
 		
-		NSDictionary	*autoroutingRules = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"AUTOROUTINGDICTIONARY"];
+		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+		int i;
 		
-		NSEnumerator	*enumerator = [autoroutingRules keyEnumerator];
-		NSString		*routingRuleName = 0L;
-		
-		while ((routingRuleName = [enumerator nextObject]))
+		for( i = 0; i < [autoroutingRules count]; i++)
 		{
-			NSDictionary	*routingRule = [autoroutingRules objectForKey: routingRuleName];
-		
+			NSDictionary	*routingRule = [autoroutingRules objectAtIndex: i];
+			
 			NSManagedObjectContext *context = [self managedObjectContext];
 			[context lock];
-			
+			 
 			NSPredicate			*predicate = 0L;
 			
-			predicate = [self smartAlbumPredicateString: @""];
+			predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
 			
 			NSArray		*result = [newImages filteredArrayUsingPredicate: predicate];
 			
@@ -1087,7 +1083,7 @@ static BOOL COMPLETEREBUILD = NO;
 				
 				[autoroutingQueue lock];
 				
-				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server"]];
+				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server"], 0L];
 				
 				[autoroutingQueue unlock];
 			}
