@@ -6376,7 +6376,7 @@ static long scrollMode;
 		*width = [curDCM pwidth];
 		*height = [curDCM pheight];
 		
-		if( [curDCM thickSlabMode])
+		if( [curDCM thickSlabActivated])
 		{
 			force8bits = YES;
 			
@@ -6880,14 +6880,13 @@ static long scrollMode;
 			}
 			vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) &credTable, (Pixel_8*) &cgreenTable, (Pixel_8*) &cblueTable, 0);
 		}
-		else vImageTableLookUp_ARGB8888( &dest8, &dest8,
-		 (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
+		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 	
 //	glDisable(GL_TEXTURE_2D);
     glEnable(TEXTRECTMODE);
 	
-	if( [curDCM isRGB] == YES || [curDCM thickSlabMode] == YES) textureWidth = [curDCM rowBytes]/4;
+	if( [curDCM isRGB] == YES || [curDCM thickSlabActivated] == YES) textureWidth = [curDCM rowBytes]/4;
     else textureWidth = [curDCM rowBytes];
 	
 	textureHeight = [curDCM pheight];
@@ -6916,7 +6915,7 @@ static long scrollMode;
 				{
 					unsigned char * pBuffer;
 					
-					if( [curDCM isRGB] == YES || [curDCM thickSlabMode] == YES)
+					if( [curDCM isRGB] == YES || [curDCM thickSlabActivated] == YES)
 					{
 						pBuffer =   (unsigned char*) [curDCM baseAddr] +			//baseAddr
 									offsetY * [curDCM rowBytes] +      //depth
@@ -6961,11 +6960,11 @@ static long scrollMode;
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
 					
 					#if __BIG_ENDIAN__
-					if( [curDCM isRGB] == YES || [curDCM thickSlabMode] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					if( [curDCM isRGB] == YES || [curDCM thickSlabActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					#else
-					if( [curDCM isRGB] == YES || [curDCM thickSlabMode] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					if( [curDCM isRGB] == YES || [curDCM thickSlabActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					#endif

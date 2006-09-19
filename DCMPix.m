@@ -2153,7 +2153,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		isRGB = NO;
 		nonDICOM = NO;
 		fullwl = fullww = 0;
-		thickSlabMode = NO;
+		thickSlabActivated = NO;
 			
 		repetitiontime = 0L;
 		echotime = 0L;
@@ -8300,9 +8300,9 @@ BOOL            readable = YES;
 	}
 }
 
--(BOOL) thickSlabMode
+-(BOOL) thickSlabActivated
 {
-	return thickSlabMode;
+	return thickSlabActivated;
 }
 
 - (void) setThickSlabController:( ThickSlabController*) ts
@@ -8737,7 +8737,7 @@ float			iwl, iww;
 		
 		if( isRGB == NO) //fImage case
 		{
-			thickSlabMode = NO;
+			thickSlabActivated = NO;
 			[self setRowBytes: width];
 		
 			// = STACK IMAGES thickslab
@@ -8778,7 +8778,7 @@ float			iwl, iww;
 						
 						rgbaImage = [thickSlab renderSlab];
 						
-						thickSlabMode = YES;
+						thickSlabActivated = YES;
 						
 						[self setRowBytes: width*4];
 						[self setBaseAddr: (char*) rgbaImage];  //malloc( width * height * 4)];
@@ -9118,7 +9118,7 @@ float			iwl, iww;
 		// Convolution
 		if( convolution)
 		{
-			if( isRGB == YES || thickSlabMode == YES)
+			if( isRGB == YES || thickSlabActivated == YES)
 			{
 				vImage_Buffer dst8, dst28;
 				
@@ -9146,7 +9146,7 @@ float			iwl, iww;
 			}
 			else
 			{
-			//	if( thickSlabMode == NO)
+			//	if( thickSlabActivated == NO)
 				{
 					vImage_Buffer dst8, dst28;
 					

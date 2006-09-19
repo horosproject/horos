@@ -25,6 +25,7 @@
 				CEACC7B70878781000CF466E /* PBXTargetDependency */,
 				CEACC7B90878781000CF466E /* PBXTargetDependency */,
 				CEACC7BB0878781000CF466E /* PBXTargetDependency */,
+				AB381B090ABE9FA600239326 /* PBXTargetDependency */,
 			);
 			name = "Build All Prerequisites";
 			productName = "Build All Prerequisites";
@@ -902,6 +903,9 @@
 		AB34225405DD53B8000B8B72 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		AB34225505DD53B8000B8B72 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		AB34225605DD53B8000B8B72 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
+		AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
+		AB381AFE0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
+		AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */; };
 		AB39177605EA75F600E29DD2 /* MPR2DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB39177205EA75F600E29DD2 /* MPR2DController.h */; };
 		AB39177705EA75F600E29DD2 /* MPR2DController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB39177305EA75F600E29DD2 /* MPR2DController.mm */; };
 		AB39177805EA75F600E29DD2 /* MPR2DView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB39177405EA75F600E29DD2 /* MPR2DView.h */; };
@@ -9544,6 +9548,20 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "DCM Framework";
 		};
+		AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D202CF80486D31800D8A456;
+			remoteInfo = OSIAutoroutingPreferencePane;
+		};
+		AB381B080ABE9FA600239326 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D202CE80486D31800D8A456;
+			remoteInfo = OSIAutoroutingPreferencePane;
+		};
 		ABC398F509F527C4000A6508 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
@@ -10237,6 +10255,8 @@
 		AB2C24E10677861300A08910 /* PluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFilter.h; sourceTree = "<group>"; };
 		AB2C25200677873200A08910 /* PluginManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManager.m; sourceTree = "<group>"; };
 		AB2C25210677873200A08910 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
+		AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIAutoroutingPreferencePane.prefPane; path = "Preference Panes/OSIAutoroutingPreferencePane/build/Development/OSIAutoroutingPreferencePane.prefPane"; sourceTree = "<group>"; };
+		AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIAutoroutingPreferencePane.xcodeproj; path = "Preference Panes/OSIAutoroutingPreferencePane/OSIAutoroutingPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		AB39177205EA75F600E29DD2 /* MPR2DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MPR2DController.h; sourceTree = "<group>"; };
 		AB39177305EA75F600E29DD2 /* MPR2DController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = MPR2DController.mm; sourceTree = "<group>"; };
@@ -13692,6 +13712,7 @@
 				CE4E42ED08758A1700D0AFDB /* OSIGeneralPreferencePane.xcodeproj */,
 				CE4E42F008758A1700D0AFDB /* OSIListenerPreferencePane.xcodeproj */,
 				CE4E42F308758A1700D0AFDB /* OSIRoutingPreferencePane.xcodeproj */,
+				AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */,
 			);
 			name = Dependencies;
 			sourceTree = "<group>";
@@ -14178,6 +14199,14 @@
 				AB2C25210677873200A08910 /* PluginManager.h */,
 			);
 			name = Plugins;
+			sourceTree = "<group>";
+		};
+		AB381B030ABE9F9A00239326 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AB381B070ABE9F9A00239326 /* OSIAutoroutingPreferencePane.prefPane */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		AB39177E05EA760100E29DD2 /* MPR 2D */ = {
@@ -17487,6 +17516,7 @@
 		CEBD8A4B0875B029000E42D6 /* Pane */ = {
 			isa = PBXGroup;
 			children = (
+				AB381AE90ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane */,
 				CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */,
 				CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */,
 				CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */,
@@ -23500,6 +23530,10 @@
 					ProjectRef = ABC398F009F527C4000A6508 /* OSI3DPreferencePane.xcodeproj */;
 				},
 				{
+					ProductGroup = AB381B030ABE9F9A00239326 /* Products */;
+					ProjectRef = AB381B020ABE9F9A00239326 /* OSIAutoroutingPreferencePane.xcodeproj */;
+				},
+				{
 					ProductGroup = CE4E42EB08758A1700D0AFDB /* Products */;
 					ProjectRef = CE4E42EA08758A1700D0AFDB /* OSICDPreferencePane.xcodeproj */;
 				},
@@ -23550,6 +23584,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		AB381B070ABE9F9A00239326 /* OSIAutoroutingPreferencePane.prefPane */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OSIAutoroutingPreferencePane.prefPane;
+			remoteRef = AB381B060ABE9F9A00239326 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		ABC398F609F527C4000A6508 /* OSI3DPreferencePane.prefPane */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
@@ -23927,6 +23968,7 @@
 				B7CDAD020AB30E7700068D70 /* page.tif in Resources */,
 				B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */,
 				A94173240AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
+				AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24212,6 +24254,7 @@
 				BF0680720A9E602E000F3152 /* viewHTMLSelected.tiff in Resources */,
 				BF0680730A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 				A94173230AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
+				AB381AFE0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24498,6 +24541,7 @@
 				BF0680710A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 				A94172BA0AB6997F00B9B487 /* page.tif in Resources */,
 				A94173250AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
+				AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27237,6 +27281,11 @@
 			isa = PBXTargetDependency;
 			target = 7E0B3A3E067526CD00908593 /* DCM Framework */;
 			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
+		};
+		AB381B090ABE9FA600239326 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSIAutoroutingPreferencePane;
+			targetProxy = AB381B080ABE9FA600239326 /* PBXContainerItemProxy */;
 		};
 		ABC3990209F527E7000A6508 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

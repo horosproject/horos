@@ -580,7 +580,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				else
 				{
-					imageID = [[NSString alloc] initWithInt: 0];
+					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					SOPUID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];

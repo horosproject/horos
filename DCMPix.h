@@ -118,7 +118,7 @@
 	short				stack;
 	short				stackMode, pixPos, stackDirection;
 //thickslab
-    BOOL				thickSlabMode;
+    BOOL				thickSlabActivated;
 	ThickSlabController *thickSlab;
 	
     float				ww, wl;
@@ -215,7 +215,7 @@
 - (void) setID :(long) i;
 - (long) frameNo;
 - (void) setFrameNo:(long) f;
-- (BOOL) thickSlabMode;
+- (BOOL) thickSlabActivated;
 - (void) ConvertToBW:(long) mode;
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 - (float) cineRate;
