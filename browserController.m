@@ -1097,7 +1097,6 @@ static BOOL COMPLETEREBUILD = NO;
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	
 	NSArray				*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	NSEnumerator		*serverEnumerator	= [serversArray objectEnumerator];
 	
 	int i;
 	
@@ -1118,9 +1117,10 @@ static BOOL COMPLETEREBUILD = NO;
 			NSDictionary	*server = 0L;
 			
 			NSDictionary	*aServer;
+			NSEnumerator	*serverEnumerator	= [serversArray objectEnumerator];
 			while (aServer = [serverEnumerator nextObject])
 			{
-				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
+				if ([[aServer objectForKey:@"AETitle"] isEqualToString: serverName]) 
 				{
 					server = aServer;
 					break;
@@ -1140,7 +1140,10 @@ static BOOL COMPLETEREBUILD = NO;
 				[storeSCU run:self];
 				[storeSCU release];
 			}
-			else NSLog(@"server not found for autorouting: %@", serverName);
+			else
+			{
+				NSLog(@"server not found for autorouting: %@", serverName);
+			}
 
 		}
 		NSLog(@"autorouting Queue end");
