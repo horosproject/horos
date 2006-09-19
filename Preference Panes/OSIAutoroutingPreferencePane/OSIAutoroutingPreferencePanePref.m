@@ -71,10 +71,9 @@
 	[_authView updateStatus:self];
 	
 	routesArray = [[[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy] retain];
-	if (routesArray)
-	{
-		[routesTable reloadData];
-	}
+	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
+	
+	[routesTable reloadData];
 	
 	[routesTable setDelegate:self];
 	[routesTable setDoubleAction:@selector( editRoute:)];
@@ -88,6 +87,8 @@
 	NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
 	
 	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
+	
+	[routesArray release];
 	
 	[super dealloc];
 }
