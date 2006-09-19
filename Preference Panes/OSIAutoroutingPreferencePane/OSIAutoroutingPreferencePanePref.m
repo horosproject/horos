@@ -190,7 +190,7 @@ static BOOL newRouteMode = NO;
 {
 	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 	
-	[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", 0L]];
+	[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", 0L]];
 	
 	[routesTable reloadData];
 	

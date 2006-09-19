@@ -7353,7 +7353,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60*2 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
-		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:65 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
+		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
 		
 		bonjourRunLoopTimer = 0L;
 		
