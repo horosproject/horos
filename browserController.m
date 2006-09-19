@@ -1168,7 +1168,6 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
-
 #pragma mark iCal routing functions - will be re-activated with iCal API in MacOS 10.5
 //
 //- (void)runSendQueue:(id)object{
@@ -2314,7 +2313,16 @@ static BOOL COMPLETEREBUILD = NO;
 	[deleteInProgress lock];
 	[deleteInProgress unlock];
 	//
-
+	
+	// Wait if there is something in the autorouting queue
+	[autoroutingInProgress lock];
+	[autoroutingInProgress unlock];
+	
+	[self emptyAutoroutingQueue:self];
+	
+	[autoroutingInProgress lock];
+	[autoroutingInProgress unlock];
+	
 	long i;
 	long totalFiles = 0;
 	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
@@ -7739,6 +7747,14 @@ static NSArray*	openSubSeriesArray = 0L;
 	[deleteInProgress lock];
 	[deleteInProgress unlock];
 	
+	[autoroutingInProgress lock];
+	[autoroutingInProgress unlock];
+	
+	[self emptyAutoroutingQueue:self];
+	
+	[autoroutingInProgress lock];
+	[autoroutingInProgress unlock];
+
 	[self syncReportsIfNecessary: previousBonjourIndex];
 	
 	[sourcesSplitView saveDefault:@"SPLITSOURCE"];
