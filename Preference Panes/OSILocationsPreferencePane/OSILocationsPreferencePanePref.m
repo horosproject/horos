@@ -303,22 +303,25 @@
 {
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		if( [sender tag] == 0)
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected server?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
 		{
-			[serverList removeObjectAtIndex:[serverTable selectedRow]];
-			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+			if( [sender tag] == 0)
+			{
+				[serverList removeObjectAtIndex:[serverTable selectedRow]];
+				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+				
+				[serverTable reloadData];
+			}
 			
-			[serverTable reloadData];
-		}
-		
-		if( [sender tag] == 1)
-		{
-			[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
-			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
-			
-			[osirixServerTable reloadData];
+			if( [sender tag] == 1)
+			{
+				[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
+				[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+				
+				[osirixServerTable reloadData];
+			}
 		}
 	}
 }
