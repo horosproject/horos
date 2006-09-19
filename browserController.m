@@ -1055,6 +1055,8 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
+	return;
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
 		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
