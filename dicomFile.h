@@ -73,6 +73,7 @@
 -(short) getDicomFile;
 - (BOOL)autoFillComments;
 - (BOOL)splitMultiEchoMR;
+- (BOOL)useSeriesDescription;
 - (BOOL) noLocalizer;
 - (BOOL)combineProjectionSeries;
 - (BOOL)checkForLAVIM;

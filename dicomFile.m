@@ -2321,7 +2321,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( serie != 0L)
+		if( serie != 0L && useSeriesDescription)
 		{
 			NSString	*n;
 			
@@ -2855,6 +2855,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (BOOL)autoFillComments{
 	return COMMENTSAUTOFILL;
+}
+
+- (BOOL)useSeriesDescription{
+	return useSeriesDescription;
 }
 
 - (BOOL)splitMultiEchoMR{

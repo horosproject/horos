@@ -414,7 +414,7 @@ extern NSLock	*PapyrusLock;
 			serieID = n;
 		}
 		
-		if( serie != 0L)
+		if( serie != 0L && [self useSeriesDescription])
 		{
 			NSString	*n;
 			
