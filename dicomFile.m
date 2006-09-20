@@ -56,6 +56,7 @@ static BOOL DEFAULTSSET = NO;
 static int TOOLKITPARSER;
 static BOOL COMMENTSAUTOFILL;
 static BOOL splitMultiEchoMR;
+static BOOL useSeriesDescription;
 static BOOL NOLOCALIZER;
 static BOOL combineProjectionSeries;
 static BOOL	CHECKFORLAVIM;
@@ -177,6 +178,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
 			
+			useSeriesDescription = [sd boolForKey: @"useSeriesDescription"];
 			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
@@ -199,6 +201,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
 			
+			useSeriesDescription = [[dict objectForKey: @"useSeriesDescription"] intValue];
 			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
 			NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
 			combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
@@ -1874,7 +1877,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
-				if( serie != 0L)
+				if( serie != 0L  && useSeriesDescription)
 				{
 					NSString	*n;
 					

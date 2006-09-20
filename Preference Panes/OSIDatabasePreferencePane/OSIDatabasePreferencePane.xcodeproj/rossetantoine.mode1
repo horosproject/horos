@@ -185,7 +185,48 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>ABC98A280AC193F300DC5BDA</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>OSIDatabasePreferencePanePref.m</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>ABC98A290AC193F300DC5BDA</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>OSIDatabasePreferencePanePref.m</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>ABC98A340AC1940E00DC5BDA</string>
+						<key>history</key>
+						<array>
+							<string>ABC98A2A0AC193F300DC5BDA</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1245, 601}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>-1323 123 1245 642 -1680 -150 1680 1050 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -220,6 +261,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -302,14 +345,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>OSIDatabasePreferencePanePref.m</string>
+								<string>OSIDatabasePreferencePanePref.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -317,22 +358,25 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>OSIDatabasePreferencePanePref.m</string>
+										<string>OSIDatabasePreferencePanePref.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB52DFCE0A19D10C00726305</string>
+										<string>ABC98A330AC1940E00DC5BDA</string>
 										<key>history</key>
 										<array>
-											<string>AB80AB570A19CF2500FED357</string>
 											<string>AB80AB580A19CF2500FED357</string>
-											<string>AB52DFCD0A19D10C00726305</string>
+											<string>ABC98A2F0AC1940E00DC5BDA</string>
+											<string>ABC98A300AC1940E00DC5BDA</string>
 										</array>
 										<key>prevStack</key>
 										<array>
 											<string>AB80A1D00A19C50900FED357</string>
 											<string>AB80A5DE0A19C5B600FED357</string>
 											<string>AB80AB5F0A19CF2500FED357</string>
+											<string>ABC98A260AC193F300DC5BDA</string>
+											<string>ABC98A310AC1940E00DC5BDA</string>
+											<string>ABC98A320AC1940E00DC5BDA</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -390,9 +434,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB52DFCF0A19D10C00726305</string>
+				<string>ABC98A110AC1922700DC5BDA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB52DFD00A19D10C00726305</string>
+				<string>ABC98A120AC1922700DC5BDA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,7 +570,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>AB4664CF09A335BC005A2766</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>ABC98A280AC193F300DC5BDA</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -568,8 +614,6 @@
 							<string>218pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -609,7 +653,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>AB4664CF09A335BC005A2766</string>
-				<string>AB80A6260A19C6DF00FED357</string>
+				<string>ABC98A2C0AC193F300DC5BDA</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -979,9 +1023,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>AB52DFD10A19D10C00726305</string>
+				<string>ABC98A130AC1922700DC5BDA</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>AB52DFD20A19D10C00726305</string>
+				<string>ABC98A140AC1922700DC5BDA</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

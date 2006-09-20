@@ -408,6 +408,14 @@ Version 2.4
 
 }
 
+- (BOOL)useSeriesDescription{
+	return  [[NSUserDefaults standardUserDefaults] boolForKey:@"useSeriesDescription"];
+}
+
+- (void)setUseSeriesDescription:(BOOL)value{
+	[[NSUserDefaults standardUserDefaults] setBool:value forKey:@"useSeriesDescription"];
+}
+
 - (BOOL)splitMultiEchoMR{
 	return  [[NSUserDefaults standardUserDefaults] boolForKey:@"splitMultiEchoMR"];
 }

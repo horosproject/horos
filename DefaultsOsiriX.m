@@ -816,6 +816,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject: @"1" forKey: @"USESTORESCP"];
 	// Parsing Series Objects
 	[defaultValues setObject:@"1" forKey:@"splitMultiEchoMR"];
+	[defaultValues setObject:@"1" forKey:@"useSeriesDescription"];
 	[defaultValues setObject:@"1" forKey:@"combineProjectionSeries"];
 	
 	return defaultValues;

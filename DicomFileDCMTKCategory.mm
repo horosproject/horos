@@ -286,7 +286,7 @@ extern NSLock	*PapyrusLock;
 		}
 		
 		//Patients Sex
-		if (dataset->findAndGetString(DCM_PatientsAge, string, OFFalse).good() && string != NULL){
+		if (dataset->findAndGetString(DCM_PatientsSex, string, OFFalse).good() && string != NULL){
 			NSString *patientSex  = [[NSString alloc] initWithCString:string];
 			[dicomElements setObject:patientSex forKey:@"patientSex"];	
 			[patientSex  release];

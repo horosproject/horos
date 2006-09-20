@@ -17,7 +17,6 @@
 
 @interface OSIDatabasePreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSButton		*displayAllStudies;
 	IBOutlet NSMatrix		*locationMatrix;
 	IBOutlet NSTextField	*locationURLField;
 	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
@@ -60,6 +59,8 @@
 - (IBAction)setAutoComments:(id) sender;
 - (IBAction)setReportMode:(id) sender;
 
+- (BOOL)useSeriesDescription;
+- (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;
 - (void)setSplitMultiEchoMR:(BOOL)value;
 - (BOOL)combineProjectionSeries;
