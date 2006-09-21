@@ -101,7 +101,7 @@ my_error_exit (j_common_ptr ioCInfo)
 /*										*/
 /********************************************************************************/
 
-static short  alreadyUncompressing = FALSE;
+static short volatile alreadyUncompressing = FALSE;
 
 PapyShort
 ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart, PapyULong *inOffsetTableP, int inImageNb, int inDepth, int mode)
@@ -123,6 +123,7 @@ ExtractJPEGlossy16 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelS
 
   while( alreadyUncompressing == TRUE)
   {
+	
   }
   alreadyUncompressing = TRUE;
   
