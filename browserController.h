@@ -293,8 +293,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
-- (void)runSendQueue:(id)object;
-- (void)addToQueue:(NSArray *)array;
+//- (void)runSendQueue:(id)object;
+//- (void)addToQueue:(NSArray *)array;
 - (MyOutlineView*) databaseOutline;
 
 -(void) previewPerformAnimation:(id) sender;

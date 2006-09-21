@@ -204,7 +204,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>ABC98A340AC1940E00DC5BDA</string>
+						<string>ABC98A660AC199D800DC5BDA</string>
 						<key>history</key>
 						<array>
 							<string>ABC98A2A0AC193F300DC5BDA</string>
@@ -362,12 +362,12 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>ABC98A330AC1940E00DC5BDA</string>
+										<string>ABC98A650AC199D800DC5BDA</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB580A19CF2500FED357</string>
 											<string>ABC98A2F0AC1940E00DC5BDA</string>
-											<string>ABC98A300AC1940E00DC5BDA</string>
+											<string>ABC98A640AC199D800DC5BDA</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -1034,7 +1034,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

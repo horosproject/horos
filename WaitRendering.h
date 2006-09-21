@@ -27,7 +27,7 @@
 	NSDate						*startTime;
 	
 	BOOL						aborted;
-	BOOL						stop;
+	volatile BOOL				stop;
 	BOOL						cancel;
 	NSModalSession				session;
 }

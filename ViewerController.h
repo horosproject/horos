@@ -208,7 +208,9 @@ enum
 	short					curMovieIndex, maxMovieIndex, orientationVector;
     NSToolbar               *toolbar;
 	
-	float					direction, loadingPercentage;
+	float					direction;
+	
+	volatile float			loadingPercentage;
     
 	volatile BOOL			ThreadLoadImage, stopThreadLoadImage, loadingPause;
     BOOL                    FullScreenOn;
