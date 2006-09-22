@@ -136,6 +136,8 @@ char *GetPrivateIP()
 	
 	[singleProcessButton setState:[defaults boolForKey:@"SINGLEPROCESS"]];
 	
+	[decompressButton setState:[defaults boolForKey:@"DECOMPRESSDICOMLISTENER"]];
+	
 //	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
 //	
 //	[defaults boolForKey:@"USESTORESCP"] ? 
@@ -220,6 +222,9 @@ char *GetPrivateIP()
 	[AETransferSyntax release];
 }
 
+- (IBAction)setDecompress:(id)sender{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"DECOMPRESSDICOMLISTENER"];
+}
 - (IBAction)setSingleProcess:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"SINGLEPROCESS"];
 }

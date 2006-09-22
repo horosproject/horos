@@ -47,6 +47,7 @@
 + (BOOL) isTiffFile:(NSString *) file;
 + (BOOL) isFVTiffFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file;
++ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed;
 + (BOOL) isXMLDescriptedFile:(NSString *) file;
 + (BOOL) isXMLDescriptorFile:(NSString *) file;
 

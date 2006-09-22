@@ -193,7 +193,7 @@ void errmsg(const char* msg, ...)
 	*/
 	
 	//outgoing syntaxes we should determine this by server. not globally
-	options.networkTransferSyntaxOut_ = EXS_Unknown;
+	options.networkTransferSyntaxOut_ =  EXS_Unknown;	//;	//;	//;
 	/*
 	options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
 	options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
@@ -239,7 +239,7 @@ void errmsg(const char* msg, ...)
 	options.useMetaheader_ = OFTrue;
 	
 	//write with same syntax as it came in
-	options.writeTransferSyntax_ = EXS_Unknown;
+	options.writeTransferSyntax_ = EXS_Unknown;	//;
 	
 	//remove group lengths
 	options.groupLength_ = EGL_withoutGL;

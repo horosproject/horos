@@ -113,6 +113,7 @@ Version 2.5
 #define DATABASEVERSION @"2.1"
 
 #define DATABASEPATH @"/DATABASE/"
+#define DECOMPRESSIONPATH @"/DECOMPRESSION/"
 #define DATABASEFPATH @"/DATABASE"
 #define DATAFILEPATH @"/Database.sql"
 #define INCOMINGPATH @"/INCOMING/"
@@ -5072,40 +5073,40 @@ static BOOL withReset = NO;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	long i;
 	
-	if( [checkIncomingLock tryLock])
+	[checkIncomingLock lock];
+	
+	if( [context tryLock])
 	{
-		if( [context tryLock])
-		{
-			DatabaseIsEdited = YES;
+		DatabaseIsEdited = YES;
+		
+		@try
+		{	
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+			NSError	*error = 0L;
+			NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
 			
-			@try
-			{	
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
-				NSError	*error = 0L;
-				NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-				
-				int maxSeries = [seriesArray count];
-				
-				if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
-				
-				for( i = 0; i < maxSeries; i++)
-				{
-					if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
-						[self buildThumbnail: [seriesArray objectAtIndex: i]];
-				}
-			}
+			int maxSeries = [seriesArray count];
 			
-			@catch( NSException *ne)
+			if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
+			
+			for( i = 0; i < maxSeries; i++)
 			{
-				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+				if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
+					[self buildThumbnail: [seriesArray objectAtIndex: i]];
 			}
-			
-			[context unlock];
 		}
-		[checkIncomingLock unlock];
+		
+		@catch( NSException *ne)
+		{
+			NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+		}
+		
+		[context unlock];
 	}
+	[checkIncomingLock unlock];
+		
 	DatabaseIsEdited = NO;
 }
 
@@ -7298,6 +7299,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[numFmt setHasThousandSeparators: YES];
 		
 		checkIncomingLock = [[NSLock alloc] init];
+		decompressJPEGLock = [[NSLock alloc] init];
 		
 		DATABASEINDEX	= [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASEINDEX"];
 		
@@ -7359,7 +7361,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:16.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
-		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60*2 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
+		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];
 		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:35 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain];
 		
@@ -8380,6 +8382,37 @@ static NSArray*	openSubSeriesArray = 0L;
 	return folder;
 }
 
+static volatile int numberOfThreadsForJPEG = 0;
+
+- (BOOL) waitForAProcessor
+{
+	[decompressJPEGLock lock];
+	BOOL result = numberOfThreadsForJPEG >= MPProcessors ();
+	if( result == NO) numberOfThreadsForJPEG++;
+	[decompressJPEGLock unlock];
+	
+	return result;
+}
+
+-(void) decompressDICOMJPEG:(NSString*) compressedPath
+{
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	
+	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	
+	NSString			*INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
+	[dcmObject writeToFile:[INpath stringByAppendingString:[compressedPath lastPathComponent]] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+	
+	[compressedPath release];
+	
+	[decompressJPEGLock lock];
+	numberOfThreadsForJPEG--;
+	[decompressJPEGLock unlock];
+	
+	[pool release];
+}
+
 -(void) checkIncomingThread:(id) sender
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
@@ -8389,9 +8422,10 @@ static NSArray*	openSubSeriesArray = 0L;
     NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 	NSString		*ERRpath = [documentsDirectory() stringByAppendingString:ERRPATH];
     NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-	BOOL			isDir = YES, routineActivated = [[NSUserDefaults standardUserDefaults] boolForKey: @"ROUTINGACTIVATED"];
+	NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingString:DECOMPRESSIONPATH];
+	BOOL			isDir = YES;
 	BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
-	NSArray			*RoutingCalendarsArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"ROUTING CALENDARS"];
+	BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
 	long			i;
 	
 	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
@@ -8404,7 +8438,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		INpath = [self folderPathResolvingAliasAndSymLink:INpath];
 		OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
 		ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
-
+		DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
 		
 		NSString        *pathname;
 		NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -8441,11 +8475,11 @@ static NSArray*	openSubSeriesArray = 0L;
 				}
 				else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
 				{
-					BOOL	isDicomFile;
-					NSString *dstPath;
-					dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
+					BOOL		isDicomFile;
+					BOOL		isJPEGCompressed;
+					NSString	*dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
 					
-					isDicomFile = [DicomFile isDICOMFile :srcPath];
+					isDicomFile = [DicomFile isDICOMFile:srcPath compressed:&isJPEGCompressed];
 					
 					if( isDicomFile == YES		||
 						(([DicomFile isFVTiffFile:srcPath]		||
@@ -8454,10 +8488,19 @@ static NSArray*	openSubSeriesArray = 0L;
 						[DicomFile isXMLDescriptorFile:srcPath]) 
 						&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 					{
-//						dstPath = [self getNewFileDatabasePath:@"dcm"];
-						
 						if (isDicomFile)
 						{
+							if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
+							{
+								NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingString:[srcPath lastPathComponent]];
+								
+								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+								
+								[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [compressedPath retain]];
+								
+								continue;
+							}
+							
 							dstPath = [self getNewFileDatabasePath:@"dcm"];
 						}
 						else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
@@ -8497,32 +8540,6 @@ static NSArray*	openSubSeriesArray = 0L;
 						if( result == YES)
 						{
 							[filesArray addObject:dstPath];
-							
-							//routing routine
-							
-							if( routineActivated)
-							{
-								if ([[NSWorkspace sharedWorkspace] fullPathForApplication:@"iCal"])
-								{
-									NSEnumerator	*enumerator	= [RoutingCalendarsArray objectEnumerator];
-									NSString		*calendar;
-									
-									while (calendar = [enumerator nextObject])
-									{
-										DCMCalendarScript *calendarScript = [[[DCMCalendarScript alloc] initWithCalendar:calendar] autorelease];
-										NSArray *routingDestination = [calendarScript routingDestination];
-										if (routingDestination)
-										{
-											NSLog(@"have routingDestination");
-											NSEnumerator *enumerator = [routingDestination objectEnumerator];
-											NSMutableArray *route;
-											while (route = [enumerator nextObject]) 
-												[route addObject:dstPath];
-											[NSThread detachNewThreadSelector:@selector(addToQueue:) toTarget:self withObject:routingDestination];
-										}
-									}
-								}
-							}
 						}
 					}
 					else // DELETE or MOVE THIS UNKNOWN FILE ?
@@ -10232,7 +10249,7 @@ static NSArray*	openSubSeriesArray = 0L;
 						vr = @"OB";
 					DCMTransferSyntax *ts;
 					if (isLittleEndian)
-						ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
+						ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
 					else
 						ts = [DCMTransferSyntax ExplicitVRBigEndianTransferSyntax];
 					DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
@@ -10251,7 +10268,7 @@ static NSArray*	openSubSeriesArray = 0L;
 					[dcmObject setAttribute:attr];
 					NSLog(@"raw data to Dicom: %@", [dcmObject description]);
 					 NSString	*tempFilename = [documentsDirectory() stringByAppendingFormat:@"/INCOMING/%d.dcm", i];
-					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+					[dcmObject writeToFile:tempFilename withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 				} 
 			}
 			else

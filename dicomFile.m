@@ -252,7 +252,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return success;
 }
 
-+ (BOOL) isDICOMFile:(NSString *) file
++ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed
 {
 	//return [DicomFile isDICOMFileDCMTK:file]; 
 	// return [DCMObject isDICOM:[NSData dataWithContentsOfFile:file]]; <- This is EXTREMELY slow with large files like XA, CR: You have to read the ENTIRE file to test it.
@@ -265,15 +265,28 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		readable = NO;
 	}
-	else Papy3FileClose (fileNb, TRUE);
+	else
+	{
+		if( compressed)
+		{
+			if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+			else *compressed = NO;
+		}
+		Papy3FileClose (fileNb, TRUE);
+	}
 	
 	[PapyrusLock unlock];
 	
 	if (!readable)
 	{
 		return [DCMObject isDICOM:[NSData dataWithContentsOfMappedFile:file]];
-	}	
+	}
     return readable;
+}
+
++ (BOOL) isDICOMFile:(NSString *) file
+{
+	return [DicomFile isDICOMFile:file compressed:0L];
 }
 
 + (BOOL) isXMLDescriptedFile:(NSString *) file

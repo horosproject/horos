@@ -528,7 +528,7 @@ NSString* asciiString (NSString* name);
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
 		//Don't want Big Endian, May not be readable
 		if ([[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
-			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
+			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
 		else
 			[manager copyPath:file toPath:newPath handler:nil];
 		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Copying: %@", [newPath lastPathComponent]] waitUntilDone:YES];

@@ -192,6 +192,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableArray					*autoroutingQueueArray;
 	NSLock							*autoroutingQueue, *autoroutingInProgress;
 	
+	NSLock							*decompressJPEGLock;
+	
 	NSMutableString					*pressedKeys;
 	
 	IBOutlet NSProgressIndicator	*incomingProgress;

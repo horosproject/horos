@@ -380,7 +380,6 @@ extern BrowserController	*browserWindow;
 		int bitsAllocated;
 		float numberBytes;
 		BOOL isSigned;
-		BOOL isLittleEndian = YES;		//Yes, we work in little endian to make these Windows DICOM viewer happy...
 		
 		NSLog(@"Current bpp: %d", bpp);
 		
@@ -493,10 +492,7 @@ extern BrowserController	*browserWindow;
 		
 
 		DCMTransferSyntax *ts;
-		if (isLittleEndian)
-			ts = [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax];
-		else
-			ts = [DCMTransferSyntax ExplicitVRBigEndianTransferSyntax];
+		ts = [DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax];
 		
 		DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PixelData"];
 		DCMPixelDataAttribute *attr = [[[DCMPixelDataAttribute alloc] initWithAttributeTag:tag 
@@ -510,7 +506,7 @@ extern BrowserController	*browserWindow;
 		[attr addFrame:imageNSData];
 		[dcmDst setAttribute:attr];
 
-		[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+		[dcmDst writeToFile:dstPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 		
 		if( squaredata)
 		{

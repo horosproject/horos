@@ -528,7 +528,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname){
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+		[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
 		[dcmObject release];
 	}
 	else {
