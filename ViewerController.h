@@ -471,6 +471,7 @@ enum
 - clear8bitRepresentations;
 -(void) ApplyConvString:(NSString*) str;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
+- (IBAction) applyConvolutionOnSource:(id) sender;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

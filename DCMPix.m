@@ -8655,6 +8655,38 @@ BOOL            readable = YES;
 	return result;
 }
 
+- (void) applyConvolutionOnSourceImage
+{
+	[self CheckLoad]; 
+	
+	vImage_Buffer dstf, srcf;
+	float  fkernel[25];
+	
+	int i;
+	
+	if( normalization != 0)
+		for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization; 
+	else
+		for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
+		
+	dstf.height = height;
+	dstf.width = width;
+	dstf.rowBytes = width*sizeof(float);
+	dstf.data = fImage;
+	
+	srcf = dstf;
+	srcf.data = malloc( height*width*sizeof(float));
+	if( srcf.data)
+	{
+		short err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageEdgeExtend);
+		if( err) NSLog(@"Error vImageConvolve_PlanarF = %d", err);
+		
+		memcpy(fImage,srcf.data,height*width*sizeof(float));
+		
+		free( srcf.data);
+	}
+}
+
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
 long			i;

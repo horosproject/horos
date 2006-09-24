@@ -193,6 +193,7 @@
                 SyncSeries = id; 
                 alwaysSyncMenu = id; 
                 annotMenu = id; 
+                applyConvolutionOnSource = id; 
                 axView = id; 
                 barMenu = id; 
                 calibrate = id; 

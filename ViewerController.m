@@ -4001,8 +4001,8 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subSharpen:(id) sender
 {
-if ([sender state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
-else								[self ApplyConvString:@"No Filter"];
+	if ([sender state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
+	else								[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 }
 
 #pragma mark-
@@ -4524,6 +4524,20 @@ static float oldsetww, oldsetwl;
 
 #pragma mark convolution
 
+- (IBAction) applyConvolutionOnSource:(id) sender
+{
+	int x, i;
+	
+	for ( x = 0; x < maxMovieIndex; x++)
+	{
+		for ( i = 0; i < [pixList[ x] count]; i ++)
+		{
+			[[pixList[ x] objectAtIndex:i] applyConvolutionOnSourceImage];
+		}
+	}
+	
+	[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+}
 
 - (IBAction) computeSum:(id) sender
 {
