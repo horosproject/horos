@@ -245,6 +245,7 @@
 - (NSString*) patientPosition;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(short*)val :(short) size :(short) norm;
+- (void) applyConvolutionOnSourceImage;
 - (void) setArrayPix :(NSArray*) array :(short) i;
 - (BOOL) updateToApply;
 - (id) myinitEmpty;

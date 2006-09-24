@@ -4528,15 +4528,19 @@ static float oldsetww, oldsetwl;
 {
 	int x, i;
 	
-	for ( x = 0; x < maxMovieIndex; x++)
+	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
-		for ( i = 0; i < [pixList[ x] count]; i ++)
+		for ( x = 0; x < maxMovieIndex; x++)
 		{
-			[[pixList[ x] objectAtIndex:i] applyConvolutionOnSourceImage];
+			for ( i = 0; i < [pixList[ x] count]; i ++)
+			{
+				[[pixList[ x] objectAtIndex:i] applyConvolutionOnSourceImage];
+			}
 		}
-	}
 	
-	[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+	}
+	else NSRunAlertPanel(NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"First, apply a convolution filter...", nil), nil, nil, nil);
 }
 
 - (IBAction) computeSum:(id) sender
