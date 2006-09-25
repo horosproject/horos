@@ -1499,9 +1499,10 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		switch( gx0028BitsStored [inFileNb])
 		{
 			case 16:
+			case 12:
 				theErr = ExtractJPEGlossy16 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
 			break;
-			case 12:
+			
 			case 10:
 				theErr = ExtractJPEGlossy12 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
 			break;

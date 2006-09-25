@@ -5498,6 +5498,16 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM JPEG files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
+	[contextual addItem: [NSMenuItem separatorItem]];
+	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Toggle images/series displaying", nil)  action:@selector(displayImagesOfSeries:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -7500,6 +7510,16 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Compress DICOM files in JPEG", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""];
+	[menu addItem:exportItem];
+	[exportItem release];
+	
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Decompress DICOM JPEG files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""];
+	[menu addItem:exportItem];
+	[exportItem release];
+
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Report", 0L) action: @selector(generateReport:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
@@ -8394,7 +8414,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return result;
 }
 
--(void) decompressDICOMJPEG:(NSString*) compressedPath
+-(void) decompressDICOMJPEGinINCOMING:(NSString*) compressedPath
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -8411,6 +8431,104 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[decompressJPEGLock unlock];
 	
 	[pool release];
+}
+
+-(void) decompressDICOMJPEG:(NSString*) compressedPath
+{
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	
+	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	
+	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
+	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
+	[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
+	
+	[compressedPath release];
+	
+	[decompressJPEGLock lock];
+	numberOfThreadsForJPEG--;
+	[decompressJPEGLock unlock];
+	
+	[pool release];
+}
+
+-(void) compressDICOMJPEG:(NSString*) compressedPath
+{
+	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+	
+	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+	
+	NSTask			*theTask;
+	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
+	
+	theTask = [[NSTask alloc] init];
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmcjpeg"]];
+	[theTask setCurrentDirectoryPath: [compressedPath stringByDeletingLastPathComponent]];
+	[theTask setArguments:theArguments];		
+
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	int status = [theTask terminationStatus];
+	
+	[theTask release]; 
+	
+	if (status == 0 && [[NSFileManager defaultManager] fileExistsAtPath:[compressedPath stringByAppendingString:@" temp"]] == YES)
+	{
+		[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
+		[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
+	}
+	
+	[compressedPath release];
+	
+	[decompressJPEGLock lock];
+	numberOfThreadsForJPEG--;
+	[decompressJPEGLock unlock];
+	
+	[pool release];
+}
+
+- (IBAction) compressSelectedFiles:(id) sender
+{
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
+		
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+	}
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	
+	int i;
+	
+	for( i = 0 ; i < [filesToExport count] ; i++)
+	{
+		if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+			[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [[filesToExport objectAtIndex: i] retain]];
+	}
+}
+
+- (IBAction) decompressSelectedFiles:(id) sender
+{
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
+		
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+	}
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	
+	int i;
+	
+	for( i = 0 ; i < [filesToExport count] ; i++)
+	{
+		if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+			[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [[filesToExport objectAtIndex: i] retain]];
+	}
 }
 
 -(void) checkIncomingThread:(id) sender
@@ -8496,7 +8614,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								
 								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
 								
-								[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [compressedPath retain]];
+								[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [compressedPath retain]];
 								
 								continue;
 							}

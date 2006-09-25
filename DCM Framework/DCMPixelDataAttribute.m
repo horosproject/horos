@@ -2913,16 +2913,16 @@ NS_ENDHANDLER
 
 					
 				//12 bit jpegs
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && _pixelDepth <= 12) {
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && _pixelDepth < 12) {
 					
 					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
 
 				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && _pixelDepth <= 12) {
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLosslessTransferSyntax]] && _pixelDepth < 12) {
 					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
 
 				}
-				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && _pixelDepth <= 12) {
+				else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLossless14TransferSyntax]] && _pixelDepth < 12) {
 					data = [[[self convertJPEG12ToHost:subData] mutableCopy] autorelease];
 
 				}

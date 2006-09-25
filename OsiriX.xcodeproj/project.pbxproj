@@ -8349,6 +8349,9 @@
 		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE677D1407A6BDDD003B3650 /* VRViewVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */; };
+		CE682DEF0AC71E50004DD3A5 /* dcmcjpeg in Resources */ = {isa = PBXBuildFile; fileRef = CE682DEE0AC71E50004DD3A5 /* dcmcjpeg */; };
+		CE682DF00AC71E50004DD3A5 /* dcmcjpeg in Resources */ = {isa = PBXBuildFile; fileRef = CE682DEE0AC71E50004DD3A5 /* dcmcjpeg */; };
+		CE682DF10AC71E50004DD3A5 /* dcmcjpeg in Resources */ = {isa = PBXBuildFile; fileRef = CE682DEE0AC71E50004DD3A5 /* dcmcjpeg */; };
 		CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
 		CE69601F09CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
 		CE69602009CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
@@ -13018,6 +13021,7 @@
 		CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRViewVPRO.h; sourceTree = "<group>"; };
 		CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRControllerVPRO.mm; sourceTree = "<group>"; };
 		CE677D1207A6BDDD003B3650 /* VRControllerVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRControllerVPRO.h; sourceTree = "<group>"; };
+		CE682DEE0AC71E50004DD3A5 /* dcmcjpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmcjpeg; sourceTree = "<group>"; };
 		CE69601D09CAB75800EFFDEF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/VRPanel.nib; sourceTree = "<group>"; };
 		CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FixedIP.tif; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
@@ -14371,6 +14375,7 @@
 			isa = PBXGroup;
 			children = (
 				7EE713BA097450B000510E88 /* dcmmkdir */,
+				CE682DEE0AC71E50004DD3A5 /* dcmcjpeg */,
 				ABBB639C0635874D00D9531F /* dcmdjpeg */,
 				ABBB639D0635874D00D9531F /* dcmdump */,
 				ABBB639E0635874D00D9531F /* dicom.dic */,
@@ -23969,6 +23974,7 @@
 				B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */,
 				A94173240AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
+				CE682DEF0AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24255,6 +24261,7 @@
 				BF0680730A9E602E000F3152 /* viewXMLSelected.tiff in Resources */,
 				A94173230AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFE0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
+				CE682DF00AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24542,6 +24549,7 @@
 				A94172BA0AB6997F00B9B487 /* page.tif in Resources */,
 				A94173250AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
+				CE682DF10AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

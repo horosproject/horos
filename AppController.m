@@ -1177,6 +1177,10 @@ NSRect screenFrame()
 	// DELETE THE DUMP DIRECTORY...
 	NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: 0L];
+	
+	// DELETE THE DECOMPRESSION DIRECTORY...
+	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingString:@"/DECOMPRESSION/"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: 0L];
 }
 
 
