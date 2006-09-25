@@ -116,6 +116,7 @@
                 bonjourServicesList = NSTableView; 
                 bonjourSharingCheck = NSButton; 
                 bonjourSourcesBox = NSBox; 
+                compressionMatrix = NSMatrix; 
                 customEnd = NSDatePicker; 
                 customEnd2 = NSDatePicker; 
                 customStart = NSDatePicker; 

@@ -25,11 +25,9 @@
 	NSMutableArray *files;
 	NSArray	*dbObjects;
 	float burnSize;
-	IBOutlet NSTableView *filesTableView;
 	IBOutlet NSTextField *nameField;
-	IBOutlet NSTextField *sizeField;
-	IBOutlet NSTextField *statusField;
-	//IBOutlet NSWindow *window;
+	IBOutlet NSTextField *statusField, *sizeField;
+	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
 	NSString *cdName;
 	NSString *folderSize;

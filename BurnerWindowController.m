@@ -85,6 +85,8 @@ NSString* asciiString (NSString* name);
 	
 	[[self window] setDelegate:self];
 	[self setup:nil];
+	
+	[compressionMode selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Burning"]];
 }
 
 - (void)dealloc
@@ -395,6 +397,8 @@ NSString* asciiString (NSString* name);
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
+	
 	[browserWindow setBurnerWindowControllerToNIL];
 	NSLog(@"Burner windowWillClose");
 	
@@ -531,6 +535,24 @@ NSString* asciiString (NSString* name);
 			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
 		else
 			[manager copyPath:file toPath:newPath handler:nil];
+			
+		if( dcmObject)	// <- it's a DICOM file
+		{
+			switch( [compressionMode selectedTag])
+			{
+				case 0:
+				break;
+				
+				case 1:
+					[browserWindow compressDICOMJPEG: [newPath retain]];
+				break;
+				
+				case 2:
+					[browserWindow decompressDICOMJPEG: [newPath retain]];
+				break;
+			}
+		}
+		
 		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Copying: %@", [newPath lastPathComponent]] waitUntilDone:YES];
 		[newFiles addObject:newPath];
 		[pool release];
@@ -592,7 +614,7 @@ NSString* asciiString (NSString* name);
 		[pool release];
 	}
 	size += 44400000/1024;			// fixed size of OsiriX, should be calculated to allow for changes.
-	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d %@ %3.2fMB", NSLocalizedString(@"Files:", nil), [files count], NSLocalizedString(@"Estimated size:", nil), size/1024.0]];
+	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d %@ %3.2fMB", NSLocalizedString(@"Files:", nil), [files count], NSLocalizedString(@"Estimated size (uncompressed):", nil), size/1024.0]];
 }
 
 

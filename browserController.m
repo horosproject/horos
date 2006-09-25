@@ -5482,6 +5482,10 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Reveal In Finder", nil)  action:@selector(revealInFinder:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
@@ -7496,6 +7500,11 @@ static NSArray*	openSubSeriesArray = 0L;
 	[menu addItem:keyImageItem];
 	[keyImageItem release];
 	
+	keyImageItem= [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""];
+	[keyImageItem setTarget:self];
+	[menu addItem:keyImageItem];
+	[keyImageItem release];
+	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export as DICOM Files", 0L) action: @selector(exportDICOMFile:) keyEquivalent:@""];
@@ -8406,6 +8415,23 @@ static NSArray*	openSubSeriesArray = 0L;
 			folder= [[NSFileManager defaultManager] pathContentOfSymbolicLinkAtPath:path];
 	}
 	return folder;
+}
+
+- (IBAction) revealInFinder:(id) sender
+{
+	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+	NSMutableArray *filesToExport;
+		
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+	}
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	
+	if( [filesToExport count])
+	{
+		[[NSWorkspace sharedWorkspace] selectFile:[filesToExport objectAtIndex: 0] inFileViewerRootedAtPath:0L];
+	}
 }
 
 static volatile int numberOfThreadsForJPEG = 0;
@@ -9433,6 +9459,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setCanCreateDirectories:YES];
 	[sPanel setAccessoryView:exportAccessoryView];
 	
+	[compressionMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"Compression Mode for Export"]];
+	
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
 	{
 		int					i, t;
@@ -9573,6 +9601,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			[[NSFileManager defaultManager] copyPath:[filesToExport objectAtIndex:i] toPath:dest handler:0L];
 			
+			if( [[curImage valueForKey: @"fileType"] isEqualToString:@"DICOM"])
+			{
+				switch( [compressionMatrix selectedTag])
+				{
+					case 0:
+					break;
+					
+					case 1:
+						[self compressDICOMJPEG: [dest retain]];
+					break;
+					
+					case 2:
+						[self decompressDICOMJPEG: [dest retain]];
+					break;
+				}
+			}
+			
 			if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
 			{
 				[[NSFileManager defaultManager] copyPath:[[[filesToExport objectAtIndex:i] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dest stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
@@ -9636,6 +9681,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		//close progress window	
 		[splash close];
 		[splash release];
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: [compressionMatrix selectedTag] forKey:@"Compression Mode for Export"];
 	}
 }
 

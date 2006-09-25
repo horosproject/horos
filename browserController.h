@@ -66,10 +66,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableDictionary		*activeReceives;
 	NSMutableArray			*receiveLog;
 	
-	QueryController * queryController;
-	AnonymizerWindowController *anonymizerController;
-	BurnerWindowController *burnerWindowController;
-	LogWindowController *logWindowController;
+	QueryController				*queryController;
+	AnonymizerWindowController	*anonymizerController;
+	BurnerWindowController		*burnerWindowController;
+	LogWindowController			*logWindowController;
 	
 	NSNumberFormatter		*numFmt;
     
@@ -153,8 +153,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSWindow				*urlWindow;
 	IBOutlet NSTextField			*urlString;
 	
-//	IBOutlet NSTableView			*sendLogTable;
-	
 	IBOutlet NSForm					*rdPatientForm;
 	IBOutlet NSForm					*rdPixelForm;
 	IBOutlet NSForm					*rdVoxelForm;
@@ -162,9 +160,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSMatrix				*rdPixelTypeMatrix;
 	IBOutlet NSView					*rdAccessory;
 	
-//	IBOutlet NSMatrix				*keyImageMatrix;
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSButton				*addDICOMDIRButton;
+	IBOutlet NSMatrix				*compressionMatrix;
     
 	NSLock							*checkIncomingLock;
 	NSTimeInterval					lastSaved;
@@ -387,6 +385,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (IBAction) decompressSelectedFiles:(id) sender;
 - (IBAction) compressSelectedFiles:(id) sender;
+
+-(void) compressDICOMJPEG:(NSString*) compressedPath;
+-(void) decompressDICOMJPEG:(NSString*) compressedPath;
 
 /******Notifactions posted by browserController***********
 
