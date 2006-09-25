@@ -7309,7 +7309,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		[numFmt setHasThousandSeparators: YES];
 		
 		checkIncomingLock = [[NSLock alloc] init];
-		decompressJPEGLock = [[NSLock alloc] init];
+		decompressArrayLock = [[NSLock alloc] init];
+		decompressThreadRunning = [[NSLock alloc] init];
+		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
+		decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		DATABASEINDEX	= [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASEINDEX"];
 		
@@ -7761,6 +7764,9 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[decompressThreadRunning lock];
+	[decompressThreadRunning unlock];
+	
 	[deleteInProgress lock];
 	[deleteInProgress unlock];
 	
@@ -8406,10 +8412,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL) waitForAProcessor
 {
-	[decompressJPEGLock lock];
+	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForJPEG >= MPProcessors ();
-	if( result == NO) numberOfThreadsForJPEG++;
-	[decompressJPEGLock unlock];
+	if( result == NO)
+	{
+		numberOfThreadsForJPEG++;
+		if( numberOfThreadsForJPEG >= MPProcessors ())
+		{
+			[processorsLock unlockWithCondition: 0];
+		}
+		else
+		{
+			[processorsLock unlockWithCondition: 1];
+		}
+	}
+	else
+	{
+		NSLog( @"waitForAProcessor ?? We should not be here...");
+		[processorsLock unlockWithCondition: 0];
+	}
 	
 	return result;
 }
@@ -8418,17 +8439,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-	
 	NSString			*INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
 	[dcmObject writeToFile:[INpath stringByAppendingString:[compressedPath lastPathComponent]] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 	
 	[compressedPath release];
 	
-	[decompressJPEGLock lock];
+	[processorsLock lock];
 	numberOfThreadsForJPEG--;
-	[decompressJPEGLock unlock];
+	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
 }
@@ -8436,8 +8455,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-	
-	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 	
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
 	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
@@ -8447,9 +8464,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[compressedPath release];
 	
-	[decompressJPEGLock lock];
+	[processorsLock lock];
 	numberOfThreadsForJPEG--;
-	[decompressJPEGLock unlock];
+	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
 }
@@ -8457,8 +8474,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void) compressDICOMJPEG:(NSString*) compressedPath
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-	
-	while( [self waitForAProcessor]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
 	
 	NSTask			*theTask;
 	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
@@ -8484,51 +8499,116 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[compressedPath release];
 	
-	[decompressJPEGLock lock];
+	[processorsLock lock];
 	numberOfThreadsForJPEG--;
-	[decompressJPEGLock unlock];
+	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
 }
 
 - (IBAction) compressSelectedFiles:(id) sender
 {
-	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
+	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
+	{
+		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+		NSMutableArray *filesToExport;
+			
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+		{
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		}
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
-	{
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		int i;
+		NSMutableArray *result = [NSMutableArray array];
+		
+		for( i = 0 ; i < [filesToExport count] ; i++)
+		{
+			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+				[result addObject: [filesToExport objectAtIndex: i]];
+		}
+		
+		[decompressArrayLock lock];
+		[decompressArray addObjectsFromArray: result];
+		[decompressArrayLock unlock];
+		
+		[decompressThreadRunning lock];
+		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'C']];
+		[decompressThreadRunning unlock];
 	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
-	
-	int i;
-	
-	for( i = 0 ; i < [filesToExport count] ; i++)
-	{
-		if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
-			[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [[filesToExport objectAtIndex: i] retain]];
-	}
+	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", 0L), NSLocalizedString(@"Cannot compress images in a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 }
 
 - (IBAction) decompressSelectedFiles:(id) sender
 {
-	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
+	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
+	{
+		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+		NSMutableArray *filesToExport;
+			
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+		{
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		}
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 		
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
-	{
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		int i;
+		NSMutableArray *result = [NSMutableArray array];
+		
+		for( i = 0 ; i < [filesToExport count] ; i++)
+		{
+			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+				[result addObject: [filesToExport objectAtIndex: i]];
+		}
+		
+		[decompressArrayLock lock];
+		[decompressArray addObjectsFromArray: result];
+		[decompressArrayLock unlock];
+		
+		[decompressThreadRunning lock];
+		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'D']];
+		[decompressThreadRunning unlock];
 	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	else NSRunInformationalAlertPanel(NSLocalizedString(@"Non-Local Database", 0L), NSLocalizedString(@"Cannot decompress images in a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+}
+
+- (void) decompressThread: (NSNumber*) typeOfWork
+{	
+	[decompressThreadRunning lock];
 	
-	int i;
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	NSArray				*array;
+	int					i;
+	char				tow = [typeOfWork charValue];
 	
-	for( i = 0 ; i < [filesToExport count] ; i++)
+	[decompressArrayLock lock];
+	array = [NSArray arrayWithArray: decompressArray];
+	[decompressArray removeAllObjects];
+	[decompressArrayLock unlock];
+	
+	for( i = 0; i < [array count]; i++)
 	{
-		if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
-			[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [[filesToExport objectAtIndex: i] retain]];
+		[self waitForAProcessor];
+		
+		switch( tow)
+		{
+			case 'C':
+				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+			break;
+			
+			case 'D':
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+			break;
+			
+			case 'I':
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+			break;
+		}
 	}
+	
+	[pool release];
+	
+	[decompressThreadRunning unlock];
 }
 
 -(void) checkIncomingThread:(id) sender
@@ -8560,6 +8640,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		NSString        *pathname;
 		NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+		NSMutableArray	*compressedPathArray = [[NSMutableArray alloc] initWithCapacity:0];
 		
 		NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
 		
@@ -8614,7 +8695,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 								
 								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
 								
-								[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [compressedPath retain]];
+								[compressedPathArray addObject: compressedPath];
 								
 								continue;
 							}
@@ -8721,7 +8802,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		[filesArray release];
+		
+		if( [compressedPathArray count] > 0)
+		{
+			[decompressArrayLock lock];
+			[decompressArray addObjectsFromArray: compressedPathArray];
+			[decompressArrayLock unlock];
+			
+			[decompressThreadRunning lock];
+			[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
+			[decompressThreadRunning unlock];
+		}
+		[compressedPathArray release];
 	}
+	
 	[checkIncomingLock unlock];
 	
 	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
