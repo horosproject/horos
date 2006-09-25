@@ -18,15 +18,13 @@
                 setAE = id; 
                 setAnonymizeListenerOnOff = id; 
                 setCheckInterval = id; 
+                setCompress = id; 
                 setDecompress = id; 
                 setDeleteFileMode = id; 
-                setExtraStoreSCP = id; 
                 setGenerateLogs = id; 
                 setListenerOnOff = id; 
                 setLogDuration = id; 
                 setSingleProcess = id; 
-                setTransferSyntaxMode = id; 
-                setUseStoreSCP = id; 
             }; 
             CLASS = OSIListenerPreferencePanePref; 
             LANGUAGE = ObjC; 
@@ -35,9 +33,9 @@
                 aeForm = NSForm; 
                 aeTitleField = NSFormCell; 
                 checkIntervalField = NSTextField; 
+                compressButton = NSButton; 
                 decompressButton = NSButton; 
                 deleteFileModeMatrix = NSMatrix; 
-                extrastorescp = NSTextField; 
                 generateLogsButton = NSButton; 
                 ipField = NSFormCell; 
                 listenerOnOffAnonymize = NSButton; 
@@ -46,9 +44,6 @@
                 nameField = NSFormCell; 
                 portField = NSFormCell; 
                 singleProcessButton = NSButton; 
-                transferSyntaxBox = NSBox; 
-                transferSyntaxModeMatrix = NSMatrix; 
-                useStoreSCPModeMatrix = NSMatrix; 
             }; 
             SUPERCLASS = NSPreferencePane; 
         }, 

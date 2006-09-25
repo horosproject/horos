@@ -82,10 +82,10 @@ char *GetPrivateIP()
 	[super dealloc];
 }
 
--(IBAction) setExtraStoreSCP:(id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setObject:[extrastorescp stringValue] forKey:@"STORESCPEXTRA"];
-}
+//-(IBAction) setExtraStoreSCP:(id) sender
+//{
+//	[[NSUserDefaults standardUserDefaults] setObject:[extrastorescp stringValue] forKey:@"STORESCPEXTRA"];
+//}
 
 -(IBAction) setCheckInterval:(id) sender
 {
@@ -126,8 +126,8 @@ char *GetPrivateIP()
 	[ipField setStringValue: ip];
 	[nameField setStringValue: name];
 	
-	if( [defaults stringForKey:@"STORESCPEXTRA"])
-		[extrastorescp setStringValue:[defaults stringForKey:@"STORESCPEXTRA"]];
+//	if( [defaults stringForKey:@"STORESCPEXTRA"])
+//		[extrastorescp setStringValue:[defaults stringForKey:@"STORESCPEXTRA"]];
 	[aeTitleField setStringValue:[defaults stringForKey:@"AETITLE"]];
 	[portField setStringValue:[defaults stringForKey:@"AEPORT"]];
 	
@@ -137,6 +137,7 @@ char *GetPrivateIP()
 	[singleProcessButton setState:[defaults boolForKey:@"SINGLEPROCESS"]];
 	
 	[decompressButton setState:[defaults boolForKey:@"DECOMPRESSDICOMLISTENER"]];
+	[compressButton setState:[defaults boolForKey:@"COMPRESSDICOMLISTENER"]];
 	
 //	[useStoreSCPModeMatrix selectCellWithTag:[defaults boolForKey:@"USESTORESCP"]];
 //	
@@ -195,33 +196,9 @@ char *GetPrivateIP()
 	[[NSUserDefaults standardUserDefaults] setObject:[portField stringValue] forKey:@"AEPORT"];
 }
 
-- (IBAction)setUseStoreSCP:(id)sender{
-	BOOL useDCMTK = [[sender selectedCell] tag];
-	NSLog(@"setUseStoreSCP: %d", useDCMTK);	
-	[[NSUserDefaults standardUserDefaults] setBool:useDCMTK forKey:@"USESTORESCP"];	
-	useDCMTK ? [transferSyntaxBox setHidden:NO] : [transferSyntaxBox setHidden:YES];		
+- (IBAction)setCompress:(id)sender{
+	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"COMPRESSDICOMLISTENER"];
 }
-
-- (IBAction)setTransferSyntaxMode:(id)sender{
-	NSString *AETransferSyntax;
-	switch( [[sender selectedCell] tag])
-	{
-		default:
-		case 0:		AETransferSyntax = [[NSString alloc] initWithString:@"+x="];		break;
-		case 1:		AETransferSyntax = [[NSString alloc] initWithString:@"+xe"];		break;
-		case 2:		AETransferSyntax = [[NSString alloc] initWithString:@"+xb"];		break;
-		case 3:		AETransferSyntax = [[NSString alloc] initWithString:@"+xs"];		break;
-		case 4:		AETransferSyntax = [[NSString alloc] initWithString:@"+xy"];		break;
-		case 5:		AETransferSyntax = [[NSString alloc] initWithString:@"+xx"];		break;
-		case 6:		AETransferSyntax = [[NSString alloc] initWithString:@"+xr"];		break;
-		case 7:		AETransferSyntax = [[NSString alloc] initWithString:@"+xi"];		break;
-		case 8:		AETransferSyntax = [[NSString alloc] initWithString:@"+xv"];		break;
-		case 9:		AETransferSyntax = [[NSString alloc] initWithString:@"+xw"];		break;
-	}
-	[[NSUserDefaults standardUserDefaults] setObject:AETransferSyntax forKey:@"AETransferSyntax"];
-	[AETransferSyntax release];
-}
-
 - (IBAction)setDecompress:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"DECOMPRESSDICOMLISTENER"];
 }

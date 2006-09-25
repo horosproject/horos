@@ -20,17 +20,14 @@
 	IBOutlet NSForm *aeForm;
 	IBOutlet NSMatrix *deleteFileModeMatrix;
 	IBOutlet NSButton *listenerOnOffButton;
-	IBOutlet NSBox *transferSyntaxBox;
-	IBOutlet NSMatrix *transferSyntaxModeMatrix;
-	IBOutlet NSMatrix *useStoreSCPModeMatrix;
 	IBOutlet NSFormCell *aeTitleField;
 	IBOutlet NSFormCell *portField;
 	IBOutlet NSFormCell *ipField;
 	IBOutlet NSFormCell *nameField;
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
-	IBOutlet NSButton *decompressButton;
-	IBOutlet NSTextField *extrastorescp, *checkIntervalField;
+	IBOutlet NSButton *decompressButton, *compressButton;
+	IBOutlet NSTextField *checkIntervalField;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
 	
@@ -39,16 +36,14 @@
 
 - (void) mainViewDidLoad;
 - (IBAction)setAE:(id)sender;
-- (IBAction)setUseStoreSCP:(id)sender;
-- (IBAction)setTransferSyntaxMode:(id)sender;
 - (IBAction)setDeleteFileMode:(id)sender;
 - (IBAction)setListenerOnOff:(id)sender;
 - (IBAction)setAnonymizeListenerOnOff:(id)sender;
 - (IBAction)setGenerateLogs:(id)sender;
 - (IBAction)helpstorescp:(id) sender;
-- (IBAction)setExtraStoreSCP:(id)sender;
 - (IBAction)setSingleProcess:(id)sender;
 - (IBAction)setLogDuration:(id)sender;
 - (IBAction)setCheckInterval:(id) sender;
 - (IBAction)setDecompress:(id)sender;
+- (IBAction)setCompress:(id)sender;
 @end

@@ -8528,11 +8528,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
 		
+		[decompressThreadRunning lock];
+		
 		[decompressArrayLock lock];
 		[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
-		[decompressThreadRunning lock];
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'C']];
 		[decompressThreadRunning unlock];
 	}
@@ -8561,11 +8562,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
 		
+		[decompressThreadRunning lock];
 		[decompressArrayLock lock];
 		[decompressArray addObjectsFromArray: result];
 		[decompressArrayLock unlock];
 		
-		[decompressThreadRunning lock];
 		[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'D']];
 		[decompressThreadRunning unlock];
 	}
@@ -8624,6 +8625,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL			isDir = YES;
 	BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 	BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
+	BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
 	long			i;
 	
 	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
@@ -8799,17 +8801,32 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[[NSFileManager defaultManager] movePath:[filesArray objectAtIndex: i] toPath:dstPath handler:nil];
 				}
 			}
+			
+			if( COMPRESSDICOMLISTENER)
+			{
+				if( [filesArray count] > 0)
+				{
+					[decompressThreadRunning lock];
+					[decompressArrayLock lock];
+					[decompressArray addObjectsFromArray: filesArray];
+					[decompressArrayLock unlock];
+					[decompressThreadRunning unlock];
+					
+					[self decompressThread: [NSNumber numberWithChar: 'C']];
+				}
+			}
 		}
 		
 		[filesArray release];
 		
 		if( [compressedPathArray count] > 0)
 		{
+			[decompressThreadRunning lock];
+			
 			[decompressArrayLock lock];
 			[decompressArray addObjectsFromArray: compressedPathArray];
 			[decompressArrayLock unlock];
 			
-			[decompressThreadRunning lock];
 			[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
 			[decompressThreadRunning unlock];
 		}

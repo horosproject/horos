@@ -57,10 +57,12 @@
                 burnDICOM = id; 
                 checkIncomingThread = id; 
                 checkMemory = id; 
+                compressSelectedFiles = id; 
                 createDatabase = id; 
                 customIntervalNow = id; 
                 customize = id; 
                 databaseWindow = id; 
+                decompressSelectedFiles = id; 
                 delItem = id; 
                 deleteReport = id; 
                 emptyDeleteQueue = id; 

@@ -385,6 +385,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray *)databaseSelection;
 - (IBAction)databaseWindow:(id)sender;
 
+- (IBAction) decompressSelectedFiles:(id) sender;
+- (IBAction) compressSelectedFiles:(id) sender;
+
 /******Notifactions posted by browserController***********
 
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser

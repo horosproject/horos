@@ -185,7 +185,48 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>ABF834490AC7CCF10035413E</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>OSIListenerPreferencePanePref.m</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>ABF8344A0AC7CCF10035413E</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>OSIListenerPreferencePanePref.m</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>ABF834600AC7CD680035413E</string>
+						<key>history</key>
+						<array>
+							<string>ABF834540AC7CD320035413E</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1245, 774}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>300 63 1245 815 0 0 1440 878 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -220,6 +261,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -267,8 +310,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>9</integer>
-									<integer>5</integer>
+									<integer>2</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -292,7 +335,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>-1482 129 1114 668 -1680 -150 1680 1050 </string>
+						<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -303,8 +346,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -322,13 +363,13 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>ABB9C29C0AC4387D00F91093</string>
+										<string>ABF8345F0AC7CD680035413E</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB470A19CF1800FED357</string>
 											<string>AB52E74B0A19FC0F00726305</string>
-											<string>ABB9C28D0AC436B300F91093</string>
-											<string>ABB9C28E0AC436B300F91093</string>
+											<string>ABF8345B0AC7CD680035413E</string>
+											<string>ABF8345C0AC7CD680035413E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -336,10 +377,8 @@
 											<string>AB7925FD09FCBE46006E342C</string>
 											<string>AB80AB4C0A19CF1800FED357</string>
 											<string>AB52E74E0A19FC0F00726305</string>
-											<string>ABB9C28F0AC436B300F91093</string>
-											<string>ABB9C2900AC436B300F91093</string>
-											<string>ABB9C2910AC436B300F91093</string>
-											<string>ABB9C2920AC436B300F91093</string>
+											<string>ABF8345D0AC7CD680035413E</string>
+											<string>ABF8345E0AC7CD680035413E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -353,7 +392,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {906, 622}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1482 129 1114 668 -1680 -150 1680 1050 </string>
+								<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -373,7 +412,7 @@
 								<key>Frame</key>
 								<string>{{0, 627}, {906, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1482 129 1114 668 -1680 -150 1680 1050 </string>
+								<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -397,9 +436,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABB9C2860AC4362600F91093</string>
+				<string>ABF8343E0AC7CC570035413E</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABB9C2870AC4362600F91093</string>
+				<string>ABF8343F0AC7CC570035413E</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -533,10 +572,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>ABF834490AC7CCF10035413E</string>
+		<string>AB34B71909AA11120057FE0E</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>-1482 129 1114 668 -1680 -150 1680 1050 </string>
+	<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -552,12 +593,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>OSIListenerPreferencePanePref.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -613,7 +656,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>AB34B71909AA11120057FE0E</string>
-				<string>ABACA3680A108B5F0090E36F</string>
+				<string>ABF8344D0AC7CCF10035413E</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -624,7 +667,7 @@
 			<key>WindowToolGUID</key>
 			<string>AB34B71909AA11120057FE0E</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
