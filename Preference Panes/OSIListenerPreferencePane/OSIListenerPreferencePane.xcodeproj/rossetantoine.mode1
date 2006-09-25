@@ -185,48 +185,7 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>ABF834490AC7CCF10035413E</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>OSIListenerPreferencePanePref.m</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>ABF8344A0AC7CCF10035413E</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>OSIListenerPreferencePanePref.m</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>ABF834600AC7CD680035413E</string>
-						<key>history</key>
-						<array>
-							<string>ABF834540AC7CD320035413E</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1245, 774}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>300 63 1245 815 0 0 1440 878 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -363,13 +322,13 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>ABF8345F0AC7CD680035413E</string>
+										<string>ABF834760AC7D47E0035413E</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB470A19CF1800FED357</string>
 											<string>AB52E74B0A19FC0F00726305</string>
 											<string>ABF8345B0AC7CD680035413E</string>
-											<string>ABF8345C0AC7CD680035413E</string>
+											<string>ABF834750AC7D47E0035413E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -572,7 +531,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>ABF834490AC7CCF10035413E</string>
 		<string>AB34B71909AA11120057FE0E</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj</string>
 	</array>
@@ -667,7 +625,7 @@
 			<key>WindowToolGUID</key>
 			<string>AB34B71909AA11120057FE0E</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
