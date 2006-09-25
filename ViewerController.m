@@ -4539,6 +4539,8 @@ static float oldsetww, oldsetwl;
 		}
 	
 		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
 	}
 	else NSRunAlertPanel(NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"First, apply a convolution filter...", nil), nil, nil, nil);
 }
@@ -8880,7 +8882,7 @@ return moviePosSlider;
 	
 	if( [pixList[ curMovieIndex] count] > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Send to PACS", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L) == NSAlertDefaultReturn) all = NO;
+		if( NSRunInformationalAlertPanelRelativeToWindow( NSLocalizedString(@"Send to PACS", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L, [self window]) == NSAlertDefaultReturn) all = NO;
 		else all = YES;
 	}
 	
@@ -10358,6 +10360,12 @@ return moviePosSlider;
 	}
 	else
 	{
+		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
+		{
+			if( NSRunInformationalAlertPanelRelativeToWindow( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L, [self window]) == NSAlertDefaultReturn)
+				[self applyConvolutionOnSource: self];
+		}
+	
 		VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
 		
 		if( viewer)
