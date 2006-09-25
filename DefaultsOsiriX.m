@@ -555,6 +555,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"HIDEPATIENTNAME"];
 	
 	[defaultValues setObject:@"0" forKey:@"DECOMPRESSDICOMLISTENER"];
+	[defaultValues setObject:@"0" forKey:@"COMPRESSDICOMLISTENER"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];
