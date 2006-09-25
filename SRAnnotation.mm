@@ -153,7 +153,7 @@
 	}
 }
 
-- (void)saveAsHTML
+- (void)saveAsHTML;
 {
 	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
 	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"html"];

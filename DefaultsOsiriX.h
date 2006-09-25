@@ -14,6 +14,7 @@
 }
 
 + (BOOL) isHUG;
++ (BOOL) isUniGE;
 + (BOOL) isLAVIM;
 + (NSMutableDictionary*) getDefaults;
 + (NSString*) hostName;

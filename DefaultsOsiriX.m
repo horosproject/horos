@@ -10,7 +10,7 @@
 
 extern		NSMutableArray			*preProcessPlugins;
 
-static BOOL isHcugeCh = NO, testDone = NO;
+static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
 static NSString *hostName = @"";
 
 @implementation DefaultsOsiriX
@@ -23,7 +23,7 @@ static NSString *hostName = @"";
 
 + (BOOL) isHUG
 {
-	if( testDone == NO)
+	if( testIsHugDone == NO)
 	{
 		NSArray	*names = [[NSHost currentHost] names];
 		int i;
@@ -39,9 +39,32 @@ static NSString *hostName = @"";
 				hostName = [names objectAtIndex: i];
 			}
 		}
-		testDone = YES;
+		testIsHugDone = YES;
 	}
 	return isHcugeCh;
+}
+
++ (BOOL) isUniGE
+{
+	if( testIsUniDone == NO)
+	{
+		NSArray	*names = [[NSHost currentHost] names];
+		int i;
+		for( i = 0; i < [names count] && !isUnigeCh; i++)
+		{
+			int len = [[names objectAtIndex: i] length];
+			if ( len < 8 ) continue;  // Fixed out of bounds error in following line when domainname is short.
+			NSString *domainName = [[names objectAtIndex: i] substringFromIndex: len - 8];
+
+			if([domainName isEqualToString: @"unige.ch"])
+			{
+				isUnigeCh = YES;
+				hostName = [names objectAtIndex: i];
+			}
+		}
+		testIsUniDone = YES;
+	}
+	return isUnigeCh;
 }
 
 + (BOOL) isLAVIM

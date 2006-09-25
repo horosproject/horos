@@ -25,6 +25,7 @@
 	dcmFileList = [files retain];
 
 	[mprController initWithPixList: pix : files : vData : vC : bC: self];
+	
 	//[[mprController xReslicedView] adjustWLWW:400 :1200];
 //	[[NSNotificationCenter defaultCenter] removeObserver:mprController name: @"changeWLWW" object: nil];
 //	[[NSNotificationCenter defaultCenter] removeObserver:[mprController originalView] name: @"changeWLWW" object: nil];
@@ -35,7 +36,7 @@
 	[mprController setReslicer:reslicer];
 	[reslicer release];
 	[(LLScoutView*)[mprController xReslicedView] setIsFlipped: [[vC imageView] flippedData]];
-	
+
 	viewer = vC;
 	blendingViewer = bC;
 
@@ -197,8 +198,12 @@
 
 	if(index==0)
 	{
-		//if([[viewer imageView] flippedData])
-		if([self isStackUpsideDown])
+		if([[viewer imageView] flippedData])
+		{
+			pixRange.location = topLimit;
+			pixRange.length = [dcmPixList count] - topLimit;
+		}
+		else if([self isStackUpsideDown])
 		{
 //			pixRange.location = topLimit;
 //			pixRange.length = [[mprController originalDCMPixList] count] - topLimit;
@@ -214,8 +219,12 @@
 	}
 	else if(index==1)
 	{
-		//if([[viewer imageView] flippedData])
-		if([self isStackUpsideDown])
+		if([[viewer imageView] flippedData])
+		{
+			pixRange.location = bottomLimit;
+			pixRange.length = topLimit - bottomLimit;
+		}
+		else if([self isStackUpsideDown])
 		{
 //			pixRange.location = bottomLimit;
 //			pixRange.length = topLimit - bottomLimit;
@@ -231,8 +240,12 @@
 	}
 	else
 	{
-		//if([[viewer imageView] flippedData])
-		if([self isStackUpsideDown])
+		if([[viewer imageView] flippedData])
+		{
+			pixRange.location = 0;
+			pixRange.length = bottomLimit;
+		}
+		else if([self isStackUpsideDown])
 		{
 //			pixRange.location = 0;
 //			pixRange.length = bottomLimit;
@@ -361,7 +374,14 @@
 
 - (BOOL)isStackUpsideDown;
 {
-	return ([dcmPixList objectAtIndex:0]-[dcmPixList objectAtIndex:1] < 0);
+	NSLog(@"- (BOOL)isStackUpsideDown;");
+	NSLog(@"[[dcmPixList objectAtIndex:0] sliceLocation] : %f", [[dcmPixList objectAtIndex:0] sliceLocation]);
+	NSLog(@"[[dcmPixList objectAtIndex:1] sliceLocation] : %f", [[dcmPixList objectAtIndex:1] sliceLocation]);
+	
+	//if(![[viewer imageView] flippedData])
+		return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] < 0);
+	//else
+	//	return ([[dcmPixList objectAtIndex:0] sliceLocation] - [[dcmPixList objectAtIndex:1] sliceLocation] > 0);
 }
 
 @end
