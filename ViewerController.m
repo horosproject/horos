@@ -137,6 +137,8 @@ static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
 static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
+static NSString*	ResampleBy2ToolbarItemIdentifier	= @"3D.tif";
+
 static NSArray*		DefaultROINames;
 
 static	BOOL EXPORT2IPHOTO								= NO;
@@ -2602,7 +2604,16 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setImage: [NSImage imageNamed: FlipHorizontalToolbarItemIdentifier]];
 	[toolbarItem setTarget: nil];
 	[toolbarItem setAction: @selector(flipHorizontal:)];
-    } 
+    }
+	else if ([itemIdent isEqualToString: ResampleBy2ToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Resample By 2", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Resample By 2", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Resample By 2", nil)];
+		[toolbarItem setImage: [NSImage imageNamed:ResampleBy2ToolbarItemIdentifier]];
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(resampleDataBy2:)];
+    }
     else
 	{
 		// Is it a plugin menu item?
@@ -2693,6 +2704,7 @@ static ViewerController *draggedController = 0L;
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
+														ResampleBy2ToolbarItemIdentifier,
 														nil];
 	
 	long		i;
@@ -3653,6 +3665,11 @@ static ViewerController *draggedController = 0L;
 	[self executeFilterFromString: [sender label]];
 }
 
+- (IBAction)resampleDataBy2:(id)sender;
+{
+	[self resampleDataBy2];
+}
+
 - (void)resampleDataBy2;
 {
 	[self resampleDataWithFactor:2];
@@ -3665,17 +3682,26 @@ static ViewerController *draggedController = 0L;
 
 - (void)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 {
+	NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
+	NSMutableData *newData = [NSMutableData dataWithLength:0];
+	
+	[ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+	[self changeImageData:newPixList :newDcmList :newData :NO];
+}
+
++ (void)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSMutableData*)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+{
 	long				i, y, z, imageSize, newX, newY, newZ, size;
 	float				*srcImage, *dstImage, *emptyData;
 	DCMPix				*curPix;
-	ViewerController	*new2DViewer;
 	
 	// Display a waiting window
 	// id waitWindow = [viewerController startWaitWindow:@"I'm working for you!"];
 	
-	int originWidth = [[[self imageView] curDCM] pwidth];
-	int originHeight = [[[self imageView] curDCM] pheight];
-	int originZ = [[self pixList] count];
+	int originWidth = [[[aViewer imageView] curDCM] pwidth];
+	int originHeight = [[[aViewer imageView] curDCM] pheight];
+	int originZ = [[aViewer pixList] count];
 
 	newX = originWidth / xFactor;
 	newY = originHeight / yFactor;
@@ -3692,12 +3718,12 @@ static ViewerController *draggedController = 0L;
 		BOOL equalVector = YES;
 		int o;
 		
-		[[[self pixList] objectAtIndex:0] orientation: vectors];
-		[[[self pixList] objectAtIndex:1] orientation: vectorsB];
+		[[[aViewer pixList] objectAtIndex:0] orientation: vectors];
+		[[[aViewer pixList] objectAtIndex:1] orientation: vectorsB];
 		
-		origin[ 0] = [[[self pixList] objectAtIndex:0] originX]; 
-		origin[ 1] = [[[self pixList] objectAtIndex:1] originY]; 
-		origin[ 2] = [[[self pixList] objectAtIndex:2] originZ]; 
+		origin[ 0] = [[[aViewer pixList] objectAtIndex:0] originX]; 
+		origin[ 1] = [[[aViewer pixList] objectAtIndex:1] originY]; 
+		origin[ 2] = [[[aViewer pixList] objectAtIndex:2] originZ]; 
 		
 		for( i = 0; i < 9; i++)
 		{
@@ -3708,7 +3734,7 @@ static ViewerController *draggedController = 0L;
 		{
 			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 			{
-				interval = [[[self pixList] objectAtIndex:0] originX] - [[[self pixList] objectAtIndex:1] originX];
+				interval = [[[aViewer pixList] objectAtIndex:0] originX] - [[[aViewer pixList] objectAtIndex:1] originX];
 				
 				if( vectors[6] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3717,7 +3743,7 @@ static ViewerController *draggedController = 0L;
 			
 			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 			{
-				interval = [[[self pixList] objectAtIndex:0] originY] - [[[self pixList] objectAtIndex:1] originY];
+				interval = [[[aViewer pixList] objectAtIndex:0] originY] - [[[aViewer pixList] objectAtIndex:1] originY];
 				
 				if( vectors[7] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3726,7 +3752,7 @@ static ViewerController *draggedController = 0L;
 			
 			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 			{
-				interval = [[[self pixList] objectAtIndex:0] originZ] - [[[self pixList] objectAtIndex:1] originZ];
+				interval = [[[aViewer pixList] objectAtIndex:0] originZ] - [[[aViewer pixList] objectAtIndex:1] originZ];
 				
 				if( vectors[8] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3737,19 +3763,19 @@ static ViewerController *draggedController = 0L;
 		interval *= (float) zFactor;
 		
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
-		NSMutableArray	*finalnewPixList = [NSMutableArray arrayWithCapacity: 0];
-		NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
-		NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
+		//NSMutableArray	*finalnewPixList = [NSMutableArray arrayWithCapacity: 0];
+		//NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
+		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
 		
-		float pos1 = [[[self pixList] objectAtIndex: 0] sliceLocation];
-		float pos2 = [[[self pixList] objectAtIndex: 1] sliceLocation];
+		float pos1 = [[[aViewer pixList] objectAtIndex: 0] sliceLocation];
+		float pos2 = [[[aViewer pixList] objectAtIndex: 1] sliceLocation];
 		float intervalSlice = pos2 - pos1;
 		
 		intervalSlice *= (float) zFactor;
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
-			curPix = [[self pixList] objectAtIndex: (z * originZ) / newZ];
+			curPix = [[aViewer pixList] objectAtIndex: (z * originZ) / newZ];
 			
 			DCMPix	*copyPix = [curPix copy];
 			
@@ -3793,7 +3819,7 @@ static ViewerController *draggedController = 0L;
 		{
 			vImage_Buffer	srcVimage, dstVimage;
 			
-			curPix = [[self pixList] objectAtIndex: z];
+			curPix = [[aViewer pixList] objectAtIndex: z];
 			
 			srcImage = [curPix  fImage];
 			dstImage = emptyData + imageSize * z;
@@ -3846,18 +3872,20 @@ static ViewerController *draggedController = 0L;
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
-			[newDcmList addObject: [[self fileList] objectAtIndex: (z * originZ) / newZ]];
-			[finalnewPixList addObject: [newPixList objectAtIndex: z]];
+			[aFileList addObject: [[aViewer fileList] objectAtIndex: (z * originZ) / newZ]];
+			[aPixList addObject: [newPixList objectAtIndex: z]];
 		}
 		
 		// CREATE A SERIES
-		new2DViewer = [self newWindow:finalnewPixList :newDcmList :newData];
+		//new2DViewer = [ViewerController newWindow:finalnewPixList :newDcmList :newData];
+		//changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
+		[aData setData:newData];
 	}
 	// Close the waiting window
 	// [viewerController endWaitWindow: waitWindow];
 	
 	// We modified the view: OsiriX please update the display!
-	[self needsDisplayUpdate];
+	// [aViewer needsDisplayUpdate];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
