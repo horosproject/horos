@@ -669,7 +669,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
         errmsg("No SOP Class & Instance UIDs in file: %s", fname);
         return DIMSE_BADDATA;
     }
-
+	
     /* figure out which of the accepted presentation contexts should be used */
     DcmXfer filexfer(dcmff.getDataset()->getOriginalXfer());
 
@@ -698,6 +698,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		//printf("presID: %d\n", presId);
 		if (filexfer.isNotEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
 			// do nothing
+			status = NO;
 		}
 		else if (filexfer.isEncapsulated() && propoesdTransfer.isNotEncapsulated()) {
 			status = decompressFile(dcmff, fname);
@@ -712,11 +713,21 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	 }
 	 else
 		status = NO;
+		
 	// printf("presentation for syntax:%s %d\n", dcmFindNameOfUID(preferredXfer.getXferID()), presId);
 	 //reload file after syntax change
-	if (status) {
+	if (status)
+	{
+		printf("on the fly conversion\n");
 		cond = 	dcmff.loadFile(fname);
 		filexfer = dcmff.getDataset()->getOriginalXfer();
+		
+		/* figure out which SOP class and SOP instance is encapsulated in the file */
+		if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
+			sopClass, sopInstance, opt_correctUIDPadding)) {
+			errmsg("No SOP Class & Instance UIDs in file: %s", fname);
+			return DIMSE_BADDATA;
+		}
 	}
 	 
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
