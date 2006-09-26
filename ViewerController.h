@@ -322,10 +322,10 @@ enum
 - (IBAction) export2PACS:(id) sender;
 
 - (IBAction)resampleDataBy2:(id)sender;
-- (void)resampleDataBy2;
-- (void)resampleDataWithFactor:(int)factor;
-- (void)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
-+ (void)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSMutableData*)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+- (BOOL)resampleDataBy2;
+- (BOOL)resampleDataWithFactor:(int)factor;
+- (BOOL)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
++ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 
 - (IBAction) subCtrlOnOff:(id) sender;
 - (IBAction) subCtrlNewMask:(id) sender;

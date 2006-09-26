@@ -3665,39 +3665,50 @@ static ViewerController *draggedController = 0L;
 	[self executeFilterFromString: [sender label]];
 }
 
+#pragma mark resample image
+
 - (IBAction)resampleDataBy2:(id)sender;
 {
-	[self resampleDataBy2];
+	BOOL isResampled = [self resampleDataBy2];
+	if(!isResampled)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Not enough memory", nil), NSLocalizedString(@"Your computer doesn't have enough RAM to complete the resampling", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
 }
 
-- (void)resampleDataBy2;
+- (BOOL)resampleDataBy2;
 {
-	[self resampleDataWithFactor:2];
+	return [self resampleDataWithFactor:2];
 }
 
-- (void)resampleDataWithFactor:(int)factor;
+- (BOOL)resampleDataWithFactor:(int)factor;
 {
-	[self resampleDataWithXFactor:factor yFactor:factor zFactor:factor];
+	return [self resampleDataWithXFactor:factor yFactor:factor zFactor:factor];
 }
 
-- (void)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+- (BOOL)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 {
+	[self checkEverythingLoaded];
+	
 	NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 	NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
-	NSMutableData *newData = [NSMutableData dataWithLength:0];
+	NSData *newData = 0L;
 	
-	[ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
-	[self changeImageData:newPixList :newDcmList :newData :NO];
+	BOOL isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+	if(isResampled)
+	{
+		[self changeImageData:newPixList :newDcmList :newData :NO];
+		loadingPercentage = 1;
+		[self setWindowTitle:self];
+	}
+	return isResampled;
 }
 
-+ (void)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSMutableData*)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
++ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 {
 	long				i, y, z, imageSize, newX, newY, newZ, size;
 	float				*srcImage, *dstImage, *emptyData;
 	DCMPix				*curPix;
-	
-	// Display a waiting window
-	// id waitWindow = [viewerController startWaitWindow:@"I'm working for you!"];
 	
 	int originWidth = [[[aViewer imageView] curDCM] pwidth];
 	int originHeight = [[[aViewer imageView] curDCM] pheight];
@@ -3763,9 +3774,7 @@ static ViewerController *draggedController = 0L;
 		interval *= (float) zFactor;
 		
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
-		//NSMutableArray	*finalnewPixList = [NSMutableArray arrayWithCapacity: 0];
-		//NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
-		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
+		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
 		
 		float pos1 = [[[aViewer pixList] objectAtIndex: 0] sliceLocation];
 		float pos2 = [[[aViewer pixList] objectAtIndex: 1] sliceLocation];
@@ -3792,7 +3801,7 @@ static ViewerController *draggedController = 0L;
 			
 			[[newPixList lastObject] setPixelSpacingX: [curPix pixelSpacingX] * (float) xFactor];
 			[[newPixList lastObject] setPixelSpacingY: [curPix pixelSpacingY] * (float) yFactor];
-			[[newPixList lastObject] setSliceThickness: [copyPix sliceThickness] * (float) zFactor];
+			[[newPixList lastObject] setSliceThickness: [curPix sliceThickness] * (float) zFactor];
 			[[newPixList lastObject] setPixelRatio:  [curPix pixelRatio] / (float) xFactor * (float) yFactor];
 			
 			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
@@ -3821,7 +3830,7 @@ static ViewerController *draggedController = 0L;
 			
 			curPix = [[aViewer pixList] objectAtIndex: z];
 			
-			srcImage = [curPix  fImage];
+			srcImage = [curPix fImage];
 			dstImage = emptyData + imageSize * z;
 			
 			srcVimage.data = srcImage;
@@ -3875,17 +3884,13 @@ static ViewerController *draggedController = 0L;
 			[aFileList addObject: [[aViewer fileList] objectAtIndex: (z * originZ) / newZ]];
 			[aPixList addObject: [newPixList objectAtIndex: z]];
 		}
-		
-		// CREATE A SERIES
-		//new2DViewer = [ViewerController newWindow:finalnewPixList :newDcmList :newData];
-		//changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
-		[aData setData:newData];
+		*aData = newData;
+		return YES;
 	}
-	// Close the waiting window
-	// [viewerController endWaitWindow: waitWindow];
-	
-	// We modified the view: OsiriX please update the display!
-	// [aViewer needsDisplayUpdate];
+	else
+	{
+		return NO;
+	}
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

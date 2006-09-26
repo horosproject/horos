@@ -2397,6 +2397,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	self->halflife = fromDcm->halflife;
 	self->philipsFactor = fromDcm->philipsFactor;
 	self->generated = YES;
+	
+	self->minValueOfSeries = fromDcm->minValueOfSeries;
+	self->maxValueOfSeries = fromDcm->maxValueOfSeries;
+
 }
 
 - (id) copyWithZone:(NSZone *)zone
@@ -2447,7 +2451,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	copy->philipsFactor = self->philipsFactor;
 	
 	copy->generated = YES;
-	
+
+	copy->maxValueOfSeries = self->maxValueOfSeries;
+	copy->minValueOfSeries = self->minValueOfSeries;
+
     return copy;
 }
 
