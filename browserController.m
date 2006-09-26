@@ -3108,6 +3108,8 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
+	[checkIncomingLock lock];
+	
 	NSString	*path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
 	if( path != 0L)
 	{
@@ -3117,7 +3119,7 @@ static BOOL COMPLETEREBUILD = NO;
 	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
 	
 	[checkIncomingLock unlock];
-		
+	
 	[pool release];
 }
 
@@ -3179,8 +3181,8 @@ static BOOL COMPLETEREBUILD = NO;
 			{
 				if( [checkIncomingLock tryLock])
 				{
-				//	NSLog(@"lock checkBonjourUpToDate");
 					[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
+					[checkIncomingLock unlock];
 				}
 				else NSLog(@"checkBonjourUpToDate locked...");
 			}
@@ -5073,40 +5075,41 @@ static BOOL withReset = NO;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	long i;
 	
-	[checkIncomingLock lock];
-	
-	if( [context tryLock])
-	{
-		DatabaseIsEdited = YES;
-		
-		@try
-		{	
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
-			NSError	*error = 0L;
-			NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
-			
-			int maxSeries = [seriesArray count];
-			
-			if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
-			
-			for( i = 0; i < maxSeries; i++)
-			{
-				if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
-					[self buildThumbnail: [seriesArray objectAtIndex: i]];
-			}
-		}
-		
-		@catch( NSException *ne)
+	if( [checkIncomingLock tryLock])
+	{	
+		if( [context tryLock])
 		{
-			NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+			DatabaseIsEdited = YES;
+			
+			@try
+			{	
+				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
+				NSError	*error = 0L;
+				NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+				
+				int maxSeries = [seriesArray count];
+				
+				if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
+				
+				for( i = 0; i < maxSeries; i++)
+				{
+					if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
+						[self buildThumbnail: [seriesArray objectAtIndex: i]];
+				}
+			}
+			
+			@catch( NSException *ne)
+			{
+				NSLog(@"buildAllThumbnails exception: %@", [ne description]);
+			}
+			
+			[context unlock];
 		}
-		
-		[context unlock];
+		[checkIncomingLock unlock];
 	}
-	[checkIncomingLock unlock];
-		
+	
 	DatabaseIsEdited = NO;
 }
 
@@ -7824,8 +7827,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[self removeAllMounted];
 	
-	
-	
     [self release];
 }
 
@@ -8642,6 +8643,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
+	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+	
 	[checkIncomingLock lock];
 	
     NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
@@ -8653,8 +8656,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
 	BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
 	long			i;
-	
-	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
 	
 	//NSLog(@"Scan folder START");
 	

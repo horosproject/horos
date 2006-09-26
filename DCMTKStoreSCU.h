@@ -53,7 +53,7 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 			extraParameters:(NSDictionary *)extraParameters;
 			
 - (void)run:(id)sender;
-- (void)updateLogEntry:(id)sender;
+- (void)updateLogEntry: (NSMutableDictionary*) userInfo;
 - (void)abort;
 @end
 

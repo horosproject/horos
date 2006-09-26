@@ -1384,7 +1384,20 @@ NS_DURING
 		if (cond == EC_Normal)  _numberSent++;
 		else _numberErrors = _numberOfFiles - _numberSent;
 		
-		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:self waitUntilDone:YES];
+		NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+		[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
+		[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
+		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+		if (_numberSent + _numberErrors < _numberOfFiles) {
+			[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
+			[userInfo setObject:@"In Progress" forKey:@"Message"];
+		}
+		else{
+			[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
+			[userInfo setObject:@"Complete" forKey:@"Message"];
+		}
+		
+		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
     }
 
     /* tear down association, i.e. terminate network connection to SCP */
@@ -1532,60 +1545,43 @@ NS_ENDHANDLER
 	[pool release];
 }
 
-- (void)updateLogEntry: (id)sender
+- (void)updateLogEntry: (NSMutableDictionary*) userInfo
 {
-	//update send progress bar 
-	if( sender == self)
-	{
-		NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
-		[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
-		[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
-		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
-		if (_numberSent + _numberErrors < _numberOfFiles) {
-			[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
-			[userInfo setObject:@"In Progress" forKey:@"Message"];
-		}
-		else{
-			[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
-			[userInfo setObject:@"Complete" forKey:@"Message"];
-		}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
+	
+	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
+	
+	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
+	if( context == 0L) return;
+	
+	[context lock];
+	
+	if (!_logEntry) {		
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
-		
-		if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
-		
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
-		if( context == 0L) return;
-		
-		[context lock];
-		
-		if (!_logEntry) {		
-			
-			_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-			[_logEntry setValue:[NSDate date] forKey:@"startTime"];
-			[_logEntry setValue:@"Send" forKey:@"type"];
-			[_logEntry setValue:_calledAET forKey:@"destinationName"];
-			[_logEntry setValue:_callingAET forKey:@"originName"];
-			if (_patientName)
-				[_logEntry setValue:_patientName forKey:@"patientName"];
-			if (_studyDescription)
-				[_logEntry setValue:_studyDescription forKey:@"studyName"];
-		
-		}	
-		[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
-		[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
-		[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
-		if (_numberSent + _numberErrors < _numberOfFiles) {
-			[_logEntry setValue:@"In Progress" forKey:@"message"];
-		}
-		else{
-			[_logEntry setValue:@"Complete" forKey:@"message"];
-		
-		}
-		[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-		
-		[context unlock];
+		_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+		[_logEntry setValue:[NSDate date] forKey:@"startTime"];
+		[_logEntry setValue:@"Send" forKey:@"type"];
+		[_logEntry setValue:_calledAET forKey:@"destinationName"];
+		[_logEntry setValue:_callingAET forKey:@"originName"];
+		if (_patientName)
+			[_logEntry setValue:_patientName forKey:@"patientName"];
+		if (_studyDescription)
+			[_logEntry setValue:_studyDescription forKey:@"studyName"];
+	
+	}	
+	[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
+	[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
+	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
+	if (_numberSent + _numberErrors < _numberOfFiles) {
+		[_logEntry setValue:@"In Progress" forKey:@"message"];
 	}
+	else{
+		[_logEntry setValue:@"Complete" forKey:@"message"];
+	
+	}
+	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
+	
+	[context unlock];
 }
 
 - (void)abort{

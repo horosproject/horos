@@ -5397,6 +5397,9 @@ static long scrollMode;
 		}
 		
 		yRaster = size.size.height-2;
+		xRaster = size.size.width;
+		[self DrawNSStringGL: @"Made In OsiriX" : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
+		yRaster -= (stringSize.height + stringSize.height/10);
 		
 		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 		if( date && [date yearOfCommonEra] != 3000)
