@@ -321,6 +321,10 @@ enum
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (IBAction) export2PACS:(id) sender;
 
+- (void)resampleDataBy2;
+- (void)resampleDataWithFactor:(int)factor;
+- (void)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+
 - (IBAction) subCtrlOnOff:(id) sender;
 - (IBAction) subCtrlNewMask:(id) sender;
 - (IBAction) subCtrlOffset:(id) sender;

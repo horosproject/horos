@@ -3653,6 +3653,212 @@ static ViewerController *draggedController = 0L;
 	[self executeFilterFromString: [sender label]];
 }
 
+- (void)resampleDataBy2;
+{
+	[self resampleDataWithFactor:2];
+}
+
+- (void)resampleDataWithFactor:(int)factor;
+{
+	[self resampleDataWithXFactor:factor yFactor:factor zFactor:factor];
+}
+
+- (void)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+{
+	long				i, y, z, imageSize, newX, newY, newZ, size;
+	float				*srcImage, *dstImage, *emptyData;
+	DCMPix				*curPix;
+	ViewerController	*new2DViewer;
+	
+	// Display a waiting window
+	// id waitWindow = [viewerController startWaitWindow:@"I'm working for you!"];
+	
+	int originWidth = [[[self imageView] curDCM] pwidth];
+	int originHeight = [[[self imageView] curDCM] pheight];
+	int originZ = [[self pixList] count];
+
+	newX = originWidth / xFactor;
+	newY = originHeight / yFactor;
+	newZ = originZ / zFactor;
+
+	imageSize = newX * newY;
+	size = sizeof(float) * originZ * imageSize;
+	
+	// CREATE A NEW SERIES TO CONTAIN THIS NEW RE-SAMPLED SERIES
+	emptyData = malloc( size);
+	if( emptyData)
+	{
+		float vectors[ 9], vectorsB[ 9], interval = 0, origin[ 3], newOrigin[ 3];
+		BOOL equalVector = YES;
+		int o;
+		
+		[[[self pixList] objectAtIndex:0] orientation: vectors];
+		[[[self pixList] objectAtIndex:1] orientation: vectorsB];
+		
+		origin[ 0] = [[[self pixList] objectAtIndex:0] originX]; 
+		origin[ 1] = [[[self pixList] objectAtIndex:1] originY]; 
+		origin[ 2] = [[[self pixList] objectAtIndex:2] originZ]; 
+		
+		for( i = 0; i < 9; i++)
+		{
+			if( vectors[ i] != vectorsB[ i]) equalVector = NO;
+		}
+		
+		if( equalVector)
+		{
+			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+			{
+				interval = [[[self pixList] objectAtIndex:0] originX] - [[[self pixList] objectAtIndex:1] originX];
+				
+				if( vectors[6] > 0) interval = -( interval);
+				else interval = ( interval);
+				o = 0;
+			}
+			
+			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+			{
+				interval = [[[self pixList] objectAtIndex:0] originY] - [[[self pixList] objectAtIndex:1] originY];
+				
+				if( vectors[7] > 0) interval = -( interval);
+				else interval = ( interval);
+				o = 1;
+			}
+			
+			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
+			{
+				interval = [[[self pixList] objectAtIndex:0] originZ] - [[[self pixList] objectAtIndex:1] originZ];
+				
+				if( vectors[8] > 0) interval = -( interval);
+				else interval = ( interval);
+				o = 2;
+			}
+		}
+		
+		interval *= (float) zFactor;
+		
+		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
+		NSMutableArray	*finalnewPixList = [NSMutableArray arrayWithCapacity: 0];
+		NSMutableArray	*newDcmList = [NSMutableArray arrayWithCapacity: 0];
+		NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
+		
+		float pos1 = [[[self pixList] objectAtIndex: 0] sliceLocation];
+		float pos2 = [[[self pixList] objectAtIndex: 1] sliceLocation];
+		float intervalSlice = pos2 - pos1;
+		
+		intervalSlice *= (float) zFactor;
+		
+		for( z = 0 ; z < newZ; z ++)
+		{
+			curPix = [[self pixList] objectAtIndex: (z * originZ) / newZ];
+			
+			DCMPix	*copyPix = [curPix copy];
+			
+			[newPixList addObject: copyPix];
+			[copyPix release];
+			
+			[[newPixList lastObject] setPwidth: newX];
+			[[newPixList lastObject] setPheight: newY];
+			
+			[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * z)];
+			[[newPixList lastObject] setTot: newZ];
+			[[newPixList lastObject] setFrameNo: z];
+			[[newPixList lastObject] setID: z];
+			
+			[[newPixList lastObject] setPixelSpacingX: [curPix pixelSpacingX] * (float) xFactor];
+			[[newPixList lastObject] setPixelSpacingY: [curPix pixelSpacingY] * (float) yFactor];
+			[[newPixList lastObject] setSliceThickness: [copyPix sliceThickness] * (float) zFactor];
+			[[newPixList lastObject] setPixelRatio:  [curPix pixelRatio] / (float) xFactor * (float) yFactor];
+			
+			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
+			switch( o)
+			{
+				case 0:
+					newOrigin[ 0] = origin[ 0] + (float) z * interval; 
+					break;
+					
+				case 1:
+					newOrigin[ 1] = origin[ 1] + (float) z * interval;
+					break;
+					
+				case 2:
+					newOrigin[ 2] = origin[ 2] + (float) z * interval;
+					break;
+			}
+			[[newPixList lastObject] setOrigin: newOrigin];
+			[[newPixList lastObject] setSliceLocation: pos1 + intervalSlice * (float) z];
+			[[newPixList lastObject] setSliceInterval: intervalSlice * (float) z];
+		}
+		
+		for( z = 0; z < originZ; z++)
+		{
+			vImage_Buffer	srcVimage, dstVimage;
+			
+			curPix = [[self pixList] objectAtIndex: z];
+			
+			srcImage = [curPix  fImage];
+			dstImage = emptyData + imageSize * z;
+			
+			srcVimage.data = srcImage;
+			srcVimage.height =  originHeight;
+			srcVimage.width = originWidth;
+			srcVimage.rowBytes = originWidth*4;
+			
+			dstVimage.data = dstImage;
+			dstVimage.height =  newY;
+			dstVimage.width = newX;
+			dstVimage.rowBytes = newX*4;
+			
+			if( [curPix isRGB])
+				vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			else
+				vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+		}
+		
+		// Z RESAMPLING
+		
+		if( originZ != newZ)
+		{
+			curPix = [newPixList objectAtIndex: 0];
+			
+			for( y = 0; y < newY; y++)
+			{
+				vImage_Buffer	srcVimage, dstVimage;
+				
+				srcImage = [curPix  fImage] + y * newX;
+				dstImage = emptyData + y * newX;
+				
+				srcVimage.data = srcImage;
+				srcVimage.height =  originZ;
+				srcVimage.width = newX;
+				srcVimage.rowBytes = newY*newX*4;
+				
+				dstVimage.data = dstImage;
+				dstVimage.height =  newZ;
+				dstVimage.width = newX;
+				dstVimage.rowBytes = newY*newX*4;
+				
+				if( [curPix isRGB])
+					vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				else
+					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			}
+		}
+		
+		for( z = 0 ; z < newZ; z ++)
+		{
+			[newDcmList addObject: [[self fileList] objectAtIndex: (z * originZ) / newZ]];
+			[finalnewPixList addObject: [newPixList objectAtIndex: z]];
+		}
+		
+		// CREATE A SERIES
+		new2DViewer = [self newWindow:finalnewPixList :newDcmList :newData];
+	}
+	// Close the waiting window
+	// [viewerController endWaitWindow: waitWindow];
+	
+	// We modified the view: OsiriX please update the display!
+	[self needsDisplayUpdate];
+}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
