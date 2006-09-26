@@ -1071,10 +1071,21 @@ static BOOL COMPLETEREBUILD = NO;
 			[context lock];
 			 
 			NSPredicate			*predicate = 0L;
+			NSArray				*result;
 			
-			predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+			@try
+			{
+				predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+				result = [newImages filteredArrayUsingPredicate: predicate];
+			}
 			
-			NSArray		*result = [newImages filteredArrayUsingPredicate: predicate];
+			@catch( NSException *ne)
+			{
+				result = 0L;
+				NSLog( @"Error in autorouting filter :");
+				NSLog( [ne name]);
+				NSLog( [ne reason]);
+			}
 			
 			if( [result count])
 			{
