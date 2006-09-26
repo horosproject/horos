@@ -3470,8 +3470,9 @@ static BOOL COMPLETEREBUILD = NO;
 			threadWillRunning = YES;
 			
 			[animationSlider setEnabled:NO];
-			[animationSlider setIntValue:0];
-			
+			[animationSlider setMaxValue:0];
+			[animationSlider setNumberOfTickMarks:1];
+			[animationSlider setIntValue:0];			
 			
 			NSArray			*children = [self childrenArray: item];
 			NSMutableArray	*imagePaths = [NSMutableArray arrayWithCapacity: 0];
@@ -4690,6 +4691,8 @@ static BOOL withReset = NO;
     {
 		if( [cell isEnabled] == YES)
 		{
+			if( [cell tag] >= [matrixViewArray count]) return;
+			
 			NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 			if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 			{
@@ -4703,6 +4706,8 @@ static BOOL withReset = NO;
 					if( [images count] > 1 || noOfImages == 1)
 					{
 						animate = YES;
+						
+						if( [sender intValue] >= [images count]) return;
 						
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [sender intValue]] valueForKey:@"completePath"]] == NO)
 						{						
@@ -4790,7 +4795,8 @@ static BOOL withReset = NO;
     if( threadWillRunning == YES) return;
     if( threadRunning == YES)  return;
     if( [[self window] isKeyWindow] == NO) return;
-    
+    if( [animationSlider isEnabled] == NO) return;
+	
 	int	pos = [animationSlider intValue];
 	pos++;
 	if( pos > [animationSlider maxValue]) pos = 0;
@@ -4843,6 +4849,8 @@ static BOOL withReset = NO;
 	[[self window] makeFirstResponder:databaseOutline];
 	
 	[animationSlider setEnabled:NO];
+	[animationSlider setMaxValue:0];
+	[animationSlider setNumberOfTickMarks:1];
 	[animationSlider setIntValue:0];
 	
     if( [theCell tag] >= 0)
