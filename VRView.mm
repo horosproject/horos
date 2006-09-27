@@ -2084,6 +2084,8 @@ public:
 			case tZoom:
 				[self rightMouseUp:theEvent];
 				break;
+			case t3DCut:	// <- DO NOTHING !
+			break;
 			default:
 				[self setNeedsDisplay:YES];
 				break;
