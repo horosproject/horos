@@ -112,7 +112,7 @@ BOOL useQuartz() {
 
 - (IBAction) switchVersion:(id) sender
 {
-	NSString	*currVersionNumber = 0L;
+	NSMutableString *currVersionNumber = 0L;
 	
 	if( versionType)
 	{
@@ -120,7 +120,8 @@ BOOL useQuartz() {
 	}
 	else
 	{
-		currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"];
+		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"]];
+		[currVersionNumber replaceOccurrencesOfString:@"$" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [currVersionNumber length])];
 	}
 	
 	if( sizeof(long) == 8)
