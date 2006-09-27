@@ -3690,6 +3690,7 @@ static ViewerController *draggedController = 0L;
 	{
 		[self changeImageData:newPixList :newDcmList :newData :NO];
 		loadingPercentage = 1;
+		[self computeInterval];
 		[self setWindowTitle:self];
 	}
 	return isResampled;
@@ -3713,9 +3714,12 @@ static ViewerController *draggedController = 0L;
 	newX = (int)((float)originWidth / xFactor + 0.5);
 	newY = (int)((float)originHeight / yFactor + 0.5);
 	newZ = (int)((float)originZ / zFactor + 0.5);
-
+	
+	int maxZ = originZ;
+	if( maxZ < newZ) maxZ = newZ;
+	
 	imageSize = newX * newY;
-	size = sizeof(float) * originZ * imageSize;
+	size = sizeof(float) * maxZ * imageSize;
 	
 	emptyData = malloc( size);
 	if( emptyData)
@@ -3816,7 +3820,7 @@ static ViewerController *draggedController = 0L;
 			}
 			[[newPixList lastObject] setOrigin: newOrigin];
 			[[newPixList lastObject] setSliceLocation: pos1 + intervalSlice * (float) z];
-			[[newPixList lastObject] setSliceInterval: intervalSlice];
+			[[newPixList lastObject] setSliceInterval: 0];
 		}
 		
 		for( z = 0; z < originZ; z++)
