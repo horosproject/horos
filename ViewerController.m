@@ -3706,14 +3706,19 @@ static ViewerController *draggedController = 0L;
 
 + (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 {
+	return [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+}
+
++ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+{
 	long				i, y, z, imageSize, newX, newY, newZ, size;
 	float				*srcImage, *dstImage, *emptyData;
 	DCMPix				*curPix;
 	
-	int originWidth = [[[aViewer imageView] curDCM] pwidth];
-	int originHeight = [[[aViewer imageView] curDCM] pheight];
-	int originZ = [[aViewer pixList] count];
-
+	int originWidth = [[originalPixlist objectAtIndex:0] pwidth];
+	int originHeight = [[originalPixlist objectAtIndex:0] pheight];
+	int originZ = [originalPixlist count];
+	
 	newX = originWidth / xFactor;
 	newY = originHeight / yFactor;
 	newZ = originZ / zFactor;
@@ -3721,7 +3726,6 @@ static ViewerController *draggedController = 0L;
 	imageSize = newX * newY;
 	size = sizeof(float) * originZ * imageSize;
 	
-	// CREATE A NEW SERIES TO CONTAIN THIS NEW RE-SAMPLED SERIES
 	emptyData = malloc( size);
 	if( emptyData)
 	{
@@ -3729,12 +3733,12 @@ static ViewerController *draggedController = 0L;
 		BOOL equalVector = YES;
 		int o;
 		
-		[[[aViewer pixList] objectAtIndex:0] orientation: vectors];
-		[[[aViewer pixList] objectAtIndex:1] orientation: vectorsB];
+		[[originalPixlist objectAtIndex:0] orientation: vectors];
+		[[originalPixlist objectAtIndex:1] orientation: vectorsB];
 		
-		origin[ 0] = [[[aViewer pixList] objectAtIndex:0] originX]; 
-		origin[ 1] = [[[aViewer pixList] objectAtIndex:1] originY]; 
-		origin[ 2] = [[[aViewer pixList] objectAtIndex:2] originZ]; 
+		origin[ 0] = [[originalPixlist objectAtIndex:0] originX]; 
+		origin[ 1] = [[originalPixlist objectAtIndex:1] originY]; 
+		origin[ 2] = [[originalPixlist objectAtIndex:2] originZ]; 
 		
 		for( i = 0; i < 9; i++)
 		{
@@ -3745,7 +3749,7 @@ static ViewerController *draggedController = 0L;
 		{
 			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 			{
-				interval = [[[aViewer pixList] objectAtIndex:0] originX] - [[[aViewer pixList] objectAtIndex:1] originX];
+				interval = [[originalPixlist objectAtIndex:0] originX] - [[originalPixlist objectAtIndex:1] originX];
 				
 				if( vectors[6] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3754,7 +3758,7 @@ static ViewerController *draggedController = 0L;
 			
 			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 			{
-				interval = [[[aViewer pixList] objectAtIndex:0] originY] - [[[aViewer pixList] objectAtIndex:1] originY];
+				interval = [[originalPixlist objectAtIndex:0] originY] - [[originalPixlist objectAtIndex:1] originY];
 				
 				if( vectors[7] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3763,7 +3767,7 @@ static ViewerController *draggedController = 0L;
 			
 			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 			{
-				interval = [[[aViewer pixList] objectAtIndex:0] originZ] - [[[aViewer pixList] objectAtIndex:1] originZ];
+				interval = [[originalPixlist objectAtIndex:0] originZ] - [[originalPixlist objectAtIndex:1] originZ];
 				
 				if( vectors[8] > 0) interval = -( interval);
 				else interval = ( interval);
@@ -3776,15 +3780,15 @@ static ViewerController *draggedController = 0L;
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
 		
-		float pos1 = [[[aViewer pixList] objectAtIndex: 0] sliceLocation];
-		float pos2 = [[[aViewer pixList] objectAtIndex: 1] sliceLocation];
+		float pos1 = [[originalPixlist objectAtIndex: 0] sliceLocation];
+		float pos2 = [[originalPixlist objectAtIndex: 1] sliceLocation];
 		float intervalSlice = pos2 - pos1;
 		
 		intervalSlice *= (float) zFactor;
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
-			curPix = [[aViewer pixList] objectAtIndex: (z * originZ) / newZ];
+			curPix = [originalPixlist objectAtIndex: (z * originZ) / newZ];
 			
 			DCMPix	*copyPix = [curPix copy];
 			
@@ -3821,14 +3825,14 @@ static ViewerController *draggedController = 0L;
 			}
 			[[newPixList lastObject] setOrigin: newOrigin];
 			[[newPixList lastObject] setSliceLocation: pos1 + intervalSlice * (float) z];
-			[[newPixList lastObject] setSliceInterval: intervalSlice * (float) z];
+			[[newPixList lastObject] setSliceInterval: intervalSlice];
 		}
 		
 		for( z = 0; z < originZ; z++)
 		{
 			vImage_Buffer	srcVimage, dstVimage;
 			
-			curPix = [[aViewer pixList] objectAtIndex: z];
+			curPix = [originalPixlist objectAtIndex: z];
 			
 			srcImage = [curPix fImage];
 			dstImage = emptyData + imageSize * z;
@@ -3881,7 +3885,7 @@ static ViewerController *draggedController = 0L;
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
-			[aFileList addObject: [[aViewer fileList] objectAtIndex: (z * originZ) / newZ]];
+			[aFileList addObject: [originalFileList objectAtIndex: (z * originZ) / newZ]];
 			[aPixList addObject: [newPixList objectAtIndex: z]];
 		}
 		*aData = newData;
@@ -5755,6 +5759,8 @@ NSMutableArray		*array;
 		case 9: // LL
 		{
 			[self checkEverythingLoaded];
+			//[self resampleDataBy2];
+			//[blendedwin resampleDataBy2];
 			[blendedwin checkEverythingLoaded];
 			LLScoutViewer *llScoutViewer;
 			llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];

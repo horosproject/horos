@@ -326,6 +326,7 @@ enum
 - (BOOL)resampleDataWithFactor:(int)factor;
 - (BOOL)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 + (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
++ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
 
 - (IBAction) subCtrlOnOff:(id) sender;
 - (IBAction) subCtrlNewMask:(id) sender;
