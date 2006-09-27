@@ -80,7 +80,10 @@ static NSString *hostName = @"";
 			if( [[filter className] isEqualToString:@"LavimAnonymize"]) return YES;
 		}
 	}
-	
+	else if([self isUniGE])
+	{
+		if ([hostName isEqualToString:@"lavimcmu1.unige.ch"]) return YES;
+	}
 	return NO;
 }
 
