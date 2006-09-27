@@ -153,8 +153,10 @@
 - (float) wl;
 -(float) fullww;
 -(float) fullwl;
-- (long) savedWL;
-- (long) savedWW;
+- (float) savedWL;
+- (float) savedWW;
+- (float) setSavedWL:(float) l;
+- (float) setSavedWW:(float) w;
 - (void) changeWLWW:(float)newWL :(float)newWW;
 -(void) computePixMinPixMax;
 - (float) maxValueOfSeries;
@@ -321,8 +323,6 @@
 - (void) setUpdateToApply;
 - (void) revert;
 - (void) computePixMinPixMax;
-- (long) savedWL;
-- (long) savedWW;
 - (void) setfImage:(float*) ptr;
 - (void) setThickSlabController:( ThickSlabController*) ts;
 - (void) setFixed8bitsWLWW:(BOOL) f;

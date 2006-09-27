@@ -210,6 +210,8 @@ enum
 	
 	float					direction;
 	
+	float					factorPET2SUV;
+	
 	volatile float			loadingPercentage;
     
 	volatile BOOL			ThreadLoadImage, stopThreadLoadImage, loadingPause;
@@ -479,6 +481,7 @@ enum
 -(void) ApplyConvString:(NSString*) str;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
 - (IBAction) applyConvolutionOnSource:(id) sender;
+- (float) factorPET2SUV;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

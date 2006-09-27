@@ -3303,6 +3303,14 @@ static long scrollMode;
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
 			}
+			else
+			{
+				if( [[[self window] windowController] is2DViewer] == YES)
+				{
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				}
+			}
 		}
         else if( tool == tWL && [stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
 		{
@@ -3391,7 +3399,11 @@ static long scrollMode;
 	}
 	else
 	{
-		
+		if( [[[self window] windowController] is2DViewer] == YES)
+		{
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+		}
 	}
 }
 
@@ -3410,6 +3422,14 @@ static long scrollMode;
 	{
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+	}
+	else
+	{
+		if( [[[self window] windowController] is2DViewer] == YES)
+		{
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+		}
 	}
 }
 
@@ -7480,8 +7500,19 @@ BOOL	lowRes = NO;
 		{
 			if( [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] != 0.0)
 			{
-				curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
-				curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+				if( [curDCM SUVConverted] == NO)
+				{
+					curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+				}
+				else
+				{
+					if( [[[self window] windowController] is2DViewer] == YES)
+					{
+						curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
+						curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
+					}
+				}
 			}
 		}
 	}
@@ -7500,10 +7531,23 @@ BOOL	lowRes = NO;
 		[series setValue:[NSNumber numberWithFloat:0.0] forKey:@"xOffset"];
 		origin.y = 0.0;
 		[series setValue:[NSNumber numberWithFloat:0.0] forKey:@"yOffset"];
+		
 		[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];
-		[series setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-
-		[series setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		if( [curDCM SUVConverted] == NO)
+		{
+			
+			[series setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[series setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		}
+		else
+		{
+			if( [[[self window] windowController] is2DViewer] == YES)
+			{
+				[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			}
+		}
+		
 		[[self seriesObj] setValue:[NSNumber numberWithFloat:0] forKey:@"displayStyle"]; 
 		[self scaleToFit];
 	}

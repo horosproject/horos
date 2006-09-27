@@ -2051,8 +2051,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 -(void) setSliceThickness:(float) l { [self CheckLoad]; sliceThickness = l;}
 -(float) slope {[self CheckLoad]; return slope;}
 -(float) offset{[self CheckLoad]; return offset;}
-- (long) savedWL {[self CheckLoad]; return savedWL;}
-- (long) savedWW {[self CheckLoad]; return savedWW;}
+- (float) savedWL {[self CheckLoad]; return savedWL;}
+- (float) savedWW {[self CheckLoad]; return savedWW;}
+- (float) setSavedWL:(float) l {[self CheckLoad]; savedWL = l;}
+- (float) setSavedWW:(float) w {[self CheckLoad]; savedWW = w;}
+
+
 -(float) cineRate {[self CheckLoad]; return cineRate;}
 
 -(float) fullwl

@@ -7508,6 +7508,12 @@ int i,j,l;
 	}
 }
 #pragma mark SUV
+
+- (float) factorPET2SUV
+{
+	return factorPET2SUV;
+}
+
 - (void) convertPETtoSUV
 {
 	long	y, x, i;
@@ -7536,18 +7542,17 @@ int i,j,l;
 			if( [pix SUVConverted] == NO)
 			{
 				float	*imageData = [pix fImage];
-				float	factor;
 				if( [[pix units] isEqualToString:@"CNTS"])	// Philips
 				{
-					factor = [pix philipsFactor];
+					factorPET2SUV = [pix philipsFactor];
 				}
-				else factor = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
+				else factorPET2SUV = [pix patientsWeight] * 1000. / ([pix radionuclideTotalDoseCorrected]);
 				
 				i = [pix pheight] * [pix pwidth];
 				
 				while( i--> 0)
 				{
-					*imageData++ *=  factor;
+					*imageData++ *=  factorPET2SUV;
 				}
 				
 				[pix setSUVConverted : YES];
@@ -7566,6 +7571,9 @@ int i,j,l;
 		{
 			[[pixList[y] objectAtIndex: x] setMaxValueOfSeries: maxValueOfSeries];
 			[[pixList[y] objectAtIndex: x] setMinValueOfSeries: minValueOfSeries];
+			
+			[[pixList[y] objectAtIndex: x] setSavedWL: [[pixList[y] objectAtIndex: x] savedWL]* updatefactor];
+			[[pixList[y] objectAtIndex: x] setSavedWW: [[pixList[y] objectAtIndex: x] savedWW]* updatefactor];
 		}
 	}
 	
@@ -10051,6 +10059,7 @@ return moviePosSlider;
 	ThreadLoadImageLock = [[NSLock alloc] init];
 	roiLock = [[NSLock alloc] init];
 	
+	factorPET2SUV = 1.0;
 	windowWillClose = NO;
 	EXPORT2IPHOTO = NO;
 	loadingPause = NO;
