@@ -323,10 +323,10 @@ enum
 
 - (IBAction)resampleDataBy2:(id)sender;
 - (BOOL)resampleDataBy2;
-- (BOOL)resampleDataWithFactor:(int)factor;
-- (BOOL)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
-+ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
-+ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+- (BOOL)resampleDataWithFactor:(float)factor;
+- (BOOL)resampleDataWithXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
++ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
++ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 
 - (IBAction) subCtrlOnOff:(id) sender;
 - (IBAction) subCtrlNewMask:(id) sender;

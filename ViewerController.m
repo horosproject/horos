@@ -3669,7 +3669,9 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction)resampleDataBy2:(id)sender;
 {
+	id waitWindow = [self startWaitWindow:@"Resampling data..."];
 	BOOL isResampled = [self resampleDataBy2];
+	[self endWaitWindow: waitWindow];
 	if(!isResampled)
 	{
 		NSRunAlertPanel(NSLocalizedString(@"Not enough memory", nil), NSLocalizedString(@"Your computer doesn't have enough RAM to complete the resampling", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -3678,15 +3680,15 @@ static ViewerController *draggedController = 0L;
 
 - (BOOL)resampleDataBy2;
 {
-	return [self resampleDataWithFactor:2];
+	return [self resampleDataWithFactor:2.0];
 }
 
-- (BOOL)resampleDataWithFactor:(int)factor;
+- (BOOL)resampleDataWithFactor:(float)factor;
 {
 	return [self resampleDataWithXFactor:factor yFactor:factor zFactor:factor];
 }
 
-- (BOOL)resampleDataWithXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
+- (BOOL)resampleDataWithXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	[self checkEverythingLoaded];
 	
@@ -3704,12 +3706,12 @@ static ViewerController *draggedController = 0L;
 	return isResampled;
 }
 
-+ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
++ (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	return [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
 }
 
-+ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(int)xFactor yFactor:(int)yFactor zFactor:(int)zFactor;
++ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	long				i, y, z, imageSize, newX, newY, newZ, size;
 	float				*srcImage, *dstImage, *emptyData;
@@ -3718,10 +3720,10 @@ static ViewerController *draggedController = 0L;
 	int originWidth = [[originalPixlist objectAtIndex:0] pwidth];
 	int originHeight = [[originalPixlist objectAtIndex:0] pheight];
 	int originZ = [originalPixlist count];
-	
-	newX = originWidth / xFactor;
-	newY = originHeight / yFactor;
-	newZ = originZ / zFactor;
+		
+	newX = (int)((float)originWidth / xFactor + 0.5);
+	newY = (int)((float)originHeight / yFactor + 0.5);
+	newZ = (int)((float)originZ / zFactor + 0.5);
 
 	imageSize = newX * newY;
 	size = sizeof(float) * originZ * imageSize;
@@ -3803,10 +3805,10 @@ static ViewerController *draggedController = 0L;
 			[[newPixList lastObject] setFrameNo: z];
 			[[newPixList lastObject] setID: z];
 			
-			[[newPixList lastObject] setPixelSpacingX: [curPix pixelSpacingX] * (float) xFactor];
-			[[newPixList lastObject] setPixelSpacingY: [curPix pixelSpacingY] * (float) yFactor];
-			[[newPixList lastObject] setSliceThickness: [curPix sliceThickness] * (float) zFactor];
-			[[newPixList lastObject] setPixelRatio:  [curPix pixelRatio] / (float) xFactor * (float) yFactor];
+			[[newPixList lastObject] setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
+			[[newPixList lastObject] setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
+			[[newPixList lastObject] setSliceThickness: [curPix sliceThickness] * zFactor];
+			[[newPixList lastObject] setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
 			
 			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
 			switch( o)
