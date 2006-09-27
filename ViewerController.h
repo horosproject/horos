@@ -482,7 +482,7 @@ enum
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
 - (IBAction) applyConvolutionOnSource:(id) sender;
 - (float) factorPET2SUV;
-
+- (IBAction) flipDataSeries: (id) sender;
 #pragma mark-
 #pragma mark Brush ROI Filters
 
