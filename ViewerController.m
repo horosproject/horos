@@ -137,7 +137,6 @@ static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
 static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
-static NSString*	ResampleBy2ToolbarItemIdentifier	= @"3D.tif";
 
 static NSArray*		DefaultROINames;
 
@@ -2605,15 +2604,6 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setTarget: nil];
 	[toolbarItem setAction: @selector(flipHorizontal:)];
     }
-	else if ([itemIdent isEqualToString: ResampleBy2ToolbarItemIdentifier])
-	{
-		[toolbarItem setLabel: NSLocalizedString(@"Resample By 2", nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Resample By 2", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Resample By 2", nil)];
-		[toolbarItem setImage: [NSImage imageNamed:ResampleBy2ToolbarItemIdentifier]];
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(resampleDataBy2:)];
-    }
     else
 	{
 		// Is it a plugin menu item?
@@ -2704,7 +2694,6 @@ static ViewerController *draggedController = 0L;
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
 														VRPanelToolbarItemIdentifier,
-														ResampleBy2ToolbarItemIdentifier,
 														nil];
 	
 	long		i;
