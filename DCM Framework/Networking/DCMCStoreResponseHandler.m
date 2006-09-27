@@ -103,8 +103,6 @@ htt://www.pixelmed.com
 	if (date)
 		[userInfo setObject:date forKey:@"Time"];
 	
-
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:self userInfo:userInfo];
 	
 	[moveHandler setStatus:(unsigned short)moveStatus  numberSent:(int)numberSent numberError:(int)numberErrors];

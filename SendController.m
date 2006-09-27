@@ -370,8 +370,6 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
 	[info setObject:calledAET forKey:@"CalledAET"];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMSendStatus" object:nil userInfo:info];
-	
 	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
 	
 	[storeSCU release];
