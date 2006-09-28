@@ -3896,6 +3896,9 @@ static ViewerController *draggedController = 0L;
 		{
 			[aFileList addObject: [originalFileList objectAtIndex: (z * originZ) / newZ]];
 			[aPixList addObject: [newPixList objectAtIndex: z]];
+			
+			[[aPixList lastObject] setArrayPix: aPixList :z];
+			[[aPixList lastObject] setID: z];
 		}
 		*aData = newData;
 		return YES;
