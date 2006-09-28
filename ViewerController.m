@@ -6543,7 +6543,8 @@ int i,j,l;
 
 	// Find the first ROI selected
 	ROI *selectedROI = 0L;
-	long i;
+	long i,y,x;
+	
 	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
@@ -6568,9 +6569,52 @@ int i,j,l;
 	
 	// proceed
 	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue];
+	
+	// Recompute!!!! Apply WL/WW
+	float   iwl, iww;
+		
+	[imageView getWLWW:&iwl :&iww];
+	[imageView setWLWW:iwl :iww];
+	
+	// Recompute all ROIs
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[y] count]; x++)
+		{
+			for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++) [[[roiList[y] objectAtIndex: x] objectAtIndex: i] recompute];
+			
+			[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];	//recompute WLWW
+		}
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
 }
 
-- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) updateVolumeData
+- (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed
+{
+	if( [roiToProceed count])
+	{
+		// Create a scheduler
+		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+		[sched setDelegate: self];
+		
+		// Create the work units.
+		long i;
+		NSMutableSet *unitsSet = [NSMutableSet set];
+		for ( i = 0; i < [roiToProceed count]; i++ )
+		{
+			[unitsSet addObject: [roiToProceed  objectAtIndex: i]];
+		}
+		
+		[sched performScheduleForWorkUnits:unitsSet];
+		
+		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+		
+		[sched release];
+	}
+}
+
+- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
 {
 	long			i, x, y, z;
 	float			volume = 0;
@@ -6659,57 +6703,14 @@ int i,j,l;
 		}
 	}
 	
-	if( [roiToProceed count])
-	{
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units.
-		long i;
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( i = 0; i < [roiToProceed count]; i++ )
-		{
-			[unitsSet addObject: [roiToProceed  objectAtIndex: i]];
-		}
-		
-		[sched performScheduleForWorkUnits:unitsSet];
-		
-		while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-		
-		[sched release];
-	}
+	[self roiSetStartScheduler: roiToProceed];
 	
 	[splash close];
 	[splash release];
-	
-	// Recompute!!!! Apply WL/WW
-	float   iwl, iww;
-		
-	[imageView getWLWW:&iwl :&iww];
-	[imageView setWLWW:iwl :iww];
-	
-	// Recompute all ROIs
-	for( y = 0; y < maxMovieIndex; y++)
-	{
-		for( x = 0; x < [pixList[y] count]; x++)
-		{
-			for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++) [[[roiList[y] objectAtIndex: x] objectAtIndex: i] recompute];
 			
-			[[pixList[y] objectAtIndex: x] changeWLWW:iwl :iww];	//recompute WLWW
-		}
-	}
-	
-	if( updateVolumeData)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
-		
 	NSLog(@"endSetPixel");
 }
 
-- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL)propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
-{
-	[self roiSetPixels:aROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :YES];
-}
 - (IBAction) endRoiRename:(id) sender
 {
 	[roiRenameWindow orderOut:sender];

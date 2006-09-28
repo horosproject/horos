@@ -330,24 +330,31 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 		}
 	}
 	
-	// ** RESAMPLE START
-	
-	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
-	NSData				*newData = 0L;
-	
-	if( [ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
-	{
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-		return 0L;
-	}
-	else
-	{
-		pix = newPix;
-		f = newFiles;
-		vData = newData;
-		
-		firstObject = [pix objectAtIndex: 0];
-	}
+//	// ** RESAMPLE START
+//	
+//	WaitRendering *www = [[WaitRendering alloc] init:@"Resampling 3D data..."];
+//	[www start];
+//	
+//	NSMutableArray		*newPix = [NSMutableArray array], *newFiles = [NSMutableArray array];
+//	NSData				*newData = 0L;
+//	
+//	if( [ViewerController resampleDataFromPixArray:pix fileArray:f inPixArray:newPix fileArray:newFiles data:&newData withXFactor:2 yFactor:2 zFactor:2] == NO)
+//	{
+//		NSRunCriticalAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+//		return 0L;
+//	}
+//	else
+//	{
+//		pix = newPix;
+//		f = newFiles;
+//		vData = newData;
+//		
+//		firstObject = [pix objectAtIndex: 0];
+//	}
+//	
+//	[www end];
+//	[www close];
+//	[www release];
 //	
 //	// ** RESAMPLE END
 			

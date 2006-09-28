@@ -90,14 +90,15 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 @implementation ITKSegmentation3D
 
-+ (unsigned char*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from viewer:(ViewerController*) srcViewer
++ (NSMutableDictionary*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList
 {
-	BOOL				found = YES, foundPlane = YES;
-	long				minX, minY, minZ, maxX, maxY, maxZ;
-	long				nminX, nminY, nminZ, nmaxX, nmaxY, nmaxZ;
-	long				x, y, z, zz, s = w*h;
-	float				*srcPtrZ, *srcPtrY, *srcPtrX;
-	unsigned char		*rPtr, *rPtrZ, *rPtrY, *rPtrX;
+	BOOL					found = YES, foundPlane = YES;
+	long					minX, minY, minZ, maxX, maxY, maxZ;
+	long					nminX, nminY, nminZ, nmaxX, nmaxY, nmaxZ;
+	long					x, y, z, zz, s = w*h;
+	float					*srcPtrZ, *srcPtrY, *srcPtrX;
+	unsigned char			*rPtr, *rPtrZ, *rPtrY, *rPtrX;
+	NSMutableDictionary		*roiList = [NSMutableDictionary dictionary];
 	
 	if( seed[ 0] <= 1) seed[ 0] = 2;	if( seed[ 0] >= w - 2)		seed[ 0] = w - 3;
 	if( seed[ 1] <= 1) seed[ 1] = 2;	if( seed[ 1] >= h - 2)		seed[ 1] = h - 3;
@@ -305,10 +306,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		
 		
 		rPtrZ = rPtr;
-		for( i = 0; i < [[srcViewer pixList] count]; i++)
+		for( i = 0; i < [pixList count]; i++)
 		{
-			int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
-			int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
+			int buffHeight = [[pixList objectAtIndex: i] pheight];
+			int buffWidth = [[pixList objectAtIndex: i] pwidth];
 			
 			ROI *theNewROI = [[ROI alloc]	initWithTexture:rPtrZ
 											textWidth:w
@@ -316,15 +317,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											textName: @"BoneRemovalAlgorithmROIUniqueName"
 											positionX:0
 											positionY:0
-											spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
-											spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-											imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
+											spacingX:[[pixList objectAtIndex: i] pixelSpacingX]
+											spacingY:[[pixList objectAtIndex: i] pixelSpacingY]
+											imageOrigin:NSMakePoint([[pixList objectAtIndex: i] originX], [[pixList objectAtIndex: i] originY])];
 			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 			{
-				[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
-				[theNewROI setROIMode: ROI_selected];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
+				[roiList setObject: theNewROI forKey: [pixList objectAtIndex: i]];
+//				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
+//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
+//				[theNewROI setROIMode: ROI_selected];
+//				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
 			}
 			[theNewROI release];
 			
@@ -334,7 +336,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		free( rPtr);
 	}
 	
-	return 0L;
+	return roiList;
 }
 
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints

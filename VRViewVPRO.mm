@@ -2669,15 +2669,10 @@ public:
 			{
 				NSLog(@"BONE FOUND!!");
 				
-				[[[[[self window] windowController] viewer2D] imageView] setIndex:currentSliceNumber]; //set the DCMview on the good slice
-				
 				NSPoint seedPoint;
 				seedPoint.x = xPosition;
 				seedPoint.y = yPosition;
 				
-				#define USEFAST 1
-				
-				#ifdef USEFAST
 				
 				long seed[ 3];
 				
@@ -2685,59 +2680,39 @@ public:
 				seed[ 1] = (long) seedPoint.y;
 				seed[ 2] = currentSliceNumber;
 				
-				[ITKSegmentation3D fastGrowingRegionWithVolume:		[[[[self window] windowController] viewer2D] volumePtr]
-														width:		[[[[[[self window] windowController] viewer2D] pixList] objectAtIndex: 0] pwidth]
-														height:		[[[[[[self window] windowController] viewer2D] pixList] objectAtIndex: 0] pheight]
-														depth:		[[[[[self window] windowController] viewer2D] pixList] count]
-														seedPoint:	seed
-														from:		BONEVALUE
-														viewer:		[[[self window] windowController] viewer2D]];
+				NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
+																						width:		[[pixList objectAtIndex: 0] pwidth]
+																						height:		[[pixList objectAtIndex: 0] pheight]
+																						depth:		[pixList count]
+																						seedPoint:	seed
+																						from:		BONEVALUE
+																						pixList:	pixList];
 				
-				#else
-				
-				ITKSegmentation3D *itkSegmentation = [[ITKSegmentation3D alloc] initWith:[[[[self window] windowController] viewer2D] pixList] :[[[[self window] windowController] viewer2D] volumePtr] :-1];
-				
-				[itkSegmentation regionGrowing3D	:[[[self window] windowController] viewer2D]	// source viewer
-													:nil					// destination viewer = nil means we don't want a new serie
-													:-1						// slice = -1 means 3D region growing
-													:seedPoint				// startingPoint
-													:1						// algorithmNumber, 1 = threshold connected with low & up threshold
-													:[NSArray arrayWithObjects:	[NSNumber numberWithFloat:BONEVALUE],
-																				[NSNumber numberWithFloat:2000],nil]// algo parameters
-													:0						// setIn
-													:0.0					// inValue
-													:0						// setOut
-													:0.0					// outValue
-													:tPlain					// roiType
-													:0						// roiResolution
-													:@"BoneRemovalAlgorithmROIUniqueName"];		// newname (I tried to make it unique ;o)
-				
-				[itkSegmentation release];
-				#endif
 				
 				NSLog( @"**** Growing3D");
 				
-				// find all ROIs with name = BoneRemoval
-				NSArray *producedROIs = [[[[self window] windowController] viewer2D] roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
-				
-				// Dilatation
-				ITKBrushROIFilter *itkFilter = [[ITKBrushROIFilter alloc] init];
-				int i;
-				for(i=0;i<[producedROIs count];i++)
-				{
-					ROI* currentROI = [producedROIs objectAtIndex:i];
-					[itkFilter dilate:currentROI withStructuringElementRadius: 10];
-					[itkFilter erode:currentROI withStructuringElementRadius: 6];
-				}
-				[itkFilter release];
+				[[[[self window] windowController] viewer2D] applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
+				[[[[self window] windowController] viewer2D] applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
+
 				NSLog( @"**** Dilate/Erode");
 				
 				// Bone Removal
-				[[[[self window] windowController] viewer2D] roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000];
-				NSLog( @"**** Set Pixels");
+				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];
+				NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];
+				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
+				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
+				NSMutableArray	*roiToProceed = [NSMutableArray array];
+				NSArray			*keys = [roiList allKeys];
+				int				i;
 				
-				// Remove produced ROIs
-				[[[[self window] windowController] viewer2D] deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
+				for( i = 0 ; i < [keys count]; i++)
+				{
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", [keys objectAtIndex: i], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+				}
+				
+				[[[[self window] windowController] viewer2D] roiSetStartScheduler: roiToProceed];
+				
+				NSLog( @"**** Set Pixels");
 			}
 			else
 			{

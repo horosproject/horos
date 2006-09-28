@@ -483,6 +483,7 @@ enum
 - (IBAction) applyConvolutionOnSource:(id) sender;
 - (float) factorPET2SUV;
 - (IBAction) flipDataSeries: (id) sender;
+- (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed;
 #pragma mark-
 #pragma mark Brush ROI Filters
 

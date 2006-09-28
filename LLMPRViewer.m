@@ -973,55 +973,42 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	
 	NSLog( @">>>> Bone Removal Start");
 	
-	[[notInjectedViewer imageView] setIndex: z]; //set the DCMview on the good slice
-	
 	long seed[3];
 	
 	seed[0] = (long) x;
 	seed[1] = (long) y;
 	seed[2] = (long) z;
 	
-	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
-											 width:		[[[notInjectedViewer pixList] objectAtIndex: 0] pwidth]
-											height:		[[[notInjectedViewer pixList] objectAtIndex: 0] pheight]
-											 depth:		[[notInjectedViewer pixList] count]
-										 seedPoint:		seed
-											  from:		BONEVALUE
-											viewer:		notInjectedViewer];		
+	NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
+																			width:		[[[notInjectedViewer pixList] objectAtIndex: 0] pwidth]
+																			height:		[[[notInjectedViewer pixList] objectAtIndex: 0] pheight]
+																			depth:		[[notInjectedViewer pixList] count]
+																		seedPoint:		seed
+																			from:		BONEVALUE
+																		pixList:		[notInjectedViewer pixList]];		
 	NSLog( @">>>> Growing3D");
-	
-	// find all ROIs with name = BoneRemoval
-	NSArray *producedROIs = [notInjectedViewer roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
-	
 	// Dilatation
 	
-	[notInjectedViewer applyMorphology: producedROIs action:@"dilate" radius: 10 sendNotification:NO];
-	NSLog( @">>>> Dilatation");
-	[notInjectedViewer applyMorphology: producedROIs action:@"erode" radius: 6 sendNotification:NO];
-	NSLog( @">>>> Erosion");
+	[notInjectedViewer applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
+	[notInjectedViewer applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
 	
-	// Bone Removal on injected viewer
-	NSMutableArray *injectedViewerROIList = [NSMutableArray arrayWithArray:[viewer roiList]];
-	NSMutableArray *injectedViewerROIListTemp = [viewer roiList];
-	[injectedViewerROIListTemp removeAllObjects];
-	int i,j;
-	for(i=0; i<[[notInjectedViewer roiList] count]; i++)
+	// Bone Removal
+	NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];
+	NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];
+	NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
+	NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
+	NSMutableArray	*roiToProceed = [NSMutableArray array];
+	NSArray			*keys = [roiList allKeys];
+	int				i;
+	
+	for( i = 0 ; i < [keys count]; i++)
 	{
-		[injectedViewerROIListTemp addObject:[[notInjectedViewer roiList] objectAtIndex:i]];
+		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]]];
+		
+		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 	}
 	
-	producedROIs = [viewer roisWithName:@"BoneRemovalAlgorithmROIUniqueName"];
-				
-	[viewer roiSetPixels:[producedROIs objectAtIndex:0] :0 :YES :NO :-99999 :99999 :-1000 :NO];
-	NSLog( @">>>> Set Pixels");
-	// restore ROI list on injected viewer
-	[injectedViewerROIListTemp removeAllObjects];
-	for(i=0; i<[injectedViewerROIList count]; i++)
-	{
-		[injectedViewerROIListTemp addObject:[injectedViewerROIList objectAtIndex:i]];
-	}
-	// Remove produced ROIs
-	[notInjectedViewer deleteSeriesROIwithName:@"BoneRemovalAlgorithmROIUniqueName"];
+	[viewer roiSetStartScheduler: roiToProceed];
 	
 	// Update views
 	[injectedMPRController restoreCrossPositions];
