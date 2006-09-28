@@ -3704,7 +3704,7 @@ static ViewerController *draggedController = 0L;
 	return [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
 }
 
-+ (BOOL)resampleDataFromPixArray:(NSMutableArray *)originalPixlist fileArray:(NSMutableArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
++ (BOOL)resampleDataFromPixArray:(NSArray *)originalPixlist fileArray:(NSArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	long				i, y, z, imageSize, newX, newY, newZ, size;
 	float				*srcImage, *dstImage, *emptyData;
@@ -3810,45 +3810,56 @@ static ViewerController *draggedController = 0L;
 			switch( o)
 			{
 				case 0:
-					newOrigin[ 0] = origin[ 0] + (float) z * interval; 
+					newOrigin[ 0] = origin[ 0] + (float) z * interval;
+					[[newPixList lastObject] setSliceLocation: newOrigin[ 0]];
 					break;
 					
 				case 1:
 					newOrigin[ 1] = origin[ 1] + (float) z * interval;
+					[[newPixList lastObject] setSliceLocation: newOrigin[ 1]];
 					break;
 					
 				case 2:
 					newOrigin[ 2] = origin[ 2] + (float) z * interval;
+					[[newPixList lastObject] setSliceLocation: newOrigin[ 2]];
 					break;
 			}
 			[[newPixList lastObject] setOrigin: newOrigin];
-			[[newPixList lastObject] setSliceLocation: pos1 + intervalSlice * (float) z];
-			[[newPixList lastObject] setSliceInterval: 0];
+			[[newPixList lastObject] setSliceInterval: interval];
 		}
 		
-		for( z = 0; z < originZ; z++)
+		// X - Y RESAMPLING
+		
+		if( originHeight != newY || originWidth != newX)
 		{
-			vImage_Buffer	srcVimage, dstVimage;
-			
-			curPix = [originalPixlist objectAtIndex: z];
-			
-			srcImage = [curPix fImage];
-			dstImage = emptyData + imageSize * z;
-			
-			srcVimage.data = srcImage;
-			srcVimage.height =  originHeight;
-			srcVimage.width = originWidth;
-			srcVimage.rowBytes = originWidth*4;
-			
-			dstVimage.data = dstImage;
-			dstVimage.height =  newY;
-			dstVimage.width = newX;
-			dstVimage.rowBytes = newX*4;
-			
-			if( [curPix isRGB])
-				vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
-			else
-				vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			for( z = 0; z < originZ; z++)
+			{
+				vImage_Buffer	srcVimage, dstVimage;
+				
+				curPix = [originalPixlist objectAtIndex: z];
+				
+				srcImage = [curPix fImage];
+				dstImage = emptyData + imageSize * z;
+				
+				srcVimage.data = srcImage;
+				srcVimage.height =  originHeight;
+				srcVimage.width = originWidth;
+				srcVimage.rowBytes = originWidth*4;
+				
+				dstVimage.data = dstImage;
+				dstVimage.height =  newY;
+				dstVimage.width = newX;
+				dstVimage.rowBytes = newX*4;
+				
+				if( [curPix isRGB])
+					vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				else
+					vImageScale_PlanarF( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			}
+		}
+		else
+		{
+			memcpy( emptyData, [[originalPixlist objectAtIndex: 0] fImage], originHeight * originWidth * 4 * originZ);
 		}
 		
 		// Z RESAMPLING
