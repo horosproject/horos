@@ -116,18 +116,20 @@ BOOL useQuartz() {
 	
 	if( versionType)
 	{
-		currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"];
+		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleGetInfoString"]];
+		if( sizeof(long) == 8)
+			[currVersionNumber appendString:@" 64-bit"];
+		else
+			[currVersionNumber appendString:@" 32-bit"];
 	}
 	else
 	{
-		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"]];
-		[currVersionNumber replaceOccurrencesOfString:@"$" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [currVersionNumber length])];
+		//currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"]];
+		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"]];
+		//[currVersionNumber replaceOccurrencesOfString:@"$" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [currVersionNumber length])];
 	}
 	
-	if( sizeof(long) == 8)
-		[version setTitle: [currVersionNumber stringByAppendingString:@" 64-bit"]];
-	else
-		[version setTitle: [currVersionNumber stringByAppendingString:@" 32-bit"]];
+	[version setTitle: currVersionNumber];
 
 	versionType = !versionType;
 }
