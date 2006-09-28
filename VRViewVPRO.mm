@@ -2712,6 +2712,8 @@ public:
 				
 				[[[[self window] windowController] viewer2D] roiSetStartScheduler: roiToProceed];
 				
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList userInfo: 0];
+				
 				NSLog( @"**** Set Pixels");
 			}
 			else
