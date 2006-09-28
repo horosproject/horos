@@ -124,9 +124,8 @@ BOOL useQuartz() {
 	}
 	else
 	{
-		//currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"SVNRevision"]];
 		currVersionNumber = [NSMutableString stringWithString:[[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"]];
-		//[currVersionNumber replaceOccurrencesOfString:@"$" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [currVersionNumber length])];
+		[currVersionNumber insertString:@"Revision " atIndex:0];
 	}
 	
 	[version setTitle: currVersionNumber];
