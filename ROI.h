@@ -211,7 +211,7 @@ enum
 - (void) addMarginToBuffer: (int) margin;
 - (void) drawTextualData;
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect;
-
+- (NSPoint) ProjectionPointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint;
 // parent ROI
 - (ROI*) parentROI;
 - (void) setParentROI: (ROI*) aROI;

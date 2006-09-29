@@ -677,6 +677,30 @@ GLenum glReportError (void)
 	return mesureLength;
 }
 
+-(NSPoint) ProjectionPointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint
+{
+    float   LineMag;
+    float   U;
+    NSPoint Intersection;
+ 
+    LineMag = [self Magnitude: endPoint : startPoint];
+ 
+    U = ( ( ( Point.x - startPoint.x ) * ( endPoint.x - startPoint.x ) ) +
+        ( ( Point.y - startPoint.y ) * ( endPoint.y - startPoint.y ) ) );
+		
+	U /= ( LineMag * LineMag );
+
+//    if( U < -0.2f || U > 1.2f )
+//	{
+//		return 0;
+//	}
+	
+    Intersection.x = startPoint.x + U * ( endPoint.x - startPoint.x );
+    Intersection.y = startPoint.y + U * ( endPoint.y - startPoint.y );
+	
+    return Intersection;
+}
+
 -(int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance
 {
     float   LineMag;

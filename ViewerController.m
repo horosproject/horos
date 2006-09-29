@@ -3621,6 +3621,7 @@ static ViewerController *draggedController = 0L;
     id				filter = [plugins objectForKey:name];
 	
 	[self checkEverythingLoaded];
+	[imageView stopROIEditing];
 	
 	NSLog(@"executeFilter");
 	
