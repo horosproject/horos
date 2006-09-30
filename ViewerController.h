@@ -103,6 +103,7 @@ enum
     IBOutlet NSSlider       *subCtrlGamma;
     IBOutlet NSSlider       *subCtrlPercent;
 	IBOutlet NSButton		*subCtrlSharpenButton;
+	IBOutlet NSButton		*shutterOnOff;
 
 			 long			speedometer;
 		 
@@ -317,6 +318,8 @@ enum
 - (NSLock*) roiLock;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
+- (IBAction) shutterOnOff:(id) sender;
+
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (IBAction) ConvertToRGBMenu:(id) sender;

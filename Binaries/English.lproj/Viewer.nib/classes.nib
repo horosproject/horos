@@ -181,6 +181,7 @@
                 setROITool = id; 
                 setStatus = id; 
                 setStructuringElementRadius = id; 
+                shutterOnOff = id; 
                 sliderFusionAction = id; 
                 speedSliderAction = id; 
                 startMSRG = id; 
@@ -322,6 +323,7 @@
                 serieView = NSView; 
                 setROI4DSeries = NSButton; 
                 setWLWWWindow = NSWindow; 
+                shutterOnOff = NSButton; 
                 sizeMatrix = NSMatrix; 
                 slider = NSSlider; 
                 sliderFusion = NSSlider; 

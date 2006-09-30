@@ -2875,6 +2875,81 @@ static ViewerController *draggedController = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultRightToolModified" object:sender userInfo: 0L];
 }
 
+//added by Jacques Fauquex 2006-09-30
+- (IBAction) shutterOnOff:(id) sender
+{
+	NSRect shutterRect;
+	shutterRect.origin.x = 0;
+	shutterRect.origin.y = 0;
+	shutterRect.size.width = 0;
+	shutterRect.size.height = 0;
+
+	if ([shutterOnOff state] == NSOnState)
+	{
+		// Find the first ROI selected for the current frame and copy the rectangle in shutterRect
+		long i;
+		long ii = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count];
+		for( i = 0; i < ii; i++)
+		{
+			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];				
+			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+			{
+				ROI *selectedROI = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
+				//check if selectedROI bounds remain within image bounds
+				shutterRect = [selectedROI rect];
+				//free(selectedROI);
+				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject:selectedROI];
+				i = ii;
+			}
+		}
+		
+		//shutterRect inside frame?
+		//NSLog(@"x:%f, y:%f, w:%f, h:%f",shutterRect.origin.x,shutterRect.origin.y,shutterRect.size.width,shutterRect.size.height);
+		float DCMPixWidth = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] pwidth];
+		float DCMPixHeight = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] pheight];
+		//NSLog(@"DCMPix w:%f",DCMPixWidth);
+		//NSLog(@"DCMPix h:%f",DCMPixHeight);		
+		if ((shutterRect.origin.x < 0) ||
+			(shutterRect.origin.y < 0) ||
+			((shutterRect.origin.x + shutterRect.size.width) > DCMPixWidth) ||
+			((shutterRect.origin.y + shutterRect.size.height) > DCMPixHeight))
+				{
+				NSLog(@"shutterRect not strictly contained in the frame");
+				shutterRect.size.width = 0;
+				shutterRect.size.height = 0;
+				}
+
+		//using valid shutterRect
+		if (shutterRect.size.width != 0)
+		{
+			//copy the rect to DCMPix and activate DCMPixshutterOnOff
+			[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
+			[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOnState];
+//			NSLog(@"test new DCMPixshutterRectWidth x:%d",[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixshutterRectWidth]);
+		}
+		else
+		{
+			//using stored shutterRect?
+			if  ([[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterRectWidth] == 0)
+			{
+				//NSLog(@"no shutter rectangle available");
+				[shutterOnOff setState:NSOffState];
+			}
+			else //reuse preconfigured shutterRect
+			{
+				//NSLog(@"using stored shutter rectangle");
+				[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOnState];
+			}
+		}
+	}
+	else
+	{
+		//NSLog(@"shutterOff");
+		[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOffState];
+	}
+	[imageView setIndex: [imageView curImage]]; //refresh viewer only
+}
+
 
 - (IBAction) AddOpacity:(id) sender
 {

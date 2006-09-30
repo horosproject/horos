@@ -1722,6 +1722,9 @@
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
+		B78DA71B0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
+		B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
+		B78DA71D0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
 		B7CDACFB0AB3003300068D70 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
 		B7CDAD020AB30E7700068D70 /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
 		B7CDAD030AB30E7700068D70 /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
@@ -10487,6 +10490,7 @@
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
 		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Shutter.tif; sourceTree = "<group>"; };
 		B7CDAC730AB3003200068D70 /* PAGES */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PAGES; path = Binaries/PAGES; sourceTree = "<group>"; };
 		B7CDAD000AB30E7600068D70 /* page.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = page.tif; sourceTree = "<group>"; };
 		B7CDAD010AB30E7600068D70 /* pdf.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = pdf.tif; sourceTree = "<group>"; };
@@ -14387,6 +14391,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */,
 				BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */,
 				BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */,
 				BFED84AA0A717E2500119174 /* smallKeyPlus.tif */,
@@ -23978,6 +23983,7 @@
 				A94173240AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DEF0AC71E50004DD3A5 /* dcmcjpeg in Resources */,
+				B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24265,6 +24271,7 @@
 				A94173230AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFE0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DF00AC71E50004DD3A5 /* dcmcjpeg in Resources */,
+				B78DA71D0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24553,6 +24560,7 @@
 				A94173250AB6B50000B9B487 /* SRAnnotation.nib in Resources */,
 				AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DF10AC71E50004DD3A5 /* dcmcjpeg in Resources */,
+				B78DA71B0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24597,7 +24605,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/perl -w";
-			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/usr/local/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\ndie \"$0: No Subversion revision found\" unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);";
+			shellScript = "# Xcode auto-versioning script for Subversion\n# by Axel Andersson, modified by Daniel Jalkut to add\n# \"--revision HEAD\" to the svn info line, which allows\n# the latest revision to always be used.\n\nuse strict;\n\ndie \"$0: Must be run from Xcode\" unless $ENV{\"BUILT_PRODUCTS_DIR\"};\n\n# Get the current subversion revision number and use it to set the CFBundleVersion value\nmy $REV = `/opt/local/bin/svnversion -n ./`;\nmy $INFO = \"$ENV{BUILT_PRODUCTS_DIR}/$ENV{WRAPPER_NAME}/Contents/Info.plist\";\n\nmy $version = $REV;\n\n# (Match the last group of digits and optional letter M/S):\n\n# ugly yet functional (barely) regex by Daniel Jalkut:\n#$version =~ s/([\\d]*:)(\\d+[M|S]*).*/$2/;\n\n# better yet still functional regex via Kevin \"Regex Nerd\" Ballard\n($version =~ m/\\d+[MS]*$/) && ($version = $&);\n\ndie \"$0: No Subversion revision found\" unless $version;\n\nopen(FH, \"$INFO\") or die \"$0: $INFO: $!\";\nmy $info = join(\"\", <FH>);\nclose(FH);\n\n$info =~ s/([\\t ]+<key>CFBundleVersion<\\/key>\\n[\\t ]+<string>).*?(<\\/string>)/$1$version$2/;\n\nopen(FH, \">$INFO\") or die \"$0: $INFO: $!\";\nprint FH $info;\nclose(FH);";
 		};
 		A9EDB1D50ACBC39700D8B534 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;

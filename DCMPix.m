@@ -2320,6 +2320,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		subtractedfPercent = 1;
 		subtractedfZero = 0.8;
 		subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );	
+		DCMPixShutterOnOff = NSOffState;
+		shutterRect_x = 0;
+		shutterRect_y = 0;
+		shutterRect_w = 0;
+		shutterRect_h = 0;
+// to be improved with init using Philips corresponding tags value
+
 /*		//Shutter Shape (0018,1600) RECTANGULAR
 		subShutterLeftVerticalEdge; //(0018,1602)
 		subShutterRightVerticalEdge; //(0018,1604)
@@ -8666,6 +8673,21 @@ BOOL            readable = YES;
 	return result;
 }
 
+-(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
+{
+	shutterRect_x = x;
+	shutterRect_y = y;
+	shutterRect_w = w;
+	shutterRect_h = h;
+}
+-(long) DCMPixShutterRectWidth {return shutterRect_w;}
+-(BOOL) DCMPixShutterOnOff  {return DCMPixShutterOnOff;}
+-(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff
+{
+	DCMPixShutterOnOff = newDCMPixShutterOnOff;
+	updateToBeApplied = YES;
+}
+
 - (void) applyConvolutionOnSourceImage
 {
 	[self CheckLoad]; 
@@ -8765,10 +8787,7 @@ float			iwl, iww;
         max = iwl + iww / 2;
 //        diff = max - min;  //is this a register thing ??? doesn't calculate diff right !!! By the way diff isn't ever used afterwards...
 		
-		//these classes field is used in the subtraction method.
-		fImageBlackPoint = min;
-		fImageWhitePoint = max;
-		//------------------------------------------------------------ min, max, (diff) defined. These are the values used to downsample
+		// min, max are the values used to downsample in the end of the method
 		
 		/* =========================================================== thickslab
 		
@@ -8937,11 +8956,51 @@ float			iwl, iww;
 					if( subtractedfImage)
 						{
 						srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+						
+						if (DCMPixShutterOnOff == NSOnState)
+						{
+
+							NSLog(@"Shutter");
+							Pixel_8888 backColor;    
+							backColor[0] = 0;
+							backColor[1] = 0;
+							backColor[2] = 0;
+							backColor[3] = 0;
+							vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
+
+							srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
+							srcf.width = shutterRect_w;
+							srcf.height = shutterRect_h;
+							dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
+							dst8.width = shutterRect_w;
+							dst8.height = shutterRect_h;
+						}
+
 						vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
 						}
 					else
 						{
 						srcf.data = fFinalResult;
+						
+						if (DCMPixShutterOnOff == NSOnState)
+						{
+
+							NSLog(@"Shutter");
+							Pixel_8888 backColor;    
+							backColor[0] = 0;
+							backColor[1] = 0;
+							backColor[2] = 0;
+							backColor[3] = 0;
+							vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
+
+							srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
+							srcf.width = shutterRect_w;
+							srcf.height = shutterRect_h;
+							dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
+							dst8.width = shutterRect_w;
+							dst8.height = shutterRect_h;
+						}
+
 						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 						}
 						
@@ -8973,11 +9032,51 @@ float			iwl, iww;
 				if( subtractedfImage)
 					{
 					srcf.data = [self subtractImages: fImage :subtractedfImage];
+						
+						if (DCMPixShutterOnOff == NSOnState)
+						{
+
+							NSLog(@"Shutter");
+							Pixel_8888 backColor;    
+							backColor[0] = 0;
+							backColor[1] = 0;
+							backColor[2] = 0;
+							backColor[3] = 0;
+							vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
+
+							srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
+							srcf.width = shutterRect_w;
+							srcf.height = shutterRect_h;
+							dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
+							dst8.width = shutterRect_w;
+							dst8.height = shutterRect_h;
+						}
+
 					vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
 					}
 				else
 					{
 					srcf.data = fImage;
+						
+						if (DCMPixShutterOnOff == NSOnState)
+						{
+
+							NSLog(@"Shutter");
+							Pixel_8888 backColor;    
+							backColor[0] = 0;
+							backColor[1] = 0;
+							backColor[2] = 0;
+							backColor[3] = 0;
+							vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
+
+							srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
+							srcf.width = shutterRect_w;
+							srcf.height = shutterRect_h;
+							dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
+							dst8.width = shutterRect_w;
+							dst8.height = shutterRect_h;
+						}
+
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 					}
 			}

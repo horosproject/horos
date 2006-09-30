@@ -89,14 +89,18 @@
 	unsigned char		*oData;
 	
 //	DSA-subtraction	
-	float				fImageBlackPoint;
-	float				fImageWhitePoint;
 	float				*subtractedfImage;
 	NSPoint				subPixOffset;
 	NSPoint				subMinMax;
 	float				subtractedfPercent;
 	float				subtractedfZero;
 	long				*subGammaFunction;
+
+	long				shutterRect_x;
+	long				shutterRect_y;
+	long				shutterRect_w;
+	long				shutterRect_h;
+	BOOL				DCMPixShutterOnOff;
 
 //-------------------------------------------------------	
 	long				frameNo;
@@ -235,6 +239,10 @@
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
+-(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
+-(long) DCMPixShutterRectWidth;
+-(BOOL) DCMPixShutterOnOff;
+-(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 
 - (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
