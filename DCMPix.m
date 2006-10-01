@@ -8842,11 +8842,10 @@ float			iwl, iww;
 				BOOL			flip = NO; // case 5
 				long			stacksize;
 				unsigned char   *rgbaImage;
-				float *fNext = NULL;
-				float *fResult = malloc( height * width * sizeof(float));
-				long	i;
-				long next;
-				vImage_Buffer srcf, dst8;
+				float			*fNext = NULL;
+				long			i;
+				long			next;
+				vImage_Buffer	srcf, dst8;
 				
 				switch( stackMode)
 				{
@@ -8882,59 +8881,62 @@ float			iwl, iww;
 					//	[self changeWLWW:127 :256];
 					break;
 					// -----------------------------------------------------------------------------------------------------
-					case 1:	;	// Mean
-
-					if( stackDirection) next = pixPos-1;
-					else next = pixPos+1;
-					
-					if( next < [pixArray count]  && next >= 0)
+					case 1:		// Mean
 					{
-						fNext = [[pixArray objectAtIndex: next] fImage];
-						if( fNext) vDSP_vadd( fImage, 1, fNext, 1, fResult, 1, height * width);
-						countstack++;
+						float *fResult = malloc( height * width * sizeof(float));
 						
-						for( i = 2; i < stack; i++)
+						if( stackDirection) next = pixPos-1;
+						else next = pixPos+1;
+						
+						if( next < [pixArray count]  && next >= 0)
 						{
-							long res;
-							if( stackDirection) res = pixPos-i;
-							else res = pixPos+i;
+							fNext = [[pixArray objectAtIndex: next] fImage];
+							if( fNext) vDSP_vadd( fImage, 1, fNext, 1, fResult, 1, height * width);
+							countstack++;
 							
-							if( res < [pixArray count] && res >= 0)
+							for( i = 2; i < stack; i++)
 							{
-								fNext = [[pixArray objectAtIndex: res] fImage];
-								if( fNext) vDSP_vadd( fResult, 1, fNext, 1, fResult, 1, height * width);
-								countstack++;
+								long res;
+								if( stackDirection) res = pixPos-i;
+								else res = pixPos+i;
+								
+								if( res < [pixArray count] && res >= 0)
+								{
+									fNext = [[pixArray objectAtIndex: res] fImage];
+									if( fNext) vDSP_vadd( fResult, 1, fNext, 1, fResult, 1, height * width);
+									countstack++;
+								}
 							}
 						}
+						else
+						{
+							memcpy( fResult, fImage, height * width * sizeof(float));
+						}
+						
+						//rajouter vmull pour la division en floatant... telecharger la doc
+						
+						// Convert to 8 bits
+						
+						
+						srcf.height = height;
+						srcf.width = width;
+						srcf.rowBytes = width*sizeof(float);
+						
+						dst8.height = height;
+						dst8.width = width;
+						dst8.rowBytes = rowBytes;
+						
+						dst8.data = baseAddr;
+						srcf.data = fResult;
+						
+						vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max*countstack, min*countstack, 0);
+						
+						free( fResult);
 					}
-					else
-					{
-						memcpy( fResult, fImage, height * width * sizeof(float));
-					}
-					
-					//rajouter vmull pour la division en floatant... telecharger la doc
-					
-					// Convert to 8 bits
-					
-					
-					srcf.height = height;
-					srcf.width = width;
-					srcf.rowBytes = width*sizeof(float);
-					
-					dst8.height = height;
-					dst8.width = width;
-					dst8.rowBytes = rowBytes;
-					
-					dst8.data = baseAddr;
-					srcf.data = fResult;
-					
-					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max*countstack, min*countstack, 0);
-					
-					free( fResult);
 					break;
 					// ------------------------------------------------------------------------------------------------
 					case 2:		// Maximum IP
-					case 3:;		// Minimum IP
+					case 3:		// Minimum IP
 					
 					fFinalResult = malloc( height * width * sizeof(float));
 					memcpy( fFinalResult, fImage, height * width * sizeof(float));
