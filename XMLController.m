@@ -117,6 +117,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (IBAction) setSearchString:(id) sender
 {
+	
 	[table reloadData];
 }
 
@@ -169,18 +170,30 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
+	BOOL found = NO;
+	
 	if( [[search stringValue] isEqualToString:@""] == NO)
 	{
-		NSRange range = [[item description] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+		NSRange range = [[item XMLString] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
 		
-		if( range.location == NSNotFound)
+		if( range.location != NSNotFound) found = YES;
+		
+		if( found)
 		{
-			[cell setFont: [NSFont systemFontOfSize:12]];
+			[cell setTextColor: [NSColor blackColor]];
+			[cell setFont:[NSFont boldSystemFontOfSize:12]];
 		}
-		else [cell setFont: [NSFont boldSystemFontOfSize:12]];
+		else
+		{
+			[cell setTextColor: [NSColor grayColor]];
+			[cell setFont:[NSFont systemFontOfSize:12]];
+		}
 	}
-	else [cell setFont: [NSFont systemFontOfSize:12]];
-	
+	else
+	{
+		[cell setTextColor: [NSColor blackColor]];
+		[cell setFont:[NSFont systemFontOfSize:12]];
+	}
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 }
 
