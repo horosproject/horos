@@ -7,10 +7,11 @@
                 deepCollapseAllItems = id; 
                 deepExpandAllItems = id; 
                 expandAllItems = id; 
+                setSearchString = id; 
             }; 
             CLASS = XMLController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {table = NSOutlineView; }; 
+            OUTLETS = {search = NSSearchField; searchView = NSView; table = NSOutlineView; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

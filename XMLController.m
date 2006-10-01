@@ -23,6 +23,7 @@ static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
 static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
 static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
 static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
+static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 @implementation XMLController
 
@@ -114,13 +115,14 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 }
 
 
+- (IBAction) setSearchString:(id) sender
+{
+	[table reloadData];
+}
+
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
 {
     return YES;
-}
-
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
-{
 }
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item 
@@ -163,6 +165,23 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
         {
 			return [item childAtIndex:index];
         }
+}
+
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if( [[search stringValue] isEqualToString:@""] == NO)
+	{
+		NSRange range = [[item description] rangeOfString: [search stringValue] options: NSCaseInsensitiveSearch];
+		
+		if( range.location == NSNotFound)
+		{
+			[cell setFont: [NSFont systemFontOfSize:12]];
+		}
+		else [cell setFont: [NSFont boldSystemFontOfSize:12]];
+	}
+	else [cell setFont: [NSFont systemFontOfSize:12]];
+	
+	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
@@ -230,6 +249,16 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportXML:)];
     }
+	else if ([itemIdent isEqual: SearchToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Search", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Search", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Search", nil)];
+		
+		[toolbarItem setView: searchView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([searchView frame]), NSHeight([searchView frame]))];
+    }
 	else if ([itemIdent isEqual: ExportTextToolbarItemIdentifier]) {       
 		[toolbarItem setLabel: NSLocalizedString(@"Export Text", 0L)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export Text", 0L)];
@@ -270,6 +299,7 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 										ExportTextToolbarItemIdentifier,
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
+										SearchToolbarItemIdentifier,
 										nil];
 }
 
@@ -285,6 +315,7 @@ static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 										ExportTextToolbarItemIdentifier, 
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
+										SearchToolbarItemIdentifier,
 										nil];
 }
 

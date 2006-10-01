@@ -18,9 +18,10 @@
 
 @interface XMLController : NSWindowController
 {
-    IBOutlet NSOutlineView *table;
-    
-    
+    IBOutlet NSOutlineView		*table;
+    IBOutlet NSSearchField		*search;
+    IBOutlet NSView				*searchView;
+	
     NSMutableArray          *xmlDcmData;    
     NSData                  *xmlData;    
     NSToolbar               *toolbar;	
@@ -38,5 +39,6 @@
 - (void) collapseAllItems: (id) sender;
 - (void) deepCollapseAllItems: (id) sender;
 - (void) collapseAll: (BOOL) deep;
+- (IBAction) setSearchString:(id) sender;
 
 @end
