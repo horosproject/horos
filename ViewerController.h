@@ -104,6 +104,7 @@ enum
     IBOutlet NSSlider       *subCtrlPercent;
 	IBOutlet NSButton		*subCtrlSharpenButton;
 	IBOutlet NSButton		*shutterOnOff;
+	IBOutlet NSView			*shutterView;
 
 			 long			speedometer;
 		 

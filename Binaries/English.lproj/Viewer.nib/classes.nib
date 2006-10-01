@@ -119,6 +119,7 @@
                 SyncSeries = id; 
                 VRVPROViewer = id; 
                 VRViewer = id; 
+                applyConvolutionOnSource = id; 
                 blendingMode = id; 
                 blendingSlider = id; 
                 brushTool = id; 
@@ -155,6 +156,8 @@
                 exportJPEG = id; 
                 exportQuicktime = id; 
                 exportQuicktimeSlider = id; 
+                flipDataSeries = id; 
+                fullScreenMenu = id; 
                 keyImageCheckBox = id; 
                 keyImageDisplayButton = id; 
                 keyObjectNotes = id; 
@@ -164,6 +167,7 @@
                 movieRateSliderAction = id; 
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
+                resampleDataBy2 = id; 
                 resetImage = id; 
                 revertSeries = id; 
                 roiDeleteAll = id; 
@@ -210,7 +214,6 @@
                 OpacityPopup = NSPopUpButton; 
                 OpacityView = OpacityTransferView; 
                 PagePad = NSView; 
-                PagePadCombo = NSComboBox; 
                 RGBFactorsView = NSView; 
                 ReconstructionRoi = NSPopUpButton; 
                 ReconstructionView = NSView; 
@@ -324,6 +327,7 @@
                 setROI4DSeries = NSButton; 
                 setWLWWWindow = NSWindow; 
                 shutterOnOff = NSButton; 
+                shutterView = NSView; 
                 sizeMatrix = NSMatrix; 
                 slider = NSSlider; 
                 sliderFusion = NSSlider; 

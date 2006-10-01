@@ -137,6 +137,7 @@ static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
 static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
+static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 
 static NSArray*		DefaultROINames;
 
@@ -2541,6 +2542,18 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([RGBFactorsView frame]), NSHeight([RGBFactorsView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([RGBFactorsView frame]), NSHeight([RGBFactorsView frame]))];
 	}
+	else if([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
+	 {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Shutter", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Shutter", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Shutter", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: shutterView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
+	}
 	else if([itemIdent isEqualToString: ReconstructionToolbarItemIdentifier])
 	 {
 	// Set up the standard properties 
@@ -2683,6 +2696,7 @@ static ViewerController *draggedController = 0L;
 														WLWWToolbarItemIdentifier,
 														FusionToolbarItemIdentifier,
 														SubtractionToolbarItemIdentifier,
+														ShutterToolbarItemIdentifier,
 														RGBFactorToolbarItemIdentifier,
 														FilterToolbarItemIdentifier,
 														ToolsToolbarItemIdentifier,
@@ -2909,16 +2923,11 @@ static ViewerController *draggedController = 0L;
 		float DCMPixHeight = [[[imageView dcmPixList] objectAtIndex:[imageView curImage]] pheight];
 		//NSLog(@"DCMPix w:%f",DCMPixWidth);
 		//NSLog(@"DCMPix h:%f",DCMPixHeight);		
-		if ((shutterRect.origin.x < 0) ||
-			(shutterRect.origin.y < 0) ||
-			((shutterRect.origin.x + shutterRect.size.width) > DCMPixWidth) ||
-			((shutterRect.origin.y + shutterRect.size.height) > DCMPixHeight))
-				{
-				NSLog(@"shutterRect not strictly contained in the frame");
-				shutterRect.size.width = 0;
-				shutterRect.size.height = 0;
-				}
-
+		if (shutterRect.origin.x < 0) shutterRect.origin.x = 0;
+		if (shutterRect.origin.y < 0) shutterRect.origin.y = 0;
+		if (shutterRect.origin.x + shutterRect.size.width > DCMPixWidth) shutterRect.size.width = DCMPixWidth - shutterRect.origin.x;
+		if (shutterRect.origin.y + shutterRect.size.height > DCMPixHeight) shutterRect.size.height = DCMPixHeight - shutterRect.origin.y;
+		
 		//using valid shutterRect
 		if (shutterRect.size.width != 0)
 		{
@@ -2934,6 +2943,8 @@ static ViewerController *draggedController = 0L;
 			{
 				//NSLog(@"no shutter rectangle available");
 				[shutterOnOff setState:NSOffState];
+				
+				NSRunCriticalAlertPanelRelativeToWindow(NSLocalizedString(@"Shutter", nil), NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil), NSLocalizedString(@"OK", nil), nil, nil, [self window]);
 			}
 			else //reuse preconfigured shutterRect
 			{
