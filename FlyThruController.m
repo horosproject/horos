@@ -515,7 +515,7 @@ MODIFICATION HISTORY
 		[progress showWindow:self];
 		[[progress progress] setMaxValue: numberOfFrames];
 		
-		[dcmSequence setSeriesNumber:8500 + [[NSCalendarDate date] minuteOfHour] ];
+		[dcmSequence setSeriesNumber:8500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 		[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
 		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] sourceFile]];
 				

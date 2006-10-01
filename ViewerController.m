@@ -9097,7 +9097,7 @@ return moviePosSlider;
 			curImage = [imageView curImage];
 			
 			if (exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
+			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
 			for (i = from ; i < to; i += interval)

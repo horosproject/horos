@@ -1127,7 +1127,7 @@ extern NSString * documentsDirectory();
 		
 		DICOMExport		*dcmSequence = [[DICOMExport alloc] init];
 		
-		[dcmSequence setSeriesNumber:6870 + [[NSCalendarDate date] minuteOfHour] ];
+		[dcmSequence setSeriesNumber:6870 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 		[dcmSequence setSeriesDescription:@"4D MPR - 2D"];
 		[dcmSequence setSourceFile: [[fileList objectAtIndex:0] valueForKey:@"completePath"]];
 		

@@ -1990,9 +1990,9 @@ NSString * documentsDirectory();
 			else
 			{
 				long nCT, nPETCT, nPET;
-				nCT = 15300 + [[NSCalendarDate date] minuteOfHour];
-				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour];
-				nPET = 35300 + [[NSCalendarDate date] minuteOfHour];
+				nCT = 15300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+				nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
 				
 				if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
 				{
@@ -2091,7 +2091,7 @@ NSString * documentsDirectory();
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 
 			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
+			[exportDCM setSeriesNumber:5300 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
 			if([dcmExport3Modalities state]==NSOffState)
@@ -2111,9 +2111,9 @@ NSString * documentsDirectory();
 			else
 			{	
 				long nCT, nPETCT, nPET;
-				nCT = 15300 + [[NSCalendarDate date] minuteOfHour];
-				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour];
-				nPET = 35300 + [[NSCalendarDate date] minuteOfHour];
+				nCT = 15300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+				nPETCT = 25300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
+				nPET = 35300 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute];
 
 				for( i = from; i < to; i+=interval)
 				{

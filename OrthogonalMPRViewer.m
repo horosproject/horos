@@ -1283,7 +1283,7 @@ NSString * documentsDirectory();
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 			
 			if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
-			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour] ];	//Try to create a unique series number... Do you have a better idea??
+			[exportDCM setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];	//Try to create a unique series number... Do you have a better idea??
 			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
 			
 			//for( i = 0 ; i < max; i += [dcmInterval intValue])

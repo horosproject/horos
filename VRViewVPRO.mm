@@ -962,7 +962,7 @@ public:
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: [[[self window] windowController] movieFrames]];
 			
-			[dcmSequence setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour] ];
+			[dcmSequence setSeriesNumber:5250 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			[dcmSequence setSeriesDescription:@"4D VR"];
 			[dcmSequence setSourceFile: [firstObject sourceFile]];
 			
@@ -1027,7 +1027,7 @@ public:
 			[progress showWindow:self];
 			[[progress progress] setMaxValue: numberOfFrames];
 			
-			[dcmSequence setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour] ];
+			[dcmSequence setSeriesNumber:5600 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 			[dcmSequence setSeriesDescription: [dcmSeriesName stringValue]];
 			[dcmSequence setSourceFile: [firstObject sourceFile]];
 			
