@@ -4969,6 +4969,25 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
 		pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
 	}
+	else if([pixelSpacing count] >= 1)
+	{
+		pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
+		pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
+	}
+	else
+	{
+		NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"ImagerPixelSpacing"];
+		if([pixelSpacing count] >= 2)
+		{
+			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
+			pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
+		}
+		else if([pixelSpacing count] >= 1)
+		{
+			pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
+			pixelSpacingX = [[pixelSpacing objectAtIndex:0] floatValue];
+		}
+	}
 	
 	
 	
@@ -5669,6 +5688,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 		imageNb = 1 + frameNo; 
 		
+		pixelSpacingX = 0;
+		pixelSpacingY = 0;
+		
 		offset = 0.0;
 		slope = 1.0;
 		
@@ -5735,6 +5757,19 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			else cineRate = 0;
+			
+			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
+			if (val != NULL)
+			{
+				tmp = val;
+				pixelSpacingY = [[NSString stringWithCString:tmp->a] floatValue];
+				
+				if( nbVal > 1)
+				{
+					tmp++;
+					pixelSpacingX = [[NSString stringWithCString:tmp->a] floatValue];
+				}
+			}
 			
 			if( cineRate == 0)
 			{
@@ -5909,8 +5944,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			pixmin = pixmax = 0;
 			
-			pixelSpacingX = 0;
-			pixelSpacingY = 0;
 			pixelRatio = 1.0;
 			
 			val = Papy3GetElement (theGroupP, papPixelSpacingGr, &nbVal, &elemType);
