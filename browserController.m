@@ -4608,6 +4608,18 @@ static BOOL COMPLETEREBUILD = NO;
 	[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
 }
 
+-(IBAction) copy:(id) sender
+{
+    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+			
+	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+	
+	NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	
+	if( aFile)
+		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
+}
+
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
