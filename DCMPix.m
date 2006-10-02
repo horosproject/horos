@@ -8784,7 +8784,7 @@ BOOL            readable = YES;
 		case 4:		// Volume Rendering
 		case 5:
 		break;
-		case 1:		// Moyenne
+		case 1:		// Mean
 			for(i = 0; i < 256; i++)
 			{
 				val = (((i-min) * 255L) / diff);
