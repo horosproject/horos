@@ -8789,7 +8789,7 @@ BOOL            readable = YES;
 	}
 }
 
-- (void) computeThickSlabRGB
+- (float*) computeThickSlabRGB
 {
 	long			countstack = 1;
 	BOOL			flip;
@@ -8820,28 +8820,10 @@ BOOL            readable = YES;
 		case 4:		// Volume Rendering
 		case 5:
 		break;
+		
 		case 1:		// Mean
-			for(i = 0; i < 256; i++)
-			{
-				val = (((i-min) * 255L) / diff);
-				if( val < 0) val = 0;
-				if( val > 255) val = 255;
-				convTable[i] = val;
-			}
-			
-			src.height = height;
-			src.width = width;
-			src.rowBytes = width*4;
-			src.data = fImage;
-			
-			dst.height = height;
-			dst.width = width;
-			dst.rowBytes = rowBytes;
-			dst.data = baseAddr;
-			
-			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
 		break;
-		// ------------------------------------------------------------------------------------------------
+		
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
 			if( stackDirection) next = pixPos-1;
@@ -8904,32 +8886,10 @@ BOOL            readable = YES;
 			{
 				memcpy( fResult, fImage, height * width * sizeof(char)*4);
 			}
-			
-			float   *inputfImage;
-			
-			for(i = 0; i < 256; i++)
-			{
-				val = (((i-min) * 255L) / diff);
-				if( val < 0) val = 0;
-				if( val > 255) val = 255;
-				convTable[i] = val;
-			}
-			
-			src.height = height;
-			src.width = width;
-			src.rowBytes = width*4;
-			src.data = fResult;
-			
-			dst.height = height;
-			dst.width = width;
-			dst.rowBytes = rowBytes;
-			dst.data = baseAddr;
-			
-			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
 		break;			
 	} //end of switch
 	
-	free( fResult);
+	return( fResult);
 }
 
 - (float*) computeThickSlab
@@ -9187,36 +9147,38 @@ float			iwl, iww;
 		}	
 		else
 		{
+			vImage_Buffer   src, dst;
+			Pixel_8			convTable[256];
+			long			i, diff = max - min, val;
+			float			*tempfImage = 0L;
+			
 			if( stackMode > 0 && stack >= 1)
 			{
-				[self computeThickSlabRGB];
+				tempfImage = [self computeThickSlabRGB];
+				src.data = tempfImage;
 			}
-			else	// No images fusion
+			else src.data = fImage;
+			
+			for(i = 0; i < 256; i++)
 			{
-				vImage_Buffer   src, dst;
-				Pixel_8			convTable[256];
-				long			i, diff = max - min, val;
-
-				for(i = 0; i < 256; i++)
-				{
-					val = (((i-min) * 255L) / diff);
-					if( val < 0) val = 0;
-					if( val > 255) val = 255;
-					convTable[i] = val;
-				}
-				
-				src.height = height;
-				src.width = width;
-				src.rowBytes = width*4;
-				src.data = fImage;
-				
-				dst.height = height;
-				dst.width = width;
-				dst.rowBytes = rowBytes;
-				dst.data = baseAddr;
-				
-				vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
+				val = (((i-min) * 255L) / diff);
+				if( val < 0) val = 0;
+				if( val > 255) val = 255;
+				convTable[i] = val;
 			}
+			
+			src.height = height;
+			src.width = width;
+			src.rowBytes = width*4;
+			
+			dst.height = height;
+			dst.width = width;
+			dst.rowBytes = rowBytes;
+			dst.data = baseAddr;
+			
+			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0);
+			
+			if( tempfImage) free( tempfImage);
 		}
 		
 		[self applyShutter];
