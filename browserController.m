@@ -4041,6 +4041,8 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	[self outlineViewRefresh];
 	
+	[databaseOutline selectRow: 0 byExtendingSelection: NO];
+	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
