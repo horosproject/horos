@@ -179,7 +179,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 - (void) windowDidLoad
 {
     [self setupToolbar];
-	[self createContextualMenu];
+//	[self createContextualMenu];
 }
 
 -(ViewerController*) blendingController
