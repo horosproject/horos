@@ -1511,7 +1511,7 @@ public:
 		[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]];
 		
 		if( [[dict objectForKey:@"SUVConverted"] boolValue] == [firstObject SUVConverted])
-			[self setWLWW: [[dict objectForKey:@"WL"] longValue] :[[dict objectForKey:@"WW"] longValue]];
+			[self setWLWW: [[dict objectForKey:@"WL"] floatValue] :[[dict objectForKey:@"WW"] floatValue]];
 		
 		tempArray = [dict objectForKey:@"CameraPosition"];
 		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
@@ -1942,7 +1942,7 @@ public:
 						break;
 						
 						case 1:
-							endlevel = _startMax + ([theEvent deltaY]) * WWAdapter ;
+							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
 							
 							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							ww = endlevel - _startMin;
@@ -3573,9 +3573,17 @@ public:
 //		if( volumeMapper) volumeMapper->SetInput((vtkDataSet *) flip->GetOutput());
 //		if( textureMapper) textureMapper->SetInput((vtkDataSet *) flip->GetOutput());
 //	}
-				
-	if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-	else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+	
+	if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+	{
+		if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
+		else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
+	}
+	else
+	{
+		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
+		else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
+	}
 	textWLWW->SetInput( WLWWString);
 	
 	[self setNeedsDisplay:YES];

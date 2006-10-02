@@ -10520,20 +10520,23 @@ return moviePosSlider;
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
+
+			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+			{
+				if( [[imageView curDCM] SUVConverted] == YES)
+				{
+					[viewer setWLWW: 3 : 6];
+				}
+				else
+				{
+					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/4 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2];
+				}
+			}
 			
 			[viewer load3DState];
 			
 			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 			{
-				if( [[imageView curDCM] SUVConverted] == YES)
-				{
-					[viewer setWLWW: 2 : 6];
-				}
-				else
-				{
-					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
-				}
-				
 				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 					[viewer ApplyCLUTString: @"B/W Inverse"];
 				else

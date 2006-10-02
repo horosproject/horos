@@ -5840,31 +5840,24 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		{
 			maxFrame = gArrNbImages [fileNb];
 			
-//				switch (gFileModality [fileNb])
-//				{
-//				case PET_IM :
-//				case CR_IM :
-//				case CT_IM :
-//				case MR_IM :
-					val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
-					if (val3 != NULL)
-					{
-						tmpVal3 = val3;
-						// get the last offset
-						for (j = 1; j < pos; j++) tmpVal3++;
-						offset =  [[NSString stringWithCString:tmpVal3->a] floatValue];
-					}
-					val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
-					if (val3 != NULL)
-					{
-						tmpVal3 = val3;
-						// get the last slope
-						for (j = 1; j < pos; j++) tmpVal3++;
-						slope  = [[NSString stringWithCString:tmpVal3->a] floatValue];  //CharToFloat (tmpVal3->a);
-					//	slope = 1.0;
-						
-					//	NSLog(@"slope:%f", slope);
-						
+			val3 = Papy3GetElement (theGroupP, papRescaleInterceptGr, &pos, &elemType);
+			if (val3 != NULL)
+			{
+				tmpVal3 = val3;
+				// get the last offset
+				for (j = 1; j < pos; j++) tmpVal3++;
+				offset =  [[NSString stringWithCString:tmpVal3->a] floatValue];
+			}
+			val3 = Papy3GetElement (theGroupP, papRescaleSlopeGr, &pos, &elemType);
+			if (val3 != NULL)
+			{
+				tmpVal3 = val3;
+				// get the last slope
+				for (j = 1; j < pos; j++) tmpVal3++;
+				slope = [[NSString stringWithCString:tmpVal3->a] floatValue];
+				
+			//	NSLog(@"slope:%f", slope);
+				
 //						if( slope != 0 && fabs( slope) < 0.01)
 //						{
 //							while( slope < 0.01)
@@ -5872,11 +5865,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //								slope *= 100.;
 //							}
 //						}
-					}
+			}
 					
-												
-//				break;
-//				}
 			// bitsAllocated
 			val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);	//papBitsAllocatedGr
 			bitsAllocated = (int) val->us;
