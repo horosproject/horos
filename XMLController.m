@@ -312,6 +312,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 										ExportTextToolbarItemIdentifier,
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
+										NSToolbarFlexibleSpaceItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
 }
