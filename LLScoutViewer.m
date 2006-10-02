@@ -37,9 +37,11 @@
 	BOOL sameLocations = YES;
 	int i;
 	
-	for(i=0; i<[pixA count]; i++)
+	for(i=0; i<[pixA count] && sameLocations; i++)
 	{
 		sameLocations = sameLocations && ([[pixA objectAtIndex:i] sliceLocation] == [[pixB objectAtIndex:i] sliceLocation]);
+		if (!sameLocations)
+			NSLog(@"i:%d pixA:%f pixB:%f", i, [[pixA objectAtIndex:i] sliceLocation], [[pixB objectAtIndex:i] sliceLocation]);
 	}
 	
 	return sameLocations;
@@ -64,10 +66,13 @@
 		if(!sameImagesLocations)
 			[alertMessage appendString:@"\n - the same location for each image"];
 	}
-		
-	NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
 	
-	return samePixelSpacing && sameImagesCount && sameImagesLocations;
+	BOOL error = !samePixelSpacing || !sameImagesCount || !sameImagesLocations;
+	
+	if(error)
+		NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
+	
+	return !error;
 }
 
 - (id)initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
