@@ -2892,6 +2892,8 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
+	long i;
+	
 	NSRect shutterRect;
 	shutterRect.origin.x = 0;
 	shutterRect.origin.y = 0;
@@ -2901,7 +2903,7 @@ static ViewerController *draggedController = 0L;
 	if ([shutterOnOff state] == NSOnState)
 	{
 		// Find the first ROI selected for the current frame and copy the rectangle in shutterRect
-		long i;
+		
 		long ii = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count];
 		for( i = 0; i < ii; i++)
 		{
@@ -2911,7 +2913,6 @@ static ViewerController *draggedController = 0L;
 				ROI *selectedROI = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
 				//check if selectedROI bounds remain within image bounds
 				shutterRect = [selectedROI rect];
-				//free(selectedROI);
 				[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] removeObject:selectedROI];
 				i = ii;
 			}
@@ -2931,10 +2932,11 @@ static ViewerController *draggedController = 0L;
 		//using valid shutterRect
 		if (shutterRect.size.width != 0)
 		{
-			//copy the rect to DCMPix and activate DCMPixshutterOnOff
-			[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
-			[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOnState];
-//			NSLog(@"test new DCMPixshutterRectWidth x:%d",[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixshutterRectWidth]);
+			for( i = 0; i < [[imageView dcmPixList] count]; i++)
+			{
+				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
+				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+			}
 		}
 		else
 		{
@@ -2948,15 +2950,13 @@ static ViewerController *draggedController = 0L;
 			}
 			else //reuse preconfigured shutterRect
 			{
-				//NSLog(@"using stored shutter rectangle");
-				[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOnState];
+				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
 			}
 		}
 	}
 	else
 	{
-		//NSLog(@"shutterOff");
-		[[[imageView dcmPixList] objectAtIndex:[imageView curImage]] DCMPixShutterOnOff: NSOffState];
+		for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
