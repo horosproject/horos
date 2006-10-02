@@ -2157,7 +2157,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		isRGB = NO;
 		nonDICOM = NO;
 		fullwl = fullww = 0;
-		thickSlabActivated = NO;
+		thickSlabVRActivated = NO;
 			
 		repetitiontime = 0L;
 		echotime = 0L;
@@ -8341,9 +8341,9 @@ BOOL            readable = YES;
 	}
 }
 
--(BOOL) thickSlabActivated
+-(BOOL) thickSlabVRActivated
 {
-	return thickSlabActivated;
+	return thickSlabVRActivated;
 }
 
 - (void) setThickSlabController:( ThickSlabController*) ts
@@ -8712,7 +8712,7 @@ BOOL            readable = YES;
 {
 	if (DCMPixShutterOnOff == NSOnState)
 	{
-		if( isRGB == YES || thickSlabActivated == YES)
+		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
 			char*	tempMem = calloc( 1, height * width * 4*sizeof(char));
 			
@@ -8844,8 +8844,6 @@ BOOL            readable = YES;
 		// ------------------------------------------------------------------------------------------------
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
-
-			
 			if( stackDirection) next = pixPos-1;
 			else next = pixPos+1;
 			
@@ -8928,15 +8926,13 @@ BOOL            readable = YES;
 			dst.data = baseAddr;
 			
 			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
-			
-			free( fResult);
-		
 		break;			
 	} //end of switch
-// ---------------------------------------------------------------------------------------------------
+	
+	free( fResult);
 }
 
-- (void) computeThickSlab
+- (float*) computeThickSlab
 {
 	long			countstack = 1;
 	BOOL			flip = NO; // case 5
@@ -8947,6 +8943,7 @@ BOOL            readable = YES;
 	long			next;
 	vImage_Buffer	srcf, dst8;
 	float			min, max, iwl, iww;
+	float			*fResult = 0L;
 	
 	if( fixed8bitsWLWW)
 	{
@@ -8986,16 +8983,17 @@ BOOL            readable = YES;
 				
 				rgbaImage = [thickSlab renderSlab];
 				
-				thickSlabActivated = YES;
+				thickSlabVRActivated = YES;
 				
 				[self setRowBytes: width*4];
 				[self setBaseAddr: (char*) rgbaImage];
 			}
 		break;
-		// -----------------------------------------------------------------------------------------------------
+
+
 		case 1:		// Mean
 		{
-			float *fResult = malloc( height * width * sizeof(float));
+			fResult = malloc( height * width * sizeof(float));
 			
 			if( stackDirection) next = pixPos-1;
 			else next = pixPos+1;
@@ -9038,15 +9036,13 @@ BOOL            readable = YES;
 			srcf.data = fResult;
 			
 			vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max*countstack, min*countstack, 0);
-			
-			free( fResult);
 		}
 		break;
 		// ------------------------------------------------------------------------------------------------
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
-			fFinalResult = malloc( height * width * sizeof(float));
-			memcpy( fFinalResult, fImage, height * width * sizeof(float));
+			fFinalResult =fResult = malloc( height * width * sizeof(float));
+			memcpy( fResult, fImage, height * width * sizeof(float));
 			
 			long processors = MPProcessors();
 			if (processors > 1 && stack > 20)
@@ -9078,35 +9074,10 @@ BOOL            readable = YES;
 			}
 
 			//-----------------------------------
-		
-			// ** SUBTRACTION + Convert to 8 bits					
-			
-			dst8.height = height;
-			dst8.width = width;
-			dst8.rowBytes = rowBytes;					
-			dst8.data = baseAddr;
-
-			srcf.height = height;
-			srcf.width = width;
-			srcf.rowBytes = width*sizeof(float);
-			
-			if( subtractedfImage)
-			{
-				srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
-				
-				vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
-				
-				free( srcf.data);
-			}
-			else
-			{
-				srcf.data = fFinalResult;
-				
-				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-			}
-			free( fFinalResult);
 		break;
 	}
+	
+	return fResult;
 }
 
 - (void) changeWLWW:(float)newWL :(float)newWW
@@ -9172,20 +9143,23 @@ float			iwl, iww;
 		*/
 		if( isRGB == NO) //fImage case
 		{
-			thickSlabActivated = NO;
+			vImage_Error	vIerr;
+			vImage_Buffer	srcf, dst8;
+			float			*tempfImage = 0L;
+			
+			thickSlabVRActivated = NO;
 			[self setRowBytes: width];
 		
 			// = STACK IMAGES thickslab
 			if( stackMode > 0 && stack >= 1)
 			{
-				[self computeThickSlab];
+				tempfImage = [self computeThickSlab];
+				srcf.data = tempfImage;
 			}
-			// ---------------------------------------------------------------------------------------------------
-			else	// No images fusion
+			else srcf.data = fImage;
+			
+			if( thickSlabVRActivated == NO)
 			{
-				vImage_Error vIerr;
-				vImage_Buffer srcf, dst8;
-				
 				dst8.height = height;
 				dst8.width = width;
 				dst8.rowBytes = rowBytes;					
@@ -9194,13 +9168,12 @@ float			iwl, iww;
 				srcf.height = height;
 				srcf.width = width;
 				srcf.rowBytes = width*sizeof(float);
-				srcf.data = fImage;
 				
 				if( subtractedfImage)
 				{
-					srcf.data = [self subtractImages: fImage :subtractedfImage];
+					srcf.data = [self subtractImages: srcf.data :subtractedfImage];
 					
-					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 					
 					free( srcf.data);
 				}
@@ -9208,6 +9181,8 @@ float			iwl, iww;
 				{
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 				}
+				
+				if( tempfImage) free( tempfImage);
 			}
 		}	
 		else
@@ -9249,7 +9224,7 @@ float			iwl, iww;
 		// Convolution
 		if( convolution)
 		{
-			if( isRGB == YES || thickSlabActivated == YES)
+			if( isRGB == YES || thickSlabVRActivated == YES)
 			{
 				vImage_Buffer dst8, dst28;
 				
@@ -9277,7 +9252,7 @@ float			iwl, iww;
 			}
 			else
 			{
-			//	if( thickSlabActivated == NO)
+			//	if( thickSlabVRActivated == NO)
 				{
 					vImage_Buffer dst8, dst28;
 					
