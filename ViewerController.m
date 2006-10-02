@@ -5858,12 +5858,13 @@ NSMutableArray		*array;
 		case 9: // LL
 		{
 			[self checkEverythingLoaded];
-			//[self resampleDataBy2];
-			//[blendedwin resampleDataBy2];
 			[blendedwin checkEverythingLoaded];
-			LLScoutViewer *llScoutViewer;
-			llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
-			[llScoutViewer showWindow:self];
+			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
+			{
+				LLScoutViewer *llScoutViewer;
+				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
+				[llScoutViewer showWindow:self];
+			}
 		}
 
 	}

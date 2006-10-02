@@ -14,6 +14,62 @@
 
 @implementation LLScoutViewer
 
++ (BOOL)haveSamePixelSpacing:(NSArray*)pixA :(NSArray*)pixB;
+{
+	float pixSpacingAx = [[pixA objectAtIndex:0] pixelSpacingX];
+	float pixSpacingAy = [[pixA objectAtIndex:0] pixelSpacingY];
+	float pixSpacingBx = [[pixB objectAtIndex:0] pixelSpacingX];
+	float pixSpacingBy = [[pixB objectAtIndex:0] pixelSpacingY];
+	
+	return ((pixSpacingAx == pixSpacingBx) && (pixSpacingAy == pixSpacingBy));
+}
+
++ (BOOL)haveSameImagesCount:(NSArray*)pixA :(NSArray*)pixB;
+{
+	int imageCountA = [pixA count];
+	int imageCountB = [pixB count];
+	
+	return (imageCountA == imageCountB);
+}
+
++ (BOOL)haveSameImagesLocations:(NSArray*)pixA :(NSArray*)pixB;
+{
+	BOOL sameLocations = YES;
+	int i;
+	
+	for(i=0; i<[pixA count]; i++)
+	{
+		sameLocations = sameLocations && ([[pixA objectAtIndex:i] sliceLocation] == [[pixB objectAtIndex:i] sliceLocation]);
+	}
+	
+	return sameLocations;
+}
+
++ (BOOL)verifyRequiredConditions:(NSArray*)pixA :(NSArray*)pixB;
+{
+	NSMutableString *alertMessage = [NSMutableString stringWithString:@"The two series must have:"];
+	
+	BOOL samePixelSpacing, sameImagesCount, sameImagesLocations=NO;
+	samePixelSpacing = [LLScoutViewer haveSamePixelSpacing:pixA :pixB];
+	sameImagesCount = [LLScoutViewer haveSameImagesCount:pixA :pixB];
+		
+	if(!samePixelSpacing)
+		[alertMessage appendString:@"\n - the same pixels spacing"];
+	
+	if(!sameImagesCount)
+		[alertMessage appendString:@"\n - the same number of images"];
+	else
+	{
+		sameImagesLocations = [LLScoutViewer haveSameImagesLocations:pixA :pixB];
+		if(!sameImagesLocations)
+			[alertMessage appendString:@"\n - the same location for each image"];
+	}
+		
+	NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
+	
+	return samePixelSpacing && sameImagesCount && sameImagesLocations;
+}
+
 - (id)initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 {
 	[super initWithWindowNibName:@"LLScoutView"];

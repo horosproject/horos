@@ -21,6 +21,11 @@
 	NSArray								*dcmPixList, *dcmFileList;
 }
 
++ (BOOL)haveSamePixelSpacing:(NSArray*)pixA :(NSArray*)pixB;
++ (BOOL)haveSameImagesCount:(NSArray*)pixA :(NSArray*)pixB;
++ (BOOL)haveSameImagesLocations:(NSArray*)pixA :(NSArray*)pixB;
++ (BOOL)verifyRequiredConditions:(NSArray*)pixA :(NSArray*)pixB;
+
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 
 - (BOOL)is2DViewer;
