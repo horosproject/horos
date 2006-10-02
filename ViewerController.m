@@ -2944,7 +2944,7 @@ static ViewerController *draggedController = 0L;
 				//NSLog(@"no shutter rectangle available");
 				[shutterOnOff setState:NSOffState];
 				
-				NSRunCriticalAlertPanelRelativeToWindow(NSLocalizedString(@"Shutter", nil), NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil), NSLocalizedString(@"OK", nil), nil, nil, [self window]);
+				NSRunCriticalAlertPanel(NSLocalizedString(@"Shutter", nil), NSLocalizedString(@"Please first define a rectangle with a rectangular ROI.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			}
 			else //reuse preconfigured shutterRect
 			{
@@ -4639,11 +4639,11 @@ static ViewerController *draggedController = 0L;
 {
 	if( [customInterval floatValue] == 0 || [customXSpacing floatValue] == 0 ||  [customYSpacing floatValue] == 0)
 	{
-		 if( [sender tag])
-		 {
-				NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"These values CANNOT be equal to ZERO!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-				return;
-		 }
+		if( [sender tag])
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"These values CANNOT be equal to ZERO!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			return;
+		}
 	}
 
     [ThickIntervalWindow orderOut:sender];

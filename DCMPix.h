@@ -94,7 +94,7 @@
 	NSPoint				subMinMax;
 	float				subtractedfPercent;
 	float				subtractedfZero;
-	long				*subGammaFunction;
+	GammaFunction		subGammaFunction;
 
 	long				shutterRect_x;
 	long				shutterRect_y;

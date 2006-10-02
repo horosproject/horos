@@ -8169,20 +8169,10 @@ BOOL            readable = YES;
 	}
 	else
 	{
-		register float      *pt = fImage;
-		register float		fmin, fmax, fvalue;
+		float		fmin, fmax;
 		
-		fmin = fmax = *pt;
-		
-		i = width * height;
-		
-		while( i-- > 0)
-		{
-			fvalue = *pt;
-			pt ++;
-			if (fvalue < fmin) fmin = fvalue;
-			if (fvalue > fmax) fmax = fvalue;
-		}
+		vDSP_minv ( fImage,  1, &fmin, width * height);
+		vDSP_maxv ( fImage , 1, &fmax, width * height);
 		
 		pixmax = fmax;
 		pixmin = fmin;
@@ -8648,6 +8638,7 @@ BOOL            readable = YES;
 	subtractedfPercent = p;
 	subtractedfZero = z - 0.8 + (p*0.8);
 	//subGammaFunction is a pointer which refers to the current gamma for the series
+	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	subGammaFunction = vImageCreateGammaFunction(g, kvImageGamma_UseGammaValue_half_precision, 0 );	
 	updateToBeApplied = YES;
 }
@@ -8682,27 +8673,23 @@ BOOL            readable = YES;
 
 -(float*) subtractImages:(float*)input :(float*)subfImage
 {
-	long firstPixel = subPixOffset.y * width - subPixOffset.x;			
-	long firstPixelAbs = abs(subPixOffset.y * width) + abs(subPixOffset.x);
-	
-	float *firstSourcePixel;
-	firstSourcePixel = subfImage + (firstPixelAbs + firstPixel)/2;
-
-	long			i			= height * width;	
-	float			*result		= malloc( i * sizeof(float));
-	float *firstResultPixel;
-	firstResultPixel = result + (firstPixelAbs - firstPixel)/2;
-
-	long lengthToBeCopied = i - firstPixelAbs;
+	long	firstPixel = subPixOffset.y * width - subPixOffset.x;			
+	long	firstPixelAbs = abs(subPixOffset.y * width) + abs(subPixOffset.x);
+	float	*firstSourcePixel = subfImage + (firstPixelAbs + firstPixel)/2;
+	long	i = height * width;	
+	float	*result = malloc( i * sizeof(float));
+	float	*firstResultPixel = result + (firstPixelAbs - firstPixel)/2;
+	long	lengthToBeCopied = i - firstPixelAbs;
 
 	//preparing mask: the following command registers it in function of the pixel shift, and multiplies it by % 
 	vDSP_vsmul (firstSourcePixel,1,&subtractedfPercent,firstResultPixel,1,lengthToBeCopied);//result= % mask	
-
+	
 	vDSP_vsub (result,1,input,1,result,1,lengthToBeCopied);				//mask - frame
-
+	
 	float ratio = fabs(subMinMax.y-subMinMax.x);						//Max difference in subtraction without pixel shift
 	vDSP_vsdiv (result,1,&ratio,result,1,i);							//normalize result [-1...1]
 	vDSP_vsadd (result,1,&subtractedfZero,result,1,i);					//normalize result [0...n]
+	
 	return result;
 }
 
@@ -8719,6 +8706,55 @@ BOOL            readable = YES;
 {
 	DCMPixShutterOnOff = newDCMPixShutterOnOff;
 	updateToBeApplied = YES;
+}
+
+-(void) applyShutter
+{
+	if (DCMPixShutterOnOff == NSOnState)
+	{
+		if( isRGB == YES || thickSlabActivated == YES)
+		{
+			char*	tempMem = calloc( 1, height * width * 4*sizeof(char));
+			
+			int i = shutterRect_h;
+			
+			char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x*4);
+			char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x*4);
+			
+			while( i-- > 0)
+			{
+				memcpy( dst, src, shutterRect_w*4);
+				
+				dst += rowBytes;
+				src += rowBytes;
+			}
+			
+			memcpy(baseAddr, tempMem, height * width * 4*sizeof(char));
+			
+			free( tempMem);
+		}
+		else
+		{
+			char*	tempMem = calloc( 1, height * width * sizeof(char));
+			
+			int i = shutterRect_h;
+			
+			char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x);
+			char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x);
+			
+			while( i-- > 0)
+			{
+				memcpy( dst, src, shutterRect_w);
+				
+				dst += rowBytes;
+				src += rowBytes;
+			}
+			
+			memcpy(baseAddr, tempMem, height * width * sizeof(char));
+			
+			free( tempMem);
+		}
+	}
 }
 
 - (void) applyConvolutionOnSourceImage
@@ -8872,15 +8908,7 @@ BOOL            readable = YES;
 			}
 			
 			float   *inputfImage;
-		
-			// ** SUBTRACTION
-		
-		//	if( subtractedfImage) inputfImage = [self subtractImages: fResult :subtractedfImage];
-		//	else inputfImage = fResult;
-		
-			// Convert to RGB WL & WW
 			
-
 			for(i = 0; i < 256; i++)
 			{
 				val = (((i-min) * 255L) / diff);
@@ -8901,7 +8929,6 @@ BOOL            readable = YES;
 			
 			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
 			
-		//	if( subtractedfImage) free( inputfImage);
 			free( fResult);
 		
 		break;			
@@ -8938,35 +8965,32 @@ BOOL            readable = YES;
 	switch( stackMode)
 	{
 		case 4:		// Volume Rendering
-				flip = YES;
-		case 5:		// Create the VR Rendering Window
-		
-		if( thickSlab)
-		{											
-			if( stackDirection)
-			{
-				if( pixPos-stack < 0) stacksize = pixPos+1; 
-				else stacksize = stack+1;
+			flip = YES;
+		case 5:		// Volume Rendering
+			if( thickSlab)
+			{											
+				if( stackDirection)
+				{
+					if( pixPos-stack < 0) stacksize = pixPos+1; 
+					else stacksize = stack+1;
+				}
+				else
+				{
+					if( pixPos+stack < [pixArray count]) stacksize = stack; 
+					else stacksize = [pixArray count] - pixPos;
+				}
+				
+				if( stackDirection) [thickSlab setImageSource: fImage - (stacksize-1)*height * width :stacksize];
+				else [thickSlab setImageSource: fImage :stacksize];
+				[thickSlab setWLWW: iwl: iww];
+				
+				rgbaImage = [thickSlab renderSlab];
+				
+				thickSlabActivated = YES;
+				
+				[self setRowBytes: width*4];
+				[self setBaseAddr: (char*) rgbaImage];
 			}
-			else
-			{
-				if( pixPos+stack < [pixArray count]) stacksize = stack; 
-				else stacksize = [pixArray count] - pixPos;
-			}
-			
-			if( stackDirection) [thickSlab setImageSource: fImage - (stacksize-1)*height * width :stacksize];
-			else [thickSlab setImageSource: fImage :stacksize];
-			[thickSlab setWLWW: iwl: iww];
-			
-			rgbaImage = [thickSlab renderSlab];
-			
-			thickSlabActivated = YES;
-			
-			[self setRowBytes: width*4];
-			[self setBaseAddr: (char*) rgbaImage];  //malloc( width * height * 4)];
-		}
-		//  in case of thickSlab==NO, nothing happens
-		//	[self changeWLWW:127 :256];
 		break;
 		// -----------------------------------------------------------------------------------------------------
 		case 1:		// Mean
@@ -9001,11 +9025,7 @@ BOOL            readable = YES;
 				memcpy( fResult, fImage, height * width * sizeof(float));
 			}
 			
-			//rajouter vmull pour la division en floatant... telecharger la doc
-			
 			// Convert to 8 bits
-			
-			
 			srcf.height = height;
 			srcf.width = width;
 			srcf.rowBytes = width*sizeof(float);
@@ -9025,22 +9045,18 @@ BOOL            readable = YES;
 		// ------------------------------------------------------------------------------------------------
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
-		
-		fFinalResult = malloc( height * width * sizeof(float));
-		memcpy( fFinalResult, fImage, height * width * sizeof(float));
-
-		//multiprocessor acceleration
-		
-		
-		long processors = MPProcessors();
-		if (processors > 1 && stack > 20)
-		{
-			long from , to;
+			fFinalResult = malloc( height * width * sizeof(float));
+			memcpy( fFinalResult, fImage, height * width * sizeof(float));
 			
-			wlwwThreads = 0;
-			
-			if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
-			
+			long processors = MPProcessors();
+			if (processors > 1 && stack > 20)
+			{
+				long from , to;
+				
+				wlwwThreads = 0;
+				
+				if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
+				
 				for( i = 0; i < processors-1; i++)
 				{
 					from = i * stack / processors;
@@ -9055,87 +9071,42 @@ BOOL            readable = YES;
 				[self computeMax: from to: to];
 				
 				while( wlwwThreads != processors) {};
-		}
-		else 
-		{
+			}
+			else 
+			{
 				[self computeMax: 1 to: stack];
-		}
+			}
 
-		//-----------------------------------
-	
-		// ** SUBTRACTION + Convert to 8 bits					
-
-		vImage_Error vIerr;
-		// vImage_Buffer srcf, dst8;    already defined
-		dst8.height = height;
-		dst8.width = width;
-		dst8.rowBytes = rowBytes;					
-		dst8.data = baseAddr;
-
-		srcf.height = height;
-		srcf.width = width;
-		srcf.rowBytes = width*sizeof(float);
+			//-----------------------------------
 		
-		if( subtractedfImage)
-			{
-			srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+			// ** SUBTRACTION + Convert to 8 bits					
 			
-			if (DCMPixShutterOnOff == NSOnState)
-			{
+			dst8.height = height;
+			dst8.width = width;
+			dst8.rowBytes = rowBytes;					
+			dst8.data = baseAddr;
 
-				NSLog(@"Shutter");
-				Pixel_8888 backColor;    
-				backColor[0] = 0;
-				backColor[1] = 0;
-				backColor[2] = 0;
-				backColor[3] = 0;
-				vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
-
-				srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
-				srcf.width = shutterRect_w;
-				srcf.height = shutterRect_h;
-				dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
-				dst8.width = shutterRect_w;
-				dst8.height = shutterRect_h;
-			}
-
-			vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
-			}
-		else
-			{
-			srcf.data = fFinalResult;
+			srcf.height = height;
+			srcf.width = width;
+			srcf.rowBytes = width*sizeof(float);
 			
-			if (DCMPixShutterOnOff == NSOnState)
+			if( subtractedfImage)
 			{
-
-				NSLog(@"Shutter");
-				Pixel_8888 backColor;    
-				backColor[0] = 0;
-				backColor[1] = 0;
-				backColor[2] = 0;
-				backColor[3] = 0;
-				vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
-
-				srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
-				srcf.width = shutterRect_w;
-				srcf.height = shutterRect_h;
-				dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
-				dst8.width = shutterRect_w;
-				dst8.height = shutterRect_h;
+				srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
+				
+				vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+				
+				free( srcf.data);
 			}
-
-			vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+			else
+			{
+				srcf.data = fFinalResult;
+				
+				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 			}
-			
-/*					CODE BEFORE VIMAGE USE	
-		if( subtractedfImage) srcf.data = [self subtractImages: fFinalResult :subtractedfImage];
-		else srcf.data = fFinalResult;					
-		vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-*/					
-		free( fFinalResult);
+			free( fFinalResult);
 		break;
-	} //end of switch
-	
+	}
 }
 
 - (void) changeWLWW:(float)newWL :(float)newWW
@@ -9199,8 +9170,6 @@ float			iwl, iww;
 		stackMode defines how to compose the frames.
 		for each mode there are on the one side the RGB method and on the other the fImage method.
 		*/
-#pragma mark !isRGB (->fImage)
-		
 		if( isRGB == NO) //fImage case
 		{
 			thickSlabActivated = NO;
@@ -9216,71 +9185,33 @@ float			iwl, iww;
 			{
 				vImage_Error vIerr;
 				vImage_Buffer srcf, dst8;
-
+				
 				dst8.height = height;
 				dst8.width = width;
-				dst8.rowBytes = rowBytes;
+				dst8.rowBytes = rowBytes;					
 				dst8.data = baseAddr;
 
 				srcf.height = height;
 				srcf.width = width;
 				srcf.rowBytes = width*sizeof(float);
+				srcf.data = fImage;
 				
 				if( subtractedfImage)
 				{
 					srcf.data = [self subtractImages: fImage :subtractedfImage];
 					
-					if (DCMPixShutterOnOff == NSOnState)
-					{
-
-						NSLog(@"Shutter");
-						Pixel_8888 backColor;    
-						backColor[0] = 0;
-						backColor[1] = 0;
-						backColor[2] = 0;
-						backColor[3] = 0;
-						vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
-
-						srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
-						srcf.width = shutterRect_w;
-						srcf.height = shutterRect_h;
-						dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
-						dst8.width = shutterRect_w;
-						dst8.height = shutterRect_h;
-					}
-
-					vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8,subGammaFunction,0);
+					
+					free( srcf.data);
 				}
 				else
 				{
-					srcf.data = fImage;
-						
-					if (DCMPixShutterOnOff == NSOnState)
-					{
-
-						NSLog(@"Shutter");
-						Pixel_8888 backColor;    
-						backColor[0] = 0;
-						backColor[1] = 0;
-						backColor[2] = 0;
-						backColor[3] = 0;
-						vIerr=vImageBufferFill_ARGB8888(&dst8, backColor, 0);
-
-						srcf.data += ((shutterRect_y * rowBytes) + shutterRect_x) * sizeof(float);
-						srcf.width = shutterRect_w;
-						srcf.height = shutterRect_h;
-						dst8.data += ((shutterRect_y * rowBytes) + shutterRect_x);
-						dst8.width = shutterRect_w;
-						dst8.height = shutterRect_h;
-					}
-
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 				}
 			}
 		}	
 		else
 		{
-			#pragma mark isRGB
 			if( stackMode > 0 && stack >= 1)
 			{
 				[self computeThickSlabRGB];
@@ -9312,6 +9243,8 @@ float			iwl, iww;
 				vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0); 
 			}
 		}
+		
+		[self applyShutter];
 		
 		// Convolution
 		if( convolution)
