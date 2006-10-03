@@ -24,7 +24,7 @@ extern BOOL USETOOLBARPANEL;
 
 + (long) fixedHeight
 {
-	return 84;
+	return 88;
 }
 
 - (void) fixSize
