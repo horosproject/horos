@@ -212,18 +212,18 @@ extern     BrowserController  *browserWindow;
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-	if (![[sender draggingSource] isEqual:self]) {
+	if (![[sender draggingSource] isEqual:self])
+	{
 		NSPasteboard *paste = [sender draggingPasteboard];
-        //gets the dragging-specific pasteboard from the sender
+		
 		NSArray *types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
-	//a list of types that we can accept
+		
 		NSString *desiredType = [paste availableTypeFromArray:types];
 		NSData *carriedData = [paste dataForType:desiredType];
 		long	i;
 	
 		if (nil == carriedData)
 		{
-        //the operation failed for some reason
 			NSRunAlertPanel(NSLocalizedString(@"Drag Error",nil), NSLocalizedString(@"Sorry, but the past operation failed",nil), 
             nil, nil, nil);
 			return NO;

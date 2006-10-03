@@ -247,6 +247,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar;
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar;
 - (BOOL) validateToolbarItem: (NSToolbarItem *) toolbarItem;
+- (NSArray*) exportDICOMFileInt:(NSString*) location files:(NSArray*) filesToExport objects:(NSArray*) dicomFiles2Export;
 
 - (void) setupToolbar;
 
