@@ -8396,80 +8396,7 @@ BOOL            readable = YES;
 	return val;
 }
 
-#if __ppc__ || __ppc64__
-- (void) computeMax:(int) from to:(int) to
-{
-	if( to > from)
-	{
-		float				*fNext = NULL;
-		float				*fResult = malloc( height * width * sizeof(float));
-		long				i;
-		BOOL				first = YES;
-		
-		for( i = from; i < to; i++)
-		{
-			long res;
-			if( stackDirection) res = pixPos-i;
-			else res = pixPos+i;
-			
-			if( res < [pixArray count] && res >= 0)
-			{
-				fNext = [[pixArray objectAtIndex: res] fImage];
-				if( fNext)
-				{
-					if( first)
-					{
-						memcpy( fResult, fNext, height * width * sizeof(float));
-						first = NO;
-					}
-					else
-					{
-						#if __ppc__ || __ppc64__
-						if( Altivec)
-						{
-							if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
-							else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
-						}
-						else
-						{
-							if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
-							else vminNoAltivec(fResult, fNext, fResult, height * width);
-						}
-						#else
-						if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
-						else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
-						#endif
-					}
-				}
-			}
-		}
-		
-		if( first == NO)
-		{
-			[maxResultLock lock];
-			#if __ppc__ || __ppc64__
-			if( Altivec)
-			{
-				if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
-				else vmin( (vector float *)fResult, (vector float *)fFinalResult, (vector float *)fFinalResult, height * width);
-			}
-			else
-			{
-				if( stackMode == 2) vmaxNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
-				else vminNoAltivec(fResult, fFinalResult, fFinalResult, height * width);
-			}
-			#else
-			if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
-			else vminIntel( (vFloat *)fResult, (vFloat *)fFinalResult, (vFloat *)fFinalResult, height * width);
-			#endif
-			[maxResultLock unlock];
-		}
-		free( fResult);
-	}
-	wlwwThreads++;
-}
-#else
-- (void) computeMax:(int) from to:(int) to
+- (void) computeMax:(int) from to:(int) to result:(float*) fResult
 {
 	float				*fNext = NULL;
 	long				i;
@@ -8488,33 +8415,21 @@ BOOL            readable = YES;
 				#if __ppc__ || __ppc64__
 				if( Altivec)
 				{
-					if( stackMode == 2) vmax( (vector float *)fFinalResult, (vector float *)fNext, (vector float *)fFinalResult, height * width);
-					else vmin( (vector float *)fFinalResult, (vector float *)fNext, (vector float *)fFinalResult, height * width);
+					if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+					else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
 				}
 				else
 				{
-					if( stackMode == 2) vmaxNoAltivec(fFinalResult, fNext, fFinalResult, height * width);
-					else vminNoAltivec(fFinalResult, fNext, fFinalResult, height * width);
+					if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
+					else vminNoAltivec(fResult, fNext, fResult, height * width);
 				}
 				#else
-				if( stackMode == 2) vmaxIntel( (vFloat *)fFinalResult, (vFloat *)fNext, (vFloat *)fFinalResult, height * width);
-				else vminIntel( (vFloat *)fFinalResult, (vFloat *)fNext, (vFloat *)fFinalResult, height * width);
+				if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+				else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
 				#endif
 			}
 		}
 	}
-		
-	wlwwThreads++;
-}
-#endif
-
-- (void) computeMaxThread:(NSDictionary*) dict
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	[self computeMax: [[dict objectForKey: @"from"] intValue] to:[[dict objectForKey: @"to"] intValue]];
-	
-	[pool release];
 }
 
 #pragma mark-
@@ -8884,7 +8799,6 @@ BOOL            readable = YES;
 
 - (float*) computeThickSlab
 {
-	long			countstack = 1;
 	BOOL			flip = NO; // case 5
 	long			stacksize;
 	unsigned char   *rgbaImage;
@@ -8943,6 +8857,8 @@ BOOL            readable = YES;
 
 		case 1:		// Mean
 		{
+			float countstack = 1;
+				
 			fResult = malloc( height * width * sizeof(float));
 			
 			if( stackDirection) next = pixPos-1;
@@ -8973,61 +8889,40 @@ BOOL            readable = YES;
 				memcpy( fResult, fImage, height * width * sizeof(float));
 			}
 			
-			// Convert to 8 bits
-			srcf.height = height;
-			srcf.width = width;
-			srcf.rowBytes = width*sizeof(float);
-			
-			dst8.height = height;
-			dst8.width = width;
-			dst8.rowBytes = rowBytes;
-			
-			dst8.data = baseAddr;
-			srcf.data = fResult;
-			
-			vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max*countstack, min*countstack, 0);
+			i = height * width;
+			while( i-- > 0) fResult[ i] /= countstack;
 		}
 		break;
 		// ------------------------------------------------------------------------------------------------
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
-			fFinalResult =fResult = malloc( height * width * sizeof(float));
+			fResult = malloc( height * width * sizeof(float));
 			memcpy( fResult, fImage, height * width * sizeof(float));
 			
-			long processors = MPProcessors();
-			if (processors > 1 && stack > 20)
-			{
-				long from , to;
-				
-				wlwwThreads = 0;
-				
-				if( maxResultLock == 0L) maxResultLock = [[NSLock alloc] init];
-				
-				for( i = 0; i < processors-1; i++)
-				{
-					from = i * stack / processors;
-					if( from == 0) from++;
-					to = (i+1) * stack / processors;
-					[NSThread detachNewThreadSelector: @selector(computeMaxThread:) toTarget:self withObject:[NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", 0L]];  
-				}
-				
-				from = i * stack / processors;
-				to = (i+1) * stack / processors;
-				
-				[self computeMax: from to: to];
-				
-				while( wlwwThreads != processors) {};
-			}
-			else 
-			{
-				[self computeMax: 1 to: stack];
-			}
-
+			[self computeMax: 1 to: stack result: fResult];
+			
 			//-----------------------------------
 		break;
 	}
 	
 	return fResult;
+}
+
+- (float*) computefImage
+{
+	float *result;
+	
+	thickSlabVRActivated = NO;
+	[self setRowBytes: width];
+
+	// = STACK IMAGES thickslab
+	if( stackMode > 0 && stack >= 1)
+	{
+		result = [self computeThickSlab];
+	}
+	else result = fImage;
+
+	return result;
 }
 
 - (void) changeWLWW:(float)newWL :(float)newWW
@@ -9095,18 +8990,8 @@ float			iwl, iww;
 		{
 			vImage_Error	vIerr;
 			vImage_Buffer	srcf, dst8;
-			float			*tempfImage = 0L;
 			
-			thickSlabVRActivated = NO;
-			[self setRowBytes: width];
-		
-			// = STACK IMAGES thickslab
-			if( stackMode > 0 && stack >= 1)
-			{
-				tempfImage = [self computeThickSlab];
-				srcf.data = tempfImage;
-			}
-			else srcf.data = fImage;
+			srcf.data = [self computefImage];
 			
 			if( thickSlabVRActivated == NO)
 			{
@@ -9132,7 +9017,7 @@ float			iwl, iww;
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 				}
 				
-				if( tempfImage) free( tempfImage);
+				if( srcf.data != fImage) free( srcf.data);
 			}
 		}	
 		else
@@ -9542,8 +9427,6 @@ float			iwl, iww;
 	checking = 0L;
 	
 	if( oData) free( oData);
-	
-	[maxResultLock release];
 	
     [super dealloc];
 }
