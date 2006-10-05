@@ -9019,8 +9019,6 @@ float			iwl, iww;
 			
 			if( thickSlabVRActivated == NO)
 			{
-				if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
-				
 				dst8.height = height;
 				dst8.width = width;
 				dst8.rowBytes = rowBytes;					
@@ -9034,11 +9032,15 @@ float			iwl, iww;
 				{
 					srcf.data = [self subtractImages: srcf.data :subtractedfImage];
 					
+					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
+					
 					if( subGammaFunction == 0L) subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );
 					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 				}
 				else
 				{
+					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
+					
 					vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
 				}
 				
