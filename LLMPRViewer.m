@@ -978,7 +978,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	seed[0] = (long) x;
 	seed[1] = (long) y;
 	seed[2] = (long) z;
-	
+	NSLog( @"seed : %d, %d, %d", x, y, z);
 	NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
 																			width:		[[[notInjectedViewer pixList] objectAtIndex: 0] pwidth]
 																			height:		[[[notInjectedViewer pixList] objectAtIndex: 0] pheight]
@@ -988,8 +988,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 																		pixList:		[notInjectedViewer pixList]];		
 	NSLog( @">>>> Growing3D");
 	// Dilatation
-	
+	NSLog( @"dilate");
 	[notInjectedViewer applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
+	NSLog( @"erode");
 	[notInjectedViewer applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
 	
 	// Bone Removal
@@ -1000,14 +1001,25 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
 	NSArray			*keys = [roiList allKeys];
 	int				i;
-	
+
 	for( i = 0 ; i < [keys count]; i++)
 	{
+		NSLog( @"i : %d", i);
+		NSLog( @"keys : %@", [keys objectAtIndex: i]);
+	}
+
+
+	NSLog( @"for");
+	for( i = 0 ; i < [keys count]; i++)
+	{
+		NSLog( @"i : %d", i);
+		NSLog( @"[keys objectAtIndex: i] : %@", [keys objectAtIndex: i]);
+		NSLog( @"[[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]] : %d", [[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]]);
 		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]]];
 		
 		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 	}
-	
+	NSLog( @"end for");
 	[viewer roiSetStartScheduler: roiToProceed];
 	
 	// Update views

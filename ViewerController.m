@@ -3561,9 +3561,9 @@ static ViewerController *draggedController = 0L;
 		 }	 
 	}
 	
-	ThreadLoadImage = NO;
 	if( stopThreadLoadImage == YES)
 	{
+		ThreadLoadImage = NO;
 		[pool release];
 		[ThreadLoadImageLock unlock];
 		return;
@@ -3623,6 +3623,7 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	loadingPercentage = 1;
+	ThreadLoadImage = NO;
 	
     [pool release];
 }
@@ -5855,18 +5856,17 @@ NSMutableArray		*array;
 		
 		break;
 		
-		case 9: // LL
-		{
-			[self checkEverythingLoaded];
-			[blendedwin checkEverythingLoaded];
-			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
-			{
-				LLScoutViewer *llScoutViewer;
-				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
-				[llScoutViewer showWindow:self];
-			}
-		}
-
+//		case 9: // LL
+//		{
+//			[self checkEverythingLoaded];
+//			[blendedwin checkEverythingLoaded];
+//			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
+//			{
+//				LLScoutViewer *llScoutViewer;
+//				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
+//				[llScoutViewer showWindow:self];
+//			}
+//		}
 	}
 	
 	blendedwin = 0L;
@@ -11227,7 +11227,7 @@ long i;
 		
 		[ThreadLoadImageLock unlock];
 		
-		while( loadingPercentage != 1)
+		while( ThreadLoadImage)
 		{
 			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];		// To be sure that PerformOnMainThread has been called !
 		}
