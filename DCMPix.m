@@ -8662,36 +8662,59 @@ BOOL            readable = YES;
 	}
 }
 
-- (void) applyConvolutionOnSourceImage
+- (float*) applyConvolutionOnImage:(float*) src RGB:(BOOL) color
 {
+	float	*result;
+	
 	[self CheckLoad]; 
 	
 	vImage_Buffer dstf, srcf;
-	float  fkernel[25];
-	
-	int i;
-	
-	if( normalization != 0)
-		for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization; 
-	else
-		for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
 		
 	dstf.height = height;
 	dstf.width = width;
 	dstf.rowBytes = width*sizeof(float);
-	dstf.data = fImage;
+	dstf.data = src;
 	
 	srcf = dstf;
-	srcf.data = malloc( height*width*sizeof(float));
+	srcf.data = result = malloc( height*width*sizeof(float));
 	if( srcf.data)
 	{
-		short err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageEdgeExtend);
-		if( err) NSLog(@"Error vImageConvolve_PlanarF = %d", err);
+		short err;
 		
-		memcpy(fImage,srcf.data,height*width*sizeof(float));
+		if( color)
+		{
+			err = vImageConvolve_ARGB8888( &dstf, &srcf, 0, 0, 0,  kernel, kernelsize, kernelsize, normalization, 0, kvImageLeaveAlphaUnchanged + kvImageEdgeExtend);
+		}
+		else
+		{
+			float  fkernel[25];
+			int i;
+			
+			if( normalization != 0)
+				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i] / (float) normalization; 
+			else
+				for( i = 0; i < 25; i++) fkernel[ i] = (float) kernel[ i]; 
+			
+			err = vImageConvolve_PlanarF( &dstf, &srcf, 0, 0, 0, fkernel, kernelsize, kernelsize, 0, kvImageEdgeExtend);
+		}
 		
-		free( srcf.data);
+		if( err) NSLog(@"Error applyConvolutionOnImage = %d", err);
+		
+		if( src != fImage) free( src);
 	}
+	
+	return result;
+}
+
+- (void) applyConvolutionOnSourceImage
+{
+	[self CheckLoad];
+	
+	float *result = [self applyConvolutionOnImage: fImage RGB: isRGB];
+	
+	memcpy( fImage, result, height*width*sizeof(float));
+	
+	free( result);
 }
 
 - (float*) computeThickSlabRGB
@@ -8979,13 +9002,11 @@ float			iwl, iww;
 		
         min = iwl - iww / 2; 
         max = iwl + iww / 2;
-		// min, max are the values used to downsample in the end of the method
-		
-		/* =========================================================== thickslab
-		
-		stackMode defines how to compose the frames.
-		for each mode there are on the one side the RGB method and on the other the fImage method.
-		*/
+
+		// ***** ***** ***** ***** ***** 
+		// ***** SOURCE IMAGE IS 32 BIT FLOAT
+		// ***** ***** ***** ***** *****
+
 		if( isRGB == NO) //fImage case
 		{
 			vImage_Error	vIerr;
@@ -8993,8 +9014,12 @@ float			iwl, iww;
 			
 			srcf.data = [self computefImage];
 			
+			// CONVERSION TO 8-BIT for displaying
+			
 			if( thickSlabVRActivated == NO)
 			{
+				if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
+				
 				dst8.height = height;
 				dst8.width = width;
 				dst8.rowBytes = rowBytes;					
@@ -9020,19 +9045,26 @@ float			iwl, iww;
 				if( srcf.data != fImage) free( srcf.data);
 			}
 		}	
-		else
+		
+		// ***** ***** ***** ***** ***** 
+		// ***** SOURCE IMAGE IS RGBA
+		// ***** ***** ***** ***** *****
+		
+		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
 			vImage_Buffer   src, dst;
 			Pixel_8			convTable[256];
 			long			i, diff = max - min, val;
-			float			*tempfImage = 0L;
 			
 			if( stackMode > 0 && stack >= 1)
 			{
-				tempfImage = [self computeThickSlabRGB];
-				src.data = tempfImage;
+				src.data = [self computeThickSlabRGB];
 			}
 			else src.data = fImage;
+			
+			if( convolution) src.data = [self applyConvolutionOnImage: src.data RGB: YES];
+			
+			// APPLY WINDOW LEVEL TO RGB IMAGE
 			
 			for(i = 0; i < 256; i++)
 			{
@@ -9053,69 +9085,10 @@ float			iwl, iww;
 			
 			vImageTableLookUp_ARGB8888 ( &src,  &dst,  convTable,  convTable,  convTable,  convTable,  0);
 			
-			if( tempfImage) free( tempfImage);
+			if( src.data != fImage) free( src.data);
 		}
 		
-		[self applyShutter];
-		
-		// Convolution
-		if( convolution)
-		{
-			if( isRGB == YES || thickSlabVRActivated == YES)
-			{
-				vImage_Buffer dst8, dst28;
-				
-				dst8.height = height;
-				dst8.width = width;
-				dst8.rowBytes = width*4;
-				dst8.data = baseAddr;
-				
-				dst28 = dst8;
-				dst28.height = height-10;
-				dst28.width = width-10;
-				dst28.data = malloc((height+4) * ((width+4)*4));
-				if( dst28.data != 0L)
-				{
-					short err = vImageConvolve_ARGB8888( &dst8, &dst28, 0, 5, 5,  kernel, kernelsize, kernelsize, normalization, 0, kvImageLeaveAlphaUnchanged+ kvImageEdgeExtend);	// 
-					if( err) NSLog(@"Error = %d", err);
-					
-				//	BlockMoveData( dst28.data, dst8.data, height*rowBytes);
-				//	free(dst28.data);
-					
-					baseAddr = dst28.data;
-					[image SetxNSImage: (unsigned char*) baseAddr];
-				}
-				else NSLog(@"Memory please");
-			}
-			else
-			{
-			//	if( thickSlabVRActivated == NO)
-				{
-					vImage_Buffer dst8, dst28;
-					
-					dst8.height = height;
-					dst8.width = width;
-					dst8.rowBytes = rowBytes;
-					dst8.data = baseAddr;
-					
-					dst28 = dst8;
-					dst28.data = malloc((height+4) * (rowBytes+4));
-					if( dst28.data != 0L)
-					{
-//						short err = vImageRichardsonLucyDeConvolve_Planar8(&dst8, &dst28, 0, 0, 0, kernel, 0L, kernelsize, kernelsize, 0L, 0L, 0, 10, 0, 1, 0);
-						
-						short err = vImageConvolve_Planar8(&dst8, &dst28, 0, 0, 0, kernel, kernelsize, kernelsize, normalization, 0, kvImageEdgeExtend );
-						if( err) NSLog(@"Error = %d", err);
-						
-						baseAddr = dst28.data;
-						[image SetxNSImage: (unsigned char*)baseAddr];
-					//	BlockMoveData( dst28.data, dst8.data, height*rowBytes);
-					//	free(dst28.data);
-					}
-					else NSLog(@"Memory please");
-				}
-			}
-		}
+		[self applyShutter];		
     }
 }
 

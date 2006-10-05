@@ -790,6 +790,8 @@ static NSString *hostName = @"";
 	// ** STARTCOUNT
 	[defaultValues setObject: @"0" forKey: @"STARTCOUNT"];
 	
+	[defaultValues setObject: @"0" forKey: @"Compression Mode for Export"];
+	
 	// ** ORIGINALSIZE
 	[defaultValues setObject: @"0" forKey: @"ORIGINALSIZE"];
 	

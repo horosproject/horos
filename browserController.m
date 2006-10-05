@@ -536,7 +536,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog(@"AddFilesToDatabase exception: %@", [ne description]);
+		NSLog(@"AddFilesToDatabase executeFetchRequest exception: %@", [ne description]);
 		NSLog(@"executeFetchRequest failed for studiesArray.");
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
 	}
@@ -910,7 +910,7 @@ static BOOL COMPLETEREBUILD = NO;
 			
 			@catch( NSException *ne)
 			{
-				NSLog(@"exception: %@", [ne description]);
+				NSLog(@"AddFilesToDatabase DicomFile exception: %@", [ne description]);
 				NSLog(@"Parser failed for this file: %@", newFile);
 			}
 		}
@@ -9748,6 +9748,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
 	{
 		[self exportDICOMFileInt: [[sPanel filenames] objectAtIndex:0] files: filesToExport objects: dicomFiles2Export];
+		
+		[[NSUserDefaults standardUserDefaults] setInteger:[compressionMatrix selectedTag] forKey:@"Compression Mode for Export"];
 	}
 }
 
