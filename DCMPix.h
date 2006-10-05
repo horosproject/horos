@@ -297,10 +297,7 @@
 - (BOOL) loadDICOMPapyrus;
 - (void) CheckLoadIn;
 - (void) CheckLoad;
-//-(void) CheckLoad;
-
-
-
+- (float*) computefImage;
 -(float) slope;
 -(float) offset;
 -(long) serieNo;

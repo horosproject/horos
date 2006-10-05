@@ -6490,8 +6490,7 @@ static long scrollMode;
 				dst8.width = *width;
 				dst8.rowBytes = *width * sizeof( short);
 				
-				
-				srcf.data = [curDCM fImage];
+				srcf.data = [curDCM computefImage];
 				
 				i = *width * *height * *spp * *bpp / 8;
 				buf = malloc( i);
@@ -6500,6 +6499,8 @@ static long scrollMode;
 					dst8.data = buf;
 					vImageConvert_FTo16U( &srcf, &dst8, -1024,  1, 0);	//By default, we use a 1024 rescale intercept !!
 				}
+				
+				if( srcf.data != [curDCM fImage]) free( srcf.data);
 			}
 		}
 	}
