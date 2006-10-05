@@ -1133,6 +1133,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 {	
 	NSLog(@"DCMView released");
 	
+	[mouseModifiers release]; 
 	[shortDateString release];
 	[localeDictionnary release];
 	

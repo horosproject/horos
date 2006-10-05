@@ -2319,7 +2319,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		subPixOffset.x = subPixOffset.y = 0;
 		subtractedfPercent = 1;
 		subtractedfZero = 0.8;
-		subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );	
+		subGammaFunction = 0L;
 		DCMPixShutterOnOff = NSOffState;
 		shutterRect_x = 0;
 		shutterRect_y = 0;
@@ -8595,6 +8595,8 @@ BOOL            readable = YES;
 	vDSP_vsdiv (result,1,&ratio,result,1,i);							//normalize result [-1...1]
 	vDSP_vsadd (result,1,&subtractedfZero,result,1,i);					//normalize result [0...n]
 	
+	if( input != fImage) free( input);
+	
 	return result;
 }
 
@@ -8996,7 +8998,6 @@ float			iwl, iww;
     if( baseAddr)
     {
 		updateToBeApplied = NO;
-		[self CheckLoad];   
 	
 		float  min, max;
 		
@@ -9033,9 +9034,8 @@ float			iwl, iww;
 				{
 					srcf.data = [self subtractImages: srcf.data :subtractedfImage];
 					
+					if( subGammaFunction == 0L) subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );
 					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
-					
-					free( srcf.data);
 				}
 				else
 				{
@@ -9400,6 +9400,8 @@ float			iwl, iww;
 	checking = 0L;
 	
 	if( oData) free( oData);
+	
+	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
     [super dealloc];
 }

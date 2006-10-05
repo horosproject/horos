@@ -1701,7 +1701,7 @@ static BOOL initialized = NO;
 		{
 			if( [[[menu itemAtIndex:i] title] isEqualToString:@"Local DICOM Database"] == NO)
 			{
-				[[menu itemAtIndex:i] setKeyEquivalent:[[[NSNumber numberWithLong:val] stringValue] retain]];
+				[[menu itemAtIndex:i] setKeyEquivalent: [[NSNumber numberWithLong:val] stringValue]];
 				[[menu itemAtIndex:i] setKeyEquivalentModifierMask: NSCommandKeyMask];
 				val++;
 			}
