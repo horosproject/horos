@@ -466,6 +466,7 @@ static BOOL COMPLETEREBUILD = NO;
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
 {
 	if( isCurrentDatabaseBonjour) return 0L;
+	
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
@@ -535,7 +536,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog(@"exception: %@", [ne description]);
+		NSLog(@"AddFilesToDatabase exception: %@", [ne description]);
 		NSLog(@"executeFetchRequest failed for studiesArray.");
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:1 userInfo: 0L];
 	}

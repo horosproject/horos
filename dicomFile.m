@@ -599,7 +599,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					SOPUID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 					serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-					imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+					studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				}
 				
 				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
