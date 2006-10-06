@@ -5210,6 +5210,9 @@ static BOOL withReset = NO;
 	[self outlineViewRefresh];
 	
 	[context unlock];
+	
+	[databaseOutline selectRow:0 byExtendingSelection:NO];
+	[databaseOutline selectRowIndexes:selectedRows byExtendingSelection: NO];
 }
 
 - (void) matrixLoadIcons:(NSManagedObject*) item
@@ -5595,6 +5598,10 @@ static BOOL withReset = NO;
 	[item release];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Anonymize", nil)  action:@selector(anonymizeDICOM:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
+
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -7621,7 +7628,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	[anonymizeItem setTarget:self];
 	[menu addItem:anonymizeItem];
 	[anonymizeItem release];
-	
+	anonymizeItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""];
+	[anonymizeItem setTarget:self];
+	[menu addItem:anonymizeItem];
+	[anonymizeItem release];
 	
 	[databaseOutline setMenu:menu];
 	[menu release];
