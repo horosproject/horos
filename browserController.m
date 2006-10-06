@@ -89,7 +89,8 @@ Version 2.5
 #import "DCMAttributeTag.h"
 #import "DCMPixelDataAttribute.h"
 #import "DCMCalendarDate.h"
-#import <OsiriX/DCMTransferSyntax.h>
+
+
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCMDirectory.h>
 #import <OsiriX/DCMObject.h>
@@ -109,6 +110,8 @@ Version 2.5
 #import "StructuredReportController.h"
 
 #import "QTExportHTMLSummary.h"
+
+#import "BrowserControllerDCMTKCategory.h"
 
 #define DATABASEVERSION @"2.1"
 
@@ -8544,7 +8547,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-	
+	/*
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
 	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 	
@@ -8552,7 +8555,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
 	
 	[compressedPath release];
-	
+	*/
+	[self decompressDICOM:compressedPath];
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
@@ -8562,8 +8566,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(void) compressDICOMJPEG:(NSString*) compressedPath
 {
+
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-	
+	/*
 	NSTask			*theTask;
 	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
 	
@@ -8587,6 +8592,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[compressedPath release];
+	*/
+	
+	[self compressDICOMWithJPEG:compressedPath];
 	
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
