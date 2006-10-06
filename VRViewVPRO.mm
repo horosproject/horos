@@ -993,7 +993,9 @@ public:
 					[dcmSequence setOrientation: o];
 					
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-			//		[dcmSequence setPixelSpacing: 1 :1];
+					
+					if( aCamera->GetParallelProjection())
+						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
 					err = [dcmSequence writeDCMFile: 0L];
 					
@@ -1066,7 +1068,9 @@ public:
 					[dcmSequence setOrientation: o];
 					
 					[dcmSequence setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-			//		[dcmSequence setPixelSpacing: 1 :1];
+					
+					if( aCamera->GetParallelProjection())
+						[dcmSequence setPixelSpacing: [self getResolution] :[self getResolution]];
 					
 					err = [dcmSequence writeDCMFile: 0L];
 					
