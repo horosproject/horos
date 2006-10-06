@@ -3793,6 +3793,40 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 } // end createROIsFromRTSTRUCT
 
+- (void) setVOILUT:(int) first number :(unsigned int) number depth :(unsigned int) depth table :(unsigned int *)table image:(unsigned short*) src isSigned:(BOOL) isSigned
+{
+	long			i;
+	int				index;
+	
+	if( isSigned)
+	{
+		int *signedTable = (int*) table;
+		int *signedSrc = (int*) src;
+		
+		i = width * height;
+		while( i-- > 0 )
+		{
+			index = signedSrc[ i] - first;
+			if( index <= 0) index = 0;
+			if( index >= number) index = number = -1;
+			
+			src[ i] = table[ index];
+		}
+	}
+	else
+	{
+		i = width * height;
+		while( i-- > 0 )
+		{
+			index = src[ i] - first;
+			if( index <= 0) index = 1;
+			if( index >= number) index = number = -1;
+			
+			src[ i] = table[ index];
+		}
+	}
+}
+
 #pragma mark-
 
 //- (BOOL)loadFileDCMFramework	// PLEASE, KEEP ALSO THIS FUNCTION, BASED on loadDICOMDCMFrameword, but refactored
@@ -6295,6 +6329,52 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				if (found16) fSetClut16 = YES;
 			} // endif ...extraction of the color palette
 			
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"])
+			{
+				val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType );
+				
+				// Loop over sequence
+				
+				if ( val != NULL)
+				{
+					if( val->sq != NULL )
+					{
+						Papy_List	*dcmList = val->sq->object->item;
+						if (dcmList != NULL)	// We use ONLY the first VOILut available
+						{
+							SElement *gr = (SElement *)dcmList->object->group;
+							if ( gr->group == 0x0028 )
+							{
+								
+								val = Papy3GetElement (gr, papLUTDescriptorGr, &pos, &elemType );
+								if( val)
+								{
+									VOILUT_number = val->us;		val++;
+									VOILUT_first = val->us;			val++;
+									VOILUT_depth = val->us;			val++;
+								}
+								
+								val = Papy3GetElement (gr, papLUTDataGr, &pos, &elemType );
+								if( val)
+								{
+									VOILUT_number = pos;
+									
+									if( VOILUT_table) free( VOILUT_table);
+									VOILUT_table = malloc( sizeof(unsigned int) * VOILUT_number);
+									for (j = 0; j < VOILUT_number; j++)
+									{
+										VOILUT_table [j] = (unsigned int) val->us;			val++;
+									}
+								}
+							}
+						//	dcmList = dcmList->next;
+						}
+					}
+				}
+			}
+
+			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 
@@ -7237,6 +7317,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						
 						src16.data = oImage;
 						
+						if( VOILUT_number != 0 && VOILUT_depth != 0 && VOILUT_table != 0L)
+						{
+							[self setVOILUT:VOILUT_first number:VOILUT_number depth:VOILUT_depth table:VOILUT_table image:(unsigned short*) oImage isSigned: fIsSigned];
+							
+							free( VOILUT_table);
+							VOILUT_table = 0L;
+						}
+
 						if( imPix->fVolImage)
 						{
 							imPix->fImage = imPix->fVolImage;
@@ -7247,7 +7335,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						}
 						
 						dstf.data = imPix->fImage;
-						
+												
 						if( inverseVal) slope *= -1.;
 						
 						if( fIsSigned)
@@ -9003,18 +9091,18 @@ float			iwl, iww;
 		
         min = iwl - iww / 2; 
         max = iwl + iww / 2;
-
+		
 		// ***** ***** ***** ***** ***** 
 		// ***** SOURCE IMAGE IS 32 BIT FLOAT
 		// ***** ***** ***** ***** *****
-
+		
 		if( isRGB == NO) //fImage case
 		{
 			vImage_Error	vIerr;
 			vImage_Buffer	srcf, dst8;
 			
 			srcf.data = [self computefImage];
-			
+						
 			// CONVERSION TO 8-BIT for displaying
 			
 			if( thickSlabVRActivated == NO)
@@ -9402,7 +9490,8 @@ float			iwl, iww;
 	checking = 0L;
 	
 	if( oData) free( oData);
-	
+	if( VOILUT_table) free( VOILUT_table);
+
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
     [super dealloc];

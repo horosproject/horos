@@ -89,6 +89,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 		}
 		[table reloadData];
 		[table expandItem:[table itemAtRow:0] expandChildren:NO];
+		
+		[search setRecentsAutosaveName:@"xml meta data search"];
 	}
 	return self;
 }

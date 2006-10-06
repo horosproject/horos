@@ -805,6 +805,10 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey: @"IMAGEROWS"];
 	[defaultValues setObject:@"1" forKey: @"IMAGECOLUMNS"];
 	
+	//UseVOILUT
+	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
+	
+	
 	// ** STRINGENCODING
 	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
 

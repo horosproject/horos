@@ -133,7 +133,11 @@
 	
 	NSString			*convertedDICOM;	
 	BOOL				generated;	
-	NSLock				*checking;	
+	NSLock				*checking;
+	
+	BOOL				useVOILUT;
+	int					VOILUT_first;
+	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
 }
 
 // Is it an RGB image (ARGB) or float image?

@@ -264,6 +264,7 @@
                 subCtrlOffset = id; 
                 subCtrlOnOff = id; 
                 syncronize = id; 
+                useVOILUT = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 

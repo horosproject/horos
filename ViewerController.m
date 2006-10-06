@@ -7830,6 +7830,12 @@ int i,j,l;
 	[self revertSeries: self];
 }
 
+- (void)useVOILUT: (id)sender
+{
+	[self revertSeries: self];
+	[imageView setWLWW:0 :0];
+}
+
 
 #pragma mark-
 #pragma mark 4.1.6 Fixed graphical layer
