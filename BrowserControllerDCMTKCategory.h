@@ -21,7 +21,11 @@
 #import <Cocoa/Cocoa.h>
 #import "browserController.h"
 
+
+
 @interface BrowserController (BrowserControllerDCMTKCategory)
 
+- (BOOL)compressDICOMWithJPEG:(NSString *)path;
+- (BOOL)decompressDICOM:(NSString *)path;
 
 @end
