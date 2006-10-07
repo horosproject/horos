@@ -200,6 +200,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 }
 
 + (BrowserController*) currentBrowser;
++ (void) replaceNotAdmitted:(NSMutableString*) name;
 
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;

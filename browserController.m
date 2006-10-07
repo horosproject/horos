@@ -319,7 +319,7 @@ NSString* asciiString (NSString* name)
 	NSData		*asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 	
 	outString = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
-	[outString replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [outString length])];
+	[BrowserController replaceNotAdmitted:outString];
 	
 	return outString;
 }
@@ -9239,7 +9239,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		
 		NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
-		[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+		[BrowserController replaceNotAdmitted:seriesStr];
 		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 		
@@ -9428,7 +9428,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
 			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
-			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
+			[BrowserController replaceNotAdmitted:seriesStr];
 			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 			
@@ -9504,6 +9504,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
++ (void) replaceNotAdmitted:(NSMutableString*) name
+{
+	[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
+	[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
+	[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"\\" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"|" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@":" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"*" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"<" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@">" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+	[name replaceOccurrencesOfString:@"?" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+}
+
 - (NSArray*) exportDICOMFileInt:(NSString*) location files:(NSArray*) filesToExport objects:(NSArray*) dicomFiles2Export
 {
 	int					i, t;
@@ -9544,12 +9561,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 			
-			[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+			[BrowserController replaceNotAdmitted: name];
+			
 			tempPath = [path stringByAppendingPathComponent:name];
 		}
 		
@@ -9583,12 +9596,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
 			
-			[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];
+			[BrowserController replaceNotAdmitted: name];
 			tempPath = [tempPath stringByAppendingPathComponent:name];
 		}
 			
@@ -9597,9 +9605,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if (!addDICOMDIR ) {
 			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
-			[seriesStr replaceOccurrencesOfString: @"/" withString: @"_" options: NSLiteralSearch range: NSMakeRange(0,[seriesStr length])];
-			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			
+			[BrowserController replaceNotAdmitted:seriesStr];
+			
+			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
 			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
 		}
 		else
@@ -9615,12 +9624,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
 			
-			[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"." withString:@"" options:nil range:NSMakeRange(0, [name length])];  
-			[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+			[BrowserController replaceNotAdmitted: name];
 			tempPath = [tempPath stringByAppendingPathComponent:name];
 		}
 		
@@ -9699,11 +9703,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
 			
-			[name replaceOccurrencesOfString:@" " withString:@"" options:nil range:NSMakeRange(0, [name length])];  
-			[name replaceOccurrencesOfString:@"," withString:@"" options:nil range:NSMakeRange(0, [name length])]; 
-			[name replaceOccurrencesOfString:@"^" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"/" withString:@"" options:nil range:NSMakeRange(0, [name length])];
-			[name replaceOccurrencesOfString:@"-" withString:@"" options:nil range:NSMakeRange(0, [name length])];
+			[BrowserController replaceNotAdmitted: name];
 			
 			NSString *tempPath = [path stringByAppendingPathComponent:name];
 			
