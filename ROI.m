@@ -621,11 +621,18 @@ GLenum glReportError (void)
 {
   float 		ax,ay,bx,by;
   float			val, angle;
+  float			px = 1, py = 1;
   
-  ax = p2.x - p1.x;
-  ay = p2.y - p1.y;
-  bx = p3.x - p1.x;
-  by = p3.y - p1.y;
+  if( pixelSpacingX != 0 && pixelSpacingY != 0)
+  {
+	px = pixelSpacingX;
+	py = pixelSpacingY;
+  }
+  
+  ax = p2.x*px - p1.x*px;
+  ay = p2.y*py - p1.y*py;
+  bx = p3.x*px - p1.x*px;
+  by = p3.y*py - p1.y*py;
   
   if (ax == 0 && ay == 0) return 0;
   val = ((ax * bx) + (ay * by)) / (sqrt(ax*ax + ay*ay) * sqrt(bx*bx + by*by));
