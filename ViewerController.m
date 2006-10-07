@@ -7367,8 +7367,6 @@ int i,j,l;
 	NSEnumerator	*enumerator = [workUnits objectEnumerator];
 	NSDictionary	*object;
 	
-	[roiLock lock];
-	
 	while (object = [enumerator nextObject])
 	{
 		// ** Set Pixels
@@ -7393,8 +7391,6 @@ int i,j,l;
 		if( [[object valueForKey:@"action"] isEqualToString:@"erode"])
 			[[object objectForKey:@"filter"] erode: [object objectForKey:@"roi"] withStructuringElementRadius: [[object objectForKey:@"radius"] intValue]];
 	}
-	
-	[roiLock unlock];
 }
 
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
@@ -7402,6 +7398,8 @@ int i,j,l;
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
 	[sched setDelegate: self];
+	
+	[roiLock lock];
 	
 	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
 	
@@ -7418,6 +7416,8 @@ int i,j,l;
 	while( [sched numberOfDetachedThreads] > 0) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	[sched release];
+	
+	[roiLock unlock];
 	
 	if( sendNotification)
 		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
