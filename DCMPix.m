@@ -3815,7 +3815,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		{
 			index = signedSrc[ i] - first;
 			if( index <= 0) index = 0;
-			if( index >= number) index = number = -1;
+			if( index >= number) index = number -1;
 			
 			src[ i] = table[ index];
 		}
@@ -3825,9 +3825,17 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		i = width * height;
 		while( i-- > 0 )
 		{
-			index = src[ i] - first;
-			if( index <= 0) index = 1;
-			if( index >= number) index = number = -1;
+			int val = src[ i];
+			
+			index = val - first;
+			if( index <= 0)
+			{
+			NSLog(@"<=0");	index = 1;
+			}
+			if( index >= number)
+			{
+			NSLog(@"number"); index = number -1;
+			}
 			
 			src[ i] = table[ index];
 		}

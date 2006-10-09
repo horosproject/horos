@@ -5282,13 +5282,19 @@ static BOOL withReset = NO;
 				}
 				
 				if( thumbnail == 0L) thumbnail = [dcmPix getImage];
-				if( thumbnail == 0L) thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-			
-				[previewPixThumbnails addObject: thumbnail];
-				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel)
+				
+				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel && thumbnail != 0L)
 				{
 					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
 				}
+				
+				if( thumbnail == 0L)
+				{
+					thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
+					NSLog(@"thumbnail failed");
+				}
+				
+				[previewPixThumbnails addObject: thumbnail];
 				[previewPix addObject: dcmPix];
 				
 				[dcmPix release];
