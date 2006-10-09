@@ -3806,6 +3806,9 @@ static ViewerController *draggedController = 0L;
 	newY = (int)((float)originHeight / yFactor + 0.5);
 	newZ = (int)((float)originZ / zFactor + 0.5);
 	
+	if( newZ <= 0) newZ = 1;
+	if( originZ == 1) newZ = 1;
+	
 	int maxZ = originZ;
 	if( maxZ < newZ) maxZ = newZ;
 	
@@ -3819,45 +3822,48 @@ static ViewerController *draggedController = 0L;
 		BOOL equalVector = YES;
 		int o;
 		
-		[[originalPixlist objectAtIndex:0] orientation: vectors];
-		[[originalPixlist objectAtIndex:1] orientation: vectorsB];
-		
-		origin[ 0] = [[originalPixlist objectAtIndex:0] originX]; 
-		origin[ 1] = [[originalPixlist objectAtIndex:1] originY]; 
-		origin[ 2] = [[originalPixlist objectAtIndex:2] originZ]; 
-		
-		for( i = 0; i < 9; i++)
+		if( [originalPixlist count] > 1)
 		{
-			if( vectors[ i] != vectorsB[ i]) equalVector = NO;
-		}
-		
-		if( equalVector)
-		{
-			if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+			[[originalPixlist objectAtIndex:0] orientation: vectors];
+			[[originalPixlist objectAtIndex:1] orientation: vectorsB];
+			
+			origin[ 0] = [[originalPixlist objectAtIndex:0] originX]; 
+			origin[ 1] = [[originalPixlist objectAtIndex:0] originY]; 
+			origin[ 2] = [[originalPixlist objectAtIndex:0] originZ]; 
+			
+			for( i = 0; i < 9; i++)
 			{
-				interval = [[originalPixlist objectAtIndex:0] originX] - [[originalPixlist objectAtIndex:1] originX];
-				
-				if( vectors[6] > 0) interval = -( interval);
-				else interval = ( interval);
-				o = 0;
+				if( vectors[ i] != vectorsB[ i]) equalVector = NO;
 			}
 			
-			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+			if( equalVector)
 			{
-				interval = [[originalPixlist objectAtIndex:0] originY] - [[originalPixlist objectAtIndex:1] originY];
+				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+				{
+					interval = [[originalPixlist objectAtIndex:0] originX] - [[originalPixlist objectAtIndex:1] originX];
+					
+					if( vectors[6] > 0) interval = -( interval);
+					else interval = ( interval);
+					o = 0;
+				}
 				
-				if( vectors[7] > 0) interval = -( interval);
-				else interval = ( interval);
-				o = 1;
-			}
-			
-			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
-			{
-				interval = [[originalPixlist objectAtIndex:0] originZ] - [[originalPixlist objectAtIndex:1] originZ];
+				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+				{
+					interval = [[originalPixlist objectAtIndex:0] originY] - [[originalPixlist objectAtIndex:1] originY];
+					
+					if( vectors[7] > 0) interval = -( interval);
+					else interval = ( interval);
+					o = 1;
+				}
 				
-				if( vectors[8] > 0) interval = -( interval);
-				else interval = ( interval);
-				o = 2;
+				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
+				{
+					interval = [[originalPixlist objectAtIndex:0] originZ] - [[originalPixlist objectAtIndex:1] originZ];
+					
+					if( vectors[8] > 0) interval = -( interval);
+					else interval = ( interval);
+					o = 2;
+				}
 			}
 		}
 		
@@ -3866,11 +3872,15 @@ static ViewerController *draggedController = 0L;
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
 		
-		float pos1 = [[originalPixlist objectAtIndex: 0] sliceLocation];
-		float pos2 = [[originalPixlist objectAtIndex: 1] sliceLocation];
-		float intervalSlice = pos2 - pos1;
-		
-		intervalSlice *= (float) zFactor;
+//		float pos1 = [[originalPixlist objectAtIndex: 0] sliceLocation];
+//		
+//		if( [originalPixlist count] > 1)
+//		{
+//			float pos2 = [[originalPixlist objectAtIndex: 1] sliceLocation];
+//			float intervalSlice = pos2 - pos1;
+//		
+//			intervalSlice *= (float) zFactor;
+//		}
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
