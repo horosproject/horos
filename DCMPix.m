@@ -2748,17 +2748,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
 	long			i, x, y, totSize;
 	int				realwidth;
-//<<<<<<< .mine
 	long	w, h, row;
 	short   bpp, count, tifspp;
 	short   cur_page, number_of_pages;
-/*
-=======
-	int				w, h, row;
-	short			bpp, count, spp;
-	short			cur_page, number_of_pages;
->>>>>>> .r1029
-*/
 	
 	isRGB = NO;
 	
@@ -4126,7 +4118,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //	
 //	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
 //	bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
-//	int spp = 1;
+//	spp = 1;
 //	if ([dcmObject attributeValueWithName:@"SamplesperPixel"]) spp = [[dcmObject attributeValueWithName:@"SamplesperPixel"] intValue];
 //	
 //	offset = 0.0;
@@ -5012,7 +5004,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
 	bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
-	int spp = 1;
+	spp = 1;
 	if ([dcmObject attributeValueWithName:@"SamplesperPixel"]) spp = [[dcmObject attributeValueWithName:@"SamplesperPixel"] intValue];
 	
 	offset = 0.0;

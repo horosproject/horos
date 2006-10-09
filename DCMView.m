@@ -5477,7 +5477,9 @@ static long scrollMode;
 			NSString *Modality = [file valueForKeyPath:@"series.modality"];
 			NSString *PatientName = [NSString stringWithString:[file valueForKeyPath:@"series.study.name"]];
 			NSString *BirthDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-			NSString *PatientSex = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientSex"]];
+			NSString *PatientSex; //this field may be empty in the database
+			if ( [file valueForKeyPath:@"series.study.patientSex"]) PatientSex = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientSex"]];
+			else PatientSex = @" ";
 			NSString *PatientID = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientID"]];
 			NSNumber *FrameTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] fImageTime]];
 			NSNumber *MaskTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] maskTime]];

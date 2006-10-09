@@ -47,7 +47,7 @@
 
 //	pixel representation
 	BOOL				fIsSigned;
-	short				bitsAllocated;
+	short				bitsAllocated, spp;
     float               slope, offset;
 
 //	image size
