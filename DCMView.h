@@ -153,7 +153,8 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 	NSColor			*fontColor;
     GLuint          fontListGL;
 	GLuint          labelFontListGL;
-    
+	float			fontRasterY;
+	
     NSPoint         mesureA, mesureB;
     NSRect          roiRect;
 	NSString		*stringID;
@@ -310,6 +311,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
+- (void) DrawNSStringGLPLUGINonly:(NSString*)str :(long)line :(_Bool)right;
 - (void) drawTextualData:(NSRect) size :(long) annotations;
 - (void) draw2DPointMarker;
 - (void) setSyncro:(long) s;

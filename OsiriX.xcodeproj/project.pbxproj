@@ -1722,6 +1722,12 @@
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
+		B78675450AD9C56400731977 /* diameter570frame512.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675430AD9C56400731977 /* diameter570frame512.pbm */; };
+		B78675460AD9C56400731977 /* diameter1140frame1024.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675440AD9C56400731977 /* diameter1140frame1024.pbm */; };
+		B78675470AD9C56400731977 /* diameter570frame512.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675430AD9C56400731977 /* diameter570frame512.pbm */; };
+		B78675480AD9C56400731977 /* diameter1140frame1024.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675440AD9C56400731977 /* diameter1140frame1024.pbm */; };
+		B78675490AD9C56400731977 /* diameter570frame512.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675430AD9C56400731977 /* diameter570frame512.pbm */; };
+		B786754A0AD9C56400731977 /* diameter1140frame1024.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675440AD9C56400731977 /* diameter1140frame1024.pbm */; };
 		B78DA71B0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
 		B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
 		B78DA71D0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
@@ -10490,6 +10496,8 @@
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
 		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		B78675430AD9C56400731977 /* diameter570frame512.pbm */ = {isa = PBXFileReference; lastKnownFileType = file; path = diameter570frame512.pbm; sourceTree = "<group>"; };
+		B78675440AD9C56400731977 /* diameter1140frame1024.pbm */ = {isa = PBXFileReference; lastKnownFileType = file; path = diameter1140frame1024.pbm; sourceTree = "<group>"; };
 		B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Shutter.tif; sourceTree = "<group>"; };
 		B7CDAC730AB3003200068D70 /* PAGES */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PAGES; path = Binaries/PAGES; sourceTree = "<group>"; };
 		B7CDAD000AB30E7600068D70 /* page.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = page.tif; sourceTree = "<group>"; };
@@ -13581,6 +13589,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
+				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
@@ -23984,6 +23994,8 @@
 				AB381AFF0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DEF0AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 				B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
+				B78675470AD9C56400731977 /* diameter570frame512.pbm in Resources */,
+				B78675480AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24272,6 +24284,8 @@
 				AB381AFE0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DF00AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 				B78DA71D0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
+				B78675490AD9C56400731977 /* diameter570frame512.pbm in Resources */,
+				B786754A0AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24561,6 +24575,8 @@
 				AB381AFD0ABE9F5100239326 /* OSIAutoroutingPreferencePane.prefPane in Resources */,
 				CE682DF10AC71E50004DD3A5 /* dcmcjpeg in Resources */,
 				B78DA71B0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
+				B78675450AD9C56400731977 /* diameter570frame512.pbm in Resources */,
+				B78675460AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

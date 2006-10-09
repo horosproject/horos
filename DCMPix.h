@@ -95,7 +95,13 @@
 	float				subtractedfPercent;
 	float				subtractedfZero;
 	GammaFunction		subGammaFunction;
-
+	
+	long				maskID;
+	float				maskTime;
+	float				fImageTime;
+	float				rot;
+	float				ang;
+	
 	long				shutterRect_x;
 	long				shutterRect_y;
 	long				shutterRect_w;
@@ -240,6 +246,18 @@
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;
 - (void) setSubtractedfImage:(float*)mask :(NSPoint)smm;
 - (float*) subtractImages:(float*)input :(float*)subfImage;
+
+-(void) fImageTime:(float)newTime;
+-(float) fImageTime;
+-(void) maskID:(long)newID;
+-(long) maskID;
+-(void) maskTime:(float)newMaskTime;
+-(float) maskTime;
+-(void) rot:(float)newRot;
+-(float) rot;
+-(void) ang:(float)newAng;
+-(float) ang;
+
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
 -(long) DCMPixShutterRectWidth;
 -(BOOL) DCMPixShutterOnOff;

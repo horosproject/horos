@@ -4052,6 +4052,7 @@ static ViewerController *draggedController = 0L;
 		long subCtrlMin = 1024;
 		long subCtrlMax = 0;
 		long i;
+		float newMaskTime = [[[imageView dcmPixList] objectAtIndex:subCtrlMaskID]fImageTime];
 		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
 				{
 					subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
@@ -4059,6 +4060,9 @@ static ViewerController *draggedController = 0L;
 								    ];
 					if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
 					if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+					
+					[[[imageView dcmPixList] objectAtIndex:i] maskID: subCtrlMaskID];
+					[[[imageView dcmPixList] objectAtIndex:i] maskTime: newMaskTime];
 				}
 		subCtrlMinMax.x = subCtrlMin;
 		subCtrlMinMax.y = subCtrlMax;

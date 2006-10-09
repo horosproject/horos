@@ -2320,6 +2320,13 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		subtractedfPercent = 1;
 		subtractedfZero = 0.8;
 		subGammaFunction = 0L;
+		
+		ang = 0;
+		rot = 0;
+		maskID = 1;
+		maskTime = 0;
+		fImageTime = 0;
+				
 		DCMPixShutterOnOff = NSOffState;
 		shutterRect_x = 0;
 		shutterRect_y = 0;
@@ -3829,19 +3836,209 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 #pragma mark-
 
-//- (BOOL)loadFileDCMFramework	// PLEASE, KEEP ALSO THIS FUNCTION, BASED on loadDICOMDCMFrameword, but refactored
+// PLEASE, KEEP ALSO THIS FUNCTION, BASED on loadDICOMDCMFramework
+// but progresively refactored (for now, I only aislated a special treatment for Philips Angiography)
+// To try it, uncomment, change method name to loadDICOMDCMFramework and the original loadDICOMDCMFramework to another name
+//- (BOOL)loadDICOMDCMFrameworkJacques_2006-10-08	
 //{		
 //	if( pixArray != 0L && frameNo > 0) return YES; //NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
-//	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);
 //	
 //	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+//	
+//	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+//	if ( dcmObject == nil ) {
+//		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
+//		[pool release];
+//		return NO;
+//	}
+//	
 //	int					j;
 //	int					elemType;
 //	short				maxFrame = 1;
 //	short				imageNb = frameNo;
 //	short				ee;
+//	
+//	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
 //
-///*Color LUT
+//#pragma mark *XA 
+//	
+//	if ( [SOPClassUID isEqualToString:@"1.2.840.10008.5.1.4.1.1.12.1"] &&
+//		 [[dcmObject attributeValueWithName:@"ManufacturersModelName"] isEqualToString:@"P H I L I P S     INTEGRIS V"])
+//	{
+//		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
+//		width = [[dcmObject attributeValueWithName:@"Columns"] intValue];
+//		NSString *path;
+//		if((height == 1024) && (width == 1024))
+//			path = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/diameter1140frame1024.pbm"];
+//		else
+//			path = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/diameter570frame512.pbm"];
+//
+//		NSData *PBMdata = [[NSFileManager defaultManager] contentsAtPath:path];
+//		fIsSigned = 0;
+//		bitsAllocated = 16;
+//		spp = 1;
+//		fPlanarConf = 0; //fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];
+//		slope = 1.0;
+//		savedWL = 512;
+//		savedWW = 1024;
+//
+//		//pixelSpacingX = 0;
+//		//pixelSpacingY = 0;
+//		//pixelRatio = 1.0;	
+//		//originX = 0;
+//		//originY = 0;
+//		//originZ = 0;
+//		float rotation=[[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"] floatValue]; //0018,1510
+//		float angle=[[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] floatValue]; //0018,1511
+//		//NSLog(@"rotation:%f",rotation);
+//		//NSLog(@"angle:%f",angle);
+//		
+//		maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
+//		if( maxFrame == 0) maxFrame = 1; //monoframe image
+//		if( pixArray == 0L) maxFrame = 1; //icon for multiframe image
+//
+//		if ([dcmObject attributeValueWithName:@"PixelData"])
+//		{	
+//			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
+//			DCMPix	*imPix = 0L;
+//			
+//			//fImageTime
+//			float chronometer;
+//			float interval;
+//			float frameTimes[maxFrame];
+//			
+//			NSString *FrameTime = [dcmObject attributeValueWithName:@"FrameTime"];
+//			if (FrameTime)
+//			{
+//				//NSLog(@"FrameTime (0018,1063)");
+//				interval= [FrameTime floatValue]/1000;
+//				for( ee = 0; ee < maxFrame; ee++) frameTimes[ee]=interval * ee;
+//			}
+//			else
+//			{
+//				DCMSequenceAttribute *frameTimeVector = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"FrameTimeVector"];	
+//				if ( frameTimeVector != nil )
+//				{
+//					//NSLog(@"FrameTime (0018,1065)");					
+//					NSArray *frameTimeVectors = [[frameTimeVector valuesAsString] componentsSeparatedByString:@","];
+//					NSEnumerator *enumerator = [frameTimeVectors objectEnumerator];
+//					id anObject;
+//					
+//					ee=0;
+//					chronometer=0;
+//					frameTimes[ee++]=chronometer;
+//					[enumerator nextObject];
+//					
+//					while (anObject = [enumerator nextObject])
+//					{
+//						interval=[[anObject substringFromIndex:2] floatValue]/1000;
+//						chronometer=chronometer + interval;
+//						frameTimes[ee++]=chronometer;						
+//					}
+//				}
+//				//else NSLog(@"No frame time information");
+//			}
+//			
+//			
+//			// frame loop
+//			for( ee = 0; ee < maxFrame; ee++)			
+//			{
+//				NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
+//				if( maxFrame > 1)
+//				{
+//					//duplicates DCMPix (one imPix for each frame)
+//					imPix = [pixArray objectAtIndex: ee];
+//					[imPix copyFromOther: self];
+//				}
+//				else
+//				{
+//					imPix = self;
+//					ee = imageNb;
+//				}
+//				
+//				[[pixArray objectAtIndex: ee]fImageTime:frameTimes[ee]];
+//				[[pixArray objectAtIndex: ee]maskTime:frameTimes[1]];
+//				if (rotation) [[pixArray objectAtIndex: ee]rot:rotation];
+//				if (angle) [[pixArray objectAtIndex: ee]ang:angle];
+//				
+//				NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];	//creation of a pointer to the frame
+//				oImage =  malloc([pixData length]);
+//				[pixData getBytes:oImage];								//transform data into buffer oImage		
+//
+//				if(imPix->fVolImage) imPix->fImage = imPix->fVolImage;			//browserViewer (one image at a time)
+//				else imPix->fImage = malloc(width*height*sizeof(float) + 100);	//2Dviewer (all images in contiguous memory)
+//				float *fPointer = (imPix->fImage);
+//				
+//				//in PBM format after the return (byte 15 or byte 13 in our cases) each bit white=0 black=1
+//
+//				short *oImagePointer;
+//				oImagePointer = oImage;
+//				
+//				unsigned char *eightAlphaBits, *eightAlphaBitsLast;
+//				if(height == 1024)
+//					{
+//					eightAlphaBits = [PBMdata bytes]+0x0F;
+//					eightAlphaBitsLast = [PBMdata bytes]+0x20010;
+//					}				
+//				else //height == 512
+//					{
+//					eightAlphaBits = [PBMdata bytes]+0x0D;
+//					eightAlphaBitsLast = [PBMdata bytes]+0x800E;
+//					}				
+//				while (eightAlphaBits++ < eightAlphaBitsLast)
+//				{
+//					switch( (*eightAlphaBits))
+//					{
+//						case 255:						
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//							*fPointer++=*oImagePointer++;
+//						break;
+//						
+//						case 0:
+//							fPointer+=8;
+//							oImagePointer+=8;
+//						break;
+//						
+//						default:							
+//							if (*eightAlphaBits & 0x80) *fPointer++=*oImagePointer++;
+//							else {*fPointer++ = 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x40) *fPointer++=*oImagePointer++;
+//							else {*fPointer++ = 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x20) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x10) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x08) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x04) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x02) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}
+//							if (*eightAlphaBits & 0x01) *fPointer++=*oImagePointer++;
+//							else {*fPointer++= 0 ; oImagePointer++;}	
+//						break;						
+//					}
+//				}
+//				[subPool release];
+//				free(oImage);
+//				oImage = 0L;
+//			}//out of the loop
+//			
+//		}//out of if([dcmObject attributeValueWithName:@"PixelData"])
+//
+//	}
+//	else
+//	{
+//	//start specific non XA treatment
+//		
+//	int					realwidth, realheight;
+////Color LUT
 //	BOOL				fSetClut = NO, fSetClut16 = NO;
 //	unsigned char		*clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
 //	unsigned short		clutEntryR, clutEntryG, clutEntryB;
@@ -3849,243 +4046,48 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //	unsigned short		*shortRed, *shortGreen, *shortBlue;
 //
 //	int					pixmin, pixmax;
-//*/		
-//
-//	
-//			
-//	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-//	if ( dcmObject == nil ) {
-//		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
-//		[pool release];
-//		return NO;
-//	}
-//
-////----------------------------------------------------------------------------------	
-//	
-//#pragma mark FILE SOP CLASS UID DEPENDANT
-//	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-//
-//#pragma mark *XA	
-//
-//	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]] )
-//		{
-//			NSLog(@"DCMparser Before frame loading XA");
-//			originX = 0;	originY = 0;	originZ = 0;
-//			
-//			fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
-//			NSLog(@"fIsSigned:%d",fIsSigned);
-//			
-//			bitsAllocated = 16;
-//			spp = 1;
-//			fPlanarConf = 0;
-////			fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue];
-//
-//			slope = 1.0;
-//			height =1024;
-////			height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
-//			width = 1024;
-////			width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
-//			
-//			NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
-//			if( iop)
-//			{
-//				for (j = 0 ; j < [iop count]; j++) 
-//					orientation[ j] = [[iop objectAtIndex:j] floatValue];
-//			}
-//
-//			savedWL = 512;
-//			savedWW = 1024;
-//
-//			pixelSpacingX = 0;
-//			pixelSpacingY = 0;
-//			pixelRatio = 1.0;
-///*
-//			NSArray *pixelSpacing = [dcmObject attributeArrayWithName:@"PixelSpacing"];
-//			if([pixelSpacing count] >= 2)
-//			{
-//				pixelSpacingY = [[pixelSpacing objectAtIndex:0] floatValue];
-//				pixelSpacingX = [[pixelSpacing objectAtIndex:1] floatValue];
-//			}
-//			NSArray *par = [dcmObject attributeArrayWithName:@"PixelAspectRatio"];
-//			if ([par count] >= 2)
-//			{
-//				float ratiox = 1, ratioy = 1;
-//				ratiox = [[par objectAtIndex:0] floatValue];
-//				ratioy = [[par objectAtIndex:1] floatValue];
-//				
-//				if( ratioy != 0)
-//				{
-//					pixelRatio = ratiox / ratioy;
-//				}
-//			}
-//			else if( pixelSpacingX != pixelSpacingY)
-//			{
-//				if( pixelSpacingY != 0 && pixelSpacingX != 0) pixelRatio = pixelSpacingY / pixelSpacingX;
-//			}
-//			NSLog(@"pixelSpacingX:%d   pixelSpacingY:%d   pixelRatio:%d   ",pixelSpacingX, pixelSpacingY, pixelRatio); 
-//*/
-//			
-//		}
-//	
-//else {
-////start specific non XA treatment
-//
 //
 //	
 //#pragma mark *pdf
-//	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) {
-//		NSLog(@"have PDF");
-//		int					realwidth, realheight;
-//
-//		NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
-//		NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
-//		[rep setCurrentPage:frameNo];	
-//		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
-//		[pdfImage addRepresentation:rep];
-//		[pdfImage setBackgroundColor: [NSColor whiteColor]];
-//		/*
-//		 NSSize	newSize = [pdfImage size];						
-//		 newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
-//		 newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-//		 [pdfImage setScalesWhenResized:YES];
-//		 [pdfImage setSize: newSize];
-//		 */
-//		
-//		NSData *tiffData = [pdfImage TIFFRepresentation];
-//		//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
-//		
-//		NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
-//		//NSLog(@"tiffRep: %@", [TIFFRep description]);
-//		
-//		height = [TIFFRep pixelsHigh];
-//		height /= 2;
-//		height *= 2;
-//		realwidth = [TIFFRep pixelsWide];
-//		width = realwidth/2;
-//		width *= 2;
-//		rowBytes = [TIFFRep bytesPerRow];
-//		oImage = 0L;
-//		unsigned char *srcImage = [TIFFRep bitmapData];
-//		
-//		unsigned char   *ptr, *tmpImage ;
-//		long			loop, totSize;
-//		unsigned char   *argbImage, *tmpPtr, *srcPtr;
-//		int x,y;
-//		
-//		totSize = height * width * 4;
-//		argbImage = malloc( totSize);
-//		isRGB = YES;
-//		
-//		//NSLog(@"height %d", height);
-//		//NSLog(@"width %d", width);
-//		switch( [TIFFRep bitsPerPixel])
+//		if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 //		{
-//			case 8:
-//				NSLog(@"8 bit DICOM PDF");
-//				tmpPtr = argbImage;
-//				for( y = 0 ; y < height; y++)
-//				{
-//					srcPtr = srcImage + y*rowBytes;
-//					
-//					x = width;
-//					while( x-->0)
-//					{
-//						tmpPtr++;
-//						*tmpPtr++ = *srcPtr;
-//						*tmpPtr++ = *srcPtr;
-//						*tmpPtr++ = *srcPtr;
-//						srcPtr++;
-//					}
-//					isRGB = NO;
-//				}
-//					break;
-//				
-//			case 32:
-//				//already argb
-//				//argbImage = srcImage;				
-//				//NSLog(@"32 bits DICOM PDF");
-//				tmpPtr = argbImage;
-//				for( y = 0 ; y < height; y++)
-//				{
-//					srcPtr = srcImage + y*rowBytes;
-//					x = width;
-//					while( x-->0)
-//					{
-//						unsigned char r = *srcPtr++;
-//						unsigned char g = *srcPtr++;
-//						unsigned char b = *srcPtr++;
-//						unsigned char a = *srcPtr++;
-//						*tmpPtr++ = a;
-//						*tmpPtr++ = r;
-//						*tmpPtr++ = g;
-//						*tmpPtr++ = b;
-//						
-//						
-//					}			
-//				}
-//					NSLog(@"finished 32  bit");
-//				break;
-//				
-//			case 24:
-//				//NSLog(@"24 bits");
-//				tmpPtr = argbImage;
-//				for( y = 0 ; y < height; y++)
-//				{
-//					srcPtr = srcImage + y*rowBytes;
-//					
-//					x = width;
-//					while( x-->0)
-//					{
-//						unsigned char r = *srcPtr++;
-//						unsigned char g = *srcPtr++;
-//						unsigned char b = *srcPtr++;
-//						unsigned char a = 1.0;
-//						*tmpPtr++ = a;
-//						*tmpPtr++ = r;
-//						*tmpPtr++ = g;
-//						*tmpPtr++ = b;
-//						
-//						
-//					}
-//				}
-//					break;
-//				
-//			case 48:
-//				NSLog(@"48 bits");
-//				tmpPtr = argbImage;
-//				for( y = 0 ; y < height; y++)
-//				{
-//					srcPtr = srcImage + y*rowBytes;
-//					
-//					x = width;
-//					while( x-->0)
-//					{
-//						tmpPtr++;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-//					}
-//					
-//					//BlockMoveData( srcPtr, tmpPtr, width*4);
-//					//tmpPtr += width*4;
-//				}
-//					break;
-//				
-//			default:
-//				NSLog(@"Error - Unknow...");
-//				break;
-//		}
+//			NSLog(@"have PDF");
 //
-//		fImage = (float*) argbImage;
-//		rowBytes = width * 4;
-//		
-//		//[pdfData writeToFile:@"/tmp/dcm.pdf" atomically:YES];
-//		//[[NSWorkspace sharedWorkspace] openFile:@"/tmp/dcm.pdf" withApplication:@"Preview"];
-//		
-//		[pool release];
-//		return YES;												 
-//	} // end encapsulatedPDF
-////----------------------------------------------------------------------------------	
+//			//check if the folder PDF exists in OsiriX document folder
+//			NSString *pathToPDF = [documentsDirectory() stringByAppendingString:@"/PDF/"];
+//			if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPDF]))
+//			[[NSFileManager defaultManager] createDirectoryAtPath:pathToPDF attributes:nil];
+//			
+//			//pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
+//			NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
+//			pathToPDF = [pathToPDF stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
+//			pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
+//			NSLog(pathToPDF);
+//				
+//			//creating file and opening it with preview
+//			NSFileManager *fileManager = [NSFileManager defaultManager];
+//			if( [fileManager createFileAtPath:pathToPDF contents:[dcmObject attributeValueWithName:@"EncapsulatedDocument"] attributes:nil])
+//			{
+//				[[NSWorkspace sharedWorkspace] openFile:pathToPDF];
+//				//return YES;
+//			}
+//			else
+//			{
+//				NSLog(@"couldn't open pdf");
+//				return NO;
+//			}
+//			
+//			//create pathToIconPDF
+//			NSString *pathToIcon = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/pdf"];
+//			pathToIcon = [pathToIcon stringByAppendingPathExtension:@"tif"];	
+//			//read the tif...
+//			//- (NSData *)contentsAtPath:(NSString *)path
+//			NSData *tiffData = [[NSFileManager defaultManager] contentsAtPath:pathToIcon];
+//			
+//			[pool release];
+//			return YES;												 
+//		} // end encapsulatedPDF
+//	//----------------------------------------------------------------------------------	
 //
 //
 //
@@ -4101,9 +4103,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		originY = [[ipp objectAtIndex:1] floatValue];
 //		originZ = [[ipp objectAtIndex:2] floatValue];
 //	}
-//// already defined in myinit	
-////	orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-////	orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+//	
+//	orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
+//	orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
 //	NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
 //	if( iop)
 //	{
@@ -4111,47 +4113,53 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //			orientation[ j] = [[iop objectAtIndex:j] floatValue];
 //	}
 //
-//
 //	
-//	//PixelRepresentation (signed, bitsAllocated, ssp, offset, slope)
+//	//PixelRepresentation
 //	
 //	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
-//	if ([dcmObject attributeValueWithName:@"BitsAllocated"]) bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
-//	else 
+//	bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
+//	int spp = 1;
 //	if ([dcmObject attributeValueWithName:@"SamplesperPixel"]) spp = [[dcmObject attributeValueWithName:@"SamplesperPixel"] intValue];
-//	else spp = 1;
-//	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];	
-//	else offset = 0.0;
-//	if ([dcmObject attributeValueWithName:@"RescaleSlope"] ) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
-//	else slope = 1.0;
-//
-//
-//	// image size (width, height)
 //	
+//	offset = 0.0;
+//	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];	
+//	slope = 1.0;
+//	if ([dcmObject attributeValueWithName:@"RescaleSlope"] ) slope = [[dcmObject attributeValueWithName:@"RescaleSlope"] floatValue]; 
+//
+//
+//
+//	// image size
+//	
+//	//width = height = 0;	
+//	//NSString *rows = [dcmObject attributeValueWithName:@"Rows"];
 //	height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
+//	realheight= height;
+//	height /= 2;
+//	height *= 2;
+//
+//	//NSString *columns = [dcmObject attributeValueWithName:@"Columns"];
 //	width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
+//	realwidth = width;
+//	width = realwidth/2;
+//	width *= 2;
+//	
+//	
 //	
 //	//window level & width
-//		
-//	if ([dcmObject attributeValueWithName:@"WindowCenter"])
-//		{
-//			savedWL = (long)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
-//			wl = savedWL;
-//		}
-//	else savedWL = 0;
-//	if ([dcmObject attributeValueWithName:@"WindowWidth"])
-//	{
-//		savedWW =  (long) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
-//		ww = savedWW;
-//	}
-//	else savedWW = 0;
+//	
+//	savedWL = 0;
+//	if ([dcmObject attributeValueWithName:@"WindowCenter"]) savedWL = (long)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
+//	savedWW = 0;
+//	if ([dcmObject attributeValueWithName:@"WindowWidth"]) savedWW =  (long) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
 //	//NSLog(@"ww: %d wl: %d", savedWW, savedWL);
 //	
 //	
-//	//planar configuration, pixelSpacing
+//	
+//	//planar configuration
 //	
 //	fPlanarConf = [[dcmObject attributeValueWithName:@"PlanarConfiguration"] intValue]; 
 //	
+//	pixmin = pixmax = 0;
 //	pixelSpacingX = 0;
 //	pixelSpacingY = 0;
 //	pixelRatio = 1.0;
@@ -4190,7 +4198,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		// palette conversions done by dcm Object
 //		isRGB = YES;			
 //	} // endif ...extraction of the color palette
-//
 //	
 //
 //#pragma mark *RTSTRUCT	
@@ -4393,8 +4400,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //	}
 //	
 //	// End SUV		
-//
-//
 //	
 //#pragma mark *compute normal vector				
 //	// Compute normal vector
@@ -4418,52 +4423,32 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		sliceLocation = originZ;
 //	}
 //
-//} //fin else (isn't XA)
 //
 //
-//#pragma mark READ PIXEL DATA
+//#pragma mark READ PIXEL DATA		
 //	
-//maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
-//if( maxFrame == 0) maxFrame = 1;
-//if( pixArray == 0L) maxFrame = 1;
-//
-//if ([dcmObject attributeValueWithName:@"PixelData"])
-//{	
-//	DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
-//	oImage =  malloc(width * height * bitsAllocated / 8 * spp);
-//	DCMPix	*imPix = 0L;
-//	int i;					
-//	long y, x;
-//
-//#pragma mark *loading each frame		
-//	for( ee = 0; ee < maxFrame; ee++)
+//	maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
+//	if( maxFrame == 0) maxFrame = 1;
+//	if( pixArray == 0L) maxFrame = 1;
+//    //pixelAttr contains the whole PixelData attribute of every frames. Hence needs to be before the loop
+//	if ([dcmObject attributeValueWithName:@"PixelData"])
 //	{
-//		NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
-////*
-//		if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]] )
-//		{
-//			imPix = [pixArray objectAtIndex: ee];					//creation pix object with its instance variables
-//			[imPix copyFromOther: self];
-//			NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];	//creation of a pointer to the frame
-//			[pixData getBytes:oImage];								//transform data into buffer			
+//		DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
 //
-//			vImage_Buffer src16, dstf;
-//			
-//			dstf.height = src16.height = height;
-//			dstf.width = src16.width = width;
-//			src16.rowBytes = width*2;
-//			dstf.rowBytes = width*sizeof(float);			
-//			imPix->fImage = malloc(width*height*sizeof(float) + 100);
-//			dstf.data = imPix->fImage;
-//			vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-//		}
-//		else
+//
+//		//=============================== loading a frame
+//		for( ee = 0; ee < maxFrame; ee++)
 //		{
-////*/			
+//			//duplicates DCMPix (one imPix for each frame)
+//
+//			NSAutoreleasePool	*subPool = [[NSAutoreleasePool alloc] init];
+//
+//			DCMPix	*imPix = 0L;
+//			
 //			if( maxFrame > 1)
-//			{//duplicates DCMPix (one imPix for each frame)
+//			{
 //				imPix = [pixArray objectAtIndex: ee];
-//				[imPix copyFromOther: self];
+//				[imPix copyFromOther: self]; // duplicates the class fields
 //			}
 //			else
 //			{
@@ -4471,17 +4456,20 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //				ee = imageNb;
 //			}
 //						
-////get PixelData
+//			//get PixelData
 //			NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
+//			oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 //			[pixData getBytes:oImage];
-//			if( oImage == 0L)
+//			//NSLog(@"image size: %d", ( height * width * 2));
+//			//NSLog(@"Data size: %d", [pixData length]);
+//			
+//			if( oImage == 0L) //there was no data for this frame ->create empty image
 //			{
 //				NSLog(@"This is really bad..... Please send this file to rossetantoine@bluewin.ch");
-//				//create empty image
 //				//NSLog(@"image size: %d", ( height * width * 2));
 //				oImage = malloc( height * width * 2);
 //				//gArrPhotoInterpret [fileNb] = MONOCHROME2;
-//				i = 0;
+//				int i = 0;
 //				long yo = 0;
 //				for( i = 0 ; i < height * width; i++)
 //				{
@@ -4491,10 +4479,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //			}
 //			
 //			//-----------------------frame data already loaded in (short) oImage --------------
-//
-//// Determine colorspace				
+//			
 //			isRGB = NO;
-//			inverseVal = NO;			
+//			inverseVal = NO;
+//					
 //			NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
 //			if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound) {inverseVal = YES; savedWL = -savedWL;}													
 //			/*else if ( [colorspace hasPrefix:@"MONOCHROME2"])	{inverseVal = NO; savedWL = savedWL;} */
@@ -4504,21 +4492,22 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //			/******** dcm Object will do this *******convertYbrToRgb -> planar is converted***/		
 //			if ([colorspace rangeOfString:@"YBR"].location != NSNotFound) {fPlanarConf = 0; isRGB = YES;}
 //
-//
-//// convert to ARGB for better performance thru vImage					
-//			if (isRGB == YES) 
+//			
+//			if (isRGB == YES) // CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
 //			{
 //				//NSLog(@"is RGB");		
-//				long			loop = height * width;
 //				unsigned char   *ptr, *tmpImage;
+//				// realwidth = width = tag columns
+//				long			loop = (long) height * (long) realwidth;
 //				tmpImage = malloc (loop * 4L);
 //				ptr   = tmpImage;
 //							
 //				//NSLog(@"height %d width %d loop should be: %d", height , realwidth, (long) height * (long) realwidth);
 //				//NSLog(@"loop %d", loop);
 //				
-//				if( bitsAllocated > 8) // RGB - FFF
+//				if( bitsAllocated > 8) // RGB_FFF
 //				{
+//	// /*
 //					unsigned short   *bufPtr;
 //					bufPtr = (unsigned short*) oImage;
 //					{
@@ -4532,12 +4521,18 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //														//NSLog(@"loop: %d", loop);
 //						}
 //					}
+//	// */				
 //				}
 //				else // RGB_888
 //				{
-//					//NSLog(@"Convert to ARGB 8 bit");
+//					NSLog(@"Convert to ARGB 8 bit");
 //					unsigned char   *bufPtr;
 //					bufPtr = (unsigned char*) oImage;
+//	 /*
+//					long vImage_Error;
+//					vImage_Error = vImageConvert_RGB888toARGB8888( bufPtr, NULL, 255, ptr, 0, 0); //0=no flag
+//	 */				
+//
 //					{
 //						//loop = totSize/4;
 //						while( loop-- > 0)
@@ -4549,18 +4544,19 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //						}
 //					}
 //				}
-//					//free(oImage);
-//					//oImage = (short*) tmpImage;
+//				free(oImage);
+//				oImage = (short*) tmpImage;
 //			}
-//			
-//// Black & White 8 bit image -> 16 bits image			
-//			else if( bitsAllocated == 8)
+//
+//															
+//			else if( bitsAllocated == 8)	// Planar 8
 //			{
+//				//-> 16 bits image
 //				unsigned char   *bufPtr;
 //				short			*ptr, *tmpImage;
 //				long			loop, totSize;
 //				
-//				totSize = (long) ((long) height * (long) width * 2L);
+//				totSize = (long) ((long) height * (long) realwidth * 2L);
 //				tmpImage = malloc( totSize);
 //				
 //				bufPtr = (unsigned char*) oImage;
@@ -4576,155 +4572,212 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //					*ptr++ = *bufPtr++;
 //					//	ptr++; bufPtr ++;
 //				}
-////					free(oImage);
+//				free(oImage);
 //				//efree3 ((void **) &oImage);
 //				oImage =  (short*) tmpImage;
 //			}
-//
-////aligning to presentation 4 byte realwidth			
-//				if( width != width)//realwidth
-//				{
-//					//NSLog(@"Update width: %d realWidth: %d ", width, realwidth);
-//					if( isRGB)
-//					{
-//						char	*ptr = (char*) oImage;
-//						for( i = 0; i < height;i++)
-//						{
-//							memmove( ptr + i*width*4, ptr + i*width*4, width*4);//realwidht
-//						}
-//					}
-//					else
-//					{
-//						if( bitsAllocated == 32)
-//						{
-//							for( i = 0; i < height;i++)
-//							{
-//								memmove( oImage + i*width*2, oImage + i*width*2, width*4);//realwidht
-//							}
-//						}
-//						else
-//						{//
-///*
-//							for( i = 0; i < height;i++)
-//							{
-//								memmove( oImage + i*width, oImage + i*realwidth, width*2);
-//							}
-//*/
-//						}
-//					}
-//					//NSLog(@"Updated width");
-//				}
-//				
-//				//***********
-//				
+//			
+//			
+//			
+//			
+//			
+//			
+//			
+//			if( realwidth != width)
+//			{
+//				//NSLog(@"Update width: %d realWidth: %d ", width, realwidth);
 //				if( isRGB)
 //				{
-//					if( imPix->fVolImage)
+//					int i;
+//					char	*ptr = (char*) oImage;
+//					for( i = 0; i < height;i++)
 //					{
-//						imPix->fImage = imPix->fVolImage;
-//						memcpy( imPix->fImage, oImage, realwidth*height*sizeof(float));
-//					}
-//					else imPix->fImage = (float*) oImage;
-//					
-//					if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
-//					{
-//						unsigned char	*rgbData = (unsigned char*) imPix->fImage;
-//						long			y, x;
-//						for( y = 0; y < oRows; y++)
-//						{
-//							for( x = 0; x < oColumns; x++)
-//							{
-//								if( oData[ y * oColumns + x])
-//								{
-//									rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-//									rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-//									rgbData[ y * width*4 + x*4 + 3] = 0xFF;
-//								}
-//							}
-//						}
+//						memmove( ptr + i*width*4, ptr + i*realwidth*4, width*4);
 //					}
 //				}
 //				else
 //				{
-////NSLog(@"not RGB");
 //					if( bitsAllocated == 32)
 //					{
-//						unsigned long	*uslong = (unsigned long*) oImage;
-//						long			*slong = (long*) oImage;
-//						float			*tDestF;
-//						
-//						if( imPix->fVolImage) tDestF = imPix->fImage = imPix->fVolImage;
-//						else tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
-//						
-//						if( fIsSigned > 0)
+//						int i;
+//						for( i = 0; i < height;i++)
 //						{
-//							long x = height * width;
-//							while( x-->0) *tDestF++ = ((float) (*slong++)) * slope + offset;
-//						}
-//						else
-//						{
-//							long x = height * width;
-//							while( x-->0) *tDestF++ = ((float) (*uslong++)) * slope + offset;
+//							memmove( oImage + i*width*2, oImage + i*realwidth*2, width*4);
 //						}
 //					}
 //					else
 //					{
-////NSLog(@"16 monochrome");					
-//						vImage_Buffer src16, dstf;
-//						
-//						dstf.height = src16.height = height;
-//						dstf.width = src16.width = width;
-//						src16.rowBytes = width*2;
-//						dstf.rowBytes = width*sizeof(float);						
-//						src16.data = oImage;						
-//						if( imPix->fVolImage) imPix->fImage = imPix->fVolImage;
-//						else imPix->fImage = malloc(width*height*sizeof(float) + 100);						
-//						dstf.data = imPix->fImage;						
-//						if( inverseVal) slope *= -1.;
-//						
-//						if( fIsSigned > 0) vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
-//						else vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-//					}
-//					
-//					
-////Grayscale DisplayDICOMOverlays					
-//					if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
-//					{						
-//						for( y = 0; y < oRows; y++)
+//						int i;					
+//						for( i = 0; i < height;i++)
 //						{
-//							for( x = 0; x < oColumns; x++)
+//							memmove( oImage + i*width, oImage + i*realwidth, width*2);
+//						}
+//					}
+//				}
+//				//NSLog(@"Updated width");
+//			}
+//			
+//			//***********
+//			
+//			if( isRGB)
+//			{
+//				if( imPix->fVolImage)
+//				{
+//					imPix->fImage = imPix->fVolImage;
+//					memcpy( imPix->fImage, oImage, realwidth*height*sizeof(float));
+//					free(oImage);
+//				}
+//				else imPix->fImage = (float*) oImage;
+//				oImage = 0L;
+//				
+//				if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+//				{
+//					unsigned char	*rgbData = (unsigned char*) imPix->fImage;
+//					long			y, x;
+//					
+//					for( y = 0; y < oRows; y++)
+//					{
+//						for( x = 0; x < oColumns; x++)
+//						{
+//							if( oData[ y * oColumns + x])
 //							{
-//								if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
+//								rgbData[ y * width*4 + x*4 + 1] = 0xFF;
+//								rgbData[ y * width*4 + x*4 + 2] = 0xFF;
+//								rgbData[ y * width*4 + x*4 + 3] = 0xFF;
 //							}
 //						}
 //					}
 //				}
+//			}
+//			else
+//			{
+//				//NSLog(@"not RGB");
+//				if( bitsAllocated == 32)
+//				{
+//					unsigned long	*uslong = (unsigned long*) oImage;
+//					long			*slong = (long*) oImage;
+//					float			*tDestF;
+//					
+//					if( imPix->fVolImage)
+//					{
+//						tDestF = imPix->fImage = imPix->fVolImage;
+//					}
+//					else
+//					{
+//						tDestF = imPix->fImage = malloc(width*height*sizeof(float) + 100);
+//					}
+//					
+//					if( fIsSigned > 0)
+//					{
+//						long x = height * width;
+//						while( x-->0)
+//						{
+//							*tDestF++ = ((float) (*slong++)) * slope + offset;
+//						}
+//					}
+//					else
+//					{
+//						long x = height * width;
+//						while( x-->0)
+//						{
+//							*tDestF++ = ((float) (*uslong++)) * slope + offset;
+//						}
+//					}
+//					
+//					free(oImage);
+//					oImage = 0L;
+//				}
+//				else //16 bit greyscale to float
+//				{
+//					vImage_Buffer src16, dstf;
+//					dstf.height = src16.height = height;
+//					dstf.width = src16.width = width;
+//					src16.rowBytes = width*2;
+//					dstf.rowBytes = width*sizeof(float);
+//					
+//					src16.data = oImage;
+//					
+//					if( imPix->fVolImage)
+//					{
+//						imPix->fImage = imPix->fVolImage;
+//					}
+//					else
+//					{
+//						imPix->fImage = malloc(width*height*sizeof(float) + 100);
+//					}
+//					
+//					dstf.data = imPix->fImage;
+//					
+//					if( inverseVal) slope *= -1.;
+//					
+//					
+//					
+//					if( fIsSigned > 0)
+//					{
+//						vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
+//					}
+//					else
+//					{
+//						
+//						vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+//						//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+//					}
+//					
+//					free(oImage);
+//					oImage = 0L;
+//				}
 //				
-//			} //end else [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]] 
+//				if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+//				{
+//					long			y, x;
+//					
+//					for( y = 0; y < oRows; y++)
+//					{
+//						for( x = 0; x < oColumns; x++)
+//						{
+//							if( oData[ y * oColumns + x]) imPix->fImage[ y * width + x] = 0xFF;
+//						}
+//					}
+//				}
+//			}
+//			
+//			if( pixmin == 0 && pixmax == 0)
+//			{
+//				
+//				wl = 0;
+//				ww = 0; //Computed later, only if needed
+//			}
+//			else
+//			{
+//				
+//				wl = pixmin + (pixmax - pixmin)/2;
+//				ww = (pixmax - pixmin);
+//			}
+//			
+//			if( savedWW != 0)
+//			{
+//				
+//				wl = savedWL;
+//				ww = savedWW;
+//			}
+//			
 //			[subPool release];
-//			free(oImage);
-//			oImage = 0L;
-//		}//out of the loop
-//	}//end of 		if ([dcmObject attributeValueWithName:@"PixelData"])
-//	
-//#pragma mark *after all frames are loaded	
-//	
-//#pragma mark *XA	
 //
-//	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]] )
-//		{
-//			NSLog(@"DCMparser XA");
+//	#pragma mark *after loading a frame
+//
 //		}
-//
+//	}//end of 		if ([dcmObject attributeValueWithName:@"PixelData"])
+//		
+//		
+//		
+//	} //end else [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]] 
 //	[pool release];
 //	return YES;
 //}
 //
 //
 //
-//
-//
-//
+
 
 
 
@@ -8687,6 +8740,18 @@ BOOL            readable = YES;
 	
 	return result;
 }
+
+-(void) fImageTime:(float)newTime {fImageTime = newTime;}
+-(float) fImageTime {return fImageTime;}
+-(void) maskID:(long)newID {maskID = newID;}
+-(long) maskID {return maskID;}
+-(void) maskTime:(float)newMaskTime {maskTime = newMaskTime;}
+-(float) maskTime {return maskTime;}
+-(void) rot:(float)newRot {rot = newRot;}
+-(float) rot {return rot;}
+-(void) ang:(float)newAng {ang = newAng;}
+-(float) ang {return ang;}
+
 
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
 {
