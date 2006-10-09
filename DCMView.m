@@ -75,6 +75,8 @@ static		float						deg2rad = 3.14159265358979/180.0;
 extern		long						numberOf2DViewer;
 			BOOL						ALWAYSSYNC = NO, display2DMPRLines = YES;
 
+extern NSMutableDictionary				*plugins;
+
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
@@ -4331,13 +4333,24 @@ static long scrollMode;
 
 -(void) annotMenu:(id) sender
 {
+	//in case of tag=4 (plugin only) => check that  PLUGINdrawTextInfo.plugin exists
+	short chosenLine = [sender tag];
+	if (chosenLine == 4)
+	{
+		if( [plugins objectForKey:@"PLUGINdrawTextInfo"] == 0L)
+		{
+			chosenLine = 3;
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations", nil), NSLocalizedString(@"PLUGINdrawTextInfo not available, full annotation chosen instead.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
+	}
+
     NSMenu   *menu = [sender menu];
     short    i;
     
     i = [menu numberOfItems];
     while(i-- > 0) [[menu itemAtIndex:i] setState:NSOffState];   
     
-	[[NSUserDefaults standardUserDefaults] setInteger: [sender tag] forKey: @"ANNOTATIONS"];
+	[[NSUserDefaults standardUserDefaults] setInteger: chosenLine forKey: @"ANNOTATIONS"];
     
     NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -5455,51 +5468,54 @@ static long scrollMode;
 	else
 	{
 	// plugin only
+		if ( [plugins objectForKey:@"PLUGINdrawTextInfo"] != 0L)
+		{
+			// the plugin exists	
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-		NSString *SOPclassUID = [file valueForKeyPath:@"series.seriesSOPClassUID"];
-		NSString *Modality = [file valueForKeyPath:@"series.modality"];
-		NSString *PatientName = [NSString stringWithString:[file valueForKeyPath:@"series.study.name"]];
-		NSString *BirthDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-		NSString *PatientSex = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientSex"]];
-		NSString *PatientID = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientID"]];
-		NSNumber *FrameTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] fImageTime]];
-		NSNumber *MaskTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] maskTime]];
-		NSString *SeriesTime = [NSString stringWithString:[[file valueForKeyPath:@"series.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
-		NSString *StudyDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-		NSString *StudyTime = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
-		NSNumber *Rot = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] rot]];
-		NSNumber *Ang = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] ang]];
-		NSNumber *CurFrame = [NSNumber numberWithInt:curImage+1];
-		NSNumber *CurMask = [NSNumber numberWithInt:[[dcmPixList objectAtIndex: curImage] maskID]+1];
-		NSNumber *FrameCount = [NSNumber numberWithInt:[dcmPixList count]];
-		NSNumber *SeriesNumber = [file valueForKeyPath:@"series.id"];
-		
-		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-			SOPclassUID, @"SOPclassUID",
-			Modality, @"Modality",
-			PatientName, @"PatientName",
-			BirthDate, @"BirthDate",
-			PatientSex, @"PatientSex",
-			PatientID, @"PatientID",
-			FrameTime, @"FrameTime",
-			MaskTime, @"MaskTime",
-			SeriesTime, @"SeriesTime",															
-			StudyDate, @"StudyDate",
-			StudyTime, @"StudyTime",
-			Rot, @"Rot",
-			Ang, @"Ang",
-			CurFrame, @"CurFrame",
-			CurMask, @"CurMask",
-			FrameCount, @"FrameCount",
-			SeriesNumber, @"SeriesNumber",
-		nil ];
+			NSString *SOPclassUID = [file valueForKeyPath:@"series.seriesSOPClassUID"];
+			NSString *Modality = [file valueForKeyPath:@"series.modality"];
+			NSString *PatientName = [NSString stringWithString:[file valueForKeyPath:@"series.study.name"]];
+			NSString *BirthDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
+			NSString *PatientSex = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientSex"]];
+			NSString *PatientID = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientID"]];
+			NSNumber *FrameTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] fImageTime]];
+			NSNumber *MaskTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] maskTime]];
+			NSString *SeriesTime = [NSString stringWithString:[[file valueForKeyPath:@"series.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
+			NSString *StudyDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
+			NSString *StudyTime = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
+			NSNumber *Rot = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] rot]];
+			NSNumber *Ang = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] ang]];
+			NSNumber *CurFrame = [NSNumber numberWithInt:curImage+1];
+			NSNumber *CurMask = [NSNumber numberWithInt:[[dcmPixList objectAtIndex: curImage] maskID]+1];
+			NSNumber *FrameCount = [NSNumber numberWithInt:[dcmPixList count]];
+			NSNumber *SeriesNumber = [file valueForKeyPath:@"series.id"];
+			
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+				SOPclassUID, @"SOPclassUID",
+				Modality, @"Modality",
+				PatientName, @"PatientName",
+				BirthDate, @"BirthDate",
+				PatientSex, @"PatientSex",
+				PatientID, @"PatientID",
+				FrameTime, @"FrameTime",
+				MaskTime, @"MaskTime",
+				SeriesTime, @"SeriesTime",															
+				StudyDate, @"StudyDate",
+				StudyTime, @"StudyTime",
+				Rot, @"Rot",
+				Ang, @"Ang",
+				CurFrame, @"CurFrame",
+				CurMask, @"CurMask",
+				FrameCount, @"FrameCount",
+				SeriesNumber, @"SeriesNumber",
+			nil ];
 
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-															object: self
-														userInfo: userInfo];
-		[pool release];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
+																object: self
+															userInfo: userInfo];
+			[pool release];
+		}
 	}
 }
 - (void) DrawNSStringGLPLUGINonly:(NSString*)str :(long)flor :(_Bool)right
