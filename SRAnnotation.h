@@ -14,6 +14,7 @@
 
 @interface SRAnnotation : NSObject {
 	DSRDocument *document;
+	id image;
 }
 
 - (void)addROIs:(NSArray *)someROIs;

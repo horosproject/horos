@@ -27,6 +27,7 @@
 	document = new DSRDocument();
 	//document->createNewDocument(DSRTypes::DT_BasicTextSR);
 	document->createNewDocument(DSRTypes::DT_ComprehensiveSR);
+				
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 	//document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
@@ -51,6 +52,7 @@
 	while (aROI = [roisEnumerator nextObject])
 	{
 		[self addROI:aROI];
+		image = [[aROI pix] imageObj];
 	}
 }
 
@@ -130,6 +132,45 @@
 			
 - (BOOL)save;
 {
+			id study = [image valueForKeyPath:@"series.study"];
+			//add to Study
+			document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
+			// Add metadata for DICOM
+				//Study Description
+			if ([study valueForKey:@"studyName"])
+				document->setStudyDescription([[study valueForKey:@"studyName"] UTF8String]);
+			//Series Description
+			document->setSeriesDescription("OsiriX ROI SR");
+			//Patient Name
+			if ([study valueForKey:@"name"] )
+				document->setPatientsName([[study valueForKey:@"name"] UTF8String]);
+			// Patient DOB
+			if ([study valueForKey:@"dateOfBirth"])
+				document->setPatientsBirthDate([[[study valueForKey:@"dateOfBirth"] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] UTF8String]);
+			//Patient Sex
+			if ([study valueForKey:@"patientSex"])
+				document->setPatientsSex([[study valueForKey:@"patientSex"] UTF8String]);
+			//Patient ID
+			NSString *patientID = [study valueForKey:@"patientID"];
+			if (patientID)
+				document->setPatientID([patientID UTF8String]);
+			//Referring Physician
+			if ([study valueForKey:@"referringPhysician"])
+				document->setReferringPhysiciansName([[study valueForKey:@"referringPhysician"] UTF8String]);
+			//StudyID	
+			if ([study valueForKey:@"id"]) {
+				NSString *studyID = [study valueForKey:@"id"];
+				document->setStudyID([studyID UTF8String]);
+			}
+			//Accession Number
+			if ([study valueForKey:@"accessionNumber"])
+				document->setAccessionNumber([[study valueForKey:@"accessionNumber"] UTF8String]);
+			//Series Number
+			document->setSeriesNumber("5002");
+			
+			document->setManufacturer("OsiriX");
+
+	
 	DcmFileFormat fileformat;
 	OFCondition status = document->write(*fileformat.getDataset());
 
