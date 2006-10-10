@@ -6947,8 +6947,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						if(gArrPhotoInterpret [fileNb] == RGB) fPlanarConf = 0;
 					}
 					
-					// PIXEL DATA 
+					// PIXEL DATA
+					[PapyrusLock lock];
 					oImage = (short *)Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
+					[PapyrusLock unlock];
 					
 					if( oImage == 0L) // It's probably a problem with JPEG... try to convert to classic DICOM with DCMTK dcmdjpeg
 					{

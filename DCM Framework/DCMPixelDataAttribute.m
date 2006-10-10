@@ -36,6 +36,8 @@ Version 2.3
 
 #import "jasper.h"
 
+static volatile NSLock *singleThread;
+
 #if __ppc__
 
 union vectorShort {
@@ -555,6 +557,8 @@ short DCMHasAltiVec()
 		else if (quality == DCMLowQuality)
 			q = 70;
 		
+		if( singleThread == 0L) singleThread = [[NSLock alloc] init];
+		[singleThread lock];
 		
 		_min = 0;
 		_max = 0;
@@ -573,6 +577,9 @@ short DCMHasAltiVec()
 
 			
 		}
+		
+		[singleThread unlock];
+		
 		/*
 		for (i = 0; i< [array count]; i++) {
 			[_values replaceObjectAtIndex:i withObject:[array objectAtIndex:i]];
@@ -2889,7 +2896,11 @@ NS_ENDHANDLER
 			// data to decoders
 		NSMutableData *data = nil;
 		if (!_isDecoded){
-			if ([transferSyntax isEncapsulated]){
+			if ([transferSyntax isEncapsulated])
+			{
+				if( singleThread == 0L) singleThread = [[NSLock alloc] init];
+				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
+				
 				//NSLog(@"Encapsulated: %@", [DCMTransferSyntax description]);
 				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]]) {
 					data = [[[self convertJPEG8ToHost:subData] mutableCopy] autorelease];
@@ -2953,6 +2964,8 @@ NS_ENDHANDLER
 					NSLog(@"Unknown compressed transfer syntax: %@", [transferSyntax  description]);
 
 				}
+				
+				[singleThread unlock];
 			}
 			//non encapsulated
 			else if (_bitsStored > 8) {

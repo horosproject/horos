@@ -8512,8 +8512,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	int processors =  MPProcessors ();
 	
-	processors = 1;
-	
 	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForJPEG >= processors;
 	if( result == NO)
