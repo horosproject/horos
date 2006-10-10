@@ -2,7 +2,6 @@
 {
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeBuildConfigurationName = Development;
-		activeBuildStyle = 06F27B30FFEEEFEF11CA0E56 /* Development */;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */;
 		addToTargets = (
 			8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */,
@@ -31,15 +30,15 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 169461988;
-			PBXWorkspaceStateSaveDate = 169461988;
+			PBXPerProjectTemplateStateSaveDate = 182156887;
+			PBXWorkspaceStateSaveDate = 182156887;
 		};
 		perUserProjectItems = {
+			AB3126C10ADB7E810074F1BF /* PBXTextBookmark */ = AB3126C10ADB7E810074F1BF /* PBXTextBookmark */;
 			AB80A6710A19C8ED00FED357 /* PBXTextBookmark */ = AB80A6710A19C8ED00FED357 /* PBXTextBookmark */;
 			ABC3940709F52058000A6508 /* PBXTextBookmark */ = ABC3940709F52058000A6508 /* PBXTextBookmark */;
 			ABC3940909F52058000A6508 /* PBXTextBookmark */ = ABC3940909F52058000A6508 /* PBXTextBookmark */;
 			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
-			ABC3941509F5206D000A6508 /* PBXTextBookmark */ = ABC3941509F5206D000A6508 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
 		userBuildSettings = {
@@ -59,6 +58,16 @@
 	AB29966B09AB2BCA00F810FC /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	AB3126C10ADB7E810074F1BF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
+		name = "OSIViewerPreferencePanePref.h: toolbarPanelMatrix";
+		rLen = 0;
+		rLoc = 963;
+		rType = 0;
+		vrLen = 1608;
+		vrLoc = 0;
 	};
 	AB80A6710A19C8ED00FED357 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -96,16 +105,6 @@
 		name = "OSIViewerPreferencePanePref.h: setAutoHideMatrixState:";
 		rLen = 0;
 		rLoc = 1348;
-		rType = 0;
-		vrLen = 1447;
-		vrLoc = 0;
-	};
-	ABC3941509F5206D000A6508 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
-		name = "OSIViewerPreferencePanePref.h: iPhotoAlbumName";
-		rLen = 0;
-		rLoc = 963;
 		rType = 0;
 		vrLen = 1447;
 		vrLoc = 0;
