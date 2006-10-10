@@ -2588,12 +2588,16 @@ static long scrollMode;
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
-	
+
 	if( [[self window] isVisible] == NO) return;
 	if( [[[self window] windowController] is2DViewer] == YES)
 	{
 		if( [[[self window] windowController] windowWillClose]) return;
 	}
+
+	float deltaX = [theEvent deltaX];
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
 		reverseScrollWheel=-1.0;
@@ -2611,7 +2615,7 @@ static long scrollMode;
 			//[[[self window] windowController] saveCrossPositions];
 			[[self controller] saveCrossPositions];
 			float change;
-			if( fabs( [theEvent deltaY]) >  fabs( [theEvent deltaX]))
+			if( fabs( [theEvent deltaY]) >  fabs( deltaX))
 			{
 				change = reverseScrollWheel * [theEvent deltaY];
 				if( change > 0)
@@ -2630,7 +2634,7 @@ static long scrollMode;
 			}
 			else
 			{
-				change = reverseScrollWheel * [theEvent deltaX];
+				change = reverseScrollWheel * deltaX;
 				if( change > 0)
 				{
 					change = ceil( change);
@@ -2662,7 +2666,7 @@ static long scrollMode;
 		}
 		else
 		{
-			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( [theEvent deltaX]))
+			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX))
 			{
 				if( [theEvent modifierFlags]  & NSShiftKeyMask)
 				{
@@ -2707,16 +2711,16 @@ static long scrollMode;
 					}
 				}
 			}
-			else if( fabs( [theEvent deltaX]) > 0.7)
+			else if( fabs( deltaX) > 0.7)
 			{
 				[self mouseMoved: theEvent];	// Update some variables...
 				
-//				NSLog(@"delta x: %f", [theEvent deltaX]);
+//				NSLog(@"delta x: %f", deltaX);
 				
 				float sScaleValue = scaleValue;
 				
-				[self setScaleValue:sScaleValue + [theEvent deltaX] * scaleValue / 10];
-//				scaleValue = sScaleValue + [theEvent deltaX] * scaleValue / 10;
+				[self setScaleValue:sScaleValue + deltaX * scaleValue / 10];
+//				scaleValue = sScaleValue + deltaX * scaleValue / 10;
 //				if( scaleValue < 0.01) scaleValue = 0.01;
 //				if( scaleValue > 100) scaleValue = 100;
 				

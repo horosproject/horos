@@ -808,6 +808,8 @@ static NSString *hostName = @"";
 	//UseVOILUT
 	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
 	
+	//ZoomWithHorizonScroll
+	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
 	
 	// ** STRINGENCODING
 	[defaultValues setObject :@"ISO_IR 100" forKey: @"STRINGENCODING"];
