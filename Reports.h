@@ -28,4 +28,8 @@
 - (NSString *) reportScriptBody:(NSManagedObject*) study;
 - (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type;
 
+- (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
+- (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
+- (BOOL)createNewPageReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
+
 @end

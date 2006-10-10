@@ -190,7 +190,7 @@ static id aedesc_to_id(AEDesc *desc)
 				
 				do
 				{
-					range = [rtfString rangeOfString: [NSString stringWithFormat:@"Ç%@È", name] options:0 range: searchRange];
+					range = [rtfString rangeOfString: [NSString stringWithFormat:@"Ç%@È", name] options:0 range:searchRange];
 					
 					if( range.length > 0)
 					{
@@ -219,6 +219,13 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"TextEdit"];
 			[study setValue: destinationFile forKey:@"reportURL"];
+		}
+		break;
+		
+		case 2:
+		{
+			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
+			return [self createNewPageReportForStudy:study toDestinationPath:destinationFile];
 		}
 		break;
 	}
@@ -308,6 +315,36 @@ CHECK;
 }
 
 #pragma mark -
+
+- (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
+{
+	NSManagedObjectModel *model = [[[aStudy managedObjectContext] persistentStoreCoordinator] managedObjectModel];
+	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
+	
+	NSString *shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey:NSShortDateFormatString];
+	NSDictionary *localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+	
+	long x;
+	for( x = 0; x < [properties count]; x++)
+	{
+		NSString *propertyName = [properties objectAtIndex:x];
+		NSString *propertyValue;
+		
+		if( [[aStudy valueForKey:propertyName] isKindOfClass:[NSDate class]])
+			propertyValue = [[aStudy valueForKey:propertyName] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary];
+		else
+			propertyValue = [[aStudy valueForKey:propertyName] description];
+			
+		if(!propertyValue)
+			propertyValue = @"";
+			
+		//		Ç is encoded as &#xAB;
+		//      È is encoded as &#xBB;
+		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
+	}
+}
+
+#pragma mark -
 #pragma mark Pages.app
 
 - (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
@@ -356,14 +393,22 @@ CHECK;
 		NSLog(@"Pages Report creation  failed. Cause: Gzip -d failed.");
 		return NO;
 	}
-	
+	[gzip release];
 	// read the xml file and find & replace templated string with patient's datas
+	NSString *indexFilePath = [NSString stringWithFormat:@"%@/index.xml", aPath];
+	NSError *xmlError = nil;
+	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
+	NSMutableString *xmlContentString = [NSMutableString stringWithContentsOfFile:indexFilePath encoding:xmlFileEncoding error:&xmlError];
+
+	[self searchAndReplaceFieldsFromStudy:aStudy inString:xmlContentString];
 	
-	// ....
-	// ....
-	// ....	
+	if(![xmlContentString writeToFile:indexFilePath atomically:YES encoding:xmlFileEncoding error:&xmlError])
+		return NO;
 	
 	// gzip back the index.xml file
+	gzip = [[NSTask alloc] init];
+	[gzip setLaunchPath:@"/usr/bin/gzip"];
+	[gzip setCurrentDirectoryPath:aPath];
 	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
 	[gzip launch];
 
