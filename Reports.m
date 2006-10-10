@@ -307,4 +307,84 @@ ok = OSADispose(myComponent, scriptId);
 CHECK;
 }
 
+#pragma mark -
+#pragma mark Pages.app
+
+- (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
+{
+	// transform path to AppleScript styled path:
+	// '/Users/joris/Documents' will become ':Users:joris:Documents'
+	NSMutableString *asStyledPath = [NSMutableString stringWithString:aFilePath];
+	[asStyledPath replaceOccurrencesOfString:@"/" withString:@":" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [asStyledPath length])];
+
+	NSMutableString *script = [NSMutableString stringWithCapacity:1000];
+	
+	[script appendString:[NSString stringWithFormat:@"set theSaveName to \"%@\"\n", asStyledPath]];
+	[script appendString:@"tell application \"Pages\"\n"];
+	[script appendString:[NSString stringWithFormat:@"set myDocument to make new document with properties {template name:\"%@\"}\n", aTemplate]];
+	[script appendString:@"close myDocument saving in theSaveName\n"];
+	[script appendString:@"end tell\n"];
+	
+	return script;
+}
+
+- (BOOL)createNewPageReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
+{
+	// one sould verify the availability of the template...
+	
+	// ....
+	// ....
+	
+	// create the Pages file, using the template (not filling the patient's data yet)
+	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:@"OsiriX Report" completeFilePath:aPath];
+	[self runScript:creationScript];
+	
+	// decompress the gzipped index.xml.gz file in the .pages bundle
+	NSTask *gzip = [[NSTask alloc] init];
+	[gzip setLaunchPath:@"/usr/bin/gzip"];
+	[gzip setCurrentDirectoryPath:aPath];
+	[gzip setArguments:[NSArray arrayWithObjects:@"-d", @"index.xml.gz", nil]];
+	[gzip launch];
+
+	[gzip waitUntilExit];
+	int status = [gzip terminationStatus];
+ 
+	if (status == 0)
+		NSLog(@"Pages Report creation. Gzip -d succeeded.");
+	else
+	{
+		NSLog(@"Pages Report creation  failed. Cause: Gzip -d failed.");
+		return NO;
+	}
+	
+	// read the xml file and find & replace templated string with patient's datas
+	
+	// ....
+	// ....
+	// ....	
+	
+	// gzip back the index.xml file
+	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
+	[gzip launch];
+
+	[gzip waitUntilExit];
+	status = [gzip terminationStatus];
+ 
+	if (status == 0)
+		NSLog(@"Pages Report creation. Gzip succeeded.");
+	else
+	{
+		NSLog(@"Pages Report creation  failed. Cause: Gzip failed.");
+		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
+	}
+	// we don't need to gzip anything anymore 
+	[gzip release];
+	
+	// open the modified .pages file
+	[[NSWorkspace sharedWorkspace] openFile:aPath withApplication:@"Pages"];
+	
+	// end
+	return YES;
+}
+
 @end
