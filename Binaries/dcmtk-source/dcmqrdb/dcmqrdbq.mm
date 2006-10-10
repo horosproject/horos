@@ -86,7 +86,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname){
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-	if (filexfer.getXferID() == EXS_JPEG2000LosslessOnly || filexfer.getXferID() == EXS_JPEG2000) {
+	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000) {
 		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];

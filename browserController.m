@@ -8510,12 +8510,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL) waitForAProcessor
 {
+	int processors =  MPProcessors ();
+	
+	processors = 1;
+	
 	[processorsLock lockWhenCondition: 1];
-	BOOL result = numberOfThreadsForJPEG >= MPProcessors ();
+	BOOL result = numberOfThreadsForJPEG >= processors;
 	if( result == NO)
 	{
 		numberOfThreadsForJPEG++;
-		if( numberOfThreadsForJPEG >= MPProcessors ())
+		if( numberOfThreadsForJPEG >= processors)
 		{
 			[processorsLock unlockWithCondition: 0];
 		}
@@ -8538,11 +8542,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSString			*INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
-	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
-	[dcmObject writeToFile:[INpath stringByAppendingString:[compressedPath lastPathComponent]] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 	
-	[compressedPath release];
-	
+	[self decompressDICOM:compressedPath to: [INpath stringByAppendingString:[compressedPath lastPathComponent]]];
+
+//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:compressedPath decodingPixelData:YES];
+//	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+//	[[NSFileManager defaultManager] removeFileAtPath:compressedPath handler:nil];
+//	[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:[INpath stringByAppendingString:[compressedPath lastPathComponent]] handler: 0L];
+//	[dcmObject release];
+		
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
@@ -8553,16 +8561,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-	/*
-	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:compressedPath decodingPixelData:NO];
-	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
+
+	[self decompressDICOM:compressedPath to: 0L];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
-	[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
-	
-	[compressedPath release];
-	*/
-	[self decompressDICOM:compressedPath];
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
@@ -8572,35 +8573,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 -(void) compressDICOMJPEG:(NSString*) compressedPath
 {
-
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-	/*
+	
+//	[self compressDICOMWithJPEG:compressedPath];
+	
 	NSTask			*theTask;
 	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
-	
+
 	theTask = [[NSTask alloc] init];
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmcjpeg"]];
 	[theTask setCurrentDirectoryPath: [compressedPath stringByDeletingLastPathComponent]];
-	[theTask setArguments:theArguments];		
+	[theTask setArguments:theArguments];
 
 	[theTask launch];
 	[theTask waitUntilExit];
-	
+
 	int status = [theTask terminationStatus];
-	
-	[theTask release]; 
-	
+
+	[theTask release];
+
 	if (status == 0 && [[NSFileManager defaultManager] fileExistsAtPath:[compressedPath stringByAppendingString:@" temp"]] == YES)
 	{
 		[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
 		[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
 	}
-	
-	[compressedPath release];
-	*/
-	
-	[self compressDICOMWithJPEG:compressedPath];
 	
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
@@ -8697,15 +8694,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 		switch( tow)
 		{
 			case 'C':
-				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+				[NSThread detachNewThreadSelector: @selector( compressDICOMJPEG:) toTarget:self withObject: [array objectAtIndex: i]];
 			break;
 			
 			case 'D':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEG:) toTarget:self withObject: [array objectAtIndex: i]];
 			break;
 			
 			case 'I':
-				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [[array objectAtIndex: i] retain]];
+				[NSThread detachNewThreadSelector: @selector( decompressDICOMJPEGinINCOMING:) toTarget:self withObject: [array objectAtIndex: i]];
 			break;
 		}
 	}

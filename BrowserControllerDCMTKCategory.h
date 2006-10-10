@@ -26,6 +26,6 @@
 @interface BrowserController (BrowserControllerDCMTKCategory)
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path;
-- (BOOL)decompressDICOM:(NSString *)path;
+- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest;
 
 @end
