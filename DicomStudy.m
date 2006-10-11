@@ -136,8 +136,7 @@ Version 2.3
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
 	while (series = [enumerator nextObject]){
-		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]]  || [series valueForKey:@"seriesSOPClassUID"] == nil)
-		//|| [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]]
+		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
 			[newArray addObject:series];
 	}
 	return newArray;
