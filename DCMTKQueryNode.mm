@@ -70,6 +70,7 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 NSException* queryException;
+int debugLevel = 1;
 
 typedef struct {
     T_ASC_Association *assoc;
@@ -114,12 +115,15 @@ progressCallback(
      *                              mask of the C-FIND-RQ which was sent.
      */
 {	
-		    /* dump response number */
-   // printf("RESPONSE: %d (%s)\n", responseCount,
-   //     DU_cfindStatusString(rsp->DimseStatus));
 
-    /* dump data set which was received */
-   // responseIdentifiers->print(COUT);
+	if (debugLevel > 0) {
+		/* dump response number */
+		printf("RESPONSE: %d (%s)\n", responseCount,
+			DU_cfindStatusString(rsp->DimseStatus));
+
+		/* dump data set which was received */
+		responseIdentifiers->print(COUT);
+   }
 
 	MyCallbackInfo *callbackInfo = (MyCallbackInfo *)callbackData;
 	DCMTKQueryNode *node = callbackInfo -> node;
@@ -142,7 +146,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     myCallbackData = (MyCallbackInfo*)callbackData;
 	DCMTKQueryNode *node = myCallbackData -> node;
-//	NSLog(@"move Response: %d", responseCount);
+
 	NSManagedObject *logEntry = [node logEntry];
 	if (!logEntry)
 	{
@@ -178,10 +182,10 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	}
 	[logEntry setValue:[NSDate date] forKey:@"endTime"];
 
- //   if (_verbose) {
-//        printf("Move Response %d: \n", responseCount);
- //       DIMSE_printCMoveRSP(stdout, response);
-//    }
+	if (debugLevel > 0) {
+        printf("Move Response %d: \n", responseCount);
+        DIMSE_printCMoveRSP(stdout, response);
+    }
 
    
 }
@@ -246,6 +250,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters]){
 		//_children = [[NSMutableArray alloc] init];
+		int dbl = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
+		NSLog(@"Debug Level: %d", dbl);
 		_children = nil;
 		_uid = nil;
 		_theDescription = nil;
@@ -255,10 +261,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_time  = nil;
 		_modality = nil;
 		_numberImages = nil;
-		_specificCharacterSet = nil;	
-		//dataset->print(COUT);
-		//if (dataset != NULL)
-		//	dataset->writeXML(cout, 0); 	
+		_specificCharacterSet = nil;
+		if (debugLevel > 0)
+			_verbose = YES;
+		//if (debugLevel > 0) {	
+			//dataset->print(COUT);
+		//	if (dataset != NULL)
+		//		dataset->writeXML(cout, 0); 
+		//}
 		
 	}
 	return self;
@@ -668,7 +678,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     }
 
     /* dump presentation contexts if required */
-    if (_debug) {
+    if (_verbose) {
         printf("Request Parameters:\n");
         ASC_dumpParameters(params, COUT);
     }
@@ -698,7 +708,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	
 	  /* dump the presentation contexts which have been accepted/refused */
-    if (_debug) {
+    if (_verbose) {
         printf("Association Parameters Negotiated:\n");
         ASC_dumpParameters(params, COUT);
     }

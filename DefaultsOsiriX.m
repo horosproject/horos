@@ -856,6 +856,9 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey:@"useSeriesDescription"];
 	[defaultValues setObject:@"1" forKey:@"combineProjectionSeries"];
 	
+	//debugging level. Can be changed at the command line
+	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"NetworkDebugLevel"];
+	
 	return defaultValues;
 }
 @end
