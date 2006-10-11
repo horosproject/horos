@@ -225,7 +225,8 @@ static id aedesc_to_id(AEDesc *desc)
 		case 2:
 		{
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
-			return [self createNewPageReportForStudy:study toDestinationPath:destinationFile];
+			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
+			[study setValue:destinationFile forKey:@"reportURL"];
 		}
 		break;
 	}
@@ -365,13 +366,8 @@ CHECK;
 	return script;
 }
 
-- (BOOL)createNewPageReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
-{
-	// one sould verify the availability of the template...
-	
-	// ....
-	// ....
-	
+- (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
+{	
 	// create the Pages file, using the template (not filling the patient's data yet)
 	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:@"OsiriX Report" completeFilePath:aPath];
 	[self runScript:creationScript];

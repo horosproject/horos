@@ -30,6 +30,6 @@
 
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
 - (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
-- (BOOL)createNewPageReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
+- (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 
 @end
