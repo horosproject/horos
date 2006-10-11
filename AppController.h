@@ -60,6 +60,7 @@ NSRect screenFrame();
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 + (id) sharedAppController;
++ (void)checkForPagesTemplate;
 - (void) terminate :(id) sender;
 - (void) restartSTORESCP;
 - (void) startSTORESCP:(id) sender;

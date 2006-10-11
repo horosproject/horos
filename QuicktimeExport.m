@@ -234,47 +234,50 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 
 	for (curSample = 0; curSample < maxImage; curSample++) 
 	{
-	NSAutoreleasePool *subpool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *subpool = [[NSAutoreleasePool alloc] init];
 
-	NSLog(@"frame: %d", curSample);
+		NSLog(@"frame: %d", curSample);
 
-	im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
+		im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
 
-	UpdateSystemActivity ( 1);	// avoid sleep or screen saver mode
+		UpdateSystemActivity ( 1);	// avoid sleep or screen saver mode
 
-	if( PRODUCEFILES == NO)
-	{
-		[self CopyNSImageToGWorld :im :theGWorld];
-		
-		result = SCCompressSequenceFrame (ci,
-				  GetGWorldPixMap(theGWorld),
-				  0L,
-				  &theRes,
-				  &dataSize,
-				  &notSyncFlag);
+		if( PRODUCEFILES == NO)
+		{
+			[self CopyNSImageToGWorld :im :theGWorld];
 			
-			if( curSample == maxImage-1)
-			 // Add sample data and a description to a media
-			err = AddMediaSample(theMedia,	/* media specifier */ 
-					theRes,	/* handle to sample data - dataIn */
-					0,		/* specifies offset into data reffered to by dataIn handle */
-					dataSize, /* number of bytes of sample data to be added */ 
-					X2Fix( 0.01 / 500.0),		 /* frame duration = 1/10 sec */
-					(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
-					1,	/* number of samples */
-					notSyncFlag,	/* control flag indicating self-contained samples */
-					nil);		/* returns a time value where sample was insterted */
-			else
-			// Add sample data and a description to a media
-			err = AddMediaSample(theMedia,	/* media specifier */ 
-					theRes,	/* handle to sample data - dataIn */
-					0,		/* specifies offset into data reffered to by dataIn handle */
-					dataSize, /* number of bytes of sample data to be added */ 
-					X2Fix( 0.01 / Fix2X(timeSettings.frameRate)),		 /* frame duration = 1/10 sec */
-					(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
-					1,	/* number of samples */
-					notSyncFlag,	/* control flag indicating self-contained samples */
-					nil);		/* returns a time value where sample was insterted */
+			result = SCCompressSequenceFrame (ci,
+					  GetGWorldPixMap(theGWorld),
+					  0L,
+					  &theRes,
+					  &dataSize,
+					  &notSyncFlag);
+			
+			if( result == 0)
+			{
+				if( curSample == maxImage-1)
+				 // Add sample data and a description to a media
+				err = AddMediaSample(theMedia,	/* media specifier */ 
+						theRes,	/* handle to sample data - dataIn */
+						0,		/* specifies offset into data reffered to by dataIn handle */
+						dataSize, /* number of bytes of sample data to be added */ 
+						X2Fix( 0.01 / 500.0),		 /* frame duration = 1/10 sec */
+						(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
+						1,	/* number of samples */
+						notSyncFlag,	/* control flag indicating self-contained samples */
+						nil);		/* returns a time value where sample was insterted */
+				else
+				// Add sample data and a description to a media
+				err = AddMediaSample(theMedia,	/* media specifier */ 
+						theRes,	/* handle to sample data - dataIn */
+						0,		/* specifies offset into data reffered to by dataIn handle */
+						dataSize, /* number of bytes of sample data to be added */ 
+						X2Fix( 0.01 / Fix2X(timeSettings.frameRate)),		 /* frame duration = 1/10 sec */
+						(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
+						1,	/* number of samples */
+						notSyncFlag,	/* control flag indicating self-contained samples */
+						nil);		/* returns a time value where sample was insterted */
+			}
 		}
 		else
 		{
@@ -282,12 +285,11 @@ static StringPtr QTUtils_ConvertCToPascalString (char *theString)
 			
 			[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
 		}
-
-
+		
 		[im release];
-
+		
 		[wait incrementBy:1];
-
+		
 		if( [wait aborted])
 		{
 			err = -1;

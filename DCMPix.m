@@ -9025,8 +9025,7 @@ BOOL            readable = YES;
 				[self setBaseAddr: (char*) rgbaImage];
 			}
 		break;
-
-
+		
 		case 1:		// Mean
 		{
 			float countstack = 1;
@@ -9199,7 +9198,7 @@ float			iwl, iww;
 		// ***** SOURCE IMAGE IS RGBA
 		// ***** ***** ***** ***** *****
 		
-		if( isRGB == YES || thickSlabVRActivated == YES)
+		if( isRGB == YES)
 		{
 			vImage_Buffer   src, dst;
 			Pixel_8			convTable[256];
