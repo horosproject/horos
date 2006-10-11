@@ -451,6 +451,9 @@
 		A91CE49E098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE49F098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE4A0098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
+		A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
+		A92155FB0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
+		A92155FC0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
 		A926BFCA0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
 		A926BFCB0A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */ = {isa = PBXBuildFile; fileRef = A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */; };
@@ -10121,6 +10124,7 @@
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
+		A92155E50ADCF319008D881E /* OsiriX Report.template */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "OsiriX Report.template"; path = "Binaries/OsiriX Report.template"; sourceTree = "<group>"; };
 		A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportSeriesTemplate.html; sourceTree = "<group>"; };
 		A932B957094D722D0085B58A /* EndoscopyViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyViewer.h; sourceTree = "<group>"; };
 		A932B958094D722D0085B58A /* EndoscopyViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EndoscopyViewer.m; sourceTree = "<group>"; };
@@ -13594,6 +13598,7 @@
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
+				A92155E50ADCF319008D881E /* OsiriX Report.template */,
 				A95B98AA0A6E65C900E476D4 /* QTExportPatientsTemplate.html */,
 				A95B98AB0A6E65C900E476D4 /* QTExportStudiesTemplate.html */,
 				A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */,
@@ -23996,6 +24001,7 @@
 				B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 				B78675470AD9C56400731977 /* diameter570frame512.pbm in Resources */,
 				B78675480AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
+				A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24286,6 +24292,7 @@
 				B78DA71D0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 				B78675490AD9C56400731977 /* diameter570frame512.pbm in Resources */,
 				B786754A0AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
+				A92155FC0ADCF319008D881E /* OsiriX Report.template in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24577,6 +24584,7 @@
 				B78DA71B0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 				B78675450AD9C56400731977 /* diameter570frame512.pbm in Resources */,
 				B78675460AD9C56400731977 /* diameter1140frame1024.pbm in Resources */,
+				A92155FB0ADCF319008D881E /* OsiriX Report.template in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24607,7 +24615,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo DicomImporter.mdimporter.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd $SRCROOT\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\ncd $SRCROOT\ncd VolumePRO\nunzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		A9EDAC530ACBB5BE00D8B534 /* SVN Revision number */ = {
 			isa = PBXShellScriptBuildPhase;

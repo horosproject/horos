@@ -1315,6 +1315,7 @@ static BOOL initialized = NO;
 					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
 				
 				[AppController checkForHTMLTemplates];
+				[AppController checkForPagesTemplate];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				
@@ -2275,6 +2276,25 @@ static BOOL initialized = NO;
 	NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];
+}
+
+#pragma mark-
+#pragma mark Pages Template
+
++ (void)checkForPagesTemplate;
+{
+	NSLog(@"checkForPagesTemplate");
+	NSString *templateDirectory = [NSString pathWithComponents:[NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil]];
+	NSLog(@"templateDirectory : %@", templateDirectory);
+	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Report.template"];
+	NSLog(@"reportFile : %@", reportFile);
+	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
+	{
+		NSLog(@"Pages Template does not exist.");
+		NSLog(@"Ressource path : %@", [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"]);
+		NSLog(@"Destination path : %@", [templateDirectory stringByAppendingString:@"/OsiriX Report.template"]);
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingString:@"/OsiriX Report.template"] handler:0L];
+	}
 }
 
 @end
