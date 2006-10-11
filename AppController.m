@@ -2283,16 +2283,15 @@ static BOOL initialized = NO;
 
 + (void)checkForPagesTemplate;
 {
-	NSLog(@"checkForPagesTemplate");
+	// Pages template directory
 	NSString *templateDirectory = [NSString pathWithComponents:[NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil]];
-	NSLog(@"templateDirectory : %@", templateDirectory);
+	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectory])
+		[[NSFileManager defaultManager] createDirectoryAtPath:templateDirectory attributes:nil];
+		
+	// Pages template
 	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Report.template"];
-	NSLog(@"reportFile : %@", reportFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 	{
-		NSLog(@"Pages Template does not exist.");
-		NSLog(@"Ressource path : %@", [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"]);
-		NSLog(@"Destination path : %@", [templateDirectory stringByAppendingString:@"/OsiriX Report.template"]);
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingString:@"/OsiriX Report.template"] handler:0L];
 	}
 }
