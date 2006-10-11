@@ -5099,7 +5099,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 #pragma mark *RTSTRUCT	
 	//  Check for RTSTRUCT and create ROIs if needed	
-	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] ) [self createROIsFromRTSTRUCT: dcmObject];
+//	if ( [SOPClassUID isEqualToString:[DCMAbstractSyntaxUID RTStructureSetStorage]] ) [self createROIsFromRTSTRUCT: dcmObject];
 
 	// Image object dicom tags
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];

@@ -130,14 +130,14 @@ Version 2.3
 
 
 - (NSArray *)imageSeries{
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	//return array;
+	NSArray *array = [self primitiveValueForKey: @"series"];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
 	NSEnumerator *enumerator = [array objectEnumerator];
 	id series;
 	while (series = [enumerator nextObject]){
-		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
+		if ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]]  || [series valueForKey:@"seriesSOPClassUID"] == nil)
+		//|| [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]]
 			[newArray addObject:series];
 	}
 	return newArray;
