@@ -54,65 +54,64 @@
 	// if we can't read it stop
 	if (!cond.good())
 		return NO;
-			
+	NSLog(@"Compress DICOM: %@", path);		
 	E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
 	DcmDataset *dataset = fileformat.getDataset();
 	DcmItem *metaInfo = fileformat.getMetaInfo();
-	E_TransferSyntax originalXfer = dataset->getOriginalXfer ();
-	// only compress if an unencapsulated syntax
-	if ((originalXfer == EXS_LittleEndianImplicit) || 
-		(originalXfer == EXS_BigEndianImplicit) ||
-		(originalXfer == EXS_LittleEndianExplicit) ||
-		(originalXfer == EXS_BigEndianExplicit))
-	{
+    DcmXfer original_xfer(dataset->getOriginalXfer());
+    if (original_xfer.isEncapsulated())
+    {
+        NSLog(@"DICOM file is already compressed");
+        return 1;
+    }
 
-		DcmRepresentationParameter *params;
-		DJ_RPLossless losslessParams; 
-		DJ_RPLossy lossyParams(0.8);
-		DcmRLERepresentationParameter rleParams;
-		// Use fixed lossless for now
-		params = &losslessParams;
-		
-		
-		/*
-			DJ_RPLossless losslessParams; // codec parameters, we use the defaults
-			if (transferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-			params = &losslessParams;
-			else if (transferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-			params = &lossyParams; 
-			else if (transferSyntax == EXS_RLELossless)
-			params = &rleParams; 
-		*/
 
-		// this causes the lossless JPEG version of the dataset to be created
-		dataset->chooseRepresentation(tSyntax, params);
-		// check if everything went well
-		if (dataset->canWriteXfer(tSyntax))
-		{
-		// force the meta-header UIDs to be re-generated when storing the file 
-		// since the UIDs in the data set may have changed 
+	DJ_RPLossless losslessParams(6,0); 
+	//DJ_RPLossy lossyParams(0.8);
+	//DcmRLERepresentationParameter rleParams;
+	// Use fixed lossless for now
+	DcmRepresentationParameter *params = &losslessParams;
 	
-		/*
-			//only need to do this for lossy
-		delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-		delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-		*/
+	
+	/*
+		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
+		if (transferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+		params = &losslessParams;
+		else if (transferSyntax == EXS_JPEGProcess2_4TransferSyntax)
+		params = &lossyParams; 
+		else if (transferSyntax == EXS_RLELossless)
+		params = &rleParams; 
+	*/
 
-			// store in lossless JPEG format
-			
-			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(fname, tSyntax);
-			status =  (cond.good()) ? YES : NO;
-		}
-		else
-			status = NO;
-			
-		return status;
+	// this causes the lossless JPEG version of the dataset to be created
+	DcmXfer oxferSyn(tSyntax);
+	dataset->chooseRepresentation(tSyntax, params);
+	// check if everything went well
+	if (dataset->canWriteXfer(tSyntax))
+	{
+	// force the meta-header UIDs to be re-generated when storing the file 
+	// since the UIDs in the data set may have changed 
+
+	NSLog(@"Output transfer syntax  %s can be written", oxferSyn.getXferName());
+		//only need to do this for lossy
+	delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+	delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+	
+	
+	
+
+		// store in lossless JPEG format
+		
+		fileformat.loadAllDataIntoMemory();
+		//[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+
+		cond = fileformat.saveFile(fname, tSyntax);
+		status =  (cond.good()) ? YES : NO;
 	}
 	else
-		return YES;
-
+		status = NO;
+		
+	return status;
 }
 
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
