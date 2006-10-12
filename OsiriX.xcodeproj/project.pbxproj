@@ -957,8 +957,6 @@
 		AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		AB6FF5A90A47D0EF00C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		AB724F200ADE6D9C00A212A0 /* Decompress.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */; };
-		AB724F220ADE6D9C00A212A0 /* Decompress.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */; };
 		AB724F4F0ADE6ECB00A212A0 /* dcfilefo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD809B6827D00545F5E /* dcfilefo.cc */; };
 		AB724F500ADE6ECB00A212A0 /* dcxfer.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5309B6827F00545F5E /* dcxfer.cc */; };
 		AB724F510ADE6ECB00A212A0 /* dcvrut.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3B5109B6827F00545F5E /* dcvrut.cc */; };
@@ -9949,7 +9947,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = AB724F300ADE6ECB00A212A0 /* Decompress */;
+			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
 			remoteInfo = Decompress;
 		};
 		ABC398F509F527C4000A6508 /* PBXContainerItemProxy */ = {
@@ -26838,7 +26836,6 @@
 				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */,
-				AB724F220ADE6D9C00A212A0 /* Decompress.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28122,7 +28119,6 @@
 				BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837110AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				A94172B10AB6993000B9B487 /* SRAnnotationController.mm in Sources */,
-				AB724F200ADE6D9C00A212A0 /* Decompress.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
