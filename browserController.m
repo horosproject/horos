@@ -8524,7 +8524,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
-//	[self compressDICOMWithJPEG:compressedPath];
+	[self compressDICOMWithJPEG:compressedPath];
+	return;
 	
 	NSTask			*theTask;
 	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
