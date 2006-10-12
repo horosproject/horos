@@ -105,8 +105,7 @@ Version 2.4
 	NSEnumerator *pathEnum = [paths objectEnumerator];
     NSString *path;
 	
-	[reportsPluginsMenu removeAllItems];
-	
+	int numberOfReportPlugins = 0;
 	while ( path = [pathEnum nextObject] )
 	{
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
@@ -123,27 +122,26 @@ Version 2.4
 				{
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"])
 					{
-						[reportsPluginsMenu addItemWithTitle: [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-						[reportsMode2 addItemWithTitle: [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-						[[reportsMode2 lastItem] setIndentationLevel:1];
+						[reportsMode addItemWithTitle: [[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
+						[[reportsMode lastItem] setIndentationLevel:1];
+						numberOfReportPlugins++;
 					}
 				}
 			}
 		}
 	}
 	
-	if( [reportsPluginsMenu numberOfItems] <= 0)
+	if( numberOfReportPlugins <= 0)
 	{
-		[[reportsMode cellWithTag:3] setEnabled: NO];
-		[reportsMode2 removeItemAtIndex:[reportsMode2 indexOfItem:[reportsMode2 lastItem]]];
-		[reportsMode2 removeItemAtIndex:[reportsMode2 indexOfItem:[reportsMode2 lastItem]]];
+		[reportsMode removeItemAtIndex:[reportsMode indexOfItem:[reportsMode lastItem]]];
+		[reportsMode removeItemAtIndex:[reportsMode indexOfItem:[reportsMode lastItem]]];
 	}
 	else
 	{
-		if([reportsPluginsMenu numberOfItems] == 1)
-			[[reportsMode2 itemAtIndex:5] setTitle:@"Plugin"];
-		[reportsMode2 setAutoenablesItems:NO];
-		[[reportsMode2 itemAtIndex:5] setEnabled:NO];
+		if(numberOfReportPlugins == 1)
+			[[reportsMode itemAtIndex:5] setTitle:@"Plugin"];
+		[reportsMode setAutoenablesItems:NO];
+		[[reportsMode itemAtIndex:5] setEnabled:NO];
 	}
 }
 
@@ -200,18 +198,13 @@ Version 2.4
 	
 	// REPORTS
 	[self buildPluginsMenu];
-	[reportsMode selectCellWithTag:[[defaults stringForKey:@"REPORTSMODE"] intValue]];
-NSLog(@"REPORTSMODE , %@", [defaults stringForKey:@"REPORTSMODE"]);
-NSLog(@"REPORTSMODE , %d", [[defaults stringForKey:@"REPORTSMODE"] intValue]);
 	if([[defaults stringForKey:@"REPORTSMODE"] intValue] == 3)
 	{
-		NSLog(@"REPORTSPLUGIN , %@", [defaults stringForKey:@"REPORTSPLUGIN"]);
-		[reportsMode2 selectItemWithTitle:[defaults stringForKey:@"REPORTSPLUGIN"]];
+		[reportsMode selectItemWithTitle:[defaults stringForKey:@"REPORTSPLUGIN"]];
 	}
 	else
 	{
-		NSLog(@"pas un plugin");
-		[reportsMode2 selectItemWithTag:[[defaults stringForKey:@"REPORTSMODE"] intValue]];
+		[reportsMode selectItemWithTag:[[defaults stringForKey:@"REPORTSMODE"] intValue]];
 	}
 	
 	// DATABASE AUTO-CLEANING
@@ -263,24 +256,18 @@ NSLog(@"REPORTSMODE , %d", [[defaults stringForKey:@"REPORTSMODE"] intValue]);
 	
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
-//	[defaults setInteger:[[reportsMode selectedCell] tag] forKey:@"REPORTSMODE"];
-//	
-//	[defaults setObject:[[reportsPluginsMenu selectedItem] title] forKey:@"REPORTSPLUGIN"];
-	
-	int indexOfPluginsLabel = [reportsMode2 indexOfItemWithTitle:@"Plugins"];
-	int indexOfPluginLabel = [reportsMode2 indexOfItemWithTitle:@"Plugin"];
+	int indexOfPluginsLabel = [reportsMode indexOfItemWithTitle:@"Plugins"];
+	int indexOfPluginLabel = [reportsMode indexOfItemWithTitle:@"Plugin"];
 	int indexOfLabel = (indexOfPluginsLabel>indexOfPluginLabel)?indexOfPluginsLabel:indexOfPluginLabel;
 	
-	if([reportsMode2 indexOfSelectedItem] >= indexOfLabel) // in this case it is a plugin
+	if([reportsMode indexOfSelectedItem] >= indexOfLabel) // in this case it is a plugin
 	{
-		NSLog(@"plugin name : %@", [[reportsMode2 selectedItem] title]);
 		[defaults setInteger:3 forKey:@"REPORTSMODE"];
-		[defaults setObject:[[reportsMode2 selectedItem] title] forKey:@"REPORTSPLUGIN"];
+		[defaults setObject:[[reportsMode selectedItem] title] forKey:@"REPORTSPLUGIN"];
 	}
 	else
 	{
-		NSLog(@"report mode : %d", [[reportsMode2 selectedItem] tag]);
-		[defaults setInteger:[[reportsMode2 selectedItem] tag] forKey:@"REPORTSMODE"];
+		[defaults setInteger:[[reportsMode selectedItem] tag] forKey:@"REPORTSMODE"];
 	}
 }
 
