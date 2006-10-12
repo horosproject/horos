@@ -49,6 +49,7 @@
                 olderThanProduced = NSPopUpButton; 
                 olderType = NSMatrix; 
                 reportsMode = NSMatrix; 
+                reportsMode2 = NSPopUpButton; 
                 reportsPluginsMenu = NSPopUpButton; 
                 seriesOrderMatrix = NSMatrix; 
             }; 

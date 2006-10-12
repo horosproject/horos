@@ -25,6 +25,7 @@
 	IBOutlet NSMatrix		*columnsDisplay;
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSMatrix		*reportsMode;
+	IBOutlet NSPopUpButton	*reportsMode2;
 	IBOutlet NSPopUpButton	*reportsPluginsMenu;
 	
 	IBOutlet NSMatrix		*commentsDeleteMatrix;
