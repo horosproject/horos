@@ -342,7 +342,7 @@ enum
 - (void) offsetMatrixSetting: (int) twentyFiveCodes;
 - (IBAction) subSumSlider:(id) sender;
 - (IBAction) subSharpen:(id) sender;
-
+- (IBAction) reSyncOrigin:(id) sender;
 - (void) loadROI:(long) mIndex;
 - (void) saveROI:(long) mIndex;
 - (id) findPlayStopButton;

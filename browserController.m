@@ -10476,40 +10476,45 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 			studySelected = [item valueForKey:@"study"];
 		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
+		long result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete report", 0L), NSLocalizedString(@"Are you sure you want to delete the selected report?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+		
+		if( result == NSAlertDefaultReturn)
 		{
-			NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 3)
+			{
+				NSBundle *plugin = [reportPlugins objectForKey: [[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSPLUGIN"]];
+						
+				if( plugin)
+				{
+					PluginFilter* filter = [[plugin principalClass] filter];
+					[filter deleteReportForStudy: studySelected];
+					//[filter report: studySelected action: @"deleteReport"];
+				}
+				else
+				{
+					NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
+					return;
+				}
+			}
+			else if( [studySelected valueForKey:@"reportURL"] != 0L)
+			{
+				if( isCurrentDatabaseBonjour)
+				{
+					[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:0L];
+					[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
 					
-			if( plugin)
-			{
-				PluginFilter* filter = [[plugin principalClass] filter];
-				[filter deleteReportForStudy: studySelected];
-				//[filter report: studySelected action: @"deleteReport"];
+					// Set only LAST component -> the bonjour server will complete the address
+					[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:0L forKey:@"reportURL"];
+					
+					[studySelected setValue: 0L forKey:@"reportURL"];
+				}
+				else
+				{
+					[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:0L];
+					[studySelected setValue: 0L forKey:@"reportURL"];
+				}
+				[databaseOutline reloadData];
 			}
-			else
-			{
-				NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Report Plugin not available.", nil), nil, nil, nil);
-				return;
-			}
-		}
-		else if( [studySelected valueForKey:@"reportURL"] != 0L)
-		{
-			if( isCurrentDatabaseBonjour)
-			{
-				[[NSFileManager defaultManager] removeFileAtPath:[BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]] handler:0L];
-				[bonjourReportFilesToCheck removeObjectForKey: [[studySelected valueForKey:@"reportURL"] lastPathComponent]];
-				
-				// Set only LAST component -> the bonjour server will complete the address
-				[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:studySelected value:0L forKey:@"reportURL"];
-				
-				[studySelected setValue: 0L forKey:@"reportURL"];
-			}
-			else
-			{
-				[[NSFileManager defaultManager] removeFileAtPath:[studySelected valueForKey:@"reportURL"] handler:0L];
-				[studySelected setValue: 0L forKey:@"reportURL"];
-			}
-			[databaseOutline reloadData];
 		}
 	}
 }

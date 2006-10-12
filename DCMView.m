@@ -2046,6 +2046,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				offset.x = 0;
 				offset.y = 0;
 			}
+			
 //			NSLog( @"%f %f", offset.x, offset.y);
 			
 			// Convert screen position to pixel position in blended image

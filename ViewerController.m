@@ -7915,6 +7915,55 @@ int i,j,l;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: userInfo];
 }
 
+- (IBAction) reSyncOrigin:(id) sender
+{
+	float	o[ 3];
+	int		x, i;
+	
+	if( blendingController)
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
+		{
+			for( i = 0; i < maxMovieIndex; i++)
+			{
+				for( x = 0; x < [pixList[ i] count]; x++)
+				{
+					DCMPix		*curDCM = [pixList[ i] objectAtIndex:x];
+					float		vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
+					NSPoint		offset;
+					
+					// Compute blended view offset
+					[curDCM orientation: vectorP];
+					
+					tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
+					tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
+					tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+					
+					tempOriginBlending[ 0] = [[[blendingController imageView] curDCM] originX] * vectorP[ 0] + [[[blendingController imageView] curDCM] originY] * vectorP[ 1] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 2];
+					tempOriginBlending[ 1] = [[[blendingController imageView] curDCM] originX] * vectorP[ 3] + [[[blendingController imageView] curDCM] originY] * vectorP[ 4] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 5];
+					tempOriginBlending[ 2] = [[[blendingController imageView] curDCM] originX] * vectorP[ 6] + [[[blendingController imageView] curDCM] originY] * vectorP[ 7] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 8];
+					
+					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[[blendingController imageView] curDCM] pwidth]*[[[blendingController imageView] curDCM] pixelSpacingX]/2.));
+					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[[blendingController imageView] curDCM] pheight]*[[[blendingController imageView] curDCM] pixelSpacingY]/2.));
+					
+					offset.x /= [[[blendingController imageView] curDCM] pixelSpacingX];
+					offset.y /= [[[blendingController imageView] curDCM] pixelSpacingY];
+
+					o[ 0] = [curDCM originX];		o[ 1] = [curDCM originY];		o[ 2] = [curDCM originZ];
+					
+					o[ 0] -= [[blendingController imageView] origin].x - offset.x;
+					o[ 1] -= [[blendingController imageView] origin].y - offset.y;
+					
+					[curDCM setOrigin: o];
+					
+					[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
+				}
+			}
+		}
+		else NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"Only useful if propagate settings is OFF.", nil), nil, nil, nil);
+	}
+	else NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"Only useful if image fusion is activated.", nil), nil, nil, nil);
+}
 
 -(void) propagateSettings
 {
