@@ -167,7 +167,10 @@ extern NSString * documentsDirectory();
 - (void) subConnectionReceived:(NSFileHandle *)incomingConnection
 {
 	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
-	
+
+	BOOL				saveDB = NO;
+	BOOL				refreshDB = NO;
+
 	[incomingConnection retain];
 	
 	@try
@@ -175,6 +178,7 @@ extern NSString * documentsDirectory();
 		NSData				*readData;
 		NSMutableData		*data = [NSMutableData dataWithCapacity: 512*512*2*2];
 		NSMutableData		*representationToSend = 0L;
+		
 		
 		if( incomingConnection)
 		{
@@ -363,8 +367,8 @@ extern NSString * documentsDirectory();
 					}
 				}
 				
-				[interfaceOsiriX refreshDatabase: 0L];
-				[interfaceOsiriX saveDatabase: 0L];
+				refreshDB = YES;
+				saveDB = YES;
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
 			{
@@ -448,7 +452,7 @@ extern NSString * documentsDirectory();
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
 				pos += dataSize;
 				
-				[interfaceOsiriX refreshDatabase: 0L];
+				refreshDB = YES;
 				
 				[path release];
 			}
@@ -579,6 +583,9 @@ extern NSString * documentsDirectory();
 	
 	[incomingConnection release];
 	[connectionLock unlock];
+	
+	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:0L waitUntilDone: YES];		// This has to be performed on the main thread
+	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:0L waitUntilDone: YES];			// This has to be performed on the main thread
 	
 	[mPool release];
 }
