@@ -7,9 +7,9 @@
             OUTLETS = {
                 burnButton = NSButton; 
                 compressionMode = NSMatrix; 
+                finalSizeField = NSTextField; 
                 nameField = NSTextField; 
                 sizeField = NSTextField; 
-                statusField = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

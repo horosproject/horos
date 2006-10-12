@@ -387,6 +387,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (IBAction) decompressSelectedFiles:(id) sender;
 - (IBAction) compressSelectedFiles:(id) sender;
+- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work;
+- (void) decompressThread: (NSNumber*) typeOfWork;
 
 -(void) compressDICOMJPEG:(NSString*) compressedPath;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath;

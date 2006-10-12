@@ -187,7 +187,6 @@ NSString* asciiString (NSString* name);
 	isSettingUpBurn = NO;
 
 	[self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
-	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
 	[pool release];
 }
 
@@ -351,7 +350,6 @@ NSString* asciiString (NSString* name);
 	burning = YES;	// Keep the app from being quit from underneath the burn.
 	isThrobbing = NO;
 	burnAnimationIndex = 0;
-	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"Burning" waitUntilDone:YES];
 
 }
 
@@ -452,7 +450,6 @@ NSString* asciiString (NSString* name);
 //	[filesTableView reloadData];
 
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
-	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
 	isExtracting = NO;
 	[NSThread detachNewThreadSelector:@selector(irisAnimation:) toTarget:self withObject:nil];
 	[burnButton setEnabled:YES];
@@ -505,7 +502,48 @@ NSString* asciiString (NSString* name);
 	[[BrowserController currentBrowser] exportQuicktimeInt:dbObjects :burnFolder :YES];
 }
 
-- (void)addDicomdir{
+- (NSNumber*)getSizeOfDirectory:(NSString*)path
+{
+	NSNumber *sizeField;
+	if([[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
+	{
+		NSArray *args;
+		NSPipe *fromPipe;
+		NSFileHandle *fromDu;
+		NSData *duOutput;
+		NSString *size;
+		NSArray *stringComponents;
+		unsigned char aBuffer[70];
+
+		args = [NSArray arrayWithObjects:@"-ks",path,nil];
+		fromPipe=[NSPipe pipe];
+		fromDu=[fromPipe fileHandleForWriting];
+		NSTask *duTool=[[NSTask alloc]init];
+
+		[duTool setLaunchPath:@"/usr/bin/du"];
+		[duTool setStandardOutput:fromDu];
+		[duTool setArguments:args];
+		[duTool launch];
+		
+		duOutput=[[fromPipe fileHandleForReading] availableData];
+		[duOutput getBytes:aBuffer];
+		
+		size=[NSString stringWithCString:aBuffer];
+		stringComponents=[size pathComponents];
+		
+		size=[stringComponents objectAtIndex:0];
+		size=[size substringToIndex:[size length]-1];
+		
+		return sizeField = [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
+	}
+	else return sizeField = [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
+}
+
+- (void)addDicomdir
+{
+
+	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
+
 	//NSLog(@"add Dicomdir");
 	NS_DURING
 	NSEnumerator *enumerator = [files objectEnumerator];
@@ -526,7 +564,10 @@ NSString* asciiString (NSString* name);
 		[manager copyPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath handler:nil];
 		
 	NSMutableArray *newFiles = [NSMutableArray array];
-	while (file = [enumerator nextObject]) {
+	NSMutableArray *compressedArray = [NSMutableArray array];
+	
+	while (file = [enumerator nextObject])
+	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
@@ -544,29 +585,37 @@ NSString* asciiString (NSString* name);
 				break;
 				
 				case 1:
-					[browserWindow compressDICOMJPEG: [newPath retain]];
+					[compressedArray addObject: newPath];
 				break;
 				
 				case 2:
-					[browserWindow decompressDICOMJPEG: [newPath retain]];
+					[compressedArray addObject: newPath];
 				break;
 			}
 		}
 		
-		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Copying: %@", [newPath lastPathComponent]] waitUntilDone:YES];
 		[newFiles addObject:newPath];
 		[pool release];
 	}
-	[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"Creating DICOMDIR" waitUntilDone:YES];
-	[self addDICOMDIRUsingDCMTK];
-	int size = 400;
 	
-// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
+	switch( [compressionMode selectedTag])
+	{
+		case 1:
+			[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+		break;
+		
+		case 2:
+			[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+		break;
+	}
+	
+	[self addDICOMDIRUsingDCMTK];
+	
+	// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
 	{
 		NSString *iRadPath = [[NSBundle mainBundle] bundlePath];
-		[statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"Writing Osirix application" waitUntilDone:YES];
 		[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
 	}
 	
@@ -585,7 +634,6 @@ NSString* asciiString (NSString* name);
 			supplementaryBurnPath=[supplementaryBurnPath stringByExpandingTildeInPath];
 			if ([manager fileExistsAtPath: supplementaryBurnPath])
 			{
-				[statusField performSelectorOnMainThread: @selector(setStringValue:) withObject:@"Writing extra files" waitUntilDone:YES];
 				NSEnumerator *enumerator=[manager enumeratorAtPath: supplementaryBurnPath];
 				while (file=[enumerator nextObject])
 				{
@@ -595,6 +643,9 @@ NSString* asciiString (NSString* name);
 			}
 		}
 	}
+	
+	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", [[self getSizeOfDirectory: burnFolder] floatValue] / 1024.] waitUntilDone:YES];
+	
 	NS_HANDLER
 		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
 	NS_ENDHANDLER
@@ -613,8 +664,7 @@ NSString* asciiString (NSString* name);
 		size += [fattrs fileSize]/1024;
 		[pool release];
 	}
-	size += 44400000/1024;			// fixed size of OsiriX, should be calculated to allow for changes.
-	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d %@ %3.2fMB", NSLocalizedString(@"Files:", nil), [files count], NSLocalizedString(@"Estimated size (uncompressed):", nil), size/1024.0]];
+	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"Files:", nil), [files count], NSLocalizedString(@"Image Files size:", nil), size/1024.0]];
 }
 
 

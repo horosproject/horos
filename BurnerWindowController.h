@@ -26,7 +26,7 @@
 	NSArray	*dbObjects;
 	float burnSize;
 	IBOutlet NSTextField *nameField;
-	IBOutlet NSTextField *statusField, *sizeField;
+	IBOutlet NSTextField *sizeField, *finalSizeField;
 	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
 	NSString *cdName;

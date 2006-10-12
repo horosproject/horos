@@ -1478,7 +1478,6 @@ static BOOL COMPLETEREBUILD = NO;
 	return localFiles;
 }
 
-
 - (void) addURLToDatabaseEnd:(id) sender
 {
 	if( [sender tag] == 1)
@@ -8502,7 +8501,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self decompressDICOM:compressedPath to: [INpath stringByAppendingString:[compressedPath lastPathComponent]]];
 		
 	[processorsLock lock];
-	numberOfThreadsForJPEG--;
+	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
@@ -8515,7 +8514,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self decompressDICOM:compressedPath to: 0L];
 	
 	[processorsLock lock];
-	numberOfThreadsForJPEG--;
+	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
@@ -8550,10 +8549,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[processorsLock lock];
-	numberOfThreadsForJPEG--;
+	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
 	
 	[pool release];
+}
+
+- (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work
+{
+	[decompressThreadRunning lock];
+	[decompressArrayLock lock];
+	[decompressArray addObjectsFromArray: array];
+	[decompressArrayLock unlock];
+	[decompressThreadRunning unlock];
+	
+	[self decompressThread: work];
 }
 
 - (IBAction) compressSelectedFiles:(id) sender
@@ -8631,11 +8641,27 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSArray				*array;
 	int					i;
 	char				tow = [typeOfWork charValue];
+	BOOL				finished;
 	
+	finished = NO;
+	do
+	{
+		[processorsLock lockWhenCondition: 1];
+		if( numberOfThreadsForJPEG <= 0)
+		{
+			finished = YES;
+			[processorsLock unlockWithCondition: 1];
+		}
+		else [processorsLock unlockWithCondition: 0];
+	}
+	while( finished == NO);
+
 	[decompressArrayLock lock];
 	array = [NSArray arrayWithArray: decompressArray];
 	[decompressArray removeAllObjects];
 	[decompressArrayLock unlock];
+	
+	numberOfThreadsForJPEG = 0;
 	
 	for( i = 0; i < [array count]; i++)
 	{
@@ -8656,6 +8682,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 		}
 	}
+	
+	finished = NO;
+	do
+	{
+		[processorsLock lockWhenCondition: 1];
+		if( numberOfThreadsForJPEG <= 0)
+		{
+			finished = YES;
+			[processorsLock unlockWithCondition: 1];
+		}
+		else [processorsLock unlockWithCondition: 0];
+	}
+	while( finished == NO);
 	
 	[pool release];
 	
