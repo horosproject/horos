@@ -269,6 +269,7 @@ Version 2.4
 	{
 		[defaults setInteger:[[reportsMode selectedItem] tag] forKey:@"REPORTSMODE"];
 	}
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"reportModeChanged" object:nil];
 }
 
 // - (IBAction) setDisplayAllStudiesAlbum:(id) sender

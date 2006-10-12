@@ -7426,25 +7426,16 @@ static NSArray*	openSubSeriesArray = 0L;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
 		
 		/* notifications from workspace */
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
-															  selector: @selector(volumeMount:)
-																  name: NSWorkspaceDidMountNotification
-																object: nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
 
-		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
-															  selector: @selector(volumeUnmount:)
-																  name: NSWorkspaceDidUnmountNotification
-																object: nil];
-																
-
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(closeAllWindows:) name: @"Close All Viewers" object: nil];	
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(mainWindowHasChanged:) name: NSWindowDidBecomeMainNotification object: nil];
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(updateCurrentImage:) name: @"DCMNewImageViewResponder" object: nil];
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(ViewFrameDidChange:) name: NSViewFrameDidChangeNotification object: nil];
-		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(OsirixAddToDBNotification:) name: @"OsirixAddToDBNotification" object: nil];
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentImage:) name:@"DCMNewImageViewResponder" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
 	}
-		
 	return self;
 }
 
@@ -10666,6 +10657,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	return [NSImage imageNamed:iconName];
 }
+
+- (void)updateReportToolbarIcon:(NSNotification *)note
+{
+	long i;
+	NSToolbarItem *item;
+	NSArray *toolbarItems = [toolbar items];
+	for(i=0; i<[toolbarItems count]; i++)
+	{
+		item = [toolbarItems objectAtIndex:i];
+		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier])
+		{
+			[item setImage:[self reportIcon]];
+		}
+	}
+}
+
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
