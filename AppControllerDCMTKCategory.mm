@@ -38,7 +38,31 @@
     DJDecoderRegistration::registerCodecs();
 
     // register global JPEG compression codecs
-    DJEncoderRegistration::registerCodecs();
+    DJEncoderRegistration::registerCodecs(
+	 	ECC_lossyYCbCr,
+		EUC_default,
+		OFFalse,
+		OFFalse,
+		0,
+		0,
+		0,
+		OFTrue,
+		ESS_444,
+		OFFalse,
+		OFFalse,
+		0,
+		0,
+		0.0,
+		0.0,
+		0,
+		0,
+		0,
+		0,
+		OFTrue,
+		OFFalse,
+		OFFalse,
+		OFFalse,
+		OFTrue);
 
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs();
