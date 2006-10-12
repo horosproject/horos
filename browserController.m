@@ -4068,6 +4068,7 @@ static BOOL COMPLETEREBUILD = NO;
 					if( isCurrentDatabaseBonjour || [[NSFileManager defaultManager] fileExistsAtPath:[item valueForKey:@"reportURL"]] == YES)
 					{
 						NSImage	*reportIcon = [NSImage imageNamed:@"Report.icns"];
+						//NSImage	*reportIcon = [self reportIcon];
 						[reportIcon setSize: NSMakeSize(16, 16)];
 						
 						[(ImageAndTextCell *)cell setImage: reportIcon];
@@ -10641,6 +10642,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 }
+
+- (NSImage*)reportIcon;
+{
+	NSString *iconName = @"Report.icns";
+	switch([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue])
+	{
+		case 0: // M$ Word
+		{
+			iconName = @"ReportWord.icns";
+		}
+		break;
+		case 1: // TextEdit (RTF)
+		{
+			iconName = @"ReportRTF.icns";
+		}
+		break;
+		case 2: // Pages.app
+		{
+			iconName = @"ReportPages.icns";
+		}
+		break;
+	}
+	return [NSImage imageNamed:iconName];
+}
+
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
@@ -10797,7 +10823,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setLabel: NSLocalizedString(@"Report",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
+		//[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
+		[toolbarItem setImage: [self reportIcon]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }
