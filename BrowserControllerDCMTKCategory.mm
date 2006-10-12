@@ -117,57 +117,14 @@
 
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
 {
-	OFCondition cond;
-	OFBool status = YES;
-	const char *fname = (const char *)[path UTF8String];
+	NSTask *theTask = [[NSTask alloc] init];
 	
-	const char *destination = 0L;
-	if( dest) destination = (const char *)[dest UTF8String];
-	else
-	{
-		dest = path;
-		destination = fname;
-	}
-	DcmFileFormat fileformat;
-	cond = fileformat.loadFile(fname);
-	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	
-	//hopefully dcmtk willsupport jpeg2000 compression and decompression in the future
-	
-	if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
-	{
-		NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
-		
-		[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-		[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: 0L];
-		
-		[dcmObject release];
-	}
-	else
-	{
-		  DcmDataset *dataset = fileformat.getDataset();
+	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
 
-		  // decompress data set if compressed
-		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-
-		  // check if everything went well
-		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-		  {
-			fileformat.loadAllDataIntoMemory();
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-			cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
-			status =  (cond.good()) ? YES : NO;
-			
-		  }
-		  else
-			status = NO;
-
-	}
-
-	return status;
+	return YES;
 }
-
-
 @end

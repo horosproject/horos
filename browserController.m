@@ -8508,12 +8508,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSString			*INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
 	
 	[self decompressDICOM:compressedPath to: [INpath stringByAppendingString:[compressedPath lastPathComponent]]];
-
-//	DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:compressedPath decodingPixelData:YES];
-//	[dcmObject writeToFile:[compressedPath stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-//	[[NSFileManager defaultManager] removeFileAtPath:compressedPath handler:nil];
-//	[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:[INpath stringByAppendingString:[compressedPath lastPathComponent]] handler: 0L];
-//	[dcmObject release];
 		
 	[processorsLock lock];
 	numberOfThreadsForJPEG--;
