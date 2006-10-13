@@ -229,6 +229,7 @@
                 loadSerie = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
+                reSyncOrigin = id; 
                 resetImage = id; 
                 resetImagePresentationState = id; 
                 resetSeriesPresentationState = id; 
