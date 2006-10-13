@@ -2226,6 +2226,7 @@ static BOOL initialized = NO;
 // Hide the Bonjour Panel in the side drawer
 - (void) HUGDisableBonjourFeature
 {
+	return;
 	// disable Bonjour
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"bonjourSharing"];
 	[browserController setBonjourSharingEnabled:NO];

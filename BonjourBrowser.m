@@ -202,6 +202,38 @@ volatile static BOOL threadIsRunning = NO;
 			}
 			else if ( strcmp( messageToRemoteService, "RFILE") == 0)
 			{
+				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
+				BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
+				if(isPages)
+				{
+					NSLog(@"readAllTheData isPages");
+					NSString *zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
+					[filePathToLoad release];
+					filePathToLoad = [zipFilePathToLoad retain];
+				}
+				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
+
+//					NSString *reportFileName = [filePathToLoad stringByDeletingPathExtension];
+//					NSLog(@"reportFileName : %@", reportFileName);
+//					// unzip the file
+//					NSTask *unzipTask   = [[NSTask alloc] init];
+//					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
+//					[unzipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+//					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", filePathToLoad, nil]]; // -o to override existing report w/ same name
+//					[unzipTask launch];
+//					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+//					int result = [unzipTask terminationStatus];
+//					[unzipTask release];
+//					
+//					NSLog(@"unzip result : %d", result);
+//					if(result==0)
+//					{
+//						// remove the zip file!
+//						filePathToLoad = reportFileName;
+//					}
+//				}
+
+			
 				NSString *destPath = [BonjourBrowser bonjour2local: filePathToLoad];
 				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:0L];
 				
@@ -234,6 +266,28 @@ volatile static BOOL threadIsRunning = NO;
 				[[NSFileManager defaultManager] changeFileAttributes:newfattrs atPath:destPath];
 				
 				[str release];
+				
+				if(isPages)
+				{
+					NSString *reportFileName = [destPath stringByDeletingPathExtension];
+					NSLog(@"readAllTheData  reportFileName : %@", reportFileName);
+					// unzip the file
+					NSTask *unzipTask   = [[NSTask alloc] init];
+					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
+					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
+					[unzipTask launch];
+					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+					int result = [unzipTask terminationStatus];
+					[unzipTask release];
+					
+					NSLog(@"unzip result : %d", result);
+					if(result==0)
+					{
+						// remove the zip file!
+						//filePathToLoad = reportFileName;
+					}
+				}
 			}
 			else if (strcmp( messageToRemoteService, "DICOM") == 0)
 			{
@@ -324,6 +378,8 @@ volatile static BOOL threadIsRunning = NO;
 //socket.h
 - (BOOL) connectToService: (struct sockaddr_in*) socketAddress
 {
+
+NSLog(@"connectToService");
 	BOOL succeed = NO;
 	
 	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -385,6 +441,7 @@ volatile static BOOL threadIsRunning = NO;
 				
 				if (strcmp( messageToRemoteService, "RFILE") == 0)
 				{
+					NSLog(@"ask for : %@", filePathToLoad);
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
 					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
 					
@@ -402,7 +459,7 @@ volatile static BOOL threadIsRunning = NO;
 				}
 				
 				if (strcmp( messageToRemoteService, "WFILE") == 0)
-				{
+				{				
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
 					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
 					

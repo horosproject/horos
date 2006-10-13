@@ -403,9 +403,33 @@ extern NSString * documentsDirectory();
 				
 				// We read the string
 				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				NSString *path = [[NSString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
+				NSMutableString *path = [[NSMutableString alloc] initWithData: [data subdataWithRange: NSMakeRange(pos,stringSize)] encoding: NSUnicodeStringEncoding];
 				pos += stringSize;
 				
+				BOOL isDirectory = NO;
+				[[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+				if(isDirectory)
+				{
+					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [path lastPathComponent]];
+					// zip the directory into a single archive file
+					NSTask *zipTask   = [[NSTask alloc] init];
+					[zipTask setLaunchPath:@"/usr/bin/zip"];
+					[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
+					[zipTask launch];
+					if ([zipTask isRunning]) [zipTask waitUntilExit];
+					int result = [zipTask terminationStatus];
+					[zipTask release];
+
+					if(result==0)
+					{
+						NSMutableString *path2 = (NSMutableString*)[[path stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+						[path release];
+						path = [path2 retain];
+						NSLog(@"path : %@", path);
+					}
+				}
+
 				NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
 				
 				// Send the file
@@ -451,7 +475,6 @@ extern NSString * documentsDirectory();
 				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:0L];
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
 				pos += dataSize;
-				
 				refreshDB = YES;
 				
 				[path release];
