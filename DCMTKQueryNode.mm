@@ -250,8 +250,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters]){
 		//_children = [[NSMutableArray alloc] init];
-		int dbl = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
-		NSLog(@"Debug Level: %d", dbl);
+		debugLevel = [[NSUserDefaults standardUserDefaults] integerForKey:@"NetworkDebugLevel"];
+		
 		_children = nil;
 		_uid = nil;
 		_theDescription = nil;
@@ -937,9 +937,10 @@ NS_ENDHANDLER
             }
         }
     } else {
-		errmsg("Find Failed, query keys:");
-		dataset->print(COUT);
+		errmsg("Find Failed\n Condition:\n");
+		//dataset->print(COUT);
         DimseCondition::dump(cond);
+		NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]);
     }
 
     /* dump status detail information if there is some */
