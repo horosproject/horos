@@ -204,7 +204,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>AB063B730ADF805000CB2467</string>
+						<string>AB063BA30ADF881D00CB2467</string>
 						<key>history</key>
 						<array>
 							<string>ABC98A660AC199D800DC5BDA</string>
@@ -362,7 +362,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB063B720ADF805000CB2467</string>
+										<string>AB063BA20ADF881D00CB2467</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB580A19CF2500FED357</string>
@@ -569,8 +569,8 @@
 	<array>
 		<string>AB4664CF09A335BC005A2766</string>
 		<string>ABC98A280AC193F300DC5BDA</string>
-		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
+		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>-1655 342 963 753 -1680 46 1680 1050 </string>

@@ -3123,6 +3123,7 @@ static BOOL COMPLETEREBUILD = NO;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
 	[checkIncomingLock lock];
+	[checkBonjourUpToDateThreadLock lock];
 	
 	NSString	*path = [bonjourBrowser getDatabaseFile: [bonjourServicesList selectedRow]-1];
 	if( path != 0L)
@@ -3130,9 +3131,10 @@ static BOOL COMPLETEREBUILD = NO;
 		[self performSelectorOnMainThread:@selector(openDatabaseInBonjour:) withObject:path waitUntilDone:YES];
 	}
 	
-	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
-	
 	[checkIncomingLock unlock];
+	[checkBonjourUpToDateThreadLock unlock];
+	
+	[self performSelectorOnMainThread:@selector(outlineViewRefresh) withObject:nil waitUntilDone:YES];
 	
 	[pool release];
 }
@@ -3159,6 +3161,8 @@ static BOOL COMPLETEREBUILD = NO;
 		{
 			if( [bonjourBrowser isBonjourDatabaseUpToDate: [bonjourServicesList selectedRow]-1] == NO)
 			{
+				[self syncReportsIfNecessary: [bonjourServicesList selectedRow]-1];
+				
 				if( [checkIncomingLock tryLock])
 				{
 					[NSThread detachNewThreadSelector: @selector(checkBonjourUpToDateThread:) toTarget:self withObject: self];
@@ -7349,6 +7353,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[numFmt setFormat:@"0"];
 		[numFmt setHasThousandSeparators: YES];
 		
+		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
 		checkIncomingLock = [[NSLock alloc] init];
 		decompressArrayLock = [[NSLock alloc] init];
 		decompressThreadRunning = [[NSLock alloc] init];
@@ -10512,6 +10517,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		NSManagedObject *studySelected;
 		
+		[checkBonjourUpToDateThreadLock lock];
+		
 		if ([[[item entity] name] isEqual:@"Study"])
 			studySelected = item;
 		else
@@ -10557,6 +10564,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				[databaseOutline reloadData];
 			}
 		}
+		
+		[checkBonjourUpToDateThreadLock unlock];
 	}
 }
 
@@ -10590,11 +10599,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 			if( plugin)
 			{
+				[checkBonjourUpToDateThreadLock lock];
+				
 				NSLog(@"generate report with plugin");
 				PluginFilter* filter = [[plugin principalClass] filter];
 				[filter createReportForStudy: studySelected];
 				NSLog(@"end generate report with plugin");
 				//[filter report: studySelected action: @"openReport"];
+				
+				[checkBonjourUpToDateThreadLock unlock];
 			}
 			else
 			{
@@ -10607,6 +10620,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		// REPORTS GENERATED AND HANDLED BY OSIRIX
 		// *********************************************
 		{
+			[checkBonjourUpToDateThreadLock lock];
+			
 			// *********************************************
 			//	BONJOUR
 			// *********************************************
@@ -10685,6 +10700,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 			}
+			
+			[checkBonjourUpToDateThreadLock unlock];
 		}
 	}
 }
