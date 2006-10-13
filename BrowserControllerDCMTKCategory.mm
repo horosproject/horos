@@ -45,73 +45,18 @@
 
 @implementation BrowserController (BrowserControllerDCMTKCategory)
 
-- (BOOL)compressDICOMWithJPEG:(NSString *)path{
-	OFCondition cond;
-	OFBool status = YES;
-	const char *fname = (const char *)[path UTF8String];
-	DcmFileFormat fileformat;
-	cond = fileformat.loadFile(fname);
-	// if we can't read it stop
-	if (!cond.good())
-		return NO;
-	NSLog(@"Compress DICOM: %@", path);		
-	E_TransferSyntax tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-	DcmDataset *dataset = fileformat.getDataset();
-	DcmItem *metaInfo = fileformat.getMetaInfo();
-    DcmXfer original_xfer(dataset->getOriginalXfer());
-    if (original_xfer.isEncapsulated())
-    {
-        NSLog(@"DICOM file is already compressed");
-        return 1;
-    }
-
-
-	DJ_RPLossless losslessParams(6,0); 
-	//DJ_RPLossy lossyParams(0.8);
-	//DcmRLERepresentationParameter rleParams;
-	// Use fixed lossless for now
-	DcmRepresentationParameter *params = &losslessParams;
+- (BOOL)compressDICOMWithJPEG:(NSString *)path
+{
+	NSTask *theTask = [[NSTask alloc] init];
 	
-	
-	/*
-		DJ_RPLossless losslessParams; // codec parameters, we use the defaults
-		if (transferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-		params = &losslessParams;
-		else if (transferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-		params = &lossyParams; 
-		else if (transferSyntax == EXS_RLELossless)
-		params = &rleParams; 
-	*/
+	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
+	[theTask launch];
+	[theTask waitUntilExit];
+	[theTask release];
 
-	// this causes the lossless JPEG version of the dataset to be created
-	DcmXfer oxferSyn(tSyntax);
-	dataset->chooseRepresentation(tSyntax, params);
-	// check if everything went well
-	if (dataset->canWriteXfer(tSyntax))
-	{
-	// force the meta-header UIDs to be re-generated when storing the file 
-	// since the UIDs in the data set may have changed 
+	return YES;
 
-	NSLog(@"Output transfer syntax  %s can be written", oxferSyn.getXferName());
-		//only need to do this for lossy
-	delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-	delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-	
-	
-	
-
-		// store in lossless JPEG format
-		
-		fileformat.loadAllDataIntoMemory();
-		//[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
-
-		cond = fileformat.saveFile(fname, tSyntax);
-		status =  (cond.good()) ? YES : NO;
-	}
-	else
-		status = NO;
-		
-	return status;
 }
 
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest

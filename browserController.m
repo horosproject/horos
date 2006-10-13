@@ -8525,29 +8525,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
 	[self compressDICOMWithJPEG:compressedPath];
-	return;
 	
-	NSTask			*theTask;
-	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
-
-	theTask = [[NSTask alloc] init];
-	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmcjpeg"]];
-	[theTask setCurrentDirectoryPath: [compressedPath stringByDeletingLastPathComponent]];
-	[theTask setArguments:theArguments];
-
-	[theTask launch];
-	[theTask waitUntilExit];
-
-	int status = [theTask terminationStatus];
-
-	[theTask release];
-
-	if (status == 0 && [[NSFileManager defaultManager] fileExistsAtPath:[compressedPath stringByAppendingString:@" temp"]] == YES)
-	{
-		[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
-		[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
-	}
+//	NSTask			*theTask;
+//	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
+//
+//	theTask = [[NSTask alloc] init];
+//	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmcjpeg"]];
+//	[theTask setCurrentDirectoryPath: [compressedPath stringByDeletingLastPathComponent]];
+//	[theTask setArguments:theArguments];
+//
+//	[theTask launch];
+//	[theTask waitUntilExit];
+//
+//	int status = [theTask terminationStatus];
+//
+//	[theTask release];
+//
+//	if (status == 0 && [[NSFileManager defaultManager] fileExistsAtPath:[compressedPath stringByAppendingString:@" temp"]] == YES)
+//	{
+//		[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
+//		[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
+//	}
 	
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -9327,7 +9326,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long				previousSeries = -1;
 	long				serieCount		= 0;
 	NSMutableArray		*result = [NSMutableArray array];
-
+	NSMutableArray		*files2Compress = [NSMutableArray array];
+	
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[filesToExport count]];
 	
@@ -9381,52 +9381,58 @@ static volatile int numberOfThreadsForJPEG = 0;
 				else break;
 			}
 		}
-		if (!addDICOMDIR)		
-			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
-		else {				
-			NSMutableString *name;
-			if ([[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
-				name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
-			else
-				name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.id"] uppercaseString]];
-			
-			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
-			
-			[BrowserController replaceNotAdmitted: name];
-			tempPath = [tempPath stringByAppendingPathComponent:name];
-		}
-			
-		// Find the DICOM-STUDY folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		
-		if (!addDICOMDIR ) {
-			NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
-			
-			[BrowserController replaceNotAdmitted:seriesStr];
-			
-			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
-		}
-		else
+		if( [folderTree selectedTag] == 0)
 		{
-			NSMutableString *name;
-//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
-//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
-//				else
-//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
+			if (!addDICOMDIR)		
+				tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]]];
+			else
+			{				
+				NSMutableString *name;
+				if ([[curImage valueForKeyPath: @"series.study.id"] length] > 8 )
+					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath:@"series.study.id"] substringToIndex:7] uppercaseString]];
+				else
+					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.id"] uppercaseString]];
+				
+				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];
+				
+				[BrowserController replaceNotAdmitted: name];
+				tempPath = [tempPath stringByAppendingPathComponent:name];
+			}
+				
+			// Find the DICOM-STUDY folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 			
-			name = [NSMutableString stringWithString: [[[curImage valueForKeyPath: @"series.id"] stringValue] uppercaseString]];
+			if (!addDICOMDIR )
+			{
+				NSMutableString *seriesStr = [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]];
+				
+				[BrowserController replaceNotAdmitted:seriesStr];
+				
+				tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+				tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+			}
+			else
+			{
+				NSMutableString *name;
+	//				if ([[curImage valueForKeyPath: @"series.name"] length] > 8)
+	//					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.name"] substringToIndex:7] uppercaseString]];
+	//				else
+	//					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.name"] uppercaseString]];
+				
+				name = [NSMutableString stringWithString: [[[curImage valueForKeyPath: @"series.id"] stringValue] uppercaseString]];
+				
+				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
+				
+				[BrowserController replaceNotAdmitted: name];
+				tempPath = [tempPath stringByAppendingPathComponent:name];
+			}
 			
-			NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-			name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
-			
-			[BrowserController replaceNotAdmitted: name];
-			tempPath = [tempPath stringByAppendingPathComponent:name];
+			// Find the DICOM-SERIE folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		}
-		
-		// Find the DICOM-SERIE folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
 		
 		long imageNo = [[curImage valueForKey:@"instanceNumber"] intValue];
 		
@@ -9456,19 +9462,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			switch( [compressionMatrix selectedTag])
 			{
-				case 0:
-				break;
-				
 				case 1:
-					[self compressDICOMJPEG: [dest retain]];
+					[files2Compress addObject: dest];
 				break;
 				
 				case 2:
-					[self decompressDICOMJPEG: [dest retain]];
+					[files2Compress addObject: dest];
 				break;
 			}
-			
-		//	[result addObject: dest];
 		}
 		
 		if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
@@ -9478,6 +9479,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 		[splash incrementBy:1];
 		[pool release];
+	}
+	
+	if( [files2Compress count] > 0)
+	{
+		switch( [compressionMatrix selectedTag])
+		{
+			case 1:
+				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'C']];
+			break;
+			
+			case 2:
+				[self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'D']];
+			break;
+		}
 	}
 	
 	// add DICOMDIR

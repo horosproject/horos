@@ -36,7 +36,7 @@ static NSString *hostName = @"";
 			if([domainName isEqualToString: @"hcuge.ch"])
 			{
 				isHcugeCh = YES;
-				hostName = [names objectAtIndex: i];
+				hostName = [[names objectAtIndex: i] retain];
 			}
 		}
 		testIsHugDone = YES;
@@ -59,7 +59,7 @@ static NSString *hostName = @"";
 			if([domainName isEqualToString: @"unige.ch"])
 			{
 				isUnigeCh = YES;
-				hostName = [names objectAtIndex: i];
+				hostName = [[names objectAtIndex: i] retain];
 			}
 		}
 		testIsUniDone = YES;

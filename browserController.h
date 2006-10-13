@@ -163,7 +163,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSButton				*addDICOMDIRButton;
 	IBOutlet NSMatrix				*compressionMatrix;
-    
+    IBOutlet NSMatrix				*folderTree;
+	
 	NSLock							*checkIncomingLock;
 	NSTimeInterval					lastSaved;
 	

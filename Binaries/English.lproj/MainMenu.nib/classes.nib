@@ -130,6 +130,7 @@
                 enoughMem = NSBox; 
                 estimatedTime = NSTextField; 
                 exportAccessoryView = NSView; 
+                folderTree = NSMatrix; 
                 imageTileMenu = NSMenu; 
                 imageView = PreviewView; 
                 incomingProgress = NSProgressIndicator; 
