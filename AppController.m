@@ -50,6 +50,7 @@ MODIFICATION HISTORY
 #import "PreferenceController.h"
 #import "PreferencePaneController.h"
 #import "BrowserController.h"
+#import "BrowserControllerDCMTKCategory.h"
 #import "ViewerController.h"
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
@@ -543,63 +544,78 @@ NSString* filenameWithDate( NSString *inputfile)
 
 NSString* convertDICOM( NSString *inputfile)
 {
-	NSString		*tempString, *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
-    NSMutableArray  *theArguments = [NSMutableArray array];
-	long			i = 0;
-	
-	while( converting)
-	{
-		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-	}
+	NSString		*outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
 	
 	NSLog(inputfile);
-	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
-	{
-		//[[NSFileManager defaultManager] removeFileAtPath:outputfile handler: 0L];
-		//NSLog(@"Already converted...");
-		return outputfile;
-	}
+	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile]) return outputfile;
 	
 	converting = YES;
 	NSLog(@"IN");
-	NSTask *convertTask = [[NSTask alloc] init];
-    
-//    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-//    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdjpeg"]];
-
-	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dcmdjpeg"]]; 
+	[[BrowserController currentBrowser] decompressDICOM:inputfile to:outputfile deleteOriginal: NO];
+	NSLog(@"OUT");
 	
-    [theArguments addObject:inputfile];
-    [theArguments addObject:outputfile];
-	
-    [convertTask setArguments:theArguments];
-    
-	NS_DURING
-		// launch traceroute
-		[convertTask launch];
-		//[convertTask waitUntilExit];
-		
-		while( [convertTask isRunning] == YES)
-		{
-			//	NSLog(@"CONVERSION WORK");
-			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		}
-		
-		[convertTask interrupt];
-		[convertTask release];
-		
-		NSLog(@"OUT");
-		
-		converting = NO;
-		
-	NS_HANDLER
-		NSLog( [localException name]);
-		converting = NO;
-	NS_ENDHANDLER
-	
-	return outputfile ;
+	return outputfile;
 }
+
+//NSString* convertDICOM( NSString *inputfile)
+//{
+//	NSString		*tempString, *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/%@", filenameWithDate( inputfile)];
+//    NSMutableArray  *theArguments = [NSMutableArray array];
+//	long			i = 0;
+//	
+//	while( converting)
+//	{
+//		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+//	}
+//	
+//	NSLog(inputfile);
+//	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
+//	{
+//		//[[NSFileManager defaultManager] removeFileAtPath:outputfile handler: 0L];
+//		//NSLog(@"Already converted...");
+//		return outputfile;
+//	}
+//	
+//	converting = YES;
+//	NSLog(@"IN");
+//	NSTask *convertTask = [[NSTask alloc] init];
+//    
+////    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+////    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdjpeg"]];
+//
+//	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dcmdjpeg"]]; 
+//	
+//    [theArguments addObject:inputfile];
+//    [theArguments addObject:outputfile];
+//	
+//    [convertTask setArguments:theArguments];
+//    
+//	NS_DURING
+//		// launch traceroute
+//		[convertTask launch];
+//		//[convertTask waitUntilExit];
+//		
+//		while( [convertTask isRunning] == YES)
+//		{
+//			//	NSLog(@"CONVERSION WORK");
+//			[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
+//		}
+//		
+//		[convertTask interrupt];
+//		[convertTask release];
+//		
+//		NSLog(@"OUT");
+//		
+//		converting = NO;
+//		
+//	NS_HANDLER
+//		NSLog( [localException name]);
+//		converting = NO;
+//	NS_ENDHANDLER
+//	
+//	return outputfile ;
+//}
 
 
 int dictSort(id num1, id num2, void *context)

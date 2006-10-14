@@ -88,7 +88,7 @@ int main(int argc, const char *argv[])
 			const char *fname = (const char *)[path UTF8String];
 			const char *destination = 0L;
 			
-			if( dest) destination = (const char *)[dest UTF8String];
+			if( dest && [dest isEqualToString:path] == NO) destination = (const char *)[dest UTF8String];
 			else
 			{
 				dest = path;
@@ -141,7 +141,7 @@ int main(int argc, const char *argv[])
 				
 				// store in lossless JPEG format
 				fileformat.loadAllDataIntoMemory();
-				[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 				
 				cond = fileformat.saveFile(destination, tSyntax);
 				status =  (cond.good()) ? YES : NO;
@@ -177,8 +177,10 @@ int main(int argc, const char *argv[])
 				DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 				
 				[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
-				[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+				
+				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: 0L];
+				
 				
 				[dcmObject release];
 			}
@@ -193,7 +195,7 @@ int main(int argc, const char *argv[])
 				if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 				{
 					fileformat.loadAllDataIntoMemory();
-					[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
+					if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithCString:fname] handler:nil];
 					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
 					status =  (cond.good()) ? YES : NO;
 				}

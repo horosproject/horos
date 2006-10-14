@@ -52,23 +52,35 @@
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
 	[theTask launch];
-	[theTask waitUntilExit];
+	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	[theTask waitUntilExit]; <- The problem with this: it calls the current running loop.... problems with current Lock !
 	[theTask release];
 
 	return YES;
 
 }
 
-- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
+- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal
 {
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
 	[theTask launch];
-	[theTask waitUntilExit];
+	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
 	[theTask release];
 
+	if( dest && [dest isEqualToString:path] == NO)
+	{
+		if( deleteOriginal) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+	}
+	
 	return YES;
+}
+
+- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest
+{
+	[self decompressDICOM: path to: dest deleteOriginal:YES];
 }
 @end

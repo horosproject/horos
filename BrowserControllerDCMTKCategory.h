@@ -27,5 +27,6 @@
 
 - (BOOL)compressDICOMWithJPEG:(NSString *)path;
 - (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest;
+- (BOOL)decompressDICOM:(NSString *)path to:(NSString*) dest deleteOriginal:(BOOL) deleteOriginal;
 
 @end

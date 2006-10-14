@@ -8530,29 +8530,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	
 	[self compressDICOMWithJPEG:compressedPath];
-	
-//	NSTask			*theTask;
-//	NSMutableArray	*theArguments = [NSMutableArray arrayWithObjects: compressedPath, [compressedPath stringByAppendingString:@" temp"],  nil];
-//
-//	theTask = [[NSTask alloc] init];
-//	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-//	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmcjpeg"]];
-//	[theTask setCurrentDirectoryPath: [compressedPath stringByDeletingLastPathComponent]];
-//	[theTask setArguments:theArguments];
-//
-//	[theTask launch];
-//	[theTask waitUntilExit];
-//
-//	int status = [theTask terminationStatus];
-//
-//	[theTask release];
-//
-//	if (status == 0 && [[NSFileManager defaultManager] fileExistsAtPath:[compressedPath stringByAppendingString:@" temp"]] == YES)
-//	{
-//		[[NSFileManager defaultManager] removeFileAtPath: compressedPath handler: 0L];
-//		[[NSFileManager defaultManager] movePath:[compressedPath stringByAppendingString:@" temp"] toPath:compressedPath handler: 0L];
-//	}
-	
+
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
 	[processorsLock unlockWithCondition: 1];
