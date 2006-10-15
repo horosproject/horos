@@ -78,7 +78,8 @@
 	
 	if([roiList count])
 	{
-		name = [[roiList objectAtIndex:0] name];
+		ROI *curROI = [roiList objectAtIndex:0];
+		name = [curROI name];
 		[properties setValue:name forKey:@"name"];
 		[properties setValue:[NSNumber numberWithFloat:volume] forKey:@"volume"];
 	}
