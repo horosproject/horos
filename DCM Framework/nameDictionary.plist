@@ -650,8 +650,56 @@
 	<string>0040,A375</string>
 	<key>CurrentTreatmentStatus</key>
 	<string>3008,0200</string>
+	<key>CurveData</key>
+	<string>5000,3000</string>	
+	<key>CurveData2</key>
+	<string>5002,3000</string>	
+	<key>CurveData4</key>
+	<string>5004,3000</string>	
+	<key>CurveData6</key>
+	<string>5006,3000</string>	
+	<key>CurveData8</key>
+	<string>5008,3000</string>
+	<key>CurveData10</key>
+	<string>5010,3000</string>	
+	<key>CurveData12</key>
+	<string>5012,3000</string>	
+	<key>CurveData14</key>
+	<string>5014,3000</string>
 	<key>CurveDate</key>
 	<string>0008,0025</string>
+	<key>CurveDescription</key>
+	<string>5000,0022</string>
+	<key>CurveDescription2</key>
+	<string>5002,0022</string>
+	<key>CurveDescription4</key>
+	<string>5004,0022</string>
+	<key>CurveDescription6</key>
+	<string>5006,0022</string>	
+	<key>CurveDescription8</key>
+	<string>5008,0022</string>
+	<key>CurveDescription10</key>
+	<string>5010,0022</string>
+	<key>CurveDescription12</key>
+	<string>5012,0022</string>
+	<key>CurveDescription14</key>
+	<string>50014,0022</string>
+	<key>CurveDimensions</key>
+	<string>5000,0005</string>
+	<key>CurveDimensions2</key>
+	<string>5002,0005</string>
+	<key>CurveDimensions4</key>
+	<string>5004,0005</string>
+	<key>CurveDimensions6</key>
+	<string>5006,0005</string>
+	<key>CurveDimensions8</key>
+	<string>5008,0005</string>
+	<key>CurveDimensions10</key>
+	<string>5010,0005</string>
+	<key>CurveDimensions12</key>
+	<string>5012,0005</string>
+	<key>CurveDimensions14</key>
+	<string>5014,0005</string>
 	<key>CurveNumber</key>
 	<string>0020,0024</string>
 	<key>CurveTime</key>
@@ -697,7 +745,23 @@
 	<key>DataSetTrailingPadding</key>
 	<string>FFFC,FFFC</string>
 	<key>DataSetType</key>
-	<string>0000,0800</string>
+	<string>0000,0800</string>	
+	<key>DataValueRepresentation</key>
+	<string>5000,0103</string>
+	<key>DataValueRepresentation2</key>
+	<string>5002,0103</string>
+	<key>DataValueRepresentation4</key>
+	<string>5004,0103</string>	
+	<key>DataValueRepresentation6</key>
+	<string>5006,0103</string>	
+	<key>DataValueRepresentation8</key>
+	<string>5008,0103</string>
+	<key>DataValueRepresentation10</key>
+	<string>5010,0103</string>
+	<key>DataValueRepresentation12</key>
+	<string>5012,0103</string>	
+	<key>DataValueRepresentation14</key>
+	<string>5014,0103</string>
 	<key>Date</key>
 	<string>0040,A121</string>
 	<key>DateTime</key>
@@ -1724,6 +1788,22 @@
 	<string>0000,1022</string>
 	<key>NumberOfMatches</key>
 	<string>0000,0850</string>
+	<key>NumberOfPoints</key>
+	<string>5000,0010</string>
+	<key>NumberOfPoints2</key>
+	<string>5002,0010</string>
+	<key>NumberOfPoints4</key>
+	<string>5004,0010</string>
+	<key>NumberOfPoints6</key>
+	<string>5006,0010</string>
+	<key>NumberOfPoints8</key>
+	<string>5008,0010</string>
+	<key>NumberOfPoints10</key>
+	<string>5010,0010</string>
+	<key>NumberOfPoints12</key>
+	<string>5012,0010</string>
+	<key>NumberOfPoints14</key>
+	<string>5014,0010</string>
 	<key>NumberOfReferences</key>
 	<string>0004,1600</string>
 	<key>NumberOfRemainingSuboperations</key>
@@ -3478,7 +3558,23 @@
 	<key>TriggerWindow</key>
 	<string>0018,1094</string>
 	<key>Trim</key>
-	<string>2010,0140</string>
+	<string>2010,0140</string>	
+	<key>TypeOfData</key>
+	<string>5000,0020</string>
+	<key>TypeOfData2</key>
+	<string>5002,0020</string>
+	<key>TypeOfData4</key>
+	<string>5004,0020</string>
+	<key>TypeOfData6</key>	
+	<string>5006,0020</string>
+	<key>TypeOfData8</key>
+	<string>5008,0020</string>
+	<key>TypeOfData10</key>
+	<string>5010,0020</string>
+	<key>TypeOfData12</key>
+	<string>5012,0020</string>
+	<key>TypeOfData14</key>
+	<string>5014,0020</string>
 	<key>TypeofDetectorMotion</key>
 	<string>0054,0202</string>
 	<key>TypeofFilters</key>
