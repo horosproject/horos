@@ -142,8 +142,8 @@ static NSString *Modality = @"Modality";
 		
 		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
 		if ([aServer isMemberOfClass:[NSNetService class]]){
-			theirAET = [aServer name];
-			hostname = [aServer hostName];
+			theirAET = [(NSNetService*)aServer name];
+			hostname = [(NSNetService*)aServer hostName];
 			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
 			netService = aServer;
 		}
@@ -232,8 +232,8 @@ static NSString *Modality = @"Modality";
 			aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
 			if ([aServer isMemberOfClass:[NSNetService class]]){
-				theirAET = [aServer name];
-				hostname = [aServer hostName];
+				theirAET = [(NSNetService*)aServer name];
+				hostname = [(NSNetService*)aServer hostName];
 				port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
 				netService = aServer;
 			}
@@ -657,8 +657,8 @@ static NSString *Modality = @"Modality";
 	 
 		//Bonjour
 		if ([aServer isMemberOfClass:[NSNetService class]]){
-			theirAET = [aServer name];
-			hostname = [aServer hostName];
+			theirAET = [(NSNetService*)aServer name];
+			hostname = [(NSNetService*)aServer hostName];
 			port = [NSString stringWithFormat: @"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
 			//port = @"4096";
 		}
