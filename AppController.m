@@ -2301,9 +2301,15 @@ static BOOL initialized = NO;
 + (void)checkForPagesTemplate;
 {
 	// Pages template directory
-	NSString *templateDirectory = [NSString pathWithComponents:[NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil]];
-	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectory])
-		[[NSFileManager defaultManager] createDirectoryAtPath:templateDirectory attributes:nil];
+	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil];
+	int i;
+	NSString *templateDirectory;
+	for(i=0; i<[templateDirectoryPathArray count]; i++)
+	{
+		templateDirectory = [NSString pathWithComponents:[templateDirectoryPathArray subarrayWithRange:NSMakeRange(0,i+1)]];
+		if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectory])
+			[[NSFileManager defaultManager] createDirectoryAtPath:templateDirectory attributes:nil];
+	}
 		
 	// Pages template
 	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Report.template"];
