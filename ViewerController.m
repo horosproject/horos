@@ -8354,7 +8354,7 @@ int i,j,l;
 {
 	NSImage		*im = 0L;
 	BOOL		export = YES;
-	int			curSample = [cur intValue];
+	int			curSample = [cur intValue] + qt_from;
 			
 	if( qt_dimension == 3)
 	{
