@@ -1775,9 +1775,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					[imageID release];
 					imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 				}
-				else imageID = [[NSString alloc] initWithFormat:@"%5d", 1];
-				
-				[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+				else imageID = 0L;
 				
 				// Compute slice location
 				
@@ -1834,6 +1832,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7])) location = origin[ 2];
 				
 				[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
+				
+				if( imageID == 0L) imageID = [[NSString alloc] initWithFormat:@"%5d", (long)  fabs( location*10.)];
+				[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+
 				
 //				val = Papy3GetElement (theGroupP, papSliceLocationGr, &nbVal, &itemType);
 //				if (val != NULL)
@@ -2231,8 +2233,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];		
 		}
 		else
-			imageID = [[NSString alloc] initWithFormat:@"%5d", 1];
-		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+			imageID = 0;
 				
 		// Compute slice location
 		float		orientation[ 9];
@@ -2270,6 +2271,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7])) location = origin[ 2];
 		
 		[dicomElements setObject:[NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
+		
+		if( imageID == 0L) imageID = [[NSString alloc] initWithFormat:@"%5d", (long)  fabs( location*10.)];
+		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
 		
 		// Series Number
 		

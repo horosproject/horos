@@ -8543,7 +8543,8 @@ int i,j,l;
 	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 
-	[quicktimeFrom setIntValue: 1];
+	if( [imageView flippedData]) [quicktimeFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+	else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
 	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
 	
 	[quicktimeTo performClick: self];	// Will update the text field
@@ -8552,10 +8553,16 @@ int i,j,l;
 	
 	[self setCurrentdcmExport: quicktimeMode];
 	
-	if( blendingController) [[quicktimeMode cellWithTag: 0] setEnabled:YES];
+	if( blendingController)
+	{
+		[[quicktimeMode cellWithTag: 0] setEnabled:YES];
+	}
 	else [[quicktimeMode cellWithTag: 0] setEnabled:NO];
 		
-	if( maxMovieIndex > 1) [[quicktimeMode cellWithTag: 2] setEnabled:YES];
+	if( maxMovieIndex > 1)
+	{
+		[[quicktimeMode cellWithTag: 2] setEnabled:YES];
+	}
 	else [[quicktimeMode cellWithTag: 2] setEnabled:NO];
 	
 	if( [[quicktimeMode selectedCell] isEnabled] == NO) [quicktimeMode selectCellWithTag: 1];

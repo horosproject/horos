@@ -343,8 +343,7 @@ extern NSLock	*PapyrusLock;
 			[imageID release];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
 		}
-		else imageID = [[NSString alloc] initWithFormat:@"%5d", 1];
-		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+		else imageID = 0L;
 		
 		// Compute slice location
 			
@@ -376,7 +375,10 @@ extern NSLock	*PapyrusLock;
 		if( fabs( orientation[8]) > fabs(orientation[6]) && fabs( orientation[8]) > fabs(orientation[7])) location = origin[ 2];
 		
 		[dicomElements setObject:[NSNumber numberWithDouble: (double)location] forKey:@"sliceLocation"];
-
+		
+		if( imageID == 0L) imageID = [[NSString alloc] initWithFormat:@"%5d", (long)  fabs( location*10.)];
+		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
+		
 		//Series Number
 		if (dataset->findAndGetString(DCM_SeriesNumber, string, OFFalse).good() && string != NULL){
 			seriesNo = [[NSString alloc] initWithCString:string];
