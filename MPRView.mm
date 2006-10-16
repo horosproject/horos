@@ -160,7 +160,7 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 	{
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
-		[mov generateMovie: YES :NO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		[mov createMovieQTKit: YES :NO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov dealloc];
 	}
@@ -198,9 +198,9 @@ OSErr VRObject_MakeObjectMovie (FSSpec *theMovieSpec, FSSpec *theDestSpec, long 
 		else
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
 		
-		[mov setCodec:kJPEGCodecType :codecHighQuality];
+		//[mov setCodec:kJPEGCodecType :codecHighQuality];
 		
-		path = [mov generateMovie: NO  :NO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		path = [mov createMovieQTKit: NO  :NO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		FSPathMakeRef((unsigned const char *)[path fileSystemRepresentation], &fsref, NULL);
 		FSGetCatalogInfo( &fsref, kFSCatInfoNone,NULL, NULL, &spec, NULL);

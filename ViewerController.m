@@ -145,471 +145,12 @@ static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
 
-static ViewerController *gSelf;
+//static ViewerController *gSelf;
 
 long numberOf2DViewer = 0;
 
 NSString * documentsDirectory();
 NSString* convertDICOM( NSString *inputfile);
-
-#if !__LP64__
-Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long from, long to, long interval);
-
-static void CheckError(OSErr err, char *message )
-{
-    if (err != noErr)
-    {
-        printf(message);
-    }
-}
-
-void CopyNSImageToGWorld(NSImage *image, GWorldPtr gWorldPtr)
-{
-    NSArray				*repArray;
-    PixMapHandle		pixMapHandle;
-    unsigned char* 		pixBaseAddr;
-    int					imgRepresentationIndex;
-    NSImage             *newImage;
-//    NSRect            frameRect;
-    NSImageRep          *sourceImageRep = [image bestRepresentationForDevice:nil];
-    NSBitmapImageRep	*bitmap;
-    
-/*    frameRect = [[gSelf imageView] frame];
-
-    NSSize  size = [image size];
-    NSSize  sizeView = [[[gSelf imageView] enclosingScrollView] contentSize];
-    NSRect  visibleRect = [[[gSelf imageView] enclosingScrollView] documentVisibleRect];
-    */
-    
-    NSSize  size = [image size];
-    NSRect  sRect;
-    
-    newImage = [[NSImage alloc] initWithSize:size];
-    
-        [newImage lockFocus];
-
-            
-            sRect.origin.x = 0;
-            sRect.origin.y = 0;
-            sRect.size.width = size.width;
-            sRect.size.height = size.height;
-                    
-            [sourceImageRep drawInRect:sRect];  // rect
-            bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:sRect];  // frameRect
-
-    [newImage unlockFocus];    
-    [newImage addRepresentation:bitmap];
-    
-    // Lock the pixels
-    pixMapHandle = GetGWorldPixMap(gWorldPtr);
-    LockPixels (pixMapHandle);
-    pixBaseAddr = (unsigned char*) GetPixBaseAddr(pixMapHandle);
-    
-    repArray = [newImage representations];
-    for (imgRepresentationIndex = 0; imgRepresentationIndex < [repArray count]; ++imgRepresentationIndex)
-    {
-        NSObject *imageRepresentation = [repArray objectAtIndex:imgRepresentationIndex];
-        
-        if ([imageRepresentation isKindOfClass:[NSBitmapImageRep class]])
-        {
-            unsigned char* bitMapDataPtr = [(NSBitmapImageRep *)imageRepresentation bitmapData];
-			
-            if ((bitMapDataPtr != nil) && (pixBaseAddr != nil))
-            {
-                int i,j;
-                int pixmapRowBytes = GetPixRowBytes(pixMapHandle);
-                
-                NSSize imageSize = [(NSBitmapImageRep *)imageRepresentation size];
-                
-                for (i=0; i< imageSize.height; i++)
-                {
-                    unsigned char *src = bitMapDataPtr + i * [(NSBitmapImageRep *)imageRepresentation bytesPerRow];
-                    unsigned char *dst = pixBaseAddr + i * pixmapRowBytes;
-                    
-                    for (j = 0; j < imageSize.width; j++)
-                    {
-                        *dst++ = 0;        // X - our src is 24-bit only
-                        *dst++ = *src++;	// Red component
-                        *dst++ = *src++;	// Green component
-                        *dst++ = *src++;	// Blue component
-                        
-                        if( [(NSBitmapImageRep *)imageRepresentation bitsPerPixel] == 32) src++;
-                    }
-                }
-            }
-        }
-    }
-    UnlockPixels(pixMapHandle);
-    
-    [newImage release];
-	[bitmap release];
-}
-
-static ICMCompressionSessionOptionsRef GrabCSessionOptionsFromStdCompression()
-{
-    ComponentInstance stdCompression = 0;
-    long scPreferences;
-    ICMCompressionSessionOptionsRef sessionOptionsRef = NULL;
-
-    ComponentResult err;
-
-    // open the standard compression component
-    err = OpenADefaultComponent(StandardCompressionType, StandardCompressionSubType, &stdCompression);
-    if (err || 0 == stdCompression) goto bail;
-
-    // Indicates the client is ready to use the ICM compression session API to perform compression operations
-    // StdCompression will disable frame reordering and multi pass encoding if this flag not set because the
-    // older sequence APIs do not support these capabilities
-    scPreferences = scAllowEncodingWithCompressionSession;
-
-    // set the preferences we want
-    err = SCSetInfo(stdCompression, scPreferenceFlagsType, &scPreferences);
-    if (err) goto bail;
-
-    // display the standard compression dialog box
-    err = SCRequestSequenceSettings(stdCompression);
-    if (err) goto bail;
-
-    // creates a compression session options object based on configured settings
-    err = SCCopyCompressionSessionOptions(stdCompression, &sessionOptionsRef);
-
-bail:
-    if (0 != stdCompression) CloseComponent(stdCompression);
-
-    return sessionOptionsRef;
-}
-
-static short QTVideo_AddVideoSamplesToMedia(Media theMedia, const Rect *trackFrame, long dimension, long from, long to, long interval)
-{
-	GWorldPtr					theGWorld = nil;
-	long						curSample;
-	ImageDescriptionHandle		imageDesc = nil;
-	CGrafPtr					oldPort;
-	GDHandle					oldGDeviceH;
-	OSErr						err = noErr;
-	ComponentInstance			ci;
-	long						dataSize;
-	ComponentResult				result;
-	short						notSyncFlag;
-	Handle						theRes;
-	NSImage						*im;
-                
-		// Create a graphics world
-	err = NewGWorld (&theGWorld,	/* pointer to created gworld */	
-			32,		/* pixel depth */
-			trackFrame, 		/* bounds */
-			nil, 			/* color table */
-			nil,			/* handle to GDevice */ 
-			(GWorldFlags)0);	/* flags */
-	CheckError (err, "NewGWorld error");
-
-
-	// Lock the pixels
-	LockPixels (GetGWorldPixMap(theGWorld)/*GetPortPixMap(theGWorld)*/);
-
-
-    ci = OpenDefaultComponent (StandardCompressionType, StandardCompressionSubType);
-
-
-//MovieExportDoUserDialog
-
-    // Do not requite the user to enter the keyframe data
-     long flags;
-     SCGetInfo(ci, scPreferenceFlagsType, &flags);
-     flags &= ~scAllowZeroKeyFrameRate;
-     SCSetInfo(ci, scPreferenceFlagsType, &flags);
-    
-    SCSpatialSettings theDefaultChoice = { kJPEGCodecType,
-                                       (CodecComponent)0L,
-                                       0,
-                                       codecHighQuality };
-    SCSetInfo(ci, scSpatialSettingsType, &theDefaultChoice);
-
-    SCTemporalSettings timeSettings;
-     timeSettings.temporalQuality = codecHighQuality;
-	 
-	 switch( dimension)
-	 {
-		default:
-		case 1:
-		case 3:
-			if( [gSelf frameRate] > 0) timeSettings.frameRate = X2Fix([gSelf frameRate]);
-			else timeSettings.frameRate = X2Fix(60.0);
-		break;
-		
-		case 0:
-			timeSettings.frameRate = X2Fix(10.0);
-		break;
-		
-		case 2:
-			if( [gSelf frame4DRate] > 0) timeSettings.frameRate = X2Fix([gSelf frameRate]);
-			else timeSettings.frameRate = X2Fix(60.0);
-		break;
-	}
-     
-	timeSettings.keyFrameRate = 0;
-	SCSetInfo(ci, scTemporalSettingsType, &timeSettings);
-    
-    im = [[gSelf imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
-    
-	CopyNSImageToGWorld( im, theGWorld);
-	
-	if( EXPORT2IPHOTO == NO)
-	{
-		result = SCSetTestImagePixMap (ci,
-						   GetGWorldPixMap(theGWorld),
-						   0L,
-						   scPreferScalingAndCropping);
-		
-		result = SCRequestSequenceSettings (ci);
-	}
-	else result = 0;
-	
-    [im release];
-    if (result < 0 || result == scUserCancelled) return -1;
-     
-        Wait    *wait= [[Wait alloc] initWithString:0L];
-        [wait showWindow:gSelf];
-
-    SCGetInfo(ci, scTemporalSettingsType, &timeSettings);
-    timeSettings.keyFrameRate = 0;
-	SCSetInfo(ci, scTemporalSettingsType, &timeSettings);
-	
-	result = SCCompressSequenceBegin (ci,
-      					GetGWorldPixMap(theGWorld),
-      					0L,
-      					&imageDesc);
-
-        // Change the current graphics port to the GWorld
-        GetGWorld(&oldPort, &oldGDeviceH);
-        SetGWorld(theGWorld, nil);
-        
-        // For each sample...
-		switch( dimension)
-		{
-			case 1:
-			break;
-			
-			case 3:
-				to = [gSelf getNumberOfImages];
-				from = 0;
-				interval = 1;
-			break;
-			
-			case 0:
-				to = 20;
-				from = 0;
-				interval = 1;
-			break;
-			
-			case 2:
-				to = [gSelf maxMovieIndex];
-				from = 0;
-				interval = 1;
-			break;
-		}
-		
-        [[wait progress] setMaxValue: (to-from) / interval];
-		
-        for (curSample = from; curSample < to; curSample += interval) 
-        {
-			BOOL export = YES;
-			
-			if( dimension == 3)
-			{
-				NSManagedObject	*image = [[gSelf fileList] objectAtIndex: curSample];
-				export = [[image valueForKey:@"isKeyImage"] boolValue];
-			}
-			
-			if( export)
-			{
-				switch( dimension)
-				{
-					case 1:
-					case 3:
-						if( [[gSelf imageView] flippedData]) [[gSelf imageView] setIndex: [gSelf getNumberOfImages] - 1 -curSample];
-						else [[gSelf imageView] setIndex:curSample];
-						[[gSelf imageView] sendSyncMessage:1];
-						[[gSelf imageView] display];
-					break;
-
-					case 0:
-						[[gSelf blendingSlider] setIntValue: -256 + ((curSample * 512) / (to-1))];
-						[gSelf blendingSlider:[gSelf blendingSlider]];
-						[[gSelf imageView] display];
-					break;
-
-					case 2:
-						[[gSelf moviePosSlider] setIntValue: curSample];
-						[gSelf moviePosSliderAction:[gSelf moviePosSlider]];
-						[[gSelf imageView] display];
-					break;
-				}
-						
-				im = [[gSelf imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
-
-				if( EXPORT2IPHOTO == NO)
-				{
-					CopyNSImageToGWorld(im, theGWorld);
-
-					result = SCCompressSequenceFrame (ci,
-								  GetGWorldPixMap(theGWorld),
-								  0L,
-								  &theRes,
-								  &dataSize,
-								  &notSyncFlag);
-
-					// Add sample data and a description to a media
-					err = AddMediaSample(theMedia,	/* media specifier */ 
-							theRes,	/* handle to sample data - dataIn */
-							0,		/* specifies offset into data reffered to by dataIn handle */
-							dataSize, /* number of bytes of sample data to be added */ 
-							X2Fix( 0.01 / Fix2X(timeSettings.frameRate)),		 /* frame duration = 1/10 sec */
-							(SampleDescriptionHandle)imageDesc,	/* sample description handle */ 
-							1,	/* number of samples */
-							notSyncFlag,	/* control flag indicating self-contained samples */
-							nil);		/* returns a time value where sample was insterted */
-					CheckError( err, "AddMediaSample error" );
-				}
-				else
-				{
-					NSString *curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curSample];
-					
-					[[im TIFFRepresentation] writeToFile:curFile atomically:YES];
-				}
-
-				[im release];
-			}
-			[wait incrementBy:1];
-        }
-        	
-      UnlockPixels (GetGWorldPixMap(theGWorld));
-
-       SetGWorld (oldPort, oldGDeviceH);
-        
-		[wait close];
-        [wait release];
-        
-        // Dealocate our previously alocated handles and GWorld
-        
-        if (theGWorld)
-        {
-                DisposeGWorld (theGWorld);
-        }
-        
-        return err;
-} 
-
-static short QTVideo_CreateMyVideoTrack(Movie theMovie, Rect *trackFrame, long dimension, long from, long to, long interval)
-{
-	Track theTrack;
-	Media theMedia;
-	OSErr err = noErr;
-        
-        // 1. Create the track
-        theTrack = NewMovieTrack (theMovie, 		/* movie specifier */
-                            FixRatio((*trackFrame).right,1),  /* width */
-                            FixRatio((*trackFrame).bottom,1), /* height */
-                                                        kNoVolume);  /* trackVolume */
-        
-        // 2. Create the media for the track
-        theMedia = NewTrackMedia (theTrack,		/* track identifier */
-                                VideoMediaType,		/* type of media */
-                                600, 	/* time coordinate system */
-                                nil,			/* data reference - use the file that is associated with the movie  */
-                                0);			/* data reference type */
-
-        // 3. Establish a media-editing session
-        BeginMediaEdits (theMedia);
-
-        // 3a. Add Samples to the media
-        err = QTVideo_AddVideoSamplesToMedia (theMedia, trackFrame,  dimension,  from,  to,  interval);
-        
-        // 3b. End media-editing session
-        EndMediaEdits (theMedia);
-
-        // 4. Insert a reference to a media segment into the track
-        InsertMediaIntoTrack (theTrack,		/* track specifier */
-                                0,	/* track start time */
-                                0, 	/* media start time */
-                                GetMediaDuration(theMedia), /* media duration */
-                                X2Fix(1.0));		/* media rate ((Fixed) 0x00010000L) */
-
-    return err;
-} 
-
-static StringPtr QTUtils_ConvertCToPascalString (char *theString)
-{
-	StringPtr	myString = malloc(strlen(theString) + 1);
-	short		myIndex = 0;
-
-	while (theString[myIndex] != '\0') {
-		myString[myIndex + 1] = theString[myIndex];
-		myIndex++;
-	}
-	
-	myString[0] = (unsigned char)myIndex;
-	
-	return(myString);
-}
-
-Movie CreateMovie(Rect *trackFrame, NSString *filename, long dimension, long from, long to, long interval)
-{
-    Movie theMovie = nil;
-    FSSpec mySpec;
-    short resRefNum = 0;
-    short resId = movieInDataForkResID;
-    OSErr err = noErr;
-    FSRef fsRef;
-
-
-    [filename writeToFile:filename atomically:false];
-    
-    err = [gSelf getFSRefAtPath:filename ref:&fsRef];
-    
-    
-    err =FSGetCatalogInfo(&fsRef, 
-                                    kFSCatInfoNone, 
-                                    NULL,
-                                    NULL,
-                                    &mySpec,
-                                    NULL);
-    
-    err = CreateMovieFile (&mySpec, 
-                            'TVOD',
-                            smCurrentScript, 
-                            createMovieFileDeleteCurFile | createMovieFileDontCreateResFile,
-                            &resRefNum, 
-                            &theMovie );
-    if( err == 0)
-    {
-        err = QTVideo_CreateMyVideoTrack (theMovie, trackFrame, dimension, from, to, interval);
-        if( err == noErr)
-        {
-            err = AddMovieResource (theMovie, resRefNum, &resId, QTUtils_ConvertCToPascalString ("testing"));
-            if (resRefNum)
-            {
-                CloseMovieFile (resRefNum);
-            }
-        }
-        else
-        {
-			CloseMovieFile (resRefNum);
-			
-            DisposeMovie( theMovie);
-            theMovie = 0L;
-            
-            FSpDelete( &mySpec);
-        }
-    }
-    else
-    {
-        NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"I cannot create this file... File is busy? opened? not enough place?", nil), nil, nil, nil);
-    }
-    return theMovie;
-}
-
-#endif
 
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
@@ -8584,7 +8125,7 @@ int i,j,l;
 
 -(NSSlider*) moviePosSlider
 {
-return moviePosSlider;
+	return moviePosSlider;
 }
 
 - (void) setMovieIndex: (short) i
@@ -8808,193 +8349,125 @@ return moviePosSlider;
 
 #define DATABASEPATH @"/DATABASE/"
 
-#if !__LP64__
 
--(NSArray*) produceFilesFromMovie: (Movie) mov
+-(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
-	TimeValue			aTime = 0;
-	OSType				mediatype = 'eyes';
-	long				curFrame, i;
-	Rect				tempRect;
-	GWorldPtr			ftheGWorld = 0L;
-	PixMapHandle		pixMapHandle;
-	Ptr					pixBaseAddr;
-	NSMutableArray		*files = [NSMutableArray arrayWithCapacity:0];
-	NSBitmapImageRep	*rep;
-	NSString			*curFile;
-	
-	GetMovieBox (mov, &tempRect);
-	OffsetRect (&tempRect, -tempRect.left, -tempRect.top);
-	
-	NewGWorld (   &ftheGWorld,
-				 32,			// 32 Bits color !
-				 &tempRect,
-				 0,
-				 NULL,
-				 (GWorldFlags) keepLocal);
-	
-	SetMovieGWorld (mov, ftheGWorld, 0L);
-	SetMovieActive (mov, TRUE);
-	SetMovieBox (mov, &tempRect);
-	
-	
-	curFrame = 0;
-	while (aTime != -1)
-	{
-		SetMovieTimeValue (mov, aTime);
-		UpdateMovie (mov);
-		MoviesTask (mov, 0);
-		
-		// We have the image...
+	NSImage		*im = 0L;
+	BOOL		export = YES;
+	int			curSample = [cur intValue];
 			
-		pixMapHandle = GetGWorldPixMap(ftheGWorld);
-		LockPixels (pixMapHandle);
-		pixBaseAddr = GetPixBaseAddr(pixMapHandle);
-		
-		rep = [[[NSBitmapImageRep alloc]
-			 initWithBitmapDataPlanes: nil
-						   pixelsWide: tempRect.right
-						   pixelsHigh: tempRect.bottom
-						bitsPerSample: 8
-					  samplesPerPixel: 3
-							 hasAlpha: NO
-							 isPlanar: NO
-					   colorSpaceName: NSCalibratedRGBColorSpace
-						  bytesPerRow: GetPixRowBytes(pixMapHandle)
-						 bitsPerPixel: 32] autorelease];
-						 
-		memcpy( [rep bitmapData], pixBaseAddr, GetPixRowBytes(pixMapHandle)*tempRect.bottom);
-		
-		i = GetPixRowBytes(pixMapHandle) * tempRect.bottom /4;
-		
-		unsigned int *argb = (unsigned int*) [rep bitmapData];
-		while( i-- > 0)
-		{
-			*argb = (*argb << 8) + 0xFF;
-			argb++;
-		}
-		
-		UnlockPixels (pixMapHandle);
-		
-		// NEXT FRAME
-		
-		GetMovieNextInterestingTime (   mov,
-									   nextTimeMediaSample,
-									   1,
-									   &mediatype,
-									   aTime,
-									   1,
-									   &aTime,
-									   0L);
-									   
-		
-		
-		curFile = [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/OsiriX%4d.tif", curFrame];
-		
-		
-		 NSImage *image = [[NSImage alloc] init];
-		 
-		[image addRepresentation:rep];
-		
-		[[image TIFFRepresentation] writeToFile:curFile atomically:YES];
-		
-		[files addObject: curFile];
-		
-		[image release];
-		
-		curFrame++;
+	if( qt_dimension == 3)
+	{
+		NSManagedObject	*image = [[self fileList] objectAtIndex: curSample];
+		export = [[image valueForKey:@"isKeyImage"] boolValue];
 	}
 	
-	return files;
-}
+	current_qt_interval--;
+	if( current_qt_interval > 0) export = NO;
+	else
+	{
+		current_qt_interval = qt_interval;
+	}
+	
+	if( export)
+	{
+		switch( qt_dimension)
+		{
+			case 1:
+			case 3:
+				if( [[self imageView] flippedData]) [[self imageView] setIndex: [self getNumberOfImages] - 1 -curSample];
+				else [[self imageView] setIndex:curSample];
+				[[self imageView] sendSyncMessage:1];
+				[[self imageView] display];
+			break;
 
-#endif
+			case 0:
+				[[self blendingSlider] setIntValue: -256 + ((curSample * 512) / ([max intValue]-1))];
+				[self blendingSlider:[self blendingSlider]];
+				[[self imageView] display];
+			break;
+
+			case 2:
+				[[self moviePosSlider] setIntValue: curSample];
+				[self moviePosSliderAction:[self moviePosSlider]];
+				[[self imageView] display];
+			break;
+		}
+				
+		im = [[self imageView] nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+	}
+	
+	return im;
+}
 
 -(void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval
 {
-	#ifdef __LP64__
-	#else
-    NSRect          imageSize;
-    Rect            trackFrame;
-    NSSavePanel     *panel = [NSSavePanel savePanel];
-    Movie           theMovie = nil;
-	long			result, i;
-	NSString		*destFilename;
+	QuicktimeExport *mov;
 	
-	if( EXPORT2IPHOTO == NO)
+	qt_dimension = dimension;
+	
+	switch( qt_dimension)
 	{
-		[panel setCanSelectHiddenExtension:YES];
-		[panel setRequiredFileType:@"mov"];
+		case 1:
+			qt_to = to;
+			qt_from = from;
+			qt_interval = interval;
+		break;
 		
-		result = [panel runModalForDirectory:0L file:[[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"]];
+		case 3:
+			qt_to = [self getNumberOfImages];
+			qt_from = 0;
+			qt_interval = 1;
+		break;
 		
-		destFilename = [panel filename];
+		case 0:
+			qt_to = 20;
+			qt_from = 0;
+			qt_interval = 1;
+		break;
+		
+		case 2:
+			qt_to = [self maxMovieIndex];
+			qt_from = 0;
+			qt_interval = 1;
+		break;
+	}
+	
+	current_qt_interval = qt_interval;
+	
+	mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :qt_to - qt_from];
+	
+	switch( qt_dimension)
+	{
+		default:
+		case 1:
+		case 3:
+			if( [self frameRate] > 0) [mov setRate: [NSNumber numberWithInt: [self frameRate]]];
+		break;
+		
+		case 0:
+			[mov setRate: [NSNumber numberWithInt: 10]];
+		break;
+		
+		case 2:
+			if( [self frame4DRate] > 0) [mov setRate: [NSNumber numberWithInt: [self frame4DRate]]];
+		break;
+	}
+	
+	NSString *path = [mov createMovieQTKit: NO  :EXPORT2IPHOTO :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	
+	if( EXPORT2IPHOTO)
+	{
+		iPhoto *ifoto = [[iPhoto alloc] init];
+		[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"]]];
+		[ifoto release];
+		
+		[[NSFileManager defaultManager] removeFileAtPath: path handler: 0L];
 	}
 	else
 	{
-		result = NSFileHandlingPanelOKButton;
-		
-		destFilename =  [documentsDirectory() stringByAppendingFormat:@"/TEMP/OsiriXMovieTemp.mov"];
-		
-		[[NSFileManager defaultManager] removeFileAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] handler: 0L];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"] attributes: 0L];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [[NSWorkspace sharedWorkspace] openFile: path];
 	}
-	
-	if( result == NSFileHandlingPanelOKButton)
-	{
-		gSelf = self;
-		
-		// resize and update all images:
-		//for( i =0; i < [pixList count]; i++) [imageView setIndex:i];
-				
-		imageSize = [imageView bounds];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"])
-		{
-			trackFrame.top = 0;
-			trackFrame.left = 0;
-			trackFrame.bottom = [[imageView curDCM] pheight];
-			trackFrame.right = [[imageView curDCM] pwidth];
-		}
-		else
-		{
-			trackFrame.top = 0;
-			trackFrame.left = 0;
-			trackFrame.bottom = imageSize.size.height;
-			trackFrame.right = imageSize.size.width;
-		}
-		
-		
-		theMovie = CreateMovie( &trackFrame, destFilename, dimension, from, to, interval);
-		
-		//theMovie = [QTMovie movie];
-		
-		
-		
-		if( theMovie)
-		{
-			NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"] && EXPORT2IPHOTO == NO)
-				[ws openFile: [panel filename]];
-		
-					
-			DisposeMovie( theMovie);
-			theMovie = 0L;
-			
-			if( EXPORT2IPHOTO)
-			{
-				iPhoto *ifoto = [[iPhoto alloc] init];
-				[ifoto importIniPhoto: [NSArray arrayWithObject:[documentsDirectory() stringByAppendingFormat:@"/TEMP/IPHOTO/"]]];
-				[ifoto release];
-				
-				[[NSFileManager defaultManager] removeFileAtPath: destFilename handler: 0L];
-			}
-		}
-	}
-	
-	EXPORT2IPHOTO = NO;
-	#endif
 }
 
 -(IBAction) endQuicktime:(id) sender
@@ -9025,7 +8498,7 @@ return moviePosSlider;
 			from = 0;
 			interval = 1;
 		}
-		
+				
 		[self exportQuicktimeIn: [[quicktimeMode selectedCell] tag] :from :to :interval];
 	}
 	

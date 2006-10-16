@@ -103,7 +103,7 @@ extern NSString * documentsDirectory();
 		{
 			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :[quicktimeFrames intValue]];
 			
-			[mov generateMovie: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+			[mov createMovieQTKit: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			
 			[mov dealloc];
 		}
@@ -113,7 +113,7 @@ extern NSString * documentsDirectory();
 		{
 			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(image4DForFrame: maxFrame:) :maxMovieIndex];
 			
-			[mov generateMovie: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+			[mov createMovieQTKit: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			
 			[mov dealloc];
 		}

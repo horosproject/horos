@@ -496,7 +496,7 @@ MODIFICATION HISTORY
 		}
 		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame:maxFrame:) :numberOfFrames];	
-		[mov generateMovie: YES  :NO :[[[[self window3DController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		[mov createMovieQTKit: YES  :NO :[[[[self window3DController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov dealloc];
 	}
 	else

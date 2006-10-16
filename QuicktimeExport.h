@@ -26,13 +26,20 @@
 	unsigned long			codec;
 	long					quality;
 	
+	NSSavePanel				*panel;
+	NSArray					*exportTypes;
+	
 	IBOutlet NSView			*view;
 	IBOutlet NSPopUpButton	*type;
+	IBOutlet NSSlider		*rateSlider;
+	IBOutlet NSTextField	*rateValue;
 }
 
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
-- (void) setCodec:(unsigned long) codec :(long) quality;
-- (NSString*) generateMovie :(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
+//- (void) setCodec:(unsigned long) codec :(long) quality;
+//- (NSString*) generateMovie :(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
+- (IBAction) setRate:(id) sender;
+- (IBAction) changeExportType:(id) sender;
 @end
 

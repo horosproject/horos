@@ -229,7 +229,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	{
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
-		[mov generateMovie: YES  :NO  :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		[mov createMovieQTKit: YES  :NO  :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov release];
 	}
@@ -380,9 +380,9 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		else
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
 		
-		[mov setCodec:kJPEGCodecType :codecHighQuality];
+		//[mov setCodec:kJPEGCodecType :codecHighQuality];
 		
-		path = [mov generateMovie: NO  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+		path = [mov createMovieQTKit: NO  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		if( path)
 		{
