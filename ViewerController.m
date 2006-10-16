@@ -8130,16 +8130,27 @@ int i,j,l;
 
 - (void) setMovieIndex: (short) i
 {
-	curMovieIndex = i;
-	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
-	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
-	
-	[moviePosSlider setIntValue:curMovieIndex];
-	
-	[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
-	[imageView setIndex:[imageView curImage]];
-	
-	[self setWindowTitle: self];
+//	if( curMovieIndex != i)
+	{
+		BOOL wasDataFlipped = [imageView flippedData];
+		int index = [imageView curImage];
+		
+		curMovieIndex = i;
+		if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
+		if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
+		
+		[moviePosSlider setIntValue:curMovieIndex];
+		
+		[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
+		
+		if( wasDataFlipped) [self flipDataSeries: self];
+		
+		[imageView setIndex: index];
+		
+		[self adjustSlider];
+		
+		[self setWindowTitle: self];
+	}
 }
 
 - (void) moviePosSliderAction:(id) sender
