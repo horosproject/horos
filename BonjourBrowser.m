@@ -204,14 +204,16 @@ volatile static BOOL threadIsRunning = NO;
 			{
 				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
 				BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
+				NSString *zipFilePathToLoad;
 				if(isPages)
 				{
 					NSLog(@"readAllTheData isPages");
-					NSString *zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
-					[filePathToLoad release];
-					filePathToLoad = [zipFilePathToLoad retain];
+					zipFilePathToLoad = [filePathToLoad stringByAppendingString:@".zip"];
+					//[filePathToLoad release];
+					//filePathToLoad = [zipFilePathToLoad retain];
 				}
 				NSLog(@"readAllTheData filePathToLoad : %@", filePathToLoad);
+				NSLog(@"readAllTheData zipFilePathToLoad : %@", zipFilePathToLoad);
 
 //					NSString *reportFileName = [filePathToLoad stringByDeletingPathExtension];
 //					NSLog(@"reportFileName : %@", reportFileName);
@@ -233,7 +235,8 @@ volatile static BOOL threadIsRunning = NO;
 //					}
 
 			
-				NSString *destPath = [BonjourBrowser bonjour2local: filePathToLoad];
+				//NSString *destPath = [BonjourBrowser bonjour2local: filePathToLoad];
+				NSString *destPath = [BonjourBrowser bonjour2local: zipFilePathToLoad];
 				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:0L];
 				
 				long	pos = 0, size;
@@ -246,7 +249,33 @@ volatile static BOOL threadIsRunning = NO;
 				pos += size;
 				
 				// Write the file
-				success = [curData writeToFile: destPath atomically:YES];
+				success = [curData writeToFile:destPath atomically:YES];
+				
+				if(isPages)
+				{
+					NSLog(@"readAllTheData isPages 2");
+					NSString *reportFileName = [destPath stringByDeletingPathExtension];
+					NSLog(@"readAllTheData  reportFileName : %@", reportFileName);
+					// unzip the file
+					NSTask *unzipTask   = [[NSTask alloc] init];
+					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
+					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
+					[unzipTask launch];
+					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+					int result = [unzipTask terminationStatus];
+					[unzipTask release];
+					
+					NSLog(@"unzip result : %d", result);
+					if(result==0)
+					{
+						//destPath = reportFileName;
+						destPath = [BonjourBrowser bonjour2local:filePathToLoad];
+						NSLog(@"destPath : %@", destPath);
+						// remove the zip file!
+						//filePathToLoad = reportFileName;
+					}
+				}
 				
 				// The modification date
 				size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
@@ -265,28 +294,6 @@ volatile static BOOL threadIsRunning = NO;
 				[[NSFileManager defaultManager] changeFileAttributes:newfattrs atPath:destPath];
 				
 				[str release];
-				
-				if(isPages)
-				{
-					NSString *reportFileName = [destPath stringByDeletingPathExtension];
-					NSLog(@"readAllTheData  reportFileName : %@", reportFileName);
-					// unzip the file
-					NSTask *unzipTask   = [[NSTask alloc] init];
-					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
-					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
-					[unzipTask launch];
-					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
-					int result = [unzipTask terminationStatus];
-					[unzipTask release];
-					
-					NSLog(@"unzip result : %d", result);
-					if(result==0)
-					{
-						// remove the zip file!
-						//filePathToLoad = reportFileName;
-					}
-				}
 			}
 			else if (strcmp( messageToRemoteService, "DICOM") == 0)
 			{
@@ -459,6 +466,31 @@ NSLog(@"connectToService");
 				
 				if (strcmp( messageToRemoteService, "WFILE") == 0)
 				{				
+					NSLog(@"connectToService, WFILE");
+					BOOL isPages = [[filePathToLoad pathExtension] isEqualToString:@"pages"];
+					if(isPages)
+					{
+						NSLog(@"connectToService isPages");
+						NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [filePathToLoad lastPathComponent]];
+						// zip the directory into a single archive file
+						NSTask *zipTask   = [[NSTask alloc] init];
+						[zipTask setLaunchPath:@"/usr/bin/zip"];
+						[zipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [filePathToLoad lastPathComponent], nil]];
+						[zipTask launch];
+						if ([zipTask isRunning]) [zipTask waitUntilExit];
+						int result = [zipTask terminationStatus];
+						[zipTask release];
+
+						if(result==0)
+						{
+							NSMutableString *path2 = (NSMutableString*)[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingFormat:@"/%@", zipFileName];
+							[filePathToLoad release];
+							filePathToLoad = [path2 retain];
+							NSLog(@"filePathToLoad : %@", filePathToLoad);
+						}
+					}
+				
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
 					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
 					

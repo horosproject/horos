@@ -10469,7 +10469,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: file traverseLink:YES];
 				
 				NSDate *previousDate = [bonjourReportFilesToCheck objectForKey: key];
-				
+				NSLog(@"file : %@", file);
+				NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);
 				if( [previousDate isEqualToDate: [fattrs objectForKey:NSFileModificationDate]] == NO)
 				{
 					NSLog(@"Sync %@ : %@ - %@", key, [previousDate description], [[fattrs objectForKey:NSFileModificationDate] description]);

@@ -394,6 +394,7 @@ extern NSString * documentsDirectory();
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
 			{
+				NSLog(@"subConnectionReceived : RFILE");
 				long pos = 6, stringSize, size;
 				
 				// We read 4 bytes that contain the string size
@@ -407,10 +408,11 @@ extern NSString * documentsDirectory();
 				pos += stringSize;
 				
 				BOOL isDirectory = NO;
+				NSString *zipFileName;
 				[[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
 				if(isDirectory)
 				{
-					NSString *zipFileName = [NSString stringWithFormat:@"%@.zip", [path lastPathComponent]];
+					zipFileName = [NSString stringWithFormat:@"%@.zip", [path lastPathComponent]];
 					// zip the directory into a single archive file
 					NSTask *zipTask   = [[NSTask alloc] init];
 					[zipTask setLaunchPath:@"/usr/bin/zip"];
@@ -446,10 +448,13 @@ extern NSString * documentsDirectory();
 				[representationToSend appendBytes:&stringSize length: 4];
 				[representationToSend appendData: content];
 				
+				if(isDirectory)
+					[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 				[path release];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
 			{
+				NSLog(@"subConnectionReceived : WFILE");
 				long pos = 6, stringSize, dataSize, size;
 				
 				// We read 4 bytes that contain the string size
@@ -471,12 +476,39 @@ extern NSString * documentsDirectory();
 				while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
 				NSString	*localpath = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [path lastPathComponent]];
-				
+					NSLog(@"subConnectionReceived, localpath : %@", localpath);
 				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:0L];
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
 				pos += dataSize;
-				refreshDB = YES;
 				
+				BOOL isPages = [[localpath pathExtension] isEqualToString:@"zip"];
+				if(isPages)
+				{
+					NSString *reportFileName = [localpath stringByDeletingPathExtension];
+					NSLog(@"subConnectionReceived  reportFileName : %@", reportFileName);
+					// unzip the file
+					NSTask *unzipTask   = [[NSTask alloc] init];
+					[unzipTask setLaunchPath:@"/usr/bin/unzip"];
+					[unzipTask setCurrentDirectoryPath:[[localpath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", localpath, nil]]; // -o to override existing report w/ same name
+					[unzipTask launch];
+					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+					int result = [unzipTask terminationStatus];
+					[unzipTask release];
+					
+					NSLog(@"unzip result : %d", result);
+					if(result==0)
+					{
+						// remove the zip file!
+						//filePathToLoad = reportFileName;
+					}
+				}
+				
+				refreshDB = YES;
+
+				if(isPages)
+					[[NSFileManager defaultManager] removeFileAtPath:localpath handler:nil];
+
 				[path release];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
