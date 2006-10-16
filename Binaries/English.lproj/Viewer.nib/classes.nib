@@ -167,6 +167,7 @@
                 movieRateSliderAction = id; 
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
+                reSyncOrigin = id; 
                 resampleDataBy2 = id; 
                 resetImage = id; 
                 revertSeries = id; 
@@ -197,6 +198,7 @@
                 subSharpen = id; 
                 subSumSlider = id; 
                 updateImage = id; 
+                updateSUVValues = id; 
                 updateSetWLWW = id; 
             }; 
             CLASS = ViewerController; 

@@ -231,7 +231,6 @@ volatile static BOOL threadIsRunning = NO;
 //						// remove the zip file!
 //						filePathToLoad = reportFileName;
 //					}
-//				}
 
 			
 				NSString *destPath = [BonjourBrowser bonjour2local: filePathToLoad];

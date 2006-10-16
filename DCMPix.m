@@ -3463,6 +3463,14 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	fclose( fp);
 }
 
+- (void) computeTotalDoseCorrected
+{
+	// WARNING : only time is correct. NOT year/month/day
+	float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
+	if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
+	else NSLog(@"ERROR IN computeTotalDoseCorrected");
+}
+
 - (void) checkSUV
 {
 	hasSUV = NO;
@@ -4371,10 +4379,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		DCMObject *radionuclideTotalDoseObject = [[radiopharmaceuticalInformationSequence sequence] objectAtIndex:0];
 //		radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
 //		halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
-//		radiopharmaceuticalStartTime = [[NSDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+//		radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 //		
 //		// WARNING : only time is correct. NOT year/month/day
-//		acquisitionTime = [[NSDate	dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+//		acquisitionTime = [[NSCalendarDate	dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 //		float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
 //		
 //		//		NSLog( @"timebetween: %f", timebetween);
@@ -5276,17 +5284,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		DCMObject *radionuclideTotalDoseObject = [[radiopharmaceuticalInformationSequence sequence] objectAtIndex:0];
 		radionuclideTotalDose = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideTotalDose"] floatValue];
 		halflife = [[radionuclideTotalDoseObject attributeValueWithName:@"RadionuclideHalfLife"] floatValue];
-		radiopharmaceuticalStartTime = [[NSDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+		radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
 		// WARNING : only time is correct. NOT year/month/day
-		acquisitionTime = [[NSDate	dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
-		float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
+		acquisitionTime = [[NSCalendarDate	dateWithString:[[dcmObject attributeValueWithName:@"AcquisitionTime"] descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 		
-		//		NSLog( @"timebetween: %f", timebetween);
-		//		NSLog( @"radionuclideTotalDose: %f", radionuclideTotalDose);
-		//		NSLog( @"ln2: %f", logf(2));
-		
-		if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
+		[self computeTotalDoseCorrected];
 	}
 	// Loop over sequence to find injected dose
 	
@@ -5784,7 +5787,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
 				NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 				
-				acquisitionTime = [[NSDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+				acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 				
 				[cd release];
 				[cc release];
@@ -6463,7 +6466,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 								NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
 								NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 								
-								radiopharmaceuticalStartTime = [[NSDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
+								radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
 								
 								[cd release];
 								[cc release];
@@ -6477,9 +6480,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					}
 				}
 						
-				float timebetween = -[radiopharmaceuticalStartTime timeIntervalSinceDate: acquisitionTime];
-			
-				if( halflife > 0 && timebetween > 0) radionuclideTotalDoseCorrected = radionuclideTotalDose * exp( -timebetween * logf(2)/halflife);
+				[self computeTotalDoseCorrected];
 			
 				// End of SUV required values
 			}
@@ -9611,23 +9612,23 @@ float			iwl, iww;
 	 patientsWeight = v;
 }
 
--(NSDate*) acquisitionTime
+-(NSCalendarDate*) acquisitionTime
 {
 	return acquisitionTime;
 }
 
--(void) setAcquisitionTime : (NSDate*) d
+-(void) setAcquisitionTime : (NSCalendarDate*) d
 {
 	[acquisitionTime release];
 	acquisitionTime = [d retain];
 }
 
--(NSDate*) radiopharmaceuticalStartTime
+-(NSCalendarDate*) radiopharmaceuticalStartTime
 {
 	return radiopharmaceuticalStartTime;
 }
 
--(void) setRadiopharmaceuticalStartTime : (NSDate*) d
+-(void) setRadiopharmaceuticalStartTime : (NSCalendarDate*) d
 {
 	[radiopharmaceuticalStartTime release];
 	radiopharmaceuticalStartTime = [d retain];

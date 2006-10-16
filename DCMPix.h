@@ -78,8 +78,8 @@
 	float				decayFactor;
 	float				radionuclideTotalDose;
 	float				radionuclideTotalDoseCorrected;
-	NSDate				*acquisitionTime;
-	NSDate				*radiopharmaceuticalStartTime;
+	NSCalendarDate		*acquisitionTime;
+	NSCalendarDate		*radiopharmaceuticalStartTime;
 	float				halflife;
     float				philipsFactor;
 	BOOL				displaySUVValue;
@@ -262,7 +262,7 @@
 -(long) DCMPixShutterRectWidth;
 -(BOOL) DCMPixShutterOnOff;
 -(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
-
+- (void) computeTotalDoseCorrected;
 - (void) copyFromOther:(DCMPix *) fromDcm;
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (NSString*) repetitiontime;
@@ -366,10 +366,10 @@
 - (void) setRadionuclideTotalDose : (float) v;
 - (float) radionuclideTotalDoseCorrected;
 - (void) setRadionuclideTotalDoseCorrected : (float) v;
-- (NSDate*) acquisitionTime;
-- (void) setAcquisitionTime : (NSDate*) d;
-- (NSDate*) radiopharmaceuticalStartTime;
-- (void) setRadiopharmaceuticalStartTime : (NSDate*) d;
+- (NSCalendarDate*) acquisitionTime;
+- (void) setAcquisitionTime : (NSCalendarDate*) d;
+- (NSCalendarDate*) radiopharmaceuticalStartTime;
+- (void) setRadiopharmaceuticalStartTime : (NSCalendarDate*) d;
 - (void) setSUVConverted : (BOOL) v;
 - (BOOL) SUVConverted;
 - (float) decayFactor;
