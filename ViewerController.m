@@ -3314,6 +3314,7 @@ static ViewerController *draggedController = 0L;
 	NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
 	NSData *newData = 0L;
 	BOOL wasDataFlipped = [imageView flippedData];
+	int index = [imageView curImage];
 	
 	BOOL isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
 	if(isResampled)
@@ -3324,6 +3325,9 @@ static ViewerController *draggedController = 0L;
 		[self setWindowTitle:self];
 		
 		if( wasDataFlipped) [self flipDataSeries: self];
+		
+		[imageView setIndex: index];
+		[self adjustSlider];
 	}
 	return isResampled;
 }
