@@ -266,18 +266,23 @@ NSString * documentsDirectory();
 	if( result == NSFileHandlingPanelOKButton)
 	{
 		int				maxImage, myState, curSample = 0;
-		Movie			qtMovie    = nil;
+		Movie			qtMovie = 0L;
+		QTTime			curTime;
+		QTMovie			*mMovie = 0L;
 		
-		[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+		if( produceFiles == NO)
+		{
+			[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+			
+			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+			
+			long long timeValue = 600 / [rateSlider intValue];
+			long timeScale = 600;
+			
+			curTime = QTMakeTime(timeValue, timeScale);
+		}
 		
-		QTMovie *mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
-		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-		
-		long long timeValue = 600 / [rateSlider intValue];
-		long timeScale = 600;
-
-		QTTime curTime = QTMakeTime(timeValue, timeScale);
-
 		Wait    *wait = [[Wait alloc] initWithString:0L :NO];
 		[wait showWindow:self];
 		
@@ -317,22 +322,24 @@ NSString * documentsDirectory();
 		
 		[wait release];
 		
-		[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
-		
-		NSData	*exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
-		
-		if( exportSettings)
+		if( produceFiles == NO)
 		{
-			[self writeMovie:mMovie toFile:fileName withComponent:[exportTypes objectAtIndex: [type indexOfSelectedItem]] withExportSettings: exportSettings];
+			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:0L];
 			
-			if( openIt == YES && produceFiles == NO)
-			{
-				NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-				[ws openFile:fileName];
-			}
-		}
+			NSData	*exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
 		
-		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+			if( exportSettings)
+			{
+				[self writeMovie:mMovie toFile:fileName withComponent:[exportTypes objectAtIndex: [type indexOfSelectedItem]] withExportSettings: exportSettings];
+			
+				if( openIt)
+				{
+					NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+					[ws openFile:fileName];
+				}
+			}
+			[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
+		}
 		
 		return fileName;
 	}
