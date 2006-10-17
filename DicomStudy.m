@@ -43,6 +43,35 @@ Version 2.3
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+- (NSString*) yearOldAcquisition
+{
+	if( [self valueForKey: @"dateOfBirth"])
+	{
+		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"dateOfBirth"] timeIntervalSinceReferenceDate]];
+		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"date"] timeIntervalSinceReferenceDate]];
+		
+		#if __LP64__
+		NSInteger years, months, days;
+		#else
+		int years, months, days;
+		#endif
+		
+		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+		
+		if( years < 2)
+		{
+			if( years < 1)
+			{
+				if( months < 1) return [NSString stringWithFormat:@"%d d", days];
+				else return [NSString stringWithFormat:@"%d m", months];
+			}
+			else return [NSString stringWithFormat:@"%d y %d m",years, months];
+		}
+		else return [NSString stringWithFormat:@"%d y", years];
+	}
+	else return @"";
+}
+
 - (NSString*) yearOld
 {
 	if( [self valueForKey: @"dateOfBirth"])

@@ -1082,7 +1082,11 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
 
 		[yearOld release];
-		yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		
+		if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+			yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+		else
+			yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 	}
 }
 
@@ -1292,7 +1296,11 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 
 	[yearOld release];
-	yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+	
+	if( [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] isEqualToString: [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]])
+		yearOld = [[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"] retain];
+	else
+		yearOld = [[NSString stringWithFormat:@"%@ / %@", [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOld"], [[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.yearOldAcquisition"]] retain];
 }
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
@@ -5379,17 +5387,33 @@ static long scrollMode;
 		NSManagedObject   *file;
 
 		file = [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
-		if( annotations >= annotFull && fullText)
+		if( annotations >= annotBase && fullText)
 		{
-			if( [file valueForKeyPath:@"series.study.name"])
+			if( annotations >= annotFull)
+			{
+				if( [file valueForKeyPath:@"series.study.name"])
+				{
+					NSString	*nsstring;
+					
+					if( [file valueForKeyPath:@"series.study.dateOfBirth"])
+					{
+						nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+					}
+					else  nsstring = [file valueForKeyPath:@"series.study.name"];
+					
+					xRaster = size.size.width;
+					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+					yRaster += (stringSize.height + stringSize.height/10);
+				}
+			}
+			else
 			{
 				NSString	*nsstring;
 				
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
-					nsstring = [NSString stringWithFormat: @"%@ - %@ - %@",[file valueForKeyPath:@"series.study.name"], [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+					nsstring = [NSString stringWithFormat: @"%@ - %@",[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
 				}
-				else  nsstring = [file valueForKeyPath:@"series.study.name"];
 				
 				xRaster = size.size.width;
 				[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
