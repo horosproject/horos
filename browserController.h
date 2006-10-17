@@ -160,6 +160,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSMatrix				*rdPixelTypeMatrix;
 	IBOutlet NSView					*rdAccessory;
 	
+	IBOutlet NSView					*exportQuicktimeView;
+	IBOutlet NSButton				*exportHTMLButton;
+	
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSButton				*addDICOMDIRButton;
 	IBOutlet NSMatrix				*compressionMatrix;

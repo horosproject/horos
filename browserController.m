@@ -8927,29 +8927,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) writeMovie: (NSArray*) imagesArray name: (NSString*) fileName
 {
-	#if !__LP64__
-	int				maxImage, myState, curSample = 0;
-	Handle			dataRef = NULL;
-	OSType			dataRefType;
-	DataHandler		dataHandler;
-	Movie			qtMovie = NULL;
-	
-	QTNewDataReferenceFromFullPathCFString((CFStringRef) [fileName stringByAppendingString:@"temp"], kQTNativeDefaultPathStyle, 0, &dataRef, &dataRefType);
-	
-	CreateMovieStorage (dataRef,
-						dataRefType,
-						'TVOD',
-						smSystemScript,
-						newMovieDontInteractWithUser,
-						&dataHandler,
-						&qtMovie);
-	
-	DisposeHandle(dataRef);
-	
-	QTMovie *mMovie = [QTMovie movieWithQuickTimeMovie:qtMovie disposeWhenDone:YES error:nil];
+	[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: 0L];
+			
+	QTMovie *mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 	[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 	
-	long long timeValue = 30;
+	long long timeValue = 60;
 	long timeScale = 600;
 	
 	QTTime curTime = QTMakeTime(timeValue, timeScale);
@@ -8958,6 +8941,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality],
 							QTAddImageCodecQuality, nil];
 	
+	int	curSample;
 	for (curSample = 0; curSample < [imagesArray count]; curSample++) 
 	{
 		[mMovie addImage:[imagesArray objectAtIndex: curSample] forDuration:curTime withAttributes: myDict];
@@ -8965,9 +8949,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
 	[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
-	
-	CloseMovieStorage( dataHandler);
-	#endif
 }
 
 -(void) exportQuicktimeInt:(NSArray*) dicomFiles2Export :(NSString*) path :(BOOL) html
@@ -9143,17 +9124,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setTitle: NSLocalizedString(@"Export",0L)];
 	[sPanel setCanCreateDirectories:YES];
 	
-	[addDICOMDIRButton setTitle:@"Create HTML pages"];
-	[addDICOMDIRButton sizeToFit];
-	
-	[sPanel setAccessoryView:exportAccessoryView];
+	[sPanel setAccessoryView:exportQuicktimeView];
 	
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
 	{
-		[self exportQuicktimeInt: dicomFiles2Export :[[sPanel filenames] objectAtIndex:0] :[addDICOMDIRButton state]];
+		[self exportQuicktimeInt: dicomFiles2Export :[[sPanel filenames] objectAtIndex:0] :[exportHTMLButton state]];
 	}
-	[addDICOMDIRButton setTitle:@"Add DICOMDIR"];
-	[addDICOMDIRButton sizeToFit];
 }
 
 - (void) exportJPEG:(id) sender

@@ -130,6 +130,8 @@
                 enoughMem = NSBox; 
                 estimatedTime = NSTextField; 
                 exportAccessoryView = NSView; 
+                exportHTMLButton = NSButton; 
+                exportQuicktimeView = NSView; 
                 folderTree = NSMatrix; 
                 imageTileMenu = NSMenu; 
                 imageView = PreviewView; 
