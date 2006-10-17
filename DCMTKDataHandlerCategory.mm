@@ -542,6 +542,8 @@ extern BrowserController *browserWindow;
 		dataset ->putAndInsertString(DCM_NumberOfSeriesRelatedInstances, value);
 
 	}
+	
+	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "SERIES");
 
 	
 	
@@ -563,6 +565,7 @@ extern BrowserController *browserWindow;
 	}
 	//UTF 8 Encoding
 	//dataset ->putAndInsertString(DCM_SpecificCharacterSet,  "ISO_IR 192") ;
+	dataset ->putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
 	NS_HANDLER
 	NS_ENDHANDLER
 	[pool release];
