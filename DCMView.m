@@ -5408,7 +5408,7 @@ static long scrollMode;
 			}
 			else
 			{
-				NSString	*nsstring;
+				NSString	*nsstring = [NSString string];
 				
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
