@@ -343,6 +343,9 @@ CHECK;
 		//      È is encoded as &#xBB;
 		[aString replaceOccurrencesOfString:[NSString stringWithFormat:@"&#xAB;%@&#xBB;", propertyName] withString:propertyValue options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 	}
+	
+	// "today"
+	[aString replaceOccurrencesOfString:@"&#xAB;today&#xBB;" withString:[[NSDate date] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary] options:NSLiteralSearch range:NSMakeRange(0, [aString length])];
 }
 
 #pragma mark -
