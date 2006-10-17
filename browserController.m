@@ -10612,7 +10612,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				
 				NSString	*localReportFile = [BonjourBrowser bonjour2local: [studySelected valueForKey:@"reportURL"]];
-				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: localReportFile])
 				{
 					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:localReportFile traverseLink:YES];
