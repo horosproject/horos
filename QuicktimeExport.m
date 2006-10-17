@@ -152,7 +152,10 @@ NSString * documentsDirectory();
 	
 	ComponentResult err;
 	
-	NSData *data = [[NSUserDefaults standardUserDefaults] dataForKey: [NSString stringWithFormat:@"Quicktime Export:%d", [component valueForKey:@"subtype"]]];
+	NSString	*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
+	NSLog( prefString);
+	
+	NSData *data = [[NSUserDefaults standardUserDefaults] dataForKey: prefString];
 	char	*ptr = (char*) [data bytes];
 	
 	if( data) MovieExportSetSettingsFromAtomContainer (exporter, &ptr);
@@ -180,7 +183,7 @@ NSString * documentsDirectory();
 	}
 	
 	data = [NSData dataWithBytes:*settings length:GetHandleSize(settings)];	
-	[[NSUserDefaults standardUserDefaults] setObject:data forKey: [NSString stringWithFormat:@"Quicktime Export:%d", [component valueForKey:@"subtype"]]];
+	[[NSUserDefaults standardUserDefaults] setObject:data forKey: prefString];
 	
 	DisposeHandle(settings);
 
@@ -228,6 +231,8 @@ NSString * documentsDirectory();
 	if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
 	if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];
 	if( subtype == kQTFileTypeMP4)	[panel setRequiredFileType:@"mpg4"];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:[type indexOfSelectedItem] forKey:@"selectedMenuQuicktimeExport"];
 }
 
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
@@ -257,7 +262,10 @@ NSString * documentsDirectory();
 		[type removeAllItems];
 				
 		[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
-
+		
+		[type selectItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey:@"selectedMenuQuicktimeExport"]];
+		[self changeExportType: self];
+		
 		result = [panel runModalForDirectory:0L file:name];
 		
 		fileName = [panel filename];

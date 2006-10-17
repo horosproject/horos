@@ -9567,7 +9567,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			defaultButton:@"OK" 
 			alternateButton:nil 
 			otherButton:nil 
-			informativeTextWithFormat:@"Burn in Progress. Please Wait"];
+			informativeTextWithFormat:@"Burn in Progress. Please Wait."];
 		[alert runModal];
 	}
 	//send to OsirixBurner

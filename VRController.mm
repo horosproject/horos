@@ -1373,8 +1373,8 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
     }
 	else if ([itemIdent isEqualToString: QTExportToolbarItemIdentifier]) {
         
-	[toolbarItem setLabel: NSLocalizedString(@"Export QT",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString(@"Export QT",nil)];
+	[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
+	[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
         [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Quicktime file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: view];
