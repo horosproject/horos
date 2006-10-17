@@ -364,4 +364,7 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
 - (id)dicomImage;
+
+//Hot key action
+-(void)actionForHotKey:(NSString *)hotKey;
 @end

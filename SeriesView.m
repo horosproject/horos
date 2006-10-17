@@ -183,12 +183,16 @@
  
  -(void) defaultToolModified: (NSNotification*) note{
 	id sender = [note object];
+
 	int ctag;
 
 	if ([sender isKindOfClass:[NSMatrix class]])
 	{
 		NSButtonCell *theCell = [sender selectedCell];
 		ctag = [theCell tag];
+	}
+	else if (!sender) {
+		ctag = [[[note userInfo] valueForKey:@"toolIndex"] intValue];
 	}
 	else
 	{

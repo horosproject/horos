@@ -1537,7 +1537,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
         else
         {
-            [super keyDown:event];
+           // [super keyDown:event];
+		   [self actionForHotKey:[event characters]];
         }
         
 		
@@ -7942,4 +7943,83 @@ BOOL	lowRes = NO;
 - (id)dicomImage{
 	return [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 }
+
+//Hot key action
+-(void)actionForHotKey:(NSString *)hotKey{
+	if ([hotKey length] > 0) {
+		NSDictionary *userInfo = nil;
+		NSDictionary *wwwlDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+		NSArray *wwwl = nil;
+		NSArray *wwwlValues = [wwwlDict allValues];
+		unichar key = [hotKey characterAtIndex:0];
+		int index = 1;
+		switch (key){
+			case '`': [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
+						break;
+			case '0': [self setWLWW:0 :0];												// full dynamic WW/WL
+				break;
+																						// 1 - 9 will be presets WW/WL
+			case '1': if([wwwlValues count] >= 1) {
+							wwwl = [wwwlValues objectAtIndex:0];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '2': if([wwwlValues count] >= 2) {
+							wwwl = [wwwlValues objectAtIndex:1];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '3': if([wwwlValues count] >= 3) {
+							wwwl = [wwwlValues objectAtIndex:2];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '4': if([wwwlValues count] >= 4) {
+							wwwl = [wwwlValues objectAtIndex:3];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '5': if([wwwlValues count] >= 5) {
+							wwwl = [wwwlValues objectAtIndex:4];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '6': if([wwwlValues count] >= 6) {
+							wwwl = [wwwlValues objectAtIndex:5];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '7': if([wwwlValues count] >= 7) {
+							wwwl = [wwwlValues objectAtIndex:6];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '8': if([wwwlValues count] >= 8) {
+							wwwl = [wwwlValues objectAtIndex:7];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			case '9': if([wwwlValues count] >= 9) {
+							wwwl = [wwwlValues objectAtIndex:8];
+							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
+					}	
+					break;
+			
+			// Flip
+			case 'h': [self flipHorizontal:nil];
+					break;
+			case 'v': [self flipVertical:nil];
+					break;
+			// mouse functions
+			case 'w':				
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+						break;
+						
+
+			default: break;
+		}
+	}
+
+}
+
 @end
