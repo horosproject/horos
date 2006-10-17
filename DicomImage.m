@@ -110,7 +110,7 @@ extern NSString * documentsDirectory();
 }
 
 - (NSSet *)paths{
-	return [NSSet setWithObject:[self primitiveValueForKey:@"completePath"]];
+	return [NSSet setWithObject:[self completePath]];
 }
 
 // DICOM Presentation State
