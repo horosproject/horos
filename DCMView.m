@@ -5408,16 +5408,14 @@ static long scrollMode;
 			}
 			else
 			{
-				NSString	*nsstring = [NSString string];
-				
 				if( [file valueForKeyPath:@"series.study.dateOfBirth"])
 				{
-					nsstring = [NSString stringWithFormat: @"%@ - %@",[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+					NSString *nsstring = [NSString stringWithFormat: @"%@ - %@",[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary], yearOld];
+					
+					xRaster = size.size.width;
+					[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+					yRaster += (stringSize.height + stringSize.height/10);
 				}
-				
-				xRaster = size.size.width;
-				[self DrawNSStringGL: nsstring : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
-				yRaster += (stringSize.height + stringSize.height/10);
 			}
 			
 			if( [file valueForKeyPath:@"series.study.patientID"])
