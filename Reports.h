@@ -17,8 +17,8 @@
 
 @interface Reports : NSObject
 {
-
 	ComponentInstance myComponent;
+	NSMutableString *templateName;
 }
 
 + (NSString*) getUniqueFilename:(NSManagedObject*) study;
@@ -31,5 +31,8 @@
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
 - (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
++ (NSMutableArray*)pagesTemplatesList;
+- (NSMutableString *)templateName;
+- (void)setTemplateName:(NSString *)aName;
 
 @end

@@ -152,6 +152,9 @@
                 rdVoxelForm = NSForm; 
                 rebuildType = NSMatrix; 
                 rebuildWindow = NSWindow; 
+                reportTemplatesImageView = NSImageView; 
+                reportTemplatesListPopUpButton = NSPopUpButton; 
+                reportTemplatesView = NSView; 
                 searchField = NSSearchField; 
                 searchView = NSView; 
                 segmentedAlbumButton = NSSegmentedControl; 

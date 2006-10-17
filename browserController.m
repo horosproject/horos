@@ -10642,7 +10642,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				else
 				{
 					if (reportsMode < 3) {
-						Reports	*report = [[Reports alloc] init];					
+						Reports	*report = [[Reports alloc] init];
+						if([sender isEqualTo:reportTemplatesListPopUpButton])[report setTemplateName:[[sender selectedItem] title]];
 						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];					
 						[report release];
 					}
@@ -10694,11 +10695,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 		item = [toolbarItems objectAtIndex:i];
 		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier])
 		{
-			[item setImage:[self reportIcon]];
+			[toolbar removeItemAtIndex:i];
+			[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
 		}
 	}
 }
 
+- (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
+{
+		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+		if([pagesTemplatesArray count]>=1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
+		{
+			[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
+			[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+			[item setView:reportTemplatesView];
+			[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+			[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		}
+		else
+		{
+			[item setImage:[self reportIcon]];
+		}
+}
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -10857,7 +10875,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Report",nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study",nil)];
 		//[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
-		[toolbarItem setImage: [self reportIcon]];
+		[self setToolbarReportIconForItem:toolbarItem];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(generateReport:)];
     }

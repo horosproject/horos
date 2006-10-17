@@ -224,6 +224,7 @@ static id aedesc_to_id(AEDesc *desc)
 		
 		case 2:
 		{
+			NSMutableArray * a = [Reports pagesTemplatesList];
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
 			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
 			[study setValue:destinationFile forKey:@"reportURL"];
@@ -241,7 +242,7 @@ static id aedesc_to_id(AEDesc *desc)
 	if (self)
 	{
 		myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
-		// other initialization code here
+		templateName = [NSMutableString stringWithString:@"OsiriX Report"];
 	}
 	return self;
 }
@@ -372,7 +373,7 @@ CHECK;
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 {	
 	// create the Pages file, using the template (not filling the patient's data yet)
-	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:@"OsiriX Report" completeFilePath:aPath];
+	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:templateName completeFilePath:aPath];
 	[self runScript:creationScript];
 	
 	// decompress the gzipped index.xml.gz file in the .pages bundle
@@ -429,6 +430,41 @@ CHECK;
 	
 	// end
 	return YES;
+}
+
++ (NSMutableArray*)pagesTemplatesList;
+{
+	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil];
+	NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
+	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
+	
+	NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
+	
+	id file;	 
+	while ((file = [directoryEnumerator nextObject]))
+	{
+		[directoryEnumerator skipDescendents];
+		NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
+		if(rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
+		{
+			// this is a template for us (we should maybe verify that it is a valid Pages template... but what ever...)
+			[templatesArray addObject:[file substringFromIndex:7]];
+		}
+	}
+	return templatesArray;
+}
+
+- (NSMutableString *)templateName;
+{
+	return templateName;
+}
+
+- (void)setTemplateName:(NSString *)aName;
+{
+	[templateName setString:aName];
+	[templateName replaceOccurrencesOfString:@".template" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateName length])];
+	[templateName insertString:@"OsiriX " atIndex:0];
+	NSLog(@"setTemplateName : %@ -> %@", aName, templateName);
 }
 
 @end

@@ -201,6 +201,10 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableString					*pressedKeys;
 	
 	IBOutlet NSProgressIndicator	*incomingProgress;
+	
+	IBOutlet NSView					*reportTemplatesView;
+	IBOutlet NSImageView			*reportTemplatesImageView;
+	IBOutlet NSPopUpButton			*reportTemplatesListPopUpButton;
 }
 
 + (BrowserController*) currentBrowser;
