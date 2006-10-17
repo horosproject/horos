@@ -805,6 +805,9 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey: @"IMAGEROWS"];
 	[defaultValues setObject:@"1" forKey: @"IMAGECOLUMNS"];
 	
+	//VRDefaultViewSize
+	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
+	
 	//UseVOILUT
 	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
 	

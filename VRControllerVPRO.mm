@@ -1834,5 +1834,13 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 												
 }
 
+- (void) showWindow:(id) sender
+{
+	[super showWindow: sender];
+	
+	[view squareView: self];
+}
+
+
 
 @end

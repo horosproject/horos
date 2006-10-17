@@ -4886,4 +4886,32 @@ public:
 		[cursor set];
 	}
 }
+
+-(void) squareView:(id) sender
+{
+	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
+	
+	NSRect	newFrame = [self frame];
+	NSRect	beforeFrame = [self frame];
+	
+	int		border = [self frame].size.height-1;
+	
+	if( border > [self frame].size.width) border = [self frame].size.width;
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2) border = 512;
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3) border = 768;
+	
+	newFrame.size.width = border;
+	newFrame.size.height = border;
+
+	newFrame.origin.x = (int) ((beforeFrame.size.width - border) / 2);
+	newFrame.origin.y = (int) (10 + (beforeFrame.size.height - border) / 2);
+	
+	[self setFrame: newFrame];
+	
+	[[self window] display];
+}
+
 @end

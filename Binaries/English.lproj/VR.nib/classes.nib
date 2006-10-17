@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = BlackView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {renderButton = id; selectPicker = id; }; 
             CLASS = ColorTransferView; 

@@ -1311,6 +1311,14 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 		}
 	}
 }
+
+- (void) showWindow:(id) sender
+{
+	[super showWindow: sender];
+	
+	[view squareView: self];
+}
+
 #endif
 
 @end

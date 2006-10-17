@@ -2308,4 +2308,11 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (ViewerController*) viewer2D {return viewer2D;}
 
+- (void) showWindow:(id) sender
+{
+	[super showWindow: sender];
+	
+	[view squareView: self];
+}
+
 @end

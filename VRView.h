@@ -394,6 +394,7 @@ typedef char* vtkMyCallbackVR;
 - (float) offset;
 - (float) valueFactor;
 - (void) setViewportResizable: (BOOL) boo;
+- (void) squareView:(id) sender;
 
 - (void) setRotate: (BOOL) r;
 - (float) factor;

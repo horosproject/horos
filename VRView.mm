@@ -1880,6 +1880,33 @@ public:
 	else [pixelInformation setStringValue: @""];
 }
 
+-(void) squareView:(id) sender
+{
+	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
+	
+	NSRect	newFrame = [self frame];
+	NSRect	beforeFrame = [self frame];
+	
+	int		border = [self frame].size.height-1;
+	
+	if( border > [self frame].size.width) border = [self frame].size.width;
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2) border = 512;
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3) border = 768;
+	
+	newFrame.size.width = border;
+	newFrame.size.height = border;
+
+	newFrame.origin.x = (int) ((beforeFrame.size.width - border) / 2);
+	newFrame.origin.y = (int) (10 + (beforeFrame.size.height - border) / 2);
+	
+	[self setFrame: newFrame];
+	
+	[[self window] display];
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent{
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
 			[self deleteMouseDownTimer];
@@ -1887,7 +1914,8 @@ public:
 		
 	if (_dragInProgress == YES) return;
 	
-	if (_resizeFrame){
+	if (_resizeFrame)
+	{
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
 		NSPoint mouseLoc = [theEvent locationInWindow];
@@ -1916,7 +1944,7 @@ public:
 		
 		aCamera->Zoom( beforeFrame.size.height / newFrame.size.height);
 		
-		[[self window] display];		
+		[[self window] display];
 	}
 	else 
 	{
@@ -2154,70 +2182,6 @@ public:
 	if( _mouseLocStart.x < 10 && _mouseLocStart.y < 10 && isViewportResizable)
 	{
 		_resizeFrame = YES;
-		NSRect	newFrame = [self frame];
-		NSRect	beforeFrame;
-		/*
-		do
-		{
-			theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-			
-			mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
-			
-			
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
-			
-			switch ([theEvent type])
-			{
-				case NSLeftMouseDragged:
-					beforeFrame = [self frame];
-				
-					if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
-						mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;
-					
-					if( [[[self window] contentView] frame].size.height - mouseLoc.y*2 < 100)
-						mouseLoc.y = ([[[self window] contentView] frame].size.height - 100) / 2;
-
-					if( mouseLoc.x < 10)
-						mouseLoc.x = 10;
-					
-					if( mouseLoc.y < 10)
-						mouseLoc.y = 10;
-						
-					newFrame.origin.x = mouseLoc.x;
-					newFrame.origin.y = mouseLoc.y;
-					
-					newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
-					newFrame.size.height = [[[self window] contentView] frame].size.height - 10 - mouseLoc.y*2;
-					
-					[self setFrame: newFrame];
-					
-					aCamera->Zoom( beforeFrame.size.height / newFrame.size.height);
-					
-					[[self window] display];
-					
-				//	NSLog(@"%f", aCamera->GetParallelScale());
-				//	NSLog(@"%f", aCamera->GetViewAngle());
-				break;
-				
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					keepOn = NO;
-				break;
-					
-				case NSPeriodic:
-					
-				break;
-					
-				default:
-				
-				break;
-			}
-		}while (keepOn);
-				
-		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-		
-		[self setNeedsDisplay:YES];
-		*/
 	}
 	else
 	{
