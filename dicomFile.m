@@ -314,7 +314,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( [extension isEqualToString:@"tiff"] == YES ||
 		[extension isEqualToString:@"tif"] == YES)
 	{
-		int i;
+		int i, j;
 		short head_size = 0;
 		char* head_data = 0;
 		TIFF* tif = TIFFOpen([filePath UTF8String], "r");
@@ -361,20 +361,35 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			Modality = [[NSString alloc] initWithString:@"FV300"];
 			fileType = [[NSString stringWithString:@"FVTiff"] retain];
 			
-			// set the comments field
+			// set the comments and date fields
 			NSXMLElement* rootElement = [xmlDocument rootElement];
+			NSString* datetime_string = [NSString string];
 			for (i = 0; i < [rootElement childCount]; i++)
 			{
 				NSXMLNode* theNode = [rootElement childAtIndex:i];
 				if ([[theNode name] isEqualToString:@"Description"])
 					[dicomElements setObject:[theNode stringValue] forKey:@"studyComment"];
+				if ([[theNode name] isEqualToString:@"Acquisition Parameters"])
+					for (j = 0; j < [theNode childCount]; j++)
+					{
+						NSXMLNode* theSubNode = [theNode childAtIndex:j];
+						if ([[theSubNode name] isEqualToString:@"Date"])
+							datetime_string = [NSString stringWithFormat:@"%@ %@", datetime_string, [theSubNode stringValue]];
+						if ([[theSubNode name] isEqualToString:@"Time"])
+							datetime_string = [NSString stringWithFormat:@"%@ %@", datetime_string, [theSubNode stringValue]];
+					}
 			}
 			
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			
+			date = [NSDate dateWithNaturalLanguageString:datetime_string];
+			if (date == 0L)
+				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 			
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
+			
 			[dicomElements setObject:date forKey:@"studyDate"];
+			
 			[dicomElements setObject:Modality forKey:@"modality"];
 			[dicomElements setObject:patientID forKey:@"patientID"];
 			[dicomElements setObject:name forKey:@"patientName"];
