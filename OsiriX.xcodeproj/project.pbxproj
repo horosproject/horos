@@ -4856,6 +4856,12 @@
 		BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */; };
 		BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */; };
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
+		BFDDDD500AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTK Category.h */; };
+		BFDDDD510AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm */; };
+		BFDDDD520AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTK Category.h */; };
+		BFDDDD530AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm */; };
+		BFDDDD540AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTK Category.h */; };
+		BFDDDD550AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
 		BFDF1D5509E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
@@ -12129,6 +12135,8 @@
 		BFD4BFF106F2A96900EC9A90 /* RotateCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = RotateCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF206F2A96900EC9A90 /* StackCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StackCursor.tif; sourceTree = "<group>"; };
 		BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomCursor.tif; sourceTree = "<group>"; };
+		BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTK Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewerControllerDCMTK Category.h"; sourceTree = "<group>"; };
+		BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerControllerDCMTK Category.mm"; sourceTree = "<group>"; };
 		BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMEncapsulatedPDF.h; sourceTree = "<group>"; };
 		BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMEncapsulatedPDF.m; sourceTree = "<group>"; };
 		BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrcbm.mm; sourceTree = "<group>"; };
@@ -14674,6 +14682,7 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				BF92F5350AD6E8A30028FFAD /* Exporting */,
 				BF348573095126B700B05AD2 /* Sending */,
 				7E0339E307415C330025DDB4 /* Burning */,
 				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
@@ -15269,6 +15278,13 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
+		BF92F5350AD6E8A30028FFAD /* Exporting */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Exporting;
+			sourceTree = "<group>";
+		};
 		BF952BA206C9C7F40063B562 /* Single Window */ = {
 			isa = PBXGroup;
 			children = (
@@ -15282,6 +15298,8 @@
 				AB73E13706497EDA00545980 /* PreviewView.m */,
 				ABE17661056D2659009C93B5 /* ViewerController.h */,
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
+				BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTK Category.h */,
+				BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -20053,6 +20071,7 @@
 				BF0AAEB30A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
 				A942AFEA0AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
+				BFDDDD520AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21928,6 +21947,7 @@
 				BF0AAEB10A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837120AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 				A942AFE80AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
+				BFDDDD540AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23808,6 +23828,7 @@
 				BF0AAEAF0A9AB2560001C8EB /* DragMatrixWithDelete.h in Headers */,
 				A95837100AAEBC2A0001D415 /* SRAnnotation.h in Headers */,
 				A942AFEC0AB5630500CCADB1 /* SRAnnotationController.h in Headers */,
+				BFDDDD500AE6E3FE00888882 /* ViewerControllerDCMTK Category.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26117,6 +26138,7 @@
 				BF0AAEB40A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
 				A941723C0AB6934B00B9B487 /* SRAnnotationController.mm in Sources */,
+				BFDDDD530AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26844,6 +26866,7 @@
 				BF0AAEB20A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837130AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */,
+				BFDDDD550AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28127,6 +28150,7 @@
 				BF0AAEB00A9AB2560001C8EB /* DragMatrixWithDelete.m in Sources */,
 				A95837110AAEBC2A0001D415 /* SRAnnotation.mm in Sources */,
 				A94172B10AB6993000B9B487 /* SRAnnotationController.mm in Sources */,
+				BFDDDD510AE6E3FE00888882 /* ViewerControllerDCMTK Category.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

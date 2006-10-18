@@ -15993,16 +15993,16 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
 	  
 	// Private tag for ROI data  
-	#ifdef WITH_PRIVATE_TAGS
+	//#ifdef WITH_PRIVATE_TAGS
   , { 0x0071, 0x0011, 0x0071, 0x0011,
-      EVR_OW, "ROI", 1, 1, "OSIRIX",
+      EVR_OB, "ROI", 1, 1, "OSIRIX",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "OSIRIX" }
 	, { 0x0071, 0x0013, 0x0071, 0x0013,
-      EVR_OW, "3DReconstructionData", 1, 1, "OSIRIX",
+      EVR_OB, "3DReconstructionData", 1, 1, "OSIRIX",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "OSIRIX" }
-	#endif
+	//#endif
 	
   , { 0x0072, 0x0000, 0x0072, 0x0000,
       EVR_UL, "HangingProtocolGroupLength", 1, 1, "dicom2005",

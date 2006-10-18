@@ -38,6 +38,7 @@
 - (void)dealloc
 {
 	delete document;
+	[rois release];
 	[super dealloc];
 }
 
@@ -48,12 +49,15 @@
 {
 	NSEnumerator *roisEnumerator = [someROIs objectEnumerator];
 	ROI *aROI;
- 
+	[rois release];
+	rois = [someROIs retain];
 	while (aROI = [roisEnumerator nextObject])
 	{
 		[self addROI:aROI];
 		image = [[aROI pix] imageObj];
 	}
+
+		
 }
 
 - (void)addROI:(ROI *)aROI;
@@ -171,8 +175,21 @@
 			document->setManufacturer("OsiriX");
 
 	
-	DcmFileFormat fileformat;
-	OFCondition status = document->write(*fileformat.getDataset());
+		DcmFileFormat fileformat;
+		OFCondition status;
+		status = document->write(*fileformat.getDataset());
+		//This adds the archived ROI data of a single ROI to the SR	
+		if ([rois count] == 1) {	
+			ROI *roi = [rois objectAtIndex:0];
+			NSData *data = [roi data];
+			//const char *buffer =  (const char *)[data bytes];
+			const Uint8 *buffer =  (const Uint8 *)[data bytes];
+			DcmDataset *dataset = fileformat.getDataset();
+			DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
+			status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+		}
+		//NSLog(@"error code: %s", status.text());
+		//status = document->write(*fileformat.getDataset());
 
 	//NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
 	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];

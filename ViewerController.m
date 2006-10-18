@@ -5541,8 +5541,13 @@ extern NSString * documentsDirectory();
 				NSMutableString		*mutStr = [NSMutableString stringWithString: [[fileList[mIndex] objectAtIndex:i] valueForKey:@"uniqueFilename"]];
 				[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
 				NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
-				
-				array = [NSUnarchiver unarchiveObjectWithFile: str];
+				if ([[str pathExtension] isEqualToString:@"dcm"]) 
+				//the archived data is encapsulated inside the DICOM file. Need to get the data out and use unarchiveObjectWithData
+				{
+					//add this later
+				}
+				else				
+					array = [NSUnarchiver unarchiveObjectWithFile: str];
 				if( array)
 				{
 					[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
