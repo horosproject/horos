@@ -2370,17 +2370,40 @@ static ViewerController *draggedController = 0L;
 	id sender = [note object];
 	int tag;
 	
-	if ([sender isKindOfClass:[NSMatrix class]])
+	if( sender)
 	{
-		NSButtonCell *theCell = [sender selectedCell];
-		tag = [theCell tag];
+		if ([sender isKindOfClass:[NSMatrix class]])
+		{
+			NSButtonCell *theCell = [sender selectedCell];
+			tag = [theCell tag];
+		}
+		else
+		{
+			tag = [sender tag];
+		}
 	}
-	else
+	else tag = [[[note userInfo] valueForKey:@"toolIndex"] intValue];
+	
+	switch( tag)
 	{
-		tag = [sender tag];
-    }
-
-	[toolsMatrix selectCellWithTag: tag];
+		case tMesure:
+		case tAngle:
+		case tROI:
+		case tOval:
+		case tText:
+		case tArrow:
+		case tOPolygon:
+		case tCPolygon:
+		case tPencil:
+		case t2DPoint:
+		case tPlain:
+			[self setROIToolTag: tag];
+		break;
+		
+		default:
+			[toolsMatrix selectCellWithTag: tag];
+		break;
+	}
 	
 	if( tag >= 0) [imageView setCurrentTool: tag];
 }
@@ -6794,7 +6817,7 @@ int i,j,l;
 	}
 }
 
--(void) setROITool:(int) roitype name :(NSString*) title
+-(void) setROIToolTag:(int) roitype
 {
 	NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:5];
 	[cell setTag: roitype];
@@ -6811,7 +6834,7 @@ int i,j,l;
 
 -(void) setROITool:(id) sender
 {
-	[self setROITool: [sender tag] name:[sender title]];
+	[self setROIToolTag: [sender tag]];
 	
 	//change default Tool if sent from Menu 	
 	if ([sender isKindOfClass:[NSMenuItem class]])
@@ -6915,7 +6938,7 @@ int i,j,l;
 	{
 		PaletteController *palette = [[PaletteController alloc] initWithViewer: self];
 	}
-//	else [self setROITool: tPlain name:@"Brush"];
+//	else [self setROIToolTag: tPlain];
 }
 
 - (NSLock*) roiLock { return roiLock;}
@@ -7531,7 +7554,10 @@ int i,j,l;
 					[curDCM setOrigin: o];
 				}
 			}
+			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
+			[imageView sendSyncMessage:1];
+			[self propagateSettings];
 		}
 		else NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(@"Only useful if propagate settings is OFF.", nil), nil, nil, nil);
 	}

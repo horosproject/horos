@@ -112,7 +112,7 @@ PURPOSE.
 
 - (IBAction)changeMode:(id)sender
 {
-	[viewer setROITool: tPlain name:@"Brush"];
+	[viewer setROIToolTag: tPlain];
 	
 	[[viewer imageView] setEraserFlag: [sender selectedSegment]];
 }
@@ -135,7 +135,7 @@ PURPOSE.
 
 	[self showWindow:self];
 	
-	[viewer setROITool: tPlain name:@"Brush"];
+	[viewer setROIToolTag: tPlain];
 	
 	return self;
 }

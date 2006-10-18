@@ -351,7 +351,7 @@ enum
 - (IBOutlet)setKeyImage:(id)sender;
 - (BOOL) FullScreenON;
 - (void) setROITool:(id) sender;
-- (void) setROITool:(int) roitype name :(NSString*) title;
+- (void) setROIToolTag:(int) roitype;
 - (void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition;
 - (IBAction) loadSerie:(id) sender;
 - (IBAction) loadPatient:(id) sender;
