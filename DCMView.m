@@ -8011,9 +8011,92 @@ BOOL	lowRes = NO;
 			case 'v': [self flipVertical:nil];
 					break;
 			// mouse functions
-			case 'w':				
+			case 'w':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tWL], @"toolIndex", nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
-						break;
+				[self setCurrentTool: tWL];
+				break;
+			case 'm':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tTranslate], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tTranslate];
+				break;
+			case 'z':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tZoom], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tZoom];
+				break;
+			case 'i':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRotate], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tRotate];
+				break;
+			case 's':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tNext], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tNext];
+				break;
+			case 'l':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tMesure], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tMesure];
+				break;
+			case 'a':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tAngle], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tAngle];
+				break;
+			case 'r':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tROI], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tTranslate];
+				break;
+			case 'e':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tOval], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tROI];
+				break;
+			case 't':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tText], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tText];
+				break;
+			case 'q':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tArrow], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tArrow];
+				break;
+			case 'o':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tOPolygon], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tOPolygon];
+				break;
+			case 'c':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tCPolygon], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tCPolygon];
+				break;
+			case 'd':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tPencil], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tPencil];
+				break;
+			case 'p':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:t3Dpoint], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: t3Dpoint];
+				break;
+			case 'b':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tPlain], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[self setCurrentTool: tPlain];
+				break;
+			
+			case 'x':		
+				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tBonesRemoval], @"toolIndex", nil];
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				break;
+			
 						
 
 			default: break;
