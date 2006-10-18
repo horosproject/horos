@@ -10646,7 +10646,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					if (reportsMode < 3) {
 						Reports	*report = [[Reports alloc] init];
-						if([sender isEqualTo:reportTemplatesListPopUpButton])[report setTemplateName:[[sender selectedItem] title]];
+						if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
 						[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/REPORTS/", documentsDirectory()] type:reportsMode];					
 						[report release];
 					}
@@ -10690,7 +10690,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)updateReportToolbarIcon:(NSNotification *)note
 {
-	NSLog(@"updateReportToolbarIcon");
 	long i;
 	NSToolbarItem *item;
 	NSArray *toolbarItems = [toolbar items];

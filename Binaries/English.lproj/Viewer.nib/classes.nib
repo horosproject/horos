@@ -307,6 +307,9 @@
                 quicktimeTo = NSSlider; 
                 quicktimeToText = NSTextField; 
                 quicktimeWindow = NSWindow; 
+                reportTemplatesImageView = NSImageView; 
+                reportTemplatesListPopUpButton = NSPopUpButton; 
+                reportTemplatesView = NSView; 
                 roiPropaCopy = NSMatrix; 
                 roiPropaDest = NSTextField; 
                 roiPropaDim = NSMatrix; 

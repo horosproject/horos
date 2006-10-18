@@ -250,6 +250,10 @@ enum
 	BOOL					displayOnlyKeyImages;
 	
 	int						qt_to, qt_from, qt_interval, qt_dimension, current_qt_interval;
+	
+	IBOutlet NSView			*reportTemplatesView;
+	IBOutlet NSImageView	*reportTemplatesImageView;
+	IBOutlet NSPopUpButton	*reportTemplatesListPopUpButton;
 }
 
 // Create a new 2D Viewer

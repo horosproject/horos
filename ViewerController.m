@@ -88,6 +88,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "KeyObjectPopupController.h"
 
 #import "SRAnnotationController.h"
+#import "Reports.h"
 
 @class VRPROController;
 
@@ -1909,9 +1910,12 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setLabel: NSLocalizedString(@"Report", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Report", nil)];
 	[toolbarItem setToolTip: NSLocalizedString(@"Create/Open a report for selected study", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
-	[toolbarItem setTarget: browserWindow];
+	[self setToolbarReportIconForItem:toolbarItem];
+	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(generateReport:)];
+//	[toolbarItem setImage: [NSImage imageNamed: ReportToolbarItemIdentifier]];
+//	[toolbarItem setTarget: browserWindow];
+//	[toolbarItem setAction: @selector(generateReport:)];
     } 
 	else if ( [itemIdent isEqualToString: DeleteToolbarItemIdentifier])
 	{
@@ -10036,6 +10040,9 @@ int i,j,l;
 			   name: @"NSControlTextDidChangeNotification"
 			 object: nil];
 	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
+	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, nil]];
 	
 	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
@@ -11134,5 +11141,80 @@ sourceRef);
 	return displayOnlyKeyImages;
 }
 
+#pragma mark-
+#pragma mark report
+
+- (IBAction)generateReport:(id)sender;
+{
+	[self updateReportToolbarIcon:nil];
+	[browserWindow generateReport:sender];
+}
+
+- (NSImage*)reportIcon;
+{
+	NSString *iconName = @"Report.icns";
+	switch([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue])
+	{
+		case 0: // M$ Word
+		{
+			iconName = @"ReportWord.icns";
+		}
+		break;
+		case 1: // TextEdit (RTF)
+		{
+			iconName = @"ReportRTF.icns";
+		}
+		break;
+		case 2: // Pages.app
+		{
+			iconName = @"ReportPages.icns";
+		}
+		break;
+	}
+	return [NSImage imageNamed:iconName];
+}
+
+- (void)updateReportToolbarIcon:(NSNotification *)note
+{
+	long i;
+	NSToolbarItem *item;
+	NSArray *toolbarItems = [toolbar items];
+	for(i=0; i<[toolbarItems count]; i++)
+	{
+		item = [toolbarItems objectAtIndex:i];
+		if ([[item itemIdentifier] isEqualToString:ReportToolbarItemIdentifier])
+		{
+			[toolbar removeItemAtIndex:i];
+			[toolbar insertItemWithItemIdentifier:ReportToolbarItemIdentifier atIndex:i];
+		}
+	}
+}
+
+- (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
+{
+	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
+	{
+		[item setView:reportTemplatesView];
+		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+	}
+	else
+	{
+		[item setImage:[self reportIcon]];
+	}
+}
+
+- (void)reportToolbarItemWillPopUp:(NSNotification *)notif;
+{
+	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
+	{
+		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+		[reportTemplatesListPopUpButton removeAllItems];
+		[reportTemplatesListPopUpButton addItemWithTitle:@""];
+		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
+		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+	}
+}
 
 @end
