@@ -7474,7 +7474,7 @@ int i,j,l;
 - (void)useVOILUT: (id)sender
 {
 	[self revertSeries: self];
-	[imageView setWLWW:0 :0];
+	[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
 }
 
 

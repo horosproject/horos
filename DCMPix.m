@@ -786,6 +786,54 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 @implementation DCMPix
 
+//- (void) convertToFull16Bits: (unsigned short*) rawdata size:(long) RawSize BitsAllocated:(long) BitsAllocated BitsStored:(long) BitsStored HighBitPosition:(long) HighBitPosition PixelSign:(BOOL) PixelSign
+//{
+//	int l = (int)( RawSize / ( BitsAllocated / 8 ) );
+//	int i;
+//	
+//	if ( BitsAllocated == 16 )
+//	{
+//		// pmask : to mask the 'unused bits' (may contain overlays)
+//		uint16_t pmask = 0xffff;
+//		pmask = pmask >> ( BitsAllocated - BitsStored );
+//
+//		uint16_t *deb = (uint16_t*) rawdata;
+//	
+//		if ( !PixelSign )  // Pixels are unsigned
+//		{
+//			for(i = 0; i<l; i++)
+//			{   
+//				*deb = (*deb >> (BitsStored - HighBitPosition - 1)) & pmask;
+//				deb++;
+//			}
+//		}
+//		else // Pixels are signed
+//		{
+//			// smask : to check the 'sign' when BitsStored != BitsAllocated
+//			uint16_t smask = 0x0001;
+//			smask = smask << ( 16 - (BitsAllocated - BitsStored + 1) );
+//			// nmask : to propagate sign bit on negative values
+//			int16_t nmask = (int16_t)0x8000;  
+//			nmask = nmask >> ( BitsAllocated - BitsStored - 1 );
+//			
+//			for(i = 0; i<l; i++)
+//			{
+//				*deb = *deb >> (BitsStored - HighBitPosition - 1);
+//				if ( *deb & smask )
+//				{
+//					*deb = *deb | nmask;
+//				}
+//				else
+//				{
+//					*deb = *deb & pmask;
+//				}
+//				
+//				deb++;
+//			}
+//		}
+//	}
+//}
+
 - (NSImage*) image
 {
 	unsigned char		*buf = 0L;
@@ -4814,10 +4862,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //					
 //					dstf.data = imPix->fImage;
 //					
-//					if( inverseVal) slope *= -1.;
-//					
-//					
-//					
 //					if( fIsSigned > 0)
 //					{
 //						vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
@@ -4829,6 +4873,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //						//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
 //					}
 //					
+//					if( inverseVal)
+//					{
+//						float neg = -1;
+//						vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
+//					}
 //					free(oImage);
 //					oImage = 0L;
 //				}
@@ -5733,10 +5782,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				
 				dstf.data = imPix->fImage;
 				
-				if( inverseVal) slope *= -1.;
-				
-				
-				
 				if( fIsSigned > 0)
 				{
 					vImageConvert_16SToF( &src16, &dstf, offset, slope, 0);
@@ -5745,7 +5790,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				{
 					
 					vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
-					//vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+				}
+				
+				if( inverseVal)
+				{
+					float neg = -1;
+					vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
 				}
 				
 				free(oImage);
@@ -5812,7 +5862,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 - (BOOL) loadDICOMPapyrus // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 {
-	int				elemType, pixmin, pixmax, realwidth, realheight;
+	int				elemType, pixmin, pixmax, realwidth, realheight, highBit;
 	PapyShort		fileNb, imageNb, maxFrame = 1, ee,  err, theErr;
 	PapyULong		nbVal, i, pos;
 	SElement		*theGroupP;
@@ -6054,12 +6104,15 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //							}
 //						}
 			}
-					
-			// bitsAllocated
-			val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);	//papBitsAllocatedGr
+			
+			val = Papy3GetElement (theGroupP, papBitsAllocatedGr, &nbVal, &elemType);
 			bitsAllocated = (int) val->us;
 			
-			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);		//papBitsStoredGr
+			val = Papy3GetElement (theGroupP, papHighBitGr, &nbVal, &elemType);
+			highBit = (int) val->us;
+			
+			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
+			bitsStored = (int) val->us;
 //			if( val->us == 8 && bitsAllocated == 16)
 //			{
 //				bitsAllocated = 8;
@@ -7349,6 +7402,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						efree3 ((void **) &oImage);
 						oImage =  (short*) tmpImage;
 					}
+//					else if( bitsStored != 16 && fIsSigned == YES && bitsAllocated == 16)
+//					{
+//						long totSize = (long) ((long) height * (long) realwidth * 2L);
+//						
+//						[self convertToFull16Bits: (unsigned short*) oImage size: totSize BitsAllocated: bitsAllocated BitsStored: bitsStored HighBitPosition: highBit PixelSign: fIsSigned];
+//					}
 					
 					if( realwidth != width)
 					{
@@ -7489,8 +7548,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						}
 						
 						dstf.data = imPix->fImage;
-												
-						if( inverseVal) slope *= -1.;
 						
 						if( fIsSigned)
 						{
@@ -7499,6 +7556,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						else
 						{
 							vImageConvert_16UToF( &src16, &dstf, offset, slope, 0);
+						}
+						
+						if( inverseVal)
+						{
+							float neg = -1;
+							vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
 						}
 						
 						free(oImage);
