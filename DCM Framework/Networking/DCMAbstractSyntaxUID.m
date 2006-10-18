@@ -411,7 +411,9 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    || [sopClassUID isEqualToString:VisibleLightPhotographicImageStorage]
 		    || [sopClassUID isEqualToString:PETImageStorage]
 		    || [sopClassUID isEqualToString:RTImageStorage]
+			|| [sopClassUID isEqualToString:PDFStorageClassUID]
 		);
+		//JF 2006-10-11 added PDFStorageClassUID
 }
 
 + (NSArray *)imageSyntaxes{
