@@ -367,5 +367,5 @@ enum { barHide = 0, barOrigin, barFused, barBoth };
 - (id)dicomImage;
 
 //Hot key action
--(void)actionForHotKey:(NSString *)hotKey;
+-(BOOL)actionForHotKey:(NSString *)hotKey;
 @end

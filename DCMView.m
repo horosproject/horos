@@ -1534,8 +1534,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
         else
         {
-           // [super keyDown:event];
-		   [self actionForHotKey:[event characters]];
+			if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
         }
         
 		
@@ -7947,8 +7946,12 @@ BOOL	lowRes = NO;
 }
 
 //Hot key action
--(void)actionForHotKey:(NSString *)hotKey{
-	if ([hotKey length] > 0) {
+-(BOOL)actionForHotKey:(NSString *)hotKey
+{
+	BOOL returnedVal = YES;
+	
+	if ([hotKey length] > 0)
+	{
 		NSDictionary *userInfo = nil;
 		NSDictionary *wwwlDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
 		NSArray *wwwl = nil;
@@ -8082,10 +8085,14 @@ BOOL	lowRes = NO;
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 				break;
 			
-			default: break;
+			default:
+				returnedVal = NO;
+			break;
 		}
 	}
-
+	else returnedVal = NO;
+	
+	return returnedVal;
 }
 
 @end
