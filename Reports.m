@@ -224,7 +224,6 @@ static id aedesc_to_id(AEDesc *desc)
 		
 		case 2:
 		{
-			NSMutableArray * a = [Reports pagesTemplatesList];
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"pages"];
 			[self createNewPagesReportForStudy:study toDestinationPath:destinationFile];
 			[study setValue:destinationFile forKey:@"reportURL"];
@@ -242,7 +241,7 @@ static id aedesc_to_id(AEDesc *desc)
 	if (self)
 	{
 		myComponent = OpenDefaultComponent(kOSAComponentType, kOSAGenericScriptingComponentSubtype);
-		templateName = [NSMutableString stringWithString:@"OsiriX Report"];
+		templateName = [NSMutableString stringWithString:@"OsiriX Basic Report"];
 	}
 	return self;
 }
@@ -434,13 +433,13 @@ CHECK;
 
 + (NSMutableArray*)pagesTemplatesList;
 {
+	// iWork templates directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil];
 	NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
 	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
 	
 	NSMutableArray *templatesArray = [NSMutableArray arrayWithCapacity:1];
-	
-	id file;	 
+	id file;
 	while ((file = [directoryEnumerator nextObject]))
 	{
 		[directoryEnumerator skipDescendents];
@@ -451,6 +450,7 @@ CHECK;
 			[templatesArray addObject:[file substringFromIndex:7]];
 		}
 	}
+	
 	return templatesArray;
 }
 
@@ -464,7 +464,6 @@ CHECK;
 	[templateName setString:aName];
 	[templateName replaceOccurrencesOfString:@".template" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [templateName length])];
 	[templateName insertString:@"OsiriX " atIndex:0];
-	NSLog(@"setTemplateName : %@ -> %@", aName, templateName);
 }
 
 @end

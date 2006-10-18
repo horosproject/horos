@@ -2312,11 +2312,18 @@ static BOOL initialized = NO;
 	}
 		
 	// Pages template
-	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Report.template"];
+	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Basic Report.template"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 	{
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingString:@"/OsiriX Report.template"] handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingString:@"/OsiriX Basic Report.template"] handler:0L];
 	}
+	
+	// Pages templates in the OsiriX Data folder
+	// creation of the alias to the iWork template folder if needed
+	NSArray *templateDirectoryInOsiriXDataPathArray = [NSArray arrayWithObjects:documentsDirectory(), @"PAGES TEMPLATES", nil];
+	NSString *templateDirectoryInOsiriXData = [NSString pathWithComponents:templateDirectoryInOsiriXDataPathArray];
+	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectoryInOsiriXData])
+		[[NSFileManager defaultManager] createSymbolicLinkAtPath:templateDirectoryInOsiriXData pathContent:templateDirectory];
 }
 
 @end

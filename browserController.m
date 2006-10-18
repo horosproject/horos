@@ -1184,6 +1184,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
+#pragma mark-
 #pragma mark iCal routing functions - will be re-activated with iCal API in MacOS 10.5
 //
 //- (void)runSendQueue:(id)object{
@@ -7439,6 +7440,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	}
 	return self;
 }
@@ -10526,6 +10528,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) generateReport: (id) sender
 {
+	[self updateReportToolbarIcon:nil];
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
@@ -10687,6 +10690,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)updateReportToolbarIcon:(NSNotification *)note
 {
+	NSLog(@"updateReportToolbarIcon");
 	long i;
 	NSToolbarItem *item;
 	NSArray *toolbarItems = [toolbar items];
@@ -10703,19 +10707,29 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
+	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
+	{
+		[item setView:reportTemplatesView];
+		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
+	}
+	else
+	{
+		[item setImage:[self reportIcon]];
+	}
+}
+
+- (void)reportToolbarItemWillPopUp:(NSNotification *)notif;
+{
+	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
+	{
 		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-		if([pagesTemplatesArray count]>=1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
-		{
-			[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
-			[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
-			[item setView:reportTemplatesView];
-			[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-			[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
-		}
-		else
-		{
-			[item setImage:[self reportIcon]];
-		}
+		[reportTemplatesListPopUpButton removeAllItems];
+		[reportTemplatesListPopUpButton addItemWithTitle:@""];
+		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
+		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+	}
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
