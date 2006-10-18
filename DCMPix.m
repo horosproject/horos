@@ -3839,7 +3839,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 // PLEASE, KEEP ALSO THIS FUNCTION, BASED on loadDICOMDCMFramework
 // but progresively refactored (for now, I only aislated a special treatment for Philips Angiography)
 // To try it, uncomment, change method name to loadDICOMDCMFramework and the original loadDICOMDCMFramework to another name
-//- (BOOL)loadDICOMDCMFrameworkJacques_2006-10-08	
+//Jacques_2006-10-08
+
+//- (BOOL)loadDICOMDCMFrameworkJacques
 //{		
 //	if( pixArray != 0L && frameNo > 0) return YES; //NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
 //	
@@ -3859,19 +3861,20 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //	short				ee;
 //	
 //	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-//
+//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
 //#pragma mark *XA 
 //	
-//	if ( [SOPClassUID isEqualToString:@"1.2.840.10008.5.1.4.1.1.12.1"] &&
-//		 [[dcmObject attributeValueWithName:@"ManufacturersModelName"] isEqualToString:@"P H I L I P S     INTEGRIS V"])
+//	if ([SOPClassUID isEqualToString:@"1.2.840.10008.5.1.4.1.1.12.1"] ||
+//		[MediaStorageSOPInstanceUID hasPrefix:@"1.3.46.670589.7.5"])
 //	{
+//		//angio - Philips
 //		height = [[dcmObject attributeValueWithName:@"Rows"] intValue];
 //		width = [[dcmObject attributeValueWithName:@"Columns"] intValue];
 //		NSString *path;
 //		if((height == 1024) && (width == 1024))
-//			path = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/diameter1140frame1024.pbm"];
+//			path = [[NSBundle mainBundle] pathForResource:@"diameter1140frame1024" ofType:@"pbm"];
 //		else
-//			path = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/diameter570frame512.pbm"];
+//			path = [[NSBundle mainBundle] pathForResource:@"diameter570frame512" ofType:@"pbm"];
 //
 //		NSData *PBMdata = [[NSFileManager defaultManager] contentsAtPath:path];
 //		fIsSigned = 0;
@@ -3881,13 +3884,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		slope = 1.0;
 //		savedWL = 512;
 //		savedWW = 1024;
-//
-//		//pixelSpacingX = 0;
-//		//pixelSpacingY = 0;
-//		//pixelRatio = 1.0;	
-//		//originX = 0;
-//		//originY = 0;
-//		//originZ = 0;
 //		float rotation=[[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"] floatValue]; //0018,1510
 //		float angle=[[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] floatValue]; //0018,1511
 //		//NSLog(@"rotation:%f",rotation);
@@ -4053,36 +4049,146 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //		{
 //			NSLog(@"have PDF");
 //
-//			//check if the folder PDF exists in OsiriX document folder
-//			NSString *pathToPDF = [documentsDirectory() stringByAppendingString:@"/PDF/"];
-//			if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPDF]))
-//			[[NSFileManager defaultManager] createDirectoryAtPath:pathToPDF attributes:nil];
+//			NSData *pdfData = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+//			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];	
+//			[rep setCurrentPage:frameNo];	
+//			NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+//			[pdfImage addRepresentation:rep];
+//			[pdfImage setBackgroundColor: [NSColor whiteColor]];
+//			/*
+//			 NSSize	newSize = [pdfImage size];						
+//			 newSize.width *= 1.5;		// Increase PDF resolution to 72 * 1.5 DPI !
+//			 newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
+//			 [pdfImage setScalesWhenResized:YES];
+//			 [pdfImage setSize: newSize];
+//			 */
 //			
-//			//pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
-//			NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
-//			pathToPDF = [pathToPDF stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
-//			pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
-//			NSLog(pathToPDF);
-//				
-//			//creating file and opening it with preview
-//			NSFileManager *fileManager = [NSFileManager defaultManager];
-//			if( [fileManager createFileAtPath:pathToPDF contents:[dcmObject attributeValueWithName:@"EncapsulatedDocument"] attributes:nil])
-//			{
-//				[[NSWorkspace sharedWorkspace] openFile:pathToPDF];
-//				//return YES;
-//			}
-//			else
-//			{
-//				NSLog(@"couldn't open pdf");
-//				return NO;
-//			}
+//			NSData *tiffData = [pdfImage TIFFRepresentation];
+//			//NSString *dest = [NSString stringWithFormat:@"%@/Desktop/pdf.tif", NSHomeDirectory()];
 //			
-//			//create pathToIconPDF
-//			NSString *pathToIcon = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/pdf"];
-//			pathToIcon = [pathToIcon stringByAppendingPathExtension:@"tif"];	
-//			//read the tif...
-//			//- (NSData *)contentsAtPath:(NSString *)path
-//			NSData *tiffData = [[NSFileManager defaultManager] contentsAtPath:pathToIcon];
+//			NSBitmapImageRep	*TIFFRep = [NSBitmapImageRep imageRepWithData: tiffData];
+//			//NSLog(@"tiffRep: %@", [TIFFRep description]);
+//			
+//			height = [TIFFRep pixelsHigh];
+//			height /= 2;
+//			height *= 2;
+//			realwidth = [TIFFRep pixelsWide];
+//			width = realwidth/2;
+//			width *= 2;
+//			rowBytes = [TIFFRep bytesPerRow];
+//			oImage = 0L;
+//			unsigned char *srcImage = [TIFFRep bitmapData];
+//			
+//			unsigned char   *ptr, *tmpImage ;
+//			long			loop;
+//			unsigned char   *argbImage, *tmpPtr, *srcPtr;
+//			int x,y;
+//			
+//			argbImage = malloc( height * width * 4);
+//			isRGB = YES;
+//			
+//			//NSLog(@"height %d", height);
+//			//NSLog(@"width %d", width);
+//			switch( [TIFFRep bitsPerPixel])
+//			{
+//				case 8:
+//					NSLog(@"8 bit DICOM PDF");
+//					tmpPtr = argbImage;
+//					for( y = 0 ; y < height; y++)
+//					{
+//						srcPtr = srcImage + y*rowBytes;
+//						
+//						x = width;
+//						while( x-->0)
+//						{
+//							tmpPtr++;
+//							*tmpPtr++ = *srcPtr;
+//							*tmpPtr++ = *srcPtr;
+//							*tmpPtr++ = *srcPtr;
+//							srcPtr++;
+//						}
+//						isRGB = NO;
+//					}
+//						break;
+//					
+//				case 32:
+//					//already argb
+//					//argbImage = srcImage;				
+//					//NSLog(@"32 bits DICOM PDF");
+//					tmpPtr = argbImage;
+//					for( y = 0 ; y < height; y++)
+//					{
+//						srcPtr = srcImage + y*rowBytes;
+//						x = width;
+//						while( x-->0)
+//						{
+//							unsigned char r = *srcPtr++;
+//							unsigned char g = *srcPtr++;
+//							unsigned char b = *srcPtr++;
+//							unsigned char a = *srcPtr++;
+//							*tmpPtr++ = a;
+//							*tmpPtr++ = r;
+//							*tmpPtr++ = g;
+//							*tmpPtr++ = b;
+//							
+//							
+//						}			
+//					}
+//						NSLog(@"finished 32  bit");
+//					break;
+//					
+//				case 24:
+//					//NSLog(@"loadDICOMDCMFramework 24 bits");
+//					tmpPtr = argbImage;
+//					for( y = 0 ; y < height; y++)
+//					{
+//						srcPtr = srcImage + y*rowBytes;
+//						
+//						x = width;
+//						while( x-->0)
+//						{
+//							unsigned char r = *srcPtr++;
+//							unsigned char g = *srcPtr++;
+//							unsigned char b = *srcPtr++;
+//							unsigned char a = 1.0;
+//							*tmpPtr++ = a;
+//							*tmpPtr++ = r;
+//							*tmpPtr++ = g;
+//							*tmpPtr++ = b;
+//							
+//							
+//						}
+//					}
+//						break;
+//					
+//				case 48:
+//					NSLog(@"48 bits");
+//					tmpPtr = argbImage;
+//					for( y = 0 ; y < height; y++)
+//					{
+//						srcPtr = srcImage + y*rowBytes;
+//						
+//						x = width;
+//						while( x-->0)
+//						{
+//							tmpPtr++;
+//							*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//							*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//							*tmpPtr++ = *srcPtr;	srcPtr += 2;
+//						}
+//						
+//						//BlockMoveData( srcPtr, tmpPtr, width*4);
+//						//tmpPtr += width*4;
+//					}
+//						break;
+//					
+//				default:
+//					NSLog(@"Error - Unknow...");
+//					break;
+//			}
+//
+//			fImage = (float*) argbImage;
+//			rowBytes = width * 4;
 //			
 //			[pool release];
 //			return YES;												 
@@ -4774,9 +4880,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 //	[pool release];
 //	return YES;
 //}
-//
-//
-//
+
+
+
 
 
 
