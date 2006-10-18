@@ -24,7 +24,6 @@
 
 @implementation DragMatrixWithDelete
 
-static	NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 static NSString  *pasteBoardTypeCover = @"KeyImages";
 
 /*****************************************************************************

@@ -80,9 +80,6 @@ extern NSMutableDictionary				*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
-
-static		NSString					*pasteBoardOsiriX = @"OsiriX pasteboard";
-
 static		float						margin = 2;
 
 #define CROSS(dest,v1,v2) \
@@ -7864,11 +7861,16 @@ BOOL	lowRes = NO;
 	[thumbnail unlockFocus];
 	
 	if ([event modifierFlags] & NSAlternateKeyMask)
-		[ pbTypes addObject: NSFilesPromisePboardType];
+	{	
+		[pbTypes addObject: NSFilesPromisePboardType];
+	}
 	else
+	{
 		[pbTypes addObject: NSTIFFPboardType];	
+	}
 	
-	if ([self dicomImage]) {
+	if ([self dicomImage])
+	{
 		[pbTypes addObject:pasteBoardOsiriX];
 		[pboard declareTypes:pbTypes  owner:self];
 		[pboard setData:nil forType:pasteBoardOsiriX]; 

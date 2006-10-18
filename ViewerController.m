@@ -1361,115 +1361,132 @@ long sortROIByName(id roi1, id roi2, void *context)
 
 static ViewerController *draggedController = 0L;
 
+- (void) completeDragOperation:(ViewerController*) v
+{
+	int iz, xz;
+	
+	blendedwin = v;
+	
+	if( [[[blendedwin imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
+		[[[blendedwin imageView] curDCM] pheight] != [[imageView curDCM] pheight])
+		{
+			[blendingTypeMultiply setEnabled: NO];
+			[blendingTypeSubtract setEnabled: NO];
+			
+			[blendingTypeRed	setEnabled: NO];
+			[blendingTypeGreen  setEnabled: NO];
+			[blendingTypeBlue   setEnabled: NO];
+			[blendingTypeRGB   setEnabled: NO];
+		}
+		
+	if( [[[blendedwin pixList] objectAtIndex: 0] isRGB])
+	{
+		[blendingTypeRed	setEnabled: NO];
+		[blendingTypeGreen  setEnabled: NO];
+		[blendingTypeBlue   setEnabled: NO];
+	}
+	else
+	{
+		[blendingTypeRGB   setEnabled: NO];
+	}
+	
+	// Prepare fusion plug-ins menu
+	for( iz = 0; iz < [fusionPluginsMenu numberOfItems]; iz++)
+	{
+		if( [[fusionPluginsMenu itemAtIndex:iz] hasSubmenu])
+		{
+			NSMenu  *subMenu = [[fusionPluginsMenu itemAtIndex:iz] submenu];
+			
+			for( xz = 0; xz < [subMenu numberOfItems]; xz++)
+			{
+				[[subMenu itemAtIndex:xz] setTarget:self];
+				[[subMenu itemAtIndex:xz] setAction:@selector(endBlendingType:)];
+			}
+		}
+		else
+		{
+			[[fusionPluginsMenu itemAtIndex:iz] setTarget:self];
+			[[fusionPluginsMenu itemAtIndex:iz] setAction:@selector(endBlendingType:)];
+		}
+	}
+	[blendingPlugins setMenu: fusionPluginsMenu];
+	
+	//[self checkEverythingLoaded];
+	//[draggedController checkEverythingLoaded];
+	
+	// What type of blending?
+	[NSApp beginSheet: blendingTypeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	
+	draggedController = 0L;
+}
+
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-    NSPasteboard *paste = [sender draggingPasteboard];
-        //gets the dragging-specific pasteboard from the sender
-    NSArray *types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
-	//a list of types that we can accept
-    NSString *desiredType = [paste availableTypeFromArray:types];
-    NSData *carriedData = [paste dataForType:desiredType];
-	long	i, x, z, iz, xz;
+    NSPasteboard	*paste = [sender draggingPasteboard];
+	long			i, x, z, iz, xz;
 	
-    if (nil == carriedData)
-    {
-        //the operation failed for some reason
-        NSRunAlertPanel(NSLocalizedString(@"Paste Error", nil), NSLocalizedString(@"Sorry, but the past operation failed", nil), nil, nil, nil);
-        return NO;
-    }
-    else
-    {
-        //the pasteboard was able to give us some meaningful data
-        if ([desiredType isEqualToString:NSFilenamesPboardType])
-        {
-            //we have a list of file names in an NSData object
-            NSArray				*fileArray = [paste propertyListForType:@"NSFilenamesPboardType"];
-			NSString			*draggedFile = [fileArray objectAtIndex:0];
- 			
-			// Find a 2D viewer containing this specific file!
-			
-			NSArray				*winList = [NSApp windows];
-			BOOL				found = NO;
-			
-			for( i = 0; i < [winList count]; i++)
+	if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriX]] isEqualToString: pasteBoardOsiriX])
+	{
+		DCMView	*vi = [sender draggingSource];
+		
+		if ([[[vi window] windowController] is2DViewer] == YES)
+		{
+			[self completeDragOperation: [[vi window] windowController]];
+		}
+	}
+	else
+	{
+	    NSArray			*types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
+		NSString		*desiredType = [paste availableTypeFromArray:types];
+		NSData			*carriedData = 0L;
+		
+		if( desiredType) carriedData = [paste dataForType: desiredType];
+
+		if (nil == carriedData)
+		{
+			//the operation failed for some reason
+			NSRunAlertPanel(NSLocalizedString(@"Paste Error", nil), NSLocalizedString(@"Sorry, but the past operation failed", nil), nil, nil, nil);
+			return NO;
+		}
+		else
+		{
+			//the pasteboard was able to give us some meaningful data
+			if ([desiredType isEqualToString:NSFilenamesPboardType])
 			{
-				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+				//we have a list of file names in an NSData object
+				NSArray				*fileArray = [paste propertyListForType:@"NSFilenamesPboardType"];
+				NSString			*draggedFile = [fileArray objectAtIndex:0];
+				
+				// Find a 2D viewer containing this specific file!
+				
+				NSArray				*winList = [NSApp windows];
+				BOOL				found = NO;
+				
+				for( i = 0; i < [winList count]; i++)
 				{
-					for( z = 0; z < [[[winList objectAtIndex:i] windowController] maxMovieIndex]; z++)
+					if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 					{
-						NSMutableArray  *pList = [[[winList objectAtIndex:i] windowController] pixList: z];
-						
-						for( x = 0; x < [pList count]; x++)
+						for( z = 0; z < [[[winList objectAtIndex:i] windowController] maxMovieIndex]; z++)
 						{
-							if([[[pList objectAtIndex: x] sourceFile] isEqualToString:draggedFile])
+							NSMutableArray  *pList = [[[winList objectAtIndex:i] windowController] pixList: z];
+							
+							for( x = 0; x < [pList count]; x++)
 							{
-								if( found == NO)
+								if([[[pList objectAtIndex: x] sourceFile] isEqualToString:draggedFile])
 								{
-									if( [[winList objectAtIndex:i] windowController] == draggedController && draggedController != self)
+									if( found == NO)
 									{
-										found = YES;
-										
-										blendedwin = [[winList objectAtIndex:i] windowController];
-										
-										if( [[[blendedwin imageView] curDCM] pwidth] != [[imageView curDCM] pwidth] ||
-											[[[blendedwin imageView] curDCM] pheight] != [[imageView curDCM] pheight])
-											{
-												[blendingTypeMultiply setEnabled: NO];
-												[blendingTypeSubtract setEnabled: NO];
-												
-												[blendingTypeRed	setEnabled: NO];
-												[blendingTypeGreen  setEnabled: NO];
-												[blendingTypeBlue   setEnabled: NO];
-												[blendingTypeRGB   setEnabled: NO];
-											}
+										if( [[winList objectAtIndex:i] windowController] == draggedController && draggedController != self)
+										{
+											[self completeDragOperation: [[winList objectAtIndex:i] windowController]];
+											found = YES;
+										}
+										else if( draggedController == self)
+										{
+											NSLog(@"Myself => Cancel fusion if previous one!");
 											
-										if( [[[blendedwin pixList] objectAtIndex: 0] isRGB])
-										{
-											[blendingTypeRed	setEnabled: NO];
-											[blendingTypeGreen  setEnabled: NO];
-											[blendingTypeBlue   setEnabled: NO];
+											[self ActivateBlending: 0L];
 										}
-										else
-										{
-											[blendingTypeRGB   setEnabled: NO];
-										}
-										
-										// Prepare fusion plug-ins menu
-										for( iz = 0; iz < [fusionPluginsMenu numberOfItems]; iz++)
-										{
-											if( [[fusionPluginsMenu itemAtIndex:iz] hasSubmenu])
-											{
-												NSMenu  *subMenu = [[fusionPluginsMenu itemAtIndex:iz] submenu];
-												
-												for( xz = 0; xz < [subMenu numberOfItems]; xz++)
-												{
-													[[subMenu itemAtIndex:xz] setTarget:self];
-													[[subMenu itemAtIndex:xz] setAction:@selector(endBlendingType:)];
-												}
-											}
-											else
-											{
-												[[fusionPluginsMenu itemAtIndex:iz] setTarget:self];
-												[[fusionPluginsMenu itemAtIndex:iz] setAction:@selector(endBlendingType:)];
-											}
-										}
-										[blendingPlugins setMenu: fusionPluginsMenu];
-										
-										//[self checkEverythingLoaded];
-										//[draggedController checkEverythingLoaded];
-										
-										// What type of blending?
-										[NSApp beginSheet: blendingTypeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-										
-										draggedController = 0L;
-										// We found the windowcontroller of the incoming file
-										//[self ActivateBlending: [[winList objectAtIndex:i] windowController]];
-									}
-									else if( draggedController == self)
-									{
-										NSLog(@"Myself => Cancel fusion if previous one!");
-										
-										[self ActivateBlending: 0L];
 									}
 								}
 							}
@@ -1477,17 +1494,17 @@ static ViewerController *draggedController = 0L;
 					}
 				}
 			}
-        }
-        else
-        {
-            //this can't happen
-            NSAssert(NO, @"This can't happen");
-            return NO;
-        }
-    }
+			else
+			{
+				//this can't happen
+				NSAssert(NO, @"This can't happen");
+				return NO;
+			}
+		}
+	}
 	
 	draggedController = 0L;
-
+	
     return YES;
 }
 
@@ -10019,7 +10036,7 @@ int i,j,l;
 			   name: @"NSControlTextDidChangeNotification"
 			 object: nil];
 	
-	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, nil]];
 	
 	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
