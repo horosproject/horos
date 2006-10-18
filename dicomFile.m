@@ -2004,7 +2004,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
 		
 		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
-		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
+		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
 		{
 			[dicomElements setObject:studyID forKey:@"seriesID"];
 			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
@@ -2392,7 +2392,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = [[NSString alloc] initWithString:name];
 			
 		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
-		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
+		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
 		{
 			[dicomElements setObject:studyID forKey:@"seriesID"];
 			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
