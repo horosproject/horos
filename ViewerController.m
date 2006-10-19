@@ -10310,7 +10310,7 @@ int i,j,l;
 					if( [sender tag] == 3) mode = @"MIP";
 					else mode = @"VR";
 					
-					viewer = [[VRPROController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
+					viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
 					for( i = 1; i < maxMovieIndex; i++)
 					{
 						[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
@@ -10390,7 +10390,7 @@ int i,j,l;
 			if( [sender tag] == 3) mode = @"MIP";
 			else mode = @"VR";
 			
-			viewer = [[VRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
+			viewer = [[VRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
 			for( i = 1; i < maxMovieIndex; i++)
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];

@@ -18,12 +18,15 @@
 		<string>613 540 214 93 0 0 1440 878 </string>
 		<key>372</key>
 		<string>433 457 158 82 0 0 1024 746 </string>
+		<key>737</key>
+		<string>687 547 66 78 0 0 1440 878 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>1408</integer>
+		<integer>737</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>
