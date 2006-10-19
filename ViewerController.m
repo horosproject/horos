@@ -41,7 +41,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "VRControllerVPRO.h"
 #import "NSSplitViewSave.h"
 #import "SRController.h"
-#import "MPRController.h"
+//#import "MPRController.h"
 #import "MPR2DController.h"
 #import "NSFullScreenWindow.h"
 #import "ViewerController.h"
@@ -3478,41 +3478,42 @@ static ViewerController *draggedController = 0L;
 			DCMPix	*copyPix = [curPix copy];
 			
 			[newPixList addObject: copyPix];
-			[copyPix release];
 			
-			[[newPixList lastObject] setPwidth: newX];
-			[[newPixList lastObject] setPheight: newY];
+			[copyPix setPwidth: newX];
+			[copyPix setPheight: newY];
 			
-			[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * z)];
-			[[newPixList lastObject] setTot: newZ];
-			[[newPixList lastObject] setFrameNo: z];
-			[[newPixList lastObject] setID: z];
+			[copyPix setfImage: (float*) (emptyData + imageSize * z)];
+			[copyPix setTot: newZ];
+			[copyPix setFrameNo: z];
+			[copyPix setID: z];
 			
-			[[newPixList lastObject] setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
-			[[newPixList lastObject] setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
-			[[newPixList lastObject] setSliceThickness: [curPix sliceThickness] * zFactor];
-			[[newPixList lastObject] setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
+			[copyPix setPixelSpacingX: [curPix pixelSpacingX] * xFactor];
+			[copyPix setPixelSpacingY: [curPix pixelSpacingY] * yFactor];
+			[copyPix setSliceThickness: [curPix sliceThickness] * zFactor];
+			[copyPix setPixelRatio:  [curPix pixelRatio] / xFactor * yFactor];
 			
 			newOrigin[ 0] = origin[ 0];	newOrigin[ 1] = origin[ 1];	newOrigin[ 2] = origin[ 2];
 			switch( o)
 			{
 				case 0:
 					newOrigin[ 0] = origin[ 0] + (float) z * interval;
-					[[newPixList lastObject] setSliceLocation: newOrigin[ 0]];
+					[copyPix setSliceLocation: newOrigin[ 0]];
 					break;
 					
 				case 1:
 					newOrigin[ 1] = origin[ 1] + (float) z * interval;
-					[[newPixList lastObject] setSliceLocation: newOrigin[ 1]];
+					[copyPix setSliceLocation: newOrigin[ 1]];
 					break;
 					
 				case 2:
 					newOrigin[ 2] = origin[ 2] + (float) z * interval;
-					[[newPixList lastObject] setSliceLocation: newOrigin[ 2]];
+					[copyPix setSliceLocation: newOrigin[ 2]];
 					break;
 			}
-			[[newPixList lastObject] setOrigin: newOrigin];
-			[[newPixList lastObject] setSliceInterval: interval];
+			[copyPix setOrigin: newOrigin];
+			[copyPix setSliceInterval: interval];
+			
+			[copyPix release];	// It's added to the newPixList array
 		}
 		
 		// X - Y RESAMPLING
@@ -4231,7 +4232,7 @@ static ViewerController *draggedController = 0L;
 		switch( [contextInfo tag])
 		{
 			case 1: [self MPR2DViewer:contextInfo];		break;  //2DMPR
-			case 2: [self MPRViewer:contextInfo];		break;  //3DMPR
+//			case 2: [self MPRViewer:contextInfo];		break;  //3DMPR
 			case 3: [self VRViewer:contextInfo];		break;  //MIP
 			case 4: [self VRViewer:contextInfo];		break;  //VR
 			case 5: [self SRViewer:contextInfo];		break;  //SR
@@ -7714,27 +7715,27 @@ int i,j,l;
 	
 	[viewersList release];
 	
-	// *** 3D MPR Viewers ***
-	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"MPR"])
-		{
-			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
-		}
-	}
-	
-	for( i = 0; i < [viewersList count]; i++)
-	{
-		MPRController	*vC = [viewersList objectAtIndex: i];
-		
-		if( self == [vC blendingController])
-		{
-			[vC updateBlendingImage];
-		}
-	}
-	[viewersList release];
+//	// *** 3D MPR Viewers ***
+//	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+//	
+//	for( i = 0; i < [winList count]; i++)
+//	{
+//		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"MPR"])
+//		{
+//			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
+//		}
+//	}
+//	
+//	for( i = 0; i < [viewersList count]; i++)
+//	{
+//		MPRController	*vC = [viewersList objectAtIndex: i];
+//		
+//		if( self == [vC blendingController])
+//		{
+//			[vC updateBlendingImage];
+//		}
+//	}
+//	[viewersList release];
 	
 //	// *** 3D MIP Viewers ***
 //	viewersList = [[NSMutableArray alloc] initWithCapacity:0];
@@ -10211,48 +10212,48 @@ int i,j,l;
 	}
 }
 
--(IBAction) MPRViewer:(id) sender
-{
-	long i;
-	
-	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-
-	if( [self computeInterval] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-	{
-		[self SetThicknessInterval:sender];
-	}
-	else
-	{
-		MPRController *viewer = [appController FindViewer :@"MPR" :pixList[0]];
-		
-		if( viewer)
-		{
-			[[viewer window] makeKeyAndOrderFront:self];
-		}
-		else
-		{
-			viewer = [[MPRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController];
-			
-			for( i = 1; i < maxMovieIndex; i++)
-			{
-				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
-			}
-			
-			[viewer ApplyCLUTString:curCLUTMenu];
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[viewer setWLWW:iwl :iww];
-			[viewer showWindow:self];
-			[[viewer window] makeKeyAndOrderFront:self];
-			[viewer setWLWW:iwl :iww];
-			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-		}
-	}
-}
+//-(IBAction) MPRViewer:(id) sender
+//{
+//	long i;
+//	
+//	[self checkEverythingLoaded];
+//	[self clear8bitRepresentations];
+//
+//	if( [self computeInterval] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
+//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
+//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
+//	{
+//		[self SetThicknessInterval:sender];
+//	}
+//	else
+//	{
+//		MPRController *viewer = [appController FindViewer :@"MPR" :pixList[0]];
+//		
+//		if( viewer)
+//		{
+//			[[viewer window] makeKeyAndOrderFront:self];
+//		}
+//		else
+//		{
+//			viewer = [[MPRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController];
+//			
+//			for( i = 1; i < maxMovieIndex; i++)
+//			{
+//				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+//			}
+//			
+//			[viewer ApplyCLUTString:curCLUTMenu];
+//			float   iwl, iww;
+//			[imageView getWLWW:&iwl :&iww];
+//			[viewer setWLWW:iwl :iww];
+//			[viewer showWindow:self];
+//			[[viewer window] makeKeyAndOrderFront:self];
+//			[viewer setWLWW:iwl :iww];
+//			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+//		}
+//	}
+//}
 
 -(IBAction) segmentationTest:(id) sender
 {

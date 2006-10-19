@@ -401,6 +401,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) compressDICOMJPEG:(NSString*) compressedPath;
 -(void) decompressDICOMJPEG:(NSString*) compressedPath;
 
+- (void)updateReportToolbarIcon:(NSNotification *)note;
 /******Notifactions posted by browserController***********
 
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser

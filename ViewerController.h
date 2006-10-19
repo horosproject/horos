@@ -414,7 +414,7 @@ enum
 - (float) computeInterval;
 - (IBAction) endThicknessInterval:(id) sender;
 - (void) SetThicknessInterval:(id) constructionType;
-- (IBAction) MPRViewer:(id) sender;
+//- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
 - (IBAction) MPR2DViewer:(id) sender;
@@ -493,6 +493,8 @@ enum
 - (float) factorPET2SUV;
 - (IBAction) flipDataSeries: (id) sender;
 - (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed;
+- (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
+- (void)updateReportToolbarIcon:(NSNotification *)note;
 #pragma mark-
 #pragma mark Brush ROI Filters
 
