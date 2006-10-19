@@ -434,7 +434,7 @@ CHECK;
 + (NSMutableArray*)pagesTemplatesList;
 {
 	// iWork templates directory
-	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil];
+	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
 	NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
 	

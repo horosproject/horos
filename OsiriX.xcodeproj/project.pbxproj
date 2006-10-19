@@ -8724,6 +8724,9 @@
 		CE5EABE30935E702006D85DD /* Hue1.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC20935E702006D85DD /* Hue1.plist */; };
 		CE5EABE40935E702006D85DD /* HotMetal.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC30935E702006D85DD /* HotMetal.plist */; };
 		CE5EABE50935E702006D85DD /* HotGreen.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC40935E702006D85DD /* HotGreen.plist */; };
+		CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */ = {isa = PBXBuildFile; fileRef = CE5F9D730AE813A40042280F /* localizedTemplatesPages */; };
+		CE5F9D750AE813A40042280F /* localizedTemplatesPages in Resources */ = {isa = PBXBuildFile; fileRef = CE5F9D730AE813A40042280F /* localizedTemplatesPages */; };
+		CE5F9D760AE813A40042280F /* localizedTemplatesPages in Resources */ = {isa = PBXBuildFile; fileRef = CE5F9D730AE813A40042280F /* localizedTemplatesPages */; };
 		CE61039B09DEA15F00A1FA92 /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CB909B6828400545F5E /* jchuff8.h */; };
 		CE61039C09DEA18B00A1FA92 /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF509B6828500545F5E /* jmemsys8.h */; };
 		CE646B1A0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
@@ -13401,6 +13404,7 @@
 		CE5EABC20935E702006D85DD /* Hue1.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Hue1.plist; sourceTree = "<group>"; };
 		CE5EABC30935E702006D85DD /* HotMetal.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = HotMetal.plist; sourceTree = "<group>"; };
 		CE5EABC40935E702006D85DD /* HotGreen.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = HotGreen.plist; sourceTree = "<group>"; };
+		CE5F9D730AE813A40042280F /* localizedTemplatesPages */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = localizedTemplatesPages; path = Binaries/localizedTemplatesPages; sourceTree = "<group>"; };
 		CE646B150751D8D9002962B7 /* iPhotoSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = iPhotoSmall.tif; path = Binaries/Icons/iPhotoSmall.tif; sourceTree = SOURCE_ROOT; };
 		CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRViewVPRO.mm; sourceTree = "<group>"; };
 		CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRViewVPRO.h; sourceTree = "<group>"; };
@@ -14035,6 +14039,7 @@
 				BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */,
 				A94173210AB6B50000B9B487 /* SRAnnotation.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
+				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
 				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
@@ -24409,6 +24414,7 @@
 				A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */,
 				A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */,
+				CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24701,6 +24707,7 @@
 				A9ADBBD70ADE80E60022DFC7 /* ReportPages.icns in Resources */,
 				A9ADBBD80ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD90ADE80E60022DFC7 /* ReportWord.icns in Resources */,
+				CE5F9D750AE813A40042280F /* localizedTemplatesPages in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24994,6 +25001,7 @@
 				A9ADBBD40ADE80E60022DFC7 /* ReportPages.icns in Resources */,
 				A9ADBBD50ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD60ADE80E60022DFC7 /* ReportWord.icns in Resources */,
+				CE5F9D760AE813A40042280F /* localizedTemplatesPages in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

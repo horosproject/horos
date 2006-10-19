@@ -2301,7 +2301,7 @@ static BOOL initialized = NO;
 + (void)checkForPagesTemplate;
 {
 	// Pages template directory
-	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"My Templates", nil];
+	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
 	NSString *templateDirectory;
 	for(i=0; i<[templateDirectoryPathArray count]; i++)
@@ -2310,7 +2310,20 @@ static BOOL initialized = NO;
 		if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectory])
 			[[NSFileManager defaultManager] createDirectoryAtPath:templateDirectory attributes:nil];
 	}
-		
+	// Creates paths for other languages...
+	NSArray *LocalizedTemplateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", nil];
+	NSString *localizedDirectory;
+	
+	NSArray	*localizedList = [NSArray arrayWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/localizedTemplatesPages"]];
+	
+	for( i = 0 ; i < [localizedList count]; i++)
+	{
+		localizedDirectory = [NSString pathWithComponents:[LocalizedTemplateDirectoryPathArray arrayByAddingObject: [localizedList objectAtIndex: i]]];
+		if(![[NSFileManager defaultManager] fileExistsAtPath:localizedDirectory]) [[NSFileManager defaultManager] createDirectoryAtPath:localizedDirectory attributes:nil];
+		localizedDirectory = [localizedDirectory stringByAppendingPathComponent:@"OsiriX"];
+		if(![[NSFileManager defaultManager] fileExistsAtPath:localizedDirectory]) [[NSFileManager defaultManager] createSymbolicLinkAtPath:localizedDirectory pathContent:templateDirectory];
+	}
+	
 	// Pages template
 	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Basic Report.template"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
