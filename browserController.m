@@ -2739,7 +2739,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	for(  i = 0; i < [[sender menu] numberOfItems]; i++) [[[sender menu] itemAtIndex: i] setState: NSOffState];
 	
-	[[[sender menu] itemAtIndex: [sender tag]] setState: NSOnState];
+	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
 	searchType = [sender tag];
 	//create new Filter Predicate when changing searchType ans set searchString to nil;
@@ -5185,8 +5185,8 @@ static BOOL withReset = NO;
 	
 	[context unlock];
 	
-	[databaseOutline selectRow:0 byExtendingSelection:NO];
-	[databaseOutline selectRowIndexes:selectedRows byExtendingSelection: NO];
+	previousItem = 0L;
+	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
 }
 
 - (void) matrixLoadIcons:(NSManagedObject*) item
