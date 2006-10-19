@@ -198,7 +198,6 @@
 	{
 		ctag = [sender tag];
     }
-	
 	if( ctag >= 0)
     {
 		NSEnumerator *enumerator = [imageViews objectEnumerator];
