@@ -120,12 +120,26 @@
 	
 	// image reference
 	DCMObject *dcmObject;
+	OFString refsopClassUID;
+	OFString refsopInstanceUID;
 	dcmObject = [DCMObject objectWithContentsOfFile:[[aROI pix] srcFile] decodingPixelData:NO];
-	OFString sopClassUID = OFString([[dcmObject attributeValueWithName:@"SOPClassUID"] UTF8String]);
-	OFString sopInstanceUID = OFString([[[[aROI pix] imageObj] valueForKey:@"sopInstanceUID"] UTF8String]);
-
+	if (![aROI referencedSOPClassUID]) {
+		NSString *uid = [dcmObject attributeValueWithName:@"SOPClassUID"];
+		refsopClassUID = OFString([uid UTF8String]);
+		[aROI setReferencedSOPClassUID:uid];
+	}
+		else refsopClassUID = OFString([[aROI referencedSOPClassUID]  UTF8String]);
+		
+	if (![aROI referencedSOPInstanceUID]) {
+		NSString *uid = [[[aROI pix] imageObj] valueForKey:@"sopInstanceUID"];
+		refsopInstanceUID = OFString([uid UTF8String]);
+		[aROI setReferencedSOPInstanceUID:uid];
+	}
+	else
+		refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID]  UTF8String]);
+		
 	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
-	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(sopClassUID, sopInstanceUID));
+	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(refsopClassUID, refsopInstanceUID));
 	document->getTree().goUp(); // go up to the SCOORD element
 	
 	document->getTree().goUp(); // go up to the root element
@@ -134,7 +148,16 @@
 #pragma mark -
 #pragma mark DICOM write
 			
-- (BOOL)save;
+- (BOOL)save{
+	//NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
+	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
+	// to do : find a correct output file name
+	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"dcm"];
+	return [self writeToFileAtPath:path];
+}
+
+
+- (BOOL)writeToFileAtPath:(NSString *)path
 {
 			id study = [image valueForKeyPath:@"series.study"];
 			//add to Study
@@ -178,23 +201,20 @@
 		DcmFileFormat fileformat;
 		OFCondition status;
 		status = document->write(*fileformat.getDataset());
-		//This adds the archived ROI data of a single ROI to the SR	
-		if ([rois count] == 1) {	
+		
+		//This adds the archived ROI Array  to the SR		
 			ROI *roi = [rois objectAtIndex:0];
-			NSData *data = [roi data];
-			//const char *buffer =  (const char *)[data bytes];
+			NSData *data = nil;
+			data = [ NSArchiver archivedDataWithRootObject:rois];
 			const Uint8 *buffer =  (const Uint8 *)[data bytes];
 			DcmDataset *dataset = fileformat.getDataset();
 			DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
 			status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
-		}
+
 		//NSLog(@"error code: %s", status.text());
 		//status = document->write(*fileformat.getDataset());
 
-	//NSString *dbPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"INCOMING"];
-	NSString *dbPath = [[BrowserController currentBrowser] documentsDirectory];
-	// to do : find a correct output file name
-	NSString *path = [[dbPath stringByAppendingPathComponent:@"tmp"] stringByAppendingPathExtension:@"dcm"];
+
 
 	if (status.good())
 		status = fileformat.saveFile([path UTF8String], EXS_LittleEndianExplicit);

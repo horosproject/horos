@@ -19,6 +19,7 @@
 =========================================================================*/
 
 #import "ViewerControllerDCMTKCategory.h"
+#import "SRAnnotation.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -36,16 +37,21 @@
 	OFString name;
 	const Uint8 *buffer;
 	unsigned long length;
+	NSLog(@"Unarchive from SR");
 	if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good()){
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}
-	/*
-	findAndGetUint8Array	( DCM_OsirixROI,
-								const Uint8 *& 	value,
-								unsigned long * 	count = NULL,
-								const OFBool 	searchIntoSub = OFFalse
-*/
+	
 	return archiveData;
+}
+
+
+//All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
+- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path{
+	SRAnnotation *sr = [[SRAnnotation alloc] init];
+	[sr addROIs:rois];
+	[sr writeToFileAtPath:path];
+	[sr dealloc];
 }
 
 

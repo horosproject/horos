@@ -21,6 +21,8 @@
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
 
+
+- (BOOL)writeToFileAtPath:(NSString *)path;
 - (BOOL)save;
 - (void)saveAsHTML;
 

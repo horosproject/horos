@@ -89,6 +89,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 
 #import "SRAnnotationController.h"
 #import "Reports.h"
+#import "ViewerControllerDCMTKCategory.h"
 
 @class VRPROController;
 
@@ -5542,13 +5543,15 @@ extern NSString * documentsDirectory();
 				NSMutableString		*mutStr = [NSMutableString stringWithString: [[fileList[mIndex] objectAtIndex:i] valueForKey:@"uniqueFilename"]];
 				[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
 				NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
-				if ([[str pathExtension] isEqualToString:@"dcm"]) 
-				//the archived data is encapsulated inside the DICOM file. Need to get the data out and use unarchiveObjectWithData
-				{
-					//add this later
-				}
-				else				
+											
+				NSData *data = [self roiFromDICOM:[str stringByAppendingPathExtension:@"dcm"]];	
+				//If data, we successfully unarchived from SR style ROI, else try old ROI archive 
+				if (data)
+					array = [NSUnarchiver unarchiveObjectWithData:data];
+				else
 					array = [NSUnarchiver unarchiveObjectWithFile: str];
+					
+					
 				if( array)
 				{
 					[[roiList[ mIndex] objectAtIndex:i] addObjectsFromArray:array];
@@ -5586,11 +5589,12 @@ extern NSString * documentsDirectory();
 				{
 					NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
 					[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-					NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
-					
+					//NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
+					NSString			*str = [path stringByAppendingFormat: @"%@-%d.dcm",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
 					if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 					{
-						[NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
+						// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
+						[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath:str];
 					}
 					else
 					{

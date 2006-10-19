@@ -25,6 +25,7 @@
 @interface ViewerController (ViewerControllerDCMTKCategory)
 
 - (NSData *)roiFromDICOM:(NSString *)path;
+- (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path;
 
 
 @end
