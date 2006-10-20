@@ -99,15 +99,7 @@ enum
 			 positionX:(int)posX positionY:(int)posY
 			  spacingX:(float) ipixelSpacingx spacingY:(float) ipixelSpacingy imageOrigin:(NSPoint) iimageOrigin;
 
-/*
- convert DICOM presentation state to ROI. 
- Although the referenced values are in the presentation state. 
- ROIs only point to a single image in OsiriX	
-*/
 
-- (id)initWithDICOMPresentationState:(DCMObject *)presentationState
-		referencedSOPInstanceUID:(NSString *)referencedSOPInstanceUID
-		referencedSOPClassUID:(NSString *)referencedSOPClassUID;
 
 - (int)textureDownRightCornerX;
 - (int)textureDownRightCornerY;
@@ -197,16 +189,7 @@ enum
 - (void) resize: (float) factor :(NSPoint) center;
 - (void) setPix: (DCMPix*) newPix;
 - (DCMPix*) pix;
-- (NSString *)roiSeriesInstanceUID;
-- (NSString *)sopInstanceUID;
-- (NSString *)referencedSOPInstanceUID;
-- (NSString *)referencedSOPClassUID;
-- (int) frameNumber;
-- (void)setRoiSeriesInstanceUID:(NSString *)roiSeriesInstanceUID;
-- (void)setSopInstanceUID:(NSString *)sopInstanceUID;
-- (void)setReferencedSOPInstanceUID:(NSString *)referencedSOPInstanceUID;
-- (void)setReferencedSOPClassUID:(NSString *)referencedSOPClassUID;
-- (void)setFrameNumber: (int)frameNumber;
+
 - (BOOL) reduceTextureIfPossible;
 - (void) addMarginToBuffer: (int) margin;
 - (void) drawTextualData;
@@ -215,5 +198,19 @@ enum
 // parent ROI
 - (ROI*) parentROI;
 - (void) setParentROI: (ROI*) aROI;
+
+
+//DICOM info
+- (NSString	*) roiSeriesInstanceUID;
+- (NSString	*) sopInstanceUID;
+- (NSString	*) referencedSOPInstanceUID;
+- (NSString	*) referencedSOPClassUID;
+-(int) frameNumber;
+
+- (void) setRoiSeriesInstanceUID:(NSString *)uid;
+- (void) setSopInstanceUID:(NSString *)uid;
+- (void) setReferencedSOPInstanceUID:(NSString *)uid;
+- (void) setReferencedSOPClassUID:(NSString *)uid;
+-(void) setFrameNumber:(int)frame;
 
 @end

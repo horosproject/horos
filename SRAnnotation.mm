@@ -32,6 +32,40 @@
 	//document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
 	
+	newSR = YES;
+	return self;
+}
+
+- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path{
+	if (self = [super init]) {
+	
+		document = new DSRDocument();
+		newSR = NO;
+		OFCondition status;
+		// load old ROI SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {			
+			DcmFileFormat fileformat;
+			status  = fileformat.loadFile([path UTF8String]);
+			if (status.good()) 				
+				status = document->read(*fileformat.getDataset());
+			
+			//clear old content	Don't want to UIDs if already created
+			if (status.good()) 
+				document->getTree().clear();
+
+				
+		}
+		// create new Doc 
+		if (![[NSFileManager defaultManager] fileExistsAtPath:path] || !status.good()) {
+			newSR = YES;
+			document->createNewDocument(DSRTypes::DT_ComprehensiveSR);	
+		}
+			
+		document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+		document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
+		
+		[self addROIs:ROIs];
+	}
 	return self;
 }
 
@@ -158,7 +192,9 @@
 
 
 - (BOOL)writeToFileAtPath:(NSString *)path
-{
+{	
+		//	Don't want to UIDs if already created
+		if (newSR) {
 			id study = [image valueForKeyPath:@"series.study"];
 			//add to Study
 			document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -196,7 +232,7 @@
 			document->setSeriesNumber("5002");
 			
 			document->setManufacturer("OsiriX");
-
+		}
 	
 		DcmFileFormat fileformat;
 		OFCondition status;

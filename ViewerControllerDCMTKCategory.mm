@@ -53,9 +53,10 @@
 
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
 - (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path{
-	SRAnnotation *sr = [[SRAnnotation alloc] init];
-	[sr addROIs:rois];
+	//SRAnnotation *sr = [[SRAnnotation alloc] init];
+	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path];
+	//[sr addROIs:rois];
 	[sr writeToFileAtPath:path];
-	[sr dealloc];
+	[sr release];
 }
 @end

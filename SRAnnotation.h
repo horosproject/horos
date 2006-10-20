@@ -16,7 +16,10 @@
 	DSRDocument *document;
 	id image;
 	NSArray *rois;
+	BOOL  newSR;
 }
+
+- (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path;
 
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;

@@ -239,6 +239,15 @@ Version 2.3
 	return newArray;
 }
 
+- (NSArray *)roiSRSeries{
+	NSArray *array = [self primitiveValueForKey: @"reportSeries"] ;
+	NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"id == 5002", nil]; 
+	NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"name == OsiriX ROI SR", nil]; 
+	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:predicate1, predicate2, nil]];
+	NSArray *newArray = [array filteredArrayUsingPredicate:compoundPredicate];
+	return array;
+}
+
 	
 
 
