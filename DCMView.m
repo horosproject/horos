@@ -5433,6 +5433,13 @@ static long scrollMode;
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
 			
+			if( [file valueForKeyPath:@"series.name"])
+			{
+				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+				[self DrawNSStringGL: [file valueForKeyPath:@"series.name"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+				yRaster += (stringSize.height + stringSize.height/10);
+			}
+			
 			if( [file valueForKeyPath:@"series.study.id"])
 			{
 				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		

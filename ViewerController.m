@@ -3372,6 +3372,8 @@ static ViewerController *draggedController = 0L;
 		if( wasDataFlipped) [self flipDataSeries: self];
 		
 		[imageView setIndex: index];
+		[imageView sendSyncMessage:1];
+		
 		[self adjustSlider];
 	}
 	return isResampled;
@@ -7628,7 +7630,7 @@ int i,j,l;
 		float   iwl, iww;
 		
 		// 4D data
-		if( curMovieIndex != [vC curMovieIndex])
+		if( curMovieIndex != [vC curMovieIndex] && maxMovieIndex ==  [vC maxMovieIndex])
 		{
 			[vC setMovieIndex: curMovieIndex];
 		}
@@ -8197,27 +8199,24 @@ int i,j,l;
 
 - (void) setMovieIndex: (short) i
 {
-//	if( curMovieIndex != i)
-	{
-		BOOL wasDataFlipped = [imageView flippedData];
-		int index = [imageView curImage];
-		
-		curMovieIndex = i;
-		if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
-		if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
-		
-		[moviePosSlider setIntValue:curMovieIndex];
-		
-		[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
-		
-		if( wasDataFlipped) [self flipDataSeries: self];
-		
-		[imageView setIndex: index];
-		
-		[self adjustSlider];
-		
-		[self setWindowTitle: self];
-	}
+	int index = [imageView curImage];
+	BOOL wasDataFlipped = [imageView flippedData];
+	
+	curMovieIndex = i;
+	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
+	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
+	
+	[moviePosSlider setIntValue:curMovieIndex];
+	
+	[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :roiList[curMovieIndex] :0 :'i' :NO];
+	[self setWindowTitle: self];
+	
+	if( wasDataFlipped) [self flipDataSeries: self];
+	
+	[imageView setIndex: index];
+	[imageView sendSyncMessage:1];
+	
+	[self adjustSlider];
 }
 
 - (void) moviePosSliderAction:(id) sender
