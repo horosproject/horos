@@ -7442,7 +7442,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	}
@@ -10524,6 +10524,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				[databaseOutline reloadData];
 			}
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixDeletedReport" object:nil userInfo:nil];
 		}
 		
 		[checkBonjourUpToDateThreadLock unlock];
@@ -10722,10 +10723,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else
 		studySelected = [selectedItem valueForKey:@"study"];
 	
-	NSLog(@"[pagesTemplatesArray count] : %d", [pagesTemplatesArray count]);
-	NSLog(@"REPORTSMODE : %d", [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]);
-	NSLog(@"Path : %@", [studySelected valueForKey:@"reportURL"]);
-
 	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
 	{
 		[item setView:reportTemplatesView];

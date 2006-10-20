@@ -9944,119 +9944,45 @@ int i,j,l;
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver: self
-           selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
-             object: nil];
 	
-	[nc	addObserver: self
-			selector: @selector(Display3DPoint:)
-				name: @"Display3DPoint"
-			object: nil];
-			
-	[nc addObserver: self
-           selector: @selector(ViewFrameDidChange:)
-               name: NSViewFrameDidChangeNotification
-             object: nil];
-			 
-	[nc addObserver: self
-           selector: @selector(revertSeriesNotification:)
-               name: @"revertSeriesNotification"
-             object: nil];
+    [nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
+	[nc	addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
+	[nc addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
+	[nc addObserver:self selector:@selector(revertSeriesNotification:) name:@"revertSeriesNotification" object:nil];
+	[nc addObserver:self selector:@selector(updateVolumeData:) name:@"updateVolumeData" object:nil];
+	[nc addObserver:self selector:@selector(roiChange:) name:@"roiChange" object:nil];
+	[nc addObserver:self selector:@selector(OpacityChanged:) name:@"OpacityChanged" object:nil];
+	[nc addObserver:self selector:@selector(defaultToolModified:) name:@"defaultToolModified" object:nil];
+	[nc addObserver:self selector:@selector(defaultRightToolModified:) name:@"defaultRightToolModified" object:nil];
 	
-	[nc addObserver: self
-           selector: @selector(updateVolumeData:)
-               name: @"updateVolumeData"
-             object: nil];
-			 
-	[nc addObserver: self
-		   selector: @selector(roiChange:)
-			   name: @"roiChange"
-			 object: nil];
-			 
-	[nc addObserver: self
-			   selector: @selector(OpacityChanged:)
-				   name: @"OpacityChanged"
-				 object: nil];
+	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
 	
-	[nc addObserver: self
-           selector: @selector(defaultToolModified:)
-               name: @"defaultToolModified"
-             object: nil];
-			 
-	[nc addObserver: self
-           selector: @selector(defaultRightToolModified:)
-               name: @"defaultRightToolModified"
-             object: nil];
-	
-	[nc postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	
-    [nc addObserver: self
-           selector: @selector(UpdateConvolutionMenu:)
-               name: @"UpdateConvolutionMenu"
-             object: nil];
-	
-	[nc addObserver: self
-			   selector: @selector(CLUTChanged:)
-				   name: @"CLUTChanged"
-				 object: nil];
+    [nc addObserver:self selector:@selector(UpdateConvolutionMenu:) name:@"UpdateConvolutionMenu" object:nil];
+	[nc addObserver:self selector:@selector(CLUTChanged:) name:@"CLUTChanged" object:nil];
 				 
 	[nc postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 
-    [nc addObserver: self
-           selector: @selector(UpdateCLUTMenu:)
-               name: @"UpdateCLUTMenu"
-             object: nil];
+    [nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
 	
 	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 
 	curOpacityMenu = @"Linear Table";
 	[curOpacityMenu retain];
 	
-    [nc addObserver: self
-           selector: @selector(UpdateOpacityMenu:)
-               name: @"UpdateOpacityMenu"
-             object: nil];
+    [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+	[nc postNotificationName:@"UpdateOpacityMenu" object:curOpacityMenu userInfo:0L];
 
-    [nc addObserver: self
-           selector: @selector(CloseViewerNotification:)
-               name: @"CloseViewerNotification"
-             object: nil];
-	
-	[nc addObserver: self
-			selector: @selector(recomputeROI:)
-               name: @"recomputeROI"
-             object: nil];
-			 
-	[nc addObserver: self
-		selector: @selector(closeAllWindows:)
-               name: @"Close All Viewers"
-             object: nil];
-	
-	[nc addObserver: self
-		selector: @selector(notificationStopPlaying:)
-               name: @"notificationStopPlaying"
-             object: nil];
-			 
-	[nc addObserver: self
-		selector: @selector(notificationiChatBroadcast:)
-               name: @"notificationiChatBroadcast"
-             object: nil];
-			 
-	[nc addObserver: self
-			selector: @selector(notificationSyncSeries:)
-               name: @"notificationSyncSeries"
-             object: nil];
-	
-	[nc	addObserver: self
-		   selector: @selector(exportTextFieldDidChange:)
-			   name: @"NSControlTextDidChangeNotification"
-			 object: nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
+    [nc addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+	[nc addObserver:self selector:@selector(recomputeROI:) name:@"recomputeROI" object:nil];
+	[nc addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
+	[nc addObserver:self selector:@selector(notificationStopPlaying:) name:@"notificationStopPlaying" object:nil];
+	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:@"notificationiChatBroadcast" object:nil];
+	[nc addObserver:self selector:@selector(notificationSyncSeries:) name:@"notificationSyncSeries" object:nil];
+	[nc	addObserver:self selector:@selector(exportTextFieldDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
+	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
+	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
+	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, nil]];
 	
@@ -11159,10 +11085,17 @@ sourceRef);
 #pragma mark-
 #pragma mark report
 
+- (IBAction)deleteReport:(id)sender;
+{
+	[browserWindow deleteReport:sender];
+	[self updateReportToolbarIcon:nil];
+}
+
 - (IBAction)generateReport:(id)sender;
 {
 	[self updateReportToolbarIcon:nil];
 	[browserWindow generateReport:sender];
+	[self updateReportToolbarIcon:nil];
 }
 
 - (NSImage*)reportIcon;
@@ -11208,7 +11141,10 @@ sourceRef);
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
 	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
+
+	NSManagedObject *studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
+	
+	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
 	{
 		[item setView:reportTemplatesView];
 		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
