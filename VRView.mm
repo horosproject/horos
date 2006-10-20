@@ -5898,7 +5898,7 @@ public:
             event:event];
 	} 
 	else {		
-		[pboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+		[pboard setData:[image TIFFRepresentationUsingCompression:NSTIFFCompressionPackBits factor:0.5] forType:NSTIFFPboardType];
 		[ self dragImage:thumbnail
 			at:local_point
 			offset:dragOffset
