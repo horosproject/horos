@@ -5123,6 +5123,8 @@ static BOOL withReset = NO;
 					if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
 						[self buildThumbnail: [seriesArray objectAtIndex: i]];
 				}
+				
+				[self saveDatabase: currentDatabasePath];
 			}
 			
 			@catch( NSException *ne)

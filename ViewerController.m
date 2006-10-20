@@ -1433,7 +1433,7 @@ static ViewerController *draggedController = 0L;
 		
 		if ([[[vi window] windowController] is2DViewer] == YES)
 		{
-			[self completeDragOperation: [[vi window] windowController]];
+			if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
 		}
 	}
 	else
