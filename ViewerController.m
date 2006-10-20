@@ -9004,14 +9004,14 @@ int i,j,l;
 
 	NSString *pdf2dcmContent = @"# pdf2dcm Configuration";
 	pdf2dcmContent = [pdf2dcmContent stringByAppendingString: @"\r# For use with dcm4che pdf2dcm, version 2.0.7"];
-	
-	
+	NSManagedObject	*curImage = [fileList[0] objectAtIndex:0];
+		
 //0010,0010	(2) Patient Module Attributes
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.name"];
+			tagString = [curImage valueForKeyPath: @"series.study.name"];
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Patient's Name\r00100010:%@",tagString];
 
 //0010,0020	(2) Patient Module Attributes
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.patientID"];
+			tagString = [curImage valueForKeyPath: @"series.study.patientID"];
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Patient ID\r00100020:%@",tagString];
 
 //0010,0021	(3) Patient Module Attributes
@@ -9019,26 +9019,26 @@ int i,j,l;
 			//pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Issuer of Patient ID\r00100021:%@",tagString];
 
 //0010,0030	(2) Patient Module Attributes
-			tagDate = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.dateOfBirth"];
+			tagDate = [curImage valueForKeyPath: @"series.study.dateOfBirth"];
 			if (tagDate) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Patient's Birth Date\r00100030:%@",[NSDate2DA_Formatter stringFromDate:tagDate]];
 
 //0010,0040 (2) Patient Module Attributes
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.patientSex"];
+			tagString = [curImage valueForKeyPath: @"series.study.patientSex"];
 			if ([tagString isEqualToString: @"M"] || [tagString isEqualToString: @"F"] || [tagString isEqualToString: @"O"]) 
 				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat:@"\r# Patient's Sex\r00100040:%@",tagString];
 
 
 
 //0020,000D (1) General Study
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.studyInstanceUID"];
+			tagString = [curImage valueForKeyPath: @"series.study.studyInstanceUID"];
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study Instance UID\r0020000D:%@",tagString];
 
 //0008,0020 (2) General Study
-			tagDate = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.date"];
+			tagDate = [curImage valueForKeyPath: @"series.study.date"];
 			if (tagDate) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study Date\r00080020:%@",[NSDate2DA_Formatter stringFromDate:tagDate]];
 
 //0008,0030 (2) General Study
-			floatTime = [[[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.dicomTime"] floatValue];
+			floatTime = [[curImage valueForKeyPath: @"series.study.dicomTime"] floatValue];
 			if (floatTime)
 			{
 				NSNumber *tagTime = [NSNumber numberWithFloat:floatTime];
@@ -9046,7 +9046,7 @@ int i,j,l;
 			}
 
 //0008,0090 (2) General Study	
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.referringPhysician"];
+			tagString = [curImage valueForKeyPath: @"series.study.referringPhysician"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Referring Physician's Name\r00080090:%@",tagString];
 
 //0008,1050 ( ) General Study
@@ -9054,15 +9054,15 @@ int i,j,l;
 			//if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Performing Physician's Name\r00081050:%@",tagString];	
 
 //0020,0010 (2) General Study	
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.id"];
+			tagString = [curImage valueForKeyPath: @"series.study.id"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study ID\r00200010:%@",tagString];
 
 //0008,0050 (2) General Study	
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.accessionNumber"];
+			tagString = [curImage valueForKeyPath: @"series.study.accessionNumber"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Accession Number\r00080050:%@",tagString];
 
 //0008,1030 (3) General Study	
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.studyName"];
+			tagString = [curImage valueForKeyPath: @"series.study.studyName"];
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Study Description\r00081030:%@",tagString];
 	
 
@@ -9072,7 +9072,7 @@ int i,j,l;
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Modality\r00080060:%@",tagString];
 
 //0020,000E (1) Encapsulated Document Series Attributes
-			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.studyInstanceUID"];//series UID = study UID + timestamp
+			tagString = [curImage valueForKeyPath: @"series.study.studyInstanceUID"];//series UID = study UID + timestamp
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Instance UID\r0020000E:%@.%@",tagString,[datetimeFormatter stringFromDate:[NSDate date]]];
 
 //0020,0011 (1) Encapsulated Document Series Attributes
@@ -9105,7 +9105,7 @@ int i,j,l;
 
 //0008,002A (2) Encapsulated Document Module Attributes
 			//Needs to be improved ... normally acquisition datetime - replaced by study datetime !!!
-			tagDate = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.date"];
+			tagDate = [curImage valueForKeyPath: @"series.study.date"];
 			if (tagDate) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Acquisition Datetime\r0008002A:%@",[NSDate2DT_Formatter stringFromDate:tagDate]];
 
 //0028,0301 (1) Encapsulated Document Module Attributes
@@ -9113,9 +9113,11 @@ int i,j,l;
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Burned In Annotation\r00280301:%@",tagString];
 
 //0042,0010 (2) Encapsulated Document Module Attributes
+//0008,103E SeriesDescription
 			//Better asking for the title... or copying it from the study or from the performed procedure step
 			tagString = @"FILM";
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Document Title\r00420010:%@",tagString];
+			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Description\r0008103E:%@",tagString];
 
 //0040,A043 (2) Encapsulated Document Module Attributes	
 			//tagString = @" ";
@@ -9130,8 +9132,8 @@ int i,j,l;
 			//tagString = @" ";
 			//pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Concept Name Meaning\r0040A043/00080104:%@",tagString];
 //0042,0012	 (1) Encapsulated Document Module Attributes
-//			tagString = @"application/pdf";
-//			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# MIME Type of Encapsulated Document\r00420012:%@",tagString];
+			tagString = @"application/pdf";
+			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# MIME Type of Encapsulated Document\r00420012:%@",tagString];
 
 
 //0008,0016 (1) SOP Common Module Attributes
@@ -9141,12 +9143,6 @@ int i,j,l;
 //0008,0018 (1) SOP Common Module Attributes
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# SOP Instance UID\r#00080018"];
 
-
-
-
-
-
-	//- (BOOL)createFileAtPath:(NSString *)path contents:(NSData *)contents attributes:(NSDictionary *)attributes
 	if(
 		[fileManager createFileAtPath:[pathToPAGES stringByAppendingPathExtension:@"cfg"]
 							contents:[pdf2dcmContent dataUsingEncoding:NSUTF8StringEncoding]
