@@ -136,7 +136,7 @@
 	long nbStep = [tempStepCameras count];
 
 	// instantiation
-	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepMinCroppingPlanes, *stepMaxCroppingPlanes;
+	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepMinCroppingPlanes, *stepMaxCroppingPlanes, *stepFusionPercentage;
 
 	stepPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	stepViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -150,6 +150,7 @@
 	stepWW = [NSMutableArray arrayWithCapacity:nbStep];
 	stepMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	stepMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
+	stepFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
 	
 	// initialisation
 	NSEnumerator *eCam = [tempStepCameras objectEnumerator];
@@ -167,13 +168,14 @@
 		[stepParallelScale addObject: [[[Point3D alloc] initWithValues:[cam parallelScale]:0:0] autorelease] ];
 		[stepWL addObject: [[[Point3D alloc] initWithValues:(float)[cam wl]:0:0] autorelease] ];
 		[stepWW addObject: [[[Point3D alloc] initWithValues:(float)[cam ww]:0:0] autorelease] ];
+		[stepFusionPercentage addObject: [[[Point3D alloc] initWithValues:[cam fusionPercentage]:0:0] autorelease] ];
 		
 		[stepMinCroppingPlanes addObject:[cam minCroppingPlanes]];
 		[stepMaxCroppingPlanes addObject:[cam maxCroppingPlanes]];
 	}
 	
 	// interpolation
-	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathMinCroppingPlanes, *pathMaxCroppingPlanes;
+	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathMinCroppingPlanes, *pathMaxCroppingPlanes, *pathFusionPercentage;
 	
 	pathPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	pathViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -187,6 +189,7 @@
 	pathWW = [NSMutableArray arrayWithCapacity:nbStep];
 	pathMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	pathMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
+	pathFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
 
 	[stepsPositionInPath release];
 	stepsPositionInPath = [[NSMutableArray alloc] initWithCapacity:0];
@@ -203,7 +206,8 @@
 	pathWW = [self path: stepWW : interpolationMethod : NO];
 	pathMinCroppingPlanes = [self path: stepMinCroppingPlanes : interpolationMethod : NO];
 	pathMaxCroppingPlanes = [self path: stepMaxCroppingPlanes : interpolationMethod : NO];
-
+	pathFusionPercentage = [self path: stepFusionPercentage : interpolationMethod : NO];
+	
 	// result
 	NSEnumerator *ePathPosition = [pathPosition objectEnumerator];
 	NSEnumerator *ePathViewUp = [pathViewUp objectEnumerator];
@@ -217,8 +221,9 @@
 	NSEnumerator *ePathWW = [pathWW objectEnumerator];
 	NSEnumerator *ePathMinCroppingPlanes = [pathMinCroppingPlanes objectEnumerator];
 	NSEnumerator *ePathMaxCroppingPlanes = [pathMaxCroppingPlanes objectEnumerator];
+	NSEnumerator *ePathFusionPercentage = [pathFusionPercentage objectEnumerator];
 	
-	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, minCropp, maxCropp;
+	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, minCropp, maxCropp, fusion;
 	
 	[pathCameras removeAllObjects];
 	
@@ -235,6 +240,7 @@
 		iww = [ePathWW nextObject];
 		minCropp = [ePathMinCroppingPlanes nextObject];
 		maxCropp = [ePathMaxCroppingPlanes nextObject];
+		fusion = [ePathFusionPercentage nextObject];
 		
 		Camera * c = [[Camera alloc] init];
 		[c setPosition: pos];
@@ -247,6 +253,7 @@
 		[c setWLWW: (long)[iwl x] : (long)[iww x]];
 		[c setMinCroppingPlanes: minCropp];
 		[c setMaxCroppingPlanes: maxCropp];
+		[c setFusionPercentage: [fusion x]];
 		
 		[pathCameras addObject:c];
 		[c release];

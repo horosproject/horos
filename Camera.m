@@ -34,10 +34,12 @@
 	eyeAngle = 0;
 	wl = 0;
 	ww = 0;
-	
+
 	minCroppingPlanes = [[Point3D alloc] init];
 	maxCroppingPlanes = [[Point3D alloc] init];
 	
+	fusionPercentage = 0.0;
+		
 	previewImage = [[NSImage alloc]  initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Empty.tif"]];
 	return self;
 }
@@ -58,6 +60,8 @@
 	
 	minCroppingPlanes = [[Point3D alloc] initWithPoint3D: [c minCroppingPlanes]];
 	maxCroppingPlanes = [[Point3D alloc] initWithPoint3D: [c maxCroppingPlanes]];
+	
+	fusionPercentage = [c fusionPercentage];
 	
 	previewImage = [[c previewImage] copy];
 	return self;
@@ -187,6 +191,16 @@
 	return maxCroppingPlanes;
 }
 
+- (void)setFusionPercentage:(float)f;
+{
+	fusionPercentage = f;
+}
+
+- (float)fusionPercentage;
+{
+	return fusionPercentage;
+}
+
 -(void) setPreviewImage: (NSImage*)im
 {
 	if( previewImage != im)
@@ -218,6 +232,7 @@
 	[desc appendString:[NSString stringWithFormat:@"ww: %f\n",[self ww]]];
 	[desc appendString:[NSString stringWithFormat:@"minCroppingPlanes: %@\n",[self minCroppingPlanes]]];
 	[desc appendString:[NSString stringWithFormat:@"maxCroppingPlanes: %@\n",[self maxCroppingPlanes]]];
+	[desc appendString:[NSString stringWithFormat:@"fusionPercentage: %f\n",[self fusionPercentage]]];
 	return desc;
 }
 
@@ -241,6 +256,8 @@
 	[xml setObject: [minCroppingPlanes exportToXML] forKey:@"minCroppingPlanes"];
 	[xml setObject: [maxCroppingPlanes exportToXML] forKey:@"maxCroppingPlanes"];
 	
+	[xml setObject:[NSString stringWithFormat:@"%f",[self fusionPercentage]] forKey:@"fusionPercentage"];
+	
 	return [xml autorelease];
 }
 
@@ -259,6 +276,7 @@
 	ww = [[xml valueForKey:@"ww"] floatValue];
 	minCroppingPlanes = [(Point3D*) [Point3D alloc] initWithDictionary: [xml valueForKey:@"minCroppingPlanes"]];
 	maxCroppingPlanes = [(Point3D*) [Point3D alloc] initWithDictionary: [xml valueForKey:@"maxCroppingPlanes"]];
+	fusionPercentage = [[xml valueForKey:@"fusionPercentage"] floatValue];
 	return self;
 }
 

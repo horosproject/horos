@@ -4731,6 +4731,9 @@ public:
 	[cam setMinCroppingPlanes: [[[Point3D alloc] initWithValues:a[0] :a[2] :a[4]] autorelease]];
 	[cam setMaxCroppingPlanes: [[[Point3D alloc] initWithValues:a[1] :a[3] :a[5]] autorelease]];
 
+	// fusion percentage
+	[cam setFusionPercentage:blendingFactor];
+
 	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
 	
 	return [cam autorelease];
@@ -4775,6 +4778,9 @@ public:
 	a[2] += origin[1];		a[3] += origin[1];
 	a[4] += origin[2];		a[5] += origin[2];
 	croppingBox->PlaceWidget(a[0], a[1], a[2], a[3], a[4], a[5]);
+	
+	// fusion percentage
+	[self setBlendingFactor:[cam fusionPercentage]];
 	
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);

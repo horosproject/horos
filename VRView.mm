@@ -4928,6 +4928,9 @@ public:
 	[cam setMinCroppingPlanes: [[[Point3D alloc] initWithValues:a[0] :a[2] :a[4]] autorelease]];
 	[cam setMaxCroppingPlanes: [[[Point3D alloc] initWithValues:a[1] :a[3] :a[5]] autorelease]];
 	
+	// fusion percentage
+	[cam setFusionPercentage:blendingFactor];
+	
 	// thumbnail
 	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
 	
@@ -4966,7 +4969,7 @@ public:
 	a[5] = [[cam maxCroppingPlanes] z];
 	
 	[VRView setCroppingBox: a :volume];
-		
+	
 	double origin[3];
 	volume->GetPosition(origin);	//GetOrigin		
 	a[0] += origin[0];		a[1] += origin[0];
@@ -4976,6 +4979,9 @@ public:
 
 	[VRView getCroppingBox: a :blendingVolume :croppingBox];
 	[VRView setCroppingBox: a :blendingVolume];
+
+	// fusion percentage
+	[self setBlendingFactor:[cam fusionPercentage]];
 
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);

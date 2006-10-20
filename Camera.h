@@ -1,7 +1,7 @@
 /*=========================================================================
   Program:   OsiriX
 
-  Copyright (c) OsiriX Team
+  Copyright(c) OsiriX Team
   All rights reserved.
   Distributed under GNU - GPL
   
@@ -21,39 +21,42 @@
 	Point3D *position, *viewUp, *focalPoint, *minCroppingPlanes, *maxCroppingPlanes;
 	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale;
 	NSImage *previewImage;
-	float wl, ww;
+	float wl, ww, fusionPercentage;
 }
 
--(id) init;
--(id) initWithCamera: (Camera*)c;
--(void) setPosition: (Point3D*)p;
--(Point3D*) position;
--(void) setViewUp: (Point3D*)p;
--(Point3D*) viewUp;
--(void) setFocalPoint: (Point3D*)p;
--(Point3D*) focalPoint;
--(void) setClippingRangeFrom: (float)near To: (float)far;
--(float) clippingRangeNear;
--(float) clippingRangeFar;
--(void) setViewAngle: (float)angle;
--(float) viewAngle;
--(void) setEyeAngle: (float)angle;
--(float) eyeAngle;
--(void) setParallelScale: (float)scale;
--(float) parallelScale;
+- (id)init;
+- (id)initWithCamera:(Camera *)c;
+- (void)setPosition:(Point3D *)p;
+- (Point3D *)position;
+- (void)setViewUp:(Point3D *)p;
+- (Point3D *)viewUp;
+- (void)setFocalPoint:(Point3D *)p;
+- (Point3D *)focalPoint;
+- (void)setClippingRangeFrom:(float)near To:(float)far;
+- (float)clippingRangeNear;
+- (float)clippingRangeFar;
+- (void)setViewAngle:(float)angle;
+- (float)viewAngle;
+- (void)setEyeAngle:(float)angle;
+- (float)eyeAngle;
+- (void)setParallelScale:(float)scale;
+- (float)parallelScale;
 // window level
--(void) setWLWW: (float) newWl : (float) newWw;
--(float) wl;
--(float) ww;
+- (void)setWLWW:(float)newWl :(float)newWw;
+- (float)wl;
+- (float)ww;
 // cropping planes
--(void) setMinCroppingPlanes: (Point3D*)p;
--(Point3D*) minCroppingPlanes;
--(void) setMaxCroppingPlanes: (Point3D*)p;
--(Point3D*) maxCroppingPlanes;
+- (void)setMinCroppingPlanes:(Point3D *)p;
+- (Point3D *)minCroppingPlanes;
+- (void)setMaxCroppingPlanes:(Point3D *)p;
+- (Point3D *)maxCroppingPlanes;
+// fusion
+- (void)setFusionPercentage:(float)f;
+- (float)fusionPercentage;
 
--(void) setPreviewImage: (NSImage*)im;
--(NSImage*) previewImage;
+- (void)setPreviewImage:(NSImage *)im;
+- (NSImage *)previewImage;
 
--(NSMutableDictionary*) exportToXML;
--(id) initWithDictionary: (NSDictionary*) xml;
+- (NSMutableDictionary *)exportToXML;
+- (id)initWithDictionary:(NSDictionary *)xml;
 @end
