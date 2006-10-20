@@ -62,7 +62,7 @@
 
 - (void)addROI:(ROI *)aROI;
 {
-	NSLog(@"+++ add a ROI : %@", [aROI name]);
+//	NSLog(@"+++ add a ROI : %@", [aROI name]);
 
 	// add the region to the SR
 	document->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_SCoord, DSRTypes::AM_belowCurrent);

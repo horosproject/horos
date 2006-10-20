@@ -30,15 +30,20 @@
 @implementation ViewerController (ViewerControllerDCMTKCategory)
 
 
-- (NSData *)roiFromDICOM:(NSString *)path{
+- (NSData *)roiFromDICOM:(NSString *)path
+{
 	NSData *archiveData = nil;
 	DcmFileFormat fileformat;
 	OFCondition status = fileformat.loadFile([path UTF8String]);
+	if( status != EC_Normal) return 0L;
+	
 	OFString name;
 	const Uint8 *buffer;
 	unsigned long length;
-	NSLog(@"Unarchive from SR");
-	if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good()){
+	
+	if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
+	{
+		NSLog(@"Unarchive from SR");
 		archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
 	}
 	
@@ -53,7 +58,4 @@
 	[sr writeToFileAtPath:path];
 	[sr dealloc];
 }
-
-
-
 @end

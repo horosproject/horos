@@ -5547,12 +5547,11 @@ extern NSString * documentsDirectory();
 				NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
 											
 				NSData *data = [self roiFromDICOM:[str stringByAppendingPathExtension:@"dcm"]];	
-				//If data, we successfully unarchived from SR style ROI, else try old ROI archive 
+				//If data, we successfully unarchived from SR style ROI
 				if (data)
 					array = [NSUnarchiver unarchiveObjectWithData:data];
 				else
 					array = [NSUnarchiver unarchiveObjectWithFile: str];
-					
 					
 				if( array)
 				{
@@ -5591,16 +5590,17 @@ extern NSString * documentsDirectory();
 				{
 					NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
 					[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-					//NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
-					NSString			*str = [path stringByAppendingFormat: @"%@-%d.dcm",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
+					NSString *str = [path stringByAppendingFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
 					if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 					{
 						// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
-						[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath:str];
+						[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"]];
+						[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
 					}
 					else
 					{
 						[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+						[[NSFileManager defaultManager] removeFileAtPath: [str stringByAppendingPathExtension:@"dcm"] handler: 0L];
 					}
 				}
 			}
