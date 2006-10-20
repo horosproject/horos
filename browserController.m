@@ -7442,6 +7442,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(OsirixAddToDBNotification:) name:@"OsirixAddToDBNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"reportModeChanged" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	}
 	return self;
@@ -10525,6 +10527,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		[checkBonjourUpToDateThreadLock unlock];
+		[self updateReportToolbarIcon:nil];
 	}
 }
 
@@ -10664,6 +10667,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[checkBonjourUpToDateThreadLock unlock];
 		}
 	}
+	[self updateReportToolbarIcon:nil];
 }
 
 - (NSImage*)reportIcon;
@@ -10709,7 +10713,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
 	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2)
+
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
+	NSManagedObject *studySelected;
+	if ([[[selectedItem entity] name] isEqual:@"Study"])
+		studySelected = selectedItem;
+	else
+		studySelected = [selectedItem valueForKey:@"study"];
+	
+	NSLog(@"[pagesTemplatesArray count] : %d", [pagesTemplatesArray count]);
+	NSLog(@"REPORTSMODE : %d", [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]);
+	NSLog(@"Path : %@", [studySelected valueForKey:@"reportURL"]);
+
+	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
 	{
 		[item setView:reportTemplatesView];
 		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
