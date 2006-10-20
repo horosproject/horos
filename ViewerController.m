@@ -5588,20 +5588,32 @@ extern NSString * documentsDirectory();
 				
 				if( [image isFault] == NO)
 				{
-					NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
-					[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-					NSString *str = [path stringByAppendingFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
-					if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
+					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+					
+					@try
 					{
-						// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
-						[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"]];
-						[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+						NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
+						[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
+						NSString *str = [path stringByAppendingFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
+						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
+						{
+							// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
+							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"]];
+							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+						}
+						else
+						{
+							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
+							[[NSFileManager defaultManager] removeFileAtPath: [str stringByAppendingPathExtension:@"dcm"] handler: 0L];
+						}
 					}
-					else
+					
+					@catch( NSException *ne)
 					{
-						[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
-						[[NSFileManager defaultManager] removeFileAtPath: [str stringByAppendingPathExtension:@"dcm"] handler: 0L];
+						NSLog(@"saveROI failed.");
 					}
+					
+					[pool release];
 				}
 			}
 		}
