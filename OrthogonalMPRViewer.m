@@ -1289,17 +1289,17 @@ NSString * documentsDirectory();
 			//for( i = 0 ; i < max; i += [dcmInterval intValue])
 			for( i = from; i < to; i+=interval)
 			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
 				[view setCrossPosition:x+i*deltaX :y+i*deltaY];
 				[splitView display];
 				[view display];
 				
-				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
-					[pool release];
-				}
+				[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
 				
 				[splash incrementBy: 1];
+				
+				[pool release];
 			}
 			
 			[view setCrossPosition:oldX :oldY];

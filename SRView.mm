@@ -517,6 +517,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			[self display];
 			for( i = 0; i < numberOfFrames; i++)
 			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
 			//	[self renderImageWithBestQuality: bestRenderingMode waitDialog: NO];
 				long	width, height, spp, bpp, err;
 				
@@ -524,8 +526,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				
 				if( dataPtr)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
 					[self getOrientation: o];
 					[dcmSequence setOrientation: o];
 					
@@ -537,7 +537,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 					err = [dcmSequence writeDCMFile: 0L];
 					
 					free( dataPtr);
-					[pool release];
 				}
 				
 				switch( rotationOrientation)
@@ -552,6 +551,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 				}
 				[self display];
 				[progress incrementBy: 1];
+				
+				[pool release];
 			}
 			
 //			[self endRenderImageWithBestQuality];

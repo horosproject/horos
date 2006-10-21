@@ -968,6 +968,8 @@ public:
 			
 			for( i = 0; i < [[[self window] windowController] movieFrames]; i++)
 			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
 				[[[self window] windowController] setMovieFrame: i];
 				
 				if( croppingBox->GetEnabled()) croppingBox->Off();
@@ -987,8 +989,6 @@ public:
 				
 				if( dataPtr)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
 					[self getOrientation: o];
 					[dcmSequence setOrientation: o];
 					
@@ -1000,12 +1000,11 @@ public:
 					err = [dcmSequence writeDCMFile: 0L];
 					
 					free( dataPtr);
-					[pool release];
 				}
 				
-				
-				
 				[progress incrementBy: 1];
+				
+				[pool release];
 			}
 			
 			[progress close];
@@ -1035,6 +1034,8 @@ public:
 			
 			for( i = 0; i < numberOfFrames; i++)
 			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
 				if( [[[self window] windowController] movieFrames] > 1)
 				{	
 					short movieIndex = i;
@@ -1062,8 +1063,6 @@ public:
 				
 				if( dataPtr)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
 					[self getOrientation: o];
 					[dcmSequence setOrientation: o];
 					
@@ -1075,7 +1074,6 @@ public:
 					err = [dcmSequence writeDCMFile: 0L];
 					
 					free( dataPtr);
-					[pool release];
 				}
 				
 				switch( rotationOrientation)
@@ -1090,6 +1088,8 @@ public:
 				}
 				
 				[progress incrementBy: 1];
+				
+				[pool release];
 			}
 			
 			[progress close];

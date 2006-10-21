@@ -1133,6 +1133,8 @@ extern NSString * documentsDirectory();
 		
 		for( i = 0; i < maxMovieIndex; i++)
 		{
+			NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+			
 			curMovieIndex = i;
 			
 			[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
@@ -1152,6 +1154,8 @@ extern NSString * documentsDirectory();
 				err = [dcmSequence writeDCMFile: 0L];
 				free( data);
 			}
+			
+			[pool release];
 		}
 		
 		[dcmSequence release];

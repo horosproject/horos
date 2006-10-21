@@ -8769,6 +8769,8 @@ int i,j,l;
 			
 			for (i = from ; i < to; i += interval)
 			{
+				NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+				
 				BOOL	export = YES;
 				
 				if( [[dcmSelection selectedCell] tag] == 2)	// Only key images
@@ -8786,14 +8788,12 @@ int i,j,l;
 					[imageView display];
 					[self adjustSlider];
 					
-					{
-						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						[self exportDICOMFileInt:[[dcmFormat selectedCell] tag] ];
-						[pool release];
-					}
+					[self exportDICOMFileInt:[[dcmFormat selectedCell] tag]];
 				}
 				
 				[splash incrementBy: 1];
+				
+				[pool release];
 			}
 			
 			[splash close];
