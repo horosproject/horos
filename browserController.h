@@ -311,8 +311,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
-
 //- (void)reloadSendLog:(id)sender;
+- (void) pdfPreview:(id)sender;
 - (IBAction)importRawData:(id)sender;
 - (void) setBurnerWindowControllerToNIL;
 

@@ -4951,6 +4951,7 @@ static BOOL withReset = NO;
 		[managedObjectContext lock];
 		
 		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
+		NSString	*seriesSOPClassUID = [[pix seriesObj] valueForKey: @"seriesSOPClassUID"];
 		
 		if( img || [modality isEqualToString: @"RTSTRUCT"])
 		{
@@ -4968,6 +4969,12 @@ static BOOL withReset = NO;
 			
 			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
 				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
+			}
+			else if ([seriesSOPClassUID isEqualToString: @"1.2.840.10008.5.1.4.1.1.104.1"]) //JF: pdf encapsulated opened with preview
+			{
+				[cell setAction: @selector(pdfPreview:)];
+				[cell setTitle: @"open Preview.app"];
+				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
 			}
 			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
 				long count = [[curFile valueForKey:@"images"] count];
@@ -5023,6 +5030,42 @@ static BOOL withReset = NO;
 		[managedObjectContext unlock];
 	}
 	[oMatrix setNeedsDisplay:YES];
+}
+
+- (void) pdfPreview:(id)sender
+{
+    [self matrixPressed:sender];
+	
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+		
+	NSLog(@"open pdf with Preview");
+		//check if the folder PDF exists in OsiriX document folder
+	NSString *pathToPDF = [documentsDirectory() stringByAppendingString:@"/PDF/"];
+	if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPDF]))
+	[[NSFileManager defaultManager] createDirectoryAtPath:pathToPDF attributes:nil];
+	
+	//pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
+	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
+	pathToPDF = [pathToPDF stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
+	pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
+	NSLog(pathToPDF);
+		
+	//creating file and opening it with preview
+	NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
+	NSLog([curObj valueForKey: @"type"]);
+	[managedObjectContext lock];
+	if( [[curObj valueForKey:@"type"] isEqualToString: @"Series"] == YES) curObj = [[self childrenArray: curObj] objectAtIndex: 0];
+	[managedObjectContext unlock];
+
+	NSLog([curObj valueForKey: @"completePath"]);	
+	
+	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[curObj valueForKey: @"completePath"] decodingPixelData:NO];
+	NSData *encapsulatedPDF = [dcmObject attributeValueWithName:@"EncapsulatedDocument"];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	if( [fileManager createFileAtPath:pathToPDF contents:encapsulatedPDF attributes:nil]) [[NSWorkspace sharedWorkspace] openFile:pathToPDF];
+	else NSLog(@"couldn't open pdf");
+	
+	[pool release];	
 }
 
 -(void) matrixDisplayIcons:(id) sender
