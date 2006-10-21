@@ -639,7 +639,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
 		
-		[pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
+		[pb setData: [im TIFFRepresentationUsingCompression:NSTIFFCompressionPackBits factor:0.5] forType:NSTIFFPboardType];
 		
 		[im release];
 	}
@@ -670,57 +670,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
 	
 	[self setNeedsDisplay:YES];
-}
-
-- (IBAction)saveDocumentAs:(id)sender
-{
-	#if !__LP64__
-   	NSImage *im;	
-	im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];		
-    NSFileManager *manager = [NSFileManager defaultManager]; 
-    GraphicsImportComponent	graphicsImporter;
-    Boolean 	gotFSRef = false;
-    FSRef 	fileFSRef;
-    OSStatus 	status;
-    FSSpec 	fileFSSpec;
-   // FSSpec 	fileNameFSSpec;
-    OSErr 	err;
-    ComponentResult result;
-    //NSString 	*filePath = @"/tmp/iRad.tif";
-    NSString 	*filePath = [[NSDate date] description];
-    NSURL 	*fileUrl = [NSURL fileURLWithPath:filePath];
-    //if ([manager fileExistsAtPath:filePath])
-    //    [manager removeFileAtPath:filePath handler:nil];
-
-    [[im TIFFRepresentation] writeToFile:filePath atomically:YES];
-
-           // create Quicktime Importer
-   // fileNameFSSpec.name = [[[[myDoc keyView] dicomObject] objectWithDescription:@"PatientsName"] UTF8String];
-            
-    // get an FSRef for our file
-    gotFSRef = CFURLGetFSRef((CFURLRef)fileUrl, &fileFSRef);
-    
-    // get an FSSpec for the same file, which we can
-    // pass to GetGraphicsImporterForFile below
-    status = FSGetCatalogInfo(&fileFSRef, kFSCatInfoNone, 
-            NULL, NULL, &fileFSSpec, NULL);
-    
-    // find a graphics importer for our image file
-    err = GetGraphicsImporterForFile(&fileFSSpec, &graphicsImporter);
-            
-    
-    result = GraphicsImportDoExportImageFileDialog ( graphicsImporter,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL,
-                                                    NULL);
-
-
-  [manager removeFileAtPath:filePath handler:nil];
-  [im release];
-  #endif
 }
 
 -(BOOL)yFlipped{
