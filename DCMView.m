@@ -639,7 +639,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
 		
-		[pb setData: [im TIFFRepresentationUsingCompression:NSTIFFCompressionPackBits factor:0.5] forType:NSTIFFPboardType];
+		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 		
 		[im release];
 	}
@@ -7851,9 +7851,11 @@ BOOL	lowRes = NO;
             slideBack:YES
             event:event];
 	} 
-	else {		
-		[pboard setData:[image TIFFRepresentationUsingCompression:NSTIFFCompressionPackBits factor:0.5] forType:NSTIFFPboardType];
-		[ self dragImage:thumbnail
+	else
+	{
+		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+		
+		[self dragImage:thumbnail
 			at:local_point
 			offset:dragOffset
 			event:event 
@@ -7876,8 +7878,9 @@ BOOL	lowRes = NO;
 	name = @"OsiriX";
 	name = [name stringByAppendingPathExtension:@"jpg"];
 	NSArray *array = [NSArray arrayWithObject:name];
-	NSData *data = [(NSBitmapImageRep *)[destinationImage bestRepresentationForDevice:nil] representationUsingType:NSJPEGFileType 
-		properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	
+	NSData *data = [[NSBitmapImageRep imageRepWithData: [destinationImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	
 	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
 	[data writeToURL:url  atomically:YES];
 	[destinationImage release];

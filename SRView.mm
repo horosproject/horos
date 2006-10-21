@@ -3111,7 +3111,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
             event:event];
 	} 
 	else {		
-		[pboard setData:[image TIFFRepresentationUsingCompression:NSTIFFCompressionPackBits factor:0.5] forType:NSTIFFPboardType];
+		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+		
 		[ self dragImage:thumbnail
 			at:local_point
 			offset:dragOffset
@@ -3134,8 +3135,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	NSString *name = @"OsiriX";
 	name = [name stringByAppendingPathExtension:@"jpg"];
 	NSArray *array = [NSArray arrayWithObject:name];
-	NSData *_data = [(NSBitmapImageRep *)[destinationImage bestRepresentationForDevice:nil] representationUsingType:NSJPEGFileType 
-		properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	NSData *_data = [[NSBitmapImageRep imageRepWithData: [destinationImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
 	[_data writeToURL:url  atomically:YES];
 	[destinationImage release];
