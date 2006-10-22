@@ -1392,11 +1392,6 @@ static BOOL initialized = NO;
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
-           selector: @selector(windowsMenuChanged:)
-               name: NSMenuDidChangeItemNotification
-             object: nil];
-	
-    [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
                name: @"UpdateWLWWMenu"
              object: nil];
@@ -1706,25 +1701,6 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
-
--(void) windowsMenuChanged: (NSNotification*) note
-{
-	NSMenu  *menu = [note object];
-	long	i, val = 1;
-	
-	if( menu == [NSApp windowsMenu])
-	{
-		for( i = 9; i < [menu numberOfItems]; i++)
-		{
-			if( [[[menu itemAtIndex:i] title] isEqualToString:@"Local DICOM Database"] == NO)
-			{
-				[[menu itemAtIndex:i] setKeyEquivalent: [[NSNumber numberWithLong:val] stringValue]];
-				[[menu itemAtIndex:i] setKeyEquivalentModifierMask: NSCommandKeyMask];
-				val++;
-			}
-		}
-	}
-}
 
 - (IBAction) about: (id) sender
 {
