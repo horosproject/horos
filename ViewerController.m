@@ -9149,7 +9149,7 @@ int i,j,l;
 
 
 //0008,0016 (1) SOP Common Module Attributes
-			tagString = @"1.2.840.10008.5.1.4.1.1.104.1";
+			tagString = [DCMAbstractSyntaxUID pdfStorageClassUID];
 			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# SOP Class UID\r00080016:%@",tagString];
 			
 //0008,0018 (1) SOP Common Module Attributes
