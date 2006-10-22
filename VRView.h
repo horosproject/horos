@@ -143,7 +143,7 @@ typedef char* vtkMyCallbackVR;
 
 @interface VRView : VTKView <Schedulable>
 {
-	NSTimer						*autoRotate;
+	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						rotate;
 
 	int							projectionMode;

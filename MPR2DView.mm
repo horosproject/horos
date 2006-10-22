@@ -467,7 +467,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
                 double newValues[2];
                 float   WWAdapter;
 				
-				WWAdapter  = (fdata[1] - fdata[0]) / 200.0;
+				WWAdapter  = (fdata[1] - fdata[0]) / 100.0;
 				
                 newValues[0] = fdata[0]+(mouseLoc.y - mouseLocStart.y + (mouseLocStart.x - mouseLoc.x)) *WWAdapter;
                 newValues[1] = fdata[1]+(mouseLoc.y - mouseLocStart.y - (mouseLocStart.x - mouseLoc.x)) *WWAdapter;

@@ -1351,6 +1351,11 @@ public:
 	return tool;
 }
 
+- (void) startAutoRotate:(id) sender
+{
+	rotate = YES;
+}
+
 - (void) autoRotate:(id) sender
 {
 	if( rotate)
@@ -1459,6 +1464,8 @@ public:
 		
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
+		startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	}
     
@@ -1469,6 +1476,10 @@ public:
 {
 	if( [notification object] == [self window])
 	{
+		[startAutoRotate invalidate];
+		[startAutoRotate release];
+		startAutoRotate = 0L;
+		
 		[autoRotate invalidate];
 		[autoRotate release];
 		autoRotate = 0L;
@@ -1960,7 +1971,7 @@ public:
 				_startWL = wl;
 				_startMin = wl - ww/2;
 				_startMax = wl + ww/2;
-				WWAdapter  = _startWW / 200.0;
+				WWAdapter  = _startWW / 100.0;
 				
 				if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
 				{
@@ -1969,6 +1980,8 @@ public:
 						case 0:
 							wl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
 							ww =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+							
+							if( ww < 0.1) ww = 0.1;
 						break;
 						
 						case 1:
@@ -1976,6 +1989,9 @@ public:
 							
 							wl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
 							ww = endlevel - _startMin;
+							
+							if( ww < 0.1) ww = 0.1;
+							if( wl - ww/2 < 0) wl = ww/2;
 						break;
 						
 						case 2:
@@ -1986,8 +2002,14 @@ public:
 							
 							wl = startlevel + (endlevel - startlevel) / 2;
 							ww = endlevel - startlevel;
+							
+							if( ww < 0.1) ww = 0.1;
+							if( wl - ww/2 < 0) wl = ww/2;
 						break;
 					}
+					
+					
+					
 				}
 				else
 				{
@@ -2154,7 +2176,7 @@ public:
 	
 	noWaitDialog = YES;
 	tool = currentTool;
-	
+		
 	if ([theEvent type] == NSLeftMouseDown) {
 		if (_mouseDownTimer) {
 			[self deleteMouseDownTimer];
@@ -2192,9 +2214,17 @@ public:
 		_tool = tool;
 		[self setCursorForView: tool];
 		
+		if( tool != tWL && tool != tZoom)
+		{
+			rotate = NO;
+			
+			[startAutoRotate invalidate];
+			[startAutoRotate release];
+			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+		}
+		
 		if( tool == tMesure)
 		{
-			
 			double	*pp;
 			long	i;
 			
@@ -2315,117 +2345,6 @@ public:
 			
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
-			/*
-			do
-			{
-				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				switch ([theEvent type])
-				{
-				case NSLeftMouseDragged:
-				{
-					float WWAdapter  = startWW / 200.0;
-					float startlevel, endlevel;
-					
-					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
-					{
-						switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-						{
-							case 0:
-								wl =  (startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter);
-								ww =  (startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter);
-							break;
-							
-							case 1:
-								endlevel = startMax + (mouseLoc.y - mouseLocStart.y) * WWAdapter ;
-								
-								wl =  (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-								ww = endlevel - startMin;
-							break;
-							
-							case 2:
-								endlevel = startMax + (mouseLoc.y - mouseLocStart.y) * WWAdapter ;
-								startlevel = startMin + (mouseLoc.x - mouseLocStart.x) * WWAdapter ;
-								
-								if( startlevel < 0) startlevel = 0;
-								
-								wl = startlevel + (endlevel - startlevel) / 2;
-								ww = endlevel - startlevel;
-							break;
-						}
-					}
-					else
-					{
-						wl =  (startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter);
-						ww =  (startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter);
-					}
-					
-					if( ww < 0.1) ww = 0.1;
-					
-					[self setOpacity: currentOpacityArray];
-					
-					if( isRGB)
-						colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
-					else
-						colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
-					
-	//				vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
-	//				if( needToFlip)
-	//				{
-	//					[self flipData: (char*) dst8.data :[pixList count] :[firstObject pheight] * [firstObject pwidth]];
-	//				}
-					
-					if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
-					{
-						if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
-						else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
-					}
-					else
-					{
-						if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
-						else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
-					}
-					
-					textWLWW->SetInput( WLWWString);
-					
-					
-	//				if( flip)
-	//				{
-	//					flip->Delete();
-	//					
-	//					flip = vtkImageFlip::New();
-	//					flip->SetInput( reader->GetOutput());
-	//					flip->SetFlipAboutOrigin( TRUE);
-	//					flip->SetFilteredAxis(2);
-	//					
-	//					outlineData->SetInput((vtkDataSet *) flip->GetOutput());
-	//					if( volumeMapper) volumeMapper->SetInput((vtkDataSet *) flip->GetOutput());
-	//					if( textureMapper) textureMapper->SetInput((vtkDataSet *) flip->GetOutput());
-	//				}
-					
-					[self setNeedsDisplay:YES];
-				}
-				break;
-				
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					keepOn = NO;
-					break;
-					
-				case NSPeriodic:
-					
-					break;
-					
-				default:
-					break;
-				}
-			}while (keepOn);
-			
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-			*/
-//			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
-			
-//			[self setNeedsDisplay:YES];
 		}
 		else if( tool == tRotate)
 		{
@@ -2435,30 +2354,6 @@ public:
 			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			/*
-			do {
-				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-				switch ([theEvent type]) {
-				case NSLeftMouseDragged:
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					break;
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-					keepOn = NO;
-					break;
-				case NSPeriodic:
-					[self getInteractor]->InvokeEvent(vtkCommand::TimerEvent, NULL);
-					break;
-				default:
-					break;
-				}
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-			}while (keepOn);
-			*/
 		}
 		else if( tool == t3DRotate)
 		{
@@ -2477,30 +2372,6 @@ public:
 	
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			/*
-			do {
-				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
-				switch ([theEvent type]) {
-				case NSLeftMouseDragged:
-					[self computeOrientationText];
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					break;
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-					keepOn = NO;
-					break;
-				case NSPeriodic:
-					[self getInteractor]->InvokeEvent(vtkCommand::TimerEvent, NULL);
-					break;
-				default:
-					break;
-				}
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-			}while (keepOn);
-			*/
 		}
 		else if( tool == tTranslate)
 		{
@@ -2510,30 +2381,6 @@ public:
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
-			/*
-			do {
-				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-				switch ([theEvent type]) {
-				case NSLeftMouseDragged:
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-					break;
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-					keepOn = NO;
-					break;
-				case NSPeriodic:
-					[self getInteractor]->InvokeEvent(vtkCommand::TimerEvent, NULL);
-					break;
-				default:
-					break;
-				}
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-				
-			}while (keepOn);
-			*/
 		}
 		else if( tool == tZoom)
 		{
@@ -2545,44 +2392,6 @@ public:
 				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 				[self getInteractor]->InvokeEvent(vtkCommand::RightButtonPressEvent,NULL);
-				/*
-				do {
-					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-					mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					switch ([theEvent type]) {
-					case NSLeftMouseDragged:
-					case NSRightMouseDragged:
-						[self computeLength];
-						[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
-						
-//						NSLog( @"resolution: %f", [self getResolution] / [firstObject pixelSpacingX]);
-//						
-//						if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( 1. / (3*([self getResolution] / [firstObject pixelSpacingX])));
-						
-						break;
-					case NSLeftMouseUp:
-					case NSRightMouseUp:
-						noWaitDialog = NO;
-						[self computeLength];
-						[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
-						keepOn = NO;
-						//show contextual menu  added LP 12/2/05
-//						if ([theEvent clickCount] == 1)
-//							[NSMenu popUpContextMenu:[self menu] withEvent:theEvent forView:self];
-						break;
-					case NSPeriodic:
-						[self getInteractor]->InvokeEvent(vtkCommand::TimerEvent, NULL);
-						break;
-					default:
-						break;
-					}
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-				}while (keepOn);
-				*/
-//				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( 1./([self getResolution] / [firstObject pixelSpacingX]));
-//				
-//				[self setNeedsDisplay:YES];
 			}
 			else
 			{
@@ -2590,55 +2399,6 @@ public:
 				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
 				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
-//				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
-				/*
-				do
-				{
-					theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-					mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-					switch ([theEvent type])
-					{
-					case NSLeftMouseDragged:
-					case NSRightMouseDragged:
-					{
-						float distance = aCamera->GetDistance();
-						aCamera->Dolly( 1.0 + (mouseLoc.y - mouseLocPre.y) / 1200.);
-						aCamera->SetDistance( distance);
-						aCamera->ComputeViewPlaneNormal();
-						aCamera->OrthogonalizeViewUp();
-						aRenderer->ResetCameraClippingRange();
-						
-						[self setNeedsDisplay:YES];
-					}
-					break;
-					
-					case NSLeftMouseUp:
-					case NSRightMouseUp:
-						noWaitDialog = NO;
-						keepOn = NO;
-						//show contextual menu  added LP 12/2/05
-//						if ([theEvent clickCount] == 1)
-//							[NSMenu popUpContextMenu:[self menu] withEvent:theEvent forView:self];
-						break;
-						
-					case NSPeriodic:
-						
-						break;
-						
-					default:
-						break;
-					}
-					
-					mouseLocPre = mouseLoc;
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-					
-				}while (keepOn);
-				
-				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-				*/
-//				if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
-				
-//				[self setNeedsDisplay:YES];
 			}
 		}
 		else if( tool == tCamera3D)
@@ -2647,48 +2407,6 @@ public:
 			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
-//			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( 512 / 10);
-			/*
-			do
-			{
-				theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-				mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-				switch ([theEvent type])
-				{
-				case NSLeftMouseDragged:
-				{
-					aCamera->Yaw( -(mouseLoc.x - mouseLocPre.x) / 5.);
-					aCamera->Pitch( (mouseLoc.y - mouseLocPre.y) / 5.);
-					aCamera->ComputeViewPlaneNormal();
-					aCamera->OrthogonalizeViewUp();
-					aRenderer->ResetCameraClippingRange();
-					
-					[self computeOrientationText];
-					
-					[self setNeedsDisplay:YES];
-				}
-				break;
-				
-				case NSLeftMouseUp:
-					noWaitDialog = NO;
-					keepOn = NO;
-					break;
-					
-				case NSPeriodic:
-					
-					break;
-					
-				default:
-					break;
-				}
-				mouseLocPre = mouseLoc;
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
-			}while (keepOn);
-			*/
-//			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
-//			if( textureMapper) textureMapper->SetMaximumNumberOfPlanes( (int) (512 / LOD));
-			
-//			[self setNeedsDisplay:YES];
 		}
 		else if( tool == t3Dpoint)
 		{

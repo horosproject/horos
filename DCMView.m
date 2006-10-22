@@ -3188,7 +3188,7 @@ static long scrollMode;
         if( tool == tWL && !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
         {
 		//	ICI
-			float WWAdapter = startWW / 200.0;
+			float WWAdapter = startWW / 100.0;
 			
 			if( WWAdapter < 0.001) WWAdapter = 0.001;
 			
@@ -3204,16 +3204,25 @@ static long scrollMode;
 					float startlevel;
 					float endlevel;
 					
+					float eWW, eWL;
+					
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
 						case 0:
-							[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
+							eWL = startWL + (current.y -  start.y)*WWAdapter;
+							eWW = startWW + (current.x -  start.x)*WWAdapter;
+							
+							if( eWW < 0.1) eWW = 0.1;
 						break;
 						
 						case 1:
 							endlevel = startMax + (current.y -  start.y) * WWAdapter ;
 							
-							[curDCM changeWLWW: (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"]: endlevel - startMin];
+							eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							eWW = endlevel - startMin;
+							
+							if( eWW < 0.1) eWW = 0.1;
+							if( eWL - eWW/2 < 0) eWL = eWW/2;
 						break;
 						
 						case 2:
@@ -3222,9 +3231,15 @@ static long scrollMode;
 							
 							if( startlevel < 0) startlevel = 0;
 							
-							[curDCM changeWLWW: startlevel + (endlevel - startlevel) / 2: endlevel - startlevel];
+							eWL = startlevel + (endlevel - startlevel) / 2;
+							eWW = endlevel - startlevel;
+							
+							if( eWW < 0.1) eWW = 0.1;
+							if( eWL - eWW/2 < 0) eWL = eWW/2;
 						break;
 					}
+					
+					[curDCM changeWLWW :eWL  :eWW];
 				}
 				else
 				{

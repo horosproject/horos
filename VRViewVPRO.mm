@@ -2071,7 +2071,7 @@ public:
 				{
 				case NSLeftMouseDragged:
 				{
-					float WWAdapter  = startWW / 200.0;
+					float WWAdapter  = startWW / 100.0;
 					
 					wl = startWL + (long) (mouseLoc.y - mouseLocStart.y)*WWAdapter;
 					ww = startWW + (long) (mouseLoc.x - mouseLocStart.x)*WWAdapter;

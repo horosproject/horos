@@ -9279,8 +9279,18 @@ float			iwl, iww;
 		{
 			if( newWW < 1) newWW = 2;
 			
-			newWW = (int) newWW;
-			newWL = (int) newWL;
+			if( newWL - newWW/2 == 0)
+			{
+				newWW = (int) newWW;
+				newWL = (int) newWL;
+				
+				newWL = newWW/2;
+			}
+			else
+			{
+				newWW = (int) newWW;
+				newWL = (int) newWL;
+			}
 		}
 		
         if( newWW < 0.001) newWW = 0.001;
