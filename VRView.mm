@@ -2228,10 +2228,6 @@ public:
 			double	*pp;
 			long	i;
 			
-			#if !__LP64__
-			QDDisplayWaitCursor( true);
-			#endif
-			
 			vtkPoints		*pts = Line2DData->GetPoints();
 		
 			if( pts->GetNumberOfPoints() >= 2)
@@ -2281,20 +2277,12 @@ public:
 				ROIUPDATE = YES;
 				[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
-			
-			#if !__LP64__
-			QDDisplayWaitCursor( false);
-			#endif
 		}
 		else if( tool == t3DCut)
 		{
 			
 			double	*pp;
 			long	i;
-			
-			#if !__LP64__
-			QDDisplayWaitCursor( true);
-			#endif
 			
 			// Click point 3D to 2D
 			
@@ -2331,10 +2319,6 @@ public:
 				ROIUPDATE = YES;
 				[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
 			}
-			
-			#if !__LP64__
-			QDDisplayWaitCursor( false);
-			#endif
 		}
 		else if( tool == tWL)
 		{
