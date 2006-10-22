@@ -78,7 +78,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "ROIManagerController.h"
 #import "MSRGSegmentation.h"
 #import "ITKBrushROIFilter.h"
-
+#import "DCMAbstractSyntaxUID.h"
 
 #import "HornRegistration.h"
 #import "ITKTransform.h"
@@ -157,7 +157,7 @@ NSString* convertDICOM( NSString *inputfile);
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
 // use it with sortUsingFunction:context: to order an array of ROIs
-long sortROIByName(id roi1, id roi2, void *context)
+int sortROIByName(id roi1, id roi2, void *context)
 {
     NSString *n1 = [roi1 name];
     NSString *n2 = [roi2 name];
@@ -11078,7 +11078,7 @@ sourceRef);
 	[NSApp beginSheet:[controller window]  modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(keyObjectSheetDidEnd:returnCode:contextInfo:) contextInfo:controller];
 }
 
-- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo{
 	[contextInfo autorelease];
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 }

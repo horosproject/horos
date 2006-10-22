@@ -325,6 +325,6 @@ typedef char* vtkPolyDataNormals;
 //Dragging
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
-
+-(void) squareView:(id) sender;
 
 @end

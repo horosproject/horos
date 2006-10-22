@@ -521,7 +521,7 @@ enum
 #pragma mark-
 #pragma mark Key Objects
 - (IBAction)createKeyObjectNote:(id)sender;
-- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo;
+- (void)keyObjectSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode  contextInfo:(id)contextInfo;
 - (IBAction)keyObjectNotes:(id)sender;
 - (BOOL)displayOnlyKeyImages;
 - (BOOL)isKeyImage:(int)index;
