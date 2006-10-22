@@ -4970,7 +4970,7 @@ static BOOL withReset = NO;
 			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
 				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
 			}
-			else if ([seriesSOPClassUID isEqualToString: @"1.2.840.10008.5.1.4.1.1.104.1"]) //JF: pdf encapsulated opened with preview
+			else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]]) //JF: pdf encapsulated opened with preview
 			{
 				[cell setAction: @selector(pdfPreview:)];
 				[cell setTitle: @"open Preview.app"];
