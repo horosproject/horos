@@ -4336,10 +4336,12 @@ public:
 	
 	aRenderer->AddActor2D( Line2DActor);
 	
+	#if !__LP64__
 	orientationWidget->SetInteractor( [self getInteractor] );
 	orientationWidget->SetEnabled( 1 );
 	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
 	orientationWidget->InteractiveOff();
+	#endif
 	
 	[self saView:self];
 	

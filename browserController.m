@@ -8986,14 +8986,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	QTTime curTime = QTMakeTime(timeValue, timeScale);
 	
-	NSDictionary *myDict =	[NSDictionary dictionaryWithObjectsAndKeys: @"jpeg",
-							QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality],
-							QTAddImageCodecQuality, nil];
+	NSDictionary *myDict = [NSDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
 	
 	int	curSample;
 	for (curSample = 0; curSample < [imagesArray count]; curSample++) 
 	{
+		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+		
 		[mMovie addImage:[imagesArray objectAtIndex: curSample] forDuration:curTime withAttributes: myDict];
+		
+		[pool release];
 	}
 	
 	[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
