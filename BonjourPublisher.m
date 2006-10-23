@@ -419,7 +419,7 @@ extern NSString * documentsDirectory();
 					[zipTask setCurrentDirectoryPath:[[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [path lastPathComponent], nil]];
 					[zipTask launch];
-					if ([zipTask isRunning]) [zipTask waitUntilExit];
+					while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 					int result = [zipTask terminationStatus];
 					[zipTask release];
 
@@ -492,7 +492,7 @@ extern NSString * documentsDirectory();
 					[unzipTask setCurrentDirectoryPath:[[localpath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", localpath, nil]]; // -o to override existing report w/ same name
 					[unzipTask launch];
-					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
 					

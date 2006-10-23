@@ -7803,44 +7803,25 @@ BOOL            readable = YES;
 
 - (void) getFrameFromMovie:(NSString*) extension
 {
-	QTMovie *movie = 0L;
-	
-	EnterMoviesOnThread( 0);
 	
 	if( [extension isEqualToString:@"mov"] == YES ||
 		[extension isEqualToString:@"mpg"] == YES ||
 		[extension isEqualToString:@"mpeg"] == YES ||
 		[extension isEqualToString:@"avi"] == YES)
 		{
-			movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:srcFile] error: 0L];
+			NSTask			*theTask = [[NSTask alloc] init];
+			
+			NSImage *frame = 0L;
+			
+			[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
+			[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Quicktime"]];
+			[theTask launch];
+			while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+			//	[theTask waitUntilExit]; <- The problem with this: it calls the current running loop.... problems with current Lock !
+			[theTask release];
+		
+			//[self getDataFromNSImage: [result objectAtIndex: 0]];
 		}
-	
-	if( movie)
-	{
-		AttachMovieToCurrentThread( [movie quickTimeMovie]);
-		
-		int curFrame = 0;
-		[movie gotoBeginning];
-		
-		QTTime previousTime;
-		
-		curFrame = 0;
-		
-		while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && curFrame != frameNo)
-		{
-			previousTime = [movie currentTime];
-			curFrame++;
-			[movie stepForward];
-		}
-		
-		[self getDataFromNSImage: [movie currentFrameImage]];
-		
-		DetachMovieFromCurrentThread( [movie quickTimeMovie]);
-		
-		[movie release];
-	}
-	
-	ExitMoviesOnThread();
 }
 
 - (void) CheckLoadIn
@@ -8383,9 +8364,7 @@ BOOL            readable = YES;
 				}
 				#endif
 				
-//				// Sadly QTMovie is NOT thread-safe... not an easy problem....
 //				[self getFrameFromMovie: extension];
-//				[self performSelectorOnMainThread:@selector(getFrameFromMovie:) withObject:extension waitUntilDone: YES];
 			}
 		}
 		

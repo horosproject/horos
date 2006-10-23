@@ -20,12 +20,14 @@ int main(int argc, const char *argv[])
 		NSString	*what = [NSString stringWithCString:argv[ 1]];
 		NSString	*path = [NSString stringWithCString:argv[ 2]];
 		
+		NSLog( what);
+		NSLog( path);
+		
 		if( [what isEqualToString:@"getFrame"])
 		{
-			int			frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
-			NSImage		**result =(NSImage**) argv[ 4];
+			int				frameNo = [[NSString stringWithCString:argv[ 3]] intValue];
 			
-			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:path] error: 0L];
+			QTMovie *movie = [[QTMovie alloc] initWithFile:path error: 0L];
 			
 			if( movie)
 			{
@@ -43,12 +45,10 @@ int main(int argc, const char *argv[])
 					[movie stepForward];
 				}
 				
-				*result = [movie currentFrameImage];
+				//[result addObject: [movie currentFrameImage]];
 				
 				[movie release];
 			}
-			
-			ExitMoviesOnThread();
 		}
 	}
 	

@@ -8860,6 +8860,9 @@
 		CE97630F08FABDA600E6F8B0 /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
 		CE99E88F073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
 		CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
+		CE9AF29D0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
+		CE9AF29E0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
+		CE9AF29F0AED5EE600606C3D /* Quicktime in Resources */ = {isa = PBXBuildFile; fileRef = CE9AF29C0AED5EE600606C3D /* Quicktime */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -10054,7 +10057,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CE7A0D7D0AED55AD00540017 /* Quicktime */;
+			remoteGlobalIDString = CE7A0D7D0AED55AD00540017;
 			remoteInfo = Quicktime;
 		};
 		CEACC7AC0878781000CF466E /* PBXContainerItemProxy */ = {
@@ -13472,6 +13475,7 @@
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PaletteController.m; sourceTree = "<group>"; };
 		CE99E88E073AB4C500725ABC /* iPhoto.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPhoto.icns; sourceTree = "<group>"; };
+		CE9AF29C0AED5EE600606C3D /* Quicktime */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Quicktime; path = build/Development/Quicktime; sourceTree = "<group>"; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
@@ -14023,6 +14027,7 @@
 			children = (
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
+				CE9AF29C0AED5EE600606C3D /* Quicktime */,
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
@@ -24480,6 +24485,7 @@
 				A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */,
+				CE9AF29F0AED5EE600606C3D /* Quicktime in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24773,6 +24779,7 @@
 				A9ADBBD80ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD90ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				CE5F9D750AE813A40042280F /* localizedTemplatesPages in Resources */,
+				CE9AF29D0AED5EE600606C3D /* Quicktime in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25067,6 +25074,7 @@
 				A9ADBBD50ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
 				A9ADBBD60ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				CE5F9D760AE813A40042280F /* localizedTemplatesPages in Resources */,
+				CE9AF29E0AED5EE600606C3D /* Quicktime in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

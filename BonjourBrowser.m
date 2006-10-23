@@ -262,7 +262,7 @@ volatile static BOOL threadIsRunning = NO;
 					[unzipTask setCurrentDirectoryPath:[[destPath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 					[unzipTask setArguments:[NSArray arrayWithObjects:@"-o", destPath, nil]]; // -o to override existing report w/ same name
 					[unzipTask launch];
-					if ([unzipTask isRunning]) [unzipTask waitUntilExit];
+					while( [unzipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 					int result = [unzipTask terminationStatus];
 					[unzipTask release];
 					
@@ -478,7 +478,7 @@ NSLog(@"connectToService");
 						[zipTask setCurrentDirectoryPath:[[filePathToLoad stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
 						[zipTask setArguments:[NSArray arrayWithObjects:@"-r" , zipFileName, [filePathToLoad lastPathComponent], nil]];
 						[zipTask launch];
-						if ([zipTask isRunning]) [zipTask waitUntilExit];
+						while( [zipTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 						int result = [zipTask terminationStatus];
 						[zipTask release];
 
