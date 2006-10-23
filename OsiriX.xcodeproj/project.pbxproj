@@ -2054,6 +2054,7 @@
 		ABE471150A76412700327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFA09B6828500545F5E /* jquant2.c */; };
 		ABE471160A76412700327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFB09B6828500545F5E /* jutils.c */; };
 		ABE471170A76412700327466 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
+		ABE500370AECA4F2009BCB5B /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		ABEA83BD0A21BF6D0094CAEF /* PapyWildexit3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C405646BBF00BED927 /* PapyWildexit3.c */; };
 		ABEA83BE0A21BF6D0094CAEF /* PapyWild3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C305646BBF00BED927 /* PapyWild3.c */; };
 		ABEA83BF0A21BF6D0094CAEF /* PapyWrite3.c in Sources */ = {isa = PBXBuildFile; fileRef = AB0BD5C205646BBF00BED927 /* PapyWrite3.c */; };
@@ -13754,6 +13755,7 @@
 				AB6FF5890A47CF8700C501F0 /* QuickTime.framework in Frameworks */,
 				AB6FF5BC0A47D24200C501F0 /* IOKit.framework in Frameworks */,
 				CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */,
+				ABE500370AECA4F2009BCB5B /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

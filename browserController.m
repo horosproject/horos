@@ -1590,8 +1590,6 @@ static BOOL COMPLETEREBUILD = NO;
 		[bonjourRunLoopTimer release];
 		bonjourRunLoopTimer = 0L;
 	}
-	
-	[self setFixedDocumentsDirectory];
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
@@ -1841,6 +1839,7 @@ static BOOL COMPLETEREBUILD = NO;
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 	managedObjectContext = 0L;
+	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
 
 	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?

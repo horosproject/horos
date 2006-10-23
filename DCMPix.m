@@ -33,6 +33,7 @@
 #include "FVTiff.h"
 #include "Analyze.h"
 #include <Accelerate/Accelerate.h>
+#import <QTKit/QTKit.h>
 
 #define PREVIEWSIZE 70.0
 
@@ -7639,6 +7640,209 @@ BOOL            readable = YES;
     return readable;
 }
 
+- (void) getDataFromNSImage:(NSImage*) otherImage
+{
+	int x, y;
+	
+	NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [otherImage TIFFRepresentation]];
+	
+	height = [TIFFRep pixelsHigh];
+	height /= 2;
+	height *= 2;
+	int realwidth = [TIFFRep pixelsWide];
+	width = realwidth/2;
+	width *= 2;
+	rowBytes = [TIFFRep bytesPerRow];
+	oImage = 0L;
+	
+	unsigned char *srcImage = [TIFFRep bitmapData];
+	unsigned char *argbImage = 0L, *srcPtr = 0L, *tmpPtr = 0L;
+	
+	int totSize = height * width * 4;
+	if( fVolImage)
+	{
+		argbImage =	(unsigned char*) fVolImage;
+	}
+	else
+	{
+		argbImage = malloc( totSize);
+	}
+	
+	switch( [TIFFRep bitsPerPixel])
+	{
+		case 8:
+			NSLog(@"8 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*rowBytes;
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr;
+					*tmpPtr++ = *srcPtr;
+					*tmpPtr++ = *srcPtr;
+					srcPtr++;
+				}
+			}
+		break;
+		
+		case 32:
+			NSLog(@"32 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*rowBytes;
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr++;
+					*tmpPtr++ = *srcPtr++;
+					*tmpPtr++ = *srcPtr++;
+					srcPtr++;
+				}
+				
+				//BlockMoveData( srcPtr, tmpPtr, width*4);
+				//tmpPtr += width*4;
+			}
+		break;
+		
+		case 24:
+			NSLog(@"24 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*rowBytes;
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					
+					*((short*)tmpPtr) = *((short*)srcPtr);
+					tmpPtr+=2;
+					srcPtr+=2;
+					
+					*tmpPtr++ = *srcPtr++;
+
+//									tmpPtr++;
+//									*tmpPtr++ = srcPtr[ 1];
+//									*tmpPtr++ = srcPtr[ 0];
+//									*tmpPtr++ = srcPtr[ 2];
+//									
+//									srcPtr += 3;
+				}
+			}
+		break;
+		
+		case 48:
+			NSLog(@"48 bits");
+			tmpPtr = argbImage;
+			for( y = 0 ; y < height; y++)
+			{
+				srcPtr = srcImage + y*rowBytes;
+				
+				x = width;
+				while( x-->0)
+				{
+					tmpPtr++;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+					*tmpPtr++ = *srcPtr;	srcPtr += 2;
+				}
+				
+				//BlockMoveData( srcPtr, tmpPtr, width*4);
+				//tmpPtr += width*4;
+			}
+		break;
+		
+		default:
+			NSLog(@"Error - Unknow...");
+		break;
+	}
+	
+	fImage = (float*) argbImage;
+	rowBytes = width * 4;
+	// TEST IF Black&White -> Convert to float -> Faster....???
+//				BOOL BW;
+//				i = height * width;
+//				i /= 16;
+//				
+//				while( i -- > 0 && BW == YES)
+//				{
+//					if( argbImage[ (i*16*4)+1] == argbImage[ (i*16*4)+2] == argbImage[ (i*16*4)+3])
+//					{
+//						BW = NO;
+//					}
+//				}
+//				
+//				if( BW)
+//				{
+//					NSLog(@"JPEG -> BW conversion");
+//					
+//					i = height * width;
+//					while( i-->0)
+//					{
+//						fImage[ i] = (argbImage[ (i*4)+1] +  argbImage[ (i*4)+2] + argbImage[ (i*4)+3]) / 3;
+//					}
+//					
+//					isRGB = NO;
+//				}
+//				else
+	{
+		isRGB = YES;
+	}
+	
+	[TIFFRep release];
+
+}
+
+- (void) getFrameFromMovie:(NSString*) extension
+{
+	QTMovie *movie = 0L;
+	
+	EnterMoviesOnThread( 0);
+	
+	if( [extension isEqualToString:@"mov"] == YES ||
+		[extension isEqualToString:@"mpg"] == YES ||
+		[extension isEqualToString:@"mpeg"] == YES ||
+		[extension isEqualToString:@"avi"] == YES)
+		{
+			movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:srcFile] error: 0L];
+		}
+	
+	if( movie)
+	{
+		AttachMovieToCurrentThread( [movie quickTimeMovie]);
+		
+		int curFrame = 0;
+		[movie gotoBeginning];
+		
+		QTTime previousTime;
+		
+		curFrame = 0;
+		
+		while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && curFrame != frameNo)
+		{
+			previousTime = [movie currentTime];
+			curFrame++;
+			[movie stepForward];
+		}
+		
+		[self getDataFromNSImage: [movie currentFrameImage]];
+		
+		DetachMovieFromCurrentThread( [movie quickTimeMovie]);
+		
+		[movie release];
+	}
+	
+	ExitMoviesOnThread();
+}
+
 - (void) CheckLoadIn
 {
 	BOOL USECUSTOMTIFF = NO;
@@ -8068,158 +8272,7 @@ BOOL            readable = YES;
 						}
 					}
 					
-					NSBitmapImageRep	*TIFFRep = [[NSBitmapImageRep alloc] initWithData: [otherImage TIFFRepresentation]];
-					
-					height = [TIFFRep pixelsHigh];
-					height /= 2;
-					height *= 2;
-					realwidth = [TIFFRep pixelsWide];
-					width = realwidth/2;
-					width *= 2;
-					rowBytes = [TIFFRep bytesPerRow];
-					oImage = 0L;
-					srcImage = [TIFFRep bitmapData];
-					
-					totSize = height * width * 4;
-					if( fVolImage)
-					{
-						argbImage =	(unsigned char*) fVolImage;
-					}
-					else
-					{
-						argbImage = malloc( totSize);
-					}
-					
-					switch( [TIFFRep bitsPerPixel])
-					{
-						case 8:
-							NSLog(@"8 bits");
-							tmpPtr = argbImage;
-							for( y = 0 ; y < height; y++)
-							{
-								srcPtr = srcImage + y*rowBytes;
-								
-								x = width;
-								while( x-->0)
-								{
-									tmpPtr++;
-									*tmpPtr++ = *srcPtr;
-									*tmpPtr++ = *srcPtr;
-									*tmpPtr++ = *srcPtr;
-									srcPtr++;
-								}
-							}
-						break;
-						
-						case 32:
-							NSLog(@"32 bits");
-							tmpPtr = argbImage;
-							for( y = 0 ; y < height; y++)
-							{
-								srcPtr = srcImage + y*rowBytes;
-								
-								x = width;
-								while( x-->0)
-								{
-									tmpPtr++;
-									*tmpPtr++ = *srcPtr++;
-									*tmpPtr++ = *srcPtr++;
-									*tmpPtr++ = *srcPtr++;
-									srcPtr++;
-								}
-								
-								//BlockMoveData( srcPtr, tmpPtr, width*4);
-								//tmpPtr += width*4;
-							}
-						break;
-						
-						case 24:
-							NSLog(@"24 bits");
-							tmpPtr = argbImage;
-							for( y = 0 ; y < height; y++)
-							{
-								srcPtr = srcImage + y*rowBytes;
-								
-								x = width;
-								while( x-->0)
-								{
-									tmpPtr++;
-									
-									*((short*)tmpPtr) = *((short*)srcPtr);
-									tmpPtr+=2;
-									srcPtr+=2;
-									
-									*tmpPtr++ = *srcPtr++;
-
-//									tmpPtr++;
-//									*tmpPtr++ = srcPtr[ 1];
-//									*tmpPtr++ = srcPtr[ 0];
-//									*tmpPtr++ = srcPtr[ 2];
-//									
-//									srcPtr += 3;
-								}
-							}
-						break;
-						
-						case 48:
-							NSLog(@"48 bits");
-							tmpPtr = argbImage;
-							for( y = 0 ; y < height; y++)
-							{
-								srcPtr = srcImage + y*rowBytes;
-								
-								x = width;
-								while( x-->0)
-								{
-									tmpPtr++;
-									*tmpPtr++ = *srcPtr;	srcPtr += 2;
-									*tmpPtr++ = *srcPtr;	srcPtr += 2;
-									*tmpPtr++ = *srcPtr;	srcPtr += 2;
-								}
-								
-								//BlockMoveData( srcPtr, tmpPtr, width*4);
-								//tmpPtr += width*4;
-							}
-						break;
-						
-						default:
-							NSLog(@"Error - Unknow...");
-						break;
-					}
-					
-					fImage = (float*) argbImage;
-					rowBytes = width * 4;
-					// TEST IF Black&White -> Convert to float -> Faster....???
-	//				BOOL BW;
-	//				i = height * width;
-	//				i /= 16;
-	//				
-	//				while( i -- > 0 && BW == YES)
-	//				{
-	//					if( argbImage[ (i*16*4)+1] == argbImage[ (i*16*4)+2] == argbImage[ (i*16*4)+3])
-	//					{
-	//						BW = NO;
-	//					}
-	//				}
-	//				
-	//				if( BW)
-	//				{
-	//					NSLog(@"JPEG -> BW conversion");
-	//					
-	//					i = height * width;
-	//					while( i-->0)
-	//					{
-	//						fImage[ i] = (argbImage[ (i*4)+1] +  argbImage[ (i*4)+2] + argbImage[ (i*4)+3]) / 3;
-	//					}
-	//					
-	//					isRGB = NO;
-	//				}
-	//				else
-					{
-						isRGB = YES;
-					}
-					
-					[TIFFRep release];
+					[self getDataFromNSImage: otherImage];
 				}
 				
 				if( otherImage) [otherImage release];
@@ -8329,6 +8382,10 @@ BOOL            readable = YES;
 					[movie release];
 				}
 				#endif
+				
+//				// Sadly QTMovie is NOT thread-safe... not an easy problem....
+//				[self getFrameFromMovie: extension];
+//				[self performSelectorOnMainThread:@selector(getFrameFromMovie:) withObject:extension waitUntilDone: YES];
 			}
 		}
 		
@@ -8344,10 +8401,7 @@ BOOL            readable = YES;
 			}
 			else
 			{
-				
-				
 				fImage = malloc( 256 * 256 * 4);
-				
 			}
 			
 			height = 256;
