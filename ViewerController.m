@@ -7573,8 +7573,10 @@ int i,j,l;
 	
 	if( blendingController)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == NO || [imageView syncro] != syncroLOC)
 		{
+			float zDiff = [[[blendingController imageView] curDCM] sliceLocation] - [[imageView curDCM] sliceLocation];
+		
 			for( i = 0; i < maxMovieIndex; i++)
 			{
 				for( x = 0; x < [pixList[ i] count]; x++)
@@ -7594,19 +7596,25 @@ int i,j,l;
 					tempOriginBlending[ 1] = [[[blendingController imageView] curDCM] originX] * vectorP[ 3] + [[[blendingController imageView] curDCM] originY] * vectorP[ 4] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 5];
 					tempOriginBlending[ 2] = [[[blendingController imageView] curDCM] originX] * vectorP[ 6] + [[[blendingController imageView] curDCM] originY] * vectorP[ 7] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 8];
 					
+					[curDCM setPixelSpacingX: [[imageView curDCM] pixelSpacingX] * ([[blendingController imageView] pixelSpacingX] / [[blendingController imageView] scaleValue]) /  ([[imageView curDCM] pixelSpacingX]/[imageView scaleValue])];
+					[curDCM setPixelSpacingY: [[imageView curDCM] pixelSpacingY] * ([[blendingController imageView] pixelSpacingY] / [[blendingController imageView] scaleValue]) / ([[imageView curDCM] pixelSpacingY]/[imageView scaleValue])];
+					
 					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[[blendingController imageView] curDCM] pwidth]*[[[blendingController imageView] curDCM] pixelSpacingX]/2.));
 					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[[blendingController imageView] curDCM] pheight]*[[[blendingController imageView] curDCM] pixelSpacingY]/2.));
-
-					o[ 0] = [curDCM originX];		o[ 1] = [curDCM originY];		o[ 2] = [curDCM originZ];
 					
+					o[ 0] = [curDCM originX];		o[ 1] = [curDCM originY];		o[ 2] = [curDCM originZ];
+
 					o[ 0] -= ([[blendingController imageView] origin].x*[[[blendingController imageView] curDCM] pixelSpacingX]/[[blendingController imageView] scaleValue] - [imageView origin].x*[curDCM pixelSpacingX]/[imageView scaleValue]) + offset.x;
 					o[ 1] += ([[blendingController imageView] origin].y*[[[blendingController imageView] curDCM] pixelSpacingY]/[[blendingController imageView] scaleValue] - [imageView origin].y*[curDCM pixelSpacingY]/[imageView scaleValue]) - offset.y;
+					o[ 2] += zDiff;
 					
 					[curDCM setOrigin: o];
+					[curDCM setSliceLocation: o[ 2]];
 				}
 			}
 			
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"COPYSETTINGS"];
+			[imageView setSyncro: syncroLOC];
 			[imageView sendSyncMessage:1];
 			[self propagateSettings];
 		}

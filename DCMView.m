@@ -63,7 +63,7 @@ Version 2.3
 //#define RECTANGLE false
 //GL_TEXTURE_RECTANGLE_EXT - GL_TEXTURE_2D
 
-enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D = 5};
+
 
 extern		NSThread					*mainThread;
 extern		BOOL						USETOOLBARPANEL;
@@ -7800,7 +7800,8 @@ BOOL	lowRes = NO;
 
 #pragma mark-  Drag and Drop
 
-- (void) startDrag:(NSTimer*)theTimer{
+- (void) startDrag:(NSTimer*)theTimer
+{
 	NS_DURING
 	_dragInProgress = YES;
 	[_mouseDownTimer release];
