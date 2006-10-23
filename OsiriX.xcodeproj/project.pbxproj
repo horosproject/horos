@@ -16,6 +16,7 @@
 				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
 				ABCB1B3C0A21FC04008EB2E8 /* PBXTargetDependency */,
 				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
+				CE7A0F7F0AED591800540017 /* PBXTargetDependency */,
 				CEACC7AD0878781000CF466E /* PBXTargetDependency */,
 				CEACC7AF0878781000CF466E /* PBXTargetDependency */,
 				CEACC7B10878781000CF466E /* PBXTargetDependency */,
@@ -8774,6 +8775,16 @@
 		CE79DCFD0753A64D005C8051 /* NO-VRControllerVPRO.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */; };
 		CE7A0C2F071D26D100C5E16F /* PreferencePanesViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE7A0C2D071D26D100C5E16F /* PreferencePanesViewer.nib */; };
 		CE7A0C30071D26D100C5E16F /* PreferencePanesViewer.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE7A0C2D071D26D100C5E16F /* PreferencePanesViewer.nib */; };
+		CE7A0EE20AED55AD00540017 /* OsiriX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E0B3A3F067526CD00908593 /* OsiriX.framework */; };
+		CE7A0EE30AED55AD00540017 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
+		CE7A0EE40AED55AD00540017 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
+		CE7A0EE50AED55AD00540017 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
+		CE7A0EE60AED55AD00540017 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CE7A0EE70AED55AD00540017 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
+		CE7A0EE80AED55AD00540017 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
+		CE7A0EE90AED55AD00540017 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
+		CE7A0F650AED582700540017 /* Quicktime.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE7A0F1A0AED55E700540017 /* Quicktime.mm */; };
+		CE7A0F700AED58E500540017 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CE7DED2708F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */; };
 		CE7DED2808F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */; };
 		CE7DED2908F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom in Resources */ = {isa = PBXBuildFile; fileRef = CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */; };
@@ -10038,6 +10049,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 8D202CF80486D31800D8A456;
 			remoteInfo = OSIRoutingPreferencePane;
+		};
+		CE7A0F7E0AED591800540017 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE7A0D7D0AED55AD00540017 /* Quicktime */;
+			remoteInfo = Quicktime;
 		};
 		CEACC7AC0878781000CF466E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -13427,6 +13445,8 @@
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
 		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
 		CE7A0C2E071D26D100C5E16F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.nib; sourceTree = "<group>"; };
+		CE7A0EED0AED55AD00540017 /* Quicktime */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Quicktime; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
 		CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel1.1.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE84A51708621EDC00F37B43 /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
@@ -13759,6 +13779,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE7A0EE10AED55AD00540017 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE7A0EE20AED55AD00540017 /* OsiriX.framework in Frameworks */,
+				CE7A0EE30AED55AD00540017 /* Foundation.framework in Frameworks */,
+				CE7A0EE40AED55AD00540017 /* libtiff.dylib in Frameworks */,
+				CE7A0EE50AED55AD00540017 /* libtiff.a in Frameworks */,
+				CE7A0EE60AED55AD00540017 /* Cocoa.framework in Frameworks */,
+				CE7A0EE70AED55AD00540017 /* QuickTime.framework in Frameworks */,
+				CE7A0EE80AED55AD00540017 /* IOKit.framework in Frameworks */,
+				CE7A0EE90AED55AD00540017 /* libz.dylib in Frameworks */,
+				CE7A0F700AED58E500540017 /* QTKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECB054907539E3900576814 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -13947,6 +13983,7 @@
 				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
 				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
+				CE7A0EED0AED55AD00540017 /* Quicktime */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -13954,6 +13991,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				CE7A0D670AED557500540017 /* Quicktime */,
 				AB724F1C0ADE6CFC00A212A0 /* DecompressDICOM */,
 				ABEA7F420A21BD310094CAEF /* SafeDBRebuild */,
 				BFBF3AAF09B6820C00545F5E /* dcmtk */,
@@ -17874,6 +17912,14 @@
 				CE4E431508758A1800D0AFDB /* OSIRoutingPreferencePane.prefPane */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CE7A0D670AED557500540017 /* Quicktime */ = {
+			isa = PBXGroup;
+			children = (
+				CE7A0F1A0AED55E700540017 /* Quicktime.mm */,
+			);
+			name = Quicktime;
 			sourceTree = "<group>";
 		};
 		CE7DECC208F05F1500763A70 /* Previous DB Models */ = {
@@ -23916,6 +23962,22 @@
 			productReference = ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
+		CE7A0D7D0AED55AD00540017 /* Quicktime */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE7A0EEA0AED55AD00540017 /* Build configuration list for PBXNativeTarget "Quicktime" */;
+			buildPhases = (
+				CE7A0D7E0AED55AD00540017 /* Sources */,
+				CE7A0EE10AED55AD00540017 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Quicktime;
+			productName = SafeDBRebuild;
+			productReference = CE7A0EED0AED55AD00540017 /* Quicktime */;
+			productType = "com.apple.product-type.tool";
+		};
 		CECBFEE707539E3900576814 /* Development VolumePRO */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC9085757B70073649A /* Build configuration list for PBXNativeTarget "Development VolumePRO" */;
@@ -24020,6 +24082,7 @@
 				4A16D0950965E15300F82EC4 /* Unit Testing (Cocoa) */,
 				ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
+				CE7A0D7D0AED55AD00540017 /* Quicktime */,
 			);
 		};
 /* End PBXProject section */
@@ -27386,6 +27449,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CE7A0D7E0AED55AD00540017 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE7A0F650AED582700540017 /* Quicktime.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECB03FD07539E3900576814 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -28168,6 +28239,11 @@
 			isa = PBXTargetDependency;
 			target = ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */;
 			targetProxy = ABCB1B3B0A21FC04008EB2E8 /* PBXContainerItemProxy */;
+		};
+		CE7A0F7F0AED591800540017 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE7A0D7D0AED55AD00540017 /* Quicktime */;
+			targetProxy = CE7A0F7E0AED591800540017 /* PBXContainerItemProxy */;
 		};
 		CEACC7AD0878781000CF466E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -29377,6 +29453,77 @@
 			};
 			name = Default;
 		};
+		CE7A0EEB0AED55AD00540017 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)",
+				);
+				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Quicktime;
+				SYMROOT = build;
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		CE7A0EEC0AED55AD00540017 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(BUILD_DIR)/build/Development/OsiriX/Contents/MacOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)",
+				);
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/Binaries/LibTiff\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = SafeDBRebuild;
+				SYMROOT = build;
+			};
+			name = Default;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -29466,6 +29613,15 @@
 			buildConfigurations = (
 				ABEA7F390A21BCE90094CAEF /* Development */,
 				ABEA7F3A0A21BCE90094CAEF /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		CE7A0EEA0AED55AD00540017 /* Build configuration list for PBXNativeTarget "Quicktime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE7A0EEB0AED55AD00540017 /* Development */,
+				CE7A0EEC0AED55AD00540017 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
