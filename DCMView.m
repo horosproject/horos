@@ -82,6 +82,9 @@ static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable =
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		float						margin = 2;
 
+NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
+
+
 #define CROSS(dest,v1,v2) \
           dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
           dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \

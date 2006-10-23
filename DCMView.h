@@ -56,7 +56,7 @@ enum
 	tBonesRemoval				//	21
 };
 
-static NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
+extern NSString *pasteBoardOsiriX;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };
 enum { barHide = 0, barOrigin, barFused, barBoth };
