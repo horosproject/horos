@@ -181,6 +181,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[imageView setIndex: [newPixList count]/2];
 	[imageView sendSyncMessage:1];
 	[self adjustSlider];
+	
 }
 
 -(void) processReslice:(long) directionm
@@ -401,7 +402,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 				}
 				
 				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingY]];
-				[[newPixList lastObject] setSliceInterval: [firstPix pixelSpacingY]];
+				[[newPixList lastObject] setSliceInterval: 0];
 				[curPix setOrigin: origin];
 			}
 			else											// Y - RESLICE
@@ -517,7 +518,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 				}
 				
 				[[newPixList lastObject] setSliceThickness: [firstPix pixelSpacingX]];
-				[[newPixList lastObject] setSliceInterval: [firstPix pixelSpacingY]];
+				[[newPixList lastObject] setSliceInterval: 0];
 				
 				[curPix setOrigin: origin];
 			}
@@ -541,30 +542,107 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 		if( blendingController) [self ActivateBlending: 0L];
 
-		if( currentOrientationTool != 0)
+		if( currentOrientationTool != originalOrientation)
 		{
 			[browserWindow loadSeries :[[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"] :self :YES keyImagesOnly: displayOnlyKeyImages];
 		}
 		
 		currentOrientationTool = newOrientationTool;
 		
-		switch( currentOrientationTool)
+		switch( originalOrientation)
 		{
 			case 0:
+			{
+				switch( currentOrientationTool)
+				{
+					case 0:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+					break;
+					
+					case 1:
+						[self checkEverythingLoaded];
+						[self processReslice: 0];
+					break;
+					
+					case 2:
+						[self checkEverythingLoaded];
+						[self processReslice: 1];
+					break;
+				}
+			}
 			break;
-			
+
 			case 1:
-				[self checkEverythingLoaded];
-				[self processReslice: 0];
+			{
+				switch( currentOrientationTool)
+				{
+					case 0:
+						[self checkEverythingLoaded];
+						[self processReslice: 0];
+						
+						[imageView setYFlipped: YES];
+						[imageView setRotation: 0];
+					break;
+					
+					case 1:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+						
+						[imageView setYFlipped: NO];
+						[imageView setRotation: 0];
+					break;
+					
+					case 2:
+						[self checkEverythingLoaded];
+						[self processReslice: 1];
+						
+						[imageView setYFlipped: NO];
+						[imageView setRotation: 90];
+					break;
+				}
+			}
 			break;
-			
+
 			case 2:
-				[self checkEverythingLoaded];
-				[self processReslice: 1];
+			{
+				switch( currentOrientationTool)
+				{
+					case 0:
+						[self checkEverythingLoaded];
+						[self processReslice: 0];
+						
+						[imageView setXFlipped: YES];
+						[imageView setRotation: 90];
+					break;
+					
+					case 1:
+						[self checkEverythingLoaded];
+						[self processReslice: 1];
+						
+						[imageView setXFlipped: YES];
+						[imageView setRotation: 90];
+					break;
+					
+					case 2:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+						
+						[imageView setXFlipped: NO];
+						[imageView setRotation: 0];
+					break;
+				}
+			}
 			break;
+
 		}
 		
 		[orientationMatrix selectCellWithTag: currentOrientationTool];
+		
+		NSLog( @"********* originalOrientation: %d", originalOrientation);
 	}
 }
 
@@ -3127,8 +3205,12 @@ static ViewerController *draggedController = 0L;
 	}	
 	windowWillClose = YES;
 	
-	
-	
+	if( currentOrientationTool != originalOrientation)
+	{
+		[imageView setXFlipped: NO];
+		[imageView setYFlipped: NO];
+		[imageView setRotation: 0];
+	}
 	
 	if( previousColumns != 1 || previousRows != 1)
 	{
@@ -3618,6 +3700,24 @@ static ViewerController *draggedController = 0L;
 	{
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
+		
+		switch( orientationVector)
+		{
+			case eAxialPos:
+			case eAxialNeg:
+				originalOrientation = 0;
+			break;
+			
+			case eCoronalNeg:
+			case eCoronalPos:
+				originalOrientation = 1;
+			break;
+			
+			case eSagittalNeg:
+			case eSagittalPos:
+				originalOrientation = 2;
+			break;
+		}
 	}
 	
 	loadingPercentage = 1;
@@ -4522,6 +4622,9 @@ static ViewerController *draggedController = 0L;
 				
 				if( vectors[6] > 0) orientationVector = eSagittalPos;
 				else orientationVector = eSagittalNeg;
+				
+				[orientationMatrix selectCellWithTag: 2];
+				currentOrientationTool = 2;
 			}
 			
 			if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
@@ -4534,6 +4637,9 @@ static ViewerController *draggedController = 0L;
 				
 				if( vectors[7] > 0) orientationVector = eCoronalPos;
 				else orientationVector = eCoronalNeg;
+				
+				[orientationMatrix selectCellWithTag: 1];
+				currentOrientationTool = 1;
 			}
 			
 			if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
@@ -4546,6 +4652,9 @@ static ViewerController *draggedController = 0L;
 				
 				if( vectors[8] > 0) orientationVector = eAxialPos;
 				else orientationVector = eAxialNeg;
+				
+				[orientationMatrix selectCellWithTag: 0];
+				currentOrientationTool = 0;
 			}
 			
 			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!

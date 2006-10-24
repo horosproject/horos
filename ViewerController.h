@@ -68,7 +68,7 @@ enum
 	IBOutlet NSView         *orientationView;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
-	short					currentOrientationTool;
+	short					currentOrientationTool, originalOrientation;
 	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;

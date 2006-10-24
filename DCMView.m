@@ -5688,138 +5688,6 @@ static long scrollMode;
 				glDisable( GL_BLEND);
 			}
 			
-			// ***********************
-			// DRAW CLUT BARS ********
-			
-			if( [[[self window] windowController] is2DViewer] == YES && annotations != annotNone)
-			{
-				if( clutBars == barOrigin || clutBars == barBoth)
-				{
-					float			heighthalf = size.size.height/2 - 1;
-					float			widthhalf = size.size.width/2 - 1;
-					long			yRaster = 1, xRaster, i;
-					NSString		*tempString = 0L;
-					
-					#define BARPOSX1 50.f
-					#define BARPOSX2 20.f
-					
-					heighthalf = 0;
-					
-					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-					glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f);
-					
-					glLineWidth(1.0);
-					glBegin(GL_LINES);
-					for( i = 0; i < 256; i++)
-					{
-						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
-						
-						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
-						glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
-					}
-					glColor3ub ( 128, 128, 128);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
-					glEnd();
-					
-					if( curWW < 50)
-					{
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
-						
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-						
-						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
-					}
-					else
-					{
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
-						
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
-						
-						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
-					}
-				} //clutBars == barOrigin || clutBars == barBoth
-				
-				if( blendingView)
-				{
-					if( clutBars == barFused || clutBars == barBoth)
-					{
-						unsigned char	*bred, *bgreen, *bblue;
-						float			heighthalf = size.size.height/2 - 1;
-						float			widthhalf = size.size.width/2 - 1;
-						long			yRaster = 1, xRaster, i;
-						float			bwl, bww;
-						NSString		*tempString = 0L;
-						
-						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-						{
-							bred = PETredTable;
-							bgreen = PETgreenTable;
-							bblue = PETblueTable;
-						}
-						else [blendingView getCLUT:&bred :&bgreen :&bblue];
-						
-						#define BBARPOSX1 55.f
-						#define BBARPOSX2 25.f
-						
-						heighthalf = 0;
-						
-						glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-						glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f);
-						
-						glLineWidth(1.0);
-						glBegin(GL_LINES);
-						for( i = 0; i < 256; i++)
-						{
-							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
-							
-							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
-							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
-						}
-						glColor3ub ( 128, 128, 128);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
-						glEnd();
-						
-						[blendingView getWLWW: &bwl :&bww];
-						
-						if( curWW < 50)
-						{
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-							
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-							
-							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-						}
-						else
-						{
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
-							
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
-							
-							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
-						}
-					}
-				} //blendingView
-			} //[[[self window] windowController] is2DViewer] == YES
-			
-			
 			//** SLICE CUT FOR 2D MPR
 			if( cross.x != -9999 && cross.y != -9999 && display2DMPRLines == YES)
 			{
@@ -5943,6 +5811,141 @@ static long scrollMode;
 				glDisable(GL_POINT_SMOOTH);
 				glDisable(GL_BLEND);
 			}
+			
+			// ***********************
+			// DRAW CLUT BARS ********
+			
+			if( [[[self window] windowController] is2DViewer] == YES && annotations != annotNone)
+			{
+				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+				glScalef (2.0f /(size.size.width), -2.0f / (size.size.height), 1.0f); // scale to port per pixel scale
+
+				if( clutBars == barOrigin || clutBars == barBoth)
+				{
+					float			heighthalf = size.size.height/2 - 1;
+					float			widthhalf = size.size.width/2 - 1;
+					long			yRaster = 1, xRaster, i;
+					NSString		*tempString = 0L;
+					
+					#define BARPOSX1 50.f
+					#define BARPOSX2 20.f
+					
+					heighthalf = 0;
+					
+//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//					glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f);
+					
+					glLineWidth(1.0);
+					glBegin(GL_LINES);
+					for( i = 0; i < 256; i++)
+					{
+						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
+						
+						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
+						glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
+					}
+					glColor3ub ( 128, 128, 128);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
+					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
+					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
+					glEnd();
+					
+					if( curWW < 50)
+					{
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					}
+					else
+					{
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						
+						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
+						[self DrawNSStringGL: tempString : labelFontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+					}
+				} //clutBars == barOrigin || clutBars == barBoth
+				
+				if( blendingView)
+				{
+					if( clutBars == barFused || clutBars == barBoth)
+					{
+						unsigned char	*bred, *bgreen, *bblue;
+						float			heighthalf = size.size.height/2 - 1;
+						float			widthhalf = size.size.width/2 - 1;
+						long			yRaster = 1, xRaster, i;
+						float			bwl, bww;
+						NSString		*tempString = 0L;
+						
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+						{
+							bred = PETredTable;
+							bgreen = PETgreenTable;
+							bblue = PETblueTable;
+						}
+						else [blendingView getCLUT:&bred :&bgreen :&bblue];
+						
+						#define BBARPOSX1 55.f
+						#define BBARPOSX2 25.f
+						
+						heighthalf = 0;
+						
+//						glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//						glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f);
+						
+						glLineWidth(1.0);
+						glBegin(GL_LINES);
+						for( i = 0; i < 256; i++)
+						{
+							glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
+							
+							glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
+							glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+						}
+						glColor3ub ( 128, 128, 128);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
+						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
+						glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
+						glEnd();
+						
+						[blendingView getWLWW: &bwl :&bww];
+						
+						if( curWW < 50)
+						{
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							
+							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+						}
+						else
+						{
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							
+							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
+							[self DrawNSStringGL: tempString : labelFontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+						}
+					}
+				} //blendingView
+			} //[[[self window] windowController] is2DViewer] == YES
+
 			
 			if (annotations != annotNone)
 			{
