@@ -64,6 +64,12 @@ enum
 	IBOutlet NSBox			*quicktimeBox;
 	
 	DCMView					*imageView;
+	
+	IBOutlet NSView         *orientationView;
+	IBOutlet NSMatrix		*orientationMatrix;
+	
+	short					currentOrientationTool;
+	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;
     IBOutlet NSView         *speedView;
@@ -260,6 +266,7 @@ enum
 + (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
 - (ViewerController *) newWindow:(NSMutableArray*)pixList :(NSMutableArray*)fileList :(NSData*) volumeData;
 - (void) CloseViewerNotification: (NSNotification*) note;
+- (void) replaceSeriesWith:(NSMutableArray*)newPixList :(NSMutableArray*)newDcmList :(NSData*) newData;
 
 // Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object
 -(ViewerController*) blendedWindow;
@@ -495,6 +502,9 @@ enum
 - (void) roiSetStartScheduler:(NSMutableArray*) roiToProceed;
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
+- (IBAction) setOrientationTool:(id) sender;
+- (void) setWindowTitle:(id) sender;
+
 #pragma mark-
 #pragma mark Brush ROI Filters
 

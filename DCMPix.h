@@ -373,6 +373,7 @@
 - (void) setSUVConverted : (BOOL) v;
 - (BOOL) SUVConverted;
 - (float) decayFactor;
+- (float) setDecayFactor: (float) f;
 - (NSString*) units;
 - (NSString*) decayCorrection;
 - (void) setDecayCorrection : (NSString*) s;

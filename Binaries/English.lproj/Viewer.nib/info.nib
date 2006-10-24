@@ -14,19 +14,20 @@
 		<string>692 548 55 77 0 0 1440 878 </string>
 		<key>1750</key>
 		<string>690 549 60 74 0 0 1440 878 </string>
+		<key>1769</key>
+		<string>887 739 145 94 0 0 1920 1178 </string>
 		<key>21</key>
 		<string>613 540 214 93 0 0 1440 878 </string>
 		<key>372</key>
 		<string>433 457 158 82 0 0 1024 746 </string>
 		<key>737</key>
-		<string>687 547 66 78 0 0 1440 878 </string>
+		<string>927 747 66 78 0 0 1920 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>1408</integer>
-		<integer>737</integer>
+		<integer>1769</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>

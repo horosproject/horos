@@ -110,7 +110,6 @@
                 ConvertToRGBMenu = id; 
                 CurvedMPR = id; 
                 MPR2DViewer = id; 
-                MPRViewer = id; 
                 MoviePlayStop = id; 
                 PagePadCreate = id; 
                 Panel3D = id; 
@@ -183,9 +182,11 @@
                 setCurrentdcmExport = id; 
                 setCurvedMPRslider = id; 
                 setDefaultTool = id; 
+                setOrientationTool = id; 
                 setROITool = id; 
                 setStatus = id; 
                 setStructuringElementRadius = id; 
+                setWindowTitle = id; 
                 shutterOnOff = id; 
                 sliderFusionAction = id; 
                 speedSliderAction = id; 
@@ -294,6 +295,8 @@
                 movieView = NSView; 
                 newName = NSTextField; 
                 newValueText = NSTextField; 
+                orientationMatrix = NSMatrix; 
+                orientationView = NSView; 
                 patientView = NSView; 
                 popFusion = NSPopUpButton; 
                 popupRoi = NSPopUpButton; 
