@@ -173,18 +173,17 @@ int main(int argc, const char *argv[])
 			
 			if (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000)
 			{
-				NSString *path = [NSString stringWithCString:fname encoding:[NSString defaultCStringEncoding]];
 				DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData:YES];
 				
 				[dcmObject writeToFile:[path stringByAppendingString:@" temp"] withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality:1 AET:@"OsiriX" atomically:YES];
+								
+				[dcmObject release];
 				
 				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+				
 				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: 0L];
-				
-				
-				[dcmObject release];
 			}
-			else
+			else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 			{
 				DcmDataset *dataset = fileformat.getDataset();
 				
@@ -199,10 +198,9 @@ int main(int argc, const char *argv[])
 					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
 					status =  (cond.good()) ? YES : NO;
 				}
-				else
-				status = NO;
+				else status = NO;
 			}
-		
+			
 			if( status == NO) NSLog(@"decompress error");
 		}
 		
