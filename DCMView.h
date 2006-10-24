@@ -353,6 +353,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 -(void) roiSelected:(NSNotification*) note;
 - (void) setStartWLWW;
 - (void) stopROIEditing;
+- (void) stopROIEditingForce:(BOOL) force;
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 
 // methodes to access global variables (for plugins)

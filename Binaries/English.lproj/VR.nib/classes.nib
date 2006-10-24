@@ -78,23 +78,26 @@
         }, 
         {
             ACTIONS = {
-                ApplyCLUT = id; 
-                ApplyOpacity = id; 
+                ApplyWLWW = id; 
                 LODsliderAction = id; 
                 MoviePlayStop = id; 
                 blendingSlider = id; 
-                clutAction = id; 
                 editShadingValues = id; 
-                endCLUT = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
                 endShadingEditing = id; 
+                export2iPhoto = id; 
+                exportJPEG = id; 
+                exportTIFF = id; 
+                flyThruControllerInit = id; 
                 moviePosSliderAction = id; 
                 movieRateSliderAction = id; 
                 resetShading = id; 
+                roiGetManager = id; 
+                sendMail = id; 
                 setDefaultTool = id; 
                 setEngine = id; 
                 setMode = id; 
+                setOrientation = id; 
+                undo = id; 
             }; 
             CLASS = VRController; 
             LANGUAGE = ObjC; 
@@ -102,18 +105,10 @@
                 BlendingView = NSView; 
                 LODSlider = NSSlider; 
                 LODView = NSView; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
+                OrientationsView = NSView; 
                 WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
                 enginePopup = NSPopUpButton; 
                 engineView = NSView; 
                 modeMatrix = NSMatrix; 
@@ -123,7 +118,6 @@
                 movieRateSlider = NSSlider; 
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
-                newName = NSTextField; 
                 perspectiveView = NSView; 
                 scissorStateView = NSView; 
                 shadingCheck = NSButton; 
@@ -134,9 +128,6 @@
                 toolsMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = VRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
             }; 
             SUPERCLASS = Window3DController; 
         }, 

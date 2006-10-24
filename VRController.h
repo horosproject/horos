@@ -41,6 +41,8 @@
 	
     IBOutlet NSView         *toolsView, *WLWWView, *LODView, *BlendingView, *movieView, *shadingView, *engineView, *perspectiveView, *modeView, *scissorStateView;
 	
+	IBOutlet NSView			*OrientationsView;
+	
 	IBOutlet NSMatrix		*modeMatrix;
 	
 	IBOutlet NSMatrix		*toolsMatrix;
@@ -89,6 +91,7 @@
 	NSMutableArray			*roiVolumes;
 }
 
+- (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
 - (IBAction) resetShading:(id) sender;
 - (void) setModeIndex:(long) val;

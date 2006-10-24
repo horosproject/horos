@@ -537,7 +537,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
-		[imageView stopROIEditing];
+		[imageView stopROIEditingForce: YES];
 		[self checkEverythingLoaded];
 
 		if( blendingController) [self ActivateBlending: 0L];
@@ -963,6 +963,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (BOOL)windowShouldClose:(id)sender
 {
+	[imageView stopROIEditingForce: YES];
+	
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
@@ -977,6 +979,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 - (void)windowWillClose:(NSNotification *)notification
 {
 	if( FullScreenOn == YES ) [self fullScreenMenu: self];
+	
+	[imageView stopROIEditingForce: YES];
 	
 	windowWillClose = YES;
 	
@@ -1050,11 +1054,15 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 - (void) WindowDidResignMainNotification:(NSNotification *)aNotification
 {
+	[imageView stopROIEditingForce: YES];
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
 -(void) WindowDidResignKeyNotification:(NSNotification *)aNotification
 {
+	[imageView stopROIEditingForce: YES];
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
@@ -3806,7 +3814,7 @@ static ViewerController *draggedController = 0L;
     id				filter = [plugins objectForKey:name];
 	
 	[self checkEverythingLoaded];
-	[imageView stopROIEditing];
+	[imageView stopROIEditingForce: YES];
 	
 	NSLog(@"executeFilter");
 	
@@ -3866,7 +3874,7 @@ static ViewerController *draggedController = 0L;
 - (BOOL)resampleDataWithXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
 	[self checkEverythingLoaded];
-	[imageView stopROIEditing];
+	[imageView stopROIEditingForce: YES];
 	
 	NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 	NSMutableArray *newDcmList = [NSMutableArray arrayWithCapacity:0];
@@ -6592,7 +6600,7 @@ int i,j,l;
 	
 	[name retain];
 	
-	[imageView stopROIEditing];
+	[imageView stopROIEditingForce: YES];
 	
 	for( x = 0; x < [pixList[curMovieIndex] count]; x++)
 	{
@@ -7020,7 +7028,7 @@ int i,j,l;
 {
 	long i, x, y;
 	
-	[imageView stopROIEditing];
+	[imageView stopROIEditingForce: YES];
 	
 	for( y = 0; y < maxMovieIndex; y++)
 	{

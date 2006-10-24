@@ -1334,6 +1334,9 @@
 		AB73E14A0649839300545980 /* Studies.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB73E1480649839300545980 /* Studies.tif */; };
 		AB746743065938DB005838D5 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB746742065938DB005838D5 /* Pencil.tiff */; };
 		AB746744065938DB005838D5 /* Pencil.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AB746742065938DB005838D5 /* Pencil.tiff */; };
+		AB7598290AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
+		AB75982A0AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
+		AB75982B0AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
 		AB785FB8061A3C0700EC48D3 /* MyNSTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */; };
 		AB785FB9061A3C0700EC48D3 /* MyNSTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB785FB7061A3C0700EC48D3 /* MyNSTextView.m */; };
 		AB785FBA061A3C0700EC48D3 /* MyNSTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */; };
@@ -10720,6 +10723,7 @@
 		AB73E13706497EDA00545980 /* PreviewView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PreviewView.m; sourceTree = "<group>"; };
 		AB73E1480649839300545980 /* Studies.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Studies.tif; sourceTree = "<group>"; };
 		AB746742065938DB005838D5 /* Pencil.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Pencil.tiff; sourceTree = "<group>"; };
+		AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagSmallOpposite.tif; sourceTree = "<group>"; };
 		AB785FB6061A3C0700EC48D3 /* MyNSTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyNSTextView.h; sourceTree = "<group>"; };
 		AB785FB7061A3C0700EC48D3 /* MyNSTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyNSTextView.m; sourceTree = "<group>"; };
 		AB7CB7AF0A6E3886008DFCC9 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
@@ -14849,6 +14853,7 @@
 			isa = PBXGroup;
 			children = (
 				ABD559F50AEE146900108895 /* SagSmall.tif */,
+				AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */,
 				ABD559F60AEE146900108895 /* CorSmall.tif */,
 				ABD559F70AEE146900108895 /* AxialSmall.tif */,
 				B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */,
@@ -24504,6 +24509,7 @@
 				ABD559FE0AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559FF0AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD55A000AEE146900108895 /* AxialSmall.tif in Resources */,
+				AB75982B0AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24801,6 +24807,7 @@
 				ABD559FB0AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559FC0AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD559FD0AEE146900108895 /* AxialSmall.tif in Resources */,
+				AB75982A0AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25099,6 +25106,7 @@
 				ABD559F80AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559F90AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD559FA0AEE146900108895 /* AxialSmall.tif in Resources */,
+				AB7598290AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

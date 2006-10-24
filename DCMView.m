@@ -365,7 +365,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	return 0L;	// Only defined in herited classes
 }
 
-- (void) stopROIEditing
+- (void) stopROIEditingForce:(BOOL) force
 {
 	long i, x, no;
 	
@@ -392,7 +392,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				if( [[dcmRoiList objectAtIndex: x] containsObject: curROI]) no++;
 			}
 		
-			if( no <= 1)
+			if( no <= 1 || force == YES)
 			{
 				[curROI setROIMode: ROI_sleep];
 				curROI = 0L;
@@ -404,6 +404,11 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			curROI = 0L;
 		}
 	}
+}
+
+- (void) stopROIEditing
+{
+	[self stopROIEditingForce: NO];
 }
 
 - (void) blendingPropagate
@@ -836,7 +841,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 {
     currentTool = i;
     
-	[self stopROIEditing];
+	[self stopROIEditingForce: YES];
 	
     mesureA.x = mesureA.y = mesureB.x = mesureB.y = 0;
     roiRect.origin.x = roiRect.origin.y = roiRect.size.width = roiRect.size.height = 0;

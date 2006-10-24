@@ -56,10 +56,6 @@ static NSString*	StereoIdentifier				= @"Stereo.icns";
 static NSString*	CaptureToolbarItemIdentifier 	= @"Capture.icns";
 static NSString*	CroppingToolbarItemIdentifier 	= @"Cropping.icns";
 static NSString*	OrientationToolbarItemIdentifier= @"OrientationWidget.tiff";
-static NSString*	AxToolbarItemIdentifier			= @"Axial.tif";
-static NSString*	SaToolbarItemIdentifier			= @"Sag.tif";
-static NSString*	SaOppositeToolbarItemIdentifier	= @"SagOpposite.tif";
-static NSString*	CoToolbarItemIdentifier			= @"Cor.tif";
 static NSString*	ToolsToolbarItemIdentifier		= @"Tools";
 static NSString*	WLWWToolbarItemIdentifier		= @"WLWW";
 static NSString*	LODToolbarItemIdentifier		= @"LOD";
@@ -76,11 +72,32 @@ static NSString*	ModeToolbarItemIdentifier		= @"Mode";
 static NSString*	FlyThruToolbarItemIdentifier	= @"FlyThru.tif";
 static NSString*	ScissorStateToolbarItemIdentifier	= @"ScissorState";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
-
+static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 @implementation VRController
 
 
+- (IBAction) setOrientation:(id) sender
+{
+	switch( [[sender selectedCell] tag])
+	{
+		case 0:
+			[view axView: self];
+		break;
+		
+		case 1:
+			[view coView: self];
+		break;
+		
+		case 2:
+			[view saView: self];
+		break;
+		
+		case 3:
+			[view saViewOpposite: self];
+		break;
+	}
+}
 
 -(void) revertSeries:(id) sender
 {
@@ -1425,42 +1442,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
-	else if ([itemIdent isEqualToString: AxToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Axial",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Axial",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an axial view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: AxToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(axView:)];
-    }
-	else if ([itemIdent isEqualToString: SaToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Sagittal",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Sagittal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an sagittal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: SaToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(saView:)];
-    }
-	else if ([itemIdent isEqualToString: SaOppositeToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Sagittal",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Sagittal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an sagittal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: SaOppositeToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(saViewOpposite:)];
-    }
-	else if ([itemIdent isEqualToString: CoToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Coronal",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Coronal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an coronal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: CoToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(coView:)];
-    }
 	else if ([itemIdent isEqualToString: CaptureToolbarItemIdentifier]) {
 	
 	[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
@@ -1493,6 +1474,17 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[toolbarItem setView: movieView];
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
+    }
+	else if([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Orientations", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: OrientationsView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
     }
 	else if([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier]) {
 	// Set up the standard properties 
@@ -1598,7 +1590,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 												NSToolbarFlexibleSpaceItemIdentifier,
 												QTExportToolbarItemIdentifier,
 												QTExportVRToolbarItemIdentifier,
-												MailToolbarItemIdentifier,
+												OrientationsViewToolbarItemIdentifier,
 												ResetToolbarItemIdentifier,
 												RevertToolbarItemIdentifier,
 												ExportToolbarItemIdentifier,
@@ -1616,7 +1608,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 												ShadingToolbarItemIdentifier,
 												NSToolbarFlexibleSpaceItemIdentifier,
 												QTExportToolbarItemIdentifier,
-												MailToolbarItemIdentifier,
+												OrientationsViewToolbarItemIdentifier,
 												ResetToolbarItemIdentifier,
 												ExportToolbarItemIdentifier,
 												nil];
@@ -1640,10 +1632,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											ShadingToolbarItemIdentifier,
 											EngineToolbarItemIdentifier,
 											PerspectiveToolbarItemIdentifier,
-											AxToolbarItemIdentifier,
-											CoToolbarItemIdentifier,
-											SaToolbarItemIdentifier,
-											SaOppositeToolbarItemIdentifier,
+											OrientationsViewToolbarItemIdentifier,
 											ToolsToolbarItemIdentifier,
 											ModeToolbarItemIdentifier,
 											BlendingToolbarItemIdentifier,
@@ -1671,10 +1660,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											CroppingToolbarItemIdentifier,
 											OrientationToolbarItemIdentifier,
 											ShadingToolbarItemIdentifier,
-											AxToolbarItemIdentifier,
-											CoToolbarItemIdentifier,
-											SaToolbarItemIdentifier,
-											SaOppositeToolbarItemIdentifier,
+											OrientationsViewToolbarItemIdentifier,
 											QTExportToolbarItemIdentifier,
 											iPhotoToolbarItemIdentifier,
 											MailToolbarItemIdentifier,
