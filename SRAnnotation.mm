@@ -89,9 +89,7 @@
 	{
 		[self addROI:aROI];
 		image = [[aROI pix] imageObj];
-	}
-
-		
+	}		
 }
 
 - (void)addROI:(ROI *)aROI;

@@ -5876,17 +5876,17 @@ NSMutableArray		*array;
 		
 		break;
 		
-//		case 9: // LL
-//		{
-//			[self checkEverythingLoaded];
-//			[blendedwin checkEverythingLoaded];
-//			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
-//			{
-//				LLScoutViewer *llScoutViewer;
-//				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
-//				[llScoutViewer showWindow:self];
-//			}
-//		}
+		case 9: // LL
+		{
+			[self checkEverythingLoaded];
+			[blendedwin checkEverythingLoaded];
+			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
+			{
+				LLScoutViewer *llScoutViewer;
+				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
+				[llScoutViewer showWindow:self];
+			}
+		}
 	}
 	
 	blendedwin = 0L;
