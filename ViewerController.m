@@ -184,7 +184,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 }
 
--(void) processReslice:(long) directionm
+-(void) processReslice:(long) directionm :(BOOL) newViewer
 {
 	DCMPix				*firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
 	DCMPix				*lastPix = [pixList[ curMovieIndex] lastObject];
@@ -524,7 +524,16 @@ int sortROIByName(id roi1, id roi2, void *context)
 			}
 		}
 		
-		[self replaceSeriesWith :newPixList :newDcmList :newData];
+		if( newViewer)
+		{
+			ViewerController	*new2DViewer;
+			
+			// CREATE A SERIES
+			new2DViewer = [self newWindow	:newPixList :newDcmList :newData];
+			[new2DViewer setImageIndex: [newPixList count]/2];
+			[[new2DViewer window] makeKeyAndOrderFront: self];
+		}
+		else [self replaceSeriesWith :newPixList :newDcmList :newData];
 	}
 	
 	// Close the waiting window
@@ -537,6 +546,11 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
+		BOOL newViewer = NO;
+		
+//		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) newViewer = YES;
+//		else newViewer = NO;
+	
 		[imageView stopROIEditingForce: YES];
 		[self checkEverythingLoaded];
 
@@ -563,12 +577,12 @@ int sortROIByName(id roi1, id roi2, void *context)
 					
 					case 1:
 						[self checkEverythingLoaded];
-						[self processReslice: 0];
+						[self processReslice: 0 :newViewer];
 					break;
 					
 					case 2:
 						[self checkEverythingLoaded];
-						[self processReslice: 1];
+						[self processReslice: 1 :newViewer];
 					break;
 				}
 			}
@@ -580,7 +594,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 				{
 					case 0:
 						[self checkEverythingLoaded];
-						[self processReslice: 0];
+						[self processReslice: 0 :newViewer];
 						
 						[imageView setYFlipped: YES];
 						[imageView setRotation: 0];
@@ -597,7 +611,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 					
 					case 2:
 						[self checkEverythingLoaded];
-						[self processReslice: 1];
+						[self processReslice: 1 :newViewer];
 						
 						[imageView setYFlipped: NO];
 						[imageView setRotation: 90];
@@ -612,7 +626,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 				{
 					case 0:
 						[self checkEverythingLoaded];
-						[self processReslice: 0];
+						[self processReslice: 0 :newViewer];
 						
 						[imageView setXFlipped: YES];
 						[imageView setRotation: 90];
@@ -620,7 +634,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 					
 					case 1:
 						[self checkEverythingLoaded];
-						[self processReslice: 1];
+						[self processReslice: 1 :newViewer];
 						
 						[imageView setXFlipped: YES];
 						[imageView setRotation: 90];
@@ -640,7 +654,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 		}
 		
-		[orientationMatrix selectCellWithTag: currentOrientationTool];
+		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 		
 		NSLog( @"********* originalOrientation: %d", originalOrientation);
 	}
