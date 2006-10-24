@@ -34,7 +34,9 @@
     IBOutlet NSSlider       *LODSlider;
     IBOutlet NSView         *toolsView, *LODView, *BlendingView, *export3DView, *perspectiveView;
 	IBOutlet SRView			*view;	
-	
+
+	IBOutlet NSView			*OrientationsView;
+
 	IBOutlet NSWindow       *SRSettingsWindow;
 	IBOutlet NSButton		*checkFirst, *checkSecond;
 	IBOutlet NSTextField    *firstValue, *secondValue;
@@ -80,6 +82,7 @@
 	NSMutableArray			*roiVolumes;
 }
 
+- (IBAction) setOrientation:(id) sender;
 - (ViewerController*) blendingController;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (void) setupToolbar;

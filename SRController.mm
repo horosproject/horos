@@ -34,10 +34,6 @@ static NSString*	StereoIdentifier					= @"Stereo.icns";
 static NSString*	QTExportVRToolbarItemIdentifier		= @"QTExportVR.icns";
 static NSString*	SRSettingsToolbarItemIdentifier		= @"SRSettings.tif";
 static NSString*	BSRSettingsToolbarItemIdentifier	= @"BSRSettings.tif";
-static NSString*	AxToolbarItemIdentifier				= @"Axial.tif";
-static NSString*	SaToolbarItemIdentifier				= @"Sag.tif";
-static NSString*	SaOppositeToolbarItemIdentifier		= @"SagOpposite.tif";
-static NSString*	CoToolbarItemIdentifier				= @"Cor.tif";
 static NSString*	ToolsToolbarItemIdentifier			= @"Tools";
 static NSString*	Export3DFileFormat					= @"3DExportFileFormat";
 static NSString*	FlyThruToolbarItemIdentifier		= @"FlyThru.tif";
@@ -47,6 +43,7 @@ static NSString*	PerspectiveToolbarItemIdentifier	= @"Perspective";
 static NSString*	ResetToolbarItemIdentifier			= @"Reset.tiff";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
+static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 //static NSString*	LODToolbarItemIdentifier		= @"LOD";
 //static NSString*	BlendingToolbarItemIdentifier   = @"2DBlending";
@@ -128,6 +125,28 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 //{
 //    [view setLOD:[sender floatValue]];
 //}
+
+- (IBAction) setOrientation:(id) sender
+{
+	switch( [[sender selectedCell] tag])
+	{
+		case 0:
+			[view axView: self];
+		break;
+		
+		case 1:
+			[view coView: self];
+		break;
+		
+		case 2:
+			[view saView: self];
+		break;
+		
+		case 3:
+			[view saViewOpposite: self];
+		break;
+	}
+}
 
 - (void) windowDidLoad
 {
@@ -402,6 +421,9 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
     
     [NSApp endSheet:SRSettingsWindow returnCode:[sender tag]];
     
+	WaitRendering *www = [[WaitRendering alloc] init:@"Preparing 3D Iso Surface..."];
+	[www start];
+	
     if( [sender tag])   //User clicks OK Button
     {
 		// FIRST SURFACE
@@ -438,6 +460,10 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 		else
 			[view deleteActor: (long) 1];
     }
+	
+	[www end];
+	[www close];
+	[www release];
 }
 
 - (void) ChangeSettings:(id) sender
@@ -625,42 +651,6 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(switchOrientationWidget:)];
     }
-	else if ([itemIdent isEqual: AxToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Axial",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Axial",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an axial view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: AxToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(axView:)];
-    }
-	else if ([itemIdent isEqual: SaToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Sagittal",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Sagittal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an sagittal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: SaToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(saView:)];
-    }
-	else if ([itemIdent isEqual: SaOppositeToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"Sagittal",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Sagittal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an sagittal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: SaOppositeToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(saViewOpposite:)];
-    }
-	else if ([itemIdent isEqual: CoToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel:NSLocalizedString( @"Coronal",nil)];
-	[toolbarItem setPaletteLabel:NSLocalizedString( @"Coronal",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Move to an coronal view",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: CoToolbarItemIdentifier]];
-	[toolbarItem setTarget: view];
-	[toolbarItem setAction: @selector(coView:)];
-    }
      else if([itemIdent isEqual: ToolsToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel:NSLocalizedString( @"Mouse button function",nil)];
@@ -720,6 +710,17 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(resetImage:)];
     }
+	else if([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Orientations", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Orientations", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Orientations", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: OrientationsView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
+    }
 	else if ([itemIdent isEqualToString: ExportToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel:NSLocalizedString( @"DICOM File",nil)];
@@ -751,10 +752,7 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 											QTExportToolbarItemIdentifier,
 											QTExportVRToolbarItemIdentifier,
 											Export3DFileFormat,
-											AxToolbarItemIdentifier,
-											CoToolbarItemIdentifier,
-											SaToolbarItemIdentifier,
-											SaOppositeToolbarItemIdentifier,
+											OrientationsViewToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
                                             nil];
 }
@@ -779,10 +777,7 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 										iPhotoToolbarItemIdentifier,
 										QTExportVRToolbarItemIdentifier,
 										Export3DFileFormat,
-										AxToolbarItemIdentifier,
-										CoToolbarItemIdentifier,
-										SaToolbarItemIdentifier,
-										SaOppositeToolbarItemIdentifier,
+										OrientationsViewToolbarItemIdentifier,
                                         ToolsToolbarItemIdentifier,
 										ROIManagerToolbarItemIdentifier,
 										FlyThruToolbarItemIdentifier,
