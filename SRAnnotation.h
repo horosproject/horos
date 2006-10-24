@@ -15,18 +15,24 @@
 @interface SRAnnotation : NSObject {
 	DSRDocument *document;
 	id image;
-	NSArray *rois;
-	BOOL  newSR;
+	NSArray *_rois;
+	BOOL  _newSR;
+	NSString *_seriesInstanceUID;
 }
 
 - (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path;
 
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
+- (NSArray *)ROIs;
 
 
 - (BOOL)writeToFileAtPath:(NSString *)path;
 - (BOOL)save;
 - (void)saveAsHTML;
+
+- (NSString *)seriesInstanceUID;
+- (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID;
+- (NSString *)sopInstanceUID;
 
 @end

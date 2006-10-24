@@ -31,16 +31,16 @@
 	document->getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
 	//document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("11528-7", "LN", "Radiology Report")); // to do : find a correct concept name
 	document->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1", "99HUG", "Annotations"));
-	
-	newSR = YES;
+	_seriesInstanceUID = nil;
+	_newSR = YES;
 	return self;
 }
 
 - (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path{
 	if (self = [super init]) {
-	
+		_seriesInstanceUID = nil;
 		document = new DSRDocument();
-		newSR = NO;
+		_newSR = NO;
 		OFCondition status;
 		// load old ROI SR and replace as needed
 		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {			
@@ -57,7 +57,7 @@
 		}
 		// create new Doc 
 		if (![[NSFileManager defaultManager] fileExistsAtPath:path] || !status.good()) {
-			newSR = YES;
+			_newSR = YES;
 			document->createNewDocument(DSRTypes::DT_ComprehensiveSR);	
 		}
 			
@@ -72,7 +72,8 @@
 - (void)dealloc
 {
 	delete document;
-	[rois release];
+	[_rois release];
+	[_seriesInstanceUID release];
 	[super dealloc];
 }
 
@@ -83,8 +84,12 @@
 {
 	NSEnumerator *roisEnumerator = [someROIs objectEnumerator];
 	ROI *aROI;
-	[rois release];
-	rois = [someROIs retain];
+	//[rois release];
+	if (!_rois)
+		_rois = [[NSArray alloc] init];
+	NSArray *newROIs = [_rois arrayByAddingObjectsFromArray:someROIs];
+	[_rois release];
+	_rois = [newROIs retain];
 	while (aROI = [roisEnumerator nextObject])
 	{
 		[self addROI:aROI];
@@ -177,6 +182,10 @@
 	document->getTree().goUp(); // go up to the root element
 }
 
+- (NSArray *)ROIs{
+	return _rois;
+}
+
 #pragma mark -
 #pragma mark DICOM write
 			
@@ -192,7 +201,7 @@
 - (BOOL)writeToFileAtPath:(NSString *)path
 {	
 		//	Don't want to UIDs if already created
-		if (newSR) {
+		if (_newSR) {
 			id study = [image valueForKeyPath:@"series.study"];
 			//add to Study
 			document->createNewSeriesInStudy([[study valueForKey:@"studyInstanceUID"] UTF8String]);
@@ -237,13 +246,17 @@
 		status = document->write(*fileformat.getDataset());
 		
 		//This adds the archived ROI Array  to the SR		
-			ROI *roi = [rois objectAtIndex:0];
+			ROI *roi = [_rois objectAtIndex:0];
 			NSData *data = nil;
-			data = [ NSArchiver archivedDataWithRootObject:rois];
+			data = [ NSArchiver archivedDataWithRootObject:_rois];
 			const Uint8 *buffer =  (const Uint8 *)[data bytes];
 			DcmDataset *dataset = fileformat.getDataset();
 			DcmTag tag(0x0071, 0x0011, DcmVR("OB"));
 			status = dataset->putAndInsertUint8Array(tag , buffer, [data length] , OFTrue);
+			
+			//use seriesInstanceUID if we have one
+			if (_seriesInstanceUID)
+				status = dataset->putAndInsertString(DCM_SeriesInstanceUID, [_seriesInstanceUID UTF8String], OFTrue);
 
 		//NSLog(@"error code: %s", status.text());
 		//status = document->write(*fileformat.getDataset());
@@ -273,6 +286,21 @@
 	size_t renderFlags = DSRTypes::HF_renderDcmtkFootnote;		
 	ofstream stream([path UTF8String]);
 	document->renderHTML(stream, renderFlags, NULL);
+}
+
+- (NSString *)seriesInstanceUID{
+	if (!_seriesInstanceUID)
+		_seriesInstanceUID =  [[NSString stringWithUTF8String:document->getSeriesInstanceUID()] retain];
+	return _seriesInstanceUID;
+}
+
+- (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID{
+	[_seriesInstanceUID release];
+	_seriesInstanceUID = [seriesInstanceUID retain];
+}
+
+- (NSString *)sopInstanceUID{
+	return [NSString stringWithUTF8String:document->getSOPInstanceUID()];
 }
 
 @end
