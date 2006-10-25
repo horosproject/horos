@@ -142,20 +142,20 @@
 	{
 		case 0:
 			result = [self exportSelectedROI];
-			alertTitle = @"No ROI selected";
-			alertMessage = @"Please select a ROI first.";
+			alertTitle = NSLocalizedString(@"No ROI selected", 0L);
+			alertMessage = NSLocalizedString(@"Please select a ROI first.", 0L);
 		break;
 		
 		case 1:
 			result = [self exportAllROIsForCurrentDCMPix];
-			alertTitle = @"No ROIs";
-			alertMessage = @"There is no ROIs on current image.";
+			alertTitle = NSLocalizedString(@"No ROIs", 0L);
+			alertMessage = NSLocalizedString(@"There is no ROIs on current image.", 0L);
 		break;
 		
 		case 2:
 			result = [self exportAllROIs];
-			alertTitle = @"No ROIs";
-			alertMessage = @"There is no ROIs on this series.";
+			alertTitle = NSLocalizedString(@"No ROIs", 0L);
+			alertMessage = NSLocalizedString(@"There is no ROIs on this series.", 0L);
 		break;
 	}
 	
@@ -164,7 +164,7 @@
 	if(result)
 		[self writeResult];
 	else
-		NSRunAlertPanel(NSLocalizedString(alertTitle, nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel( alertTitle, alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
 		
 	NSLog(@"!!!!!!!!!!!!!! SR Annotation !!!!!!!!!!!!!!");
 }

@@ -49,28 +49,28 @@
 
 + (BOOL)verifyRequiredConditions:(NSArray*)pixA :(NSArray*)pixB;
 {
-	NSMutableString *alertMessage = [NSMutableString stringWithString:@"The two series must have:"];
+	NSMutableString *alertMessage = [NSMutableString stringWithString: NSLocalizedString( @"The two series must have:", 0L) ];
 	
 	BOOL samePixelSpacing, sameImagesCount, sameImagesLocations=NO;
 	samePixelSpacing = [LLScoutViewer haveSamePixelSpacing:pixA :pixB];
 	sameImagesCount = [LLScoutViewer haveSameImagesCount:pixA :pixB];
 		
 	if(!samePixelSpacing)
-		[alertMessage appendString:@"\n - the same pixels spacing"];
+		[alertMessage appendString: NSLocalizedString( @"\n - the same pixels spacing", 0L)];
 	
 	if(!sameImagesCount)
-		[alertMessage appendString:@"\n - the same number of images"];
+		[alertMessage appendString: NSLocalizedString( @"\n - the same number of images", 0L)];
 	else
 	{
 		sameImagesLocations = [LLScoutViewer haveSameImagesLocations:pixA :pixB];
 		if(!sameImagesLocations)
-			[alertMessage appendString:@"\n - the same location for each image"];
+			[alertMessage appendString:NSLocalizedString(  @"\n - the same location for each image", 0L)];
 	}
 	
 	BOOL error = !samePixelSpacing || !sameImagesCount || !sameImagesLocations;
 	
 	if(error)
-		NSRunAlertPanel(NSLocalizedString(@"Error", nil), NSLocalizedString(alertMessage, nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Error", nil),  alertMessage, NSLocalizedString(@"OK", nil), nil, nil);
 	
 	return !error;
 }
