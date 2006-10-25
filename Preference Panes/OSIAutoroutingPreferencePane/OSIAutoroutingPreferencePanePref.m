@@ -88,6 +88,11 @@
 	
 	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOROUTINGACTIVATED"])
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey:@"INC"]+1  forKey:@"INC"];
+	}
+	
 	[routesArray release];
 	
 	[super dealloc];

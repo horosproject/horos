@@ -1058,6 +1058,31 @@ static BOOL COMPLETEREBUILD = NO;
 #pragma mark-
 #pragma mark Autorouting functions
 
+- (void) testAutorouting
+{
+	// Test the routing filters
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
+	{
+		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+		int i;
+			
+		for( i = 0; i < [autoroutingRules count]; i++)
+		{
+			NSDictionary	*routingRule = [autoroutingRules objectAtIndex: i];
+			
+			@try
+			{
+				[[BrowserController currentBrowser] smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+			}
+		
+			@catch( NSException *ne)
+			{
+				NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\rSee Routing Preferences.", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"]], nil, nil, nil);
+			}
+		}
+	}
+}
+
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
@@ -3151,6 +3176,8 @@ static BOOL COMPLETEREBUILD = NO;
 
 -(void) checkBonjourUpToDate:(id) sender
 {
+	[self testAutorouting];
+	
 	if( bonjourDownloading) return;
 	if( DatabaseIsEdited) return;
 	if( managedObjectContext == 0L) return;
@@ -7848,6 +7875,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[wait close];
 	[wait release];
+	
+	[self testAutorouting];
 }
 
 - (IBAction)customize:(id)sender {
