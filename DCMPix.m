@@ -8756,10 +8756,12 @@ BOOL            readable = YES;
 			if( fNext)
 			{
 				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
-				else if( stackMode == 1) vDSP_vadd( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+				else if( stackMode == 1) 
+				{
+					vDSP_vadd( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+					if( from == 0) countstackMean++;
+				}
 				else vDSP_vmin( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
-				
-				if( from == 0) countstackMean++;
 			}
 		}
 	}
@@ -9234,40 +9236,8 @@ BOOL            readable = YES;
 			}
 		break;
 		
-		case 1:		// Mean
-		{
-			countstackMean = 1;
-			
-			fResult = malloc( height * width * sizeof(float));
-			memcpy( fResult, fImage, height * width * sizeof(float));
-			
-			if( processorsLock == 0L)
-			processorsLock = [[NSLock alloc] init];
-		
-			numberOfThreadsForCompute = MPProcessors ();
-			for( i = 0; i < MPProcessors ()-1; i++)
-			{
-				[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
-			}
-			
-			[self computeMaxThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
-			
-			BOOL done = NO;
-			while( done == NO)
-			{
-				[processorsLock lock];
-				if( numberOfThreadsForCompute <= 0) done = YES;
-				[processorsLock unlock];
-			}
-			
-			if( countstackMean > 1)
-			{
-				i = height * width;
-				while( i-- > 0) fResult[ i] /= countstackMean;
-			}
-		}
-		break;
 		// ------------------------------------------------------------------------------------------------
+		case 1:		// Mean
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
 			countstackMean = 1;
@@ -9292,6 +9262,12 @@ BOOL            readable = YES;
 				[processorsLock lock];
 				if( numberOfThreadsForCompute <= 0) done = YES;
 				[processorsLock unlock];
+			}
+			
+			if( countstackMean > 1)
+			{
+				i = height * width;
+				while( i-- > 0) fResult[ i] /= countstackMean;
 			}
 			//-----------------------------------
 		break;
