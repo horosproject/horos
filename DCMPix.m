@@ -8755,21 +8755,11 @@ BOOL            readable = YES;
 			fNext = [[pixArray objectAtIndex: res] fImage];
 			if( fNext)
 			{
-				#if __ppc__ || __ppc64__
-				if( Altivec)
-				{
-					if( stackMode == 2) vmax( (vector float *)(fResult + from), (vector float *)(fNext + from), (vector float *)(fResult + from), size);
-					else vmin( (vector float *)(fResult + from), (vector float *)(fNext + from), (vector float *)(fResult + from), size);
-				}
-				else
-				{
-					if( stackMode == 2) vmaxNoAltivec((fResult + from), (fNext + from), (fResult + from), size);
-					else vminNoAltivec((fResult + from), (fNext + from), (fResult + from), size);
-				}
-				#else
-				if( stackMode == 2) vmaxIntel( (vFloat *)(fResult + from), (vFloat *)(fNext + from), (vFloat *)(fResult + from), size);
-				else vminIntel( (vFloat *)(fResult + from), (vFloat *)(fNext + from), (vFloat *)(fResult + from), size);
-				#endif
+				if( stackMode == 2) vDSP_vmax( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+				else if( stackMode == 1) vDSP_vadd( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+				else vDSP_vmin( fResult + from, 1, fNext + from, 1, fResult + from, 1, size);
+				
+				if( from == 0) countstackMean++;
 			}
 		}
 	}
@@ -9246,48 +9236,45 @@ BOOL            readable = YES;
 		
 		case 1:		// Mean
 		{
-			float countstack = 1;
-				
+			countstackMean = 1;
+			
 			fResult = malloc( height * width * sizeof(float));
+			memcpy( fResult, fImage, height * width * sizeof(float));
 			
-			if( stackDirection) next = pixPos-1;
-			else next = pixPos+1;
-			
-			if( next < [pixArray count]  && next >= 0)
+			if( processorsLock == 0L)
+			processorsLock = [[NSLock alloc] init];
+		
+			numberOfThreadsForCompute = MPProcessors ();
+			for( i = 0; i < MPProcessors ()-1; i++)
 			{
-				fNext = [[pixArray objectAtIndex: next] fImage];
-				if( fNext) vDSP_vadd( fImage, 1, fNext, 1, fResult, 1, height * width);
-				countstack++;
-				
-				for( i = 2; i < stack; i++)
-				{
-					long res;
-					if( stackDirection) res = pixPos-i;
-					else res = pixPos+i;
-					
-					if( res < [pixArray count] && res >= 0)
-					{
-						fNext = [[pixArray objectAtIndex: res] fImage];
-						if( fNext) vDSP_vadd( fResult, 1, fNext, 1, fResult, 1, height * width);
-						countstack++;
-					}
-				}
-			}
-			else
-			{
-				memcpy( fResult, fImage, height * width * sizeof(float));
+				[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
 			}
 			
-			i = height * width;
-			while( i-- > 0) fResult[ i] /= countstack;
+			[self computeMaxThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
+			
+			BOOL done = NO;
+			while( done == NO)
+			{
+				[processorsLock lock];
+				if( numberOfThreadsForCompute <= 0) done = YES;
+				[processorsLock unlock];
+			}
+			
+			if( countstackMean > 1)
+			{
+				i = height * width;
+				while( i-- > 0) fResult[ i] /= countstackMean;
+			}
 		}
 		break;
 		// ------------------------------------------------------------------------------------------------
 		case 2:		// Maximum IP
 		case 3:		// Minimum IP
+			countstackMean = 1;
+			
 			fResult = malloc( height * width * sizeof(float));
 			memcpy( fResult, fImage, height * width * sizeof(float));
-			
+
 			if( processorsLock == 0L)
 				processorsLock = [[NSLock alloc] init];
 			

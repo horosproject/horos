@@ -131,6 +131,7 @@
     BOOL				thickSlabVRActivated;
 	ThickSlabController *thickSlab;
 	
+	float				countstackMean;
     float				ww, wl;
 	float				fullww, fullwl;
 	BOOL				fixed8bitsWLWW;	
