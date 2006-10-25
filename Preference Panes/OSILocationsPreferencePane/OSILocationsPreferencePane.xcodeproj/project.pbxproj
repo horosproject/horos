@@ -17,6 +17,7 @@
 		8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
+		CE1EF6DE0AF0072000A728F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE1EF6DC0AF0072000A728F2 /* Localizable.strings */; };
 		CE94D6FA0A17CC420010E3E8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE94D6F90A17CC420010E3E8 /* Security.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		7EC5847607298EDC00429FC7 /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSILocationsPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSILocationsPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE1EF6DD0AF0072000A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE94D6F90A17CC420010E3E8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSILocationsPreferencePanePref.h; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				8D202CF70486D31800D8A456 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 				F506C040013D9D8001CA16C8 /* OSILocationsPreferencePanePref.tiff */,
+				CE1EF6DC0AF0072000A728F2 /* Localizable.strings */,
 				F506C042013D9D8C01CA16C8 /* OSILocationsPreferencePanePref.nib */,
 			);
 			name = Resources;
@@ -189,6 +192,7 @@
 				8D202CED0486D31800D8A456 /* InfoPlist.strings in Resources */,
 				8D202CEE0486D31800D8A456 /* OSILocationsPreferencePanePref.tiff in Resources */,
 				8D202CEF0486D31800D8A456 /* OSILocationsPreferencePanePref.nib in Resources */,
+				CE1EF6DE0AF0072000A728F2 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,6 +227,14 @@
 				089C167EFE841241C02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE1EF6DC0AF0072000A728F2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE1EF6DD0AF0072000A728F2 /* English */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		F506C042013D9D8C01CA16C8 /* OSILocationsPreferencePanePref.nib */ = {
