@@ -7041,6 +7041,8 @@ int i,j,l;
 	nsmaxValue	= [NSNumber numberWithFloat: maxValue];
 	nsoutside	= [NSNumber numberWithBool: outside];
 	
+	[self checkEverythingLoaded];
+	
 	WaitRendering *splash = [[WaitRendering alloc] init:@"Filtering..."];
 	[splash showWindow:self];
 	
@@ -7048,7 +7050,7 @@ int i,j,l;
 
 	for( y = 0; y < maxMovieIndex; y++)
 	{
-		if( propagateIn4D)
+		if( propagateIn4D == NO)
 		{
 			if( y == curMovieIndex) proceed = YES;
 			else proceed = NO;

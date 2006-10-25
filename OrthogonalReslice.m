@@ -16,25 +16,6 @@
 #import "WaitRendering.h"
 
 #include <Accelerate/Accelerate.h>
-//
-//void MyBlockMoveData( float* src, float* dst, long size)
-//{
-//	size /= 2;
-//	while( size-- > 0)
-//	{
-//		*dst++ = *src++;
-//		*dst++ = *src++;
-//	}
-//} 
-//
-//inline void MyBlockMoveData( vFloat* src, vFloat* dst, long size)
-//{
-//	size /= 4;
-//	while( size-- > 0)
-//	{
-//		*dst++ = *src++;
-//	}
-//}
 
 @implementation OrthogonalReslice
 
@@ -102,7 +83,7 @@
 	
  	[self xReslice: [xNum intValue]];
 	
-	[resliceLock unlockWithCondition: [resliceLock condition]+1];
+	[resliceLock unlockWithCondition: 1];
 	
 	[pool release];
 }
@@ -508,7 +489,7 @@
 				{
 					float		*srcP, *dstP, *curPixfImage = [curPix fImage];
 					DCMPix		*srcPix = [pixList objectAtIndex: 0];
-					long		w = [srcPix pwidth];
+					long		w = [srcPix pheight];
 					
 					for( y = 0; y < newY; y++)
 					{
