@@ -8734,12 +8734,17 @@ BOOL            readable = YES;
 	return val;
 }
 
-- (void) computeMax:(int) from to:(int) to result:(float*) fResult
+- (void) computeMax:(float*) fResult pos:(int) pos threads:(int) threads
 {
 	float				*fNext = NULL;
 	long				i;
-
-	for( i = from; i < to; i++)
+	long				from, to, size = height * width;
+	
+	from = (pos * size) / threads;
+	to = ((pos+1) * size) / threads;
+	size = to - from;
+	
+	for( i = 1; i < stack; i++)
 	{
 		long res;
 		if( stackDirection) res = pixPos-i;
@@ -8753,21 +8758,31 @@ BOOL            readable = YES;
 				#if __ppc__ || __ppc64__
 				if( Altivec)
 				{
-					if( stackMode == 2) vmax( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
-					else vmin( (vector float *)fResult, (vector float *)fNext, (vector float *)fResult, height * width);
+					if( stackMode == 2) vmax( (vector float *)(fResult + from), (vector float *)(fNext + from), (vector float *)(fResult + from), size);
+					else vmin( (vector float *)(fResult + from), (vector float *)(fNext + from), (vector float *)(fResult + from), size);
 				}
 				else
 				{
-					if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
-					else vminNoAltivec(fResult, fNext, fResult, height * width);
+					if( stackMode == 2) vmaxNoAltivec((fResult + from), (fNext + from), (fResult + from), size);
+					else vminNoAltivec((fResult + from), (fNext + from), (fResult + from), size);
 				}
 				#else
-				if( stackMode == 2) vmaxIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
-				else vminIntel( (vFloat *)fResult, (vFloat *)fNext, (vFloat *)fResult, height * width);
+				if( stackMode == 2) vmaxIntel( (vFloat *)(fResult + from), (vFloat *)(fNext + from), (vFloat *)(fResult + from), size);
+				else vminIntel( (vFloat *)(fResult + from), (vFloat *)(fNext + from), (vFloat *)(fResult + from), size);
 				#endif
 			}
 		}
 	}
+	
+	[processorsLock lock];
+	numberOfThreadsForCompute--;
+	[processorsLock unlock];
+
+}
+
+- (void) computeMaxThread:(NSDictionary*) dict
+{
+	[self computeMax: [[dict valueForKey:@"fResult"] pointerValue] pos: [[dict valueForKey:@"pos"] intValue] threads: MPProcessors ()];
 }
 
 #pragma mark-
@@ -9273,8 +9288,24 @@ BOOL            readable = YES;
 			fResult = malloc( height * width * sizeof(float));
 			memcpy( fResult, fImage, height * width * sizeof(float));
 			
-			[self computeMax: 1 to: stack result: fResult];
+			if( processorsLock == 0L)
+				processorsLock = [[NSLock alloc] init];
 			
+			numberOfThreadsForCompute = MPProcessors ();
+			for( i = 0; i < MPProcessors ()-1; i++)
+			{
+				[NSThread detachNewThreadSelector: @selector( computeMaxThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
+			}
+			
+			[self computeMaxThread: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: fResult], @"fResult", [NSNumber numberWithInt: i], @"pos", 0L]];
+			
+			BOOL done = NO;
+			while( done == NO)
+			{
+				[processorsLock lock];
+				if( numberOfThreadsForCompute <= 0) done = YES;
+				[processorsLock unlock];
+			}
 			//-----------------------------------
 		break;
 	}
@@ -9726,6 +9757,7 @@ float			iwl, iww;
 
 - (void) dealloc
 {
+	[processorsLock release];
 	[acquisitionTime release];
 	[radiopharmaceuticalStartTime release];
 	[convertedDICOM release];

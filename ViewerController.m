@@ -494,7 +494,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[self waitForAProcessor];
 				
 				[NSThread detachNewThreadSelector: @selector( resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", 0L]];
-					
+				
 //				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
 //				{
 //					if( sign > 0)
