@@ -55,41 +55,63 @@
 
 //All the ROIs for an image are archived as an NSArray.  We will need to extract all the necessary ROI info to create the basic SR before adding archived data. 
 - (void)archiveROIsAsDICOM:(NSArray *)rois toPath:(NSString *)path  forImage:(id)image{
-	//BrowserController *browser = [BrowserController currentBrowser];
-	//NSManagedObjectModel *managedObjectModel = [browser managedObjectModel];
-	//NSManagedObjectContext *context = [browser managedObjectContext];
+	
 	
 	SRAnnotation *sr = [[SRAnnotation alloc] initWithROIs:rois path:path];
-	
+	NSLog(@"archive ROI");
 	/* We could create an ROI coreData relationship if we wanted to as use presentationStateInstanceUID for the ROI path. 
 		And save presentationSeriesInstanceUID, but I won't right now
 		Right now we will just get the Study for the imager and then the roiSRSeries relationship
 	*/
 	
-	/*
+	
 	id study = [image valueForKeyPath:@"series.study"];
+	
 	NSArray *roiSRSeries = [study roiSRSeries];
-	id series = nil;
+	NSDictionary *userInfo = nil;
+	
 	//check to see if there is already a roi Series. Use SeriesInstanceUID if there is.
-	if ([roiSRSeries count] > 0) {
-		series = [roiSRSeries objectAtIndex:0];
+	if ([roiSRSeries count] > 0) 
+		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", [roiSRSeries objectAtIndex:0], @"series", study, @"study", nil];
+	else
+		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:sr, @"sr", study, @"study", nil];
+		
+	//[self checkDBForSRROI:userInfo];
+	
+	//[self performSelectorOnMainThread:@selector(checkDBForSRROI:) withObject:userInfo waitUntilDone:YES];
+	
+	[sr writeToFileAtPath:path];
+	NSLog(@"wrote SR");
+	[sr release];
+}
+
+- (void)checkDBForSRROI:(NSDictionary *)userInfo{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	id series = [userInfo objectForKey:@"series"];
+	SRAnnotation *sr = [userInfo objectForKey:@"sr"];
+	id study = [userInfo objectForKey:@"study"];
+	BrowserController *browser = [BrowserController currentBrowser];
+	NSManagedObjectModel *managedObjectModel = [browser managedObjectModel];
+	NSManagedObjectContext *context = [browser managedObjectContext];
+	
+	if (series) {
 		NSString *seriesInstanceUID = [series valueForKey:@"seriesDICOMUID"];
 		[sr setSeriesInstanceUID:seriesInstanceUID];
+		NSLog(@"Have roi series");
 	}
-	//create new Series Object
 	else {
 		series = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 		[series setValue:study forKey:@"study"];
 		[series setValue:[sr seriesInstanceUID] forKey:@"seriesDICOMUID"];
+		NSLog(@"create roi series");
 	}
-	//See if the SR is in the series. Add it if necessary
+		
+		//See if the SR is in the series. Add it if necessary
 	NSArray *srs = [(NSSet *)[series valueForKey:@"images"] allObjects];
 	NSString *sopInstanceUID = [sr sopInstanceUID];
 	//Search for object with this UID
 	// empty for now
-	*/
-	
-	[sr writeToFileAtPath:path];
-	[sr release];
+	[pool release];
+
 }
 @end
