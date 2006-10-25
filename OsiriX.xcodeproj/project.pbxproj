@@ -742,6 +742,9 @@
 		AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
 		AB0128660635991400A74AA1 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
 		AB0128670635991400A74AA1 /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
+		AB0323BE0AEF389B0059AEDE /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
+		AB0323BF0AEF389B0059AEDE /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
+		AB0323C00AEF389F0059AEDE /* pdf.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD010AB30E7600068D70 /* pdf.tif */; };
 		AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0CA45F05BE159500F52729 /* ColorTransferView.h */; };
 		AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
 		AB0F20AC06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
@@ -9110,7 +9113,7 @@
 		CEAF1E4F0A757C4C00A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4B09B6828200545F5E /* jerror.c */; };
 		CEAF1E500A757C4C00A0D729 /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
 		CEAF1E510A757C4C00A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4D09B6828200545F5E /* jfdctflt.c */; };
-		CEAF1E520A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E /* jfdctfst.c */; };
+		CEAF1E520A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E; };
 		CEAF1E530A757C4C00A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4F09B6828300545F5E /* jfdctint.c */; };
 		CEAF1E540A757C4C00A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5009B6828300545F5E /* jidctflt.c */; };
 		CEAF1E550A757C4C00A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5109B6828300545F5E /* jidctfst.c */; };
@@ -9187,7 +9190,7 @@
 		CEAF1E9C0A757C4C00A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4B09B6828200545F5E /* jerror.c */; };
 		CEAF1E9D0A757C4C00A0D729 /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
 		CEAF1E9E0A757C4C00A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4D09B6828200545F5E /* jfdctflt.c */; };
-		CEAF1E9F0A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E /* jfdctfst.c */; };
+		CEAF1E9F0A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E; };
 		CEAF1EA00A757C4C00A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4F09B6828300545F5E /* jfdctint.c */; };
 		CEAF1EA10A757C4C00A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5009B6828300545F5E /* jidctflt.c */; };
 		CEAF1EA20A757C4C00A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5109B6828300545F5E /* jidctfst.c */; };
@@ -24808,6 +24811,8 @@
 				ABD559FC0AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD559FD0AEE146900108895 /* AxialSmall.tif in Resources */,
 				AB75982A0AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */,
+				AB0323BE0AEF389B0059AEDE /* page.tif in Resources */,
+				AB0323BF0AEF389B0059AEDE /* pdf.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25107,6 +25112,7 @@
 				ABD559F90AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD559FA0AEE146900108895 /* AxialSmall.tif in Resources */,
 				AB7598290AEE62CE005EE3A9 /* SagSmallOpposite.tif in Resources */,
+				AB0323C00AEF389F0059AEDE /* pdf.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
