@@ -184,6 +184,75 @@ int sortROIByName(id roi1, id roi2, void *context)
 	
 }
 
+static volatile int numberOfThreadsForRelisce = 0;
+
+- (BOOL) waitForAProcessor
+{
+	int processors =  MPProcessors ();
+	
+	[processorsLock lockWhenCondition: 1];
+	BOOL result = numberOfThreadsForRelisce >= processors;
+	if( result == NO)
+	{
+		numberOfThreadsForRelisce++;
+		if( numberOfThreadsForRelisce >= processors)
+		{
+			[processorsLock unlockWithCondition: 0];
+		}
+		else
+		{
+			[processorsLock unlockWithCondition: 1];
+		}
+	}
+	else
+	{
+		NSLog( @"waitForAProcessor ?? We should not be here...");
+		[processorsLock unlockWithCondition: 0];
+	}
+	
+	return result;
+}
+
+- (void) resliceThread:(NSDictionary*) dict
+{
+	int x,y;
+	int i = [[dict valueForKey:@"i"] intValue];
+	int sign = [[dict valueForKey:@"sign"] intValue];
+	int newX = [[dict valueForKey:@"newX"] intValue];
+	float *curPixFImage = [[dict valueForKey:@"curPix"] fImage];
+	int rowBytes = [[dict valueForKey:@"rowBytes"] intValue];
+	
+	float *srcPtr, *dstPtr, *mainSrcPtr;
+	int count = [pixList[ curMovieIndex] count];
+	
+	if( sign > 0)
+		mainSrcPtr = [[pixList[ curMovieIndex] objectAtIndex: count-1] fImage];
+	else
+		mainSrcPtr = [[pixList[ curMovieIndex] objectAtIndex: 0] fImage];
+	
+	int sliceSize = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth] * [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+	
+	for(x = 0; x < count; x++)
+	{
+		if( sign > 0)
+			srcPtr = mainSrcPtr - x*sliceSize + i;
+		else
+			srcPtr = mainSrcPtr + x*sliceSize + i;
+		dstPtr = curPixFImage + x * newX;
+		
+		y = newX;
+		while (y-->0)
+		{
+			*dstPtr++ = *srcPtr;
+			srcPtr += rowBytes;
+		}
+	}
+
+	[processorsLock lock];
+	if( numberOfThreadsForRelisce >= 0) numberOfThreadsForRelisce--;
+	[processorsLock unlockWithCondition: 1];
+}
+
 -(void) processReslice:(long) directionm :(BOOL) newViewer
 {
 	DCMPix				*firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
@@ -194,6 +263,7 @@ int sortROIByName(id roi1, id roi2, void *context)
 	long				imageSize, size, x, y, newX, newY;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign, ratio;
 	BOOL				square = NO;
+	
 	
 	// Get Values
 	if( directionm == 0)		// X - RESLICE
@@ -260,6 +330,8 @@ int sortROIByName(id roi1, id roi2, void *context)
 		
 		NSData	*newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
 		
+		NSLog( @"reslice start");
+		
 		for( i = 0 ; i < newTotal; i ++)
 		{
 			[newPixList addObject: [[pixList[ curMovieIndex] objectAtIndex: 0] copy]];
@@ -290,20 +362,23 @@ int sortROIByName(id roi1, id roi2, void *context)
 			{
 				DCMPix	*curPix = [newPixList lastObject];
 				
+				int count = [pixList[ curMovieIndex] count];
+				int pwidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+				
 				if( sign > 0)
 				{
-					for( y = 0; y < [pixList[ curMovieIndex] count]; y++)
+					for( y = 0; y < count; y++)
 					{
-						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * [[pixList[ curMovieIndex] objectAtIndex: y] pwidth],
-										[curPix fImage] + ([pixList[ curMovieIndex] count]-y-1) * newX,
+						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
+										[curPix fImage] + (count-y-1) * newX,
 										newX * sizeof( float));
 					}
 				}
 				else
 				{
-					for( y = 0; y < [pixList[ curMovieIndex] count]; y++)
+					for( y = 0; y < count; y++)
 					{
-						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * [[pixList[ curMovieIndex] objectAtIndex: y] pwidth],
+						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
 										[curPix fImage] + y * newX,
 										newX * sizeof( float));
 					}
@@ -412,22 +487,26 @@ int sortROIByName(id roi1, id roi2, void *context)
 				float	*dstPtr;
 				long	rowBytes = [firstPix pwidth];
 				
-				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
-				{
-					if( sign > 0)
-						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: [pixList[ curMovieIndex] count]-x-1] fImage] + i;
-					else
-						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: x] fImage] + i;
-					dstPtr = [curPix fImage] + x * newX;
+				[self waitForAProcessor];
+				
+				[NSThread detachNewThreadSelector: @selector( resliceThread:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: i], @"i", [NSNumber numberWithInt: sign], @"sign", [NSNumber numberWithInt: newX], @"newX",[NSNumber numberWithInt: rowBytes], @"rowBytes", curPix, @"curPix", 0L]];
 					
-					y = newX;
-					while (y-->0)
-					{
-						*dstPtr = *srcPtr;
-						dstPtr++;
-						srcPtr += rowBytes;
-					}
-				}
+//				for(x = 0; x < [pixList[ curMovieIndex] count]; x++)
+//				{
+//					if( sign > 0)
+//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: [pixList[ curMovieIndex] count]-x-1] fImage] + i;
+//					else
+//						srcPtr = [[pixList[ curMovieIndex] objectAtIndex: x] fImage] + i;
+//					dstPtr = [curPix fImage] + x * newX;
+//					
+//					y = newX;
+//					while (y-->0)
+//					{
+//						*dstPtr = *srcPtr;
+//						dstPtr++;
+//						srcPtr += rowBytes;
+//					}
+//				}
 									
 				if( square)
 				{
@@ -524,6 +603,21 @@ int sortROIByName(id roi1, id roi2, void *context)
 			}
 		}
 		
+		BOOL finished = NO;
+		do
+		{
+			[processorsLock lockWhenCondition: 1];
+			if( numberOfThreadsForRelisce <= 0)
+			{
+				finished = YES;
+				[processorsLock unlockWithCondition: 1];
+			}
+			else [processorsLock unlockWithCondition: 0];
+		}
+		while( finished == NO);
+		
+		NSLog( @"reslice end");
+		
 		if( newViewer)
 		{
 			ViewerController	*new2DViewer;
@@ -543,6 +637,24 @@ int sortROIByName(id roi1, id roi2, void *context)
 - (IBAction) setOrientationTool:(id) sender
 {
 	short newOrientationTool = [[sender selectedCell] tag];
+	
+	BOOL volumicData = YES;
+	
+	long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+	long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+	
+	long j;
+	for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+	{
+		if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+		if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+	}
+	
+	if( volumicData == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
+		return;
+	}
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
@@ -3173,6 +3285,8 @@ static ViewerController *draggedController = 0L;
 {
 	self = [super initWithWindowNibName:@"Viewer"];
 	
+	processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
+	
 	[self setPixelList:f fileList:d volumeData:v];
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
@@ -3677,31 +3791,30 @@ static ViewerController *draggedController = 0L;
 	if( stopThreadLoadImage == NO)
 	{
 #pragma mark XA
-	enableSubtraction = FALSE;
-	if([[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"XA"] == YES)
-	{
-		NSLog(@"XA");
-		long runSize = [pixList[ 0] count];
-		if(runSize > 1)
+		enableSubtraction = FALSE;
+		if([[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"XA"] == YES)
 		{
-			long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
-			long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
-
-			if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
-
-			long j;
-			for( j = 0 ; j < runSize; j++)
+			NSLog(@"XA");
+			long runSize = [pixList[ 0] count];
+			if(runSize > 1)
 			{
-				if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
-				if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
+				long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
+				long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
+
+				if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
+
+				long j;
+				for( j = 0 ; j < runSize; j++)
+				{
+					if ( moviePixWidth != [[pixList[0] objectAtIndex: j] pwidth]) enableSubtraction = FALSE;
+					if ( moviePixHeight != [[pixList[0] objectAtIndex: j] pheight]) enableSubtraction = FALSE;
+				}
 			}
 		}
-	}
-	
-	// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
-	[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
-
-
+		
+		// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
+		[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: YES];
+		
 #pragma mark PET	
 
 		if( isPET)

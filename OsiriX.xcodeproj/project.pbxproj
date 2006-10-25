@@ -9113,7 +9113,7 @@
 		CEAF1E4F0A757C4C00A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4B09B6828200545F5E /* jerror.c */; };
 		CEAF1E500A757C4C00A0D729 /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
 		CEAF1E510A757C4C00A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4D09B6828200545F5E /* jfdctflt.c */; };
-		CEAF1E520A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E; };
+		CEAF1E520A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E /* jfdctfst.c */; };
 		CEAF1E530A757C4C00A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4F09B6828300545F5E /* jfdctint.c */; };
 		CEAF1E540A757C4C00A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5009B6828300545F5E /* jidctflt.c */; };
 		CEAF1E550A757C4C00A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5109B6828300545F5E /* jidctfst.c */; };
@@ -9190,7 +9190,7 @@
 		CEAF1E9C0A757C4C00A0D729 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4B09B6828200545F5E /* jerror.c */; };
 		CEAF1E9D0A757C4C00A0D729 /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
 		CEAF1E9E0A757C4C00A0D729 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4D09B6828200545F5E /* jfdctflt.c */; };
-		CEAF1E9F0A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E; };
+		CEAF1E9F0A757C4C00A0D729 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E /* jfdctfst.c */; };
 		CEAF1EA00A757C4C00A0D729 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4F09B6828300545F5E /* jfdctint.c */; };
 		CEAF1EA10A757C4C00A0D729 /* jidctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5009B6828300545F5E /* jidctflt.c */; };
 		CEAF1EA20A757C4C00A0D729 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5109B6828300545F5E /* jidctfst.c */; };

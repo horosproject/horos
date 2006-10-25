@@ -191,14 +191,39 @@
         }, 
         {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
         {
-            ACTIONS = {SetWLWW = id; endSetWLWW = id; updateSetWLWW = id; }; 
+            ACTIONS = {
+                AddCLUT = id; 
+                ApplyCLUT = id; 
+                ApplyOpacity = id; 
+                SetWLWW = id; 
+                clutAction = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endSetWLWW = id; 
+                fullScreenMenu = id; 
+                updateSetWLWW = id; 
+            }; 
             CLASS = Window3DController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
                 fromset = NSTextField; 
+                newName = NSTextField; 
                 setWLWWWindow = NSWindow; 
                 toset = NSTextField; 
+                wl = NSTextField; 
                 wlset = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
                 wwset = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 

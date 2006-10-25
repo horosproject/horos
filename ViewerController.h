@@ -260,6 +260,8 @@ enum
 	IBOutlet NSView			*reportTemplatesView;
 	IBOutlet NSImageView	*reportTemplatesImageView;
 	IBOutlet NSPopUpButton	*reportTemplatesListPopUpButton;
+	
+	NSConditionLock			*processorsLock;
 }
 
 // Create a new 2D Viewer
