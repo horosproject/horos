@@ -544,4 +544,15 @@ extern NSLock	*PapyrusLock;
 	return-1;
 }
 
+- (BOOL) checkForROISR:(NSDictionary *)dicomInfo{
+	if ([[dicomInfo objectForKey:@"seriesID"] isEqualToString:@"5002"] &&
+		[[dicomInfo objectForKey:@"seriesID"] isEqualToString:@"OsiriX ROI SR"] &&
+		//Comprehensive SR Class uid
+		[[dicomInfo objectForKey:@"SOPClassUID"] isEqualToString:@"1.2.840.10008.5.1.4.1.1.88.33"]) {
+			NSLog(@"have SR Roi");
+			//Need to move to roi folder and merge with any previous ROI for image
+		}
+		
+}
+
 @end

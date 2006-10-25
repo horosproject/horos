@@ -26,5 +26,7 @@
 
 + (BOOL) isDICOMFileDCMTK:(NSString *) file;
 -(short) getDicomFileDCMTK;
+- (BOOL) checkForROISR:(NSDictionary *)dicomInfo;
+
 
 @end

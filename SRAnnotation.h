@@ -34,5 +34,9 @@
 - (NSString *)seriesInstanceUID;
 - (void)setSeriesInstanceUID: (NSString *)seriesInstanceUID;
 - (NSString *)sopInstanceUID;
+- (NSString *)sopClassUID;
+- (NSString *)seriesDescription;
+- (NSString *)seriesNumber;
+- (int)frameIndex;
 
 @end

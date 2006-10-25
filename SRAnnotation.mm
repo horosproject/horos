@@ -174,9 +174,13 @@
 	}
 	else
 		refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID]  UTF8String]);
-		
+	
+	NSNumber *frameIndex = [[[aROI pix] imageObj] valueForKey:@"frameNo"];
 	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
-	document->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(refsopClassUID, refsopInstanceUID));
+	DSRImageReferenceValue imageRef(refsopClassUID, refsopInstanceUID);
+	// add frame reference
+	imageRef.getFrameList().putString([[frameIndex stringValue] UTF8String]);
+	document->getTree().getCurrentContentItem().setImageReference(imageRef);
 	document->getTree().goUp(); // go up to the SCOORD element
 	
 	document->getTree().goUp(); // go up to the root element
@@ -302,5 +306,40 @@
 - (NSString *)sopInstanceUID{
 	return [NSString stringWithUTF8String:document->getSOPInstanceUID()];
 }
+
+- (NSString *)sopClassUID{
+	return [NSString stringWithUTF8String:document->getSOPClassUID()];
+}
+
+- (NSString *)seriesDescription{
+	return [NSString stringWithUTF8String:document->getSeriesDescription()];
+}
+
+- (NSString *)seriesNumber{
+	return [NSString stringWithUTF8String:document->getSeriesNumber()];
+}
+
+- (int)frameIndex{
+	DSRDocumentTreeNode *node = NULL; 
+	//_doc->getTree().print(cout, 0);
+	document->getTree().gotoRoot ();
+		/* iterate over all nodes */ 
+	do { 
+		node = OFstatic_cast(DSRDocumentTreeNode *, document->getTree().getNode());			
+		if (node != NULL && node->getValueType() == DSRTypes::VT_Image) {
+			//image node get SOPCInstance
+			DSRImageReferenceValue *imagePtr = document->getTree().getCurrentContentItem().getImageReferencePtr();
+			DSRImageFrameList frameList = imagePtr->getFrameList ();
+			NSLog(@"got image node");
+			int i;
+			for (i = 0; i < 1000; i++) {
+				if (imagePtr->appliesToFrame(i) == OFTrue)
+					return i;
+			}			
+		}
+	} while (document->getTree().iterate()); 
+	return 0;
+}
+
 
 @end
