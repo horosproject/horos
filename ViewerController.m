@@ -6142,7 +6142,7 @@ extern NSString * documentsDirectory();
 						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 						{
 							// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];
-							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"]];
+							[self archiveROIsAsDICOM:[roiList[ mIndex] objectAtIndex: i]  toPath: [str stringByAppendingPathExtension:@"dcm"] forImage:image];
 							[[NSFileManager defaultManager] removeFileAtPath: str handler: 0L];
 						}
 						else
