@@ -1080,7 +1080,7 @@ static BOOL COMPLETEREBUILD = NO;
 			@try
 			{
 				predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-				result = [newImages filteredArrayUsingPredicate: predicate];
+				if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
 			}
 			
 			@catch( NSException *ne)
@@ -2913,22 +2913,31 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	NSPredicate *predicate;
 	
-	@try
+	if( [string isEqualToString:@""]) predicate = [NSPredicate predicateWithValue: YES];
+	else
 	{
 		predicate = [NSPredicate predicateWithFormat: pred];
 	}
-	
-	@catch( NSException *ne)
-	{
-		predicate = [NSPredicate predicateWithValue: NO];
-	}
-	
 	return predicate;
 }
 
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album
 {
-	return [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]];
+	NSPredicate	*pred = 0L;
+	
+	@try
+	{
+		pred = [self smartAlbumPredicateString: [album valueForKey:@"predicateString"]];
+	}
+	
+	@catch( NSException *ne)
+	{
+		pred = [NSPredicate predicateWithValue: NO];
+		
+		NSLog( @"filter error %@ : %@", [ne name] ,[ne reason]);
+	}
+	
+	return pred;
 }
 
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView

@@ -20,7 +20,6 @@
 
 #import "RoutingArrayController.h"
 
-
 @implementation RoutingArrayController
 
 
@@ -50,7 +49,6 @@
 	[dictionary setValue:@"Server Description" forKey:@"Description"];
 	[dictionary setValue:[NSMutableArray array] forKey:@"rules"];
 	[super addObject:dictionary];
-
 }
 
 - (IBAction)editRoute:(id)sender{

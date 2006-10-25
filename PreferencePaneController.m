@@ -180,6 +180,28 @@ extern BrowserController	*browserWindow;
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];
 	
+	// Test the routing filters
+	if( [[note object] boolForKey: @"AUTOROUTINGACTIVATED"])
+	{
+		NSArray	*autoroutingRules = [[note object] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+		int i;
+			
+		for( i = 0; i < [autoroutingRules count]; i++)
+		{
+			NSDictionary	*routingRule = [autoroutingRules objectAtIndex: i];
+			
+			@try
+			{
+				[[BrowserController currentBrowser] smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+			}
+		
+			@catch( NSException *ne)
+			{
+				NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"]], nil, nil, nil);
+			}
+		}
+	}
+	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);
 	NS_ENDHANDLER
