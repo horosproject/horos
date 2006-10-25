@@ -637,29 +637,29 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (IBAction) setOrientationTool:(id) sender
 {
 	short newOrientationTool = [[sender selectedCell] tag];
-
-	[self checkEverythingLoaded];
-	
-	BOOL volumicData = YES;
-	
-	long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
-	long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
-	
-	long j;
-	for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
-	{
-		if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
-		if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
-	}
-	
-	if( volumicData == NO)
-	{
-		NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
-		return;
-	}
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
+		[self checkEverythingLoaded];
+	
+		BOOL volumicData = YES;
+		
+		long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
+		long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
+		
+		long j;
+		for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+		{
+			if ( moviePixWidth != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+			if ( moviePixHeight != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+		}
+		
+		if( volumicData == NO)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
+			return;
+		}
+	
 		BOOL newViewer = NO;
 		
 		[imageView stopROIEditingForce: YES];
