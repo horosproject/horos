@@ -215,6 +215,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) resliceThread:(NSDictionary*) dict
 {
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
 	int x,y;
 	int i = [[dict valueForKey:@"i"] intValue];
 	int sign = [[dict valueForKey:@"sign"] intValue];
@@ -251,6 +253,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[processorsLock lock];
 	if( numberOfThreadsForRelisce >= 0) numberOfThreadsForRelisce--;
 	[processorsLock unlockWithCondition: 1];
+	
+	[pool release];
 }
 
 -(void) processReslice:(long) directionm :(BOOL) newViewer
@@ -3712,6 +3716,19 @@ static ViewerController *draggedController = 0L;
 	else [self checkView: subCtrlView :NO];
 }
 
+//-(void) loadThread:(DCMPix*) pix
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+//	
+//	[pix CheckLoad];
+//
+//	[processorsLock lock];
+//	if( numberOfThreadsForRelisce >= 0) numberOfThreadsForRelisce--;
+//	[processorsLock unlockWithCondition: 1];
+//	
+//	[pool release];
+//}
+
 -(void) loadImageData:(id) sender
 {
     NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
@@ -3733,9 +3750,6 @@ static ViewerController *draggedController = 0L;
 	
 	if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 	
-	float maxValueOfSeries = -100000;
-	float minValueOfSeries = 100000;
-	
 	for( x = 0; x < maxMovieIndex; x++)
 	{
 		for( i = 0 ; i < [pixList[ x] count]; i++)
@@ -3749,10 +3763,11 @@ static ViewerController *draggedController = 0L;
 				
 				
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				[pix CheckLoad];
 				
-				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
-				if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
+//				[self waitForAProcessor];
+//				[NSThread detachNewThreadSelector: @selector( loadThread:) toTarget:self withObject:  pix];
+				
+				[pix CheckLoad];
 			}
 			
 			loadingPercentage = (float) ((x*[pixList[ x] count]) + i) / (float) (maxMovieIndex * [pixList[ x] count]);
@@ -3764,12 +3779,39 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
+//	BOOL finished = NO;
+//	do
+//	{
+//		[processorsLock lockWhenCondition: 1];
+//		if( numberOfThreadsForRelisce <= 0)
+//		{
+//			finished = YES;
+//			[processorsLock unlockWithCondition: 1];
+//		}
+//		else [processorsLock unlockWithCondition: 0];
+//	}
+//	while( finished == NO);
+	
 	if( stopThreadLoadImage == NO)	 
-	{	 
+	{	
+		float maxValueOfSeries = -100000;
+		float minValueOfSeries = 100000;
+
 		for( x = 0; x < maxMovieIndex; x++)	 
 		{	 
 			for( i = 0 ; i < [pixList[ x] count]; i++)	 
-			{	 
+			{
+				DCMPix* pix = [pixList[ x] objectAtIndex: i];
+				
+				if( maxValueOfSeries < [pix fullwl] + [pix fullww]/2) maxValueOfSeries = [pix fullwl] + [pix fullww]/2;
+				if( minValueOfSeries > [pix fullwl] - [pix fullww]/2) minValueOfSeries = [pix fullwl] - [pix fullww]/2;
+			}
+		}
+		
+		for( x = 0; x < maxMovieIndex; x++)	 
+		{	 
+			for( i = 0 ; i < [pixList[ x] count]; i++)	 
+			{
 				[[pixList[ x] objectAtIndex: i] setMaxValueOfSeries: maxValueOfSeries];
 				[[pixList[ x] objectAtIndex: i] setMinValueOfSeries: minValueOfSeries];
 			}
