@@ -637,6 +637,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (IBAction) setOrientationTool:(id) sender
 {
 	short newOrientationTool = [[sender selectedCell] tag];
+
+	[self checkEverythingLoaded];
 	
 	BOOL volumicData = YES;
 	
@@ -660,9 +662,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		BOOL newViewer = NO;
 		
-//		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) newViewer = YES;
-//		else newViewer = NO;
-	
 		[imageView stopROIEditingForce: YES];
 		[self checkEverythingLoaded];
 
