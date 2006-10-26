@@ -263,6 +263,9 @@
 
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
 -(long) DCMPixShutterRectWidth;
+-(long) DCMPixShutterRectHeight;
+-(long) DCMPixShutterRectOriginX;
+-(long) DCMPixShutterRectOriginY;
 -(BOOL) DCMPixShutterOnOff;
 -(void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
 - (void) computeTotalDoseCorrected;
@@ -317,7 +320,7 @@
 -(long) rowBytes;
 -(void) setRowBytes:(long) rb;
 
-//- (BOOL)loadFileDCMFramework;//Refactoring of loadDICOMDCMFramework
+- (BOOL)loadXAPhilips;
 - (BOOL)loadDICOMDCMFramework;
 - (BOOL) loadDICOMPapyrus;
 - (void) CheckLoadIn;
