@@ -352,6 +352,7 @@
                 subCtrlOnOff = NSButton; 
                 subCtrlPercent = NSSlider; 
                 subCtrlSharpenButton = NSButton; 
+                subCtrlSum = NSSlider; 
                 subCtrlView = NSView; 
                 subCtrlZero = NSSlider; 
                 suvConversion = NSMatrix; 

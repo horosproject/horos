@@ -3104,6 +3104,7 @@ static ViewerController *draggedController = 0L;
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
+	if ([[sender title] isEqualToString:@"Shutter"] == YES) [shutterOnOff setState: (![shutterOnOff state])];//from menu
 	long i;
 	
 	NSRect shutterRect;
@@ -3149,6 +3150,7 @@ static ViewerController *draggedController = 0L;
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
 			}
+			//[imageView scaleBy2AndFitShutter: [[[splitView subviews] objectAtIndex: 1] frame]];
 		}
 		else
 		{
@@ -3163,12 +3165,15 @@ static ViewerController *draggedController = 0L;
 			else //reuse preconfigured shutterRect
 			{
 				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
+				//[imageView scaleBy2AndFitShutter: [[[splitView subviews] objectAtIndex: 1] frame]];	
 			}
 		}
 	}
 	else
 	{
 		for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
+		//[imageView setOrigin: NSMakePoint( 0, 0)];
+		//[imageView scaleToFit];
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }
@@ -4597,6 +4602,15 @@ static ViewerController *draggedController = 0L;
 	{
 		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
 		{
+			switch([sender tag]) //menu shortcut
+			{
+				case 37: [subCtrlGamma setFloatValue:[subCtrlGamma floatValue]-0.5];	break;  //Ctr - (min 0.5)
+				case 38: [subCtrlGamma setFloatValue:2];								break;
+				case 39: [subCtrlGamma setFloatValue:[subCtrlGamma floatValue]+0.5];	break;  //Ctr + (max 6.0)
+				case 34: [subCtrlZero setFloatValue:[subCtrlZero floatValue]-0.05];		break;  //Bri - (min 0.6)
+				case 35: [subCtrlZero setFloatValue:0.8];								break;
+				case 36: [subCtrlZero setFloatValue:[subCtrlZero floatValue]+0.05] ;	break;  //Bri + (max 1.2)
+			}
 			long i;				
 			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
 				{
@@ -4614,10 +4628,16 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subSumSlider:(id) sender
 {
+	switch([sender tag]) //menu shortcut
+	{
+		case 31: [subCtrlSum setFloatValue:[subCtrlSum floatValue]-1];	break;  //Sum - (min 1)
+		case 32: [subCtrlSum setFloatValue:1];							break;
+		case 33: [subCtrlSum setFloatValue:[subCtrlSum floatValue]+1];	break;  //Sum + (max 10)
+	}
 	[self setFusionMode: 3];
 	long x, i;
 	
-	[imageView setFusion:-1 :[sender intValue]];
+	[imageView setFusion:-1 :[subCtrlSum intValue]];
 	
 	for ( x = 0; x < maxMovieIndex; x++)
 	{
@@ -4625,14 +4645,14 @@ static ViewerController *draggedController = 0L;
 		{
 			for ( i = 0; i < [pixList[ x] count]; i ++)
 			{
-				[[pixList[ x] objectAtIndex:i] setFusion:-1 :[sender intValue] :-1];
+				[[pixList[ x] objectAtIndex:i] setFusion:-1 :[subCtrlSum intValue] :-1];
 			}
 		}
 	}
 	
-	[stacksFusion setIntValue:[sender intValue]];
+	[stacksFusion setIntValue:[subCtrlSum intValue]];
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:[sender intValue] forKey:@"stackThickness"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[subCtrlSum intValue] forKey:@"stackThickness"];
 	
 	[imageView sendSyncMessage:1];
 
@@ -4640,7 +4660,8 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subSharpen:(id) sender
 {
-	if ([sender state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
+	if ([sender tag] == 30) [subCtrlSharpenButton  setState: ![subCtrlSharpenButton state]];
+	if ([subCtrlSharpenButton state] == NSOnState)	[self ApplyConvString:@"5x5 sharpen"];
 	else								[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 }
 

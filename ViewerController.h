@@ -107,6 +107,7 @@ enum
 
     IBOutlet NSSlider       *subCtrlZero;
     IBOutlet NSSlider       *subCtrlGamma;
+    IBOutlet NSSlider       *subCtrlSum;
     IBOutlet NSSlider       *subCtrlPercent;
 	IBOutlet NSButton		*subCtrlSharpenButton;
 	IBOutlet NSButton		*shutterOnOff;

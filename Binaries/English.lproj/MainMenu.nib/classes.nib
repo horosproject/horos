@@ -270,6 +270,9 @@
                 subCtrlNewMask = id; 
                 subCtrlOffset = id; 
                 subCtrlOnOff = id; 
+                subCtrlSliders = id; 
+                subSharpen = id; 
+                subSumSlider = id; 
                 syncronize = id; 
                 useVOILUT = id; 
             }; 
