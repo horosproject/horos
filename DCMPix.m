@@ -4105,16 +4105,20 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
+//	NSString			*MediaStorageSOPInstanceUID = [dcmObject attributeValueWithName:@"MediaStorageSOPInstanceUID"];
 
-	if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]]  &&
-		[MediaStorageSOPInstanceUID hasPrefix:@"1.3.46.670589.7.5"]
-	   ) 
-		{
-			//NSLog(@"XA Philips");
-			[pool release];
-			return [self loadXAPhilips];
-		}
+// Sorry, but I cannot accept this kind of specific code in the 'standard' OsiriX version. Activate it on your side if needed
+// This would generate too many bugs and produce different behavior for XA from other constructors.
+// I don't want a 'constructor oriented' DICOM viewer
+
+//	if ([SOPClassUID isEqualToString:[DCMAbstractSyntaxUID xrayAngiographicImageStorage]]  &&
+//		[MediaStorageSOPInstanceUID hasPrefix:@"1.3.46.670589.7.5"]
+//	   ) 
+//		{
+//			//NSLog(@"XA Philips");
+//			[pool release];
+//			return [self loadXAPhilips];
+//		}
 		
 	//-----------------------common----------------------------------------------------------	
 		
