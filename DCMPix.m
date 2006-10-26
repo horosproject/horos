@@ -2797,9 +2797,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
 	long			i, x, y, totSize;
 	int				realwidth;
-	long	w, h, row;
-	short   bpp, count, tifspp;
-	short   cur_page, number_of_pages;
+	long			w, h, row;
+	short			bpp, count, tifspp;
+	short			cur_page, number_of_pages, dataType;
 	
 	isRGB = NO;
 	
@@ -2826,6 +2826,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
 		TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bpp);
 		TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &tifspp);
+		TIFFGetField(tif, TIFFTAG_DATATYPE, &dataType);
 		
 		NSLog( @"Bits Per Sample: %d, Samples Per Pixel: %d", bpp, tifspp);
 		
@@ -3009,7 +3010,17 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			dstf.data = fImage;
 			
-			vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+			switch( dataType)
+			{
+				case TIFF_SSHORT:
+				case TIFF_SLONG:
+					vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+				break;
+				
+				default:
+					vImageConvert_16UToF( &src16, &dstf, 0, 1, 0);
+				break;
+			}
 		}
 		else
 		{
