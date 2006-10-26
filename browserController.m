@@ -3251,7 +3251,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
-- (NSArray*) childrenArray: (NSManagedObject*) item
+- (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages
 {
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
@@ -3278,16 +3278,21 @@ static BOOL COMPLETEREBUILD = NO;
 		[sortid release];
 		[sortdate release];
 		
-		//return [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
-		return [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
+		if( onlyImages) return [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
+		else return [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 	}
 
 	return 0L;
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject
+- (NSArray*) childrenArray: (NSManagedObject*) item
 {
-	NSArray			*childrenArray = [self childrenArray: item];
+	return [self childrenArray: item onlyImages: YES];
+}
+
+- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages
+{
+	NSArray			*childrenArray = [self childrenArray: item onlyImages:onlyImages];
 	NSMutableArray	*imagesPathArray = 0L;
 	long			i;
 	
@@ -3324,7 +3329,7 @@ static BOOL COMPLETEREBUILD = NO;
 				break;
 				case oMiddle:
 				{
-					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
+					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i] onlyImages:onlyImages];
 				
 					// Get the middle image of the series
 					if( [seriesArray count] > 0)
@@ -3333,7 +3338,7 @@ static BOOL COMPLETEREBUILD = NO;
 				break;
 				case oFirstForFirst:
 				{
-					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i]];
+					NSArray			*seriesArray = [self childrenArray: [childrenArray objectAtIndex: i] onlyImages:onlyImages];
 					
 					// Get the middle image of the series
 					if( [seriesArray count] > 0)
@@ -3345,6 +3350,11 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	return imagesPathArray;
+}
+
+- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject
+{
+	return [self imagesArray: item preferredObject: oAny onlyImages:YES]; 
 }
 
 - (NSArray*) imagesArray: (NSManagedObject*) item
@@ -3382,7 +3392,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
-- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
+- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImageObjects:(BOOL) onlyImageObjects
 {
 	long				i, x, type;
     NSString			*pat, *stud, *ser;
@@ -3435,6 +3445,11 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	return selectedFiles;
 
+}
+
+- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
+{
+	return [self filesForDatabaseOutlineSelection:correspondingManagedObjects onlyImageObjects: YES];
 }
 
 - (void) outlineViewSelectionDidChange:(NSNotification *)aNotification
