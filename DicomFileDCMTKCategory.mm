@@ -21,8 +21,10 @@
 #import "DicomFileDCMTKCategory.h"
 #import "Papyrus3/Papyrus3.h"
 #import "DICOMToNSString.h"
+//#import "browserController.h"
+//#import "SRAnnotation.h"
 
-#undef verify
+// #undef verify
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -544,15 +546,26 @@ extern NSLock	*PapyrusLock;
 	return-1;
 }
 
+// SRAnnotation and BrowserController cause many problems for SafeDB Rebuild need a work around ????
 - (BOOL) checkForROISR:(NSDictionary *)dicomInfo{
+/*
 	if ([[dicomInfo objectForKey:@"seriesID"] isEqualToString:@"5002"] &&
 		[[dicomInfo objectForKey:@"seriesID"] isEqualToString:@"OsiriX ROI SR"] &&
 		//Comprehensive SR Class uid
 		[[dicomInfo objectForKey:@"SOPClassUID"] isEqualToString:@"1.2.840.10008.5.1.4.1.1.88.33"]) {
 			NSLog(@"have SR Roi");
+			int frameNumber = 0;
+			SRAnnotation *sr = [[[SRAnnotation alloc] initWithContentsOfFile: filePath] autorelease];
+			NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"ROIs"];
+			NSString *seriesNumber = @"1";   // should be one for DICOM I hope.
+			NSMutableString *uniquePath = [[[NSString stringWithFormat:@"%@ %@",[dicomInfo objectForKey:@"SOPUID"],
+											[dicomInfo objectForKey:@"imageID"]] 
+											mutableCopy] autorelease];
+			[uniquePath replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [uniquePath length])];
+			NSString *str = [path stringByAppendingFormat: @"%@-%d", uniquePath , frameNumber];
 			//Need to move to roi folder and merge with any previous ROI for image
 		}
-		
+*/		
 }
 
 @end

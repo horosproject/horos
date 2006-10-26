@@ -21,10 +21,12 @@
 }
 
 - (id)initWithROIs:(NSArray *)ROIs  path:(NSString *)path;
+- (id)initWithContentsOfFile:(NSString *)path;
 
 - (void)addROIs:(NSArray *)someROIs;
 - (void)addROI:(ROI *)aROI;
 - (NSArray *)ROIs;
+- (void)mergeWithSR:(SRAnnotation *)sr;
 
 
 - (BOOL)writeToFileAtPath:(NSString *)path;

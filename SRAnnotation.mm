@@ -7,7 +7,7 @@
 //
 
 #import "SRAnnotation.h"
-#import "DCMVIew.h"
+#import "DCMView.h"
 #import "DCMPix.h"
 #import "browserController.h"
 #import "DCMObject.h"
@@ -69,6 +69,32 @@
 	return self;
 }
 
+- (id) initWithContentsOfFile:(NSString *)path{
+	if (self = [super init]) {
+		document = new DSRDocument();
+		OFCondition status;
+		// load old ROI SR and replace as needed
+		if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {			
+			DcmFileFormat fileformat;
+			status  = fileformat.loadFile([path UTF8String]);
+			if (status.good()) 				
+				status = document->read(*fileformat.getDataset());
+				
+			const Uint8 *buffer;
+			unsigned long length;
+			NSData *archiveData;
+			if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
+			{
+				NSLog(@"Unarchive from SR");
+				archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
+				_rois = [[NSUnarchiver unarchiveObjectWithData:archiveData] retain];
+			}
+				
+		}
+	}
+	return self;
+}
+
 - (void)dealloc
 {
 	delete document;
@@ -92,9 +118,25 @@
 	_rois = [newROIs retain];
 	while (aROI = [roisEnumerator nextObject])
 	{
-		[self addROI:aROI];
-		image = [[aROI pix] imageObj];
+		NSEnumerator *enumerator = [_rois objectEnumerator];
+		BOOL newROI = YES;
+		ROI *roi;
+		NSData *newROIData = [aROI data];
+		while ((roi = [enumerator nextObject]) && newROI){
+			if ([newROIData isEqualToData:[roi data]]) {
+				newROI = NO;
+			}
+		}
+		if (newROI) {
+			[self addROI:aROI];
+			image = [[aROI pix] imageObj];
+		}
 	}		
+}
+
+- (void)mergeWithSR:(SRAnnotation *)sr{
+	NSArray *rois = [sr ROIs];
+	[self addROIs:rois];
 }
 
 - (void)addROI:(ROI *)aROI;
