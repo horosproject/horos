@@ -222,6 +222,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;
 - (NSArray*) imagesArray: (NSManagedObject*) item;
 - (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject;
+- (NSArray*) imagesArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;
 - (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages;
 - (NSManagedObjectContext *) managedObjectContextLoadIfNecessary:(BOOL) loadIfNecessary;
 - (void) setNetworkLogs;
@@ -296,8 +297,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BOOL) isItCD:(NSArray*) pathFilesComponent;
 - (void)storeSCPComplete:(id)sender;
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingDicomFile;
-- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImageObjects:(BOOL) onlyImageObjects;
+- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects;
+- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages;
 
 - (void) resetListenerTimer;
 - (IBAction) smartAlbumHelpButton:(id) sender;

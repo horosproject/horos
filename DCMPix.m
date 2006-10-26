@@ -2799,7 +2799,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	int				realwidth;
 	long			w, h, row;
 	short			bpp, count, tifspp;
-	short			cur_page, number_of_pages, dataType;
+	short			cur_page, number_of_pages, dataType = 0;
 	
 	isRGB = NO;
 	

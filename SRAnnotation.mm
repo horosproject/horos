@@ -312,11 +312,16 @@
 }
 
 - (NSString *)seriesDescription{
-	return [NSString stringWithUTF8String:document->getSeriesDescription()];
+
+	const char* seriesDescription = document->getSeriesDescription();
+	if( seriesDescription) return [NSString stringWithUTF8String:seriesDescription];
+	else return @"";
 }
 
 - (NSString *)seriesNumber{
-	return [NSString stringWithUTF8String:document->getSeriesNumber()];
+	const char* seriesNumber = document->getSeriesNumber();
+	if( seriesNumber) return [NSString stringWithUTF8String:seriesNumber];
+	else return @"";
 }
 
 - (int)frameIndex{

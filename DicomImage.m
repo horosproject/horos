@@ -70,11 +70,7 @@ extern NSString * documentsDirectory();
 			val++;
 			val *= 10000;
 			
-//			if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-//				completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/TIF/%@", path] retain];
-//			else {
-				completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path] retain];
-//			}
+			completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path] retain];
 			
 			return completePathCache;
 		}

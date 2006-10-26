@@ -3357,6 +3357,11 @@ static BOOL COMPLETEREBUILD = NO;
 	return [self imagesArray: item preferredObject: oAny onlyImages:YES]; 
 }
 
+- (NSArray*) imagesArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages
+{
+	return [self imagesArray: item preferredObject: oAny onlyImages: onlyImages];
+}
+
 - (NSArray*) imagesArray: (NSManagedObject*) item
 {
 	return [self imagesArray: item preferredObject: oAny];
@@ -3392,7 +3397,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
-- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImageObjects:(BOOL) onlyImageObjects
+- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
 	long				i, x, type;
     NSString			*pat, *stud, *ser;
@@ -3407,7 +3412,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
 		{
-			NSArray		*imagesArray = [self imagesArray: curObj];
+			NSArray		*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
 			
 			if( isCurrentDatabaseBonjour)
 			{
@@ -3423,11 +3428,11 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
 		{
-			NSArray	*seriesArray = [self childrenArray: curObj];
+			NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
 			
 			for( i = 0 ; i < [seriesArray count]; i++)
 			{
-				NSArray		*imagesArray = [self imagesArray: [seriesArray objectAtIndex: i]];
+				NSArray		*imagesArray = [self imagesArray: [seriesArray objectAtIndex: i] onlyImages: onlyImages];
 				
 				if( isCurrentDatabaseBonjour)
 				{
@@ -3449,7 +3454,7 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
 {
-	return [self filesForDatabaseOutlineSelection:correspondingManagedObjects onlyImageObjects: YES];
+	return [self filesForDatabaseOutlineSelection:correspondingManagedObjects onlyImages: YES];
 }
 
 - (void) outlineViewSelectionDidChange:(NSNotification *)aNotification
@@ -3678,13 +3683,13 @@ static BOOL COMPLETEREBUILD = NO;
 			
 			if( matrixThumbnails)
 			{
-				[self filesForDatabaseMatrixSelection: objectsToDelete];
+				[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			else
 			{
 				[self deleteEmptyFoldersForDatabaseOutlineSelection];
-				[self filesForDatabaseOutlineSelection: objectsToDelete];
+				[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			
@@ -5542,7 +5547,7 @@ static BOOL withReset = NO;
 	}
 }
 
-- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects
+- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
 	long				i, x, type;
     NSString			*pat, *stud, *ser;
@@ -5572,7 +5577,7 @@ static BOOL withReset = NO;
 				
 				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
 				{
-					NSArray *imagesArray = [self imagesArray: curObj];
+					NSArray *imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
 					
 					if( isCurrentDatabaseBonjour)
 					{
@@ -5590,6 +5595,11 @@ static BOOL withReset = NO;
 	}
 		
 	return selectedFiles;
+}
+
+- (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects
+{
+	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
 }
 
 - (void) createContextualMenu
@@ -10151,8 +10161,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSMutableArray	*objects = [NSMutableArray array];
 	NSMutableArray  *files;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects];
-	else files = [self filesForDatabaseOutlineSelection:objects];
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files = [self filesForDatabaseMatrixSelection:objects onlyImages: NO];
+	else files = [self filesForDatabaseOutlineSelection:objects onlyImages: NO];
 	
 	[self selectServer: objects];
 }

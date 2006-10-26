@@ -113,10 +113,11 @@
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", sopInstanceUID];
 	NSArray *found = [srs filteredArrayUsingPredicate:predicate];
 	if ([found count] < 1) {
-		id sr = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
-		[sr setValue:series forKey:@"series"];
-		[sr setValue:sopInstanceUID forKey:@"sopInstanceUID"];
-		[sr setValue:path forKey:@"path"];
+		id im = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+		[im setValue:series forKey:@"series"];
+		[im setValue:sopInstanceUID forKey:@"sopInstanceUID"];
+		[im setValue:path forKey:@"path"];
+		[im setValue:[NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];	// this will allow the automatic deletion of the file when the study is removed
 	}
 	//Search for object with this UID
 	// empty for now
