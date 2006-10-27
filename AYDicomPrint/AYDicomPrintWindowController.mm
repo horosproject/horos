@@ -470,7 +470,7 @@ static const char* transferSyntaxes[] = {
 	else
 	{
 		[m_ProgressTabView selectLastTabViewItem: self];
-		[m_ProgressMessage setStringValue: NSLocalizedString(message, nil)];
+		[m_ProgressMessage setStringValue: message];
 	}
 
 	[m_ProgressMessage setNeedsDisplay: YES];
