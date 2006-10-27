@@ -569,6 +569,8 @@ static NSString *hostName = @"";
 	// ** STORESCP
 	[defaultValues setObject:@"1" forKey: @"STORESCP"];
 	
+	[defaultValues setObject:@"1" forKey: @"DCMPRINT_Interval"];
+	
 	// ** STORESCP
 	[defaultValues setObject:@"5" forKey: @"LISTENERCHECKINTERVAL"];
 	
