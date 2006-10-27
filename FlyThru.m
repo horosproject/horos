@@ -136,7 +136,7 @@
 	long nbStep = [tempStepCameras count];
 
 	// instantiation
-	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepMinCroppingPlanes, *stepMaxCroppingPlanes, *stepFusionPercentage;
+	NSMutableArray *stepPosition, *stepViewUp, *stepFocalPoint, *stepClippingRangeNear, *stepClippingRangeFar, *stepViewAngle, *stepEyeAngle, *stepParallelScale, *stepWL, *stepWW, *stepMinCroppingPlanes, *stepMaxCroppingPlanes, *stepFusionPercentage, *stepMovieIndexIn4D;
 
 	stepPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	stepViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -151,6 +151,7 @@
 	stepMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	stepMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	stepFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
+	stepMovieIndexIn4D = [NSMutableArray arrayWithCapacity:nbStep];
 	
 	// initialisation
 	NSEnumerator *eCam = [tempStepCameras objectEnumerator];
@@ -169,13 +170,14 @@
 		[stepWL addObject: [[[Point3D alloc] initWithValues:(float)[cam wl]:0:0] autorelease] ];
 		[stepWW addObject: [[[Point3D alloc] initWithValues:(float)[cam ww]:0:0] autorelease] ];
 		[stepFusionPercentage addObject: [[[Point3D alloc] initWithValues:[cam fusionPercentage]:0:0] autorelease] ];
+		[stepMovieIndexIn4D addObject: [[[Point3D alloc] initWithValues:[cam movieIndexIn4D]:0:0] autorelease]];
 		
 		[stepMinCroppingPlanes addObject:[cam minCroppingPlanes]];
 		[stepMaxCroppingPlanes addObject:[cam maxCroppingPlanes]];
 	}
 	
 	// interpolation
-	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathMinCroppingPlanes, *pathMaxCroppingPlanes, *pathFusionPercentage;
+	NSMutableArray *pathPosition, *pathViewUp, *pathFocalPoint, *pathClippingRangeNear, *pathClippingRangeFar, *pathViewAngle, *pathEyeAngle, *pathParallelScale, *pathWL, *pathWW, *pathMinCroppingPlanes, *pathMaxCroppingPlanes, *pathFusionPercentage, *pathMovieIndexIn4D;
 	
 	pathPosition = [NSMutableArray arrayWithCapacity:nbStep];
 	pathViewUp = [NSMutableArray arrayWithCapacity:nbStep];
@@ -190,7 +192,8 @@
 	pathMinCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	pathMaxCroppingPlanes = [NSMutableArray arrayWithCapacity:nbStep];
 	pathFusionPercentage = [NSMutableArray arrayWithCapacity:nbStep];
-
+	pathMovieIndexIn4D = [NSMutableArray arrayWithCapacity:nbStep];
+	
 	[stepsPositionInPath release];
 	stepsPositionInPath = [[NSMutableArray alloc] initWithCapacity:0];
 	
@@ -207,6 +210,7 @@
 	pathMinCroppingPlanes = [self path: stepMinCroppingPlanes : interpolationMethod : NO];
 	pathMaxCroppingPlanes = [self path: stepMaxCroppingPlanes : interpolationMethod : NO];
 	pathFusionPercentage = [self path: stepFusionPercentage : interpolationMethod : NO];
+	pathMovieIndexIn4D = [self path:stepMovieIndexIn4D :interpolationMethod :NO];
 	
 	// result
 	NSEnumerator *ePathPosition = [pathPosition objectEnumerator];
@@ -222,8 +226,9 @@
 	NSEnumerator *ePathMinCroppingPlanes = [pathMinCroppingPlanes objectEnumerator];
 	NSEnumerator *ePathMaxCroppingPlanes = [pathMaxCroppingPlanes objectEnumerator];
 	NSEnumerator *ePathFusionPercentage = [pathFusionPercentage objectEnumerator];
+	NSEnumerator *ePathMovieIndexIn4D = [pathMovieIndexIn4D objectEnumerator];
 	
-	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, minCropp, maxCropp, fusion;
+	id pos, vUp, foPt, near, far, view, eye, para, iwl, iww, minCropp, maxCropp, fusion, index4D;
 	
 	[pathCameras removeAllObjects];
 	
@@ -241,6 +246,7 @@
 		minCropp = [ePathMinCroppingPlanes nextObject];
 		maxCropp = [ePathMaxCroppingPlanes nextObject];
 		fusion = [ePathFusionPercentage nextObject];
+		index4D = [ePathMovieIndexIn4D nextObject];
 		
 		Camera * c = [[Camera alloc] init];
 		[c setPosition: pos];
@@ -254,6 +260,7 @@
 		[c setMinCroppingPlanes: minCropp];
 		[c setMaxCroppingPlanes: maxCropp];
 		[c setFusionPercentage: [fusion x]];
+		[c setMovieIndexIn4D: (long)[index4D x]];
 		
 		[pathCameras addObject:c];
 		[c release];

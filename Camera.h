@@ -22,6 +22,8 @@
 	float clippingRangeNear, clippingRangeFar, viewAngle, eyeAngle, parallelScale;
 	NSImage *previewImage;
 	float wl, ww, fusionPercentage;
+	BOOL is4D;
+	long movieIndexIn4D;
 }
 
 - (id)init;
@@ -53,6 +55,11 @@
 // fusion
 - (void)setFusionPercentage:(float)f;
 - (float)fusionPercentage;
+// 4D
+- (void)setIs4D:(BOOL)boo;
+- (BOOL)is4D;
+- (void)setMovieIndexIn4D:(long)i;
+- (long)movieIndexIn4D;
 
 - (void)setPreviewImage:(NSImage *)im;
 - (NSImage *)previewImage;

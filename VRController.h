@@ -118,10 +118,12 @@
 - (void) moviePosSliderAction:(id) sender;
 - (long) movieFrames;
 - (void) setMovieFrame: (long) l;
--(void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
--(IBAction) endShadingEditing:(id) sender;
--(IBAction) editShadingValues:(id) sender;
--(IBAction) setEngine:(id) sender;
+- (void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
+- (short)curMovieIndex;
+- (BOOL)is4D;
+- (IBAction) endShadingEditing:(id) sender;
+- (IBAction) editShadingValues:(id) sender;
+- (IBAction) setEngine:(id) sender;
 - (void) updateEngine;
 - (void) prepareUndo;
 - (VRView*) view;

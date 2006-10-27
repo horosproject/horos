@@ -4637,6 +4637,9 @@ public:
 	// fusion percentage
 	[cam setFusionPercentage:blendingFactor];
 	
+	// 4D
+	[cam setMovieIndexIn4D:[controller curMovieIndex]];
+	
 	// thumbnail
 	[cam setPreviewImage: [[self nsimage:TRUE] autorelease]];
 	
@@ -4688,6 +4691,10 @@ public:
 
 	// fusion percentage
 	[self setBlendingFactor:[cam fusionPercentage]];
+
+	// 4D
+	if([controller is4D])
+		[controller setMovieFrame:[cam movieIndexIn4D]];
 
 	aCamera->SetPosition(pos);
 	aCamera->SetFocalPoint(focal);

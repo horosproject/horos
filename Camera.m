@@ -39,6 +39,9 @@
 	maxCroppingPlanes = [[Point3D alloc] init];
 	
 	fusionPercentage = 0.0;
+
+	is4D = NO;
+	movieIndexIn4D = 0;
 		
 	previewImage = [[NSImage alloc]  initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Empty.tif"]];
 	return self;
@@ -199,6 +202,26 @@
 - (float)fusionPercentage;
 {
 	return fusionPercentage;
+}
+
+- (void)setIs4D:(BOOL)boo;
+{
+	is4D = boo;
+}
+
+- (BOOL)is4D;
+{
+	return is4D;
+}
+
+- (void)setMovieIndexIn4D:(long)i;
+{
+	movieIndexIn4D = i;
+}
+
+- (long)movieIndexIn4D;
+{
+	return movieIndexIn4D;
 }
 
 -(void) setPreviewImage: (NSImage*)im

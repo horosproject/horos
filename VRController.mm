@@ -304,6 +304,16 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[moviePlayStop setEnabled: YES];
 }
 
+- (short)curMovieIndex;
+{
+	return curMovieIndex;
+}
+
+- (BOOL)is4D;
+{
+	return (maxMovieIndex > 1);
+}
+
 -(NSMutableArray*) pixList { return pixList[0];}
 
 - (NSString*) style

@@ -352,6 +352,34 @@ MODIFICATION HISTORY
 	{
 		[FT setNumberOfFrames: [nbFramesTextField intValue]];
 		[FT computePath];
+		
+		// 4D
+		if([controller3D is4D])
+		{
+			NSArray *pathCameras = [FT pathCameras];
+			int i;
+			long previousIndex = [[pathCameras objectAtIndex:0] movieIndexIn4D];
+			BOOL sameIndexes = YES;
+			for(i=1; i<[pathCameras count] && sameIndexes; i++)
+			{
+				sameIndexes = sameIndexes && (previousIndex == [[pathCameras objectAtIndex:i] movieIndexIn4D]);
+				previousIndex = [[pathCameras objectAtIndex:i] movieIndexIn4D];
+			}
+			if(sameIndexes)
+			{
+				NSLog(@"sameIndexes");
+				long movieFrames = [controller3D movieFrames];
+				int j = 0;
+				for(i=0; i<[pathCameras count]; i++)
+				{
+					[[pathCameras objectAtIndex:i] setMovieIndexIn4D:j];
+					j = (j+1) % movieFrames;
+					NSLog(@"j : %d", j);
+				}
+			}
+		}
+
+		
 		[boxPlay setHidden:NO];
 		[boxExport setHidden:NO];
 		
