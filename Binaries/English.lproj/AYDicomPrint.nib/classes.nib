@@ -1,0 +1,41 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                cancel = id; 
+                closeSheet = id; 
+                exportDICOMSlider = id; 
+                printImages = id; 
+                setExportMode = id; 
+                setPages = id; 
+                verifyConnection = id; 
+            }; 
+            CLASS = AYDicomPrintWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                entireSeriesBox = NSBox; 
+                entireSeriesFrom = NSSlider; 
+                entireSeriesFromText = NSTextField; 
+                entireSeriesInterval = NSSlider; 
+                entireSeriesIntervalText = NSTextField; 
+                entireSeriesTo = NSSlider; 
+                entireSeriesToText = NSTextField; 
+                "m_ImageSelection" = NSMatrix; 
+                "m_PrintButton" = NSButton; 
+                "m_PrinterController" = NSArrayController; 
+                "m_ProgressIndicator" = NSProgressIndicator; 
+                "m_ProgressMessage" = NSTextField; 
+                "m_ProgressOKButton" = NSButton; 
+                "m_ProgressSheet" = NSPanel; 
+                "m_ProgressTabView" = NSTabView; 
+                "m_ToggleDrawerButton" = NSButton; 
+                "m_VerifyConnectionButton" = NSButton; 
+                "m_VersionNumberTextField" = NSTextField; 
+                "m_pages" = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

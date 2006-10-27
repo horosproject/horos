@@ -12,7 +12,7 @@
             ACTIONS = {selectPane = id; }; 
             CLASS = PreferencePaneController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {destView = NSView; }; 
+            OUTLETS = {destView = NSView; "m_SelectionMatrix" = NSMatrix; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {

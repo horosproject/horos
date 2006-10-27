@@ -330,9 +330,9 @@ extern BrowserController	*browserWindow;
 		case 5:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];	
 			break;
-		case 6:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIRoutingPreferencePane" ofType: @"prefPane"];	
-			break;
+//		case 6:
+//			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIRoutingPreferencePane" ofType: @"prefPane"];	
+//			break;
 		case 7:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHangingPreferencePane" ofType: @"prefPane"];	
 			break;
@@ -345,7 +345,9 @@ extern BrowserController	*browserWindow;
 		case 10:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];	
 			break;
-			
+		case 6:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];	
+			break;
 		default:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
 	}

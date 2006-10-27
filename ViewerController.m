@@ -31,7 +31,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 
 
 
-
+#import "AYDicomPrintWindowController.h"
 #import "MyOutlineView.h"
 #import "xNSImage.h"
 #import "PluginFilter.h"
@@ -141,6 +141,7 @@ static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
 static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
+static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 
 static NSArray*		DefaultROINames;
 
@@ -2347,6 +2348,15 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(exportQuicktime:)];
     }
+	else if ([itemIdent isEqualToString: PrintToolbarItemIdentifier]) {
+		
+		[toolbarItem setLabel: NSLocalizedString(@"Print",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Print",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Print selected study/series to a DICOM printer",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: PrintToolbarItemIdentifier]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector(printDICOM:)];
+    }
 	else  if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
         
 	[toolbarItem setLabel: NSLocalizedString(@"iPhoto", nil)];
@@ -2848,6 +2858,7 @@ static ViewerController *draggedController = 0L;
 										PlayToolbarItemIdentifier,
 										SpeedToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
+										PrintToolbarItemIdentifier,
 										nil];
 }
 
@@ -2861,6 +2872,7 @@ static ViewerController *draggedController = 0L;
 														NSToolbarSeparatorItemIdentifier,
 														MailToolbarItemIdentifier,
 														Send2PACSToolbarItemIdentifier,
+														PrintToolbarItemIdentifier,
 														ExportToolbarItemIdentifier,
 														iPhotoToolbarItemIdentifier,
 														PagePadToolbarItemIdentifier,
@@ -9168,6 +9180,14 @@ int i,j,l;
 #define DATABASEPATH @"/DATABASE/"
 
 
+
+- (void) printDICOM:(id) sender
+{
+	[self checkEverythingLoaded];
+	
+	[[[AYDicomPrintWindowController alloc] init] autorelease];
+}
+
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
 	NSImage		*im = 0L;
@@ -9302,12 +9322,10 @@ int i,j,l;
 		to = [quicktimeTo intValue];
 		interval = [quicktimeInterval intValue];
 		
-		if( from > to)
+		if( from >= to)
 		{
-			long temp = to;
-		
-			to = from;
-			from = temp;
+			to = [quicktimeFrom intValue];
+			from = [quicktimeTo intValue]-1;
 		}
 				
 		if( [[quicktimeMode selectedCell] tag] == 3)	// key images
@@ -9354,9 +9372,9 @@ int i,j,l;
 	else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
 	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
 	
-	[quicktimeTo performClick: self];	// Will update the text field
-	[quicktimeFrom performClick: self];	// Will update the text field
-	[quicktimeInterval performClick: self];	// Will update the text field
+	[quicktimeToText setIntValue: [quicktimeTo intValue]];
+	[quicktimeFromText setIntValue: [quicktimeFrom intValue]];
+	[quicktimeIntervalText setIntValue: [quicktimeInterval intValue]];
 	
 	[self setCurrentdcmExport: quicktimeMode];
 	
@@ -9611,12 +9629,13 @@ int i,j,l;
 	[dcmFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	[dcmTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
 	
-	[dcmFrom setIntValue: 1];
+	if( [imageView flippedData]) [dcmFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+	else [dcmFrom setIntValue: 1+ [imageView curImage]];
 	[dcmTo setIntValue: [pixList[ curMovieIndex] count]];
 	
-	[dcmTo performClick: self];	// Will update the text field
-	[dcmFrom performClick: self];	// Will update the text field
-	[dcmInterval performClick: self];	// Will update the text field
+	[dcmToText setIntValue: [dcmTo intValue]];
+	[dcmFromText setIntValue: [dcmFrom intValue]];
+	[dcmIntervalText setIntValue: [dcmInterval intValue]];
 	
 	[self setCurrentdcmExport: dcmSelection];
 	

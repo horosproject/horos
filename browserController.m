@@ -342,7 +342,6 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.icns";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.icns";
 static NSString*	SendToolbarItemIdentifier			= @"Send.icns";
-static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	ViewerToolbarItemIdentifier			= @"Viewer.icns";
 static NSString*	CDRomToolbarItemIdentifier			= @"CDRom.icns";
 static NSString*	MovieToolbarItemIdentifier			= @"Movie.icns";
@@ -9746,12 +9745,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
 }
 
-
-- (void) printDICOM:(id) sender
-{
-	
-}
-
 - (void) loadDICOMFromiPod
 {
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
@@ -10960,15 +10953,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(sendiDisk:)];
 	}
-    else if ([itemIdent isEqualToString: PrintToolbarItemIdentifier]) {
-		
-		[toolbarItem setLabel: NSLocalizedString(@"Print",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Print",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Print selected study/series to a DICOM printer",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: PrintToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(printDICOM:)];
-    }
     else if ([itemIdent isEqualToString: ViewerToolbarItemIdentifier]) {
         
 		[toolbarItem setLabel: NSLocalizedString(@"2D-3D Viewer",nil)];
