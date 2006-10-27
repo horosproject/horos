@@ -234,6 +234,7 @@
                 loadSerie = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
+                printDICOM = id; 
                 reSyncOrigin = id; 
                 resetImage = id; 
                 resetImagePresentationState = id; 
