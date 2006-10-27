@@ -33692,10 +33692,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					AYDicomPrint,
-				);
 				INFOPLIST_FILE = "Deployment-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
@@ -34111,7 +34107,7 @@
 				GCC_FAST_OBJC_DISPATCH = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/include/libxml2,
-					"AYDicomPrint/xercesc/**",
+					AYDicomPrint,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
