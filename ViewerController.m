@@ -9711,20 +9711,22 @@ int i,j,l;
 	NSString *pathToPAGES = [documentsDirectory() stringByAppendingString:@"/PAGES/"];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
-	
-	//create pathToTemplate
-	NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/PAGES/"];
-	pathToTemplate = [pathToTemplate stringByAppendingString:[sender title]];
-	pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 
 	//pathToPAGES = timeStamp
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
 	pathToPAGES = [pathToPAGES stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
-	
-	//copy file pathToTemplate to pathToPAGES
-	if([fileManager copyPath:pathToTemplate toPath:[pathToPAGES stringByAppendingPathExtension:@"pages"] handler:0L]) NSLog([NSString stringWithFormat:@"%@ is a copy of %@",[pathToPAGES stringByAppendingPathExtension:@"pages"], pathToTemplate]);
-	else NSLog(@"template not available");
 
+	if (!([[sender title] isEqualToString: @"SCAN"]))
+	{
+		//create pathToTemplate
+		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/PAGES/"];
+		pathToTemplate = [pathToTemplate stringByAppendingString:[sender title]];
+		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
+		
+		//copy file pathToTemplate to pathToPAGES
+		if([fileManager copyPath:pathToTemplate toPath:[pathToPAGES stringByAppendingPathExtension:@"pages"] handler:0L]) NSLog([NSString stringWithFormat:@"%@ is a copy of %@",[pathToPAGES stringByAppendingPathExtension:@"pages"], pathToTemplate]);
+		else NSLog(@"template not available");
+	}
 
 	
 	//create pathToPages/timeStamp.cfg, sibling of pathToPages (allows for use of dcm4che lib to reinject the pdf produced into OsiriX)
@@ -9756,8 +9758,8 @@ int i,j,l;
 			if ([tagString length] > 0) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Patient ID\r00100020:%@",tagString];
 
 //0010,0021	(3) Patient Module Attributes
-			//tagString = @"1.3.6.1.4.1.23650";//  Opendicom SRL, Jacques FAUQUEX, jacques@internet.com.uy
-			//pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Issuer of Patient ID\r00100021:%@",tagString];
+			tagString = @"OsiriX";
+			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Issuer of Patient ID\r00100021:%@",tagString];
 
 //0010,0030	(2) Patient Module Attributes
 			tagDate = [curImage valueForKeyPath: @"series.study.dateOfBirth"];
@@ -9791,8 +9793,8 @@ int i,j,l;
 			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Referring Physician's Name\r00080090:%@",tagString];
 
 //0008,1050 ( ) General Study
-			//tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.performingPhysician"];
-			//if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Performing Physician's Name\r00081050:%@",tagString];	
+			tagString = [[[self fileList] objectAtIndex:0] valueForKeyPath: @"series.study.performingPhysician"];
+			if (tagString) pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Performing Physician's Name\r00081050:%@",tagString];	
 
 //0020,0010 (2) General Study	
 			tagString = [curImage valueForKeyPath: @"series.study.id"];
@@ -9823,10 +9825,16 @@ int i,j,l;
 
 
 //0008,0070 (2) General Equipment Module Attributes.... to be modified with reading from the dicom file...
-			tagString = @"Philips Medical Systems (Netherlands)";
-			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Manufacturer\r00080070:%@",tagString];
-
-
+			if ([[sender title] isEqualToString: @"SCAN"])
+			{
+				tagString = @"Apple Mac OSX 10.4";
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Manufacturer\r00080070:%@",tagString];
+			}
+			else
+			{
+				tagString = @"Philips Medical Systems (Netherlands)";
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Manufacturer\r00080070:%@",tagString];
+			}
 
 //0008,0064 (1) SC Equipment Module Attributes
 			tagString = @"WSD";//Workstation
@@ -9856,10 +9864,18 @@ int i,j,l;
 //0042,0010 (2) Encapsulated Document Module Attributes
 //0008,103E SeriesDescription
 			//Better asking for the title... or copying it from the study or from the performed procedure step
-			tagString = @"FILM";
-			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Document Title\r00420010:%@",tagString];
-			pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Description\r0008103E:%@",tagString];
-
+			if ([[sender title] isEqualToString: @"SCAN"])
+			{
+				tagString = @"SCAN";
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Document Title\r00420010:%@",tagString];
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Description\r0008103E:%@",tagString];
+			}
+			else
+			{
+				tagString = @"FILM";
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Document Title\r00420010:%@",tagString];
+				pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Series Description\r0008103E:%@",tagString];
+			}
 //0040,A043 (2) Encapsulated Document Module Attributes	
 			//tagString = @" ";
 			//pdf2dcmContent = [pdf2dcmContent stringByAppendingFormat: @"\r# Concept Name Code Value\r#0040A043:%@",tagString];
@@ -9891,8 +9907,11 @@ int i,j,l;
 	    ]) NSLog([NSString stringWithFormat:@"created %@ for dicom pdf creation with dcm4che pdf2dcm",[pathToPAGES stringByAppendingPathExtension:@"cfg"]]);
 
 
-	//open pathToPAGES
-	[[NSWorkspace sharedWorkspace] openFile:[pathToPAGES stringByAppendingPathExtension:@"pages"]];
+	if (!([[sender title] isEqualToString: @"SCAN"]))
+	{
+		//open pathToPAGES
+		[[NSWorkspace sharedWorkspace] openFile:[pathToPAGES stringByAppendingPathExtension:@"pages"]];
+	}
 }
 
 - (void) exportTIFF:(id) sender
