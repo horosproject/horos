@@ -285,6 +285,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (float) pixelSpacingX;
 - (float) pixelSpacingY;
 - (void) scaleToFit;
+- (void) scaleBy2AndCenterShutter;
 - (void) setBlendingFactor:(float) f;
 - (void) sliderAction:(id) sender;
 - (DCMPix*)curDCM;

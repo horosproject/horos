@@ -3150,7 +3150,7 @@ static ViewerController *draggedController = 0L;
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterRect:(long)shutterRect.origin.x :(long)shutterRect.origin.y :(long)shutterRect.size.width :(long)shutterRect.size.height];
 				[[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
 			}
-			//[imageView scaleBy2AndFitShutter: [[[splitView subviews] objectAtIndex: 1] frame]];
+			[imageView scaleBy2AndCenterShutter];
 		}
 		else
 		{
@@ -3165,15 +3165,15 @@ static ViewerController *draggedController = 0L;
 			else //reuse preconfigured shutterRect
 			{
 				for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOnState];
-				//[imageView scaleBy2AndFitShutter: [[[splitView subviews] objectAtIndex: 1] frame]];	
+				[imageView scaleBy2AndCenterShutter];	
 			}
 		}
 	}
 	else
 	{
 		for( i = 0; i < [[imageView dcmPixList] count]; i++) [[[imageView dcmPixList] objectAtIndex: i] DCMPixShutterOnOff: NSOffState];
-		//[imageView setOrigin: NSMakePoint( 0, 0)];
-		//[imageView scaleToFit];
+		[imageView setOrigin: NSMakePoint( 0, 0)];
+		[imageView scaleToFit];
 	}
 	[imageView setIndex: [imageView curImage]]; //refresh viewer only
 }

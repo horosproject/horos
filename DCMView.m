@@ -970,6 +970,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[self setNeedsDisplay:YES];
 }
 
+- (void) scaleBy2AndCenterShutter
+{
+	scaleValue *= 2;
+	origin.x = (([curDCM pwidth] / 2) - ([curDCM DCMPixShutterRectOriginX] + ([curDCM DCMPixShutterRectWidth]/2))) * scaleValue;
+	origin.y = -(([curDCM pheight] / 2) - ([curDCM DCMPixShutterRectOriginY] + ([curDCM DCMPixShutterRectHeight]/2))) * scaleValue;
+	[self setNeedsDisplay:YES];
+}
+
 - (void) setIndexWithReset:(short) index :(BOOL) sizeToFit
 {
 	long i;
