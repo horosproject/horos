@@ -868,6 +868,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 	[curCLUTMenu release];
 	[curOpacityMenu release];
+	[roiVolumes release];
 
 	[super dealloc];
 }
@@ -2216,7 +2217,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	for(i=0; i<[roiNames count]; i++)
 	{
 		NSArray *roisWithCurrentName = [viewer2D roisWithName:[roiNames objectAtIndex:i]];
-		ROIVolume *volume = [[ROIVolume alloc] init];
+		ROIVolume *volume = [[[ROIVolume alloc] init] autorelease];
 		[volume setFactor:[self factor]];
 		[volume setROIList:roisWithCurrentName];
 		if ([volume isVolume])
