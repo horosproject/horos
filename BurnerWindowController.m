@@ -504,7 +504,7 @@ NSString* asciiString (NSString* name);
 
 - (NSNumber*)getSizeOfDirectory:(NSString*)path
 {
-	NSNumber *sizeField;
+	NSNumber *sizeFieldNumber;
 	if([[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
 	{
 		NSArray *args;
@@ -513,7 +513,7 @@ NSString* asciiString (NSString* name);
 		NSData *duOutput;
 		NSString *size;
 		NSArray *stringComponents;
-		unsigned char aBuffer[70];
+		char aBuffer[70];
 
 		args = [NSArray arrayWithObjects:@"-ks",path,nil];
 		fromPipe=[NSPipe pipe];
@@ -534,9 +534,9 @@ NSString* asciiString (NSString* name);
 		size=[stringComponents objectAtIndex:0];
 		size=[size substringToIndex:[size length]-1];
 		
-		return sizeField = [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
+		return sizeFieldNumber = [NSNumber numberWithUnsignedLongLong:(unsigned long long)[size doubleValue]];
 	}
-	else return sizeField = [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
+	else return sizeFieldNumber = [NSNumber numberWithUnsignedLongLong:(unsigned long long)0];
 }
 
 - (void)addDicomdir
