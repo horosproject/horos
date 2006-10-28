@@ -3380,7 +3380,6 @@
 		ABD9084B0AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD9084D0AF20B7F00E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
-		ABD9084E0AF20B7F00E47345 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD9084F0AF20B8A00E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD908510AF20BA700E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
@@ -6772,6 +6771,8 @@
 		CE0F423D0A56A8A600D54F38 /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
 		CE0F423E0A56A8A600D54F38 /* ofthread.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6709B6828B00545F5E /* ofthread.cc */; };
 		CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
+		CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
+		CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */; };
 		CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139008EDD5FD005B15E1 /* libvtkHybrid.a */; };
 		CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139108EDD5FD005B15E1 /* libvtkVolumeRendering.a */; };
@@ -11942,7 +11943,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				ABD9084D0AF20B7F00E47345 /* libxerces-c.27.dylib in CopyFiles */,
-				ABD9084E0AF20B7F00E47345 /* libdcmprintscu.dylib in CopyFiles */,
+				CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
 				7EC3593206FE21EF00188171 /* libtiff.dylib in CopyFiles */,
@@ -16052,6 +16053,7 @@
 				CE5C0C8C0A935FE1006BC8CA /* libitkvnl_algo.a in Frameworks */,
 				ABD908470AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */,
 				ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
+				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33705,9 +33707,11 @@
 					"$(SRCROOT)/ITK180/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
@@ -33771,9 +33775,11 @@
 					"$(SRCROOT)/../VTK/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";

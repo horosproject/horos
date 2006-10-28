@@ -1,15 +1,13 @@
 {
     IBClasses = (
         {
-            ACTIONS = {
-                addPrinter = id; 
-                applyChanges = id; 
-                restoreChanges = id; 
-                setDefaultPrinter = id; 
-            }; 
+            ACTIONS = {addPrinter = id; setDefaultPrinter = id; }; 
             CLASS = AYDicomPrintPref; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"m_PrinterController" = NSArrayController; }; 
+            OUTLETS = {
+                "_authView" = SFAuthorizationView; 
+                "m_PrinterController" = NSArrayController; 
+            }; 
             SUPERCLASS = NSPreferencePane; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
@@ -23,7 +21,8 @@
                 "_window" = id; 
             }; 
             SUPERCLASS = NSObject; 
-        }
+        }, 
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
     ); 
     IBVersion = 1; 
 }

@@ -7,12 +7,14 @@
 //
 
 #import <PreferencePanes/PreferencePanes.h>
-
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface AYDicomPrintPref : NSPreferencePane 
 {
 	NSArray *m_PrinterDefaults;
 	IBOutlet NSArrayController *m_PrinterController;
+	
+	IBOutlet SFAuthorizationView			*_authView;
 }
 
 - (IBAction) addPrinter: (id) sender;
