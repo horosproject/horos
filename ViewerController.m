@@ -9650,7 +9650,7 @@ int i,j,l;
 	
 	if( [pixList[ curMovieIndex] count] > 1)
 	{
-		if( NSRunInformationalAlertPanelRelativeToWindow( NSLocalizedString(@"Send to PACS", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L, [self window]) == NSAlertDefaultReturn) all = NO;
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Send to PACS", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L) == NSAlertDefaultReturn) all = NO;
 		else all = YES;
 	}
 	
@@ -11078,7 +11078,7 @@ int i,j,l;
 	{
 		if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 		{
-			if( NSRunInformationalAlertPanelRelativeToWindow( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L, [self window]) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 				[self applyConvolutionOnSource: self];
 		}
 	

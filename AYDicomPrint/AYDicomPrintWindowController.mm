@@ -156,7 +156,7 @@ static const char* transferSyntaxes[] = {
 {
 	if( [m_pages intValue] > 10)
 	{
-		if( NSRunInformationalAlertPanelRelativeToWindow( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L, [self window]) != NSAlertDefaultReturn) return;
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) != NSAlertDefaultReturn) return;
 	}
 	
 	[sender setEnabled: NO];
