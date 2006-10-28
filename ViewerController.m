@@ -772,7 +772,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 		
-		NSLog( @"********* originalOrientation: %d", originalOrientation);
+		NSLog( @"originalOrientation: %d", originalOrientation);
 	}
 }
 
