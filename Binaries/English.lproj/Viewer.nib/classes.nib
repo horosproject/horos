@@ -14,13 +14,15 @@
                 changeFont = id; 
                 flipHorizontal = id; 
                 flipVertical = id; 
+                resetImagePresentationState = id; 
+                resetSeriesPresentationState = id; 
+                roiLoadFromXMLFiles = id; 
                 sliderAction = id; 
                 sliderAction2DMPR = id; 
                 sliderRGBFactor = id; 
             }; 
             CLASS = DCMView; 
             LANGUAGE = ObjC; 
-            OUTLETS = {syncOffsetText = NSTextField; syncOffsetWindow = NSWindow; }; 
             SUPERCLASS = NSOpenGLView; 
         }, 
         {
@@ -141,6 +143,7 @@
                 endExportImage = id; 
                 endNameWLWW = id; 
                 endOpacity = id; 
+                endPrint = id; 
                 endQuicktime = id; 
                 endRoiRename = id; 
                 endSetComments = id; 
@@ -166,6 +169,7 @@
                 movieRateSliderAction = id; 
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
+                print = id; 
                 reSyncOrigin = id; 
                 resampleDataBy2 = id; 
                 resetImage = id; 
@@ -301,6 +305,7 @@
                 popFusion = NSPopUpButton; 
                 popupRoi = NSPopUpButton; 
                 previewMatrix = NSMatrix; 
+                printWindow = NSWindow; 
                 quicktimeBox = NSBox; 
                 quicktimeFrom = NSSlider; 
                 quicktimeFromText = NSTextField; 

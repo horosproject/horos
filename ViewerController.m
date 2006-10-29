@@ -79,7 +79,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "MSRGSegmentation.h"
 #import "ITKBrushROIFilter.h"
 #import "DCMAbstractSyntaxUID.h"
-
+#import "printView.h"
 #import "HornRegistration.h"
 #import "ITKTransform.h"
 #import "LLScoutViewer.h"
@@ -3600,7 +3600,11 @@ static ViewerController *draggedController = 0L;
 					}
 				}
 				
-				if( index != 0) [self setImageIndex: index];
+				if( index != 0)
+				{
+					[imageView setIndex: index];
+					[self adjustSlider];
+				}
 			}
 		}
 	}
@@ -9016,9 +9020,10 @@ int i,j,l;
 }
 
 - (void) setImageIndex:(long) i
-{	
-	[imageView setIndex: i];
-
+{
+	if( [[self imageView] flippedData]) [[self imageView] setIndex: [self getNumberOfImages] -1 -i];
+	else [[self imageView] setIndex: i];
+	
 	[self adjustSlider];
 	
 	[imageView displayIfNeeded];
@@ -9179,7 +9184,51 @@ int i,j,l;
 
 #define DATABASEPATH @"/DATABASE/"
 
+-(IBAction) endPrint:(id) sender
+{
+    [printWindow orderOut:sender];
+    [NSApp endSheet:printWindow returnCode:[sender tag]];
+    
+    if( [sender tag])   //User clicks OK Button
+    {
+		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
+		
+		[settings setObject: [NSNumber numberWithInt: 2] forKey: @"columns"];
+		[settings setObject: [NSNumber numberWithInt: 3] forKey: @"rows"];
+		
+		printView	*pV = [[printView alloc] initWithViewer: self settings: settings];
+		
+		NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
+		
+		[printOperation runOperation];
+		
+		[pV release];
+    }
+	else
+	{
+	}
+}
 
+- (void) print:(id) sender
+{
+//	[quicktimeFrom setMaxValue: [pixList[ curMovieIndex] count]];
+//	[quicktimeTo setMaxValue: [pixList[ curMovieIndex] count]];
+//
+//	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+//	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+//
+//	if( [imageView flippedData]) [quicktimeFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+//	else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
+//	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
+//	
+//	[quicktimeToText setIntValue: [quicktimeTo intValue]];
+//	[quicktimeFromText setIntValue: [quicktimeFrom intValue]];
+//	[quicktimeIntervalText setIntValue: [quicktimeInterval intValue]];
+//	
+//	[self setCurrentdcmExport: quicktimeMode];
+		
+	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
 
 - (void) printDICOM:(id) sender
 {

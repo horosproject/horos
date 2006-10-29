@@ -314,6 +314,71 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 @implementation DCMView
 
+- (IBAction)print:(id)sender
+{
+	if ([[[self window] windowController] is2DViewer] == YES)
+	{
+		[[[self window] windowController] print: self];
+	}
+	else
+	{
+		NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo]; 
+		
+		NSLog(@"Orientation %d", [printInfo orientation]);
+		
+		NSImage *im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
+		
+	//	NSRect	r = NSMakeRect( 0, 0, [im size].width/2, [im size].height/2);
+		
+		NSLog( @"w:%f, h:%f", [im size].width, [im size].height);
+		
+		if ([im size].height < [im size].width)
+			[printInfo setOrientation: NSLandscapeOrientation];
+		else
+			[printInfo setOrientation: NSPortraitOrientation];
+		
+		//NSRect	r = NSMakeRect( 0, 0, [printInfo paperSize].width, [printInfo paperSize].height);
+		
+		NSRect	r = NSMakeRect( 0, 0, [im size].width/2, [im size].height/2);
+		
+		NSImageView *imageView = [[NSImageView alloc] initWithFrame: r];
+		
+	//	r = NSMakeRect( 0, 0, [im size].width, [im size].height);
+		
+	//	NSWindow	*pwindow = [[NSWindow alloc]  initWithContentRect: r styleMask: NSBorderlessWindowMask backing: NSBackingStoreNonretained defer: NO];
+		
+	//	[pwindow setContentView: imageView];
+		
+		[im setScalesWhenResized:YES];
+		
+		[imageView setImage: im];
+		[imageView setImageScaling: NSScaleProportionally];
+		[imageView setImageAlignment: NSImageAlignCenter];
+		
+		[printInfo setVerticallyCentered:YES];
+		[printInfo setHorizontallyCentered:YES];
+		
+	//	[printInfo setTopMargin: 0.0f];
+	//	[printInfo setBottomMargin: 0.0f];
+	//	[printInfo setRightMargin: 0.0f];
+	//	[printInfo setLeftMargin: 0.0f];
+
+
+		// print imageView
+		
+		[printInfo setHorizontalPagination:NSFitPagination];
+		[printInfo setVerticalPagination:NSFitPagination];
+		
+		NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: imageView];
+		
+		[printOperation runOperation];
+		
+	//	[pwindow release];
+		[imageView release];
+		[im release];
+	}
+} 
+
 - (void) erase2DPointMarker
 {
 	display2DPoint = NSMakePoint(0,0);
@@ -1839,64 +1904,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[self setNeedsDisplay:YES];
 }
-
-- (IBAction)print:(id)sender
-{
-    NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo]; 
-	
-	NSLog(@"Orientation %d", [printInfo orientation]);
-	
-	NSImage *im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
-	
-//	NSRect	r = NSMakeRect( 0, 0, [im size].width/2, [im size].height/2);
-	
-	NSLog( @"w:%f, h:%f", [im size].width, [im size].height);
-	
-	if ([im size].height < [im size].width)
-		[printInfo setOrientation: NSLandscapeOrientation];
-	else
-		[printInfo setOrientation: NSPortraitOrientation];
-	
-	//NSRect	r = NSMakeRect( 0, 0, [printInfo paperSize].width, [printInfo paperSize].height);
-	
-	NSRect	r = NSMakeRect( 0, 0, [im size].width/2, [im size].height/2);
-	
-	NSImageView *imageView = [[NSImageView alloc] initWithFrame: r];
-	
-//	r = NSMakeRect( 0, 0, [im size].width, [im size].height);
-	
-//	NSWindow	*pwindow = [[NSWindow alloc]  initWithContentRect: r styleMask: NSBorderlessWindowMask backing: NSBackingStoreNonretained defer: NO];
-	
-//	[pwindow setContentView: imageView];
-	
-	[im setScalesWhenResized:YES];
-	
-	[imageView setImage: im];
-	[imageView setImageScaling: NSScaleProportionally];
-	[imageView setImageAlignment: NSImageAlignCenter];
-	
-	[printInfo setVerticallyCentered:YES];
-	[printInfo setHorizontallyCentered:YES];
-	
-//	[printInfo setTopMargin: 0.0f];
-//	[printInfo setBottomMargin: 0.0f];
-//	[printInfo setRightMargin: 0.0f];
-//	[printInfo setLeftMargin: 0.0f];
-
-
-	// print imageView
-	
-    [printInfo setHorizontalPagination:NSFitPagination];
-    [printInfo setVerticalPagination:NSFitPagination];
-	
-	NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: imageView];
-	
-	[printOperation runOperation];
-	
-//	[pwindow release];
-	[imageView release];
-	[im release];
-} 
 
 - (void) checkMouseModifiers:(id) sender
 {

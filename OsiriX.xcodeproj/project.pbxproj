@@ -3373,16 +3373,10 @@
 		ABD7BC5E063F00A900E24B0E /* GEcolor.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC50063F00A900E24B0E /* GEcolor.plist */; };
 		ABD7BC5F063F00A900E24B0E /* GrayRainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */; };
 		ABD7BC60063F00A900E24B0E /* HotIron.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABD7BC52063F00A900E24B0E /* HotIron.plist */; };
-		ABD908470AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
-		ABD908490AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD9084A0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
-		ABD9084B0AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
-		ABD9084D0AF20B7F00E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
-		ABD9084F0AF20B8A00E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
-		ABD908510AF20BA700E47345 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */; };
 		ABD908520AF20BA700E47345 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		ABD908D80AF2119200E47345 /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
 		ABD908D90AF2119200E47345 /* AYDicomPrint.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */; };
@@ -10505,6 +10499,15 @@
 		CE61039C09DEA18B00A1FA92 /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF509B6828500545F5E /* jmemsys8.h */; };
 		CE646B1A0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
+		CE6692DA0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
+		CE6692DB0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
+		CE6692DC0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
+		CE6692DD0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
+		CE6692DE0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
+		CE6692DF0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
+		CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		CE6693C80AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		CE6693C90AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		CE677D1307A6BDDD003B3650 /* VRViewVPRO.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE677D1407A6BDDD003B3650 /* VRViewVPRO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */; };
 		CE69601E09CAB75800EFFDEF /* VRPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE69601C09CAB75800EFFDEF /* VRPanel.nib */; };
@@ -11942,7 +11945,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ABD9084D0AF20B7F00E47345 /* libxerces-c.27.dylib in CopyFiles */,
 				CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
@@ -11956,7 +11958,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ABD908510AF20BA700E47345 /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908520AF20BA700E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CE6D6F30098139E7009F0B5A /* DotMacKit.framework in CopyFiles */,
 				7E7673BA0792E2D900462780 /* OsiriX.framework in CopyFiles */,
@@ -11970,7 +11971,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ABD9084F0AF20B8A00E47345 /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */,
 				7E76739D0792E2B700462780 /* OsiriX.framework in CopyFiles */,
@@ -13231,7 +13231,6 @@
 		ABD7BC50063F00A900E24B0E /* GEcolor.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = GEcolor.plist; sourceTree = "<group>"; };
 		ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = GrayRainbow.plist; sourceTree = "<group>"; };
 		ABD7BC52063F00A900E24B0E /* HotIron.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = HotIron.plist; sourceTree = "<group>"; };
-		ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
 		ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
 		ABD908C60AF2119200E47345 /* AYDicomPrint.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AYDicomPrint.prefPane; path = "Preference Panes/AYDicomPrintPreferencePane/build/Release/AYDicomPrint.prefPane"; sourceTree = "<group>"; };
 		ABD908DB0AF211BB00E47345 /* AYDicomPrint.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AYDicomPrint.xcodeproj; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrint.xcodeproj"; sourceTree = "<group>"; };
@@ -15808,6 +15807,9 @@
 		CE5EABC40935E702006D85DD /* HotGreen.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = HotGreen.plist; sourceTree = "<group>"; };
 		CE5F9D730AE813A40042280F /* localizedTemplatesPages */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = localizedTemplatesPages; path = Binaries/localizedTemplatesPages; sourceTree = "<group>"; };
 		CE646B150751D8D9002962B7 /* iPhotoSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = iPhotoSmall.tif; path = Binaries/Icons/iPhotoSmall.tif; sourceTree = SOURCE_ROOT; };
+		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
+		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
+		CE6693C60AF551210073D923 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
 		CE677D0F07A6BDDD003B3650 /* VRViewVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRViewVPRO.mm; sourceTree = "<group>"; };
 		CE677D1007A6BDDD003B3650 /* VRViewVPRO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRViewVPRO.h; sourceTree = "<group>"; };
 		CE677D1107A6BDDD003B3650 /* VRControllerVPRO.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRControllerVPRO.mm; sourceTree = "<group>"; };
@@ -16051,9 +16053,9 @@
 				CE5C0C8A0A935FE0006BC8CA /* libitkvnl_inst.a in Frameworks */,
 				CE5C0C8B0A935FE1006BC8CA /* libitkvnl.a in Frameworks */,
 				CE5C0C8C0A935FE1006BC8CA /* libitkvnl_algo.a in Frameworks */,
-				ABD908470AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */,
 				ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
+				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16132,8 +16134,8 @@
 				BF6290B00A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC230A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 				AB6B75EB0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
-				ABD908490AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */,
 				ABD9084A0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
+				CE6693C90AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16260,8 +16262,8 @@
 				BF6290AF0A2B80A800BB0B62 /* AddressBook.framework in Frameworks */,
 				BF47CC220A2E3BC500700AA9 /* WebKit.framework in Frameworks */,
 				AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
-				ABD9084B0AF20B7C00E47345 /* libxerces-c.27.dylib in Frameworks */,
 				ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
+				CE6693C80AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16508,7 +16510,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ABD908450AF20B7C00E47345 /* libxerces-c.27.dylib */,
+				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */,
 				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
 				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
@@ -18311,6 +18313,8 @@
 				AB59B18205697FD400B77AFC /* DCMView.m */,
 				AB73E13606497EDA00545980 /* PreviewView.h */,
 				AB73E13706497EDA00545980 /* PreviewView.m */,
+				CE6692D80AF545F90073D923 /* printView.h */,
+				CE6692D90AF545F90073D923 /* printView.m */,
 				ABE17661056D2659009C93B5 /* ViewerController.h */,
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
 				BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */,
@@ -23668,6 +23672,7 @@
 				AB80F0B60AF1FC2200E7E934 /* XUtil.hpp in Headers */,
 				AB80F0B70AF1FC2200E7E934 /* YearDatatypeValidator.hpp in Headers */,
 				AB80F0B80AF1FC2200E7E934 /* YearMonthDatatypeValidator.hpp in Headers */,
+				CE6692DA0AF545F90073D923 /* printView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26116,6 +26121,7 @@
 				AB80F2F00AF1FC2200E7E934 /* XUtil.hpp in Headers */,
 				AB80F2F10AF1FC2200E7E934 /* YearDatatypeValidator.hpp in Headers */,
 				AB80F2F20AF1FC2200E7E934 /* YearMonthDatatypeValidator.hpp in Headers */,
+				CE6692DE0AF545F90073D923 /* printView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28569,6 +28575,7 @@
 				AB80F52A0AF1FC2200E7E934 /* XUtil.hpp in Headers */,
 				AB80F52B0AF1FC2200E7E934 /* YearDatatypeValidator.hpp in Headers */,
 				AB80F52C0AF1FC2200E7E934 /* YearMonthDatatypeValidator.hpp in Headers */,
+				CE6692DC0AF545F90073D923 /* printView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30940,6 +30947,7 @@
 				BFDDDD530AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
 				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
+				CE6692DB0AF545F90073D923 /* printView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31668,6 +31676,7 @@
 				BFDDDD550AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
 				AB80EBB20AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBB40AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
+				CE6692DF0AF545F90073D923 /* printView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32960,6 +32969,7 @@
 				BFDDDD510AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm in Sources */,
 				AB80EBB80AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
 				AB80EBBA0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
+				CE6692DD0AF545F90073D923 /* printView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33708,10 +33718,9 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
@@ -33721,7 +33730,6 @@
 					"-framework",
 					AppKit,
 				);
-				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 				SECTORDER_FLAGS = "";
@@ -33776,10 +33784,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
@@ -33844,9 +33854,9 @@
 					"$(SRCROOT)/../VTK/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33855,7 +33865,6 @@
 					"-framework",
 					AppKit,
 				);
-				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriXVP;
 				SECTORDER_FLAGS = "";
@@ -33906,9 +33915,11 @@
 					"$(SRCROOT)/../VTK/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33973,9 +33984,9 @@
 					"$(SRCROOT)/../VTK/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33984,7 +33995,6 @@
 					"-framework",
 					AppKit,
 				);
-				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 				WARNING_CFLAGS = "";
@@ -34035,9 +34045,11 @@
 					"$(SRCROOT)/../VTK/bin",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../Desktop/DICOM Print/AYDicomPrint 2\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/AYDicomPrint\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/AYDicomPrint\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (

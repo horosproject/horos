@@ -263,6 +263,8 @@ enum
 	IBOutlet NSPopUpButton	*reportTemplatesListPopUpButton;
 	
 	NSConditionLock			*processorsLock;
+	
+	IBOutlet NSWindow		*printWindow;
 }
 
 // Create a new 2D Viewer
@@ -320,6 +322,7 @@ enum
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
 
+- (IBAction) endPrint:(id) sender;
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
 //arg: this function will automatically scan the buffer to create a textured ROI (tPlain) for all slices
@@ -336,13 +339,12 @@ enum
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (IBAction) shutterOnOff:(id) sender;
-
 - (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (IBAction) ConvertToRGBMenu:(id) sender;
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (IBAction) export2PACS:(id) sender;
-
+- (void) print:(id) sender;
 - (IBAction)resampleDataBy2:(id)sender;
 - (BOOL)resampleDataBy2;
 - (BOOL)resampleDataWithFactor:(float)factor;
