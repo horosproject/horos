@@ -9428,6 +9428,8 @@ int i,j,l;
 		
 		[printFormat selectCellWithTag: [[p valueForKey: @"format"] intValue]];
 		[printInterval setIntValue: [[p valueForKey: @"interval"] intValue]];
+		
+		[printText setStringValue: [p valueForKey: @"comments"]];
 	}
 	
 	// ****
