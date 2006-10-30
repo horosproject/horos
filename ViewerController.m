@@ -9184,6 +9184,76 @@ int i,j,l;
 
 #define DATABASEPATH @"/DATABASE/"
 
+-(IBAction) setPagesToPrint:(id) sender
+{
+	if( sender == printTo) [printToText setIntValue: [printTo intValue]];
+	if( sender == printFrom) [printFromText setIntValue: [printFrom intValue]];
+	if( sender == printInterval) [printIntervalText setIntValue: [printInterval intValue]];
+
+	if( sender == printToText) [printTo setIntValue: [printToText intValue]];
+	if( sender == printFromText) [printFrom setIntValue: [printFromText intValue]];
+	if( sender == printIntervalText) [printInterval setIntValue: [printIntervalText intValue]];
+
+	int from;
+	int to;
+	int interval;
+	
+	int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
+	int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];
+	int ipp = columns * rows;
+	
+	switch( [[printSelection selectedCell] tag])
+	{
+		case 0:
+			from = [imageView curImage];
+			to = from+1;
+			interval = 1;
+		break;
+		
+		case 1:
+			from = 0;
+			to = [pixList [curMovieIndex] count];
+			interval = 1;
+		break;
+		
+		case 2:
+			if( [printFrom intValue] < [printTo intValue])
+			{
+				from = [printFrom intValue]-1;
+				to = [printTo intValue];
+			}
+			else
+			{
+				to = [printFrom intValue];
+				from = [printTo intValue]-1;
+			}
+			
+			if( to == from) to = from+1;
+			
+			interval = [printInterval intValue];
+		break;
+	}
+	
+	int i, count = 0;
+	for( i = from; i < to; i += interval)
+	{
+		BOOL saveImage = YES;
+		
+		if( [[printSelection selectedCell] tag] == 1)
+		{
+			if (![[[fileList[ curMovieIndex] objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+		}
+		
+		if( saveImage)
+		{
+			count++;
+		}
+	}
+	
+	if( count % ipp == 0) [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", count / ipp]];
+	else [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", 1 + (count / ipp)]];
+}
+
 -(IBAction) endPrint:(id) sender
 {
     [printWindow orderOut:sender];
@@ -9193,40 +9263,175 @@ int i,j,l;
     {
 		NSMutableDictionary	*settings = [NSMutableDictionary dictionary];
 		
-		[settings setObject: [NSNumber numberWithInt: 2] forKey: @"columns"];
-		[settings setObject: [NSNumber numberWithInt: 3] forKey: @"rows"];
+		int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
+		int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];
 		
-		printView	*pV = [[printView alloc] initWithViewer: self settings: settings];
+		[settings setObject: [[printLayout selectedItem] title] forKey: @"layout"];
+		[settings setObject: [NSNumber numberWithInt: columns] forKey: @"columns"];
+		[settings setObject: [NSNumber numberWithInt: rows] forKey: @"rows"];
 		
-		NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
+		if( [[printSettings cellWithTag: 2] state]) [settings setObject: [printText stringValue] forKey: @"comments"];
+		if( [[printSettings cellWithTag: 3] state]) [settings setObject: @"YES" forKey: @"backgroundColor"];
+		float r, g, b;
+		[[printColor color] getRed:&r green:&g blue:&b alpha:0L];
+		[settings setObject: [NSNumber numberWithFloat: r] forKey: @"backgroundColorR"];
+		[settings setObject: [NSNumber numberWithFloat: g] forKey: @"backgroundColorG"];
+		[settings setObject: [NSNumber numberWithFloat: b] forKey: @"backgroundColorB"];
+		if( [[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
+		if( [[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
+		[settings setObject: [NSNumber numberWithInt: [[printFormat selectedCell] tag]] forKey: @"format"];
+		[settings setObject: [NSNumber numberWithInt: [printInterval intValue]] forKey: @"interval"];
 		
-		[printOperation runOperation];
+		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"previousPrintSettings"];
 		
-		[pV release];
+		NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
+
+		int from;
+		int to;
+		int interval;
+		
+		switch( [[printSelection selectedCell] tag])
+		{
+			case 0:
+				from = [imageView curImage];
+				to = from+1;
+				interval = 1;
+			break;
+			
+			case 1:
+				from = 0;
+				to = [pixList [curMovieIndex] count];
+				interval = 1;
+			break;
+			
+			case 2:
+				if( [printFrom intValue] < [printTo intValue])
+				{
+					from = [printFrom intValue]-1;
+					to = [printTo intValue];
+				}
+				else
+				{
+					to = [printFrom intValue];
+					from = [printTo intValue]-1;
+				}
+				
+				if( to == from) to = from+1;
+				
+				interval = [printInterval intValue];
+			break;
+		}
+		
+		NSMutableArray	*files = [NSMutableArray array];
+		
+		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
+		
+		int i;
+		for( i = from; i < to; i += interval)
+		{
+			BOOL saveImage = YES;
+			
+			if( [[printSelection selectedCell] tag] == 1)
+			{
+				if (![[fileList[ curMovieIndex] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+			}
+			
+			if( saveImage)
+			{
+				[self setImageIndex: i];
+				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]];
+				
+				NSArray *representations = [im representations];
+				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+				
+				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
+				
+				[bitmapData writeToFile: [files lastObject] atomically:YES];
+		
+				[im release];
+			}
+		}
+		
+		if( [files count])
+		{
+			printView	*pV = [[printView alloc] initWithViewer: self settings: settings files: files];
+			
+			NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
+			
+			[printOperation runOperation];
+			
+			[pV release];
+		}
+		
+		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
     }
 	else
 	{
 	}
 }
 
+- (IBAction) printSlider:(id) sender
+{
+	if( [[printSelection selectedCell] tag] == 2)
+	{
+		[printFromText takeIntValueFrom: printFrom];
+		[printToText takeIntValueFrom: printTo];
+		
+		if( [imageView flippedData]) [imageView setIndex: [pixList[ curMovieIndex] count] - [sender intValue]];
+		else [imageView setIndex:  [sender intValue]-1];
+		
+		[imageView sendSyncMessage:1];
+		
+		[self adjustSlider];
+	}
+	
+	[self setPagesToPrint: self];
+}
+
 - (void) print:(id) sender
 {
-//	[quicktimeFrom setMaxValue: [pixList[ curMovieIndex] count]];
-//	[quicktimeTo setMaxValue: [pixList[ curMovieIndex] count]];
-//
-//	[quicktimeFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-//	[quicktimeTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
-//
-//	if( [imageView flippedData]) [quicktimeFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
-//	else [quicktimeFrom setIntValue: 1+ [imageView curImage]];
-//	[quicktimeTo setIntValue: [pixList[ curMovieIndex] count]];
-//	
-//	[quicktimeToText setIntValue: [quicktimeTo intValue]];
-//	[quicktimeFromText setIntValue: [quicktimeFrom intValue]];
-//	[quicktimeIntervalText setIntValue: [quicktimeInterval intValue]];
-//	
-//	[self setCurrentdcmExport: quicktimeMode];
+	NSDictionary	*p = [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"];
+	
+	if( p)
+	{
+		[printLayout selectItemWithTitle: [p valueForKey: @"layout"]];
+		if( [p valueForKey: @"comments"]) [[printSettings cellWithTag: 2] setState: NSOnState];
+		else [[printSettings cellWithTag: 2] setState: NSOffState];
+		if( [p valueForKey: @"backgroundColor"]) [[printSettings cellWithTag: 3] setState: NSOnState];
+		else [[printSettings cellWithTag: 3] setState: NSOffState];
 		
+		[printColor setColor: [NSColor colorWithDeviceRed:[[p valueForKey: @"backgroundColorR"] floatValue] green:[[p valueForKey: @"backgroundColorG"] floatValue] blue:[[p valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0]];
+		
+		if( [p valueForKey: @"patientInfo"]) [[printSettings cellWithTag: 0] setState: NSOnState];
+		else [[printSettings cellWithTag: 0] setState: NSOffState];
+		if( [p valueForKey: @"studyInfo"]) [[printSettings cellWithTag: 1] setState: NSOnState];
+		else [[printSettings cellWithTag: 1] setState: NSOffState];
+		
+		[printFormat selectCellWithTag: [[p valueForKey: @"format"] intValue]];
+		[printInterval setIntValue: [[p valueForKey: @"interval"] intValue]];
+	}
+	
+	// ****
+	
+	[printFrom setMaxValue: [pixList[ curMovieIndex] count]];
+	[printTo setMaxValue: [pixList[ curMovieIndex] count]];
+
+	[printFrom setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+	[printTo setNumberOfTickMarks: [pixList[ curMovieIndex] count]];
+
+	if( [imageView flippedData]) [printFrom setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage]];
+	else [printFrom setIntValue: 1+ [imageView curImage]];
+	[printTo setIntValue: [pixList[ curMovieIndex] count]];
+	
+	[printToText setIntValue: [printTo intValue]];
+	[printFromText setIntValue: [printFrom intValue]];
+	[printIntervalText setIntValue: [printInterval intValue]];
+	
+	[self setCurrentdcmExport: printSelection];
+	
+	[self setPagesToPrint: self];
+	
 	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
@@ -9649,6 +9854,11 @@ int i,j,l;
 	
 	if( [[sender selectedCell] tag] == 1) [self checkView: quicktimeBox :YES];
 	else [self checkView: quicktimeBox :NO];
+	
+	if( [[sender selectedCell] tag] == 2) [self checkView: printBox :YES];
+	else [self checkView: printBox :NO];
+	
+	if( sender == printSelection)[self setPagesToPrint: self];
 }
 
 - (IBAction) exportDICOMSlider:(id) sender

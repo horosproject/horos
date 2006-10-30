@@ -170,6 +170,7 @@
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
                 print = id; 
+                printSlider = id; 
                 reSyncOrigin = id; 
                 resampleDataBy2 = id; 
                 resetImage = id; 
@@ -187,6 +188,7 @@
                 setCurvedMPRslider = id; 
                 setDefaultTool = id; 
                 setOrientationTool = id; 
+                setPagesToPrint = id; 
                 setROITool = id; 
                 setStatus = id; 
                 setStructuringElementRadius = id; 
@@ -305,6 +307,20 @@
                 popFusion = NSPopUpButton; 
                 popupRoi = NSPopUpButton; 
                 previewMatrix = NSMatrix; 
+                printBox = NSBox; 
+                printColor = NSColorWell; 
+                printFormat = NSMatrix; 
+                printFrom = NSSlider; 
+                printFromText = NSTextField; 
+                printInterval = NSSlider; 
+                printIntervalText = NSTextField; 
+                printLayout = NSPopUpButton; 
+                printPagesToPrint = NSTextField; 
+                printSelection = NSMatrix; 
+                printSettings = NSMatrix; 
+                printText = NSTextField; 
+                printTo = NSSlider; 
+                printToText = NSTextField; 
                 printWindow = NSWindow; 
                 quicktimeBox = NSBox; 
                 quicktimeFrom = NSSlider; 

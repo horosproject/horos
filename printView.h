@@ -13,8 +13,9 @@
 {
 	ViewerController		*viewer;
 	NSDictionary			*settings;
+	NSArray					*filesToPrint;
 }
 
-- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s;
+- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s files:(NSArray*) f;
 
 @end

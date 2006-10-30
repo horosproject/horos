@@ -8,6 +8,7 @@
 
 #import "printView.h"
 #import "DCMView.h"
+#import "DCMPix.h"
 
 @implementation printView
 
@@ -21,24 +22,74 @@
 	
 	[self lockFocus];
 	
-	int page = [[NSPrintOperation currentOperation] currentPage];
-	
 	NSManagedObject	*file = [[viewer fileList] objectAtIndex: 0];
 	
-	NSString *string2draw = [NSString stringWithFormat:@"%@ - %@\r%@", [file valueForKeyPath:@"series.study.name"], [file valueForKeyPath:@"series.study.patientID"], [file valueForKeyPath:@"series.study.studyName"], [file valueForKeyPath:@"series.name"]];
+	NSString *string2draw = @"";
+	
+	NSString *shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+	NSDictionary *localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+	
+	// TOP HEADER
+	
+	if( [settings valueForKey:@"patientInfo"])
+	{
+		string2draw = [string2draw stringByAppendingFormat:@"Name: "];
+		if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
+		if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@" (%@)", [file valueForKeyPath:@"series.study.patientID"]];
+		if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@" - %@", [[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
+		
+		string2draw = [string2draw stringByAppendingFormat:@"\r"];
+	}
+	
+	if( [settings valueForKey:@"studyInfo"])
+	{
+		string2draw = [string2draw stringByAppendingFormat:@"Study: "];
+		if([file valueForKeyPath:@"series.study.studyName"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.studyName"]];
+		if([file valueForKeyPath:@"series.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.name"]];
+
+		NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
+		if( date && [date yearOfCommonEra] != 3000)
+		{
+			NSString *tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]];
+			string2draw = [string2draw stringByAppendingFormat:@"\rDate: %@", tempString];
+		
+			DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
+			
+			if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
+			if( date && [date yearOfCommonEra] != 3000)
+			{
+				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];
+				string2draw = [string2draw stringByAppendingFormat:@" - %@", tempString];
+			}
+		}
+	}
+	
+	if( [settings valueForKey:@"comments"]) string2draw = [string2draw stringByAppendingFormat:@"\r%@", [settings valueForKey:@"comments"]];
 	
 	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];  
-	[attribs setObject:[NSFont systemFontOfSize:14] forKey:NSFontAttributeName];
+	[attribs setObject:[NSFont systemFontOfSize:10] forKey:NSFontAttributeName];
 	NSSize pageNumberSize = [string2draw sizeWithAttributes:attribs];
 	
 	float bottomMargin = [[[NSPrintOperation currentOperation] printInfo] bottomMargin];
-	NSPoint pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0,
-	borderSize.height - (bottomMargin + pageNumberSize.height) / 2.0);
+	NSPoint pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, borderSize.height - (bottomMargin + pageNumberSize.height) / 2.0);
+	[string2draw drawAtPoint: pageNumberPoint withAttributes:attribs];
 	
+	// BOTTOM HEADER
+	
+	int page = [[NSPrintOperation currentOperation] currentPage];
+	
+	NSRange	range;
+	[self knowsPageRange: &range];
+	string2draw = [NSString stringWithFormat:@"Page: %d of %d", page, range.length];
+
+	pageNumberSize = [string2draw sizeWithAttributes:attribs];
+	
+	float topMargin = [[[NSPrintOperation currentOperation] printInfo] topMargin];
+	pageNumberPoint = NSMakePoint((borderSize.width - pageNumberSize.width) / 2.0, 0 + (topMargin - pageNumberSize.height) / 2.0);
 	[string2draw drawAtPoint: pageNumberPoint withAttributes:attribs];
 	
 	[self unlockFocus];
-
+	
 	[self setFrame:frame];
 }
 
@@ -51,8 +102,8 @@
 	int ipp = columns * rows;
 	int pages;
 	
-	if( [[viewer pixList] count] % ipp == 0) pages = [[viewer pixList] count] / ipp;
-	else pages = 1 + [[viewer pixList] count] / ipp;
+	if( [filesToPrint count] % ipp == 0) pages = [filesToPrint count] / ipp;
+	else pages = 1 + [filesToPrint count] / ipp;
 	
     range->location = 1;
     range->length = pages;
@@ -70,11 +121,12 @@
 {
 	[viewer release];
 	[settings release];
+	[filesToPrint release];
 	
 	[super dealloc];
 }
 
-- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s
+- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s files:(NSArray*) f
 {
 	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];
 	NSSize size = [pi paperSize];
@@ -84,6 +136,7 @@
 	{
 		viewer = [v retain];
 		settings = [s retain];
+		filesToPrint = [f retain];
     }
     return self;
 }
@@ -108,14 +161,18 @@
 			int index = (page - 1) * ipp + y*columns + x;
 			
 			NSRect rect = NSMakeRect( x * size.width / columns,  (rows-1-y) * size.height / rows , size.width / columns, size.height / rows);
-			NSRectFill( rect);
-			if( index < [[viewer pixList] count])
+			
+			if( [settings valueForKey: @"backgroundColor"])
+			{
+				[[NSColor colorWithDeviceRed: [[settings valueForKey: @"backgroundColorR"] floatValue] green: [[settings valueForKey: @"backgroundColorG"] floatValue] blue: [[settings valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0] set];
+				NSRectFill( rect);
+			}
+			
+			if( index < [filesToPrint count])
 			{
 				NSLog( @"%d", index);
-			
-				[viewer setImageIndex: index];
-				[[viewer imageView] display];
-				NSImage *im = [[viewer imageView] nsimage: YES];
+				
+				NSImage *im = [[NSImage alloc] initWithContentsOfFile: [filesToPrint objectAtIndex: index]];
 				
 				NSRect dstRect;
 				
@@ -130,7 +187,7 @@
 					dstRect = NSMakeRect( rect.origin.x, rect.origin.y  + (rect.size.height - [im size].height * ratio) / 2, rect.size.width, [im size].height * ratio);
 				}
 				
-				[im drawInRect: dstRect fromRect:NSZeroRect operation:NSCompositeCopy fraction: 1.0];
+				[im drawInRect: NSInsetRect(dstRect, 2, 2)  fromRect:NSZeroRect operation:NSCompositeCopy fraction: 1.0];
 				
 				[im release];
 			}

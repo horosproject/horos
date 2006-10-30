@@ -265,6 +265,15 @@ enum
 	NSConditionLock			*processorsLock;
 	
 	IBOutlet NSWindow		*printWindow;
+	IBOutlet NSMatrix		*printSelection;
+	IBOutlet NSMatrix		*printFormat;
+	IBOutlet NSSlider		*printInterval, *printFrom, *printTo;
+	IBOutlet NSTextField	*printIntervalText, *printFromText, *printToText;
+	IBOutlet NSBox			*printBox;
+	IBOutlet NSMatrix		*printSettings;
+	IBOutlet NSColorWell	*printColor;
+	IBOutlet NSPopUpButton	*printLayout;
+	IBOutlet NSTextField	*printText, *printPagesToPrint;
 }
 
 // Create a new 2D Viewer
@@ -322,6 +331,7 @@ enum
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
 
+-(IBAction) setPagesToPrint:(id) sender;
 - (IBAction) endPrint:(id) sender;
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
@@ -509,6 +519,7 @@ enum
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
 - (void) setWindowTitle:(id) sender;
+- (IBAction) printSlider:(id) sender;
 
 #pragma mark-
 #pragma mark Brush ROI Filters
