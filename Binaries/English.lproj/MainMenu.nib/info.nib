@@ -23,7 +23,7 @@
 		<key>1580</key>
 		<string>730 203 220 815 0 0 1680 1028 </string>
 		<key>29</key>
-		<string>44 690 561 44 0 0 1024 746 </string>
+		<string>84 820 561 44 0 0 1440 878 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
@@ -32,6 +32,6 @@
 		<integer>29</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8L127</string>
+	<string>8L2127</string>
 </dict>
 </plist>
