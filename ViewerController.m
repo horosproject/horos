@@ -9256,6 +9256,8 @@ int i,j,l;
 
 -(IBAction) endPrint:(id) sender
 {
+	[self checkEverythingLoaded];
+	
     [printWindow orderOut:sender];
     [NSApp endSheet:printWindow returnCode:[sender tag]];
     
@@ -9327,9 +9329,15 @@ int i,j,l;
 		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
 		[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
 		
+		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Preparing printing...", nil)];
+		[splash showWindow:self];
+		[[splash progress] setMaxValue: (to - from) / interval];
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+			
 			BOOL saveImage = YES;
 			
 			if( [[printSelection selectedCell] tag] == 1)
@@ -9351,7 +9359,14 @@ int i,j,l;
 		
 				[im release];
 			}
+			
+			[splash incrementBy: 1];
+			
+			[pool release];
 		}
+		
+		[splash close];
+		[splash release];
 		
 		if( [files count])
 		{

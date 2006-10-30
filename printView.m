@@ -143,6 +143,8 @@
 
 - (void)drawRect:(NSRect)rect
 {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	NSSize size = [self frame].size;
 	
 	int	columns = [[settings objectForKey: @"columns"] intValue];
@@ -193,6 +195,8 @@
 			}
 		}
 	}
+	
+	[pool release];
 }
 
 @end
