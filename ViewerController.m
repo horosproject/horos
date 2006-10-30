@@ -9275,7 +9275,10 @@ int i,j,l;
 		if( [[printSettings cellWithTag: 2] state]) [settings setObject: [printText stringValue] forKey: @"comments"];
 		if( [[printSettings cellWithTag: 3] state]) [settings setObject: @"YES" forKey: @"backgroundColor"];
 		float r, g, b;
-		[[printColor color] getRed:&r green:&g blue:&b alpha:0L];
+		
+		NSColor	*rgbColor = [[printColor color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+		
+		[rgbColor getRed:&r green:&g blue:&b alpha:0L];
 		[settings setObject: [NSNumber numberWithFloat: r] forKey: @"backgroundColorR"];
 		[settings setObject: [NSNumber numberWithFloat: g] forKey: @"backgroundColorG"];
 		[settings setObject: [NSNumber numberWithFloat: b] forKey: @"backgroundColorB"];

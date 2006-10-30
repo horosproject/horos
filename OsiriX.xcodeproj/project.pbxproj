@@ -1358,6 +1358,9 @@
 		AB7D0BB60615F94D00890872 /* ROI.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7D0BB40615F94D00890872 /* ROI.m */; };
 		AB7D0BB70615F94D00890872 /* ROI.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D0BB30615F94D00890872 /* ROI.h */; };
 		AB7D0BB80615F94D00890872 /* ROI.m in Sources */ = {isa = PBXBuildFile; fileRef = AB7D0BB40615F94D00890872 /* ROI.m */; };
+		AB7D548D0AF6428F00012A2F /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		AB7D548E0AF6429400012A2F /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		AB7D548F0AF6429900012A2F /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		AB7D5E5B0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		AB7D5E5C0669A698000C16AE /* jasper.h in Headers */ = {isa = PBXBuildFile; fileRef = AB7D5E5A0669A698000C16AE /* jasper.h */; };
 		AB80EBAA0AF1F5B600E7E934 /* AYDcmPrintSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA40AF1F5B600E7E934 /* AYDcmPrintSCU.h */; };
@@ -11945,6 +11948,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AB7D548D0AF6428F00012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
 				CE416BCE07969EEB009A8D42 /* OsiriX.framework in CopyFiles */,
@@ -11958,6 +11962,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AB7D548F0AF6429900012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908520AF20BA700E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CE6D6F30098139E7009F0B5A /* DotMacKit.framework in CopyFiles */,
 				7E7673BA0792E2D900462780 /* OsiriX.framework in CopyFiles */,
@@ -11971,6 +11976,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AB7D548E0AF6429400012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */,
 				7E76739D0792E2B700462780 /* OsiriX.framework in CopyFiles */,
