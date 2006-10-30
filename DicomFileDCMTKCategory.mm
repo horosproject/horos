@@ -378,7 +378,11 @@ extern NSLock	*PapyrusLock;
 		
 		[dicomElements setObject:[NSNumber numberWithDouble: (double)location] forKey:@"sliceLocation"];
 		
-		if( imageID == 0L) imageID = [[NSString alloc] initWithFormat:@"%5d", (long)  fabs( location*10.)];
+		if( imageID == 0L)
+		{
+			int val = 10000 + location*10.;
+			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
+		}
 		[dicomElements setObject:[NSNumber numberWithLong: [imageID intValue]] forKey:@"imageID"];
 		
 		//Series Number
