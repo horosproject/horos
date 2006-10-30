@@ -150,8 +150,7 @@
 		int i;
 		for (i = [[options valueForKey:@"from"] intValue]; i < [[options valueForKey:@"to"] intValue]; i += [[options valueForKey:@"interval"] intValue])
 		{
-			if( [[currentViewer imageView] flippedData]) [images addObject: [NSNumber numberWithInt: [fileList count] -1 -i]];
-			else [images addObject: [NSNumber numberWithInt: i]];
+			[images addObject: [NSNumber numberWithInt: i]];
 		}
 	}
 	else if ([[options valueForKey:@"mode"] intValue] == eKeyImages)
