@@ -156,6 +156,12 @@
 	
 	int x, y;
 	
+	if( [settings valueForKey: @"backgroundColor"])
+	{
+		[[NSColor colorWithDeviceRed: [[settings valueForKey: @"backgroundColorR"] floatValue] green: [[settings valueForKey: @"backgroundColorG"] floatValue] blue: [[settings valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0] set];
+		NSRectFill( NSMakeRect(0, 0, [self frame].size.width, [self frame].size.height));
+	}
+	
 	for( y = 0 ; y < rows ; y ++)
 	{
 		for( x = 0 ; x < columns ; x ++)
@@ -164,16 +170,8 @@
 			
 			NSRect rect = NSMakeRect( x * size.width / columns,  (rows-1-y) * size.height / rows , size.width / columns, size.height / rows);
 			
-			if( [settings valueForKey: @"backgroundColor"])
-			{
-				[[NSColor colorWithDeviceRed: [[settings valueForKey: @"backgroundColorR"] floatValue] green: [[settings valueForKey: @"backgroundColorG"] floatValue] blue: [[settings valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0] set];
-				NSRectFill( rect);
-			}
-			
 			if( index < [filesToPrint count])
 			{
-				NSLog( @"%d", index);
-				
 				NSImage *im = [[NSImage alloc] initWithContentsOfFile: [filesToPrint objectAtIndex: index]];
 				
 				NSRect dstRect;

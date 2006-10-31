@@ -1499,7 +1499,7 @@ public:
 	aCamera->SetPosition (0, 0, 1);
 	aCamera->SetRoll(180);
 	aCamera->Dolly(1.5);
-	
+		
 	aRenderer->ResetCamera();
 	[self saView:self];
     [self setNeedsDisplay:YES];
@@ -2091,7 +2091,9 @@ public:
 - (void)rightMouseDragged:(NSEvent *)theEvent{
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 	float distance ;
-	if( projectionMode != 2){
+	
+	if( projectionMode != 2)
+	{
 		int shiftDown = 0;
 		int controlDown = 1;
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
