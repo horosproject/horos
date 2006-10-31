@@ -9346,6 +9346,8 @@ int i,j,l;
 		[splash showWindow:self];
 		[[splash progress] setMaxValue: (to - from) / interval];
 		
+		int currentImageIndex = [imageView curImage];
+		
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -9377,6 +9379,8 @@ int i,j,l;
 			
 			[pool release];
 		}
+		
+		[self setImageIndex: currentImageIndex];
 		
 		[splash close];
 		[splash release];
