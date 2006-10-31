@@ -186,8 +186,10 @@
 		[dicomFilePathList addObject: [self _createDicomImageWithViewer: currentViewer toDestinationPath: destPath asColorPrint: colorPrint withAnnotations: annotations]];
 	}
 
-	[currentViewer setImageIndex: currentImageIndex];
-
+	[[currentViewer imageView] setIndex: currentImageIndex];
+	[[currentViewer imageView] sendSyncMessage:1];
+	[currentViewer adjustSlider];
+	
 	return dicomFilePathList;
 }
 

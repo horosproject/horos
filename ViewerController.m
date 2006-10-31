@@ -9264,6 +9264,22 @@ int i,j,l;
 	else [printPagesToPrint setStringValue: [NSString stringWithFormat:@"%d pages", 1 + (count / ipp)]];
 }
 
+- (void)printOperationDidRun:(NSPrintOperation *)printOperation
+                success:(BOOL)success
+                contextInfo:(printView*)info
+{
+    if (success)
+	{
+	
+    }
+	
+	[info release];
+	
+	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+}
+
 -(IBAction) endPrint:(id) sender
 {
 	[self checkEverythingLoaded];
@@ -9380,7 +9396,9 @@ int i,j,l;
 			[pool release];
 		}
 		
-		[self setImageIndex: currentImageIndex];
+		[imageView setIndex: currentImageIndex];
+		[imageView sendSyncMessage:1];
+		[self adjustSlider];
 		
 		[splash close];
 		[splash release];
@@ -9391,12 +9409,13 @@ int i,j,l;
 			
 			NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
 			
-			[printOperation runOperation];
+			[printOperation setCanSpawnSeparateThread: YES];
 			
-			[pV release];
+			[printOperation runOperationModalForWindow:[self window]
+                delegate:self
+                didRunSelector: @selector(printOperationDidRun:success:contextInfo:)
+                contextInfo:pV];
 		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
     }
 	else
 	{
