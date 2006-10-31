@@ -472,7 +472,7 @@ extern short Altivec;
 				[NSThread detachNewThreadSelector: @selector( subRender:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", 0L]];
 			}
 			
-			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: 2], @"pos", 0L]];
+			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", 0L]];
 			
 			BOOL done = NO;
 			while( done == NO)
