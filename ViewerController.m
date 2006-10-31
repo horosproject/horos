@@ -4794,6 +4794,7 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) flipDataSeries: (id) sender
 {
+	int previousFusion = [popFusion selectedTag];
 	[self setFusionMode: 0];
 	[popFusion selectItemAtIndex:0];
 	
@@ -4803,6 +4804,9 @@ static ViewerController *draggedController = 0L;
 	[self adjustSlider];
 	
 	[imageView sendSyncMessage:1];
+	
+	[self setFusionMode: previousFusion];
+	[popFusion selectItemWithTag:previousFusion];
 }
 
 -(short) orientationVector

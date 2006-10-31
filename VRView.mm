@@ -2132,6 +2132,12 @@ public:
 			case tRotate:
 			case t3DRotate:
 			case tTranslate:
+				if( volumeMapper)
+				{
+					volumeMapper->SetAutoAdjustSampleDistances( 1);
+					volumeMapper->SetMinimumImageSampleDistance( LOD);
+				}
+				
 				[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 				break;
@@ -2146,15 +2152,16 @@ public:
 				break;
 		}
 	}
-	
-	
-	
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent{
 	if (_tool == tZoom)
 	{
-		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
+		if( volumeMapper)
+		{
+			volumeMapper->SetAutoAdjustSampleDistances( 1);
+			volumeMapper->SetMinimumImageSampleDistance( LOD);
+		}
 		
 		if( projectionMode != 2)
 		{
@@ -2336,7 +2343,13 @@ public:
 		{
 			int shiftDown = 0;
 			int controlDown = 1;
-
+			
+			if( volumeMapper)
+			{
+				volumeMapper->SetAutoAdjustSampleDistances( 0);
+				volumeMapper->SetImageSampleDistance( LOD*3);
+			}
+			
 			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
@@ -2345,6 +2358,12 @@ public:
 		{
 			int shiftDown = 0;//([theEvent modifierFlags] & NSShiftKeyMask);
 			int controlDown = 0;//([theEvent modifierFlags] & NSControlKeyMask);
+
+			if( volumeMapper)
+			{
+				volumeMapper->SetAutoAdjustSampleDistances( 0);
+				volumeMapper->SetImageSampleDistance( LOD*3);
+			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 
@@ -2363,13 +2382,25 @@ public:
 		{
 			int shiftDown = 1;
 			int controlDown = 0;
-
+			
+			if( volumeMapper)
+			{
+				volumeMapper->SetAutoAdjustSampleDistances( 0);
+				volumeMapper->SetImageSampleDistance( LOD*3);
+			}
+			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			[self getInteractor]->SetEventInformation((int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
 			[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
 		}
 		else if( tool == tZoom)
 		{
+			if( volumeMapper)
+			{
+				volumeMapper->SetAutoAdjustSampleDistances( 0);
+				volumeMapper->SetImageSampleDistance( LOD*3);
+			}
+			
 			if( projectionMode != 2)
 			{
 				int shiftDown = 0;
