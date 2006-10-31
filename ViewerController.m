@@ -9266,14 +9266,12 @@ int i,j,l;
 
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
                 success:(BOOL)success
-                contextInfo:(printView*)info
+                contextInfo:(void*)info
 {
     if (success)
 	{
 	
     }
-	
-	[info release];
 	
 	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
 	
@@ -9405,7 +9403,7 @@ int i,j,l;
 		
 		if( [files count])
 		{
-			printView	*pV = [[printView alloc] initWithViewer: self settings: settings files: files];
+			printView	*pV = [[[printView alloc] initWithViewer: self settings: settings files: files] autorelease];
 			
 			NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
 			
@@ -9414,7 +9412,7 @@ int i,j,l;
 			[printOperation runOperationModalForWindow:[self window]
                 delegate:self
                 didRunSelector: @selector(printOperationDidRun:success:contextInfo:)
-                contextInfo:pV];
+                contextInfo:0L];
 		}
     }
 	else
