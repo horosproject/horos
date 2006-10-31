@@ -88,7 +88,10 @@
 	
 	float								*dstFloatR, *dstFloatG, *dstFloatB;
 	long								ifrom, ito, isize;
-	BOOL								threadDone, isRGB;
+	BOOL								isRGB;
+	
+	NSLock								*processorsLock;
+	volatile int						numberOfThreadsForCompute;
 }
 -(void) setImageData:(long) w :(long) h :(long) c :(float) sX :(float) sY :(float) t :(BOOL) flip;
 -(void) setWLWW: (float) l :(float) w;

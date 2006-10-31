@@ -27,6 +27,8 @@ extern short Altivec;
 	if( dst8.data) free( dst8.data);
 	if( dst8Blending.data) free( dst8Blending.data);
 	
+	[processorsLock release];
+	
 	[super dealloc];
 }
 
@@ -290,11 +292,20 @@ extern short Altivec;
 	lowQuality = q;
 }
 
--(void) subRender:(long) from :(long) to :(long) size
+-(void) subRender:(NSDictionary*) dict
 {
+	long			x, i, from, to, size, pos, threads, slicesize;
+	
+	threads = MPProcessors ();
+	pos = [[dict valueForKey:@"pos"] intValue];
+	slicesize = [[dict valueForKey:@"size"] intValue];
+
+	from = (pos * slicesize) / threads;
+	to = ((pos+1) * slicesize) / threads;
+	size = to - from;
+	
 	float			*dstFloatRi = dstFloatR + from, *dstFloatGi = dstFloatG + from, *dstFloatBi = dstFloatB + from;
-	long			x, i;
-		
+	
 	for( i = from; i < to; i+= 4)
 	{
 		float dstFloatRv1 = 0, dstFloatGv1 = 0, dstFloatBv1 = 0;
@@ -339,7 +350,7 @@ extern short Altivec;
 			
 			if( zz == 4) x = 0;
 			
-			pixels += size;
+			pixels += slicesize;
 			
 			dstFloatRv1 += opacityPtr1 * tableFloatR[ val1];
 			dstFloatGv1 += opacityPtr1 * tableFloatG[ val1];
@@ -374,15 +385,10 @@ extern short Altivec;
 		*dstFloatGi++ = dstFloatGv4;
 		*dstFloatBi++ = dstFloatBv4;
 	}
-}
-
-- (void)doRenderProcess:(id)anObject
-{
-	[self subRender: ifrom: ito :isize];
 	
-	threadDone = YES;
-	
-    return;
+	[processorsLock lock];
+	numberOfThreadsForCompute--;
+	[processorsLock unlock];
 }
 
 -(unsigned char*) renderSlab
@@ -457,8 +463,24 @@ extern short Altivec;
 		}
 		else
 		{
-			//	SHARK + THREADS !
-			[self subRender :0: size : size];
+			if( processorsLock == 0L)
+				processorsLock = [[NSLock alloc] init];
+			
+			numberOfThreadsForCompute = MPProcessors ();
+			for( i = 0; i < MPProcessors ()-1; i++)
+			{
+				[NSThread detachNewThreadSelector: @selector( subRender:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", 0L]];
+			}
+			
+			[self subRender: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: 2], @"pos", 0L]];
+			
+			BOOL done = NO;
+			while( done == NO)
+			{
+				[processorsLock lock];
+				if( numberOfThreadsForCompute <= 0) done = YES;
+				[processorsLock unlock];
+			}
 		}
 		
 		src.height = height;		src.width = width;			src.rowBytes = width*4;		src.data = dstFloatR;
