@@ -3420,6 +3420,12 @@ static ViewerController *draggedController = 0L;
 		[volumeData[ i] release];
 	}
 	
+	if( thickSlab)
+	{
+		[thickSlab release];
+		thickSlab = 0L;
+	}
+	
 //	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
 //	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 //	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
