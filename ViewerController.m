@@ -12022,6 +12022,19 @@ long i;
 
 - (void) adjustKeyImage
 {
+	if( [fileList[ curMovieIndex] count] != 1)
+	{
+		if( [fileList[ curMovieIndex] objectAtIndex: 0] == [fileList[ curMovieIndex] lastObject])
+		{
+			[keyImageCheck setState: NSOffState];
+			[keyImageCheck setEnabled: NO];
+			
+			return;
+		}
+	}
+	
+	[keyImageCheck setEnabled: YES];
+	
 	// Update Key Image check box
 	if( [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"isKeyImage"] boolValue] == YES)
 	{
