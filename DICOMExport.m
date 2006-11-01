@@ -414,7 +414,14 @@ extern BrowserController	*browserWindow;
 		//add attributes
 		if( charSet) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:charSet] forName:@"SpecificCharacterSet"];
 		if( studyUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:studyUID] forName:@"StudyInstanceUID"];
-		if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[exportSeriesUID stringByAppendingString: [seriesNumber stringValue]]] forName:@"SeriesInstanceUID"];
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"generateNewSeriesUID"])
+		{
+			if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:[exportSeriesUID stringByAppendingString: [seriesNumber stringValue]]] forName:@"SeriesInstanceUID"];
+		}
+		else
+		{
+			if( exportSeriesUID) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesUID] forName:@"SeriesInstanceUID"];
+		}
 		if( exportSeriesDescription) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:exportSeriesDescription] forName:@"SeriesDescription"];
 		
 		if( patientName) [dcmDst setAttributeValues:[NSMutableArray arrayWithObject:patientName] forName:@"PatientsName"];

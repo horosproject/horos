@@ -1808,7 +1808,7 @@ public:
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
 	if (!interactor)
 	return;
-
+	
 	if( projectionMode != 2)
 	{
 		int shiftDown = 0;
