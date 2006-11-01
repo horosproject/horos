@@ -2485,9 +2485,9 @@ public:
 		else if( tool == tBonesRemoval)
 		{
 			[self deleteMouseDownTimer];
-			#if !__LP64__
-			QDDisplayWaitCursor( true);
-			#endif
+			
+			WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
+			[waiting showWindow:self];
 			
 			NSLog( @"**** Bone Removal Start");
 			// enable Undo
@@ -2557,6 +2557,9 @@ public:
 						vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 				}
 				[self setNeedsDisplay:YES];
+				
+				[waiting close];
+				[waiting release];
 			}
 		}
 		else [super mouseDown:theEvent];
@@ -2917,12 +2920,18 @@ public:
 		}
 		else
 		{
+			WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Scissor...", nil)];
+			[waiting showWindow:self];
+			
 			[self deleteRegion: c :pixList :NO];
 			
 //			if( blendingController)
 //			{
 //				[self deleteRegion: c :blendingPixList :YES];
 //			}
+
+			[waiting close];
+			[waiting release];
 		}
 	}
 	
