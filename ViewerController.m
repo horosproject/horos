@@ -9042,6 +9042,8 @@ int i,j,l;
 {
 	if( [[self imageView] flippedData]) [[self imageView] setIndex: [self getNumberOfImages] -1 -i];
 	else [[self imageView] setIndex: i];
+
+	[imageView sendSyncMessage:1];
 	
 	[self adjustSlider];
 	
