@@ -308,27 +308,19 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>OSIViewerPreferencePanePref.m</string>
+								<string>&lt;No Editor&gt;</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
-										<key>PBXProjectModuleLabel</key>
-										<string>OSIViewerPreferencePanePref.m</string>
-										<key>_historyCapacity</key>
-										<integer>0</integer>
-										<key>bookmark</key>
-										<string>AB0E1B020AF88653004ABF8E</string>
 										<key>history</key>
 										<array>
 											<string>ABF899510AE89FFD00BBE119</string>
-											<string>ABF899530AE89FFD00BBE119</string>
 										</array>
 										<key>prevStack</key>
 										<array>
-											<string>ABC3940909F52058000A6508</string>
 											<string>ABC3940A09F52058000A6508</string>
 										</array>
 									</dict>

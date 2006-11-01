@@ -34,13 +34,11 @@
 			PBXWorkspaceStateSaveDate = 184059472;
 		};
 		perUserProjectItems = {
-			AB0E1B020AF88653004ABF8E /* PBXTextBookmark */ = AB0E1B020AF88653004ABF8E /* PBXTextBookmark */;
-			ABC3940709F52058000A6508 = ABC3940709F52058000A6508 /* PBXTextBookmark */;
-			ABC3940909F52058000A6508 = ABC3940909F52058000A6508 /* PBXTextBookmark */;
-			ABC3940A09F52058000A6508 = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
-			ABF899510AE89FFD00BBE119 = ABF899510AE89FFD00BBE119 /* PBXTextBookmark */;
-			ABF899520AE89FFD00BBE119 = ABF899520AE89FFD00BBE119 /* PBXTextBookmark */;
-			ABF899530AE89FFD00BBE119 = ABF899530AE89FFD00BBE119 /* PBXTextBookmark */;
+			AB0E20970AF89413004ABF8E /* PBXTextBookmark */ = AB0E20970AF89413004ABF8E /* PBXTextBookmark */;
+			ABC3940909F52058000A6508 /* PBXTextBookmark */ = ABC3940909F52058000A6508 /* PBXTextBookmark */;
+			ABC3940A09F52058000A6508 /* PBXTextBookmark */ = ABC3940A09F52058000A6508 /* PBXTextBookmark */;
+			ABF899510AE89FFD00BBE119 /* PBXTextBookmark */ = ABF899510AE89FFD00BBE119 /* PBXTextBookmark */;
+			ABF899530AE89FFD00BBE119 /* PBXTextBookmark */ = ABF899530AE89FFD00BBE119 /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB29966A09AB2BCA00F810FC /* Source Control */;
 		userBuildSettings = {
@@ -49,7 +47,7 @@
 	8D202CE80486D31800D8A456 /* OSIViewerPreferencePane */ = {
 		activeExec = 0;
 	};
-	AB0E1B020AF88653004ABF8E /* PBXTextBookmark */ = {
+	AB0E20970AF89413004ABF8E /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
 		name = "- (IBAction) setReverseScrollWheel: (id) sender";
@@ -70,16 +68,6 @@
 	AB29966B09AB2BCA00F810FC /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
-	};
-	ABC3940709F52058000A6508 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIViewerPreferencePanePref.m */;
-		name = "@end";
-		rLen = 5;
-		rLoc = 3239;
-		rType = 0;
-		vrLen = 1485;
-		vrLoc = 1759;
 	};
 	ABC3940909F52058000A6508 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -102,16 +90,6 @@
 		vrLoc = 0;
 	};
 	ABF899510AE89FFD00BBE119 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
-		name = "OSIViewerPreferencePanePref.h: toolbarPanelMatrix";
-		rLen = 0;
-		rLoc = 963;
-		rType = 0;
-		vrLen = 1608;
-		vrLoc = 0;
-	};
-	ABF899520AE89FFD00BBE119 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03C013D9D7901CA16C8 /* OSIViewerPreferencePanePref.h */;
 		name = "OSIViewerPreferencePanePref.h: toolbarPanelMatrix";

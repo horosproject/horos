@@ -12019,7 +12019,6 @@ long i;
 	[self keyImageCheckBox: keyImageCheck];
 }
 
-
 - (void) adjustKeyImage
 {
 	if( [fileList[ curMovieIndex] count] != 1)
@@ -12028,11 +12027,13 @@ long i;
 		{
 			[keyImageCheck setState: NSOffState];
 			[keyImageCheck setEnabled: NO];
+			[keyImageDisplay setEnabled: NO];
 			
 			return;
 		}
 	}
 	
+	[keyImageDisplay setEnabled: YES];
 	[keyImageCheck setEnabled: YES];
 	
 	// Update Key Image check box
