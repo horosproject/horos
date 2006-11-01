@@ -9382,7 +9382,7 @@ int i,j,l;
 			
 			if( [[printSelection selectedCell] tag] == 1)
 			{
-				if (![[fileList[ curMovieIndex] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+				if (![[[fileList[ curMovieIndex] objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
 			}
 			
 			if( saveImage)
