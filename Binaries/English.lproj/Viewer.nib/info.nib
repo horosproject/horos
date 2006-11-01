@@ -9,14 +9,17 @@
 		<key>14</key>
 		<string>652 544 135 84 0 0 1440 878 </string>
 		<key>1684</key>
-		<string>681 544 78 85 0 0 1440 878 </string>
+		<string>921 744 78 85 0 0 1920 1178 </string>
+		<key>382</key>
+		<string>889 748 141 76 0 0 1920 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>1845</integer>
 		<integer>1684</integer>
+		<integer>382</integer>
+		<integer>1845</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>

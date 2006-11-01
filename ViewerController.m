@@ -649,6 +649,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 		BOOL volumicData = YES;
 		
+		int previousFusion = [popFusion selectedTag];
+		
 		long moviePixWidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
 		long moviePixHeight = [[pixList[ curMovieIndex] objectAtIndex: 0] pheight];
 		
@@ -771,6 +773,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
+		
+		[self setFusionMode: previousFusion];
+		[popFusion selectItemWithTag:previousFusion];
 		
 		NSLog( @"originalOrientation: %d", originalOrientation);
 	}
@@ -2665,9 +2670,9 @@ static ViewerController *draggedController = 0L;
     }
 	    else if([itemIdent isEqualToString: FilterToolbarItemIdentifier]) {
 	// Set up the standard properties 
-	[toolbarItem setLabel: NSLocalizedString(@"Filters", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Filters", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Apply a filter", nil)];
+	[toolbarItem setLabel: NSLocalizedString(@"Convolution Filters", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Convolution Filters", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Apply a convolution filter", nil)];
 	
 	// Use a custom view, a text field, for the search item 
 	[toolbarItem setView: ConvView];
@@ -3495,13 +3500,17 @@ static ViewerController *draggedController = 0L;
 		[speedSlider setEnabled:YES];
         [slider setEnabled:YES];
 	}
-    //jacques : init aparencia 2Dviewer
+	
 	[subCtrlOnOff setState: NSOffState];
 	[popFusion selectItemAtIndex:0];
 	[convPopup selectItemAtIndex:0];
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
+
+	[movieRateSlider setEnabled: NO];
+	[moviePosSlider setEnabled: NO];
+	[moviePlayStop setEnabled:NO];
 	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :imageIndex :'i' :!sameSeries];
 	
