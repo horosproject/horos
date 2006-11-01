@@ -645,6 +645,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
+		if( displayOnlyKeyImages)
+		{
+			[keyImagePopUpButton selectItemAtIndex: 0];
+			[self keyImageDisplayButton: self];
+		}
+		
 		[self checkEverythingLoaded];
 	
 		BOOL volumicData = YES;
@@ -4829,6 +4835,8 @@ static ViewerController *draggedController = 0L;
 	float				vectors[ 9], vectorsB[ 9];
 	long				i, x;
 	
+	[orientationMatrix setEnabled: NO];
+	
 	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
 	{
 		BOOL equalVector = YES;
@@ -4856,6 +4864,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eSagittalNeg;
 				
 				[orientationMatrix selectCellWithTag: 2];
+				[orientationMatrix setEnabled: YES];
 				currentOrientationTool = 2;
 			}
 			
@@ -4871,6 +4880,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eCoronalNeg;
 				
 				[orientationMatrix selectCellWithTag: 1];
+				[orientationMatrix setEnabled: YES];
 				currentOrientationTool = 1;
 			}
 			
@@ -4886,6 +4896,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eAxialNeg;
 				
 				[orientationMatrix selectCellWithTag: 0];
+				[orientationMatrix setEnabled: YES];
 				currentOrientationTool = 0;
 			}
 			
@@ -11971,8 +11982,6 @@ long i;
 	[imageView setNeedsDisplay:YES];
 }
 
-
-
 - (IBAction) keyImageDisplayButton:(id) sender
 {
 	NSManagedObject	*series = [[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"series"];
@@ -12023,7 +12032,6 @@ long i;
 	}
 }
 
-
 - (IBOutlet)setKeyImage:(id)sender
 {
 	[keyImageCheck setState: ![keyImageCheck state]];
@@ -12039,6 +12047,7 @@ long i;
 			[keyImageCheck setState: NSOffState];
 			[keyImageCheck setEnabled: NO];
 			[keyImageDisplay setEnabled: NO];
+			[keyImagePopUpButton setEnabled: NO];
 			
 			return;
 		}
@@ -12046,6 +12055,7 @@ long i;
 	
 	[keyImageDisplay setEnabled: YES];
 	[keyImageCheck setEnabled: YES];
+	[keyImagePopUpButton setEnabled: YES];
 	
 	// Update Key Image check box
 	if( [[[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"isKeyImage"] boolValue] == YES)
