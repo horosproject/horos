@@ -490,6 +490,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	blendingController = bC;
 	if( blendingController) // Blending! Activate image fusion
 	{
+		blendingPixList = [blendingController pixList];
 		[view setBlendingPixSource: blendingController];
 		
 		[blendingSlider setEnabled:YES];
@@ -732,25 +733,49 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	long		stackOrientation	= [[object objectAtIndex: 1] intValue];
 	long		c					= [[object objectAtIndex: 2] intValue];
 	ROI*		roi					= [object objectAtIndex: 3];
+	BOOL		blendedSeries		= [[object objectAtIndex: 4] intValue];
 	
-	for( x = 0; x < maxMovieIndex; x++)
+	if( blendedSeries)
 	{
 		switch( stackOrientation)
 		{
 			case 2:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
-				else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
+				else [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
 				break;
 				
 			case 1:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
-				else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
+				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
 				break;
 				
 			case 0:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
-				else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
+				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
+				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
 				break;
+		}
+	}
+	else
+	{
+		for( x = 0; x < maxMovieIndex; x++)
+		{
+			switch( stackOrientation)
+			{
+				case 2:
+					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
+					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
+					break;
+					
+				case 1:
+					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
+					break;
+					
+				case 0:
+					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
+					break;
+			}
 		}
 	}
 }

@@ -2558,16 +2558,307 @@ public:
 				}
 				[self setNeedsDisplay:YES];
 			}
-			
-			#if !__LP64__
-			QDDisplayWaitCursor( false);
-			#endif
 		}
 		else [super mouseDown:theEvent];
 		
 		croppingBox->SetHandleSize( 0.005);
 	}
 	noWaitDialog = NO;
+}
+
+- (void) deleteRegion:(int) c :(NSArray*) pxList :(BOOL) blendedSeries
+{
+	long			tt, stackMax, stackOrientation, i;
+	vtkPoints		*roiPts = ROI3DData->GetPoints();
+	NSMutableArray	*ROIList = [NSMutableArray arrayWithCapacity:0];
+	double			xyz[ 3], cameraProj[ 3], cameraProjObj[ 3];
+	float			vector[ 9];
+	DCMPix			*fObject = [pxList objectAtIndex: 0];
+
+	NSLog(@"Scissor Start");
+//			[[[self window] windowController] prepareUndo];
+	[controller prepareUndo];
+	
+	vtkMatrix4x4 *ActorMatrix;
+	
+	if( blendedSeries)  ActorMatrix = blendingVolume->GetUserMatrix();
+	else ActorMatrix = volume->GetUserMatrix();
+	
+	vtkTransform *Transform = vtkTransform::New();
+	
+	Transform->SetMatrix( ActorMatrix);
+	Transform->Push();
+	
+	aCamera->GetViewPlaneNormal( cameraProj);
+	aCamera->GetPosition( xyz);
+	
+	if( blendedSeries)
+	{
+		xyz[ 0] /= blendingFactor;
+		xyz[ 1] /= blendingFactor;
+		xyz[ 2] /= blendingFactor;
+	}
+	else
+	{
+		xyz[ 0] /= factor;
+		xyz[ 1] /= factor;
+		xyz[ 2] /= factor;
+	}
+	[fObject orientation: vector];
+	
+	cameraProjObj[ 0] = cameraProj[ 0] * vector[ 0] + cameraProj[ 1] * vector[ 1] + cameraProj[ 2] * vector[ 2];
+	cameraProjObj[ 1] = cameraProj[ 0] * vector[ 3] + cameraProj[ 1] * vector[ 4] + cameraProj[ 2] * vector[ 5];
+	cameraProjObj[ 2] = cameraProj[ 0] * vector[ 6] + cameraProj[ 1] * vector[ 7] + cameraProj[ 2] * vector[ 8];
+				
+	if( fabs( cameraProjObj[ 0]) > fabs(cameraProjObj[ 1]) && fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 2]))
+	{
+		NSLog(@"X Stack");
+		stackOrientation = 0;
+	}
+	else if( fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 0]) && fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 2]))
+	{
+		NSLog(@"Y Stack");
+		stackOrientation = 1;
+	}
+	else
+	{
+		NSLog(@"Z Stack");
+		stackOrientation = 2;
+	}
+	
+	switch( stackOrientation)
+	{
+		case 0:		stackMax = [fObject pwidth];		break;
+		case 1:		stackMax = [fObject pheight];		break;
+		case 2:		stackMax = [pxList count];				break;
+	}
+	
+	for( i = 0 ; i < stackMax ; i++)
+		[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon :[fObject pixelSpacingX]*factor :[fObject pixelSpacingY]*factor :NSMakePoint( [fObject originX], [fObject originY])] autorelease]];
+		
+	for( tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
+	{
+		float	point1[ 3], point2[ 3];
+		long	x, y, z;
+		
+		double	point2D[ 3], *pp;
+		
+		roiPts->GetPoint( tt, point2D);
+		aRenderer->SetDisplayPoint( point2D[ 0], point2D[ 1], 0);
+		aRenderer->DisplayToWorld();
+		pp = aRenderer->GetWorldPoint();
+		
+		if( blendedSeries)
+		{
+			pp[ 0] /= blendingFactor;
+			pp[ 1] /= blendingFactor;
+			pp[ 2] /= blendingFactor;
+		}
+		else
+		{
+			pp[ 0] /= factor;
+			pp[ 1] /= factor;
+			pp[ 2] /= factor;
+		}
+		
+	//	NSLog(@"point: %f %f %f", pp[ 0], pp[ 1], pp[ 2]);
+		
+		if( aCamera->GetParallelProjection())
+		{
+			NSLog(@"Cam Proj: %f %f %f",cameraProj[ 0], cameraProj[ 1], cameraProj[ 2]);
+			
+			aCamera->GetPosition( xyz);
+			
+			xyz[ 0] = pp[0] + cameraProj[ 0];
+			xyz[ 1] = pp[1] + cameraProj[ 1];
+			xyz[ 2] = pp[2] + cameraProj[ 2];
+							
+			// Go beyond the object...
+							
+			pp[0] = xyz[ 0] + (pp[0] - xyz[ 0]) * 5000.;
+			pp[1] = xyz[ 1] + (pp[1] - xyz[ 1]) * 5000.;
+			pp[2] = xyz[ 2] + (pp[2] - xyz[ 2]) * 5000.;
+			
+			point1[ 0] = xyz[ 0];
+			point1[ 1] = xyz[ 1];
+			point1[ 2] = xyz[ 2];
+					
+			point2[ 0] = pp[ 0];
+			point2[ 1] = pp[ 1];
+			point2[ 2] = pp[ 2];
+		}
+		else
+		{
+			// Go beyond the object...
+			
+			point1[ 0] = xyz[ 0];
+			point1[ 1] = xyz[ 1];
+			point1[ 2] = xyz[ 2];
+		
+			point2[0] = xyz[ 0] + (pp[0] - xyz[ 0])*5000.;
+			point2[1] = xyz[ 1] + (pp[1] - xyz[ 1])*5000.;
+			point2[2] = xyz[ 2] + (pp[2] - xyz[ 2])*5000.;		
+		}
+		
+//		NSLog( @"Start Pt : x=%f, y=%f, z=%f"	, point1[ 0], point1[ 1], point1[ 2]);
+//		NSLog( @"End Pt : x=%f, y=%f, z=%f"		, point2[ 0], point2[ 1], point2[ 2]);
+					
+		// Intersection between this line and planes in Z direction
+		for( x = 0; x < stackMax; x++)
+		{
+			float	planeVector[ 3];
+			float	point[ 3];
+			float	resultPt[ 3];
+			double	vPos[ 3];
+			
+			if( blendedSeries)  blendingVolume->GetPosition( vPos);
+			else volume->GetPosition( vPos);
+	
+			 // factor
+			
+			if( blendedSeries)
+			{
+				vPos[ 0] /= blendingFactor;
+				vPos[ 1] /= blendingFactor;
+				vPos[ 2] /= blendingFactor;
+			}
+			else
+			{
+				vPos[ 0] /= factor;
+				vPos[ 1] /= factor;
+				vPos[ 2] /= factor;
+			}
+			
+//			vPos[ 0] = [fObject originX];
+//			vPos[ 1] = [fObject originY];
+//			vPos[ 2] = [fObject originZ];
+			
+			switch( stackOrientation)
+			{
+				case 0:
+					point[ 0] = x * [fObject pixelSpacingX];
+					point[ 1] = 0;
+					point[ 2] = 0;
+												
+					planeVector[ 0] =  vector[ 0];
+					planeVector[ 1] =  vector[ 1];
+					planeVector[ 2] =  vector[ 2];
+				break;
+				
+				case 1:
+					point[ 0] = 0;
+					point[ 1] = x * [fObject pixelSpacingY];
+					point[ 2] = 0;
+					
+					planeVector[ 0] =  vector[ 3];
+					planeVector[ 1] =  vector[ 4];
+					planeVector[ 2] =  vector[ 5];
+				break;
+				
+				case 2:
+					point[ 0] = 0;
+					point[ 1] = 0;
+			//		point[ 2] = x * fabs( [fObject sliceInterval]);
+					point[ 2] = x * ( [fObject sliceInterval]);
+					
+					planeVector[ 0] =  vector[ 6];
+					planeVector[ 1] =  vector[ 7];
+					planeVector[ 2] =  vector[ 8];
+				break;
+			}
+			
+			point[ 0] += vPos[ 0];
+			point[ 1] += vPos[ 1];
+			point[ 2] += vPos[ 2];
+			
+			Transform->TransformPoint(point,point);
+			
+			if( intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ))
+			{
+				float	tempPoint3D[ 3];
+				long	ptInt[ 3];
+				long	roiID;
+				// Convert this 3D point to 2D point projected in the plane
+				
+				Transform->Inverse();
+				Transform->TransformPoint(resultPt,tempPoint3D);
+				Transform->Inverse();
+				
+				tempPoint3D[ 0] -= vPos[ 0];
+				tempPoint3D[ 1] -= vPos[ 1];
+				tempPoint3D[ 2] -= vPos[ 2];
+				
+				tempPoint3D[0] /= [fObject pixelSpacingX];
+				tempPoint3D[1] /= [fObject pixelSpacingY];
+			//	tempPoint3D[2] /= fabs( [fObject sliceInterval]);
+				tempPoint3D[2] /= ( [fObject sliceInterval]);
+				
+			//	tempPoint3D[0] /= factor;
+			//	tempPoint3D[1] /= factor;
+			//	tempPoint3D[2] /= factor;
+				
+				ptInt[ 0] = (long) (tempPoint3D[0] + 0.5);
+				ptInt[ 1] = (long) (tempPoint3D[1] + 0.5);
+				ptInt[ 2] = (long) (tempPoint3D[2] + 0.5);
+				
+				
+				if( needToFlip) 
+				{
+					ptInt[ 2] = [pxList count] - ptInt[ 2] -1;
+				}
+				
+//						if( ptInt[0] >= 0 && ptInt[0] < [fObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [fObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pxList count])
+//						{						
+//							// Test delete...
+//							
+//							float *src = [[pxList objectAtIndex: ptInt[ 2]] fImage];
+//							*(src + (long) ptInt[1] * [fObject pwidth] + (long) ptInt[0]) = 10000;
+//						}
+				
+				switch( stackOrientation)
+				{
+					case 0:	
+						roiID = ptInt[0];
+						
+						if( roiID >= 0 && roiID < stackMax)
+							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
+					break;
+					
+					case 1:
+						roiID = ptInt[1];
+						
+						if( roiID >= 0 && roiID < stackMax)
+							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
+					break;
+					
+					case 2:
+						roiID = ptInt[2];
+						
+						if( roiID >= 0 && roiID < stackMax)
+							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
+					break;
+				}
+//				NSLog(@"Slide ID: %d", roiID);
+			}
+		}
+	}
+	
+	Transform->Delete();
+	
+	// Fill ROIs
+	
+	// Create a scheduler
+	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+	[sched setDelegate: self];
+	
+	// Create the work units. These can be anything. We will use NSNumbers
+	NSMutableSet *unitsSet = [NSMutableSet set];
+	for ( i = 0; i < stackMax; i++ )
+	{
+		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], 0L]];
+	}
+	// Perform work schedule
+	[sched performScheduleForWorkUnits:unitsSet];
 }
 
 - (void) keyDown:(NSEvent *)event
@@ -2618,11 +2909,7 @@ public:
 	
 	if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter) && currentTool == t3DCut)
 	{
-		long			tt, stackMax, stackOrientation, i;
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
-		NSMutableArray	*ROIList = [NSMutableArray arrayWithCapacity:0];
-		double			xyz[ 3], cameraProj[ 3], cameraProjObj[ 3];
-		float			vector[ 9];
 		
 		if( roiPts->GetNumberOfPoints() < 3)
 		{
@@ -2630,262 +2917,13 @@ public:
 		}
 		else
 		{
-			#if !__LP64__
-			QDDisplayWaitCursor( true);
-			#endif
+			[self deleteRegion: c :pixList :NO];
 			
-			NSLog(@"Scissor Start");
-//			[[[self window] windowController] prepareUndo];
-			[controller prepareUndo];
-			
-			vtkMatrix4x4 *ActorMatrix = volume->GetUserMatrix();
-			vtkTransform *Transform = vtkTransform::New();
-			
-			Transform->SetMatrix( ActorMatrix);
-			Transform->Push();
-			
-			aCamera->GetViewPlaneNormal( cameraProj);
-			aCamera->GetPosition( xyz);
-			
-			xyz[ 0] /= factor;
-			xyz[ 1] /= factor;
-			xyz[ 2] /= factor;
-			
-			[firstObject orientation: vector];
-			
-			cameraProjObj[ 0] = cameraProj[ 0] * vector[ 0] + cameraProj[ 1] * vector[ 1] + cameraProj[ 2] * vector[ 2];
-			cameraProjObj[ 1] = cameraProj[ 0] * vector[ 3] + cameraProj[ 1] * vector[ 4] + cameraProj[ 2] * vector[ 5];
-			cameraProjObj[ 2] = cameraProj[ 0] * vector[ 6] + cameraProj[ 1] * vector[ 7] + cameraProj[ 2] * vector[ 8];
-						
-			if( fabs( cameraProjObj[ 0]) > fabs(cameraProjObj[ 1]) && fabs(cameraProjObj[ 0]) > fabs(cameraProjObj[ 2]))
-			{
-				NSLog(@"X Stack");
-				stackOrientation = 0;
-			}
-			else if( fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 0]) && fabs(cameraProjObj[ 1]) > fabs(cameraProjObj[ 2]))
-			{
-				NSLog(@"Y Stack");
-				stackOrientation = 1;
-			}
-			else
-			{
-				NSLog(@"Z Stack");
-				stackOrientation = 2;
-			}
-			
-			switch( stackOrientation)
-			{
-				case 0:		stackMax = [firstObject pwidth];		break;
-				case 1:		stackMax = [firstObject pheight];		break;
-				case 2:		stackMax = [pixList count];				break;
-			}
-			
-			for( i = 0 ; i < stackMax ; i++)
-				[ROIList addObject: [[[ROI alloc] initWithType: tCPolygon :[firstObject pixelSpacingX]*factor :[firstObject pixelSpacingY]*factor :NSMakePoint( [firstObject originX], [firstObject originY])] autorelease]];
-				
-			for( tt = 0; tt < roiPts->GetNumberOfPoints(); tt++)
-			{
-				float	point1[ 3], point2[ 3];
-				long	x, y, z;
-				
-				double	point2D[ 3], *pp;
-				
-				roiPts->GetPoint( tt, point2D);
-				aRenderer->SetDisplayPoint( point2D[ 0], point2D[ 1], 0);
-				aRenderer->DisplayToWorld();
-				pp = aRenderer->GetWorldPoint();
-				
-				pp[ 0] /= factor;
-				pp[ 1] /= factor;
-				pp[ 2] /= factor;
-				
-			//	NSLog(@"point: %f %f %f", pp[ 0], pp[ 1], pp[ 2]);
-				
-				if( aCamera->GetParallelProjection())
-				{
-					NSLog(@"Cam Proj: %f %f %f",cameraProj[ 0], cameraProj[ 1], cameraProj[ 2]);
-					
-					aCamera->GetPosition( xyz);
-					
-					xyz[ 0] = pp[0] + cameraProj[ 0];
-					xyz[ 1] = pp[1] + cameraProj[ 1];
-					xyz[ 2] = pp[2] + cameraProj[ 2];
-									
-					// Go beyond the object...
-									
-					pp[0] = xyz[ 0] + (pp[0] - xyz[ 0]) * 5000.;
-					pp[1] = xyz[ 1] + (pp[1] - xyz[ 1]) * 5000.;
-					pp[2] = xyz[ 2] + (pp[2] - xyz[ 2]) * 5000.;
-					
-					point1[ 0] = xyz[ 0];
-					point1[ 1] = xyz[ 1];
-					point1[ 2] = xyz[ 2];
-							
-					point2[ 0] = pp[ 0];
-					point2[ 1] = pp[ 1];
-					point2[ 2] = pp[ 2];
-				}
-				else
-				{
-					// Go beyond the object...
-					
-					point1[ 0] = xyz[ 0];
-					point1[ 1] = xyz[ 1];
-					point1[ 2] = xyz[ 2];
-				
-					point2[0] = xyz[ 0] + (pp[0] - xyz[ 0])*5000.;
-					point2[1] = xyz[ 1] + (pp[1] - xyz[ 1])*5000.;
-					point2[2] = xyz[ 2] + (pp[2] - xyz[ 2])*5000.;		
-				}
-				
-			//	NSLog( @"Start Pt : x=%f, y=%f, z=%f"	, point1[ 0], point1[ 1], point1[ 2]);
-			//	NSLog( @"End Pt : x=%f, y=%f, z=%f"		, point2[ 0], point2[ 1], point2[ 2]);
-							
-				// Intersection between this line and planes in Z direction
-				for( x = 0; x < stackMax; x++)
-				{
-					float	planeVector[ 3];
-					float	point[ 3];
-					float	resultPt[ 3];
-					double	vPos[ 3];
-					
-					volume->GetPosition( vPos); // factor
-//
-					vPos[ 0] /= factor;
-					vPos[ 1] /= factor;
-					vPos[ 2] /= factor;
-										
-//					vPos[ 0] = [firstObject originX];
-//					vPos[ 1] = [firstObject originY];
-//					vPos[ 2] = [firstObject originZ];
-					
-					switch( stackOrientation)
-					{
-						case 0:
-							point[ 0] = x * [firstObject pixelSpacingX];
-							point[ 1] = 0;
-							point[ 2] = 0;
-														
-							planeVector[ 0] =  vector[ 0];
-							planeVector[ 1] =  vector[ 1];
-							planeVector[ 2] =  vector[ 2];
-						break;
-						
-						case 1:
-							point[ 0] = 0;
-							point[ 1] = x * [firstObject pixelSpacingY];
-							point[ 2] = 0;
-							
-							planeVector[ 0] =  vector[ 3];
-							planeVector[ 1] =  vector[ 4];
-							planeVector[ 2] =  vector[ 5];
-						break;
-						
-						case 2:
-							point[ 0] = 0;
-							point[ 1] = 0;
-					//		point[ 2] = x * fabs( [firstObject sliceInterval]);
-							point[ 2] = x * ( [firstObject sliceInterval]);
-							
-							planeVector[ 0] =  vector[ 6];
-							planeVector[ 1] =  vector[ 7];
-							planeVector[ 2] =  vector[ 8];
-						break;
-					}
-					
-					point[ 0] += vPos[ 0];
-					point[ 1] += vPos[ 1];
-					point[ 2] += vPos[ 2];
-					
-					Transform->TransformPoint(point,point);
-					
-					if( intersect3D_SegmentPlane( point2, point1, planeVector, point, resultPt ))
-					{
-						float	tempPoint3D[ 3];
-						long	ptInt[ 3];
-						long	roiID;
-						// Convert this 3D point to 2D point projected in the plane
-						
-						Transform->Inverse();
-						Transform->TransformPoint(resultPt,tempPoint3D);
-						Transform->Inverse();
-						
-						tempPoint3D[ 0] -= vPos[ 0];
-						tempPoint3D[ 1] -= vPos[ 1];
-						tempPoint3D[ 2] -= vPos[ 2];
-						
-						tempPoint3D[0] /= [firstObject pixelSpacingX];
-						tempPoint3D[1] /= [firstObject pixelSpacingY];
-					//	tempPoint3D[2] /= fabs( [firstObject sliceInterval]);
-						tempPoint3D[2] /= ( [firstObject sliceInterval]);
-						
-					//	tempPoint3D[0] /= factor;
-					//	tempPoint3D[1] /= factor;
-					//	tempPoint3D[2] /= factor;
-						
-						ptInt[ 0] = (long) (tempPoint3D[0] + 0.5);
-						ptInt[ 1] = (long) (tempPoint3D[1] + 0.5);
-						ptInt[ 2] = (long) (tempPoint3D[2] + 0.5);
-						
-						
-						if( needToFlip) 
-						{
-							ptInt[ 2] = [pixList count] - ptInt[ 2] -1;
-						}
-						
-//						if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pixList count])
-//						{						
-//							// Test delete...
-//							
-//							float *src = [[pixList objectAtIndex: ptInt[ 2]] fImage];
-//							*(src + (long) ptInt[1] * [firstObject pwidth] + (long) ptInt[0]) = 10000;
-//						}
-						
-						switch( stackOrientation)
-						{
-							case 0:	
-								roiID = ptInt[0];
-								
-								if( roiID >= 0 && roiID < stackMax)
-									[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
-							break;
-							
-							case 1:
-								roiID = ptInt[1];
-								
-								if( roiID >= 0 && roiID < stackMax)
-									[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
-							break;
-							
-							case 2:
-								roiID = ptInt[2];
-								
-								if( roiID >= 0 && roiID < stackMax)
-									[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
-							break;
-						}
-					//	NSLog(@"Slide ID: %d", roiID);
-					}
-				}
-			}
-			
-			Transform->Delete();
+//			if( blendingController)
+//			{
+//				[self deleteRegion: c :blendingPixList :YES];
+//			}
 		}
-		
-		// Fill ROIs
-		
-		// Create a scheduler
-		id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
-		[sched setDelegate: self];
-		
-		// Create the work units. These can be anything. We will use NSNumbers
-		NSMutableSet *unitsSet = [NSMutableSet set];
-		for ( i = 0; i < stackMax; i++ )
-		{
-			[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], 0L]];
-		}
-		// Perform work schedule
-		[sched performScheduleForWorkUnits:unitsSet];
 	}
 	
 	if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter) && currentTool == t3Dpoint)
@@ -2911,10 +2949,6 @@ public:
 	//[self setNeedsDisplay:YES];
 	
 	NSLog(@"Scissor End");
-	
-	#if !__LP64__
-	QDDisplayWaitCursor( false);
-	#endif
 	
 	// Update everything..
 	ROIUPDATE = NO;
@@ -2945,7 +2979,7 @@ public:
 	
 	while (object = [enumerator nextObject])
 	{
-		[controller applyScissor : object];
+		[controller applyScissor :object];
 	}
 }
 
