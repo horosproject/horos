@@ -571,8 +571,6 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"1" forKey: @"DCMPRINT_Interval"];
 	
-	[defaultValues setObject:@"0" forKey: @"generateNewSeriesUID"];
-	
 	// ** STORESCP
 	[defaultValues setObject:@"5" forKey: @"LISTENERCHECKINTERVAL"];
 	

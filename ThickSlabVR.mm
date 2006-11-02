@@ -47,7 +47,7 @@ extern short Altivec;
 		
 		imagePtr = 0;
 		imageBlendingPtr = 0;
-					
+			
 		opacityTransferFunction = vtkPiecewiseFunction::New();
 		opacityTransferFunction->AddPoint(0, 0);
 		opacityTransferFunction->AddPoint(255, 1);

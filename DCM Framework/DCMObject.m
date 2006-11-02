@@ -1350,8 +1350,6 @@ PixelRepresentation
 		[newUIDValues addObject:newValue];
 	}
 	NSString *uidSuffix = [newUIDValues componentsJoinedByString:@""];
-	
-	
 	NSArray *uidValues = [NSArray arrayWithObjects:rootUID, @"2", uidSuffix, nil];
 	NSString *uid = [uidValues componentsJoinedByString:@"."];
 	uid = [uid substringToIndex:64];
