@@ -90,7 +90,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 @implementation ITKSegmentation3D
 
-+ (NSMutableDictionary*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList
++ (NSArray*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList
 {
 	BOOL					found = YES, foundPlane = YES;
 	long					minX, minY, minZ, maxX, maxY, maxZ;
@@ -98,7 +98,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	long					x, y, z, zz, s = w*h;
 	float					*srcPtrZ, *srcPtrY, *srcPtrX;
 	unsigned char			*rPtr, *rPtrZ, *rPtrY, *rPtrX;
-	NSMutableDictionary		*roiList = [NSMutableDictionary dictionary];
+	NSMutableArray			*roiList = [NSMutableArray array];
 	
 	if( seed[ 0] <= 1) seed[ 0] = 2;	if( seed[ 0] >= w - 2)		seed[ 0] = w - 3;
 	if( seed[ 1] <= 1) seed[ 1] = 2;	if( seed[ 1] >= h - 2)		seed[ 1] = h - 3;
@@ -322,7 +322,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											imageOrigin:NSMakePoint([[pixList objectAtIndex: i] originX], [[pixList objectAtIndex: i] originY])];
 			if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
 			{
-				[roiList setObject: theNewROI forKey: [pixList objectAtIndex: i]];
+				[roiList addObject: [NSDictionary dictionaryWithObjectsAndKeys: theNewROI, @"roi", [pixList objectAtIndex: i], @"curPix", 0L]];
 //				[[roiList objectAtIndex:i] addObject:theNewROI];		// roiList
 //				[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
 //				[theNewROI setROIMode: ROI_selected];

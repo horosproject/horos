@@ -2684,7 +2684,7 @@ public:
 				seed[ 1] = (long) seedPoint.y;
 				seed[ 2] = currentSliceNumber;
 				
-				NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
+				NSArray	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
 																						width:		[[pixList objectAtIndex: 0] pwidth]
 																						height:		[[pixList objectAtIndex: 0] pheight]
 																						depth:		[pixList count]
@@ -2695,8 +2695,8 @@ public:
 				
 				NSLog( @"**** Growing3D");
 				
-				[[[[self window] windowController] viewer2D] applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
-				[[[[self window] windowController] viewer2D] applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
+				[[[[self window] windowController] viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
+				[[[[self window] windowController] viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 
 				NSLog( @"**** Dilate/Erode");
 				
@@ -2706,12 +2706,13 @@ public:
 				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 				NSMutableArray	*roiToProceed = [NSMutableArray array];
-				NSArray			*keys = [roiList allKeys];
 				int				i;
 				
-				for( i = 0 ; i < [keys count]; i++)
+				for( i = 0 ; i < [roiList count]; i++)
 				{
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", [keys objectAtIndex: i], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					NSDictionary	*rr = [roiList objectAtIndex: i];
+					
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 				}
 				
 				[[[[self window] windowController] viewer2D] roiSetStartScheduler: roiToProceed];

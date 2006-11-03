@@ -2486,14 +2486,11 @@ public:
 		{
 			[self deleteMouseDownTimer];
 			
-			WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
-			[waiting showWindow:self];
-			
 			NSLog( @"**** Bone Removal Start");
 			// enable Undo
 			[controller prepareUndo];
 			NSLog( @"**** Undo");
-			
+						
 			// clicked point (2D coordinate)
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 			
@@ -2502,6 +2499,9 @@ public:
 	
 			if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value maxOpacity: BONEOPACITY minValue: BONEVALUE])
 			{
+				WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Bone Removal...", nil)];
+				[waiting showWindow:self];
+
 				NSLog( @"**** Bone Raycast");
 
 				NSPoint seedPoint;
@@ -2514,7 +2514,7 @@ public:
 				seed[ 1] = (long) seedPoint.y;
 				seed[ 2] = pix[ 2];
 				
-				NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
+				NSArray	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		data
 																						width:		[[pixList objectAtIndex: 0] pwidth]
 																						height:		[[pixList objectAtIndex: 0] pheight]
 																						depth:		[pixList count]
@@ -2524,8 +2524,8 @@ public:
 				
 				// Dilatation
 				
-				[[controller viewer2D] applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
-				[[controller viewer2D] applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
+				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
+				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 				
 				// Bone Removal
 				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];
@@ -2533,11 +2533,12 @@ public:
 				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 				NSMutableArray	*roiToProceed = [NSMutableArray array];
-				NSArray			*keys = [roiList allKeys];
 				
-				for( i = 0 ; i < [keys count]; i++)
+				for( i = 0 ; i < [roiList count]; i++)
 				{
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", [keys objectAtIndex: i], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					NSDictionary	*rr = [roiList objectAtIndex: i];
+				
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 				}
 				
 				[[controller viewer2D] roiSetStartScheduler: roiToProceed];

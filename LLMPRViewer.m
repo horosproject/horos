@@ -337,6 +337,15 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[self refreshSubtractedViews];
 }
 
+
+- (void) CloseViewerNotification: (NSNotification*) note
+{
+	if([note object] == viewer || [note object] == notInjectedViewer)
+	{
+		[[self window] close];
+	}
+}
+
 - (void)windowWillClose:(NSNotification *)aNotification
 {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
