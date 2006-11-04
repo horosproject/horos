@@ -182,6 +182,7 @@ static NSString *Modality = @"Modality";
 		}
 		//
 		if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+		
 		if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 		
 		if ([dateQueryFilter object] || [filterValue length] > 0)

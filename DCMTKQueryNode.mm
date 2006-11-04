@@ -515,7 +515,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	opt_port = _port;
 	
 //	//verbose option set to true for now
-//	_verbose=OFTrue;
+	_verbose=OFTrue;
 //
 //	
 //	//debug code activated for now
