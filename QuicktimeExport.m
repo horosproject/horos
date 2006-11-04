@@ -56,8 +56,9 @@ NSString * documentsDirectory();
 		
 		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
 		{
-			unsigned char *namePStr = (unsigned char*) *name;
-			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			//unsigned char *namePStr = (unsigned char*) *name;
+			//NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			NSString *nameStr = [[NSString alloc] initWithString: @"Quicktime Movie"];
 			
 			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
 				nameStr, @"name",
@@ -87,8 +88,9 @@ NSString * documentsDirectory();
 		
 		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
 		{
-			unsigned char *namePStr = (unsigned char*) *name;
-			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			//unsigned char *namePStr = (unsigned char*) *name;
+			//NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			NSString *nameStr = [[NSString alloc] initWithString: @"AVI Movie"];
 			
 			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
 				nameStr, @"name",
@@ -118,8 +120,10 @@ NSString * documentsDirectory();
 		
 		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
 		{
-			unsigned char *namePStr = (unsigned char*) *name;
-			NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			//unsigned char *namePStr = (unsigned char*) *name;
+			//NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			
+			NSString *nameStr = [[NSString alloc] initWithString: @"MPEG4 Movie"];
 			
 			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
 				nameStr, @"name",
