@@ -4835,10 +4835,10 @@ static ViewerController *draggedController = 0L;
 	float				vectors[ 9], vectorsB[ 9];
 	long				i, x;
 	
-	[orientationMatrix setEnabled: NO];
-	
 	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
 	{
+		[orientationMatrix setEnabled: NO];
+		
 		BOOL equalVector = YES;
 		
 		[[pixList[ curMovieIndex] objectAtIndex:0] orientation: vectors];
@@ -4987,6 +4987,7 @@ static ViewerController *draggedController = 0L;
 			NSLog( @"%2.2f %2.2f %2.2f", vectors[6], vectors[7], vectors[8]);
 		}
 	}
+	else if( interval == 0) [orientationMatrix setEnabled: NO];
 	
 	[blendingController computeInterval];
 	

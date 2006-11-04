@@ -988,7 +988,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	seed[1] = (long) y;
 	seed[2] = (long) z;
 	NSLog( @"seed : %d, %d, %d", x, y, z);
-	NSMutableDictionary	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
+	NSArray	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
 																			width:		[[[notInjectedViewer pixList] objectAtIndex: 0] pwidth]
 																			height:		[[[notInjectedViewer pixList] objectAtIndex: 0] pheight]
 																			depth:		[[notInjectedViewer pixList] count]
@@ -998,9 +998,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSLog( @">>>> Growing3D");
 	// Dilatation
 	NSLog( @"dilate");
-	[notInjectedViewer applyMorphology: [roiList allValues] action:@"dilate" radius: 10 sendNotification:NO];
+	[notInjectedViewer applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
 	NSLog( @"erode");
-	[notInjectedViewer applyMorphology: [roiList allValues] action:@"erode" radius: 6 sendNotification:NO];
+	[notInjectedViewer applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 	
 	// Bone Removal
 	NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];
@@ -1008,25 +1008,19 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 	NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
-	NSArray			*keys = [roiList allKeys];
 	int				i;
-
-	for( i = 0 ; i < [keys count]; i++)
-	{
-		NSLog( @"i : %d", i);
-		NSLog( @"keys : %@", [keys objectAtIndex: i]);
-	}
-
-
+	
 	NSLog( @"for");
-	for( i = 0 ; i < [keys count]; i++)
+	for( i = 0 ; i < [roiList count]; i++)
 	{
-		NSLog( @"i : %d", i);
-		NSLog( @"[keys objectAtIndex: i] : %@", [keys objectAtIndex: i]);
-		NSLog( @"[[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]] : %d", [[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]]);
-		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [keys objectAtIndex: i]]];
+		NSDictionary	*rr = [roiList objectAtIndex: i];
 		
-		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [roiList objectForKey: [keys objectAtIndex: i]], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+		NSLog( @"i : %d", i);
+		NSLog( @"[[notInjectedViewer pixList] indexOfObject: ] : %d", [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]);
+				
+		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]];
+		
+		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 	}
 	NSLog( @"end for");
 	[viewer roiSetStartScheduler: roiToProceed];

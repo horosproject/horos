@@ -672,20 +672,8 @@ static BOOL COMPLETEREBUILD = NO;
 							else
 							{
 								study = [studiesArray objectAtIndex: index];
-								[study setValue:today forKey:@"dateAdded"];
 							}
-							
-							
-							// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
-							for( x = 0; x < [viewersList count]; x++)
-							{
-								if( [[curDict objectForKey: @"patientUID"] isEqualToString: [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.patientUID"]])
-								{
-									if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
-										[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
-								}
-							}
-							
+														
 							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
 							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
 							
@@ -739,13 +727,6 @@ static BOOL COMPLETEREBUILD = NO;
 								else
 								{
 									seriesTable = [seriesArray objectAtIndex: index];
-									[seriesTable setValue:today forKey:@"dateAdded"];
-									
-									// For each new image in a pre-existing series, check if a viewer is already opened -> reload the series
-									for( x = 0; x < [viewersList count]; x++)
-									{
-										if( seriesTable == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKey:@"series"]) [viewersListToReload addObject: [viewersList objectAtIndex: x]];
-									}
 								}
 								
 								[curSerieID release];
@@ -803,6 +784,29 @@ static BOOL COMPLETEREBUILD = NO;
 							if( index == NSNotFound)
 							{
 								needDBRefresh = YES;
+								
+								for( x = 0; x < [viewersList count]; x++)
+								{
+									NSManagedObject	*firstObject = [[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0];
+									
+									// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
+									
+									if( [[curDict objectForKey: @"patientUID"] isEqualToString: [firstObject valueForKeyPath:@"series.study.patientUID"]])
+									{
+										if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
+											[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
+									}
+									
+									if( seriesTable == [firstObject valueForKey:@"series"])
+									{
+										if( [viewersListToReload containsObject:[viewersList objectAtIndex: x]] == NO)
+											[viewersListToReload addObject: [viewersList objectAtIndex: x]];
+									}
+								}
+								
+								[study setValue:today forKey:@"dateAdded"];
+								[seriesTable setValue:today forKey:@"dateAdded"];
+								
 								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
 								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
