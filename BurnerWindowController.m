@@ -22,7 +22,7 @@ Version 2.3
 
 
 
-
+#import "WaitRendering.h"
 #import "BurnerWindowController.h"
 #import <OsiriX/DCM.h>
 #import <DiscRecordingUI/DiscRecordingUI.h>
@@ -39,6 +39,10 @@ NSString* asciiString (NSString* name);
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
+	NSFileManager *manager = [NSFileManager defaultManager];
+	
+	[manager removeFileAtPath:imagePath handler:nil];
+	
 	NSTask* makeImageTask = [[[NSTask alloc]init]autorelease];
 
 	[makeImageTask setLaunchPath: @"/bin/sh"];
@@ -52,6 +56,33 @@ NSString* asciiString (NSString* name);
 	[makeImageTask setArguments:args];
 	[makeImageTask launch];
 	[makeImageTask waitUntilExit];
+}
+
+- (void)writeDMG:(id)object
+{
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setCanSelectHiddenExtension:YES];
+	[savePanel setRequiredFileType:@"dmg"];
+	[savePanel setTitle:@"Save as DMG"];
+	
+	if( [savePanel runModalForDirectory:0L file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
+	{
+		WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
+		[wait showWindow:self];
+		
+		[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
+		
+		[wait close];
+		[wait release];
+	}
+	
+	NSFileManager *manager = [NSFileManager defaultManager];
+	[manager removeFileAtPath:[self folderToBurn] handler:nil];
+	burning = NO;
+	runBurnAnimation = NO;
+	
+	[nameField setEnabled: YES];
+	[compressionMode setEnabled: YES];
 }
 
 -(id) initWithFiles:(NSArray *)theFiles
@@ -187,6 +218,9 @@ NSString* asciiString (NSString* name);
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
+		[nameField setEnabled: NO];
+		[compressionMode setEnabled: NO];
+		
 		if (cdName != nil) {
 			runBurnAnimation = YES;
 			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
@@ -197,13 +231,18 @@ NSString* asciiString (NSString* name);
 	}
 }
 
-- (void)performBurn: (id) object{
+- (void)performBurn: (id) object
+{
+	BOOL writeDMG = NO;
+
+	 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
+	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isSettingUpBurn = YES;
 	[self addDicomdir];
 	isSettingUpBurn = NO;
-
-	[self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
+	if( writeDMG) [self performSelectorOnMainThread:@selector(writeDMG:) withObject:nil waitUntilDone:YES];
+	else [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
 	[pool release];
 }
 
@@ -255,6 +294,9 @@ NSString* asciiString (NSString* name);
 		else
 			runBurnAnimation = NO;
 	}
+	
+	[nameField setEnabled: YES];
+	[compressionMode setEnabled: YES];
 }
 
 
@@ -688,9 +730,12 @@ NSString* asciiString (NSString* name);
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (void)burnAnimation:(NSTimer *)timer{
+- (void)burnAnimation:(NSTimer *)timer
+{
 	isThrobbing = NO;
-	while (runBurnAnimation) {
+	while (runBurnAnimation)
+	{
+		
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString *animation = [NSString stringWithFormat:@"burn_anim%02d", burnAnimationIndex++];
 		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
@@ -702,7 +747,6 @@ NSString* asciiString (NSString* name);
 		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		[pool release];
 	}
-	
 }
 
 -(void)irisAnimation:(id)object
