@@ -37,6 +37,23 @@ NSString* asciiString (NSString* name);
 
 @implementation BurnerWindowController
 
+- (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
+{
+	NSTask* makeImageTask = [[[NSTask alloc]init]autorelease];
+
+	[makeImageTask setLaunchPath: @"/bin/sh"];
+
+	NSString* cmdString = [NSString stringWithFormat: @"hdiutil create '%@' -srcfolder '%@'",
+													  imagePath,
+													  directoryPath];
+
+	NSArray *args = [NSArray arrayWithObjects: @"-c", cmdString, nil];
+
+	[makeImageTask setArguments:args];
+	[makeImageTask launch];
+	[makeImageTask waitUntilExit];
+}
+
 -(id) initWithFiles:(NSArray *)theFiles
 {
     if (self = [super initWithWindowNibName:@"BurnViewer"]) {
