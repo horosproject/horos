@@ -30,8 +30,10 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 ****************************************/
 
 
-
+#if !__LP64__
 #import "AYDicomPrintWindowController.h"
+#endif
+
 #import "MyOutlineView.h"
 #import "xNSImage.h"
 #import "PluginFilter.h"
@@ -374,18 +376,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					for( y = 0; y < count; y++)
 					{
-						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
-										[curPix fImage] + (count-y-1) * newX,
-										newX * sizeof( float));
+						memcpy(	[curPix fImage] + (count-y-1) * newX,
+								[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
+								newX * sizeof( float));
 					}
 				}
 				else
 				{
 					for( y = 0; y < count; y++)
 					{
-						BlockMoveData(	[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
-										[curPix fImage] + y * newX,
-										newX * sizeof( float));
+						memcpy(	[curPix fImage] + y * newX,
+								[[pixList[ curMovieIndex] objectAtIndex: y] fImage] + i * pwidth,
+								newX * sizeof( float));
 					}
 				}
 				
@@ -9513,7 +9515,9 @@ int i,j,l;
 {
 	[self checkEverythingLoaded];
 	
+	#if !__LP64__
 	[[[AYDicomPrintWindowController alloc] init] autorelease];
+	#endif
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
