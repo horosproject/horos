@@ -239,7 +239,7 @@
 {
 	red = r;
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
-	roiVolumeActor->GetProperty()->SetColor(red, green, blue);
+	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:red] forKey:@"red"];
 }
 
@@ -252,7 +252,7 @@
 {
 	green = g;
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
-	roiVolumeActor->GetProperty()->SetColor(red, green, blue);
+	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:green] forKey:@"green"];
 }
 
@@ -265,7 +265,7 @@
 {
 	blue = b;
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
-	roiVolumeActor->GetProperty()->SetColor(red, green, blue);
+	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetColor(red, green, blue);
 	[properties setValue:[NSNumber numberWithFloat:blue] forKey:@"blue"];
 }
 
@@ -278,7 +278,7 @@
 {
 	opacity = o;
 	color = [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:opacity];
-	roiVolumeActor->GetProperty()->SetOpacity(opacity);
+	if( roiVolumeActor) roiVolumeActor->GetProperty()->SetOpacity(opacity);
 	[properties setValue:[NSNumber numberWithFloat:opacity] forKey:@"opacity"];
 }
 
