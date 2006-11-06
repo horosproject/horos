@@ -316,8 +316,13 @@ MODIFICATION HISTORY
 
 - (void) flyThruSetNumberOfFrames
 {
-	[FT setNumberOfFrames: [nbFramesTextField intValue]];
-	[framesSlider setMaxValue: [nbFramesTextField intValue]-1];
+	int v = [nbFramesTextField intValue];
+	
+	if( v < 2) v = 2;
+	if( v > 1000) v = 1000;
+	
+	[FT setNumberOfFrames: v];
+	[framesSlider setMaxValue: v-1];
 }
 
 - (IBAction) flyThruSetNumberOfFrames:(id) sender
@@ -350,7 +355,12 @@ MODIFICATION HISTORY
 	
 	if(userChoice == 1)
 	{
-		[FT setNumberOfFrames: [nbFramesTextField intValue]];
+		int v = [nbFramesTextField intValue];
+	
+		if( v < 2) v = 2;
+		if( v > 1000) v = 1000;
+	
+		[FT setNumberOfFrames: v];
 		[FT computePath];
 		
 		// 4D
