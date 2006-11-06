@@ -73,6 +73,11 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 @implementation VRPROController
 
+- (BOOL)is4D;
+{
+	return (maxMovieIndex > 1);
+}
+
 -(void) revertSeries:(id) sender
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: 0L];
