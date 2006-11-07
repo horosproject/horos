@@ -762,6 +762,8 @@
 		AB17D1CA0AF2137C00231B11 /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		AB17D1CB0AF2137C00231B11 /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		AB17D6E90AB6BAC600C71ACA /* SRAnnotationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A942B0DF0AB591E000CCADB1 /* SRAnnotationController.mm */; };
+		AB1C9FAF0B009073001DB0D2 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
+		AB1C9FB00B00907C001DB0D2 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
 		AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
 		AB1CB35D0618A37E00CD966B /* MyPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.m */; };
 		AB1CB35E0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
@@ -29545,6 +29547,7 @@
 				ABB36C150AF23CB900DBEEA2 /* AYDicomPrint.nib in Resources */,
 				ABB36D820AF2548C00DBEEA2 /* away.tif in Resources */,
 				ABB36D830AF2548C00DBEEA2 /* available.tif in Resources */,
+				AB1C9FB00B00907C001DB0D2 /* PAGES in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29850,6 +29853,7 @@
 				ABB36C160AF23CB900DBEEA2 /* AYDicomPrint.nib in Resources */,
 				ABB36D840AF2548C00DBEEA2 /* away.tif in Resources */,
 				ABB36D850AF2548C00DBEEA2 /* available.tif in Resources */,
+				AB1C9FAF0B009073001DB0D2 /* PAGES in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

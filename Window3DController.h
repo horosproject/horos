@@ -93,4 +93,6 @@
 - (IBAction) fullScreenMenu: (id) sender;
 - (long) movieFrames;
 - (void) setMovieFrame: (long) l;
+
+- (BOOL)is4D;
 @end
