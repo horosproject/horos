@@ -9409,16 +9409,16 @@ int i,j,l;
 			if( saveImage)
 			{
 				[self setImageIndex: i];
-				NSImage *im = [imageView nsimage: [[printFormat selectedCell] tag]];
+				NSImage *im = [[imageView nsimage: [[printFormat selectedCell] tag]] autorelease];
+				im = [DCMPix resizeIfNecessary: im dcmPix: [imageView curDCM]];
 				
-				NSArray *representations = [im representations];
-				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+				NSData *imageData = [im  TIFFRepresentation];
+				NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+				NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 				
 				[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", i]];
 				
 				[bitmapData writeToFile: [files lastObject] atomically:YES];
-		
-				[im release];
 			}
 			
 			[splash incrementBy: 1];

@@ -261,6 +261,7 @@
 -(void) ang:(float)newAng;
 -(float) ang;
 
++ (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
 -(long) DCMPixShutterRectWidth;
 -(long) DCMPixShutterRectHeight;

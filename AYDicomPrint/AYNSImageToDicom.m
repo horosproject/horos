@@ -204,59 +204,25 @@
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
-	NSImage *currentImage = [[viewer imageView] nsimage: NO];
+	NSImage *currentImage = [[[viewer imageView] nsimage: NO] autorelease];
+	
+	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
+	
 	[currentImage setFlipped: YES];
-
-	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
-	NSRect imageRect;
-	float rescale = 1;
 	
-	// Rescale image if resolution is too high, compared to the original resolution
-	
-	#define MAXSIZE 1.3
-	
-	if(		[currentImage size].width > [[[viewer imageView] curDCM] pwidth]*MAXSIZE &&
-			[currentImage size].height > [[[viewer imageView] curDCM] pheight]*MAXSIZE)
-		{
-			if( [currentImage size].width/[[[viewer imageView] curDCM] pwidth] < [currentImage size].height / [[[viewer imageView] curDCM] pheight])
-			{
-				float ratio = [currentImage size].width / ([[[viewer imageView] curDCM] pwidth] * MAXSIZE);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
-			}
-			else
-			{
-				float ratio = [currentImage size].height / ([[[viewer imageView] curDCM] pheight] * MAXSIZE);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
-			}
-		}
-	else imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
-	
-	NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
-	[compositingImage setFlipped: YES];
-	[currentImage setScalesWhenResized:YES];
-	[compositingImage lockFocus];
-	[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
-	[[NSColor whiteColor] set];
-	[NSBezierPath setDefaultLineWidth: 2.0];
-	[NSBezierPath strokeRect: NSMakeRect(imageRect.origin.x + 1, imageRect.origin.y + 1, imageRect.size.width - 1, imageRect.size.height - 1)];
-	[currentImage release];
-	
-	NSLog( @"Size: %f %f", [compositingImage size].width, [compositingImage size].height);
+	[currentImage lockFocus];
 	
 	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
-
+	
+	NSRect imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
+	
 	if (annotations)
 		[self _drawAnnotationsInRect: imageRect forTile: patientInfoDict isPrinting: YES];
 	
-	[compositingImage unlockFocus];
+	[currentImage unlockFocus];
 	
-	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: compositingImage colorPrint: colorPrint];
+	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
 	
-	[compositingImage release];
 	// masu 2006-10-04
 	
 	return imagePath;
@@ -327,8 +293,6 @@
 	
 	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation size].width * [imageRepresentation size].height) + 1];
 	
-	NSLog( @"IN");
-	
 	//unsigned char *imageBuffer = malloc([imageRepresentation size].width * [imageRepresentation size].height) + 1;
 	//unsigned char *destBuffer = imageBuffer;
 
@@ -361,8 +325,6 @@
 		//*destBuffer++ = '\0';
 		bytesWritten++;
 	}
-	
-	NSLog( @"OUT");
 	
 	//[imageRepresentation release];
 	[pool release];

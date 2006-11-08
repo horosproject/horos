@@ -145,6 +145,8 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+	
 	NSSize size = [self frame].size;
 	
 	int	columns = [[settings objectForKey: @"columns"] intValue];
