@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "ViewerController.h"
 #import "DCMView.h"
-
+#import "DCMPix.h"
 
 enum
 {

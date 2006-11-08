@@ -186,8 +186,12 @@
 	int i;
 	for(i = 0; i < [fileList count]; i++)
 	{
+		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+		
 		[currentViewer setImageIndex: [[fileList objectAtIndex: i] intValue]];
 		[dicomFilePathList addObject: [self _createDicomImageWithViewer: currentViewer toDestinationPath: destPath asColorPrint: colorPrint withAnnotations: annotations]];
+		
+		[pool release];
 	}
 
 	[[currentViewer imageView] setIndex: currentImageIndex];
@@ -200,32 +204,58 @@
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
 	NSImage *currentImage = [[viewer imageView] nsimage: NO];
 	[currentImage setFlipped: YES];
 
-	NSRect imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
+	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
+	NSRect imageRect;
+	float rescale = 1;
+	
+	// Rescale image if resolution is too high, compared to the original resolution
+	
+	#define MAXSIZE 1.3
+	
+	if(		[currentImage size].width > [[[viewer imageView] curDCM] pwidth]*MAXSIZE &&
+			[currentImage size].height > [[[viewer imageView] curDCM] pheight]*MAXSIZE)
+		{
+			if( [currentImage size].width/[[[viewer imageView] curDCM] pwidth] < [currentImage size].height / [[[viewer imageView] curDCM] pheight])
+			{
+				float ratio = [currentImage size].width / ([[[viewer imageView] curDCM] pwidth] * MAXSIZE);
+				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+				
+				NSLog( @"ratio: %f", ratio);
+			}
+			else
+			{
+				float ratio = [currentImage size].height / ([[[viewer imageView] curDCM] pheight] * MAXSIZE);
+				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+				
+				NSLog( @"ratio: %f", ratio);
+			}
+		}
+	else imageRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
+	
 	NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
 	[compositingImage setFlipped: YES];
-
+	[currentImage setScalesWhenResized:YES];
 	[compositingImage lockFocus];
-	[currentImage drawInRect: imageRect fromRect: imageRect operation: NSCompositeCopy fraction: 1.0];
+	[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
 	[[NSColor whiteColor] set];
 	[NSBezierPath setDefaultLineWidth: 2.0];
 	[NSBezierPath strokeRect: NSMakeRect(imageRect.origin.x + 1, imageRect.origin.y + 1, imageRect.size.width - 1, imageRect.size.height - 1)];
 	[currentImage release];
-		
-	[pool release];
+	
+	NSLog( @"Size: %f %f", [compositingImage size].width, [compositingImage size].height);
 	
 	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
 
 	if (annotations)
 		[self _drawAnnotationsInRect: imageRect forTile: patientInfoDict isPrinting: YES];
 	
-	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: compositingImage colorPrint: colorPrint];
-
 	[compositingImage unlockFocus];
+	
+	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: compositingImage colorPrint: colorPrint];
+	
 	[compositingImage release];
 	// masu 2006-10-04
 	
@@ -297,6 +327,8 @@
 	
 	m_ImageDataBytes = [[NSMutableData alloc] initWithCapacity: ([imageRepresentation size].width * [imageRepresentation size].height) + 1];
 	
+	NSLog( @"IN");
+	
 	//unsigned char *imageBuffer = malloc([imageRepresentation size].width * [imageRepresentation size].height) + 1;
 	//unsigned char *destBuffer = imageBuffer;
 
@@ -324,10 +356,14 @@
 
 	if(bytesWritten % 2 != 0)
 	{
-		[m_ImageDataBytes appendBytes: '\0' length: 1];
+		grayValue = 0;
+		[m_ImageDataBytes appendBytes: &grayValue length: 1];
 		//*destBuffer++ = '\0';
 		bytesWritten++;
 	}
+	
+	NSLog( @"OUT");
+	
 	//[imageRepresentation release];
 	[pool release];
 	struct rawData rawImage;

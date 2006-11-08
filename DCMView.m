@@ -5103,7 +5103,7 @@ static long scrollMode;
 	
 	//draw line around edge for key Images only in 2D Viewer
 	
-	if ([[[self window] windowController] isMemberOfClass:[ViewerController class]] && [[[self window] windowController] isKeyImage:curImage]) {
+	if ([[[self window] windowController] isMemberOfClass:[ViewerController class]] && [[[self window] windowController] isKeyImage:curImage] && stringID == 0L) {
 		glLineWidth(2.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
@@ -5997,7 +5997,7 @@ static long scrollMode;
 					}
 				}  //drawLines for ImageView Frames
 				
-				if ((_imageColumns > 1 || _imageRows > 1) && [[[self window] windowController] is2DViewer] == YES) {
+				if ((_imageColumns > 1 || _imageRows > 1) && [[[self window] windowController] is2DViewer] == YES && stringID == 0L) {
 					float heighthalf = size.size.height/2 - 1;
 					float widthhalf = size.size.width/2 - 1;
 					
