@@ -15,6 +15,7 @@
 #import "AppController.h"
 #import "VRController.h"
 #import "VRControllerVPRO.h"
+#import "WaitRendering.h"
 
 #define BONEVALUE 250
 
@@ -1271,9 +1272,15 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //	}
 //	else
 //	{
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Computing subtraction...", nil)];
+		[wait showWindow:self];
+
 		NSMutableData *volumeData = [[NSMutableData alloc] initWithLength:0];
 		NSMutableArray *pix = [[NSMutableArray alloc] initWithCapacity:0];
 		[self produceResultData:&volumeData pixList:pix];
+
+		[wait close];
+		[wait release];
 		
 //		NSLog(@"[volumeData length] : %d", [volumeData length]);
 //		NSLog(@"[pix count] : %d", [pix count]);
