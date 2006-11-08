@@ -154,7 +154,7 @@ static const char* transferSyntaxes[] = {
 
 - (IBAction) printImages: (id) sender
 {
-	if( [m_pages intValue] > 10)
+	if( [m_pages intValue] > 10 && [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Print", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you really sure you want to print %d pages?", nil), [m_pages intValue]] , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) != NSAlertDefaultReturn) return;
 	}

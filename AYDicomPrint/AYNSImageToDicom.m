@@ -160,10 +160,14 @@
 		int i;
 		for (i = 0; i < [fileList count]; i++)
 		{
-			NSManagedObject *image = [fileList objectAtIndex: i];
+			NSManagedObject *image;
+			
+			if( [[currentViewer imageView] flippedData]) image = [fileList objectAtIndex: [fileList count] -1 -i];
+			else image = [fileList objectAtIndex: i];
+			
 			if (![[image valueForKey: @"isKeyImage"] boolValue])
 				continue;
-
+			
 			[images addObject: [NSNumber numberWithInt: i]];
 		}
 	}

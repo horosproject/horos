@@ -3916,6 +3916,8 @@ static ViewerController *draggedController = 0L;
 	NSLog(@"LOADING: All images loaded");
 	
 	
+	loadingPercentage = 1;
+	
 	if( stopThreadLoadImage == NO)
 	{
 		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
@@ -3940,7 +3942,6 @@ static ViewerController *draggedController = 0L;
 		}
 	}
 	
-	loadingPercentage = 1;
 	ThreadLoadImage = NO;
 	
     [pool release];
@@ -9347,7 +9348,8 @@ int i,j,l;
 		switch( [[printSelection selectedCell] tag])
 		{
 			case 0:
-				from = [imageView curImage];
+				if( [imageView flippedData]) from = [pixList[ curMovieIndex] count] - [imageView curImage] - 1;
+				else from = [imageView curImage];
 				to = from+1;
 				interval = 1;
 			break;
@@ -9396,7 +9398,12 @@ int i,j,l;
 			
 			if( [[printSelection selectedCell] tag] == 1)
 			{
-				if (![[[fileList[ curMovieIndex] objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
+				NSManagedObject	*image;
+				
+				if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+				else image = [[self fileList] objectAtIndex: i];
+				
+				if (![[image valueForKey: @"isKeyImage"] boolValue]) saveImage = NO;
 			}
 			
 			if( saveImage)
@@ -9528,7 +9535,10 @@ int i,j,l;
 			
 	if( qt_dimension == 3)
 	{
-		NSManagedObject	*image = [[self fileList] objectAtIndex: curSample];
+		NSManagedObject	*image;
+		
+		if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -curSample];
+		else image = [[self fileList] objectAtIndex: curSample];
 		export = [[image valueForKey:@"isKeyImage"] boolValue];
 	}
 	
@@ -9854,7 +9864,11 @@ int i,j,l;
 				
 				if( [[dcmSelection selectedCell] tag] == 2)	// Only key images
 				{
-					NSManagedObject	*image = [fileList[ curMovieIndex] objectAtIndex: i];
+					NSManagedObject	*image;
+					
+					if( [[self imageView] flippedData]) image = [[self fileList] objectAtIndex: [[self fileList] count] -1 -i];
+					else image = [[self fileList] objectAtIndex: i];
+					
 					export = [[image valueForKey:@"isKeyImage"] boolValue];
 				}
 				
@@ -10325,7 +10339,10 @@ int i,j,l;
 						
 						if( [[imageSelection selectedCell] tag] == 2)
 						{
-							NSManagedObject	*image = [fileList[ curMovieIndex] objectAtIndex: i];
+							NSManagedObject	*image;
+							
+							image = [[self fileList] objectAtIndex: i];
+							
 							export = [[image valueForKey:@"isKeyImage"] boolValue];
 						}
 						
