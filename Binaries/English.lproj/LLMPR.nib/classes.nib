@@ -56,7 +56,9 @@
             OUTLETS = {
                 bonesThresholdSlider = NSSlider; 
                 bonesThresholdTextField = NSTextField; 
+                closingRadiusSlider = NSSlider; 
                 closingRadiusTextField = NSTextField; 
+                dilatationRadiusSlider = NSSlider; 
                 dilatationRadiusTextField = NSTextField; 
                 displayBonesButton = NSButton; 
                 injectedMPRController = LLMPRController; 
@@ -69,6 +71,7 @@
                 notInjectedMinValueSlider = NSSlider; 
                 notInjectedMinValueTextField = NSTextField; 
                 parametersPanel = NSPanel; 
+                settingsPupop = NSPopUpButton; 
                 subtractedOriginalView = LLDCMView; 
                 subtractedXReslicedView = LLDCMView; 
                 subtractedYReslicedView = LLDCMView; 

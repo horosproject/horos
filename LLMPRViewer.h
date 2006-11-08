@@ -30,7 +30,7 @@
 	IBOutlet NSPopUpButton		*thickSlabModePopUp;
 	IBOutlet NSPanel			*parametersPanel;
 	IBOutlet NSTextField		*injectedMinValueTextField, *injectedMaxValueTextField, *notInjectedMinValueTextField, *notInjectedMaxValueTextField, *subtractionMinValueTextField, *subtractionMaxValueTextField;
-	IBOutlet NSSlider			*injectedMinValueSlider, *injectedMaxValueSlider, *notInjectedMinValueSlider, *notInjectedMaxValueSlider, *subtractionMinValueSlider, *subtractionMaxValueSlider;
+	IBOutlet NSSlider			*injectedMinValueSlider, *injectedMaxValueSlider, *notInjectedMinValueSlider, *notInjectedMaxValueSlider, *subtractionMinValueSlider, *subtractionMaxValueSlider, *dilatationRadiusSlider, *closingRadiusSlider;
 	int							injectedMinValue, injectedMaxValue, notInjectedMinValue, notInjectedMaxValue, subtractionMinValue, subtractionMaxValue;
 	IBOutlet NSTextField		*xShiftTextField, *yShiftTextField, *zShiftTextField;
 	IBOutlet NSTextField		*dilatationRadiusTextField, *closingRadiusTextField;
@@ -40,6 +40,7 @@
 	IBOutlet NSSlider			*bonesThresholdSlider;
 	IBOutlet NSTextField		*bonesThresholdTextField;
 	int							bonesThreshold;
+	IBOutlet NSPopUpButton		*settingsPupop;
 }
 
 - (id)initWithPixList:(NSMutableArray*)pix:(NSMutableArray*)pixToSubstract:(NSArray*)files:(NSData*)vData:(ViewerController*)vC:(ViewerController*)bC:(LLScoutViewer*)sV;

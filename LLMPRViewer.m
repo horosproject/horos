@@ -85,10 +85,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //
 //	// WL/WW Menu	
 	curWLWWMenu = NSLocalizedString(@"Other", nil);
-	[nc addObserver: self
-           selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
-             object: nil];
+	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc postNotificationName: @"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
 		
 	subtractedOriginalBuffer = 0L;
@@ -104,6 +101,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	closingRadius = 2;
 	displayBones = NO;
 	bonesThreshold = 200;
+	
+	[self buildSettingsMenu];
 	
 	return self;
 }
@@ -1525,6 +1524,111 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[closingRadiusTextField setIntValue:closingRadius-1];
 	//NSLog(@"setClosingRadius : %d", closingRadius);
 	[self refreshSubtractedViews];
+}
+
+#pragma mark-
+#pragma mark Saved Settings
+
+- (void)saveSettings:(id)sender;
+{
+	[self saveSettingsAs:[NSString stringWithFormat:@"test %d",[settingsPupop numberOfItems]]];
+	[self buildSettingsMenu];
+}
+
+- (void)saveSettingsAs:(NSString*)title;
+{
+	NSMutableDictionary *settings = [NSMutableDictionary dictionary];
+	// thresholds
+	[settings setValue:[NSNumber numberWithInt:injectedMinValue] forKey:@"injectedMinValue"];
+	[settings setValue:[NSNumber numberWithInt:injectedMaxValue] forKey:@"injectedMaxValue"];
+	[settings setValue:[NSNumber numberWithInt:notInjectedMinValue] forKey:@"notInjectedMinValue"];
+	[settings setValue:[NSNumber numberWithInt:notInjectedMaxValue] forKey:@"notInjectedMaxValue"];
+	[settings setValue:[NSNumber numberWithInt:subtractionMinValue] forKey:@"subtractionMinValue"];
+	[settings setValue:[NSNumber numberWithInt:subtractionMaxValue] forKey:@"subtractionMaxValue"];
+	// bones
+	[settings setValue:[NSNumber numberWithBool:displayBones] forKey:@"displayBones"];
+	[settings setValue:[NSNumber numberWithInt:bonesThreshold] forKey:@"bonesThreshold"];
+	// morphology
+	[settings setValue:[NSNumber numberWithInt:dilatationRadius] forKey:@"dilatationRadius"];
+	[settings setValue:[NSNumber numberWithInt:closingRadius] forKey:@"closingRadius"];
+		
+	NSDictionary *oldPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
+	NSMutableDictionary *llPresets = [NSMutableDictionary dictionary];
+	[llPresets setDictionary:oldPresets];
+	[llPresets setObject:settings forKey:title];
+	[[NSUserDefaults standardUserDefaults] setObject:llPresets forKey:@"LLSubtractionParameters"];
+}
+
+- (NSDictionary*)settingsForTitle:(NSString*)title;
+{
+	NSDictionary *llPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
+	NSDictionary *settings = [llPresets objectForKey:title];
+}
+
+- (void)applySettingsForTitle:(NSString*)title;
+{
+	NSDictionary *settings = [self settingsForTitle:title];
+	
+	// thresholds
+	//     values
+	[self setInjectedMinValue:[[settings objectForKey:@"injectedMinValue"] intValue]];
+	[self setInjectedMaxValue:[[settings objectForKey:@"injectedMaxValue"] intValue]];
+	[self setNotInjectedMinValue:[[settings objectForKey:@"notInjectedMinValue"] intValue]];
+	[self setNotInjectedMaxValue:[[settings objectForKey:@"notInjectedMaxValue"] intValue]];
+	[self setSubtractionMinValue:[[settings objectForKey:@"subtractionMinValue"] intValue]];
+	[self setSubtractionMaxValue:[[settings objectForKey:@"subtractionMaxValue"] intValue]];
+	//     sliders
+	[injectedMinValueSlider setIntValue:injectedMinValue];
+	[injectedMaxValueSlider setIntValue:injectedMaxValue];
+	[notInjectedMinValueSlider setIntValue:notInjectedMinValue];
+	[notInjectedMaxValueSlider setIntValue:notInjectedMaxValue];
+	[subtractionMinValueSlider setIntValue:subtractionMinValue];
+	[subtractionMaxValueSlider setIntValue:subtractionMaxValue];
+	//     textFields
+	[injectedMinValueTextField setStringValue:[NSString stringWithFormat:@"%d", injectedMinValue]];
+	[injectedMaxValueTextField setStringValue:[NSString stringWithFormat:@"%d", injectedMaxValue]];
+	[notInjectedMinValueTextField setStringValue:[NSString stringWithFormat:@"%d", notInjectedMinValue]];
+	[notInjectedMaxValueTextField setStringValue:[NSString stringWithFormat:@"%d", notInjectedMaxValue]];
+	[subtractionMinValueTextField setStringValue:[NSString stringWithFormat:@"%d", subtractionMinValue]];
+	[subtractionMaxValueTextField setStringValue:[NSString stringWithFormat:@"%d", subtractionMaxValue]];
+	// bones
+	displayBones = [[settings objectForKey:@"displayBones"] boolValue];
+	[displayBonesButton setState:(displayBones)?NSOnState:NSOffState];
+	bonesThreshold = [[settings objectForKey:@"bonesThreshold"] intValue];
+	[bonesThresholdSlider setEnabled:displayBones];
+	[bonesThresholdSlider setIntValue:bonesThreshold];
+	[bonesThresholdTextField setStringValue:[NSString stringWithFormat:@"%d", bonesThreshold]];
+	// morphology
+	dilatationRadius = [[settings objectForKey:@"dilatationRadius"] intValue];
+	closingRadius = [[settings objectForKey:@"closingRadius"] intValue];
+	[dilatationRadiusSlider setIntValue:dilatationRadius];
+	[closingRadiusSlider setIntValue:dilatationRadius];
+	[dilatationRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", dilatationRadius]];
+	[closingRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", closingRadius]];
+	
+	[self refreshSubtractedViews];
+}
+
+- (IBAction)applySettings:(id)sender;
+{
+	[self applySettingsForTitle:[sender title]];
+}
+
+- (void)buildSettingsMenu;
+{
+	NSDictionary *llPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
+	NSArray *keys = [llPresets allKeys];
+	NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	[settingsPupop removeAllItems];
+	NSMenu *menu = [settingsPupop menu];
+	int i;
+	for(i=0; i<[sortedKeys count]; i++)
+	{
+		[menu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(applySettings:) keyEquivalent:@""];
+	}
+	if([sortedKeys count])[menu addItem:[NSMenuItem separatorItem]];
+	[menu addItemWithTitle:@"Add current settings" action:@selector(saveSettings:) keyEquivalent:@""];
+	[settingsPupop setMenu:menu];
 }
 
 @end
