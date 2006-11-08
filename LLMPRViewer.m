@@ -850,6 +850,22 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[zShiftTextField setIntValue:zShift];
 }
 
+- (IBAction)resetShift:(id)sender;
+{
+	[self resetShift];
+	[self refreshSubtractedViews];
+}
+
+- (void)resetShift;
+{
+	xShift = 0;
+	yShift = 0;
+	zShift = 0;
+	[xShiftTextField setIntValue:0];
+	[yShiftTextField setIntValue:0];
+	[zShiftTextField setIntValue:0];
+}
+
 - (void)applyShiftX:(int)x y:(int)y toBuffer:(float*)buffer withWidth:(int)width height:(int)height;
 {
 	if(x==0 && y==0) return;

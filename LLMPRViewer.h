@@ -49,6 +49,8 @@
 - (void)_setThickSlabMode:(int)mode;
 - (void)refreshSubtractedViews;
 - (void)shiftSubtractionX:(int)deltaX y:(int)deltaY z:(int)deltaZ;
+- (IBAction)resetShift:(id)sender;
+- (void)resetShift;
 - (void)applyShiftX:(int)x y:(int)y toBuffer:(float*)buffer withWidth:(int)width height:(int)height;
 - (void)removeBonesAtX:(int)x y:(int)y z:(int)z;
 - (void)resampleBuffer:(float*)buffer withWidth:(int)width height:(int)height factor:(float)factor inNewBuffer:(float*)newBuffer;

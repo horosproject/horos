@@ -42,6 +42,7 @@
                 produce3DResult = id; 
                 produceResultInMemory = id; 
                 resetParametersSliders = id; 
+                resetShift = id; 
                 saveParametersValuesAsDefault = id; 
                 setBonesThreshold = id; 
                 setClosingRadius = id; 
