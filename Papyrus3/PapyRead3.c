@@ -1137,6 +1137,154 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
     
 } /* endof ExtractRLE */
 
+
+unsigned short readUint16(const unsigned char *data)
+{
+  return (((unsigned short)(*data) << 8) | ((unsigned short)(*(data+1))));
+}
+
+unsigned char scanJpegDataForBitDepth(
+  const unsigned char *data,
+  const long fragmentLength)
+{
+  long offset = 0;
+  while(offset+4 < fragmentLength)
+  {
+    switch(readUint16(data+offset))
+    {
+      case 0xffc0: // SOF_0: JPEG baseline
+        return data[offset+4];
+        /* break; */
+      case 0xffc1: // SOF_1: JPEG extended sequential DCT
+        return data[offset+4];
+        /* break; */
+      case 0xffc2: // SOF_2: JPEG progressive DCT
+        return data[offset+4];
+        /* break; */
+      case 0xffc3 : // SOF_3: JPEG lossless sequential
+        return data[offset+4];
+        /* break; */
+      case 0xffc5: // SOF_5: differential (hierarchical) extended sequential, Huffman
+        return data[offset+4];
+        /* break; */
+      case 0xffc6: // SOF_6: differential (hierarchical) progressive, Huffman
+        return data[offset+4];
+        /* break; */
+      case 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
+        return data[offset+4];
+        /* break; */
+      case 0xffc8: // Reserved for JPEG extentions
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffc9: // SOF_9: extended sequential, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffca: // SOF_10: progressive, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffcb: // SOF_11: lossless, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffcd: // SOF_13: differential (hierarchical) extended sequential, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffce: // SOF_14: differential (hierarchical) progressive, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffcf: // SOF_15: differential (hierarchical) lossless, arithmetic
+        return data[offset+4];
+        /* break; */
+      case 0xffc4: // DHT
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffcc: // DAC
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffd0: // RST m
+      case 0xffd1:
+      case 0xffd2:
+      case 0xffd3:
+      case 0xffd4:
+      case 0xffd5:
+      case 0xffd6:
+      case 0xffd7:
+        offset +=2;
+        break;
+      case 0xffd8: // SOI
+        offset +=2;
+        break;
+      case 0xffd9: // EOI
+        offset +=2;
+        break;
+      case 0xffda: // SOS
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffdb: // DQT
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffdc: // DNL
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffdd: // DRI
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffde: // DHP
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffdf: // EXP
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xffe0: // APPn
+      case 0xffe1:
+      case 0xffe2:
+      case 0xffe3:
+      case 0xffe4:
+      case 0xffe5:
+      case 0xffe6:
+      case 0xffe7:
+      case 0xffe8:
+      case 0xffe9:
+      case 0xffea:
+      case 0xffeb:
+      case 0xffec:
+      case 0xffed:
+      case 0xffee:
+      case 0xffef:
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xfff0: // JPGn
+      case 0xfff1:
+      case 0xfff2:
+      case 0xfff3:
+      case 0xfff4:
+      case 0xfff5:
+      case 0xfff6:
+      case 0xfff7:
+      case 0xfff8:
+      case 0xfff9:
+      case 0xfffa:
+      case 0xfffb:
+      case 0xfffc:
+      case 0xfffd:
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xfffe: // COM
+        offset += readUint16(data+offset+2)+2;
+        break;
+      case 0xff01: // TEM
+        break;
+      default:
+        if ((data[offset]==0xff) && (data[offset+1]>2) && (data[offset+1] <= 0xbf)) // RES reserved markers
+        {
+          offset += 2;
+        }
+        else return 0; // syntax error, stop parsing
+        break;
+    }
+  } // while
+  return 0; // no SOF marker found
+}
+
 /********************************************************************************/
 /*									 	*/
 /*	Papy3GetPixelData : gets the specified image or icon and put it either	*/
@@ -1496,13 +1644,40 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     /********************************************************************/
     if (gArrCompression [inFileNb] == JPEG_LOSSLESS)
     {
-		switch( gx0028BitsStored [inFileNb])
+		Papy3FSeek (gPapyFile [inFileNb], SEEK_SET, (PapyLong) (thePixelStart + theOffsetTableP [inImageNb - 1]));
+		
+		/* read 8 chars from the file */
+		theTmpBufP = (PapyUChar *) &theTmpBuf [0];
+		i = 8L; 					/* grNb, elemNb & elemLength */
+		Papy3FRead (gPapyFile [inFileNb], &i, 1L, theTmpBufP);
+		
+		PapyUShort			theGroup, theElement;
+		
+		thePos     = 0L;
+		theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+
+		/* Pixel data fragment not found when expected */
+		if ((theGroup != 0xFFFE) || (theElement != 0xE000)) printf("error");
+		
+		theULong = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		
+		unsigned char* data = malloc( theULong);
+		
+		Papy3FRead (gPapyFile [inFileNb], &theULong, 1L, data);
+		
+		short depth = scanJpegDataForBitDepth( data, theULong);
+		if( depth == 0) depth = gx0028BitsStored [inFileNb];
+		
+		free( data);
+		
+		switch( depth)
 		{
 			case 16:
-			case 12:
 				theErr = ExtractJPEGlossy16 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
 			break;
 			
+			case 12:
 			case 10:
 				theErr = ExtractJPEGlossy12 (inFileNb, theBufP, thePixelStart, theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], gArrPhotoInterpret [inFileNb]);
 			break;

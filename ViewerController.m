@@ -9350,6 +9350,7 @@ int i,j,l;
 			case 0:
 				if( [imageView flippedData]) from = [pixList[ curMovieIndex] count] - [imageView curImage] - 1;
 				else from = [imageView curImage];
+				
 				to = from+1;
 				interval = 1;
 			break;

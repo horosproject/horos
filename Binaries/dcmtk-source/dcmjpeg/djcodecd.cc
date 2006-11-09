@@ -132,6 +132,7 @@ OFCondition DJCodecDecoder::decode(
         if (result.good())
         {
           Uint8 precision = scanJpegDataForBitDepth(jpegData, fragmentLength);
+		  printf("%d", precision);
           if (precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
           else
           {
