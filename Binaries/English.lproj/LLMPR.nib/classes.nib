@@ -37,13 +37,17 @@
         }, 
         {
             ACTIONS = {
+                addCurrentSettings = id; 
+                applySettings = id; 
                 blendingPropagate = id; 
+                cancelAddSettings = id; 
                 defaultValuesParametersSliders = id; 
                 produce3DResult = id; 
                 produceResultInMemory = id; 
                 resetParametersSliders = id; 
                 resetShift = id; 
                 saveParametersValuesAsDefault = id; 
+                saveSettings = id; 
                 setBonesThreshold = id; 
                 setClosingRadius = id; 
                 setDilatationRadius = id; 
@@ -71,7 +75,9 @@
                 notInjectedMinValueSlider = NSSlider; 
                 notInjectedMinValueTextField = NSTextField; 
                 parametersPanel = NSPanel; 
-                settingsPupop = NSPopUpButton; 
+                settingsNameSheetWindow = NSWindow; 
+                settingsNameTextField = NSTextField; 
+                settingsPopup = NSPopUpButton; 
                 subtractedOriginalView = LLDCMView; 
                 subtractedXReslicedView = LLDCMView; 
                 subtractedYReslicedView = LLDCMView; 

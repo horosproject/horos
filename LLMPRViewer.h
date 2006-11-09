@@ -40,7 +40,10 @@
 	IBOutlet NSSlider			*bonesThresholdSlider;
 	IBOutlet NSTextField		*bonesThresholdTextField;
 	int							bonesThreshold;
-	IBOutlet NSPopUpButton		*settingsPupop;
+	IBOutlet NSPopUpButton		*settingsPopup;
+	NSString					*settingsName;
+	IBOutlet NSWindow			*settingsNameSheetWindow;
+	IBOutlet NSTextField		*settingsNameTextField;
 }
 
 - (id)initWithPixList:(NSMutableArray*)pix:(NSMutableArray*)pixToSubstract:(NSArray*)files:(NSData*)vData:(ViewerController*)vC:(ViewerController*)bC:(LLScoutViewer*)sV;
@@ -64,9 +67,9 @@
 - (void)showParametersPanel:(id)sender;
 - (IBAction)setParameterValue:(id)sender;
 - (IBAction)resetParametersSliders:(id)sender;
-- (IBAction)defaultValuesParametersSliders:(id)sender;
-- (IBAction)saveParametersValuesAsDefault:(id)sender;
-- (void)setInitialDefaultParametersValues;
+//- (IBAction)defaultValuesParametersSliders:(id)sender;
+//- (IBAction)saveParametersValuesAsDefault:(id)sender;
+//- (void)setInitialDefaultParametersValues;
 - (int)injectedMinValue;
 - (int)injectedMaxValue;
 - (int)notInjectedMinValue;
@@ -85,5 +88,17 @@
 
 - (IBAction)setDilatationRadius:(id)sender;
 - (IBAction)setClosingRadius:(id)sender;
+
+- (void)initialDefaultSettings;
+- (void)addCurrentSettings:(id)sender;
+- (IBAction)cancelAddSettings:(id)sender;
+- (IBAction)saveSettings:(id)sender;
+- (void)saveSettingsAs:(NSString*)title;
+- (IBAction)removeCurrentSettings:(id)sender;
+- (void)removeSettingsWithTitle:(NSString*)title;
+- (NSDictionary*)settingsForTitle:(NSString*)title;
+- (void)applySettingsForTitle:(NSString*)title;
+- (IBAction)applySettings:(id)sender;
+- (void)buildSettingsMenu;
 
 @end

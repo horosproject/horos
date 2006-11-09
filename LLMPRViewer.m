@@ -57,7 +57,6 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	[splitView setDelegate:self];
 
-	// [self updateToolbarItems];
 	// initialisations
 	[injectedMPRController initWithPixList: pix : files : vData : vC : nil: self];
 	[(LLMPRController*)controller initWithPixList: pixToSubstract : files : vData : bC : nil: self];
@@ -68,21 +67,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	// thick slab
 	[thickSlabTextField setStringValue:[NSString stringWithFormat:@"%d",2]];
 	[thickSlabSlider setMinValue:2];
-	//NSLog(@"maxValue : %d",[controller maxThickSlab]);
-//	[thickSlabSlider setMaxValue:[controller maxThickSlab]];
-//	[thickSlabSlider setMaxValue:40];
-	
-	// CLUT Menu
-//	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
-//	[nc addObserver: self
-//           selector: @selector(UpdateCLUTMenu:)
-//               name: @"UpdateCLUTMenu"
-//             object: nil];
-//	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
-//
 //	// WL/WW Menu	
 	curWLWWMenu = NSLocalizedString(@"Other", nil);
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
@@ -95,13 +82,16 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	xShift = 0;
 	yShift = 0;
 	zShift = 0;
-	
-	[self setInitialDefaultParametersValues];
 		
 	closingRadius = 2;
 	displayBones = NO;
 	bonesThreshold = 200;
 	
+//	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LLSubtractionParameters"];
+	
+	settingsName = @"";
+
+	[self initialDefaultSettings];
 	[self buildSettingsMenu];
 	
 	return self;
@@ -1363,63 +1353,63 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[self setParameterValue:self];
 }
 
-- (IBAction)defaultValuesParametersSliders:(id)sender;
-{
-	NSDictionary *defaultValues = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"];
-	[injectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMinValue"] intValue]];
-	[injectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMaxValue"] intValue]];
-	[notInjectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMinValue"] intValue]];
-	[notInjectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMaxValue"] intValue]];
-	[subtractionMinValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMinValue"] intValue]];
-	[subtractionMaxValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMaxValue"] intValue]];
-	
-	[injectedMinValueSlider setNeedsDisplay:YES];
-	[injectedMaxValueSlider setNeedsDisplay:YES];
-	[notInjectedMinValueSlider setNeedsDisplay:YES];
-	[notInjectedMaxValueSlider setNeedsDisplay:YES];
-	[subtractionMinValueSlider setNeedsDisplay:YES];
-	[subtractionMaxValueSlider setNeedsDisplay:YES];
-	
-	[self setParameterValue:self];
-}
+//- (IBAction)defaultValuesParametersSliders:(id)sender;
+//{
+//	NSDictionary *defaultValues = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"];
+//	[injectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMinValue"] intValue]];
+//	[injectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"injectedMaxValue"] intValue]];
+//	[notInjectedMinValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMinValue"] intValue]];
+//	[notInjectedMaxValueSlider setIntValue:[[defaultValues objectForKey:@"notInjectedMaxValue"] intValue]];
+//	[subtractionMinValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMinValue"] intValue]];
+//	[subtractionMaxValueSlider setIntValue:[[defaultValues objectForKey:@"subtractionMaxValue"] intValue]];
+//	
+//	[injectedMinValueSlider setNeedsDisplay:YES];
+//	[injectedMaxValueSlider setNeedsDisplay:YES];
+//	[notInjectedMinValueSlider setNeedsDisplay:YES];
+//	[notInjectedMaxValueSlider setNeedsDisplay:YES];
+//	[subtractionMinValueSlider setNeedsDisplay:YES];
+//	[subtractionMaxValueSlider setNeedsDisplay:YES];
+//	
+//	[self setParameterValue:self];
+//}
 
-- (IBAction)saveParametersValuesAsDefault:(id)sender;
-{
-	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
-	
-	[parametersValues setValue:[NSNumber numberWithInt:[injectedMinValueSlider intValue]] forKey:@"injectedMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:[injectedMaxValueSlider intValue]] forKey:@"injectedMaxValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMinValueSlider intValue]] forKey:@"notInjectedMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMaxValueSlider intValue]] forKey:@"notInjectedMaxValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMinValueSlider intValue]] forKey:@"subtractionMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMaxValueSlider intValue]] forKey:@"subtractionMaxValue"];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
-}
+//- (IBAction)saveParametersValuesAsDefault:(id)sender;
+//{
+//	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
+//	
+//	[parametersValues setValue:[NSNumber numberWithInt:[injectedMinValueSlider intValue]] forKey:@"injectedMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:[injectedMaxValueSlider intValue]] forKey:@"injectedMaxValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMinValueSlider intValue]] forKey:@"notInjectedMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:[notInjectedMaxValueSlider intValue]] forKey:@"notInjectedMaxValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMinValueSlider intValue]] forKey:@"subtractionMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:[subtractionMaxValueSlider intValue]] forKey:@"subtractionMaxValue"];
+//	
+//	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
+//}
 
-- (void)setInitialDefaultParametersValues;
-{
-	injectedMinValue = 10;
-	injectedMaxValue = 500;
-	notInjectedMinValue = -30;
-	notInjectedMaxValue = 100;
-	subtractionMinValue = 20;
-	subtractionMaxValue = 500;
-
-	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"])
-		return;
-		
-	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
-	
-	[parametersValues setValue:[NSNumber numberWithInt:injectedMinValue] forKey:@"injectedMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:injectedMaxValue] forKey:@"injectedMaxValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMinValue] forKey:@"notInjectedMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMaxValue] forKey:@"notInjectedMaxValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:subtractionMinValue] forKey:@"subtractionMinValue"];
-	[parametersValues setValue:[NSNumber numberWithInt:subtractionMaxValue] forKey:@"subtractionMaxValue"];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
-}
+//- (void)setInitialDefaultParametersValues;
+//{
+//	injectedMinValue = 10;
+//	injectedMaxValue = 500;
+//	notInjectedMinValue = -30;
+//	notInjectedMaxValue = 100;
+//	subtractionMinValue = 20;
+//	subtractionMaxValue = 500;
+//
+//	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParametersValues"])
+//		return;
+//		
+//	NSMutableDictionary *parametersValues = [NSMutableDictionary dictionary];
+//	
+//	[parametersValues setValue:[NSNumber numberWithInt:injectedMinValue] forKey:@"injectedMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:injectedMaxValue] forKey:@"injectedMaxValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMinValue] forKey:@"notInjectedMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:notInjectedMaxValue] forKey:@"notInjectedMaxValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:subtractionMinValue] forKey:@"subtractionMinValue"];
+//	[parametersValues setValue:[NSNumber numberWithInt:subtractionMaxValue] forKey:@"subtractionMaxValue"];
+//	
+//	[[NSUserDefaults standardUserDefaults] setObject:parametersValues forKey:@"LLSubtractionParametersValues"];
+//}
 
 - (int)injectedMinValue;
 {
@@ -1529,10 +1519,47 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 #pragma mark-
 #pragma mark Saved Settings
 
-- (void)saveSettings:(id)sender;
+- (void)initialDefaultSettings;
 {
-	[self saveSettingsAs:[NSString stringWithFormat:@"test %d",[settingsPupop numberOfItems]]];
+	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"])
+		return;
+
+	injectedMinValue = 10;
+	injectedMaxValue = 500;
+	notInjectedMinValue = -30;
+	notInjectedMaxValue = 100;
+	subtractionMinValue = 20;
+	subtractionMaxValue = 500;
+
+	dilatationRadius = 1;
+	closingRadius = 2;
+	displayBones = NO;
+	bonesThreshold = 200;
+	settingsName = @"Default";
+	[self saveSettingsAs:settingsName];
+}
+
+- (void)addCurrentSettings:(id)sender;
+{
+	[NSApp beginSheet:settingsNameSheetWindow modalForWindow:parametersPanel modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (IBAction)cancelAddSettings:(id)sender;
+{
+	NSLog(@"cancelAddSettings");
+	[settingsNameSheetWindow orderOut:self];
+	[NSApp endSheet:settingsNameSheetWindow];
+	[settingsPopup selectItemWithTitle:settingsName];
+}
+
+- (IBAction)saveSettings:(id)sender;
+{
+	[settingsNameSheetWindow orderOut:self];
+	[NSApp endSheet:settingsNameSheetWindow];
+	settingsName = [settingsNameTextField stringValue];
+	[self saveSettingsAs:settingsName];
 	[self buildSettingsMenu];
+	[settingsPopup selectItemWithTitle:settingsName];
 }
 
 - (void)saveSettingsAs:(NSString*)title;
@@ -1559,6 +1586,26 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[[NSUserDefaults standardUserDefaults] setObject:llPresets forKey:@"LLSubtractionParameters"];
 }
 
+- (IBAction)removeCurrentSettings:(id)sender;
+{
+	[self removeSettingsWithTitle:settingsName];
+	[self buildSettingsMenu];
+	if([settingsPopup numberOfItems]>2) // save + remove
+	{
+		[settingsPopup selectItemAtIndex:0];
+		[self applySettingsForTitle:[settingsPopup itemTitleAtIndex:0]];
+	}
+}
+
+- (void)removeSettingsWithTitle:(NSString*)title;
+{
+	NSDictionary *oldPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
+	NSMutableDictionary *llPresets = [NSMutableDictionary dictionary];
+	[llPresets setDictionary:oldPresets];
+	[llPresets removeObjectForKey:title];
+	[[NSUserDefaults standardUserDefaults] setObject:llPresets forKey:@"LLSubtractionParameters"];
+}
+
 - (NSDictionary*)settingsForTitle:(NSString*)title;
 {
 	NSDictionary *llPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
@@ -1568,6 +1615,8 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 - (void)applySettingsForTitle:(NSString*)title;
 {
 	NSDictionary *settings = [self settingsForTitle:title];
+	
+	settingsName = title;
 	
 	// thresholds
 	//     values
@@ -1602,9 +1651,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	dilatationRadius = [[settings objectForKey:@"dilatationRadius"] intValue];
 	closingRadius = [[settings objectForKey:@"closingRadius"] intValue];
 	[dilatationRadiusSlider setIntValue:dilatationRadius];
-	[closingRadiusSlider setIntValue:dilatationRadius];
-	[dilatationRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", dilatationRadius]];
-	[closingRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", closingRadius]];
+	[closingRadiusSlider setIntValue:closingRadius];
+	[dilatationRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", dilatationRadius-1]];
+	[closingRadiusTextField setStringValue:[NSString stringWithFormat:@"%d", closingRadius-1]];
 	
 	[self refreshSubtractedViews];
 }
@@ -1619,16 +1668,17 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSDictionary *llPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"];
 	NSArray *keys = [llPresets allKeys];
 	NSArray *sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-	[settingsPupop removeAllItems];
-	NSMenu *menu = [settingsPupop menu];
+	[settingsPopup removeAllItems];
+	NSMenu *menu = [settingsPopup menu];
 	int i;
 	for(i=0; i<[sortedKeys count]; i++)
 	{
 		[menu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(applySettings:) keyEquivalent:@""];
 	}
 	if([sortedKeys count])[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItemWithTitle:@"Add current settings" action:@selector(saveSettings:) keyEquivalent:@""];
-	[settingsPupop setMenu:menu];
+	[menu addItemWithTitle:@"Save current settings as..." action:@selector(addCurrentSettings:) keyEquivalent:@""];
+	[menu addItemWithTitle:@"Remove current settings" action:@selector(removeCurrentSettings:) keyEquivalent:@""];
+	[settingsPopup setMenu:menu];
 }
 
 @end
