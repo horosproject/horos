@@ -1164,7 +1164,8 @@ static BOOL COMPLETEREBUILD = NO;
 			NSEnumerator	*serverEnumerator	= [serversArray objectEnumerator];
 			while (aServer = [serverEnumerator nextObject])
 			{
-				if ([[aServer objectForKey:@"AETitle"] isEqualToString: serverName]) 
+				NSLog( [aServer description]);
+				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 				{
 					server = aServer;
 					break;
