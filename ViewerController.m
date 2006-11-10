@@ -6063,9 +6063,6 @@ NSMutableArray		*array;
 	
 	if( blendingController)
 	{
-		[self computeInterval];
-		[blendingController computeInterval];
-	
 		if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 		{
 			// By default, re-activate 'propagate settings'
@@ -6109,8 +6106,6 @@ NSMutableArray		*array;
 - (IBAction) endBlendingType:(id) sender
 {
 	long i;
-	
-	[self computeInterval];
 	
 	[blendingTypeWindow orderOut:sender];
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
