@@ -7015,12 +7015,41 @@ static BOOL needToRezoom;
 		{
 			if( [toOpenArray count] == 1)	// Just one thumbnail is selected, check if multiples lines are selected
 			{
+				NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
+				NSMutableArray	*splittedSeries = [NSMutableArray array];
+				
+				float interval, previousinterval = 0;
+				
+				[splittedSeries addObject: [NSMutableArray array]];
+				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+				
+				for( x = 1; x < [singleSeries count]; x++)
+				{
+					interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+					
+					if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+					{
+						[splittedSeries addObject: [NSMutableArray array]];
+						NSLog(@"split at: %d", x);
+						
+						previousinterval = 0;
+					}
+					else previousinterval = interval;
+					
+					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+				}
+				
+				toOpenArray = splittedSeries;
+			}
+			
+			if( [toOpenArray count] == 1)
+			{
 				NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"To see an animated series, you have to select multiple series of the same area at different times: e.g. a cardiac CT", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 				movieError = YES;
 			}
-			else if( [toOpenArray count] >= 100)
+			else if( [toOpenArray count] >= 200)
 			{
-				NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 100 series.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+				NSRunCriticalAlertPanel( NSLocalizedString(@"4D Player",@"4D Player"), NSLocalizedString(@"4D Player is limited to a maximum number of 200 series.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 				movieError = YES;
 			}
 			else
@@ -7029,6 +7058,8 @@ static BOOL needToRezoom;
 				
 				for( x = 0; x < [toOpenArray count]; x++)
 				{
+					NSLog( @"%d", [[toOpenArray objectAtIndex: x] count]);
+					
 					if( numberImages == -1)
 					{
 						numberImages = [[toOpenArray objectAtIndex: x] count];
@@ -7338,7 +7369,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[subSeriesTo setIntValue: [[toOpenArray objectAtIndex:0] count]];
 	[subSeriesSlider setIntValue: 2];
 	[subSeriesIntervalText setIntValue: 2];
-	[subSeriesInterval setState: NSOffState];
+	[subSeriesInterval setState: NSOnState];
 	
 	[NSApp beginSheet: subSeriesWindow
 				modalForWindow:	[NSApp mainWindow]					//[self window]

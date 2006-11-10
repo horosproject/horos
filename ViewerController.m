@@ -960,9 +960,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
 	{
-		loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
-		
-		if( loadingPercentage != 1) [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
+		if( loadingPercentage != 1)
+		{
+			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
+			[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(setWindowTitle:)  userInfo:0L repeats:NO];
+		}
 	}
 	
 	NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
@@ -3920,7 +3922,7 @@ static ViewerController *draggedController = 0L;
 	
 	if( stopThreadLoadImage == NO)
 	{
-		[self performSelectorOnMainThread:@selector( computeInterval) withObject:nil waitUntilDone: YES];
+		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: YES];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
 		
 		switch( orientationVector)
@@ -4026,6 +4028,7 @@ static ViewerController *draggedController = 0L;
 	long			result;
     id				filter = [plugins objectForKey:name];
 	
+	[self computeInterval];
 	[self checkEverythingLoaded];
 	[imageView stopROIEditingForce: YES];
 	
@@ -4832,11 +4835,20 @@ static ViewerController *draggedController = 0L;
 	return orientationVector;
 }
 
--(float) computeInterval
+-(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	float				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
 	float				vectors[ 9], vectorsB[ 9];
 	long				i, x;
+	BOOL				flipNow = [flipNowNumber boolValue];
+	
+	if( interval < 0 && [pixList[ curMovieIndex] count] > 1)
+	{
+		if( flipNow)
+		{
+			interval = 0;
+		}
+	}
 	
 	if( interval == 0 && [pixList[ curMovieIndex] count] > 1)
 	{
@@ -4904,7 +4916,7 @@ static ViewerController *draggedController = 0L;
 			}
 			
 			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
-			if( interval < 0)
+			if( interval < 0 && flipNow == YES)
 			{
 				BOOL sameSize = YES;
 				
@@ -4995,6 +5007,11 @@ static ViewerController *draggedController = 0L;
 	[blendingController computeInterval];
 	
 	return interval;
+}
+
+-(float) computeInterval
+{
+	return [self computeIntervalFlipNow: [NSNumber numberWithBool: YES]];
 }
 
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(id)contextInfo;
@@ -6046,6 +6063,9 @@ NSMutableArray		*array;
 	
 	if( blendingController)
 	{
+		[self computeInterval];
+		[blendingController computeInterval];
+	
 		if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[blendingController fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 		{
 			// By default, re-activate 'propagate settings'
@@ -6089,6 +6109,8 @@ NSMutableArray		*array;
 - (IBAction) endBlendingType:(id) sender
 {
 	long i;
+	
+	[self computeInterval];
 	
 	[blendingTypeWindow orderOut:sender];
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
@@ -11950,6 +11972,8 @@ long i;
 		
 		[self setWindowTitle: self];
 	}
+	
+	[self computeInterval];
 }
 
 -(void) revertSeries:(id) sender
