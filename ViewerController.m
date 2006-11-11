@@ -4879,7 +4879,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eSagittalNeg;
 				
 				[orientationMatrix selectCellWithTag: 2];
-				[orientationMatrix setEnabled: YES];
+				if( interval != 0) [orientationMatrix setEnabled: YES];
 				currentOrientationTool = 2;
 			}
 			
@@ -4895,7 +4895,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eCoronalNeg;
 				
 				[orientationMatrix selectCellWithTag: 1];
-				[orientationMatrix setEnabled: YES];
+				if( interval != 0) [orientationMatrix setEnabled: YES];
 				currentOrientationTool = 1;
 			}
 			
@@ -4911,7 +4911,7 @@ static ViewerController *draggedController = 0L;
 				else orientationVector = eAxialNeg;
 				
 				[orientationMatrix selectCellWithTag: 0];
-				[orientationMatrix setEnabled: YES];
+				if( interval != 0) [orientationMatrix setEnabled: YES];
 				currentOrientationTool = 0;
 			}
 			
