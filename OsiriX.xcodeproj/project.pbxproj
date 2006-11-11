@@ -12505,7 +12505,7 @@
 		AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsOsiriX.h; sourceTree = "<group>"; };
 		AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsOsiriX.m; sourceTree = "<group>"; };
 		AB724F1E0ADE6D9C00A212A0 /* Decompress.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Decompress.mm; sourceTree = "<group>"; };
-		AB724FF60ADE6ECB00A212A0 /* Decompress */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Decompress; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB7250370ADE6F5D00A212A0 /* Decompress */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = Decompress; path = build/Development/Decompress; sourceTree = "<group>"; };
 		AB726C85063F3AD500787EF6 /* QTExportVR.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = QTExportVR.icns; sourceTree = "<group>"; };
 		AB73E13606497EDA00545980 /* PreviewView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PreviewView.h; sourceTree = "<group>"; };
@@ -15838,7 +15838,7 @@
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
 		CE79DCFB0753A64D005C8051 /* NO-VRControllerVPRO.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NO-VRControllerVPRO.m"; sourceTree = SOURCE_ROOT; };
 		CE7A0C2E071D26D100C5E16F /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PreferencePanesViewer.nib; sourceTree = "<group>"; };
-		CE7A0EED0AED55AD00540017 /* Quicktime */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Quicktime; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE7A0EED0AED55AD00540017 /* SafeDBRebuild */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SafeDBRebuild; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7A0F1A0AED55E700540017 /* Quicktime.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = Quicktime.mm; sourceTree = "<group>"; };
 		CE7DED2608F06B2300763A70 /* OsiriXDB_Previous_DataModel1.1.mom */ = {isa = PBXFileReference; lastKnownFileType = file; name = OsiriXDB_Previous_DataModel1.1.mom; path = Binaries/DB_Previous_Models/OsiriXDB_Previous_DataModel1.1.mom; sourceTree = "<group>"; };
 		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
@@ -16383,8 +16383,8 @@
 				CECB058B07539E3A00576814 /* OsiriXVP.app */,
 				4A16D0960965E15300F82EC4 /* Unit Testing (Cocoa).octest */,
 				ABEA7F080A21BCC90094CAEF /* SafeDBRebuild */,
-				AB724FF60ADE6ECB00A212A0 /* Decompress */,
-				CE7A0EED0AED55AD00540017 /* Quicktime */,
+				AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */,
+				CE7A0EED0AED55AD00540017 /* SafeDBRebuild */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -28684,7 +28684,7 @@
 			);
 			name = Decompress;
 			productName = SafeDBRebuild;
-			productReference = AB724FF60ADE6ECB00A212A0 /* Decompress */;
+			productReference = AB724FF60ADE6ECB00A212A0 /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
 		ABEA7F070A21BCC90094CAEF /* SafeDBRebuild */ = {
@@ -28716,7 +28716,7 @@
 			);
 			name = Quicktime;
 			productName = SafeDBRebuild;
-			productReference = CE7A0EED0AED55AD00540017 /* Quicktime */;
+			productReference = CE7A0EED0AED55AD00540017 /* SafeDBRebuild */;
 			productType = "com.apple.product-type.tool";
 		};
 		CECBFEE707539E3900576814 /* Development VolumePRO */ = {

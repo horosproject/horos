@@ -5667,7 +5667,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 					if (val != NULL)
 					{
 						unsigned short  *ptrs =  (unsigned short*) val->a;
-						for (j = 0; j < clutEntryR; j++, ptrs++) clutRed [j] = (int) (*ptrs/256);
+						for (j = 0; j < clutEntryR; j++, ptrs++)
+						{
+							clutRed [j] = (int) (*ptrs/256);
+						}
 						
 						found = YES; 	// this is used to let us know we have to look for the other element */
 					}//endif

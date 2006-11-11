@@ -1970,7 +1970,7 @@ unsigned char scanJpegDataForBitDepth(
 
 - (NSMutableData *)convertPaletteToRGB:(NSMutableData *)data{
 	
-	//NSLog(@"convertPaletteToRGB");
+	NSLog(@"convertPaletteToRGB");
 	BOOL			fSetClut = NO, fSetClut16 = NO;
 	unsigned char   *clutRed = 0L, *clutGreen = 0L, *clutBlue = 0L;
 	int		clutEntryR = 0, clutEntryG = 0, clutEntryB = 0;
@@ -2047,29 +2047,29 @@ unsigned char scanJpegDataForBitDepth(
 					xxindex = 0;
 					for( jj = 0; jj < nbVal;jj++)
 					{
-						int type = NSSwapShort(ptrs[jj]);
+						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Type: %d", type);
 						switch(type)
 						{
 							case 0:	// Discrete
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj++]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortRed[ xxindex] = pixel;
-									//if( xxindex < 256) NSLog(@"Type: %d  pixel:%d, swapped: %d", shortRed[ xxindex], NSSwapShort(shortRed[ xxindex]));
+									//if( xxindex < 256) NSLog(@"Type: %d  pixel:%d, swapped: %d", shortRed[ xxindex], NSSwapLittleShortToHost(shortRed[ xxindex]));
 								}
 								jj--;
 							break;
 							
 							case 1:	// Linear
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj + 1]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortRed[ xxindex] = shortRed[ xx-1] + ((pixel - shortRed[ xx-1]) * (1+xxindex - xx)) / (length);
 									//if( xxindex < 256) NSLog(@"%d", shortRed[ xxindex]);
 								}
@@ -2079,7 +2079,7 @@ unsigned char scanJpegDataForBitDepth(
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 
 								jj += 2;
 							break;
@@ -2106,17 +2106,17 @@ unsigned char scanJpegDataForBitDepth(
 					xxindex = 0;
 					for( jj = 0; jj < nbVal; jj++)
 					{
-						int type = NSSwapShort(ptrs[jj]);
+						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Green Type: %d", type);
 						switch(type)
 						{
 							case 0:	// Discrete
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj++]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortGreen[ xxindex] = pixel;
 									//if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
@@ -2125,10 +2125,10 @@ unsigned char scanJpegDataForBitDepth(
 							
 							case 1:	// Linear
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj + 1]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortGreen[ xxindex] = shortGreen[ xx-1] + ((pixel - shortGreen[ xx-1]) * (1+xxindex - xx)) / (length);
 								//	if( xxindex < 256) NSLog(@"%d", shortGreen[ xxindex]);
 								}
@@ -2138,7 +2138,7 @@ unsigned char scanJpegDataForBitDepth(
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 
 								jj += 2;
 							break;
@@ -2165,17 +2165,17 @@ unsigned char scanJpegDataForBitDepth(
 					xxindex = 0;
 					for( jj = 0; jj < nbVal; jj++)
 					{
-						int type = NSSwapShort(ptrs[jj]);
+						int type = NSSwapLittleShortToHost(ptrs[jj]);
 						//NSLog(@"Blue Type: %d", type);
 						switch(type)
 						{
 							case 0:	// Discrete
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								jj++;
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj++]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj++]);
 									shortBlue[ xxindex] = pixel;
 						//			if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
@@ -2184,10 +2184,10 @@ unsigned char scanJpegDataForBitDepth(
 							
 							case 1:	// Linear
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 								for( xx = xxindex; xxindex < xx + length; xxindex++)
 								{
-									unsigned short pixel = NSSwapShort(ptrs[ jj + 1]);
+									unsigned short pixel = NSSwapLittleShortToHost(ptrs[ jj + 1]);
 									shortBlue[ xxindex] = shortBlue[ xx-1] + ((pixel - shortBlue[ xx-1]) * (xxindex - xx + 1)) / (length);
 									//if( xxindex < 256) NSLog(@"%d", shortBlue[ xxindex]);
 								}
@@ -2197,7 +2197,7 @@ unsigned char scanJpegDataForBitDepth(
 							case 2: // Indirect
 								NSLog(@"indirect not supported");
 								jj++;
-								length = NSSwapShort(ptrs[jj]);
+								length = NSSwapLittleShortToHost(ptrs[jj]);
 
 								jj += 2;
 							break;
@@ -2229,8 +2229,9 @@ unsigned char scanJpegDataForBitDepth(
 			}
 		} //end segmented
 		// EXTRACT THE PALETTE data only if there is 256 entries and depth is 16 bits
-		else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16) {
-			
+		else if (clutDepthR == 16  && clutDepthG == 16  && clutDepthB == 16)
+		{
+			NSLog(@"16 bit PALETTE");
 			NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
 			if (redCLUT) {
 				if (clutEntryR == 0) 
@@ -2371,7 +2372,7 @@ unsigned char scanJpegDataForBitDepth(
 					{
 						for( x = 0; x < width; x++)
 						{
-							pixelR = pixelG = pixelB = bufPtr16[i];
+							pixelR = pixelG = pixelB = NSSwapBigShortToHost( bufPtr16[i]);
 							tmpImage[i*3 + 0] = clutRed[ pixelR];
 							tmpImage[i*3 + 1] = clutGreen[ pixelG];
 							tmpImage[i*3 + 2] = clutBlue[ pixelB];
@@ -2404,7 +2405,7 @@ unsigned char scanJpegDataForBitDepth(
 		{
 			for( x = 0; x < width; x++)
 			{
-				//pixel = NSSwapShort(bufPtr[y*width + x]);
+				//pixel = NSSwapLittleShortToHost(bufPtr[y*width + x]);
 				pixel = (bufPtr[y*width + x]);
 				tmpImage[y*width*3 + x*3 + 0] = shortRed[pixel];
 				tmpImage[y*width*3 + x*3 + 1] = shortGreen[ pixel];
@@ -3129,7 +3130,9 @@ NS_ENDHANDLER
 				//Big Endian Data and little Endian host
 				else  if ((NSHostByteOrder() == NS_LittleEndian) &&
 				 [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
+				 {
 					data = [self convertDataFromBigEndianToHost:subData];
+				}
 				//no swap needed
 				else
 					data = subData;
