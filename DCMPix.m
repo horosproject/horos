@@ -6356,6 +6356,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 							totSize = (long) ((long) height * (long) realwidth * 3L);
 							tmpImage = malloc( totSize);
 							
+							fPlanarConf = NO;
+							
 						//	if( bitsAllocated != 8) NSLog(@"Palette with a non-8 bit image???");
 							
 							switch( bitsAllocated)
@@ -6414,6 +6416,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						unsigned char   *tmpImage;
 						long			loop, totSize, x, y, ii;
 						unsigned short pixel;
+						
+						fPlanarConf = NO;
 						
 						totSize = (long) ((long) height * (long) realwidth * 3L);
 						tmpImage = malloc( totSize);
