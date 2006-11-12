@@ -3080,7 +3080,10 @@ static ViewerController *draggedController = 0L;
 		break;
 	}
 	
-	if( tag >= 0) [imageView setCurrentTool: tag];
+	if( tag >= 0)
+	{
+		[imageView setCurrentTool: tag];
+	}
 }
 
 -(void) defaultRightToolModified: (NSNotification*) note
@@ -3336,8 +3339,9 @@ static ViewerController *draggedController = 0L;
 		
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
 	
-	[imageView setCurrentTool: tWL];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:toolsMatrix userInfo: 0L];
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+	
 	displayOnlyKeyImages = NO;
 	
 	return self;

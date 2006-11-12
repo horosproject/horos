@@ -63,6 +63,7 @@ static BOOL combineProjectionSeries;
 static BOOL	CHECKFORLAVIM;
 static int COMMENTSGROUP;
 static int COMMENTSELEMENT;
+static BOOL SEPARATECARDIAC4D;
 
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
@@ -175,6 +176,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			TOOLKITPARSER = [sd integerForKey: @"TOOLKITPARSER"];
 			COMMENTSAUTOFILL = [sd boolForKey: @"COMMENTSAUTOFILL"];
+			SEPARATECARDIAC4D = [sd boolForKey: @"SEPARATECARDIAC4D"];
 			
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -198,6 +200,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			TOOLKITPARSER = [[dict objectForKey: @"TOOLKITPARSER"] intValue];
 			COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
+			SEPARATECARDIAC4D = [[dict objectForKey: @"SEPARATECARDIAC4D"] intValue];
 			
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
@@ -1944,7 +1947,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
 				
-				if( cardiacTime != -1)  // For new Cardiac-CT Siemens series
+				if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
 				{
 					NSString	*n;
 					
@@ -2396,7 +2399,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
 				
-		if( cardiacTime != -1)  // For new Cardiac-CT Siemens series
+		if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
 		{
 			NSString	*n;
 			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
@@ -2846,7 +2849,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //											NULL); // base url
 											
 		sourceURL = CFURLCreateFromFileSystemRepresentation (	NULL, // allocator 
-																[pathToXMLDescriptor UTF8String], // string buffer
+																(unsigned char*) [pathToXMLDescriptor UTF8String], // string buffer
 																[pathToXMLDescriptor length],	// buffer length
 																FALSE); // is directory
 		NSLog(@"sourceURL : %@", sourceURL);
@@ -2971,6 +2974,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (BOOL)combineProjectionSeries{
 	return combineProjectionSeries;
+}
+
+- (BOOL)separateCardiac4D{
+	return SEPARATECARDIAC4D;
 }
 
 - (BOOL)checkForLAVIM{

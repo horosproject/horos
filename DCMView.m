@@ -905,7 +905,10 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 -(void) setCurrentTool:(short) i
 {
     currentTool = i;
-    
+
+//  Not activated by default    
+//	[[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
+	
 	[self stopROIEditingForce: YES];
 	
     mesureA.x = mesureA.y = mesureB.x = mesureB.y = 0;
@@ -3783,7 +3786,7 @@ static long scrollMode;
 	labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
 	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :YES];
 	
-    currentTool = tWL;
+    currentTool =  [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
     
 	cross.x = cross.y = -9999;
 	

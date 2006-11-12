@@ -536,7 +536,11 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"];
 	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
 	
-	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	//ZOOM TOOL
+	[defaultValues setObject:@"1" forKey:@"SEPARATECARDIAC4D"];
+	[defaultValues setObject:@"0" forKey:@"DEFAULTPETFUSION"];
+	
+	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
+	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
 	
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];

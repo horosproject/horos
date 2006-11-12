@@ -403,7 +403,7 @@ extern NSLock	*PapyrusLock;
 						
 		//Series ID
 		
-		if( cardiacTime != -1)  // For new Cardiac-CT Siemens series
+		if( cardiacTime != -1 && [self separateCardiac4D] == YES)  // For new Cardiac-CT Siemens series
 		{
 			NSString	*n;
 			
