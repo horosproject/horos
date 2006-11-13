@@ -222,15 +222,28 @@ extern BrowserController *browserWindow;
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL) {
 					NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
-					NSString *format = @"*%@*" ;
-					if ([u hasPrefix:@"*"] && [u hasSuffix:@"*"])
-						format = @"";
-					else if ([u hasPrefix:@"*"])
-						format = @"%@*";
-					else if ([u hasSuffix:@"*"])
-						format = @"*%@";
-					NSString *suid = [NSString stringWithFormat:format, u];
-					predicate = [NSPredicate predicateWithFormat:@"seriesInstanceUID like %@", suid];
+					NSArray *uids = [u componentsSeparatedByString:@"\\"];
+					NSArray *predicateArray = [NSArray array];
+					
+					int x;
+					for(x = 0; x < [uids count]; x++)
+					{
+						NSString *curString = [uids objectAtIndex: x];
+						
+						NSString *format = @"*%@*" ;
+						if ([curString hasPrefix:@"*"] && [curString hasSuffix:@"*"])
+							format = @"";
+						else if ([curString hasPrefix:@"*"])
+							format = @"%@*";
+						else if ([curString hasSuffix:@"*"])
+							format = @"*%@";
+						
+						NSString *suid = [NSString stringWithFormat:format, curString];
+						
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"seriesInstanceUID like %@", suid]];
+					}
+					
+					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
 				}
 			} 
 			else if (key == DCM_SeriesDescription) {
@@ -387,7 +400,8 @@ extern BrowserController *browserWindow;
 			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 	}
 
-	//NSLog(@"predicate: %@", [compoundPredicate description]);
+	NSLog(@"predicate: %@", [compoundPredicate description]);
+	
 	NS_HANDLER
 		NSLog(@"Exception getting predicate: %@ for dataset\n", [localException description]);
 		dataset->print(COUT);
@@ -598,8 +612,11 @@ extern BrowserController *browserWindow;
 		error = 0L;
 		
 		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+		[context lock];
 		
 		findArray = [context executeFetchRequest:request error:&error];
+		
+		[context unlock];
 		
 		if (error) {
 			findArray = nil;
