@@ -208,9 +208,6 @@ extern BrowserController *browserWindow;
 			
 			else
 				predicate = nil;
-				
-			if (predicate)
-				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
 		else if (strcmp(sType, "SERIES") == 0) {
 			if (key == DCM_StudyInstanceUID) {
@@ -353,9 +350,6 @@ extern BrowserController *browserWindow;
 			}
 			else
 				predicate = nil;
-				
-			if (predicate)
-				compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 		}
 		else if (strcmp(sType, "IMAGE") == 0) {
 			
@@ -396,6 +390,7 @@ extern BrowserController *browserWindow;
 					predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
 			}
 		}
+		
 		if (predicate)
 			compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate, compoundPredicate, nil]];
 	}
