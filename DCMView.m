@@ -6409,6 +6409,11 @@ static long scrollMode;
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical
 {
+	return [self getRawPixels:width :height :spp :bpp :screenCapture :force8bits :removeGraphical :NO];
+}
+
+-(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits :(BOOL) removeGraphical :(BOOL) squarePixels
+{
 	unsigned char	*buf = 0L;
 	long			i;
 	
@@ -6669,6 +6674,33 @@ static long scrollMode;
 				if( srcf.data != [curDCM fImage]) free( srcf.data);
 			}
 		}
+		
+		// IF 8 bits or RGB, IF non-square pixels -> square pixels
+		
+		if( squarePixels == YES && *bpp == 8 && [self pixelSpacingX] != [self pixelSpacingY])
+		{
+			vImage_Buffer	srcVimage, dstVimage;
+			
+			srcVimage.data = buf;
+			srcVimage.height = *height;
+			srcVimage.width = *width;
+			srcVimage.rowBytes = *width * (*bpp/8) * *spp;
+			
+			dstVimage.height =  (int) ((float) *height * [self pixelSpacingY] / [self pixelSpacingX]);
+			dstVimage.width = *width;
+			dstVimage.rowBytes = *width * (*bpp/8) * *spp;
+			dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
+			
+			if( *spp == 3)
+				vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			else
+				vImageScale_Planar8( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+				
+			free( buf);
+			
+			buf = dstVimage.data;
+			*height = dstVimage.height;
+		}
 	}
 	
 	return buf;
@@ -6681,7 +6713,7 @@ static long scrollMode;
 	NSString			*colorSpace;
 	unsigned char		*data;
 	
-	data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
+	data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
 	
 	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;
 	else colorSpace = NSCalibratedWhiteColorSpace;
