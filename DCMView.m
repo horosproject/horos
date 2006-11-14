@@ -2722,9 +2722,17 @@ static long scrollMode;
 				[self setNeedsDisplay:YES];
 			}
 			
-			if( curImage < 0) curImage = [dcmPixList count]-1;
-			if( curImage >= [dcmPixList count]) curImage = 0;
-					
+			if( [dcmPixList count] > 3)
+			{
+				if( curImage < 0) curImage = [dcmPixList count]-1;
+				if( curImage >= [dcmPixList count]) curImage = 0;
+			}
+			else
+			{
+				if( curImage < 0) curImage = 0;
+				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+			}
+			
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
