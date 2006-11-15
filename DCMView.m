@@ -6692,7 +6692,26 @@ static long scrollMode;
 			dstVimage.data = malloc( dstVimage.rowBytes * dstVimage.height);
 			
 			if( *spp == 3)
-				vImageScale_ARGB8888( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
+			{
+				vImage_Buffer	argbsrcVimage, argbdstVimage;
+				
+				argbsrcVimage = srcVimage;
+				argbsrcVimage.rowBytes =  *width * 4;
+				argbsrcVimage.data = malloc( argbsrcVimage.rowBytes * argbsrcVimage.height);
+				
+				argbdstVimage = dstVimage;
+				argbdstVimage.rowBytes =  *width * 4;
+				argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
+				
+				vImageConvert_RGB888toARGB8888( &srcVimage, 0L, 0, &argbsrcVimage, 0, 0);
+			
+				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, 0L, kvImageHighQualityResampling);
+				
+				vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
+				
+				free( argbsrcVimage.data);
+				free( argbdstVimage.data);
+			}
 			else
 				vImageScale_Planar8( &srcVimage, &dstVimage, 0L, kvImageHighQualityResampling);
 				
