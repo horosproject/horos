@@ -320,8 +320,6 @@
 - (void) checkImageAvailble:(float)newWW :(float)newWL;
 -(long) rowBytes;
 -(void) setRowBytes:(long) rb;
-
-- (BOOL)loadXAPhilips;
 - (BOOL)loadDICOMDCMFramework;
 - (BOOL) loadDICOMPapyrus;
 - (void) CheckLoadIn;
