@@ -867,7 +867,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
 		
 		[compositingImage lockFocus];
-		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
 		[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
 		[compositingImage unlockFocus];
 		

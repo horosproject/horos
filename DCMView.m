@@ -6704,9 +6704,7 @@ static long scrollMode;
 				argbdstVimage.data = malloc( argbdstVimage.rowBytes * argbdstVimage.height);
 				
 				vImageConvert_RGB888toARGB8888( &srcVimage, 0L, 0, &argbsrcVimage, 0, 0);
-			
 				vImageScale_ARGB8888( &argbsrcVimage, &argbdstVimage, 0L, kvImageHighQualityResampling);
-				
 				vImageConvert_ARGB8888toRGB888( &argbdstVimage, &dstVimage, 0);
 				
 				free( argbsrcVimage.data);

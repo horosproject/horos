@@ -781,9 +781,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
+
+		float   iwl, iww;
+		[imageView getWLWW:&iwl :&iww];
+		[imageView setWLWW:iwl :iww];
 		
-		[self setFusionMode: previousFusion];
-		[popFusion selectItemWithTag:previousFusion];
+		if( previousFusion != 0)
+		{
+			[self checkEverythingLoaded];
+			[self computeInterval];
+			[self setFusionMode: previousFusion];
+			[popFusion selectItemWithTag:previousFusion];
+		}
 		
 		NSLog( @"originalOrientation: %d", originalOrientation);
 	}
@@ -3366,6 +3375,8 @@ static ViewerController *draggedController = 0L;
 	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
+	
+	[self setFusionMode: 0];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 
@@ -6014,6 +6025,10 @@ NSMutableArray		*array;
 	}
 	
 	[imageView sendSyncMessage:1];
+	
+	float   iwl, iww;
+	[imageView getWLWW:&iwl :&iww];
+	[imageView setWLWW:iwl :iww];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:self userInfo: 0L];
 }
