@@ -5578,6 +5578,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
+		else // This group is MANDATORY... Try another toolkit
+		{
+			NSLog( @"********* A non-readable MANDATORY group... try DCM FrameWork");
+			return [self loadDICOMDCMFramework];
+		}
 
 #pragma mark SUV
 
