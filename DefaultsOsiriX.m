@@ -539,6 +539,8 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey:@"SEPARATECARDIAC4D"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTPETFUSION"];
 	
+	
+	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
 	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
 	

@@ -117,7 +117,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX v.2.6</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.6b</string>
+	<string>2.6</string>
 	<key>CFBundleVersion</key>
 	<string>260</string>
 	<key>CFBundleIconFile</key>
