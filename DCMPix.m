@@ -76,13 +76,13 @@ void ConvertFloatToNative (float *theFloat)
 	*myLongPtr = EndianU32_LtoN(*myLongPtr);
 }
 
-void ConvertDoubleToNative (double *theFloat)
-{
-	unsigned long long		*myLongPtr;
-	
-	myLongPtr = (unsigned long long*)theFloat;
-	*myLongPtr = EndianU64_LtoN(*myLongPtr);
-}
+//void ConvertDoubleToNative (double *theFloat)
+//{
+//	unsigned long long		*myLongPtr;
+//	
+//	myLongPtr = (unsigned long long*)theFloat;
+//	*myLongPtr = EndianU64_LtoN(*myLongPtr);
+//}
 
 
 uint64_t	MyGetTime( void )
@@ -3393,7 +3393,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 	} // end for loop parsing info of first frame
 	
-	
 	if( TIF_CZ_LSMINFO)
 	{
 		fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
@@ -3526,19 +3525,21 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		}
 		oImage = 0L;
 		
+		NSSwappedDouble tt;
+		
 		fseek(fp, TIF_CZ_LSMINFO + 40, SEEK_SET);
-		fread( &VOXELSIZE_X, 8, 1, fp);
-		ConvertDoubleToNative( &VOXELSIZE_X);
+		fread( &tt, 8, 1, fp);
+		VOXELSIZE_X = NSSwapLittleDoubleToHost( tt);
 		pixelSpacingX = VOXELSIZE_X*1000;
 		
 		fseek(fp, TIF_CZ_LSMINFO + 48, SEEK_SET);
-		fread( &VOXELSIZE_Y, 8, 1, fp);
-		ConvertDoubleToNative( &VOXELSIZE_Y);
+		fread( &tt, 8, 1, fp);
+		VOXELSIZE_Y = NSSwapLittleDoubleToHost( tt);
 		pixelSpacingY = VOXELSIZE_Y*1000;
 		
 		fseek(fp, TIF_CZ_LSMINFO + 56, SEEK_SET);
-		fread( &VOXELSIZE_Z, 8, 1, fp);
-		ConvertDoubleToNative( &VOXELSIZE_Z);
+		fread( &tt, 8, 1, fp);
+		VOXELSIZE_Z = NSSwapLittleDoubleToHost( tt);
 		sliceInterval = sliceThickness = VOXELSIZE_Z*1000;
 		sliceLocation = frameNo * sliceInterval;
 		
