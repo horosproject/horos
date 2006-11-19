@@ -251,6 +251,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (void)discretelySetWLWW:(float)wl :(float)ww;
 - (void) getWLWW:(float*) wl :(float*) ww;
 
+-(void) getThickSlabThickness:(float*) thickness location:(float*) location;
 - (void) setConv:(short*) matrix :(short) size :(short) norm;
 - (void) setCLUT:( unsigned char*) r :(unsigned char*) g :(unsigned char*) b;
 - (void) setCurrentTool:(short)i;

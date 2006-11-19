@@ -9808,8 +9808,12 @@ int i,j,l;
 		{
 			[exportDCM setPixelSpacing: [curPix pixelSpacingX]:[curPix pixelSpacingY]];
 		}
-		[exportDCM setSliceThickness: [curPix sliceThickness]];
-		[exportDCM setSlicePosition: [curPix sliceLocation]];
+		
+		float thickness, location;
+		
+		[imageView getThickSlabThickness:&thickness location:&location];
+		[exportDCM setSliceThickness: thickness];
+		[exportDCM setSlicePosition: location];
 		
 		[curPix orientation: o];
 		[exportDCM setOrientation: o];

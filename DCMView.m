@@ -5101,6 +5101,41 @@ static long scrollMode;
 	}
 }
 
+-(void) getThickSlabThickness:(float*) thickness location:(float*) location
+{
+	*thickness = [curDCM sliceThickness];
+	*location = [curDCM sliceLocation];
+	
+	if( [curDCM sliceThickness] != 0 && [curDCM sliceLocation] != 0)
+	{
+		if( [curDCM stack] > 1)
+		{
+			long maxVal;
+			
+			if( flippedData) maxVal = curImage-[curDCM stack];
+			else maxVal = curImage+[curDCM stack];
+			
+			if( maxVal < 0) maxVal = curImage;
+			else if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count] - curImage;
+			else maxVal = [curDCM stack];
+			
+			float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
+			
+			vv += [curDCM sliceThickness];
+			
+			float pp;
+			
+			if( flippedData)
+				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
+			else
+				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
+				
+			*thickness = vv;
+			*location = pp;
+		}
+	}
+}
+
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
 	NSManagedObject   *file;
@@ -5273,28 +5308,10 @@ static long scrollMode;
 		{
 			if( [curDCM stack] > 1)
 			{
-				long maxVal;
+				float vv, pp;
 				
-				if( flippedData) maxVal = curImage-[curDCM stack];
-				else maxVal = curImage+[curDCM stack];
+				[self getThickSlabThickness: &vv location: &pp];
 				
-				if( maxVal < 0) maxVal = curImage;
-				else if( maxVal > [dcmPixList count]) maxVal = [dcmPixList count] - curImage;
-				else maxVal = [curDCM stack];
-				
-				float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
-				
-				vv += [curDCM sliceThickness];
-				
-				float pp;
-				
-				if( flippedData)
-				{
-					pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
-				}
-				else
-					pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
-					
 				if( vv < 1.0 && vv != 0.0)
 				{
 					if( fabs( pp) < 1.0 && pp != 0.0)
