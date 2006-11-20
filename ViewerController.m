@@ -7157,12 +7157,8 @@ int i,j,l;
 
 	for( y = 0; y < maxMovieIndex; y++)
 	{
-		if( propagateIn4D == NO)
-		{
-			if( y == curMovieIndex) proceed = YES;
-			else proceed = NO;
-		}
-		else proceed = YES;
+		if( y == curMovieIndex) proceed = YES;
+		else proceed = NO;
 		
 		if( proceed)
 		{
