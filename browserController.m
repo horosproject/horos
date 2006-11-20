@@ -5009,81 +5009,89 @@ static BOOL withReset = NO;
 		
 		[managedObjectContext lock];
 		
-		NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
-		NSString	*seriesSOPClassUID = [[pix seriesObj] valueForKey: @"seriesSOPClassUID"];
-		
-		if( img || [modality isEqualToString: @"RTSTRUCT"])
+		@try
 		{
-			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-			[cell setTransparent:NO];
-			[cell setEnabled:YES];
+			NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
+			NSString	*seriesSOPClassUID = [[pix seriesObj] valueForKey: @"seriesSOPClassUID"];
 			
-			[cell setFont:[NSFont systemFontOfSize:10]];
-			[cell setImagePosition: NSImageBelow];
-			[cell setAction: @selector(matrixPressed:)];
-			
-			NSString	*name = [curFile valueForKey:@"name"];
-			
-			if( [name length] > 15) name = [name substringToIndex: 15];
-			
-			if ( [modality isEqualToString: @"RTSTRUCT"] ) {
-				[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
-			}
-			else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]]) //JF: pdf encapsulated opened with preview
+			if( img || [modality isEqualToString: @"RTSTRUCT"])
 			{
-				[cell setAction: @selector(pdfPreview:)];
-				[cell setTitle: @"open Preview.app"];
-				img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
-			}
-			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
-				long count = [[curFile valueForKey:@"images"] count];
+				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+				[cell setTransparent:NO];
+				[cell setEnabled:YES];
 				
-				if( count == 1) {
-					long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-					
-					if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
-					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
+				[cell setFont:[NSFont systemFontOfSize:10]];
+				[cell setImagePosition: NSImageBelow];
+				[cell setAction: @selector(matrixPressed:)];
+				
+				NSString	*name = [curFile valueForKey:@"name"];
+				
+				if( [name length] > 15) name = [name substringToIndex: 15];
+				
+				if ( [modality isEqualToString: @"RTSTRUCT"] ) {
+					[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
 				}
-				else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
-				
-				//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
-			}
-			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) {
-				[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
-			}
-			else if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"]) {
-				[cell setTitle: name];
-				[oMatrix setToolTip:[curFile valueForKey:@"name"] forCell:cell];
-			}
-			
-			[cell setButtonType:NSPushOnPushOffButton];
-			
-			[cell setImage: img];
-						
-			if( setDCMDone == NO)
-			{
-				NSIndexSet  *index = [databaseOutline selectedRowIndexes];
-				if( [index count] >= 1)
+				else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]]) //JF: pdf encapsulated opened with preview
 				{
-					NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
-					
-					[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
-					[imageView setStringID:@"previewDatabase"];
-					setDCMDone = YES;
+					[cell setAction: @selector(pdfPreview:)];
+					[cell setTitle: @"open Preview.app"];
+					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
 				}
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
+					long count = [[curFile valueForKey:@"images"] count];
+					
+					if( count == 1) {
+						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						
+						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", 0L), name, frames]];
+						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
+					}
+					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
+					
+					//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
+				}
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) {
+					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
+				}
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"]) {
+					[cell setTitle: name];
+					[oMatrix setToolTip:[curFile valueForKey:@"name"] forCell:cell];
+				}
+				
+				[cell setButtonType:NSPushOnPushOffButton];
+				
+				[cell setImage: img];
+							
+				if( setDCMDone == NO)
+				{
+					NSIndexSet  *index = [databaseOutline selectedRowIndexes];
+					if( [index count] >= 1)
+					{
+						NSManagedObject* aFile = [databaseOutline itemAtRow:[index firstIndex]];
+						
+						[imageView setDCM:previewPix :[self imagesArray: aFile preferredObject: oAny] :0L :[[oMatrix selectedCell] tag] :'i' :YES];
+						[imageView setStringID:@"previewDatabase"];
+						setDCMDone = YES;
+					}
+				}
+			}		
+			else {  // Show Error Button
+				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+				[cell setImage: nil];
+				[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
+				[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
+				[cell setFont:[NSFont systemFontOfSize:10]];
+				[cell setTransparent:NO];
+				[cell setEnabled:NO];
+				[cell setButtonType:NSPushOnPushOffButton];
+				[cell setBezelStyle:NSShadowlessSquareBezelStyle];
+				[cell setTag:i];
 			}
-		}		
-		else {  // Show Error Button
-			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-			[cell setImage: nil];
-			[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
-			[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
-			[cell setFont:[NSFont systemFontOfSize:10]];
-			[cell setTransparent:NO];
-			[cell setEnabled:NO];
-			[cell setButtonType:NSPushOnPushOffButton];
-			[cell setBezelStyle:NSShadowlessSquareBezelStyle];
-			[cell setTag:i];
+		}
+		
+		@catch( NSException *ne)
+		{
+			NSLog(@"matrixNewIcon exception: %@", [ne description]);
 		}
 		
 		[managedObjectContext unlock];
@@ -5134,30 +5142,38 @@ static BOOL withReset = NO;
 	if( bonjourDownloading) return;
 	if( managedObjectContext == 0L) return;
 	
-	if( loadPreviewIndex < [previewPix count])
+	@try
 	{
-		for( i = loadPreviewIndex; i < [previewPix count];i++)
+		if( loadPreviewIndex < [previewPix count])
 		{
-			NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-			
-			if( [cell isEnabled] == NO)
+			for( i = loadPreviewIndex; i < [previewPix count];i++)
 			{
-				if( i < [previewPix count])
+				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+				
+				if( [cell isEnabled] == NO)
 				{
-					if( [previewPix objectAtIndex: i] != 0L)
+					if( i < [previewPix count])
 					{
-						if( i < [matrixViewArray count])
+						if( [previewPix objectAtIndex: i] != 0L)
 						{
-							[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+							if( i < [matrixViewArray count])
+							{
+								[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+							}
 						}
 					}
 				}
 			}
+			
+			if( loadPreviewIndex == 0) [self initAnimationSlider];
+			
+			loadPreviewIndex = i;
 		}
-		
-		if( loadPreviewIndex == 0) [self initAnimationSlider];
-		
-		loadPreviewIndex = i;
+	}
+			
+	@catch( NSException *ne)
+	{
+		NSLog(@"matrixDisplayIcons exception: %@", [ne description]);
 	}
 }
 
@@ -5209,7 +5225,7 @@ static BOOL withReset = NO;
 			DatabaseIsEdited = YES;
 			
 			@try
-			{	
+			{
 				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 				[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithFormat:@"thumbnail == NIL"]];
