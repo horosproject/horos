@@ -27,11 +27,12 @@ MODIFICATION HISTORY
 
 #import "FlyThruController.h"
 #import "VRController.h"
+#import "VRView.h"
 #import "DICOMExport.h"
 #import "Window3DController.h"
 #import "Wait.h"
 
-
+@class VRPROController;
 
 @implementation FlyThruController
 
@@ -585,6 +586,14 @@ MODIFICATION HISTORY
 				
 				[[controller3D view] getOrientation: o];
 				[dcmSequence setOrientation: o];
+				
+				if( [controller3D isKindOfClass: [VRController class]] ||  [controller3D isKindOfClass: [VRPROController class]])
+				{
+					float resolution = [[controller3D view] getResolution];
+					
+					if( resolution)
+						[dcmSequence setPixelSpacing: resolution :resolution];
+				}
 				
 				err = [dcmSequence writeDCMFile: 0L];
 				

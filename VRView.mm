@@ -1703,23 +1703,27 @@ public:
 
 - (float) getResolution
 {
-	double			point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
-	char			text[ 256];
-	
-	aRenderer->SetDisplayPoint( point1);
-	aRenderer->DisplayToWorld();
-	aRenderer->GetWorldPoint( point1);
-	
-	aRenderer->SetDisplayPoint( point2);
-	aRenderer->DisplayToWorld();
-	aRenderer->GetWorldPoint( point2);
-	
-	double xd = point2[ 0]- point1[ 0];
-	double yd = point2[ 1]- point1[ 1];
-	double zd = point2[ 2]- point1[ 2];
-	double length = sqrt(xd*xd + yd*yd + zd*zd);
+	if( aCamera->GetParallelProjection())
+	{
+		double			point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
+		char			text[ 256];
+		
+		aRenderer->SetDisplayPoint( point1);
+		aRenderer->DisplayToWorld();
+		aRenderer->GetWorldPoint( point1);
+		
+		aRenderer->SetDisplayPoint( point2);
+		aRenderer->DisplayToWorld();
+		aRenderer->GetWorldPoint( point2);
+		
+		double xd = point2[ 0]- point1[ 0];
+		double yd = point2[ 1]- point1[ 1];
+		double zd = point2[ 2]- point1[ 2];
+		double length = sqrt(xd*xd + yd*yd + zd*zd);
 
-	return (length/factor);
+		return (length/factor);
+	}
+	else return 0;
 }
 
 - (void) computeLength
