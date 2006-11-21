@@ -567,8 +567,18 @@ NSString * documentsDirectory();
 {
 	x = x - (float)[[[sender performSelector:view] curDCM] pwidth]/2.0f;
 	y = y - (float)[[[sender performSelector:view] curDCM] pheight]/2.0f;
+
+	float vectorP[ 9], senderOrigin[ 3], destOrigin[ 3];
 	
-	NSPoint offset, senderOrigin, destOrigin;
+	[[[sender performSelector:view] curDCM] orientation: vectorP];
+	senderOrigin[ 0] = [[[sender performSelector:view] curDCM]  originX] * vectorP[ 0] + [[[sender performSelector:view] curDCM]  originY] * vectorP[ 1] + [[[sender performSelector:view] curDCM]  originZ] * vectorP[ 2];
+	senderOrigin[ 1] = [[[sender performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[sender performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[sender performSelector:view] curDCM]  originZ] * vectorP[ 5];
+	senderOrigin[ 2] = [[[sender performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[sender performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[sender performSelector:view] curDCM]  originZ] * vectorP[ 8];
+
+	NSLog( @"%f %f", senderOrigin[ 0], senderOrigin[ 1]);
+
+
+	NSPoint offset;
 	offset = NSMakePoint(0,0);
 	float destWidth, destHeight, senderPixelSpacingX, senderPixelSpacingY, destPixelSpacingX, destPixelSpacingY;
 	long newX, newY;
@@ -577,23 +587,27 @@ NSString * documentsDirectory();
 	
 	senderPixelSpacingX = [[[sender performSelector:view] curDCM] pixelSpacingX];
 	senderPixelSpacingY = [[[sender performSelector:view] curDCM] pixelSpacingY];
-	senderOrigin = [[sender performSelector:view] origin];
 	isSenderXFlipped = [[sender performSelector:view] xFlipped];
 	isSenderYFlipped = [[sender performSelector:view] yFlipped];
 	xSignSender = (isSenderXFlipped)? 1 : 1 ;
 	ySignSender = (isSenderYFlipped)? 1 : 1 ;
+		
 	// CT
 	destPixelSpacingX = [[[CTController performSelector:view] curDCM] pixelSpacingX];
 	destPixelSpacingY = [[[CTController performSelector:view] curDCM] pixelSpacingY];
-	destOrigin = [[CTController performSelector:view] origin];
 	destWidth = (float)[[[CTController performSelector:view] curDCM] pwidth];
 	destHeight = (float)[[[CTController performSelector:view] curDCM] pheight];
 	isDestXFlipped = [[CTController performSelector:view] xFlipped];
 	isDestYFlipped = [[CTController performSelector:view] yFlipped];
 	xSignDest = (isDestXFlipped)? 1 : 1 ;
 	ySignDest = (isDestYFlipped)? 1 : 1 ;
-	offset.x = (senderOrigin.x - destOrigin.x)/senderPixelSpacingX;
-	offset.y = (senderOrigin.y - destOrigin.y)/senderPixelSpacingY;
+
+	[[[CTController performSelector:view] curDCM] orientation: vectorP];
+	destOrigin[ 0] = [[[CTController performSelector:view] curDCM]  originX] * vectorP[ 0] + [[[CTController performSelector:view] curDCM]  originY] * vectorP[ 1] + [[[CTController performSelector:view] curDCM]  originZ] * vectorP[ 2];
+	destOrigin[ 1] = [[[CTController performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[CTController performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[CTController performSelector:view] curDCM]  originZ] * vectorP[ 5];
+	destOrigin[ 2] = [[[CTController performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[CTController performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[CTController performSelector:view] curDCM]  originZ] * vectorP[ 8];
+	
+	NSLog( @"CT: %f %f", destOrigin[ 0], destOrigin[ 1]);
 
 	newX = xSignDest * (x + offset.x) * senderPixelSpacingX / destPixelSpacingX + destWidth/2.0f;
 	newY = ySignDest * (y + offset.y) * senderPixelSpacingY / destPixelSpacingY + destHeight/2.0f;
@@ -610,7 +624,6 @@ NSString * documentsDirectory();
 	// PET
 	destPixelSpacingX = [[[PETController performSelector:view] curDCM] pixelSpacingX];
 	destPixelSpacingY = [[[PETController performSelector:view] curDCM] pixelSpacingY];
-	destOrigin = [[PETController performSelector:view] origin];
 	destWidth = (float)[[[PETController performSelector:view] curDCM] pwidth];
 	destHeight = (float)[[[PETController performSelector:view] curDCM] pheight];
 	isDestXFlipped = [[PETController performSelector:view] xFlipped];
@@ -618,27 +631,45 @@ NSString * documentsDirectory();
 	xSignDest = (isDestXFlipped)? 1 : 1 ;
 	ySignDest = (isDestYFlipped)? 1 : 1 ;
 
-	offset.x = (senderOrigin.x - destOrigin.x)/senderPixelSpacingX;
-	offset.y = (senderOrigin.y - destOrigin.y)/senderPixelSpacingY;
+	[[[PETController performSelector:view] curDCM] orientation: vectorP];
+	destOrigin[ 0] = [[[PETController performSelector:view] curDCM]  originX] * vectorP[ 0] + [[[PETController performSelector:view] curDCM]  originY] * vectorP[ 1] + [[[PETController performSelector:view] curDCM]  originZ] * vectorP[ 2];
+	destOrigin[ 1] = [[[PETController performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[PETController performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[PETController performSelector:view] curDCM]  originZ] * vectorP[ 5];
+	destOrigin[ 2] = [[[PETController performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[PETController performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[PETController performSelector:view] curDCM]  originZ] * vectorP[ 8];
 	
-	NSLog( @"%f", [[[PETController performSelector:view] curDCM] originX] + destPixelSpacingX * destWidth/2);
-	NSLog( @"%f", [[[CTController performSelector:view] curDCM] originX] + senderPixelSpacingX * [[[CTController performSelector:view] curDCM] pwidth]/2);
+	NSLog( @"PET: %f %f", destOrigin[ 0], destOrigin[ 1]);
 	
-//	offset.x = [[[PETController performSelector:view] curDCM] originX] + destPixelSpacingX * destWidth/2 - ([[[CTController performSelector:view] curDCM] originX] + senderPixelSpacingX * [[[CTController performSelector:view] curDCM] pwidth]/2);
-//	offset.y = [[[PETController performSelector:view] curDCM] originY] + destPixelSpacingY * destHeight/2 - ([[[CTController performSelector:view] curDCM] originY] + senderPixelSpacingY * [[[CTController performSelector:view] curDCM] pheight]/2);
-//	
-//	offset.x /= destPixelSpacingX;
-//	offset.y /= destPixelSpacingY;
+	offset.x = 0;
+	offset.y = 0;
 	
-//	NSLog( @"%f", [[[PETController performSelector:view] curDCM] originX] - [[[CTController performSelector:view] curDCM] originX]);
-//	
-//	offset.x += [[[PETController performSelector:view] curDCM] originX] - [[[CTController performSelector:view] curDCM] originX];
-//	offset.y += [[[PETController performSelector:view] curDCM] originY] - [[[CTController performSelector:view] curDCM] originY];
+	offset.x = [[[PETController performSelector:view] curDCM] originX] + [[[PETController performSelector:view] curDCM] pixelSpacingX] * destWidth/2 - ([[[CTController performSelector:view] curDCM] originX] + [[[CTController performSelector:view] curDCM] pixelSpacingX] * [[[CTController performSelector:view] curDCM] pwidth]/2);
+	offset.y = [[[PETController performSelector:view] curDCM] originY] + [[[PETController performSelector:view] curDCM] pixelSpacingY] * destHeight/2 - ([[[CTController performSelector:view] curDCM] originY] + [[[CTController performSelector:view] curDCM] pixelSpacingY] * [[[CTController performSelector:view] curDCM] pheight]/2);
+	offset.x /= destPixelSpacingX;
+	offset.y /= destPixelSpacingY;
+	
+//	NSLog( @"%f %f", offset.x, offset.y);
+	
+//	if( view == @selector(originalView))
+//	{
+//		offset.x = [[[PETController performSelector:view] curDCM] originX] + [[[PETController performSelector:view] curDCM] pixelSpacingX] * destWidth/2 - ([[[CTController performSelector:view] curDCM] originX] + [[[CTController performSelector:view] curDCM] pixelSpacingX] * [[[CTController performSelector:view] curDCM] pwidth]/2);
+//		offset.y = [[[PETController performSelector:view] curDCM] originY] + [[[PETController performSelector:view] curDCM] pixelSpacingY] * destHeight/2 - ([[[CTController performSelector:view] curDCM] originY] + [[[CTController performSelector:view] curDCM] pixelSpacingY] * [[[CTController performSelector:view] curDCM] pheight]/2);
+//		offset.x /= destPixelSpacingX;
+//		offset.y /= destPixelSpacingY;
+//	}
+//	else if( view == @selector(xReslicedView))
+//	{
+//		offset.x = [[[PETController performSelector:view] curDCM] originX] + destPixelSpacingX * destWidth/2 - ([[[CTController performSelector:view] curDCM] originX] + senderPixelSpacingX * [[[CTController performSelector:view] curDCM] pwidth]/2);
+//		offset.x /= destPixelSpacingX;
+//	}
+//	else if( view == @selector(yReslicedView))
+//	{
+//		offset.y = [[[PETController performSelector:view] curDCM] originY] + [[[PETController performSelector:view] curDCM] pixelSpacingY] * destHeight/2 - ([[[CTController performSelector:view] curDCM] originY] + [[[CTController performSelector:view] curDCM] pixelSpacingY] * [[[CTController performSelector:view] curDCM] pheight]/2);
+//		offset.y /= destPixelSpacingY;
+//	}
 	
 	newX = xSignDest * (x) * senderPixelSpacingX / destPixelSpacingX + destWidth/2.0f;
 	newY = ySignDest * (y) * senderPixelSpacingY / destPixelSpacingY + destHeight/2.0f;
 	
-	newX += offset.x;
+	newX -= offset.x;
 	newY += offset.y;
 	
 	newX = (newX < 0)? 0 : newX ;
@@ -654,16 +685,20 @@ NSString * documentsDirectory();
 	// PETCT
 	destPixelSpacingX = [[[PETCTController performSelector:view] curDCM] pixelSpacingX];
 	destPixelSpacingY = [[[PETCTController performSelector:view] curDCM] pixelSpacingY];
-	destOrigin = [[PETCTController performSelector:view] origin];
 	destWidth = (float)[[[PETCTController performSelector:view] curDCM] pwidth];
 	destHeight = (float)[[[PETCTController performSelector:view] curDCM] pheight];
 	isDestXFlipped = [[PETCTController performSelector:view] xFlipped];
 	isDestYFlipped = [[PETCTController performSelector:view] yFlipped];
 	xSignDest = (isDestXFlipped)? 1 : 1 ;
 	ySignDest = (isDestYFlipped)? 1 : 1 ;
-	offset.x = senderOrigin.x - destOrigin.x * destPixelSpacingX / senderPixelSpacingX;
-	offset.y = senderOrigin.y - destOrigin.y * destPixelSpacingX / senderPixelSpacingX;
 
+	[[[PETCTController performSelector:view] curDCM] orientation: vectorP];
+	destOrigin[ 0] = [[[PETCTController performSelector:view] curDCM]  originX] * vectorP[ 0] + [[[PETCTController performSelector:view] curDCM]  originY] * vectorP[ 1] + [[[PETCTController performSelector:view] curDCM]  originZ] * vectorP[ 2];
+	destOrigin[ 1] = [[[PETCTController performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[PETCTController performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[PETCTController performSelector:view] curDCM]  originZ] * vectorP[ 5];
+	destOrigin[ 2] = [[[PETCTController performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[PETCTController performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[PETCTController performSelector:view] curDCM]  originZ] * vectorP[ 8];
+
+	NSLog( @"PETCT: %f %f", destOrigin[ 0], destOrigin[ 1]);
+	
 	newX = xSignDest * (x + offset.x) * senderPixelSpacingX / destPixelSpacingX + destWidth/2.0f;
 	newY = ySignDest * (y + offset.y) * senderPixelSpacingY / destPixelSpacingY + destHeight/2.0f;
 	newX = (newX < 0)? 0 : newX ;
