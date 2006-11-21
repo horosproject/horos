@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = DarkBox; LANGUAGE = ObjC; SUPERCLASS = NSBox; }, 
         {
             ACTIONS = {starterField = id; }; 
             CLASS = FirstResponder; 
@@ -9,10 +10,10 @@
         {CLASS = HelpButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
         {CLASS = NSPreferencesModule; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {selectPane = id; }; 
+            ACTIONS = {selectPane = id; showAll = id; }; 
             CLASS = PreferencePaneController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {destView = NSView; "m_SelectionMatrix" = NSMatrix; }; 
+            OUTLETS = {allView = NSView; destView = NSView; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {

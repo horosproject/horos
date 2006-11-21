@@ -99,6 +99,8 @@ extern NSString * documentsDirectory();
 extern AppController		*appController;
 extern BrowserController	*browserWindow;
 
+float MAXWIDTH = 725;
+
 @implementation PreferencePaneController
 
 -(id) init
@@ -194,7 +196,7 @@ extern BrowserController	*browserWindow;
 	NSBundle *prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	Class prefPaneClass = [prefBundle principalClass];
 	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];
-	[self setPane:aPane];
+	//[self setPane:aPane];
 	[aPane release];
 
 	[[NSNotificationCenter defaultCenter]	addObserver: self
@@ -203,6 +205,7 @@ extern BrowserController	*browserWindow;
 												 object: nil];
 	
 	[[self window] setDelegate:self];
+	[self showAll:nil];
 }
 
 - (void) dealloc
@@ -226,7 +229,7 @@ extern BrowserController	*browserWindow;
 			float y, newY, deltaH;
 			NSRect frameRect = [[self window] frame];
 			NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
-			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, contentFrame.size.width, [[aPane mainView] frame].size.height + 64.0);
+			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, MAXWIDTH, [[aPane mainView] frame].size.height + 64.0);
 			NSRect newWindowFrame = [[self window] frameRectForContentRect:newRect];
 			y = frameRect.origin.y;
 			deltaH = newWindowFrame.size.height - frameRect.size.height;
@@ -242,7 +245,7 @@ extern BrowserController	*browserWindow;
 		
 			[pane willUnselect];
 			[[pane mainView] removeFromSuperview];
-			
+			[allView removeFromSuperview];
 			
 		//	[[[self window] contentView] addSubview:[aPane mainView]];
 
@@ -356,6 +359,57 @@ extern BrowserController	*browserWindow;
 	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
 	[self setPane:aPane];
 	[pane release];
+}
+
+- (IBAction)showAll:(id)sender{
+//NSLog(@"pane added");
+			
+			/* Add view to window */
+			float y, newY, deltaH;
+			NSRect frameRect = [[self window] frame];
+			NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
+			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, MAXWIDTH, [allView frame].size.height + 64.0);
+			NSRect newWindowFrame = [[self window] frameRectForContentRect:newRect];
+			y = frameRect.origin.y;
+			deltaH = newWindowFrame.size.height - frameRect.size.height;
+			newY = y - deltaH;
+			newWindowFrame.origin.y = newY;
+					
+			[pane willUnselect];
+			[[pane mainView] removeFromSuperview];			
+			
+			[[self window] setFrame:newWindowFrame display:YES animate:YES];
+			
+			[[self window] setContentMinSize: newRect.size];
+			[[self window] setFrame:newWindowFrame display:YES animate:YES];
+						
+			[destView addSubview:allView];
+			[allView setNeedsDisplay:YES];
+			[pane release];
+			pane = nil;
+			
+			[[self window] setContentMinSize: NSMakeSize(0 , 0)];
+			
+			NSRect	finalFrame = [[self window] frame];
+			
+			if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
+			{
+				long diff= finalFrame.size.height - [[NSScreen mainScreen] visibleFrame].size.height;
+				
+				finalFrame.size.height -= diff;
+				finalFrame.origin.y += diff;
+				
+				[[self window] setFrame:finalFrame display:YES animate:NO];
+				
+				if( [[[allView subviews] objectAtIndex: 0] isKindOfClass: [NSScrollView class]])
+				{
+					NSScrollView	*scrollView = [[allView subviews] objectAtIndex: 0];
+					[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[[scrollView contentView] documentView] frame].size.height - [[scrollView contentView] documentVisibleRect].size.height) ];
+					[scrollView reflectScrolledClipView: [scrollView contentView]];
+				}
+			}
+
+	
 }
 
 //TableViews Data source
