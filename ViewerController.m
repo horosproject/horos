@@ -1920,7 +1920,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
 				
-				[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick to load this series\rClick + Option to load it in a separate window", [curSeries valueForKey:@"id"]] forCell:cell];
+				[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick to load\rClick + Option : in new window", [curSeries valueForKey:@"id"]] forCell:cell];
 				
 				if( [curImage valueForKey:@"series"] == curSeries)
 				{
