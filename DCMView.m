@@ -49,6 +49,9 @@ Version 2.3
 
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+	#import <CoreVideo/CoreVideo.h>
+#endif
 //#include <OpenGL/gl.h> // for OpenGL API
 //#include <OpenGL/glext.h> // for OpenGL extension support 
 
@@ -1230,6 +1233,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[_mouseDownTimer release];
 	
 	[destinationImage release];
+	
+	[_alternateContext release];
 	
     [super dealloc];
 }
@@ -3322,8 +3327,8 @@ static long scrollMode;
 			{
 				if( [[[self window] windowController] is2DViewer] == YES)
 				{
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				}
 			}
 		}
@@ -3416,8 +3421,8 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] is2DViewer] == YES)
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -3442,8 +3447,8 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] is2DViewer] == YES)
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -3801,6 +3806,9 @@ static long scrollMode;
 	mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
+	
+	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
+
 	
     return self;
 }
@@ -5636,7 +5644,12 @@ static long scrollMode;
 	glScalef( 1.f, [curDCM pixelRatio], 1.f);
 }
 
-- (void) drawRect:(NSRect)aRect
+- (void) drawRect:(NSRect)aRect {
+	[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
+}
+
+- (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
+
 {
 	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
@@ -5655,31 +5668,22 @@ static long scrollMode;
 		
 		offset.y = offset.x = 0;
 		
-	//	if( QuartzExtreme)
-	//	{
-	//		NSRect bounds = [self bounds];
-	//		[[NSColor clearColor] set];
-	//		NSRectFill(bounds);
-	//		
-	//		NSRect ovalRect = NSMakeRect(0.0, 0.0, 50.0, 50.0);
-	//		NSBezierPath *aPath = [NSBezierPath bezierPathWithOvalInRect:ovalRect];
-	//		
-	//		NSColor *color = [NSColor colorWithDeviceRed: 1.0 green: 0.0 blue: 0.0 alpha: 0.3];
-	//		[color set];
-	//		
-	//		[aPath fill];
-	//	}
+
 		
 		// Make this context current
-		[[self openGLContext] makeCurrentContext];
-//		[[self openGLContext] update];
+		//[[self openGLContext] makeCurrentContext];
+		
+		[ctx makeCurrentContext];
 		
 		NSRect size = [self frame];
 		
-		glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
+		glViewport (0, 0, aRect.size.width, aRect.size.height); // set the viewport to cover entire window
+		//glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
+		
+
 		
 		if( dcmPixList && curImage > -1)
 		{
@@ -5690,7 +5694,7 @@ static long scrollMode;
 			}
 			else glDisable( GL_BLEND);
 			
-			[self drawRectIn:size :pTextureName :offset :textureX :textureY];
+			 [self drawRectIn:size :pTextureName :offset :textureX :textureY];
 			
 			if( blendingView)
 			{
@@ -6309,7 +6313,8 @@ static long scrollMode;
 		}
 		
 	// Swap buffer to screen
-		[[self openGLContext] flushBuffer];
+	//	[[self openGLContext] flushBuffer];
+	[ctx  flushBuffer];
 		
 //		GLenum err = glGetError();
 //		if (GL_NO_ERROR != err)
@@ -7742,8 +7747,8 @@ BOOL	lowRes = NO;
 				{
 					if( [[[self window] windowController] is2DViewer] == YES)
 					{
-						curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
-						curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
+						//curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
+						//curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
 					}
 				}
 			}
@@ -7776,8 +7781,8 @@ BOOL	lowRes = NO;
 		{
 			if( [[[self window] windowController] is2DViewer] == YES)
 			{
-				[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				//[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				//[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			}
 		}
 		
@@ -8025,6 +8030,8 @@ BOOL	lowRes = NO;
 	return [dcmFilesList objectAtIndex:[self indexForPix:curImage]];
 }
 
+#pragma mark -
+#pragma mark Hot Keys.
 //Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey
 {
@@ -8174,5 +8181,143 @@ BOOL	lowRes = NO;
 	
 	return returnedVal;
 }
+
+#pragma mark -
+#pragma mark IMAVManager delegate methods.
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+/*
+// The IMAVManager will call this to ask for the context we'll be providing frames with.
+- (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
+	NSLog(@"alt context: %@ format: %@", [_alternateContext description], [[self pixelFormat] description]);
+    *contextOut = [_alternateContext CGLContextObj];
+    *pixelFormatOut = [[self pixelFormat] CGLPixelFormatObj];
+}
+
+// The IMAVManager will call this when it wants a frame.
+// Note that this will be called on a non-main thread.
+
+- (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
+	// We ignore the timestamp, signifying that we're providing content for 'now'.
+	NSLog(@"renderIntoOpenGLBuffer:");
+	// Make sure we agree on the screen ID.
+ 	CGLContextObj cgl_ctx = [_alternateContext CGLContextObj];
+	CGLGetVirtualScreen(cgl_ctx, screenInOut);
+	NSLog(@"get virtual screen");
+	// Attach the OpenGLBuffer and render into the _alternateContext.
+    if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
+        // In case the buffers have changed in size, reset the viewport.
+        NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
+        GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
+        GLfloat height = [[attributes objectForKey:(NSString *)kCVOpenGLBufferHeight] floatValue];
+		NSLog(@"width %f  height %f:", width, height);
+
+		NSLog(@"render");
+		// Render!
+        [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
+        return YES;
+    } else {
+        // This should never happen.  The safest thing to do if it does it return
+        // 'NO' (signifying that the frame has not changed).
+        return NO;
+    }
+}
+
+*/
+// Callback from IMAVManager asking what pixel format we'll be providing frames in.
+- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
+    *pixelFormatOut = kCVPixelFormatType_32ARGB;
+}
+
+// This callback is called periodically when we're in the IMAVActive state.
+// We copy (actually, re-render) what's currently on the screen into the provided 
+// CVPixelBufferRef.
+//
+// Note that this will be called on a non-main thread. 
+- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
+    // We ignore the timestamp, signifying that we're providing content for 'now'.
+	CVReturn err;
+
+	// If the image has not changed since we provided the last one return 'NO'.
+    // This enables more efficient transmission of the frame when there is no
+    // new information.
+	//if (newImage)
+	//	return NO;
+	
+    // Lock the pixel buffer's base address so that we can draw into it.
+	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
+        // This should not happen.  If it does, the safe thing to do is return 
+        // 'NO'.
+		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
+		return NO;
+	}
+    
+    // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
+    // pixel format returned in getPixelBufferPixelFormat:, above, width and
+    // height should be read from the provided CVPixelBuffer.
+    size_t width = CVPixelBufferGetWidth(buffer); 
+    size_t height = CVPixelBufferGetHeight(buffer);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
+                                                   width, height,
+                                                   8,
+                                                   CVPixelBufferGetBytesPerRow(buffer),
+                                                   colorSpace,
+                                                   kCGImageAlphaPremultipliedFirst);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
+    // to draw.
+    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+    [NSGraphicsContext setCurrentContext:context];
+	//get NSImage and draw in the rect
+    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
+    [context flushGraphics];
+    
+    // Clean up - remember to unlock the pixel buffer's base address (we locked
+    // it above so that we could draw into it).
+    CGContextRelease(cgContext);
+    CVPixelBufferUnlockBaseAddress(buffer, 0);
+    
+    return YES;
+}
+
+#endif
+
+- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect{
+    // We synchronise to make sure we're not drawing in two threads
+    // simultaneously.
+  
+	[[NSColor blackColor] set];
+	NSRectFill(rect);
+	
+	if (image != nil) {
+        NSRect imageBounds = { NSZeroPoint, [image size] };
+        float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
+        float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
+        
+        if (scaledHeight < scaledWidth) {
+            // rect is wider than image: fit height
+            float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
+            rect.origin.x += horizMargin / 2.0;
+            rect.size.width -= horizMargin;
+        } else {
+            // rect is taller than image: fit width
+            float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
+            rect.origin.y += vertMargin / 2.0;
+            rect.size.height -= vertMargin;
+        }
+        
+        [image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
+    }
+	
+		// This will set the _hasChanged flag to 'YES'.
+		//(void)[self _checkHasChanged:YES];
+	//}
+}
+
+
+
+
+
 
 @end
