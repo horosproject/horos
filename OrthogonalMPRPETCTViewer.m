@@ -756,6 +756,8 @@ NSString * documentsDirectory();
 	[PETCTController showViews:sender];
 	
 	[super showWindow:sender];
+	
+	[self resliceFromX: [[[[self keyView] controller] xReslicedView] crossPositionX] : [[[[self keyView] controller] xReslicedView] crossPositionY] : [[self keyView] controller]];
 }
 
 - (void) windowWillClose:(NSNotification *)notification
