@@ -757,7 +757,7 @@ NSString * documentsDirectory();
 	
 	[super showWindow:sender];
 	
-	[self resliceFromX: [[[[self keyView] controller] xReslicedView] crossPositionX] : [[[[self keyView] controller] xReslicedView] crossPositionY] : [[self keyView] controller]];
+	[self resliceFromOriginal: [[[[self keyView] controller] originalView] crossPositionX] : [[[[self keyView] controller] originalView] crossPositionY] : [[self keyView] controller]];
 }
 
 - (void) windowWillClose:(NSNotification *)notification
