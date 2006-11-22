@@ -3327,8 +3327,8 @@ static long scrollMode;
 			{
 				if( [[[self window] windowController] is2DViewer] == YES)
 				{
-					//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				}
 			}
 		}
@@ -3421,8 +3421,8 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] is2DViewer] == YES)
 		{
-			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -3447,8 +3447,8 @@ static long scrollMode;
 	{
 		if( [[[self window] windowController] is2DViewer] == YES)
 		{
-			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			//[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -7781,8 +7781,8 @@ BOOL	lowRes = NO;
 		{
 			if( [[[self window] windowController] is2DViewer] == YES)
 			{
-				//[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				//[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			}
 		}
 		
