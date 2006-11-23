@@ -6056,6 +6056,7 @@ static BOOL needToRezoom;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	
 	[context lock];
+	
 	//Find all albums
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Album"]];

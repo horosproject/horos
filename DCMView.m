@@ -5644,7 +5644,8 @@ static long scrollMode;
 	glScalef( 1.f, [curDCM pixelRatio], 1.f);
 }
 
-- (void) drawRect:(NSRect)aRect {
+- (void) drawRect:(NSRect)aRect
+{
 	[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
 }
 
@@ -5677,8 +5678,8 @@ static long scrollMode;
 		
 		NSRect size = [self frame];
 		
-		glViewport (0, 0, aRect.size.width, aRect.size.height); // set the viewport to cover entire window
-		//glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
+		//glViewport (0, 0, aRect.size.width, aRect.size.height); // set the viewport to cover entire window <- This doesn't work ANR
+		glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
 		
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
