@@ -55,13 +55,16 @@
     if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
-- (void) dealloc
+- (void) willUnselect
 {
-	NSLog(@"dealloc OSIPETPreferencePane");
-	
 	[[NSUserDefaults standardUserDefaults] setObject:[DefaultCLUTMenu title] forKey: @"PET Default CLUT"];
 	[[NSUserDefaults standardUserDefaults] setObject:[CLUTBlendingMenu title] forKey: @"PET Blending CLUT"];
 	[[NSUserDefaults standardUserDefaults] setInteger:[minimumValueText intValue] forKey: @"PETMinimumValue"];
+}
+
+- (void) dealloc
+{
+	NSLog(@"dealloc OSIPETPreferencePane");
 	
 	[super dealloc];
 }
