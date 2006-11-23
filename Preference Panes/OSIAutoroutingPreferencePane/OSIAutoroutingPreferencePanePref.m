@@ -82,16 +82,19 @@
 	[autoroutingActivated setState: [defaults boolForKey:@"AUTOROUTINGACTIVATED"]];
 }
 
-- (void)dealloc
+-(void) willUnselect
 {
-	NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
-	
 	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOROUTINGACTIVATED"])
 	{
 		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey:@"INC"]+1  forKey:@"INC"];
 	}
+}
+
+- (void)dealloc
+{
+	NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
 	
 	[routesArray release];
 	

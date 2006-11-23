@@ -81,11 +81,16 @@
 	//[calendarTable setEnabled:[routingActivated state]];
 }
 
+- (void) willUnselect
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[routesController content]  forKey:@"RoutingRules"];
+}
+
 - (void)dealloc{
 
 	NSLog(@"dealloc OSIRoutingPreferencePanePref");
 	//NSLog(@"content: %@", [[routesController content]  description]);
-	[[NSUserDefaults standardUserDefaults] setObject:[routesController content]  forKey:@"RoutingRules"];
+	
 	[routingCalendars release];
 	[super dealloc];
 }

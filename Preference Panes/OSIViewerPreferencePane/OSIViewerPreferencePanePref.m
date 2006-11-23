@@ -55,10 +55,13 @@
     if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"]) [self enableControls: NO];
 }
 
-- (void) dealloc
+- (void) willUnselect
 {
 	[[NSUserDefaults standardUserDefaults] setObject:[iPhotoAlbumName stringValue] forKey: @"ALBUMNAME"];
-	
+}
+
+- (void) dealloc
+{
 	NSLog(@"dealloc OSIViewerPreferencePanePref");
 	
 	[super dealloc];
