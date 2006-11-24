@@ -7306,6 +7306,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 	int from = subFrom-1, to = subTo, interval = subInterval, x, i;
 	
+	if( interval < 1) interval = 1;
 //	if( [subSeriesInterval state] == NSOnState) interval = [subSeriesSlider intValue];
 //	else interval = 1;
 	
