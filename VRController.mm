@@ -713,10 +713,10 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	
 	[view set3DStateDictionary:dict];
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
-	else if([view mode] == 0) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
+	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
 	
 	if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-	else if([view mode] == 0) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
+	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
 	else [shadingCheck setState: NSOffState];

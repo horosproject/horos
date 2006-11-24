@@ -78,11 +78,14 @@ extern NSString * documentsDirectory();
             serverAddress.sin_family = AF_INET;
             serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
             serverAddress.sin_port = htons(8780); //make it endian independent
-
+			
             // Allow the kernel to choose a random port number by passing in 0 for the port.
             if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
 			{
 				NSLog(@"bind failed... select another port than 8780");
+				
+				NSRunCriticalAlertPanel(NSLocalizedString(@"Bonjour Port",nil), NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+				
 				serverAddress.sin_port = htons(0);
 				if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
 				{
