@@ -7304,15 +7304,15 @@ static NSArray*	openSubSeriesArray = 0L;
 {
 	NSArray *newArray = [NSArray array];
 		
-	int from, to, interval, x, i;
+	int from = subFrom-1, to = subTo, interval = subInterval, x, i;
 	
-	if( [subSeriesInterval state] == NSOnState) interval = [subSeriesSlider intValue];
-	else interval = 1;
+//	if( [subSeriesInterval state] == NSOnState) interval = [subSeriesSlider intValue];
+//	else interval = 1;
 	
-	[subSeriesIntervalText setIntValue: [subSeriesSlider intValue]];
+//	[subSeriesIntervalText setIntValue: [subSeriesSlider intValue]];
 	
-	from = [subSeriesFrom intValue]-1;
-	to = [subSeriesTo intValue];
+//	from = [subSeriesFrom intValue]-1;
+//	to = [subSeriesTo intValue];
 	
 	int max = 0;
 	for( x = 0; x < [toOpenArray count]; x++)
@@ -7329,15 +7329,15 @@ static NSArray*	openSubSeriesArray = 0L;
 	if( from > max) from = max;
 	if( to > max) to = max;
 	
-	[subSeriesFrom setIntValue: from+1];
-	[subSeriesTo setIntValue: to];
+//	[subSeriesFrom setIntValue: from+1];
+//	[subSeriesTo setIntValue: to];
 	
 	for( x = 0; x < [toOpenArray count]; x++)
 	{
 		NSArray *loadList = [toOpenArray objectAtIndex: x];
 		
-		from = [subSeriesFrom intValue]-1;
-		to = [subSeriesTo intValue];
+		from = subFrom-1;
+		to = subTo;
 		
 		if( from >= [loadList count]) from = [loadList count];
 		if( to >= [loadList count]) to = [loadList count];
@@ -7379,30 +7379,51 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 }
 
+- (void) setSubInterval:(id) sender
+{
+	subInterval = [sender intValue];
+	
+	[self checkMemory: self];
+}
+
 - (void) setSubFrom:(id) sender
 {
 	subFrom = [sender intValue];
+	
+	if( managedObjectContext == 0L) return;
+	if( bonjourDownloading) return;
+    if( threadWillRunning == YES) return;
+    if( threadRunning == YES)  return;
+	
+	[animationSlider setIntValue: subFrom-1];
+	[self previewSliderAction: animationSlider];
+	
+	[self checkMemory: self];
 }
 
 - (void) setSubTo:(id) sender
 {
 	subTo = [sender intValue];
+	
+	if( managedObjectContext == 0L) return;
+	if( bonjourDownloading) return;
+    if( threadWillRunning == YES) return;
+    if( threadRunning == YES)  return;
+	
+	[animationSlider setIntValue: subTo-1];
+	[self previewSliderAction: animationSlider];
+	
+	[self checkMemory: self];
 }
 
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray
 {
 	openSubSeriesArray = [toOpenArray retain];
 	
-	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
 	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
-	
-	[subSeriesFrom setIntValue: 1];
-	[subSeriesTo setIntValue: [[toOpenArray objectAtIndex:0] count]];
-	[subSeriesSlider setIntValue: 2];
-	[subSeriesIntervalText setIntValue: 2];
-	[subSeriesInterval setState: NSOnState];
 	
 	[NSApp beginSheet: subSeriesWindow
 				modalForWindow:	[NSApp mainWindow]					//[self window]

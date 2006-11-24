@@ -119,9 +119,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	int								subFrom, subTo, subInterval, subMax;
 	
 	IBOutlet NSWindow				*subSeriesWindow;
-	IBOutlet NSButton				*subSeriesInterval, *subSeriesOKButton;
-	IBOutlet NSTextField			*subSeriesFrom, *subSeriesTo, *subSeriesIntervalText, *memoryMessage;
-	IBOutlet NSSlider				*subSeriesSlider;
+	IBOutlet NSButton				*subSeriesOKButton;
+	IBOutlet NSTextField			*memoryMessage;
 	IBOutlet NSBox					*enoughMem, *notEnoughMem;
 	
 	IBOutlet NSWindow				*bonjourPasswordWindow;
