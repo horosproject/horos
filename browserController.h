@@ -116,6 +116,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     
     IBOutlet PreviewView			*imageView;
 	
+	int								subFrom, subTo, subInterval, subMax;
+	
 	IBOutlet NSWindow				*subSeriesWindow;
 	IBOutlet NSButton				*subSeriesInterval, *subSeriesOKButton;
 	IBOutlet NSTextField			*subSeriesFrom, *subSeriesTo, *subSeriesIntervalText, *memoryMessage;

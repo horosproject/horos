@@ -7379,10 +7379,25 @@ static NSArray*	openSubSeriesArray = 0L;
 	}
 }
 
+- (void) setSubFrom:(id) sender
+{
+	subFrom = [sender intValue];
+}
+
+- (void) setSubTo:(id) sender
+{
+	subTo = [sender intValue];
+}
+
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray
 {
 	openSubSeriesArray = [toOpenArray retain];
-
+	
+	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
+	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subTo"];
+	[self setValue:[NSNumber numberWithInt:2] forKey:@"subInterval"];
+	[self setValue:[NSNumber numberWithInt:[[toOpenArray objectAtIndex:0] count]] forKey:@"subMax"];
+	
 	[subSeriesFrom setIntValue: 1];
 	[subSeriesTo setIntValue: [[toOpenArray objectAtIndex:0] count]];
 	[subSeriesSlider setIntValue: 2];
