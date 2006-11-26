@@ -5646,7 +5646,9 @@ static long scrollMode;
 
 - (void) drawRect:(NSRect)aRect
 {
-	[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
+	@synchronized (self) {
+		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
+	}
 }
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
@@ -6316,6 +6318,7 @@ static long scrollMode;
 	// Swap buffer to screen
 	//	[[self openGLContext] flushBuffer];
 	[ctx  flushBuffer];
+	(void)[self _checkHasChanged:YES];
 		
 //		GLenum err = glGetError();
 //		if (GL_NO_ERROR != err)
@@ -8237,12 +8240,12 @@ BOOL	lowRes = NO;
 - (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
     // We ignore the timestamp, signifying that we're providing content for 'now'.
 	CVReturn err;
-
+	
 	// If the image has not changed since we provided the last one return 'NO'.
     // This enables more efficient transmission of the frame when there is no
     // new information.
-	//if (newImage)
-	//	return NO;
+	if ([self checkHasChanged])
+		return NO;
 	
     // Lock the pixel buffer's base address so that we can draw into it.
 	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
@@ -8251,7 +8254,7 @@ BOOL	lowRes = NO;
 		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
 		return NO;
 	}
-    
+    @synchronized (self) {
     // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
     // pixel format returned in getPixelBufferPixelFormat:, above, width and
     // height should be read from the provided CVPixelBuffer.
@@ -8271,6 +8274,7 @@ BOOL	lowRes = NO;
     NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
     [NSGraphicsContext setCurrentContext:context];
 	//get NSImage and draw in the rect
+	
     [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
     [context flushGraphics];
     
@@ -8278,44 +8282,64 @@ BOOL	lowRes = NO;
     // it above so that we could draw into it).
     CGContextRelease(cgContext);
     CVPixelBufferUnlockBaseAddress(buffer, 0);
-    
+    }
     return YES;
 }
 
-#endif
+
 
 - (void)drawImage:(NSImage *)image inBounds:(NSRect)rect{
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
-  
-	[[NSColor blackColor] set];
-	NSRectFill(rect);
-	
-	if (image != nil) {
-        NSRect imageBounds = { NSZeroPoint, [image size] };
-        float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
-        float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
-        
-        if (scaledHeight < scaledWidth) {
-            // rect is wider than image: fit height
-            float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
-            rect.origin.x += horizMargin / 2.0;
-            rect.size.width -= horizMargin;
-        } else {
-            // rect is taller than image: fit width
-            float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
-            rect.origin.y += vertMargin / 2.0;
-            rect.size.height -= vertMargin;
-        }
-        
-        [image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
-    }
-	
-		// This will set the _hasChanged flag to 'YES'.
-		//(void)[self _checkHasChanged:YES];
+   
+		[[NSColor blackColor] set];
+		NSRectFill(rect);
+		
+		if (image != nil) {
+			NSRect imageBounds = { NSZeroPoint, [image size] };
+			float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
+			float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
+			
+			if (scaledHeight < scaledWidth) {
+				// rect is wider than image: fit height
+				float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
+				rect.origin.x += horizMargin / 2.0;
+				rect.size.width -= horizMargin;
+			} else {
+				// rect is taller than image: fit width
+				float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
+				rect.origin.y += vertMargin / 2.0;
+				rect.size.height -= vertMargin;
+			}
+			
+			[image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
+		}
+
 	//}
 }
 
+
+
+#endif
+
+// The _hasChanged flag is set to 'NO' after any check (by a client of this 
+// class), and 'YES' after a frame is drawn that is not identical to the 
+// previous one (in the drawInBounds: method).
+
+// Returns the current state of the flag, and sets it to the passed in value.
+- (BOOL)_checkHasChanged:(BOOL)flag {
+    BOOL hasChanged;
+    @synchronized (self) {
+        hasChanged = _hasChanged;
+        _hasChanged = flag;
+    }
+    return hasChanged;
+}
+
+- (BOOL)checkHasChanged {
+    // Calling with 'NO' clears _hasChanged after the call (see above).
+    return [self _checkHasChanged:NO];
+}
 
 
 

@@ -93,6 +93,11 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "Reports.h"
 #import "ViewerControllerDCMTKCategory.h"
 
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+	#import <InstantMessage/IMService.h>
+	#import <InstantMessage/IMAVManager.h>
+#endif
+
 @class VRPROController;
 
 extern	NSMutableDictionary		*plugins, *pluginsDict;
@@ -1674,6 +1679,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
+	
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
+	[[IMService notificationCenter] removeObserver:self];
+#endif
 }
 
 
@@ -3024,10 +3034,14 @@ static ViewerController *draggedController = 0L;
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: iChatBroadCastToolbarItemIdentifier])
 	{
+		#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+			enable = YES;
+		#else
 		if( [[NSFileManager defaultManager] fileExistsAtPath:@"/Library/Quicktime/OsiriX Broadcasting.component"] == NO)
 		{
 			enable = NO;
 		}
+		#endif
 	}
 	
 	if([[toolbarItem itemIdentifier] isEqualToString: SUVToolbarItemIdentifier])
@@ -3352,6 +3366,12 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 	
 	displayOnlyKeyImages = NO;
+	
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5	
+	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
+                                           name:IMAVManagerStateChangedNotification object:nil];
+	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
+#endif
 	
 	return self;
 
@@ -10734,6 +10754,27 @@ int i,j,l;
 //	[sourceImage release];
 }
 
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5	
+// IMAVManager notification callback.
+- (void)_stateChanged:(NSNotification *)aNotification {
+    // Read the state.
+    IMAVManagerState state = [[IMAVManager sharedAVManager] state];
+}
+
+- (void) iChatBroadcast:(id) sender
+{
+	NSLog(@"ichat broadcast");
+    IMAVManager *avManager = [IMAVManager sharedAVManager];
+    if ([avManager state] != IMAVRunning) {
+        [avManager start];
+		NSLog(@"Start broadcast");
+    } else {
+        [avManager stop];
+    }
+}
+
+#else
+
 - (void) iChatBroadcast:(id) sender
 {
 	if( timeriChat)
@@ -10759,6 +10800,7 @@ int i,j,l;
         [sender setToolTip: NSLocalizedString(@"Stop", nil)];
     }
 }
+#endif
 
 - (void) notificationiChatBroadcast:(NSNotification*)note
 {

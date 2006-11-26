@@ -198,6 +198,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	NSTimer			*_mouseDownTimer; //Timer to check if mouseDown is Persisiting;
 	NSImage			*destinationImage; //image will be dropping
 	
+	BOOL			_hasChanged;
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
 }
