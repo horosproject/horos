@@ -7026,8 +7026,7 @@ static BOOL needToRezoom;
 				if( loadList) [toOpenArray addObject: loadList];
 			}
 		}
-		
-
+				
 		numberImages = 0;
 		if( movieViewer == YES) // First check if all series contain same amount of images
 		{
@@ -7091,6 +7090,101 @@ static BOOL needToRezoom;
 				}
 			}
 		}
+		else if( [toOpenArray count] == 1)	// Just one thumbnail is selected,
+		{
+			NSArray			*singleSeries = [toOpenArray objectAtIndex: 0];
+			NSMutableArray	*splittedSeries = [NSMutableArray array];
+			
+			float interval, previousinterval = 0;
+			
+			[splittedSeries addObject: [NSMutableArray array]];
+			[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+			
+			for( x = 1; x < [singleSeries count]; x++)
+			{
+				interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+				
+				if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+				{
+					[splittedSeries addObject: [NSMutableArray array]];
+					NSLog(@"split at: %d", x);
+					
+					previousinterval = 0;
+				}
+				else previousinterval = interval;
+				
+				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+			}
+			
+			if( [splittedSeries count] > 1)
+			{
+				[subOpenMatrix renewRows: 1 columns: [splittedSeries count]];
+				[subOpenMatrix setAllowsEmptySelection: NO];
+				
+				[[supOpenButtons cellWithTag: 3] setEnabled: YES];
+				
+				for( i = 0 ; i < [splittedSeries count]; i++)
+				{
+					if( [[splittedSeries objectAtIndex: 0] count] != [[splittedSeries objectAtIndex:i] count]) [[supOpenButtons cellWithTag: 3] setEnabled: NO];
+				}
+				
+				for( i = 0 ; i < [splittedSeries count]; i++)
+				{
+					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
+					
+					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+			
+					if( dcmPix)
+					{
+						[dcmPix computeWImage:YES :0 :0];
+						
+						NSImage	 *img = [dcmPix getImage];
+						
+						NSButtonCell *cell = [subOpenMatrix cellAtRow:0 column: i];
+						[cell setTransparent:NO];
+						[cell setEnabled:YES];
+						[cell setFont:[NSFont systemFontOfSize:10]];
+						[cell setImagePosition: NSImageBelow];
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d Images", nil), [[splittedSeries objectAtIndex:i] count]]];
+						[cell setButtonType:NSPushOnPushOffButton];
+						[cell setImage: img];
+						[dcmPix release];
+					}
+				}
+				
+				[NSApp beginSheet: subOpenWindow
+							modalForWindow:	[NSApp mainWindow]
+							modalDelegate: nil
+							didEndSelector: nil
+							contextInfo: nil];
+				
+				int result = [NSApp runModalForWindow: subOpenWindow];
+				
+				[NSApp endSheet: subOpenWindow];
+				[subOpenWindow orderOut: self];
+				
+				switch( [supOpenButtons selectedTag])
+				{
+				
+					case 0:	// Cancel
+						movieError = YES;
+					break;
+					
+					case 1: // Entire
+					
+					break;
+					
+					case 2: // selected
+						toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix selectedColumn]]];
+					break;
+					
+					case 3:	// 4D
+						toOpenArray = splittedSeries;
+					break;
+				}
+			}
+		}
+
 		
 		if( movieError == NO)
 			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];

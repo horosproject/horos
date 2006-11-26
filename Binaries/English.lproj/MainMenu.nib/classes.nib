@@ -78,6 +78,7 @@
                 matrixPressed = id; 
                 newViewerDICOM = id; 
                 openDatabase = id; 
+                pdfPreview = id; 
                 previewPerformAnimation = id; 
                 previewSliderAction = id; 
                 queryDICOM = id; 
@@ -161,13 +162,11 @@
                 sourcesSplitView = NSSplitView; 
                 splitViewHorz = NSSplitView; 
                 splitViewVert = NSSplitView; 
-                subSeriesFrom = NSTextField; 
-                subSeriesInterval = NSButton; 
-                subSeriesIntervalText = NSTextField; 
+                subOpenMatrix = NSMatrix; 
+                subOpenWindow = NSWindow; 
                 subSeriesOKButton = NSButton; 
-                subSeriesSlider = NSSlider; 
-                subSeriesTo = NSTextField; 
                 subSeriesWindow = NSWindow; 
+                supOpenButtons = NSMatrix; 
                 thumbnailsScrollView = NSScrollView; 
                 timeIntervalView = NSView; 
                 urlString = NSTextField; 
