@@ -4283,7 +4283,8 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
 	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
-	if( [dcmObject attributeValueWithName:@"CineRate"])			cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
+	if( [dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"])	cineRate = [[dcmObject attributeValueWithName:@"RecommendedDisplayFrameRate"] floatValue]; 
+	if( !cineRate && [dcmObject attributeValueWithName:@"CineRate"])		cineRate = [[dcmObject attributeValueWithName:@"CineRate"] floatValue]; 
 	if (!cineRate)
 	{
 		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
@@ -4929,6 +4930,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		{
+			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
+			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			else cineRate = 0;
+			
 			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 			if( val)
 			{
@@ -4985,7 +4990,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			else patientPosition = 0;
 			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
-			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
+			if (!cineRate && val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 			else cineRate = 0;
 			
 			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
@@ -5001,7 +5006,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				}
 			}
 			
-			if( cineRate == 0)
+			if(!cineRate)
 			{
 				val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
 				if (val != NULL)
