@@ -871,6 +871,19 @@ static NSString *hostName = @"";
 	//debugging level. Can be changed at the command line
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"NetworkDebugLevel"];
 	
+	//hot key prefs
+	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
+	NSString *stringValue;
+	NSArray *array = [NSArray arrayWithObjects:@"~", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0",
+							@"h", @"v", @"w", @"m", @"z", @"i", @"s", @"l", @"a", @"r", @"e", @"t", @"q", @"o", 
+							@"c", @"d", @"p", @"b", @"x", nil];
+	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
+	while (stringValue = [hotKeyEnumerator nextObject]) {
+		unichar character  = [stringValue characterAtIndex:0];
+		[hotkeys setObject:[NSNumber numberWithInt:character] forKey:stringValue];
+	}
+	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
+	
 	return defaultValues;
 }
 @end

@@ -201,6 +201,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	BOOL			_hasChanged;
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
+	NSDictionary *_hotKeyDictionary;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;

@@ -1236,6 +1236,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[_alternateContext release];
 	
+	[_hotKeyDictionary release];
+	
     [super dealloc];
 }
 
@@ -3809,7 +3811,7 @@ static long scrollMode;
 	
 	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
 
-	
+	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
     return self;
 }
 
@@ -8048,6 +8050,7 @@ BOOL	lowRes = NO;
 		NSArray *wwwl = nil;
 		NSArray *wwwlValues = [wwwlDict allValues];
 		unichar key = [hotKey characterAtIndex:0];
+		key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
 		int index = 1;
 		switch (key){
 			case '`': [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
