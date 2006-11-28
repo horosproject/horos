@@ -9814,10 +9814,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSLog( [sender description]);
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
 	{
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
+		//Burn additional Files. Not just images. Add SRs
+		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:NO];
 		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
 	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
+	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:NO];
 	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
@@ -9849,9 +9850,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		NSMutableArray *managedObjects = [[NSMutableArray alloc] init];
 		NSMutableArray *filesToBurn;
-		
-		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects];
-		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects];
+		//Burn additional Files. Not just images. Add SRs
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
+		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects   onlyImages:NO];
 		
 		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects  releaseAfterBurn:YES];
 
