@@ -8,6 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum HotKeyActions {DefaultWWWLHotKeyAction, FullDynamicWWWLHotKeyAction, 
+	Preset1WWWLHotKeyAction, Preset2WWWLHotKeyAction, Preset3WWWLHotKeyAction, 
+	Preset4WWWLHotKeyAction, Preset5WWWLHotKeyAction, Preset6WWWLHotKeyAction, 
+	Preset7WWWLHotKeyAction, Preset8WWWLHotKeyAction, Preset9WWWLHotKeyAction,
+	FlipVerticalHotKeyAction, FlipHorizontalHotKeyAction,
+	WWWLToolHotKeyAction, MoveHotKeyAction, ZoomHotKeyAction, RotateHotKeyAction,
+	ScrollHotKeyAction, LengthHotKeyAction, AngleHotKeyAction, RectangleHotKeyAction,
+	OvalHotKeyAction, TextHotKeyAction, ArrowHotKeyAction, OpenPolygonHotKeyAction,
+	ClosedPolygonHotKeyAction, PencilHotKeyAction, ThreeDPointHotKeyAction, PlainToolHotKeyAction,
+	BoneRemovalHotKeyAction};
 
 @interface DefaultsOsiriX : NSObject {
 

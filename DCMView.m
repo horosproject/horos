@@ -52,6 +52,8 @@ Version 2.3
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <CoreVideo/CoreVideo.h>
 #endif
+
+#import "DefaultsOsiriX.h"
 //#include <OpenGL/gl.h> // for OpenGL API
 //#include <OpenGL/glext.h> // for OpenGL extension support 
 
@@ -8072,52 +8074,52 @@ BOOL	lowRes = NO;
 		key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
 		int index = 1;
 		switch (key){
-			case '`': [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
+			case DefaultWWWLHotKeyAction: [self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
 						break;
-			case '0': [self setWLWW:0 :0];												// full dynamic WW/WL
+			case FullDynamicWWWLHotKeyAction: [self setWLWW:0 :0];												// full dynamic WW/WL
 				break;
 																						// 1 - 9 will be presets WW/WL
-			case '1': if([wwwlValues count] >= 1) {
+			case Preset1WWWLHotKeyAction: if([wwwlValues count] >= 1) {
 							wwwl = [wwwlValues objectAtIndex:0];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '2': if([wwwlValues count] >= 2) {
+			case Preset2WWWLHotKeyAction: if([wwwlValues count] >= 2) {
 							wwwl = [wwwlValues objectAtIndex:1];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '3': if([wwwlValues count] >= 3) {
+			case Preset3WWWLHotKeyAction: if([wwwlValues count] >= 3) {
 							wwwl = [wwwlValues objectAtIndex:2];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '4': if([wwwlValues count] >= 4) {
+			case Preset4WWWLHotKeyAction: if([wwwlValues count] >= 4) {
 							wwwl = [wwwlValues objectAtIndex:3];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '5': if([wwwlValues count] >= 5) {
+			case Preset5WWWLHotKeyAction: if([wwwlValues count] >= 5) {
 							wwwl = [wwwlValues objectAtIndex:4];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '6': if([wwwlValues count] >= 6) {
+			case Preset6WWWLHotKeyAction: if([wwwlValues count] >= 6) {
 							wwwl = [wwwlValues objectAtIndex:5];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '7': if([wwwlValues count] >= 7) {
+			case Preset7WWWLHotKeyAction: if([wwwlValues count] >= 7) {
 							wwwl = [wwwlValues objectAtIndex:6];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '8': if([wwwlValues count] >= 8) {
+			case Preset8WWWLHotKeyAction: if([wwwlValues count] >= 8) {
 							wwwl = [wwwlValues objectAtIndex:7];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	
 					break;
-			case '9': if([wwwlValues count] >= 9) {
+			case Preset9WWWLHotKeyAction: if([wwwlValues count] >= 9) {
 							wwwl = [wwwlValues objectAtIndex:8];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
 					}	

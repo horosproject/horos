@@ -874,13 +874,19 @@ static NSString *hostName = @"";
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
 	NSString *stringValue;
-	NSArray *array = [NSArray arrayWithObjects:@"~", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"0",
+	NSArray *array = [NSArray arrayWithObjects:@"~", @"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", 
 							@"h", @"v", @"w", @"m", @"z", @"i", @"s", @"l", @"a", @"r", @"e", @"t", @"q", @"o", 
 							@"c", @"d", @"p", @"b", @"x", nil];
 	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
-	while (stringValue = [hotKeyEnumerator nextObject]) {
-		unichar character  = [stringValue characterAtIndex:0];
-		[hotkeys setObject:[NSNumber numberWithInt:character] forKey:stringValue];
+	int x = DefaultWWWLHotKeyAction;
+	int count = BoneRemovalHotKeyAction + 1;
+	for (x = DefaultWWWLHotKeyAction; x < count; x++) {
+	//while (stringValue = [hotKeyEnumerator nextObject]) {
+	//	unichar character  = [stringValue characterAtIndex:0];
+		if  ( x < [array count]) {
+			stringValue = [array objectAtIndex:x];
+			[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
+		}
 	}
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
 	
