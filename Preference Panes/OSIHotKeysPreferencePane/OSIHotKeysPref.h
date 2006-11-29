@@ -24,8 +24,6 @@
 @interface OSIHotKeysPref : NSPreferencePane 
 {
 	NSArray *_actions;
-	NSArray *_keys;
-	NSArray *_actionsAndKeys;
 	IBOutlet SFAuthorizationView *_authView;
 	BOOL _enableControls;
 }
@@ -33,8 +31,7 @@
 - (void) mainViewDidLoad;
 - (NSArray *)actions;
 - (void)setActions:(NSArray *)actions;
-- (NSArray *)keys;
-- (void)setKeys:(NSArray *)keys;
+
 - (void) setEnableControls: (BOOL) val;
 - (BOOL)enableControls;
 
