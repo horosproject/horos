@@ -3,6 +3,10 @@
 	089C1669FE841209C02AAC07 /* Project object */ = {
 		activeBuildConfigurationName = Release;
 		activeTarget = 8D202CE80486D31800D8A456 /* OSIHotKeys */;
+		addToTargets = (
+			8D202CE80486D31800D8A456 /* OSIHotKeys */,
+		);
+		breakpointsGroup = BF92A1EB0B1D462C001DB893 /* XCBreakpointsBucket */;
 		codeSenseManager = BFEF2CFE0B1CEFFC005D8A08 /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -10,9 +14,9 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					244,
+					601,
 					20,
-					48.1626,
+					48,
 					43,
 					43,
 					20,
@@ -27,21 +31,35 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 186445813;
-			PBXWorkspaceStateSaveDate = 186445813;
+			PBXPerProjectTemplateStateSaveDate = 186465667;
+			PBXWorkspaceStateSaveDate = 186465667;
 		};
 		perUserProjectItems = {
+			BF92A1D40B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D40B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1D50B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D50B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1D60B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D60B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1D70B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D70B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1D80B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D80B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1D90B1D462C001DB893 /* PBXTextBookmark */ = BF92A1D90B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DA0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DA0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DB0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DB0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DC0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DC0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DD0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DD0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DE0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DE0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1DF0B1D462C001DB893 /* PBXTextBookmark */ = BF92A1DF0B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E00B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E00B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E10B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E10B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E20B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E20B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E30B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E30B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E40B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E40B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E50B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E50B1D462C001DB893 /* PBXTextBookmark */;
+			BF92A1E60B1D462C001DB893 /* PBXTextBookmark */ = BF92A1E60B1D462C001DB893 /* PBXTextBookmark */;
 			BFEF2D0F0B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D0F0B1D0048005D8A08 /* PBXTextBookmark */;
 			BFEF2D100B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D100B1D0048005D8A08 /* PBXTextBookmark */;
-			BFEF2D110B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D110B1D0048005D8A08 /* PBXTextBookmark */;
-			BFEF2D120B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D120B1D0048005D8A08 /* PBXTextBookmark */;
 			BFEF2D130B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D130B1D0048005D8A08 /* PBXTextBookmark */;
 			BFEF2D140B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D140B1D0048005D8A08 /* PBXTextBookmark */;
 			BFEF2D150B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D150B1D0048005D8A08 /* PBXTextBookmark */;
 			BFEF2D160B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D160B1D0048005D8A08 /* PBXTextBookmark */;
-			BFEF2D170B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D170B1D0048005D8A08 /* PBXTextBookmark */;
-			BFEF2D180B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D180B1D0048005D8A08 /* PBXTextBookmark */;
-			BFEF2D190B1D0048005D8A08 /* PBXTextBookmark */ = BFEF2D190B1D0048005D8A08 /* PBXTextBookmark */;
 		};
 		sourceControlManager = BFEF2CFD0B1CEFFC005D8A08 /* Source Control */;
 		userBuildSettings = {
@@ -56,6 +74,202 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRect = "{{0, 0}, {442, 563}}";
 		};
+	};
+	BF92A1D40B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 18";
+		rLen = 0;
+		rLoc = 575;
+		rType = 0;
+		vrLen = 2213;
+		vrLoc = 0;
+	};
+	BF92A1D50B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "OSIHotKeysPref.h: 18";
+		rLen = 0;
+		rLoc = 575;
+		rType = 0;
+		vrLen = 1035;
+		vrLoc = 0;
+	};
+	BF92A1D60B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "OSIHotKeysPref.h: 15";
+		rLen = 0;
+		rLoc = 849;
+		rType = 0;
+		vrLen = 314;
+		vrLoc = 0;
+	};
+	BF92A1D70B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 47";
+		rLen = 0;
+		rLoc = 3124;
+		rType = 0;
+		vrLen = 2049;
+		vrLoc = 0;
+	};
+	BF92A1D80B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = keys;
+		rLen = 4;
+		rLoc = 752;
+		rType = 0;
+		vrLen = 314;
+		vrLoc = 0;
+	};
+	BF92A1D90B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 59";
+		rLen = 0;
+		rLoc = 4073;
+		rType = 0;
+		vrLen = 2392;
+		vrLoc = 42;
+	};
+	BF92A1DA0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "OSIHotKeysPref.h: 16";
+		rLen = 0;
+		rLoc = 849;
+		rType = 0;
+		vrLen = 356;
+		vrLoc = 0;
+	};
+	BF92A1DB0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 53";
+		rLen = 0;
+		rLoc = 2545;
+		rType = 0;
+		vrLen = 2498;
+		vrLoc = 150;
+	};
+	BF92A1DC0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "OSIHotKeysPref.h: 20";
+		rLen = 111;
+		rLoc = 879;
+		rType = 0;
+		vrLen = 471;
+		vrLoc = 0;
+	};
+	BF92A1DD0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 82";
+		rLen = 0;
+		rLoc = 3484;
+		rType = 0;
+		vrLen = 1847;
+		vrLoc = 1419;
+	};
+	BF92A1DE0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = _enableControls;
+		rLen = 15;
+		rLoc = 833;
+		rType = 0;
+		vrLen = 494;
+		vrLoc = 0;
+	};
+	BF92A1DF0B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "- (void) setEnableControls: (BOOL) val";
+		rLen = 38;
+		rLoc = 3419;
+		rType = 0;
+		vrLen = 1850;
+		vrLoc = 1419;
+	};
+	BF92A1E00B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "- (BOOL)enableControls";
+		rLen = 22;
+		rLoc = 1032;
+		rType = 0;
+		vrLen = 558;
+		vrLoc = 0;
+	};
+	BF92A1E10B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 107";
+		rLen = 0;
+		rLoc = 3994;
+		rType = 0;
+		vrLen = 1333;
+		vrLoc = 2318;
+	};
+	BF92A1E20B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "IBOutlet SFAuthorizationView *_authView;";
+		rLen = 42;
+		rLoc = 785;
+		rType = 0;
+		vrLen = 558;
+		vrLoc = 0;
+	};
+	BF92A1E30B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 107";
+		rLen = 0;
+		rLoc = 3994;
+		rType = 0;
+		vrLen = 1336;
+		vrLoc = 2315;
+	};
+	BF92A1E40B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = "OSIHotKeysPref.h: 18";
+		rLen = 0;
+		rLoc = 575;
+		rType = 0;
+		vrLen = 1035;
+		vrLoc = 0;
+	};
+	BF92A1E50B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
+		name = "OSIHotKeysPref.m: 18";
+		rLen = 0;
+		rLoc = 575;
+		rType = 0;
+		vrLen = 2213;
+		vrLoc = 0;
+	};
+	BF92A1E60B1D462C001DB893 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
+		name = _actionsAndKeys;
+		rLen = 15;
+		rLoc = 768;
+		rType = 0;
+		vrLen = 1062;
+		vrLoc = 0;
+	};
+	BF92A1EB0B1D462C001DB893 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Project Breakpoints";
+		objects = (
+		);
 	};
 	BFEF2CFD0B1CEFFC005D8A08 /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -87,26 +301,6 @@
 		rLoc = 0;
 		rType = 0;
 		vrLen = 114;
-		vrLoc = 0;
-	};
-	BFEF2D110B1D0048005D8A08 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
-		name = "OSIHotKeysPref.m: 16";
-		rLen = 0;
-		rLoc = 275;
-		rType = 0;
-		vrLen = 284;
-		vrLoc = 0;
-	};
-	BFEF2D120B1D0048005D8A08 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
-		name = actions;
-		rLen = 7;
-		rLoc = 254;
-		rType = 0;
-		vrLen = 298;
 		vrLoc = 0;
 	};
 	BFEF2D130B1D0048005D8A08 /* PBXTextBookmark */ = {
@@ -149,48 +343,18 @@
 		vrLen = 246;
 		vrLoc = 0;
 	};
-	BFEF2D170B1D0048005D8A08 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
-		name = actions;
-		rLen = 7;
-		rLoc = 254;
-		rType = 0;
-		vrLen = 298;
-		vrLoc = 0;
-	};
-	BFEF2D180B1D0048005D8A08 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */;
-		name = "OSIHotKeysPref.m: 16";
-		rLen = 0;
-		rLoc = 275;
-		rType = 0;
-		vrLen = 284;
-		vrLoc = 0;
-	};
-	BFEF2D190B1D0048005D8A08 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */;
-		name = "OSIHotKeysPref.h: 15";
-		rLen = 0;
-		rLoc = 278;
-		rType = 0;
-		vrLen = 314;
-		vrLoc = 0;
-	};
 	F506C03C013D9D7901CA16C8 /* OSIHotKeysPref.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {442, 563}}";
-			sepNavSelRange = "{278, 0}";
-			sepNavVisRect = "{{0, 0}, {442, 563}}";
+			sepNavIntBoundsRect = "{{0, 0}, {799, 794}}";
+			sepNavSelRange = "{768, 15}";
+			sepNavVisRect = "{{0, 0}, {799, 794}}";
 		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIHotKeysPref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {442, 563}}";
-			sepNavSelRange = "{275, 0}";
-			sepNavVisRect = "{{0, 0}, {442, 563}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1155, 1736}}";
+			sepNavSelRange = "{3946, 0}";
+			sepNavVisRect = "{{0, 1174}, {1155, 562}}";
 		};
 	};
 }

@@ -11,6 +11,12 @@
                 "_window" = id; 
             }; 
             SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = OSIHotKeysPref; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_authView" = SFAuthorizationView; }; 
+            SUPERCLASS = NSPreferencePane; 
         }
     ); 
     IBVersion = 1; 
