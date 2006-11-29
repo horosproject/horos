@@ -46,6 +46,7 @@
 	QueryArrayController *queryManager;
 }
 
+- (void) queryPatientID:(NSString*) ID;
 -(void) query:(id)sender;
 -(void) advancedQuery:(id)sender;
 -(void) retrieve:(id)sender;

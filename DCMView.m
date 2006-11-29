@@ -3896,6 +3896,7 @@ static long scrollMode;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
 	
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
 	[self sendSyncMessage:0];
 	
@@ -3909,6 +3910,7 @@ static long scrollMode;
 {
 
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
+	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;
 	[self sendSyncMessage:0];
 	[self setNeedsDisplay:YES];
@@ -6166,7 +6168,6 @@ static long scrollMode;
 
 					if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 )
 					{
-				
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
@@ -6182,49 +6183,67 @@ static long scrollMode;
 							glVertex2f( scaleValue*(slicePointO[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 1000*sliceVector[ 1]));
 							glVertex2f( scaleValue*(slicePointO[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 1000*sliceVector[ 1]));
 						glEnd();
+					}
+					
+					if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 )
+					{
+						float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
 						
-						if( slicePoint3D[ 0] != 0 | slicePoint3D[ 1] != 0  | slicePoint3D[ 2] != 0 )
+					//	glColor3f (0.6f, 0.0f, 0.0f);
+						
+						[curDCM orientation: vectorP];
+						
+						glLineWidth(2.0);
+						
+					//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
+						
+						slicePoint3D[ 0] -= [curDCM originX];
+						slicePoint3D[ 1] -= [curDCM originY];
+						slicePoint3D[ 2] -= [curDCM originZ];
+						
+						tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
+						tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
+						tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
+						
+						slicePoint3D[ 0] += [curDCM originX];
+						slicePoint3D[ 1] += [curDCM originY];
+						slicePoint3D[ 2] += [curDCM originZ];
+						
+					//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
+						
+						tempPoint3D[0] /= [curDCM pixelSpacingX];
+						tempPoint3D[1] /= [curDCM pixelSpacingY];
+						
+						tempPoint3D[0] -= [curDCM pwidth]/2.;
+						tempPoint3D[1] -= [curDCM pheight]/2.;
+						
+						if( sliceVector[ 0] != 0 | sliceVector[ 1] != 0  | sliceVector[ 2] != 0 )
 						{
-							float vectorP[ 9], tempPoint3D[ 3], rotateVector[ 2];
-							
-						//	glColor3f (0.6f, 0.0f, 0.0f);
-							
-							[curDCM orientation: vectorP];
-							
-							glLineWidth(2.0);
-							
-						//	NSLog(@"Before: %2.2f / %2.2f / %2.2f", slicePoint3D[ 0], slicePoint3D[ 1], slicePoint3D[ 2]);
-							
-							slicePoint3D[ 0] -= [curDCM originX];
-							slicePoint3D[ 1] -= [curDCM originY];
-							slicePoint3D[ 2] -= [curDCM originZ];
-							
-							tempPoint3D[ 0] = slicePoint3D[ 0] * vectorP[ 0] + slicePoint3D[ 1] * vectorP[ 1] + slicePoint3D[ 2] * vectorP[ 2];
-							tempPoint3D[ 1] = slicePoint3D[ 0] * vectorP[ 3] + slicePoint3D[ 1] * vectorP[ 4] + slicePoint3D[ 2] * vectorP[ 5];
-							tempPoint3D[ 2] = slicePoint3D[ 0] * vectorP[ 6] + slicePoint3D[ 1] * vectorP[ 7] + slicePoint3D[ 2] * vectorP[ 8];
-							
-							slicePoint3D[ 0] += [curDCM originX];
-							slicePoint3D[ 1] += [curDCM originY];
-							slicePoint3D[ 2] += [curDCM originZ];
-							
-						//	NSLog(@"After: %2.2f / %2.2f / %2.2f", tempPoint3D[ 0], tempPoint3D[ 1], tempPoint3D[ 2]);
-							
-							tempPoint3D[0] /= [curDCM pixelSpacingX];
-							tempPoint3D[1] /= [curDCM pixelSpacingY];
-							
-							tempPoint3D[0] -= [curDCM pwidth]/2.;
-							tempPoint3D[1] -= [curDCM pheight]/2.;
-							
 							rotateVector[ 0] = sliceVector[ 1];
 							rotateVector[ 1] = -sliceVector[ 0];
 							
 							glBegin(GL_LINES);
-								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
-								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
+							glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX] *(rotateVector[ 0])), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]*(rotateVector[ 1])));
 							glEnd();
-							
-							glLineWidth(1.0);
 						}
+						else
+						{
+							glColor3f (0.0f, 0.6f, 0.0f);
+							glLineWidth(2.0);
+							
+							glBegin(GL_LINES);
+								glVertex2f( scaleValue*(tempPoint3D[ 0]-20/[curDCM pixelSpacingX]), scaleValue*(tempPoint3D[ 1]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]+20/[curDCM pixelSpacingX]), scaleValue*(tempPoint3D[ 1]));
+								
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]-20/[curDCM pixelSpacingY]));
+								glVertex2f( scaleValue*(tempPoint3D[ 0]), scaleValue*(tempPoint3D[ 1]+20/[curDCM pixelSpacingY]));
+							glEnd();
+						}
+						
+						
+						
+						glLineWidth(1.0);
 					}
 					
 					if( sliceVector2[ 0] != 0 | sliceVector2[ 1] != 0  | sliceVector2[ 2] != 0 )

@@ -5048,6 +5048,15 @@ static BOOL withReset = NO;
 					}
 					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
 					
+//					int state = [[curFile valueForKey:@"stateText"] intValue];
+//					
+//					if( state == 0)
+//					{
+//						state = [[curFile valueForKeyPath:@"study.stateText"] intValue];
+//					}
+//					
+//					if( state) [cell setFont:[NSFont boldSystemFontOfSize:10]];
+					
 					//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) {
@@ -5685,6 +5694,10 @@ static BOOL withReset = NO;
 	[item release];
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
+	
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from PACS", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
+	[contextual addItem:item];
+	[item release];
 	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
 	[contextual addItem:item];
@@ -7871,6 +7884,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
+	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from PACS", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
+	[sendItem setTarget:self];
+	[menu addItem:sendItem];
+	[sendItem release];
 	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil) action: @selector(export2PACS:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
@@ -10325,7 +10342,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	#endif
 }
 
-
 - (void) selectServer: (NSArray*) objects
 {
 	if( [objects count] > 0) [SendController sendFiles:objects];
@@ -10345,14 +10361,43 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self selectServer: objects];
 }
 
-
-- (void) queryDICOM:(id) sender
+- (void) querySelectedStudy:(id) sender
 {
 	[[self window] makeKeyAndOrderFront:sender];
 	
     if(!queryController)
 		queryController = [[QueryController alloc] init];
     [queryController showWindow:self];
+
+	// *****
+
+	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
+	NSManagedObject		*item = [databaseOutline itemAtRow:[index firstIndex]];			
+	NSManagedObject		*studySelected;
+	
+	if (item)
+	{	
+		if ([[[item entity] name] isEqual:@"Study"])
+			studySelected = item;
+		else
+			studySelected = [item valueForKey:@"study"];
+			
+		[queryController queryPatientID: [studySelected valueForKey:@"patientID"]];
+	}
+}
+
+- (void) queryDICOM:(id) sender
+{
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)	// Query selected patient
+		[self querySelectedStudy: self];
+	else
+	{
+		[[self window] makeKeyAndOrderFront:sender];
+		
+		if(!queryController)
+			queryController = [[QueryController alloc] init];
+		[queryController showWindow:self];
+	}
 }
 
 -(void)volumeMount:(NSNotification *)notification
@@ -11097,7 +11142,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         
 		[toolbarItem setLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Query",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from your PACS archive",@"Query and retrieve a DICOM study from your PACS archive")];
+		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from your PACS archive\rShift + click to query selected patient.",0L)];
 		[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(queryDICOM:)];

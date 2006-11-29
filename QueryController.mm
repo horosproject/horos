@@ -126,6 +126,21 @@ static NSString *Modality = @"Modality";
 	[outlineView reloadData];
 }
 
+- (void) queryPatientID:(NSString*) ID
+{
+	[PatientModeMatrix selectCellWithTag: 1];	// PatientID search
+	
+	[dateFilterMatrix selectCellWithTag: 0];
+	[self setDateQuery: dateFilterMatrix];
+	
+	[modalityFilterMatrix selectCellWithTag: 3];
+	[self setModalityQuery: modalityFilterMatrix];
+	
+	[searchField setStringValue: ID];
+	
+	[self query: self];
+}
+
 -(void) query:(id)sender
 {
 	
