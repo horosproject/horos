@@ -25,7 +25,9 @@
 {
 	NSArray *_actions;
 	IBOutlet SFAuthorizationView *_authView;
+	IBOutlet NSTextFieldCell *keyTextFieldCell;
 	BOOL _enableControls;
+	IBOutlet NSArrayController *arrayController;
 }
 
 - (void) mainViewDidLoad;
@@ -34,5 +36,7 @@
 
 - (void) setEnableControls: (BOOL) val;
 - (BOOL)enableControls;
+
+
 
 @end

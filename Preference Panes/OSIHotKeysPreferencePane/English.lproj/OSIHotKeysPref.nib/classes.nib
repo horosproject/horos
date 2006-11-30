@@ -1,6 +1,8 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = HotKeyFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }, 
+        {CLASS = HotKeyTextFieldCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
         {
             CLASS = NSPreferencePane; 
             LANGUAGE = ObjC; 
@@ -15,7 +17,7 @@
         {
             CLASS = OSIHotKeysPref; 
             LANGUAGE = ObjC; 
-            OUTLETS = {"_authView" = SFAuthorizationView; }; 
+            OUTLETS = {"_authView" = SFAuthorizationView; arrayController = NSArrayController; }; 
             SUPERCLASS = NSPreferencePane; 
         }
     ); 

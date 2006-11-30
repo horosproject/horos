@@ -22,7 +22,8 @@
 
 @implementation OSIHotKeysPref
 
-- (void)dealloc{
+- (void)dealloc{	
+	NSLog(@"dealloc Hot Key Pref PAne");
 	[_actions release];
 	[super dealloc];
 }
@@ -30,7 +31,7 @@
 - (void) mainViewDidLoad
 {
 	// create array of MutableDictionaries containing names of actions
-	_actions = [[NSArray arrayWithObjects:[NSMutableDictionary dictionaryWithObjectsAndKeys:	NSLocalizedString(@"Default WW/WL", nil), @"action", nil],
+		NSArray *actions = [NSArray arrayWithObjects:[NSMutableDictionary dictionaryWithObjectsAndKeys:	NSLocalizedString(@"Default WW/WL", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Full Dynamic WW/WL", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"1st WW/WL preset", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"2nd WW/WL preset", nil), @"action", nil],
@@ -60,7 +61,7 @@
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select 3D Point Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Plain Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Bone Removal Tool", nil), @"action", nil],
-											nil] retain];
+											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];
 	NSEnumerator *enumerator = [keys objectEnumerator];
@@ -70,9 +71,10 @@
 		NSArray *allKeys = [keys allKeysForObject:index];
 		if ([allKeys count] > 0) {
 			NSString *key = [allKeys objectAtIndex:0];
-			[[_actions objectAtIndex:[index intValue]] setObject:key forKey:@"key"];
+			[[actions objectAtIndex:[index intValue]] setObject:key forKey:@"key"];
 		}
 	}
+	[self setActions:actions];
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
@@ -86,6 +88,7 @@
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
+	NSLog(@"MainViewDidLoad arrayController: %@", [arrayController description]);
 											
 }
 
@@ -109,19 +112,28 @@
 }
 
 - (NSArray *)actions{
+	//NSLog(@"action: %@", [_actions description]);
 	return _actions;
 }
 
 - (void)setActions:(NSArray *)actions{
 	[_actions release];
-	_actions = [actions retain];
+	_actions = [actions retain];	
+
+	
+}
+
+- (NSPreferencePaneUnselectReply)shouldUnselect{
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	int count = [_actions count];
 	int i;
 	for (i = 0; i < count; i++)
 		[dict setObject:[NSNumber numberWithInt:i] forKey:[[_actions objectAtIndex:i] objectForKey:@"key"]];
 	[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"HOTKEYS"];
-	
+	return [super shouldUnselect];
+}
+
+- (void)didUnselect{
 }
 
 
