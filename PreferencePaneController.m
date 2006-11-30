@@ -116,11 +116,12 @@ float MAXWIDTH = 725;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[pane shouldUnselect];
 	[pane willUnselect];
 	[[pane mainView] removeFromSuperview];
-	
+	[pane didUnselect];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
+	//[pane release];
 	[self release];
 }
 
@@ -221,8 +222,8 @@ float MAXWIDTH = 725;
 {
 	if ([aPane loadMainView] ) {
 		//NSLog(@"load Main View");
-		if (!pane || [pane shouldUnselect]) {
-			//NSLog(@"pane added");
+		if ([pane shouldUnselect] || !pane) {
+			NSLog(@"pane added");
 			
 			[aPane willSelect];
 			/* Add view to window */
@@ -260,6 +261,7 @@ float MAXWIDTH = 725;
 			
 			[destView addSubview:[aPane mainView]];
 			[aPane didSelect];
+			[pane didUnselect];
 			[[aPane mainView] setNeedsDisplay:YES];
 			[pane release];
 			pane = [aPane retain];
@@ -351,6 +353,9 @@ float MAXWIDTH = 725;
 		case 6:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];	
 			break;
+		case 11:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];	
+			break;
 		default:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
 	}
@@ -374,8 +379,9 @@ float MAXWIDTH = 725;
 			deltaH = newWindowFrame.size.height - frameRect.size.height;
 			newY = y - deltaH;
 			newWindowFrame.origin.y = newY;
-					
+			[pane shouldUnselect];		
 			[pane willUnselect];
+			[pane didUnselect];
 			[[pane mainView] removeFromSuperview];			
 			
 			[[self window] setFrame:newWindowFrame display:YES animate:YES];
