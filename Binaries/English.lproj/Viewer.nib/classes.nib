@@ -236,6 +236,7 @@
                 addWLWWWindow = NSWindow; 
                 blendingPercentage = NSTextField; 
                 blendingPlugins = NSPopUpButton; 
+                blendingPopupMenu = NSPopUpButton; 
                 blendingSlider = NSSlider; 
                 blendingTypeBlue = NSButton; 
                 blendingTypeGreen = NSButton; 

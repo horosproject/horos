@@ -195,6 +195,7 @@ enum
 	IBOutlet NSSlider       *movieRateSlider;
 	IBOutlet NSSlider       *moviePosSlider;
 	
+	IBOutlet NSPopUpButton  *blendingPopupMenu;
 	IBOutlet NSTextField    *blendingPercentage;
 	IBOutlet NSSlider       *blendingSlider;
 	ViewerController		*blendingController;

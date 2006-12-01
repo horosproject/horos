@@ -6160,6 +6160,10 @@ NSMutableArray		*array;
 		}
 		
 		[imageView setBlendingFactor: [blendingSlider floatValue]];
+		
+		[blendingPopupMenu selectItemWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+		[imageView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+		[seriesView setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
 	}
 	else
 	{
@@ -6353,7 +6357,6 @@ NSMutableArray		*array;
 - (void) blendingMode:(id) sender
 {
 	[imageView setBlendingMode: [sender tag]];
-	
 	[seriesView setBlendingMode: [sender tag]];
 }
 
