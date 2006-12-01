@@ -3818,6 +3818,12 @@ static ViewerController *draggedController = 0L;
 //	[pool release];
 //}
 
+-(void) setDefaultPETWLWW:(id) sender
+{
+	[imageView updatePresentationStateFromSeries];
+	[imageView setIndex: [imageView curImage]];
+}
+
 -(void) loadImageData:(id) sender
 {
     NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
@@ -3954,6 +3960,11 @@ static ViewerController *draggedController = 0L;
 				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
 				
 				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:0L waitUntilDone: YES];
+			}
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DEFAULTPETWLWW"] != 0)
+			{
+				[self performSelectorOnMainThread:@selector( setDefaultPETWLWW:) withObject:self waitUntilDone: YES];
 			}
 		}
 	}

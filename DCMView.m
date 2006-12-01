@@ -7744,18 +7744,57 @@ BOOL	lowRes = NO;
 		{
 			if( [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] != 0.0)
 			{
-				if( [curDCM SUVConverted] == NO)
+				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"])
 				{
-					curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
-					curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+					float from, to;
+					
+					switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"])
+					{
+						case 0:
+							if( [curDCM SUVConverted] == NO)
+							{
+								curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
+								curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+							}
+							else
+							{
+								if( [[[self window] windowController] is2DViewer] == YES)
+								{
+									curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
+									curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
+								}
+							}
+						break;
+						
+						case 1:
+							from = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROM"] / 100.;
+							to = [curDCM maxValueOfSeries] * [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTO"] / 100.;
+							
+							curWW = to - from;
+							curWL = from + (curWW/2.);
+						break;
+						
+						case 2:
+							if( [curDCM SUVConverted])
+							{
+								from = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWFROMSUV"];
+								to = [[NSUserDefaults standardUserDefaults] floatForKey:@"PETWLWWTOSUV"];
+								
+								curWW = to - from;
+								curWL = from + (curWW/2.);
+							}
+							else
+							{
+								curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
+								curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
+							}
+						break;
+					}
 				}
 				else
 				{
-					if( [[[self window] windowController] is2DViewer] == YES)
-					{
-						//curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
-						//curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
-					}
+					curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue];
 				}
 			}
 		}
@@ -7796,10 +7835,10 @@ BOOL	lowRes = NO;
 		[self scaleToFit];
 	}
 	[self setNeedsDisplay:YES];
-		
-		
 }
-- (IBAction)resetImagePresentationState:(id)sender{
+
+- (IBAction)resetImagePresentationState:(id)sender
+{
 }
 
 //resize Window to a scale of Image Size

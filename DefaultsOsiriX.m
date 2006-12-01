@@ -542,6 +542,8 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"DEFAULTPETWLWW"];
 	[defaultValues setObject:@"0" forKey:@"PETWLWWFROM"];
 	[defaultValues setObject:@"100" forKey:@"PETWLWWTO"];
+	[defaultValues setObject:@"0" forKey:@"PETWLWWFROMSUV"];
+	[defaultValues setObject:@"6" forKey:@"PETWLWWTOSUV"];
 	
 	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
