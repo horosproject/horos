@@ -855,6 +855,7 @@ static NSString *hostName = @"";
 		[defaultHangingProtocols setObject:protocols forKey:modality];
 	}
 	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
+	[defaultValues setObject: [NSArray array] forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 	
 	// ** COLUMNSDATABASE
 	NSMutableDictionary *defaultDATABASECOLUMNS = [NSMutableDictionary dictionary];

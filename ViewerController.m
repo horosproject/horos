@@ -12445,4 +12445,14 @@ sourceRef);
 	}
 }
 
+- (NSManagedObject *)currentStudy{
+	return [[imageView seriesObj] valueForKey:@"study"];
+}
+- (NSManagedObject *)currentSeries{
+	return [imageView seriesObj];
+}
+- (NSManagedObject *)currentImage{
+	return [imageView imageObj];
+}
+
 @end

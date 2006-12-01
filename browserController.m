@@ -4303,23 +4303,68 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	
 		// DICOM & others
-		[appController setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
-		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
-		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
-		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
-		{
-			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
-		}
-		else {
-			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-			if( count < 1) count = 1;
+		/* Need to improve Hanging Protocols	
+			Things Advanced Hanging Protocol needs to do.
+			For Advanced Hanging Protocols Need to Search for Comparisons
+			Arrange Series in a Particular order by either series description or series number
+			Could have preset ww/wl and CLUT
+			Series Fusion at start
+			Could have a 3D ViewerController instead of a 2D ViewerController
+				If 2D viewer need to set starting orientation, wwwl, CLUT, if SR preset surfaces.
+				Preprocess Volume - extract heart, Get Center line for vessel Colon, etc
+				
+			Root object is NSArray we ca nsearch through with predicates to get a filteredArray
+		*/
+		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
+		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [item valueForKey:@"modality"]];
+		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [item valueForKey:@"studyName"]];
+		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
+		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+		if ([filteredHangingProtocols count] > 0) {
+			// ? Add'l Filter for institution  or add'l attributes here ?
+			// Possible to have more than one Protocol.  Give user option to pick which one.
+			// How to handle comparisons. Would like to a bodyRegion Attribute to study Ideally handle comparisons differently depending on comparison's Modality
+			// For now just use the first one
+			NSDictionary *hangingProtocol = [filteredHangingProtocols objectAtIndex:0];
+			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
+			NSArray *arrangedSeries = [hangingProtocol objectForKey:@"seriesSets"];
+			NSArray *firstSet = [arrangedSeries objectAtIndex:0];
 			
+			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
+			NSDictionary *seriesInfo;
+			NSEnumerator *enumerator = [firstSet objectEnumerator];
 			NSMutableArray *children =  [NSMutableArray array];
-			int i;
-			for (i = 0; i < count; i++)
-				[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
-			
+			int count = [firstSet count];
+			while (seriesInfo = [enumerator nextObject]){
+				int i;				
+				for (i = 0; i < count; i++) {
+				id child = [[self childrenArray: item] objectAtIndex:i];
+				if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
+					[children addObject:child];
+				}
+			}
 			[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+		}
+		//Use Basic Hanging Protocols
+		else {
+			[appController setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+			NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
+			//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+			{
+				[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+			}
+			else {
+				unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+				if( count < 1) count = 1;
+				
+				NSMutableArray *children =  [NSMutableArray array];
+				int i;
+				for (i = 0; i < count; i++)
+					[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
+				
+				[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+			}
 		}
 	}
 }

@@ -554,4 +554,11 @@ enum
 - (BOOL)displayOnlyKeyImages;
 - (BOOL)isKeyImage:(int)index;
 
+#pragma mark-
+#pragma mark current Core Data Objects
+- (NSManagedObject *)currentStudy;
+- (NSManagedObject *)currentSeries;
+- (NSManagedObject *)currentImage;
+
+
 @end
