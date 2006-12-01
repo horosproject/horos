@@ -785,10 +785,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject: @"" forKey: @"DATABASELOCATIONURL"];
 	
 	// ** REPORTSMODE
-	if( [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"])
-		[defaultValues setObject: @"0" forKey: @"REPORTSMODE"];
-	else
-		[defaultValues setObject: @"1" forKey: @"REPORTSMODE"];
+	[defaultValues setObject: @"2" forKey: @"REPORTSMODE"];
 	
 	// ** LASTURL
 	[defaultValues setObject: @"http://homepage.mac.com/rossetantoine/internet.dcm" forKey: @"LASTURL"];

@@ -1371,46 +1371,46 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //		display2DMPRLines =!display2DMPRLines;
 //	}
 	
-	if( [stringID isEqualToString:@"MPR3D"])
-	{
-		if( c == 127) // Delete
-		{
-			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
-			long	i;
-			BOOL	done = NO;
-			
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
-				{
-					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
-					{
-						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
-						[curRoiList removeObjectAtIndex:i];
-						i--;
-					}
-				}
-			}
-			
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
-					[curRoiList removeObjectAtIndex:i];
-					i--;
-				}
-			}
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
-			
-			[self setNeedsDisplay:YES];
-			
-			curROI = 0L;
-		}
-		else [super keyDown:event];
-		return;
-	}
+//	if( [stringID isEqualToString:@"MPR3D"])
+//	{
+//		if( c == 127) // Delete
+//		{
+//			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
+//			long	i;
+//			BOOL	done = NO;
+//			
+//			for( i = 0; i < [curRoiList count]; i++)
+//			{
+//				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
+//				{
+//					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
+//					{
+//						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+//						[curRoiList removeObjectAtIndex:i];
+//						i--;
+//					}
+//				}
+//			}
+//			
+//			for( i = 0; i < [curRoiList count]; i++)
+//			{
+//				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+//				{
+//					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+//					[curRoiList removeObjectAtIndex:i];
+//					i--;
+//				}
+//			}
+//			
+//			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
+//			
+//			[self setNeedsDisplay:YES];
+//			
+//			curROI = 0L;
+//		}
+//		else [super keyDown:event];
+//		return;
+//	}
 	
     if( dcmPixList)
     {
@@ -1457,7 +1457,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			[self setNeedsDisplay: YES];
 		}
-        else if( c == 13 | c == 3)	// Return - Enter
+        else if( c == 13 || c == 3 || c == ' ')	// Return - Enter - Space
 		{
 			if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] PlayStop:[[[self window] windowController] findPlayStopButton]];
 		}
@@ -3564,27 +3564,6 @@ static long scrollMode;
 	}
 	
 //JF not necesary	[curDCM changeWLWW :curWL: curWW];
-}
-
-- (void) setConv:(short*) m :(short) s :(short) norm
-{
-	long i;
-	
-	kernelsize = s;
-	normalization = norm;
-	if( m)
-	{
-		long i;
-		for( i = 0; i < kernelsize*kernelsize; i++)
-		{
-			kernel[i] = m[i];
-		}
-	}
-	
-	for ( i = 0; i < [dcmPixList count]; i ++)
-	{
-		[[dcmPixList objectAtIndex:i] setConvolutionKernel:m :kernelsize :norm];
-	}
 }
 
 -(short) curImage

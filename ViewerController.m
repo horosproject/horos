@@ -5401,11 +5401,38 @@ static float oldsetww, oldsetwl;
     }
 }
 
+- (void) setConv:(short*) m :(short) s :(short) norm
+{
+	long			x, i;
+	BOOL			convolution;
+	short			kernelsize, normalization;
+	short			kernel[ 25];
+	
+	kernelsize = s;
+	normalization = norm;
+	if( m)
+	{
+		long i;
+		for( i = 0; i < kernelsize*kernelsize; i++)
+		{
+			kernel[i] = m[i];
+		}
+	}
+	
+	for ( x = 0; x < maxMovieIndex; x++)
+	{
+		for ( i = 0; i < [pixList[ x] count]; i ++)
+		{
+			[[pixList[ x] objectAtIndex:i] setConvolutionKernel:m :kernelsize :norm];
+		}
+	}
+}
+
 -(void) ApplyConvString:(NSString*) str
 {
 	if( [str isEqualToString:NSLocalizedString(@"No Filter", nil)] == YES)
 	{
-		[imageView setConv:0L :0: 0];
+		[self setConv:0L :0: 0];
 		[imageView setIndex:[imageView curImage]];
 		curConvMenu = str;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
@@ -5429,7 +5456,7 @@ static float oldsetww, oldsetwl;
 			matrix[i] = [[array objectAtIndex: i] longValue];
 		}
 		
-		[imageView setConv:matrix :size: nomalization];
+		[self setConv:matrix :size: nomalization];
 		[imageView setIndex:[imageView curImage]];
 		curConvMenu = str;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
@@ -5601,7 +5628,7 @@ short				matrix[25];
 		matrix[i] = [[array objectAtIndex: i] longValue];
 	}
 	
-	[imageView setConv:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm intValue]];
+	[self setConv:matrix :[[sizeMatrix selectedCell] tag] :[matrixNorm intValue]];
 	[imageView setIndex:[imageView curImage]];
 }
 

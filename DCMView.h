@@ -127,10 +127,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	
     NSSize          scaleStart, scaleInit;
     
-	BOOL			convolution;
-	short			kernelsize, normalization;
-	short			kernel[ 25];
-	
     float           scaleValue, startScaleValue;
     float           rotation, rotationStart;
     NSPoint			origin, originOffset;
@@ -257,7 +253,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (void) getWLWW:(float*) wl :(float*) ww;
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location;
-- (void) setConv:(short*) matrix :(short) size :(short) norm;
 - (void) setCLUT:( unsigned char*) r :(unsigned char*) g :(unsigned char*) b;
 - (void) setCurrentTool:(short)i;
 - (short) currentTool;

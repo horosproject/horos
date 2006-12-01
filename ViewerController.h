@@ -520,6 +520,7 @@ enum
 - (IBAction) setOrientationTool:(id) sender;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
+- (void) setConv:(short*) matrix :(short) size :(short) norm;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

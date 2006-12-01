@@ -7069,6 +7069,16 @@ static BOOL needToRezoom;
 						
 						previousinterval = 0;
 					}
+					else if( previousinterval)
+					{
+						if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+						{
+							[splittedSeries addObject: [NSMutableArray array]];
+							NSLog(@"split at: %d", x);
+							previousinterval = 0;
+						}
+						else previousinterval = interval;
+					}
 					else previousinterval = interval;
 					
 					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
@@ -7132,7 +7142,7 @@ static BOOL needToRezoom;
 					}
 					else if( previousinterval)
 					{
-						if( fabs(interval/previousinterval) > 3.0 || fabs(interval/previousinterval) < 0.3)
+						if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
 						{
 							[splittedSeries addObject: [NSMutableArray array]];
 							NSLog(@"split at: %d", x);
@@ -7195,15 +7205,17 @@ static BOOL needToRezoom;
 							contextInfo: nil];
 				
 				int result = [NSApp runModalForWindow: subOpenWindow];
-				if( result == 2) [supOpenButtons selectCellWithTag: 2];
-				else result = [supOpenButtons selectedTag];
+				if( result == 2)
+				{
+					[supOpenButtons selectCellWithTag: 2];
+					
+					if( [subOpenMatrix selectedColumn] < 0) result = 0;
+				}
 				
 				[NSApp endSheet: subOpenWindow];
 				[subOpenWindow orderOut: self];
 				
-				if( [subOpenMatrix selectedColumn] < 0) result = 0;
-				
-				switch( result)
+				switch( [supOpenButtons selectedTag])
 				{
 					case 0:	// Cancel
 						movieError = YES;
@@ -7219,6 +7231,7 @@ static BOOL needToRezoom;
 					
 					case 3:	// 4D
 						toOpenArray = splittedSeries;
+						movieViewer = YES;
 					break;
 				}
 			}
