@@ -212,6 +212,11 @@ float MAXWIDTH = 725;
 - (void) dealloc
 {
 	NSLog(@"PreferencePaneController released !");
+	// In+case Pne does anyting on closing
+	[pane shouldUnselect];
+	[pane willUnselect];
+	[[pane mainView] removeFromSuperview];
+	[pane didUnselect];
 	[pane release];
 	[previousDefaults release];
 	[super dealloc];
