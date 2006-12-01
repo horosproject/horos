@@ -537,8 +537,11 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
 	
 	[defaultValues setObject:@"1" forKey:@"SEPARATECARDIAC4D"];
-	[defaultValues setObject:@"0" forKey:@"DEFAULTPETFUSION"];
 	
+	[defaultValues setObject:@"0" forKey:@"DEFAULTPETFUSION"];
+	[defaultValues setObject:@"0" forKey:@"DEFAULTPETWLWW"];
+	[defaultValues setObject:@"0" forKey:@"PETWLWWFROM"];
+	[defaultValues setObject:@"100" forKey:@"PETWLWWTO"];
 	
 	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL

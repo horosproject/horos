@@ -3030,7 +3030,7 @@ public:
 		}
 	}
 	
-	if( currentTool == t3DCut && previousTool == t3DCut)
+	if( (currentTool == t3DCut && previousTool == t3DCut) || currentTool != t3DCut)
 	{
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
