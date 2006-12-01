@@ -214,7 +214,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (BrowserController*) currentBrowser;
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 
-- (void) querySelectedStudy:(id) sender;
+- (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;

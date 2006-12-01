@@ -6937,6 +6937,11 @@ static BOOL needToRezoom;
 	NS_ENDHANDLER
 }
 
+- (IBAction) selectSubSeriesAndOpen:(id) sender
+{
+	[NSApp stopModalWithCode: 2];
+}
+
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
@@ -7117,12 +7122,25 @@ static BOOL needToRezoom;
 			{
 				interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 				
-				if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+				if( [[splittedSeries lastObject] count] > 2)
 				{
-					[splittedSeries addObject: [NSMutableArray array]];
-					NSLog(@"split at: %d", x);
-					
-					previousinterval = 0;
+					if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+					{
+						[splittedSeries addObject: [NSMutableArray array]];
+						NSLog(@"split at: %d", x);
+						previousinterval = 0;
+					}
+					else if( previousinterval)
+					{
+						if( fabs(interval/previousinterval) > 3.0 || fabs(interval/previousinterval) < 0.3)
+						{
+							[splittedSeries addObject: [NSMutableArray array]];
+							NSLog(@"split at: %d", x);
+							previousinterval = 0;
+						}
+						else previousinterval = interval;
+					}
+					else previousinterval = interval;
 				}
 				else previousinterval = interval;
 				
@@ -7131,8 +7149,14 @@ static BOOL needToRezoom;
 			
 			if( [splittedSeries count] > 1)
 			{
+				[wait close];
+				[wait release];
+				wait = 0L;
+				
 				[subOpenMatrix renewRows: 1 columns: [splittedSeries count]];
-				[subOpenMatrix setAllowsEmptySelection: NO];
+				[subOpenMatrix sizeToCells];
+				[subOpenMatrix setTarget:self];
+				[subOpenMatrix setAction: @selector( selectSubSeriesAndOpen:)];
 				
 				[[supOpenButtons cellWithTag: 3] setEnabled: YES];
 				
@@ -7146,7 +7170,7 @@ static BOOL needToRezoom;
 					NSManagedObject	*oob = [[splittedSeries objectAtIndex:i] objectAtIndex: [[splittedSeries objectAtIndex:i] count] / 2];
 					
 					DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
-			
+					
 					if( dcmPix)
 					{
 						[dcmPix computeWImage:YES :0 :0];
@@ -7158,8 +7182,7 @@ static BOOL needToRezoom;
 						[cell setEnabled:YES];
 						[cell setFont:[NSFont systemFontOfSize:10]];
 						[cell setImagePosition: NSImageBelow];
-						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d Images", nil), [[splittedSeries objectAtIndex:i] count]]];
-						[cell setButtonType:NSPushOnPushOffButton];
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
 						[cell setImage: img];
 						[dcmPix release];
 					}
@@ -7172,13 +7195,16 @@ static BOOL needToRezoom;
 							contextInfo: nil];
 				
 				int result = [NSApp runModalForWindow: subOpenWindow];
+				if( result == 2) [supOpenButtons selectCellWithTag: 2];
+				else result = [supOpenButtons selectedTag];
 				
 				[NSApp endSheet: subOpenWindow];
 				[subOpenWindow orderOut: self];
 				
-				switch( [supOpenButtons selectedTag])
-				{
+				if( [subOpenMatrix selectedColumn] < 0) result = 0;
 				
+				switch( result)
+				{
 					case 0:	// Cancel
 						movieError = YES;
 					break;
@@ -10361,7 +10387,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self selectServer: objects];
 }
 
-- (void) querySelectedStudy:(id) sender
+- (IBAction) querySelectedStudy:(id) sender
 {
 	[[self window] makeKeyAndOrderFront:sender];
 	

@@ -1724,7 +1724,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask) 
 	{
-		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		//[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		
+		[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
+		[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:0L];
 		
 		[self matrixPreviewSelectCurrentSeries];
 		
@@ -1739,7 +1742,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	else
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
-			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+		{
+//			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+			
+			[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
+			[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:self];
+		}
 	}
 }
 
@@ -11986,9 +11994,14 @@ long i;
 	if( [sender tag] == 3)
 	{
 		[[sender selectedItem] setImage:0L];
+		
 		[browserWindow loadSeries :[[sender selectedItem] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 	}
-	else [browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
+	else
+	{
+		[browserWindow loadNextSeries:[fileList[0] objectAtIndex:0] :[sender tag] :self :YES keyImagesOnly: displayOnlyKeyImages];
+
+	}
 }
 - (BOOL) isEverythingLoaded
 {

@@ -82,6 +82,7 @@
                 previewPerformAnimation = id; 
                 previewSliderAction = id; 
                 queryDICOM = id; 
+                querySelectedStudy = id; 
                 rebuildThumbnails = id; 
                 refreshDatabase = id; 
                 search = id; 
