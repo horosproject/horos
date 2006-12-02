@@ -2336,5 +2336,4 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	if( [style isEqualToString:@"panel"] == NO) [view squareView: self];
 }
-
 @end

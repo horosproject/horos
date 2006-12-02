@@ -545,6 +545,8 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"PETWLWWFROMSUV"];
 	[defaultValues setObject:@"6" forKey:@"PETWLWWTOSUV"];
 	
+	[defaultValues setObject:@"0" forKey:@"EXPORTMATRIXFOR3D"];
+	
 	[defaultValues setObject:@"0" forKey:@"ROITEXTNAMEONLY"];
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
 	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
@@ -855,7 +857,6 @@ static NSString *hostName = @"";
 		[defaultHangingProtocols setObject:protocols forKey:modality];
 	}
 	[defaultValues setObject: defaultHangingProtocols forKey: @"HANGINGPROTOCOLS"];
-	[defaultValues setObject: [NSArray array] forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 	
 	// ** COLUMNSDATABASE
 	NSMutableDictionary *defaultDATABASECOLUMNS = [NSMutableDictionary dictionary];

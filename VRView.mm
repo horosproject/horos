@@ -777,6 +777,18 @@ public:
 	else [[dcmquality cellWithTag: 1] setEnabled: YES];
 }
 
+- (NSRect) centerRect: (NSRect) smallRect
+               inRect: (NSRect) bigRect
+{
+    NSRect centerRect;
+    centerRect.size = smallRect.size;
+
+    centerRect.origin.x = (bigRect.size.width - smallRect.size.width) / 2.0;
+    centerRect.origin.y = (bigRect.size.height - smallRect.size.height) / 2.0;
+
+    return (centerRect);
+}
+
 #define DATABASEPATH @"/DATABASE/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
@@ -794,6 +806,24 @@ public:
 	
 	if( [sender tag])
 	{
+		NSRect previousFrame = [self frame];
+		NSRect windowFrame;
+		
+		windowFrame.origin.x = 0;
+		windowFrame.origin.y = 0;
+		windowFrame.size.width = [[[self window] contentView] frame].size.width;
+		windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
+		
+		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+		{
+			case 0:
+			break;
+			
+			case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,256,256) inRect: windowFrame]];	break;
+			case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
+			case 3:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+		}
+		
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
@@ -968,6 +998,8 @@ public:
 			
 			[dcmSequence release];
 		}
+		
+		[self setFrame: previousFrame];
 	}
 }
 
@@ -4446,6 +4478,38 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
+- (NSImage*) resizeMatrix:(NSImage*) currentImage size: (int) matrixsize
+{
+	NSRect sourceRect = NSMakeRect(0.0, 0.0, [currentImage size].width, [currentImage size].height);
+	NSRect imageRect;
+	float rescale = 1;
+	
+	if( [currentImage size].width > [currentImage size].height)
+	{
+		float ratio = [currentImage size].width / matrixsize;
+		imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+		
+		NSLog( @"ratio: %f", ratio);
+	}
+	else
+	{
+		float ratio = [currentImage size].height / matrixsize;
+		imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+		
+		NSLog( @"ratio: %f", ratio);
+	}
+	[currentImage setScalesWhenResized:YES];
+	
+	NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
+	
+	[compositingImage lockFocus];
+//	[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
+	[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
+	[compositingImage unlockFocus];
+	
+	return [compositingImage autorelease];
+}
+
 -(NSImage*) nsimageQuicktime
 {
 	NSImage *theIm;
@@ -4825,60 +4889,6 @@ public:
 		
 		[self setNeedsDisplay:YES];
 	}
-}
-
-
-//Added LP 12/2/05
-//resize Window to a scale of Image Size
--(void)resizeWindowToScale:(float)resizeScale{
-	NSRect frame =  [self frame]; 
-	//float curImageWidth = [blendingFirstObject pwidth] * resizeScale;
-	//float curImageHeight = [blendingFirstObject pheight]* resizeScale;
-	//Fixed to imageWidth of 512 Need to figure out how to check actual volume size.
-	float curImageWidth = 512 * resizeScale;
-	float curImageHeight = 512 * resizeScale;
-	float frameWidth = frame.size.width;
-	float frameHeight = frame.size.height;
-	NSWindow *window = [self window];
-	NSRect windowFrame = [window frame];
-	float newWidth = windowFrame.size.width - (frameWidth - curImageWidth);
-	float newHeight = windowFrame.size.height - (frameHeight - curImageHeight);
-	float topLeftY = windowFrame.size.height + windowFrame.origin.y;
-	NSPoint center;
-	center.x = windowFrame.origin.x + windowFrame.size.width/2.0;
-	center.y = windowFrame.origin.y + windowFrame.size.height/2.0;
-	windowFrame.size.height = newHeight;
-	windowFrame.size.width = newWidth;
-
-	//keep window centered
-	windowFrame.origin.y = center.y - newHeight/2.0;
-	windowFrame.origin.x = center.x - newWidth/2.0;
-	//[self scaleToFit];
-	[window setFrame:windowFrame display:YES];
-}
-
-- (IBAction)resizeWindow:(id)sender{
-	float resizeScale = 1.0;
-	float curImageWidth = [blendingFirstObject pwidth];
-	float curImageHeight = [blendingFirstObject pheight];
-	float widthRatio =  320.0 / curImageWidth ;
-	float heightRatio =  320.0 / curImageHeight;
-	switch ([sender tag]) {
-		case 0: resizeScale = 0.25; // 25%
-				break;
-		case 1: resizeScale = 0.5;  //50%
-				break;
-		case 2: resizeScale = 1.0; //Actual Size 100%
-				break;
-		case 3: resizeScale = 2.0; // 200%
-				break;
-		case 4: resizeScale = 3.0; //300%
-				break;
-		case 5: // iPod Video
-				resizeScale = (widthRatio <= heightRatio) ? widthRatio : heightRatio;
-				break;
-	}
-	[self resizeWindowToScale:resizeScale];
 }
 
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D
