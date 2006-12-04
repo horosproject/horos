@@ -598,6 +598,7 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"0" forKey:@"DECOMPRESSDICOMLISTENER"];
 	[defaultValues setObject:@"0" forKey:@"COMPRESSDICOMLISTENER"];
+	[defaultValues setObject:@"1" forKey:@"CheckForMultipleVolumesInSeries"];
 	
 	// ** DELETEFILELISTENER
 	[defaultValues setObject:@"1" forKey:@"DELETEFILELISTENER"];

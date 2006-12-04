@@ -7202,7 +7202,7 @@ static BOOL needToRezoom;
 				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 			}
 			
-			if( [splittedSeries count] > 1)
+			if( [splittedSeries count] > 1 && [[NSUserDefaults standardUserDefaults] boolForKey:@"CheckForMultipleVolumesInSeries"] == YES)
 			{
 				[wait close];
 				[wait release];
