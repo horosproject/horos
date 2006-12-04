@@ -860,8 +860,16 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	if (_resizeFrame){
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame = [self frame];;
-		
 		NSPoint mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
+		
+		if( [theEvent modifierFlags] & NSShiftKeyMask)
+		{
+			newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
+			newFrame.size.height = newFrame.size.width;
+			
+			mouseLoc.x = ([[[self window] contentView] frame].size.width - newFrame.size.width) / 2;
+			mouseLoc.y = ([[[self window] contentView] frame].size.height - newFrame.size.height) / 2;
+		}
 		
 		if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
 			mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;

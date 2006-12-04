@@ -363,7 +363,7 @@ static BOOL			DICOMDIRCDMODE = NO;
 static BOOL COMPLETEREBUILD = NO;
 
 + (BrowserController*) currentBrowser { return browserWindow;}
-
++ (NSArray*) statesArray { return statesArray;}
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
@@ -7256,11 +7256,12 @@ static BOOL needToRezoom;
 					
 					if( [subOpenMatrix selectedColumn] < 0) result = 0;
 				}
+				else result = [supOpenButtons selectedTag];
 				
 				[NSApp endSheet: subOpenWindow];
 				[subOpenWindow orderOut: self];
 				
-				switch( [supOpenButtons selectedTag])
+				switch( result)
 				{
 					case 0:	// Cancel
 						movieError = YES;

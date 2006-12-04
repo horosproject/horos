@@ -1901,7 +1901,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			NSString	*name = [curStudy valueForKey:@"studyName"];
 			if( [name length] > 15) name = [name substringToIndex: 15];
-			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series"]];
+			
+			NSString	*stateText;
+			if( [[curStudy valueForKey:@"stateText"] intValue]) stateText = [[BrowserController statesArray] objectAtIndex: [[curStudy valueForKey:@"stateText"] intValue]];
+			else stateText = @"";
+			NSString	*comment = [curStudy valueForKey:@"comment"];
+			
+			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment]];
 			
 			index++;
 			
@@ -1909,11 +1915,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				NSManagedObject	*curSeries = [series objectAtIndex:i];
 				
+				int keyImagesNumber = 0, z;
+				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];
+				for( z = 0; z < [keyImagesArray count]; z++)
+				{
+					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
+				}
+				
 				NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 				
 				[cell setBezelStyle: NSShadowlessSquareBezelStyle];
 				[cell setRepresentedObject: curSeries];
-				[cell setFont:[NSFont systemFontOfSize:9]];
+				if( keyImagesNumber) [cell setFont:[NSFont boldSystemFontOfSize:9]];
+				else [cell setFont:[NSFont systemFontOfSize:9]];
 				[cell setImagePosition: NSImageBelow];
 				[cell setAction: @selector(matrixPreviewPressed:)];
 				[cell setTarget: self];
@@ -1936,7 +1950,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				}
 				else type=[type stringByAppendingString: @"s"];
 				
-				[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
+				if( keyImagesNumber) [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d/%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], keyImagesNumber, count, type]];
+				else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
 				
 				[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick + Option:\rOpen in new window", [curSeries valueForKey:@"id"]] forCell:cell];
 				
@@ -12136,6 +12151,8 @@ long i;
 		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 	}
 	
+	[self buildMatrixPreview];
+	
 	[imageView setNeedsDisplay:YES];
 }
 
@@ -12298,6 +12315,8 @@ sourceRef);
 		
 		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 		else [CommentsField setTitle: [CommentsEditField stringValue]];
+		
+		[self buildMatrixPreview];
 	}
 }
 
@@ -12319,8 +12338,9 @@ sourceRef);
 	{
 		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithInt:[[sender selectedItem] tag]] forKey:@"series.study.stateText"];
 	}
-		
+	
 	[[browserWindow databaseOutline] reloadData];
+	[self buildMatrixPreview];
 }
 
 - (IBAction) databaseWindow : (id) sender

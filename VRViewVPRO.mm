@@ -1877,7 +1877,16 @@ public:
 			{
 				case NSLeftMouseDragged:
 					beforeFrame = [self frame];
-				
+					
+					if( [theEvent modifierFlags] & NSShiftKeyMask)
+					{
+						newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
+						newFrame.size.height = newFrame.size.width;
+						
+						mouseLoc.x = ([[[self window] contentView] frame].size.width - newFrame.size.width) / 2;
+						mouseLoc.y = ([[[self window] contentView] frame].size.height - newFrame.size.height) / 2;
+					}
+					
 					if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
 						mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;
 					

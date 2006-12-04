@@ -1924,9 +1924,9 @@ public:
 //			case 1:		mode = @"MIP - ";		break;
 //		}
 		
-		[pixelInformation setStringValue: [NSString stringWithFormat: @"%@    %@ %@", val, pixLoc, mmLoc]];
+		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
 	}
-	else [pixelInformation setStringValue: @""];
+	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
 }
 
 -(void) squareView:(id) sender
@@ -1970,7 +1970,17 @@ public:
 		NSPoint mouseLoc = [theEvent locationInWindow];
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
 		beforeFrame = [self frame];
-				
+
+		if( [theEvent modifierFlags] & NSShiftKeyMask)
+		{
+			newFrame.size.width = [[[self window] contentView] frame].size.width - mouseLoc.x*2;
+			newFrame.size.height = newFrame.size.width;
+			
+			mouseLoc.x = ([[[self window] contentView] frame].size.width - newFrame.size.width) / 2;
+			mouseLoc.y = ([[[self window] contentView] frame].size.height - newFrame.size.height) / 2;
+			mouseLoc.y -= 5;
+		}
+		
 		if( [[[self window] contentView] frame].size.width - mouseLoc.x*2 < 100)
 			mouseLoc.x = ([[[self window] contentView] frame].size.width - 100) / 2;
 		
@@ -1990,6 +2000,8 @@ public:
 		newFrame.size.height = [[[self window] contentView] frame].size.height - 10 - mouseLoc.y*2;
 		
 		[self setFrame: newFrame];
+		
+		[self mouseMoved: theEvent];
 		
 		aCamera->Zoom( beforeFrame.size.height / newFrame.size.height);
 		
