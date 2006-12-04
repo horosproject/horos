@@ -332,7 +332,7 @@ enum
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
 
--(IBAction) setPagesToPrint:(id) sender;
+- (IBAction) setPagesToPrint:(id) sender;
 - (IBAction) endPrint:(id) sender;
 - (IBAction) startMSRG:(id) sender;
 - (IBAction) startMSRGWithAutomaticBounding:(id) sender;
@@ -478,6 +478,7 @@ enum
 - (IBAction) keyImageDisplayButton:(id) sender;
 - (void) adjustKeyImage;
 - (void) buildMatrixPreview;
+- (void) buildMatrixPreview: (BOOL) showSelected;
 - (void) matrixPreviewSelectCurrentSeries;
 - (void) autoHideMatrix;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval;

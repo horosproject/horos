@@ -1829,7 +1829,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return proposedPosition;
 }
 
-- (void) buildMatrixPreview
+- (void) buildMatrixPreview: (BOOL) showSelected
 {
 	NSManagedObjectModel	*model = [browserWindow managedObjectModel];
 	NSManagedObjectContext	*context = [browserWindow managedObjectContext];
@@ -2008,14 +2008,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 	long row, column;
 	#endif
 	
-	[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
-	[previewMatrix scrollCellToVisibleAtRow: row column:0];
+	if( showSelected)
+	{
+		[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
+		[previewMatrix scrollCellToVisibleAtRow: row column:0];
+	}
 	
 	[previewMatrix setNeedsDisplay:YES];
 	
 	[context unlock];
 }
 
+
+- (void) buildMatrixPreview
+{
+	[self buildMatrixPreview: YES];
+}
 
 - (void) viewXML:(id) sender
 {
@@ -12151,7 +12159,7 @@ long i;
 		[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[NSNumber numberWithBool:[sender state]] forKey:@"isKeyImage"];
 	}
 	
-	[self buildMatrixPreview];
+	[self buildMatrixPreview: NO];
 	
 	[imageView setNeedsDisplay:YES];
 }
@@ -12316,7 +12324,7 @@ sourceRef);
 		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 		else [CommentsField setTitle: [CommentsEditField stringValue]];
 		
-		[self buildMatrixPreview];
+		[self buildMatrixPreview: NO];
 	}
 }
 
@@ -12340,7 +12348,7 @@ sourceRef);
 	}
 	
 	[[browserWindow databaseOutline] reloadData];
-	[self buildMatrixPreview];
+	[self buildMatrixPreview: NO];
 }
 
 - (IBAction) databaseWindow : (id) sender

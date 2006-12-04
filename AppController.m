@@ -1249,7 +1249,7 @@ static BOOL initialized = NO;
 				
 			//	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
 				
-				mainThread  = [NSThread currentThread];
+				mainThread = [NSThread currentThread];
 							
 				Altivec = HasAltiVec();
 				//	if( Altivec == 0)

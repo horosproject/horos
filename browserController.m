@@ -420,8 +420,8 @@ static BOOL COMPLETEREBUILD = NO;
 	// Refresh preview matrix if needed
 	for( i = 0; i < [viewersListToRebuild count]; i++)
 	{
-		[[viewersListToRebuild objectAtIndex: i] buildMatrixPreview];
-		[[viewersListToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
+		[[viewersListToRebuild objectAtIndex: i] buildMatrixPreview: NO];
+	//	[[viewersListToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
 	}
 }
 
@@ -3576,6 +3576,7 @@ static BOOL COMPLETEREBUILD = NO;
 	NSError					*error = 0L;
 	BOOL					matrixThumbnails = NO;
 	int						animState = [animationCheck state];
+	NSMutableArray			*objectsToDelete = [NSMutableArray arrayWithCapacity: 0];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
 	{
@@ -3594,7 +3595,17 @@ static BOOL COMPLETEREBUILD = NO;
 	[animationCheck setState: NSOffState];
 	
 	[context lock];
-
+	
+	if( matrixThumbnails)
+	{
+		[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
+	}
+	else
+	{
+		[self deleteEmptyFoldersForDatabaseOutlineSelection];
+		[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
+	}
+	
 	// Viewers List
 	for( i = 0; i < [winList count]; i++)
 	{
@@ -3680,20 +3691,17 @@ static BOOL COMPLETEREBUILD = NO;
 			
 			// Try to find images that aren't stored in the local database
 			
-			NSMutableArray	*objectsToDelete = [NSMutableArray arrayWithCapacity: 0], *nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
+			NSMutableArray	*nonLocalImagesPath = [NSMutableArray arrayWithCapacity: 0];
 			
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
 			[wait showWindow:self];
 			
 			if( matrixThumbnails)
 			{
-				[self filesForDatabaseMatrixSelection: objectsToDelete onlyImages: NO];
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			else
 			{
-				[self deleteEmptyFoldersForDatabaseOutlineSelection];
-				[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
 				nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
 			}
 			
