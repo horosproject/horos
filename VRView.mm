@@ -671,51 +671,21 @@ public:
 	
 	if( [max intValue] > 36)
 	{
-		long line = (long) [cur floatValue] / numberOfFrames;
-		long deg = (long) [cur floatValue] - numberOfFrames*numberOfFrames;
-		long val =  (360*line) / (numberOfFrames);
-		
-		if( [cur intValue] % numberOfFrames == 0)
+		if( [cur intValue] % numberOfFrames == 0 && [cur intValue] != 0)
 		{
-			aCamera->SetPosition( camPosition);
-			
-			NSLog(@"%d", val);
-			
-			if( val >= 90 && val <= 270) 
-			{
-				double viewUpCopy[ 3];
-				
-				viewUpCopy[ 0] = -camFocal[ 0];
-				viewUpCopy[ 1] = -camFocal[ 1];
-				viewUpCopy[ 2] = -camFocal[ 2];
-				
-				aCamera->SetViewUp( viewUpCopy);
-				
-				if( val == 90) aCamera->Elevation( 90.1);
-				else if( val == 270) aCamera->Elevation( 269.9);
-				else aCamera->Elevation( val);
-			}
-			else
-			{
-				
-				aCamera->SetViewUp( camFocal);
-				
-				aCamera->Elevation( -val);
-			}
-			
-			double viewUp[ 3];
-			
-			aCamera->GetViewUp( viewUp);
-			NSLog(@"%0.0f, %0.0f, %0.0f", viewUp[0], viewUp[1], viewUp[2]);
+			aCamera->Azimuth( 360 / numberOfFrames);
+			[self Vertical: - 360 / numberOfFrames];
 		}
-		
-		if( val >= 90 && val <= 270) aCamera->Azimuth( -360 / numberOfFrames);
-		else aCamera->Azimuth( 360 / numberOfFrames);
+		else if([cur intValue] != 0) aCamera->Azimuth( 360 / numberOfFrames);
 	}
 	else
 	{
-		aCamera->Azimuth( 360 / numberOfFrames);
+		if([cur intValue] != 0) aCamera->Azimuth( 360 / numberOfFrames);
 	}
+	
+	aCamera->SetFocalPoint( volume->GetCenter());
+	aCamera->OrthogonalizeViewUp();
+	aCamera->ComputeViewPlaneNormal();
 	
 	return [self nsimageQuicktime];
 }
@@ -1082,9 +1052,6 @@ public:
 		else
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
 		
-		//[mov setCodec:kJPEGCodecType :codecHighQuality];
-		
-//		path = [mov createMovieQTKit: NO  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		path = [mov createMovieQTKit: NO  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		if( path)
 		{
@@ -1282,9 +1249,7 @@ public:
 		}
 		else
 		{
-//			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(image4DForFrame: maxFrame:) :[[[self window] windowController] movieFrames]];
 			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(image4DForFrame: maxFrame:) :[controller movieFrames]];
-//			[mov createMovieQTKit: YES  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			[mov createMovieQTKit: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];			
 			[mov dealloc];
 		}

@@ -1724,10 +1724,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask) 
 	{
-		//[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
+		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		
-		[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
-		[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:0L];
+//		[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
+//		[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:0L];
 		
 		[self matrixPreviewSelectCurrentSeries];
 		
@@ -1743,10 +1743,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
 		{
-//			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 			
-			[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
-			[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:self];
+//			[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
+//			[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:self];
 		}
 	}
 }
@@ -1877,8 +1877,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			i += [series count];
 		}
 		
-		[previewMatrix renewRows: i+[studiesArray count] columns: 1];
-		[previewMatrix sizeToCells];
+		if( [previewMatrix numberOfRows] != i+[studiesArray count])
+		{
+			[previewMatrix renewRows: i+[studiesArray count] columns: 1];
+			[previewMatrix sizeToCells];
+		}
 		
 		for( x = 0; x < [studiesArray count]; x++)
 		{
