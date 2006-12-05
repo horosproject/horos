@@ -1503,9 +1503,7 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	// THEN, LOAD THEM
-	[self addFilesAndFolderToDatabase: localFiles];
-	
-	return localFiles;
+	return [self addFilesAndFolderToDatabase: localFiles];
 }
 
 - (void) addURLToDatabaseEnd:(id) sender
