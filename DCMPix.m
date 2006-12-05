@@ -2176,6 +2176,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	repetitiontime = 0L;
 	echotime = 0L;
 	protocolName = 0L;
+	flipAngle = 0L;
 	viewPosition = 0L;
 	patientPosition = 0L;
 	maxValueOfSeries = 0;
@@ -2253,6 +2254,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 		repetitiontime = 0L;
 		echotime = 0L;
+		flipAngle = 9L;
 		protocolName = 0L;
 		viewPosition = 0L;
 		patientPosition = 0L;
@@ -2395,6 +2397,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		fullwl = fullww = 0;
 		repetitiontime = 0L;
 		echotime = 0L;
+		flipAngle = 0L;
 		protocolName = 0L;
 		viewPosition = 0L;
 		patientPosition = 0L;
@@ -2490,6 +2493,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	self->savedWW = fromDcm->savedWW;
 	
 	self->echotime = [fromDcm->echotime retain];
+	self->flipAngle = [fromDcm->flipAngle retain];
 	self->repetitiontime = [fromDcm->repetitiontime retain];
 	self->protocolName = [fromDcm->protocolName retain];
 	self->convertedDICOM = [fromDcm->convertedDICOM retain];
@@ -2543,6 +2547,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	copy->savedWW = self->savedWW;
 	
 	copy->echotime = [self->echotime retain];
+	copy->flipAngle = [self->flipAngle retain];
 	copy->repetitiontime = [self->repetitiontime retain];
 	copy->protocolName = [self->protocolName retain];
 	copy->convertedDICOM = [self->convertedDICOM retain];
@@ -2580,6 +2585,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 - (NSString*) repetitiontime {return repetitiontime;}
 - (NSString*) echotime {return echotime;}
+- (NSString*) flipAngle {return flipAngle;}
 - (void) setRepetitiontime:(NSString*)rep {repetitiontime = rep;}
 - (void) setEchotime:(NSString*)echo {echotime = echo;}
 - (NSString*) protocolName {return protocolName;}
@@ -4280,6 +4286,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
 	if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
 	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
+	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];	
 	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
 	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
@@ -4976,6 +4983,10 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &elemType);
 			if (val != NULL) echotime = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];
 			else echotime = 0;
+			
+			val = Papy3GetElement (theGroupP, papFlipAngleGr, &nbVal, &elemType);
+			if (val != NULL) flipAngle = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];
+			else flipAngle = 0;
 			
 			val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &elemType);
 			if (val != NULL) protocolName = [[NSString stringWithCString:val->a] retain];
@@ -8711,6 +8722,7 @@ float			iwl, iww;
 	[convertedDICOM release];					convertedDICOM = 0L;
 	[repetitiontime release];					repetitiontime = 0L;
 	[echotime release];							echotime = 0L;
+	[flipAngle release];						flipAngle = 0L;
 	[protocolName release];						protocolName = 0L;
 	[viewPosition release];						viewPosition = 0L;
 	[patientPosition release];					patientPosition = 0L;
@@ -8738,6 +8750,7 @@ float			iwl, iww;
 	[convertedDICOM release];
 	[repetitiontime release];
 	[echotime release];
+	[flipAngle release];
 	[units release];
 	[protocolName release];
 	[patientPosition release];

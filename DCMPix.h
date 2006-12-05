@@ -70,6 +70,7 @@
 	float				patientsWeight;
 	NSString			*repetitiontime;
 	NSString			*echotime;
+	NSString			*flipAngle;
 	NSString			*protocolName;
 	NSString			*viewPosition;
 	NSString			*patientPosition;
@@ -274,6 +275,7 @@
 - (void) imageArithmeticMultiplication:(DCMPix*) sub;
 - (NSString*) repetitiontime;
 - (NSString*) echotime;
+- (NSString*) flipAngle;
 - (void) setRepetitiontime:(NSString*)rep;
 - (void) setEchotime:(NSString*)echo;
 - (NSString*) protocolName;

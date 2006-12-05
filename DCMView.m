@@ -5474,6 +5474,15 @@ static long scrollMode;
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
 			
+			if( [curDCM flipAngle] != 0L)
+			{
+				float flipAngle = [[curDCM flipAngle] floatValue];
+				tempString = [NSString stringWithFormat:@"Flip Angle: %.2f", flipAngle];
+				xRaster = size.size.width;
+				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
+				yRaster += (stringSize.height + stringSize.height/10);
+			}
+			
 			if( [curDCM protocolName] != 0L)
 			{
 				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
