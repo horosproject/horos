@@ -9,8 +9,9 @@
         }, 
         {CLASS = HelpButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
         {CLASS = NSPreferencesModule; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
-            ACTIONS = {selectPane = id; showAll = id; }; 
+            ACTIONS = {nextAndPrevPane = id; selectPane = id; showAll = id; }; 
             CLASS = PreferencePaneController; 
             LANGUAGE = ObjC; 
             OUTLETS = {allView = NSView; destView = NSView; }; 

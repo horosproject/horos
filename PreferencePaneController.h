@@ -23,12 +23,13 @@
 @class AppController;
 @interface PreferencePaneController : NSWindowController
 {
+	int							curPaneIndex;
 	NSPreferencePane			*pane;
 	NSDictionary				*previousDefaults;
 	IBOutlet	NSView			*destView;
 	//IBOutlet	NSMatrix		*m_SelectionMatrix;
 	BOOL						showRestartNeeded;
-	IBOutlet	NSView				*allView;
+	IBOutlet	NSView			*allView;
 }
 
 - (void)setPane:(NSPreferencePane *)aPane;
@@ -37,4 +38,6 @@
 - (IBAction)showAll:(id)sender;
 - (void) reopenDatabase;
 - (void) selectFirstPane;
+- (IBAction)nextAndPrevPane:(id)sender;
+- (void)selectPaneIndex:(int) index;
 @end

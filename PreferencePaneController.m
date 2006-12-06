@@ -99,8 +99,6 @@ extern NSString * documentsDirectory();
 extern AppController		*appController;
 extern BrowserController	*browserWindow;
 
-float MAXWIDTH = 725;
-
 @implementation PreferencePaneController
 
 -(id) init
@@ -232,16 +230,16 @@ float MAXWIDTH = 725;
 			
 			[aPane willSelect];
 			/* Add view to window */
-			float y, newY, deltaH;
+			float y, x, newX, newY, deltaH, deltaW;
 			NSRect frameRect = [[self window] frame];
 			NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
-			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, MAXWIDTH, [[aPane mainView] frame].size.height + 30);
+			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, [[aPane mainView] frame].size.width, [[aPane mainView] frame].size.height + 30);
 			NSRect newWindowFrame = [[self window] frameRectForContentRect:newRect];
 			y = frameRect.origin.y;
 			deltaH = newWindowFrame.size.height - frameRect.size.height;
 			newY = y - deltaH;
 			newWindowFrame.origin.y = newY;
-			
+						
 			/*
 			NSLog(@"pane origin x:%f  y:%f   width:%f height %f", [[aPane mainView] frame].origin.x, [[aPane mainView] frame].origin.y, [[aPane mainView] frame].size.width,[[aPane mainView] frame].size.height);
 			NSLog(@"old origin x:%f  y:%f   width:%f height %f", frameRect.origin.x, frameRect.origin.y, frameRect.size.width,frameRect.size.height);
@@ -273,24 +271,24 @@ float MAXWIDTH = 725;
 			
 			[[self window] setContentMinSize: NSMakeSize(0 , 0)];
 			
-			NSRect	finalFrame = [[self window] frame];
-			
-			if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
-			{
-				long diff= finalFrame.size.height - [[NSScreen mainScreen] visibleFrame].size.height;
-				
-				finalFrame.size.height -= diff;
-				finalFrame.origin.y += diff;
-				
-				[[self window] setFrame:finalFrame display:YES animate:NO];
-				
-				if( [[[[aPane mainView] subviews] objectAtIndex: 0] isKindOfClass: [NSScrollView class]])
-				{
-					NSScrollView	*scrollView = [[[aPane mainView] subviews] objectAtIndex: 0];
-					[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[[scrollView contentView] documentView] frame].size.height - [[scrollView contentView] documentVisibleRect].size.height) ];
-					[scrollView reflectScrolledClipView: [scrollView contentView]];
-				}
-			}
+//			NSRect	finalFrame = [[self window] frame];
+//			
+//			if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
+//			{
+//				long diff= finalFrame.size.height - [[NSScreen mainScreen] visibleFrame].size.height;
+//				
+//				finalFrame.size.height -= diff;
+//				finalFrame.origin.y += diff;
+//				
+//				[[self window] setFrame:finalFrame display:YES animate:NO];
+//				
+//				if( [[[[aPane mainView] subviews] objectAtIndex: 0] isKindOfClass: [NSScrollView class]])
+//				{
+//					NSScrollView	*scrollView = [[[aPane mainView] subviews] objectAtIndex: 0];
+//					[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[[scrollView contentView] documentView] frame].size.height - [[scrollView contentView] documentVisibleRect].size.height) ];
+//					[scrollView reflectScrolledClipView: [scrollView contentView]];
+//				}
+//			}
 		}
 	}
 
@@ -316,53 +314,85 @@ float MAXWIDTH = 725;
 	[pane release];
 }
 
-- (IBAction)selectPane:(id)sender{
+- (IBAction)nextAndPrevPane:(id)sender
+{
+	if( curPaneIndex == -1) curPaneIndex = 0;
+	else
+	{
+		switch ([[sender selectedCell] tag])
+		{
+			case 0:	// Previous
+				curPaneIndex--;
+			break;
+			
+			case 1: // Next
+				curPaneIndex++;
+			break;
+		}
+	}
+	
+	if( curPaneIndex < 0) curPaneIndex = 11;
+	if( curPaneIndex > 11) curPaneIndex = 0;
+	
+	[self selectPaneIndex: curPaneIndex];
+}
+
+- (void)selectPaneIndex:(int) index
+{
 	NSString *pathToPrefPaneBundle;
 	NSBundle *prefBundle;
 	Class prefPaneClass;
-	//NSLog(@"select Pane %d", [[sender selectedCell] tag]);
-	switch ([[sender selectedCell] tag]) {
+	
+	switch ( index) {
 		case 0:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];			
+		default:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"General"];
 			break;
-		case 1:
+		case 4:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIViewerPreferencePane" ofType: @"prefPane"];	
+			[[self window] setTitle:@"Viewers"];
 			break;
 		case 2:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICDPreferencePane" ofType: @"prefPane"];	
+			[[self window] setTitle:@"CD/DVD"];
 			break;
-		case 3:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIDatabasePreferencePane" ofType: @"prefPane"];	
-			break;
-		case 4:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIListenerPreferencePane" ofType: @"prefPane"];	
-			break;
-		case 5:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];	
-			break;
-//		case 6:
-//			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIRoutingPreferencePane" ofType: @"prefPane"];	
-//			break;
-		case 7:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHangingPreferencePane" ofType: @"prefPane"];	
+		case 1:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIDatabasePreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"Database"];
 			break;
 		case 8:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSI3DPreferencePane" ofType: @"prefPane"];	
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIListenerPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"Listener"];
 			break;
 		case 9:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIPETPreferencePane" ofType: @"prefPane"];	
-			break;
-		case 10:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];	
-			break;
-		case 6:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];	
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"Locations"];
 			break;
 		case 11:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];	
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];
+			[[self window] setTitle:@"DICOM Print"];
 			break;
-		default:
-			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
+		case 3:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHangingPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"Protocols"];	
+			break;
+		case 5:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSI3DPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"3D"];
+			break;
+		case 6:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIPETPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"PET"];
+			break;
+		case 10:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];
+			[[self window] setTitle:@"Routing"];
+			break;
+		case 7:
+			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];
+			[[self window] setTitle:@"Hot Keys"];
+			break;
 	}
 	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	prefPaneClass = [prefBundle principalClass];
@@ -371,56 +401,62 @@ float MAXWIDTH = 725;
 	[pane release];
 }
 
-- (IBAction)showAll:(id)sender{
-//NSLog(@"pane added");
-			
-			/* Add view to window */
-			float y, newY, deltaH;
-			NSRect frameRect = [[self window] frame];
-			NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
-			NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, MAXWIDTH, [allView frame].size.height + 30.0);
-			NSRect newWindowFrame = [[self window] frameRectForContentRect:newRect];
-			y = frameRect.origin.y;
-			deltaH = newWindowFrame.size.height - frameRect.size.height;
-			newY = y - deltaH;
-			newWindowFrame.origin.y = newY;
-			[pane shouldUnselect];		
-			[pane willUnselect];
-			[pane didUnselect];
-			[[pane mainView] removeFromSuperview];			
-			
-			[[self window] setFrame:newWindowFrame display:YES animate:YES];
-			
-			[[self window] setContentMinSize: newRect.size];
-			[[self window] setFrame:newWindowFrame display:YES animate:YES];
-						
-			[destView addSubview:allView];
-			[allView setNeedsDisplay:YES];
-			[pane release];
-			pane = nil;
-			
-			[[self window] setContentMinSize: NSMakeSize(0 , 0)];
-			
-			NSRect	finalFrame = [[self window] frame];
-			
-			if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
-			{
-				long diff= finalFrame.size.height - [[NSScreen mainScreen] visibleFrame].size.height;
-				
-				finalFrame.size.height -= diff;
-				finalFrame.origin.y += diff;
-				
-				[[self window] setFrame:finalFrame display:YES animate:NO];
-				
-				if( [[[allView subviews] objectAtIndex: 0] isKindOfClass: [NSScrollView class]])
-				{
-					NSScrollView	*scrollView = [[allView subviews] objectAtIndex: 0];
-					[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[[scrollView contentView] documentView] frame].size.height - [[scrollView contentView] documentVisibleRect].size.height) ];
-					[scrollView reflectScrolledClipView: [scrollView contentView]];
-				}
-			}
+- (IBAction)selectPane:(id)sender
+{
+	[self selectPaneIndex: [[sender selectedCell] tag]];
+}
 
+- (IBAction)showAll:(id)sender
+{			
+	/* Add view to window */
+	float y, newY, deltaH;
+	NSRect frameRect = [[self window] frame];
+	NSRect contentFrame = [[self window] contentRectForFrameRect:frameRect];
+	NSRect newRect = NSMakeRect(contentFrame.origin.x, contentFrame.origin.y, [allView frame].size.width, [allView frame].size.height + 30.0);
+	NSRect newWindowFrame = [[self window] frameRectForContentRect:newRect];
+	y = frameRect.origin.y;
+	deltaH = newWindowFrame.size.height - frameRect.size.height;
+	newY = y - deltaH;
+	newWindowFrame.origin.y = newY;
+	[pane shouldUnselect];		
+	[pane willUnselect];
+	[pane didUnselect];
+	[[pane mainView] removeFromSuperview];			
 	
+	[[self window] setFrame:newWindowFrame display:YES animate:YES];
+	
+	[[self window] setContentMinSize: newRect.size];
+	[[self window] setFrame:newWindowFrame display:YES animate:YES];
+				
+	[destView addSubview:allView];
+	[allView setNeedsDisplay:YES];
+	[pane release];
+	pane = nil;
+	
+	[[self window] setContentMinSize: NSMakeSize(0 , 0)];
+	
+	NSRect	finalFrame = [[self window] frame];
+	
+	[[self window] setTitle:@"Preferences"];
+	
+//	if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
+//	{
+//		long diff= finalFrame.size.height - [[NSScreen mainScreen] visibleFrame].size.height;
+//		
+//		finalFrame.size.height -= diff;
+//		finalFrame.origin.y += diff;
+//		
+//		[[self window] setFrame:finalFrame display:YES animate:NO];
+//		
+//		if( [[[allView subviews] objectAtIndex: 0] isKindOfClass: [NSScrollView class]])
+//		{
+//			NSScrollView	*scrollView = [[allView subviews] objectAtIndex: 0];
+//			[[scrollView contentView] scrollToPoint:NSMakePoint(0, [[[scrollView contentView] documentView] frame].size.height - [[scrollView contentView] documentVisibleRect].size.height) ];
+//			[scrollView reflectScrolledClipView: [scrollView contentView]];
+//		}
+//	}
+	
+	curPaneIndex = -1;
 }
 
 //TableViews Data source
