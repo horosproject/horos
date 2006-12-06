@@ -436,7 +436,10 @@ static NSString *Modality = @"Modality";
 	
 	if( [sender selectedTag] == 5)
 	{
-		NSString	*between = [NSString stringWithFormat:@"%@-%@", [[fromDate dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [[toDate dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
+		NSDate	*later = [[fromDate dateValue] laterDate: [toDate dateValue]];
+		NSDate	*earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
+		
+		NSString	*between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 		
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	}

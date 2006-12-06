@@ -2969,6 +2969,8 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (void) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
+	if( [[self window] isVisible] == NO) return;
+	
 	NSError				*error = 0L;
 	long				i;
 	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -8279,6 +8281,7 @@ static NSArray*	openSubSeriesArray = 0L;
 - (void) showDatabase:(id)sender
 {
     [[self window] makeKeyAndOrderFront:sender];
+	[self outlineViewRefresh];
 }
 
 - (void)keyDown:(NSEvent *)event{

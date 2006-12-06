@@ -2254,7 +2254,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			
 		repetitiontime = 0L;
 		echotime = 0L;
-		flipAngle = 9L;
+		flipAngle = 0L;
 		protocolName = 0L;
 		viewPosition = 0L;
 		patientPosition = 0L;

@@ -759,6 +759,33 @@ public:
     return (centerRect);
 }
 
+-(void) restoreViewSizeAfterMatrix3DExport
+{
+	[self setFrame: savedViewSizeFrame];
+}
+
+-(void) setViewSizeToMatrix3DExport
+{
+	savedViewSizeFrame = [self frame];
+	
+	NSRect windowFrame;
+	
+	windowFrame.origin.x = 0;
+	windowFrame.origin.y = 0;
+	windowFrame.size.width = [[[self window] contentView] frame].size.width;
+	windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
+	
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+	{
+		case 0:
+		break;
+		
+		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,256,256) inRect: windowFrame]];	break;
+		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
+		case 3:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+	}
+}
+
 #define DATABASEPATH @"/DATABASE/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
@@ -776,23 +803,7 @@ public:
 	
 	if( [sender tag])
 	{
-		NSRect previousFrame = [self frame];
-		NSRect windowFrame;
-		
-		windowFrame.origin.x = 0;
-		windowFrame.origin.y = 0;
-		windowFrame.size.width = [[[self window] contentView] frame].size.width;
-		windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
-		
-		switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
-		{
-			case 0:
-			break;
-			
-			case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,256,256) inRect: windowFrame]];	break;
-			case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
-			case 3:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
-		}
+		[self setViewSizeToMatrix3DExport];
 		
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
@@ -967,9 +978,9 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
+			
+			[self restoreViewSizeAfterMatrix3DExport];
 		}
-		
-		[self setFrame: previousFrame];
 	}
 }
 
