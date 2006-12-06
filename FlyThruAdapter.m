@@ -37,4 +37,6 @@
 {
 	[self setCurrentViewToCamera: aCamera];
 }
+- (void) prepareMovieGenerating{}
+- (void) endMovieGenerating{}
 @end

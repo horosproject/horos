@@ -242,6 +242,44 @@ public:
 	}
 }
 
+-(void) restoreViewSizeAfterMatrix3DExport
+{
+	[self setFrame: savedViewSizeFrame];
+}
+
+- (NSRect) centerRect: (NSRect) smallRect
+               inRect: (NSRect) bigRect
+{
+    NSRect centerRect;
+    centerRect.size = smallRect.size;
+
+    centerRect.origin.x = (bigRect.size.width - smallRect.size.width) / 2.0;
+    centerRect.origin.y = (bigRect.size.height - smallRect.size.height) / 2.0;
+
+    return (centerRect);
+}
+
+-(void) setViewSizeToMatrix3DExport
+{
+	savedViewSizeFrame = [self frame];
+	
+	NSRect windowFrame;
+	
+	windowFrame.origin.x = 0;
+	windowFrame.origin.y = 0;
+	windowFrame.size.width = [[[self window] contentView] frame].size.width;
+	windowFrame.size.height = [[[self window] contentView] frame].size.height - 10;
+	
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey:@"EXPORTMATRIXFOR3D"])
+	{
+		case 0:
+		break;
+		
+		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
+		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+	}
+}
+
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: (float) maxOpacity minValue: (float) minValue
 {
 	// world point

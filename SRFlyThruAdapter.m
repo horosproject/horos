@@ -44,4 +44,14 @@
 	return [[[controller view] nsimageQuicktime] autorelease];
 }
 
+- (void) prepareMovieGenerating
+{
+	[[(SRController*)controller view] setViewSizeToMatrix3DExport];
+}
+
+- (void) endMovieGenerating
+{
+	[[(SRController*)controller view] restoreViewSizeAfterMatrix3DExport];
+}
+
 @end

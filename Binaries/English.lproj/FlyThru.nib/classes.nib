@@ -20,6 +20,8 @@
             OUTLETS = {
                 FTview = NSTableView; 
                 LOD = NSMatrix; 
+                MatrixSize = NSTextField; 
+                MatrixSizePopup = NSPopUpButton; 
                 boxCompute = NSBox; 
                 boxExport = NSBox; 
                 boxPlay = NSBox; 

@@ -356,8 +356,6 @@ typedef char* vtkMyCallbackVR;
 -(void) bestRendering:(id) sender;
 - (void) setMode: (long) modeID;
 - (long) mode;
--(void)resizeWindowToScale:(float)resizeScale;
-- (IBAction)resizeWindow:(id)sender;
 - (float) getResolution;
 
 - (BOOL) isViewportResizable;
@@ -400,6 +398,9 @@ typedef char* vtkMyCallbackVR;
 
 - (void) setRotate: (BOOL) r;
 - (float) factor;
+
+-(void) setViewSizeToMatrix3DExport;
+-(void) restoreViewSizeAfterMatrix3DExport;
 
 // export
 - (void) sendMail:(id) sender;

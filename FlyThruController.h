@@ -41,6 +41,9 @@
 	IBOutlet NSButton		*playButton;
 	IBOutlet NSTextField	*dcmSeriesName;
 	
+	IBOutlet NSTextField	*MatrixSize;
+	IBOutlet NSPopUpButton	*MatrixSizePopup;
+	
 			 NSPoint		boxPlayOrigin;
 			 NSRect			windowFrame;
 			 

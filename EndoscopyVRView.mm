@@ -23,5 +23,12 @@
 	else
 		return [super getRawPixels:width :height :spp :bpp :screenCapture :force8bits];
 }
- 
+
+-(void) restoreViewSizeAfterMatrix3DExport
+{
+}
+
+-(void) setViewSizeToMatrix3DExport
+{
+}
 @end

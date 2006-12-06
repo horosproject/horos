@@ -253,6 +253,8 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 	
 	NSCursor					*cursor;
 	NSTimer						*mouseModifiers;
+	
+	NSRect						savedViewSizeFrame;
 }
 -(void) set3DStateDictionary:(NSDictionary*) dict;
 -(void) movieChangeSource:(float*) volumeData;

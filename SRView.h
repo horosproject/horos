@@ -245,6 +245,8 @@ typedef char* vtkPolyDataNormals;
 	NSPoint						_mouseLocStart;  // mouseDown start point
 	BOOL						_resizeFrame;
 	short						_tool;
+	
+	NSRect						savedViewSizeFrame;
 }
 
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;

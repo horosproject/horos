@@ -27,6 +27,7 @@ MODIFICATION HISTORY
 
 #import "FlyThruController.h"
 #import "VRController.h"
+#import "EndoscopyVRController.h"
 #import "VRView.h"
 #import "DICOMExport.h"
 #import "Window3DController.h"
@@ -42,6 +43,12 @@ MODIFICATION HISTORY
 	
 	[controller3D release];
 	controller3D = [w3Dc retain];
+	
+	if( [controller3D isKindOfClass: [EndoscopyVRController class]])
+	{
+		[MatrixSize setHidden: YES];
+		[MatrixSizePopup setHidden: YES];
+	}
 }
 
 - (Window3DController*)window3DController
@@ -524,6 +531,8 @@ MODIFICATION HISTORY
 
 - (IBAction) flyThruQuicktimeExport :(id) sender
 {
+	[FTAdapter prepareMovieGenerating];
+
 	if( [[exportFormat selectedCell] tag] == 0)
 	{
 		long numberOfFrames = [FT numberOfFrames];
@@ -610,6 +619,8 @@ MODIFICATION HISTORY
 		
 		[dcmSequence release];
 	}
+	
+	[FTAdapter endMovieGenerating];
 }
 
 -(NSImage*) imageForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max

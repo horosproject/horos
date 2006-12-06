@@ -29,4 +29,6 @@
 - (Camera*) getCurrentCamera;
 - (void) setCurrentViewToCamera:(Camera*)aCamera;
 - (NSImage*) getCurrentCameraImage:(BOOL) highQuality;
+- (void) prepareMovieGenerating;
+- (void) endMovieGenerating;
 @end

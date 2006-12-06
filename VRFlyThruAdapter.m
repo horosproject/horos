@@ -61,5 +61,14 @@ MODIFICATION HISTORY
 	return [[[controller view] nsimageQuicktime: highQuality] autorelease];
 }
 
+- (void) prepareMovieGenerating
+{
+	[[(VRController*)controller view] setViewSizeToMatrix3DExport];
+}
+
+- (void) endMovieGenerating
+{
+	[[(VRController*)controller view] restoreViewSizeAfterMatrix3DExport];
+}
 
 @end

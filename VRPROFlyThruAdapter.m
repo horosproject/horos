@@ -49,4 +49,14 @@
 {
 	return [[[controller view] nsimageQuicktime] autorelease];
 }
+
+- (void) prepareMovieGenerating
+{
+	[[(VRPROController*)controller view] setViewSizeToMatrix3DExport];
+}
+
+- (void) endMovieGenerating
+{
+	[[(VRPROController*)controller view] restoreViewSizeAfterMatrix3DExport];
+}
 @end

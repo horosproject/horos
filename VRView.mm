@@ -780,9 +780,8 @@ public:
 		case 0:
 		break;
 		
-		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,256,256) inRect: windowFrame]];	break;
-		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
-		case 3:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
+		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
+		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
 	}
 }
 
@@ -978,9 +977,9 @@ public:
 			[progress release];
 			
 			[dcmSequence release];
-			
-			[self restoreViewSizeAfterMatrix3DExport];
 		}
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 	}
 }
 
@@ -1005,13 +1004,17 @@ public:
 			numberOfFrames /= [[[self window] windowController] movieFrames];
 			numberOfFrames *= [[[self window] windowController] movieFrames];
 		}
-	
+		
+		[self setViewSizeToMatrix3DExport];
+		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
 //		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov createMovieQTKit:YES :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov dealloc];
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 	}
 	
 }
