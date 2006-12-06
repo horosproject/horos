@@ -4299,11 +4299,11 @@ public:
 	croppingBox = vtkBoxWidget::New();
 	
 	croppingBox->GetHandleProperty()->SetColor(0, 1, 0);
-	croppingBox->SetProp3D(volume);
+	croppingBox->SetProp3D( volume);
 	croppingBox->SetPlaceFactor( 1.0);
 	croppingBox->SetHandleSize( 0.005);
 	croppingBox->PlaceWidget();
-    croppingBox->SetInteractor( [self getInteractor]);
+	croppingBox->SetInteractor( [self getInteractor]);
 	croppingBox->SetRotationEnabled( false);
 	croppingBox->SetInsideOut( true);
 	croppingBox->OutlineCursorWiresOff();

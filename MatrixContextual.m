@@ -54,5 +54,4 @@
  
 	[super rightMouseDown: theEvent];
  }
-
 @end

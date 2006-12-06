@@ -4069,7 +4069,11 @@ static BOOL COMPLETEREBUILD = NO;
 		[bonjourBrowser setBonjourDatabaseValue:[bonjourServicesList selectedRow]-1 item:item value:object forKey:[tableColumn identifier]];
 	}
 	
-	[item setValue:object forKey:[tableColumn identifier]];
+	if( [[tableColumn identifier] isEqualToString:@"stateText"])
+	{
+		if( [object intValue] >= 0) [item setValue:object forKey:[tableColumn identifier]];
+	}
+	else [item setValue:object forKey:[tableColumn identifier]];
 	
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
@@ -7876,6 +7880,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[albumDrawer setDelegate:self];
 	[oMatrix setDelegate:self];
+	[oMatrix setSelectionByRect: NO];
 	[oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
 	[oMatrix setFocusRingType: NSFocusRingTypeExterior];
 	[oMatrix renewRows:0 columns: 0];
