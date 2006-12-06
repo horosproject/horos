@@ -929,6 +929,8 @@ public:
 	
 	if( [sender tag])
 	{
+		[self setViewSizeToMatrix3DExport];
+		
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
@@ -1109,6 +1111,8 @@ public:
 			
 			[dcmSequence release];
 		}
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 	}
 }
 
@@ -1137,6 +1141,8 @@ public:
 	
 	if( [sender tag])
 	{
+		[self setViewSizeToMatrix3DExport];
+		
 		if( croppingBox->GetEnabled()) croppingBox->Off();
 	//	aRenderer->RemoveActor(outlineRect);
 		aRenderer->RemoveActor(textX);
@@ -1152,6 +1158,8 @@ public:
 		[mov createMovieQTKit: YES  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov dealloc];
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 		
 	//	aRenderer->AddActor(outlineRect);
 		aRenderer->AddActor(textX);
@@ -1191,6 +1199,8 @@ public:
 		FSSpec		spec, newspec;
 		QuicktimeExport *mov;
 		
+		[self setViewSizeToMatrix3DExport];
+		
 		if( croppingBox->GetEnabled()) croppingBox->Off();
 	//	aRenderer->RemoveActor(outlineRect);
 		aRenderer->RemoveActor(textX);
@@ -1228,6 +1238,8 @@ public:
 			
 			[[NSWorkspace sharedWorkspace] openFile:path];
 		}
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 		
 		[mov dealloc];
 		

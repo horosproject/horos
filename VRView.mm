@@ -1056,10 +1056,12 @@ public:
 	if( [sender tag])
 	{
 		#if !__LP64__
-		NSString	*path, *newpath;
-		FSRef		fsref;
-		FSSpec		spec, newspec;
-		QuicktimeExport *mov;
+		NSString			*path, *newpath;
+		FSRef				fsref;
+		FSSpec				spec, newspec;
+		QuicktimeExport		*mov;
+		
+		[self setViewSizeToMatrix3DExport];
 		
 		if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
@@ -1093,6 +1095,9 @@ public:
 		}
 		
 		[mov dealloc];
+		
+		[self restoreViewSizeAfterMatrix3DExport];
+		
 		#endif
 	}
 }

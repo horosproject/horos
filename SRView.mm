@@ -215,7 +215,6 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		if([cur intValue] != 0) aCamera->Azimuth( 360 / numberOfFrames);
 	}
 	
-	aCamera->SetFocalPoint (0, 0, 0);
 	aCamera->OrthogonalizeViewUp();
 	aCamera->ComputeViewPlaneNormal();
 	
@@ -235,11 +234,15 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	if( [sender tag])
 	{
+		[self setViewSizeToMatrix3DExport];
+		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :numberOfFrames];
 		
 		[mov createMovieQTKit: YES  :NO  :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
 		[mov release];
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 	}
 }
 
@@ -378,10 +381,14 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	if( [sender tag])
 	{
 		#if !__LP64__
-		NSString	*path, *newpath;
-		FSRef		fsref;
-		FSSpec		spec, newspec;
-		QuicktimeExport *mov;
+		NSString			*path, *newpath;
+		FSRef				fsref;
+		FSSpec				spec, newspec;
+		QuicktimeExport		*mov;
+		
+		[self setViewSizeToMatrix3DExport];
+		
+		
 		
 		if( numberOfFrames == 10 || numberOfFrames == 20)
 			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
@@ -415,6 +422,9 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		[mov release];
 		
 		[[NSWorkspace sharedWorkspace] openFile:path];
+		
+		[self restoreViewSizeAfterMatrix3DExport];
+		
 		#endif
 	}
 }
@@ -471,6 +481,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	
 	if( [sender tag])
 	{
+		[self setViewSizeToMatrix3DExport];
+		
 		// CURRENT image only
 		if( [[dcmExportMode selectedCell] tag] == 0)
 		{
@@ -570,6 +582,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			
 			[dcmSequence release];
 		}
+		
+		[self restoreViewSizeAfterMatrix3DExport];
 	}
 }
 
