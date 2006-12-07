@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-static long TIMEOUT	= 5;
+static long TIMEOUT	= 30;
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -795,10 +795,6 @@ NSLog(@"connectToService");
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	BOOL				succeed;
-	
-	
-	if( [[object valueForKey:@"msg"] isEqualToString:@"DATAB"]) TIMEOUT = 20;
-	else TIMEOUT = 5;
 	
 	resolved = NO;
 	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];

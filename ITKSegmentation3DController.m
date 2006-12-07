@@ -55,6 +55,8 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	
 	NSLog(@"windowWillClose");
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -197,6 +199,8 @@
 		[startingPointWorldPosition setStringValue:[NSString stringWithFormat:NSLocalizedString(@"mm:\t\tx:%2.2f y:%2.2f z:%2.2f", 0L), xmm, ymm, zmm]];
 		[startingPointValue setStringValue:[NSString stringWithFormat:NSLocalizedString(@"value:\t%2.2f", 0L), [[[viewer imageView] curDCM] getPixelValueX: xpx Y:ypx]]];
 		startingPoint = NSMakePoint(xpx, ypx);
+		
+		[self preview: self];
 	}
 }
 
@@ -258,6 +262,63 @@
 {
 	[self fillAlgorithmPopup];
 	[self changeAlgorithm:self];
+}
+
+-(IBAction) preview:(id) sender
+{
+	BOOL parametersProvided = YES;
+	int p;
+	
+	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	
+	for(p=0;p<[params numberOfRows]; p++)
+	{
+		parametersProvided = parametersProvided && (![[[params cellAtRow:p column:0] stringValue] isEqualToString:@""]);
+	}
+	
+	if (!parametersProvided)
+	{
+		return;
+	}
+	
+	if ( startingPoint.x == 0 && startingPoint.y == 0)
+	{
+		return;
+	}
+
+	long				slice;
+	
+	slice = [[viewer imageView] curImage];
+	
+	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[viewer pixList] :[viewer volumePtr] :slice];
+	if( itk)
+	{
+		// an array for the parameters
+		int algo = [[algorithmPopup selectedItem] tag];
+		int parametersCount = [[parameters objectAtIndex:algo] count];
+		NSMutableArray *parametersArray = [[NSMutableArray alloc] initWithCapacity:parametersCount];
+		int i;
+		for(i=0; i<parametersCount; i++)
+		{
+			[parametersArray addObject:[NSNumber numberWithFloat:[[params cellAtRow:i column:0] floatValue]]];
+		}
+				
+		[itk regionGrowing3D	: viewer
+								: 0L
+								: slice
+								: startingPoint
+								: algo //[[params cellAtIndex: 1] floatValue]
+								: parametersArray //[[params cellAtIndex: 2] floatValue]
+								: [[pixelsSet cellWithTag:0] state]==NSOnState
+								: [[pixelsValue cellWithTag:0] floatValue]
+								: [[pixelsSet cellWithTag:1] state]==NSOnState
+								: [[pixelsValue cellWithTag:1] floatValue]
+								: [[outputROIType selectedCell] tag]
+								: ((long)[roiResolution maxValue] + 1) - [roiResolution intValue]
+								: @"Segmentation Preview"];
+		
+		[itk release];
+	}
 }
 
 -(IBAction) compute:(id) sender
@@ -389,6 +450,8 @@
 		[[params cellAtRow:i column:0] setTitle:[[parameters objectAtIndex:[[algorithmPopup selectedItem] tag]] objectAtIndex:i]];
 		[[params cellAtRow:i column:0] setStringValue:[[defaultsParameters objectAtIndex:[[algorithmPopup selectedItem] tag]] objectAtIndex:i]];
 	}
+	
+	[self preview: self];
 }
 
 - (void) setNumberOfParameters: (int) n
@@ -447,7 +510,9 @@
 	else if ([[outputROIType selectedCell] tag]==11)
 	{
 		[numberOfPointsSlider setEnabled:YES];
-	}	
+	}
+	
+	[self preview: self];
 }
 
 - (IBAction) algorithmGetHelp:(id) sender

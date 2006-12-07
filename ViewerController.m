@@ -7391,6 +7391,33 @@ int i,j,l;
 	[NSApp beginSheet: roiRenameWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
+- (IBAction) roiDeleteWithName:(NSString*) name
+{
+	long i, x, y;
+	
+	[imageView stopROIEditingForce: YES];
+	
+	for( y = 0; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[y] count]; x++)
+		{
+			//[[roiList[y] objectAtIndex: x] removeAllObjects];
+			for( i = 0; i < [[roiList[y] objectAtIndex: x] count]; i++)
+			{
+				ROI *curROI = [[roiList[y] objectAtIndex: x] objectAtIndex:i];
+				
+				if( [[curROI name] isEqualToString: name])
+				{
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:curROI userInfo: 0L];
+					[[roiList[y] objectAtIndex: x] removeObject: curROI];
+				}
+			}
+		}
+	}
+	
+	[imageView setIndex: [imageView curImage]];
+}
+
 - (IBAction) roiDeleteAll:(id) sender
 {
 	long i, x, y;

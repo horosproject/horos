@@ -356,6 +356,7 @@ enum
 - (IBAction) ConvertToBWMenu:(id) sender;
 - (IBAction) export2PACS:(id) sender;
 - (void) print:(id) sender;
+- (IBAction) roiDeleteWithName:(NSString*) name;
 - (IBAction)resampleDataBy2:(id)sender;
 - (BOOL)resampleDataBy2;
 - (BOOL)resampleDataWithFactor:(float)factor;

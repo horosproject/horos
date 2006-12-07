@@ -48,6 +48,7 @@
 + (id) segmentationControllerForViewer:(ViewerController*) v;
 
 - (IBAction) compute:(id) sender;
+- (IBAction) preview:(id) sender;
 - (id) initWithViewer:(ViewerController*) v;
 - (ViewerController*) viewer;
 - (IBAction) changeAlgorithm: (id) sender;

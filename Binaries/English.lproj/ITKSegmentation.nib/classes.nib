@@ -7,6 +7,7 @@
                 changeAlgorithm = id; 
                 changeROItype = id; 
                 compute = id; 
+                preview = id; 
             }; 
             CLASS = ITKSegmentation3DController; 
             LANGUAGE = ObjC; 
