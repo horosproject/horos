@@ -51,7 +51,7 @@ static NSString*	MovieToolbarItemIdentifier		= @"Movie";
 static NSString*	ExportToolbarItemIdentifier		= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 
-
+static		float				deg2rad = 3.14159265358979/180.0; 
 
 extern NSString * documentsDirectory();
 
@@ -1150,7 +1150,7 @@ extern NSString * documentsDirectory();
 				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing]/ [[view finalView] scaleValue] :[[view finalView] pixelSpacing]/ [[view finalView] scaleValue]];
 				[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
 				
-				[[[view finalView] curDCM] orientation: o];
+				[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 				[exportDCM setOrientation: o];
 				
 				pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
@@ -1201,7 +1201,7 @@ extern NSString * documentsDirectory();
 			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] / [[view finalView] scaleValue] :[[view finalView] pixelSpacing] / [[view finalView] scaleValue]];
 			[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
 			
-			[[[view finalView] curDCM] orientation: o];
+			[[view finalView] orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			[exportDCM setOrientation: o];
 			
 			pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];

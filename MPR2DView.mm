@@ -47,11 +47,6 @@ extern void vsubtractNoAltivec( float *a,  float *b,  float *r, long size);
 extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);
 }
 
-
-typedef struct {
-   float x,y,z;
-} XYZ;
-
 /*
    Rotate a point p by angle theta around an arbitrary axis r
    Return the rotated point.

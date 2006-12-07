@@ -100,7 +100,31 @@ NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 #define SUB(dest,v1,v2) dest[0]=v1[0]-v2[0]; \
 						dest[1]=v1[1]-v2[1]; \
 						dest[2]=v1[2]-v2[2]; 
-		  
+
+XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
+{
+   XYZ q = {0.0,0.0,0.0};
+   float costheta,sintheta;
+
+//   Normalise(&r);
+   costheta = cos(theta);
+   sintheta = sin(theta);
+
+   q.x += (costheta + (1 - costheta) * r.x * r.x) * p.x;
+   q.x += ((1 - costheta) * r.x * r.y - r.z * sintheta) * p.y;
+   q.x += ((1 - costheta) * r.x * r.z + r.y * sintheta) * p.z;
+
+   q.y += ((1 - costheta) * r.x * r.y + r.z * sintheta) * p.x;
+   q.y += (costheta + (1 - costheta) * r.y * r.y) * p.y;
+   q.y += ((1 - costheta) * r.y * r.z - r.x * sintheta) * p.z;
+
+   q.z += ((1 - costheta) * r.x * r.z - r.y * sintheta) * p.x;
+   q.z += ((1 - costheta) * r.y * r.z + r.x * sintheta) * p.y;
+   q.z += (costheta + (1 - costheta) * r.z * r.z) * p.z;
+
+   return(q);
+}
+
 short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP)
 {
 	CROSS(u, Pn1, Pn2);         // cross product -> perpendicular vector
@@ -6961,6 +6985,28 @@ static long scrollMode;
 	if( rotation > 360) rotation -= 360;
 	
 	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+}
+
+- (void) orientationCorrectedToView:(float*) correctedOrientation
+{
+	float	o[ 9];
+	
+	[curDCM orientation: o];
+	
+	XYZ vector, rotationVector; 
+			
+	rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
+	
+	vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
+	vector =  ArbitraryRotate(vector, -rotation*deg2rad, rotationVector);
+	o[ 0] = vector.x;	o[ 1] = vector.y;	o[ 2] = vector.z;
+	
+	vector.x = o[ 3];	vector.y = o[ 4];	vector.z = o[ 5];
+	vector =  ArbitraryRotate(vector, -rotation*deg2rad, rotationVector);
+	o[ 3] = vector.x;	o[ 4] = vector.y;	o[ 5] = vector.z;
+	
+	int i;
+	for( i = 0; i < 9; i++) correctedOrientation[ i] = o[ i];
 }
 
 -(NSPoint) origin

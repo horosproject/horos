@@ -9932,7 +9932,8 @@ int i,j,l;
 		[exportDCM setSliceThickness: thickness];
 		[exportDCM setSlicePosition: location];
 		
-		[curPix orientation: o];
+		if( screenCapture) [imageView orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
+		else [curPix orientation: o];
 		[exportDCM setOrientation: o];
 		
 		o[ 0] = [curPix originX];		o[ 1] = [curPix originY];		o[ 2] = [curPix originZ];

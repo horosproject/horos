@@ -71,9 +71,11 @@ extern BrowserController	*browserWindow;
 		spacingY = 0;
 		sliceThickness = 0;
 		sliceInterval = 0;
-		orientation[ 6] = 0;
-		position[ 3] = 0;
 		slicePosition = 0;
+		
+		int i;
+		for( i = 0; i < 6; i++) orientation[ i] = 0;
+		for( i = 0; i < 3; i++) position[ i] = 0;
 	}
 	
 	return self;

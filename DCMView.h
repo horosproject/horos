@@ -240,6 +240,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (void) setStringID:(NSString*) str;
 -(NSString*) stringID;
 - (float) angle;
+- (void) orientationCorrectedToView:(float*) correctedOrientation;
 - (void) setCrossCoordinatesPer:(float) val;
 - (void) setCrossCoordinates:(float) x :(float) y :(BOOL) update;
 - (void) setCross:(long) x :(long)y :(BOOL) update;

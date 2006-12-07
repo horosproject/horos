@@ -428,7 +428,7 @@ extern  short		annotations;
 			[exportDCM setSliceThickness: [curPix sliceThickness]];
 			[exportDCM setSlicePosition: [curPix sliceLocation]];
 			
-			[curPix orientation: o];
+			[self orientationCorrectedToView: o];	// <- Because we do screen capture !!!!! We need to apply the rotation of the image
 			[exportDCM setOrientation: o];
 			
 			o[0] = [curPix originX];
