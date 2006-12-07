@@ -62,6 +62,4 @@
 - (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;
 - (void)setSplitMultiEchoMR:(BOOL)value;
-- (BOOL)combineProjectionSeries;
-- (void)setCombineProjectionSeries:(BOOL)value;
 @end
