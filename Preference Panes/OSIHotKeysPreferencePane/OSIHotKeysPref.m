@@ -88,7 +88,7 @@
 		[_authView setEnabled: NO];
 	}
 	[_authView updateStatus:self];
-	NSLog(@"MainViewDidLoad arrayController: %@", [arrayController description]);
+	//NSLog(@"MainViewDidLoad arrayController: %@", [arrayController description]);
 											
 }
 

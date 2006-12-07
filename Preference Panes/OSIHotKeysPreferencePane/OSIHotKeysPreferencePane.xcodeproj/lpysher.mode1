@@ -317,7 +317,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>BFBFED240B1FA4780072EE15</string>
+										<string>BFBFED340B20A1DF0072EE15</string>
 										<key>history</key>
 										<array>
 											<string>BFEF2D0F0B1D0048005D8A08</string>
@@ -327,7 +327,7 @@
 											<string>BF2EECED0B1F9493007E9088</string>
 											<string>BFBFED170B1FA4780072EE15</string>
 											<string>BFBFED180B1FA4780072EE15</string>
-											<string>BFBFED190B1FA4780072EE15</string>
+											<string>BFBFED240B1FA4780072EE15</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -339,16 +339,6 @@
 											<string>BF2EECBD0B1F91A1007E9088</string>
 											<string>BF2EECC20B1F91A1007E9088</string>
 											<string>BF2EECC30B1F91A1007E9088</string>
-											<string>BFBFED1A0B1FA4780072EE15</string>
-											<string>BFBFED1B0B1FA4780072EE15</string>
-											<string>BFBFED1C0B1FA4780072EE15</string>
-											<string>BFBFED1D0B1FA4780072EE15</string>
-											<string>BFBFED1E0B1FA4780072EE15</string>
-											<string>BFBFED1F0B1FA4780072EE15</string>
-											<string>BFBFED200B1FA4780072EE15</string>
-											<string>BFBFED210B1FA4780072EE15</string>
-											<string>BFBFED220B1FA4780072EE15</string>
-											<string>BFBFED230B1FA4780072EE15</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -406,9 +396,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>BFBFED250B1FA4780072EE15</string>
+				<string>BFBFED350B20A1DF0072EE15</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>BFBFED260B1FA4780072EE15</string>
+				<string>BFBFED360B20A1DF0072EE15</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -542,7 +532,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>BF92A1E90B1D462C001DB893</string>
 		<string>/Users/lpysher/osirix/osirix/Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj</string>
 	</array>
@@ -563,14 +552,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>HotKeyFormatter.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -626,7 +613,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>BF92A1E90B1D462C001DB893</string>
-				<string>BFBFECD50B1F96CF0072EE15</string>
+				<string>BFBFED370B20A1DF0072EE15</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -637,7 +624,7 @@
 			<key>WindowToolGUID</key>
 			<string>BF92A1E90B1D462C001DB893</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

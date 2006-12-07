@@ -97,8 +97,10 @@ NSRect screenFrame();
 - (IBAction) cancelModal: (id) sender;
 - (IBAction) okModal: (id) sender;
 
+
 #pragma mark-
 #pragma mark display setters and getters
+- (IBAction) saveLayout: (id)sender;
 - (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
 - (NSDictionary*) currentHangingProtocol;
 - (BOOL) xFlipped;

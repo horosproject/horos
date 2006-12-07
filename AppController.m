@@ -2102,6 +2102,9 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+- (IBAction) saveLayout: (id)sender{
+}
+
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
 {
 
