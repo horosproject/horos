@@ -4325,7 +4325,7 @@ static BOOL COMPLETEREBUILD = NO;
 				If 2D viewer need to set starting orientation, wwwl, CLUT, if SR preset surfaces.
 				Preprocess Volume - extract heart, Get Center line for vessel Colon, etc
 				
-			Root object is NSArray we ca nsearch through with predicates to get a filteredArray
+			Root object is NSArray we can search through with predicates to get a filteredArray
 		*/
 		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [item valueForKey:@"modality"]];

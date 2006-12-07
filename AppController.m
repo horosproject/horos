@@ -66,6 +66,7 @@ MODIFICATION HISTORY
 #import "DefaultsOsiriX.h"
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
+#import "LayoutWindowController.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -1593,6 +1594,8 @@ static BOOL initialized = NO;
 	
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+
 #pragma mark-
 
 - (void) displayUpdateMessage: (NSString*) msg
@@ -2102,7 +2105,14 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (IBAction) saveLayout: (id)sender{
+- (IBAction) saveLayout:(id) sender{
+	LayoutWindowController *layoutController = [[LayoutWindowController alloc] init];
+	[NSApp beginSheet:[layoutController window]  modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(layoutSheetDidEnd:returnCode:contextInfo:) contextInfo:layoutController];
+	
+}
+
+- (void)layoutSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+	[(LayoutWindowController *)contextInfo release];
 }
 
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description

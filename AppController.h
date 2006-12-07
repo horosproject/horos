@@ -90,6 +90,7 @@ NSRect screenFrame();
 #pragma mark-
 #pragma mark window routines
 - (IBAction) updateViews:(id) sender;
+- (IBAction) saveLayout:(id) sender;
 - (NSScreen *)dbScreen;
 - (NSArray *)viewerScreens;
 - (id) FindViewer:(NSString*) nib :(NSMutableArray*) pixList;

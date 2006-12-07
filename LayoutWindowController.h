@@ -22,7 +22,9 @@
 
 
 @interface LayoutWindowController : NSWindowController {
-
+	NSArray *_windowControllers;
 }
+
+- (IBAction)endSheet:(id)sender;
 
 @end
