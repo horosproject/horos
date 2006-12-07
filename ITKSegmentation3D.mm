@@ -553,7 +553,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		caster->SetInput(confidenceFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
 
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...",@"Propagating Region...")];
+	WaitRendering	*wait = 0L;
+	
+	if( slice == -1) wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
 	[wait showWindow:self];
 	
 	NSLog(@"RegionGrowing starts...");
