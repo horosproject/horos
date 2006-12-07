@@ -476,8 +476,12 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
-
 - (void) setEngine: (long) engineID
+{
+	[self setEngine: engineID showWait: YES];
+}
+
+- (void) setEngine: (long) engineID showWait:(BOOL) showWait
 {
 	double a[ 6];
 	
@@ -485,7 +489,9 @@ public:
 	
 	NSLog(@"Engine: %d", engineID);
 	
-	WaitRendering	*www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
+	WaitRendering	*www = 0L;
+	
+	if( showWait) www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
 	[www start];
 	
 	BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
@@ -556,7 +562,6 @@ public:
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
 	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*3);
-	
 	
 	[self display];
 	
@@ -3869,7 +3874,6 @@ public:
 	WaitRendering	*www;
 	BOOL validBox;
 	
-	
 	if( showWait)
 	{
 		www = [[WaitRendering alloc] init:@"Preparing 3D data..."];
@@ -3880,41 +3884,27 @@ public:
 	
 	if( isRGB)
 	{
-		validBox = [VRView getCroppingBox: a :volume :croppingBox];
-	
-		reader->SetImportVoidPointer( data);	//AVOID VTK BUG
+		reader->SetImportVoidPointer( data);
 		reader->GetOutput()->Modified();
 	}
 	else
 	{
 		srcf.data = data;
-		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-		
-		validBox = [VRView getCroppingBox: a :volume :croppingBox];
-	
-		reader->SetImportVoidPointer( data8);	//AVOID VTK BUG
-		reader->GetOutput()->Modified();
+		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);	
 	}
 	
-	if( validBox)
-	{
-		[VRView setCroppingBox: a :volume];
+	if( volumeMapper) volumeMapper->Delete();
+	volumeMapper = 0L;
+	if( textureMapper) textureMapper->Delete();
+	textureMapper = 0L;
 		
-		[VRView getCroppingBox: a :blendingVolume :croppingBox];
-		[VRView setCroppingBox: a :blendingVolume];
-	}
-	
+	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
+
 	if( showWait)
 	{
-		[self display];
-	
 		[www end];
 		[www close];
 		[www release];
-	}
-	else
-	{
-		[self setNeedsDisplay:YES];
 	}
 }
 
@@ -4074,7 +4064,9 @@ public:
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 			}
 			else
+			{
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
+			}
 		}
 	}
 	
