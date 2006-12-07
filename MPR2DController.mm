@@ -1121,7 +1121,7 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	i, width, height, spp, bpp, err = 0;
 		float	cwl, cww;
-		float	o[ 9];
+		float	o[ 9], pos[ 3];;
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		
@@ -1148,6 +1148,18 @@ extern NSString * documentsDirectory();
 			{
 				[dcmSequence setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
 				[dcmSequence setPixelSpacing: [[view finalView] pixelSpacing]/ [[view finalView] scaleValue] :[[view finalView] pixelSpacing]/ [[view finalView] scaleValue]];
+				[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
+				
+				[[[view finalView] curDCM] orientation: o];
+				[exportDCM setOrientation: o];
+				
+				pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
+				[exportDCM setPosition: pos];
+				
+				if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
+				if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
+				if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
+
 				[[view finalView] getWLWW:&cwl :&cww];
 				[dcmSequence setDefaultWWWL: (long) cww : (long) cwl];
 				
@@ -1169,7 +1181,8 @@ extern NSString * documentsDirectory();
 		long	annotCopy = [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
 		long	width, height, spp, bpp, err;
 		float	cwl, cww;
-		float	o[ 9];
+		float	o[ 9], pos[ 3];
+				
 		
 		[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		
@@ -1185,8 +1198,18 @@ extern NSString * documentsDirectory();
 			[exportDCM setSeriesDescription:@"MPR-2D"];
 			[exportDCM setSeriesNumber:5400];
 			[exportDCM setPixelData: data samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-			
 			[exportDCM setPixelSpacing: [[view finalView] pixelSpacing] / [[view finalView] scaleValue] :[[view finalView] pixelSpacing] / [[view finalView] scaleValue]];
+			[exportDCM setSliceThickness: [[view finalView] pixelSpacing]];
+			
+			[[[view finalView] curDCM] orientation: o];
+			[exportDCM setOrientation: o];
+			
+			pos[ 0] = [[[view finalView] curDCM] originX];		pos[ 1] = [[[view finalView] curDCM] originY];		pos[ 2] = [[[view finalView] curDCM] originZ];
+			[exportDCM setPosition: pos];
+			
+			if( fabs( o[6]) > fabs(o[7]) && fabs( o[6]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 0]];
+			if( fabs( o[7]) > fabs(o[6]) && fabs( o[7]) > fabs(o[8])) [exportDCM setSlicePosition: pos[ 1]];
+			if( fabs( o[8]) > fabs(o[6]) && fabs( o[8]) > fabs(o[7])) [exportDCM setSlicePosition: pos[ 2]];
 			
 			[[view finalView] getWLWW:&cwl :&cww];
 			[exportDCM setDefaultWWWL: (long) cww : (long) cwl];
