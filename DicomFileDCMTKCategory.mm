@@ -510,11 +510,18 @@ extern NSLock	*PapyrusLock;
 		
 		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
 		
-		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
 		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && [self combineProjectionSeries])
 		{
-			[dicomElements setObject:studyID forKey:@"seriesID"];
-			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			if( [self combineProjectionSeriesMode] == 0)		// *******Combine all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject:studyID forKey:@"seriesID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			}
+			else if( [self combineProjectionSeriesMode] == 1)	// *******Split all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+			}
+			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
 		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];

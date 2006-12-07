@@ -872,6 +872,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey:@"splitMultiEchoMR"];
 	[defaultValues setObject:@"1" forKey:@"useSeriesDescription"];
 	[defaultValues setObject:@"1" forKey:@"combineProjectionSeries"];
+	[defaultValues setObject:@"0" forKey:@"combineProjectionSeriesMode"];
 	
 	//debugging level. Can be changed at the command line
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"NetworkDebugLevel"];

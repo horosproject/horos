@@ -60,6 +60,7 @@ static BOOL splitMultiEchoMR;
 static BOOL useSeriesDescription;
 static BOOL NOLOCALIZER;
 static BOOL combineProjectionSeries;
+static int combineProjectionSeriesMode;
 static BOOL	CHECKFORLAVIM;
 static int COMMENTSGROUP;
 static int COMMENTSELEMENT;
@@ -185,6 +186,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
 			NOLOCALIZER = [sd boolForKey: @"NOLOCALIZER"];
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
+			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
 			
 			if( [DefaultsOsiriX isLAVIM])
 			{
@@ -209,6 +211,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
 			NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
 			combineProjectionSeries = [[dict objectForKey: @"combineProjectionSeries"] intValue];
+			combineProjectionSeriesMode = [[dict objectForKey: @"combineProjectionSeriesMode"] intValue];
 			
 			CHECKFORLAVIM = NO;
 		}
@@ -2070,11 +2073,18 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if( serieID == 0L) serieID = [[NSString alloc] initWithString:name];
 		
-		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
 		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) && combineProjectionSeries)
 		{
-			[dicomElements setObject:studyID forKey:@"seriesID"];
-			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject:studyID forKey:@"seriesID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			}
+			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+			}
+			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
 		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
@@ -2461,12 +2471,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 		if( serieID == 0L)  
 			serieID = [[NSString alloc] initWithString:name];
-			
-		// *******Combine all CR and DR Modality series in a study into one series******   LP 12/15/05
+		
 		if (([Modality isEqualToString:@"CR"] || [Modality isEqualToString:@"DR"] || [Modality isEqualToString:@"DX"] || [Modality  isEqualToString:@"RF"]) &&  combineProjectionSeries)
 		{
-			[dicomElements setObject:studyID forKey:@"seriesID"];
-			[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject:studyID forKey:@"seriesID"];
+				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
+			}
+			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
+			{
+				[dicomElements setObject: [serieID stringByAppendingString: imageID] forKey:@"seriesID"];
+			}
+			else NSLog( @"ARG! ERROR !? Unknown combineProjectionSeriesMode");
 		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
@@ -2974,6 +2991,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (BOOL)combineProjectionSeries{
 	return combineProjectionSeries;
+}
+
+- (BOOL)combineProjectionSeriesMode{
+	return combineProjectionSeriesMode;
 }
 
 - (BOOL)separateCardiac4D{

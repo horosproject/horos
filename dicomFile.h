@@ -77,6 +77,7 @@
 - (BOOL)useSeriesDescription;
 - (BOOL) noLocalizer;
 - (BOOL)combineProjectionSeries;
+- (BOOL)combineProjectionSeriesMode;
 - (BOOL)checkForLAVIM;
 - (BOOL)separateCardiac4D;
 - (int)commentsGroup ;

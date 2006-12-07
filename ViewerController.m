@@ -11496,6 +11496,22 @@ int i,j,l;
 
 -(IBAction) segmentationTest:(id) sender
 {
+	BOOL volumicData = YES;
+	
+	long j;
+	for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
+	{
+		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth] != [[pixList[ curMovieIndex] objectAtIndex: j] pwidth]) volumicData = NO;
+		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] pheight] != [[pixList[ curMovieIndex] objectAtIndex: j] pheight]) volumicData = NO;
+		if ( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB] == YES) volumicData = NO;
+	}
+		
+	if( volumicData == NO)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Growing Region", nil), NSLocalizedString(@"Growing Region algorithms are currently supported only for B/W images.", nil), nil, nil, nil);
+		return;
+	}
+
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	

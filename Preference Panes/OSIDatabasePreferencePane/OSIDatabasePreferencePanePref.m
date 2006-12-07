@@ -457,13 +457,13 @@ Version 2.4
 - (void)setSplitMultiEchoMR:(BOOL)value{
 	[[NSUserDefaults standardUserDefaults] setBool:value forKey:@"splitMultiEchoMR"];
 }
-		
-- (BOOL)combineProjectionSeries{
-	return [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
-}
-
-- (void)setCombineProjectionSeries:(BOOL)value{
-	[[NSUserDefaults standardUserDefaults] setBool:value forKey:@"combineProjectionSeries"];
-}
+//		
+//- (BOOL)combineProjectionSeries{
+//	return [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"];
+//}
+//
+//- (void)setCombineProjectionSeries:(BOOL)value{
+//	[[NSUserDefaults standardUserDefaults] setBool:value forKey:@"combineProjectionSeries"];
+//}
 
 @end
