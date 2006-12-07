@@ -1,0 +1,44 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {selectPicker = id; }; 
+            CLASS = ColorTransferView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {flipHorizontal = id; flipVertical = id; sliderAction = id; }; 
+            CLASS = DCMView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {
+            ACTIONS = {setBlendingFactor = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FusionDrawer; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = HistoView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {bins = NSSlider; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
+            ACTIONS = {changerColor = id; }; 
+            CLASS = MyNSTextView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTextView; 
+        }, 
+        {
+            CLASS = MyPopUpButton; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {matrix = NSMatrix; }; 
+            SUPERCLASS = NSButtonCell; 
+        }, 
+        {CLASS = PlotView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
+    ); 
+    IBVersion = 1; 
+}
