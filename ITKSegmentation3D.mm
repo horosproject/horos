@@ -477,9 +477,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef itk::ConnectedThresholdImageFilter< InternalImageType, InternalImageType > ConnectedThresholdFilterType;
 	typedef itk::NeighborhoodConnectedImageFilter< InternalImageType, InternalImageType > NeighborhoodConnectedFilterType;
 	typedef itk::ConfidenceConnectedImageFilter< InternalImageType, InternalImageType > ConfidenceConnectedFilterType;
-	ConnectedThresholdFilterType::Pointer thresholdFilter;
-	NeighborhoodConnectedFilterType::Pointer neighborhoodFilter;
-	ConfidenceConnectedFilterType::Pointer confidenceFilter;
+	
+	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
+	NeighborhoodConnectedFilterType::Pointer neighborhoodFilter = 0L;
+	ConfidenceConnectedFilterType::Pointer confidenceFilter = 0L;
 
 	if (algorithmNumber==0 || algorithmNumber==1)
 	{

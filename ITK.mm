@@ -29,6 +29,8 @@
 {
 	NSLog(@"ITK Image dealloc");
 	
+	importFilter->Delete();
+	
 	[pixList release];
 	
 	[super dealloc];

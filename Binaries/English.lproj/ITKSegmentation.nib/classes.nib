@@ -23,6 +23,7 @@
                 params = NSForm; 
                 pixelsSet = NSMatrix; 
                 pixelsValue = NSMatrix; 
+                previewCheck = NSButton; 
                 resultsBox = NSBox; 
                 roiResolution = NSSlider; 
                 startingPointPixelPosition = NSTextField; 

@@ -36,6 +36,7 @@
 	IBOutlet	NSMatrix				*pixelsValue;
 	IBOutlet	NSSlider				*roiResolution;
 	IBOutlet	NSTextField				*newName;
+	IBOutlet	NSButton				*previewCheck;
 
 	IBOutlet	NSButton				*computeButton;
 	

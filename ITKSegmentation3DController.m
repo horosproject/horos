@@ -271,6 +271,8 @@
 	
 	[viewer roiDeleteWithName:@"Segmentation Preview"];
 	
+	if( [previewCheck state] != NSOnState) return;
+	
 	for(p=0;p<[params numberOfRows]; p++)
 	{
 		parametersProvided = parametersProvided && (![[[params cellAtRow:p column:0] stringValue] isEqualToString:@""]);
