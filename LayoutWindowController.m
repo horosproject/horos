@@ -27,36 +27,148 @@
 
 - (id)init{
 	if (self = [super initWithWindowNibName:@"Layout"]) {
-		NSMutableArray *controllers = [NSMutableArray array];
-		NSEnumerator *enumerator = [[NSApp windows] objectEnumerator];
-		id	controller;
-	
-		while (controller = [enumerator nextObject])
-		{
-			//right now just 2D Viewers will need to deal with other viewer classed evnetually
-			//?Arrange controller by screen and origin.  First by screen then by x (lees first) then by y (greater first)
-			if([controller isKindOfClass:[ViewerController class]])
-				[controllers addObject:controller];
-		}
-		_windowControllers = [controller copy];
+		_addLayoutSet = NO;
 	}
 	return self;
 }
 
 - (void)dealloc{
 	[_windowControllers release];
+	[_hangingProtocol release];
+	[_studyDescription release];
+	[_modality release];
 	[super dealloc];
 }
 
 - (void)windowDidLoad{
 	NSLog(@"Layout window did load");
+	NSMutableArray *controllers = [NSMutableArray array];
+	NSArray *windows = [NSApp windows] ;
+	NSEnumerator *enumerator = [windows objectEnumerator];
+	id window;
+	//get WindowControllers
+	while (window = [enumerator nextObject])
+	{
+		NSWindowController *controller = [window windowController];
+		//right now just 2D Viewers will need to deal with other viewer classed evnetually
+		//?Arrange controller by screen and origin.  First by screen then by x (lees first) then by y (greater first)
+		if([controller isKindOfClass:[ViewerController class]])
+			[controllers addObject:controller];
+	}
+	[self setWindowControllers:controllers];
+	if ([_windowControllers count]  > 0) {
+		id study = [[_windowControllers objectAtIndex:0] currentStudy];
+		
+		//Search for current matching hanging protocol
+		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
+		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [study valueForKey:@"modality"]];
+		[self setModality:[study valueForKey:@"modality"]];
+		NSLog(@"Modality: %@", _modality);
+		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
+		[self setStudyDescription: [study valueForKey:@"studyName"]];
+		NSLog(@"studyDescription: %@", _studyDescription);
+		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
+		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+		if ([filteredHangingProtocols count] > 0) {	
+			_hangingProtocol = [[filteredHangingProtocols objectAtIndex:0] mutableCopy] ;
+			[self setHasProtocol:YES];
+			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
+			//NSArray *arrangedSeries = [hangingProtocol objectForKey:@"seriesSets"];
+			//NSArray *firstSet = [arrangedSeries objectAtIndex:0];
+		}
+		else [self setHasProtocol:NO];
+	}
+		
 	
 }
 
 - (IBAction)endSheet:(id)sender{
+	if ([sender tag] == 1) {
+		//create Layout set
+		if (!_hasProtocol || _addLayoutSet) {
+			NSMutableArray *layoutArray = [NSMutableArray array];
+			NSEnumerator *enumerator = [_windowControllers objectEnumerator];
+			id controller;
+			while (controller = [enumerator nextObject]) {
+				NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
+				NSWindow *window = [controller window];
+				NSString *frame  = NSStringFromRect([window frame]);
+				[seriesInfo setObject:frame forKey:@"windowFrame"];
+				NSScreen *screen = [window screen];				
+				int screenNumber = [[NSScreen screens] indexOfObject:screen];
+				[seriesInfo setObject:[NSNumber numberWithInt:screenNumber] forKey:@"screenNumber"];
+				id series = [controller currentSeries];
+				[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
+				[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
+				
+				
+				[layoutArray addObject:seriesInfo];
+			}
+		}
+		/*
+		 Each Series needs ViewerClass
+		 series description (name)
+		 ww/wl
+		 CLUT
+		 Window Frame
+		 Screen Number
+		 fusion
+		 ImageTiles layout
+		 rotation
+		 zoom	
+		*/
+	}
 	[[self window] orderOut:sender];
 	[NSApp endSheet: [self window] returnCode:[sender tag]];
 	 //returnCode:[sender tag]
+}
+
+- (NSString *)studyDescription{
+	return _studyDescription;
+}
+- (void)setStudyDescription:(NSString *)studyDescription{
+	[_studyDescription release];
+	_studyDescription = [studyDescription retain];
+}
+
+- (NSString *)modality{
+	return _modality;
+}
+
+- (void)setModality:(NSString *)modality{
+	[_modality release];
+	_modality = [modality retain];
+}
+
+- (NSArray *)windowControllers{
+	return _windowControllers;
+}
+- (void)setWindowControllers:(NSArray *)controllers{
+	[_windowControllers release];
+	_windowControllers = [controllers copy];
+}
+
+- (NSDictionary *)hangingProtocol{
+	return _hangingProtocol;
+}
+
+- (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol{
+	[_hangingProtocol release];
+	_hangingProtocol = [hangingProtocol retain];
+}
+
+- (BOOL) hasProtocol{
+	return _hasProtocol;
+}
+- (void)setHasProtocol:(BOOL)hasProtocol{
+	_hasProtocol = hasProtocol;
+}
+
+- (BOOL)addLayoutSet{
+	return _addLayoutSet;
+}
+- (void)setAddLayoutSet:(BOOL)addSet{
+	_addLayoutSet = addSet;
 }
 	
 
