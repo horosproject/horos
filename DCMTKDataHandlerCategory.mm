@@ -667,14 +667,17 @@ extern BrowserController *browserWindow;
 	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
 	[context lock];
 	NSArray *array = [context executeFetchRequest:request error:&error];
-	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	OFCondition cond;
 	
-	if (error) {
-		moveArray = nil;
+	if (error)
+	{
+		[moveArray release];
+		moveArray = [[NSArray array] retain];
+		
 		cond = EC_IllegalParameter;
 	}
-	else {
+	else
+	{
 		NSEnumerator *enumerator = [array objectEnumerator];
 		id moveEntity;
 		//create set
@@ -708,20 +711,20 @@ extern BrowserController *browserWindow;
 //			[paths addObject:newPath];
 //		}
 		
-		[paths release];
-		paths = [tempMoveArray copy];
+		tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
 		
-		NSLog( @"will move: %d", [paths count]);
+		[moveArray release];
+		moveArray = [tempMoveArray retain];
+		NSLog( @"will move: %d", [moveArray count]);
 		
 		cond = EC_Normal;
 	}
-	moveArray = [paths copy];
-	[paths release];	
 	
 	[context unlock];
 	
-	//NSLog(@"Move array: %@", [moveArray description]);
+	[moveEnumerator release];
 	moveEnumerator = [[moveArray objectEnumerator] retain];
+	
 	[pool release];
 	return cond;
 }
