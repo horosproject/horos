@@ -13,6 +13,7 @@
                 openOsirixFeatureRequest = id; 
                 openOsirixWebPage = id; 
                 openOsirixWikiWebPage = id; 
+                saveLayout = id; 
                 sendEmail = id; 
                 showPreferencePanel = id; 
                 startSTORESCP = id; 
