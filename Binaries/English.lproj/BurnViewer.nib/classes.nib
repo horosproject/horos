@@ -1,10 +1,11 @@
 {
     IBClasses = (
         {
-            ACTIONS = {burn = id; setCDName = id; setup = id; }; 
+            ACTIONS = {burn = id; setAnonymizedCheck = id; setCDName = id; setup = id; }; 
             CLASS = BurnerWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                anonymizedCheckButton = NSButton; 
                 burnButton = NSButton; 
                 compressionMode = NSMatrix; 
                 finalSizeField = NSTextField; 

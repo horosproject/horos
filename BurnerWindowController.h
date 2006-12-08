@@ -22,13 +22,14 @@
 @interface BurnerWindowController : NSWindowController {
 	volatile BOOL burning;
 	NSMutableArray *nodeArray;
-	NSMutableArray *files;
+	NSMutableArray *files, *anonymizedFiles;
 	NSArray	*dbObjects;
 	float burnSize;
 	IBOutlet NSTextField *nameField;
 	IBOutlet NSTextField *sizeField, *finalSizeField;
 	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
+	IBOutlet NSButton *anonymizedCheckButton;
 	NSString *cdName;
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
@@ -41,7 +42,8 @@
 	BOOL _releaseAfterBurn;
 	BOOL _multiplePatients;
 }
--(id) initWithFiles:(NSArray *)theFiles;
+- (IBAction) setAnonymizedCheck: (id) sender;
+- (id) initWithFiles:(NSArray *)theFiles;
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects releaseAfterBurn:(BOOL)releaseAfterBurn;
 - (DRTrack*) createTrack;
 -(IBAction)burn:(id)sender;

@@ -18,7 +18,7 @@
 @implementation MatrixContextual
 
 - (void) rightMouseDown:(NSEvent *)theEvent
- {
+{
 	#if !__LP64__
 	int row, column;
 	#else

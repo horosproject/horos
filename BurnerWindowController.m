@@ -84,6 +84,7 @@ NSString* asciiString (NSString* name);
 	
 	[nameField setEnabled: YES];
 	[compressionMode setEnabled: YES];
+	[anonymizedCheckButton setEnabled: YES];
 }
 
 -(id) initWithFiles:(NSArray *)theFiles
@@ -142,6 +143,7 @@ NSString* asciiString (NSString* name);
 {
 	runBurnAnimation = NO;
 	
+	[anonymizedFiles release];
 	[filesToBurn release];
 	[dbObjects release];
 	//NSLog(@"Burner dealloc");	
@@ -222,15 +224,26 @@ NSString* asciiString (NSString* name);
 		
 		[nameField setEnabled: NO];
 		[compressionMode setEnabled: NO];
+		[anonymizedCheckButton setEnabled: NO];
 		
-//		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
-//		{
-//			AnonymizerWindowController	*anonymizer = [[AnonymizerWindowController alloc] init];
-//			
-//			[anonymizer setFilesToAnonymize:files :dbObjects];
-//			[anonymizer showWindow:self];
-//			[anonymizer anonymizeToThisPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"]];
-//		}
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
+		{
+			AnonymizerWindowController	*anonymizer = [[AnonymizerWindowController alloc] init];
+			
+			[anonymizer setFilesToAnonymize:files :dbObjects];
+			[anonymizer showWindow:self];
+			
+			[[NSFileManager defaultManager] createDirectoryAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] attributes:nil];
+			[anonymizer anonymizeToThisPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"]];
+			
+			[anonymizedFiles release];
+			anonymizedFiles = [[anonymizer producedFiles] retain];
+		}
+		else
+		{
+			[anonymizedFiles release];
+			anonymizedFiles = 0L;
+		}
 		
 		if (cdName != nil) {
 			runBurnAnimation = YES;
@@ -255,6 +268,15 @@ NSString* asciiString (NSString* name);
 	if( writeDMG) [self performSelectorOnMainThread:@selector(writeDMG:) withObject:nil waitUntilDone:YES];
 	else [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
 	[pool release];
+}
+
+- (IBAction) setAnonymizedCheck: (id) sender
+{
+	if( [anonymizedCheckButton state] == NSOnState)
+	{
+		NSDate *date = [NSDate date];
+		[self setCDTitle: [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]];
+	}
 }
 
 - (void)setCDTitle: (NSString *)title{
@@ -308,6 +330,7 @@ NSString* asciiString (NSString* name);
 	
 	[nameField setEnabled: YES];
 	[compressionMode setEnabled: YES];
+	[anonymizedCheckButton setEnabled: YES];
 }
 
 
@@ -481,11 +504,16 @@ NSString* asciiString (NSString* name);
 		return NO;
 	else {
 		NSFileManager *manager = [NSFileManager defaultManager];
-		[manager removeFileAtPath:[self folderToBurn] handler:nil];
+		[manager removeFileAtPath: [self folderToBurn] handler:nil];
+		[manager removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+		
 		[filesToBurn release];
 		filesToBurn = nil;
 		[files release];
 		files = nil;
+		[anonymizedFiles release];
+		anonymizedFiles = 0L;
+		
 		//[filesTableView reloadData];
 		
 		NSLog(@"Burner windowShouldClose YES");
@@ -525,10 +553,10 @@ NSString* asciiString (NSString* name);
 	[burnButton setEnabled:YES];
 	NSString *title;
 	if ([files count] > 0) {
-		if (_multiplePatients){
+		if (_multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"]){
 			NSDate *date = [NSDate date];
 			title = [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil 
-    locale:nil]] ;
+    locale:nil]];
 		}
 		else{
 			NSString *file = [files objectAtIndex:0];
@@ -615,7 +643,10 @@ NSString* asciiString (NSString* name);
 
 	//NSLog(@"add Dicomdir");
 	NS_DURING
-	NSEnumerator *enumerator = [files objectEnumerator];
+	NSEnumerator *enumerator;
+	if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
+	else enumerator = [files objectEnumerator];
+	
 	NSString *file;
 	NSString *burnFolder = [self folderToBurn];
 	NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
@@ -688,7 +719,7 @@ NSString* asciiString (NSString* name);
 		[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"])
+	if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]  && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 	{
 		[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
 	}
@@ -793,13 +824,4 @@ NSString* asciiString (NSString* name);
 	}
 	[pool release];
 }
-
-/*
-- (void)reloadData:(id)object{
-	[filesTableView reloadData];
-}
-*/
-
-
-
 @end
