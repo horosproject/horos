@@ -284,7 +284,7 @@ NSString* asciiString (NSString* name);
 		[cdName release];
 		//if ([title length] > 8)
 		//	title = [title substringToIndex:8];
-		cdName = [asciiString(title) retain];
+		cdName = [asciiString([title uppercaseString]) retain];
 		[nameField setStringValue: cdName];
 	}
 }

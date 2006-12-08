@@ -283,10 +283,17 @@ Version 2.3
 	[NSApp endSheet: anonymizeWindow];
 	[anonymizeWindow orderOut: self];
 	
+	[[NSUserDefaults standardUserDefaults] setObject: templates forKey:@"anonymizeTemplate"];
+	
 	if( result == NSRunStoppedResponse)
 	{
 		[self anonymizeProcess: path];
 	}
+	
+	[filesToAnonymize release];
+	filesToAnonymize = nil;
+	[dcmObjects release];
+	dcmObjects = 0L;
 }
 
 - (IBAction) anonymize:(id)sender
