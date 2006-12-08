@@ -3123,7 +3123,7 @@ static BOOL COMPLETEREBUILD = NO;
 	if( [databaseOutline sortDescriptors] == 0L || [[databaseOutline sortDescriptors] count] == 0)
 	{
 		// By default sort by name
-		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
+		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
 	}
 	else
@@ -6139,7 +6139,7 @@ static BOOL needToRezoom;
 	error = 0L;
 	NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
 	
-	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
+	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 	albumsArray = [albumsArray sortedArrayUsingDescriptors:  [NSArray arrayWithObjects: sort, 0L]];
 	result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
 	
@@ -8101,13 +8101,13 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
 		{
 			if( [databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]])
-				[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]] autorelease]]];
+				[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 			else
-				[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease]]];
+				[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 		}
 	}
 	else
-		[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease]]];
+		[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 	
 	[databaseOutline selectRow: 0 byExtendingSelection:NO];
 	[databaseOutline scrollRowToVisible: 0];
