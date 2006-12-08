@@ -377,5 +377,5 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 //iChat
 // New Draw method to allow for IChat Theater
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx;
-- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect;
+- (BOOL)_checkHasChanged:(BOOL)flag;
 @end

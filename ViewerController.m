@@ -3607,12 +3607,16 @@ static ViewerController *draggedController = 0L;
 //		
 //	}
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-			[self ApplyCLUTString: @"B/W Inverse"];
-		else
-			[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				[self ApplyCLUTString: @"B/W Inverse"];
+			else
+				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
+		else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
 	}
 	else [self ApplyCLUTString:NSLocalizedString(@"No CLUT", nil)];
 	
@@ -6186,7 +6190,7 @@ NSMutableArray		*array;
 		
 		if( [[blendingController curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] && [[[blendingController pixList] objectAtIndex: 0] isRGB] == NO)
 		{
-			if( [[self modality] isEqualToString:@"PT"] == YES)
+			if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
 			{
 				if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
 					[self ApplyCLUTString: @"B/W Inverse"];
@@ -11296,12 +11300,15 @@ int i,j,l;
 	
 	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, nil]];
 	
-	if( [[self modality] isEqualToString:@"PT"] == YES  && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-			[self ApplyCLUTString: @"B/W Inverse"];
-		else
-			[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				[self ApplyCLUTString: @"B/W Inverse"];
+			else
+				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
 	}
 	
 	numberOf2DViewer++;
@@ -11413,16 +11420,19 @@ int i,j,l;
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
-
-			if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+			
+			if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 			{
-				if( [[imageView curDCM] SUVConverted] == YES)
+				if( [[self modality] isEqualToString:@"PT"] == YES )
 				{
-					[viewer setWLWW: 3 : 6];
-				}
-				else
-				{
-					[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/4 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2];
+					if( [[imageView curDCM] SUVConverted] == YES)
+					{
+						[viewer setWLWW: 3 : 6];
+					}
+					else
+					{
+						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/4 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2];
+					}
 				}
 			}
 			
@@ -11987,12 +11997,16 @@ long i;
 			{
 				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 				
-				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+				if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 				{
-					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
-						[viewer ApplyCLUTString: @"B/W Inverse"];
-					else
-						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+					if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+					{
+						if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+							[viewer ApplyCLUTString: @"B/W Inverse"];
+						else
+							[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+					}
+					else [viewer ApplyCLUTString:curCLUTMenu];
 				}
 				else [viewer ApplyCLUTString:curCLUTMenu];
 

@@ -3266,7 +3266,7 @@ static long scrollMode;
 			
 			if( [stringID isEqualToString:@"MPR3D"] == NO)
 			{
-				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"])
+				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 				{
 					float startlevel;
 					float endlevel;
@@ -5260,7 +5260,7 @@ static long scrollMode;
 			else tempString = [NSString stringWithFormat: @"WL: %ld WW: %ld", (long) lwl, (long) lww];
 			[self DrawNSStringGL: tempString : fontListGL :4 :yRaster++ * stringSize.height];
 			
-			if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES)// && [[[self window] windowController] is2DViewer] == YES)
+			if( [[[dcmFilesList objectAtIndex: 0] valueForKey:@"modality"] isEqualToString:@"PT"]  == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 			{
 				if( [curDCM maxValueOfSeries])
 				{
@@ -7799,7 +7799,7 @@ BOOL	lowRes = NO;
 		{
 			if( [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] != 0.0)
 			{
-				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"])
+				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 				{
 					float from, to;
 					

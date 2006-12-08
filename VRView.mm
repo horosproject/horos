@@ -2010,7 +2010,7 @@ public:
 				_startMax = wl + ww/2;
 				WWAdapter  = _startWW / 100.0;
 				
-				if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 				{
 					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 					{
@@ -2064,7 +2064,7 @@ public:
 					colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 				
 
-				if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 				{
 					if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
 					else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
@@ -3356,7 +3356,7 @@ public:
 //		if( textureMapper) textureMapper->SetInput((vtkDataSet *) flip->GetOutput());
 //	}
 	
-	if( [[[controller viewer2D] modality] isEqualToString:@"PT"])
+	if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
 	{
 		if( ww < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-ww/2, wl+ww/2);
 		else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-ww/2, wl+ww/2);
