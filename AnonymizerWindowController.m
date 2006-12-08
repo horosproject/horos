@@ -20,25 +20,138 @@ Version 2.3
 	
 **************/
 
-
-
 #import "AnonymizerWindowController.h"
 #import <OsiriX/DCM.h>
 #import "Wait.h"
-//#import "ButtonAndTextField.h"
 #import "ButtonAndTextCell.h"
 
 @implementation AnonymizerWindowController
 
--(id) init{
-	if (self = [super initWithWindowNibName:@"Anonymize"]) {
+- (NSDictionary*) anonymizeTags
+{
+	NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
+	NSEnumerator		*enumeratorCheck = [[[tagMatrixfirstColumn cells] arrayByAddingObjectsFromArray: [tagMatrixsecondColumn cells]] objectEnumerator];
+	NSEnumerator		*enumeratorValue = [[[firstColumnValues cells] arrayByAddingObjectsFromArray: [secondColumnValues cells]] objectEnumerator];
+	
+	NSCell				*cellCheck, *cellValue;
+	DCMAttributeTag		*attrTag;
+	
+	while (cellCheck = [enumeratorCheck nextObject])
+	{
+		cellValue = [enumeratorValue nextObject];
+		
+		if ([cellCheck state] == NSOnState)
+		{
+			[dict setObject:[cellValue stringValue] forKey:[cellCheck title]];
+		}
+	}
+	
+	NSLog( [dict description]);
+	
+	return dict;
+}
+
+- (void) setAnonymizeTags:(NSDictionary*) dict
+{
+	NSEnumerator	*enumerator = [dict keyEnumerator];
+	NSString		*string;
+	
+	NSArray			*checksArray = [[tagMatrixfirstColumn cells] arrayByAddingObjectsFromArray: [tagMatrixsecondColumn cells]];
+	NSArray			*valuesArray = [[firstColumnValues cells] arrayByAddingObjectsFromArray: [secondColumnValues cells]];
+	int				i;
+	
+	for( i = 0; i < [checksArray count] ; i++) [[checksArray objectAtIndex: i] setState:NSOffState];
+	for( i = 0; i < [valuesArray count] ; i++)
+	{
+		[[valuesArray objectAtIndex: i] setEnabled: NO];
+		[[valuesArray objectAtIndex: i] setStringValue: @""];
+	}
+	
+	while ((string = [enumerator nextObject]))
+	{
+		for( i = 0; i < [checksArray count] ; i++)
+		{
+			if( [[[checksArray objectAtIndex: i] title] isEqualToString: string])
+			{
+				[[checksArray objectAtIndex: i] setState: NSOnState];
+				[[valuesArray objectAtIndex: i] setEnabled: YES];
+				[[valuesArray objectAtIndex: i] setStringValue: [dict objectForKey: string]];
+			}
+		}
+	}
+}
+
+- (IBAction) selectTemplateMenu:(id) sender;
+{
+	if( [sender selectedItem])
+		[self setAnonymizeTags: [templates objectForKey: [[sender selectedItem] title]]];
+}
+
+
+- (IBAction)cancelModal:(id)sender
+{
+    [NSApp abortModal];
+}
+
+- (IBAction)okModal:(id)sender
+{
+    [NSApp stopModal];
+}
+
+- (IBAction) addTemplate:(id) sender;
+{
+	[templateName setStringValue:@""];
+	
+	[NSApp beginSheet:	templateNameWindow
+						modalForWindow: sPanel
+						modalDelegate: nil
+						didEndSelector: nil
+						contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow:templateNameWindow];
+	
+	[NSApp endSheet: templateNameWindow];
+	[templateNameWindow orderOut: self];
+	
+	if( result == NSRunStoppedResponse && [[templateName stringValue] isEqualToString:@""] == NO)
+	{
+		[templates setObject:[self anonymizeTags] forKey: [templateName stringValue]];
+		
+		[templatesMenu removeAllItems];
+		[templatesMenu addItemsWithTitles: [templates allKeys]];
+		
+		[templatesMenu selectItemWithTitle: [templateName stringValue]];
+		
+		[self selectTemplateMenu: templatesMenu];
+	}
+}
+
+- (IBAction) removeTemplate:(id) sender;
+{
+	[templates removeObjectForKey: [[templatesMenu selectedCell] title]];
+	
+	[templatesMenu removeAllItems];
+	[templatesMenu addItemsWithTitles: [templates allKeys]];
+	
+	if( [templatesMenu numberOfItems] > 0)
+	{
+		[templatesMenu selectItemAtIndex: 0];
+		[self selectTemplateMenu: templatesMenu];
+	}
+}
+
+-(id) init
+{
+	if (self = [super initWithWindowNibName:@"Anonymize"])
+	{
 		tags = [[NSMutableArray array] retain];
-		//[ButtonAndTextField setCellClass:[ButtonAndTextCell class]];
 	}
     return self;
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
+	[templates release];
 	[filesToAnonymize release];
 	[dcmObjects release];
 	[tagMatrixfirstColumn release];
@@ -69,8 +182,15 @@ Version 2.3
 
 - (IBAction) anonymize:(id)sender
 {
+	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
+	NSLog( [templates description]);
+	
+	[templatesMenu removeAllItems];
+	[templatesMenu addItemsWithTitles: [templates allKeys]];
+	[self selectTemplateMenu: templatesMenu];
+	
 	long i;
-	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
+	sPanel		= [NSOpenPanel openPanel];
 	//[sPanel setAccessoryView: optionsView];
 	[sPanel setAccessoryView:accessoryView];
 	[sPanel setCanCreateDirectories:YES];
@@ -156,11 +276,13 @@ Version 2.3
 		
 	}
 	[sPanel setMessage:@""];
-	[[self window] close];
+	
 	[filesToAnonymize release];
 	filesToAnonymize = nil;
 	[dcmObjects release];
 	dcmObjects = 0L;
+	
+	[[NSUserDefaults standardUserDefaults] setObject: templates forKey:@"anonymizeTemplate"];
 }
 
 - (void)setFilesToAnonymize:(NSArray *)files :(NSArray*)dcm{
@@ -296,10 +418,17 @@ Version 2.3
 
 - (IBAction)matrixAction:(id)sender{
 	int tag = [(NSCell *)[(NSMatrix *)sender selectedCell] tag];
+	
 	if (tag % 4 == 0)
+	{
 		[[firstColumnValues cellWithTag:tag] setEnabled:[[sender selectedCell] state]];
+		if( [[sender selectedCell] state] == NSOffState) [[firstColumnValues cellWithTag:tag] setStringValue:@""];
+	}
 	else
+	{
 		[[secondColumnValues cellWithTag:tag] setEnabled:[[sender selectedCell] state]];
+		if( [[sender selectedCell] state] == NSOffState) [[secondColumnValues cellWithTag:tag] setStringValue:@""];
+	}
 }
 
 

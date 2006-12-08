@@ -1,7 +1,15 @@
 {
     IBClasses = (
         {
-            ACTIONS = {anonymize = id; matrixAction = id; }; 
+            ACTIONS = {
+                addTemplate = id; 
+                anonymize = id; 
+                cancelModal = id; 
+                matrixAction = id; 
+                okModal = id; 
+                removeTemplate = id; 
+                selectTemplateMenu = id; 
+            }; 
             CLASS = AnonymizerWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -10,6 +18,9 @@
                 secondColumnValues = NSMatrix; 
                 tagMatrixfirstColumn = NSMatrix; 
                 tagMatrixsecondColumn = NSMatrix; 
+                templateName = NSTextField; 
+                templateNameWindow = NSWindow; 
+                templatesMenu = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
@@ -20,7 +31,12 @@
             OUTLETS = {textField = NSTextField; }; 
             SUPERCLASS = NSButton; 
         }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+        {
+            ACTIONS = {cancelModal = id; okModal = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
     ); 
     IBVersion = 1; 
 }

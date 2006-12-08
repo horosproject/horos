@@ -12,28 +12,34 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <AppKit/AppKit.h>
 
+@interface AnonymizerWindowController : NSWindowController
+{
+	IBOutlet NSMatrix			*tagMatrixfirstColumn, *tagMatrixsecondColumn;
+	IBOutlet NSMatrix			*firstColumnValues, *secondColumnValues;
+	IBOutlet NSView				*accessoryView;
+	IBOutlet NSPopUpButton		*templatesMenu;
+	
+	IBOutlet NSWindow			*templateNameWindow;
+	IBOutlet NSTextField		*templateName;
 
-@interface AnonymizerWindowController : NSWindowController {
-
-IBOutlet NSMatrix		*tagMatrixfirstColumn, *tagMatrixsecondColumn;
-IBOutlet NSMatrix		*firstColumnValues;
-IBOutlet NSMatrix		*secondColumnValues;
-IBOutlet NSView			*accessoryView;
-
-NSArray *filesToAnonymize, *dcmObjects;
-NSString *folderPath;
-NSMutableArray *tags;
-
+	NSOpenPanel					*sPanel;
+	NSMutableDictionary			*templates;
+	NSArray						*filesToAnonymize, *dcmObjects;
+	NSString					*folderPath;
+	NSMutableArray				*tags;
 }
 
-- (IBAction)anonymize:(id)sender;
-- (IBAction)matrixAction:(id)sender;
-- (void)setFilesToAnonymize:(NSArray *)files :(NSArray*) dcm;
--(NSArray *)tags;
+- (IBAction) selectTemplateMenu:(id) sender;
+- (IBAction) addTemplate:(id) sender;
+- (IBAction) removeTemplate:(id) sender;
+- (IBAction) anonymize:(id) sender;
+- (IBAction) matrixAction:(id) sender;
+- (void) setFilesToAnonymize:(NSArray *) files :(NSArray*) dcm;
+- (NSArray*) tags;
+
+- (IBAction)cancelModal:(id)sender;
+- (IBAction)okModal:(id)sender;
 
 @end

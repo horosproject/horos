@@ -10029,6 +10029,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
 	[anonymizerController showWindow:self];
 	[anonymizerController anonymize:self];
+//	[anonymizerController release];
+//	anonymizerController = 0L;
+	
 	[filesToAnonymize release];
 }	
 
