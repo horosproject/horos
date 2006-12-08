@@ -79,12 +79,6 @@ NSString* asciiString (NSString* name);
 	
 	NSFileManager *manager = [NSFileManager defaultManager];
 	[manager removeFileAtPath:[self folderToBurn] handler:nil];
-	burning = NO;
-	runBurnAnimation = NO;
-	
-	[nameField setEnabled: YES];
-	[compressionMode setEnabled: YES];
-	[anonymizedCheckButton setEnabled: YES];
 }
 
 -(id) initWithFiles:(NSArray *)theFiles
@@ -265,8 +259,25 @@ NSString* asciiString (NSString* name);
 	isSettingUpBurn = YES;
 	[self addDicomdir];
 	isSettingUpBurn = NO;
-	if( writeDMG) [self performSelectorOnMainThread:@selector(writeDMG:) withObject:nil waitUntilDone:YES];
-	else [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
+	
+	int no = 0;
+	
+	if( anonymizedFiles) no = [anonymizedFiles count];
+	else no = [files count];
+	
+	if( no)
+	{
+		if( writeDMG) [self performSelectorOnMainThread:@selector(writeDMG:) withObject:nil waitUntilDone:YES];
+		else [self performSelectorOnMainThread:@selector(burnCD:) withObject:nil waitUntilDone:YES];
+	}
+	
+	burning = NO;
+	runBurnAnimation = NO;
+	
+	[nameField setEnabled: YES];
+	[compressionMode setEnabled: YES];
+	[anonymizedCheckButton setEnabled: YES];
+	
 	[pool release];
 }
 
@@ -698,53 +709,56 @@ NSString* asciiString (NSString* name);
 		[pool release];
 	}
 	
-	switch( [compressionMode selectedTag])
-	{
-		case 1:
-			[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
-		break;
-		
-		case 2:
-			[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
-		break;
-	}
-	
-	[self addDICOMDIRUsingDCMTK];
-	
-	// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
-	{
-		NSString *iRadPath = [[NSBundle mainBundle] bundlePath];
-		[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
-	}
-	
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]  && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
-	{
-		[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
-	}
-		
-// Look for and if present copy a second folder for eg windows viewer or html files.
-
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
-	{
-		NSString *supplementaryBurnPath=[[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"];
-		if (supplementaryBurnPath)
+	if( [newFiles count] > 0)
+	{	
+		switch( [compressionMode selectedTag])
 		{
-			supplementaryBurnPath=[supplementaryBurnPath stringByExpandingTildeInPath];
-			if ([manager fileExistsAtPath: supplementaryBurnPath])
+			case 1:
+				[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+			break;
+			
+			case 2:
+				[browserWindow decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+			break;
+		}
+		
+		[self addDICOMDIRUsingDCMTK];
+		
+		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
+		
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
+		{
+			NSString *iRadPath = [[NSBundle mainBundle] bundlePath];
+			[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
+		}
+		
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]  && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
+		{
+			[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
+		}
+			
+	// Look for and if present copy a second folder for eg windows viewer or html files.
+
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
+		{
+			NSString *supplementaryBurnPath=[[NSUserDefaults standardUserDefaults] stringForKey: @"Supplementary Burn Path"];
+			if (supplementaryBurnPath)
 			{
-				NSEnumerator *enumerator=[manager enumeratorAtPath: supplementaryBurnPath];
-				while (file=[enumerator nextObject])
+				supplementaryBurnPath=[supplementaryBurnPath stringByExpandingTildeInPath];
+				if ([manager fileExistsAtPath: supplementaryBurnPath])
 				{
-					[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file]
-					  toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
+					NSEnumerator *enumerator=[manager enumeratorAtPath: supplementaryBurnPath];
+					while (file=[enumerator nextObject])
+					{
+						[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file]
+						  toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
+					}
 				}
 			}
 		}
+		
+		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", [[self getSizeOfDirectory: burnFolder] floatValue] / 1024.] waitUntilDone:YES];
 	}
-	
-	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", [[self getSizeOfDirectory: burnFolder] floatValue] / 1024.] waitUntilDone:YES];
 	
 	NS_HANDLER
 		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
