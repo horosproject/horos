@@ -564,4 +564,13 @@ enum
 - (NSManagedObject *)currentImage;
 
 
+#pragma mark-
+#pragma mark Convience methods for accessing values in the current imageView
+-(float)curWW;
+-(float)curWL;
+- (BOOL)xFlipped;
+- (BOOL)yFlipped;
+- (float) angle;
+
+
 @end

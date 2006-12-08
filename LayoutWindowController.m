@@ -41,7 +41,7 @@
 }
 
 - (void)windowDidLoad{
-	NSLog(@"Layout window did load");
+	
 	NSMutableArray *controllers = [NSMutableArray array];
 	NSArray *windows = [NSApp windows] ;
 	NSEnumerator *enumerator = [windows objectEnumerator];
@@ -63,10 +63,10 @@
 		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [study valueForKey:@"modality"]];
 		[self setModality:[study valueForKey:@"modality"]];
-		NSLog(@"Modality: %@", _modality);
+	
 		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
 		[self setStudyDescription: [study valueForKey:@"studyName"]];
-		NSLog(@"studyDescription: %@", _studyDescription);
+
 		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
 		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
 		if ([filteredHangingProtocols count] > 0) {	
@@ -85,42 +85,82 @@
 - (IBAction)endSheet:(id)sender{
 	if ([sender tag] == 1) {
 		//create Layout set
-		if (!_hasProtocol || _addLayoutSet) {
-			NSMutableArray *layoutArray = [NSMutableArray array];
-			NSEnumerator *enumerator = [_windowControllers objectEnumerator];
-			id controller;
-			while (controller = [enumerator nextObject]) {
-				NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
-				NSWindow *window = [controller window];
-				NSString *frame  = NSStringFromRect([window frame]);
-				[seriesInfo setObject:frame forKey:@"windowFrame"];
-				NSScreen *screen = [window screen];				
-				int screenNumber = [[NSScreen screens] indexOfObject:screen];
-				[seriesInfo setObject:[NSNumber numberWithInt:screenNumber] forKey:@"screenNumber"];
-				id series = [controller currentSeries];
-				[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
-				[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
-				
-				
-				[layoutArray addObject:seriesInfo];
-			}
+		NSMutableDictionary *hangingProtocol = nil;
+		
+		 if (_addLayoutSet)
+			hangingProtocol = [_hangingProtocol copy];
+		
+		if (!hangingProtocol) {
+			hangingProtocol = [[NSMutableDictionary dictionary] retain];
 		}
-		/*
-		 Each Series needs ViewerClass
-		 series description (name)
-		 ww/wl
-		 CLUT
-		 Window Frame
-		 Screen Number
-		 fusion
-		 ImageTiles layout
-		 rotation
-		 zoom	
-		*/
+		
+		//Add LayoutSet to SeriesSet
+		NSMutableArray *arrangedSeries = [[_hangingProtocol objectForKey:@"seriesSets"] mutableCopy];
+		if (!arrangedSeries)
+			arrangedSeries = [[NSMutableArray alloc] init];
+			
+		NSMutableArray *layoutArray = [NSMutableArray array];
+		NSEnumerator *enumerator = [_windowControllers objectEnumerator];
+		id controller;
+		while (controller = [enumerator nextObject]) {
+				/*
+				 Each Series needs ViewerClass
+				 series description (name)
+				 ww/wl
+				 CLUT
+				 Window Frame
+				 Screen Number
+				 fusion
+				 ImageTiles layout
+				 rotation
+				 zoom	
+				*/
+			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
+			NSWindow *window = [controller window];
+			NSString *frame  = NSStringFromRect([window frame]);
+			[seriesInfo setObject:frame forKey:@"windowFrame"];
+			NSScreen *screen = [window screen];				
+			int screenNumber = [[NSScreen screens] indexOfObject:screen];
+			[seriesInfo setObject:[NSNumber numberWithInt:screenNumber] forKey:@"screenNumber"];
+			id series = [controller currentSeries];
+			[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
+			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
+			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
+			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
+			[seriesInfo setObject:[NSNumber numberWithFloat:[controller angle]] forKey:@"rotation"];
+			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
+			// Have blending.  Get Series Description for blending
+			if ([controller blendingController]) {
+				id blendingSeries = [[controller blendingController] currentSeries];
+				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];
+				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];					
+			}
+			[layoutArray addObject:seriesInfo];
+	
+		}	
+
+		[arrangedSeries addObject:layoutArray];
+
+		[hangingProtocol setObject:arrangedSeries forKey:@"seriesSets"];
+		[hangingProtocol setObject:_modality forKey:@"modality"];
+		[hangingProtocol setObject:_studyDescription forKey:@"studyDescription"];
+		[arrangedSeries release];
+		
+		
+		NSMutableArray *hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"] mutableCopy];
+		if (!hangingProtocols)
+			hangingProtocols = [[NSMutableArray alloc] init];
+
+		[hangingProtocols removeObject:_hangingProtocol];
+		[hangingProtocols addObject:hangingProtocol];
+		[hangingProtocol release];
+
+		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
+		[hangingProtocols  release];
 	}
 	[[self window] orderOut:sender];
 	[NSApp endSheet: [self window] returnCode:[sender tag]];
-	 //returnCode:[sender tag]
+
 }
 
 - (NSString *)studyDescription{

@@ -12540,6 +12540,9 @@ sourceRef);
 	}
 }
 
+
+#pragma mark-
+#pragma mark current Core Data Objects
 - (NSManagedObject *)currentStudy{
 	return [[imageView seriesObj] valueForKey:@"study"];
 }
@@ -12549,5 +12552,28 @@ sourceRef);
 - (NSManagedObject *)currentImage{
 	return [imageView imageObj];
 }
+
+
+#pragma mark-
+#pragma mark Convience methods for accessing values in the current imageView
+-(float)curWW{
+	return [imageView curWW];
+}
+
+-(float)curWL{
+	return [imageView curWL];
+}
+
+- (BOOL)xFlipped{
+		return [imageView xFlipped];
+}
+	
+- (BOOL)yFlipped{
+	return [imageView yFlipped];
+}
+- (float) angle{
+	return [imageView angle];
+}
+
 
 @end
