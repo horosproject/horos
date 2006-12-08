@@ -145,12 +145,14 @@ Version 2.3
 	if (self = [super initWithWindowNibName:@"Anonymize"])
 	{
 		tags = [[NSMutableArray array] retain];
+		producedFiles = [[NSMutableArray array] retain];
 	}
     return self;
 }
 
 - (void)dealloc
 {
+	[producedFiles release];
 	[templates release];
 	[filesToAnonymize release];
 	[dcmObjects release];
@@ -180,14 +182,50 @@ Version 2.3
 	}
 }
 
-- (IBAction) anonymize:(id)sender
+- (IBAction) anonymizeToThisPath:(NSString*) path
 {
+	[checkReplace setHidden: YES];
+	
 	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
 	NSLog( [templates description]);
 	
 	[templatesMenu removeAllItems];
 	[templatesMenu addItemsWithTitles: [templates allKeys]];
 	[self selectTemplateMenu: templatesMenu];
+	
+	[producedFiles removeAllObjects];
+	
+	[anonymizeView addSubview: accessoryView];
+	
+	[NSApp beginSheet:	anonymizeWindow
+						modalForWindow: sPanel
+						modalDelegate: nil
+						didEndSelector: nil
+						contextInfo: nil];
+	
+	int result = [NSApp runModalForWindow:anonymizeWindow];
+	
+	[NSApp endSheet: anonymizeWindow];
+	[anonymizeWindow orderOut: self];
+	
+	if( result == NSRunStoppedResponse)
+	{
+		
+	}
+}
+
+- (IBAction) anonymize:(id)sender
+{
+	[checkReplace setHidden: NO];
+	
+	templates = [[NSMutableDictionary alloc] initWithDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"anonymizeTemplate"]];
+	NSLog( [templates description]);
+	
+	[templatesMenu removeAllItems];
+	[templatesMenu addItemsWithTitles: [templates allKeys]];
+	[self selectTemplateMenu: templatesMenu];
+	
+	[producedFiles removeAllObjects];
 	
 	long i;
 	sPanel		= [NSOpenPanel openPanel];
@@ -267,6 +305,9 @@ Version 2.3
 			//if([[xmlDoc  XMLData] writeToFile:dst atomically:YES])
 			//	NSLog(@"Wrote xml");
 			[DCMObject anonymizeContentsOfFile:file  tags:[self tags]  writingToFile:dest];
+			
+			[producedFiles addObject: dest];
+			
 			[pool release];
 			[splash incrementBy:1];
 		}
@@ -283,6 +324,11 @@ Version 2.3
 	dcmObjects = 0L;
 	
 	[[NSUserDefaults standardUserDefaults] setObject: templates forKey:@"anonymizeTemplate"];
+}
+
+- (NSArray*) producedFiles
+{
+	return producedFiles;
 }
 
 - (void)setFilesToAnonymize:(NSArray *)files :(NSArray*)dcm{

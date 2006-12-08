@@ -20,6 +20,10 @@
 	IBOutlet NSMatrix			*firstColumnValues, *secondColumnValues;
 	IBOutlet NSView				*accessoryView;
 	IBOutlet NSPopUpButton		*templatesMenu;
+	IBOutlet NSButton			*checkReplace;
+	
+	IBOutlet NSWindow			*anonymizeWindow;
+	IBOutlet NSView				*anonymizeView;
 	
 	IBOutlet NSWindow			*templateNameWindow;
 	IBOutlet NSTextField		*templateName;
@@ -28,7 +32,7 @@
 	NSMutableDictionary			*templates;
 	NSArray						*filesToAnonymize, *dcmObjects;
 	NSString					*folderPath;
-	NSMutableArray				*tags;
+	NSMutableArray				*tags, *producedFiles;
 }
 
 - (IBAction) selectTemplateMenu:(id) sender;
@@ -38,8 +42,8 @@
 - (IBAction) matrixAction:(id) sender;
 - (void) setFilesToAnonymize:(NSArray *) files :(NSArray*) dcm;
 - (NSArray*) tags;
-
+- (NSArray*) producedFiles;
 - (IBAction)cancelModal:(id)sender;
 - (IBAction)okModal:(id)sender;
-
+- (IBAction) anonymizeToThisPath:(NSString*) path;
 @end

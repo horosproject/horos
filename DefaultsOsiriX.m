@@ -824,7 +824,9 @@ static NSString *hostName = @"";
 	
 	//UseVOILUT
 	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
-	
+	[defaultValues setObject:@"0" forKey: @"replaceAnonymize"];
+	[defaultValues setObject:@"0" forKey: @"anonymizedBeforeBurning"];
+		
 	//ZoomWithHorizonScroll
 	[defaultValues setObject:@"0" forKey: @"ZoomWithHorizonScroll"];
 	

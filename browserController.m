@@ -9999,7 +9999,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 }
 
-- (IBAction) anonymizeDICOM:(id) sender{
+- (IBAction) anonymizeDICOM:(id) sender
+{
 	NSMutableArray *paths = [NSMutableArray array];
 	NSMutableArray *dicomFiles2Anonymize = [NSMutableArray array];
 	NSMutableArray *filesToAnonymize;
@@ -10008,29 +10009,71 @@ static volatile int numberOfThreadsForJPEG = 0;
 	else filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
 	
     [anonymizerController showWindow:self];
+	
 	NSEnumerator *enumerator = [filesToAnonymize objectEnumerator];
 	NSString *file;
-	while (file = [enumerator nextObject]) {
+	while (file = [enumerator nextObject])
+	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString	*extension = [file pathExtension];
 		if([extension isEqualToString:@"" ]) extension = [NSString stringWithString:@"dcm"];
-		else {   // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
+		else
+		{   // Added by rbrakes - check to see if "extension" includes only numbers (UID perhaps?).
 			int num;
 			NSScanner *scanner = [NSScanner scannerWithString: extension];
 			if ( [scanner scanInt: &num] && [scanner isAtEnd] ) extension = [NSString stringWithString:@"dcm"];
 		}
+		
 		if ([extension  caseInsensitiveCompare:@"dcm"] == NSOrderedSame)
 			[paths addObject:file]; 
+		
 		[pool release];
 
 	}
 	if(!anonymizerController)
 		anonymizerController = [[AnonymizerWindowController alloc] init];
+	
 	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
 	[anonymizerController showWindow:self];
 	[anonymizerController anonymize:self];
-//	[anonymizerController release];
-//	anonymizerController = 0L;
+		
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"replaceAnonymize"] == YES && isCurrentDatabaseBonjour == NO)
+	{
+		// Delete the non-anonymized
+		[self delItem: sender];
+		
+		// Add the anonymized files
+		NSArray	*newImages = [self addFilesAndFolderToDatabase: [anonymizerController producedFiles]];
+		
+		// Are we adding new files in a album?
+		// can't add to smart Album
+		if( [[self albumTable] selectedRow] > 0)
+		{
+			NSManagedObject *album = [[self albumArray] objectAtIndex: [[self albumTable] selectedRow]];
+			
+			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+			{
+				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+				
+				int i;
+				for( i = 0; i < [newImages count]; i++)
+				{
+					NSManagedObject		*object = [newImages objectAtIndex: i];
+					[studies addObject: [object valueForKeyPath:@"series.study"]];
+				}
+				
+				[self outlineViewRefresh];
+			}
+		}
+		
+		if( [newImages count] > 0)
+		{
+			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+				
+			[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+		}
+	}
 	
 	[filesToAnonymize release];
 }	

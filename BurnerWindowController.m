@@ -28,6 +28,7 @@ Version 2.3
 #import <DiscRecordingUI/DiscRecordingUI.h>
 #import <DiscRecordingUI/DRSetupPanel.h>
 #import "MutableArrayCategory.h"
+#import "AnonymizerWindowController.h"
 
 #import  "BrowserController.h"
 
@@ -217,9 +218,19 @@ NSString* asciiString (NSString* name);
 		cdName = [[nameField stringValue] retain];
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
 		
 		[nameField setEnabled: NO];
 		[compressionMode setEnabled: NO];
+		
+//		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
+//		{
+//			AnonymizerWindowController	*anonymizer = [[AnonymizerWindowController alloc] init];
+//			
+//			[anonymizer setFilesToAnonymize:files :dbObjects];
+//			[anonymizer showWindow:self];
+//			[anonymizer anonymizeToThisPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"]];
+//		}
 		
 		if (cdName != nil) {
 			runBurnAnimation = YES;
@@ -600,7 +611,6 @@ NSString* asciiString (NSString* name);
 
 - (void)addDicomdir
 {
-
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
 
 	//NSLog(@"add Dicomdir");
