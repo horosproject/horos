@@ -7922,6 +7922,13 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSMenu *menu = [[NSMenu alloc] initWithTitle:@"Tools"];
 	NSMenuItem *exportItem, *sendItem, *burnItem, *anonymizeItem, *keyImageItem;
 	
+	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Display only this patient", 0L) action: @selector(searchForCurrentPatient:) keyEquivalent:@""];
+	[exportItem setTarget:self];
+	[menu addItem:exportItem];
+	[exportItem release];
+	
+	[menu addItem: [NSMenuItem separatorItem]];
+	
 	exportItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open images", 0L) action: @selector(viewerDICOM:) keyEquivalent:@""];
 	[exportItem setTarget:self];
 	[menu addItem:exportItem];
@@ -11784,6 +11791,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self outlineViewRefresh];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 
+}
+
+- (IBAction) searchForCurrentPatient:(id) sender
+{
+	if( [databaseOutline selectedRow])
+	{
+		NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	
+		if( aFile)
+		{
+			if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
+				[self setSearchString: [aFile valueForKey:@"name"]];
+			else
+				[self setSearchString: [aFile valueForKeyPath:@"study.name"]];
+		}
+	}
 }
 
 - (NSPredicate*)fetchPredicate{

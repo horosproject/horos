@@ -85,7 +85,8 @@ static NSString *Modality = @"Modality";
 			NSError						*error = 0L;
 			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
 			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-			NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@) AND (name == %@)", [item valueForKey:@"uid"], [item valueForKey:@"name"]];	//DCMTKQueryNode
+//			NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@) AND (name == %@)", [item valueForKey:@"uid"], [item valueForKey:@"name"]];	//DCMTKQueryNode
+			NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 			NSArray						*studyArray;
 			
 			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
@@ -192,9 +193,21 @@ static NSString *Modality = @"Modality";
 			case 1:		currentQueryKey = PatientID;		break;
 		}
 		
-		if ([filterValue length] > 0) {			
-			[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+		if( currentQueryKey != PatientID)
+		{
+			if ([filterValue length] > 0)
+			{
+				[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+			}
 		}
+		else
+		{
+			if ([filterValue length] > 0)
+			{
+				[queryManager addFilter:filterValue forDescription:currentQueryKey];
+			}
+		}
+		
 		//
 		if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
 		
