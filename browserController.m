@@ -3118,12 +3118,14 @@ static BOOL COMPLETEREBUILD = NO;
 	for( i = 0; i < [outlineViewArray count]; i++) images += [[[outlineViewArray objectAtIndex: i] valueForKey:@"noFiles"] intValue];
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [numFmt stringForObjectValue:[NSNumber numberWithInt:images]]];
 	
-	// By default sort by name
-	NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
 	NSSortDescriptor * sortdate = [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease];
 	NSArray * sortDescriptors;
 	if( [databaseOutline sortDescriptors] == 0L || [[databaseOutline sortDescriptors] count] == 0)
+	{
+		// By default sort by name
+		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES] autorelease];
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
+	}
 	else
 	{
 		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
@@ -4086,7 +4088,10 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	[self outlineViewRefresh];
 	
-	[databaseOutline selectRow: 0 byExtendingSelection: NO];
+	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
+	{
+		[databaseOutline selectRow: 0 byExtendingSelection: NO];
+	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
