@@ -40,7 +40,11 @@
 
 - (ROI*) roi;
 - (void) compute;
+- (void) computeForView:(short)view;
 - (void) recompute;
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t;
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forView:(short)view;
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSaggital:(BOOL)saggital;
 - (id) initWithObjectsPer:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) i :(long) s;
+
 @end

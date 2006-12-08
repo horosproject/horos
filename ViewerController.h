@@ -154,6 +154,7 @@ enum
 	IBOutlet NSTextField	*curvedMPRsizeText;
 	IBOutlet NSSlider		*curvedMPRinterval;
 	IBOutlet NSTextField	*curvedMPRintervalText;
+	IBOutlet NSMatrix		*curvedMPRaxis;
 	
 	IBOutlet NSWindow       *blendingTypeWindow;
 	IBOutlet NSButton		*blendingTypeMultiply, *blendingTypeSubtract;

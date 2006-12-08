@@ -93,8 +93,16 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	long yT, xT;
 	float mesureLength;
 	
-	if( mesureA.x > mesureB.x) { yT = mesureA.y;  xT = mesureA.x;}
-	else {yT = mesureB.y;   xT = mesureB.x;}
+	if( mesureA.x > mesureB.x)
+	{
+		yT = mesureA.y;
+		xT = mesureA.x;
+	}
+	else
+	{
+		yT = mesureB.y;
+		xT = mesureB.x;
+	}
 	
 	{
 		double coteA, coteB;
@@ -572,7 +580,336 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 }
 
 
+- (void) computeForView:(short)view
+{
+	NSLog(@"computeForView : %d", view);
+	/*
+		values for 'view':
+		0 - axial
+		1 - coronal
+		2 - saggital
+	*/
+	
+	DCMPix		*firstObject = [pixList objectAtIndex:0];
+	float		*emptyData, *curData, length;
+	long		size, newX, newY, i, x, y, z, xInc, noOfPoints, thick;
+	NSData		*newData;
+	NSArray		*pts = [selectedROI points];
+	
+	// Compute size of the curved MPR image
+	length = 0;
+	if(view==0)
+	{
+		newY = [pixList count];
+		for( i = 0; i < [pts count]-1; i++)
+		{
+			length += [self lengthPoints:[[pts objectAtIndex:i] point] :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+		}
+	}
+	else if(view==1) // coronal
+	{
+		newY = [firstObject pheight];
+		for(i=0; i<[pts count]-1; i++)
+		{
+			NSPoint ptA = [[pts objectAtIndex:i] point];
+			NSPoint ptB = [[pts objectAtIndex:i+1] point];
+			NSPoint newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+			NSPoint newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
+			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
+			float newRatio = [firstObject pixelRatio];
+			length += [self lengthPoints:newPtA :newPtB :newRatio];
+		}
+	}
+	else if(view==2) // saggital
+	{
+		newY = [firstObject pwidth];
+		for(i=0; i<[pts count]-1; i++)
+		{
+			NSPoint ptA = [[pts objectAtIndex:i] point];
+			NSPoint ptB = [[pts objectAtIndex:i+1] point];
+			NSPoint newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+			NSPoint newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
+			//float newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
+			float newRatio = [firstObject pixelRatio];
+			length += [self lengthPoints:newPtA :newPtB :newRatio];
+		}	
+	}
+	
+	newX = length + 4;
+	newX /=4;
+	newX *=4;
+	
+	size = newX * newY * sizeof( float);
+	
+	[newPixList removeAllObjects];
+	[newDcmList removeAllObjects];
+	
+	// Allocate data for curved MPR image
+	emptyData = (float*) malloc( size * thickSlab);
+	if(emptyData)
+	{
+		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];
+		
+		for(thick=0; thick<thickSlab; thick++)
+		{
+			// *** *** *** *** Create Image Data
+			
+			curData = emptyData + thick * newX * newY;
+			
+			xInc = 0;
+			
+			for( i = 0; i < [pts count]-1; i++)
+			{
+				float xPos, yPos;
+				float sideX, sideY, startX, startY;
+				float angle, perAngle;
+				long pos, width, height;
+				long maxY;
+				
+				if(view==0)
+				{
+					length = [self lengthPoints: [[pts objectAtIndex:i] point]  :[[pts objectAtIndex:i+1] point] :[firstObject pixelRatio]];
+					
+					sideX = [[pts objectAtIndex:i] x] - [[pts objectAtIndex:i+1] x];
+					sideY = [[pts objectAtIndex:i] y] - [[pts objectAtIndex:i+1] y];
+					
+					startX = [[pts objectAtIndex:i] x];
+					startY = [[pts objectAtIndex:i] y];
+										
+					width = [[pixList objectAtIndex: 0] pwidth];
+					height = [[pixList objectAtIndex: 0] pheight];
+
+					maxY = [pixList count];
+				}
+				else
+				{
+					NSPoint ptA, ptB, newPtA, newPtB;
+					float newRatio;
+					if(view==1) // coronal
+					{
+						ptA = [[pts objectAtIndex:i] point];
+						ptB = [[pts objectAtIndex:i+1] point];
+						newPtA = NSMakePoint(ptA.x,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+						newPtB = NSMakePoint(ptB.x,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
+						//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingX];
+						newRatio = [firstObject pixelRatio];				
+						width = [[pixList objectAtIndex: 0] pwidth];
+						maxY = [[pixList objectAtIndex: 0] pheight];
+					}
+					else if(view==2) // saggital
+					{
+						ptA = [[pts objectAtIndex:i] point];
+						ptB = [[pts objectAtIndex:i+1] point];
+						newPtA = NSMakePoint(ptA.y,[[[selectedROI zPositions] objectAtIndex:i] floatValue]);
+						newPtB = NSMakePoint(ptB.y,[[[selectedROI zPositions] objectAtIndex:i+1] floatValue]);
+						//newRatio = [[selectedROI pix] sliceInterval] / [[selectedROI pix] pixelSpacingY];
+						newRatio = [firstObject pixelRatio];
+						width = [[pixList objectAtIndex: 0] pheight];
+						maxY = [[pixList objectAtIndex: 0] pwidth];
+					}
+					height = [pixList count];
+					
+					length = [self lengthPoints:newPtA :newPtB :newRatio];
+					
+					sideX = newPtA.x - newPtB.x;
+					sideY = newPtA.y - newPtB.y;
+					
+					startX = newPtA.x;
+					startY = newPtA.y;
+				}
+				
+				angle = atan( sideY / sideX);
+				perAngle = 90*deg2rad - angle;
+								
+				if( sideX < 0)
+				{
+					startX += 1.5 * cos(perAngle) * (float) (thick - (thickSlab-1)/2);
+					startY -= 1.5 * sin(perAngle) * (float) (thick - (thickSlab-1)/2);
+				}
+				else
+				{
+					startX -= 1.5 * cos(perAngle) * (float) (thick - (thickSlab-1)/2);
+					startY += 1.5 * sin(perAngle) * (float) (thick - (thickSlab-1)/2);
+				}
+				
+				noOfPoints = length;
+				for(x=0; x<noOfPoints; x++)
+				{
+					float rightLeftX, rightLeftY;
+					float X1, X2, Y1, Y2;
+					long xInt, yInt;
+					//long width, height;
+					
+					if( sideX >= 0)
+					{
+						xPos = startX - x * cos( angle);
+						yPos = startY - x * sin( angle);
+					}
+					else
+					{
+						xPos = startX + x * cos( angle);
+						yPos = startY + x * sin( angle);
+					}
+					
+					xInt = xPos;
+					yInt = yPos;
+					NSLog(@"yInt : %d", yInt);
+					rightLeftX = xPos - (float) xInt;
+					rightLeftY = yPos - (float) yInt;
+					
+					if( yInt >= 0 && yInt < height-1 && xInt >= 0 && xInt < width+1)
+					{
+						//long maxY;
+//						if(view==0)
+//							maxY = [pixList count];
+//						else if(view==1)
+//							maxY = [[pixList objectAtIndex: 0] pheight];
+//						else if(view==2)
+//							maxY = [[pixList objectAtIndex: 0] pwidth];
+						long yx1 = yInt * width + xInt+1;
+						long yx = yInt * width + xInt;
+						long y1x1 =  (yInt+1) * width + xInt+1;
+						long y1x = (yInt+1) * width + xInt;
+						float rightLeftXInv = 1.0 - rightLeftX;
+						float rightLeftYInv = 1.0 - rightLeftY;
+						
+						if(view==0)
+						{
+							if( [firstObject sliceInterval] > 0)
+							{
+								for( y = 0; y < maxY ; y++)
+								{
+									float *srcIm = [[pixList objectAtIndex: y] fImage];
+									
+									*(curData + x + xInc + newX*(maxY-y-1)) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
+								}
+							}
+							else
+							{
+								for( y = 0; y < maxY ; y++)
+								{
+									float *srcIm = [[pixList objectAtIndex: y] fImage];
+									
+									*(curData + x + xInc + newX*y) = (*(srcIm + y1x1) * rightLeftX + *(srcIm + y1x) * rightLeftXInv) * rightLeftY  + (*(srcIm + yx1) * rightLeftX + *(srcIm + yx) * rightLeftXInv) * rightLeftYInv;
+								}
+							}
+						}
+						else if(view==1) // coronal
+						{
+							float *srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
+							float *srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];
+							NSLog(@"height-yInt-1 : %d", height-yInt-1);
+							for( y = 0; y < maxY ; y++)
+							{
+								*(curData + x + xInc + newX*y) = (*(srcIm1 + xInt + 1 + y * width) * rightLeftX + *(srcIm1 + xInt + y * width) * rightLeftXInv) * rightLeftY  + (*(srcIm + xInt + 1 + y * width) * rightLeftX + *(srcIm + xInt + y * width) * rightLeftXInv) * rightLeftYInv;
+							}
+						}
+						else if(view==2) // saggital
+						{
+							float *srcIm = [[pixList objectAtIndex: height-yInt-1] fImage];
+							float *srcIm1 = [[pixList objectAtIndex: height-yInt-2] fImage];
+							for( y = 0; y < maxY ; y++)
+							{
+								*(curData + x + xInc + newX*y) = (*(srcIm1 + (xInt + 1) * width + y) * rightLeftX + *(srcIm1 + xInt * width + y) * rightLeftXInv) * rightLeftY  + (*(srcIm + (xInt + 1) * width + y) * rightLeftX + *(srcIm + xInt * width + y) * rightLeftXInv) * rightLeftYInv;
+							}
+						}
+					}
+					else
+					{
+						if(view==0)
+						{
+							for( y = 0; y < [pixList count] ; y++)
+							{
+								*(curData + x + xInc + newX*y) = -1000;
+							}
+						}
+						else if(view==1) // coronal
+						{
+							for( y = 0; y < newY ; y++)
+							{
+								*(curData + x + xInc + newX*y) = -1000;
+							}
+						}
+						else if(view==2) // saggital
+						{
+							for( y = 0; y < newY ; y++)
+							{
+								*(curData + x + xInc + newX*y) = -1000;
+							}
+						}
+					}
+				}
+				
+				xInc += noOfPoints;
+			}
+			NSLog(@"DCMPix alloc");
+			float xSpace, ySpace;
+			if(view==0)
+			{
+				xSpace = [firstObject pixelSpacingX];
+				ySpace = fabs([firstObject sliceInterval]);
+			}
+			else if(view==1) // coronal
+			{
+				xSpace = [firstObject pixelSpacingX];
+				ySpace = [firstObject pixelSpacingY];
+			}
+			else if(view==2) // saggital
+			{
+				xSpace = [firstObject pixelSpacingY];
+				ySpace = [firstObject pixelSpacingX];
+			}
+			
+			DCMPix	*pix = [[DCMPix alloc] initwithdata:curData :32 :newX :newY :xSpace :ySpace :0 :0 :0 :YES];
+			[pix changeWLWW: [[roiViewer imageView] curWL] : [[roiViewer imageView] curWW]];
+			
+			[pix setTot: thickSlab];
+			[pix setFrameNo: thick];
+			[pix setID: thick];
+		//	[pix setSliceLocation: thick * [firstObject pixelSpacingX]];
+			
+			float newVector[ 9];
+			for( i = 0; i < 9; i++) newVector[ i] = 0;
+			[pix setOrientation: newVector];
+			
+			[newPixList addObject: pix];
+			[newDcmList addObject: [fileList objectAtIndex: 0]];
+			
+			[pix release];
+		}
+		
+		if( firstTime == YES)
+		{
+			firstTime = NO;
+			
+			// CREATE A SERIES
+			viewerController = [[ViewerController alloc] viewCinit:newPixList :newDcmList :newData];
+			
+			[viewerController showWindowTransition];
+			[viewerController startLoadImageThread]; // Start async reading of all images
+			[viewerController setCurvedController: self];
+			[viewerController checkEverythingLoaded];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+				[appController tileWindows: self];
+			else
+				[appController checkAllWindowsAreVisible:self];
+		}
+		else
+		{
+			[viewerController changeImageData: newPixList :newDcmList :newData :NO];
+		}
+		
+		[viewerController setImageIndex: (thickSlab-1)/2];
+	}
+}
+
 - (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t
+{
+	[self initWithObjects:pix :files :vData :roi :roiV :t forAxial:YES forCoronal:YES forSaggital:YES];
+}
+
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forView:(short)view
 {
 	long i;
 	
@@ -601,9 +938,51 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	newDcmList = [[NSMutableArray arrayWithCapacity: 0] retain];
 	newPixListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
 	newDcmListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
-	
+
 	// Compute
-	[self compute];
+	[self computeForView:view];
+}
+
+- (id) initWithObjects:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) t forAxial:(BOOL)axial forCoronal:(BOOL)coronal forSaggital:(BOOL)saggital
+{
+	long i;
+	
+	self = [super init];
+	
+	firstTime = YES;
+	perPendicular = NO;
+	
+	thickSlab = t;
+
+	roiViewer = roiV;
+
+	fileList = files;
+	[fileList retain];
+	
+	pixList = pix;
+	[pixList retain];
+	
+	volumeData = vData;
+	[volumeData retain];
+	
+	selectedROI = roi;
+	[selectedROI retain];
+	
+	newPixList = [[NSMutableArray arrayWithCapacity: 0] retain];
+	newDcmList = [[NSMutableArray arrayWithCapacity: 0] retain];
+	newPixListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
+	newDcmListPer = [[NSMutableArray arrayWithCapacity: 0] retain];
+
+	// Compute
+	if(axial)
+		[self computeForView:0];
+	firstTime = YES;
+	if(coronal)
+		[self computeForView:1];
+	firstTime = YES;
+	if(saggital)
+		[self computeForView:2];
+	//firstTime = YES;
 }
 
 - (id) initWithObjectsPer:(NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ROI*) roi :(ViewerController*) roiV :(long) i :(long) s

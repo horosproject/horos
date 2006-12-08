@@ -293,6 +293,7 @@ GLenum glReportError (void)
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	
 	[points release];
+	[zPositions release];
 	[name release];
 	[comments release];
 	[stringTex release];
@@ -404,6 +405,7 @@ GLenum glReportError (void)
 		pixelSpacingY = ipixelSpacingy;
 		imageOrigin = iimageOrigin;
 		points = [[NSMutableArray arrayWithCapacity:0] retain];
+		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		comments = [[NSString alloc] initWithString:@""];
 		fontListGL = -1;
 		curView = 0L; //@TODO attention curView Null impossible de recuperer l'etat de la gomme !
@@ -470,6 +472,7 @@ GLenum glReportError (void)
 		imageOrigin = iimageOrigin;
 		
 		points = [[NSMutableArray arrayWithCapacity:0] retain];
+		zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		
 		comments = [[NSString alloc] initWithString:@""];
 		
@@ -896,6 +899,11 @@ return rect;
 	return;
 }
 
+- (NSMutableArray*) zPositions;
+{
+	return zPositions;
+}
+
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect
 {
 	NSRect		arect;
@@ -1128,7 +1136,12 @@ return rect;
 	return imode;
 }
 
-- (BOOL) mouseRoiDown:(NSPoint) pt :(float) scale
+- (BOOL)mouseRoiDown:(NSPoint)pt :(float)scale
+{
+	[self mouseRoiDown:pt :[curView curImage] :scale];
+}
+
+- (BOOL)mouseRoiDown:(NSPoint)pt :(int)slice :(float)scale
 {
 	MyPoint				*mypt;
 	
@@ -1224,8 +1237,11 @@ return rect;
 			mypt = [[MyPoint alloc] initWithPoint: pt];
 			
 			[points addObject: mypt];
-			
 			[mypt release];
+			
+			NSLog(@" [ROI, mouseRoiDown] adding point for polygon...");
+			NSLog(@" [ROI, mouseRoiDown] slice : %d", slice);
+			[zPositions addObject:[NSNumber numberWithInt:slice]];
 			
 			clickPoint = pt;
 		}
@@ -1244,8 +1260,6 @@ return rect;
 	
 	if( mode == ROI_drawing) return YES;
 	else return NO;
-	
-	
 }
 
 - (void) rotate: (float) angle :(NSPoint) center

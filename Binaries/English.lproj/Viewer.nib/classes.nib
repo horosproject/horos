@@ -176,6 +176,7 @@
                 resetImage = id; 
                 revertSeries = id; 
                 roiDeleteAll = id; 
+                roiDeleteWithName = id; 
                 roiPropagate = id; 
                 roiPropagateSetup = id; 
                 roiRename = id; 
@@ -257,6 +258,7 @@
                 convMatrix = NSMatrix; 
                 convPopup = NSPopUpButton; 
                 curvedMPRWindow = NSWindow; 
+                curvedMPRaxis = NSMatrix; 
                 curvedMPRinterval = NSSlider; 
                 curvedMPRintervalText = NSTextField; 
                 curvedMPRper = NSButton; 

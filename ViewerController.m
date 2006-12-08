@@ -11794,12 +11794,19 @@ int i,j,l;
 		
 		if( selectedRoi)
 		{
-			CurvedMPR *curvedMPR;
+			CurvedMPR *curvedMPR[3];
 			
 			if( [curvedMPRper state] == NSOnState)
-				curvedMPR = [[CurvedMPR alloc] initWithObjectsPer:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRinterval intValue] :[curvedMPRsize intValue]];
+				curvedMPR[0] = [[CurvedMPR alloc] initWithObjectsPer:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRinterval intValue] :[curvedMPRsize intValue]];
 			
-			curvedMPR = [[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue]];
+			///curvedMPR = [[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue]];
+			
+			short i;
+			for(i=0;i<3;i++)
+			{
+			if([[curvedMPRaxis cellWithTag:i] state] == NSOnState)
+				curvedMPR[0] = [[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue] forView:i];
+			}
 		}
 	}
 }

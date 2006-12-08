@@ -42,6 +42,7 @@ enum
 	int				textureFirstPoint;
 	
 	NSMutableArray  *points;
+	NSMutableArray  *zPositions;
 	NSRect			rect;
 	
 	long			type;
@@ -128,6 +129,7 @@ enum
 // Return/set the points state of the ROI
 - (NSMutableArray*) points;
 - (void) setPoints:(NSArray*) points;
+- (NSMutableArray*) zPositions;
 
 // Set resolution and origin associated to the ROI
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin;
