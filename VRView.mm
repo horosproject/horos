@@ -1625,10 +1625,18 @@ public:
 	
 	if( www)
 	{
-			NSLog( @"OPO");
+		NSLog( @"OPO");
 		[www end];
 		[www close];
 		[www release];
+		
+		if( isRGB == NO)
+		{
+			*(data+0) = firstPixel;
+			*(data+1) = secondPixel;
+			
+			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+		}
 	}
 }
 
@@ -3317,10 +3325,10 @@ public:
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
 		
-		if( [[pixList objectAtIndex:0] maxValueOfSeries])
+		if( [controller maximumValue])
 		{
-			iwl = [[pixList objectAtIndex:0] maxValueOfSeries] /2;
-			iww = [[pixList objectAtIndex:0] maxValueOfSeries];
+			iwl = [controller maximumValue] /2;
+			iww = [controller maximumValue];
 		}
 		else
 			iww = [[pixList objectAtIndex:0] fullww];
@@ -3673,17 +3681,17 @@ public:
 			
 			if( [blendingFirstObject SUVConverted])
 			{
-				blendingValueFactor = 4095. / [blendingFirstObject maxValueOfSeries];
+				blendingValueFactor = 4095. / [controller blendingMaximumValue];
 				blendingOFFSET16 = 0;
 				
 				vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 			}
 			else
 			{
-				if( [blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries] > 4095 || [blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries] < 50)
+				if( [controller blendingMaximumValue] - [controller blendingMinimumValue] > 4095 ||  [controller blendingMaximumValue] - [controller blendingMinimumValue] < 50)
 				{
-					blendingValueFactor = 4095. / ([blendingFirstObject maxValueOfSeries] - [blendingFirstObject minValueOfSeries]);
-					blendingOFFSET16 = -[blendingFirstObject minValueOfSeries];
+					blendingValueFactor = 4095. / ( [controller blendingMaximumValue] - [controller blendingMinimumValue]);
+					blendingOFFSET16 = -[controller blendingMinimumValue];
 				
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
@@ -3890,14 +3898,17 @@ public:
 	else
 	{
 		srcf.data = data;
-		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);	
+		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+		
+		reader->SetImportVoidPointer( data8);
+		reader->GetOutput()->Modified();
 	}
-	
+		
 	if( volumeMapper) volumeMapper->Delete();
 	volumeMapper = 0L;
 	if( textureMapper) textureMapper->Delete();
 	textureMapper = 0L;
-		
+	
 	[self setEngine: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] showWait: NO];
 
 	if( showWait)
@@ -4044,22 +4055,28 @@ public:
 		dst8.data = data8;
 		srcf.data = data;
 		
-		NSLog( @"maxValueOfSeries = %f", [firstObject maxValueOfSeries]);
-		NSLog( @"minValueOfSeries = %f", [firstObject minValueOfSeries]);
+		NSLog( @"maxValueOfSeries = %f", [controller maximumValue]);
+		NSLog( @"minValueOfSeries = %f", [controller minimumValue]);
+		
+		firstPixel = *(data+0);
+		secondPixel = *(data+1);
+		
+		*(data+0) = [controller maximumValue];		// To avoid the min/max saturation problem with 4D data...
+		*(data+1) = [controller minimumValue];		// To avoid the min/max saturation problem with 4D data...
 		
 		if( [firstObject SUVConverted])
 		{
-			valueFactor = 4095. / [firstObject maxValueOfSeries];
+			valueFactor = 4095. / [controller maximumValue];
 			OFFSET16 = 0;
 			
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 		}
 		else
 		{
-			if( [firstObject maxValueOfSeries] - [firstObject minValueOfSeries] > 4095 || [firstObject maxValueOfSeries] - [firstObject minValueOfSeries] < 50)
+			if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
 			{
-				valueFactor = 4095. / ([firstObject maxValueOfSeries] - [firstObject minValueOfSeries]);
-				OFFSET16 = -[firstObject minValueOfSeries];
+				valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
+				OFFSET16 = -[controller minimumValue];
 				
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 			}
@@ -5017,6 +5034,8 @@ public:
 
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: (float) maxOpacity minValue: (float) minValue
 {
+	NSArray	*curPixList = [controller curPixList];
+	
 	// world point
 	double	*worldPointClicked;
 	aRenderer->SetDisplayPoint( x, y, 0);
@@ -5071,7 +5090,7 @@ public:
 	else
 	{
 		stackOrientation = 2; //NSLog(@"Z Stack");
-		stackMax = [pixList count];
+		stackMax = [curPixList count];
 	}
 			
 	if(aCamera->GetParallelProjection())
@@ -5210,7 +5229,7 @@ public:
 
 			if(needToFlip) 
 			{
-				ptInt[2] = [pixList count] - ptInt[2] -1;
+				ptInt[2] = [curPixList count] - ptInt[2] -1;
 			}
 			
 			long currentSliceNumber, xPosition, yPosition;
@@ -5219,9 +5238,9 @@ public:
 			float currentPointValue;
 								
 			currentSliceNumber = ptInt[2];
-			if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [pixList count])
+			if( ptInt[0] >= 0 && ptInt[0] < [firstObject pwidth] && ptInt[1] >= 0 && ptInt[1] < [firstObject pheight] &&  ptInt[ 2] >= 0 && ptInt[ 2] < [curPixList count])
 			{
-				currentDCMPix = [pixList objectAtIndex:currentSliceNumber];
+				currentDCMPix = [curPixList objectAtIndex:currentSliceNumber];
 				imageBuffer = [currentDCMPix fImage];
 				xPosition = ptInt[0];
 				yPosition = ptInt[1];

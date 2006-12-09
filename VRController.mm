@@ -302,6 +302,28 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[movieRateSlider setEnabled: YES];
 	[moviePosSlider setEnabled: YES];
 	[moviePlayStop setEnabled: YES];
+	
+	[self computeMinMax];
+}
+
+- (float) blendingMinimumValue;
+{
+	return blendingMinimumValue;
+}
+
+- (float) blendingMaximumValue;
+{
+	return blendingMaximumValue;
+}
+
+- (float) minimumValue;
+{
+	return minimumValue;
+}
+
+- (float) maximumValue;
+{
+	return maximumValue;
 }
 
 - (short)curMovieIndex;
@@ -315,6 +337,8 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 }
 
 -(NSMutableArray*) pixList { return pixList[0];}
+
+-(NSMutableArray*) curPixList { return pixList[ curMovieIndex];}
 
 - (NSString*) style
 {
@@ -334,6 +358,23 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
 	[self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
+}
+
+- (void) computeMinMax
+{
+	maximumValue = minimumValue = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
+	
+	blendingMinimumValue = [[blendingPixList objectAtIndex: 0] minValueOfSeries];
+	blendingMaximumValue = [[blendingPixList objectAtIndex: 0] maxValueOfSeries];
+	
+	int i;
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		if( maximumValue < [[pixList[ i] objectAtIndex: 0] maxValueOfSeries]) maximumValue = [[pixList[ i] objectAtIndex: 0] maxValueOfSeries];
+		if( minimumValue > [[pixList[ i] objectAtIndex: 0] minValueOfSeries]) minimumValue = [[pixList[ i] objectAtIndex: 0] minValueOfSeries];
+	}
+	
+	NSLog( @"min: %f max: %f", minimumValue, maximumValue);
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode
@@ -410,16 +451,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	
 	if( [firstObject isRGB] == NO)
 	{
-		float *tempData = (float*) [volumeData[0] bytes];
-		
-		i = [firstObject pwidth] * [firstObject pheight] * [pix count] / 16;
-		i -= 32;
-		minimumValue = *tempData;
-		while( i-- > 0)
-		{
-			if( *tempData < minimumValue) minimumValue = *tempData;
-			tempData += 16;
-		}
+		[self computeMinMax];
 	}
 	else minimumValue = 0;
 	
@@ -682,22 +714,22 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 	// Select the series that contains the highest pixel value !
 	// AVOID the VTK BUG of MIN/MAX gradient
-	float max = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
-	
-	for( i = 1; i < maxMovieIndex; i++)
-	{
-		if( max < [[pixList[ i] objectAtIndex: 0] maxValueOfSeries])
-		{
-			max = [[pixList[ i] objectAtIndex: 0] maxValueOfSeries];
-			curMovieIndex = i;
-		}
-	}
-	
-	if( curMovieIndex != 0)
-	{
-		[self setMovieFrame: curMovieIndex];
-		[moviePosSlider setIntValue: curMovieIndex];
-	}
+//	float max = [[pixList[ 0] objectAtIndex: 0] maxValueOfSeries];
+//	
+//	for( i = 1; i < maxMovieIndex; i++)
+//	{
+//		if( max < [[pixList[ i] objectAtIndex: 0] maxValueOfSeries])
+//		{
+//			max = [[pixList[ i] objectAtIndex: 0] maxValueOfSeries];
+//			curMovieIndex = i;
+//		}
+//	}
+//	
+//	if( curMovieIndex != 0)
+//	{
+//		[self setMovieFrame: curMovieIndex];
+//		[moviePosSlider setIntValue: curMovieIndex];
+//	}
 	
 	//
 	

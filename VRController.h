@@ -77,8 +77,9 @@
 	IBOutlet NSSlider       *moviePosSlider;
 	
 	float					*undodata[ 100];
-	float					minimumValue;
-
+	float					minimumValue, maximumValue;
+	float					blendingMinimumValue, blendingMaximumValue;
+	
 	// Fly Thru
 	FlyThruController		*flyThruController;
 	VRFlyThruAdapter		*FTAdapter;
@@ -97,6 +98,7 @@
 - (void) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
 - (NSMutableArray*) pixList;
+- (NSMutableArray*) curPixList;
 - (void) load3DState;
 - (void) updateBlendingImage;
 - (ViewerController*) blendingController;
@@ -142,7 +144,11 @@
 - (void) exportJPEG:(id) sender;
 - (void) export2iPhoto:(id) sender;
 - (void) exportTIFF:(id) sender;
-
+- (void) computeMinMax;
+- (float) minimumValue;
+- (float) maximumValue;
+- (float) blendingMinimumValue;
+- (float) blendingMaximumValue;
 - (FlyThruController *) flyThruController;
 - (IBAction) flyThruControllerInit:(id) sender;
 

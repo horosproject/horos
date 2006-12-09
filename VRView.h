@@ -288,6 +288,8 @@ typedef char* vtkMyCallbackVR;
 	float						_startWW, _startWL, _startMin, _startMax;
 	
 	NSRect						savedViewSizeFrame;
+	
+	float						firstPixel, secondPixel;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
