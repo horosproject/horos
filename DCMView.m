@@ -4973,147 +4973,107 @@ static long scrollMode;
 	
 	[curDCM orientation:vectors];
 	
+	if( yFlipped)
+	{
+		vectors[ 3] *= -1;
+		vectors[ 4] *= -1;
+		vectors[ 5] *= -1;
+	}
+	
+	if( xFlipped)
+	{
+		vectors[ 0] *= -1;
+		vectors[ 1] *= -1;
+		vectors[ 2] *= -1;
+	}
+
+	// Compute normal vector
+	vectors[6] = vectors[1]*vectors[5] - vectors[2]*vectors[4];
+	vectors[7] = vectors[2]*vectors[3] - vectors[0]*vectors[5];
+	vectors[8] = vectors[0]*vectors[4] - vectors[1]*vectors[3];
+
+	
 	[self getOrientationText:string :vectors :YES];
 	//left side
 	if(rot >= 0 && rot <= 45)  {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
 	}
 	
 	else if (rot >= 315 && rot <= 360) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
 	 }
 	//top
 	else if (rot >= 45 && rot <= 135) {
-		if (yFlipped) 
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	}
 	//right
 	else if(rot >= 135 && rot <= 225) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 	}
 	// bottom
 	else if(rot >= 225 && rot <= 315) {
-		if (yFlipped) 
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 	}
 	[self getOrientationText:string :vectors :NO];
 	// right
 	if(rot >= 0 && rot <= 45)	{
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 	}
 	else if(rot >= 315 && rot <= 360){
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 	}
 	//bottom
 	else if(rot >= 45 && rot <= 135) {
-		if (yFlipped) 
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 	}
 	//left
 	else if(rot >= 135 && rot <= 225) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
 	}
 	//top
 	else if(rot >= 225 && rot <= 315) {
-		if (yFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	}
 
 	[self getOrientationText:string :vectors+3 :YES];
 	//top
 	if(rot >= 0 && rot <= 45) {
-		if (yFlipped)
-			 [self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	}
 	else if(rot >= 315 && rot <= 360) {
-		if (yFlipped)
-			 [self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	}
 	//right
 	else if(rot >= 45 && rot <= 135) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 	}
 	//bottom
 	else if(rot >= 135 && rot <= 225) {
-		if (yFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 	}
 	//left
 	else if(rot >= 225 && rot <= 315) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
 	}
 
 	[self getOrientationText:string :vectors+3 :NO];
 	//bottom
 	if (rot >= 0 && rot <= 45)	{
-		if (yFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 	}
 	else if (rot >= 315 && rot <= 360) {
-		if (yFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 	}
 	// left
 	else if(rot >= 45 && rot <= 135){
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
 	}
 	// top
 	else if (rot >= 135 && rot <= 225) {
-		if (yFlipped)
-			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	}
 	//right
 	else if (rot >= 225 && rot <= 315) {
-		if 	(xFlipped)
-			[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-		else
 			[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 	}
 }
@@ -6993,8 +6953,27 @@ static long scrollMode;
 	
 	[curDCM orientation: o];
 	
+	if( yFlipped)
+	{
+		o[ 3] *= -1;
+		o[ 4] *= -1;
+		o[ 5] *= -1;
+	}
+	
+	if( xFlipped)
+	{
+		o[ 0] *= -1;
+		o[ 1] *= -1;
+		o[ 2] *= -1;
+	}
+
+	// Compute normal vector
+	o[6] = o[1]*o[5] - o[2]*o[4];
+	o[7] = o[2]*o[3] - o[0]*o[5];
+	o[8] = o[0]*o[4] - o[1]*o[3];
+
 	XYZ vector, rotationVector; 
-			
+	
 	rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
 	
 	vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
