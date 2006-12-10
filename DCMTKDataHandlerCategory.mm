@@ -113,6 +113,23 @@ extern BrowserController *browserWindow;
 					predicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
 			}
 			
+			else if (key == DCM_PatientsBirthDate) {
+				//NSLog(@"BirthDate");
+				char *aDate;
+				DCMCalendarDate *value = nil;
+				if (dcelem->getString(aDate).good() && aDate != NULL) {
+					NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+					value = [DCMCalendarDate dicomDate:dateString];
+				}
+				//NSLog(@"StudyDate decoded");
+				if (!value) {
+					predicate = nil;
+				}
+				else{
+					predicate = [NSPredicate predicateWithFormat:@"dateOfBirth >= CAST(%f, \"NSDate\") AND dateOfBirth <= CAST(%f, \"NSDate\")",[[value addTimeInterval:-60*60*24] timeIntervalSinceReferenceDate], [[value addTimeInterval:60*60*24] timeIntervalSinceReferenceDate]];
+				}
+			}
+			
 			else if (key == DCM_StudyDate) {
 				//NSLog(@"StudyDate");
 				char *aDate;
@@ -431,18 +448,23 @@ extern BrowserController *browserWindow;
 	else
 		dataset ->putAndInsertString( DCM_StudyDescription, NULL);
 		
-
+	if ([fetchedObject valueForKey:@"dateOfBirth"]){
+		DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"dateOfBirth"]];
+		dataset ->putAndInsertString(DCM_PatientsBirthDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
+	}
+	else {
+		dataset ->putAndInsertString(DCM_PatientsBirthDate, NULL);
+	}
+	
 	if ([fetchedObject valueForKey:@"date"]){
 		DCMCalendarDate *dicomDate = [DCMCalendarDate dicomDateWithDate:[fetchedObject valueForKey:@"date"]];
 		DCMCalendarDate *dicomTime = [DCMCalendarDate dicomTimeWithDate:[fetchedObject valueForKey:@"date"]];
 		dataset ->putAndInsertString(DCM_StudyDate, [[dicomDate dateString] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 		dataset ->putAndInsertString(DCM_StudyTime, [[dicomTime timeString] cStringUsingEncoding:NSISOLatin1StringEncoding]);	
 	}
-	
 	else {
 		dataset ->putAndInsertString(DCM_StudyDate, NULL);
 		dataset ->putAndInsertString(DCM_StudyTime, NULL);
-		
 	}
 	
 	

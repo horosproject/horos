@@ -24,16 +24,17 @@
 
     IBOutlet    NSOutlineView				*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
-	IBOutlet	NSSearchField				*searchField;
+	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID;
 	IBOutlet	NSWindow					*advancedQueryWindow;   
 	IBOutlet	NSBox						*filterBox;
 	
 	IBOutlet	NSComboBox					*servers;
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
-	IBOutlet	NSMatrix					*PatientModeMatrix;
-	IBOutlet	NSDatePicker				*fromDate, *toDate;
+	IBOutlet	NSTabView					*PatientModeMatrix;
+	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     
+	NSMutableString					*pressedKeys;
     NSMutableArray                  *result;
     NSMutableArray					*queryFilters;
 	NSMutableArray					*advancedQuerySubviews;
@@ -51,7 +52,7 @@
 -(void) advancedQuery:(id)sender;
 -(void) retrieve:(id)sender;
 - (void)performQuery:(id)object;
-- (void)performRetrieve:(id)object;
+- (void)performRetrieve:(NSArray*) array;
 - (void)setDateQuery:(id)sender;
 - (void)setModalityQuery:(id)sender;
 - (void)openAdvancedQuery:(id)sender;

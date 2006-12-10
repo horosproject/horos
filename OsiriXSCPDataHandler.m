@@ -359,7 +359,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	NSEnumerator *enumerator = [[object attributes] keyEnumerator];
 	NSString *searchType = [object attributeValueWithName:@"Query/RetrieveLevel"];
 	//should be STUDY, SERIES OR IMAGE
-	//NSLog(@"predicateForObject: %@", [object description]);
+	NSLog(@"predicateForObject: %@", [object description]);
 	NSString *key;
 	while (key = [enumerator nextObject]){
 		id value;
@@ -404,6 +404,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			else if ([[[attr attrTag] name] isEqualToString:@"PerformingPhysiciansName"]) {
 				value = [attr value];
 				predicate = [NSPredicate predicateWithFormat:@"performingPhysician like[cd] %@", value];
+			}
+			else if ([[[attr attrTag] name] isEqualToString:@"PatientsBirthDate"]) {
+				value = [attr value];
+				predicate = [NSPredicate predicateWithFormat:@"dateOfBirth == CAST(%f, \"NSDate\")", [self startOfDay:value]];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"StudyDate"]) {
 				value = [attr value];
@@ -593,11 +597,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		}
 		else if ([searchType isEqualToString:@"IMAGE"]) {
 		}
-
-			
 	}
 	
-	NSLog(@"predicate: %@", [compoundPredicate description]);
+	NSLog(@"predicateForObject: %@", [compoundPredicate description]);
 	return compoundPredicate;
 }
 
@@ -661,7 +663,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		[studyObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"performingPhysician"]] forName:@"PerformingPhysiciansName"];
 	else
 		[studyObject setAttributeValues:[NSMutableArray array] forName:@"PerformingPhysiciansName"];
-		
+				
 	if ([fetchedObject valueForKey:@"institutionName"])
 		[studyObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"institutionName"]] forName:@"InstitutionName"];
 	else
@@ -811,14 +813,15 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 
 -(NSTimeInterval)endOfDay:(DCMCalendarDate *)day
 {
-	NSCalendarDate *start = [day dateByAddingYears:0 months:0 days:0 hours:23 minutes:59 seconds:59];
-	return [start timeIntervalSinceReferenceDate];
+	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
+	NSCalendarDate *end = [start dateByAddingYears:0 months:0 days:0 hours:23 minutes:59 seconds:59];
+	return [end timeIntervalSinceReferenceDate];
 }
 
 -(NSTimeInterval)startOfDay:(DCMCalendarDate *)day
 {
-	NSCalendarDate	*d = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
-	return [d timeIntervalSinceReferenceDate];
+	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
+	return [start timeIntervalSinceReferenceDate];
 }
 
 

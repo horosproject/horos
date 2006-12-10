@@ -120,21 +120,23 @@
                 abort = id; 
                 addQuerySubview = id; 
                 advancedQuery = id; 
+                changeQueryFilter = id; 
                 chooseFilter = id; 
                 clearQuery = id; 
                 controlAction = id; 
                 openAdvancedQuery = id; 
                 query = id; 
+                refresh = id; 
                 removeQuerySubview = id; 
                 retrieve = id; 
-                setCurrentQueryKey = id; 
                 setDateQuery = id; 
+                setModalityQuery = id; 
                 verify = id; 
             }; 
             CLASS = QueryController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                PatientModeMatrix = NSMatrix; 
+                PatientModeMatrix = NSTabView; 
                 advancedQueryWindow = NSWindow; 
                 dateFilterMatrix = NSMatrix; 
                 filterBox = NSBox; 
@@ -142,7 +144,9 @@
                 modalityFilterMatrix = NSMatrix; 
                 outlineView = NSOutlineView; 
                 progressIndicator = NSProgressIndicator; 
-                searchField = NSSearchField; 
+                searchBirth = NSDatePicker; 
+                searchFieldID = NSSearchField; 
+                searchFieldName = NSSearchField; 
                 servers = NSComboBox; 
                 toDate = NSDatePicker; 
             }; 

@@ -258,6 +258,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_name = nil;
 		_patientID = nil;
 		_date = nil;
+		_birthdate = nil;
 		_time  = nil;
 		_modality = nil;
 		_numberImages = nil;
@@ -280,6 +281,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_name release];
 	[_patientID release];
 	[_date release];
+	[_birthdate release];
 	[_time release];
 	[_modality release];
 	[_numberImages release];
@@ -303,6 +305,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (DCMCalendarDate *)date{
 	return _date;
+}
+- (DCMCalendarDate *)birthdate{
+	return _birthdate;
 }
 - (DCMCalendarDate *)time{
 	return _time;
@@ -394,6 +399,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 				NSString *date = [(DCMCalendarDate *)value queryString];
 				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
 				dataset->putAndInsertString(DCM_StudyDate, string);
+			}
+			else if ([key isEqualToString:@"PatientBirthDate"]) {
+				NSString *date = [(DCMCalendarDate *)value queryString];
+				string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
+				dataset->putAndInsertString(DCM_PatientsBirthDate, string);
 			}
 			else if ([key isEqualToString:@"StudyTime"]) {
 				NSString *date = [(DCMCalendarDate *)value queryString];

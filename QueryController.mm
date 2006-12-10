@@ -32,11 +32,27 @@
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *StudyDate = @"StudyDate";
+static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *Modality = @"Modality";
 
 @implementation QueryController
 
 //******	OUTLINEVIEW
+
+- (void)keyDown:(NSEvent *)event
+{
+	[pressedKeys appendString: [event characters]];
+	
+	NSArray		*resultFilter = [[queryManager queries] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+	
+	[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
+	
+	if( [resultFilter count])
+	{
+		[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
+		[outlineView scrollRowToVisible: [outlineView selectedRow]];
+	}
+}
 
 - (void) refresh: (id) sender
 {
@@ -129,7 +145,7 @@ static NSString *Modality = @"Modality";
 
 - (void) queryPatientID:(NSString*) ID
 {
-	[PatientModeMatrix selectCellWithTag: 1];	// PatientID search
+	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
 	
 	[dateFilterMatrix selectCellWithTag: 0];
 	[self setDateQuery: dateFilterMatrix];
@@ -137,10 +153,23 @@ static NSString *Modality = @"Modality";
 	[modalityFilterMatrix selectCellWithTag: 3];
 	[self setModalityQuery: modalityFilterMatrix];
 	
-	[searchField setStringValue: ID];
+	[searchFieldID setStringValue: ID];
 	
 	[self query: self];
 }
+
+//- (IBAction) changeQueryFilter:(id) sender
+//{
+//	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+//	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+//	
+//	switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+//	{
+//		case 0:		[searchField setFormatter: 0L];		break;
+//		case 1:		[searchField setFormatter: 0L];		break;
+//		case 2:		[searchField setFormatter: dateFomat];	break;
+//	}
+//}
 
 -(void) query:(id)sender
 {
@@ -173,8 +202,6 @@ static NSString *Modality = @"Modality";
 		[self setModalityQuery: modalityFilterMatrix];
 		
 		//get rid of white space at end and append "*"
-
-		NSString *filterValue = [[searchField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		
 		[queryManager release];
 		queryManager = nil;
@@ -187,24 +214,38 @@ static NSString *Modality = @"Modality";
 			//Specific Character Set
 			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 		
-		switch( [PatientModeMatrix selectedTag])
+		switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
 		{
 			case 0:		currentQueryKey = PatientName;		break;
 			case 1:		currentQueryKey = PatientID;		break;
+			case 2:		currentQueryKey = PatientBirthDate;	break;
 		}
 		
-		if( currentQueryKey != PatientID)
+		BOOL queryItem = NO;
+		
+		if( currentQueryKey == PatientName)
 		{
+			NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			
 			if ([filterValue length] > 0)
 			{
 				[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+				queryItem = YES;
 			}
 		}
-		else
+		else if( currentQueryKey == PatientBirthDate)
 		{
+			[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+			queryItem = YES;
+		}
+		else if( currentQueryKey == PatientID)
+		{
+			NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			
 			if ([filterValue length] > 0)
 			{
 				[queryManager addFilter:filterValue forDescription:currentQueryKey];
+				queryItem = YES;
 			}
 		}
 		
@@ -213,7 +254,7 @@ static NSString *Modality = @"Modality";
 		
 		if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
 		
-		if ([dateQueryFilter object] || [filterValue length] > 0)
+		if ([dateQueryFilter object] || queryItem)
 		{
 			[self performQuery: 0L];
 		}		
@@ -366,7 +407,6 @@ static NSString *Modality = @"Modality";
 					description = StudyDate;
 				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Modality", nil)])
 					description = @"ModalitiesinStudy";
-				//	description = Modality;
 				
 				if (description)
 					[queryManager addFilter:[filter filteredValue] forDescription:description];
@@ -406,28 +446,51 @@ static NSString *Modality = @"Modality";
 	[queryManager release];
 	queryManager = nil;
 	[progressIndicator stopAnimation:nil];
-	[searchField setStringValue:@""];
+	[searchFieldName setStringValue:@""];
+	[searchFieldID setStringValue:@""];
 	[outlineView reloadData];
 }
 
 -(void) retrieve:(id)sender
 {
-	id object = [sender itemAtRow:[sender selectedRow]];	
+	NSMutableArray	*selectedItems = [NSMutableArray array];
+	NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
+	int				index;
 	
-	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject:object];
+	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	{
+       if ([selectedRowIndexes containsIndex:index])
+	   {
+			[selectedItems addObject: [outlineView itemAtRow:index]];
+	   }
+	}
+	
+	[self performRetrieve: selectedItems];
+	
+//	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 }
 
-- (void)performRetrieve:(id)object{
+- (void)performRetrieve:(NSArray*) array
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[object retain];
+	[array retain];
+	
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[queryManager parameters]];
+	
 	NSLog(@"retrieve params: %@", [dictionary description]);
-	if (dictionary != nil) {
-		[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
-		[object move:dictionary];
+	
+	int i;
+	for( i = 0; i < [array count] ; i++)
+	{
+		if (dictionary != nil)
+		{
+			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
+			[[array objectAtIndex: i] move:dictionary];
+		}
 	}
-	[object release];
+	
+	[array release];
 	[pool release];
 }
 
@@ -484,9 +547,10 @@ static NSString *Modality = @"Modality";
 {
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
-    NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+	{
+	 NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
     NSMenuItem *item1, *item2, *item3;
-    id searchCell = [searchField cell];
+    id searchCell = [searchFieldID cell];
     item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
                                 action:NULL
                                 keyEquivalent:@""];
@@ -506,6 +570,37 @@ static NSString *Modality = @"Modality";
     [cellMenu insertItem:item3 atIndex:2];
     [item3 release];
     [searchCell setSearchMenuTemplate:cellMenu];
+	}
+	
+	{
+    NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+    NSMenuItem *item1, *item2, *item3;
+    id searchCell = [searchFieldName cell];
+    item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+    [cellMenu insertItem:item1 atIndex:0];
+    [item1 release];
+    item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item2 setTag:NSSearchFieldRecentsMenuItemTag];
+    [cellMenu insertItem:item2 atIndex:1];
+    [item2 release];
+    item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+                                action:NULL
+                                keyEquivalent:@""];
+    [item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+    [cellMenu insertItem:item3 atIndex:2];
+    [item3 release];
+    [searchCell setSearchMenuTemplate:cellMenu];
+	}
+	
+	
+	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
 }
 
 - (void)addQuerySubview:(id)sender{
@@ -557,6 +652,7 @@ static NSString *Modality = @"Modality";
 		echoSuccess = 0L;
 		activeMoves = 0L;
 		
+		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
 		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
@@ -570,6 +666,8 @@ static NSString *Modality = @"Modality";
 - (void)dealloc
 {
 	NSLog( @"dealloc QueryController");
+	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
+	[pressedKeys release];
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	[queryManager release];
 	[queryFilters release];
@@ -583,10 +681,15 @@ static NSString *Modality = @"Modality";
 
 - (void)windowDidLoad
 {
-	id searchCell = [searchField cell];
+	id searchCell = [searchFieldName cell];
 
 	[[searchCell cancelButtonCell] setTarget:self];
-	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];	
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
+
+	searchCell = [searchFieldID cell];
+
+	[[searchCell cancelButtonCell] setTarget:self];
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
 	
 	[servers selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"lastQueryServer"]];
 	 

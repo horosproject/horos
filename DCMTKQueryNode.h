@@ -42,6 +42,7 @@
 	NSString *_name;
 	NSString *_patientID;
 	DCMCalendarDate *_date;
+	DCMCalendarDate *_birthdate;
 	DCMCalendarDate *_time;
 	NSString *_modality;
 	NSNumber *_numberImages;

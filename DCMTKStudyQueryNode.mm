@@ -80,7 +80,14 @@
 		
 		if (dataset ->findAndGetString(DCM_PatientID, string).good() && string != nil)		
 			_patientID = [[NSString alloc] initWithCString:string  DICOMEncoding:_specificCharacterSet];
-			
+		
+		if (dataset ->findAndGetString(DCM_PatientsBirthDate, string).good() && string != nil) {
+			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+			_birthdate = [[DCMCalendarDate dicomDate:dateString] retain];
+			NSLog( [_birthdate description]);
+			[dateString release];
+		}
+
 		if (dataset ->findAndGetString(DCM_StudyDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_date = [[DCMCalendarDate dicomDate:dateString] retain];
