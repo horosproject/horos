@@ -126,7 +126,7 @@ extern BrowserController *browserWindow;
 					predicate = nil;
 				}
 				else{
-					predicate = [NSPredicate predicateWithFormat:@"dateOfBirth >= CAST(%f, \"NSDate\") AND dateOfBirth <= CAST(%f, \"NSDate\")",[[value addTimeInterval:-60*60*24] timeIntervalSinceReferenceDate], [[value addTimeInterval:60*60*24] timeIntervalSinceReferenceDate]];
+					predicate = [NSPredicate predicateWithFormat:@"dateOfBirth >= CAST(\"%@\", \"NSDate\") AND dateOfBirth <= CAST(\"%@\", \"NSDate\")",[self startOfDay:value], [self endOfDay:value]];
 				}
 			}
 			
@@ -147,14 +147,14 @@ extern BrowserController *browserWindow;
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
 
-					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%f, \"NSDate\")", [self endOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")", [self endOfDay:query]];
 
 				}
 				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"]) {
 					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];		
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%f, \"NSDate\")",[self startOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(\"%@\", \"NSDate\")",[self startOfDay:query]];
 				}
 				else if ([(DCMCalendarDate *)value isQuery]){
 					//value = [attr value];
@@ -164,8 +164,8 @@ extern BrowserController *browserWindow;
 						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
 
 						//need two predicates for range
-						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\")", [self startOfDay:startDate]];
-						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%f, \"NSDate\")",[self endOfDay:endDate]];
+						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\")", [self startOfDay:startDate]];
+						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")",[self endOfDay:endDate]];
 						
 						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 					}
@@ -173,7 +173,7 @@ extern BrowserController *browserWindow;
 						predicate = nil;
 				}
 				else{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\") AND date < CAST(%f, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\") AND date < CAST(\"%@\", \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
 			
@@ -292,14 +292,14 @@ extern BrowserController *browserWindow;
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
 					//id newValue = [DCMCalendarDate dicomDate:query];
-					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%f, \"NSDate\")", [self endOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")", [self endOfDay:query]];
 
 				}
 				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"]) {
 					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];		
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%f, \"NSDate\")",[self startOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(\"%@\", \"NSDate\")",[self startOfDay:query]];
 				}
 				else if ([(DCMCalendarDate *)value isQuery]){
 					NSArray *values = [[value queryString] componentsSeparatedByString:@"-"];
@@ -308,10 +308,10 @@ extern BrowserController *browserWindow;
 						DCMCalendarDate *endDate = [DCMCalendarDate dicomDate:[values objectAtIndex:1]];
 
 						//need two predicates for range
-						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\")", [self startOfDay:startDate]];
+						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\")", [self startOfDay:startDate]];
 						
 						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
-						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%f, \"NSDate\")",[self endOfDay:endDate]];
+						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")",[self endOfDay:endDate]];
 						
 						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 					}
@@ -319,7 +319,7 @@ extern BrowserController *browserWindow;
 						predicate = nil;
 				}
 				else{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%f, \"NSDate\") AND date < CAST(%f, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\") AND date < CAST(\"%@\", \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
 			else if (key == DCM_SeriesTime) {

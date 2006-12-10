@@ -2424,7 +2424,7 @@ static BOOL COMPLETEREBUILD = NO;
 		NSArray					*logArray;
 		NSDate					*producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
 		NSManagedObjectContext	*context = [self managedObjectContext];
-		NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%f, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
+		NSPredicate				*predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(\"%@\", \"NSDate\")", producedDate];
 		
 		[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"LogEntry"]];
 		[request setPredicate: predicate];
@@ -2913,21 +2913,22 @@ static BOOL COMPLETEREBUILD = NO;
 	// Today:
 	NSCalendarDate	*now = [NSCalendarDate calendarDate];
 	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
-	NSDate			*today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
+	
+	NSLog( [start description]);
 	
 //	NSLog( pred);
 
 	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%f", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
 																		[NSString stringWithFormat:@"%f", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
 																		[NSString stringWithFormat:@"%f", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
-																		[NSString stringWithFormat:@"%f", [today timeIntervalSinceReferenceDate]],										@"$TODAY",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24 -1] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*2 -1] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*7 -1] timeIntervalSinceReferenceDate]],		@"$WEEK",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31 -1] timeIntervalSinceReferenceDate]],		@"$MONTH",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*2 -1] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*3 -1] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*365 -1] timeIntervalSinceReferenceDate]],		@"$YEAR",
+																		[NSString stringWithFormat:@"%f", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+																		[NSString stringWithFormat:@"%f", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
 																		0L];
 	
 	NSEnumerator *enumerator = [sub keyEnumerator];
@@ -3041,13 +3042,13 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( timeIntervalStart != 0L && timeIntervalEnd != 0L)
 		{
-			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%f, \"NSDate\") AND date <= CAST(%f, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
+			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(\"%@\", \"NSDate\") AND date <= CAST(\"%@\", \"NSDate\")", timeIntervalStart, timeIntervalEnd];
 		
 			description = [description stringByAppendingFormat: NSLocalizedString(@" / Time Interval: from: %@ to: %@", nil), [timeIntervalStart descriptionWithCalendarFormat:sdf timeZone:0L locale:locale],  [timeIntervalEnd descriptionWithCalendarFormat:sdf timeZone:0L locale:locale] ];
 		}
 		else
 		{
-			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%f, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate]];
+			subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(\"%@\", \"NSDate\")", timeIntervalStart];
 			
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [timeIntervalStart descriptionWithCalendarFormat:sdf timeZone:0L locale:locale]];
 		}
