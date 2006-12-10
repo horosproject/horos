@@ -809,13 +809,16 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 //}
 
 
--(NSTimeInterval)endOfDay:(DCMCalendarDate *)day{
-	NSCalendarDate *start = [day dateByAddingYears:0 months:0 days:1 hours:0 minutes:0 seconds:0];
+-(NSTimeInterval)endOfDay:(DCMCalendarDate *)day
+{
+	NSCalendarDate *start = [day dateByAddingYears:0 months:0 days:0 hours:23 minutes:59 seconds:59];
 	return [start timeIntervalSinceReferenceDate];
 }
 
--(NSTimeInterval)startOfDay:(DCMCalendarDate *)day{
-	return [day timeIntervalSinceReferenceDate];
+-(NSTimeInterval)startOfDay:(DCMCalendarDate *)day
+{
+	NSCalendarDate	*d = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
+	return [d timeIntervalSinceReferenceDate];
 }
 
 

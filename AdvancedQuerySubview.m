@@ -33,8 +33,7 @@
 		[datePicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
 		[datePicker setDatePickerStyle: NSTextFieldAndStepperDatePickerStyle];
 		
-		NSCalendarDate *now = [NSCalendarDate date];
-		[datePicker setDateValue: [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+		[datePicker setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 		
 		[datePicker setBackgroundColor: [NSColor whiteColor]];
 		[datePicker setDrawsBackground: YES];
