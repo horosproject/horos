@@ -2777,14 +2777,14 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	if( [sender tag] == 0)
 	{
-		[customStart setDateValue: [NSDate date]];
-		[customStart2 setDateValue: [NSDate date]];
+		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	}
 	
 	if( [sender tag] == 1)
 	{
-		[customEnd setDateValue: [NSDate date]];
-		[customEnd2 setDateValue: [NSDate date]];
+		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	}
 }
 
@@ -2921,13 +2921,13 @@ static BOOL COMPLETEREBUILD = NO;
 																		[NSString stringWithFormat:@"%f", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
 																		[NSString stringWithFormat:@"%f", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
 																		[NSString stringWithFormat:@"%f", [today timeIntervalSinceReferenceDate]],										@"$TODAY",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24 -1] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*2 -1] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*7 -1] timeIntervalSinceReferenceDate]],		@"$WEEK",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31 -1] timeIntervalSinceReferenceDate]],		@"$MONTH",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*2 -1] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*31*3 -1] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+																		[NSString stringWithFormat:@"%f", [[today addTimeInterval: -60*60*24*365 -1] timeIntervalSinceReferenceDate]],		@"$YEAR",
 																		0L];
 	
 	NSEnumerator *enumerator = [sub keyEnumerator];
@@ -3470,8 +3470,6 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( item)
 	{
-		NSLog( [[item valueForKey:@"date"] description]);
-	
 		/**********
 		post notification of new selected item. Can be used by plugins to update RIS connection
 		**********/
@@ -8037,10 +8035,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	[albumTable registerForDraggedTypes:[NSArray arrayWithObject:albumDragType]];
 	[albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
 	
-	[customStart setDateValue: [NSDate date]];
-	[customStart2 setDateValue: [NSDate date]];
-	[customEnd setDateValue: [NSDate date]];
-	[customEnd2 setDateValue: [NSDate date]];
+	[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	
 //	syntaxArray = [[NSArray arrayWithObjects:@"Explicit Little Endian", @"JPEG 2000 Lossless", @"JPEG 2000 Lossy 10:1", @"JPEG 2000 Lossy 20:1", @"JPEG 2000 Lossy 50:1",@"JPEG Lossless", @"JPEG High Quality (9)",  @"JPEG Medium High Quality (8)", @"JPEG Medium Quality (7)", nil] retain];
 //	[syntaxList setDataSource:self];

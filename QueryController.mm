@@ -467,8 +467,8 @@ static NSString *Modality = @"Modality";
 			case 0:			date = nil;																								break;
 			case 1:			date = [DCMCalendarDate date];											searchType = SearchToday;		break;
 			case 2:			date = [DCMCalendarDate dateWithNaturalLanguageString:@"Yesterday"];	searchType = searchYesterday;	break;
-			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7];										break;
-			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31];									break;
+			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];										break;
+			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
 		}
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
@@ -570,7 +570,7 @@ static NSString *Modality = @"Modality";
 - (void)dealloc
 {
 	NSLog( @"dealloc QueryController");
-[fromDate setDateValue: [NSDate date]];
+	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	[queryManager release];
 	[queryFilters release];
 	[dateQueryFilter release];
@@ -621,8 +621,8 @@ static NSString *Modality = @"Modality";
 	[buttonCell setBezelStyle: NSRegularSquareBezelStyle];
 	[tableColumn setDataCell:buttonCell];
 	
-	[fromDate setDateValue: [NSDate date]];
-	[toDate setDateValue: [NSDate date]];
+	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+	[toDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
 	
 }
 
