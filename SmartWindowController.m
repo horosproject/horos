@@ -225,18 +225,18 @@
 				case searchBefore:
 					//date = [[view valueField] objectValue];
 					date = [[view datePicker] objectValue];
-					predicateString = [NSString stringWithFormat:@"%@ <= CAST(\"%@\", \"NSDate\")", field, date];
+					predicateString = [NSString stringWithFormat:@"%@ <= CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate]];
 				break;
 				
 				case searchAfter:
 					//date = [[view valueField] objectValue];
 					date = [[view datePicker] objectValue];
-					predicateString = [NSString stringWithFormat:@"%@ >= CAST(\"%@\", \"NSDate\")", field, date];
+					predicateString = [NSString stringWithFormat:@"%@ >= CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate]];
 				break;
 				
 				case searchExactDate:
 					date = [[view datePicker] objectValue];
-					predicateString = [NSString stringWithFormat:@"%@ >= CAST(\"%@\", \"NSDate\") AND %@ <= CAST(\"%@\", \"NSDate\")", field, date, field, [date addTimeInterval:60*60*24 -1]];
+					predicateString = [NSString stringWithFormat:@"%@ >= CAST(%lf, \"NSDate\") AND %@ < CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate], field, [[date addTimeInterval:60*60*24] timeIntervalSinceReferenceDate]];
 				break;
 			}
 		}

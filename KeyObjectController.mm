@@ -88,7 +88,7 @@
 		}
 
 		NS_HANDLER
-			NSLog(@"exception: %@", [localException description]);
+			NSLog(@"Close Window exception: %@", [localException description]);
 		NS_ENDHANDLER
 	}
 	[NSApp endSheet:[self window] returnCode:0];

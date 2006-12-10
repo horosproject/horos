@@ -48,8 +48,8 @@
 - (DCMObject *)seriesObjectForFetchedObject:(id)fetchedObject;
 - (DCMObject *)imageObjectForFetchedObject:(id)fetchedObject;
 
--(NSCalendarDate*)endOfDay:(DCMCalendarDate *)day;
--(NSCalendarDate*)startOfDay:(DCMCalendarDate *)day;
+-(NSTimeInterval)endOfDay:(NSCalendarDate *)day;
+-(NSTimeInterval)startOfDay:(NSCalendarDate *)day;
 
 
 @end

@@ -407,7 +407,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"PatientsBirthDate"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"dateOfBirth == CAST(\"%@\", \"NSDate\")", [self startOfDay:value]];
+				predicate = [NSPredicate predicateWithFormat:@"dateOfBirth >= CAST(%lf, \"NSDate\") AND dateOfBirth <= CAST(%lf, \"NSDate\")", [self startOfDay:value], [self endOfDay:value]];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"StudyDate"]) {
 				value = [attr value];
@@ -416,16 +416,16 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
 					/*			
-					subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%f, \"NSDate\") AND date <= CAST(%f, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
+					subPredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\") AND date <= CAST(%lf, \"NSDate\")", [timeIntervalStart timeIntervalSinceReferenceDate], [timeIntervalEnd timeIntervalSinceReferenceDate]];
 					*/
-					predicate = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")", [self endOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
 
 				}
 				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"]) {
 					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(\"%@\", \"NSDate\")",[self startOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
 				}
 				else if ([(DCMCalendarDate *)value isQuery]){
 					value = [attr value];
@@ -436,10 +436,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 						//NSLog(@"startDate: %@", [startDate description]);
 						//NSLog(@"endDate :%@", [endDate description]);
 						//need two predicates for range
-						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\")", [self startOfDay:startDate]];
+						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
 						
 						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
-						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")",[self endOfDay:endDate]];
+						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
 						
 						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 					}
@@ -447,7 +447,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 						predicate = nil;
 				}
 				else{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\") AND date < CAST(\"%@\", \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
 			
@@ -520,14 +520,14 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					NSString *queryString = [[value queryString] stringByTrimmingCharactersInSet:set];	
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
 					//id newValue = [DCMCalendarDate dicomDate:query];
-					predicate = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")", [self endOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")", [self endOfDay:query]];
 
 				}
 				else if ([(DCMCalendarDate *)value isQuery] && [[(DCMCalendarDate *)value queryString] hasSuffix:@"-"]) {
 					NSCharacterSet *set = [NSCharacterSet characterSetWithCharactersInString:@"-"];
 					NSString *queryString = [[[attr value] queryString] stringByTrimmingCharactersInSet:set];		
 					DCMCalendarDate *query = [DCMCalendarDate dicomDate:queryString];			
-					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(\"%@\", \"NSDate\")",[self startOfDay:query]];
+					predicate = [NSPredicate predicateWithFormat:@"date  >= CAST(%lf, \"NSDate\")",[self startOfDay:query]];
 				}
 				else if ([(DCMCalendarDate *)value isQuery]){
 					value = [attr value];
@@ -538,10 +538,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 						//NSLog(@"startDate: %@", [startDate description]);
 						//NSLog(@"endDate :%@", [endDate description]);
 						//need two predicates for range
-						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\")", [self startOfDay:startDate]];
+						NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\")", [self startOfDay:startDate]];
 						
 						//expression = [NSExpression expressionForConstantValue:(NSDate *)endDate];
-						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(\"%@\", \"NSDate\")",[self endOfDay:endDate]];
+						NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"date < CAST(%lf, \"NSDate\")",[self endOfDay:endDate]];
 						
 						predicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects: predicate1, predicate2, nil]];
 					}
@@ -549,7 +549,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 						predicate = nil;
 				}
 				else{
-					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(\"%@\", \"NSDate\") AND date < CAST(\"%@\", \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
+					predicate = [NSPredicate predicateWithFormat:@"date >= CAST(%lf, \"NSDate\") AND date < CAST(%lf, \"NSDate\")",[self startOfDay:value],[self endOfDay:value]];
 				}
 			}
 			
@@ -811,18 +811,16 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 //}
 
 
--(NSCalendarDate*) endOfDay:(DCMCalendarDate *)day
+-(NSTimeInterval) endOfDay:(NSCalendarDate *)day
 {
-	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
-	NSCalendarDate *end = [start dateByAddingYears:0 months:0 days:0 hours:23 minutes:59 seconds:59];
-	return end;
+	NSCalendarDate *start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L];
+	NSCalendarDate *end = [start dateByAddingYears:0 months:0 days:0 hours:24 minutes:0 seconds:0];
+	return [end timeIntervalSinceReferenceDate];
 }
 
--(NSCalendarDate*) startOfDay:(DCMCalendarDate *)day
+-(NSTimeInterval) startOfDay:(NSCalendarDate *)day
 {
-	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone:0L];
-	return start;
+	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[day yearOfCommonEra] month:[day monthOfYear] day:[day dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L];
+	return [start timeIntervalSinceReferenceDate];
 }
-
-
 @end

@@ -1784,7 +1784,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if (val != NULL) {  
 					NSString		*patientDOB =  [[[NSString alloc] initWithCString:val->a] autorelease];
 					NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
-					if( DOB) [dicomElements setObject:DOB forKey:@"patientBirthDate"];
+					
+					NSDate	*test = [NSDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]];
+					NSLog(@"test:%@ %f", [test description], [test timeIntervalSinceReferenceDate]);
+					
+					if( DOB) [dicomElements setObject:test forKey:@"patientBirthDate"];
 				}
 				//Patients Sex
 				val = Papy3GetElement (theGroupP, papPatientsSexGr, &nbVal, &itemType);
