@@ -32,7 +32,10 @@
 		datePicker = [[NSDatePicker alloc] initWithFrame:NSMakeRect(287,20,140,22)];
 		[datePicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
 		[datePicker setDatePickerStyle: NSTextFieldAndStepperDatePickerStyle];
-		[datePicker setDateValue: [NSDate date]];
+		
+		NSCalendarDate *now = [NSCalendarDate date];
+		[datePicker setDateValue: [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: 0L]];
+		
 		[datePicker setBackgroundColor: [NSColor whiteColor]];
 		[datePicker setDrawsBackground: YES];
 		[datePicker setHidden:YES];

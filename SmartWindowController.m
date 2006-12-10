@@ -235,9 +235,8 @@
 				break;
 				
 				case searchExactDate:
-					//date = [[view valueField] objectValue];
 					date = [[view datePicker] objectValue];
-					predicateString = [NSString stringWithFormat:@"%@ >= CAST(%f, \"NSDate\") AND %@ <= CAST(%f, \"NSDate\")", field, [date timeIntervalSinceReferenceDate], field, [[date addTimeInterval:60*60*24] timeIntervalSinceReferenceDate]];
+					predicateString = [NSString stringWithFormat:@"%@ >= CAST(\"%@\", \"NSDate\") AND %@ <= CAST(\"%@\", \"NSDate\")", field, date, field, [date addTimeInterval:60*60*24 -1]];
 				break;
 			}
 		}

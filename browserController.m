@@ -3470,6 +3470,8 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( item)
 	{
+		NSLog( [[item valueForKey:@"date"] description]);
+	
 		/**********
 		post notification of new selected item. Can be used by plugins to update RIS connection
 		**********/
