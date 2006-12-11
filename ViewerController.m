@@ -11873,6 +11873,27 @@ long i;
 			
 			[curvedMPRsize setIntValue:48];
 			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRsize intValue], [curvedMPRsize intValue]*[[imageView curDCM] pixelSpacingX]]];
+
+			int oldStateForCellWithTag[3];
+			oldStateForCellWithTag[1] = [[curvedMPRaxis cellWithTag:1] state];
+			oldStateForCellWithTag[2] = [[curvedMPRaxis cellWithTag:2] state];
+			[[curvedMPRaxis cellWithTag:1] setState:NSOffState];
+			[[curvedMPRaxis cellWithTag:2] setState:NSOffState];
+			[[curvedMPRaxis cellWithTag:1] setEnabled:NO];
+			[[curvedMPRaxis cellWithTag:2] setEnabled:NO];
+
+			int zPos = [[[selectedRoi zPositions] objectAtIndex:0] intValue];
+			for(i=1; i < [[selectedRoi zPositions] count]; i++)
+			{
+				if(zPos != [[[selectedRoi zPositions] objectAtIndex:i] intValue])
+				{
+					[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
+					[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
+					[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
+					[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
+					i = [[selectedRoi zPositions] count];
+				}
+			}
 			
 			[NSApp beginSheet: curvedMPRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 		}
