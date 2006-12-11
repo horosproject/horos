@@ -2914,10 +2914,6 @@ static BOOL COMPLETEREBUILD = NO;
 	NSCalendarDate	*now = [NSCalendarDate calendarDate];
 	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
 	
-	NSLog( [start description]);
-	
-//	NSLog( pred);
-
 	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"\"%@\"", [now addTimeInterval: -60*60*1] ],			@"$LASTHOUR",
 																		[NSString stringWithFormat:@"\"%@\"", [now addTimeInterval: -60*60*6] ],			@"$LAST6HOURS",
 																		[NSString stringWithFormat:@"\"%@\"", [now addTimeInterval: -60*60*12] ],			@"$LAST12HOURS",
@@ -5953,6 +5949,8 @@ static BOOL withReset = NO;
 			[albumTable reloadData];
 			
 			[context unlock];
+			
+			[self outlineViewRefresh];
 		}
 		break;
 	}
