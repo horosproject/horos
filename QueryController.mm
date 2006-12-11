@@ -41,16 +41,25 @@ static NSString *Modality = @"Modality";
 
 - (void)keyDown:(NSEvent *)event
 {
-	[pressedKeys appendString: [event characters]];
+    unichar c = [[event characters] characterAtIndex:0];
 	
-	NSArray		*resultFilter = [[queryManager queries] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
-	
-	[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
-	
-	if( [resultFilter count])
+    if(c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
 	{
-		[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
-		[outlineView scrollRowToVisible: [outlineView selectedRow]];
+        [self retrieve: self];
+    }
+	else
+	{
+		[pressedKeys appendString: [event characters]];
+		
+		NSArray		*resultFilter = [[queryManager queries] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+		
+		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
+		
+		if( [resultFilter count])
+		{
+			[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
+			[outlineView scrollRowToVisible: [outlineView selectedRow]];
+		}
 	}
 }
 
