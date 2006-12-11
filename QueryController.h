@@ -42,15 +42,18 @@
 	NSString						*currentQueryKey;
 	BOOL							echoSuccess;
 	NSMutableDictionary				*activeMoves;
+	int								checkAndViewTry;
 	
 	//DICOMQueryStudyRoot
 	QueryArrayController *queryManager;
 }
-
+- (IBAction) retrieveAndViewClick: (id) sender;
+- (IBAction) retrieveAndView: (id) sender;
+- (IBAction) view:(id) sender;
 - (void) queryPatientID:(NSString*) ID;
--(void) query:(id)sender;
--(void) advancedQuery:(id)sender;
--(void) retrieve:(id)sender;
+- (void) query:(id)sender;
+- (void) advancedQuery:(id)sender;
+- (void) retrieve:(id)sender;
 - (void)performQuery:(id)object;
 - (void)performRetrieve:(NSArray*) array;
 - (void)setDateQuery:(id)sender;

@@ -43,24 +43,27 @@ static NSString *Modality = @"Modality";
 {
     unichar c = [[event characters] characterAtIndex:0];
 	
-    if(c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
+	if( [[self window] firstResponder] == outlineView)
 	{
-        [self retrieve: self];
-    }
-	else
-	{
-		[pressedKeys appendString: [event characters]];
-		
-		NSArray		*resultFilter = [[queryManager queries] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
-		
-		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
-		
-		if( [resultFilter count])
+		if(c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
 		{
-			[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
-			[outlineView scrollRowToVisible: [outlineView selectedRow]];
+			[self retrieveAndView: self];
 		}
-	}
+		else
+		{
+			[pressedKeys appendString: [event characters]];
+			
+			NSArray		*resultFilter = [[queryManager queries] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+			
+			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
+			
+			if( [resultFilter count])
+			{
+				[outlineView selectRow: [outlineView rowForItem: [resultFilter objectAtIndex: 0]] byExtendingSelection: NO];
+				[outlineView scrollRowToVisible: [outlineView selectedRow]];
+			}
+		}
+	}	
 }
 
 - (void) refresh: (id) sender
@@ -486,18 +489,36 @@ static NSString *Modality = @"Modality";
 -(void) retrieve:(id)sender
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
-	NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
+	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
 	int				index;
 	
-	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	if( [selectedRowIndexes count])
 	{
-	   if ([selectedRowIndexes containsIndex:index])
-	   {
-			[selectedItems addObject: [outlineView itemAtRow:index]];
-	   }
+		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		{
+		   if ([selectedRowIndexes containsIndex:index])
+		   {
+				[selectedItems addObject: [outlineView itemAtRow:index]];
+		   }
+		}
+		
+		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 	}
-	
-	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+}
+
+- (IBAction) retrieveAndView: (id) sender
+{
+	[self retrieve: self];
+	[self view: self];
+}
+
+- (IBAction) retrieveAndViewClick: (id) sender
+{
+	if( [outlineView clickedRow] >= 0)
+	{
+		[self retrieve: self];
+		[self view: self];
+	}
 }
 
 -(void) retrieveClick:(id)sender
@@ -530,6 +551,49 @@ static NSString *Modality = @"Modality";
 	
 	[array release];
 	[pool release];
+}
+
+- (void) checkAndView:(id) item
+{
+	NSError						*error = 0L;
+	NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+	NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+	NSPredicate					*predicate = [NSPredicate predicateWithFormat:  @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
+	NSArray						*studyArray;
+	
+	[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+	[request setPredicate: predicate];
+	
+	[context lock];
+	studyArray = [context executeFetchRequest:request error:&error];
+	if( [studyArray count] > 0)
+	{
+		NSManagedObject	*study = [studyArray objectAtIndex: 0];
+		NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
+		
+		//[[BrowserController currentBrowser] findAndSelectFile: 0L image: [[series valueForKey:@"images"] anyObject] shouldExpand:NO];
+		[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+		else
+			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+	}
+	else
+	{
+		if( checkAndViewTry-- > 0)
+			[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
+	}
+	
+	[context unlock];
+}
+
+- (IBAction) view:(id) sender
+{
+	id item = [outlineView itemAtRow: [outlineView selectedRow]];
+	
+	checkAndViewTry = 10;
+	if( item) [self checkAndView: item];
 }
 
 - (void)setModalityQuery:(id)sender
@@ -586,53 +650,53 @@ static NSString *Modality = @"Modality";
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
 	{
-	 NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
-    NSMenuItem *item1, *item2, *item3;
-    id searchCell = [searchFieldID cell];
-    item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
-    [cellMenu insertItem:item1 atIndex:0];
-    [item1 release];
-    item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item2 setTag:NSSearchFieldRecentsMenuItemTag];
-    [cellMenu insertItem:item2 atIndex:1];
-    [item2 release];
-    item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
-    [cellMenu insertItem:item3 atIndex:2];
-    [item3 release];
-    [searchCell setSearchMenuTemplate:cellMenu];
+		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+		NSMenuItem *item1, *item2, *item3;
+		id searchCell = [searchFieldID cell];
+		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+								action:NULL
+								keyEquivalent:@""];
+		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+		[cellMenu insertItem:item1 atIndex:0];
+		[item1 release];
+		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+								action:NULL
+								keyEquivalent:@""];
+		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
+		[cellMenu insertItem:item2 atIndex:1];
+		[item2 release];
+		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+								action:NULL
+								keyEquivalent:@""];
+		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+		[cellMenu insertItem:item3 atIndex:2];
+		[item3 release];
+		[searchCell setSearchMenuTemplate:cellMenu];
 	}
 	
 	{
-    NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
-    NSMenuItem *item1, *item2, *item3;
-    id searchCell = [searchFieldName cell];
-    item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
-    [cellMenu insertItem:item1 atIndex:0];
-    [item1 release];
-    item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item2 setTag:NSSearchFieldRecentsMenuItemTag];
-    [cellMenu insertItem:item2 atIndex:1];
-    [item2 release];
-    item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
-                                action:NULL
-                                keyEquivalent:@""];
-    [item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
-    [cellMenu insertItem:item3 atIndex:2];
-    [item3 release];
-    [searchCell setSearchMenuTemplate:cellMenu];
+		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+		NSMenuItem *item1, *item2, *item3;
+		id searchCell = [searchFieldName cell];
+		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+									action:NULL
+									keyEquivalent:@""];
+		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+		[cellMenu insertItem:item1 atIndex:0];
+		[item1 release];
+		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+									action:NULL
+									keyEquivalent:@""];
+		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
+		[cellMenu insertItem:item2 atIndex:1];
+		[item2 release];
+		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+									action:NULL
+									keyEquivalent:@""];
+		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+		[cellMenu insertItem:item3 atIndex:2];
+		[item3 release];
+		[searchCell setSearchMenuTemplate:cellMenu];
 	}
 	
 	
@@ -735,7 +799,7 @@ static NSString *Modality = @"Modality";
     
     [outlineView setDelegate: self];
 	[outlineView setTarget: self];
-	[outlineView setDoubleAction:@selector(retrieveClick:)];
+	[outlineView setDoubleAction:@selector(retrieveAndViewClick:)];
 	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
 	[[outlineView tableColumnWithIdentifier:@"name"] setDataCell:cellName];
 	
