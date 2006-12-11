@@ -139,8 +139,18 @@ static NSString *Modality = @"Modality";
 
 - (void)outlineView:(NSOutlineView *)aOutlineView sortDescriptorsDidChange:(NSArray *)oldDescs
 {
+	id item = [outlineView itemAtRow: [outlineView selectedRow]];
+	
 	[queryManager sortArray: [outlineView sortDescriptors]];
 	[outlineView reloadData];
+	
+	if( [[[[outlineView sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
+	{
+		[outlineView selectRow: 0 byExtendingSelection: NO];
+	}
+	else [outlineView selectRowIndexes: [NSIndexSet indexSetWithIndex: [outlineView rowForItem: item]] byExtendingSelection: NO];
+	
+	[outlineView scrollRowToVisible: [outlineView selectedRow]];
 }
 
 - (void) queryPatientID:(NSString*) ID
@@ -453,23 +463,26 @@ static NSString *Modality = @"Modality";
 
 -(void) retrieve:(id)sender
 {
+	NSMutableArray	*selectedItems = [NSMutableArray array];
+	NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
+	int				index;
+	
+	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	{
+	   if ([selectedRowIndexes containsIndex:index])
+	   {
+			[selectedItems addObject: [outlineView itemAtRow:index]];
+	   }
+	}
+	
+	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+}
+
+-(void) retrieveClick:(id)sender
+{
 	if( [outlineView clickedRow] >= 0)
 	{
-		NSMutableArray	*selectedItems = [NSMutableArray array];
-		NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
-		int				index;
-		
-		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
-		{
-		   if ([selectedRowIndexes containsIndex:index])
-		   {
-				[selectedItems addObject: [outlineView itemAtRow:index]];
-		   }
-		}
-		
-	//	[self performRetrieve: selectedItems];
-		
-		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+		[self retrieve: sender];
 	}
 }
 
@@ -700,7 +713,7 @@ static NSString *Modality = @"Modality";
     
     [outlineView setDelegate: self];
 	[outlineView setTarget: self];
-	[outlineView setDoubleAction:@selector(retrieve:)];
+	[outlineView setDoubleAction:@selector(retrieveClick:)];
 	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
 	[[outlineView tableColumnWithIdentifier:@"name"] setDataCell:cellName];
 	
@@ -720,7 +733,7 @@ static NSString *Modality = @"Modality";
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];
 	[buttonCell setTarget:self];
-	[buttonCell setAction:@selector(retrieve:)];
+	[buttonCell setAction:@selector(retrieveClick:)];
 	[buttonCell setControlSize:NSMiniControlSize];
 	[buttonCell setImage:[NSImage imageNamed:@"InArrow.tif"]];
 //	[buttonCell setBordered:YES];
