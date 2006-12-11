@@ -121,6 +121,7 @@ static NSString *Modality = @"Modality";
 		else [(ImageAndTextCell *)cell setImage: 0L];
 		
 		[cell setFont: [NSFont boldSystemFontOfSize:13]];
+		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 	}
 }
 
@@ -459,6 +460,18 @@ static NSString *Modality = @"Modality";
 	[searchFieldName setStringValue:@""];
 	[searchFieldID setStringValue:@""];
 	[outlineView reloadData];
+}
+
+-(IBAction) copy:(id) sender
+{
+    NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+			
+	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+	
+	id   aFile = [outlineView itemAtRow:[outlineView selectedRow]];
+	
+	if( aFile)
+		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
 }
 
 -(void) retrieve:(id)sender

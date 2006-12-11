@@ -84,7 +84,6 @@
 		if (dataset ->findAndGetString(DCM_PatientsBirthDate, string).good() && string != nil) {
 			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
 			_birthdate = [[DCMCalendarDate dicomDate:dateString] retain];
-			NSLog( [_birthdate description]);
 			[dateString release];
 		}
 
