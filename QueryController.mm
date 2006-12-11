@@ -453,21 +453,24 @@ static NSString *Modality = @"Modality";
 
 -(void) retrieve:(id)sender
 {
-	NSMutableArray	*selectedItems = [NSMutableArray array];
-	NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
-	int				index;
-	
-	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	if( [outlineView clickedRow] >= 0)
 	{
-       if ([selectedRowIndexes containsIndex:index])
-	   {
-			[selectedItems addObject: [outlineView itemAtRow:index]];
-	   }
+		NSMutableArray	*selectedItems = [NSMutableArray array];
+		NSIndexSet		*selectedRowIndexes		= [outlineView selectedRowIndexes];
+		int				index;
+		
+		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		{
+		   if ([selectedRowIndexes containsIndex:index])
+		   {
+				[selectedItems addObject: [outlineView itemAtRow:index]];
+		   }
+		}
+		
+	//	[self performRetrieve: selectedItems];
+		
+		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 	}
-	
-	[self performRetrieve: selectedItems];
-	
-//	[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 }
 
 - (void)performRetrieve:(NSArray*) array
