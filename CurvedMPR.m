@@ -153,7 +153,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	emptyData = (float*) malloc( size * thickSlab);
 	if( emptyData)
 	{
-		newData = [NSData dataWithBytesNoCopy:emptyData length: size*thickSlab freeWhenDone:YES];
+		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];
 		
 		for( thick = 0; thick < thickSlab; thick++)
 		{
@@ -253,7 +253,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 					{
 						for( y = 0; y < [pixList count] ; y++)
 						{
-							*(curData + x + xInc + newX*y) = -1000;
+							*(curData + x + xInc + newX*y) = -1000.0;
 						}
 					}
 				}
@@ -348,6 +348,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	emptyData = (float*) malloc( size);
 	if( emptyData)
 	{
+		memset(emptyData, -1000.0, size);
 		newData = [NSData dataWithBytesNoCopy:emptyData length: size freeWhenDone:YES];
 		
 	//	for( imNo = 0; imNo < length; imNo++)
@@ -476,7 +477,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 							{
 								for( y = 0; y < [pixList count] ; y++)
 								{
-									*(curData + z + newX*y) = -1000;
+									*(curData + z + newX*y) = -1000.0;
 								}
 							}
 						}
@@ -646,9 +647,16 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	// Allocate data for curved MPR image
 	emptyData = (float*) malloc( size * thickSlab);
-	memset(emptyData,1,size * thickSlab);
 	if(emptyData)
 	{
+		int pixs = newX * newY * thickSlab;
+		float minPix = [[pixList objectAtIndex: 0] minValueOfSeries];
+		
+		for( i = 0; i < pixs; i++)
+		{
+			emptyData[ i] = minPix;
+		}
+		
 		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];
 		
 		for(thick=0; thick<thickSlab; thick++)
@@ -754,7 +762,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 					
 					xInt = xPos;
 					yInt = yPos;
-					NSLog(@"yInt : %d", yInt);
+
 					rightLeftX = xPos - (float) xInt;
 					rightLeftY = yPos - (float) yInt;
 					
@@ -821,21 +829,21 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 						{
 							for( y = 0; y < [pixList count] ; y++)
 							{
-								*(curData + x + xInc + newX*y) = -1000;
+								*(curData + x + xInc + newX*y) = [[pixList objectAtIndex: 0] minValueOfSeries];
 							}
 						}
 						else if(view==1) // coronal
 						{
 							for( y = 0; y < newY ; y++)
 							{
-								*(curData + x + xInc + newX*y) = -1000;
+								*(curData + x + xInc + newX*y) = [[pixList objectAtIndex: 0] minValueOfSeries];
 							}
 						}
 						else if(view==2) // saggital
 						{
 							for( y = 0; y < newY ; y++)
 							{
-								*(curData + x + xInc + newX*y) = -1000;
+								*(curData + x + xInc + newX*y) = [[pixList objectAtIndex: 0] minValueOfSeries];
 							}
 						}
 					}
@@ -843,7 +851,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 				
 				xInc += noOfPoints;
 			}
-			NSLog(@"DCMPix alloc");
+			
 			float xSpace, ySpace;
 			if(view==0)
 			{
@@ -852,12 +860,12 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			}
 			else if(view==1) // coronal
 			{
-				xSpace = [firstObject pixelSpacingX];
-				ySpace = [firstObject pixelSpacingY];
+				xSpace = fabs([firstObject sliceInterval]);
+				ySpace = [firstObject pixelSpacingX];
 			}
 			else if(view==2) // saggital
 			{
-				xSpace = [firstObject pixelSpacingY];
+				xSpace = fabs([firstObject sliceInterval]);
 				ySpace = [firstObject pixelSpacingX];
 			}
 			
@@ -890,6 +898,8 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 			[viewerController startLoadImageThread]; // Start async reading of all images
 			[viewerController setCurvedController: self];
 			[viewerController checkEverythingLoaded];
+			if(view==1 || view==2)
+				[[viewerController imageView] setRotation:90];
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 				[appController tileWindows: self];

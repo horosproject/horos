@@ -19,11 +19,11 @@
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>1684</integer>
 		<integer>1845</integer>
 		<integer>475</integer>
-		<integer>1092</integer>
 		<integer>382</integer>
+		<integer>1684</integer>
+		<integer>1092</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L127</string>

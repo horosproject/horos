@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		2
+#define ROIVERSION		3
 
 static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
@@ -207,11 +207,17 @@ GLenum glReportError (void)
 					textureBuffer[i+j*textureWidth]=pointerBuff[i+j*textureWidth];
 				}
 		}
-			
+		
+		if( fileVersion >= 3)
+		{
+			zPositions = [coder decodeObject];
+		}
+		else zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
+		
 		[points retain];
 		[name retain];
 		[comments retain];
-		
+		[zPositions retain]; 
 		mode = ROI_sleep;
 		
 		previousPoint.x = previousPoint.y = -1000;
@@ -276,7 +282,7 @@ GLenum glReportError (void)
 		[coder encodeObject:[NSNumber numberWithInt:textureDownRightCornerY]];
 		[coder encodeObject:[NSData dataWithBytes:textureBuffer length:(textureWidth*textureHeight)]];
 	}
-	
+	[coder encodeObject:zPositions];
 }
 
 - (NSData*) data
