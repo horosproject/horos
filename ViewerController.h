@@ -525,6 +525,7 @@ enum
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(short*) matrix :(short) size :(short) norm;
+-(BOOL) checkFrameSize;
 
 #pragma mark-
 #pragma mark Brush ROI Filters

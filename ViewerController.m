@@ -1400,6 +1400,11 @@ static volatile int numberOfThreadsForRelisce = 0;
         unsigned int windowStyle;
         NSRect       contentRect;
         
+		NSRect frame = [[[splitView subviews] objectAtIndex: 0] frame];
+		int previous = frame.size.width;
+		frame.size.width = 0;
+		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+		
         StartingWindow = [self window];
         windowStyle    = NSBorderlessWindowMask; 
         contentRect    = [[NSScreen mainScreen] frame];
@@ -1414,13 +1419,17 @@ static volatile int numberOfThreadsForRelisce = 0;
             
             contentView = [[self window] contentView];
             [FullScreenWindow setContentView: contentView];
-            
+           
+			
             [FullScreenWindow makeKeyAndOrderFront:self ];
             [FullScreenWindow makeFirstResponder:imageView];
             
             [FullScreenWindow setDelegate:self];
             [FullScreenWindow setWindowController: self];
             [splitView adjustSubviews];
+			
+			frame.size.width = previous;
+			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 			
             FullScreenOn = YES;
         }
@@ -1722,7 +1731,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) matrixPreviewPressed:(id) sender
 {
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask) 
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask && FullScreenOn == NO) 
 	{
 		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		
