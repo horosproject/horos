@@ -370,6 +370,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSButton*) bonjourPasswordCheck;
 - (void) bonjourRunLoop:(id) sender;
 - (void) checkIncomingThread:(id) sender;
+- (void) checkIncoming:(id) sender;
 - (NSArray*) openSubSeries: (NSArray*) toOpenArray;
 - (IBAction) checkMemory:(id) sender;
 - (IBAction) buildAllThumbnails:(id) sender;
