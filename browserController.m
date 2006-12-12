@@ -5308,7 +5308,7 @@ static BOOL withReset = NO;
 				{
 					NSManagedObject	*series = [seriesArray objectAtIndex: i];
 					
-					if( [[series valueForKey:@"modality"] isEqualToString:@"KO"] == NO && ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil))
+					if([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil)
 						[self buildThumbnail: series];
 				}
 				
