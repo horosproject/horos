@@ -883,7 +883,7 @@ static NSString *hostName = @"";
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
 	NSString *stringValue;
 	NSArray *array = [NSArray arrayWithObjects:@"~", @"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", 
-							@"h", @"v", @"w", @"m", @"z", @"i", @"s", @"l", @"a", @"r", @"e", @"t", @"q", @"o", 
+							@"v", @"h", @"w", @"m", @"z", @"i", @"s", @"l", @"a", @"r", @"e", @"t", @"q", @"o", 
 							@"c", @"d", @"p", @"b", @"x", nil];
 	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
 	int x = DefaultWWWLHotKeyAction;
