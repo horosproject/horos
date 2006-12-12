@@ -646,6 +646,7 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	// Allocate data for curved MPR image
 	emptyData = (float*) malloc( size * thickSlab);
+	memset(emptyData,1,size * thickSlab);
 	if(emptyData)
 	{
 		newData = [NSData dataWithBytesNoCopy:emptyData length:size*thickSlab freeWhenDone:YES];

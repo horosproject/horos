@@ -1239,8 +1239,8 @@ return rect;
 			[points addObject: mypt];
 			[mypt release];
 			
-			NSLog(@" [ROI, mouseRoiDown] adding point for polygon...");
-			NSLog(@" [ROI, mouseRoiDown] slice : %d", slice);
+//			NSLog(@" [ROI, mouseRoiDown] adding point for polygon...");
+//			NSLog(@" [ROI, mouseRoiDown] slice : %d", slice);
 			[zPositions addObject:[NSNumber numberWithInt:slice]];
 			
 			clickPoint = pt;
@@ -2967,16 +2967,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 			{
+				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+				tempPt.y = [curView frame].size.height - tempPt.y ;
+				tempPt = [curView ConvertFromView2GL:tempPt];
+				
 				glColor3f (0.5f, 0.5f, 1.0f);
 				glPointSize( thickness * 3);
 				glBegin( GL_POINTS);
 				for( i = 0; i < [points count]; i++)
 				{
 					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+					else glColor3f (0.5f, 0.5f, 1.0f);
 					
-					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
-					
-					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (0.5f, 0.5f, 1.0f);
+					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
 				}
 				glEnd();
 			}

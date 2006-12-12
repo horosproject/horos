@@ -166,6 +166,7 @@ enum
 - (void) setDefaultName:(NSString*) n;
 - (NSString*) defaultName;
 
+- (BOOL)mouseRoiDown:(NSPoint)pt :(int)slice :(float)scale;
 - (void) setMousePosMeasure:(float) p;
 - (NSData*) data;
 - (void) roiMove:(NSPoint) offset;
