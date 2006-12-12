@@ -16,10 +16,11 @@
 #import "ViewerController.h"
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
+#import "OSIWindowController.h"
 
 @class DICOMExport;
 
-@interface OrthogonalMPRViewer : NSWindowController
+@interface OrthogonalMPRViewer : OSIWindowController
 {
 	ViewerController					*viewer;
 

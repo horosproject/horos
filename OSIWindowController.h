@@ -17,11 +17,19 @@
      PURPOSE.
 =========================================================================*/
 
+/*
+Root class for the Viewer Window Controllers such as ViewerController
+and Window3DController
+*/
+
 #import <Cocoa/Cocoa.h>
 
 
 @interface OSIWindowController : NSWindowController {
 
 }
+
+- (NSMutableArray*) pixList;
+- (void)windowWillClose:(NSNotification *)notification;
 
 @end

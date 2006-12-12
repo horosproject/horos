@@ -16,10 +16,11 @@
 
 
 #import <AppKit/AppKit.h>
+#import "OSIWindowController.h"
 
 @class ThickSlabVR;
 
-@interface ThickSlabController : NSWindowController {
+@interface ThickSlabController : OSIWindowController {
 
 	IBOutlet	ThickSlabVR		*view;
 

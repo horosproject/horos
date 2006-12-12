@@ -1198,7 +1198,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[self SyncSeries: self];
 		}
 	}
-	
+
 	[self release];
 }
 

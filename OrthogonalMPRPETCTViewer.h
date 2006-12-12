@@ -15,8 +15,9 @@
 #import <Cocoa/Cocoa.h>
 #import "OrthogonalMPRPETCTController.h"
 #import "KFSplitView.h"
+#import "OSIWindowController.h"
 
-@interface OrthogonalMPRPETCTViewer : NSWindowController
+@interface OrthogonalMPRPETCTViewer : OSIWindowController
 {
 	ViewerController							*blendingViewerController;
 	

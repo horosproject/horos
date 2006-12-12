@@ -18,16 +18,31 @@
 =========================================================================*/
 
 #import "OSIWindowController.h"
-
+#import "WindowLayoutManager.h"
 
 @implementation OSIWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName{
 	if (self = [super initWithWindowNibName:(NSString *)windowNibName]) {
+		// Register with WindowLayoutManager
+		[[WindowLayoutManager sharedWindowLayoutManager] registerWindowController:self];
 	 // do what OsiriX needs to do for window Controllers
-	 // Register with WindowLayoutManager
+	 
 	}
 	return self;
+}
+
+- (void)dealloc{
+	[super dealloc];
+}
+
+- (NSMutableArray*) pixList{
+	// let subclasses handle it for now
+	return nil;
+}
+
+- (void)windowWillClose:(NSNotification *)notification{
+	[[WindowLayoutManager sharedWindowLayoutManager] unregisterWindowController:self];
 }
 
 @end

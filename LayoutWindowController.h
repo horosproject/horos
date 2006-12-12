@@ -17,6 +17,9 @@
      PURPOSE.
 =========================================================================*/
 
+/*
+Saves and Creates Advanced Hanging Protocols
+*/
 
 #import <Cocoa/Cocoa.h>
 

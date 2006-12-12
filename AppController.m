@@ -67,6 +67,7 @@ MODIFICATION HISTORY
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
 #import "LayoutWindowController.h"
+#import "WindowLayoutManager.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -2127,9 +2128,9 @@ static BOOL initialized = NO;
 
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
 {
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description];
+	/*
 
-//	[currentHangingProtocol release];
-//	currentHangingProtocol = nil;
 	
 	if (!modality )
 	{
@@ -2166,7 +2167,7 @@ static BOOL initialized = NO;
 			[currentHangingProtocol retain];
 		}
 	}
-	
+	*/
 }
 
 
@@ -2174,7 +2175,8 @@ static BOOL initialized = NO;
 
 - (NSDictionary *) currentHangingProtocol
 {
-	return currentHangingProtocol;
+	return [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+	//return currentHangingProtocol;
 }
 
 

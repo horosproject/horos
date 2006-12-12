@@ -34,6 +34,7 @@
 #import "Schedulable.h"
 #import "Scheduler.h"
 #import "StaticScheduler.h"
+#import "OSIWindowController.h"
 
 enum
 {
@@ -45,7 +46,7 @@ enum
 	eAxialNeg				// 5
 };
 
-@interface ViewerController : NSWindowController  <Schedulable>
+@interface ViewerController : OSIWindowController  <Schedulable>
 {
 	NSLock	*ThreadLoadImageLock;
 	NSLock	*roiLock;
