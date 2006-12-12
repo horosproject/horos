@@ -672,7 +672,6 @@ extern BrowserController *browserWindow;
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	
-	
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -681,10 +680,10 @@ extern BrowserController *browserWindow;
 		entity = [[model entitiesByName] objectForKey:@"Image"];
 	else 
 		entity = nil;
-		
+	
 	[request setEntity:entity];
 	[request setPredicate:predicate];
-				
+	
 	error = 0L;
 	
 	NSManagedObjectContext		*context = [browserWindow managedObjectContext];

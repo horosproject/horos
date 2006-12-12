@@ -103,7 +103,7 @@ Version 2.3
 	[templateName setStringValue:@""];
 	
 	[NSApp beginSheet:	templateNameWindow
-						modalForWindow: sPanel
+						modalForWindow: [NSApp keyWindow]
 						modalDelegate: nil
 						didEndSelector: nil
 						contextInfo: nil];
@@ -273,7 +273,7 @@ Version 2.3
 	[anonymizeView addSubview: accessoryView];
 	
 	[NSApp beginSheet:	anonymizeWindow
-						modalForWindow: sPanel
+						modalForWindow: [NSApp keyWindow]
 						modalDelegate: nil
 						didEndSelector: nil
 						contextInfo: nil];
