@@ -159,5 +159,20 @@
 			</dict>
 		</dict>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>OsiriX Remote Access</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>osirix</string>
+			</array>
+			<key>LSIsAppleDefaultForType</key>
+			<string>Yes</string>
+		</dict>
+	</array>
 </dict>
 </plist>

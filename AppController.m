@@ -1101,13 +1101,22 @@ NSRect screenFrame()
 
 
 
+- (void)getUrl:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+	NSString *url = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+		NSLog(@"getURL: %@", url);
+	// now you can create an NSURL and grab the necessary parts
+}
+
+
+
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
 	long				i;
 	NSMutableArray		*filesArray = [[NSMutableArray alloc] initWithCapacity:0];
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
-	
+
 	for( i = 0; i < [filenames count]; i++)
 	{
 		if([defaultManager fileExistsAtPath:[filenames objectAtIndex:i] isDirectory:&isDirectory])     // A directory
@@ -1223,7 +1232,8 @@ NSRect screenFrame()
 	appController = self;
 	
 	PapyrusLock = [[NSLock alloc] init];
-	
+	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+
 	return self;
 }
 
