@@ -5306,8 +5306,10 @@ static BOOL withReset = NO;
 				
 				for( i = 0; i < maxSeries; i++)
 				{
-					if( [[[seriesArray objectAtIndex: i] valueForKey:@"modality"] isEqualToString:@"KO"] == NO)
-						[self buildThumbnail: [seriesArray objectAtIndex: i]];
+					NSManagedObject	*series = [seriesArray objectAtIndex: i];
+					
+					if( [[series valueForKey:@"modality"] isEqualToString:@"KO"] == NO && ([DCMAbstractSyntaxUID isImageStorage:[series valueForKey:@"seriesSOPClassUID"]] || [DCMAbstractSyntaxUID isRadiotherapy:[series valueForKey:@"seriesSOPClassUID"]] || [series valueForKey:@"seriesSOPClassUID"] == nil))
+						[self buildThumbnail: series];
 				}
 				
 				[self saveDatabase: currentDatabasePath];
