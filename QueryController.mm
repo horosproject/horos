@@ -132,32 +132,34 @@ static NSString *Modality = @"Modality";
 			
 			[context unlock];
 		}
-		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
-		{
-			NSError						*error = 0L;
-			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-			NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
-			NSArray						*seriesArray;
-			
-			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
-			[request setPredicate: predicate];
-			
-			[context lock];
-			seriesArray = [context executeFetchRequest:request error:&error];
-			
-			if( [seriesArray count] > 0) NSLog( @"%d / %d", [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue], [[item valueForKey:@"numberImages"] intValue]);
-			if( [seriesArray count] > 0)
-			{
-				if( [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
-				else
-					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
-			}
-			else [(ImageAndTextCell *)cell setImage: 0L];
-			
-			[context unlock];
-		}
+//		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)	Series parsing is not identical on OsiriX......... not limited to uid
+//		{
+//			NSError						*error = 0L;
+//			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+//			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+//			NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(seriesDICOMUID == %@)", [item valueForKey:@"uid"]];
+//			NSArray						*seriesArray;
+//			
+//			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
+//			[request setPredicate: predicate];
+//			
+//			[context lock];
+//			seriesArray = [context executeFetchRequest:request error:&error];
+//			
+//			if( [seriesArray count] > 1) NSLog(@"[seriesArray count] > 2 !!");
+//			
+//			if( [seriesArray count] > 0) NSLog( @"%d / %d", [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue], [[item valueForKey:@"numberImages"] intValue]);
+//			if( [seriesArray count] > 0)
+//			{
+//				if( [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+//				else
+//					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
+//			}
+//			else [(ImageAndTextCell *)cell setImage: 0L];
+//			
+//			[context unlock];
+//		}
 		else [(ImageAndTextCell *)cell setImage: 0L];
 		
 		[cell setFont: [NSFont boldSystemFontOfSize:13]];
@@ -664,7 +666,7 @@ static NSString *Modality = @"Modality";
 {
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
-	checkAndViewTry = 10;
+	checkAndViewTry = 20;
 	if( item) [self checkAndView: item];
 }
 
