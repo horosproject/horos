@@ -99,11 +99,14 @@ NSRect screenFrame();
 - (IBAction) okModal: (id) sender;
 
 
+
+#pragma mark Deprecated. Current Hanging Protocols moveds to Window layout Manager
+- (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
+- (NSDictionary*) currentHangingProtocol;
+
 #pragma mark-
 #pragma mark display setters and getters
 - (IBAction) saveLayout: (id)sender;
-- (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
-- (NSDictionary*) currentHangingProtocol;
 - (BOOL) xFlipped;
 - (void) setXFlipped: (BOOL) v;
 - (BOOL) yFlipped;

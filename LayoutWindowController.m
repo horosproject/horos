@@ -117,7 +117,7 @@
 				*/
 			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
 			NSWindow *window = [controller window];
-			NSString *frame  = NSStringFromRect([window frame]);
+			NSString *frame  = [window stringWithSavedFrame];
 			[seriesInfo setObject:frame forKey:@"windowFrame"];
 			NSScreen *screen = [window screen];				
 			int screenNumber = [[NSScreen screens] indexOfObject:screen];
@@ -127,8 +127,11 @@
 			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
 			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
 			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
-			[seriesInfo setObject:[NSNumber numberWithFloat:[controller angle]] forKey:@"rotation"];
+			[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
+			[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
+			[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
+			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
 			// Have blending.  Get Series Description for blending
 			if ([controller blendingController]) {
 				id blendingSeries = [[controller blendingController] currentSeries];

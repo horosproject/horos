@@ -31,8 +31,14 @@ It is a shared class.
 @interface WindowLayoutManager : NSObject {
 	BOOL				_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
 	NSMutableDictionary *_currentHangingProtocol;
+	NSDictionary		*_advancedHangingProtocol;
+	BOOL				_hangingProtocolInUse;
 	BOOL				_useToolbarPanel;
 	NSMutableArray		*_windowControllers;
+	NSManagedObject		*_currentStudy;
+	NSArray				*_seriesSets;
+	int					_seriesSetIndex;
+	
 }
 
 + (id)sharedWindowLayoutManager;
@@ -58,12 +64,21 @@ It is a shared class.
 - (NSDictionary*) currentHangingProtocol;
 
 
-/*
-- (BOOL) xFlipped;
-- (void) setXFlipped: (BOOL) v;
-- (BOOL) yFlipped;
-- (void) setYFlipped: (BOOL) v;
-*/
+#pragma mark-
+#pragma mark Advanced Hanging
+-(BOOL)hangStudy:(id)study;
+
+
+#pragma mark-
+#pragma mark Moving Through Series Sets
+- (void)nextSeriesSet;
+- (void)previousSeriesSet;
+- (void)hangSet:(NSArray *)seriesSet;
+
+
+
+
+
 
 
 

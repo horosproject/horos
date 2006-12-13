@@ -12596,6 +12596,10 @@ sourceRef);
 	return [imageView curWL];
 }
 
+- (void)setWL:(float)wl  WW:(float)ww{
+	[imageView setWLWW:wl :ww];
+}
+
 - (BOOL)xFlipped{
 		return [imageView xFlipped];
 }
@@ -12603,8 +12607,21 @@ sourceRef);
 - (BOOL)yFlipped{
 	return [imageView yFlipped];
 }
-- (float) angle{
+
+- (float)rotation{
 	return [imageView angle];
+}
+
+- (void)setRotation:(float)rotation{
+	[imageView setRotation:rotation];
+}
+
+- (float)scaleValue{
+	return [imageView scaleValue];
+}
+
+- (void)setScaleValue:(float)scaleValue{
+	[imageView setScaleValue:scaleValue];
 }
 
 

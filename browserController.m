@@ -107,6 +107,7 @@ Version 2.5
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 
+#import "WindowLayoutManager.h"
 #import "StructuredReportController.h"
 
 #import "QTExportHTMLSummary.h"
@@ -4306,9 +4307,9 @@ static BOOL COMPLETEREBUILD = NO;
 		}	
 		
 		// DICOM & others
-		[appController setCurrentHangingProtocolForModality:nil description:nil];
+		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 		[self viewerDICOMInt :NO  dcmFile: [NSArray arrayWithObject:item] viewer:0L];
-//		[appController setCurrentHangingProtocolForModality:[item valueForKeyPath:@"study.modality"] description:[item valueForKeyPath:@"study.studyName"]];
+//		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKeyPath:@"study.modality"] description:[item valueForKeyPath:@"study.studyName"]];
 	}
 	else	// STUDY - HANGING PROTOCOLS
 	{
@@ -4337,40 +4338,12 @@ static BOOL COMPLETEREBUILD = NO;
 				
 			Root object is NSArray we can search through with predicates to get a filteredArray
 		*/
-		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
-		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [item valueForKey:@"modality"]];
-		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [item valueForKey:@"studyName"]];
-		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
-		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
-		if ([filteredHangingProtocols count] > 0) {
-			// ? Add'l Filter for institution  or add'l attributes here ?
-			// Possible to have more than one Protocol.  Give user option to pick which one.
-			// How to handle comparisons. Would like to a bodyRegion Attribute to study Ideally handle comparisons differently depending on comparison's Modality
-			// For now just use the first one
-			NSDictionary *hangingProtocol = [filteredHangingProtocols objectAtIndex:0];
-			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
-			NSArray *arrangedSeries = [hangingProtocol objectForKey:@"seriesSets"];
-			NSArray *firstSet = [arrangedSeries objectAtIndex:0];
-			
-			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
-			NSDictionary *seriesInfo;
-			NSEnumerator *enumerator = [firstSet objectEnumerator];
-			NSMutableArray *children =  [NSMutableArray array];
-			int count = [firstSet count];
-			while (seriesInfo = [enumerator nextObject]){
-				int i;				
-				for (i = 0; i < count; i++) {
-				id child = [[self childrenArray: item] objectAtIndex:i];
-				if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
-					[children addObject:child];
-				}
-			}
-			[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
-		}
+		
+		if (![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item])
+		{
 		//Use Basic Hanging Protocols
-		else {
-			[appController setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
-			NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
+			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
+			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
 			//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
 			if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
 			{
@@ -5004,7 +4977,7 @@ static BOOL withReset = NO;
     id  theCell = [oMatrix selectedCell];
     int column,row;
     
-	[appController setCurrentHangingProtocolForModality:nil description:nil];
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 	
     if( [theCell tag] >= 0 ) {
 		[self viewerDICOM: oMatrix];
@@ -7435,8 +7408,8 @@ static BOOL needToRezoom;
 
 	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 	{
-		[appController setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
-		NSDictionary *currentHangingProtocol = [appController currentHangingProtocol];
+		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
+		NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
 		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
 		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
 		{
@@ -7456,7 +7429,7 @@ static BOOL needToRezoom;
 	}
 	else														// Called by double click in matrix.
 	{
-		[appController setCurrentHangingProtocolForModality: Nil description: Nil];	
+		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
 		[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
 	}
 }
@@ -7468,7 +7441,7 @@ static BOOL needToRezoom;
 	long			index;
 	NSMutableArray	*images = [NSMutableArray arrayWithCapacity:0];
 	
-	[appController setCurrentHangingProtocolForModality:nil description:nil];
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
 	else [self filesForDatabaseOutlineSelection: images];
@@ -7486,7 +7459,7 @@ static BOOL needToRezoom;
 	long			index;
 	NSMutableArray	*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	[appController setCurrentHangingProtocolForModality:nil description:nil];	
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];	
 	
 	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: selectedItems];
 	else [self filesForDatabaseOutlineSelection: selectedItems];
@@ -7504,7 +7477,7 @@ static BOOL needToRezoom;
 	long					index;
 	NSMutableArray			*selectedItems = [NSMutableArray arrayWithCapacity:0];
 	
-	[appController setCurrentHangingProtocolForModality:nil description:nil];
+	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 
 	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
 

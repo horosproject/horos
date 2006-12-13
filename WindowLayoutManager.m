@@ -23,6 +23,7 @@
 #import "AppController.h"
 #import "ToolbarPanel.h"
 #import "OSIWindowController.h"
+#import "browserController.h"
 
 
 
@@ -37,8 +38,11 @@ WindowLayoutManager *sharedLayoutManager;
 }
 
 - (id)init{
-	if (self = [super init])
+	if (self = [super init]) {
 		_windowControllers = [[NSMutableArray alloc] init];
+		_hangingProtocolInUse = NO;
+		_seriesSetIndex = 0;
+	}
 	return self;
 }
 
@@ -334,7 +338,6 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark hanging protocol setters and getters
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
 {
-	NSLog(@"setCurrentHangingProtocol modality: %@ description: %@", modality,  description);
 	// if no modality set to 1 row and 1 column
 	if (!modality )
 	{
@@ -378,8 +381,183 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (NSDictionary *) currentHangingProtocol
 {
-	NSLog(@"CurrentHangingProtocol: %@", [_currentHangingProtocol description]);
 	return _currentHangingProtocol;
+}
+
+
+#pragma mark-
+#pragma mark Advanced Hanging
+-(BOOL)hangStudy:(id)study{
+	// clear current Hanging Protocol;
+
+	if ([[[study entity] name] isEqualToString:@"Study"]) {
+		[self setCurrentHangingProtocolForModality:nil description: nil];
+		_currentStudy = study;
+			// DICOM & others
+			/* Need to improve Hanging Protocols	
+				Things Advanced Hanging Protocol needs to do.
+				For Advanced Hanging Protocols Need to Search for Comparisons
+				Arrange Series in a Particular order by either series description or series number
+				Could have preset ww/wl and CLUT
+				Series Fusion at start
+				Could have a 3D ViewerController instead of a 2D ViewerController
+					If 2D viewer need to set starting orientation, wwwl, CLUT, if SR preset surfaces.
+					Preprocess Volume - extract heart, Get Center line for vessel Colon, etc
+					
+				Root object is NSArray we can search through with predicates to get a filteredArray
+			*/
+			
+		BrowserController *browserController = [BrowserController currentBrowser];
+		NSArray *advancedHangingProtocols = [[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"];
+		NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [study valueForKey:@"modality"]];
+		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
+		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
+		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+
+		if ([filteredHangingProtocols count] > 0) {
+			// ? Add'l Filter for institution  or add'l attributes here ?
+			// Possible to have more than one Protocol.  Give user option to pick which one.
+			// How to handle comparisons. Would like to a bodyRegion Attribute to study Ideally handle comparisons differently depending on comparison's Modality
+			// For now just use the first one
+			
+			NSDictionary *hangingProtocol = [filteredHangingProtocols objectAtIndex:0];
+			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
+			_seriesSets = [hangingProtocol objectForKey:@"seriesSets"];
+			NSArray *firstSet = [_seriesSets objectAtIndex:0];
+			
+			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
+			NSDictionary *seriesInfo;
+			NSEnumerator *enumerator = [firstSet objectEnumerator];
+			NSMutableArray *children =  [NSMutableArray array];
+			int count = [[browserController childrenArray: study] count];
+			while (seriesInfo = [enumerator nextObject]){
+				// only load ViewerControllers first
+	
+				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+					int i;				
+					for (i = 0; i < count; i++) {
+						id child = [[browserController childrenArray: study] objectAtIndex:i];
+						// if series description is unnamed used series number
+						if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
+							if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue])
+								[children addObject:child];
+						}
+						else {
+							if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
+								[children addObject:child];
+							}
+					}
+				}
+			}
+			//this will load the first series Set Viewers , but no fusion or 3D Viewers
+			[browserController viewerDICOMInt :NO  dcmFile:children viewer:0L];
+			//resizeWindows
+			// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
+			//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
+			// need to make this more efficient
+			enumerator = [firstSet objectEnumerator];
+			NSEnumerator *windowEnumerator = [_windowControllers objectEnumerator];
+			ViewerController *controller;
+			while (seriesInfo = [enumerator nextObject]){
+								if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+					controller = [windowEnumerator nextObject];
+					[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
+					[controller setRotation:[[seriesInfo objectForKey:@"rotation"] floatValue]];
+					[controller setScaleValue:[[seriesInfo objectForKey:@"zoom"] floatValue]];
+					
+					if ([[seriesInfo objectForKey:@"wwwlMenuItem"] isEqualToString:NSLocalizedString(@"Other", nil)])
+						[controller setWL:[[seriesInfo objectForKey:@"wl"] floatValue] WW:[[seriesInfo objectForKey:@"wl"] floatValue]];
+					else {
+						[controller setCurWLWWMenu:[seriesInfo objectForKey:@"wwwlMenuItem"]];
+					}
+					
+					[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+				}				
+			}
+		
+			[_advancedHangingProtocol release];
+			_advancedHangingProtocol = [hangingProtocol copy];
+			_hangingProtocolInUse = YES;
+			return YES;
+		}
+		else {
+			_hangingProtocolInUse = NO;
+			return NO;		
+		}
+	}
+	else {
+		_hangingProtocolInUse = NO;
+		return NO;	
+	}
+}
+
+#pragma mark-
+#pragma mark Moving Through Series Sets
+- (void)nextSeriesSet{
+	_seriesSetIndex++;
+	if (_seriesSetIndex >= [_seriesSets count])
+		_seriesSetIndex = 0;
+}
+
+
+- (void)previousSeriesSet{
+	_seriesSetIndex--;
+		if (_seriesSetIndex < 0 )
+		_seriesSetIndex = [_seriesSets count] - 1;
+}
+
+- (void)hangSet:(NSArray *)seriesSet{
+	//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
+	NSDictionary *seriesInfo;
+	NSEnumerator *enumerator = [seriesSet objectEnumerator];
+	NSMutableArray *children =  [NSMutableArray array];
+	BrowserController *browserController = [BrowserController currentBrowser];
+	int count = [[browserController childrenArray: _currentStudy] count];
+	while (seriesInfo = [enumerator nextObject]){
+		// only load ViewerControllers first
+
+		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+			int i;				
+			for (i = 0; i < count; i++) {
+				id child = [[browserController childrenArray: _currentStudy] objectAtIndex:i];
+				// if series description is unnamed used series number
+				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
+					if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue])
+						[children addObject:child];
+				}
+				else {
+					if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
+						[children addObject:child];
+					}
+			}
+		}
+	}
+	//this will load the first series Set Viewers , but no fusion or 3D Viewers
+	[browserController viewerDICOMInt :NO  dcmFile:children viewer:0L];
+	//resizeWindows
+	// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
+	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
+	// need to make this more efficient
+	enumerator = [seriesSet objectEnumerator];
+	NSEnumerator *windowEnumerator = [_windowControllers objectEnumerator];
+	ViewerController *controller;
+	while (seriesInfo = [enumerator nextObject]){
+						if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+			controller = [windowEnumerator nextObject];
+			[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
+			[controller setRotation:[[seriesInfo objectForKey:@"rotation"] floatValue]];
+			[controller setScaleValue:[[seriesInfo objectForKey:@"zoom"] floatValue]];
+			
+			if ([[seriesInfo objectForKey:@"wwwlMenuItem"] isEqualToString:NSLocalizedString(@"Other", nil)])
+				[controller setWL:[[seriesInfo objectForKey:@"wl"] floatValue] WW:[[seriesInfo objectForKey:@"wl"] floatValue]];
+			else {
+				[controller setCurWLWWMenu:[seriesInfo objectForKey:@"wwwlMenuItem"]];
+			}
+			
+			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+		}				
+	}
+
 }
 
 

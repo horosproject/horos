@@ -2126,57 +2126,19 @@ static BOOL initialized = NO;
 	[(LayoutWindowController *)contextInfo release];
 }
 
+//Deprecated use Window Layout Manager for Hanging Protocols
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
 {
 	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description];
-	/*
-
 	
-	if (!modality )
-	{
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
-		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
-
-	}
-	else
-	{
-		NSArray *hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: modality];
-		if ([hangingProtocolArray count] > 0) {
-			NSEnumerator *enumerator = [hangingProtocolArray objectEnumerator];
-
-			[currentHangingProtocol release];
-			currentHangingProtocol = nil;
-			currentHangingProtocol = [hangingProtocolArray objectAtIndex:0];
-
-			[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
-			[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
-			
-			NSMutableDictionary *protocol;
-			while (protocol = [enumerator nextObject]) {
-				NSRange searchRange = [description rangeOfString:[protocol objectForKey: @"Study Description"] options: NSCaseInsensitiveSearch | NSLiteralSearch];
-				if (searchRange.location != NSNotFound) {
-					currentHangingProtocol = protocol;
-
-					[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Rows"] intValue] forKey: @"IMAGEROWS"];
-					[[NSUserDefaults standardUserDefaults] setInteger: [[currentHangingProtocol objectForKey: @"Image Columns"] intValue] forKey: @"IMAGECOLUMNS"];
-
-					break;
-				}
-			}
-			
-			[currentHangingProtocol retain];
-		}
-	}
-	*/
 }
 
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
+//Deprecated use Window Layout Manager for Hanging Protocols
 - (NSDictionary *) currentHangingProtocol
 {
 	return [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
-	//return currentHangingProtocol;
 }
 
 

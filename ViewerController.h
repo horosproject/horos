@@ -570,9 +570,13 @@ enum
 #pragma mark Convience methods for accessing values in the current imageView
 -(float)curWW;
 -(float)curWL;
+- (void)setWL:(float)wl  WW:(float)ww;
 - (BOOL)xFlipped;
 - (BOOL)yFlipped;
-- (float) angle;
+- (float)rotation;
+- (void)setRotation:(float)rotation;
+- (float)scaleValue;
+- (void)setScaleValue:(float)scaleValue;
 
 
 @end
