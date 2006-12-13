@@ -121,9 +121,12 @@ static NSString *Modality = @"Modality";
 			
 			[context lock];
 			studyArray = [context executeFetchRequest:request error:&error];
-			if( [studyArray count] > 0 && [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+			if( [studyArray count] > 0)
 			{
-				[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+				else
+					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 			
@@ -144,9 +147,12 @@ static NSString *Modality = @"Modality";
 			seriesArray = [context executeFetchRequest:request error:&error];
 			
 			if( [seriesArray count] > 0) NSLog( @"%d / %d", [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue], [[item valueForKey:@"numberImages"] intValue]);
-			if( [seriesArray count] > 0  && [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+			if( [seriesArray count] > 0)
 			{
-				[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+				if( [[[seriesArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
+					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+				else
+					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 			
