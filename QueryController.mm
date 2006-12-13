@@ -565,7 +565,7 @@ static NSString *Modality = @"Modality";
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[queryManager parameters]];
 	
-	NSLog(@"retrieve params: %@", [dictionary description]);
+	NSLog(@"Retrieve START");
 	
 	int i;
 	for( i = 0; i < [array count] ; i++)
@@ -576,6 +576,8 @@ static NSString *Modality = @"Modality";
 			[[array objectAtIndex: i] move:dictionary];
 		}
 	}
+	
+	NSLog(@"Retrieve END");
 	
 	[array release];
 	[pool release];

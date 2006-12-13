@@ -406,7 +406,8 @@ static BOOL COMPLETEREBUILD = NO;
 	// Reload series if needed
 	for( i = 0; i < [viewersListToReload count]; i++)
 	{
-		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[viewersListToReload objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[viewersListToReload objectAtIndex: i] keyImagesOnly: NO];
+		if( [[[viewersListToReload objectAtIndex: i] window] isVisible])
+			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[viewersListToReload objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[viewersListToReload objectAtIndex: i] keyImagesOnly: NO];
 	}
 	
 	if( queryController) [queryController refresh: self];
@@ -420,7 +421,8 @@ static BOOL COMPLETEREBUILD = NO;
 	// Refresh preview matrix if needed
 	for( i = 0; i < [viewersListToRebuild count]; i++)
 	{
-		[[viewersListToRebuild objectAtIndex: i] buildMatrixPreview: NO];
+		if( [[[viewersListToRebuild objectAtIndex: i] window] isVisible])
+			[[viewersListToRebuild objectAtIndex: i] buildMatrixPreview: NO];
 	//	[[viewersListToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
 	}
 }
@@ -705,6 +707,12 @@ static BOOL COMPLETEREBUILD = NO;
 								index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
 								if( index == NSNotFound)
 								{
+									[viewersList removeAllObjects];
+									for( x = 0; x < [winList count]; x++)	// We are not in the main thread, viewers can be created at anytime...
+									{
+										if( [[[winList objectAtIndex: x] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex: x] windowController]];
+									}
+								
 									// Fields
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];

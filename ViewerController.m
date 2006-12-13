@@ -1919,6 +1919,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			else stateText = @"";
 			NSString	*comment = [curStudy valueForKey:@"comment"];
 			
+			if( comment == 0L) comment = @"";
+			
 			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment]];
 			
 			index++;
