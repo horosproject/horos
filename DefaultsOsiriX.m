@@ -882,9 +882,38 @@ static NSString *hostName = @"";
 	//hot key prefs
 	NSMutableDictionary *hotkeys = [NSMutableDictionary dictionary];
 	NSString *stringValue;
-	NSArray *array = [NSArray arrayWithObjects:@"~", @"0", @"1", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", 
-							@"v", @"h", @"w", @"m", @"z", @"i", @"s", @"l", @"a", @"r", @"e", @"t", @"q", @"o", 
-							@"c", @"d", @"p", @"b", @"x", nil];
+	NSArray *array = [NSArray arrayWithObjects:
+						NSLocalizedString(@"~", nil),
+						NSLocalizedString(@"0", nil), 
+						NSLocalizedString(@"1", nil), 
+						NSLocalizedString(@"2", nil),
+						NSLocalizedString(@"3", nil),
+						NSLocalizedString(@"4", nil), 
+						NSLocalizedString(@"5", nil), 
+						NSLocalizedString(@"6", nil), 
+						NSLocalizedString(@"7", nil), 
+						NSLocalizedString(@"8", nil), 
+						NSLocalizedString(@"9", nil), 
+						NSLocalizedString(@"v", nil), 
+						NSLocalizedString(@"h", nil), 
+						NSLocalizedString(@"w", nil), 
+						NSLocalizedString(@"m", nil), 
+						NSLocalizedString(@"z", nil), 
+						NSLocalizedString(@"i", nil), 
+						NSLocalizedString(@"s", nil), 
+						NSLocalizedString(@"l", nil), 
+						NSLocalizedString(@"a", nil), 
+						NSLocalizedString(@"r", nil), 
+						NSLocalizedString(@"e", nil), 
+						NSLocalizedString(@"t", nil), 
+						NSLocalizedString(@"q", nil), 
+						NSLocalizedString(@"o", nil), 
+						NSLocalizedString(@"c", nil), 
+						NSLocalizedString(@"d", nil), 
+						NSLocalizedString(@"p", nil), 
+						NSLocalizedString(@"b", nil), 
+						NSLocalizedString(@"x", nil), 
+						nil];
 	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
 	int x = DefaultWWWLHotKeyAction;
 	int count = BoneRemovalHotKeyAction + 1;
