@@ -1611,7 +1611,9 @@ static BOOL COMPLETEREBUILD = NO;
 {
 	if( isCurrentDatabaseBonjour == NO)
 		[self saveDatabase: currentDatabasePath];
-		
+	
+	[checkIncomingLock lock];
+	
 	[currentDatabasePath release];
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
@@ -1626,10 +1628,15 @@ static BOOL COMPLETEREBUILD = NO;
 		[bonjourRunLoopTimer release];
 		bonjourRunLoopTimer = 0L;
 	}
+	
+	[checkIncomingLock unlock];
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
 {
+	[checkBonjourUpToDateThreadLock lock];
+	[checkBonjourUpToDateThreadLock unlock];
+	
 	[self openDatabaseIn: path Bonjour: YES];
 }
 
@@ -6439,7 +6446,7 @@ static BOOL needToRezoom;
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :10];
+					filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :100];
 					destPath = [[documentsDirectory() stringByAppendingString:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
 					
 					// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
@@ -7743,7 +7750,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[numFmt setHasThousandSeparators: YES];
 		
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
-		checkIncomingLock = [[NSLock alloc] init];
+		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSLock alloc] init];
 		decompressThreadRunning = [[NSLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];

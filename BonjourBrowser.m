@@ -1114,6 +1114,8 @@ NSLog(@"connectToService");
 		
 	}while( size < FILESSIZE*noOfImages && i < [images count]);
 	
+	NSLog( @"File packed for transfer: %d", [dicomFileNames count]);
+	
 	[self connectToServer: index message:@"DICOM"];
 	
 	NSString	*returnString;

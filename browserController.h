@@ -172,7 +172,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSMatrix				*compressionMatrix;
     IBOutlet NSMatrix				*folderTree;
 	
-	NSLock							*checkIncomingLock, *checkBonjourUpToDateThreadLock;
+	NSRecursiveLock					*checkIncomingLock;
+	NSLock							*checkBonjourUpToDateThreadLock;
 	NSTimeInterval					lastSaved;
 	
     BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;
