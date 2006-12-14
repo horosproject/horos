@@ -682,6 +682,12 @@ static NSString *Modality = @"Modality";
 		
 		if( checkAndViewTry-- > 0)
 			[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
+		else success = YES;
+	}
+	
+	if( success)
+	{
+		[item release];
 	}
 	
 	[context unlock];
@@ -692,7 +698,7 @@ static NSString *Modality = @"Modality";
 	id item = [outlineView itemAtRow: [outlineView selectedRow]];
 	
 	checkAndViewTry = 20;
-	if( item) [self checkAndView: item];
+	if( item) [self checkAndView: [item retain]];
 }
 
 - (void)setModalityQuery:(id)sender

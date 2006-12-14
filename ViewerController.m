@@ -5153,11 +5153,14 @@ static ViewerController *draggedController = 0L;
 				[pix setSliceInterval: [customInterval floatValue]];
 				[pix setPixelSpacingX: fabs([customXSpacing floatValue])];
 				[pix setPixelSpacingY: fabs([customYSpacing floatValue])];
+				if( fabs([customXSpacing floatValue]) != 0 && fabs([customYSpacing floatValue]) != 0) [pix setPixelRatio: fabs([customYSpacing floatValue]) / fabs([customXSpacing floatValue])];
 				[pix setOrientation: v];
 				[pix setOrigin: o];
 			}
 		}
 		[imageView setIndex: [imageView curImage]];
+		
+		[self computeInterval];
     }
 	
     [NSApp endSheet:ThickIntervalWindow returnCode:[sender tag]];
@@ -12596,8 +12599,8 @@ sourceRef);
 	return [imageView curWL];
 }
 
-- (void)setWL:(float)wl  WW:(float)ww{
-	[imageView setWLWW:wl :ww];
+- (void)setWL:(float)cwl  WW:(float)cww{
+	[imageView setWLWW:cwl :cww];
 }
 
 - (BOOL)xFlipped{
