@@ -1612,8 +1612,6 @@ static BOOL COMPLETEREBUILD = NO;
 	if( isCurrentDatabaseBonjour == NO)
 		[self saveDatabase: currentDatabasePath];
 	
-	[checkIncomingLock lock];
-	
 	[currentDatabasePath release];
 	currentDatabasePath = [a retain];
 	isCurrentDatabaseBonjour = isBonjour;
@@ -1628,15 +1626,10 @@ static BOOL COMPLETEREBUILD = NO;
 		[bonjourRunLoopTimer release];
 		bonjourRunLoopTimer = 0L;
 	}
-	
-	[checkIncomingLock unlock];
 }
 
 -(void) openDatabaseInBonjour:(NSString*) path
-{
-	[checkBonjourUpToDateThreadLock lock];
-	[checkBonjourUpToDateThreadLock unlock];
-	
+{ 
 	[self openDatabaseIn: path Bonjour: YES];
 }
 
