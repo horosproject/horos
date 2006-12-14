@@ -23,6 +23,11 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            CLASS = OSIWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {showViews = id; }; 
             CLASS = OrthogonalMPRController; 
             LANGUAGE = ObjC; 
@@ -36,6 +41,7 @@
         {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
         {
             ACTIONS = {
+                MoviePlayStop = id; 
                 blendingPropagateOriginal = id; 
                 blendingPropagateX = id; 
                 blendingPropagateY = id; 
@@ -43,6 +49,9 @@
                 changeTool = id; 
                 customizeViewerToolBar = id; 
                 endExportDICOMFileSettings = id; 
+                moviePosSliderAction = id; 
+                movieRateSliderAction = id; 
+                resetImage = id; 
                 roiDeleteAll = id; 
                 setCurrentPosition = id; 
                 setCurrentdcmExport = id; 
@@ -68,6 +77,11 @@
                 dcmSeriesName = NSTextField; 
                 dcmTo = NSSlider; 
                 dcmToTextField = NSTextField; 
+                moviePlayStop = NSButton; 
+                moviePosSlider = NSSlider; 
+                movieRateSlider = NSSlider; 
+                movieTextSlide = NSTextField; 
+                movieView = NSView; 
                 splitView = NSSplitView; 
                 thickSlabSlider = NSSlider; 
                 thickSlabTextField = NSTextField; 
@@ -75,7 +89,7 @@
                 toolsView = NSView; 
                 wlwwPopup = NSPopUpButton; 
             }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = OSIWindowController; 
         }, 
         {CLASS = PreviewView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
         {

@@ -629,6 +629,12 @@
 	[yReslicedView restoreScaleValue];
 }
 
+-(void) refreshViews;
+{
+	[self saveCrossPositions];
+	[self reslice:originalCrossPositionX :originalCrossPositionY :originalView];
+}
+
 #pragma mark-
 #pragma mark Thick Slab
 

@@ -30,7 +30,7 @@
 		newPixListY = [[NSMutableArray alloc] initWithCapacity: 0];
 		thickSlab = 1;
 		Ycache = 0;
-		
+		useYcache = YES;
 	}
 	return self;
 }
@@ -235,7 +235,8 @@
 	{
 		if( thickSlab > 1 && Ycache == 0L)
 		{
-			Ycache = malloc( newTotal*newY*newX*sizeof(float));
+			if(useYcache)
+				Ycache = malloc( newTotal*newY*newX*sizeof(float));
 			if( Ycache)
 			{
 				NSLog( @"start YCache");
@@ -583,6 +584,16 @@
 {
 	if(Ycache) free(Ycache);
 	Ycache = 0L;
+}
+
+- (BOOL)useYcache;
+{
+	return useYcache;
+}
+
+- (void)setUseYcache:(BOOL)boo;
+{
+	useYcache = boo;
 }
 
 @end

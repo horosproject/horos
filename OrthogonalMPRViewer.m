@@ -88,7 +88,7 @@ NSString * documentsDirectory();
 	return [viewer pixList];
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC
+-(id)initWithPixList:(NSMutableArray*)pix :(NSArray*)files :(NSData*)vData :(ViewerController*)vC :(ViewerController*)bC
 {
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];
 	[[self window] setDelegate:self];
@@ -97,35 +97,30 @@ NSString * documentsDirectory();
 	
 	viewer = [vC retain];
 	
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(CloseViewerNotification:)
-											name: @"CloseViewerNotification"
-											object: nil];
-	
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(Display3DPoint:)
-											name: @"Display3DPoint"
-											object: nil];
-	
-	[[NSNotificationCenter defaultCenter]	addObserver: self
-											selector: @selector(dcmExportTextFieldDidChange:)
-											name: @"NSControlTextDidChangeNotification"
-											object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:@"CloseViewerNotification" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(Display3DPoint:) name:@"Display3DPoint" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dcmExportTextFieldDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
 	
 	[splitView setDelegate:self];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRVertialNSSplitView"])
-	{
 		[splitView setVertical:[[NSUserDefaults standardUserDefaults] boolForKey:@"orthogonalMPRVertialNSSplitView"]];
-	}
 	else
-	{
 		[splitView setVertical:YES];
-	}
 
 	[self updateToolbarItems];
+	
+	// 4D
+	curMovieIndex = 0;
+	maxMovieIndex = [viewer maxMovieIndex];
+	//originalDCMPixList[curMovieIndex] = [pix retain];
+	//originalFileList[curMovieIndex] = [files retain];
+	
+	[moviePosSlider setMaxValue:maxMovieIndex-1];
+	[moviePosSlider setNumberOfTickMarks:maxMovieIndex];
+	
 	// initialisations
-	[controller initWithPixList: pix : files : vData : vC : bC: self];
+	[controller initWithPixList:pix :files :vData :vC :bC :self];
 	
 	isFullWindow = NO;
 	displayResliceAxes = 1;
@@ -145,21 +140,13 @@ NSString * documentsDirectory();
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver: self
-           selector: @selector(UpdateCLUTMenu:)
-               name: @"UpdateCLUTMenu"
-             object: nil];
-	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	[nc addObserver:self selector:@selector(UpdateCLUTMenu:) name:@"UpdateCLUTMenu" object:nil];
+	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:0L];
 
 	// WL/WW Menu	
 	curWLWWMenu = NSLocalizedString(@"Other", nil);
-	[nc addObserver: self
-           selector: @selector(UpdateWLWWMenu:)
-               name: @"UpdateWLWWMenu"
-             object: nil];
-	[nc postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	
-	
+	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
+	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
 	
 	return self;
 }
@@ -438,6 +425,13 @@ NSString * documentsDirectory();
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[[NSUserDefaults standardUserDefaults] setBool:[splitView isVertical] forKey: @"orthogonalMPRVertialNSSplitView"];
+	
+	if( movieTimer)
+	{
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+	}
 	
 	[splitView setDelegate: 0L];
     [[self window] setDelegate:nil];
@@ -901,6 +895,17 @@ NSString * documentsDirectory();
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
+	else if([itemIdent isEqualToString: MovieToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: movieView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
+    }
     else {
 	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
 	// Returning nil will inform the toolbar this kind of item is not supported 
@@ -949,6 +954,7 @@ NSString * documentsDirectory();
 										ResetToolbarItemIdentifier,
 										FlipVolumeToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
+										MovieToolbarItemIdentifier,
 										nil];
 }
 
@@ -1492,6 +1498,101 @@ NSString * documentsDirectory();
 	[controller loadROIonReslicedViews: [[controller originalView] crossPositionX] : [[controller originalView] crossPositionY]];
 	[[controller xReslicedView] setNeedsDisplay:YES];
 	[[controller yReslicedView] setNeedsDisplay:YES];
+}
+
+#pragma mark-
+#pragma mark 4D
+
+- (void) MoviePlayStop:(id) sender
+{
+    if( movieTimer)
+    {
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+        
+		[[controller reslicer] setUseYcache:YES];
+			
+        [moviePlayStop setTitle: NSLocalizedString(@"Play", nil)];
+        
+		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+    }
+    else
+    {
+        movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performMovieAnimation:) userInfo:nil repeats:YES] retain];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSEventTrackingRunLoopMode];
+    
+        lastMovieTime = [NSDate timeIntervalSinceReferenceDate];
+        
+        [moviePlayStop setTitle: NSLocalizedString(@"Stop", nil)];
+    }
+}
+
+- (void) performMovieAnimation:(id) sender
+{
+    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
+    short           val;
+    
+//	if( [self isEverythingLoaded] == NO) return;
+	
+//	if( loadingPercentage < 0.5) return;
+	
+    if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
+    {
+        val = curMovieIndex;
+        val ++;
+        
+		if( val < 0) val = 0;
+		if( val >= maxMovieIndex) val = 0;
+		
+		curMovieIndex = val;
+		
+		[self setMovieIndex: val];
+//		[self propagateSettings];
+		
+        lastMovieTime = thisTime;
+    }
+}
+
+- (void) setMovieIndex: (short) i
+{
+	int index = [[controller originalView] curImage];
+	BOOL wasDataFlipped = [[controller originalView] flippedData];
+	
+	curMovieIndex = i;
+	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
+	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
+	
+	[moviePosSlider setIntValue:curMovieIndex];
+	
+	[[controller reslicer] setOriginalDCMPixList:[viewer pixList:i]];
+	[[controller reslicer] setUseYcache:NO];
+	[[controller originalView] setDCM:[viewer pixList:i] :[viewer fileList:i] :[viewer roiList:i] :0 :'i' :NO];
+	
+	[controller setFusion];
+	
+//	[self setWindowTitle: self];
+	
+//	if( wasDataFlipped) [self flipDataSeries: self];
+	
+	[[controller originalView] setIndex:index];
+	//[[controller originalView] sendSyncMessage:1];
+	[controller setFusion];
+	
+	
+	[controller refreshViews];
+}
+
+- (void) movieRateSliderAction:(id) sender
+{
+	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+}
+
+- (void) moviePosSliderAction:(id) sender
+{
+	[self setMovieIndex: [moviePosSlider intValue]];
+//	[self propagateSettings];
 }
 
 @end

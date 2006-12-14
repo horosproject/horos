@@ -49,6 +49,16 @@
 	IBOutlet NSPopUpButton				*OpacityPopup;
 
 	NSString							*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
+
+	// 4D
+	IBOutlet NSView						*movieView;
+	IBOutlet NSTextField				*movieTextSlide;
+	IBOutlet NSButton					*moviePlayStop;
+	IBOutlet NSSlider					*movieRateSlider;
+	IBOutlet NSSlider					*moviePosSlider;
+	short								curMovieIndex, maxMovieIndex;
+	NSTimeInterval						lastTime, lastMovieTime;
+	NSTimer								*movieTimer;
 }
 
 - (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
@@ -104,5 +114,9 @@
 
 // ROIs
 - (IBAction) roiDeleteAll:(id) sender;
+
+- (void) MoviePlayStop:(id) sender;
+- (void) movieRateSliderAction:(id) sender;
+- (void) moviePosSliderAction:(id) sender;
 
 @end

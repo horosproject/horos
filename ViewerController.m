@@ -7656,6 +7656,14 @@ int i,j,l;
 	return roiList[curMovieIndex];
 }
 
+-(NSMutableArray*) roiList: (long) i
+{
+	if( i < 0) i = 0;
+	if( i>= maxMovieIndex) i = maxMovieIndex-1;
+
+	return roiList[i];
+}
+
 - (IBAction) roiPropagate:(id) sender
 {
 	long			i, x;
@@ -9092,6 +9100,13 @@ int i,j,l;
 	return fileList[ curMovieIndex];
 }
 
+- (NSMutableArray*) fileList: (long) i
+{
+	if( i < 0) i = 0;
+	if( i>= maxMovieIndex) i = maxMovieIndex-1;
+
+	return fileList[ i];
+}
 
 -(void) addMovieSerie:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
@@ -9137,12 +9152,10 @@ int i,j,l;
 	[browserWindow delItemMatrix: [fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]]];
 }
 
-
 - (float) frameRate
 {
     return [speedSlider floatValue];
 }
-
 
 - (void) speedSliderAction:(id) sender
 {

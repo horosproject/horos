@@ -84,6 +84,7 @@
 - (void) restoreCrossPositions;
 - (void) scrollTool: (long) from : (long) to : (id) sender;
 - (void) doubleClick:(NSEvent *)event:(id) sender;
+-(void) refreshViews;
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRView*) sender;
 - (void) blendingPropagateX:(OrthogonalMPRView*) sender;

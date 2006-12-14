@@ -315,9 +315,11 @@ enum
 
 // Return the array of DicomFile objects
 - (NSMutableArray*) fileList;
+- (NSMutableArray*) fileList: (long) i;
 
 // Return the array of ROI objects
 - (NSMutableArray*) roiList;
+- (NSMutableArray*) roiList: (long) i;
 
 // Create a new Point object
 - (MyPoint*) newPoint: (float) x :(float) y;

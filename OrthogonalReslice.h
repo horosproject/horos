@@ -25,6 +25,7 @@
 	short				thickSlab;
 	float				sign;
 	
+	BOOL				useYcache;
 	float				*Ycache;
 	
 	NSConditionLock		*resliceLock;
@@ -52,5 +53,8 @@
 
 - (void) flipVolume;
 - (void)freeYCache;
+
+- (BOOL)useYcache;
+- (void)setUseYcache:(BOOL)boo;
 
 @end
