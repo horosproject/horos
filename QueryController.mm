@@ -104,23 +104,41 @@ static NSString *Modality = @"Modality";
 	return  (item == nil) ? [[queryManager queries] count] : [[(DCMTKQueryNode *) item children] count];
 }
 
+- (NSArray*) localStudy:(id) item
+{
+	NSArray						*studyArray = 0L;
+	
+	if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+	{
+		NSError						*error = 0L;
+		NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
+		NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
+		
+		
+		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+		[request setPredicate: predicate];
+		
+		[context lock];
+		
+		studyArray = [context executeFetchRequest:request error:&error];
+		
+		[context unlock];
+	}
+	
+	return studyArray;
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
-			NSError						*error = 0L;
-			NSFetchRequest				*request = [[[NSFetchRequest alloc] init] autorelease];
-			NSManagedObjectContext		*context = [[BrowserController currentBrowser] managedObjectContext];
-			NSPredicate					*predicate = [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [item valueForKey:@"uid"]];
 			NSArray						*studyArray;
 			
-			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
-			[request setPredicate: predicate];
+			studyArray = [self localStudy: item];
 			
-			[context lock];
-			studyArray = [context executeFetchRequest:request error:&error];
 			if( [studyArray count] > 0)
 			{
 				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
@@ -129,8 +147,6 @@ static NSString *Modality = @"Modality";
 					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
-			
-			[context unlock];
 		}
 //		else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)	Series parsing is not identical on OsiriX......... not limited to uid
 //		{
@@ -516,7 +532,7 @@ static NSString *Modality = @"Modality";
 		[pb setString: [aFile valueForKey:@"name"] forType:NSStringPboardType];
 }
 
--(void) retrieve:(id)sender
+-(void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable
 {
 	NSMutableArray	*selectedItems = [NSMutableArray array];
 	NSIndexSet		*selectedRowIndexes = [outlineView selectedRowIndexes];
@@ -528,7 +544,12 @@ static NSString *Modality = @"Modality";
 		{
 		   if ([selectedRowIndexes containsIndex:index])
 		   {
-				[selectedItems addObject: [outlineView itemAtRow:index]];
+				if( onlyIfNotAvailable)
+				{
+					if( [[self localStudy: [outlineView itemAtRow:index]] count] == 0) [selectedItems addObject: [outlineView itemAtRow:index]];
+					NSLog( @"Already here! We don't need to download it...");
+				}
+				else [selectedItems addObject: [outlineView itemAtRow:index]];
 		   }
 		}
 		
@@ -536,9 +557,14 @@ static NSString *Modality = @"Modality";
 	}
 }
 
+-(void) retrieve:(id)sender
+{
+	return [self retrieve: sender onlyIfNotAvailable: NO];
+}
+
 - (IBAction) retrieveAndView: (id) sender
 {
-	[self retrieve: self];
+	[self retrieve: self onlyIfNotAvailable: YES];
 	[self view: self];
 }
 
@@ -546,12 +572,11 @@ static NSString *Modality = @"Modality";
 {
 	if( [outlineView clickedRow] >= 0)
 	{
-		[self retrieve: self];
-		[self view: self];
+		[self retrieveAndView: sender];
 	}
 }
 
--(void) retrieveClick:(id)sender
+- (void) retrieveClick:(id)sender
 {
 	if( [outlineView clickedRow] >= 0)
 	{
@@ -559,7 +584,7 @@ static NSString *Modality = @"Modality";
 	}
 }
 
-- (void)performRetrieve:(NSArray*) array
+- (void) performRetrieve:(NSArray*) array
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];

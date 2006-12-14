@@ -124,6 +124,8 @@
 	}
 			
 	[rootNode queryWithValues:filterArray];
+	
+	[queries release];
 	queries = [[rootNode children] retain];
 	
 	NS_HANDLER

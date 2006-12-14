@@ -54,6 +54,7 @@
 - (void) query:(id)sender;
 - (void) advancedQuery:(id)sender;
 - (void) retrieve:(id)sender;
+- (void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable;
 - (void)performQuery:(id)object;
 - (void)performRetrieve:(NSArray*) array;
 - (void)setDateQuery:(id)sender;
