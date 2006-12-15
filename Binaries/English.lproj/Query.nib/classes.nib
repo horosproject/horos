@@ -104,6 +104,12 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {
+            CLASS = DNDArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {tableView = NSTableView; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = LogTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
@@ -118,28 +124,24 @@
         {
             ACTIONS = {
                 abort = id; 
-                addQuerySubview = id; 
-                advancedQuery = id; 
-                changeQueryFilter = id; 
                 chooseFilter = id; 
                 clearQuery = id; 
                 controlAction = id; 
-                openAdvancedQuery = id; 
                 query = id; 
                 refresh = id; 
-                removeQuerySubview = id; 
                 retrieve = id; 
+                retrieveAndView = id; 
+                retrieveAndViewClick = id; 
                 setDateQuery = id; 
                 setModalityQuery = id; 
                 verify = id; 
+                view = id; 
             }; 
             CLASS = QueryController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 PatientModeMatrix = NSTabView; 
-                advancedQueryWindow = NSWindow; 
                 dateFilterMatrix = NSMatrix; 
-                filterBox = NSBox; 
                 fromDate = NSDatePicker; 
                 modalityFilterMatrix = NSMatrix; 
                 outlineView = NSOutlineView; 
@@ -147,7 +149,7 @@
                 searchBirth = NSDatePicker; 
                 searchFieldID = NSSearchField; 
                 searchFieldName = NSSearchField; 
-                servers = NSComboBox; 
+                sourcesTable = sourcesTableView; 
                 toDate = NSDatePicker; 
             }; 
             SUPERCLASS = NSWindowController; 
@@ -159,6 +161,7 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
+        {CLASS = sourcesTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
     ); 
     IBVersion = 1; 

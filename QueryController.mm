@@ -243,132 +243,22 @@ static NSString *Modality = @"Modality";
 -(void) query:(id)sender
 {
 	
-	NSString *theirAET;
-	NSString *hostname;
-	NSString *port;
-	NSNetService *netService = nil;
-	id aServer;
-	if ([servers indexOfSelectedItem] >= 0)
+	NSString		*theirAET;
+	NSString		*hostname;
+	NSString		*port;
+	NSNetService	*netService = nil;
+	id				aServer;
+	int				i;
+	BOOL			atLeastOneSource = NO;
+	
+	for( i = 0; i < [sourcesArray count]; i++)
 	{
-		[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
-		
-		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
-		
-		NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
-		if ([aServer isMemberOfClass:[NSNetService class]]){
-			theirAET = [(NSNetService*)aServer name];
-			hostname = [(NSNetService*)aServer hostName];
-			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
-			netService = aServer;
-		}
-		else{
-			theirAET = [aServer objectForKey:@"AETitle"];
-			hostname = [aServer objectForKey:@"Address"];
-			port = [aServer objectForKey:@"Port"];
-		}
-		
-		[self setDateQuery: dateFilterMatrix];
-		[self setModalityQuery: modalityFilterMatrix];
-		
-		//get rid of white space at end and append "*"
-		
-		[queryManager release];
-		queryManager = nil;
-		[outlineView reloadData];
-		
-		queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
-		// add filters as needed
-		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
-			//Specific Character Set
-			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-		
-		switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 		{
-			case 0:		currentQueryKey = PatientName;		break;
-			case 1:		currentQueryKey = PatientID;		break;
-			case 2:		currentQueryKey = PatientBirthDate;	break;
-		}
-		
-		BOOL queryItem = NO;
-		
-		if( currentQueryKey == PatientName)
-		{
-			NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			// [[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
 			
-			if ([filterValue length] > 0)
-			{
-				[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-				queryItem = YES;
-			}
-		}
-		else if( currentQueryKey == PatientBirthDate)
-		{
-			[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
-			queryItem = YES;
-		}
-		else if( currentQueryKey == PatientID)
-		{
-			NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			
-			if ([filterValue length] > 0)
-			{
-				[queryManager addFilter:filterValue forDescription:currentQueryKey];
-				queryItem = YES;
-			}
-		}
+			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 		
-		//
-		if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
-		
-		if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
-		
-		if ([dateQueryFilter object] || queryItem)
-		{
-			[self performQuery: 0L];
-		}		
-		// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-		else if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-		{
-			[self performQuery: 0L];
-		}
-		
-	}
-	else
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
-}
-
--(void) advancedQuery:(id)sender
-{
-	//only query if have destination
-				
-		//get values from window
-	//NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
-	NSEnumerator *enumerator = [advancedQuerySubviews objectEnumerator];
-	AdvancedQuerySubview *view;
-	NSNetService *netService = nil;
-	if (queryFilters)
-		[queryFilters removeAllObjects];
-	else
-		queryFilters = [[NSMutableArray array] retain];
-		
-	if ([sender tag] > 0)
-	{
-		if ([servers indexOfSelectedItem] >= 0)
-		{
-		//setup remote query
-			NSString *theirAET;
-			NSString *hostname;
-			NSString *port;
-			NSNetService *netService = nil;
-			id aServer;
-			/*
-			if ([servers selectedRow] < [serversArray count] && [serversArray count] > 0)
-				aServer =  [serversArray objectAtIndex:[servers selectedRow]];
-			else 
-				aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow] - [serversArray count]];
-			 */
-			aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
 			if ([aServer isMemberOfClass:[NSNetService class]]){
 				theirAET = [(NSNetService*)aServer name];
@@ -381,123 +271,256 @@ static NSString *Modality = @"Modality";
 				hostname = [aServer objectForKey:@"Address"];
 				port = [aServer objectForKey:@"Port"];
 			}
-			if (queryManager)
-				[queryManager release];
+			
+			[self setDateQuery: dateFilterMatrix];
+			[self setModalityQuery: modalityFilterMatrix];
+			
+			//get rid of white space at end and append "*"
+			
+			[queryManager release];
+			queryManager = nil;
+			[outlineView reloadData];
+			
 			queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
-
-			while (view = [enumerator nextObject]) {
-				int searchType;
-				id value;
-				int day = 86400;
-				NSString *key = [[view filterKeyPopup] titleOfSelectedItem];
-				//NSLog(@"key %@", key);
-				if ([key isEqualToString:NSLocalizedString(@"Modality", nil)]) {					
-					searchType = searchExactMatch;
-					switch ([[view searchTypePopup] indexOfSelectedItem]) {
-						case osiCR: value = @"CR";
-								break;
-						case osiCT: value = @"CT";
-								break;;
-						case osiDX: value = @"DX";
-								break;
-						case osiES: value = @"ES";
-								break;
-						case osiMG: value = @"MG";
-								break;
-						case osiMR: value = @"MR";
-								break;
-						case osiNM: value = @"NM";
-								break;
-						case osiOT: value = @"OT";
-								break;
-						case osiPT: value = @"PT";
-								break;
-						case osiRF: value = @"RF";
-								break;
-						case osiSC: value = @"SC";
-								break;
-						case osiUS: value = @"US";
-								break;
-						case osiXA: value = @"XA";
-								break;
-						default: value = [[view valueField] stringValue];
-					}
-					//NSLog(@"modality %@", value);
-				}				
-				else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) {
-					searchType = [[view searchTypePopup] indexOfSelectedItem] +  4;
-					switch (searchType){
-						case 4: value = [NSDate date]; 
-								break;
-						case 5:
-								value = [NSDate dateWithTimeIntervalSinceNow: -day];
-								break;
-						case 8: //NSLog(@"within Date");
-								value = [NSNumber numberWithInt:[[view dateRangePopup] indexOfSelectedItem] + 10];
-								break;
-						/*
-						case 10:
-						case 11:
-						case 12:
-						case 13:
-						case 14:
-						case 15:
-						case 16:
-						case 17: [NSDate date]; 
-						
-								break;
-						*/
-						default: value = [[view datePicker] objectValue];
-							//value = [[view valueField] objectValue];
-					}
-				}
-				else {
-					searchType = [[view searchTypePopup] indexOfSelectedItem];
-					value = [[view valueField] stringValue];
-				}
-				//NSLog(@"%@ %d %@", key, searchType, value);
-				QueryFilter *filter = [QueryFilter queryFilterWithObject:value ofSearchType:searchType  forKey:key];
-				[queryFilters addObject:filter];
-
-
-					
-				//NSLog(@"Filter value %@", [filter filteredValue]);
-			}
-			//add filters to query
-			enumerator = [queryFilters objectEnumerator];
-			QueryFilter *filter;
-			while (filter = [enumerator nextObject]) {
-				NSString *description = nil;
-				if ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Patient Name", nil)])
-					description = PatientName;
-				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Patient ID", nil)])
-					description = PatientID;
-				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Study Date", nil)])
-					description = StudyDate;
-				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Modality", nil)])
-					description = @"ModalitiesinStudy";
-				
-				if (description)
-					[queryManager addFilter:[filter filteredValue] forDescription:description];
-					// add extra query for Modality
-			//	if ([description isEqualToString:Modality])
-			//		[queryManager addFilter:[filter filteredValue] forDescription:@"ModalitiesinStudy"];
+			// add filters as needed
+			
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+				//Specific Character Set
+				[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+			
+			switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+			{
+				case 0:		currentQueryKey = PatientName;		break;
+				case 1:		currentQueryKey = PatientID;		break;
+				case 2:		currentQueryKey = PatientBirthDate;	break;
 			}
 			
-		//Specific Character Set
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
-			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];	
-		
-		//run query
-		[self performQuery: 0L];
-		[advancedQueryWindow close];	
+			BOOL queryItem = NO;
+			
+			if( currentQueryKey == PatientName)
+			{
+				NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				
+				if ([filterValue length] > 0)
+				{
+					[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+					queryItem = YES;
+				}
+			}
+			else if( currentQueryKey == PatientBirthDate)
+			{
+				[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+				queryItem = YES;
+			}
+			else if( currentQueryKey == PatientID)
+			{
+				NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				
+				if ([filterValue length] > 0)
+				{
+					[queryManager addFilter:filterValue forDescription:currentQueryKey];
+					queryItem = YES;
+				}
+			}
+			
+			//
+			if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+			
+			if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+			
+			if ([dateQueryFilter object] || queryItem)
+			{
+				[self performQuery: 0L];
+			}		
+			// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
+			else
+			{
+				BOOL doit = NO;
+				
+				if( atLeastOneSource == NO)
+				{
+					 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
+				}
+				else doit = YES;
+				
+				if( doit) [self performQuery: 0L];
+				else i = [sourcesArray count];
+			}
+			
+			atLeastOneSource = YES;
 		}
-		else
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
-
-	[advancedQueryWindow close];	
+	
+	if( atLeastOneSource == NO)
+		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM source (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 }
+
+//
+////Action methods for managing advanced queries
+//- (void)openAdvancedQuery:(id)sender{
+//	[advancedQueryWindow makeKeyAndOrderFront:sender];
+//}
+//
+//-(void) advancedQuery:(id)sender
+//{
+//	//only query if have destination
+//				
+//		//get values from window
+//	//NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
+//	NSEnumerator *enumerator = [advancedQuerySubviews objectEnumerator];
+//	AdvancedQuerySubview *view;
+//	NSNetService *netService = nil;
+//	if (queryFilters)
+//		[queryFilters removeAllObjects];
+//	else
+//		queryFilters = [[NSMutableArray array] retain];
+//		
+//	if ([sender tag] > 0)
+//	{
+//		if ([servers indexOfSelectedItem] >= 0)
+//		{
+//		//setup remote query
+//			NSString *theirAET;
+//			NSString *hostname;
+//			NSString *port;
+//			NSNetService *netService = nil;
+//			id aServer;
+//			/*
+//			if ([servers selectedRow] < [serversArray count] && [serversArray count] > 0)
+//				aServer =  [serversArray objectAtIndex:[servers selectedRow]];
+//			else 
+//				aServer = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:[servers selectedRow] - [serversArray count]];
+//			 */
+//			aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
+//			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
+//			if ([aServer isMemberOfClass:[NSNetService class]]){
+//				theirAET = [(NSNetService*)aServer name];
+//				hostname = [(NSNetService*)aServer hostName];
+//				port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
+//				netService = aServer;
+//			}
+//			else{
+//				theirAET = [aServer objectForKey:@"AETitle"];
+//				hostname = [aServer objectForKey:@"Address"];
+//				port = [aServer objectForKey:@"Port"];
+//			}
+//			if (queryManager)
+//				[queryManager release];
+//			queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+//
+//			while (view = [enumerator nextObject]) {
+//				int searchType;
+//				id value;
+//				int day = 86400;
+//				NSString *key = [[view filterKeyPopup] titleOfSelectedItem];
+//				//NSLog(@"key %@", key);
+//				if ([key isEqualToString:NSLocalizedString(@"Modality", nil)]) {					
+//					searchType = searchExactMatch;
+//					switch ([[view searchTypePopup] indexOfSelectedItem]) {
+//						case osiCR: value = @"CR";
+//								break;
+//						case osiCT: value = @"CT";
+//								break;;
+//						case osiDX: value = @"DX";
+//								break;
+//						case osiES: value = @"ES";
+//								break;
+//						case osiMG: value = @"MG";
+//								break;
+//						case osiMR: value = @"MR";
+//								break;
+//						case osiNM: value = @"NM";
+//								break;
+//						case osiOT: value = @"OT";
+//								break;
+//						case osiPT: value = @"PT";
+//								break;
+//						case osiRF: value = @"RF";
+//								break;
+//						case osiSC: value = @"SC";
+//								break;
+//						case osiUS: value = @"US";
+//								break;
+//						case osiXA: value = @"XA";
+//								break;
+//						default: value = [[view valueField] stringValue];
+//					}
+//					//NSLog(@"modality %@", value);
+//				}				
+//				else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) {
+//					searchType = [[view searchTypePopup] indexOfSelectedItem] +  4;
+//					switch (searchType){
+//						case 4: value = [NSDate date]; 
+//								break;
+//						case 5:
+//								value = [NSDate dateWithTimeIntervalSinceNow: -day];
+//								break;
+//						case 8: //NSLog(@"within Date");
+//								value = [NSNumber numberWithInt:[[view dateRangePopup] indexOfSelectedItem] + 10];
+//								break;
+//						/*
+//						case 10:
+//						case 11:
+//						case 12:
+//						case 13:
+//						case 14:
+//						case 15:
+//						case 16:
+//						case 17: [NSDate date]; 
+//						
+//								break;
+//						*/
+//						default: value = [[view datePicker] objectValue];
+//							//value = [[view valueField] objectValue];
+//					}
+//				}
+//				else {
+//					searchType = [[view searchTypePopup] indexOfSelectedItem];
+//					value = [[view valueField] stringValue];
+//				}
+//				//NSLog(@"%@ %d %@", key, searchType, value);
+//				QueryFilter *filter = [QueryFilter queryFilterWithObject:value ofSearchType:searchType  forKey:key];
+//				[queryFilters addObject:filter];
+//
+//
+//					
+//				//NSLog(@"Filter value %@", [filter filteredValue]);
+//			}
+//			//add filters to query
+//			enumerator = [queryFilters objectEnumerator];
+//			QueryFilter *filter;
+//			while (filter = [enumerator nextObject]) {
+//				NSString *description = nil;
+//				if ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Patient Name", nil)])
+//					description = PatientName;
+//				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Patient ID", nil)])
+//					description = PatientID;
+//				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Study Date", nil)])
+//					description = StudyDate;
+//				else if  ([(NSString *)[filter key] isEqualToString:NSLocalizedString(@"Modality", nil)])
+//					description = @"ModalitiesinStudy";
+//				
+//				if (description)
+//					[queryManager addFilter:[filter filteredValue] forDescription:description];
+//					// add extra query for Modality
+//			//	if ([description isEqualToString:Modality])
+//			//		[queryManager addFilter:[filter filteredValue] forDescription:@"ModalitiesinStudy"];
+//			}
+//			
+//		//Specific Character Set
+//		if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+//			[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];	
+//		
+//		//run query
+//		[self performQuery: 0L];
+//		[advancedQueryWindow close];	
+//		}
+//		else
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a remote source.", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+//	}
+//
+//	[advancedQueryWindow close];	
+//}
 
 
 // This function calls many GUI function, it has to be called from the main thread
@@ -745,11 +768,6 @@ static NSString *Modality = @"Modality";
 	}
 }
 
-//Action methods for managing advanced queries
-- (void)openAdvancedQuery:(id)sender{
-	[advancedQueryWindow makeKeyAndOrderFront:sender];
-}
-
 -(void) awakeFromNib
 {
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
@@ -808,37 +826,49 @@ static NSString *Modality = @"Modality";
 	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
 	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
+
 }
 
-- (void)addQuerySubview:(id)sender{
-	//setup subview
-	float subViewHeight = 50.0;
-	
-	AdvancedQuerySubview *subview = [[[AdvancedQuerySubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
-	[filterBox addSubview:subview];	
-	[advancedQuerySubviews  addObject:subview];
-	[[subview addButton] setTarget:self];
-	[[subview addButton] setAction:@selector(addQuerySubview:)];
-	[[subview filterKeyPopup] setTarget:subview];
-	[[subview filterKeyPopup] setAction:@selector(showSearchTypePopup:)];
-	[[subview searchTypePopup] setTarget:subview];
-	[[subview searchTypePopup] setAction:@selector(showValueField:)];
-	[[subview removeButton] setTarget:self];
-	[[subview removeButton] setAction:@selector(removeQuerySubview:)];
-	[self drawQuerySubviews];
-}	
-
-- (void)removeQuerySubview:(id)sender{
-	NSView *view = [sender superview];
-	[advancedQuerySubviews removeObject:view];
-	[view removeFromSuperview];
-	[self drawQuerySubviews];
-}
+//- (void)addQuerySubview:(id)sender{
+//	//setup subview
+//	float subViewHeight = 50.0;
+//	
+//	AdvancedQuerySubview *subview = [[[AdvancedQuerySubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
+//	[filterBox addSubview:subview];	
+//	[advancedQuerySubviews  addObject:subview];
+//	[[subview addButton] setTarget:self];
+//	[[subview addButton] setAction:@selector(addQuerySubview:)];
+//	[[subview filterKeyPopup] setTarget:subview];
+//	[[subview filterKeyPopup] setAction:@selector(showSearchTypePopup:)];
+//	[[subview searchTypePopup] setTarget:subview];
+//	[[subview searchTypePopup] setAction:@selector(showValueField:)];
+//	[[subview removeButton] setTarget:self];
+//	[[subview removeButton] setAction:@selector(removeQuerySubview:)];
+//	[self drawQuerySubviews];
+//}	
+//
+//- (void)removeQuerySubview:(id)sender{
+//	NSView *view = [sender superview];
+//	[advancedQuerySubviews removeObject:view];
+//	[view removeFromSuperview];
+//	[self drawQuerySubviews];
+//}
 
 - (void)chooseFilter:(id)sender{
 	[(AdvancedQuerySubview *)[sender superview] showSearchTypePopup:sender];
 }
 //******
+
+- (void) refreshSources
+{
+	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+	
+	int i;
+	for( i = 0; i < [serversArray count]; i++)
+	{
+		[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [[serversArray objectAtIndex: i] valueForKey:@"Description"], @"name", [[serversArray objectAtIndex: i] valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [[serversArray objectAtIndex: i] valueForKey:@"Address"], [[serversArray objectAtIndex: i] valueForKey:@"Port"]], @"address", [serversArray objectAtIndex: i], @"server", 0L]];
+	}
+}
 
 -(id) init
 {
@@ -852,7 +882,7 @@ static NSString *Modality = @"Modality";
 	
 		result = 0L;
 		queryFilters = 0L;
-		advancedQuerySubviews = 0L;
+//		advancedQuerySubviews = 0L;
 		dateQueryFilter = 0L;
 		modalityQueryFilter = 0L;
 		currentQueryKey = 0L;
@@ -861,9 +891,13 @@ static NSString *Modality = @"Modality";
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
-		advancedQuerySubviews = [[NSMutableArray array] retain];
+//		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
-				
+		
+		sourcesArray = [[NSMutableArray array] retain];
+		
+		[self refreshSources];
+		
 		[[self window] setDelegate:self];
 	}
     
@@ -880,8 +914,9 @@ static NSString *Modality = @"Modality";
 	[queryFilters release];
 	[dateQueryFilter release];
 	[modalityQueryFilter release];
-	[advancedQuerySubviews release];
+//	[advancedQuerySubviews release];
 	[activeMoves release];
+	[sourcesArray release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }
@@ -898,8 +933,6 @@ static NSString *Modality = @"Modality";
 	[[searchCell cancelButtonCell] setTarget:self];
 	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
 	
-	[servers selectItemAtIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"lastQueryServer"]];
-	 
     // OutlineView View
     
     [outlineView setDelegate: self];
@@ -914,7 +947,7 @@ static NSString *Modality = @"Modality";
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 
-	[self addQuerySubview:nil];
+//	[self addQuerySubview:nil];
 		
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
@@ -936,50 +969,48 @@ static NSString *Modality = @"Modality";
 	
 }
 
-- (void)drawQuerySubviews{
-	float subViewHeight = 50.0;
-		//resize Autoresizing not working.  Need to manually seet window height and origin.
-	int count = [advancedQuerySubviews  count];
-	NSRect windowFrame = [advancedQueryWindow frame];
-	NSRect boxFrame = [filterBox frame];
-	float oldWindowHeight = windowFrame.size.height;
-	float newWindowHeight = 138.0 + subViewHeight * count;
-	float y = windowFrame.origin.y - (newWindowHeight - oldWindowHeight);
-	//NSLog(@"count %d", count);
-//[filterBox setFrame:NSMakeRect(boxFrame.origin.x, boxFrame.origin.y, boxFrame.size.width, subViewHeight * count)];
-	NSEnumerator *enumerator = [advancedQuerySubviews reverseObjectEnumerator];
-	id view;
-	int i = 0;
-	while (view = [enumerator nextObject]) {
-		NSRect viewFrame = [view frame];
-		[view setFrame:NSMakeRect(viewFrame.origin.x, subViewHeight * i++, viewFrame.size.width, viewFrame.size.height)];
-		
-	}
-	[advancedQueryWindow setFrame:NSMakeRect(windowFrame.origin.x, y, windowFrame.size.width, newWindowHeight) display:YES];
-	[self updateRemoveButtons];
-	//[advancedQueryWindow setFrame:NSMakeRect(windowFrame.origin.x, windowFrame.origin.y - subViewHeight, windowFrame.size.width, 138 + subViewHeight * count) display:YES];
-}
+//- (void)drawQuerySubviews{
+//	float subViewHeight = 50.0;
+//		//resize Autoresizing not working.  Need to manually seet window height and origin.
+//	int count = [advancedQuerySubviews  count];
+//	NSRect windowFrame = [advancedQueryWindow frame];
+//	NSRect boxFrame = [filterBox frame];
+//	float oldWindowHeight = windowFrame.size.height;
+//	float newWindowHeight = 138.0 + subViewHeight * count;
+//	float y = windowFrame.origin.y - (newWindowHeight - oldWindowHeight);
+//	//NSLog(@"count %d", count);
+////[filterBox setFrame:NSMakeRect(boxFrame.origin.x, boxFrame.origin.y, boxFrame.size.width, subViewHeight * count)];
+//	NSEnumerator *enumerator = [advancedQuerySubviews reverseObjectEnumerator];
+//	id view;
+//	int i = 0;
+//	while (view = [enumerator nextObject]) {
+//		NSRect viewFrame = [view frame];
+//		[view setFrame:NSMakeRect(viewFrame.origin.x, subViewHeight * i++, viewFrame.size.width, viewFrame.size.height)];
+//		
+//	}
+//	[advancedQueryWindow setFrame:NSMakeRect(windowFrame.origin.x, y, windowFrame.size.width, newWindowHeight) display:YES];
+//	[self updateRemoveButtons];
+//	//[advancedQueryWindow setFrame:NSMakeRect(windowFrame.origin.x, windowFrame.origin.y - subViewHeight, windowFrame.size.width, 138 + subViewHeight * count) display:YES];
+//}
 
-- (void)updateRemoveButtons{
-	if ([advancedQuerySubviews count] == 1) {
-		AdvancedQuerySubview *view = [advancedQuerySubviews objectAtIndex:0];
-		[[view removeButton] setEnabled:NO];
-	}
-	else {
-		NSEnumerator *enumerator = [advancedQuerySubviews  objectEnumerator];
-		AdvancedQuerySubview *view;
-		while (view = [enumerator nextObject])
-				[[view removeButton] setEnabled:YES];
-	}
-}
+//- (void)updateRemoveButtons{
+//	if ([advancedQuerySubviews count] == 1) {
+//		AdvancedQuerySubview *view = [advancedQuerySubviews objectAtIndex:0];
+//		[[view removeButton] setEnabled:NO];
+//	}
+//	else {
+//		NSEnumerator *enumerator = [advancedQuerySubviews  objectEnumerator];
+//		AdvancedQuerySubview *view;
+//		while (view = [enumerator nextObject])
+//				[[view removeButton] setEnabled:YES];
+//	}
+//}
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-	[[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
 }
 
 - (void)updateServers:(NSNotification *)note{
-	[servers reloadData];
 }
 
 - (BOOL)dicomEcho{
@@ -992,10 +1023,9 @@ static NSString *Modality = @"Modality";
 	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 	NSMutableArray *objects;
 	NSMutableArray *keys; 
-	if ([servers indexOfSelectedItem] >= 0)
+	if ([sourcesTable selectedRow] >= 0)
 	{
-		NSLog(@"Server at Index: %d", [servers indexOfSelectedItem]);
-		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
+		aServer = [[self serversList]  objectAtIndex: [sourcesTable selectedRow]];
 	 
 		//Bonjour
 		if ([aServer isMemberOfClass:[NSNetService class]]){
@@ -1030,8 +1060,8 @@ static NSString *Modality = @"Modality";
 	[wait close];
 	[wait release];
 
-	if ( [servers indexOfSelectedItem] >= 0) {
-		aServer = [[self serversList]  objectAtIndex:[servers indexOfSelectedItem]];
+	if ( [sourcesTable selectedRow] >= 0) {
+		aServer = [[self serversList]  objectAtIndex:[sourcesTable selectedRow]];
 		if ([aServer isMemberOfClass:[NSNetService class]])
 			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
 		else
@@ -1070,29 +1100,29 @@ static NSString *Modality = @"Modality";
 		return [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 }
 
-#pragma mark serversArray functions
-
-- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
-{
-	if ([aComboBox isEqual:servers]) return [[self serversList] count];
-}
-
-- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
-{
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-
-
-	if ([aComboBox isEqual:servers]){
-		if( index > -1 && index < [serversArray count])
-		{
-			id theRecord = [serversArray objectAtIndex: index];			
-			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
-		}
-		else if( index > -1) {
-			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:index - ([serversArray count])];
-			return [NSString stringWithFormat:NSLocalizedString(@"%@ - Bonjour", nil), [service name]];
-		}
-	}
-	return nil;
-}
+//#pragma mark serversArray functions
+//
+//- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+//{
+//	if ([aComboBox isEqual:servers]) return [[self serversList] count];
+//}
+//
+//- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+//{
+//	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+//
+//
+//	if ([aComboBox isEqual:servers]){
+//		if( index > -1 && index < [serversArray count])
+//		{
+//			id theRecord = [serversArray objectAtIndex: index];			
+//			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
+//		}
+//		else if( index > -1) {
+//			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:index - ([serversArray count])];
+//			return [NSString stringWithFormat:NSLocalizedString(@"%@ - Bonjour", nil), [service name]];
+//		}
+//	}
+//	return nil;
+//}
 @end

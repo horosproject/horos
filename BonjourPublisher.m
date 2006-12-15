@@ -68,7 +68,7 @@ extern NSString * documentsDirectory();
 		fdForListening= 0L;
 	
         struct sockaddr_in serverAddress;
-        int namelen = sizeof(serverAddress);
+        socklen_t namelen = sizeof(serverAddress);
 		
         // In order to use NSFileHandle's acceptConnectionInBackgroundAndNotify method, we need to create a
         // file descriptor that is itself a socket, bind that socket, and then set it up for listening. At this

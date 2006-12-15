@@ -14,7 +14,7 @@
 
 
 
-
+#import "sourcesTableView.h"
 #import <AppKit/AppKit.h>
 
 //@class DICOMQueryStudyRoot;
@@ -25,48 +25,48 @@
     IBOutlet    NSOutlineView				*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
 	IBOutlet	NSSearchField				*searchFieldName, *searchFieldID;
-	IBOutlet	NSWindow					*advancedQueryWindow;   
-	IBOutlet	NSBox						*filterBox;
 	
-	IBOutlet	NSComboBox					*servers;
+				NSMutableArray				*sourcesArray;
+	IBOutlet	sourcesTableView			*sourcesTable;
+	
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
 	IBOutlet	NSTabView					*PatientModeMatrix;
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     
-	NSMutableString					*pressedKeys;
-    NSMutableArray                  *result;
-    NSMutableArray					*queryFilters;
-	NSMutableArray					*advancedQuerySubviews;
-	QueryFilter						*dateQueryFilter, *modalityQueryFilter;
-	NSString						*currentQueryKey;
-	BOOL							echoSuccess;
-	NSMutableDictionary				*activeMoves;
-	int								checkAndViewTry;
+	NSMutableString							*pressedKeys;
+    NSMutableArray							*result;
+    NSMutableArray							*queryFilters;
 	
-	//DICOMQueryStudyRoot
-	QueryArrayController *queryManager;
+	QueryFilter								*dateQueryFilter, *modalityQueryFilter;
+	NSString								*currentQueryKey;
+	BOOL									echoSuccess;
+	NSMutableDictionary						*activeMoves;
+	int										checkAndViewTry;
+	
+	QueryArrayController					*queryManager;
 }
+
+//- (void) advancedQuery:(id)sender;
+//- (void)openAdvancedQuery:(id)sender;
+
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;
 - (IBAction) view:(id) sender;
 - (void) queryPatientID:(NSString*) ID;
 - (void) query:(id)sender;
-- (void) advancedQuery:(id)sender;
 - (void) retrieve:(id)sender;
 - (void) retrieve:(id)sender onlyIfNotAvailable:(BOOL) onlyIfNotAvailable;
 - (void)performQuery:(id)object;
 - (void)performRetrieve:(NSArray*) array;
 - (void)setDateQuery:(id)sender;
 - (void)setModalityQuery:(id)sender;
-- (void)openAdvancedQuery:(id)sender;
 - (void)clearQuery:(id)sender;
-
-- (void)addQuerySubview:(id)sender;
-- (void)removeQuerySubview:(id)sender;
+//- (void)addQuerySubview:(id)sender;
+//- (void)removeQuerySubview:(id)sender;
 - (void)chooseFilter:(id)sender;
-- (void)drawQuerySubviews;
-- (void)updateRemoveButtons;
+//- (void)drawQuerySubviews;
+//- (void)updateRemoveButtons;
 - (BOOL)dicomEcho;
 - (IBAction)verify:(id)sender;
 - (IBAction)abort:(id)sender;
