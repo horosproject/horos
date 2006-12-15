@@ -95,6 +95,7 @@ NSString * documentsDirectory();
 	[[self window] setDelegate:self];
 	
 	blendingViewerController = [bC retain];
+	viewer = [vC retain];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(CloseViewerNotification:)
@@ -209,6 +210,15 @@ NSString * documentsDirectory();
              object: nil];
 	[nc postNotificationName: @"UpdateWLWWMenu" object: curCLUTMenu userInfo: 0L];
 
+	
+	// 4D
+	curMovieIndex = 0;
+	maxMovieIndex = [viewer maxMovieIndex];
+
+	[moviePosSlider setMaxValue:maxMovieIndex-1];
+	[moviePosSlider setNumberOfTickMarks:maxMovieIndex];
+
+
 	[[self window] setShowsResizeIndicator:YES];
 	[[self window] performZoom:self];
 //	[[self window] display];
@@ -226,6 +236,7 @@ NSString * documentsDirectory();
 	NSLog(@"OrthogonalMPRPETCTViewer dealloc");
 	[pixList release];
 	[blendingViewerController release];
+	[viewer release];
 	[toolbar release];
 	[PETCTController stopBlending];
 	[super dealloc];
@@ -766,6 +777,13 @@ NSString * documentsDirectory();
 	
 	[[NSUserDefaults standardUserDefaults] setBool:[modalitySplitView isVertical] forKey: @"orthogonalMPRPETCTVerticalNSSplitView"];
 	
+	if( movieTimer)
+	{
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+	}
+	
     [[self window] setDelegate:0L];
 	
 	[originalSplitView setDelegate:0L];	
@@ -993,6 +1011,17 @@ NSString * documentsDirectory();
 
 		[[wlwwPopup cell] setUsesItemFromMenu:YES];
 	}
+	else if([itemIdent isEqualToString: MovieToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"4D Player", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"4D Player", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"4D Series Controller", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: movieView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
+    }
     else {
 	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
 	// Returning nil will inform the toolbar this kind of item is not supported 
@@ -2354,6 +2383,104 @@ NSString * documentsDirectory();
 		}
 		[dcmTo takeIntValueFrom:dcmToTextField];
 	}
+}
+
+#pragma mark-
+#pragma mark 4D
+
+- (void) MoviePlayStop:(id) sender
+{
+    if( movieTimer)
+    {
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+        
+		[[CTController reslicer] setUseYcache:YES];
+			
+        [moviePlayStop setTitle: NSLocalizedString(@"Play", nil)];
+        
+		[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+    }
+    else
+    {
+        movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performMovieAnimation:) userInfo:nil repeats:YES] retain];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
+        [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSEventTrackingRunLoopMode];
+    
+        lastMovieTime = [NSDate timeIntervalSinceReferenceDate];
+        
+        [moviePlayStop setTitle: NSLocalizedString(@"Stop", nil)];
+    }
+}
+
+- (void) performMovieAnimation:(id) sender
+{
+    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
+    short           val;
+	
+    if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
+    {
+        val = curMovieIndex;
+        val ++;
+        
+		if( val < 0) val = 0;
+		if( val >= maxMovieIndex) val = 0;
+		
+		curMovieIndex = val;
+		
+		[self setMovieIndex: val];
+		
+        lastMovieTime = thisTime;
+    }
+}
+
+- (void) setMovieIndex: (short) i
+{
+	int index = [[CTController originalView] curImage];
+	BOOL wasDataFlipped = [[CTController originalView] flippedData];
+	
+	curMovieIndex = i;
+	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
+	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
+	
+	[moviePosSlider setIntValue:curMovieIndex];
+	
+	[[CTController reslicer] setOriginalDCMPixList:[viewer pixList:i]];
+	[[CTController reslicer] setUseYcache:NO];
+	[[CTController originalView] setDCM:[viewer pixList:i] :[viewer fileList:i] :[viewer roiList:i] :0 :'i' :NO];
+	
+//	if( wasDataFlipped) [self flipDataSeries: self];
+	[[CTController originalView] setIndex:index];
+	//[[CTController originalView] sendSyncMessage:1];
+	
+	
+	index = [[PETController originalView] curImage];
+	[[PETController reslicer] setOriginalDCMPixList:[blendingViewerController pixList:i]];
+	[[PETController reslicer] setUseYcache:NO];
+	[[PETController originalView] setDCM:[blendingViewerController pixList:i] :[blendingViewerController fileList:i] :[blendingViewerController roiList:i] :0 :'i' :NO];
+//	if( wasDataFlipped) [self flipDataSeries: self];
+	[[PETController originalView] setIndex:index];
+	//[[CTController originalView] sendSyncMessage:1];
+	
+	[CTController setFusion];
+	[PETController setFusion];
+	[PETCTController setFusion];
+	
+	[CTController refreshViews];
+	[PETController refreshViews];
+	[PETCTController refreshViews];
+}
+
+- (void) movieRateSliderAction:(id) sender
+{
+	[movieTextSlide setStringValue:[NSString stringWithFormat:@"%0.0f im/s", (float) [movieRateSlider floatValue]]];
+}
+
+- (void) moviePosSliderAction:(id) sender
+{
+	[self setMovieIndex: [moviePosSlider intValue]];
+//	[self propagateSettings];
 }
 
 @end

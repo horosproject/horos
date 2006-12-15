@@ -797,17 +797,6 @@ NSString * documentsDirectory();
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 //	[toolbarItem setMinSize:NSMakeSize(NSWidth([BlendingView frame]), NSHeight([BlendingView frame]))];
 //    }
-//	else if([itemIdent isEqual: MovieToolbarItemIdentifier]) {
-//	// Set up the standard properties 
-//	[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
-//	[toolbarItem setPaletteLabel:NSLocalizedString( @"4D Player",nil)];
-//	[toolbarItem setToolTip:NSLocalizedString( @"4D Player",nil)];
-//	
-//	// Use a custom view, a text field, for the search item 
-//	[toolbarItem setView: movieView];
-//	[toolbarItem setMinSize:NSMakeSize(NSWidth([movieView frame]), NSHeight([movieView frame]))];
-//	[toolbarItem setMaxSize:NSMakeSize(NSWidth([movieView frame]),NSHeight([movieView frame]))];
-//    }
 //	else if([itemIdent isEqual: AxesToolbarItemIdentifier]) {
 //	// Set up the standard properties 
 //	[toolbarItem setLabel: @"MPR Axes"];

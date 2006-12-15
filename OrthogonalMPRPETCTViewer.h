@@ -19,7 +19,7 @@
 
 @interface OrthogonalMPRPETCTViewer : OSIWindowController
 {
-	ViewerController							*blendingViewerController;
+	ViewerController							*viewer, *blendingViewerController;
 	
 	IBOutlet OrthogonalMPRPETCTController		*CTController, *PETCTController, *PETController;
 	
@@ -57,6 +57,16 @@
 	NSString								*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
 	
 	long									fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
+	
+	// 4D
+	IBOutlet NSView						*movieView;
+	IBOutlet NSTextField				*movieTextSlide;
+	IBOutlet NSButton					*moviePlayStop;
+	IBOutlet NSSlider					*movieRateSlider;
+	IBOutlet NSSlider					*moviePosSlider;
+	short								curMovieIndex, maxMovieIndex;
+	NSTimeInterval						lastTime, lastMovieTime;
+	NSTimer								*movieTimer;
 }
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC:(ViewerController*) bC;
@@ -125,4 +135,10 @@
 - (IBAction) setCurrentdcmExport:(id) sender;
 - (void)checkView:(NSView *)aView :(BOOL) OnOff;
 - (void)dcmExportTextFieldDidChange:(NSNotification *)note;
+
+// 4D
+- (void) MoviePlayStop:(id) sender;
+- (void) movieRateSliderAction:(id) sender;
+- (void) moviePosSliderAction:(id) sender;
+
 @end

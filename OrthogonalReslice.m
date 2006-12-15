@@ -594,6 +594,8 @@
 - (void)setUseYcache:(BOOL)boo;
 {
 	useYcache = boo;
+	if(!boo)
+		[self freeYCache];
 }
 
 @end
