@@ -30,6 +30,8 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "BrowserController.h"
 
+#include "SimplePing.h"
+
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *StudyDate = @"StudyDate";
@@ -1013,8 +1015,10 @@ static NSString *Modality = @"Modality";
 - (void)updateServers:(NSNotification *)note{
 }
 
-- (BOOL)dicomEcho{
-	BOOL status = YES;
+- (int) dicomEcho
+{
+	int status = 0;
+	
 	id echoSCU;
 	NSString *theirAET;
 	NSString *hostname;
@@ -1023,6 +1027,7 @@ static NSString *Modality = @"Modality";
 	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 	NSMutableArray *objects;
 	NSMutableArray *keys; 
+
 	if ([sourcesTable selectedRow] >= 0)
 	{
 		aServer = [[self serversList]  objectAtIndex: [sourcesTable selectedRow]];
@@ -1038,30 +1043,51 @@ static NSString *Modality = @"Modality";
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
 			port = [aServer objectForKey:@"Port"];
-
 		}
 	}
-	DCMTKVerifySCU *verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
+	
+	int numberPacketsReceived = 0;
+	if( SimplePing( [hostname UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+	{
+		DCMTKVerifySCU *verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
 			calledAET:theirAET  
 			hostname:hostname 
 			port:[port intValue]
 			transferSyntax:nil
 			compression: nil
 			extraParameters:nil] autorelease];
-	return [verifySCU echo];
+			
+		status = [verifySCU echo];
+	}
+	else status = -1;
+	
+	return status;
 }
 
-- (IBAction)verify:(id)sender{
+- (IBAction)verify:(id)sender
+{
 	id				aServer;
 	NSString		*message;
 	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Verifying...", nil)];
+	
 	[wait showWindow:self];
-	NSString * status = [self dicomEcho] ? @"succeeded" : @"failed";
+	
+	NSString * status = @"";
+	
+	switch( [self dicomEcho])
+	{
+		case -1:	status = @"failed (no ping response)";				break;
+		case 0:		status = @"failed (no C-Echo response)";			break;
+		case 1:		status = @"succeeded (ping and C-Echo response)";	break;
+	}
+	
 	[wait close];
 	[wait release];
 
-	if ( [sourcesTable selectedRow] >= 0) {
+	if ( [sourcesTable selectedRow] >= 0)
+	{
 		aServer = [[self serversList]  objectAtIndex:[sourcesTable selectedRow]];
+		
 		if ([aServer isMemberOfClass:[NSNetService class]])
 			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
 		else

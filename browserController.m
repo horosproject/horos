@@ -1619,7 +1619,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];;
+		bonjourRunLoopTimer = [[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(bonjourRunLoop:) userInfo:self repeats:YES] retain];
 	}
 	else
 	{

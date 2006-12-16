@@ -67,7 +67,7 @@
 - (void)chooseFilter:(id)sender;
 //- (void)drawQuerySubviews;
 //- (void)updateRemoveButtons;
-- (BOOL)dicomEcho;
+- (int)dicomEcho;
 - (IBAction)verify:(id)sender;
 - (IBAction)abort:(id)sender;
 - (IBAction)controlAction:(id)sender;
