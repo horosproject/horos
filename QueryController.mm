@@ -274,79 +274,83 @@ static NSString *Modality = @"Modality";
 				port = [aServer objectForKey:@"Port"];
 			}
 			
-			[self setDateQuery: dateFilterMatrix];
-			[self setModalityQuery: modalityFilterMatrix];
-			
-			//get rid of white space at end and append "*"
-			
-			[queryManager release];
-			queryManager = nil;
-			[outlineView reloadData];
-			
-			queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
-			// add filters as needed
-			
-			if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
-				//Specific Character Set
-				[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-			
-			switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+			int numberPacketsReceived = 0;
+			if( SimplePing( [hostname UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 			{
-				case 0:		currentQueryKey = PatientName;		break;
-				case 1:		currentQueryKey = PatientID;		break;
-				case 2:		currentQueryKey = PatientBirthDate;	break;
-			}
-			
-			BOOL queryItem = NO;
-			
-			if( currentQueryKey == PatientName)
-			{
-				NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				[self setDateQuery: dateFilterMatrix];
+				[self setModalityQuery: modalityFilterMatrix];
 				
-				if ([filterValue length] > 0)
+				//get rid of white space at end and append "*"
+				
+				[queryManager release];
+				queryManager = nil;
+				[outlineView reloadData];
+				
+				queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+				// add filters as needed
+				
+				if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+					//Specific Character Set
+					[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+				
+				switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
 				{
-					[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+					case 0:		currentQueryKey = PatientName;		break;
+					case 1:		currentQueryKey = PatientID;		break;
+					case 2:		currentQueryKey = PatientBirthDate;	break;
+				}
+				
+				BOOL queryItem = NO;
+				
+				if( currentQueryKey == PatientName)
+				{
+					NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					
+					if ([filterValue length] > 0)
+					{
+						[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+						queryItem = YES;
+					}
+				}
+				else if( currentQueryKey == PatientBirthDate)
+				{
+					[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
 					queryItem = YES;
 				}
-			}
-			else if( currentQueryKey == PatientBirthDate)
-			{
-				[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
-				queryItem = YES;
-			}
-			else if( currentQueryKey == PatientID)
-			{
-				NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-				
-				if ([filterValue length] > 0)
+				else if( currentQueryKey == PatientID)
 				{
-					[queryManager addFilter:filterValue forDescription:currentQueryKey];
-					queryItem = YES;
+					NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					
+					if ([filterValue length] > 0)
+					{
+						[queryManager addFilter:filterValue forDescription:currentQueryKey];
+						queryItem = YES;
+					}
 				}
-			}
-			
-			//
-			if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
-			
-			if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
-			
-			if ([dateQueryFilter object] || queryItem)
-			{
-				[self performQuery: 0L];
-			}		
-			// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-			else
-			{
-				BOOL doit = NO;
 				
-				if( atLeastOneSource == NO)
+				//
+				if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+				
+				if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+				
+				if ([dateQueryFilter object] || queryItem)
 				{
-					 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
+					[self performQuery: 0L];
+				}		
+				// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
+				else
+				{
+					BOOL doit = NO;
+					
+					if( atLeastOneSource == NO)
+					{
+						 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
+					}
+					else doit = YES;
+					
+					if( doit) [self performQuery: 0L];
+					else i = [sourcesArray count];
 				}
-				else doit = YES;
-				
-				if( doit) [self performQuery: 0L];
-				else i = [sourcesArray count];
 			}
 			
 			atLeastOneSource = YES;
@@ -617,15 +621,19 @@ static NSString *Modality = @"Modality";
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
 	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[queryManager parameters]];
 	
-	NSLog(@"Retrieve START");
+	NSLog( @"Retrieve START");
 	
 	int i;
 	for( i = 0; i < [array count] ; i++)
 	{
 		if (dictionary != nil)
 		{
-			[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
-			[[array objectAtIndex: i] move:dictionary];
+			int numberPacketsReceived = 0;
+			if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+			{
+				[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
+				[[array objectAtIndex: i] move:dictionary];
+			}
 		}
 	}
 	
