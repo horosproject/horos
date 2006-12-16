@@ -75,6 +75,11 @@ It is a shared class.
 - (void)previousSeriesSet;
 - (void)hangSet:(NSArray *)seriesSet;
 
+#pragma mark-
+#pragma mark Subarrays of Window Controllers
+- (NSArray *)viewers2D;
+- (NSArray *)viewers3D;
+
 
 
 

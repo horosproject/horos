@@ -23,6 +23,7 @@
 #import "AppController.h"
 #import "ToolbarPanel.h"
 #import "OSIWindowController.h"
+#import "Window3DController.h"
 #import "browserController.h"
 
 
@@ -426,55 +427,8 @@ WindowLayoutManager *sharedLayoutManager;
 			NSArray *firstSet = [_seriesSets objectAtIndex:0];
 			
 			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
-			NSDictionary *seriesInfo;
-			NSEnumerator *enumerator = [firstSet objectEnumerator];
-			NSMutableArray *children =  [NSMutableArray array];
-			int count = [[browserController childrenArray: study] count];
-			while (seriesInfo = [enumerator nextObject]){
-				// only load ViewerControllers first
-	
-				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
-					int i;				
-					for (i = 0; i < count; i++) {
-						id child = [[browserController childrenArray: study] objectAtIndex:i];
-						// if series description is unnamed used series number
-						if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
-							if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue])
-								[children addObject:child];
-						}
-						else {
-							if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
-								[children addObject:child];
-							}
-					}
-				}
-			}
-			//this will load the first series Set Viewers , but no fusion or 3D Viewers
-			[browserController viewerDICOMInt :NO  dcmFile:children viewer:0L];
-			//resizeWindows
-			// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
-			//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
-			// need to make this more efficient
-			enumerator = [firstSet objectEnumerator];
-			NSEnumerator *windowEnumerator = [_windowControllers objectEnumerator];
-			ViewerController *controller;
-			while (seriesInfo = [enumerator nextObject]){
-								if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
-					controller = [windowEnumerator nextObject];
-					[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
-					[controller setRotation:[[seriesInfo objectForKey:@"rotation"] floatValue]];
-					[controller setScaleValue:[[seriesInfo objectForKey:@"zoom"] floatValue]];
+			[self hangSet:firstSet];
 					
-					if ([[seriesInfo objectForKey:@"wwwlMenuItem"] isEqualToString:NSLocalizedString(@"Other", nil)])
-						[controller setWL:[[seriesInfo objectForKey:@"wl"] floatValue] WW:[[seriesInfo objectForKey:@"wl"] floatValue]];
-					else {
-						[controller setCurWLWWMenu:[seriesInfo objectForKey:@"wwwlMenuItem"]];
-					}
-					
-					[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
-				}				
-			}
-		
 			[_advancedHangingProtocol release];
 			_advancedHangingProtocol = [hangingProtocol copy];
 			_hangingProtocolInUse = YES;
@@ -497,13 +451,17 @@ WindowLayoutManager *sharedLayoutManager;
 	_seriesSetIndex++;
 	if (_seriesSetIndex >= [_seriesSets count])
 		_seriesSetIndex = 0;
+	NSArray *array = [_seriesSets objectAtIndex:_seriesSetIndex];
+	[self hangSet:array];
 }
 
 
 - (void)previousSeriesSet{
 	_seriesSetIndex--;
-		if (_seriesSetIndex < 0 )
+	if (_seriesSetIndex < 0 )
 		_seriesSetIndex = [_seriesSets count] - 1;
+	NSArray *array = [_seriesSets objectAtIndex:_seriesSetIndex];
+	[self hangSet:array];
 }
 
 - (void)hangSet:(NSArray *)seriesSet{
@@ -533,7 +491,15 @@ WindowLayoutManager *sharedLayoutManager;
 		}
 	}
 	//this will load the first series Set Viewers , but no fusion or 3D Viewers
-	[browserController viewerDICOMInt :NO  dcmFile:children viewer:0L];
+	//Right now this will load new viewers.  It would be nice to reuse viewers and loaded series 
+	/*
+	It is possible to have the smae series open twice.  
+	If some one wanted lung and mediastinum at the same time.  
+	Need to take that into account
+	*/
+	
+	ViewerController *viewer = nil;
+	[browserController viewerDICOMInt :NO  dcmFile:children viewer:viewer];
 	//resizeWindows
 	// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
 	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
@@ -542,7 +508,7 @@ WindowLayoutManager *sharedLayoutManager;
 	NSEnumerator *windowEnumerator = [_windowControllers objectEnumerator];
 	ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
-						if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
 			controller = [windowEnumerator nextObject];
 			[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
 			[controller setRotation:[[seriesInfo objectForKey:@"rotation"] floatValue]];
@@ -557,7 +523,33 @@ WindowLayoutManager *sharedLayoutManager;
 			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 		}				
 	}
+}
 
+#pragma mark-
+#pragma mark Subarrays of Window Controllers
+- (NSArray *)viewers2D{
+	NSEnumerator *enumerator = [_windowControllers objectEnumerator];
+	OSIWindowController *controller;
+	NSMutableArray *array = [NSMutableArray array];
+	while (controller = [enumerator nextObject]){
+		if ([controller isKindOfClass:[ViewerController class]])
+			[array addObject:controller];
+	}
+	return array;
+}
+
+- (NSArray *)viewers3D{
+	NSEnumerator *enumerator = [_windowControllers objectEnumerator];
+	OSIWindowController *controller;
+	NSMutableArray *array = [NSMutableArray array];
+	while (controller = [enumerator nextObject]){
+		if ([controller isKindOfClass:[Window3DController class]])
+			[array addObject:controller];
+	}
+	return array;
+}
+
+-(NSArray *)viewers2DForSeries:(id)series{
 }
 
 
