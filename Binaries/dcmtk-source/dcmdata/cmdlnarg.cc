@@ -1,4 +1,4 @@
-te/*
+/*
  *
  *  Copyright (C) 1996-2005, OFFIS
  *

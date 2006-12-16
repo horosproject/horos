@@ -25,6 +25,7 @@
                 osirixNewServer = id; 
                 setStringEncoding = id; 
                 setTransferSyntax = id; 
+                test = id; 
             }; 
             CLASS = OSILocationsPreferencePanePref; 
             LANGUAGE = ObjC; 

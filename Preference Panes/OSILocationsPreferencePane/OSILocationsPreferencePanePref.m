@@ -17,8 +17,8 @@
 *	20051215	LP	Added Transfer Syntax Option for Servers 
 *****************************************************************************************************/
 
-
 #import "OSILocationsPreferencePanePref.h"
+#include "SimplePing.h"
 
 /************ Transfer Syntaxes *******************
 	@"Explicit Little Endian"
@@ -35,6 +35,24 @@
 *************************************************/
 
 @implementation OSILocationsPreferencePanePref
+
+- (int) echoAddress: (NSString*) address port:(int) port
+{
+	NSTask* theTask = [[[NSTask alloc]init]autorelease];
+	
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
+
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
+
+	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"5", @"-td", @"5", nil];
+
+	[theTask setArguments:args];
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	return [theTask terminationStatus];
+}
 
 - (void) enableControls: (BOOL) val
 {
@@ -80,6 +98,7 @@
 	{
 		if( [[serverList objectAtIndex: i] valueForKey:@"QR"] == 0L) [[serverList objectAtIndex: i] setValue:[NSNumber numberWithBool:YES] forKey:@"QR"];
 	}
+	[self resetTest];
 	
 	if (serverList) {
 		[serverTable reloadData];
@@ -160,6 +179,8 @@
 	
 	[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+	
+	[self resetTest];
 }
 
 - (IBAction) osirixNewServer:(id)sender
@@ -249,6 +270,73 @@
 			
 			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+		}
+	}
+}
+
+- (void) resetTest
+{
+	int i;
+	
+	for( i = 0 ; i < [serverList count]; i++)
+	{
+		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
+		
+		[aServer removeObjectForKey:@"test"];
+		[serverList replaceObjectAtIndex: i withObject: aServer];
+	}
+	
+	[serverTable reloadData];
+}
+
+- (IBAction) test:(id) sender
+{
+	int i;
+	int status;
+	
+	for( i = 0 ; i < [serverList count]; i++)
+	{
+		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
+		
+		int numberPacketsReceived = 0;
+		if( SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		{
+			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue]] == 0) status = 0;
+			else status = -1;
+		}
+		else status = -2;
+		
+		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
+		[serverList replaceObjectAtIndex:i withObject: aServer];
+	}
+	
+	[serverTable reloadData];
+}
+
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( [aTableView tag] == 0)
+	{
+		NSParameterAssert(rowIndex >= 0 && rowIndex < [serverList count]);
+		
+		NSMutableDictionary *theRecord = [serverList objectAtIndex:rowIndex];
+		
+		if( [[aTableColumn identifier] isEqual:@"Address"] == YES)
+		{
+			switch( [[theRecord objectForKey:@"test"] intValue])
+			{
+				case -1:
+					[aCell setTextColor: [NSColor orangeColor]];
+				break;
+				
+				case -2:
+					[aCell setTextColor: [NSColor redColor]];
+				break;
+				
+				case 0:
+					[aCell setTextColor: [NSColor blackColor]];
+				break;
+			}
 		}
 	}
 }

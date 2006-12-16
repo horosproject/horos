@@ -33,5 +33,6 @@
 - (void) deleteSelectedRow:(id)sender;
 - (IBAction) setStringEncoding:(id)sender;
 - (IBAction)setTransferSyntax:(id)sender;
-
+- (IBAction) test:(id) sender;
+- (void) resetTest;
 @end
