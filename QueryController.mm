@@ -143,6 +143,7 @@ static QueryController	*currentQueryController = 0L;
 {
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
+		NSLog( [item valueForKey:@"hostname"]);
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
 			NSArray						*studyArray;
@@ -360,7 +361,10 @@ static QueryController	*currentQueryController = 0L;
 					else i = [sourcesArray count];
 				}
 				
-				if( [resultArray count] == 0) [resultArray addObjectsFromArray: [queryManager queries]];
+				if( [resultArray count] == 0)
+				{
+					[resultArray addObjectsFromArray: [queryManager queries]];
+				}
 				else
 				{
 					int			x;
@@ -476,23 +480,24 @@ static QueryController	*currentQueryController = 0L;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
-	
+
 	NetworkMoveDataHandler *moveDataHandler = [NetworkMoveDataHandler moveDataHandler];
-	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary:[queryManager parameters]];
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: [queryManager parameters]];
 	
 	NSLog( @"Retrieve START");
+	NSLog( [dictionary description]);
+	
+	[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
 	
 	int i;
 	for( i = 0; i < [array count] ; i++)
 	{
-		if (dictionary != nil)
+		DCMTKQueryNode	*object = [array objectAtIndex: i];
+		
+		int numberPacketsReceived = 0;
+		if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
-			int numberPacketsReceived = 0;
-			if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
-			{
-				[dictionary setObject:moveDataHandler  forKey:@"receivedDataHandler"];
-				[[array objectAtIndex: i] move:dictionary];
-			}
+			[[array objectAtIndex: i] move:dictionary];
 		}
 	}
 	
