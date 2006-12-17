@@ -20,6 +20,8 @@ Version 2.3
 	
 *****************************************************************************************************/
 
+#import "QueryController.h"
+
 #include <Security/Security.h>
 
 static OSStatus SetupRight(
@@ -177,6 +179,7 @@ extern BrowserController	*browserWindow;
 		[DCMView computePETBlendingCLUT];
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
+	
 	
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];

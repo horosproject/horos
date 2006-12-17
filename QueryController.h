@@ -47,9 +47,10 @@
 	QueryArrayController					*queryManager;
 }
 
-//- (void) advancedQuery:(id)sender;
-//- (void)openAdvancedQuery:(id)sender;
++ (QueryController*) currentQueryController;
 
+- (IBAction) selectUniqueSource:(id) sender;
+- (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;
 - (IBAction) view:(id) sender;
@@ -62,16 +63,10 @@
 - (void)setDateQuery:(id)sender;
 - (void)setModalityQuery:(id)sender;
 - (void)clearQuery:(id)sender;
-//- (void)addQuerySubview:(id)sender;
-//- (void)removeQuerySubview:(id)sender;
-- (void)chooseFilter:(id)sender;
-//- (void)drawQuerySubviews;
-//- (void)updateRemoveButtons;
 - (int)dicomEcho;
 - (IBAction)verify:(id)sender;
 - (IBAction)abort:(id)sender;
 - (IBAction)controlAction:(id)sender;
 - (void) refresh: (id) sender;
-- (NSArray *)serversList;
 
 @end

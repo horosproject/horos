@@ -411,8 +411,7 @@ static BOOL COMPLETEREBUILD = NO;
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[viewersListToReload objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[viewersListToReload objectAtIndex: i] keyImagesOnly: NO];
 	}
 	
-	if( queryController) [queryController refresh: self];
-
+	[[QueryController currentQueryController] refresh: self];
 }
 
 - (void) rebuildViewers: (NSMutableArray*) viewersListToRebuild
@@ -3835,7 +3834,7 @@ static BOOL COMPLETEREBUILD = NO;
 		[wait release];
 	}
 	
-	if( queryController) [queryController refresh: self];
+	[[QueryController currentQueryController] refresh: self];
 	
 	[context unlock];
 	
@@ -10507,9 +10506,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	[[self window] makeKeyAndOrderFront:sender];
 	
-    if(!queryController)
-		queryController = [[QueryController alloc] init];
-    [queryController showWindow:self];
+    if( [QueryController currentQueryController] == 0L) [[QueryController alloc] init];
+
+    [[QueryController currentQueryController] showWindow:self];
 
 	// *****
 
@@ -10524,7 +10523,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else
 			studySelected = [item valueForKey:@"study"];
 			
-		[queryController queryPatientID: [studySelected valueForKey:@"patientID"]];
+		[[QueryController currentQueryController] queryPatientID: [studySelected valueForKey:@"patientID"]];
 	}
 }
 
@@ -10536,9 +10535,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[[self window] makeKeyAndOrderFront:sender];
 		
-		if(!queryController)
-			queryController = [[QueryController alloc] init];
-		[queryController showWindow:self];
+		if(![QueryController currentQueryController]) [[QueryController alloc] init];
+		[[QueryController currentQueryController] showWindow:self];
 	}
 }
 

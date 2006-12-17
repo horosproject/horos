@@ -38,9 +38,16 @@ static NSString *StudyDate = @"StudyDate";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *Modality = @"Modality";
 
+static QueryController	*currentQueryController = 0L;
+
 @implementation QueryController
 
 //******	OUTLINEVIEW
+
++ (QueryController*) currentQueryController
+{
+	return currentQueryController;
+}
 
 - (void)keyDown:(NSEvent *)event
 {
@@ -70,7 +77,7 @@ static NSString *Modality = @"Modality";
 }
 
 - (void) refresh: (id) sender
-{
+{	
 	[outlineView reloadData];
 }
 
@@ -837,54 +844,84 @@ static NSString *Modality = @"Modality";
 	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
 
+	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
 }
 
-//- (void)addQuerySubview:(id)sender{
-//	//setup subview
-//	float subViewHeight = 50.0;
-//	
-//	AdvancedQuerySubview *subview = [[[AdvancedQuerySubview alloc] initWithFrame:NSMakeRect(0.0,0.0,507.0,subViewHeight)] autorelease];
-//	[filterBox addSubview:subview];	
-//	[advancedQuerySubviews  addObject:subview];
-//	[[subview addButton] setTarget:self];
-//	[[subview addButton] setAction:@selector(addQuerySubview:)];
-//	[[subview filterKeyPopup] setTarget:subview];
-//	[[subview filterKeyPopup] setAction:@selector(showSearchTypePopup:)];
-//	[[subview searchTypePopup] setTarget:subview];
-//	[[subview searchTypePopup] setAction:@selector(showValueField:)];
-//	[[subview removeButton] setTarget:self];
-//	[[subview removeButton] setAction:@selector(removeQuerySubview:)];
-//	[self drawQuerySubviews];
-//}	
-//
-//- (void)removeQuerySubview:(id)sender{
-//	NSView *view = [sender superview];
-//	[advancedQuerySubviews removeObject:view];
-//	[view removeFromSuperview];
-//	[self drawQuerySubviews];
-//}
-
-- (void)chooseFilter:(id)sender{
-	[(AdvancedQuerySubview *)[sender superview] showSearchTypePopup:sender];
-}
 //******
+
+- (IBAction) selectUniqueSource:(id) sender
+{
+	[self willChangeValueForKey:@"sourcesArray"];
+	
+	int i;
+	for( i = 0; i < [sourcesArray count]; i++)
+	{
+		NSMutableDictionary		*source = [NSMutableDictionary dictionaryWithDictionary: [sourcesArray objectAtIndex: i]];
+		
+		if( [sender selectedRow] == i) [source setObject: [NSNumber numberWithBool:YES] forKey:@"activated"];
+		else [source setObject: [NSNumber numberWithBool:NO] forKey:@"activated"];
+		
+		[sourcesArray	replaceObjectAtIndex: i withObject:source];
+	}
+	
+	[self didChangeValueForKey:@"sourcesArray"];
+}
+
+- (NSDictionary*) findCorrespondingServer: (NSDictionary*) savedServer inServers : (NSArray*) servers
+{
+	int i;
+	
+	for( i = 0 ; i < [servers count]; i++)
+	{
+		if( [[savedServer objectForKey:@"AETitle"] isEqualToString: [[servers objectAtIndex:i] objectForKey:@"AETitle"]] && 
+			[[savedServer objectForKey:@"AddressAndPort"] isEqualToString: [NSString stringWithFormat:@"%@:%@", [[servers objectAtIndex:i] valueForKey:@"Address"], [[servers objectAtIndex:i] valueForKey:@"Port"]]])
+			{
+				return [servers objectAtIndex:i];
+			}
+	}
+	
+	return 0L;
+}
 
 - (void) refreshSources
 {
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	
+	NSMutableArray		*serversArray		= [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] mutableCopy] autorelease];
+	NSArray				*savedArray			= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SavedQueryArray"];
+	
+	[self willChangeValueForKey:@"sourcesArray"];
+	 
+	[sourcesArray removeAllObjects];
 	
 	int i;
+	for( i = 0; i < [savedArray count]; i++)
+	{
+		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
+		
+		if( server)
+		{
+			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", 0L]];
+			
+			[serversArray removeObject: server];
+		}
+	}
+	
 	for( i = 0; i < [serversArray count]; i++)
 	{
-		[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [[serversArray objectAtIndex: i] valueForKey:@"Description"], @"name", [[serversArray objectAtIndex: i] valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [[serversArray objectAtIndex: i] valueForKey:@"Address"], [[serversArray objectAtIndex: i] valueForKey:@"Port"]], @"address", [serversArray objectAtIndex: i], @"server", 0L]];
+		[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [[serversArray objectAtIndex: i] valueForKey:@"Description"], @"name", [[serversArray objectAtIndex: i] valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [[serversArray objectAtIndex: i] valueForKey:@"Address"], [[serversArray objectAtIndex: i] valueForKey:@"Port"]], @"AddressAndPort", [serversArray objectAtIndex: i], @"server", 0L]];
 	}
+	
+	[sourcesTable reloadData];
+	
+	[self didChangeValueForKey:@"sourcesArray"];
 }
 
 -(id) init
 {
     if ( self = [super initWithWindowNibName:@"Query"])
 	{
-		if( [[self serversList] count] == 0)
+		if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			return 0L;
@@ -892,7 +929,6 @@ static NSString *Modality = @"Modality";
 	
 		result = 0L;
 		queryFilters = 0L;
-//		advancedQuerySubviews = 0L;
 		dateQueryFilter = 0L;
 		modalityQueryFilter = 0L;
 		currentQueryKey = 0L;
@@ -901,14 +937,15 @@ static NSString *Modality = @"Modality";
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
-//		advancedQuerySubviews = [[NSMutableArray array] retain];
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		
-		sourcesArray = [[NSMutableArray array] retain];
+		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
 		
 		[self refreshSources];
 		
 		[[self window] setDelegate:self];
+		
+		currentQueryController = self;
 	}
     
     return self;
@@ -924,7 +961,6 @@ static NSString *Modality = @"Modality";
 	[queryFilters release];
 	[dateQueryFilter release];
 	[modalityQueryFilter release];
-//	[advancedQuerySubviews release];
 	[activeMoves release];
 	[sourcesArray release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -961,7 +997,7 @@ static NSString *Modality = @"Modality";
 		
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
 //	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
 
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
@@ -1018,9 +1054,11 @@ static NSString *Modality = @"Modality";
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-}
-
-- (void)updateServers:(NSNotification *)note{
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+	
+	currentQueryController = 0L;
+	
+	[self release];
 }
 
 - (int) dicomEcho
@@ -1038,7 +1076,7 @@ static NSString *Modality = @"Modality";
 
 	if ([sourcesTable selectedRow] >= 0)
 	{
-		aServer = [[self serversList]  objectAtIndex: [sourcesTable selectedRow]];
+		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
 	 
 		//Bonjour
 		if ([aServer isMemberOfClass:[NSNetService class]]){
@@ -1094,7 +1132,7 @@ static NSString *Modality = @"Modality";
 
 	if ( [sourcesTable selectedRow] >= 0)
 	{
-		aServer = [[self serversList]  objectAtIndex:[sourcesTable selectedRow]];
+		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
 		
 		if ([aServer isMemberOfClass:[NSNetService class]])
 			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
@@ -1105,7 +1143,8 @@ static NSString *Modality = @"Modality";
 	NSAlert *alert = [NSAlert alertWithMessageText:@"DICOM verification" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
 	[alert setAlertStyle:NSInformationalAlertStyle];
 	[alert runModal];
-
+	
+	[self refreshSources];
 }
 
 - (IBAction)abort:(id)sender
@@ -1122,16 +1161,6 @@ static NSString *Modality = @"Modality";
 		[self verify:sender];
 	else if ([sender selectedSegment] == 1)
 		[self abort:sender];
-}
-
-- (NSArray *) serversList
-{
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
-	if ([serversArray count] > 0)
-		return [serversArray arrayByAddingObjectsFromArray: [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices]];
-	else
-		return [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 }
 
 //#pragma mark serversArray functions

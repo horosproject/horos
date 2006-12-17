@@ -797,7 +797,7 @@ NSLog(@"connectToService");
 	BOOL				succeed;
 	
 	resolved = NO;
-	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: [[object valueForKey:@"msg"] UTF8String]];
+	succeed = [self resolveServiceWithIndex: [[object valueForKey:@"index"] intValue] msg: (char*) [[object valueForKey:@"msg"] UTF8String]];
 	
 	if( succeed)
 	{
