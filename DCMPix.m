@@ -7502,6 +7502,30 @@ BOOL            readable = YES;
 	
 }
 
++(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords {
+
+	unsigned int
+		count = [pixList count],
+		i,
+		nearestSliceIndx;
+		
+	float minDist = 1000000.0f;
+	
+	for ( i = 0; i < count; i++ ) {
+		float sliceCoords[ 3 ];
+		DCMPix *pix = [pixList objectAtIndex: i];
+		[pix convertDICOMCoords: dicomCoords toSliceCoords: sliceCoords];
+		if ( fabs( sliceCoords[ 2 ] ) < minDist ) {
+			minDist = sliceCoords[ 2 ];
+			memcpy( nearestSliceCoords, sliceCoords, sizeof nearestSliceCoords );
+			nearestSliceIndx = i;
+		}
+	}
+	
+	return nearestSliceIndx;
+}
+
+
 -(void) computePixMinPixMax
 {
 	float pixmin, pixmax;
@@ -8106,7 +8130,8 @@ BOOL            readable = YES;
 	vImage_Buffer   src, dst;
 	Pixel_8			convTable[256];
 	long			i, diff, val;
-	unsigned char	*fNext = NULL, *fResult = malloc( height * width * sizeof(char)*4);
+	float			*fNext = NULL;
+	float			*fResult = malloc( height * width * sizeof(float) );
 	long			next;
 	float			min, max, iwl, iww;
 
@@ -8141,8 +8166,8 @@ BOOL            readable = YES;
 			
 			if( next < [pixArray count]  && next >= 0)
 			{
-				fNext = (unsigned char*) [[pixArray objectAtIndex: next] fImage];
-				if( fNext)
+				fNext = [[pixArray objectAtIndex: next] fImage];
+				if( fNext )
 				{
 					#if __ppc__ || __ppc64__
 					if( Altivec)
@@ -8153,8 +8178,8 @@ BOOL            readable = YES;
 					else
 					#endif
 					{
-						if( stackMode == 2) vmaxNoAltivec(fNext, fImage, fResult, height * width);
-						else vminNoAltivec(fNext, fImage, fResult, height * width);
+						if( stackMode == 2) vmaxNoAltivec( fNext, fImage, fResult, height * width );
+						else vminNoAltivec( fNext, fImage, fResult, height * width );
 					}
 				}
 				
@@ -8172,8 +8197,8 @@ BOOL            readable = YES;
 						
 						if( res < [pixArray count] && res >= 0)
 						{
-							fNext = (unsigned char*) [[pixArray objectAtIndex: res] fImage];
-							if( fNext)
+							fNext = [[pixArray objectAtIndex: res] fImage];
+							if( fNext )
 							{
 								#if __ppc__ || __ppc64__
 								if( Altivec)
@@ -8184,8 +8209,8 @@ BOOL            readable = YES;
 								else
 								#endif
 								{
-									if( stackMode == 2) vmaxNoAltivec(fResult, fNext, fResult, height * width);
-									else vminNoAltivec(fResult, fNext, fResult, height * width);
+									if( stackMode == 2) vmaxNoAltivec( fResult, fNext, fResult, height * width );
+									else vminNoAltivec( fResult, fNext, fResult, height * width );
 								}
 							}
 						}
@@ -8194,12 +8219,12 @@ BOOL            readable = YES;
 			}
 			else
 			{
-				memcpy( fResult, fImage, height * width * sizeof(char)*4);
+				memcpy( fResult, fImage, height * width * sizeof(float) );
 			}
 		break;			
 	} //end of switch
 	
-	return( fResult);
+	return fResult;
 }
 
 - (float*) computeThickSlab

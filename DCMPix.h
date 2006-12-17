@@ -218,6 +218,7 @@
 // using current slice location and orientation and vice versa
 -(void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
 -(void) convertDICOMCoords: (float*) dc toSliceCoords: (float*) sc;
++(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  // Return index & sliceCoords
 
 // Thickness/Axial Location
 -(float) sliceLocation;
