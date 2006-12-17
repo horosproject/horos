@@ -35,7 +35,7 @@
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
     
 	NSMutableString							*pressedKeys;
-    NSMutableArray							*result;
+    NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;
 	
 	QueryFilter								*dateQueryFilter, *modalityQueryFilter;
