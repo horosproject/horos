@@ -96,7 +96,14 @@
 	int i;
 	for( i = 0; i < [serverList count]; i++)
 	{
-		if( [[serverList objectAtIndex: i] valueForKey:@"QR"] == 0L) [[serverList objectAtIndex: i] setValue:[NSNumber numberWithBool:YES] forKey:@"QR"];
+		if( [[serverList objectAtIndex: i] valueForKey:@"QR"] == 0L)
+		{
+			NSMutableDictionary	*thisServer = [NSMutableDictionary dictionaryWithDictionary: [serverList objectAtIndex: i]];
+			
+			[thisServer setValue:[NSNumber numberWithBool:YES] forKey:@"QR"];
+			
+			[serverList replaceObjectAtIndex:i withObject:thisServer];
+		}
 	}
 	[self resetTest];
 	

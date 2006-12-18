@@ -28,6 +28,7 @@
 	
 				NSMutableArray				*sourcesArray;
 	IBOutlet	sourcesTableView			*sourcesTable;
+	IBOutlet	NSTextField					*selectedResultSource;
 	
 	IBOutlet	NSMatrix					*dateFilterMatrix;
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
@@ -43,6 +44,7 @@
 	BOOL									echoSuccess;
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
+	
 	
 	QueryArrayController					*queryManager;
 }

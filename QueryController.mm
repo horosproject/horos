@@ -143,7 +143,6 @@ static QueryController	*currentQueryController = 0L;
 {
 	if( [[tableColumn identifier] isEqualToString: @"name"])	// Is this study already available in our local database? If yes, display it in italic
 	{
-		NSLog( [item valueForKey:@"hostname"]);
 		if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
 		{
 			NSArray						*studyArray;
@@ -223,6 +222,18 @@ static QueryController	*currentQueryController = 0L;
 	[outlineView scrollRowToVisible: [outlineView selectedRow]];
 }
 
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+	NSIndexSet			*index = [outlineView selectedRowIndexes];
+	id					item = [outlineView itemAtRow:[index firstIndex]];
+	
+	if( item)
+	{
+		[selectedResultSource setStringValue: [NSString stringWithFormat:@"%@ - %@:%d", [item valueForKey:@"calledAET"], [item valueForKey:@"hostname"], [[item valueForKey:@"port"] intValue]]];
+	}
+	else [selectedResultSource setStringValue:@""];
+}
+
 - (void) queryPatientID:(NSString*) ID
 {
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
@@ -260,6 +271,8 @@ static QueryController	*currentQueryController = 0L;
 	id					aServer;
 	int					i;
 	BOOL				atLeastOneSource = NO;
+	
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
 	[resultArray removeAllObjects];
 	
@@ -493,11 +506,16 @@ static QueryController	*currentQueryController = 0L;
 	for( i = 0; i < [array count] ; i++)
 	{
 		DCMTKQueryNode	*object = [array objectAtIndex: i];
+
+		[dictionary setObject:[object valueForKey:@"calledAET"] forKey:@"calledAET"];
+		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
+		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
+		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 		
 		int numberPacketsReceived = 0;
 		if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
-			[[array objectAtIndex: i] move:dictionary];
+			[object move:dictionary];
 		}
 	}
 	
@@ -524,8 +542,6 @@ static QueryController	*currentQueryController = 0L;
 		
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
-		
-		NSLog( [predicate description]);
 		
 		[context lock];
 		studyArray = [context executeFetchRequest:request error:&error];
@@ -756,7 +772,7 @@ static QueryController	*currentQueryController = 0L;
 	{
 		NSDictionary *server = [self findCorrespondingServer: [savedArray objectAtIndex:i] inServers: serversArray];
 		
-		if( server)
+		if( server && ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == 0L ))
 		{
 			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[[savedArray objectAtIndex: i] valueForKey:@"activated"], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", 0L]];
 			
@@ -766,7 +782,13 @@ static QueryController	*currentQueryController = 0L;
 	
 	for( i = 0; i < [serversArray count]; i++)
 	{
-		[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [[serversArray objectAtIndex: i] valueForKey:@"Description"], @"name", [[serversArray objectAtIndex: i] valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [[serversArray objectAtIndex: i] valueForKey:@"Address"], [[serversArray objectAtIndex: i] valueForKey:@"Port"]], @"AddressAndPort", [serversArray objectAtIndex: i], @"server", 0L]];
+		NSDictionary *server = [serversArray objectAtIndex: i];
+		
+		NSLog( [server description]);
+		
+		if( ([[server valueForKey:@"QR"] boolValue] == YES || [server valueForKey:@"QR"] == 0L ))
+		
+			[sourcesArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", [server valueForKey:@"Description"], @"name", [server valueForKey:@"AETitle"], @"AETitle", [NSString stringWithFormat:@"%@:%@", [server valueForKey:@"Address"], [server valueForKey:@"Port"]], @"AddressAndPort", server, @"server", 0L]];
 	}
 	
 	[sourcesTable reloadData];
@@ -797,6 +819,7 @@ static QueryController	*currentQueryController = 0L;
 		activeMoves = [[NSMutableDictionary dictionary] retain];
 		
 		sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"SavedQueryArray"] mutableCopy];
+		if( sourcesArray == 0L) sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
 		

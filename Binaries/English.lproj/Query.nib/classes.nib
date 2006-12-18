@@ -124,7 +124,6 @@
         {
             ACTIONS = {
                 abort = id; 
-                chooseFilter = id; 
                 clearQuery = id; 
                 controlAction = id; 
                 query = id; 
@@ -132,6 +131,7 @@
                 retrieve = id; 
                 retrieveAndView = id; 
                 retrieveAndViewClick = id; 
+                selectUniqueSource = id; 
                 setDateQuery = id; 
                 setModalityQuery = id; 
                 verify = id; 
@@ -149,6 +149,7 @@
                 searchBirth = NSDatePicker; 
                 searchFieldID = NSSearchField; 
                 searchFieldName = NSSearchField; 
+                selectedResultSource = NSTextField; 
                 sourcesTable = sourcesTableView; 
                 toDate = NSDatePicker; 
             }; 
