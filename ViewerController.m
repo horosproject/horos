@@ -5145,19 +5145,51 @@ static ViewerController *draggedController = 0L;
 		for( i = 0; i < 3; i++) o[ i] = [[customOrigin cellWithTag: i] floatValue];
 		
 		for( i = 0 ; i < maxMovieIndex; i++)
-		{
+		{			
+			BOOL	equalVector = YES;
+			int		dir = 0;
+			float	vectors[ 9], vectorsB[ 9];
+			
+			if( [pixList[ i] count] > 1)
+			{
+				[[pixList[ i] objectAtIndex:0] orientation: vectors];
+				[[pixList[ i] objectAtIndex:1] orientation: vectorsB];
+				
+				for( x = 0; x < 9; x++)
+				{
+					if( vectors[ x] != vectorsB[ x]) equalVector = NO;
+				}
+			
+				if( equalVector)
+				{
+					if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8])) dir = 0;
+					if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8])) dir = 1;
+					if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7])) dir = 2;
+				}
+			}
+			
 			for( x = 0; x < [pixList[ i] count]; x++)
 			{
-				DCMPix	*pix = [pixList[ i] objectAtIndex:x];
+				DCMPix	*pix = 0L;
 				
-				[pix setSliceInterval: [customInterval floatValue]];
+				pix = [pixList[ i] objectAtIndex:x];
+				
+				[pix setSliceInterval: 0];
 				[pix setPixelSpacingX: fabs([customXSpacing floatValue])];
 				[pix setPixelSpacingY: fabs([customYSpacing floatValue])];
 				if( fabs([customXSpacing floatValue]) != 0 && fabs([customYSpacing floatValue]) != 0) [pix setPixelRatio: fabs([customYSpacing floatValue]) / fabs([customXSpacing floatValue])];
 				[pix setOrientation: v];
 				[pix setOrigin: o];
+				
+				switch( dir)
+				{
+					case 0:	[pix setSliceLocation: o[ 0]];	o[ 0] += [customInterval floatValue];	break;
+					case 1:	[pix setSliceLocation: o[ 1]];	o[ 1] += [customInterval floatValue];	break;
+					case 2: [pix setSliceLocation: o[ 2]];	o[ 2] += [customInterval floatValue];	break;
+				}
 			}
 		}
+		
 		[imageView setIndex: [imageView curImage]];
 		
 		[self computeInterval];
@@ -5171,16 +5203,16 @@ static ViewerController *draggedController = 0L;
 	float v[ 9], o[ 3];
 	long i;
 	
-    [customInterval setFloatValue: [[pixList[ 0] objectAtIndex:0] sliceInterval]];
-	[customXSpacing setFloatValue: [[pixList[ 0] objectAtIndex:0] pixelSpacingX]];
-	[customYSpacing setFloatValue: [[pixList[ 0] objectAtIndex:0] pixelSpacingY]];
+    [customInterval setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval]];
+	[customXSpacing setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] pixelSpacingX]];
+	[customYSpacing setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] pixelSpacingY]];
 	
-	[[pixList[ 0] objectAtIndex:0] orientation: v];
+	[[pixList[ curMovieIndex] objectAtIndex:0] orientation: v];
 	for( i = 0; i < 6; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 	
-	o[ 0] = [[pixList[ 0] objectAtIndex:0] originX];
-	o[ 1] = [[pixList[ 0] objectAtIndex:0] originY];
-	o[ 2] = [[pixList[ 0] objectAtIndex:0] originZ];
+	o[ 0] = [[pixList[ curMovieIndex] objectAtIndex:0] originX];
+	o[ 1] = [[pixList[ curMovieIndex] objectAtIndex:0] originY];
+	o[ 2] = [[pixList[ curMovieIndex] objectAtIndex:0] originZ];
 	for( i = 0; i < 3; i++) [[customOrigin cellWithTag: i] setFloatValue: o[ i]];
     
 	[NSApp beginSheet: ThickIntervalWindow modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:(void*) sender];
