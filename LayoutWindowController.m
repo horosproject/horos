@@ -88,7 +88,7 @@
 		NSMutableDictionary *hangingProtocol = nil;
 		
 		 if (_addLayoutSet)
-			hangingProtocol = [_hangingProtocol copy];
+			hangingProtocol = [_hangingProtocol mutableCopy];
 		
 		if (!hangingProtocol) {
 			hangingProtocol = [[NSMutableDictionary dictionary] retain];

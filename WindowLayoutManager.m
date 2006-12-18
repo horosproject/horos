@@ -471,37 +471,63 @@ WindowLayoutManager *sharedLayoutManager;
 	NSMutableArray *children =  [NSMutableArray array];
 	BrowserController *browserController = [BrowserController currentBrowser];
 	int count = [[browserController childrenArray: _currentStudy] count];
+	NSMutableArray *usableViewers = [NSMutableArray arrayWithArray:[self viewers2D]];
 	while (seriesInfo = [enumerator nextObject]){
 		// only load ViewerControllers first
 
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
-			int i;				
-			for (i = 0; i < count; i++) {
+			int i;	
+			id seriesToOpen = nil;	
+			BOOL openViewer = NO;					
+			for (i = 0; i < count; i++) {				
 				id child = [[browserController childrenArray: _currentStudy] objectAtIndex:i];
 				// if series description is unnamed used series number
 				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
-					if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue])
+					if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
 						[children addObject:child];
+						seriesToOpen = child;
+						openViewer = YES;
+						break;
+					}
 				}
 				else {
-					if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]])
+					if ([[child valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]]) {
 						[children addObject:child];
+						seriesToOpen = child;
+						openViewer = YES;
+						break;
 					}
+				}
 			}
+			// Reuse Viewer if Series Already open
+			if (openViewer == YES) {							
+				ViewerController *viewer = nil;
+				ViewerController *viewerForSeries = nil;
+				NSEnumerator *viewerEnumerator = [usableViewers objectEnumerator];
+				
+				while (viewer = [viewerEnumerator nextObject]) {
+					if ([[viewer currentSeries] isEqual:seriesToOpen]) {
+						viewerForSeries = viewer;
+						break;
+					}
+				}
+				[browserController loadSeries:seriesToOpen :viewerForSeries :NO keyImagesOnly:NO];
+				if (viewerForSeries)
+					[usableViewers removeObject:viewerForSeries];
+			}
+			
+			
 		}
 	}
-	//this will load the first series Set Viewers , but no fusion or 3D Viewers
-	//Right now this will load new viewers.  It would be nice to reuse viewers and loaded series 
-	/*
-	It is possible to have the smae series open twice.  
-	If some one wanted lung and mediastinum at the same time.  
-	Need to take that into account
-	*/
 	
-	ViewerController *viewer = nil;
-	[browserController viewerDICOMInt :NO  dcmFile:children viewer:viewer];
 	//resizeWindows
 	// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
+	//Close unused Viewers	
+	ViewerController *viewer = nil;
+	NSEnumerator *viewerEnumerator = [usableViewers objectEnumerator];
+	while (viewer = [viewerEnumerator nextObject])
+		[viewer close];
+	
 	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
 	// need to make this more efficient
 	enumerator = [seriesSet objectEnumerator];
@@ -523,6 +549,15 @@ WindowLayoutManager *sharedLayoutManager;
 			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 		}				
 	}
+	// Need to do fusion/ Subtration/ open 3D Windows
+	// Not functional yet.
+	
+	
+	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+}
+
+- (BOOL)hangingProtocolInUse{
+	return _hangingProtocolInUse;
 }
 
 #pragma mark-

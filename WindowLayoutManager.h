@@ -74,6 +74,7 @@ It is a shared class.
 - (void)nextSeriesSet;
 - (void)previousSeriesSet;
 - (void)hangSet:(NSArray *)seriesSet;
+- (BOOL)hangingProtocolInUse;
 
 #pragma mark-
 #pragma mark Subarrays of Window Controllers
