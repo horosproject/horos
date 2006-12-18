@@ -296,6 +296,11 @@ Version 2.3
 	dcmObjects = 0L;
 }
 
+- (BOOL) cancelled
+{
+	return cancelled;
+}
+
 - (IBAction) anonymize:(id)sender
 {
 	[checkReplace setHidden: NO];
@@ -328,7 +333,10 @@ Version 2.3
 		path = [[sPanel filenames] objectAtIndex:0];
 		
 		[self anonymizeProcess: path];
+		
+		cancelled = NO;
 	}
+	else cancelled = YES;
 	[sPanel setMessage:@""];
 	
 	[filesToAnonymize release];

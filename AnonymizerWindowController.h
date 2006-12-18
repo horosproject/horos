@@ -33,6 +33,8 @@
 	NSArray						*filesToAnonymize, *dcmObjects;
 	NSString					*folderPath;
 	NSMutableArray				*tags, *producedFiles;
+	
+	BOOL						cancelled;
 }
 
 - (IBAction) selectTemplateMenu:(id) sender;
@@ -46,4 +48,5 @@
 - (IBAction)cancelModal:(id)sender;
 - (IBAction)okModal:(id)sender;
 - (IBAction) anonymizeToThisPath:(NSString*) path;
+- (BOOL) cancelled;
 @end

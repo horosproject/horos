@@ -299,7 +299,7 @@ static QueryController	*currentQueryController = 0L;
 			}
 			
 			int numberPacketsReceived = 0;
-			if( SimplePing( [hostname UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+			if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 			{
 				[self setDateQuery: dateFilterMatrix];
 				[self setModalityQuery: modalityFilterMatrix];
@@ -515,7 +515,7 @@ static QueryController	*currentQueryController = 0L;
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 		
 		int numberPacketsReceived = 0;
-		if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			[object move:dictionary];
 		}
@@ -939,7 +939,7 @@ static QueryController	*currentQueryController = 0L;
 	}
 	
 	int numberPacketsReceived = 0;
-	if( SimplePing( [hostname UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+	if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 	{
 		DCMTKVerifySCU *verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
 			calledAET:theirAET  

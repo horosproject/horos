@@ -3668,6 +3668,8 @@ static BOOL COMPLETEREBUILD = NO;
 					[album setValue: studies forKey:@"studies"];
 				}
 			}
+			
+			[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
 		}
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
@@ -3769,6 +3771,8 @@ static BOOL COMPLETEREBUILD = NO;
 					
 					[context deleteObject: [objectsToDelete objectAtIndex: x]];
 				}
+				
+				[databaseOutline selectRow:[selectedRows firstIndex] byExtendingSelection:NO];
 			}
 			
 			if( result == NSAlertOtherReturn)
@@ -6300,10 +6304,11 @@ static BOOL needToRezoom;
 	{
 		NSFont *txtFont;
 		
-		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 12];
-		else txtFont = [NSFont systemFontOfSize:12];			
+		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
+		else txtFont = [NSFont systemFontOfSize:11];			
 		
 		[aCell setFont:txtFont];
+		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
 		if( [[aTableColumn identifier] isEqualToString:@"Source"])
 		{ 
@@ -6338,10 +6343,11 @@ static BOOL needToRezoom;
 	{
 		NSFont *txtFont;
 		
-		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 12];
-		else txtFont = [NSFont systemFontOfSize:12];			
+		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
+		else txtFont = [NSFont systemFontOfSize:11];			
 		
 		[aCell setFont:txtFont];
+		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
 		if (rowIndex == 0)
 		{
@@ -10021,7 +10027,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[anonymizerController showWindow:self];
 	[anonymizerController anonymize:self];
 		
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"replaceAnonymize"] == YES && isCurrentDatabaseBonjour == NO)
+	if( [anonymizerController cancelled] == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"replaceAnonymize"] == YES && isCurrentDatabaseBonjour == NO)
 	{
 		// Delete the non-anonymized
 		[self delItem: sender];

@@ -306,7 +306,7 @@
 		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
 		
 		int numberPacketsReceived = 0;
-		if( SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 1, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue]] == 0) status = 0;
 			else status = -1;
