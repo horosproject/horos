@@ -49,6 +49,29 @@ static QueryController	*currentQueryController = 0L;
 	return currentQueryController;
 }
 
+- (NSArray *) serversList
+{
+	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
+	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+	
+	int i;
+	
+	for( i = 0 ; i < [dicomServices count] ; i++)
+	{
+		NSNetService*	aServer = [dicomServices objectAtIndex: i];
+		
+		[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[aServer hostName], @"Address",
+																				[aServer name], @"AETitle",
+																				[NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]], @"Port",
+																				[NSNumber numberWithBool:YES] , @"QR",
+																				[NSString stringWithFormat:@"%@ (Bonjour)", [aServer name]], @"Description",
+																				[NSNumber numberWithInt:9], @"Transfer Syntax",
+																				0L]];
+	}
+	
+	return serversArray;
+}
+
 - (void)keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
@@ -285,18 +308,10 @@ static QueryController	*currentQueryController = 0L;
 			
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 		
-			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 
-			if ([aServer isMemberOfClass:[NSNetService class]]){
-				theirAET = [(NSNetService*)aServer name];
-				hostname = [(NSNetService*)aServer hostName];
-				port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
-				netService = aServer;
-			}
-			else{
-				theirAET = [aServer objectForKey:@"AETitle"];
-				hostname = [aServer objectForKey:@"Address"];
-				port = [aServer objectForKey:@"Port"];
-			}
+			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
+			theirAET = [aServer objectForKey:@"AETitle"];
+			hostname = [aServer objectForKey:@"Address"];
+			port = [aServer objectForKey:@"Port"];
 			
 			int numberPacketsReceived = 0;
 			if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
@@ -762,7 +777,7 @@ static QueryController	*currentQueryController = 0L;
 {
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
-	NSMutableArray		*serversArray		= [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] mutableCopy] autorelease];
+	NSMutableArray		*serversArray		= [[[self serversList] mutableCopy] autorelease];
 	NSArray				*savedArray			= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SavedQueryArray"];
 	
 	[self willChangeValueForKey:@"sourcesArray"];
@@ -802,7 +817,7 @@ static QueryController	*currentQueryController = 0L;
 {
     if ( self = [super initWithWindowNibName:@"Query"])
 	{
-		if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] == 0)
+		if( [[self serversList] count] == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			return 0L;
@@ -924,18 +939,9 @@ static QueryController	*currentQueryController = 0L;
 	{
 		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
 	 
-		//Bonjour
-		if ([aServer isMemberOfClass:[NSNetService class]]){
-			theirAET = [(NSNetService*)aServer name];
-			hostname = [(NSNetService*)aServer hostName];
-			port = [NSString stringWithFormat: @"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]];
-			//port = @"4096";
-		}
-		else{
-			theirAET = [aServer objectForKey:@"AETitle"];
-			hostname = [aServer objectForKey:@"Address"];
-			port = [aServer objectForKey:@"Port"];
-		}
+		theirAET = [aServer objectForKey:@"AETitle"];
+		hostname = [aServer objectForKey:@"Address"];
+		port = [aServer objectForKey:@"Port"];
 	}
 	
 	int numberPacketsReceived = 0;
@@ -954,6 +960,11 @@ static QueryController	*currentQueryController = 0L;
 	else status = -1;
 	
 	return status;
+}
+
+- (void)updateServers:(NSNotification *)note
+{
+	[self refreshSources];
 }
 
 - (IBAction)verify:(id)sender
@@ -982,10 +993,7 @@ static QueryController	*currentQueryController = 0L;
 
 		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
 		
-		if ([aServer isMemberOfClass:[NSNetService class]])
-			message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
-		else
-			message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
+		message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
 		
 		NSAlert *alert;
 		
