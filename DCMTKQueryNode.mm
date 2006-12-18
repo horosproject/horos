@@ -424,6 +424,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 	
 	}
+	else NSLog( @"setupNetworkWithSyntax error");
 	 
 	 if (dataset != NULL) delete dataset;
 	
@@ -933,7 +934,21 @@ NS_ENDHANDLER
 	{
 		if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 		{
-//			NSRunCriticalAlertPanel( NSLocalizedString(@"Find Failed", nil), [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+			NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", _calledAET, _hostname, _port];
+			
+			response = [response stringByAppendingString: [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]];
+			
+			 if (statusDetail != NULL)
+			 {
+				OFOStringStream oss;
+				
+				statusDetail->print( oss);
+				OFSTRINGSTREAM_GETSTR(oss, tmpString)
+				response = [response stringByAppendingFormat:@"\r\r\r%s", tmpString];
+				OFSTRINGSTREAM_FREESTR(tmpString)
+			  }
+			 
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Query Failed", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 		}
 				
         if (_verbose) {

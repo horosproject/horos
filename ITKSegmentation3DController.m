@@ -344,7 +344,9 @@
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Segmentation Error", nil), NSLocalizedString(@"Select a starting point by clicking in the image.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
-
+	
+	[viewer roiDeleteWithName:@"Segmentation Preview"];
+	
 	long				slice;
 	
 	if( [[growingMode selectedCell] tag] == 1)

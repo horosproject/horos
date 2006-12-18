@@ -359,7 +359,7 @@ static QueryController	*currentQueryController = 0L;
 				if ([dateQueryFilter object] || queryItem)
 				{
 					[self performQuery: 0L];
-				}		
+				}
 				// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
 				else
 				{
@@ -407,7 +407,8 @@ static QueryController	*currentQueryController = 0L;
 }
 
 // This function calls many GUI function, it has to be called from the main thread
-- (void)performQuery:(id)object{
+- (void)performQuery:(id)object
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[progressIndicator startAnimation:nil];
 	[queryManager performQuery];
