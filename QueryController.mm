@@ -229,7 +229,7 @@ static QueryController	*currentQueryController = 0L;
 	
 	if( item)
 	{
-		[selectedResultSource setStringValue: [NSString stringWithFormat:@"%@ - %@:%d", [item valueForKey:@"calledAET"], [item valueForKey:@"hostname"], [[item valueForKey:@"port"] intValue]]];
+		[selectedResultSource setStringValue: [NSString stringWithFormat:@"%@  /  %@:%d", [item valueForKey:@"calledAET"], [item valueForKey:@"hostname"], [[item valueForKey:@"port"] intValue]]];
 	}
 	else [selectedResultSource setStringValue:@""];
 }
@@ -275,6 +275,7 @@ static QueryController	*currentQueryController = 0L;
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
 	[resultArray removeAllObjects];
+	[outlineView reloadData];
 	
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
@@ -987,8 +988,8 @@ static QueryController	*currentQueryController = 0L;
 		
 		NSAlert *alert;
 		
-		if( result == 1) alert = [NSAlert alertWithMessageText:@"DICOM verification FAILED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
-		else alert = [NSAlert alertWithMessageText:@"DICOM verification SUCCEEDED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
+		if( result == 1) alert = [NSAlert alertWithMessageText:@"DICOM verification SUCCEEDED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
+		else alert = [NSAlert alertWithMessageText:@"DICOM verification FAILED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
 		
 		[alert setAlertStyle:NSInformationalAlertStyle];
 		[alert runModal];
