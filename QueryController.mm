@@ -958,37 +958,43 @@ static QueryController	*currentQueryController = 0L;
 {
 	id				aServer;
 	NSString		*message;
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Verifying...", nil)];
 	
-	[wait showWindow:self];
-	
-	NSString * status = @"";
-	
-	switch( [self dicomEcho])
-	{
-		case -1:	status = @"failed (no ping response)";				break;
-		case 0:		status = @"failed (no C-Echo response)";			break;
-		case 1:		status = @"succeeded (ping and C-Echo response)";	break;
-	}
-	
-	[wait close];
-	[wait release];
-
 	if ( [sourcesTable selectedRow] >= 0)
 	{
+		WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Verifying...", nil)];
+		
+		[wait showWindow:self];
+		
+		NSString * status = @"";
+		
+		int result = [self dicomEcho];
+		switch( result)
+		{
+			case -1:	status = NSLocalizedString( @"failed (no ping response)", 0L);				break;
+			case 0:		status = NSLocalizedString( @"failed (no C-Echo response)", 0L);			break;
+			case 1:		status = NSLocalizedString( @"succeeded (ping and C-Echo response)", 0L);	break;
+		}
+		
+		[wait close];
+		[wait release];
+
 		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
 		
 		if ([aServer isMemberOfClass:[NSNetService class]])
-			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
+			message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer name], [aServer hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]] , status];
 		else
-			message = [NSString stringWithFormat: @"Connection to %@ at %@:%@ %@", [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
+			message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
+		
+		NSAlert *alert;
+		
+		if( result == 1) alert = [NSAlert alertWithMessageText:@"DICOM verification FAILED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
+		else alert = [NSAlert alertWithMessageText:@"DICOM verification SUCCEEDED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
+		
+		[alert setAlertStyle:NSInformationalAlertStyle];
+		[alert runModal];
+		
+		[self refreshSources];
 	}
-	
-	NSAlert *alert = [NSAlert alertWithMessageText:@"DICOM verification" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
-	[alert setAlertStyle:NSInformationalAlertStyle];
-	[alert runModal];
-	
-	[self refreshSources];
 }
 
 - (IBAction)abort:(id)sender
