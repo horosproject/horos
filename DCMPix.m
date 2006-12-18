@@ -7516,8 +7516,8 @@ BOOL            readable = YES;
 		DCMPix *pix = [pixList objectAtIndex: i];
 		[pix convertDICOMCoords: dicomCoords toSliceCoords: sliceCoords];
 		if ( fabs( sliceCoords[ 2 ] ) < minDist ) {
-			minDist = sliceCoords[ 2 ];
-			memcpy( nearestSliceCoords, sliceCoords, sizeof nearestSliceCoords );
+			minDist = fabs( sliceCoords[ 2 ] );
+			memcpy( nearestSliceCoords, sliceCoords, sizeof sliceCoords );
 			nearestSliceIndx = i;
 		}
 	}
@@ -8969,7 +8969,9 @@ float			iwl, iww;
 	[self checkSUV];
 }
 
-//Database links
+#pragma mark -
+#pragma mark Database links
+
 - (NSManagedObject *)imageObj{
 	return imageObj;
 }
