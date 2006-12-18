@@ -5145,9 +5145,9 @@ static ViewerController *draggedController = 0L;
 		for( i = 0; i < 3; i++) o[ i] = [[customOrigin cellWithTag: i] floatValue];
 		
 		for( i = 0 ; i < maxMovieIndex; i++)
-		{			
+		{
 			BOOL	equalVector = YES;
-			int		dir = 0;
+			int		dir = 2;
 			float	vectors[ 9], vectorsB[ 9];
 			
 			if( [pixList[ i] count] > 1)
