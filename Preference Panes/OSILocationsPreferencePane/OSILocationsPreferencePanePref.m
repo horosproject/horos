@@ -185,7 +185,7 @@
 	[serverTable editColumn:0 row:[serverList count] - 1  withEvent:nil select:YES];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	
 	[self resetTest];
 }
@@ -207,7 +207,8 @@
 	[osirixServerTable editColumn:0 row:[osirixServerList count] - 1  withEvent:nil select:YES];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
+	
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 }
 
 //****** TABLEVIEW
@@ -262,7 +263,6 @@
 			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
 			
 			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
 		}
 		
 		if( [aTableView tag] == 1)
@@ -276,8 +276,9 @@
 			[osirixServerList replaceObjectAtIndex:rowIndex withObject: theRecord];
 			
 			[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
 		}
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	}
 }
 
@@ -377,7 +378,7 @@
 				[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
 				
 				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 		}
 		
@@ -412,7 +413,7 @@
 			{
 				[serverList removeObjectAtIndex:[serverTable selectedRow]];
 				[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"ServerArray has changed" object:self];
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 				
 				[serverTable reloadData];
 			}

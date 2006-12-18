@@ -178,8 +178,13 @@ extern BrowserController	*browserWindow;
 	if( recomputePETBlending)
 		[DCMView computePETBlendingCLUT];
 	
-	[[BrowserController currentBrowser] setNetworkLogs];
+	if( [[note object] boolForKey: @"updateServers"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
+		[[QueryController currentQueryController] refreshSources];
+	}
 	
+	[[BrowserController currentBrowser] setNetworkLogs];
 	
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];
