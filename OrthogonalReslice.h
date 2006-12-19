@@ -29,6 +29,12 @@
 	float				*Ycache;
 	
 	NSConditionLock		*resliceLock;
+	
+	long				minI, maxI, newX, newY, newTotal, currentAxe;
+	DCMPix				*firstPix;
+	
+	NSLock				*processorsLock;
+	volatile int		numberOfThreadsForCompute;
 }
 
 // init
