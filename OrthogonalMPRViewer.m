@@ -113,6 +113,13 @@ NSString * documentsDirectory();
 	// 4D
 	curMovieIndex = 0;
 	maxMovieIndex = [viewer maxMovieIndex];
+	if( maxMovieIndex <= 1)
+	{
+		[movieTextSlide setEnabled: NO];
+		[movieRateSlider setEnabled: NO];
+		[moviePlayStop setEnabled:NO];
+		[moviePosSlider setEnabled:NO];
+	}
 	//originalDCMPixList[curMovieIndex] = [pix retain];
 	//originalFileList[curMovieIndex] = [files retain];
 	
