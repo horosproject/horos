@@ -25,11 +25,16 @@ and Window3DController
 #import <Cocoa/Cocoa.h>
 
 
-@interface OSIWindowController : NSWindowController {
+enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtraction, BlendingMultiplication, BlendingRed, BlendingGreen, BlendingBlue, Blending2DRegistration, Blending3DRegistration, BlendingLL};
 
+
+@interface OSIWindowController : NSWindowController {
+	int _blendingType;
 }
 
 - (NSMutableArray*) pixList;
 - (void)windowWillClose:(NSNotification *)notification;
+
+- (int)blendingType;
 
 @end
