@@ -14,5 +14,4 @@
 	return [super draggingSourceOperationMaskForLocal:flag];
 }
 
-
 @end

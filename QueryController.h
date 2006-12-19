@@ -65,10 +65,10 @@
 - (void)setDateQuery:(id)sender;
 - (void)setModalityQuery:(id)sender;
 - (void)clearQuery:(id)sender;
-- (int)dicomEcho;
+- (int)dicomEcho:(NSDictionary*) aServer;
 - (IBAction)verify:(id)sender;
 - (IBAction)abort:(id)sender;
 - (IBAction)controlAction:(id)sender;
 - (void) refresh: (id) sender;
-
+- (IBAction) pressButtons:(id) sender;
 @end

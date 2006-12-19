@@ -7,6 +7,30 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
 @implementation DNDArrayController
 
 
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( [[aTableColumn identifier] isEqual:@"name"] == YES)
+	{
+		NSParameterAssert(rowIndex >= 0 && rowIndex < [[self arrangedObjects] count]);
+		
+		NSMutableDictionary *theRecord = [[self arrangedObjects] objectAtIndex:rowIndex];
+		
+		switch( [[theRecord objectForKey:@"test"] intValue])
+		{
+			case -1:
+				[aCell setTextColor: [NSColor orangeColor]];
+			break;
+			
+			case -2:
+				[aCell setTextColor: [NSColor redColor]];
+			break;
+			
+			case 0:
+				[aCell setTextColor: [NSColor blackColor]];
+			break;
+		}
+	}
+}
 
 - (void)awakeFromNib
 {

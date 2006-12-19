@@ -820,7 +820,6 @@ static QueryController	*currentQueryController = 0L;
 		if( [[self serversList] count] == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-			return 0L;
 		}
 		
 		queryFilters = 0L;
@@ -922,7 +921,7 @@ static QueryController	*currentQueryController = 0L;
 	[self release];
 }
 
-- (int) dicomEcho
+- (int) dicomEcho:(NSDictionary*) aServer
 {
 	int status = 0;
 	
@@ -930,19 +929,13 @@ static QueryController	*currentQueryController = 0L;
 	NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
-	id aServer;
 	NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"];
 	NSMutableArray *objects;
 	NSMutableArray *keys; 
-
-	if ([sourcesTable selectedRow] >= 0)
-	{
-		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
-	 
-		theirAET = [aServer objectForKey:@"AETitle"];
-		hostname = [aServer objectForKey:@"Address"];
-		port = [aServer objectForKey:@"Port"];
-	}
+	
+	theirAET = [aServer objectForKey:@"AETitle"];
+	hostname = [aServer objectForKey:@"Address"];
+	port = [aServer objectForKey:@"Port"];
 	
 	int numberPacketsReceived = 0;
 	if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
@@ -970,41 +963,33 @@ static QueryController	*currentQueryController = 0L;
 - (IBAction)verify:(id)sender
 {
 	id				aServer;
-	NSString		*message;
+	NSString		*message;	
+	int				i;
+	int				status;
 	
-	if ( [sourcesTable selectedRow] >= 0)
+	[progressIndicator startAnimation:nil];
+	
+	[self willChangeValueForKey:@"sourcesArray"];
+	
+	for( i = 0 ; i < [sourcesArray count]; i++)
 	{
-		WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Verifying...", nil)];
+		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
 		
-		[wait showWindow:self];
+		int numberPacketsReceived = 0;
 		
-		NSString * status = @"";
-		
-		int result = [self dicomEcho];
-		switch( result)
+		switch( [self dicomEcho: [aServer objectForKey:@"server"]])
 		{
-			case -1:	status = NSLocalizedString( @"failed (no ping response)", 0L);				break;
-			case 0:		status = NSLocalizedString( @"failed (no C-Echo response)", 0L);			break;
-			case 1:		status = NSLocalizedString( @"succeeded (ping and C-Echo response)", 0L);	break;
+			case 1:		status = 0;			break;
+			case 0:		status = -1;		break;
+			case -1:	status = -2;		break;
 		}
 		
-		[wait close];
-		[wait release];
-
-		aServer = [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey:@"server"];
-		
-		message = [NSString stringWithFormat: NSLocalizedString( @"Connection to %@ at %@:%@ %@", 0L), [aServer objectForKey:@"AETitle"], [aServer objectForKey:@"Address"], [aServer objectForKey:@"Port"], status];
-		
-		NSAlert *alert;
-		
-		if( result == 1) alert = [NSAlert alertWithMessageText:@"DICOM verification SUCCEEDED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
-		else alert = [NSAlert alertWithMessageText:@"DICOM verification FAILED" defaultButton:nil  alternateButton:nil otherButton:nil informativeTextWithFormat:message];
-		
-		[alert setAlertStyle:NSInformationalAlertStyle];
-		[alert runModal];
-		
-		[self refreshSources];
+		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
 	}
+	
+	[self didChangeValueForKey:@"sourcesArray"];
+	
+	[progressIndicator stopAnimation:nil];
 }
 
 - (IBAction)abort:(id)sender
@@ -1021,5 +1006,23 @@ static QueryController	*currentQueryController = 0L;
 		[self verify:sender];
 	else if ([sender selectedSegment] == 1)
 		[self abort:sender];
+}
+
+- (IBAction) pressButtons:(id) sender
+{
+	switch( [sender selectedSegment])
+	{
+		case 0:		// Query
+			[self query: sender];
+		break;
+		
+		case 1:		// Retrieve
+			[self retrieve: sender];
+		break;
+		
+		case 2:		// Verify
+			[self verify: sender];
+		break;
+	}
 }
 @end

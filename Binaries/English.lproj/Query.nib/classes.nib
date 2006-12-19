@@ -126,6 +126,7 @@
                 abort = id; 
                 clearQuery = id; 
                 controlAction = id; 
+                pressButtons = id; 
                 query = id; 
                 refresh = id; 
                 retrieve = id; 
