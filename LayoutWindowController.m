@@ -86,11 +86,12 @@
 	if ([sender tag] == 1) {
 		//create Layout set
 		NSMutableDictionary *hangingProtocol = nil;
-		
+		NSLog(@"_hangingProtocol: %@", [_hangingProtocol description]);
 		 if (_addLayoutSet)
 			hangingProtocol = [_hangingProtocol mutableCopy];
 		
 		if (!hangingProtocol) {
+			NSLog(@"new Hanging Protocol");
 			hangingProtocol = [[NSMutableDictionary dictionary] retain];
 		}
 		
@@ -136,7 +137,8 @@
 			if ([controller blendingController]) {
 				id blendingSeries = [[controller blendingController] currentSeries];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];
-				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];					
+				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];	
+				[seriesInfo setObject:[NSNumber numberWithInt:[controller blendingType]] forKey:@"blendingType"];					
 			}
 			[layoutArray addObject:seriesInfo];
 	
