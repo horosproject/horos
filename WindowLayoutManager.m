@@ -511,9 +511,13 @@ WindowLayoutManager *sharedLayoutManager;
 						break;
 					}
 				}
-				[browserController loadSeries:seriesToOpen :viewerForSeries :NO keyImagesOnly:NO];
+				
 				if (viewerForSeries)
+					// save viewer
 					[usableViewers removeObject:viewerForSeries];
+				else	
+					// new Viewer
+					[browserController loadSeries:seriesToOpen :nil :NO keyImagesOnly:NO];
 			}
 			
 			
