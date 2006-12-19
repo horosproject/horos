@@ -47,9 +47,7 @@
 	IBOutlet NSTextField    *blendingPercentage;
 	IBOutlet NSSlider       *blendingSlider;
 	BOOL					blending;
-	NSData					*blendingVolumeData;
-    NSMutableArray			*blendingPixList;
-	ViewerController		*blendingController;
+	ViewerController		*blendingController, *viewerController;
 	
 	NSTimeInterval			lastMovieTime;
     NSTimer					*movieTimer;

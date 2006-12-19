@@ -68,6 +68,8 @@ extern NSString * documentsDirectory();
 		[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
 		[originalView setIndex: [originalView curImage]];
 		
+		[blendingController setMovieIndex: curMovieIndex];
+		[viewerController setMovieIndex: curMovieIndex];
 		[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 	}
 	
@@ -269,6 +271,8 @@ extern NSString * documentsDirectory();
 	[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
 	[originalView setIndex:[originalView curImage]];
 	
+	[blendingController setMovieIndex: curMovieIndex];
+	[viewerController setMovieIndex: curMovieIndex];
 	[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 }
 
@@ -286,12 +290,14 @@ extern NSString * documentsDirectory();
 		if( val >= maxMovieIndex) val = 0;
 		
 		curMovieIndex = val;
-
-		[moviePosSlider setIntValue:curMovieIndex];
+		
+		[moviePosSlider setIntValue: curMovieIndex];
 		
 		[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
 		[originalView setIndex:[originalView curImage]];
-
+		
+		[blendingController setMovieIndex: curMovieIndex];
+		[viewerController setMovieIndex: curMovieIndex];
 		[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 		
 	//	[imageView setDCM:pixList[curMovieIndex] :fileList[curMovieIndex] :0 :'i' :NO];
@@ -358,9 +364,10 @@ extern NSString * documentsDirectory();
 	
 	movieTimer = 0L;
 	blendingController = 0L;
+	viewerController = 0L;
 	curMovieIndex = 0;
 	maxMovieIndex = 1;
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	exportDCM = 0L;
 	
     DCMPix  *firstObject	= [pix objectAtIndex:0];
@@ -408,6 +415,8 @@ extern NSString * documentsDirectory();
 //		}
 //	}
 	
+	viewerController = [vC retain];
+	
 	fileList = files;
 	[fileList retain];
 	
@@ -420,7 +429,6 @@ extern NSString * documentsDirectory();
     
     [[self window] setDelegate:self];
     
-	
 	WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
 	[splash showWindow:self];
 
@@ -571,7 +579,7 @@ extern NSString * documentsDirectory();
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	[view set3DStateDictionary:dict];
-	[self ApplyCLUTString:[[dict objectForKey:@"CLUTName"] retain]];
+	[self ApplyCLUTString: [dict objectForKey:@"CLUTName"]];
 }
 
 -(void) dealloc
@@ -599,6 +607,10 @@ extern NSString * documentsDirectory();
 	
 	[toolbar setDelegate: 0L];
 	[toolbar release];
+	
+	[viewerController release];
+	[curOpacityMenu release];
+	[curCLUTMenu release];
 	
 	[super dealloc];
 	NSLog(@"Dealloc MPR2DController C");
@@ -724,7 +736,8 @@ extern NSString * documentsDirectory();
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
 		[view setCLUT: 0L :0L :0L];
-		curCLUTMenu = str;
+		[curCLUTMenu release];
+		curCLUTMenu = [str retain];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -758,16 +771,14 @@ extern NSString * documentsDirectory();
 			}
 			
 			[view setCLUT:red :green: blue];
-			curCLUTMenu = str;
+			[curCLUTMenu release];
+			curCLUTMenu = [str retain];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 		}
 	}
 }
-
-
-
 
 - (void) OpacityChanged: (NSNotification*) note
 {
@@ -783,7 +794,9 @@ extern NSString * documentsDirectory();
 	if( [str isEqualToString:@"Linear Table"])
 	{
 		[view setOpacity:[NSArray array]];
-		curOpacityMenu = str;
+		
+		[curOpacityMenu release];
+		curOpacityMenu = [str retain];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -796,7 +809,8 @@ extern NSString * documentsDirectory();
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[view setOpacity:array];
-			curOpacityMenu = str;
+			[curOpacityMenu release];
+			curOpacityMenu = [str retain];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -1140,6 +1154,8 @@ extern NSString * documentsDirectory();
 			[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
 			[originalView setIndex: [originalView curImage]];
 			
+			[blendingController setMovieIndex: curMovieIndex];
+			[viewerController setMovieIndex: curMovieIndex];
 			[view movieChangeSource:(float*) [volumeData[ curMovieIndex] bytes]];
 			
 			unsigned char *data = [view getRawPixels:&width :&height :&spp :&bpp :YES :YES];

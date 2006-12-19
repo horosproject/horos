@@ -864,7 +864,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 		//	blendingSliceThickness = -blendingSliceThickness;
 		}
 
-		vtkImageImport *blendingReader = vtkImageImport::New();
+		blendingReader = vtkImageImport::New();
 		blendingReader->SetWholeExtent( 0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 0, [blendingPixList count]-1);
 		blendingReader->SetDataSpacing( [blendingFirstObject pixelSpacingX], [blendingFirstObject pixelSpacingY], blendingSliceThickness);//sliceThickness
 		blendingReader->SetDataOrigin(  ([blendingFirstObject originX] ) * blendingVectors[0] + ([blendingFirstObject originY]) * blendingVectors[1] + ([blendingFirstObject originZ] )*blendingVectors[2],
@@ -997,21 +997,25 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	{
 		if( blendingAxial)
 		{
-		//	aRenderer->RemoveActor(blendingSaggital);
-		//	aRenderer->RemoveActor(blendingAxial);
-		//	aRenderer->RemoveActor(blendingCoronal);
-			
 			blendingBwLut->Delete();
 			blendingAxialColors->Delete();
 			blendingAxial->Delete();
 			blendingRotate->Delete();
+			blendingReader->Delete();
 			
 			if( blendingSliceTransform) blendingSliceTransform->Delete();
 			
-		//	aRenderer->AddActor(axial);
-			
 			blendingAxial = 0L;
 		}
+	}
+}
+
+-(void) movieBlendingChangeSource
+{
+	if( blendingController)
+	{
+		blendingData = [blendingController volumePtr];
+		blendingReader->SetImportVoidPointer( blendingData);
 	}
 }
 
@@ -1020,6 +1024,8 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	data = volumeData;
 
 	reader->SetImportVoidPointer(data);
+
+	[self movieBlendingChangeSource];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Update" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 }
@@ -2300,7 +2306,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	FOVP = (long) ([pixList count] * fabs(sliceThickness) / [firstObject pixelSpacingX]);
 	if( FOVP > FOV) FOV = FOVP;
 	
-	FOV = FOV + FOV/5;
+	FOV = FOV + FOV/2;
 	FOV = FOV/4;
 	FOV = FOV*4;
 	NSLog(@"FOV:%d", FOV);

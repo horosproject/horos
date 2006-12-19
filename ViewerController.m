@@ -9232,7 +9232,6 @@ int i,j,l;
 	[self propagateSettings];
 }
 
-
 - (void)adjustSlider
 {
 	if( [imageView flippedData]) [slider setIntValue: [pixList[ curMovieIndex] count] - [imageView curImage] -1];
@@ -9358,6 +9357,16 @@ int i,j,l;
     }
 }
 
+- (void) MovieStop:(id) sender
+{
+	 if( movieTimer)
+    {
+        [movieTimer invalidate];
+        [movieTimer release];
+        movieTimer = nil;
+	}
+}
+
 - (void) MoviePlayStop:(id) sender
 {
     if( movieTimer)
@@ -9372,10 +9381,21 @@ int i,j,l;
     }
     else
     {
+		NSArray		*winList = [NSApp windows];
+		int			i;
+		
+		for( i = 0; i < [winList count]; i++)
+		{
+			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+			{
+				[[[winList objectAtIndex:i] windowController] MovieStop: self];
+			}
+		}
+		
         movieTimer = [[NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(performMovieAnimation:) userInfo:nil repeats:YES] retain];
         [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSModalPanelRunLoopMode];
         [[NSRunLoop currentRunLoop] addTimer:movieTimer forMode:NSEventTrackingRunLoopMode];
-    
+		
         lastMovieTime = [NSDate timeIntervalSinceReferenceDate];
         
         [moviePlayStop setTitle: NSLocalizedString(@"Stop", nil)];
@@ -11466,6 +11486,8 @@ int i,j,l;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		VRController *viewer = [appController FindViewer :@"VRPanel" :pixList[0]];
 		
 		if( viewer)
@@ -11618,6 +11640,8 @@ int i,j,l;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		if( [VRPROController available])
 		{
 			if( [VRPROController  hardwareCheck])
@@ -11701,7 +11725,9 @@ int i,j,l;
 			if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 				[self applyConvolutionOnSource: self];
 		}
-	
+		
+		[self MovieStop: self];
+		
 		VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
 		
 		if( viewer)
@@ -11772,6 +11798,8 @@ int i,j,l;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		SRController *viewer = [appController FindViewer :@"SR" :pixList[0]];
 		
 		if( viewer)
@@ -11975,6 +12003,8 @@ long i;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		MPR2DController *viewer = [appController FindViewer :@"MPR2D" :pixList[0]];
 		
 		if( viewer)
@@ -12022,6 +12052,8 @@ long i;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		OrthogonalMPRViewer *viewer;
 		
 		if( blendingController)
@@ -12119,6 +12151,8 @@ long i;
 	}
 	else
 	{
+		[self MovieStop: self];
+		
 		EndoscopyViewer *viewer;
 		
 		viewer = [appController FindViewer :@"Endoscopy" :pixList[0]];

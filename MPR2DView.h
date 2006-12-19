@@ -114,6 +114,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     short               currentTool;
     BOOL                boneVisible, skinVisible;
 	
+	vtkImageImport		*blendingReader;
 	vtkImageActor       *blendingSaggital, *blendingCoronal, *blendingAxial;
     vtkImageMapToColors *blendingAxialColors, *blendingCoronalColors, *blendingSaggitalColors;
 	vtkLookupTable      *blendingBwLut;
@@ -141,18 +142,16 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	float				slicePt[3];
 	
 	
-//	IBOutlet NSButton   *bcor, *bax, *bsag;
 	IBOutlet PreviewView	*perpendicularView;
 	IBOutlet PreviewView	*finalView;
 	IBOutlet PreviewView	*finalViewBlending;
-//	IBOutlet NSSlider   *slider;
-	NSMutableArray		*perPixList, *finalPixList, *finalPixListBlending;
+	NSMutableArray			*perPixList, *finalPixList, *finalPixListBlending;
 	
-	BOOL				firstTime, firstTimeBlending;
+	BOOL					firstTime, firstTimeBlending;
 	
-	long				thickSlab;
-	long				thickSlabMode;
-	float				thickSlabGap;
+	long					thickSlab;
+	long					thickSlabMode;
+	float					thickSlabGap;
 	
 	IBOutlet NSSlider       *sliderThickSlab;
 	IBOutlet NSTextField	*textThickSlab;
@@ -182,6 +181,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(IBAction) setThickSlabGap:(id) sender;
 -(float) thickSlab;
 -(void) movieChangeSource:(float*) volumeData;
+-(void) movieBlendingChangeSource;
 -(short) setPixSource:(NSMutableArray*)pix :(NSArray*)files :(float*) volumeData;
 -(void) axView:(id) sender;
 -(NSMutableDictionary*) get3DStateDictionary;

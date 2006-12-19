@@ -431,6 +431,7 @@ enum
 - (void) moviePosSliderAction:(id) sender;
 - (void) movieRateSliderAction:(id) sender;
 - (void) MoviePlayStop:(id) sender;
+- (void) MovieStop:(id) sender;
 - (void) checkEverythingLoaded;
 - (BOOL) isEverythingLoaded;
 - (IBAction) roiSetPixelsSetup:(id) sender;
