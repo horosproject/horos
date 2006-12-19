@@ -407,7 +407,14 @@ static QueryController	*currentQueryController = 0L;
 					}
 				}
 			}
-			
+			else
+			{
+				NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+				
+				response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM source (ping failed)", 0L)];
+				
+				NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+			}
 			atLeastOneSource = YES;
 		}
 	}
@@ -891,12 +898,7 @@ static QueryController	*currentQueryController = 0L;
 	
 	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
 	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
-
-//	[self addQuerySubview:nil];
-		
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DICOMRetrieveStatus" object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(retrieveMessage:) name:@"DCMRetrieveStatus" object:nil];
-//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"ServerArray has changed" object:nil];
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
 
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
@@ -918,7 +920,7 @@ static QueryController	*currentQueryController = 0L;
 {
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
-	[self release];
+	[[self window] orderOut: self];
 }
 
 - (int) dicomEcho:(NSDictionary*) aServer
