@@ -68,6 +68,7 @@ MODIFICATION HISTORY
 #import "OrthogonalMPRPETCTViewer.h"
 #import "LayoutWindowController.h"
 #import "WindowLayoutManager.h"
+#import "QueryController.h"
 
 #define BUILTIN_DCMTK YES
 
@@ -1221,6 +1222,10 @@ NSRect screenFrame()
 		[[winList objectAtIndex:i] orderOut:sender];
 	}
 	
+	[[QueryController currentQueryController] release];
+
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
 	[NSApp terminate: sender];
 }
 
@@ -1234,7 +1239,7 @@ NSRect screenFrame()
 	
 	PapyrusLock = [[NSLock alloc] init];
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-
+	
 	return self;
 }
 

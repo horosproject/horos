@@ -304,8 +304,6 @@ static QueryController	*currentQueryController = 0L;
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
 		{
-			// [[NSUserDefaults standardUserDefaults] setInteger: [servers indexOfSelectedItem] forKey:@"lastQueryServer"];
-			
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 		
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
@@ -849,6 +847,8 @@ static QueryController	*currentQueryController = 0L;
 
 - (void)dealloc
 {
+	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
+
 	NSLog( @"dealloc QueryController");
 	[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys];
 	[pressedKeys release];
@@ -862,6 +862,8 @@ static QueryController	*currentQueryController = 0L;
 	[resultArray release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
+	
+	currentQueryController = 0L;
 }
 
 - (void)windowDidLoad
@@ -915,8 +917,6 @@ static QueryController	*currentQueryController = 0L;
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
-	
-	currentQueryController = 0L;
 	
 	[self release];
 }
