@@ -45,4 +45,8 @@
 	[[WindowLayoutManager sharedWindowLayoutManager] unregisterWindowController:self];
 }
 
+- (int)blendingType{
+	return _blendingType;
+}
+
 @end

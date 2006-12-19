@@ -6275,7 +6275,7 @@ NSMutableArray		*array;
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
 	
 	[self clear8bitRepresentations];
-	
+	_blendingType = [sender tag];
 	switch( [sender tag])
 	{
 		case -1:	// PLUG-INS METHOD

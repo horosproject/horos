@@ -551,13 +551,35 @@ WindowLayoutManager *sharedLayoutManager;
 			}
 			
 			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
-		}				
+			
+		NSString *blendingSeriesDescription = nil;
+		if (blendingSeriesDescription = [seriesInfo objectForKey:@"blendingSeriesDescription"]){
+			//find blendingViewer
+			NSEnumerator *blendingEnumerator = [_windowControllers objectEnumerator];
+			ViewerController *blendingController;
+			while (blendingController = [blendingEnumerator nextObject]){
+				if ([blendingSeriesDescription isEqualToString:@"unnamed"]){
+				//use Series Number
+					if ([[[blendingController currentSeries] valueForKey:@"id"] intValue] ==  [[seriesInfo objectForKey:@"blendingSeriesNumber"] intValue])
+						[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
+				}
+				else {
+				//use Series Description
+					if ([[[blendingController currentSeries] valueForKey:@"name"] isEqualToString:blendingSeriesDescription])
+						[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
+				}
+			}
+		}
+		}
+
 	}
 	// Need to do fusion/ Subtration/ open 3D Windows
-	// Not functional yet.
+	// Not functional yet.  
 	
 	
 	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+	if ([_windowControllers count])
+		[[[_windowControllers objectAtIndex:0] window] makeKeyAndOrderFront:self];
 }
 
 - (BOOL)hangingProtocolInUse{
