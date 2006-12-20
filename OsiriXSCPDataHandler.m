@@ -97,14 +97,16 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			
 			NSString *moveDestination = [[moveRequest moveDestination] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 //			NSArray *servers = serversArray;
-			NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-			NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];			
-			NSArray *servers;
+//			NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+			NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];			
+			NSArray					*servers;
 			
-			if ([serversArray count] > 0)
-				servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
-			else
-				servers = bonjourServers;
+//			if ([serversArray count] > 0)
+//				servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
+//			else
+//				servers = bonjourServers;
+			
+			servers = serversArray;
 			
 			NSString *theirAET;
 			NSString *hostname;
@@ -116,26 +118,26 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			//if empty. Try NSNetService
 			if ([serverSelection count] == 0) {
 				serverPredicate = [NSPredicate predicateWithFormat:@"name == %@", moveDestination];
-				serverSelection = [bonjourServers filteredArrayUsingPredicate:serverPredicate];
+				serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 			}
 			numberMoving = 0;
-			NSNetService *netService= nil;
+//			NSNetService *netService= nil;
 			
 			if ([serverSelection count]) {
 				id server = [serverSelection objectAtIndex:0];
-				if ([server isMemberOfClass:[NSNetService class]]) {
-					
-					netService = server;
-					theirAET = [server name];
-					hostname = [server hostName];
-					port = @"";
-				}
-				else {
+//				if ([server isMemberOfClass:[NSNetService class]]) {
+//					
+//					netService = server;
+//					theirAET = [server name];
+//					hostname = [server hostName];
+//					port = @"";
+//				}
+//				else {
 					//NSLog(@"
 					theirAET = [server objectForKey:@"AETitle"];
 					hostname = [server objectForKey:@"Address"];
 					port = [server objectForKey:@"Port"];
-				}
+//				}
 				NSLog(@"Server: %@", [server description]);
 				NSManagedObjectModel *model = [browserWindow managedObjectModel];
 				NSError *error = 0L;
@@ -177,15 +179,15 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 							NSArray *objects; 							
 							NSArray *keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", @"moveHandler",  nil];
 							//NSLog(@"create move Params");
-							if (netService) {
-								//NSLog(@"add netService");
-								objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:DCMLosslessQuality], [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax], [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], theirAET, hostname, port, self, netService,   nil];
-								keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", @"moveHandler",  @"netService", nil];
-							}
-							else {
+//							if (netService) {
+//								//NSLog(@"add netService");
+//								objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:DCMLosslessQuality], [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax], [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], theirAET, hostname, port, self, netService,   nil];
+//								keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", @"moveHandler",  @"netService", nil];
+//							}
+//							else {
 								objects = [NSArray arrayWithObjects:filesToSend, [NSNumber numberWithInt:DCMLosslessQuality], [DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax], [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], theirAET, hostname, port, self,   nil];
 								keys = [NSArray arrayWithObjects:@"filesToSend", @"compression", @"transferSyntax", @"callingAET", @"calledAET", @"hostname", @"port", @"moveHandler",  nil];
-							}
+//							}
 							NSDictionary *params = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 							//NSLog(@"create dictionary");
 							//NSLog(@"Move params: %@", [params description]);

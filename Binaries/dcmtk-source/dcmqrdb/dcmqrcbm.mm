@@ -525,15 +525,17 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	id server;
 	
 	//find server info
-	NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-	NSArray					*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];			
+//	NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+	NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];	//[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];			
 	NSArray *servers;
 			
-	if ([serversArray count] > 0)
-		servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
-	else
-		servers = bonjourServers;
-			
+//	if ([serversArray count] > 0)
+//		servers = [serversArray arrayByAddingObjectsFromArray:bonjourServers];
+//	else
+//		servers = bonjourServers;
+	
+	servers = serversArray;
+	
 	//NSString *theirAET;
 	NSString *hostname;
 	NSString *port;
@@ -545,23 +547,24 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	if ([serverSelection count] == 0) {
 		//NSLog(@"try Netservice");
 		serverPredicate = [NSPredicate predicateWithFormat:@"name == %@", moveDestination];
-		serverSelection = [bonjourServers filteredArrayUsingPredicate:serverPredicate];
+		serverSelection = [serversArray filteredArrayUsingPredicate:serverPredicate];
 	}
 	//NSLog(@"Servers count after net service: %d", [serverSelection count]);
 	NSNetService *netService = nil;
 			
 	if ([serverSelection count] > 0) {
 		id server = [serverSelection objectAtIndex:0];
-		if ([server isMemberOfClass:[NSNetService class]]) {
-					
-			netService = server;
-			//theirAET = [server name];
-			hostname = [server hostName];
-			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:netService]];
-			preferredTS = EXS_LittleEndianExplicit;
-			
-		}
-		else {
+//		if ([server isMemberOfClass:[NSNetService class]]) {
+//					
+//			netService = server;
+//			//theirAET = [server name];
+//			hostname = [server hostName];
+//			port = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:netService]];
+//			preferredTS = EXS_LittleEndianExplicit;
+//			
+//		}
+//		else
+		{
 					//NSLog(@"
 			//theirAET = [server objectForKey:@"AETitle"];
 			hostname = [server objectForKey:@"Address"];

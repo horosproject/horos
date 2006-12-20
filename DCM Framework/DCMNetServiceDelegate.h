@@ -28,7 +28,8 @@
 
 
 }
-
++ (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender;
++ (NSArray *) DICOMServersList;
 + (id)sharedNetServiceDelegate;
 - (void)update;
 - (NSArray *)dicomServices;

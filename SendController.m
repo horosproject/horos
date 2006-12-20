@@ -65,7 +65,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 	if( [files  count])
 	{
-		if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count] > 0)
+		if( [[DCMNetServiceDelegate DICOMServersList] count] > 0)
 		{
 			SendController *sendController = [[SendController alloc] initWithFiles:files];
 			[NSApp beginSheet: [sendController window] modalForWindow:[NSApp mainWindow] modalDelegate:sendController didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:nil];
@@ -91,7 +91,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 		
-		if( _serverIndex >= [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count])
+		if( _serverIndex >= [[DCMNetServiceDelegate DICOMServersList] count])
 			_serverIndex = 0;
 		
 		_keyImageIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendWhat"];
@@ -115,7 +115,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	{
 		[serverList reloadData];
 	
-		int count = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count];
+		int count = [[DCMNetServiceDelegate DICOMServersList] count];
 		if (_serverIndex < count)
 			[serverList selectItemAtIndex: _serverIndex];
 			
@@ -167,13 +167,10 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (id)serverAtIndex:(int)index
 {
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	//NSLog(@"server at INdex: %d", index);
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
 	
-	if( index > -1 && index < [serversArray count])
-		return [serversArray objectAtIndex:index];
-	else if( index > -1) 
-		return [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:index - ([serversArray count])];
+	if( index > -1 && index < [serversArray count]) return [serversArray objectAtIndex:index];
+	
 	return nil;
 }
 
@@ -203,15 +200,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 				[self  setOffisTS:preferredTS];
 	
 	}	
-
-	if ([[self server] isMemberOfClass: [NSNetService class]])
-	{
-		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] hostName], [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]]]];
-	}
-	else
-	{
-		[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
-	}
+	
+	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[self server] objectForKey:@"Address"], [[self server] objectForKey:@"Port"]]];
 }
 
 //- (int)serverToolIndex{
@@ -339,18 +329,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSString *transferSyntax;
 	NSLog(@"Server destination: %@", [[self server] description]);	
 	
-	if ([[self server] isMemberOfClass: [NSNetService class]]){
-		calledAET = [[self server] name];
-		hostname = [[self server] hostName];
-		destPort = [NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:[self server]]];
-
-	}
-	else{
-		calledAET = [[self server] objectForKey:@"AETitle"];
-		hostname = [[self server] objectForKey:@"Address"];
-		destPort = [[self server] objectForKey:@"Port"];
-	}
-	
+	calledAET = [[self server] objectForKey:@"AETitle"];
+	hostname = [[self server] objectForKey:@"Address"];
+	destPort = [[self server] objectForKey:@"Port"];
 
 	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 			calledAET:calledAET 
@@ -419,33 +400,25 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
 	
 	if ([aComboBox isEqual:serverList])
-	{
-		//add BONJOUR DICOM also		
-		int count = [serversArray count] + [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] count];		
-		return count;
+	{	
+		return [serversArray count];
 	}
 }
 
 - (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
 {
-	NSArray			*serversArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-
-
-	if ([aComboBox isEqual:serverList]){
+	NSArray			*serversArray		= [DCMNetServiceDelegate DICOMServersList];
+	
+	if ([aComboBox isEqual:serverList])
+	{
 		if( index > -1 && index < [serversArray count])
 		{
 			id theRecord = [serversArray objectAtIndex: index];			
 			return [NSString stringWithFormat:@"%@ - %@",[theRecord objectForKey:@"AETitle"],[theRecord objectForKey:@"Description"]];
 		}
-		else if( index > -1) {
-			id service = [[[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices] objectAtIndex:index - ([serversArray count])];
-			return [NSString stringWithFormat:NSLocalizedString(@"%@ - Bonjour", nil), [service name]];
-		}
-			
 	}
 	return nil;
 }

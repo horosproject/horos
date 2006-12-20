@@ -49,29 +49,6 @@ static QueryController	*currentQueryController = 0L;
 	return currentQueryController;
 }
 
-- (NSArray *) serversList
-{
-	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
-	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
-	
-	int i;
-	
-	for( i = 0 ; i < [dicomServices count] ; i++)
-	{
-		NSNetService*	aServer = [dicomServices objectAtIndex: i];
-		
-		[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[aServer hostName], @"Address",
-																				[aServer name], @"AETitle",
-																				[NSString stringWithFormat:@"%d", [[DCMNetServiceDelegate sharedNetServiceDelegate] portForNetService:aServer]], @"Port",
-																				[NSNumber numberWithBool:YES] , @"QR",
-																				[NSString stringWithFormat:@"%@ (Bonjour)", [aServer name]], @"Description",
-																				[NSNumber numberWithInt:9], @"Transfer Syntax",
-																				0L]];
-	}
-	
-	return serversArray;
-}
-
 - (void)keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
@@ -801,7 +778,7 @@ static QueryController	*currentQueryController = 0L;
 {
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
-	NSMutableArray		*serversArray		= [[[self serversList] mutableCopy] autorelease];
+	NSMutableArray		*serversArray		= [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 	NSArray				*savedArray			= [[NSUserDefaults standardUserDefaults] arrayForKey: @"SavedQueryArray"];
 	
 	[self willChangeValueForKey:@"sourcesArray"];
@@ -841,7 +818,7 @@ static QueryController	*currentQueryController = 0L;
 {
     if ( self = [super initWithWindowNibName:@"Query"])
 	{
-		if( [[self serversList] count] == 0)
+		if( [[DCMNetServiceDelegate DICOMServersList] count] == 0)
 		{
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}

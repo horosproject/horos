@@ -24,8 +24,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-DCMNetServiceDelegate *_netServiceDelegate;
-
+DCMNetServiceDelegate *_netServiceDelegate = 0L;
 
 @implementation DCMNetServiceDelegate
 
@@ -120,14 +119,87 @@ DCMNetServiceDelegate *_netServiceDelegate;
 	[_dicomServices removeObject:sender];
 }
 
++ (NSArray *) DICOMServersList
+{
+	NSMutableArray			*serversArray		= [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
+	NSArray					*dicomServices		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
+	
+	int i;
+	
+	for( i = 0 ; i < [dicomServices count] ; i++)
+	{
+		NSNetService*	aServer = [dicomServices objectAtIndex: i];
+		
+		NSString		*hostname;
+		int				port;
+		
+		hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
+		
+		if( hostname)
+		{
+			[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
+																					[aServer name], @"AETitle",
+																					[NSString stringWithFormat:@"%d", port], @"Port",
+																					[NSNumber numberWithBool:YES] , @"QR",
+																					[NSString stringWithFormat:@"%@ (Bonjour)", [aServer name]], @"Description",
+																					[NSNumber numberWithInt:9], @"Transfer Syntax",
+																					0L]];
+		}
+	}
+	
+	return serversArray;
+}
+
++ (NSString*) gethostnameAndPort: (int*) port forService:(NSNetService*) sender
+{
+	NSEnumerator		*enumerator = [[sender addresses] objectEnumerator];
+	NSData				*addr;
+	struct sockaddr		*result;
+	char				buffer[256];
+	NSString			*hostname = nil;
+	NSString			*portString = nil;
+	
+	while (addr = [enumerator nextObject])
+	{
+		result = (struct sockaddr *)[addr bytes];
+	
+		int family = result->sa_family;
+		if (family == AF_INET)
+		{
+			NSLog(@"Bonjour IP4 address found");
+			
+			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer)))
+			{
+				hostname = [NSString stringWithCString:buffer];
+				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
+				
+				NSLog( hostname);
+				NSLog( portString);
+				
+				if(port) *port = [portString intValue];
+			}
+		}
+		else if (family == AF_INET6)
+		{
+		
+		}
+		else
+		{
+		
+		}
+	}
+	
+	return hostname;
+}
+
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	NSLog( [sender name]);
-	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
+	int port;
+	
+//	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
-		NSLog( @"Successfully resolved address for %@ at %@.", [sender name] , [sender hostName]);
 	}
 }
 @end

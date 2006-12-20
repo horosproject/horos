@@ -89,6 +89,11 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 
 @implementation SRView
 
+- (void) print:(id) sender
+{
+	[controller print: sender];
+}
+
 -(void) restoreViewSizeAfterMatrix3DExport
 {
 	[self setFrame: savedViewSizeFrame];
