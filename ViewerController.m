@@ -6267,6 +6267,8 @@ NSMutableArray		*array;
 	return blendedwin;
 }
 
+
+
 - (IBAction) endBlendingType:(id) sender
 {
 	long i;
@@ -6275,15 +6277,25 @@ NSMutableArray		*array;
 	[NSApp endSheet:blendingTypeWindow returnCode:[sender tag]];
 	
 	[self clear8bitRepresentations];
-	_blendingType = [sender tag];
-	switch( [sender tag])
+	int blendingType = [sender tag];
+	if (blendingType == -1)
+		[self executeFilter:sender];
+	else
+		[self blendWithViewer:blendedwin blendingType:(int)blendingType];
+	blendedwin = 0L;
+}
+	
+- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType{
+	_blendingType = blendingType;
+	long i;
+	switch(blendingType)
 	{
 		case -1:	// PLUG-INS METHOD
-			[self executeFilter:sender];
+			//[self executeFilter:sender];
 		break;
 		
 		case 1:		// Image fusion
-			[self ActivateBlending: blendedwin];
+			[self ActivateBlending: bc];
 		break;
 		
 		case 2:		// Image subtraction
@@ -6293,7 +6305,7 @@ NSMutableArray		*array;
 				[imageView sendSyncMessage:1];
 				[imageView display];
 				
-				[imageView subtract: [blendedwin imageView]];
+				[imageView subtract: [bc imageView]];
 			}
 		break;
 		
@@ -6304,7 +6316,7 @@ NSMutableArray		*array;
 				[imageView sendSyncMessage:1];
 				[imageView display];
 				
-				[imageView multiply: [blendedwin imageView]];
+				[imageView multiply: [bc imageView]];
 			}
 		break;
 		
@@ -6324,7 +6336,7 @@ NSMutableArray		*array;
 					}
 					
 					DCMPix  *dstPix = [pixList[ curMovieIndex] objectAtIndex: i];
-					DCMPix  *srcPix = [[blendedwin pixList] objectAtIndex: i];
+					DCMPix  *srcPix = [[bc pixList] objectAtIndex: i];
 					
 					if( [srcPix isRGB])   // Only works if srcImage is BW
 					{
@@ -6372,7 +6384,7 @@ NSMutableArray		*array;
 						unsigned char*  dstPtr = (unsigned char*) [dstPix fImage];
 						long size = [srcPix pheight] * [srcPix pwidth];
 						
-						switch( [sender tag])
+						switch(blendingType)
 						{
 							case 4:	
 								while( size-- > 0)
@@ -6406,7 +6418,7 @@ NSMutableArray		*array;
 		break;
 		
 		case 7:		// 2D Registration
-			[self computeRegistrationWithMovingViewer: blendedwin];
+			[self computeRegistrationWithMovingViewer: bc];
 		break;
 		
 		case 8:		// 3D Registration
@@ -6416,17 +6428,17 @@ NSMutableArray		*array;
 		case 9: // LL
 		{
 			[self checkEverythingLoaded];
-			[blendedwin checkEverythingLoaded];
-			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[blendedwin pixList]])
+			[bc checkEverythingLoaded];
+			if([LLScoutViewer verifyRequiredConditions:[self pixList] :[bc pixList]])
 			{
 				LLScoutViewer *llScoutViewer;
-				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :blendedwin];
+				llScoutViewer = [[LLScoutViewer alloc] initWithPixList: pixList[0] :fileList[0] :volumeData[0] :self :bc];
 				[llScoutViewer showWindow:self];
 			}
 		}
 	}
 	
-	blendedwin = 0L;
+
 }
 
 -(NSSlider*) blendingSlider { return blendingSlider;}
@@ -11704,6 +11716,61 @@ int i,j,l;
 	}
 }
 
+- (VRController *)openVRViewerForMode:(NSString *)mode{
+	long i;
+	
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+
+	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
+	{
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+			[self applyConvolutionOnSource: self];
+	}
+	
+	[self MovieStop: self];
+	
+	VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
+	
+	if( viewer)
+	{
+		[[viewer window] makeKeyAndOrderFront:self];
+	}
+	else
+	{		
+		viewer = [[VRController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
+		for( i = 1; i < maxMovieIndex; i++)
+		{
+			[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+		}
+		
+		if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+		{
+			if( [[imageView curDCM] SUVConverted] == YES)
+			{
+				[viewer setWLWW: 2 : 6];
+			}
+			else
+			{
+				[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+			}
+			
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				[viewer ApplyCLUTString: @"B/W Inverse"];
+			else
+				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
+		else
+		{
+			float   iwl, iww;
+			[imageView getWLWW:&iwl :&iww];
+			[viewer setWLWW:iwl :iww];
+		}
+	}
+	return viewer;
+}
+
+
 -(IBAction) VRViewer:(id) sender
 {
 	long i;
@@ -11783,6 +11850,7 @@ int i,j,l;
 		}
 	}
 }
+
 
 -(IBAction) SRViewer:(id) sender
 {

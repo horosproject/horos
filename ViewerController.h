@@ -30,6 +30,7 @@
 @class CurvedMPR;
 @class DICOMExport;
 @class KeyObjectPopupController;
+@class VRController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -425,6 +426,7 @@ enum
 - (void) blendingSlider:(id) sender;
 - (void) blendingMode:(id) sender;
 - (ViewerController*) blendingController;
+- (void)blendWithViewer:(ViewerController *)bc blendingType:(int)blendingType;
 - (NSString*) modality;
 - (void) addMovieSerie:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v;
 - (void) startLoadImageThread;
@@ -580,6 +582,10 @@ enum
 - (void)setRotation:(float)rotation;
 - (float)scaleValue;
 - (void)setScaleValue:(float)scaleValue;
+
+
+// Opening VR Viewers
+- (VRController *)openVRViewerForMode:(NSString *)mode;
 
 
 @end

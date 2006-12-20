@@ -133,6 +133,8 @@
 			[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
 			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
+			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
+			
 			// Have blending.  Get Series Description for blending
 			if ([controller blendingController]) {
 				id blendingSeries = [[controller blendingController] currentSeries];

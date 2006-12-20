@@ -552,30 +552,42 @@ WindowLayoutManager *sharedLayoutManager;
 			
 			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 			
-		NSString *blendingSeriesDescription = nil;
-		if (blendingSeriesDescription = [seriesInfo objectForKey:@"blendingSeriesDescription"]){
-			//find blendingViewer
-			NSEnumerator *blendingEnumerator = [_windowControllers objectEnumerator];
-			ViewerController *blendingController;
-			while (blendingController = [blendingEnumerator nextObject]){
-				if ([blendingSeriesDescription isEqualToString:@"unnamed"]){
-				//use Series Number
-					if ([[[blendingController currentSeries] valueForKey:@"id"] intValue] ==  [[seriesInfo objectForKey:@"blendingSeriesNumber"] intValue])
-						[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
-				}
-				else {
-				//use Series Description
-					if ([[[blendingController currentSeries] valueForKey:@"name"] isEqualToString:blendingSeriesDescription])
-						[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
+			NSString *blendingSeriesDescription = nil;
+			if (blendingSeriesDescription = [seriesInfo objectForKey:@"blendingSeriesDescription"]){
+				//find blendingViewer
+				NSEnumerator *blendingEnumerator = [_windowControllers objectEnumerator];
+				ViewerController *blendingController;
+				int blendingType = [[seriesInfo objectForKey:@"blendingType"] intValue];
+				while (blendingController = [blendingEnumerator nextObject]){
+					if ([blendingSeriesDescription isEqualToString:@"unnamed"]){
+					//use Series Number
+						if ([[[blendingController currentSeries] valueForKey:@"id"] intValue] ==  [[seriesInfo objectForKey:@"blendingSeriesNumber"] intValue])
+							//[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
+							[controller blendWithViewer:blendingController blendingType:blendingType];
+					}
+					else {
+					//use Series Description
+						if ([[[blendingController currentSeries] valueForKey:@"name"] isEqualToString:blendingSeriesDescription])
+							//[controller ActivateBlending:blendingController]; //This is fusion. Don't have other blendings yet
+							[controller blendWithViewer:blendingController blendingType:blendingType];
+					}
 				}
 			}
+			if ([[seriesInfo objectForKey:@"isKeyWindow"] boolValue])
+				[[controller window] makeKeyAndOrderFront:self];
 		}
-		}
-
 	}
 	// Need to do fusion/ Subtration/ open 3D Windows
-	// Not functional yet.  
+	// Once we have 2D windows opened and fused can look for 3D windows to open  
 	
+	enumerator = [seriesSet objectEnumerator];
+	windowEnumerator = [[self viewers2D] objectEnumerator];
+	//ViewerController *controller;
+	while (seriesInfo = [enumerator nextObject]){
+		// have a 3D Viewer
+		if ( ![[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+		}
+	}
 	
 	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 	if ([_windowControllers count])
