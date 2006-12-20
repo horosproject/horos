@@ -314,104 +314,123 @@ static QueryController	*currentQueryController = 0L;
 			int numberPacketsReceived = 0;
 			if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 			{
-				[self setDateQuery: dateFilterMatrix];
-				[self setModalityQuery: modalityFilterMatrix];
+				DCMTKVerifySCU	*verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
+								calledAET:theirAET  
+								hostname:hostname 
+								port:[port intValue]
+								transferSyntax:nil
+								compression: nil
+								extraParameters:nil] autorelease];
 				
-				//get rid of white space at end and append "*"
-				
-				[queryManager release];
-				queryManager = nil;
-				
-				queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
-				// add filters as needed
-				
-				if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
-					//Specific Character Set
-					[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-				
-				switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
+				if( [verifySCU echo])
 				{
-					case 0:		currentQueryKey = PatientName;		break;
-					case 1:		currentQueryKey = PatientID;		break;
-					case 2:		currentQueryKey = PatientBirthDate;	break;
-				}
-				
-				BOOL queryItem = NO;
-				
-				if( currentQueryKey == PatientName)
-				{
-					NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+					[self setDateQuery: dateFilterMatrix];
+					[self setModalityQuery: modalityFilterMatrix];
 					
-					if ([filterValue length] > 0)
+					//get rid of white space at end and append "*"
+					
+					[queryManager release];
+					queryManager = nil;
+					
+					queryManager = [[QueryArrayController alloc] initWithCallingAET:myAET calledAET:theirAET  hostName:hostname port:port netService:netService];
+					// add filters as needed
+					
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+						//Specific Character Set
+						[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+					
+					switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
 					{
-						[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-						queryItem = YES;
+						case 0:		currentQueryKey = PatientName;		break;
+						case 1:		currentQueryKey = PatientID;		break;
+						case 2:		currentQueryKey = PatientBirthDate;	break;
 					}
-				}
-				else if( currentQueryKey == PatientBirthDate)
-				{
-					[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
-					queryItem = YES;
-				}
-				else if( currentQueryKey == PatientID)
-				{
-					NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 					
-					if ([filterValue length] > 0)
+					BOOL queryItem = NO;
+					
+					if( currentQueryKey == PatientName)
 					{
-						[queryManager addFilter:filterValue forDescription:currentQueryKey];
-						queryItem = YES;
-					}
-				}
-				
-				//
-				if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
-				
-				if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
-				
-				if ([dateQueryFilter object] || queryItem)
-				{
-					[self performQuery: 0L];
-				}
-				// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
-				else
-				{
-					BOOL doit = NO;
-					
-					if( atLeastOneSource == NO)
-					{
-						 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
-					}
-					else doit = YES;
-					
-					if( doit) [self performQuery: 0L];
-					else i = [sourcesArray count];
-				}
-				
-				if( [resultArray count] == 0)
-				{
-					[resultArray addObjectsFromArray: [queryManager queries]];
-				}
-				else
-				{
-					int			x;
-					NSArray		*curResult = [queryManager queries];
-					NSArray		*uidArray = [resultArray valueForKey: @"uid"];
-					
-					for( x = 0 ; x < [curResult count] ; x++)
-					{
-						if( [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]] == NO)
+						NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
 						{
-							[resultArray addObject: [curResult objectAtIndex: x]];
+							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+							queryItem = YES;
 						}
 					}
+					else if( currentQueryKey == PatientBirthDate)
+					{
+						[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+						queryItem = YES;
+					}
+					else if( currentQueryKey == PatientID)
+					{
+						NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:filterValue forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					
+					//
+					if ([dateQueryFilter object]) [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
+					
+					if ([modalityQueryFilter object]) [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+					
+					if ([dateQueryFilter object] || queryItem)
+					{
+						[self performQuery: 0L];
+					}
+					// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
+					else
+					{
+						BOOL doit = NO;
+						
+						if( atLeastOneSource == NO)
+						{
+							 if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil),  NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil), NSLocalizedString(@"Continue", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn) doit = YES;
+						}
+						else doit = YES;
+						
+						if( doit) [self performQuery: 0L];
+						else i = [sourcesArray count];
+					}
+					
+					if( [resultArray count] == 0)
+					{
+						[resultArray addObjectsFromArray: [queryManager queries]];
+					}
+					else
+					{
+						int			x;
+						NSArray		*curResult = [queryManager queries];
+						NSArray		*uidArray = [resultArray valueForKey: @"uid"];
+						
+						for( x = 0 ; x < [curResult count] ; x++)
+						{
+							if( [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]] == NO)
+							{
+								[resultArray addObject: [curResult objectAtIndex: x]];
+							}
+						}
+					}
+				}
+				else
+				{
+					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+				
+					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
+					
+					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 				}
 			}
 			else
 			{
 				NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
 				
-				response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM source (ping failed)", 0L)];
+				response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (ping failed)", 0L)];
 				
 				NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 			}
@@ -423,7 +442,7 @@ static QueryController	*currentQueryController = 0L;
 	[outlineView reloadData];
 	
 	if( atLeastOneSource == NO)
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM source (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 }
 
 // This function calls many GUI function, it has to be called from the main thread
