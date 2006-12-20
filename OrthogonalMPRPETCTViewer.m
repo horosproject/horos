@@ -2462,11 +2462,11 @@ NSString * documentsDirectory();
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[PETController originalView] setIndex:index];
 	//[[CTController originalView] sendSyncMessage:1];
-	
-	[CTController setFusion];
-	[PETController setFusion];
-	[PETCTController setFusion];
-	
+//	
+//	[CTController setFusion];
+//	[PETController setFusion];
+//	[PETCTController setFusion];
+//	
 	[CTController refreshViews];
 	[PETController refreshViews];
 	[PETCTController refreshViews];
