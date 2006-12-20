@@ -3104,7 +3104,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		for( i = 0; i < [outlineViewArray count] ; i++)
 		{
-			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@) AND (name == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientID"], [[outlineViewArray objectAtIndex: i] valueForKey:@"name"]]];
+			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientID"]]];
 		}
 		
 		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
@@ -4103,6 +4103,8 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+	
+	NSLog( [[databaseOutline sortDescriptors] description]);
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -4618,7 +4620,7 @@ static BOOL COMPLETEREBUILD = NO;
 		NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 		NSManagedObject		*currentSeries = [curImage valueForKeyPath:@"series"];
 		
-		NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@) AND (name == %@)", [study valueForKey:@"patientID"], [study valueForKey:@"name"]];
+		NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 		[dbRequest setPredicate: predicate];
@@ -8099,7 +8101,11 @@ static NSArray*	openSubSeriesArray = 0L;
 		NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
 		{
 			if( [databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]])
-				[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector:@selector(compare:)] autorelease]]];
+			{
+				[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[databaseOutline tableColumnWithIdentifier: [sort objectForKey:@"key"]] sortDescriptorPrototype]]];
+				
+//				[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector:@selector(compare:)] autorelease]]];
+			}
 			else
 				[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 		}
