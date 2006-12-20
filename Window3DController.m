@@ -46,12 +46,65 @@ Version 2.3
 #import "Accelerate.h"
 #import "DCMPix.h"
 #import "VRController.h"
+#import "printView.h"
 
 extern NSString* convertDICOM( NSString *inputfile);
 extern NSString * documentsDirectory();
 
 @implementation Window3DController
 
+- (void)printOperationDidRun:(NSPrintOperation *)printOperation
+                success:(BOOL)success
+                contextInfo:(void*)info
+{
+    if (success)
+	{
+	
+    }
+	
+	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
+	
+	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+}
+
+- (void) print:(id) sender
+{
+	NSMutableDictionary	*settings = [NSMutableDictionary dictionaryWithDictionary: [[NSUserDefaults standardUserDefaults] objectForKey: @"previousPrintSettings"]];
+	
+	[settings setObject: [NSNumber numberWithInt: 1] forKey: @"columns"];
+	[settings setObject: [NSNumber numberWithInt: 1] forKey: @"rows"];
+		
+	// ************
+	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
+	
+	NSMutableArray	*files = [NSMutableArray array];
+
+	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
+
+	NSImage *im = [[[self view] nsimageQuicktime] autorelease];
+	
+	NSData *imageData = [im  TIFFRepresentation];
+	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+	NSData *bitmapData = [imageRep representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+	
+	[files addObject: [tmpFolder stringByAppendingFormat:@"/%d", 1]];
+	
+	[bitmapData writeToFile: [files lastObject] atomically:YES];
+
+	// ************
+	
+	printView	*pV = [[[printView alloc] initWithViewer: self settings: settings files: files] autorelease];
+			
+	NSPrintOperation * printOperation = [NSPrintOperation printOperationWithView: pV];
+	
+	[printOperation setCanSpawnSeparateThread: YES];
+	
+	[printOperation runOperationModalForWindow:[self window]
+		delegate:self
+		didRunSelector: @selector(printOperationDidRun:success:contextInfo:)
+		contextInfo:0L];
+}
 
 //====================================================================================================================================================================================================================
 
@@ -92,7 +145,7 @@ extern NSString * documentsDirectory();
 
 - (id) view
 {
-
+	return 0L;
 }
 
 -(long) movieFrames { return 1;}

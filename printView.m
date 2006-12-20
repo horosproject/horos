@@ -126,7 +126,7 @@
 	[super dealloc];
 }
 
-- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s files:(NSArray*) f
+- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f
 {
 	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];
 	NSSize size = [pi paperSize];

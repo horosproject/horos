@@ -95,5 +95,6 @@
 - (long) movieFrames;
 - (void) setMovieFrame: (long) l;
 
+- (void) print:(id) sender;
 - (BOOL)is4D;
 @end

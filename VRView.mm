@@ -357,6 +357,13 @@ public:
 	}
 }
 
+- (void) print:(id) sender
+{
+	bestRenderingMode = YES;
+	
+	[controller print: sender];
+}
+
 - (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv
 {
 	char orientationX;

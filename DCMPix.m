@@ -4206,9 +4206,9 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	//window level & width
 	
 	savedWL = 0;
-	if ([dcmObject attributeValueWithName:@"WindowCenter"]) savedWL = (long)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (long)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
 	savedWW = 0;
-	if ([dcmObject attributeValueWithName:@"WindowWidth"]) savedWW =  (long) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (long) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
 	//NSLog(@"ww: %d wl: %d", savedWW, savedWL);
 	
 	
@@ -6616,6 +6616,12 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			{
 				wl = pixmin + (pixmax - pixmin)/2;
 				ww = (pixmax - pixmin);
+			}
+			
+			if( isRGB)
+			{
+				savedWL = 0;
+				savedWW = 0;
 			}
 			
 			if( savedWW != 0)

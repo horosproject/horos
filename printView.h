@@ -11,11 +11,11 @@
 
 @interface printView : NSView
 {
-	ViewerController		*viewer;
+	id						viewer;
 	NSDictionary			*settings;
 	NSArray					*filesToPrint;
 }
 
-- (id)initWithViewer:(ViewerController*) v settings:(NSDictionary*) s files:(NSArray*) f;
+- (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f;
 
 @end
