@@ -1259,7 +1259,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 //        
 //	[toolbarItem setLabel: @"Send DICOM"];
 //	[toolbarItem setPaletteLabel: @"Send DICOM"];
-//        [toolbarItem setToolTip: @"Send this image to a PACS server"];
+//        [toolbarItem setToolTip: @"Send this image to a DICOM node"];
 //	[toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
 //	[toolbarItem setTarget: self];
 //	[toolbarItem setAction: @selector(exportDICOMPACS:)];

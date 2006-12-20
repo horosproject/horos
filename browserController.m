@@ -5748,11 +5748,11 @@ static BOOL withReset = NO;
 	
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from PACS", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil)  action:@selector(querySelectedStudy:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
+	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to DICOM node", nil)  action:@selector(export2PACS:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
 	
@@ -7992,11 +7992,11 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from PACS", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
+	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Query this patient from Q&R window", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
 	[sendItem release];
-	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to PACS", nil) action: @selector(export2PACS:) keyEquivalent:@""];
+	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to DICOM node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
 	[sendItem release];
@@ -11296,7 +11296,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         
 		[toolbarItem setLabel: NSLocalizedString(@"Query",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Query",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from your PACS archive\rShift + click to query selected patient.",0L)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Query and retrieve a DICOM study from a DICOM node\rShift + click to query selected patient.",0L)];
 		[toolbarItem setImage: [NSImage imageNamed: QueryToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(queryDICOM:)];
@@ -11305,7 +11305,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         
 		[toolbarItem setLabel: NSLocalizedString(@"Send",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Send",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to your PACS archive",@"Send selected study/series to your PACS archive")];
+		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to a DICOM node",@"Send selected study/series to a DICOM node")];
 		[toolbarItem setImage: [NSImage imageNamed: SendToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(export2PACS:)];

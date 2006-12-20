@@ -2509,7 +2509,7 @@ static ViewerController *draggedController = 0L;
         
 	[toolbarItem setLabel: NSLocalizedString(@"Send", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Send", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Send this series to a PACS server", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Send this series to a DICOM node", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: Send2PACSToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(export2PACS:)];
@@ -10243,7 +10243,7 @@ int i,j,l;
 	
 	if( [pixList[ curMovieIndex] count] > 1)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Send to PACS", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L) == NSAlertDefaultReturn) all = NO;
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Send to DICOM node", nil), NSLocalizedString(@"Should I send only current image or all images of current series?", nil), NSLocalizedString(@"Current", nil), NSLocalizedString(@"All", nil), 0L) == NSAlertDefaultReturn) all = NO;
 		else all = YES;
 	}
 	
