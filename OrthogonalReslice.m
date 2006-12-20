@@ -315,7 +315,10 @@
 		newXSpace = [firstPix pixelSpacingY];
 		newYSpace = fabs(sliceInterval);
 	}
-
+	
+	newTotal /= 2;
+	newTotal *= 2;
+	
 	newX /= 2;
 	newX *= 2;
 	
