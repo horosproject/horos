@@ -2439,26 +2439,41 @@ NSString * documentsDirectory();
 {
 	int index = [[CTController originalView] curImage];
 	BOOL wasDataFlipped = [[CTController originalView] flippedData];
-	
+
+
+
+
+
+//	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
+//	[PETController initWithPixList: [NSMutableArray arrayWithArray: [[bC pixList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]] : [[bC fileList] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] : vData : vC : nil : self];
+//	[PETCTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : bC : self];
+
+
+
 	curMovieIndex = i;
 	if( curMovieIndex < 0) curMovieIndex = maxMovieIndex-1;
 	if( curMovieIndex >= maxMovieIndex) curMovieIndex = 0;
 	
 	[moviePosSlider setIntValue:curMovieIndex];
 	
-	[[CTController reslicer] setOriginalDCMPixList:[viewer pixList:i]];
+	NSMutableArray	*cPix = [viewer pixList:i];
+	NSMutableArray	*subPix = [NSMutableArray arrayWithArray: [cPix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]];
+	
+	[[CTController reslicer] setOriginalDCMPixList: subPix];
 	[[CTController reslicer] setUseYcache:NO];
-	[[CTController originalView] setDCM:[viewer pixList:i] :[viewer fileList:i] :[viewer roiList:i] :0 :'i' :NO];
+	[[CTController originalView] setDCM:subPix :[[viewer fileList:i] subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] :[viewer roiList:i] :0 :'i' :NO];
 	
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[CTController originalView] setIndex:index];
 	//[[CTController originalView] sendSyncMessage:1];
 	
-	
+	cPix = [blendingViewerController pixList:i];
+	subPix = [NSMutableArray arrayWithArray: [cPix subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)]];
+
 	index = [[PETController originalView] curImage];
-	[[PETController reslicer] setOriginalDCMPixList:[blendingViewerController pixList:i]];
+	[[PETController reslicer] setOriginalDCMPixList:subPix];
 	[[PETController reslicer] setUseYcache:NO];
-	[[PETController originalView] setDCM:[blendingViewerController pixList:i] :[blendingViewerController fileList:i] :[blendingViewerController roiList:i] :0 :'i' :NO];
+	[[PETController originalView] setDCM:subPix :[[blendingViewerController fileList:i] subarrayWithRange:NSMakeRange(fistPETSlice,sliceRangePET)] :[blendingViewerController roiList:i] :0 :'i' :NO];
 //	if( wasDataFlipped) [self flipDataSeries: self];
 	[[PETController originalView] setIndex:index];
 	//[[CTController originalView] sendSyncMessage:1];

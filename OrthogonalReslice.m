@@ -282,7 +282,7 @@
 	DCMPix				*lastPix = [originalDCMPixList lastObject];
 	long				i;
 	unsigned char		*emptyData;
-	long				imageSize, size, x, y;
+	long				size, x, y;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], ratio, sliceInterval;
 	
 	BOOL square = NO;
@@ -325,31 +325,35 @@
 	newY /= 2;
 	newY *= 2;
 
-	imageSize = sizeof(float) * newX * newY;	// image weight in bytes
-	size = imageSize;
+	size = sizeof(float) * newX * newY;	// image weight in bytes
 	
 	// CREATE A NEW SERIES WITH *ONE* IMAGE !
 	
 	DCMPix	*curPix;
 	long	stack = 0;
 	
-	i = sliceNumber;
-
-	
 	if( thickSlab <= 1)
 	{
 		thickSlab = 1;
 		minI = sliceNumber;
 		maxI = minI+1;
-		if( maxI > newTotal-1) NSLog(@"maxI > newTotal-1");
-		maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
+		if( maxI > newTotal-1)
+		{
+			maxI = newTotal-1;
+			minI = maxI-1;
+		}
 	}
 	else
 	{
 		thickSlab = (thickSlab==0) ? 1 : thickSlab ;
 		minI = sliceNumber-floor((float)thickSlab/2.0);
 		maxI = sliceNumber+ceil((float)thickSlab/2.0);
-		maxI = (maxI > newTotal-1) ? newTotal-1 : maxI;
+		
+		if( maxI > newTotal-1)
+		{
+			maxI = newTotal-1;
+			if( minI == maxI) minI = maxI-1;
+		}
 	}
 						
 	// Y - CACHE activated only if thick slab and if enough memory is available
@@ -492,6 +496,8 @@
 			}
 			else curPix = [newPixListY objectAtIndex: stack];
 		}
+		
+		[curPix fImage];	// <- Force CheckLoad
 		
 		[curPix setTot: 0];
 		[curPix setFrameNo: 0];

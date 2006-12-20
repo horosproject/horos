@@ -140,5 +140,5 @@
 - (void) MoviePlayStop:(id) sender;
 - (void) movieRateSliderAction:(id) sender;
 - (void) moviePosSliderAction:(id) sender;
-
+- (void) setMovieIndex: (short) i;
 @end
