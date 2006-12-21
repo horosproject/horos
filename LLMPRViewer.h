@@ -30,20 +30,27 @@
 	IBOutlet NSPopUpButton		*thickSlabModePopUp;
 	IBOutlet NSPanel			*parametersPanel;
 	IBOutlet NSTextField		*injectedMinValueTextField, *injectedMaxValueTextField, *notInjectedMinValueTextField, *notInjectedMaxValueTextField, *subtractionMinValueTextField, *subtractionMaxValueTextField;
-	IBOutlet NSSlider			*injectedMinValueSlider, *injectedMaxValueSlider, *notInjectedMinValueSlider, *notInjectedMaxValueSlider, *subtractionMinValueSlider, *subtractionMaxValueSlider, *dilatationRadiusSlider, *closingRadiusSlider;
+	IBOutlet NSSlider			*injectedMinValueSlider, *injectedMaxValueSlider, *notInjectedMinValueSlider, *notInjectedMaxValueSlider, *subtractionMinValueSlider, *subtractionMaxValueSlider, *dilatationRadiusSlider, *closingRadiusSlider, *lowPassFilterSizeSlider;
 	int							injectedMinValue, injectedMaxValue, notInjectedMinValue, notInjectedMaxValue, subtractionMinValue, subtractionMaxValue;
 	IBOutlet NSTextField		*xShiftTextField, *yShiftTextField, *zShiftTextField;
-	IBOutlet NSTextField		*dilatationRadiusTextField, *closingRadiusTextField;
-	int							dilatationRadius, closingRadius;
+	IBOutlet NSTextField		*dilatationRadiusTextField, *closingRadiusTextField, *lowPassFilterSizeTextField;
+	int							dilatationRadius, closingRadius, lowPassFilterSize;
+	
 	IBOutlet NSButton			*displayBonesButton;
 	BOOL						displayBones;
 	IBOutlet NSSlider			*bonesThresholdSlider;
 	IBOutlet NSTextField		*bonesThresholdTextField;
 	int							bonesThreshold;
+	
 	IBOutlet NSPopUpButton		*settingsPopup;
 	NSString					*settingsName;
 	IBOutlet NSWindow			*settingsNameSheetWindow;
 	IBOutlet NSTextField		*settingsNameTextField;
+	
+	IBOutlet NSPopUpButton		*convolutionsPopup;
+	BOOL						applyConvolution;
+	float						convolutionKernel[25];
+	NSString					*convolutionName;
 }
 
 - (id)initWithPixList:(NSMutableArray*)pix:(NSMutableArray*)pixToSubstract:(NSArray*)files:(NSData*)vData:(ViewerController*)vC:(ViewerController*)bC:(LLScoutViewer*)sV;
@@ -88,6 +95,11 @@
 
 - (IBAction)setDilatationRadius:(id)sender;
 - (IBAction)setClosingRadius:(id)sender;
+
+- (IBAction)setLowPassFilterSize:(id)sender;
+- (IBAction)applyConvolutionFilter:(id)sender;
+- (void)applyConvolutionWithName:(NSString*)name;
+- (void)buildConvolutionsMenu;
 
 - (void)initialDefaultSettings;
 - (void)addCurrentSettings:(id)sender;

@@ -276,4 +276,70 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	free(binaryBuffer);
 }
 
+#pragma mark-
+#pragma mark Filtering
+
++ (void)lowPassFilterOnBuffer:(float*)buffer withWidth:(int)width height:(int)height structuringElementSize:(int)structuringElementSize;
+{
+	if(width==0 || height==0 || structuringElementSize==0) return;
+	
+	structuringElementSize /= 2;
+	structuringElementSize *= 2;
+	structuringElementSize += 1;
+	
+	float kernel[structuringElementSize*structuringElementSize];
+	
+	int x,y;
+		
+	float divisor = (float) structuringElementSize * structuringElementSize;
+	float val = 1.0/divisor;
+	
+	for(x = 0; x < structuringElementSize; x++)
+	{
+		for( y = 0 ; y < structuringElementSize; y++)
+		{
+			kernel[ x + y*structuringElementSize] = val;
+		}
+	}
+	
+	vImage_Buffer srcbuf, dstBuf;
+	vImage_Error err;
+	srcbuf.data = buffer;
+	
+	dstBuf.data = malloc(height * width * sizeof(float));
+	if( dstBuf.data)
+	{
+		dstBuf.height = srcbuf.height = height;
+		dstBuf.width = srcbuf.width = width;
+		dstBuf.rowBytes = srcbuf.rowBytes = width * sizeof(float);
+
+		err = vImageConvolve_PlanarF( &srcbuf, &dstBuf, 0, 0, 0, kernel, structuringElementSize, structuringElementSize, 0, kvImageEdgeExtend);
+		if( err) NSLog(@"convolve error : %d", err);
+		memcpy(buffer,dstBuf.data,width * height * sizeof(float));
+		free(dstBuf.data);
+	}
+}
+
++ (void)convolveBuffer:(float*)buffer withWidth:(int)width height:(int)height withKernel:(float*)kernel kernelSize:(int)kernelSize;
+{
+	if(width==0 || height==0) return;
+	
+	vImage_Buffer srcbuf, dstBuf;
+	vImage_Error err;
+	srcbuf.data = buffer;
+		
+	dstBuf.data = malloc(height * width * sizeof(float));
+	if( dstBuf.data)
+	{
+		dstBuf.height = srcbuf.height = height;
+		dstBuf.width = srcbuf.width = width;
+		dstBuf.rowBytes = srcbuf.rowBytes = width * sizeof(float);
+
+		err = vImageConvolve_PlanarF( &srcbuf, &dstBuf, 0, 0, 0, kernel, kernelSize, kernelSize, 0, kvImageEdgeExtend);
+		if( err) NSLog(@"convolve error : %d", err);
+		memcpy(buffer,dstBuf.data,width * height * sizeof(float));
+		free(dstBuf.data);
+	}
+}
+
 @end

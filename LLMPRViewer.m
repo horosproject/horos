@@ -18,6 +18,7 @@
 #import "WaitRendering.h"
 
 #define BONEVALUE 250
+#define MORPH_RESAMPLE 3
 
 @class Window3DController;
 
@@ -84,15 +85,35 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	zShift = 0;
 		
 	closingRadius = 2;
+	[closingRadiusSlider setMaxValue:10.0];
+	[closingRadiusSlider setMinValue:1.0];
+//	[closingRadiusSlider setNumberOfTickMarks:MORPH_RESAMPLE*2+1];
+	[closingRadiusSlider setNumberOfTickMarks:10];
+	[closingRadiusSlider setFloatValue:closingRadius+1];
+
+	dilatationRadius = 0;
+	[dilatationRadiusSlider setMaxValue:10.0];
+	[dilatationRadiusSlider setMinValue:1.0];
+//	[dilatationRadiusSlider setNumberOfTickMarks:MORPH_RESAMPLE*2+1];
+	[dilatationRadiusSlider setNumberOfTickMarks:10];
+	[dilatationRadiusSlider setFloatValue:dilatationRadius+1];
+	
+	lowPassFilterSize = 0;
+	[lowPassFilterSizeSlider setIntValue:lowPassFilterSize];
+	
 	displayBones = NO;
 	bonesThreshold = 200;
 	
 //	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LLSubtractionParameters"];
-	
-	settingsName = @"";
 
 	[self initialDefaultSettings];
 	[self buildSettingsMenu];
+	
+	settingsName = [[settingsPopup itemAtIndex:0] title];
+	[self applySettingsForTitle:settingsName];
+	[settingsPopup selectItemAtIndex:0];
+	
+	[self buildConvolutionsMenu];
 	
 	return self;
 }
@@ -136,7 +157,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[injectedMPRController showViews:sender];
 	[[injectedMPRController originalView] setFusion:0 :1];
 	[[controller originalView] setFusion:0 :1];
-	[self refreshSubtractedViews];
+	//[self refreshSubtractedViews];
 }
 
 - (IBAction)changeTool:(id)sender
@@ -348,25 +369,31 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void) resliceFromNotification: (NSNotification*) notification;
 {
-//NSLog(@"LLMPRViewer resliceFromNotification");
+NSLog(@"LLMPRViewer resliceFromNotification");
 	if(injectedMPRController==nil) return;
+NSLog(@"injectedMPRController!=nil");
 	if(controller==nil) return;
-	
+NSLog(@"controller!=nil");	
+
 	if([injectedMPRController thickSlab]!=[controller thickSlab] || [injectedMPRController thickSlabMode]!=[controller thickSlabMode])
 		return;
+NSLog(@"thickSlab");
 	
 	[injectedMPRController resliceFromNotification: notification];
 	[(LLMPRController*)controller resliceFromNotification: notification];
 
 	if([[[injectedMPRController originalView] dcmPixList] count]==0 || [[[injectedMPRController xReslicedView] dcmPixList] count]==0 || [[[injectedMPRController yReslicedView] dcmPixList] count]==0)
 		return;
+NSLog(@"dcmPixList count");
 	if([[[controller originalView] dcmPixList] count]==0 || [[[controller xReslicedView] dcmPixList] count]==0 || [[[controller yReslicedView] dcmPixList] count]==0)
 		return;
+NSLog(@"dcmPixList count");
 	[self refreshSubtractedViews];
 }
 
 - (void)refreshSubtractedViews;
 {
+NSLog(@"refreshSubtractedViews");
 	NSAutoreleasePool *tempPool;
 	
 	DCMPix *curPix;
@@ -436,10 +463,38 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		//newAxialPix = [[[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
 		newAxialPix = [[DCMPix alloc] initwithdata:subtractedOriginalBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller originalView] dcmPixList] objectAtIndex:i] to:newAxialPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
-		[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
-		[LLSubtraction close:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+//		[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
+//		[LLSubtraction close:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+		
+		BOOL resampleMorph = ((closingRadius-1)%MORPH_RESAMPLE != 0) || ((dilatationRadius-1)%MORPH_RESAMPLE != 0);
+//		resampleMorph = YES;
+		if(resampleMorph)
+		{
+			//NSLog(@"resampleMorph");
+			resampledBuffer = malloc(byteCount*MORPH_RESAMPLE*MORPH_RESAMPLE);
+			[self resampleBuffer:[newAxialPix fImage] withWidth:width height:height factor:MORPH_RESAMPLE*1.0 inNewBuffer:resampledBuffer];
+//			if(dilatationRadius>1)
+				[LLSubtraction dilate:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:dilatationRadius];
+//			if(closingRadius>1)
+				[LLSubtraction close:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:closingRadius];
+			[self resampleBuffer:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE factor:1.0/MORPH_RESAMPLE inNewBuffer:[newAxialPix fImage]];
+			free(resampledBuffer);
+		}
+		else
+		{
+			if(dilatationRadius>1)
+				[LLSubtraction dilate:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius/MORPH_RESAMPLE+1];
+			if(closingRadius>1)
+				[LLSubtraction close:[newAxialPix fImage] withWidth:width height:height structuringElementRadius:closingRadius/MORPH_RESAMPLE+1];
+		}
 		//[LLSubtraction removeSmallConnectedPartDCMPix:newAxialPix];
-				
+		
+		if(lowPassFilterSize>1)
+			[LLSubtraction lowPassFilterOnBuffer:[newAxialPix fImage] withWidth:width height:height structuringElementSize:lowPassFilterSize];
+		
+		if(applyConvolution)
+			[LLSubtraction convolveBuffer:[newAxialPix fImage] withWidth:width height:height withKernel:convolutionKernel kernelSize:5];
+						
 		[axialPixList addObject:newAxialPix];
 		[newAxialPix release];
 	}
@@ -519,8 +574,36 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		//newCoronalPix = [[[DCMPix alloc] initwithdata :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
 		newCoronalPix = [[DCMPix alloc] initwithdata :subtractedXReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller xReslicedView] dcmPixList] objectAtIndex:i] to:newCoronalPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
-		[LLSubtraction dilate:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
-		[LLSubtraction close:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+//		[LLSubtraction dilate:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
+//		[LLSubtraction close:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+		
+		BOOL resampleMorph = ((closingRadius-1)%MORPH_RESAMPLE != 0) || ((dilatationRadius-1)%MORPH_RESAMPLE != 0);
+//		resampleMorph = YES;
+		if(resampleMorph)
+		{
+			resampledBuffer = malloc(byteCount*MORPH_RESAMPLE*MORPH_RESAMPLE);
+			[self resampleBuffer:[newCoronalPix fImage] withWidth:width height:height factor:MORPH_RESAMPLE*1.0 inNewBuffer:resampledBuffer];
+//			if(dilatationRadius>1)
+				[LLSubtraction dilate:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:dilatationRadius];
+//			if(closingRadius>1)
+				[LLSubtraction close:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:closingRadius];
+			[self resampleBuffer:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE factor:1.0/MORPH_RESAMPLE inNewBuffer:[newCoronalPix fImage]];
+			free(resampledBuffer);
+		}
+		else
+		{
+			if(dilatationRadius>1)
+				[LLSubtraction dilate:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius/MORPH_RESAMPLE+1];
+			if(closingRadius>1)
+				[LLSubtraction close:[newCoronalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius/MORPH_RESAMPLE+1];
+		}
+		
+		if(lowPassFilterSize>1)
+			[LLSubtraction lowPassFilterOnBuffer:[newCoronalPix fImage] withWidth:width height:height structuringElementSize:lowPassFilterSize];
+			
+		if(applyConvolution)
+			[LLSubtraction convolveBuffer:[newCoronalPix fImage] withWidth:width height:height withKernel:convolutionKernel kernelSize:5];
+
 		//[LLSubtraction removeSmallConnectedPartDCMPix:newCoronalPix];
 		
 		[coronalPixList addObject:newCoronalPix];
@@ -603,8 +686,36 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		//newSagitalPix = [[[DCMPix alloc] initwithdata :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]] autorelease];
 		newSagitalPix = [[DCMPix alloc] initwithdata :subtractedYReslicedBuffer :32 :width :height :pixelSpacingX :pixelSpacingY :[curPix originX] :[curPix originY] :[curPix originZ]];
 		[LLSubtraction subtractDCMPix:[[[controller yReslicedView] dcmPixList] objectAtIndex:i] to:newSagitalPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
-		[LLSubtraction dilate:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
-		[LLSubtraction close:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+//		[LLSubtraction dilate:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius];
+//		[LLSubtraction close:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius];
+
+		BOOL resampleMorph = ((closingRadius-1)%MORPH_RESAMPLE != 0) || ((dilatationRadius-1)%MORPH_RESAMPLE != 0);
+//		resampleMorph = YES;
+		if(resampleMorph)
+		{
+			resampledBuffer = malloc(byteCount*MORPH_RESAMPLE*MORPH_RESAMPLE);
+			[self resampleBuffer:[newSagitalPix fImage] withWidth:width height:height factor:MORPH_RESAMPLE*1.0 inNewBuffer:resampledBuffer];
+//			if(dilatationRadius>1)
+				[LLSubtraction dilate:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:dilatationRadius];
+//			if(closingRadius>1)
+				[LLSubtraction close:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE structuringElementRadius:closingRadius];
+			[self resampleBuffer:resampledBuffer withWidth:width*MORPH_RESAMPLE height:height*MORPH_RESAMPLE factor:1.0/MORPH_RESAMPLE inNewBuffer:[newSagitalPix fImage]];
+			free(resampledBuffer);
+		}
+		else
+		{
+			if(dilatationRadius>1)
+				[LLSubtraction dilate:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:dilatationRadius/MORPH_RESAMPLE+1];
+			if(closingRadius>1)
+				[LLSubtraction close:[newSagitalPix fImage] withWidth:width height:height structuringElementRadius:closingRadius/MORPH_RESAMPLE+1];
+		}
+
+		if(lowPassFilterSize>1)
+			[LLSubtraction lowPassFilterOnBuffer:[newSagitalPix fImage] withWidth:width height:height structuringElementSize:lowPassFilterSize];
+
+		if(applyConvolution)
+			[LLSubtraction convolveBuffer:[newSagitalPix fImage] withWidth:width height:height withKernel:convolutionKernel kernelSize:5];
+
 		//[LLSubtraction removeSmallConnectedPartDCMPix:newSagitalPix];
 		
 		[sagitalPixList addObject:newSagitalPix];
@@ -820,6 +931,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	//[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
+	//[self refreshSubtractedViews];
 }
 
 #pragma mark-
@@ -1210,8 +1322,36 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[newAxialPix setfImage: fVolumePtr];
 		
 		[LLSubtraction subtractDCMPix:[[controller originalDCMPixList] objectAtIndex: i] to:newAxialPix minValueA:injectedMinValue maxValueA:injectedMaxValue minValueB:notInjectedMinValue maxValueB:notInjectedMaxValue minValueSubtraction:subtractionMinValue maxValueSubtraction:subtractionMaxValue displayBones:displayBones bonesThreshold:bonesThreshold];// subtraction
-		[LLSubtraction dilate:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:dilatationRadius];
-		[LLSubtraction close:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:closingRadius];
+//		[LLSubtraction dilate:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:dilatationRadius];
+//		[LLSubtraction close:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:closingRadius];
+
+		BOOL resampleMorph = ((closingRadius-1)%MORPH_RESAMPLE != 0) || ((dilatationRadius-1)%MORPH_RESAMPLE != 0);
+//		resampleMorph = YES;
+		if(resampleMorph)
+		{
+			resampledBuffer = malloc(byteCount*MORPH_RESAMPLE*MORPH_RESAMPLE);
+			[self resampleBuffer:[newAxialPix fImage] withWidth:curWidth height:curHeight factor:MORPH_RESAMPLE*1.0 inNewBuffer:resampledBuffer];
+//			if(dilatationRadius>1)
+				[LLSubtraction dilate:resampledBuffer withWidth:curWidth*MORPH_RESAMPLE height:curHeight*MORPH_RESAMPLE structuringElementRadius:dilatationRadius];
+//			if(closingRadius>1)
+				[LLSubtraction close:resampledBuffer withWidth:curWidth*MORPH_RESAMPLE height:curHeight*MORPH_RESAMPLE structuringElementRadius:closingRadius];
+			[self resampleBuffer:resampledBuffer withWidth:curWidth*MORPH_RESAMPLE height:curHeight*MORPH_RESAMPLE factor:1.0/MORPH_RESAMPLE inNewBuffer:[newAxialPix fImage]];
+			free(resampledBuffer);
+		}
+		else
+		{
+			if(dilatationRadius>1)
+				[LLSubtraction dilate:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:dilatationRadius/MORPH_RESAMPLE+1];
+			if(closingRadius>1)
+				[LLSubtraction close:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementRadius:closingRadius/MORPH_RESAMPLE+1];
+		}
+
+		if(lowPassFilterSize>1)
+			[LLSubtraction lowPassFilterOnBuffer:[newAxialPix fImage] withWidth:curWidth height:curHeight structuringElementSize:lowPassFilterSize];
+
+		if(applyConvolution)
+			[LLSubtraction convolveBuffer:[newAxialPix fImage] withWidth:curWidth height:curHeight withKernel:convolutionKernel kernelSize:5];
+
 		//[LLSubtraction removeSmallConnectedPartDCMPix:newAxialPix];
 	}
 }
@@ -1503,7 +1643,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 - (IBAction)setDilatationRadius:(id)sender;
 {
 	dilatationRadius = [sender intValue];
-	[dilatationRadiusTextField setIntValue:dilatationRadius-1];
+	[dilatationRadiusTextField setFloatValue:(dilatationRadius-1)/(MORPH_RESAMPLE*1.0)];
 	//NSLog(@"setDilatationRadius : %d", dilatationRadius);
 	[self refreshSubtractedViews];
 }
@@ -1511,9 +1651,66 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 - (IBAction)setClosingRadius:(id)sender;
 {
 	closingRadius = [sender intValue];
-	[closingRadiusTextField setIntValue:closingRadius-1];
-	//NSLog(@"setClosingRadius : %d", closingRadius);
+	[closingRadiusTextField setFloatValue:(closingRadius-1)/(MORPH_RESAMPLE*1.0)];
+	NSLog(@"setClosingRadius : %d", closingRadius);
 	[self refreshSubtractedViews];
+}
+
+#pragma mark-
+#pragma mark Convolution
+
+- (IBAction)setLowPassFilterSize:(id)sender;
+{
+	lowPassFilterSize = [sender intValue] * 2 + 1;
+	lowPassFilterSize = (lowPassFilterSize == 1)? 0 : lowPassFilterSize;
+	[lowPassFilterSizeTextField setIntValue:lowPassFilterSize];
+	[self refreshSubtractedViews];
+}
+
+- (IBAction)applyConvolutionFilter:(id)sender;
+{
+	[self applyConvolutionWithName:[sender title]];
+	[self refreshSubtractedViews];
+}
+
+- (void)applyConvolutionWithName:(NSString*)name;
+{
+	convolutionName = name;
+	int i;
+	if( [convolutionName isEqualToString:NSLocalizedString(@"No Filter", nil)] == YES)
+	{
+		for(i = 0; i < 25; i++)
+			convolutionKernel[i] = 0.0;
+		convolutionKernel[12] = 1.0;
+		applyConvolution = NO;
+	}
+	else
+	{
+		NSDictionary *convolutionParameters = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] objectForKey:convolutionName];
+		long nomalization = [[convolutionParameters objectForKey:@"Normalization"] longValue];
+		long size = [[convolutionParameters objectForKey:@"Size"] longValue];
+		NSArray *array = [convolutionParameters objectForKey:@"Matrix"];
+		for(i = 0; i < size*size; i++)
+		{
+			convolutionKernel[i] = (float)[[array objectAtIndex: i] longValue] / nomalization;
+		}
+		applyConvolution = YES;		
+	}
+}
+
+- (void)buildConvolutionsMenu;
+{
+	NSDictionary *convolutionsDictionary = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"];
+	NSArray *convolutionNamesArray = [convolutionsDictionary allKeys];
+	[convolutionsPopup removeAllItems];
+	NSMenu *menu = [convolutionsPopup menu];
+	[menu addItemWithTitle:NSLocalizedString(@"No Filter", nil) action:@selector(applyConvolutionFilter:) keyEquivalent:@""];
+	[menu addItem:[NSMenuItem separatorItem]];
+	int i;
+	for(i=0; i<[convolutionNamesArray count]; i++)
+	{
+		[menu addItemWithTitle:[convolutionNamesArray objectAtIndex:i] action:@selector(applyConvolutionFilter:) keyEquivalent:@""];
+	}
 }
 
 #pragma mark-

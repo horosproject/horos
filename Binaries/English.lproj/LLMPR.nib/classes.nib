@@ -38,19 +38,20 @@
         {
             ACTIONS = {
                 addCurrentSettings = id; 
+                applyConvolutionFilter = id; 
                 applySettings = id; 
                 blendingPropagate = id; 
                 cancelAddSettings = id; 
-                defaultValuesParametersSliders = id; 
                 produce3DResult = id; 
                 produceResultInMemory = id; 
+                removeCurrentSettings = id; 
                 resetParametersSliders = id; 
                 resetShift = id; 
-                saveParametersValuesAsDefault = id; 
                 saveSettings = id; 
                 setBonesThreshold = id; 
                 setClosingRadius = id; 
                 setDilatationRadius = id; 
+                setLowPassFilterSize = id; 
                 setParameterValue = id; 
                 showParametersPanel = id; 
                 toggleDisplayBones = id; 
@@ -62,6 +63,7 @@
                 bonesThresholdTextField = NSTextField; 
                 closingRadiusSlider = NSSlider; 
                 closingRadiusTextField = NSTextField; 
+                convolutionsPopup = NSPopUpButton; 
                 dilatationRadiusSlider = NSSlider; 
                 dilatationRadiusTextField = NSTextField; 
                 displayBonesButton = NSButton; 
@@ -70,6 +72,8 @@
                 injectedMaxValueTextField = NSTextField; 
                 injectedMinValueSlider = NSSlider; 
                 injectedMinValueTextField = NSTextField; 
+                lowPassFilterSizeSlider = NSSlider; 
+                lowPassFilterSizeTextField = NSTextField; 
                 notInjectedMaxValueSlider = NSSlider; 
                 notInjectedMaxValueTextField = NSTextField; 
                 notInjectedMinValueSlider = NSSlider; 

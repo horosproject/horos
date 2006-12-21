@@ -33,4 +33,7 @@
 + (void)dilate:(float*)buffer withWidth:(long)width height:(long)height structuringElementRadius:(int)structuringElementRadius;
 + (void)close:(float*)buffer withWidth:(long)width height:(long)height structuringElementRadius:(int)structuringElementRadius;
 
++ (void)lowPassFilterOnBuffer:(float*)buffer withWidth:(int)width height:(int)height structuringElementSize:(int)structuringElementSize;
++ (void)convolveBuffer:(float*)buffer withWidth:(int)width height:(int)height withKernel:(float*)kernel kernelSize:(int)kernelSize;
+
 @end
