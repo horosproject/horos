@@ -32,6 +32,7 @@
 @class KeyObjectPopupController;
 @class VRController;
 @class VRPROController;
+@class MPR2DController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -449,6 +450,7 @@ enum
 //- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
+-(MPR2DController *)openMPR2DViewer;
 - (IBAction) MPR2DViewer:(id) sender;
 - (IBAction) orthogonalMPRViewer:(id) sender;
 - (IBAction) endoscopyViewer:(id) sender;

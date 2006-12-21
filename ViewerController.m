@@ -12188,6 +12188,19 @@ long i;
 	}
 }
 
+-(MPR2DController *)openMPR2DViewer{
+	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
+	int i;
+	[self setFusionMode: 0];
+	[popFusion selectItemAtIndex:0];
+	MPR2DController *		viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];			
+	for( i = 1; i < maxMovieIndex; i++)
+	{
+		[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+	}
+	return viewer;
+}
+
 -(IBAction) MPR2DViewer:(id) sender
 {
 	long i;
@@ -12214,6 +12227,7 @@ long i;
 		}
 		else
 		{
+			/*
 			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 			[self setFusionMode: 0];
 			[popFusion selectItemAtIndex:0];
@@ -12225,7 +12239,8 @@ long i;
 			{
 				[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
 			}
-			
+			*/
+			viewer = [self openMPR2DViewer];
 			[viewer ApplyCLUTString:curCLUTMenu];
 			float   iwl, iww;
 			[imageView getWLWW:&iwl :&iww];
