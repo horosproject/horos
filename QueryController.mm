@@ -269,17 +269,33 @@ static QueryController	*currentQueryController = 0L;
 	NSString			*port;
 	NSNetService		*netService = nil;
 	id					aServer;
-	int					i;
-	BOOL				atLeastOneSource = NO;
+	int					i, selectedServer;
+	BOOL				atLeastOneSource = NO, noChecked = YES;
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
 	
 	[resultArray removeAllObjects];
 	[outlineView reloadData];
 	
+	noChecked = YES;
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		{
+			noChecked = NO;
+		}
+	}
+	
+	selectedServer = -1;
+	if( noChecked)
+	{
+		selectedServer = [sourcesTable selectedRow];
+	}
+	
+	atLeastOneSource = NO;
+	for( i = 0; i < [sourcesArray count]; i++)
+	{
+		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
 		{
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
 		
