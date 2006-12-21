@@ -33,7 +33,7 @@
 	crossPositionX = 0;
 	crossPositionY = 0;
 	
-	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 	
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											selector: @selector(addROI:)
@@ -57,6 +57,7 @@
 {
 	long i;
 	[controller release];
+	[curWLWWMenu release];
 	[super dealloc];
 }
 
@@ -431,7 +432,11 @@
 
 - (void) setCurWLWWMenu:(NSString*) str
 {
-	curWLWWMenu = str;
+	if( str != curWLWWMenu)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [str retain];
+	}
 }
 
 - (NSString*) curWLWWMenu

@@ -431,7 +431,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	viewer2D = vC;
 	
-	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -452,8 +452,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	[curCLUTMenu retain];
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
@@ -462,8 +461,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	
-	curOpacityMenu = NSLocalizedString(@"Linear Table", nil);
-	[curOpacityMenu retain];
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateOpacityMenu:)
@@ -738,8 +736,6 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		[volumeData[ i] release];
 	}
 	[fileList release];
-	[curCLUTMenu release];
-	[curOpacityMenu release];
 	
 	[toolbar setDelegate: 0L];
 	[toolbar release];
@@ -836,7 +832,11 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
     }
 	
-	curWLWWMenu = [sender title];
+	if( curWLWWMenu != [sender title])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[sender title] retain];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 

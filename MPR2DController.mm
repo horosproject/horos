@@ -488,8 +488,7 @@ extern NSString * documentsDirectory();
 	[splash close];
 	[splash release];
 	
-	curOpacityMenu = @"Linear Table";
-	[curOpacityMenu retain];
+	curOpacityMenu = [@"Linear Table" retain];
 	
     [[NSNotificationCenter defaultCenter] addObserver: self
            selector: @selector(UpdateOpacityMenu:)
@@ -498,7 +497,7 @@ extern NSString * documentsDirectory();
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 	
-	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 	
 	NSNotificationCenter *nc;
     nc = [NSNotificationCenter defaultCenter];
@@ -609,8 +608,6 @@ extern NSString * documentsDirectory();
 	[toolbar release];
 	
 	[viewerController release];
-	[curOpacityMenu release];
-	[curCLUTMenu release];
 	
 	[super dealloc];
 	NSLog(@"Dealloc MPR2DController C");
@@ -710,7 +707,12 @@ extern NSString * documentsDirectory();
 		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
     }
 	
-	curWLWWMenu = [sender title];
+	if( [sender title] != curWLWWMenu)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[sender title] retain];
+	}
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
@@ -736,8 +738,11 @@ extern NSString * documentsDirectory();
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
 		[view setCLUT: 0L :0L :0L];
-		[curCLUTMenu release];
-		curCLUTMenu = [str retain];
+		if( curCLUTMenu != str)
+		{
+			[curCLUTMenu release];
+			curCLUTMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -771,8 +776,11 @@ extern NSString * documentsDirectory();
 			}
 			
 			[view setCLUT:red :green: blue];
-			[curCLUTMenu release];
-			curCLUTMenu = [str retain];
+			if( curCLUTMenu != str)
+			{
+				[curCLUTMenu release];
+				curCLUTMenu = [str retain];
+			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -795,8 +803,11 @@ extern NSString * documentsDirectory();
 	{
 		[view setOpacity:[NSArray array]];
 		
-		[curOpacityMenu release];
-		curOpacityMenu = [str retain];
+		if( curOpacityMenu != str)
+		{
+			[curOpacityMenu release];
+			curOpacityMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -809,8 +820,11 @@ extern NSString * documentsDirectory();
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[view setOpacity:array];
-			[curOpacityMenu release];
-			curOpacityMenu = [str retain];
+			if( curOpacityMenu != str)
+			{
+				[curOpacityMenu release];
+				curOpacityMenu = [str retain];
+			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];

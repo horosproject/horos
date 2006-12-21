@@ -192,7 +192,7 @@ NSString * documentsDirectory();
 	filesList = files;
 	
 	// CLUT Menu
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
@@ -203,7 +203,7 @@ NSString * documentsDirectory();
 	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 
 	// WL/WW Menu	
-	curWLWWMenu = NSLocalizedString(@"Other", nil);
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)
                name: @"UpdateWLWWMenu"
@@ -234,6 +234,8 @@ NSString * documentsDirectory();
 - (void) dealloc
 {
 	NSLog(@"OrthogonalMPRPETCTViewer dealloc");
+	[curCLUTMenu release];
+	[curWLWWMenu release];
 	[pixList release];
 	[blendingViewerController release];
 	[viewer release];
@@ -272,7 +274,11 @@ NSString * documentsDirectory();
 	[(OrthogonalMPRPETCTView*)[PETCTController xReslicedView] setCurCLUTMenu: [(OrthogonalMPRPETCTView*)[PETController xReslicedView] curCLUTMenu]];
 	[(OrthogonalMPRPETCTView*)[PETCTController yReslicedView] setCurCLUTMenu: [(OrthogonalMPRPETCTView*)[PETController yReslicedView] curCLUTMenu]];	
 	
-	curCLUTMenu = str;
+	if( str != curCLUTMenu)
+	{
+		[curCLUTMenu release];
+		curCLUTMenu = [str retain];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
@@ -454,8 +460,11 @@ NSString * documentsDirectory();
 
 - (void) ApplyWLWW:(id) sender
 {
-	curWLWWMenu = [sender title];
-	
+	if( curWLWWMenu != [sender title])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[sender title] retain];
+	}
 //    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 //    {
 //        NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'", [sender title]]);
@@ -486,7 +495,7 @@ NSString * documentsDirectory();
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 
-	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 //	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 //	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 }

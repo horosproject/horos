@@ -155,6 +155,17 @@ extern NSString * documentsDirectory();
 
 }
 
+- (void) dealloc
+{
+	NSLog(@"Window3DController dealloc");
+	
+	[curCLUTMenu release];
+	[curWLWWMenu release];
+	[curOpacityMenu release];
+	
+	[super dealloc];
+}
+
 //====================================================================================================================================================================================================================
 #pragma mark-
 #pragma mark Common WL/WW Functions
@@ -259,8 +270,13 @@ static float oldsetww, oldsetwl;
     {
 		NSMutableDictionary *presetsDict=[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy];
         [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:[newName stringValue]];
-		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];		
-		curWLWWMenu = [newName stringValue];
+		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
+		
+		if( curWLWWMenu != [newName stringValue])
+		{
+			[curWLWWMenu release];
+			curWLWWMenu = [[newName stringValue] retain];
+		}
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
     }
 }
@@ -349,9 +365,12 @@ static float oldsetww, oldsetwl;
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 		
 		// Apply it!
-		
-		curCLUTMenu = [clutName stringValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		if( curCLUTMenu != [clutName stringValue])
+		{
+			[curCLUTMenu release];
+			curCLUTMenu = [[clutName stringValue] retain];
+        }
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[self ApplyCLUTString: curCLUTMenu];
     }

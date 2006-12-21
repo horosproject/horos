@@ -71,7 +71,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
 //	// WL/WW Menu	
-	curWLWWMenu = NSLocalizedString(@"Other", nil);
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc postNotificationName: @"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
 		

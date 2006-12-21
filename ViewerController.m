@@ -1551,8 +1551,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:[newName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
         
-		curWLWWMenu = [newName stringValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+		if( curWLWWMenu != [newName stringValue])
+		{
+			[curWLWWMenu release];
+			curWLWWMenu = [[newName stringValue] retain];
+        }
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 		
 		[imageView setWLWW: iwl: iww];
     }
@@ -1612,7 +1616,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[exportDCM release];
 
-	NSLog(@"ViewController dealloc");
+	NSLog(@"ViewController dealloc Start");
 	
 	if( USETOOLBARPANEL)
 	{
@@ -1679,6 +1683,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[keyObjectPopupController release];
 	
+	[curCLUTMenu release];
+	[curConvMenu release];
+	[curWLWWMenu release];
+	
     [super dealloc];
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
@@ -1688,6 +1696,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
 		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
 	}
+	
+	NSLog(@"ViewController dealloc End");
 	
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
@@ -3526,9 +3536,9 @@ static ViewerController *draggedController = 0L;
 	
 	[orientationMatrix selectCellWithTag: 0];
 	
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	curConvMenu = NSLocalizedString(@"No Filter", nil);
-	curWLWWMenu = NSLocalizedString(@"Default WL & WW", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
+	curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
@@ -4807,7 +4817,11 @@ static ViewerController *draggedController = 0L;
 
 - (void) setCurWLWWMenu:(NSString*) s
 {
-	curWLWWMenu = s;
+	if( s != curWLWWMenu)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [s retain];
+	}
 }
 
 
@@ -5261,7 +5275,11 @@ static ViewerController *draggedController = 0L;
 		[self propagateSettings];
     }
 	
-	curWLWWMenu = [sender title];
+	if( curWLWWMenu != [sender title])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[sender title] retain];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
@@ -5384,8 +5402,6 @@ static float oldsetww, oldsetwl;
 {
 	return curWLWWMenu;
 }
-
-
 
 #pragma mark convolution
 
@@ -5520,7 +5536,12 @@ static float oldsetww, oldsetwl;
 	{
 		[self setConv:0L :0: 0];
 		[imageView setIndex:[imageView curImage]];
-		curConvMenu = str;
+		
+		if( str != curConvMenu)
+		{
+			[curConvMenu release];
+			curConvMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
 	else
@@ -5544,11 +5565,15 @@ static float oldsetww, oldsetwl;
 		
 		[self setConv:matrix :size: nomalization];
 		[imageView setIndex:[imageView curImage]];
-		curConvMenu = str;
+		if( str != curConvMenu)
+		{
+			[curConvMenu release];
+			curConvMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
 	}
 	
-	[[[convPopup menu] itemAtIndex:0] setTitle:str];
+	[[[convPopup menu] itemAtIndex:0] setTitle: str];
 }
 
 - (void) ApplyConv:(id) sender
@@ -5588,7 +5613,6 @@ static float oldsetww, oldsetwl;
 						{
 							[theCell setEnabled:NO];
 							[theCell setStringValue:@""];
-							[theCell setAlignment:NSCenterTextAlignment];
 						}
 						else
 						{
@@ -5672,10 +5696,16 @@ long				x, y;
 {
     NSLog(@"endConv");
 	
-    [addConvWindow orderOut:sender];
-    
-    [NSApp endSheet:addConvWindow returnCode:[sender tag]];
-    
+	int x, y;
+	for( x = 0; x < 5; x++)
+	{
+		for( y = 0; y < 5; y++)
+		{
+			NSCell *theCell = [convMatrix cellAtRow:y column:x];
+			[theCell setEnabled:YES];
+		}
+	}
+	
     if( [sender tag])   //User clicks OK Button
     {
 		NSMutableDictionary		*aConvFilter = [NSMutableDictionary dictionary];
@@ -5694,10 +5724,17 @@ long				x, y;
 		
 		// Apply it!
 		
-		curConvMenu = [matrixName stringValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
-		
+		if( curConvMenu != [matrixName stringValue])
+		{
+			[curConvMenu release];
+			curConvMenu = [[matrixName stringValue] retain];
+        }
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
     }
+
+    [addConvWindow orderOut:sender];
+    [NSApp endSheet:addConvWindow returnCode:[sender tag]];
+	
 	[self ApplyConvString: curConvMenu];
 }
 
@@ -5770,7 +5807,12 @@ short				matrix[25];
 		}
 		
 		[imageView setIndex:[imageView curImage]];
-		curCLUTMenu = str;
+		
+		if( str != curCLUTMenu)
+		{
+			[curCLUTMenu release];
+			curCLUTMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -5812,7 +5854,11 @@ short				matrix[25];
 			
 			[imageView setCLUT:red :green: blue];
 			[imageView setIndex:[imageView curImage]];
-			curCLUTMenu = str;
+			if( str != curCLUTMenu)
+			{
+				[curCLUTMenu release];
+				curCLUTMenu = [str retain];
+			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
 			[self propagateSettings];
@@ -5922,8 +5968,12 @@ short				matrix[25];
 
 		// Apply it!
 		
-		curCLUTMenu = [clutName stringValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+		if( [clutName stringValue] != curCLUTMenu)
+		{
+			[curCLUTMenu release];
+			curCLUTMenu = [[clutName stringValue] retain];
+        }
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
 		[self ApplyCLUTString:curCLUTMenu];
     }
@@ -5959,7 +6009,12 @@ NSMutableArray		*array;
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
 		[thickSlab setOpacity:[NSArray array]];
-		curOpacityMenu = str;
+		
+		if( curOpacityMenu != str)
+		{
+			[curOpacityMenu release];
+			curOpacityMenu = [str retain];
+		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -5974,7 +6029,11 @@ NSMutableArray		*array;
 			array = [aOpacity objectForKey:@"Points"];
 			
 			[thickSlab setOpacity:array];
-			curOpacityMenu = str;
+			if( curOpacityMenu != str)
+			{
+				[curOpacityMenu release];
+				curOpacityMenu = [str retain];
+			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -6071,8 +6130,12 @@ NSMutableArray		*array;
 		
 		// Apply it!
 		
-		curOpacityMenu = [OpacityName stringValue];
-        [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
+		if( curOpacityMenu != [OpacityName stringValue])
+		{
+			[curOpacityMenu release];
+			curOpacityMenu = [[OpacityName stringValue] retain];
+        }
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateOpacityMenu" object: curOpacityMenu userInfo: 0L];
 		
 		[self ApplyOpacityString:curOpacityMenu];
     }
@@ -11242,9 +11305,9 @@ int i,j,l;
 	maxMovieIndex = 1;
 	blendingController = 0L;
 	
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	curConvMenu = NSLocalizedString(@"No Filter", nil);
-	curWLWWMenu = NSLocalizedString(@"Default WL & WW", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
+	curConvMenu = [NSLocalizedString(@"No Filter", nil) retain];
+	curWLWWMenu = [NSLocalizedString(@"Default WL & WW", nil) retain];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: curConvMenu userInfo: 0L];
@@ -11371,8 +11434,7 @@ int i,j,l;
 	
 	[nc postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 
-	curOpacityMenu = @"Linear Table";
-	[curOpacityMenu retain];
+	curOpacityMenu = [@"Linear Table" retain];
 	
     [nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:@"UpdateOpacityMenu" object:nil];
 	

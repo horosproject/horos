@@ -17,11 +17,18 @@
 
 @implementation OrthogonalMPRPETCTView
 
+- (void) dealloc
+{
+	[curCLUTMenu release];
+	
+	[super dealloc];
+}
+
 - (id)initWithFrame:(NSRect)frameRect
 {
 	[super initWithFrame:frameRect];
 	blendingFactor = 0.5f;
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	return self;
 }
 
@@ -71,14 +78,14 @@
 
 - (void) setCurCLUTMenu: (NSString*) clut
 {
-	if(curCLUTMenu == clut)
-		return;
-	curCLUTMenu = clut;
+	if(curCLUTMenu == clut) return;
+	
+	[curCLUTMenu release];
+	curCLUTMenu = [clut retain];
 }
 
 - (BOOL) becomeFirstResponder
 {
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	

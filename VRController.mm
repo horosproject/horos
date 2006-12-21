@@ -531,7 +531,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 		[self updateBlendingImage];
 	}
 	
-	curWLWWMenu = NSLocalizedString(@"Other", nil);
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	
 	roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
 	sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -600,8 +600,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	[curCLUTMenu retain];
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
@@ -610,8 +609,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	
-	curOpacityMenu = NSLocalizedString(@"Linear Table", nil);
-	[curOpacityMenu retain];
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateOpacityMenu:)
@@ -932,9 +930,6 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[y2DPointsArray release];
 	[z2DPointsArray release];
 	[viewer2D release];
-
-	[curCLUTMenu release];
-	[curOpacityMenu release];
 	[roiVolumes release];
 
 	[super dealloc];
@@ -1035,7 +1030,11 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
     }
 	
-	curWLWWMenu = [sender title];
+	if( curWLWWMenu != [sender title])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [[sender title] retain];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 

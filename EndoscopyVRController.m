@@ -126,7 +126,7 @@ extern NSString * documentsDirectory();
 //		//[self updateBlendingImage];
 //	}
 	
-	curWLWWMenu = NSLocalizedString(@"Other", nil);
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	
 	roi2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
 	sliceNumber2DPointsArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -196,8 +196,7 @@ extern NSString * documentsDirectory();
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
-	[curCLUTMenu retain];
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateCLUTMenu:)
@@ -206,8 +205,7 @@ extern NSString * documentsDirectory();
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 	
-	curOpacityMenu = NSLocalizedString(@"Linear Table", nil);
-	[curOpacityMenu retain];
+	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	
     [nc addObserver: self
            selector: @selector(UpdateOpacityMenu:)

@@ -141,7 +141,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 																					[aServer name], @"AETitle",
 																					[NSString stringWithFormat:@"%d", port], @"Port",
 																					[NSNumber numberWithBool:YES] , @"QR",
-																					[NSString stringWithFormat:@"%@ (Bonjour)", [aServer name]], @"Description",
+																					[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
 																					[NSNumber numberWithInt:9], @"Transfer Syntax",
 																					0L]];
 		}
@@ -196,7 +196,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 {
 	int port;
 	
-//	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
+	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];

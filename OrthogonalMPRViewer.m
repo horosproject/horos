@@ -143,7 +143,7 @@ NSString * documentsDirectory();
 	exportDCM = 0L;
 	
 	// CLUT Menu
-	curCLUTMenu = NSLocalizedString(@"No CLUT", nil);
+	curCLUTMenu = [NSLocalizedString(@"No CLUT", nil) retain];
 	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
@@ -151,7 +151,7 @@ NSString * documentsDirectory();
 	[nc postNotificationName:@"UpdateCLUTMenu" object:curCLUTMenu userInfo:0L];
 
 	// WL/WW Menu	
-	curWLWWMenu = NSLocalizedString(@"Other", nil);
+	curWLWWMenu = [NSLocalizedString(@"Other", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateWLWWMenu:) name:@"UpdateWLWWMenu" object:nil];
 	[nc postNotificationName:@"UpdateWLWWMenu" object:curWLWWMenu userInfo:0L];
 	
@@ -161,7 +161,9 @@ NSString * documentsDirectory();
 - (void) dealloc
 {
 	NSLog(@"OrthogonalMPRViewer dealloc");
-		
+	
+	[curWLWWMenu release];
+	[curCLUTMenu release];
 	[viewer release];
 	[toolbar release];
 	[exportDCM release];
@@ -189,7 +191,11 @@ NSString * documentsDirectory();
 - (void) ApplyCLUTString:(NSString*) str
 {
 	[controller ApplyCLUTString: str];
-	curCLUTMenu = str;
+	if( curCLUTMenu != str)
+	{
+		[curCLUTMenu release];
+		curCLUTMenu = [str retain];
+	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];		
 	[[[clutPopup menu] itemAtIndex:0] setTitle:str];
 }
@@ -284,7 +290,6 @@ NSString * documentsDirectory();
 {
 	[controller setWLWW: iwl : iww];
 	[controller setCurWLWWMenu:curWLWWMenu];
-//	curWLWWMenu = NSLocalizedString(@"Other", 0L);
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -337,9 +342,13 @@ NSString * documentsDirectory();
 //    }
 //    else
 //    {
-
-		curWLWWMenu = [sender title];
-
+		
+		if( curWLWWMenu != [sender title])
+		{
+			[curWLWWMenu release];
+			curWLWWMenu = [[sender title] retain];
+		}
+		
 		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 		{
 			//[imageView setWLWW:0 :0];
@@ -364,7 +373,7 @@ NSString * documentsDirectory();
 //    }
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	curWLWWMenu = NSLocalizedString(@"Other", 0L);
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 	
 //	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 //	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
@@ -372,7 +381,11 @@ NSString * documentsDirectory();
 
 - (void) setCurWLWWMenu: (NSString*) wlww
 {
-	curWLWWMenu = wlww;
+	if( curWLWWMenu != wlww)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [wlww retain];
+	}
 }
 
 - (void) toggleDisplayResliceAxes
