@@ -50,6 +50,7 @@ NSRect screenFrame();
     volatile BOOL					quitting;
 	BOOL							verboseUpdateCheck;
     NSTask							*theTask;
+	NSNetService					*BonjourDICOMService;
 	
 	BOOL							xFlipped, yFlipped;  // Dependent on current DCMView settings.
 	

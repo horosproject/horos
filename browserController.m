@@ -475,7 +475,7 @@ static BOOL COMPLETEREBUILD = NO;
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
 	NSError					*error = 0L;
-	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
+	NSString				*curPatientID = 0L, *curStudyID = 0L, *curSerieID = 0L;
 	NSManagedObject			*seriesTable, *study, *album;
 	DicomImage				*image;
 	long					ii, i, x;
@@ -624,7 +624,7 @@ static BOOL COMPLETEREBUILD = NO;
 				{
 //					if( 0)
 					{
-						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] isEqualToString: curPatientUID] == YES)
+						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientID"] isEqualToString: curPatientID] == YES)
 						{
 							
 						}
@@ -677,7 +677,7 @@ static BOOL COMPLETEREBUILD = NO;
 							}
 														
 							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
-							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
+							[curPatientID release];		curPatientID = [[curDict objectForKey: @"patientID"] retain];
 							
 							if( produceAddedFiles)
 								[modifiedStudiesArray addObject: study];
@@ -799,7 +799,7 @@ static BOOL COMPLETEREBUILD = NO;
 									
 									// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
 									
-									if( [[curDict objectForKey: @"patientUID"] isEqualToString: [firstObject valueForKeyPath:@"series.study.patientUID"]])
+									if( [[curDict objectForKey: @"patientID"] isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
 									{
 										if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
 											[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
@@ -941,7 +941,7 @@ static BOOL COMPLETEREBUILD = NO;
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 		}
 		
-		[curPatientUID release];
+		[curPatientID release];
 		[curStudyID release];
 		[curSerieID release];
 		

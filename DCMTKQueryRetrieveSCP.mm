@@ -294,13 +294,7 @@ DcmQueryRetrieveConfig config;
 	//scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
    scp = new DcmQueryRetrieveSCP(config, options, factory);
    scp->setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
-    
-	
-	//Start Bonjour 
-	NSNetService *netService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:_aeTitle port:_port];
-	[netService setDelegate:nil];
-	[netService publish];
-	
+    	
 	_abort = NO;
 	
     /* loop waiting for associations */
@@ -312,12 +306,7 @@ DcmQueryRetrieveConfig config;
 	
 	delete scp;
 	scp = NULL;
-	
-	//stop bonjour
-	[netService stop];
-	[netService release];
-	netService = 0L;
-	
+		
 	cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {
         errmsg("Error dropping network:");

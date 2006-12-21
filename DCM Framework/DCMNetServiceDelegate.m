@@ -39,16 +39,19 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	if (self = [super init]){
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
-		[self update];		
+		[self update];
 	}
 	return self;
 }
 
-- (void)update{
+- (void)update
+{
 	[_dicomNetBrowser searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
 }
 
-- (void)dealloc{
+- (void)dealloc
+{
+	NSLog(@"DCMNetServiceDelegate dealloc");
 	[_dicomServices release];
 	[_dicomNetBrowser release];
 	[super dealloc];
@@ -59,31 +62,34 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	return _dicomServices;
 }
 
-- (int)portForNetService:(NSNetService *)netService{
-		
-		//NSArray *addresses = [[_dicomServices objectAtIndex:0] addresses];
-		NSArray *addresses = [netService addresses];
-		NSLog( @"portForNetService addresses:%d", [addresses count]);
-		struct sockaddr *addr = ( struct sockaddr *) [[addresses objectAtIndex:0]  bytes];
-		int aPort = -1;
-		if(addr->sa_family == AF_INET)		
-			aPort = ((struct sockaddr_in *)addr)->sin_port;
-		
-		else if(addr->sa_family == AF_INET6)		
-			aPort = ((struct sockaddr_in6 *)addr)->sin6_port;
-				
-		return NSSwapBigShortToHost(aPort);
+- (int)portForNetService:(NSNetService *)netService
+{		
+	//NSArray *addresses = [[_dicomServices objectAtIndex:0] addresses];
+	NSArray *addresses = [netService addresses];
+	NSLog( @"portForNetService addresses:%d", [addresses count]);
+	struct sockaddr *addr = ( struct sockaddr *) [[addresses objectAtIndex:0]  bytes];
+	int aPort = -1;
+	if(addr->sa_family == AF_INET)		
+		aPort = ((struct sockaddr_in *)addr)->sin_port;
+	
+	else if(addr->sa_family == AF_INET6)		
+		aPort = ((struct sockaddr_in6 *)addr)->sin6_port;
+			
+	return NSSwapBigShortToHost(aPort);
 }
 
 //Bonjour Delegate methods
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing{
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindDomain:(NSString *)domainString moreComing:(BOOL)moreComing
+{
+	NSLog( @"didFindDomain");
 }
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
+	[aNetService retain];
+	[aNetService resolveWithTimeout: 30];
 	[aNetService setDelegate:self];
-	[aNetService resolveWithTimeout:5];
 }
 
 //Bonjour Delegate methods
@@ -194,12 +200,16 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	int port;
+	NSLog( @"netServiceDidResolveAddress:");
+	NSLog( [sender description]);
 	
 	if( [[sender name] isEqualToString: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]] == NO || [[NSHost currentHost] isEqualToHost: [NSHost hostWithName:[sender hostName]]] == NO)
 	{
 		[_dicomServices addObject: sender];
 		[[NSNotificationCenter defaultCenter] 	postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
+//	else NSLog( @"Bonjour address (myself): %@", [sender hostName]);
+	
+	[sender release];	// <- We did a retain in the didFindService
 }
 @end

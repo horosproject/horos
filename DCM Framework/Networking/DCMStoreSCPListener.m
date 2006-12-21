@@ -75,6 +75,9 @@ htt://www.pixelmed.com
 	[socketListener release];
 	[netService stop];
 	[netService release];
+	
+	NSLog( @"DCMStoreSCPListener - netServiceDidStop");
+	
 	[super dealloc];
 }
 	
@@ -109,6 +112,8 @@ htt://www.pixelmed.com
 
 - (void)stop
 {
+	NSLog( @"netServiceDidStop stop");
+	
 	[netService stop];
 	listen = NO;
 }
@@ -141,7 +146,10 @@ htt://www.pixelmed.com
 
 
 //bonjour
-- (void)initBonjour{
+- (void)initBonjour
+{
+	NSLog( @"initBonjour DCMStoreSCPListener");
+	
 	if  (netService)
 		[netService release];
 	netService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:calledAET port:port];
@@ -162,7 +170,11 @@ htt://www.pixelmed.com
 - (void)netServiceDidResolveAddress:(NSNetService *)sender{
 }
 
-- (void)netServiceDidStop:(NSNetService *)sender{
+- (void)netServiceDidStop:(NSNetService *)sender
+{
+	NSLog( @"netServiceDidStop");
+	[netService release];
+	netService = 0L;
 }
 
 - (void)netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)data{

@@ -1009,7 +1009,51 @@ NSRect screenFrame()
 	NS_HANDLER
 		NSLog(@"Exception restarting storeSCP");
 	NS_ENDHANDLER
+	
+	//Start DICOM Bonjour 
+	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+	[BonjourDICOMService setDelegate: self];
+	[BonjourDICOMService publish];
 }
+
+- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
+{
+	NSLog(@"didNotPublish");
+}
+
+- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
+{
+	NSLog(@"didNotResolve");
+}
+
+- (void)netServiceDidPublish:(NSNetService *)sender
+{
+	NSLog(@"netServiceDidPublish:");
+	NSLog( [sender description]);
+}
+
+- (void)netServiceDidResolveAddress:(NSNetService *)sender
+{
+	NSLog(@"netServiceDidResolveAddress");
+}
+
+- (void)netServiceDidStop:(NSNetService *)sender
+{
+	NSLog( @"netServiceDidStop");
+	[BonjourDICOMService release];
+	BonjourDICOMService = 0L;
+}
+
+- (void)netServiceWillPublish:(NSNetService *)sender
+{
+	NSLog( @"netServiceWillPublish");
+}
+
+- (void)netServiceWillResolve:(NSNetService *)sender
+{
+	NSLog( @"netServiceWillResolve");
+}
+
 
 -(void) displayListenerError: (NSString*) err
 {
@@ -1184,6 +1228,10 @@ NSRect screenFrame()
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
+	[BonjourDICOMService stop];
+	[BonjourDICOMService release];
+	BonjourDICOMService = 0L;
+
     quitting = YES;
     [theTask interrupt];
 	[theTask release];
