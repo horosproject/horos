@@ -90,6 +90,8 @@
 	
 	// ROIs Volumes
 	NSMutableArray			*roiVolumes;
+	
+	NSString				*_renderingMode;
 }
 
 - (IBAction) setOrientation:(id) sender;
@@ -165,5 +167,8 @@
 #endif
 
 - (ViewerController*) viewer2D;
+
+- (NSString *)renderingMode;
+- (void)setRenderingMode:(NSString *)renderingMode;
 
 @end

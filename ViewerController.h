@@ -31,6 +31,7 @@
 @class DICOMExport;
 @class KeyObjectPopupController;
 @class VRController;
+@class VRPROController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -564,11 +565,7 @@ enum
 - (BOOL)displayOnlyKeyImages;
 - (BOOL)isKeyImage:(int)index;
 
-#pragma mark-
-#pragma mark current Core Data Objects
-- (NSManagedObject *)currentStudy;
-- (NSManagedObject *)currentSeries;
-- (NSManagedObject *)currentImage;
+
 
 
 #pragma mark-
@@ -586,6 +583,7 @@ enum
 
 // Opening VR Viewers
 - (VRController *)openVRViewerForMode:(NSString *)mode;
+- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode;
 
 
 @end

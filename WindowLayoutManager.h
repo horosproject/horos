@@ -80,6 +80,7 @@ It is a shared class.
 #pragma mark Subarrays of Window Controllers
 - (NSArray *)viewers2D;
 - (NSArray *)viewers3D;
+- (NSArray *)viewers;
 
 
 

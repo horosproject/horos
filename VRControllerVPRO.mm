@@ -359,6 +359,8 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	pixList[0] = pix;
 	volumeData[0] = vData;
 	
+	_renderingMode = [renderingMode retain];
+	
     float sliceThickness = fabs( [firstObject sliceInterval]);
 	
 	  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
@@ -475,7 +477,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
                name: @"CLUTChanged"
              object: nil];
 	
-	[[self window] performZoom:self];
+	//[[self window] performZoom:self];
 
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
@@ -739,6 +741,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	[toolbar setDelegate: 0L];
 	[toolbar release];
+	[_renderingMode dealloc];
 	
 	[super dealloc];
 }
@@ -1056,9 +1059,13 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	if( [[sender selectedCell] tag] == 1)
 	{
 		[shadingCheck setEnabled : NO];
+				[_renderingMode release];
+		_renderingMode = [@"MIP" retain];
 	}
 	else
 	{
+		[_renderingMode release];
+		_renderingMode = [@"VR" retain];
 		[shadingCheck setEnabled : YES];
 		[view switchShading: shadingCheck];
 	}
@@ -1845,6 +1852,44 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	[view squareView: self];
 }
+
+
+- (NSManagedObject *)currentStudy{
+	return [viewer2D currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewer2D currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewer2D currentImage];
+}
+
+-(float)curWW{
+	return [viewer2D curWW];
+}
+
+-(float)curWL{
+	return [viewer2D curWL];
+}
+- (NSString *)curCLUTMenu{
+	return curCLUTMenu;
+}
+
+- (NSString *)renderingMode{
+	return _renderingMode;
+}
+
+- (void)setRenderingMode:(NSString *)renderingMode{
+	if ([renderingMode isEqualToString:@"VR"] || [renderingMode isEqualToString:@"MIP"]) {
+		if ([renderingMode isEqualToString:@"MIP"])
+			[self setModeIndex:1];
+		else if ([renderingMode isEqualToString:@"VR"])
+			[self setModeIndex:0];
+	}
+}
+
+
 
 
 

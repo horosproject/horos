@@ -71,6 +71,8 @@
 	// Fly Thru
 	FlyThruController		*flyThruController;
 	VRPROFlyThruAdapter		*FTAdapter;
+	
+	NSString				*_renderingMode;
 }
 
 +(BOOL) available;
@@ -109,4 +111,7 @@
 - (IBAction) setMode:(id) sender;
 - (NSArray*) fileList;
 - (void)createContextualMenu;
+
+- (NSString *)renderingMode;
+- (void)setRenderingMode:(NSString *)renderingMode;
 @end

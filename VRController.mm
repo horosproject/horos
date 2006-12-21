@@ -428,7 +428,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 //	// ** RESAMPLE END
 			
 	style = [m retain];
-	
+	_renderingMode = [renderingMode retain];
 	// BY DEFAULT TURN OFF OPENGL ENGINE !
 	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
 	
@@ -627,9 +627,10 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
            selector: @selector(CloseViewerNotification:)
                name: @"CloseViewerNotification"
              object: nil];
-
-	if( [style isEqualToString:@"standard"])
-		[[self window] performZoom:self];
+	
+	//should we always zoom the Window?
+	//if( [style isEqualToString:@"standard"])
+	//	[[self window] performZoom:self];
 	
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
@@ -931,7 +932,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[z2DPointsArray release];
 	[viewer2D release];
 	[roiVolumes release];
-
+	[_renderingMode release];
 	[super dealloc];
 }
 
@@ -1244,6 +1245,19 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	}
 }
 
+- (NSString *)renderingMode{
+	return _renderingMode;
+}
+
+- (void)setRenderingMode:(NSString *)renderingMode{
+	if ([renderingMode isEqualToString:@"VR"] || [renderingMode isEqualToString:@"MIP"]) {
+		if ([renderingMode isEqualToString:@"MIP"])
+			[self setModeIndex:1];
+		else if ([renderingMode isEqualToString:@"VR"])
+			[self setModeIndex:0];
+	}
+}
+
 - (IBAction) setModeIndex:(long) val
 {
 	if( val == 1)	// MIP -> Turn Off Texture Mapping
@@ -1274,12 +1288,17 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	if( tag == 1)
 	{
+		[_renderingMode release];
+		_renderingMode = [@"MIP" retain];
 		[shadingCheck setEnabled : NO];
 	}
 	else
 	{
+		[_renderingMode release];
+		_renderingMode = [@"VR" retain];
 		[shadingCheck setEnabled : YES];
 	}
+
 }
 
 - (IBAction) setEngine:(id) sender
@@ -2367,4 +2386,27 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	if( [style isEqualToString:@"panel"] == NO) [view squareView: self];
 }
+
+- (NSManagedObject *)currentStudy{
+	return [viewer2D currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewer2D currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewer2D currentImage];
+}
+
+-(float)curWW{
+	return [viewer2D curWW];
+}
+
+-(float)curWL{
+	return [viewer2D curWL];
+}
+- (NSString *)curCLUTMenu{
+	return curCLUTMenu;
+}
+
 @end

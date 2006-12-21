@@ -21,6 +21,9 @@
 #import "LayoutWindowController.h"
 #import "browserController.h"
 #import "ViewerController.h"
+#import "VRController.h"
+#import "WindowLayoutManager.h"
+#import "VRControllerVPRO.h"
 
 
 @implementation LayoutWindowController
@@ -42,20 +45,8 @@
 
 - (void)windowDidLoad{
 	
-	NSMutableArray *controllers = [NSMutableArray array];
-	NSArray *windows = [NSApp windows] ;
-	NSEnumerator *enumerator = [windows objectEnumerator];
-	id window;
-	//get WindowControllers
-	while (window = [enumerator nextObject])
-	{
-		NSWindowController *controller = [window windowController];
-		//right now just 2D Viewers will need to deal with other viewer classed evnetually
-		//?Arrange controller by screen and origin.  First by screen then by x (lees first) then by y (greater first)
-		if([controller isKindOfClass:[ViewerController class]])
-			[controllers addObject:controller];
-	}
-	[self setWindowControllers:controllers];
+
+	[self setWindowControllers:[[WindowLayoutManager sharedWindowLayoutManager] viewers]];
 	if ([_windowControllers count]  > 0) {
 		id study = [[_windowControllers objectAtIndex:0] currentStudy];
 		
@@ -86,12 +77,12 @@
 	if ([sender tag] == 1) {
 		//create Layout set
 		NSMutableDictionary *hangingProtocol = nil;
-		NSLog(@"_hangingProtocol: %@", [_hangingProtocol description]);
+		//NSLog(@"_hangingProtocol: %@", [_hangingProtocol description]);
 		 if (_addLayoutSet)
 			hangingProtocol = [_hangingProtocol mutableCopy];
 		
 		if (!hangingProtocol) {
-			NSLog(@"new Hanging Protocol");
+			//NSLog(@"new Hanging Protocol");
 			hangingProtocol = [[NSMutableDictionary dictionary] retain];
 		}
 		
@@ -116,6 +107,8 @@
 				 rotation
 				 zoom	
 				*/
+				
+			//NSLog(@"save HangingProtocol: %@", [controller description]);
 			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
 			NSWindow *window = [controller window];
 			NSString *frame  = [window stringWithSavedFrame];
@@ -128,11 +121,15 @@
 			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
 			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
 			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
-			[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
-			[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
-			[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
+			if ([controller isKindOfClass:[ViewerController class]]) {
+				[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
+			}
 			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
 			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
+			if ([controller isKindOfClass:[VRController class]] || [controller isKindOfClass:[VRPROController class]] )
+				[seriesInfo setObject:[(VRController  *)controller renderingMode] forKey:@"mode"];
 			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
 			
 			// Have blending.  Get Series Description for blending

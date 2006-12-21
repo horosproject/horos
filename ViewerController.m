@@ -11732,7 +11732,8 @@ int i,j,l;
 					
 					if( [sender tag] == 3) mode = @"MIP";
 					else mode = @"VR";
-					
+					viewer = [self openVRVPROViewerForMode:mode];
+					/*
 					viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
 					for( i = 1; i < maxMovieIndex; i++)
 					{
@@ -11761,12 +11762,13 @@ int i,j,l;
 						[imageView getWLWW:&iwl :&iww];
 						[viewer setWLWW:iwl :iww];
 					}
-					
+					*/
 					[viewer ApplyCLUTString:curCLUTMenu];
 					float   iwl, iww;
 					[imageView getWLWW:&iwl :&iww];
 					[viewer setWLWW:iwl :iww];
 					[viewer load3DState];
+					[[viewer window] performZoom:self];
 					[viewer showWindow:self];
 					[[viewer window] makeKeyAndOrderFront:self];
 					[[viewer window] display];
@@ -11778,25 +11780,73 @@ int i,j,l;
 	}
 }
 
+- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode{
+	long i;
+	
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];	
+	[self MovieStop: self];
+	
+	if( [VRPROController available])
+	{
+		if( [VRPROController  hardwareCheck])
+		{
+			VRPROController *viewer = [appController FindViewer :@"VRVPRO" :pixList[0]];
+
+			if( viewer)
+			{
+				return viewer;
+			}
+			else
+			{		
+				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
+				for( i = 1; i < maxMovieIndex; i++)
+				{
+					[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
+				}
+				
+				if( [[self modality] isEqualToString:@"PT"] == YES && [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+				{
+					if( [[imageView curDCM] SUVConverted] == YES)
+					{
+						[viewer setWLWW: 2 : 6];
+					}
+					else
+					{
+						[viewer setWLWW:[[pixList[0] objectAtIndex: 0] maxValueOfSeries]/2 : [[pixList[0] objectAtIndex: 0] maxValueOfSeries]];
+					}
+					
+					if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+						[viewer ApplyCLUTString: @"B/W Inverse"];
+					else
+						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+				}
+				else
+				{
+					float   iwl, iww;
+					[imageView getWLWW:&iwl :&iww];
+					[viewer setWLWW:iwl :iww];
+				}
+			}
+			return viewer;
+		}
+	}
+	return nil;
+}
+
+
 - (VRController *)openVRViewerForMode:(NSString *)mode{
 	long i;
 	
 	[self checkEverythingLoaded];
-	[self clear8bitRepresentations];
-
-	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
-	{
-		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Convolution", nil), NSLocalizedString(@"Should I apply current convolution filter on raw data? 2D/3D post-processing viewers can only display raw data.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
-			[self applyConvolutionOnSource: self];
-	}
-	
+	[self clear8bitRepresentations];	
 	[self MovieStop: self];
 	
 	VRController *viewer = [appController FindViewer :@"VR" :pixList[0]];
 	
 	if( viewer)
 	{
-		[[viewer window] makeKeyAndOrderFront:self];
+		return viewer;
 	}
 	else
 	{		
@@ -11862,9 +11912,14 @@ int i,j,l;
 		if( viewer)
 		{
 			[[viewer window] makeKeyAndOrderFront:self];
+			if( [sender tag] == 3) 
+				[viewer setModeIndex: 1];
+			else
+				[viewer setModeIndex: 0];
 		}
 		else
 		{
+		/*
 			NSString	*mode;
 			
 			if( [sender tag] == 3) mode = @"MIP";
@@ -11906,6 +11961,22 @@ int i,j,l;
 			[viewer load3DState];
 			if( [sender tag] == 3) [viewer setModeIndex: 1];
 			[viewer showWindow:self];
+			[[viewer window] makeKeyAndOrderFront:self];
+			[[viewer window] display];
+			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+		*/
+			NSString	*mode;
+			if( [sender tag] == 3) mode = @"MIP";
+			else mode = @"VR";
+			viewer = [self openVRViewerForMode:mode];
+			
+			[viewer ApplyCLUTString:curCLUTMenu];
+			float   iwl, iww;
+			[imageView getWLWW:&iwl :&iww];
+			[viewer setWLWW:iwl :iww];
+			[viewer load3DState];
+			[[viewer window] performZoom:self];
+			[viewer showWindow:self];			
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];

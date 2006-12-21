@@ -25,6 +25,8 @@
 #import "OSIWindowController.h"
 #import "Window3DController.h"
 #import "browserController.h"
+#import "VRController.h"
+#import "VRControllerVPRO.h"
 
 
 
@@ -51,7 +53,9 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark-
 #pragma mark WindowController registration
 - (void)registerWindowController:(OSIWindowController *)controller{
+		//NSLog(@"registerWindowController: %@", [controller description]);
 	if (![_windowControllers containsObject:controller]){
+		//NSLog(@"Add Controller");
 		[_windowControllers addObject:controller];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
 	}
@@ -155,7 +159,7 @@ WindowLayoutManager *sharedLayoutManager;
 	
 	int					keyWindow = 0, numberOfMonitors = [[[AppController sharedAppController] viewerScreens] count];	
 
-	NSLog(@"tile Windows");
+	//NSLog(@"tile Windows");
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
 	
@@ -309,7 +313,7 @@ WindowLayoutManager *sharedLayoutManager;
 	}
 	else
 	{
-		NSLog(@"NO tiling");
+		//NSLog(@"NO tiling");
 		tileDone = NO;
 	}
 	
@@ -581,11 +585,67 @@ WindowLayoutManager *sharedLayoutManager;
 	// Once we have 2D windows opened and fused can look for 3D windows to open  
 	
 	enumerator = [seriesSet objectEnumerator];
-	windowEnumerator = [[self viewers2D] objectEnumerator];
+	
 	//ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
 		// have a 3D Viewer
+		//NSLog(@"look for 3D Viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
 		if ( ![[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
+			//NSLog(@"have 3D Viewer");
+			windowEnumerator = [[self viewers2D] objectEnumerator];
+			id viewer2D;
+			id selectedViewer2D = nil;
+			// find the right 2D viewer based on Series Description and number
+			//NSLog(@"Look for 2D viewer");
+			while (viewer2D = [windowEnumerator nextObject]) {
+				id viewerSeries = [viewer2D currentSeries];
+				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
+					if ([[viewerSeries valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
+						selectedViewer2D = viewer2D;
+						break;
+					}
+				}
+				else {
+					if ([[viewerSeries valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]]) {
+						selectedViewer2D = viewer2D;
+						break;
+					}
+				}
+			}
+			// if we found a 2D Viewer, open the 3D viewer based on the Class Name
+			if (selectedViewer2D) {
+				//NSLog(@"Have 2D viewer: %@", [selectedViewer2D description]);
+				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRController class])] ) {
+					//NSLog(@"3D viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
+					NSString *mode = @"VR";
+					VRController *viewerVR = [selectedViewer2D openVRViewerForMode:(NSString *)mode];
+					[viewerVR  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					//float   iwl, iww;
+					//[[selectedViewer2D imageView] getWLWW:&iwl :&iww];
+					[viewerVR setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
+					[viewerVR load3DState];
+					[viewerVR showWindow:self];
+					[[viewerVR window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
+					//[[viewerVR window] makeKeyAndOrderFront:self];
+					[[viewerVR window] display];
+					[[viewerVR window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[selectedViewer2D window] title]]];
+				}
+				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRPROController class])] ) {
+					//NSLog(@"3D viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
+					NSString *mode = @"VR";
+					VRPROController *viewerVR = [selectedViewer2D openVRVPROViewerForMode:(NSString *)mode];
+					[viewerVR  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					//float   iwl, iww;
+					//[[selectedViewer2D imageView] getWLWW:&iwl :&iww];
+					[viewerVR setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
+					[viewerVR load3DState];
+					[viewerVR showWindow:self];
+					[[viewerVR window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
+					//[[viewerVR window] makeKeyAndOrderFront:self];
+					[[viewerVR window] display];
+					[[viewerVR window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[selectedViewer2D window] title]]];
+				}
+			}
 		}
 	}
 	
@@ -620,6 +680,10 @@ WindowLayoutManager *sharedLayoutManager;
 			[array addObject:controller];
 	}
 	return array;
+}
+
+- (NSArray *)viewers{
+	return _windowControllers;
 }
 
 -(NSArray *)viewers2DForSeries:(id)series{

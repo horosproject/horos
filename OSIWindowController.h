@@ -37,4 +37,12 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 
 - (int)blendingType;
 
+#pragma mark-
+#pragma mark current Core Data Objects
+- (NSManagedObject *)currentStudy;
+- (NSManagedObject *)currentSeries;
+- (NSManagedObject *)currentImage;
+
+-(float)curWW;
+-(float)curWL;
 @end
