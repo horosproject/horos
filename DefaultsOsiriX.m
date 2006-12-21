@@ -822,6 +822,8 @@ static NSString *hostName = @"";
 	//VRDefaultViewSize
 	[defaultValues setObject:@"0" forKey: @"VRDefaultViewSize"];
 	
+	[defaultValues setObject:@"0" forKey: @"Ping"];
+	
 	//UseVOILUT
 	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
 	[defaultValues setObject:@"0" forKey: @"replaceAnonymize"];

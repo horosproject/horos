@@ -45,7 +45,7 @@
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
 
-	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"5", @"-td", @"5", nil];
+	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"2", @"-td", @"2", nil];
 
 	[theTask setArguments:args];
 	[theTask launch];
@@ -307,7 +307,7 @@
 		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
 		
 		int numberPacketsReceived = 0;
-		if( SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue]] == 0) status = 0;
 			else status = -1;

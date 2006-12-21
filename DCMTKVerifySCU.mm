@@ -137,7 +137,8 @@ static const char* transferSyntaxes[] = {
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters]){
 			
-		_acse_timeout = 10;
+		_acse_timeout = 3;
+		_dimse_timeout = 3;
 	}
 	return self;
 }

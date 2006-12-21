@@ -49,6 +49,26 @@ static QueryController	*currentQueryController = 0L;
 	return currentQueryController;
 }
 
+- (BOOL) echo: (NSString*) address port:(int) port
+{
+	NSTask* theTask = [[[NSTask alloc]init]autorelease];
+	
+	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
+
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
+
+	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"2", @"-td", @"2", nil];
+
+	[theTask setArguments:args];
+	[theTask launch];
+	[theTask waitUntilExit];
+	
+	if( [theTask terminationStatus] == 0) return YES;
+	else return NO;
+}
+
+
 - (void)keyDown:(NSEvent *)event
 {
     unichar c = [[event characters] characterAtIndex:0];
@@ -305,17 +325,9 @@ static QueryController	*currentQueryController = 0L;
 			port = [aServer objectForKey:@"Port"];
 			
 			int numberPacketsReceived = 0;
-			if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 			{
-				DCMTKVerifySCU	*verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
-								calledAET:theirAET  
-								hostname:hostname 
-								port:[port intValue]
-								transferSyntax:nil
-								compression: nil
-								extraParameters:nil] autorelease];
-				
-				if( [verifySCU echo])
+				if( [self echo: hostname port: [port intValue]])
 				{
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
@@ -547,7 +559,7 @@ static QueryController	*currentQueryController = 0L;
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 		
 		int numberPacketsReceived = 0;
-		if( SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			[object move:dictionary];
 		}
@@ -952,17 +964,9 @@ static QueryController	*currentQueryController = 0L;
 	port = [aServer objectForKey:@"Port"];
 	
 	int numberPacketsReceived = 0;
-	if( SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 	{
-		DCMTKVerifySCU *verifySCU = [[[DCMTKVerifySCU alloc] initWithCallingAET:myAET  
-			calledAET:theirAET  
-			hostname:hostname 
-			port:[port intValue]
-			transferSyntax:nil
-			compression: nil
-			extraParameters:nil] autorelease];
-			
-		status = [verifySCU echo];
+		status = [self echo: hostname port: [port intValue]];
 	}
 	else status = -1;
 	
