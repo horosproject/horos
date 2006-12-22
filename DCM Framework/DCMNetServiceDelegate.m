@@ -87,9 +87,12 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	[aNetService retain];
-	[aNetService resolveWithTimeout: 30];
-	[aNetService setDelegate:self];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+	{
+		[aNetService retain];
+		[aNetService resolveWithTimeout: 30];
+		[aNetService setDelegate:self];
+	}
 }
 
 //Bonjour Delegate methods
@@ -132,24 +135,27 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 	
 	int i;
 	
-	for( i = 0 ; i < [dicomServices count] ; i++)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 	{
-		NSNetService*	aServer = [dicomServices objectAtIndex: i];
-		
-		NSString		*hostname;
-		int				port;
-		
-		hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
-		
-		if( hostname)
+		for( i = 0 ; i < [dicomServices count] ; i++)
 		{
-			[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
-																					[aServer name], @"AETitle",
-																					[NSString stringWithFormat:@"%d", port], @"Port",
-																					[NSNumber numberWithBool:YES] , @"QR",
-																					[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
-																					[NSNumber numberWithInt:9], @"Transfer Syntax",
-																					0L]];
+			NSNetService*	aServer = [dicomServices objectAtIndex: i];
+			
+			NSString		*hostname;
+			int				port;
+			
+			hostname = [DCMNetServiceDelegate gethostnameAndPort:&port forService: aServer];
+			
+			if( hostname)
+			{
+				[serversArray addObject: [NSDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
+																						[aServer name], @"AETitle",
+																						[NSString stringWithFormat:@"%d", port], @"Port",
+																						[NSNumber numberWithBool:YES] , @"QR",
+																						[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
+																						[NSNumber numberWithInt:9], @"Transfer Syntax",
+																						0L]];
+			}
 		}
 	}
 	

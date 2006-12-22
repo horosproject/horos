@@ -269,8 +269,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>2</integer>
-									<integer>1</integer>
+									<integer>9</integer>
+									<integer>5</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -294,7 +294,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
+						<string>762 338 1114 668 0 0 2560 1578 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -310,34 +310,24 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>OSIListenerPreferencePanePref.h</string>
+								<string>&lt;No Editor&gt;</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
-										<key>PBXProjectModuleLabel</key>
-										<string>OSIListenerPreferencePanePref.h</string>
-										<key>_historyCapacity</key>
-										<integer>0</integer>
-										<key>bookmark</key>
-										<string>ABF834760AC7D47E0035413E</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB470A19CF1800FED357</string>
 											<string>AB52E74B0A19FC0F00726305</string>
 											<string>ABF8345B0AC7CD680035413E</string>
-											<string>ABF834750AC7D47E0035413E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
-											<string>AB35516209B74B1B00F0C358</string>
 											<string>AB7925FD09FCBE46006E342C</string>
 											<string>AB80AB4C0A19CF1800FED357</string>
 											<string>AB52E74E0A19FC0F00726305</string>
-											<string>ABF8345D0AC7CD680035413E</string>
-											<string>ABF8345E0AC7CD680035413E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -351,7 +341,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {906, 622}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
+								<string>762 338 1114 668 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -371,7 +361,7 @@
 								<key>Frame</key>
 								<string>{{0, 627}, {906, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
+								<string>762 338 1114 668 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -395,9 +385,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABF8343E0AC7CC570035413E</string>
+				<string>AB7D32A30B3C1D5100B15EC9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABF8343F0AC7CC570035413E</string>
+				<string>AB7D32A40B3C1D5100B15EC9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -531,11 +521,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>AB34B71909AA11120057FE0E</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>-1509 -31 1114 668 -1680 -150 1680 1050 </string>
+	<string>762 338 1114 668 0 0 2560 1578 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>

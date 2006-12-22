@@ -59,6 +59,8 @@
 	[characterSetPopup setEnabled: val];
 	[addServerDICOM setEnabled: val];
 	[addServerSharing setEnabled: val];
+	[verifyPing setEnabled: val];
+	[searchDICOMBonjourNodes setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view

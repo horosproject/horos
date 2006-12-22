@@ -804,6 +804,10 @@ static NSString *hostName = @"";
 	// ** STARTCOUNT
 	[defaultValues setObject: @"0" forKey: @"STARTCOUNT"];
 	
+	[defaultValues setObject: @"1" forKey: @"publishDICOMBonjour"];
+	[defaultValues setObject: @"1" forKey: @"searchDICOMBonjour"];
+	[defaultValues setObject: @"1" forKey: @"autorotate3D"];
+	
 	[defaultValues setObject: @"0" forKey: @"Compression Mode for Export"];
 	
 	// ** ORIGINALSIZE

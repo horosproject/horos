@@ -281,7 +281,7 @@ typedef char* vtkMyCallbackVR;
 	NSTimer						*_mouseDownTimer;
 	NSImage						*destinationImage;
 	
-	NSPoint						_mouseLocStart;  // mouseDown start point
+	NSPoint						_mouseLocStart, _previousLoc;  // mouseDown start point
 	BOOL						_resizeFrame;
 	short						_tool;
 	

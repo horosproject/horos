@@ -289,7 +289,7 @@ static QueryController	*currentQueryController = 0L;
 	NSString			*port;
 	NSNetService		*netService = nil;
 	id					aServer;
-	int					i, selectedServer;
+	int					i, selectedServer, selectedRow;
 	BOOL				atLeastOneSource = NO, noChecked = YES;
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: @"SavedQueryArray"];
@@ -312,13 +312,17 @@ static QueryController	*currentQueryController = 0L;
 		selectedServer = [sourcesTable selectedRow];
 	}
 	
+	selectedRow = [sourcesTable selectedRow];
+	
 	atLeastOneSource = NO;
 	for( i = 0; i < [sourcesArray count]; i++)
 	{
 		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
 		{
 			aServer = [[sourcesArray objectAtIndex:i] valueForKey:@"server"];
-		
+			
+			[sourcesTable selectRow: i byExtendingSelection: NO];
+			
 			NSString *myAET = [[NSUserDefaults standardUserDefaults] objectForKey:@"AETITLE"]; 			
 			theirAET = [aServer objectForKey:@"AETitle"];
 			hostname = [aServer objectForKey:@"Address"];
@@ -442,6 +446,8 @@ static QueryController	*currentQueryController = 0L;
 			atLeastOneSource = YES;
 		}
 	}
+	
+	[sourcesTable selectRow: selectedRow byExtendingSelection: NO];
 	
 	[resultArray sortUsingDescriptors: [outlineView sortDescriptors]];
 	[outlineView reloadData];
@@ -983,7 +989,7 @@ static QueryController	*currentQueryController = 0L;
 	id				aServer;
 	NSString		*message;	
 	int				i;
-	int				status;
+	int				status, selectedRow = [sourcesTable selectedRow];
 	
 	[progressIndicator startAnimation:nil];
 	
@@ -991,6 +997,8 @@ static QueryController	*currentQueryController = 0L;
 	
 	for( i = 0 ; i < [sourcesArray count]; i++)
 	{
+		[sourcesTable selectRow: i byExtendingSelection: NO];
+		
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
 		
 		int numberPacketsReceived = 0;
@@ -1004,6 +1012,8 @@ static QueryController	*currentQueryController = 0L;
 		
 		[aServer setObject:[NSNumber numberWithInt: status] forKey:@"test"];
 	}
+	
+	[sourcesTable selectRow: selectedRow byExtendingSelection: NO];
 	
 	[self didChangeValueForKey:@"sourcesArray"];
 	

@@ -1010,10 +1010,14 @@ NSRect screenFrame()
 		NSLog(@"Exception restarting storeSCP");
 	NS_ENDHANDLER
 	
-	//Start DICOM Bonjour 
-	BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
-	[BonjourDICOMService setDelegate: self];
-	[BonjourDICOMService publish];
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
+	{
+		//Start DICOM Bonjour 
+		BonjourDICOMService = [[NSNetService  alloc] initWithDomain:@"" type:@"_dicom._tcp." name:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
+		[BonjourDICOMService setDelegate: self];
+		[BonjourDICOMService publish];
+	}
+	else BonjourDICOMService = 0L;
 }
 
 - (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
@@ -1073,6 +1077,7 @@ NSRect screenFrame()
 		NSString *aeTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"];
 		int port = [[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue];
 		NSDictionary *params = nil;
+		
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
 		[dcmtkQRSCP run];
 		return;

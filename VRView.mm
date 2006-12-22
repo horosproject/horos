@@ -1492,7 +1492,9 @@ public:
 		
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
-		startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
+			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 	}
@@ -1960,7 +1962,8 @@ public:
 	[[self window] display];
 }
 
-- (void)mouseDragged:(NSEvent *)theEvent{
+- (void)mouseDragged:(NSEvent *)theEvent
+{
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
 			[self deleteMouseDownTimer];
 		}
@@ -2059,9 +2062,6 @@ public:
 							if( wl - ww/2 < 0) wl = ww/2;
 						break;
 					}
-					
-					
-					
 				}
 				else
 				{
@@ -2093,6 +2093,49 @@ public:
 				textWLWW->SetInput( WLWWString);
 				[self setNeedsDisplay:YES];
 
+				break;
+				
+				case t3DCut:
+				
+				if( fabs(mouseLoc.x - _previousLoc.x) > 5. || fabs(mouseLoc.y - _previousLoc.y) > 5.)
+				{
+					double	*pp;
+					long	i;
+					
+					aRenderer->SetDisplayPoint( mouseLoc.x, mouseLoc.y, 0);
+					aRenderer->DisplayToWorld();
+					pp = aRenderer->GetWorldPoint();
+					
+					// Create the 2D Actor
+					
+					aRenderer->SetWorldPoint(pp[0], pp[1], pp[2], 1.0);
+					aRenderer->WorldToDisplay();
+					
+					double *tempPoint = aRenderer->GetDisplayPoint();
+					
+					NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
+					
+					vtkPoints *pts = ROI3DData->GetPoints();
+					pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
+					
+					vtkCellArray *rect = vtkCellArray::New();
+					rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+					for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+					rect->InsertCellPoint( 0);
+					
+					ROI3DData->SetVerts( rect);
+					ROI3DData->SetLines( rect);		rect->Delete();
+					
+					ROI3DData->SetPoints( pts);
+					
+					if( ROIUPDATE == NO)
+					{
+						ROIUPDATE = YES;
+						[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerUpdate:) userInfo:nil repeats:0]; 
+					}
+					
+					_previousLoc = mouseLoc;
+				}
 				break;
 				
 				case tRotate:
@@ -2132,8 +2175,6 @@ public:
 					[self setNeedsDisplay:YES];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 					break;
-					
-					
 			default:
 				break;
 		}
@@ -2281,7 +2322,9 @@ public:
 			
 			[startAutoRotate invalidate];
 			[startAutoRotate release];
-			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+			
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
+				startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		}
 		
 		if( tool == tMesure)
@@ -2341,7 +2384,6 @@ public:
 		}
 		else if( tool == t3DCut)
 		{
-			
 			double	*pp;
 			long	i;
 			
@@ -4426,7 +4468,7 @@ public:
 	ROI3DActor = vtkActor2D::New();
 	ROI3DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
     ROI3DActor->SetMapper( ROI3D);
-	ROI3DActor->GetProperty()->SetPointSize( 5);	//vtkProperty2D
+	ROI3DActor->GetProperty()->SetPointSize( 1);	//vtkProperty2D
 	ROI3DActor->GetProperty()->SetLineWidth( 2);
 	ROI3DActor->GetProperty()->SetColor(0.3,1,0);
 	
