@@ -128,7 +128,10 @@
 	int count = [_actions count];
 	int i;
 	for (i = 0; i < count; i++)
-		[dict setObject:[NSNumber numberWithInt:i] forKey:[[_actions objectAtIndex:i] objectForKey:@"key"]];
+	{
+		if( [[_actions objectAtIndex:i] objectForKey:@"key"])
+			[dict setObject:[NSNumber numberWithInt:i] forKey:[[_actions objectAtIndex:i] objectForKey:@"key"]];
+	}
 	[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"HOTKEYS"];
 	return [super shouldUnselect];
 }
