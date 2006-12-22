@@ -27,6 +27,7 @@
 #import "browserController.h"
 #import "VRController.h"
 #import "VRControllerVPRO.h"
+#import "MPR2DController.h"
 
 
 
@@ -644,6 +645,17 @@ WindowLayoutManager *sharedLayoutManager;
 					//[[viewerVR window] makeKeyAndOrderFront:self];
 					[[viewerVR window] display];
 					[[viewerVR window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[selectedViewer2D window] title]]];
+				}
+				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([MPR2DController class])] ) { 
+					MPR2DController *viewerMPR = [selectedViewer2D openMPR2DViewer];
+					[viewerMPR ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					//float   iwl, iww;
+					//[imageView getWLWW:&iwl :&iww];
+					[viewerMPR setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
+					[viewerMPR load3DState];
+					[viewerMPR showWindow:self];
+					[[viewerMPR window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
+					[[viewerMPR window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewerMPR window] title], [[selectedViewer2D window] title]]];
 				}
 			}
 		}

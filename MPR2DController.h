@@ -80,4 +80,5 @@
 - (IBAction) updateImage:(id) sender;
 -(IBAction) endQuicktime:(id) sender;
 -(IBAction) export2iPhoto:(id) sender;
+- (ViewerController *)viewerController;
 @end

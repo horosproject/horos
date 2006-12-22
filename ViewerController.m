@@ -12188,7 +12188,7 @@ long i;
 	}
 }
 
--(MPR2DController *)openMPR2DViewer{
+- (MPR2DController *)openMPR2DViewer{
 	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 	int i;
 	[self setFusionMode: 0];
@@ -12246,6 +12246,7 @@ long i;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
+			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}

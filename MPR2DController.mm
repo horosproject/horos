@@ -464,7 +464,7 @@ extern NSString * documentsDirectory();
 //        return 0L;
 //    }
 	
-	[[self window] performZoom:self];
+//	[[self window] performZoom:self];
 	
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
@@ -1335,6 +1335,32 @@ extern NSString * documentsDirectory();
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
 			[ws openFile:[panel filename]];
 	}
+}
+
+- (ViewerController *)viewerController{
+	return viewerController;
+}
+
+- (NSManagedObject *)currentStudy{
+	return [viewerController currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewerController currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewerController currentImage];
+}
+
+-(float)curWW{
+	return [viewerController curWW];
+}
+
+-(float)curWL{
+	return [viewerController curWL];
+}
+- (NSString *)curCLUTMenu{
+	return curCLUTMenu;
 }
 
 @end

@@ -108,7 +108,7 @@
 				 zoom	
 				*/
 				
-			//NSLog(@"save HangingProtocol: %@", [controller description]);
+			NSLog(@"save HangingProtocol: %@", [controller description]);
 			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
 			NSWindow *window = [controller window];
 			NSString *frame  = [window stringWithSavedFrame];
@@ -126,14 +126,17 @@
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 			}
+			
 			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
 			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
 			if ([controller isKindOfClass:[VRController class]] || [controller isKindOfClass:[VRPROController class]] )
 				[seriesInfo setObject:[(VRController  *)controller renderingMode] forKey:@"mode"];
+				
 			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
-			
+			NSLog(@"blending");
 			// Have blending.  Get Series Description for blending
 			if ([controller blendingController]) {
+				NSLog(@"have blending");
 				id blendingSeries = [[controller blendingController] currentSeries];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];	
@@ -142,9 +145,9 @@
 			[layoutArray addObject:seriesInfo];
 	
 		}	
-
+		NSLog(@"add layout");
 		[arrangedSeries addObject:layoutArray];
-
+		NSLog(@"add Set");
 		[hangingProtocol setObject:arrangedSeries forKey:@"seriesSets"];
 		[hangingProtocol setObject:_modality forKey:@"modality"];
 		[hangingProtocol setObject:_studyDescription forKey:@"studyDescription"];
@@ -158,7 +161,7 @@
 		[hangingProtocols removeObject:_hangingProtocol];
 		[hangingProtocols addObject:hangingProtocol];
 		[hangingProtocol release];
-
+		NSLog(@"save prefs");
 		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		[hangingProtocols  release];
 	}

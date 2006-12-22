@@ -450,7 +450,7 @@ enum
 //- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
--(MPR2DController *)openMPR2DViewer;
+- (MPR2DController *)openMPR2DViewer;
 - (IBAction) MPR2DViewer:(id) sender;
 - (IBAction) orthogonalMPRViewer:(id) sender;
 - (IBAction) endoscopyViewer:(id) sender;

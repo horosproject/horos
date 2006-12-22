@@ -20,7 +20,7 @@
 
 @class ThickSlabVR;
 
-@interface ThickSlabController : OSIWindowController {
+@interface ThickSlabController : NSWindowController {
 
 	IBOutlet	ThickSlabVR		*view;
 
