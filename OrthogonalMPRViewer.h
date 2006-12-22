@@ -121,4 +121,6 @@
 - (void) movieRateSliderAction:(id) sender;
 - (void) moviePosSliderAction:(id) sender;
 
+- (ViewerController *)viewerController;
+
 @end

@@ -93,7 +93,7 @@ NSString * documentsDirectory();
 	self = [super initWithWindowNibName:@"OrthogonalMPR"];
 	[[self window] setDelegate:self];
 	[[self window] setShowsResizeIndicator:YES];
-	[[self window] performZoom:self];
+	//[[self window] performZoom:self];
 	
 	viewer = [vC retain];
 	
@@ -1602,6 +1602,32 @@ NSString * documentsDirectory();
 {
 	[self setMovieIndex: [moviePosSlider intValue]];
 //	[self propagateSettings];
+}
+
+- (ViewerController *)viewerController{
+	return viewer;
+}
+
+- (NSManagedObject *)currentStudy{
+	return [viewer currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewer currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewer currentImage];
+}
+
+-(float)curWW{
+	return [viewer curWW];
+}
+
+-(float)curWL{
+	return [viewer curWL];
+}
+- (NSString *)curCLUTMenu{
+	return curCLUTMenu;
 }
 
 @end

@@ -80,6 +80,16 @@
 	
 	// ROIs Volumes
 	NSMutableArray			*roiVolumes;
+	
+	float					_firstSurface,  _secondSurface, _resolution, _firstTransparency, _secondTransparency, _decimate;
+	int						_smooth;
+	NSColor					*_firstColor, *_secondColor;
+	BOOL					_shouldDecimate;
+	BOOL					_shouldSmooth;
+	BOOL					_useFirstSurface;
+	BOOL					_useSecondSurface;
+	
+
 }
 
 - (IBAction) setOrientation:(id) sender;
@@ -103,6 +113,8 @@
 
 - (void) createContextualMenu;
 
+- (ViewerController *) viewer2D;
+
 #ifdef roi3Dvolume
 // ROIs Volumes
 - (void) computeROIVolumes;
@@ -114,4 +126,41 @@
 - (void) displayROIVolumes;
 - (IBAction) roiGetManager:(id) sender;
 #endif
+
+//Surface values
+
+- (float) firstSurface;
+- (float) secondSurface;
+- (float) resolution;
+- (float) firstTransparency;
+- (float) secondTransparency;
+- (float) decimate;
+- (int)smooth;
+- (NSColor *) firstColor;
+- (NSColor *) secondColor;
+- (BOOL)shouldDecimate;
+- (BOOL	)shouldSmooth;
+- (BOOL) useFirstSurface;
+- (BOOL	) useSecondSurface;
+
+- (void) setFirstSurface:(float)pixelValue;
+- (void) setSecondSurface:(float)pixelValue;
+- (void) setResolution:(float)resolution;
+- (void) setFirstTransparency:(float)transparency;
+- (void) setSecondTransparency:(float)transparency;
+- (void) setDecimate:(float)decimateItr;
+- (void) setSmooth:(int)iteration;
+- (void) setFirstColor:(NSColor *)color;
+- (void) setSecondColor: (NSColor *)color;
+- (void) setShouldDecimate: (BOOL)shouldDecimate;
+- (void) setShouldSmooth: (BOOL)shouldSmooth;
+- (void) setUseFirstSurface:(BOOL)useSurface;
+- (void) setUseSecondSurface:(BOOL)useSurface;
+
 @end
+
+
+
+
+
+	

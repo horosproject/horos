@@ -2067,6 +2067,10 @@ static ViewerController *draggedController = 0L;
 
 - (void) completeDragOperation:(ViewerController*) v
 {
+	// if we are already blending the other way we crash
+	if ([[v blendingController] isEqual:self])
+		return;
+		
 	int iz, xz;
 	
 	blendedwin = v;
@@ -2135,6 +2139,8 @@ static ViewerController *draggedController = 0L;
 		
 		if ([[[vi window] windowController] is2DViewer] == YES)
 		{
+			if ([[[[vi window] windowController] blendingController] isEqual:self])
+				return NO;
 			if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
 		}
 	}
@@ -11984,7 +11990,16 @@ int i,j,l;
 	}
 }
 
-
+- (SRController *)openSRViewer{
+	SRController *viewer;
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	if (viewer = [appController FindViewer :@"SR" :pixList[0]])
+		return viewer;
+	viewer = [[SRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
+	return viewer;
+	
+}
 -(IBAction) SRViewer:(id) sender
 {
 	[self checkEverythingLoaded];
@@ -12009,7 +12024,7 @@ int i,j,l;
 		}
 		else
 		{
-			viewer = [[SRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
+			viewer = [self openSRViewer];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[viewer ChangeSettings:self];
@@ -12189,6 +12204,8 @@ long i;
 }
 
 - (MPR2DController *)openMPR2DViewer{
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
 	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 	int i;
 	[self setFusionMode: 0];
@@ -12253,6 +12270,71 @@ long i;
 	}
 }
 
+- (OrthogonalMPRViewer *)openOrthogonalMPRViewer{
+	OrthogonalMPRViewer *viewer;
+	long i;	
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
+	[self setFusionMode: 0];
+	[popFusion selectItemAtIndex:0];
+	if( blendingController)
+	{
+		viewer = [appController FindViewer :@"PETCT" :pixList[0]];
+	}
+	else
+	{
+		viewer = [appController FindViewer :@"OrthogonalMPR" :pixList[0]];
+	}
+	if (viewer)
+		return viewer;
+		
+	viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
+	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
+	{
+		if( [[self modality] isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"clutNM"] == YES && [[self modality] isEqualToString:@"NM"] == YES))
+		{
+			if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString: @"B/W Inverse"])
+				[viewer ApplyCLUTString: @"B/W Inverse"];
+			else
+				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+		}
+		else [viewer ApplyCLUTString:curCLUTMenu];
+	}
+	else [viewer ApplyCLUTString:curCLUTMenu];
+	return viewer;
+}
+
+- (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer{
+	OrthogonalMPRPETCTViewer  *viewer;
+	long i;	
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	if (viewer = [appController FindViewer :@"PETCT" :pixList[0]])
+		return viewer;
+	if (blendingController) {	
+		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
+					
+		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
+		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
+		[[viewer PETCTController] ApplyCLUTString:curCLUTMenu];
+		// the PETCT will display the PET CLUT in CLUTpoppuMenu
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] originalView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] xReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+		[(OrthogonalMPRPETCTView*)[[viewer PETCTController] yReslicedView] setCurCLUTMenu: [blendingController curCLUTMenu]];
+		
+		[viewer showWindow:self];
+		
+		float   iwl, iww;
+		[imageView getWLWW:&iwl :&iww];
+		[[viewer CTController] setWLWW:iwl :iww];
+		[[blendingController imageView] getWLWW:&iwl :&iww];
+		[[viewer PETController] setWLWW:iwl :iww];
+		return viewer;
+	}
+	return nil;	
+}
+
 -(IBAction) orthogonalMPRViewer:(id) sender
 {
 	long i;
@@ -12294,6 +12376,7 @@ long i;
 			
 			if( blendingController)
 			{
+			/*
 				OrthogonalMPRPETCTViewer *pcviewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
 				
 				[[pcviewer CTController] ApplyCLUTString:curCLUTMenu];
@@ -12315,15 +12398,23 @@ long i;
 
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@ - %@", [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.name"], [studyDate descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] timeZone:0L locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
-				
+			*/	
 //  The following methods are NOT defined in their receivers!				
 //				[[pcviewer CTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETCTController] setCurWLWWMenu:curWLWWMenu];
 //				[[pcviewer PETController] setCurWLWWMenu:[blendingController curWLWWMenu]];
-				
+				NSLog(@"have blending controller");
+				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
+				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@ - %@", [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.name"], 
+					[studyDate descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] timeZone:0L 
+					locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
+				[[pcviewer window] performZoom:self];
+				//[viewer showWindow:self];
 			}
 			else
 			{
+			/*
 				viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 				
 				if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
@@ -12338,7 +12429,9 @@ long i;
 					else [viewer ApplyCLUTString:curCLUTMenu];
 				}
 				else [viewer ApplyCLUTString:curCLUTMenu];
-
+			*/
+				viewer = [self openOrthogonalMPRViewer];
+				[[viewer window] performZoom:self];
 				[viewer showWindow:self];
 				
 				float   iwl, iww;

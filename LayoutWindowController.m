@@ -119,23 +119,31 @@
 			id series = [controller currentSeries];
 			[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
 			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
-			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
-			[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
+			
+			// Not supported by OrthogonalMPRPETCTViewer
+			if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || [controller isKindOfClass:[SRController class]])) {
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
+				[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
+			}
+			
 			if ([controller isKindOfClass:[ViewerController class]]) {
 				[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 			}
 			
-			[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
+		
 			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
+			// MIP vs VP fpr Volume Rendering
 			if ([controller isKindOfClass:[VRController class]] || [controller isKindOfClass:[VRPROController class]] )
 				[seriesInfo setObject:[(VRController  *)controller renderingMode] forKey:@"mode"];
 				
 			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
 			NSLog(@"blending");
 			// Have blending.  Get Series Description for blending
-			if ([controller blendingController]) {
+			
+			if ([controller isKindOfClass:[ViewerController class]] && [controller blendingController]) {
 				NSLog(@"have blending");
 				id blendingSeries = [[controller blendingController] currentSeries];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];

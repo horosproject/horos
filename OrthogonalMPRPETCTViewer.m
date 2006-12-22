@@ -220,7 +220,7 @@ NSString * documentsDirectory();
 
 
 	[[self window] setShowsResizeIndicator:YES];
-	[[self window] performZoom:self];
+//	[[self window] performZoom:self];
 //	[[self window] display];
 	
 	return self;
@@ -2505,6 +2505,32 @@ NSString * documentsDirectory();
 {
 	[self setMovieIndex: [moviePosSlider intValue]];
 //	[self propagateSettings];
+}
+
+- (ViewerController *)viewerController{
+	return viewer;
+}
+
+- (NSManagedObject *)currentStudy{
+	return [viewer currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewer currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewer currentImage];
+}
+
+-(float)curWW{
+	return [viewer curWW];
+}
+
+-(float)curWL{
+	return [viewer curWL];
+}
+- (NSString *)curCLUTMenu{
+	return curCLUTMenu;
 }
 
 @end

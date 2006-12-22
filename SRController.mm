@@ -77,6 +77,25 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 - (void) windowDidLoad
 {
     [self setupToolbar];
+	[self setResolution:0.5];
+	[self setShouldDecimate:YES];
+	[self setShouldSmooth:YES];
+	[self setFirstSurface:300.0];
+	[self setSecondSurface: -500.0];
+	[self setResolution: 0.5];
+	[self setFirstTransparency: 1.0];
+	[self setSecondTransparency: 1.0];
+	[self setDecimate: 0.5];
+	[self setSmooth: 20];
+	[self setFirstColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+	[firstColor setColor:_firstColor];
+	[self setSecondColor: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
+	[secondColor setColor:_secondColor];
+	[self setUseFirstSurface:YES];
+	[self setUseSecondSurface:NO];
+
+	[firstColor setColor:_firstColor];
+
 	//[self createContextualMenu];
 }
 
@@ -353,14 +372,25 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
     if( [sender tag])   //User clicks OK Button
     {
 		// FIRST SURFACE
+		NSLog(@"First Color; %@", [[firstColor color] description]);
+		NSColor *colorA = [firstColor color];
+		if (!colorA)
+			colorA = _firstColor;
+		NSColor *colorB = [secondColor color];
+		if (!colorB)
+			colorB = _secondColor;
 		if( [checkFirst state] == NSOnState)
-	
 			[view changeActor   :(long) 0
 								:[resolSlide floatValue]
 								:[firstTrans floatValue]
-								:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
+								:[colorA redComponent]
+								:[colorA greenComponent]
+								:[colorA blueComponent]
+								
+								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
+								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
+								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
+								
 								:[firstValue floatValue]
 								:[[preprocessMatrix cellWithTag:0] state]
 								:[decimate floatValue]
@@ -375,9 +405,12 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 			[view changeActor   :(long) 1
 								:[resolSlide floatValue]
 								:[secondTrans floatValue]
-								:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
+								:[colorB redComponent]
+								:[colorB greenComponent]
+								:[colorB blueComponent]
+								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
+								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
+								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
 								:[secondValue floatValue]
 								:[[preprocessMatrix cellWithTag:0] state]
 								:[decimate floatValue]
@@ -1233,6 +1266,10 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	}
 }
 
+
+
+#endif
+
 - (void) showWindow:(id) sender
 {
 	[super showWindow: sender];
@@ -1240,6 +1277,114 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[view squareView: self];
 }
 
-#endif
+- (ViewerController *) viewer2D{
+	return viewer2D;
+}
+
+- (NSManagedObject *)currentStudy{
+	return [viewer2D currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [viewer2D currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [viewer2D currentImage];
+}
+
+//Surface values
+
+- (float) firstSurface{
+	return _firstSurface;
+}
+- (float) secondSurface{
+	return _secondSurface;
+}
+- (float) resolution{
+	return _resolution;
+}
+- (float) firstTransparency{
+	return _firstTransparency;
+}
+- (float) secondTransparency{
+	return _secondTransparency;
+}
+
+- (float) decimate{
+	return _decimate;
+}
+
+- (int)smooth{
+	return _smooth;
+}
+
+- (NSColor *) firstColor{
+	return _firstColor;
+}
+
+- (NSColor *) secondColor{
+	return _secondColor;
+}
+
+- (BOOL)shouldDecimate{
+	
+	return _shouldDecimate;
+}
+- (BOOL	)shouldSmooth{
+	return _shouldSmooth;
+}
+
+- (BOOL) useFirstSurface{
+	return _useFirstSurface;
+}
+- (BOOL) useSecondSurface{
+	return _useSecondSurface;
+}
+
+- (void) setFirstSurface:(float)pixelValue{
+	_firstSurface = pixelValue;
+}
+- (void) setSecondSurface:(float)pixelValue{
+	_secondSurface = pixelValue;
+}
+
+- (void) setResolution:(float)resolution{
+	_resolution = resolution;
+}
+- (void) setFirstTransparency:(float)transparency{
+	_firstTransparency = transparency;
+}
+- (void) setSecondTransparency:(float)transparency{
+	_secondTransparency = transparency;
+}
+- (void) setDecimate:(float)decimateItr{
+	_decimate = decimateItr;
+}
+- (void) setSmooth:(int)iteration{
+	_smooth = iteration;
+}
+- (void) setFirstColor:(NSColor *)color{
+	[_firstColor release];
+	_firstColor  = [color retain];
+}
+
+- (void) setSecondColor: (NSColor *)color{
+	[_secondColor release];
+	_secondColor  = [color retain];
+}
+
+- (void) setShouldDecimate: (BOOL)shouldDecimate{
+	_shouldDecimate = shouldDecimate;
+}
+- (void) setShouldSmooth: (BOOL)shouldSmooth{
+	_shouldSmooth = shouldSmooth;
+}
+
+- (void) setUseFirstSurface:(BOOL)useSurface{
+	_useFirstSurface = useSurface;
+}
+- (void) setUseSecondSurface:(BOOL)useSurface{
+	_useSecondSurface = useSurface;
+}
 
 @end
