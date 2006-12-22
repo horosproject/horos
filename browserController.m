@@ -5397,9 +5397,6 @@ static BOOL withReset = NO;
 		}
 	}
 	
-	
-	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
-	
 	@try
 	{
 		NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
@@ -5487,8 +5484,6 @@ static BOOL withReset = NO;
 		[managedObjectContext unlock];
 		[item release];
 	}
-	
-	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
     [pool release];
 }
@@ -9048,8 +9043,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
-	
 	[checkIncomingLock lock];
 	
     NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
@@ -9266,8 +9259,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[checkIncomingLock unlock];
-	
-	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	[pool release];
 }

@@ -1230,6 +1230,11 @@ NSRect screenFrame()
 		[[browserWindow window] makeKeyAndOrderFront: self];
 	}
 }
+//
+//- (void)applicationWillUpdate:(NSNotification *)aNotification
+//{
+//	NSLog( @"applicationWillUpdate");
+//}
 
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
