@@ -24,6 +24,7 @@
 #import "VRController.h"
 #import "WindowLayoutManager.h"
 #import "VRControllerVPRO.h"
+#import "SRController.h"
 
 
 @implementation LayoutWindowController
@@ -125,6 +126,24 @@
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
 				[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
+			}
+			
+			if ([controller isKindOfClass:[SRController class]]) {
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller firstSurface]] forKey:@"firstSurface"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller secondSurface]] forKey:@"secondSurface"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller resolution]] forKey:@"resolution"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller firstTransparency]] forKey:@"firstTransparency"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller secondTransparency]] forKey:@"secondTransparency"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller decimate]] forKey:@"decimate"];
+				[seriesInfo setObject:[NSNumber numberWithInt:[controller smooth]] forKey:@"smooth"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller shouldDecimate]] forKey:@"shouldDecimate"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller shouldSmooth]] forKey:@"shouldSmooth"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller useFirstSurface]] forKey:@"useFirstSurface"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller useSecondSurface]] forKey:@"useSecondSurface"];
+				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller firstColor]] forKey:@"firstColor"];
+				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller secondColor]] forKey:@"secondColor"];
+	
+				// if blending SR it will here
 			}
 			
 			if ([controller isKindOfClass:[ViewerController class]]) {

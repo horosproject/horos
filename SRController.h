@@ -42,7 +42,7 @@
 	IBOutlet NSTextField    *firstValue, *secondValue;
 	IBOutlet NSSlider		*resolSlide, *firstTrans, *secondTrans;
 	IBOutlet NSPopUpButton  *firstPopup, *secondPopup;
-	IBOutlet NSColorWell	*firstColor, *secondColor;
+	
 
 	IBOutlet NSWindow       *BSRSettingsWindow;
 	IBOutlet NSButton		*BcheckFirst, *BcheckSecond;
@@ -114,6 +114,7 @@
 - (void) createContextualMenu;
 
 - (ViewerController *) viewer2D;
+- (void)renderSurfaces;
 
 #ifdef roi3Dvolume
 // ROIs Volumes
@@ -138,10 +139,10 @@
 - (int)smooth;
 - (NSColor *) firstColor;
 - (NSColor *) secondColor;
-- (BOOL)shouldDecimate;
-- (BOOL	)shouldSmooth;
+- (BOOL) shouldDecimate;
+- (BOOL) shouldSmooth;
 - (BOOL) useFirstSurface;
-- (BOOL	) useSecondSurface;
+- (BOOL) useSecondSurface;
 
 - (void) setFirstSurface:(float)pixelValue;
 - (void) setSecondSurface:(float)pixelValue;

@@ -12025,6 +12025,7 @@ int i,j,l;
 		else
 		{
 			viewer = [self openSRViewer];
+			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[viewer ChangeSettings:self];

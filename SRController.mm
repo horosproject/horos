@@ -88,13 +88,11 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[self setDecimate: 0.5];
 	[self setSmooth: 20];
 	[self setFirstColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
-	[firstColor setColor:_firstColor];
+	//[firstColor setColor:_firstColor];
 	[self setSecondColor: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
-	[secondColor setColor:_secondColor];
+	//[secondColor setColor:_secondColor];
 	[self setUseFirstSurface:YES];
 	[self setUseSecondSurface:NO];
-
-	[firstColor setColor:_firstColor];
 
 	//[self createContextualMenu];
 }
@@ -270,7 +268,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[self computeROIVolumes];
 	[self displayROIVolumes];
 #endif
-	[[self window] performZoom:self];
+	//[[self window] performZoom:self];
 	
     return self;
 }
@@ -365,64 +363,55 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
     [SRSettingsWindow orderOut:sender];
     
     [NSApp endSheet:SRSettingsWindow returnCode:[sender tag]];
-    
-	WaitRendering *www = [[WaitRendering alloc] init:@"Preparing 3D Iso Surface..."];
-	[www start];
-	
+    	
     if( [sender tag])   //User clicks OK Button
     {
-		// FIRST SURFACE
-		NSLog(@"First Color; %@", [[firstColor color] description]);
-		NSColor *colorA = [firstColor color];
-		if (!colorA)
-			colorA = _firstColor;
-		NSColor *colorB = [secondColor color];
-		if (!colorB)
-			colorB = _secondColor;
-		if( [checkFirst state] == NSOnState)
+		[self renderSurfaces];
+    }
+	
+}
+
+- (void)renderSurfaces{
+	WaitRendering *www = [[WaitRendering alloc] init:@"Preparing 3D Iso Surface..."];
+	[www start];
+
+	// FIRST SURFACE
+	if( _useFirstSurface)
 			[view changeActor   :(long) 0
-								:[resolSlide floatValue]
-								:[firstTrans floatValue]
-								:[colorA redComponent]
-								:[colorA greenComponent]
-								:[colorA blueComponent]
-								
-								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								//:[[[firstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
-								
-								:[firstValue floatValue]
-								:[[preprocessMatrix cellWithTag:0] state]
-								:[decimate floatValue]
-								:[[preprocessMatrix cellWithTag:1] state]
-								:[smooth intValue]];
+								:_resolution
+								:_firstTransparency
+								:[_firstColor redComponent]
+								:[_firstColor greenComponent]
+								:[_firstColor blueComponent]		
+								:_firstSurface
+								:_shouldDecimate
+								:_decimate
+								:_shouldSmooth
+								:_smooth];
 		else
 			[view deleteActor: (long) 0];
 		
 		// SECOND SURFACE
-		if( [checkSecond state] == NSOnState)
-	
+		if( _useSecondSurface)	
 			[view changeActor   :(long) 1
-								:[resolSlide floatValue]
-								:[secondTrans floatValue]
-								:[colorB redComponent]
-								:[colorB greenComponent]
-								:[colorB blueComponent]
-								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								//:[[[secondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
-								:[secondValue floatValue]
-								:[[preprocessMatrix cellWithTag:0] state]
-								:[decimate floatValue]
-								:[[preprocessMatrix cellWithTag:1] state]
-								:[smooth intValue]];
+								:_resolution
+								:_secondTransparency
+								:[_secondColor redComponent]
+								:[_secondColor greenComponent]
+								:[_secondColor blueComponent]
+								:_secondSurface
+								:_shouldDecimate
+								:_decimate
+								:_shouldDecimate
+								:_smooth];
 		else
 			[view deleteActor: (long) 1];
-    }
+  
 	
 	[www end];
 	[www close];
 	[www release];
+
 }
 
 - (void) ChangeSettings:(id) sender

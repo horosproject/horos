@@ -687,7 +687,29 @@ WindowLayoutManager *sharedLayoutManager;
 					[viewer3D showWindow:self];					
 					if (![[[viewer3D window] title] hasSuffix:[[selectedViewer2D window] title]])
 						[[viewer3D window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer3D window] title], [[selectedViewer2D window] title]]];
-					//[(SRController *)viewer3D ChangeSettings:selectedViewer2D];
+					[viewer3D setFirstSurface:[[seriesInfo objectForKey:@"firstSurface"] floatValue]];
+					[viewer3D setSecondSurface:[[seriesInfo objectForKey:@"secondSurface"] floatValue]];
+					[viewer3D setResolution:[[seriesInfo objectForKey:@"resolution"] floatValue]];
+					[viewer3D setFirstTransparency:[[seriesInfo objectForKey:@"firstTransparency"] floatValue]];
+					[viewer3D setSecondTransparency:[[seriesInfo objectForKey:@"secondTransparency"] floatValue]];
+					[viewer3D setDecimate:[[seriesInfo objectForKey:@"decimate"] floatValue]];
+					[viewer3D setSmooth:[[seriesInfo objectForKey:@"smooth"] intValue]];
+					[viewer3D setShouldDecimate:[[seriesInfo objectForKey:@"shouldDecimate"] boolValue]];
+					[viewer3D setShouldSmooth:[[seriesInfo objectForKey:@"shouldSmooth"] boolValue]];
+					[viewer3D setUseFirstSurface:[[seriesInfo objectForKey:@"useFirstSurface"] boolValue]];
+					[viewer3D setUseSecondSurface:[[seriesInfo objectForKey:@"useFirstSurface"] boolValue]];
+					NSData *firstColor = [seriesInfo objectForKey:@"firstColor"];
+					if (firstColor)
+						[viewer3D setFirstColor:[NSUnarchiver unarchiveObjectWithData:firstColor]];
+					else
+						[viewer3D setFirstColor:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
+						
+					NSData *secondColor = [seriesInfo objectForKey:@"secondColor"];
+					if (secondColor)	
+						[viewer3D setSecondColor:[NSUnarchiver unarchiveObjectWithData:secondColor]];
+					else
+						[viewer3D setSecondColor:[NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
+					[(SRController *)viewer3D renderSurfaces];
 				
 				}
 				

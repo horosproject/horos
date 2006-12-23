@@ -114,14 +114,12 @@
                 checkSecond = NSButton; 
                 decimate = NSTextField; 
                 export3DView = NSView; 
-                firstColor = NSColorWell; 
                 firstPopup = NSPopUpButton; 
                 firstTrans = NSSlider; 
                 firstValue = NSTextField; 
                 perspectiveView = NSView; 
                 preprocessMatrix = NSMatrix; 
                 resolSlide = NSSlider; 
-                secondColor = NSColorWell; 
                 secondPopup = NSPopUpButton; 
                 secondTrans = NSSlider; 
                 secondValue = NSTextField; 
