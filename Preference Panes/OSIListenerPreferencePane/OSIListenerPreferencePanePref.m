@@ -104,8 +104,8 @@ char *GetPrivateIP()
 	if( [defaults integerForKey:@"DICOMTimeout"] < 1)
 		[defaults setObject:@"1" forKey:@"DICOMTimeout"];
 	
-	if( [defaults integerForKey:@"DICOMTimeout"] > 120)
-		[defaults setObject:@"120" forKey:@"DICOMTimeout"];
+	if( [defaults integerForKey:@"DICOMTimeout"] > 480)
+		[defaults setObject:@"480" forKey:@"DICOMTimeout"];
 	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
@@ -222,5 +222,15 @@ char *GetPrivateIP()
 }
 - (IBAction)setAnonymizeListenerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"ANONYMIZELISTENER"];
+}
+- (void) willUnselect
+{
+	NSLog(@"willUnselect");
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"] < 1)
+		[[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"DICOMTimeout"];
+	
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"] > 480)
+		[[NSUserDefaults standardUserDefaults] setObject:@"480" forKey:@"DICOMTimeout"];
 }
 @end
