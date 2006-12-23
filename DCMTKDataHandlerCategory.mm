@@ -70,12 +70,12 @@ extern BrowserController *browserWindow;
 			if (key == DCM_PatientsName){
 				char *pn;
 				if (dcelem->getString(pn).good() && pn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_PatientID){
 				char *pid;
 				if (dcelem->getString(pid).good() && pid != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"patientID like[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
+					predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
 			}
 			else if (key == DCM_StudyInstanceUID ){
 				char *suid;
@@ -90,27 +90,27 @@ extern BrowserController *browserWindow;
 			else if (key ==  DCM_StudyDescription) {
 				char *sd;
 				if (dcelem->getString(sd).good() && sd != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"studyName like[cd] %@", [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"studyName LIKE[cd] %@", [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_InstitutionName) {
 				char *inn;
 				if (dcelem->getString(inn).good() && inn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"institutionName like[cd] %@", [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"institutionName LIKE[cd] %@", [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_ReferringPhysiciansName) {
 				char *rpn;
 				if (dcelem->getString(rpn).good() && rpn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"referringPhysician like[cd] %@", [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"referringPhysician LIKE[cd] %@", [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key ==  DCM_PerformingPhysiciansName) {
 				char *ppn;
 				if (dcelem->getString(ppn).good() && ppn != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"performingPhysician like[cd] %@", [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"performingPhysician LIKE[cd] %@", [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key ==  DCM_ModalitiesInStudy) {
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+					predicate = [NSPredicate predicateWithFormat:@"modality LIKE[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
 			}
 			
 			else if (key == DCM_PatientsBirthDate) {
@@ -264,7 +264,7 @@ extern BrowserController *browserWindow;
 			else if (key == DCM_SeriesDescription) {
 				char *string;
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+					predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
 			}
 			else if (key == DCM_SeriesNumber) {
 				char *string;
@@ -274,7 +274,7 @@ extern BrowserController *browserWindow;
 			else if (key ==  DCM_Modality) {
 				char *mis;
 				if (dcelem->getString(mis).good() && mis != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"study.modality like[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+					predicate = [NSPredicate predicateWithFormat:@"study.modality LIKE[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
 			}
 			
 			else if (key == DCM_SeriesDate) {

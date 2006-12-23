@@ -36,7 +36,7 @@
 
 @implementation OSILocationsPreferencePanePref
 
-- (int) echoAddress: (NSString*) address port:(int) port
+- (int) echoAddress: (NSString*) address port:(int) port AET:(NSString*) aet
 {
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
@@ -45,8 +45,8 @@
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
 
-	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"2", @"-td", @"2", nil];
-
+	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", @"15", @"-ta", @"15", @"-td", @"15", nil];
+	
 	[theTask setArguments:args];
 	[theTask launch];
 	[theTask waitUntilExit];
@@ -309,9 +309,9 @@
 		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
 		
 		int numberPacketsReceived = 0;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, 5, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
-			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue]] == 0) status = 0;
+			if( [self echoAddress:[aServer objectForKey:@"Address"] port:[[aServer objectForKey:@"Port"] intValue] AET:[aServer objectForKey:@"AETitle"]] == 0) status = 0;
 			else status = -1;
 		}
 		else status = -2;

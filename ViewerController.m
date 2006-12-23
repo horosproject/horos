@@ -1869,7 +1869,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	// FIND ALL STUDIES of this patient
 	
-	predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", [study valueForKey:@"patientID"]];  // , [study valueForKey:@"name"]
+	predicate = [NSPredicate predicateWithFormat: @"(patientUID LIKE[cd] %@)", [study valueForKey:@"patientUID"]];  // , [study valueForKey:@"name"]
 	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];

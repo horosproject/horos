@@ -49,7 +49,7 @@ static QueryController	*currentQueryController = 0L;
 	return currentQueryController;
 }
 
-- (BOOL) echo: (NSString*) address port:(int) port
+- (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet
 {
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
@@ -58,7 +58,7 @@ static QueryController	*currentQueryController = 0L;
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/echoscu"]];
 
-	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-to", @"2", @"-ta", @"2", @"-td", @"2", nil];
+	NSArray *args = [NSArray arrayWithObjects: address, [NSString stringWithFormat:@"%d", port], @"-aet", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"-aec", aet, @"-to", @"15", @"-ta", @"15", @"-td", @"15", nil];
 
 	[theTask setArguments:args];
 	[theTask launch];
@@ -83,7 +83,7 @@ static QueryController	*currentQueryController = 0L;
 		{
 			[pressedKeys appendString: [event characters]];
 			
-			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
 			
 			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
 			
@@ -329,9 +329,9 @@ static QueryController	*currentQueryController = 0L;
 			port = [aServer objectForKey:@"Port"];
 			
 			int numberPacketsReceived = 0;
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 5, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 			{
-				if( [self echo: hostname port: [port intValue]])
+				//if( [self echo: hostname port: [port intValue] AET:theirAET])
 				{
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
@@ -426,14 +426,14 @@ static QueryController	*currentQueryController = 0L;
 						}
 					}
 				}
-				else
-				{
-					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
-				
-					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
-					
-					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
-				}
+//				else
+//				{
+//					NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", theirAET, hostname, [port intValue]];
+//				
+//					response = [response stringByAppendingString:NSLocalizedString(@"Connection failed to this DICOM node (c-echo failed)", 0L)];
+//					
+//					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+//				}
 			}
 			else
 			{
@@ -565,7 +565,7 @@ static QueryController	*currentQueryController = 0L;
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
 		
 		int numberPacketsReceived = 0;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, 5, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			[object move:dictionary];
 		}
@@ -970,9 +970,9 @@ static QueryController	*currentQueryController = 0L;
 	port = [aServer objectForKey:@"Port"];
 	
 	int numberPacketsReceived = 0;
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 2, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [hostname UTF8String], 1, 5, 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 	{
-		status = [self echo: hostname port: [port intValue]];
+		status = [self echo: hostname port: [port intValue] AET: theirAET];
 	}
 	else status = -1;
 	

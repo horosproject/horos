@@ -166,7 +166,7 @@
 				break;
 			}
 			
-			predicateString = [NSString stringWithFormat:@"modality like[c] \"%@\"", value];
+			predicateString = [NSString stringWithFormat:@"modality LIKE[cd] \"%@\"", value];
 		}
 		// Study status	
 		else if ([key isEqualToString:NSLocalizedString(@"Study Status", 0L)])
@@ -273,13 +273,13 @@
 			
 			switch( searchType)
 			{
-				case searchContains:			predicateString = [NSString stringWithFormat:@"%@ like[c] \"*%@*\"", key, value];		break;
-				case searchStartsWith:			predicateString = [NSString stringWithFormat:@"%@ like[c] \"%@*\"", key, value];		break;
-				case searchEndsWith:			predicateString = [NSString stringWithFormat:@"%@ like[c] \"*%@\"", key, value];		break;
+				case searchContains:			predicateString = [NSString stringWithFormat:@"%@ LIKE[cd] \"*%@*\"", key, value];		break;
+				case searchStartsWith:			predicateString = [NSString stringWithFormat:@"%@ LIKE[cd] \"%@*\"", key, value];		break;
+				case searchEndsWith:			predicateString = [NSString stringWithFormat:@"%@ LIKE[cd] \"*%@\"", key, value];		break;
 				case searchExactMatch:
 									{
 										if([[[view valueField] stringValue] isEqualToString:@""]) value = [NSString stringWithString: @"<empty>"];
-										predicateString = [NSString stringWithFormat:@"%@ like[c] \"%@\"", key, value];	break;
+										predicateString = [NSString stringWithFormat:@"%@ LIKE[cd] \"%@\"", key, value];	break;
 									}
 			}
 		}

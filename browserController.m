@@ -475,7 +475,7 @@ static BOOL COMPLETEREBUILD = NO;
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
 	NSError					*error = 0L;
-	NSString				*curPatientID = 0L, *curStudyID = 0L, *curSerieID = 0L;
+	NSString				*curPatientUID = 0L, *curStudyID = 0L, *curSerieID = 0L;
 	NSManagedObject			*seriesTable, *study, *album;
 	DicomImage				*image;
 	long					ii, i, x;
@@ -624,7 +624,7 @@ static BOOL COMPLETEREBUILD = NO;
 				{
 //					if( 0)
 					{
-						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientID"] isEqualToString: curPatientID] == YES)
+						if( [[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
 						{
 							
 						}
@@ -677,7 +677,7 @@ static BOOL COMPLETEREBUILD = NO;
 							}
 														
 							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
-							[curPatientID release];		curPatientID = [[curDict objectForKey: @"patientID"] retain];
+							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
 							
 							if( produceAddedFiles)
 								[modifiedStudiesArray addObject: study];
@@ -799,7 +799,7 @@ static BOOL COMPLETEREBUILD = NO;
 									
 									// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
 									
-									if( [[curDict objectForKey: @"patientID"] isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
+									if( [[curDict objectForKey: @"patientID"] caseInsensitiveCompare: [firstObject valueForKeyPath:@"series.study.patientID"]] == NSOrderedSame)
 									{
 										if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
 											[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
@@ -941,7 +941,7 @@ static BOOL COMPLETEREBUILD = NO;
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 		}
 		
-		[curPatientID release];
+		[curPatientUID release];
 		[curStudyID release];
 		[curSerieID release];
 		
@@ -3104,7 +3104,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		for( i = 0; i < [outlineViewArray count] ; i++)
 		{
-			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientID"]]];
+			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientUID LIKE[cd] %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]]];
 		}
 		
 		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
@@ -8247,7 +8247,7 @@ static NSArray*	openSubSeriesArray = 0L;
     {
 		[pressedKeys appendString: [event characters]];
 		
-		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[c] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
+		NSArray		*result = [outlineViewArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", [NSString stringWithFormat:@"%@*", pressedKeys]]];
 		
 		[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
 		
@@ -11869,35 +11869,35 @@ static volatile int numberOfThreadsForJPEG = 0;
 				case 7:			// All Fields
 					s = [NSString stringWithFormat:@"*%@*", _searchString];
 					
-					predicate = [NSPredicate predicateWithFormat: @"(name LIKE[c] %@) OR (patientID LIKE[c] %@) OR (id LIKE[c] %@) OR (comment LIKE[c] %@) OR (studyName LIKE[c] %@) OR (modality LIKE[c] %@) OR (accessionNumber LIKE[c] %@)", s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name LIKE[cd] %@) OR (patientID LIKE[cd] %@) OR (id LIKE[cd] %@) OR (comment LIKE[cd] %@) OR (studyName LIKE[cd] %@) OR (modality LIKE[cd] %@) OR (accessionNumber LIKE[cd] %@)", s, s, s, s, s, s, s];
 				break;
 				
 				case 0:			// Patient Name
-					predicate = [NSPredicate predicateWithFormat: @"name LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat: @"name LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 1:			// Patient ID
-					predicate = [NSPredicate predicateWithFormat: @"patientID LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat: @"patientID LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 2:			// Study/Series ID
-					predicate = [NSPredicate predicateWithFormat: @"id LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat: @"id LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 3:			// Comments
-					predicate = [NSPredicate predicateWithFormat: @"comment LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat: @"comment LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 4:			// Study Description
-					predicate = [NSPredicate predicateWithFormat: @"studyName LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat: @"studyName LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 5:			// Modality
-					predicate = [NSPredicate predicateWithFormat:  @"modality LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat:  @"modality LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 6:			// Accession Number 
-					predicate = [NSPredicate predicateWithFormat:  @"accessionNumber LIKE[c] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
+					predicate = [NSPredicate predicateWithFormat:  @"accessionNumber LIKE[cd] %@", [NSString stringWithFormat:@"*%@*", _searchString]];
 				break;
 				
 				case 100:			// Advanced

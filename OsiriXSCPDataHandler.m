@@ -374,12 +374,12 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			//compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObject: compoundPredicate, nil]];
 			if ([[[attr attrTag] name] isEqualToString:@"PatientsName"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", value];
 	
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"PatientID"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"patientID like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", value];
 
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"StudyInstanceUID"]) {
@@ -392,20 +392,20 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"StudyDescription"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"studyName like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"studyName LIKE[cd] %@", value];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"InstitutionName"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"institutionName like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"institutionName LIKE[cd] %@", value];
 
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"ReferringPhysiciansName"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"referringPhysician like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"referringPhysician LIKE[cd] %@", value];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"PerformingPhysiciansName"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"performingPhysician like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"performingPhysician LIKE[cd] %@", value];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"PatientsBirthDate"]) {
 				value = [attr value];
@@ -509,7 +509,7 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			} 
 			else if ([[[attr attrTag] name] isEqualToString:@"SeriesDescription"]) {
 				value = [attr value];
-				predicate = [NSPredicate predicateWithFormat:@"name like[cd] %@", value];
+				predicate = [NSPredicate predicateWithFormat:@"name LIKE[cd] %@", value];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"SeriesNumber"]) {
 				value = [attr value];
