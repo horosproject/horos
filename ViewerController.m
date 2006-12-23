@@ -1700,8 +1700,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSLog(@"ViewController dealloc End");
 	
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+#if !__LP64__
 	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
 	[[IMService notificationCenter] removeObserver:self];
+#endif
 #endif
 }
 
@@ -3427,10 +3429,12 @@ static ViewerController *draggedController = 0L;
 	
 	displayOnlyKeyImages = NO;
 	
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5	
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+#if !__LP64__
 	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
                                            name:IMAVManagerStateChangedNotification object:nil];
 	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
+#endif
 #endif
 	
 	return self;
@@ -11020,7 +11024,8 @@ int i,j,l;
 //	[sourceImage release];
 }
 
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5	
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+#if !__LP64__
 // IMAVManager notification callback.
 - (void)_stateChanged:(NSNotification *)aNotification {
     // Read the state.
@@ -11038,7 +11043,7 @@ int i,j,l;
         [avManager stop];
     }
 }
-
+#endif
 #else
 
 - (void) iChatBroadcast:(id) sender

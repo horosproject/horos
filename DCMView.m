@@ -8287,6 +8287,7 @@ BOOL	lowRes = NO;
 #pragma mark -
 #pragma mark IMAVManager delegate methods.
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+#if !__LP64__
 /*
 // The IMAVManager will call this to ask for the context we'll be providing frames with.
 - (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
@@ -8417,7 +8418,7 @@ BOOL	lowRes = NO;
 }
 
 
-
+#endif
 #endif
 
 // The _hasChanged flag is set to 'NO' after any check (by a client of this 
