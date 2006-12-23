@@ -100,7 +100,13 @@ char *GetPrivateIP()
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
+	
+	if( [defaults integerForKey:@"DICOMTimeout"] < 1)
+		[defaults setObject:@"1" forKey:@"DICOMTimeout"];
+	
+	if( [defaults integerForKey:@"DICOMTimeout"] > 120)
+		[defaults setObject:@"120" forKey:@"DICOMTimeout"];
+	
 	[_authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{

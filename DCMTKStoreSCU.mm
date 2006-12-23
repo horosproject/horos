@@ -1053,12 +1053,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
 	
 	//Timeout
-	//OFCmdSignedInt opt_timeout = 0;
-	//dcmConnectionTimeout.set((Sint32) opt_timeout);
+	OFCmdSignedInt opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+	dcmConnectionTimeout.set((Sint32) opt_timeout);
 
    //acse-timeout
-	//OFCmdSignedInt opt_timeout = 0;
-	//opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+	opt_acse_timeout = OFstatic_cast(int, opt_timeout);
 	
 	//dimse-timeout
 	//OFCmdSignedInt opt_timeout = 0;

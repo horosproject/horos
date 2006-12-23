@@ -54,7 +54,7 @@
 		_networkTransferSyntax = EXS_Unknown;
 		_blockMode = DIMSE_BLOCKING;
 		_dimse_timeout = 0;
-		_acse_timeout = 30;
+		_acse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 		
 		//SSL
 		//_keyFileFormat = SSL_FILETYPE_PEM;

@@ -144,6 +144,7 @@ extern BrowserController	*browserWindow;
 		recomputePETBlending = YES;
 	}
 	
+	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[[note object] integerForKey: @"DICOMTimeout"]) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[[note object] integerForKey: @"LISTENERCHECKINTERVAL"]) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[[note object] integerForKey: @"SINGLEPROCESS"]) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[[note object] stringForKey: @"AETITLE"]] == NO) restartListener = YES;

@@ -210,12 +210,12 @@ void errmsg(const char* msg, ...)
 */
 
 	//timeout
-	//opt_timeout = 0;
-	//dcmConnectionTimeout.set((Sint32) opt_timeout);
+	OFCmdSignedInt opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+	dcmConnectionTimeout.set((Sint32) opt_timeout);
 	
 	//acse-timeout
-	//opt_timeout = 0;
-	//options.acse_timeout_ = OFstatic_cast(int, opt_timeout);
+	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+	options.acse_timeout_ = OFstatic_cast(int, opt_timeout);
 	
 	//dimse-timeout
 	// opt_timeout = 0;

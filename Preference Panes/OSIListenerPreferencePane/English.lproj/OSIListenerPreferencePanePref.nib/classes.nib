@@ -44,6 +44,7 @@
                 nameField = NSFormCell; 
                 portField = NSFormCell; 
                 singleProcessButton = NSButton; 
+                timeout = NSTextField; 
             }; 
             SUPERCLASS = NSPreferencePane; 
         }, 

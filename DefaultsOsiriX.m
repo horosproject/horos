@@ -720,6 +720,8 @@ static NSString *hostName = @"";
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	
+	[defaultValues setObject:@"15" forKey:@"DICOMTimeout"];
+	
 	// ** TRANSITIONTYPE
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
 	

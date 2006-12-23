@@ -27,7 +27,7 @@
 	IBOutlet NSButton *listenerOnOffAnonymize;
 	IBOutlet NSButton *generateLogsButton;
 	IBOutlet NSButton *decompressButton, *compressButton;
-	IBOutlet NSTextField *checkIntervalField;
+	IBOutlet NSTextField *checkIntervalField, *timeout;
 	IBOutlet NSButton *singleProcessButton;
 	IBOutlet NSPopUpButton *logDurationPopup;
 	
