@@ -35,6 +35,7 @@
                 addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 
                 osirixServerTable = NSTableView; 
+                progress = NSProgressIndicator; 
                 searchDICOMBonjourNodes = NSButton; 
                 serverTable = NSTableView; 
                 verifyPing = NSButton; 

@@ -305,10 +305,16 @@
 {
 	int i;
 	int status;
+	int selectedRow = [serverTable selectedRow];
+	
+	[progress startAnimation: self];
 	
 	for( i = 0 ; i < [serverList count]; i++)
 	{
 		NSMutableDictionary *aServer = [[serverList objectAtIndex: i] mutableCopy];
+		
+		[serverTable selectRow: i byExtendingSelection: NO];
+		[serverTable display];
 		
 		int numberPacketsReceived = 0;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || SimplePing( [[aServer objectForKey:@"Address"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
@@ -323,6 +329,10 @@
 	}
 	
 	[serverTable reloadData];
+	
+	[progress stopAnimation: self];
+	
+	[serverTable selectRow: selectedRow byExtendingSelection: NO];
 }
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
