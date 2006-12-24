@@ -89,6 +89,17 @@
 	BOOL					_useFirstSurface;
 	BOOL					_useSecondSurface;
 	
+	BOOL					_shouldRenderFusion;
+	
+	float					_fusionFirstSurface,  _fusionSecondSurface, _fusionResolution, _fusionFirstTransparency, _fusionSecondTransparency, _fusionDecimate;
+	int						_fusionSmooth;
+	NSColor					*_fusionFirstColor, *_fusionSecondColor;
+	BOOL					_fusionShouldDecimate;
+	BOOL					_fusionShouldSmooth;
+	BOOL					_fusionUseFirstSurface;
+	BOOL					_fusionUseSecondSurface;
+	
+	
 
 }
 
@@ -115,6 +126,7 @@
 
 - (ViewerController *) viewer2D;
 - (void)renderSurfaces;
+- (void)renderFusionSurfaces;
 
 #ifdef roi3Dvolume
 // ROIs Volumes
@@ -157,6 +169,39 @@
 - (void) setShouldSmooth: (BOOL)shouldSmooth;
 - (void) setUseFirstSurface:(BOOL)useSurface;
 - (void) setUseSecondSurface:(BOOL)useSurface;
+
+//fusion Surface values
+
+- (float) fusionFirstSurface;
+- (float) fusionSecondSurface;
+- (float) fusionResolution;
+- (float) fusionFirstTransparency;
+- (float) fusionSecondTransparency;
+- (float) fusionDecimate;
+- (int) fusionSmooth;
+- (NSColor *) fusionFirstColor;
+- (NSColor *) fusionSecondColor;
+- (BOOL) fusionShouldDecimate;
+- (BOOL) fusionShouldSmooth;
+- (BOOL) fusionUseFirstSurface;
+- (BOOL) fusionUseSecondSurface;
+
+- (BOOL) shouldRenderFusion;
+
+- (void) setFusionFirstSurface:(float)pixelValue;
+- (void) setFusionSecondSurface:(float)pixelValue;
+- (void) setFusionResolution:(float)resolution;
+- (void) setFusionFirstTransparency:(float)transparency;
+- (void) setFusionSecondTransparency:(float)transparency;
+- (void) setFusionDecimate:(float)decimateItr;
+- (void) setFusionSmooth:(int)iteration;
+- (void) setFusionFirstColor:(NSColor *)color;
+- (void) setFusionSecondColor: (NSColor *)color;
+- (void) setFusionShouldDecimate: (BOOL)shouldDecimate;
+- (void) setFusionShouldSmooth: (BOOL)shouldSmooth;
+- (void) setFusionUseFirstSurface:(BOOL)useSurface;
+- (void) setFusionUseSecondSurface:(BOOL)useSurface;
+- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion;
 
 @end
 

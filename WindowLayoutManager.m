@@ -697,7 +697,7 @@ WindowLayoutManager *sharedLayoutManager;
 					[viewer3D setShouldDecimate:[[seriesInfo objectForKey:@"shouldDecimate"] boolValue]];
 					[viewer3D setShouldSmooth:[[seriesInfo objectForKey:@"shouldSmooth"] boolValue]];
 					[viewer3D setUseFirstSurface:[[seriesInfo objectForKey:@"useFirstSurface"] boolValue]];
-					[viewer3D setUseSecondSurface:[[seriesInfo objectForKey:@"useFirstSurface"] boolValue]];
+					[viewer3D setUseSecondSurface:[[seriesInfo objectForKey:@"useSecondSurface"] boolValue]];
 					NSData *firstColor = [seriesInfo objectForKey:@"firstColor"];
 					if (firstColor)
 						[viewer3D setFirstColor:[NSUnarchiver unarchiveObjectWithData:firstColor]];
@@ -710,6 +710,34 @@ WindowLayoutManager *sharedLayoutManager;
 					else
 						[viewer3D setSecondColor:[NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
 					[(SRController *)viewer3D renderSurfaces];
+					
+					[viewer3D setShouldRenderFusion:[[seriesInfo objectForKey:@"shouldRenderFusion"] boolValue]];
+					if ([[seriesInfo objectForKey:@"shouldRenderFusion"] boolValue]){
+						[viewer3D setFusionFirstSurface:[[seriesInfo objectForKey:@"fusionFirstSurface"] floatValue]];
+						[viewer3D setFusionSecondSurface:[[seriesInfo objectForKey:@"fusionSecondSurface"] floatValue]];
+						[viewer3D setFusionResolution:[[seriesInfo objectForKey:@"fusionResolution"] floatValue]];
+						[viewer3D setFusionFirstTransparency:[[seriesInfo objectForKey:@"fusionFirstTransparency"] floatValue]];
+						[viewer3D setFusionSecondTransparency:[[seriesInfo objectForKey:@"fusionSecondTransparency"] floatValue]];
+						[viewer3D setFusionDecimate:[[seriesInfo objectForKey:@"fusionDecimate"] floatValue]];
+						[viewer3D setFusionSmooth:[[seriesInfo objectForKey:@"fusionSmooth"] intValue]];
+						[viewer3D setFusionShouldDecimate:[[seriesInfo objectForKey:@"fusionShouldDecimate"] boolValue]];
+						[viewer3D setFusionShouldSmooth:[[seriesInfo objectForKey:@"fusionShouldSmooth"] boolValue]];
+						[viewer3D setFusionUseFirstSurface:[[seriesInfo objectForKey:@"fusionUseFirstSurface"] boolValue]];
+						[viewer3D setFusionUseSecondSurface:[[seriesInfo objectForKey:@"fusionUseSecondSurface"] boolValue]];
+						NSData *fusionFirstColor = [seriesInfo objectForKey:@"fusionFirstColor"];
+						if (fusionFirstColor)
+							[viewer3D setFusionFirstColor:[NSUnarchiver unarchiveObjectWithData:fusionFirstColor]];
+						else
+							[viewer3D setFusionFirstColor:[NSColor colorWithCalibratedRed:1.0 green:0.285 blue:0.0 alpha:1.0]];
+							
+						NSData *fusionSecondColor = [seriesInfo objectForKey:@"fusionSecondColor"];
+						if (fusionSecondColor)	
+							[viewer3D setFusionSecondColor:[NSUnarchiver unarchiveObjectWithData:fusionSecondColor]];
+						else
+							[viewer3D setFusionSecondColor:[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0]];
+						[(SRController *)viewer3D renderFusionSurfaces];
+						
+					}
 				
 				}
 				

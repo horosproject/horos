@@ -142,8 +142,22 @@
 				[seriesInfo setObject:[NSNumber numberWithBool:[controller useSecondSurface]] forKey:@"useSecondSurface"];
 				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller firstColor]] forKey:@"firstColor"];
 				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller secondColor]] forKey:@"secondColor"];
-	
-				// if blending SR it will here
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller shouldRenderFusion]] forKey:@"shouldRenderFusion"];
+				
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionFirstSurface]] forKey:@"fusionFirstSurface"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionSecondSurface]] forKey:@"fusionSecondSurface"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionResolution]] forKey:@"fusionResolution"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionFirstTransparency]] forKey:@"fusionFirstTransparency"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionSecondTransparency]] forKey:@"fusionSecondTransparency"];
+				[seriesInfo setObject:[NSNumber numberWithFloat:[controller fusionDecimate]] forKey:@"fusionDecimate"];
+				[seriesInfo setObject:[NSNumber numberWithInt:[controller fusionSmooth]] forKey:@"fusionSmooth"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller fusionShouldDecimate]] forKey:@"fusionShouldDecimate"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller fusionShouldSmooth]] forKey:@"fuiosnShouldSmooth"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller fusionUseFirstSurface]] forKey:@"fusionUseFirstSurface"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller fusionUseSecondSurface]] forKey:@"fusionUseSecondSurface"];
+				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller fusionFirstColor]] forKey:@"fusionFirstColor"];
+				[seriesInfo setObject:[NSArchiver archivedDataWithRootObject:[controller fusionSecondColor]] forKey:@"fusionSecondColor"];
+
 			}
 			
 			if ([controller isKindOfClass:[ViewerController class]]) {

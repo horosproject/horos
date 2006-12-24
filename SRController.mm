@@ -88,11 +88,26 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[self setDecimate: 0.5];
 	[self setSmooth: 20];
 	[self setFirstColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
-	//[firstColor setColor:_firstColor];
 	[self setSecondColor: [NSColor colorWithCalibratedRed:1.0 green:0.592 blue:0.608 alpha:1.0]];
-	//[secondColor setColor:_secondColor];
 	[self setUseFirstSurface:YES];
 	[self setUseSecondSurface:NO];
+	
+	[self setShouldRenderFusion:NO];
+	[self setFusionResolution:0.5];
+	[self setFusionShouldDecimate:YES];
+	[self setFusionShouldSmooth:YES];
+	[self setFusionFirstSurface:300.0];
+	[self setFusionSecondSurface: -500.0];
+	[self setFusionResolution: 0.5];
+	[self setFusionFirstTransparency: 1.0];
+	[self setFusionSecondTransparency: 1.0];
+	[self setFusionDecimate: 0.5];
+	[self setFusionSmooth: 20];
+	[self setFusionFirstColor: [NSColor colorWithCalibratedRed:1.0 green:0.285 blue:0.0 alpha:1.0]];
+	[self setFusionSecondColor: [NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.0 alpha:1.0]];
+	[self setFusionUseFirstSurface:YES];
+	[self setFusionUseSecondSurface:NO];
+	
 
 	//[self createContextualMenu];
 }
@@ -295,7 +310,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[z2DPointsArray release];
 	[viewer2D release];
 	[roiVolumes release];
-	
+		
 	[super dealloc];
 }
 
@@ -334,27 +349,29 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 -(IBAction) SettingsPopup:(id) sender
 {
-	NSTextField    *textField;
-	
-	if( [sender tag] > 10) textField = secondValue;
-	else textField = firstValue;
 	
 	switch((long) [sender tag])
 	{
 		case 1:
+			[self setFirstSurface: -500.0];
+			break;
 		case 11:
-			[textField setFloatValue: -500.];
-		break;
+			[self setSecondSurface: -500.];
+			break;
 		
 		case 2:
+			[self setFirstSurface: 500.0];
+			break;
 		case 12:
-			[textField setFloatValue: 500.];
-		break;
+			[self setSecondSurface: 500.0];
+			break;
 		
 		case 3:
+			[self setFirstSurface: 2000.0];
+			break;
 		case 13:
-			[textField setFloatValue: 2000.];
-		break;
+			[self setSecondSurface: 2000.0];
+			break;
 	}
 }
 
@@ -421,28 +438,67 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 
 -(IBAction) BSettingsPopup:(id) sender
 {
-	NSTextField    *textField;
-	
-	if( [sender tag] > 10) textField = BsecondValue;
-	else textField = BfirstValue;
+
 	
 	switch((long) [sender tag])
 	{
 		case 1:
+			[self setFusionFirstSurface: -500.0];
+			break;
 		case 11:
-			[textField setFloatValue: -500.];
-		break;
+			[self setFusionSecondSurface: -500.];
+			break;
 		
 		case 2:
+			[self setFusionFirstSurface: 500.0];
+			break;
 		case 12:
-			[textField setFloatValue: 500.];
-		break;
+			[self setFusionSecondSurface: 500.0];
+			break;
 		
 		case 3:
+			[self setFusionFirstSurface: 2000.0];
+			break;
 		case 13:
-			[textField setFloatValue: 2000.];
-		break;
+			[self setFusionSecondSurface: 2000.0];
+			break;
 	}
+}
+
+- (void)renderFusionSurfaces{
+	if( _fusionUseFirstSurface)
+		
+		[view BchangeActor   :(long) 0
+								: _fusionResolution
+								: _fusionFirstTransparency
+								:[_fusionFirstColor redComponent]
+								:[_fusionFirstColor greenComponent]
+								:[_fusionFirstColor blueComponent]
+								: _fusionFirstSurface
+								: _fusionShouldDecimate
+								: _fusionDecimate
+								: _fusionShouldSmooth
+								: _fusionSmooth];
+	else
+			[view BdeleteActor: (long) 0];
+		
+		// SECOND SURFACE
+	if(_fusionUseSecondSurface)
+	
+		[view BchangeActor  :(long) 1
+								: _fusionResolution
+								: _fusionSecondTransparency
+								:[_fusionSecondColor redComponent]
+								:[_fusionSecondColor greenComponent]
+								:[_fusionSecondColor blueComponent]
+								: _fusionSecondSurface
+								: _fusionShouldDecimate
+								: _fusionDecimate
+								: _fusionShouldSmooth
+								: _fusionSmooth];
+	else
+		[view BdeleteActor: (long) 1];
+
 }
 
 -(IBAction) BApplySettings:(id) sender
@@ -453,40 +509,9 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
     
     if( [sender tag])   //User clicks OK Button
     {
-		// FIRST SURFACE
-		if( [BcheckFirst state] == NSOnState)
-	
-			[view BchangeActor   :(long) 0
-								:[BresolSlide floatValue]
-								:[BfirstTrans floatValue]
-								:[[[BfirstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								:[[[BfirstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								:[[[BfirstColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
-								:[BfirstValue floatValue]
-								:[[BpreprocessMatrix cellWithTag:0] state]
-								:[Bdecimate floatValue]
-								:[[BpreprocessMatrix cellWithTag:1] state]
-								:[Bsmooth intValue]];
-		else
-			[view BdeleteActor: (long) 0];
-		
-		// SECOND SURFACE
-		if( [BcheckSecond state] == NSOnState)
-	
-			[view BchangeActor   :(long) 1
-								:[BresolSlide floatValue]
-								:[BsecondTrans floatValue]
-								:[[[BsecondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] redComponent]
-								:[[[BsecondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] greenComponent]
-								:[[[BsecondColor color] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"] blueComponent]
-								:[BsecondValue floatValue]
-								:[[BpreprocessMatrix cellWithTag:0] state]
-								:[Bdecimate floatValue]
-								:[[BpreprocessMatrix cellWithTag:1] state]
-								:[Bsmooth intValue]];
-		else
-			[view BdeleteActor: (long) 1];
-    }
+		[self setShouldRenderFusion:YES];
+		[self renderFusionSurfaces];
+	}
 }
 
 - (void) BChangeSettings:(id) sender
@@ -1353,13 +1378,13 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	_smooth = iteration;
 }
 - (void) setFirstColor:(NSColor *)color{
-	[_firstColor release];
-	_firstColor  = [color retain];
+	_firstColor;
+	_firstColor  = color;
 }
 
 - (void) setSecondColor: (NSColor *)color{
-	[_secondColor release];
-	_secondColor  = [color retain];
+	_secondColor;
+	_secondColor  = color;
 }
 
 - (void) setShouldDecimate: (BOOL)shouldDecimate{
@@ -1375,5 +1400,108 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 - (void) setUseSecondSurface:(BOOL)useSurface{
 	_useSecondSurface = useSurface;
 }
+
+// Fusionm Surface values
+
+- (float) fusionFirstSurface{
+	return _fusionFirstSurface;
+}
+- (float) fusionSecondSurface{
+	return _fusionSecondSurface;
+}
+- (float) fusionResolution{
+	return _fusionResolution;
+}
+- (float) fusionFirstTransparency{
+	return _fusionFirstTransparency;
+}
+- (float) fusionSecondTransparency{
+	return _fusionSecondTransparency;
+}
+
+- (float) fusionDecimate{
+	return _fusionDecimate;
+}
+
+- (int)fusionSmooth{
+	return _fusionSmooth;
+}
+
+- (NSColor *) fusionFirstColor{
+	return _fusionFirstColor;
+}
+
+- (NSColor *) fusionSecondColor{
+	return _fusionSecondColor;
+}
+
+- (BOOL) fusionShouldDecimate{
+	
+	return _fusionShouldDecimate;
+}
+- (BOOL	)fusionShouldSmooth{
+	return _fusionShouldSmooth;
+}
+
+- (BOOL) fusionUseFirstSurface{
+	return _fusionUseFirstSurface;
+}
+- (BOOL) fusionUseSecondSurface{
+	return _fusionUseSecondSurface;
+}
+
+- (BOOL) shouldRenderFusion{
+	return _shouldRenderFusion;
+}
+
+
+- (void) setFusionFirstSurface:(float)pixelValue{
+	_fusionFirstSurface = pixelValue;
+}
+- (void) setFusionSecondSurface:(float)pixelValue{
+	_fusionSecondSurface = pixelValue;
+}
+
+- (void) setFusionResolution:(float)resolution{
+	_fusionResolution = resolution;
+}
+- (void) setFusionFirstTransparency:(float)transparency{
+	_fusionFirstTransparency = transparency;
+}
+- (void) setFusionSecondTransparency:(float)transparency{
+	_fusionSecondTransparency = transparency;
+}
+- (void) setFusionDecimate:(float)decimateItr{
+	_fusionDecimate = decimateItr;
+}
+- (void) setFusionSmooth:(int)iteration{
+	_fusionSmooth = iteration;
+}
+- (void) setFusionFirstColor:(NSColor *)color{
+	_fusionFirstColor  = color;
+}
+
+- (void) setFusionSecondColor: (NSColor *)color{
+	_fusionSecondColor  = color;
+}
+
+- (void) setFusionShouldDecimate: (BOOL)shouldDecimate{
+	_fusionShouldDecimate = shouldDecimate;
+}
+- (void) setFusionShouldSmooth: (BOOL)shouldSmooth{
+	_fusionShouldSmooth = shouldSmooth;
+}
+
+- (void) setFusionUseFirstSurface:(BOOL)useSurface{
+	_fusionUseFirstSurface = useSurface;
+}
+- (void) setFusionUseSecondSurface:(BOOL)useSurface{
+	_fusionUseSecondSurface = useSurface;
+}
+
+- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion{
+	_shouldRenderFusion = shouldRenderFusion;
+}
+
 
 @end
