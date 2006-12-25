@@ -1,10 +1,13 @@
-//// DOClient.h
+// DOClient.h
 
-#import "DOServer.h" // for Client protocol
+#import <Foundation/Foundation.h>
 
-@interface Client : NSObject <Client>
+@interface DOClient:NSObject
 {
-    id <Server> server;
-    NSConnection *serverConnection;
+         id serverObject;
 }
+
+- (void) connect;
+- (void)log: (NSString*)string;
+
 @end

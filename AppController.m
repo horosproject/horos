@@ -42,9 +42,11 @@ MODIFICATION HISTORY
   
 ****************************************************************/
 
-#if __ppc__
-//#import <ILCrashReporter/ILCrashReporter.h>
+#if !__LP64__
+#import <ILCrashReporter/ILCrashReporter.h>
 #endif
+
+#import "DOClient.h"
 #import "ToolbarPanel.h"
 #import "AppController.h"
 #import "PreferenceController.h"
@@ -1322,7 +1324,9 @@ static BOOL initialized = NO;
 				
 				srandom(time(NULL));
 				
-			//	[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
+				#if !__LP64__
+				[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
+				#endif
 				
 				mainThread = [NSThread currentThread];
 							
@@ -1448,22 +1452,14 @@ static BOOL initialized = NO;
 	
 }
 
-//- (void)setServer:(id)anObject
-//{
-//    [anObject retain];
-//    [anObject setProtocolForProxy:@protocol(Server)];
-//    [server release];
-//    server = (id <Server>)anObject;
-//
-//    NSLog( @"You may start to communicate with the server now");
-//}
-
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
 	
-//	[Server connectionToServerThreadForClient: self];
-	
+	DOClient	*client = [[DOClient alloc] init];
+	[client connect];
+	[client log:@"Happy Xmas 2006"];
+		
 	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 
     NSLog(@"Finishing Launching");

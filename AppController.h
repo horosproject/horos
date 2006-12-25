@@ -23,7 +23,6 @@
 @class SplashScreen;
 @class DCMNetServiceDelegate;
 
-//#define SINGLE_WINDOW_MODE YES
 enum
 {
 	always = 0,
@@ -36,10 +35,6 @@ NSRect screenFrame();
 
 @interface AppController : NSObject		// <Client>
 {
-//    id <Server> server;
-//    NSConnection *serverConnection;
-	
-	
 	IBOutlet BrowserController		*browserController;
 
     IBOutlet NSMenu					*filtersMenu;

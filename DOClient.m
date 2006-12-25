@@ -1,17 +1,17 @@
-//// Client.m
+// DOClient.m
 
 #import "DOClient.h"
 
-@implementation Client
+@implementation DOClient
 
-- (void)setServer:(id)anObject
+- (void) connect
 {
-    [anObject retain];
-    [anObject setProtocolForProxy:@protocol(Server)];
-    [server release];
-    server = (id <Server>)anObject;
+   serverObject=[NSConnection rootProxyForConnectionWithRegisteredName:@"OsiriX_DistributedObjects_OsiriX" host: nil];
+}
 
-    // You may start to communicate with the server now
+- (void)log: (NSString*)string
+{
+         [serverObject log: string];
 }
 
 @end
