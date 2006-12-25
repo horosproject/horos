@@ -3041,7 +3041,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( timeIntervalStart != 0L || timeIntervalEnd != 0L)
 	{
-		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString];	//stringByAppendingFormat:@"-%H:%M"];
+		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];	//stringByAppendingFormat:@"-%H:%M"];
 		NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 		
 		if( timeIntervalStart != 0L && timeIntervalEnd != 0L)
@@ -7781,6 +7781,15 @@ static NSArray*	openSubSeriesArray = 0L;
 	return self;
 }
 
+- (void) setDBDate
+{
+	NSString		*sdf = [[NSUserDefaults standardUserDefaults] stringForKey:@"DBDateFormat"];
+	NSDateFormatter	*dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: dateFomat];
+	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: dateFomat];
+}
+
 -(void) awakeFromNib
 {
 	WaitRendering		*wait = 0L;
@@ -7977,14 +7986,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), 0L] retain];
 	
 	// Set International dates for columns
-	NSString		*sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString];
-	NSDateFormatter	*dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: dateFomat];
-	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: dateFomat];
+	[self setDBDate];
 	
-	sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
-	dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+	NSDateFormatter	*dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: dateFomat];
 	
 

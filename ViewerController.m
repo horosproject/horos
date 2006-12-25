@@ -1888,7 +1888,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
 		
-		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString];
+		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
 		NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 		
 		i = 0;

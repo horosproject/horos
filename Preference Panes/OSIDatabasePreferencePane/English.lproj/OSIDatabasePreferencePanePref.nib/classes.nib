@@ -20,6 +20,7 @@
         {
             ACTIONS = {
                 databaseCleaning = id; 
+                resetDate = id; 
                 setAutoComments = id; 
                 setCopyDatabaseMode = id; 
                 setCopyDatabaseOnOff = id; 

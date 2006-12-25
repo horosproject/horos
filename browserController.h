@@ -215,6 +215,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;
 
+- (void) setDBDate;
 - (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;

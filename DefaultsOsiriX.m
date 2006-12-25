@@ -717,6 +717,9 @@ static NSString *hostName = @"";
 	// ** ReserveScreenForDB
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 	
+	// ** DateFormat
+	[defaultValues setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
+	
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	

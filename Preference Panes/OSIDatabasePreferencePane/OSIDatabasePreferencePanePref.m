@@ -388,6 +388,11 @@ Version 2.4
 	[[[[self mainView] window] windowController] reopenDatabase];
 }
 
+- (IBAction) resetDate:(id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
+}
+
 - (IBAction)setLocationURL:(id)sender{
 	//NSLog(@"setLocation URL");
 		
