@@ -1,4 +1,4 @@
-//// Server.h
+//// DOServer.h
 
 /* 
 
@@ -41,7 +41,7 @@ Client call [server terminate], then release the server as usual.
 }
 
 // Create new thread and get back a connection the thread
-+ (NSConnection *)connectionToServerThreadForClient:(id <Client>)client
++ (NSConnection *)connectionToServerThreadForClient:(id <Client>)client;
 
 // Private method used only by the Server class to connect to a new created thread
 + (void)connectWithPorts:(NSArray *)portArray;

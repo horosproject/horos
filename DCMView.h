@@ -117,7 +117,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
     
 	BOOL			suppress_labels; // keep from drawing the labels when command+shift is pressed
 
-	NSString		*shortDateString;
+	NSString		*shortDateString, *shortDateTimeString;
 	NSDictionary	*localeDictionnary;
 
     NSPoint         start, originStart, originOffsetStart, previous;

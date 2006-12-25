@@ -21,7 +21,7 @@
 		<key>12680</key>
 		<string>482 461 60 74 0 0 1024 746 </string>
 		<key>1580</key>
-		<string>1170 645 220 815 0 0 2560 1578 </string>
+		<string>610 53 220 815 0 0 1440 878 </string>
 		<key>29</key>
 		<string>191 1508 561 44 0 0 2560 1578 </string>
 	</dict>
@@ -29,8 +29,8 @@
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>1580</integer>
 		<integer>885</integer>
+		<integer>1580</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>

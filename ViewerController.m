@@ -991,7 +991,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
 		
-		NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+		NSString	*shortDateString = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
 		NSDictionary	*localeDictionnary = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 
 		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
@@ -12412,9 +12412,7 @@ long i;
 				NSLog(@"have blending controller");
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@ - %@", [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.name"], 
-					[studyDate descriptionWithCalendarFormat:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] timeZone:0L 
-					locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]]]];
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
 				[[pcviewer window] performZoom:self];
 				//[viewer showWindow:self];
 			}

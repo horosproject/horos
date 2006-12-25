@@ -393,6 +393,11 @@ Version 2.4
 	[[NSUserDefaults standardUserDefaults] setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
 }
 
+- (IBAction) resetDateOfBirth:(id) sender
+{
+	[[NSUserDefaults standardUserDefaults] setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] forKey:@"DBDateOfBirthFormat"];
+}
+
 - (IBAction)setLocationURL:(id)sender{
 	//NSLog(@"setLocation URL");
 		

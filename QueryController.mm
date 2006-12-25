@@ -766,11 +766,10 @@ static QueryController	*currentQueryController = 0L;
 		[searchCell setSearchMenuTemplate:cellMenu];
 	}
 	
-	
-	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
+	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
 	NSDateFormatter *dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
-
+	
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
 }
 

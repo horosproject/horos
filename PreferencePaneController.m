@@ -145,6 +145,7 @@ extern BrowserController	*browserWindow;
 	}
 	
 	if( [[previousDefaults valueForKey: @"DBDateFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateFormat"]] == NO) refreshDatabase = YES;
+	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateOfBirthFormat"]] == NO) refreshDatabase = YES;
 	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[[note object] integerForKey: @"DICOMTimeout"]) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[[note object] integerForKey: @"LISTENERCHECKINTERVAL"]) restartListener = YES;
 	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[[note object] integerForKey: @"SINGLEPROCESS"]) restartListener = YES;

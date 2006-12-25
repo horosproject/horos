@@ -21,6 +21,7 @@
             ACTIONS = {
                 databaseCleaning = id; 
                 resetDate = id; 
+                resetDateOfBirth = id; 
                 setAutoComments = id; 
                 setCopyDatabaseMode = id; 
                 setCopyDatabaseOnOff = id; 

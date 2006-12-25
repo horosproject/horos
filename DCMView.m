@@ -1204,6 +1204,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[mouseModifiers release]; 
 	[shortDateString release];
+	[shortDateTimeString release];
 	[localeDictionnary release];
 	
 	[dcmFilesList release];
@@ -3668,7 +3669,8 @@ static long scrollMode;
 	}
 	
 	yearOld = 0L;
-	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] retain];
+	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"] retain];
+	shortDateTimeString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
@@ -5482,7 +5484,7 @@ static long scrollMode;
 			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSShortDateFormatString]];	//	DDP localized from "%a %m/%d/%Y" 
+				tempString = [date descriptionWithCalendarFormat: shortDateString];
 				xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 				yRaster -= (stringSize.height + stringSize.height/10);

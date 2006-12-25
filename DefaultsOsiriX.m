@@ -719,6 +719,7 @@ static NSString *hostName = @"";
 	
 	// ** DateFormat
 	[defaultValues setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] forKey:@"DBDateFormat"];
+	[defaultValues setObject:[[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] forKey:@"DBDateOfBirthFormat"];
 	
 	// ** SERIESORDER
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];

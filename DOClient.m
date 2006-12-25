@@ -1,5 +1,7 @@
 //// Client.m
 
+#import "DOClient.h"
+
 @implementation Client
 
 - (void)setServer:(id)anObject

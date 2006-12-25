@@ -7788,6 +7788,11 @@ static NSArray*	openSubSeriesArray = 0L;
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter: dateFomat];
 	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter: dateFomat];
 	[[[databaseOutline tableColumnWithIdentifier: @"dateAdded"] dataCell] setFormatter: dateFomat];
+
+	sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"];
+	dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
+	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: dateFomat];
+	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: dateFomat];
 }
 
 -(void) awakeFromNib
@@ -7987,18 +7992,12 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	// Set International dates for columns
 	[self setDBDate];
-	
-	NSString *sdf = [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString];
-	NSDateFormatter	*dateFomat = [[[NSDateFormatter alloc]  initWithDateFormat: sdf allowNaturalLanguage: YES] autorelease];
-	[[[databaseOutline tableColumnWithIdentifier: @"dateOfBirth"] dataCell] setFormatter: dateFomat];
-	
 
 	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
 	[[databaseOutline tableColumnWithIdentifier:@"name"] setDataCell:cellName];
 	
 	ImageAndTextCell *cellReport = [[[ImageAndTextCell alloc] init] autorelease];
 	[[databaseOutline tableColumnWithIdentifier:@"reportURL"] setDataCell:cellReport];
-	[[[databaseOutline tableColumnWithIdentifier: @"reportURL"] dataCell] setFormatter: dateFomat];
 	
 //	columnsMenu = [[NSMenu alloc] initWithTitle:@"Displayed Columns"];
 //	for( i = 0; i < [[databaseOutline tableColumns] count]; i++)

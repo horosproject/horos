@@ -1,6 +1,6 @@
-//// Client.h
+//// DOClient.h
 
-#import Server.h // for Client protocol
+#import "DOServer.h" // for Client protocol
 
 @interface Client : NSObject <Client>
 {

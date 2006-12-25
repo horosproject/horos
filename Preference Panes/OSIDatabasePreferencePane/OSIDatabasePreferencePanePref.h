@@ -58,6 +58,7 @@
 - (IBAction)setAutoComments:(id) sender;
 - (IBAction)setReportMode:(id) sender;
 - (IBAction) resetDate:(id) sender;
+- (IBAction) resetDateOfBirth:(id) sender;
 - (BOOL)useSeriesDescription;
 - (void)setUseSeriesDescription:(BOOL)value;
 - (BOOL)splitMultiEchoMR;
