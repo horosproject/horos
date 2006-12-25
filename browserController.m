@@ -3131,10 +3131,12 @@ static BOOL COMPLETEREBUILD = NO;
 		NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
 		sortDescriptors = [NSArray arrayWithObjects: sort, sortdate, 0L];
 	}
-	else
+	else if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"])
 	{
 		sortDescriptors = [NSArray arrayWithObjects: [[databaseOutline sortDescriptors] objectAtIndex: 0], sortdate, 0L];
 	}
+	else sortDescriptors = [databaseOutline sortDescriptors];
+	
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
 	
 	[context unlock];
