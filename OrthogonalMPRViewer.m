@@ -120,6 +120,7 @@ NSString * documentsDirectory();
 		[moviePlayStop setEnabled:NO];
 		[moviePosSlider setEnabled:NO];
 	}
+	
 	//originalDCMPixList[curMovieIndex] = [pix retain];
 	//originalFileList[curMovieIndex] = [files retain];
 	

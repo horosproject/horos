@@ -491,6 +491,8 @@ static BOOL COMPLETEREBUILD = NO;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
+	
 //	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
 	
 //	#define RANDOMFILES

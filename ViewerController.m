@@ -12320,7 +12320,7 @@ long i;
 		return viewer;
 	if (blendingController) {	
 		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
-					
+		[[viewer window] performZoom:self];
 		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
 		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
 		[[viewer PETCTController] ApplyCLUTString:curCLUTMenu];
@@ -12413,8 +12413,6 @@ long i;
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
 				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
-				[[pcviewer window] performZoom:self];
-				//[viewer showWindow:self];
 			}
 			else
 			{

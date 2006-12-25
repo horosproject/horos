@@ -595,7 +595,7 @@ static NSString *hostName = @"";
 	
 	// ** HIDEPATIENTNAME
 	[defaultValues setObject:@"0" forKey:@"HIDEPATIENTNAME"];
-	
+	[defaultValues setObject:@"0" forKey:@"onlyDICOM"];
 	[defaultValues setObject:@"0" forKey:@"DECOMPRESSDICOMLISTENER"];
 	[defaultValues setObject:@"0" forKey:@"COMPRESSDICOMLISTENER"];
 	[defaultValues setObject:@"0" forKey:@"CheckForMultipleVolumesInSeries"];
