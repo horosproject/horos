@@ -1448,10 +1448,21 @@ static BOOL initialized = NO;
 	
 }
 
+//- (void)setServer:(id)anObject
+//{
+//    [anObject retain];
+//    [anObject setProtocolForProxy:@protocol(Server)];
+//    [server release];
+//    server = (id <Server>)anObject;
+//
+//    NSLog( @"You may start to communicate with the server now");
+//}
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
+	
+//	[Server connectionToServerThreadForClient: self];
 	
 	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 

@@ -27,7 +27,7 @@
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     Server *instance = [[self alloc] init];
-
+	
     NSConnection *connection =
         [[NSConnection alloc] initWithReceivePort:[portArray objectAtIndex:0]
                                          sendPort:[portArray objectAtIndex:1]];
@@ -37,7 +37,9 @@
     [(id <Client>)[connection rootProxy] setServer:instance];
 
     // Run until termination
-    do {
+    do
+	{
+		NSLog(@"running");
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:[NSDate distantFuture]];
     } while ([instance isRunning]);

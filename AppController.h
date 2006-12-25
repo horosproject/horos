@@ -16,7 +16,7 @@
 
 
 #import <AppKit/AppKit.h>
-//#import "DICOMStoreSCPDispatcher.h"
+#import "DOServer.h"
 
 @class PreferenceController;
 @class BrowserController;
@@ -34,8 +34,12 @@ enum
 
 NSRect screenFrame();
 
-@interface AppController : NSObject
+@interface AppController : NSObject		// <Client>
 {
+//    id <Server> server;
+//    NSConnection *serverConnection;
+	
+	
 	IBOutlet BrowserController		*browserController;
 
     IBOutlet NSMenu					*filtersMenu;

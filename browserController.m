@@ -491,7 +491,7 @@ static BOOL COMPLETEREBUILD = NO;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	
-	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
+//	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
 	
 //	#define RANDOMFILES
 	
@@ -978,7 +978,7 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	}
 	
-	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
+//	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	if( addFailed)
 	{
