@@ -72,10 +72,24 @@ extern NSLock	*PapyrusLock;
 	[PapyrusLock unlock];
 	if (status.good()){
 		NSString *characterSet = 0L;
-		fileType = [[NSString stringWithString:@"DICOM"] retain];
-		[dicomElements setObject:fileType forKey:@"fileType"];
+		
 		encoding = NSISOLatin1StringEncoding;
 		DcmDataset *dataset = fileformat.getDataset();
+		
+		//TransferSyntax
+		if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL)
+		{
+			if( [[NSString stringWithCString:string] isEqualToString:@"1.2.840.10008.1.2.4.100"])
+			{
+				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+				[dicomElements setObject:fileType forKey:@"fileType"];
+			}
+			else
+			{
+				fileType = [[NSString stringWithString:@"DICOM"] retain];
+				[dicomElements setObject:fileType forKey:@"fileType"];
+			}
+		}
 		
 		if ([self autoFillComments]  == YES ||[self checkForLAVIM] == YES)
 		{

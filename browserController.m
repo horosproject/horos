@@ -7337,6 +7337,7 @@ static BOOL needToRezoom;
 	//	[self viewerDICOMKeyImages:sender];		
 	//merge if shift key pressed.	
 	
+	
 	 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
 		[self viewerDICOMMergeSelection:sender];
 	else
