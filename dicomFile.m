@@ -2226,9 +2226,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( album) [dicomElements setObject:album forKey:@"album"];
 			}
 		}
-	
-		fileType = [[NSString stringWithString:@"DICOM"] retain];
-		[dicomElements setObject:fileType forKey:@"fileType"];
+		NSString *transferSyntaxUID = [dcmObject attributeValueWithName:@"TransferSyntaxUID"];
+		if( [transferSyntaxUID isEqualToString:@"1.2.840.10008.1.2.4.100"])
+		{
+			fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+			[dicomElements setObject:fileType forKey:@"fileType"];
+		}
+		else
+		{
+			fileType = [[NSString stringWithString:@"DICOM"] retain];
+			[dicomElements setObject:fileType forKey:@"fileType"];
+		}
 		
 		NSArray	*imageTypeArray = [dcmObject attributeArrayWithName:@"ImageType"];
 		if( [imageTypeArray count] > 2)
