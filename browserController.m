@@ -5107,7 +5107,15 @@ static BOOL withReset = NO;
 				}
 				else if ([fileType isEqualToString: @"DICOMMPEG2"])
 				{
-					[cell setTitle: @"MPEG2 Series"];
+					long count = [[curFile valueForKey:@"images"] count];
+					
+					if( count == 1) {
+						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+						
+						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Frames", 0L), name, frames]];
+						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"MPEG-2 Series\r%@\r%d Image", 0L), name, count]];
+					}
+					
 					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
@@ -7394,7 +7402,7 @@ static BOOL needToRezoom;
 		
 		if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
 		{
-			NSRunAlertPanel(@"MPEG2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
+			NSRunAlertPanel(@"MPEG-2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
 		}
 		
 		return;
