@@ -1437,8 +1437,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			NSString *characterSet = 0L;
 			
-			fileType = [[NSString stringWithString:@"DICOM"] retain];
-			[dicomElements setObject:fileType forKey:@"fileType"];
+			if( gArrCompression  [fileNb] == MPEG2MPML)
+			{
+				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+				[dicomElements setObject:fileType forKey:@"fileType"];
+			}
+			else
+			{
+				fileType = [[NSString stringWithString:@"DICOM"] retain];
+				[dicomElements setObject:fileType forKey:@"fileType"];
+			}
 			
 			imageNb = 1;
 			

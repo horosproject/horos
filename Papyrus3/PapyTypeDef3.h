@@ -142,7 +142,7 @@ enum ETransf_Syntax	{LITTLE_ENDIAN_IMPL, LITTLE_ENDIAN_EXPL, BIG_ENDIAN_EXPL};
 enum EFile_Type		{DICOM10, PAPYRUS3, DICOM_NOT10, DICOMDIR, PAPYRUS2, other};
 
 /* Definition of the different compression used */
-enum EPap_Compression	{NONE, JPEG_LOSSLESS, JPEG_LOSSY, RLE, MAYO_WAVELET, JPEG2000};
+enum EPap_Compression	{NONE, JPEG_LOSSLESS, JPEG_LOSSY, RLE, MAYO_WAVELET, JPEG2000, MPEG2MPML};
 
 /* Definition of the photometric interpretation */
 enum EPhoto_Interpret	{MONOCHROME1, MONOCHROME2, PALETTE, RGB, HSV, ARGB, CMYK, 

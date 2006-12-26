@@ -1456,9 +1456,9 @@ static BOOL initialized = NO;
 {
 	long i;
 	
-	DOClient	*client = [[DOClient alloc] init];
-	[client connect];
-	[client log:@"Happy Xmas 2006"];
+//	DOClient	*client = [[DOClient alloc] init];
+//	[client connect];
+//	[client log:@"Happy Xmas 2006"];
 		
 	[[PluginManager alloc] setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 

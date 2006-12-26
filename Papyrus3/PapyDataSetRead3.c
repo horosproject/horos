@@ -232,6 +232,11 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
     gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
     gArrCompression  [inFileNb] = JPEG2000;
   }
+   else if (strcmp (theValP->a, "1.2.840.10008.1.2.4.100") == 0) 
+  {
+    gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
+    gArrCompression  [inFileNb] = MPEG2MPML;
+  }
 
   else 
   {

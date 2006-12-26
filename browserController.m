@@ -605,7 +605,7 @@ static BOOL COMPLETEREBUILD = NO;
 				
 				if( onlyDICOM)
 				{
-					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO)
+					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO && [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOMMPEG2"] == NO)
 					{
 						[curDict release];
 						curDict = 0L;
@@ -3816,30 +3816,40 @@ static BOOL COMPLETEREBUILD = NO;
 		[wait showWindow:self];
 		
 		[self saveDatabase: currentDatabasePath];
-		// Remove series without images !
-		for( i = 0; i < [seriesArray count]; i++)
+		@try
 		{
-			if( [[[seriesArray objectAtIndex: i] valueForKey:@"images"] count] == 0)
+			// Remove series without images !
+			for( i = 0; i < [seriesArray count]; i++)
 			{
-				[context deleteObject: [seriesArray objectAtIndex: i]];
+				if( [[[seriesArray objectAtIndex: i] valueForKey:@"images"] count] == 0)
+				{
+					[context deleteObject: [seriesArray objectAtIndex: i]];
+				}
 			}
-		}
-		[self saveDatabase: currentDatabasePath];
 			
-		// Remove studies without series !
-		for( i = 0; i < [studiesArray count]; i++)
-		{
-			if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
+			[self saveDatabase: currentDatabasePath];
+			
+			// Remove studies without series !
+			for( i = 0; i < [studiesArray count]; i++)
 			{
-				[context deleteObject: [studiesArray objectAtIndex: i]];
+				if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
+				{
+					[context deleteObject: [studiesArray objectAtIndex: i]];
+				}
 			}
+			[self saveDatabase: currentDatabasePath];
+			
 		}
-		[self saveDatabase: currentDatabasePath];
+		@catch( NSException *ne)
+		{
+			NSLog( @"Exception during delItem");
+		}
 		
 		[self outlineViewRefresh];
 		
 		[wait close];
 		[wait release];
+		
 	}
 	
 	[[QueryController currentQueryController] refresh: self];
@@ -5070,6 +5080,7 @@ static BOOL withReset = NO;
 		{
 			NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
 			NSString	*seriesSOPClassUID = [[pix seriesObj] valueForKey: @"seriesSOPClassUID"];
+			NSString	*fileType = [[pix imageObj] valueForKey: @"fileType"];
 			
 			if( img || [modality isEqualToString: @"RTSTRUCT"])
 			{
@@ -5088,11 +5099,16 @@ static BOOL withReset = NO;
 				if ( [modality isEqualToString: @"RTSTRUCT"] ) {
 					[cell setTitle: [NSString stringWithFormat: @"%@\r%@", name, @"RTSTRUCT"]];
 				}
-				else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]]) //JF: pdf encapsulated opened with preview
+				else if ([seriesSOPClassUID isEqualToString: [DCMAbstractSyntaxUID pdfStorageClassUID]])
 				{
 					[cell setAction: @selector(pdfPreview:)];
 					[cell setTitle: @"open Preview.app"];
 					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"pdf"]];
+				}
+				else if ([fileType isEqualToString: @"DICOMMPEG2"])
+				{
+					[cell setTitle: @"MPEG2 Series"];
+					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
 					long count = [[curFile valueForKey:@"images"] count];
@@ -7325,7 +7341,6 @@ static BOOL needToRezoom;
 		[self viewerDICOMMergeSelection:sender];
 	else
 		[self newViewerDICOM:(id) sender];
-
 }
 
 
@@ -7334,81 +7349,59 @@ static BOOL needToRezoom;
 - (void) newViewerDICOM: (id) sender
 {
 	long				index;
+	NSMutableArray		*images = [NSMutableArray arrayWithCapacity:0];
+	
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
+	else [self filesForDatabaseOutlineSelection: images];
+		
+	// do nothing for a ZIP file with XML descriptor
+	BOOL zipFile = NO;
+	if ([[[images objectAtIndex:0] valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"])
+	{
+		NSSavePanel *savePanel = [NSSavePanel savePanel];
+		[savePanel setCanSelectHiddenExtension:YES];
+		[savePanel setRequiredFileType:@"zip"];
+		
+		NSString *filePath = [[images objectAtIndex:0] valueForKey:@"path"];
+		NSString *fileName = [filePath lastPathComponent];
+		if([savePanel runModalForDirectory:0L file:fileName] == NSFileHandlingPanelOKButton)
+		{
+			// write the file to the specified location on the disk
+			NSFileManager *fileManager = [NSFileManager defaultManager];
+			// zip
+			NSString *newFilePath = [[savePanel URL] path];
+			if ([fileManager fileExistsAtPath:filePath])
+				[fileManager copyPath:filePath toPath:newFilePath handler:nil];
+			// xml
+			NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
+			[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
+			[xmlFilePath appendString: @"xml"];
+			NSLog(@"xmlFilePath : %@", xmlFilePath);
+			NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
+			[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
+			[newXmlFilePath appendString: @"xml"];
+			NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+			if ([fileManager fileExistsAtPath:xmlFilePath])
+				[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
+		}
+
+		return;
+	}
+	else if ([[[images objectAtIndex:0] valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
+	{
+		NSString *filePath = [[images objectAtIndex:0] valueForKey:@"path"];
+		
+		if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
+		{
+			NSRunAlertPanel(@"MPEG2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
+		}
+		
+		return;
+	}
+
 	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
 	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item					= [databaseOutline itemAtRow: [databaseOutline selectedRow]];
-	
-	//close open windows if option key pressed.	
-	/*
-	int i;
-	if ([[NSApp currentEvent] modifierFlags]  & NSAlternateKeyMask) {
-		for( i = 0; i < [[NSApp windows] count]; i++)
-		{
-			NSWindow *window = [[NSApp windows] objectAtIndex:i];
-			if( [[window windowController] isKindOfClass:[ViewerController class]]) [[window windowController] close];
-		}
-	}
-	*/	
-	
-	// do nothing for a ZIP file with XML descriptor
-	BOOL zipFile = NO;
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
-	{
-		NSLog( @"Series");
-		// ZIP files with XML descriptor
-		NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
-		NSArray *imagesArray = [imagesSet allObjects];
-		if([imagesArray count]==1)
-		{
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
-			{
-				NSSavePanel *savePanel = [NSSavePanel savePanel];
-				[savePanel setCanSelectHiddenExtension:YES];
-				[savePanel setRequiredFileType:@"zip"];
-				
-				imagesSet = [item valueForKeyPath: @"images.path"];
-				imagesArray = [imagesSet allObjects];
-				NSString *filePath = [imagesArray objectAtIndex:0];
-				NSString *fileName = [filePath lastPathComponent];
-				if([savePanel runModalForDirectory:0L file:fileName] == NSFileHandlingPanelOKButton)
-				{
-					// write the file to the specified location on the disk
-					NSFileManager *fileManager = [NSFileManager defaultManager];
-					// zip
-					NSString *newFilePath = [[savePanel URL] path];
-					if ([fileManager fileExistsAtPath:filePath])
-						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
-					// xml
-					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
-					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
-					[xmlFilePath appendString: @"xml"];
-					NSLog(@"xmlFilePath : %@", xmlFilePath);
-					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
-					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
-					[newXmlFilePath appendString: @"xml"];
-					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
-					if ([fileManager fileExistsAtPath:xmlFilePath])
-						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
-				}
-
-				return;
-			}
-		}
-	}
-	else	// STUDY
-	{
-	NSLog( @"STUDY");
-		// files with XML descriptor, do nothing
-		NSSet *imagesSet = [item valueForKeyPath: @"series.images.fileType"];
-		NSArray *imagesArray = [[[imagesSet allObjects] objectAtIndex:0] allObjects];
-		if([imagesArray count]==1)
-		{
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
-			{
-				return;
-			}
-		}
-	}
 
 	// regular files:
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)

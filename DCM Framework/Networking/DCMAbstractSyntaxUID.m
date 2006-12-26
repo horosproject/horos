@@ -404,6 +404,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    || [sopClassUID isEqualToString:XrayAngiographicBiplaneImageStorage]
 		    || [sopClassUID isEqualToString:NuclearMedicineImageStorage]
 		    || [sopClassUID isEqualToString:VisibleLightDraftImageStorage]
+			|| [sopClassUID isEqualToString:VideoEndoscopicImageStorage]
 		    || [sopClassUID isEqualToString:VisibleLightMultiFrameDraftImageStorage]
 		    || [sopClassUID isEqualToString:VisibleLightEndoscopicImageStorage]
 		    || [sopClassUID isEqualToString:VisibleLightMicroscopicImageStorage]
