@@ -480,6 +480,12 @@ public:
 	
 	[self setBlendingFactor:blendingFactor];
 	
+	if( volumeMapper)
+	{
+//		volumeMapper->SetLockSampleDistanceToInputSpacing( 1);
+//		NSLog(@"SetLockSampleDistanceToInputSpacing");
+	}
+	
 	[self setNeedsDisplay:YES];
 }
 
