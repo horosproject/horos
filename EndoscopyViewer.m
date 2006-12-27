@@ -1054,4 +1054,29 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	return dataPtr;
 }
 
+- (NSManagedObject *)currentStudy{
+	return [vrController currentStudy];
+}
+- (NSManagedObject *)currentSeries{
+	return [vrController currentSeries];
+}
+
+- (NSManagedObject *)currentImage{
+	return [vrController currentImage];
+}
+
+-(float)curWW{
+	return [vrController curWW];
+}
+
+-(float)curWL{
+	return [vrController curWL];
+}
+
+- (NSString *)curCLUTMenu{
+	return [vrController curCLUTMenu];
+}
+
+
+
 @end

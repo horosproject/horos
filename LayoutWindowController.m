@@ -25,6 +25,7 @@
 #import "WindowLayoutManager.h"
 #import "VRControllerVPRO.h"
 #import "SRController.h"
+#import "EndoscopyViewer.h"
 
 
 @implementation LayoutWindowController
@@ -88,7 +89,7 @@
 		}
 		
 		//Add LayoutSet to SeriesSet
-		NSMutableArray *arrangedSeries = [[_hangingProtocol objectForKey:@"seriesSets"] mutableCopy];
+		NSMutableArray *arrangedSeries = [[hangingProtocol objectForKey:@"seriesSets"] mutableCopy];
 		if (!arrangedSeries)
 			arrangedSeries = [[NSMutableArray alloc] init];
 			
@@ -109,7 +110,7 @@
 				 zoom	
 				*/
 				
-			NSLog(@"save HangingProtocol: %@", [controller description]);
+			//NSLog(@"save HangingProtocol: %@", [controller description]);
 			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
 			NSWindow *window = [controller window];
 			NSString *frame  = [window stringWithSavedFrame];
@@ -166,18 +167,19 @@
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 			}
 			
-		
+			//Save Viewer Class
 			[seriesInfo setObject:NSStringFromClass([controller class]) forKey:@"Viewer Class"];
+			
 			// MIP vs VP fpr Volume Rendering
 			if ([controller isKindOfClass:[VRController class]] || [controller isKindOfClass:[VRPROController class]] )
 				[seriesInfo setObject:[(VRController  *)controller renderingMode] forKey:@"mode"];
 				
 			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
-			NSLog(@"blending");
+			//NSLog(@"blending");
 			// Have blending.  Get Series Description for blending
 			
 			if ([controller isKindOfClass:[ViewerController class]] && [controller blendingController]) {
-				NSLog(@"have blending");
+				//NSLog(@"have blending");
 				id blendingSeries = [[controller blendingController] currentSeries];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];	
@@ -186,9 +188,9 @@
 			[layoutArray addObject:seriesInfo];
 	
 		}	
-		NSLog(@"add layout");
+		//NSLog(@"add layout");
 		[arrangedSeries addObject:layoutArray];
-		NSLog(@"add Set");
+		//NSLog(@"add Set");
 		[hangingProtocol setObject:arrangedSeries forKey:@"seriesSets"];
 		[hangingProtocol setObject:_modality forKey:@"modality"];
 		[hangingProtocol setObject:_studyDescription forKey:@"studyDescription"];
@@ -202,7 +204,7 @@
 		[hangingProtocols removeObject:_hangingProtocol];
 		[hangingProtocols addObject:hangingProtocol];
 		[hangingProtocol release];
-		NSLog(@"save prefs");
+		//NSLog(@"save prefs");
 		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		[hangingProtocols  release];
 	}

@@ -36,6 +36,7 @@
 @class OrthogonalMPRViewer;
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
+@class EndoscopyViewer;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -453,15 +454,15 @@ enum
 //- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
-- (MPR2DController *)openMPR2DViewer;
+
 - (IBAction) MPR2DViewer:(id) sender;
-- (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
-- (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
+
 - (IBAction) orthogonalMPRViewer:(id) sender;
+
 - (IBAction) endoscopyViewer:(id) sender;
 - (IBAction) CurvedMPR:(id) sender;
-//- (IBAction) MIPViewer:(id) sender;
-- (SRController *)openSRViewer;
+
+
 - (IBAction) SRViewer:(id) sender;
 - (void)createDCMViewMenu;
 - (void) exportJPEG:(id) sender;
@@ -589,9 +590,14 @@ enum
 - (void)setScaleValue:(float)scaleValue;
 
 
-// Opening VR Viewers
+// Opening 3D Viewers
 - (VRController *)openVRViewerForMode:(NSString *)mode;
 - (VRPROController *)openVRVPROViewerForMode:(NSString *)mode;
+- (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
+- (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
+- (MPR2DController *)openMPR2DViewer;
+- (EndoscopyViewer *)openEndoscopyViewer;
+- (SRController *)openSRViewer;
 
 
 @end

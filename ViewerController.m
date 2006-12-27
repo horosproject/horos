@@ -12446,6 +12446,23 @@ long i;
 	}
 }
 
+- (EndoscopyViewer *)openEndoscopyViewer{
+	long i;	
+	[self checkEverythingLoaded];
+	[self clear8bitRepresentations];
+	EndoscopyViewer *viewer;
+		
+	viewer = [appController FindViewer :@"Endoscopy" :pixList[0]];
+	if (viewer)
+		return viewer;
+		
+	[self setFusionMode: 0];
+	[popFusion selectItemAtIndex:0];
+			
+	viewer = [[EndoscopyViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController : self];
+	return viewer;
+}
+
 
 -(IBAction) endoscopyViewer:(id) sender
 {
@@ -12476,18 +12493,10 @@ long i;
 		else
 		{
 			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
-			[self setFusionMode: 0];
-			[popFusion selectItemAtIndex:0];
+			//[self setFusionMode: 0];
+			//[popFusion selectItemAtIndex:0];
 			
-			viewer = [[EndoscopyViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController : self];
-			
-//			[viewer ApplyCLUTString:curCLUTMenu];
-//			
-//			float   iwl, iww;
-//			[imageView getWLWW:&iwl :&iww];
-//			[viewer setWLWW:iwl :iww];
-			//[viewer setCurWLWWMenu:curWLWWMenu];
-			
+			viewer = [self openEndoscopyViewer];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}

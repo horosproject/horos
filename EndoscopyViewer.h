@@ -19,8 +19,10 @@
 #import "VRController.h"
 #import "EndoscopyVRController.h"
 #import "Camera.h"
+#import "OSIWindowController.h"
 
-@interface EndoscopyViewer : NSWindowController {
+
+@interface EndoscopyViewer : OSIWindowController {
 	IBOutlet OrthogonalMPRController	*mprController;
 	IBOutlet EndoscopyVRController		*vrController;
 	NSMutableArray						*pixList;
@@ -41,6 +43,8 @@
 	IBOutlet NSTextField				*exportDCMSeriesName;
 	
 	BOOL								exportAllViews;
+	
+
 }
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;

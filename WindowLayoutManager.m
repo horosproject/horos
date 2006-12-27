@@ -30,6 +30,7 @@
 #import "MPR2DController.h"
 #import "OrthogonalMPRViewer.h"
 #import "SRController.h"
+#import "EndoscopyViewer.h"
 
 
 
@@ -56,9 +57,9 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark-
 #pragma mark WindowController registration
 - (void)registerWindowController:(OSIWindowController *)controller{
-		//NSLog(@"registerWindowController: %@", [controller description]);
+		NSLog(@"registerWindowController: %@", [controller description]);
 	if (![_windowControllers containsObject:controller]){
-		//NSLog(@"Add Controller");
+		NSLog(@"Add Controller");
 		[_windowControllers addObject:controller];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
 	}
@@ -592,9 +593,9 @@ WindowLayoutManager *sharedLayoutManager;
 	//ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
 		// have a 3D Viewer
-		//NSLog(@"look for 3D Viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
+		NSLog(@"look for 3D Viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
 		if ( ![[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
-			//NSLog(@"have 3D Viewer");
+			NSLog(@"have 3D Viewer");
 			windowEnumerator = [[self viewers2D] objectEnumerator];
 			id viewer2D;
 			id selectedViewer2D = nil;
@@ -617,7 +618,7 @@ WindowLayoutManager *sharedLayoutManager;
 			}
 			// if we found a 2D Viewer, open the 3D viewer based on the Class Name
 			if (selectedViewer2D) {
-				//NSLog(@"Have 2D viewer: %@", [selectedViewer2D description]);
+				NSLog(@"Have 2D viewer: %@", [selectedViewer2D description]);
 				id viewer3D;
 				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRController class])] ) {
 					//NSLog(@"3D viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
@@ -647,6 +648,14 @@ WindowLayoutManager *sharedLayoutManager;
 					[viewer3D showWindow:self];
 					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
 					//[[viewer3D window] makeKeyAndOrderFront:self];
+					[[viewer3D window] display];
+					if (![[[viewer3D window] title] hasSuffix:[[selectedViewer2D window] title]])
+						[[viewer3D window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer3D window] title], [[selectedViewer2D window] title]]];
+				}
+				else if ([[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([EndoscopyViewer class])] ) { 
+					viewer3D = [selectedViewer2D openEndoscopyViewer];
+					[viewer3D showWindow:self];
+					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
 					[[viewer3D window] display];
 					if (![[[viewer3D window] title] hasSuffix:[[selectedViewer2D window] title]])
 						[[viewer3D window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer3D window] title], [[selectedViewer2D window] title]]];
@@ -740,6 +749,7 @@ WindowLayoutManager *sharedLayoutManager;
 					}
 				
 				}
+				
 				
 				if ([[seriesInfo objectForKey:@"isKeyWindow"] boolValue])
 					[[viewer3D  window] makeKeyAndOrderFront:self];
