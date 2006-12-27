@@ -290,6 +290,8 @@ typedef char* vtkMyCallbackVR;
 	NSRect						savedViewSizeFrame;
 	
 	float						firstPixel, secondPixel;
+	
+	NSDictionary				*_hotKeyDictionary;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -417,5 +419,7 @@ typedef char* vtkMyCallbackVR;
 //Dragging
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
+
+-(BOOL)actionForHotKey:(NSString *)hotKey;
 
 @end
