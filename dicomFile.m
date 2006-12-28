@@ -2550,9 +2550,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		SOPUID = 0L;
 		fileType = 0L;
 		NoOfSeries = 1;
-		
-		[filePath retain];
-		
 		studyID = 0L;
 		serieID = 0L;
 		imageID = 0L;

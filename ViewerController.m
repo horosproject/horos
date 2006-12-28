@@ -1686,6 +1686,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[curCLUTMenu release];
 	[curConvMenu release];
 	[curWLWWMenu release];
+	[processorsLock release];
 	
     [super dealloc];
 

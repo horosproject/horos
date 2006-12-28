@@ -7993,6 +7993,7 @@ BOOL	lowRes = NO;
 {
 	NS_DURING
 	_dragInProgress = YES;
+	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
