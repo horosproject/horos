@@ -152,6 +152,8 @@ Version 2.3
 
 - (void)dealloc
 {
+	NSLog( @"AnonymizerWindowController dealloc");
+	
 	[producedFiles release];
 	[templates release];
 	[filesToAnonymize release];

@@ -42,10 +42,12 @@ extern BrowserController *browserWindow;
 	
 	//NSLog(@"get Specific Character set");
 	if (dataset->findAndGetString (DCM_SpecificCharacterSet, scs, OFFalse).good() && scs != NULL) {
+		[specificCharacterSet release];
 		specificCharacterSet = [[NSString stringWithCString:scs] retain];
 		encoding = [NSString encodingForDICOMCharacterSet:specificCharacterSet];
 	}
 	else {
+		[specificCharacterSet release];
 		specificCharacterSet = [[NSString stringWithString:@"ISO_IR 100"] retain];
 		encoding = NSISOLatin1StringEncoding;
 	}
@@ -636,6 +638,7 @@ extern BrowserController *browserWindow;
 		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
 		[context lock];
 		
+		[findArray release];
 		findArray = [context executeFetchRequest:request error:&error];
 		
 		[context unlock];
@@ -653,9 +656,9 @@ extern BrowserController *browserWindow;
 		findArray = nil;
 		cond = EC_IllegalParameter;
 	}
-			
+	
+	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
-
 	
 	return cond;
 	 

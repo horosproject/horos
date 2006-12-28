@@ -286,8 +286,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_modality release];
 	[_numberImages release];
 	[_specificCharacterSet release];
+	[_logEntry release];
 	
-
 	[super dealloc];
 }
 
@@ -1113,8 +1113,4 @@ NS_ENDHANDLER
 	[_logEntry release];
 	_logEntry = [logEntry retain];
 }
-
-
-
-
 @end

@@ -888,7 +888,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			  OFString studyDescription;
 			  NSString *characterSet = nil;
 			  if (fileformat.getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, charset).good()) {
-				characterSet = [[NSString alloc] initWithCString:charset.c_str()  DICOMEncoding:nil];
+				characterSet = [[[NSString alloc] initWithCString:charset.c_str()  DICOMEncoding:nil] autorelease];
 				//NSLog(@"scs %@", characterSet);
 			  }
 			  
