@@ -104,7 +104,7 @@
 	[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
 	[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	
-	//rootNode = [[DCMRootQueryNode queryNodeWithObject:nil] retain];
+	[rootNode release];
 	rootNode = [[DCMTKRootQueryNode queryNodeWithDataset:nil
 									callingAET:callingAET
 									calledAET:calledAET 
