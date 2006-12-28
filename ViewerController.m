@@ -35,7 +35,6 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #endif
 
 #import "MyOutlineView.h"
-#import "xNSImage.h"
 #import "PluginFilter.h"
 #import "DCMPix.h"
 #import "DicomImage.h"
@@ -2002,7 +2001,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						
 						if( dcmPix)
 						{
-							xNSImage *img = [dcmPix computeWImage:YES :0 :0];
+							NSImage *img = [dcmPix computeWImage:YES :0 :0];
 							
 							if( img)
 							{

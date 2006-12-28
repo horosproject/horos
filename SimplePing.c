@@ -73,7 +73,7 @@ int SimplePing(const char* HostToPing, const int NumberOfPacketsToSend, const in
     int socketConnectionToHost;
     int gotResponse = 0;
     int numberPacketsSent = 0;
-
+	
 	*numberPacketsReceived = 0;
 	
     if ((HostToPing == NULL) || (NumberOfPacketsToSend < 1) || (PingTimeoutInSeconds < 1))

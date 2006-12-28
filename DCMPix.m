@@ -8518,7 +8518,7 @@ float			iwl, iww;
 	if( baseAddr == 0L) [self computeWImage: NO: newWW :newWL];
 }
 
-- (xNSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL
+- (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL
 {
     long    destWidth, destHeight;
 	
@@ -8552,7 +8552,9 @@ float			iwl, iww;
     unsigned char *bitmapData = malloc( (rowBytes + 4) * (destHeight+4));
 	memset( bitmapData, 0, (rowBytes + 4) * (destHeight+4));
 	
-	NSBitmapImageRep *bitmapRep;
+	NSBitmapImageRep *bitmapRep = 0L;
+	
+	baseAddr = (char*) bitmapData;
 	
 	if( smallIcon)
     {
@@ -8586,13 +8588,7 @@ float			iwl, iww;
 						bitsPerPixel:8 // 8 - 24 -32
 						];
 		}
-    }
-	else bitmapRep = 0L;
-
-	baseAddr = (char*) bitmapData;  //[bitmapRep bitmapData];
-	
-	if( smallIcon)
-	{
+		
 		if( bitmapRep)
 		{
 			if( newWW == 0 && newWL == 0)
@@ -8608,29 +8604,29 @@ float			iwl, iww;
 			}
 			
 			CreateIconFrom16( fImage, bitmapData, height, width, rowBytes, newWL, newWW, isRGB);
-		}
-	}
-	// necesary to refresh DCMView of the browser
-	else [self changeWLWW: newWL : newWW];
-	
-	if( smallIcon)
-	{
-		if( bitmapRep)
-		{
+			
 			image = [[xNSImage alloc] initWithSize:NSMakeSize(destWidth,  destHeight)]; 
 			[image addRepresentation:bitmapRep];
 			[bitmapRep release];
 		}
+		else NSLog(@"Memory error... not enough RAM");
+		
 		baseAddr = 0L;		// We dont keep this information, will be deleted when xNSImage released!
 	}
-	else image = [[xNSImage alloc] init];
+	else
+	{
+		// necesary to refresh DCMView of the browser
+		[self changeWLWW: newWL : newWW];
+		
+		image = [[xNSImage alloc] init];
+	}
 	
 	if( image) [image SetxNSImage :bitmapData];
 	
     return image;
 }
 
-- (xNSImage*) getImage
+- (NSImage*) getImage
 {
 //    [self CheckLoad];
     

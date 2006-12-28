@@ -12,47 +12,28 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import "xNSImage.h"
-
 
 @implementation xNSImage
 
 - (void) dealloc
 {
-//	NSLog(@"xNSImage killed");
 	if( data == 0L)
 	{
 		NSLog(@"data == 0L ????");
     }
 	else free( data);
     data = 0L;
-        
-//    [bitmapRep release];
-    
-    [super dealloc];
-}
-
--init
-{
-	self = [super init];
-//	bitmapRep = 0L;
-	data = 0L;
 	
-	return self;
+    [super dealloc];
 }
 
 -(void) SetxNSImage:(unsigned char*)b
 {
-//    if( a) bitmapRep = a;
-	
 	if( data != b)
 	{
 		if( data) free( data);
 		data = b;
 	}
 }
-
 @end

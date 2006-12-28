@@ -78,7 +78,6 @@ Version 2.5
 #import "QueryFilter.h"
 #import "ImageAndTextCell.h"
 #import "SearchWindowController.h"
-#import "xNSImage.h"
 #import "Wait.h"
 #import "WaitRendering.h"
 #import "DCMCalendarScript.h"

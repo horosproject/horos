@@ -14,7 +14,6 @@
 
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
-#import "xNSImage.h"
 #import "DCMPix.h"
 
 // imports required for socket initialization

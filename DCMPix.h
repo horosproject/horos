@@ -310,9 +310,9 @@
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
-- (xNSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
+- (NSImage*) computeWImage: (BOOL) smallIcon :(float)newWW :(float)newWL;
 - (NSImage*) image;
-- (xNSImage*) getImage;
+- (NSImage*) getImage;
 - (char*) baseAddr;
 - (void) setBaseAddr :( char*) ptr;
 - (void) orientation:(float*) c;

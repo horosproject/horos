@@ -326,6 +326,8 @@ extern BrowserController	*browserWindow;
 	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
 	[self setPane:aPane];
 	[pane release];
+	
+	curPaneIndex = 0;
 }
 
 - (IBAction)nextAndPrevPane:(id)sender
@@ -353,6 +355,8 @@ extern BrowserController	*browserWindow;
 
 - (void)selectPaneIndex:(int) index
 {
+	curPaneIndex = index;
+	
 	NSString *pathToPrefPaneBundle;
 	NSBundle *prefBundle;
 	Class prefPaneClass;
@@ -408,6 +412,8 @@ extern BrowserController	*browserWindow;
 			[[self window] setTitle:@"Hot Keys"];
 			break;
 	}
+	[[self window] setTitleWithRepresentedFilename: pathToPrefPaneBundle];
+	
 	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	prefPaneClass = [prefBundle principalClass];
 	NSPreferencePane *aPane = [[prefPaneClass alloc] initWithBundle:prefBundle];	
