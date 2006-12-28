@@ -56,6 +56,7 @@
 	IBOutlet NSButton		*moviePlayStop;
 	IBOutlet NSSlider       *movieRateSlider;
 	IBOutlet NSSlider       *moviePosSlider;
+	IBOutlet NSMatrix		*toolMatrix;
 	
 	DICOMExport				*exportDCM;
 }
@@ -66,6 +67,7 @@
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) volumeData :(ViewerController*) bC :(ViewerController*) vC;
 - (void) setupToolbar;
 -(void) setDefaultTool:(id) sender;
+- (void)setCurrentTool:(int)tool;
 - (void) ApplyOpacityString:(NSString*) str;
 -(ViewerController*) blendingController;
 -(void) updateBlendingImage;
@@ -81,4 +83,5 @@
 -(IBAction) endQuicktime:(id) sender;
 -(IBAction) export2iPhoto:(id) sender;
 - (ViewerController *)viewerController;
+- (void)applyWLWWForString:(NSString *)menuString;
 @end

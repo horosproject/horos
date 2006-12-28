@@ -651,8 +651,16 @@ extern NSString * documentsDirectory();
     
     if( [theCell tag] >= 0)
     {
-        [view setCurrentTool: [theCell tag]];
-		[originalView setCurrentTool: [theCell tag]];
+        [self setCurrentTool:[theCell tag]];
+    }
+}
+
+- (void)setCurrentTool:(int)tool{
+	if( tool >= 0)
+    {
+        [view setCurrentTool: tool];
+		[originalView setCurrentTool: tool];
+		[toolMatrix selectCellWithTag:tool];
     }
 }
 
@@ -683,6 +691,8 @@ extern NSString * documentsDirectory();
     }
     else
     {
+		[self applyWLWWForString:[sender title]];
+	/*
 		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
 		{
 			//[imageView setWLWW:0 :0];
@@ -705,15 +715,48 @@ extern NSString * documentsDirectory();
 			
 		}
 		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
+	*/
     }
 	
-	if( [sender title] != curWLWWMenu)
-	{
-		[curWLWWMenu release];
-		curWLWWMenu = [[sender title] retain];
-	}
+//	if( [sender title] != curWLWWMenu)
+//	{
+//		[curWLWWMenu release];
+//		curWLWWMenu = [[sender title] retain];
+//	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+}
+
+- (void)applyWLWWForString:(NSString *)menuString{
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+		{
+			//[imageView setWLWW:0 :0];
+		}
+		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+		{
+			[view adjustWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW] :@"set"];
+		}
+		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+		{
+			[view adjustWLWW:0 :0 :@"set"];
+		}
+		else
+		{
+			NSArray		*value;
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: menuString];
+			
+			[view adjustWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : @"set"];
+			
+			
+		}
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+		
+	if( ![menuString isEqualToString: curWLWWMenu])
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [menuString retain];
+	}
+
 }
 
 

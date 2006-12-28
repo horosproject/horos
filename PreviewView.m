@@ -32,4 +32,14 @@
 {
 
 }
+
+- (BOOL)is2DViewer{
+	return NO;
+}
+
+-(BOOL)actionForHotKey:(NSString *)hotKey{
+	NSLog(@"preview Hot Key");
+	return [super actionForHotKey:(NSString *)hotKey];
+}
+
 @end

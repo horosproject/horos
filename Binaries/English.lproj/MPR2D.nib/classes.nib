@@ -71,6 +71,7 @@
                 quicktimeRotationView = NSMatrix; 
                 quicktimeWindow = NSWindow; 
                 slider = NSSlider; 
+                toolMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = MPR2DView; 
                 wl = NSTextField; 
@@ -134,6 +135,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = MPRPreviewView; LANGUAGE = ObjC; SUPERCLASS = PreviewView; }, 
         {
             ACTIONS = {switchActor = id; }; 
             CLASS = MPRView; 
