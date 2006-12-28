@@ -5830,114 +5830,102 @@ public:
 		NSArray *wwwlValues = [[wlwwDict allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 		NSArray *wwwl = nil;
+		NSString *wwwlMenuString = nil;
 		unichar key = [hotKey characterAtIndex:0];
 		key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
-		
+		id windowController = [[self window] windowController];
 		NSLog( @"hot key: %d", key);
 		
 		int index = 1;
 		switch (key){
-			case DefaultWWWLHotKeyAction: 
-				//[self setWLWW:[[self curDCM] savedWL] :[[self curDCM] savedWW]];	// default WW/WL
-				break;
-			case FullDynamicWWWLHotKeyAction: [self setWLWW:0 :0];												// full dynamic WW/WL
-				break;
+			case DefaultWWWLHotKeyAction: // default WW/WL
+							wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
+							[windowController applyWLWWForString:wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+					break;
+			case FullDynamicWWWLHotKeyAction:  // full dynamic WW/WL
+							wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
+							[windowController applyWLWWForString:wwwlMenuString];	
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];								
+					break;
 																						// 1 - 9 will be presets WW/WL
 			case Preset1WWWLHotKeyAction: if([wwwlValues count] >= 1) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:0]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:0]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:0] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:0];
+							[windowController applyWLWWForString:wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset2WWWLHotKeyAction: if([wwwlValues count] >= 2) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:1]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:1]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:1] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:1];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset3WWWLHotKeyAction: if([wwwlValues count] >= 3) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:2]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:2]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:2] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:2];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset4WWWLHotKeyAction: if([wwwlValues count] >= 4) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:3]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:3]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:3] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:3];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset5WWWLHotKeyAction: if([wwwlValues count] >= 5) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:4]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:4]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:4] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:4];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset6WWWLHotKeyAction: if([wwwlValues count] >= 6) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:5]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:5]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:5] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:5];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset7WWWLHotKeyAction: if([wwwlValues count] >= 7) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:6]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:6]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:6] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:6];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset8WWWLHotKeyAction: if([wwwlValues count] >= 8) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:7]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:7]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:7] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:7];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			case Preset9WWWLHotKeyAction: if([wwwlValues count] >= 9) {
-							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:8]];
-							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:8]];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:8] userInfo: 0L];
+							wwwlMenuString = [wwwlValues objectAtIndex:8];
+							[windowController applyWLWWForString: wwwlMenuString];
+							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
 					}	
 					break;
 			
-			// Flip
-			/*
-			case FlipVerticalHotKeyAction: [self flipVertical:nil];
-					break;
-			case  FlipHorizontalHotKeyAction: [self flipHorizontal:nil];
-					break;
+				// Flip  Don't flip Vertical or Horizontal in VR Do nothing
+				
 			// mouse functions
 			case WWWLToolHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tWL], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tWL];
 				break;
 			case MoveHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tTranslate], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tTranslate];
 				break;
 			case ZoomHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tZoom], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tZoom];
 				break;
 			case RotateHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRotate], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tRotate];
 				break;
 			case ScrollHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tNext], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tNext];
 				break;
 			case LengthHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tMesure], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tMesure];
 				break;
+				/*
 			case AngleHotKeyAction:		
 				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tAngle], @"toolIndex", nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
@@ -5958,31 +5946,27 @@ public:
 				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tArrow], @"toolIndex", nil];
 				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 				break;
-			case OpenPolygonHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tOPolygon], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+	*/
+			case Rotate3DHotKeyAction:		
+				[windowController setCurrentTool:t3DRotate];
 				break;
-			case ClosedPolygonHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tCPolygon], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+			case Camera3DotKeyAction:		
+				[windowController setCurrentTool:tCamera3D];
 				break;
-			case PencilHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tPencil], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+			case scissors3DHotKeyAction:		
+				[windowController setCurrentTool:t3DCut];
 				break;
+			
 			case ThreeDPointHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:t3Dpoint], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:t3Dpoint];
 				break;
 			case PlainToolHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tPlain], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tPlain];
 				break;
 			case BoneRemovalHotKeyAction:		
-				userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tBonesRemoval], @"toolIndex", nil];
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
+				[windowController setCurrentTool:tBonesRemoval];
 				break;
-			*/
+			
 			default:
 				returnedVal = NO;
 			break;

@@ -135,7 +135,6 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
     //*** Build the menu
-
     short       i;
     NSArray     *keys;
     NSArray     *sortedKeys;
@@ -978,15 +977,16 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
     
     if( tag >= 0)
     {
-        [view setCurrentTool: tag];
+        [self setCurrentTool:tag];
     }
-	//select matrix tool
-	[toolsMatrix selectCellWithTag:tag];
+
 }
 
 - (void) setCurrentTool:(short) newTool
 {
 	[view setCurrentTool: newTool];
+		//select matrix tool
+	[toolsMatrix selectCellWithTag:newTool];
 }
 
 
@@ -1008,15 +1008,22 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
     }
     else
     {
-		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+		[self applyWLWWForString:[sender title]];
+    }
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+}
+
+- (void)applyWLWWForString:(NSString *)menuString{
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
 		{
 			//[imageView setWLWW:0 :0];
 		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
 		{
 			[view setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
 		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
 		{
 			[view setWLWW:0 :0];
 		}
@@ -1024,19 +1031,18 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 		{
 			NSArray    *value;
 			
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:[sender title]];
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
 			
 			[view setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
 		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
-    }
-	
-	if( curWLWWMenu != [sender title])
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+		
+	if( curWLWWMenu != menuString)
 	{
 		[curWLWWMenu release];
-		curWLWWMenu = [[sender title] retain];
+		curWLWWMenu = [menuString retain];
 	}
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+
 }
 
 static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;

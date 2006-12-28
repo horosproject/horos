@@ -114,6 +114,7 @@
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) getWLWW:(float*) iwl :(float*) iww;
 - (void) ApplyWLWW:(id) sender;
+- (void)applyWLWWForString:(NSString *)menuString;
 - (void) blendingSlider:(id) sender;
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) ApplyOpacityString:(NSString*) str;
