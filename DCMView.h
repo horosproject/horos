@@ -371,6 +371,10 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (void)deleteMouseDownTimer;
 - (id)dicomImage;
 
+//windowController
+- (id)windowController;
+- (BOOL)is2DViewer;
+
 //Hot key action
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 

@@ -345,9 +345,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (IBAction)print:(id)sender
 {
-	if ([[[self window] windowController] is2DViewer] == YES)
+	if ([self is2DViewer] == YES)
 	{
-		[[[self window] windowController] print: self];
+		[[self windowController] print: self];
 	}
 	else
 	{
@@ -951,9 +951,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	switch( currentTool)
 	{
 		case tPlain:
-			if ([[[self window] windowController] is2DViewer] == YES)
+			if ([self is2DViewer] == YES)
 			{
-				[[[self window] windowController] brushTool: self];
+				[[self windowController] brushTool: self];
 			}
 		break;
 		
@@ -967,7 +967,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					[self scaleToFit];
 					
 					//set value for Series Object Presentation State
-					if ([[[self window] windowController] is2DViewer] == YES)
+					if ([self is2DViewer] == YES)
 					{
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
@@ -982,7 +982,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					origin.x = origin.y = 0;
 					rotation = 0;
 					scaleValue = 1;
-					if ([[[self window] windowController] is2DViewer] == YES)
+					if ([self is2DViewer] == YES)
 					{
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 						[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
@@ -1048,7 +1048,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void) scaleToFit
 {
-	if ([[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [[[self window] windowController] is2DViewer] == NO) {
+	if ([[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO) {
 		NSRect  sizeView = [self bounds];
 		
 		if( sizeView.size.width/[curDCM pwidth] < sizeView.size.height/[curDCM pheight]/[curDCM pixelRatio])
@@ -1121,23 +1121,23 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //		[self setFrameSize:sizeView];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [[[self window] windowController] is2DViewer] == NO) {
+		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO) {
 			[self scaleToFit];
 		}
 		
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
 			if( [curDCM sourceFile])
 			{
-				if( [[[self window] windowController] is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
+				if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
 			}
 		}
 		
 		[self loadTextures];
 		[self setNeedsDisplay:YES];
 		
-//		if( [[[self window] windowController] is2DViewer] == YES)
-//			[[[self window] windowController] propagateSettings];
+//		if( [self is2DViewer] == YES)
+//			[[self windowController] propagateSettings];
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -1282,9 +1282,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		if( [[[[dcmFilesList objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"]) noScale = YES;
 		else noScale = NO;
 
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
-			[[[self window] windowController] setLoadingPause: YES];
+			[[self windowController] setLoadingPause: YES];
 		}
 		
 		[[self window] setAcceptsMouseMovedEvents: YES];
@@ -1331,9 +1331,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //        [self setFrameSize:sizeView];
         [self loadTextures];
 		
-//		if( [[self window] windowController] != 0L)
+//		if( [self windowController] != 0L)
 //		{
-//			if( [[[self window] windowController] is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
+//			if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
 //		}
 
 
@@ -1343,9 +1343,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //				[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: 0L];
 //		}
 
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
-			[[[self window] windowController] setLoadingPause: NO];
+			[[self windowController] setLoadingPause: NO];
 		}
     }
     
@@ -1389,7 +1389,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	BOOL		Jog = NO;
 
 
-	if( [[self window] windowController]  == browserWindow) { [super keyDown:event]; return;}
+	if( [self windowController]  == browserWindow) { [super keyDown:event]; return;}
 	
 //	if([stringID isEqualToString:@"Perpendicular"] == YES || [stringID isEqualToString:@"Original"] == YES )
 //	{
@@ -1484,12 +1484,12 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
         else if( c == 13 || c == 3 || c == ' ')	// Return - Enter - Space
 		{
-			if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] PlayStop:[[[self window] windowController] findPlayStopButton]];
+			if( [self is2DViewer] == YES) [[self windowController] PlayStop:[[self windowController] findPlayStopButton]];
 		}
 		else if( c == 27)			// Escape
 		{
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] offFullScreen];
+			if( [self is2DViewer] == YES)
+				[[self windowController] offFullScreen];
 		}
         else if (c == NSLeftArrowFunctionKey)
         {
@@ -1538,7 +1538,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
         }
         else if (c == NSUpArrowFunctionKey)
         {
-			if( [[[self window] windowController] is2DViewer] == YES && [[[self window] windowController] maxMovieIndex] > 1) [super keyDown:event];
+			if( [self is2DViewer] == YES && [[self windowController] maxMovieIndex] > 1) [super keyDown:event];
 			else
 			{
 				[self setScaleValue:(scaleValue+1./50.)];
@@ -1551,7 +1551,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
         }
         else if(c ==  NSDownArrowFunctionKey)
         {
-            if( [[[self window] windowController] maxMovieIndex] > 1 && [[[self window] windowController] maxMovieIndex] > 1) [super keyDown:event];
+            if( [[self windowController] maxMovieIndex] > 1 && [[self windowController] maxMovieIndex] > 1) [super keyDown:event];
 			else
 			{
 				[self setScaleValue:(scaleValue-1./50.)];
@@ -1699,13 +1699,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
                 [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
             }
             
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] adjustSlider];
+			if( [self is2DViewer] == YES)
+				[[self windowController] adjustSlider];
 			
 			if( stringID)
 			{
 				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"MPR3D"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-					[[[self window] windowController] adjustSlider];
+					[[self windowController] adjustSlider];
 			}
             // SYNCRO
 			[self sendSyncMessage:inc];
@@ -1713,8 +1713,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			[self setNeedsDisplay:YES];
         }
 		
-		if( [[[self window] windowController] is2DViewer] == YES)
-			[[[self window] windowController] propagateSettings];
+		if( [self is2DViewer] == YES)
+			[[self windowController] propagateSettings];
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -1724,7 +1724,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void)flagsChanged:(NSEvent *)event
 {
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
 		BOOL update = NO;
 		if (([event modifierFlags] & (NSCommandKeyMask | NSShiftKeyMask)) == (NSCommandKeyMask | NSShiftKeyMask))
@@ -1753,9 +1753,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
 
 	if( [[self window] isVisible] == NO) return;
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		if( [[[self window] windowController] windowWillClose]) return;
+		if( [[self windowController] windowWillClose]) return;
 	}
 	
 	// If caplock is on changes to scale, rotation, zoom, ww/wl will apply only to the current image
@@ -1801,9 +1801,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		if( tool == tWL)
 		{
-			if( [[[self window] windowController] is2DViewer] == YES)
+			if( [self is2DViewer] == YES)
 			{
-				[[[[self window] windowController] thickSlabController] setLowQuality: NO];
+				[[[self windowController] thickSlabController] setLowQuality: NO];
 				[curDCM changeWLWW :curWL : curWW];
 				[self loadTextures];
 				[self setNeedsDisplay:YES];
@@ -1813,7 +1813,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			{
 				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 				{
-					[[[[self window] windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"set"];
+					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"set"];
 				}
 			}
 		}
@@ -1954,9 +1954,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 -(void) mouseMoved: (NSEvent*) theEvent
 {
 	if( [[self window] isVisible] == NO) return;
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		if( [[[self window] windowController] windowWillClose]) return;
+		if( [[self windowController] windowWillClose]) return;
 	}
 	
 	if( curDCM == 0L) return;
@@ -2180,7 +2180,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
 	}
 	
-	if ([[[self window] windowController] is2DViewer] == YES)
+	if ([self is2DViewer] == YES)
 	{
 		[super mouseMoved: theEvent];
 	}
@@ -2225,9 +2225,9 @@ static long scrollMode;
 - (void)mouseDown:(NSEvent *)event
 {
 	if( [[self window] isVisible] == NO) return;
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		if( [[[self window] windowController] windowWillClose]) return;
+		if( [[self windowController] windowWillClose]) return;
 	}
 	
 	if (_mouseDownTimer) {
@@ -2268,12 +2268,12 @@ static long scrollMode;
         roiRect.origin = [[[event window] contentView] convertPoint:eventLocation toView:self];
         roiRect.origin.y = size.size.height - roiRect.origin.y;
         
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
 			NSPoint tempPt = [self ConvertFromView2GL:mesureA];
 			
 			NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X",0L];
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [[self window] windowController] userInfo: dict];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"mouseDown" object: [self windowController] userInfo: dict];
 		}
 		
         if( [event clickCount] > 1 && [self window] == [browserWindow window])
@@ -2282,8 +2282,8 @@ static long scrollMode;
         }
 		else if( [event clickCount] > 1 && ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask))
 		{
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] setKeyImage: self];
+			if( [self is2DViewer] == YES)
+				[[self windowController] setKeyImage: self];
 		}
 		else if( [event clickCount] > 1 && stringID == 0L)
 		{
@@ -2445,15 +2445,15 @@ static long scrollMode;
 						if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
 						{
 							found = YES;
-							[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[[self window] windowController]];
+							[[[winList objectAtIndex:i] windowController] setROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 						}
 					}
 					
-					if( [event clickCount] > 1 && [[[self window] windowController] is2DViewer] == YES)
+					if( [event clickCount] > 1 && [self is2DViewer] == YES)
 					{
 						if( found == NO)
 						{
-							ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[[self window] windowController]];
+							ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: [curRoiList objectAtIndex: selected] :[self windowController]];
 							[roiWin showWindow:self];
 						}
 					}
@@ -2607,9 +2607,9 @@ static long scrollMode;
 	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
 
 	if( [[self window] isVisible] == NO) return;
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		if( [[[self window] windowController] windowWillClose]) return;
+		if( [[self windowController] windowWillClose]) return;
 	}
 
 	float deltaX = [theEvent deltaX];
@@ -2629,7 +2629,7 @@ static long scrollMode;
         
 		if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 		{
-			//[[[self window] windowController] saveCrossPositions];
+			//[[self windowController] saveCrossPositions];
 			[[self controller] saveCrossPositions];
 			float change;
 			if( fabs( [theEvent deltaY]) >  fabs( deltaX))
@@ -2747,8 +2747,8 @@ static long scrollMode;
 				originOffset.x = ((originOffset.x * scaleValue) / sScaleValue);
 				originOffset.y = ((originOffset.y * scaleValue) / sScaleValue);
 				
-				if( [[[self window] windowController] is2DViewer] == YES)
-					[[[self window] windowController] propagateSettings];
+				if( [self is2DViewer] == YES)
+					[[self windowController] propagateSettings];
 				
 				if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 		//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -2775,20 +2775,20 @@ static long scrollMode;
 				[matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
 			}
 			
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] adjustSlider];    //mouseDown:theEvent];
+			if( [self is2DViewer] == YES)
+				[[self windowController] adjustSlider];    //mouseDown:theEvent];
 				
 			if( stringID)
 			{
 				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"MPR3D"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
-					[[[self window] windowController] adjustSlider];
+					[[self windowController] adjustSlider];
 			}
 			
 			// SYNCRO
 			[self sendSyncMessage:inc];
 			
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] propagateSettings];
+			if( [self is2DViewer] == YES)
+				[[self windowController] propagateSettings];
 			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -2893,9 +2893,9 @@ static long scrollMode;
 {
 
 	if( [[self window] isVisible] == NO) return;
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		if( [[[self window] windowController] windowWillClose]) return;
+		if( [[self windowController] windowWillClose]) return;
 	}
 	
 	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0)) {
@@ -3116,7 +3116,7 @@ static long scrollMode;
 			originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
 			
 			//set value for Series Object Presentation State
-			if ([[[self window] windowController] is2DViewer] == YES)
+			if ([self is2DViewer] == YES)
 			{
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
@@ -3143,7 +3143,7 @@ static long scrollMode;
             origin.y = originStart.y + yy;
 			
 			//set value for Series Object Presentation State
-			if ([[[self window] windowController] is2DViewer] == YES)
+			if ([self is2DViewer] == YES)
 			{
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
@@ -3218,10 +3218,10 @@ static long scrollMode;
 					
 					if( matrix) [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
 					
-					if( [[[self window] windowController] is2DViewer] == YES)
-						[[[self window] windowController] adjustSlider];
+					if( [self is2DViewer] == YES)
+						[[self windowController] adjustSlider];
 					
-					if( stringID) [[[self window] windowController] adjustSlider];
+					if( stringID) [[self windowController] adjustSlider];
 					
 					// SYNCRO
 					[self sendSyncMessage: curImage - previmage];
@@ -3260,9 +3260,9 @@ static long scrollMode;
 			
 			if( WWAdapter < 0.001) WWAdapter = 0.001;
 			
-			if( [[[self window] windowController] is2DViewer] == YES)
+			if( [self is2DViewer] == YES)
 			{
-				[[[[self window] windowController] thickSlabController] setLowQuality: YES];
+				[[[self windowController] thickSlabController] setLowQuality: YES];
 			}
 			
 			if( [stringID isEqualToString:@"MPR3D"] == NO)
@@ -3318,9 +3318,9 @@ static long scrollMode;
             curWW = [curDCM ww];
             curWL = [curDCM wl];
             
-			if( [[[self window] windowController] is2DViewer] == YES)
+			if( [self is2DViewer] == YES)
 			{
-				[[[self window] windowController] setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+				[[self windowController] setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
 			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object:NSLocalizedString(@"Other", 0L) userInfo: 0L];
 			
@@ -3332,12 +3332,12 @@ static long scrollMode;
 				}
 				else if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
 				{
-					[[[[self window] windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
+					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 				}
 				else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{
 					// change Window level
-					//[[[self window] windowController] setWLWW: curWL :curWW];
+					//[[self windowController] setWLWW: curWL :curWW];
 					[self setWLWW: curWL :curWW];
 				}
 				else [self loadTextures];
@@ -3354,10 +3354,10 @@ static long scrollMode;
 			}
 			else
 			{
-				if( [[[self window] windowController] is2DViewer] == YES)
+				if( [self is2DViewer] == YES)
 				{
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 				}
 			}
 		}
@@ -3376,8 +3376,8 @@ static long scrollMode;
     //    [self checkVisible];
         [self setNeedsDisplay:YES];
 		
-		if( [[[self window] windowController] is2DViewer] == YES)
-			[[[self window] windowController] propagateSettings];
+		if( [self is2DViewer] == YES)
+			[[self windowController] propagateSettings];
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -3448,10 +3448,10 @@ static long scrollMode;
 	}
 	else
 	{
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -3474,10 +3474,10 @@ static long scrollMode;
 	}
 	else
 	{
-		if( [[[self window] windowController] is2DViewer] == YES)
+		if( [self is2DViewer] == YES)
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 		}
 	}
 }
@@ -4204,8 +4204,8 @@ static long scrollMode;
 						long	index, i;
 						float   smallestdiff = -1, fdiff, slicePosition;
 						
-						if( [[[self window] windowController] is2DViewer] == YES)
-							everythingLoaded = [[[self window] windowController] isEverythingLoaded];
+						if( [self is2DViewer] == YES)
+							everythingLoaded = [[self windowController] isEverythingLoaded];
 						
 						noSlicePosition = NO;
 						
@@ -4285,8 +4285,8 @@ static long scrollMode;
 				else [self setIndexWithReset:curImage :YES];
 			}
 			
-			if( [[[self window] windowController] is2DViewer] == YES)
-				[[[self window] windowController] adjustSlider];
+			if( [self is2DViewer] == YES)
+				[[self windowController] adjustSlider];
 			
 			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
 				{
@@ -4320,7 +4320,7 @@ static long scrollMode;
 	{
 		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"ROI"])
 		{
-			[[[winList objectAtIndex:i] windowController] setROI: [note object] :[[self window] windowController]];
+			[[[winList objectAtIndex:i] windowController] setROI: [note object] :[self windowController]];
 		}
 	}
 }
@@ -4410,7 +4410,7 @@ static long scrollMode;
 	
 //	if( [sender tag] == 4)
 //	{
-//		[[[self window] windowController] syncSetOffset];
+//		[[self windowController] syncSetOffset];
 //	}
 }
 
@@ -5128,7 +5128,7 @@ static long scrollMode;
 	
 	//draw line around edge for key Images only in 2D Viewer
 	
-	if ([[[self window] windowController] isMemberOfClass:[ViewerController class]] && [[[self window] windowController] isKeyImage:curImage] && stringID == 0L) {
+	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
 		glLineWidth(2.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
@@ -5208,7 +5208,7 @@ static long scrollMode;
 		
 		if( [stringID isEqualToString:@"MPR3D"])
 		{
-			[[[self window] windowController] getWLWW:&lwl :&lww];
+			[[self windowController] getWLWW:&lwl :&lww];
 		}
 		else
 		{
@@ -5850,7 +5850,7 @@ static long scrollMode;
 			// ***********************
 			// DRAW CLUT BARS ********
 			
-			if( [[[self window] windowController] is2DViewer] == YES && annotations != annotNone)
+			if( [self is2DViewer] == YES && annotations != annotNone)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f /(size.size.width), -2.0f / (size.size.height), 1.0f); // scale to port per pixel scale
@@ -5979,7 +5979,7 @@ static long scrollMode;
 						}
 					}
 				} //blendingView
-			} //[[[self window] windowController] is2DViewer] == YES
+			} //[self is2DViewer] == YES
 
 			
 			if (annotations != annotNone)
@@ -5993,7 +5993,7 @@ static long scrollMode;
 				glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f); // scale to port per pixel scale
 
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
-				if(( numberOf2DViewer > 1 && [[[self window] windowController] is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+				if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
 				{
 					if( [[self window] isMainWindow] && isKeyView)
 					{
@@ -6012,7 +6012,7 @@ static long scrollMode;
 					}
 				}  //drawLines for ImageView Frames
 				
-				if ((_imageColumns > 1 || _imageRows > 1) && [[[self window] windowController] is2DViewer] == YES && stringID == 0L) {
+				if ((_imageColumns > 1 || _imageRows > 1) && [self is2DViewer] == YES && stringID == 0L) {
 					float heighthalf = size.size.height/2 - 1;
 					float widthhalf = size.size.width/2 - 1;
 					
@@ -6048,7 +6048,7 @@ static long scrollMode;
 				// Draw ROIs
 				BOOL drawROI = NO;
 				
-				if( [[[self window] windowController] is2DViewer] == YES) drawROI = [[[[self window] windowController] roiLock] tryLock];
+				if( [self is2DViewer] == YES) drawROI = [[[self windowController] roiLock] tryLock];
 				else drawROI = YES;
 				
 				if( drawROI)
@@ -6077,7 +6077,7 @@ static long scrollMode;
 					rectArray = 0L;
 				}
 				
-				if( drawROI && [[[self window] windowController] is2DViewer] == YES) [[[[self window] windowController] roiLock] unlock];
+				if( drawROI && [self is2DViewer] == YES) [[[self windowController] roiLock] unlock];
 				
 				// Draw 2D point cross (used when double-click in 3D panel)
 				
@@ -6108,7 +6108,7 @@ static long scrollMode;
 					{
 						long	xx, yy;
 						
-						[[[self window] windowController] getPlanes:&xx :&yy];
+						[[self windowController] getPlanes:&xx :&yy];
 						
 						glColor3f (0.0f, 0.0f, 1.0f);
 			
@@ -6414,8 +6414,8 @@ static long scrollMode;
 			originOffset.x *= maxChanged;
 			originOffset.y *= maxChanged;
 			
-			if( [[[self window] windowController] is2DViewer] == YES)
-			[[[self window] windowController] propagateSettings];
+			if( [self is2DViewer] == YES)
+			[[self windowController] propagateSettings];
 			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -7328,10 +7328,10 @@ BOOL	lowRes = NO;
 	
 	[self sendSyncMessage:curImage - x];
 	
-	if( [[[self window] windowController] is2DViewer] == YES)
+	if( [self is2DViewer] == YES)
 	{
-		[[[self window] windowController] propagateSettings];
-		[[[self window] windowController] adjustKeyImage];
+		[[self windowController] propagateSettings];
+		[[self windowController] adjustKeyImage];
 	}
 			
 	if( [stringID isEqualToString:@"FinalView"] == YES) [self blendingPropagate];
@@ -7476,7 +7476,7 @@ BOOL	lowRes = NO;
 
 - (void)resizeWithOldSuperviewSize:(NSSize)oldBoundsSiz
 {
-	if( [[[self window] windowController] is2DViewer] != YES)
+	if( [self is2DViewer] != YES)
 	{
 		[super resizeWithOldSuperviewSize:oldBoundsSiz];
 		return;
@@ -7763,14 +7763,14 @@ BOOL	lowRes = NO;
 		[self setXFlipped: [[series valueForKey:@"xFlipped"] boolValue]];
 		[self setYFlipped: [[series valueForKey:@"yFlipped"] boolValue]];
 				
-		if ([series valueForKey:@"scale"] != 0L && [[[self window] windowController] is2DViewer] == YES)
+		if ([series valueForKey:@"scale"] != 0L && [self is2DViewer] == YES)
 			if( [[[self seriesObj] valueForKey:@"scale"] floatValue] > 0.0)
 				scaleValue = [[series valueForKey:@"scale"] floatValue];
 		
 		if( [series valueForKey:@"rotationAngle"])
 			rotation = [[series valueForKey:@"rotationAngle"] floatValue];
 		
-		if ([[[self window] windowController] is2DViewer] == YES)
+		if ([self is2DViewer] == YES)
 		{
 			if( [series valueForKey:@"xOffset"]) origin.x = [[series valueForKey:@"xOffset"] floatValue];
 			if( [series valueForKey:@"yOffset"]) origin.y = [[series valueForKey:@"yOffset"] floatValue];
@@ -7794,10 +7794,10 @@ BOOL	lowRes = NO;
 							}
 							else
 							{
-								if( [[[self window] windowController] is2DViewer] == YES)
+								if( [self is2DViewer] == YES)
 								{
-									curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[[self window] windowController] factorPET2SUV];
-									curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[[self window] windowController] factorPET2SUV];
+									curWW = [[[self seriesObj] valueForKey:@"windowWidth"] floatValue] * [[self windowController] factorPET2SUV];
+									curWL = [[[self seriesObj] valueForKey:@"windowLevel"] floatValue] * [[self windowController] factorPET2SUV];
 								}
 							}
 						break;
@@ -7860,10 +7860,10 @@ BOOL	lowRes = NO;
 		}
 		else
 		{
-			if( [[[self window] windowController] is2DViewer] == YES)
+			if( [self is2DViewer] == YES)
 			{
-				[series setValue:[NSNumber numberWithFloat:curWW / [[[self window] windowController] factorPET2SUV]] forKey:@"windowWidth"];
-				[series setValue:[NSNumber numberWithFloat:curWL / [[[self window] windowController] factorPET2SUV]] forKey:@"windowLevel"];
+				[series setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[series setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
 			}
 		}
 		
@@ -7935,7 +7935,7 @@ BOOL	lowRes = NO;
 	// 2006-02-09 masu: resizing a view, which is in fullscreen mode, cuts connection
 	// between view and window. When more viewers are open the app will crash.
 	// So resizing is only allowed in non fullscreen mode.
-	if([[[self window] windowController] FullScreenON] == FALSE)
+	if([[self windowController] FullScreenON] == FALSE)
 	{
 		float resizeScale = 1.0;
 		float curImageWidth = [curDCM pwidth];
@@ -8141,63 +8141,63 @@ BOOL	lowRes = NO;
 			case Preset1WWWLHotKeyAction: if([wwwlValues count] >= 1) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:0]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:0]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:0]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:0] userInfo: 0L];
 					}	
 					break;
 			case Preset2WWWLHotKeyAction: if([wwwlValues count] >= 2) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:1]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:1]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:1]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:1] userInfo: 0L];
 					}	
 					break;
 			case Preset3WWWLHotKeyAction: if([wwwlValues count] >= 3) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:2]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:2]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:2]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:2] userInfo: 0L];
 					}	
 					break;
 			case Preset4WWWLHotKeyAction: if([wwwlValues count] >= 4) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:3]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:3]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:3]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:3] userInfo: 0L];
 					}	
 					break;
 			case Preset5WWWLHotKeyAction: if([wwwlValues count] >= 5) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:4]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:4]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:4]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:4] userInfo: 0L];
 					}	
 					break;
 			case Preset6WWWLHotKeyAction: if([wwwlValues count] >= 6) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:5]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:5]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:5]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:5] userInfo: 0L];
 					}	
 					break;
 			case Preset7WWWLHotKeyAction: if([wwwlValues count] >= 7) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:6]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:6]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:6]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:6] userInfo: 0L];
 					}	
 					break;
 			case Preset8WWWLHotKeyAction: if([wwwlValues count] >= 8) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:7]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:7]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:7]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:7] userInfo: 0L];
 					}	
 					break;
 			case Preset9WWWLHotKeyAction: if([wwwlValues count] >= 9) {
 							wwwl = [wlwwDict objectForKey: [wwwlValues objectAtIndex:8]];
 							[self setWLWW:[[wwwl objectAtIndex:0] floatValue] :[[wwwl objectAtIndex:1] floatValue]];
-							if( [[[self window] windowController] is2DViewer] == YES) [[[self window] windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:8]];
+							if( [self is2DViewer] == YES) [[self windowController] setCurWLWWMenu: [wwwlValues objectAtIndex:8]];
 							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [wwwlValues objectAtIndex:8] userInfo: 0L];
 					}	
 					break;
@@ -8441,6 +8441,21 @@ BOOL	lowRes = NO;
 - (BOOL)checkHasChanged {
     // Calling with 'NO' clears _hasChanged after the call (see above).
     return [self _checkHasChanged:NO];
+}
+
+#pragma mark -
+#pragma mark Window Controler methods.
+- (id)windowController{
+	return [[self window] windowController];
+}
+
+- (BOOL)is2DViewer{
+	// if DCMView was subclassed for the non 2D Viewers. We could just override this method rather than checking to see if the WindowController is 2D
+	return [[self windowController] is2DViewer];
+	// probably it would  better to check for the class rather than the 2D method in the long run. It just adds an extra method to any controller;
+	//if ([[self windowController] isMemberOfClass:[ViewerController class]])
+	//	return YES;
+	//return NO;
 }
 
 
