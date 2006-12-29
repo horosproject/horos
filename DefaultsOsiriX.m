@@ -934,8 +934,6 @@ static NSString *hostName = @"";
 	int x = DefaultWWWLHotKeyAction;
 	int count = BoneRemovalHotKeyAction + 1;
 	for (x = DefaultWWWLHotKeyAction; x < count; x++) {
-	//while (stringValue = [hotKeyEnumerator nextObject]) {
-	//	unichar character  = [stringValue characterAtIndex:0];
 		if  ( x < [array count]) {
 			stringValue = [array objectAtIndex:x];
 			[hotkeys setObject:[NSNumber numberWithInt:x] forKey:stringValue];
@@ -943,6 +941,239 @@ static NSString *hostName = @"";
 	}
 	[defaultValues setObject:hotkeys forKey:@"HOTKEYS"];
 	
+	// Comparison Body Regions
+	NSArray *headRegions = [NSArray arrayWithObjects: 
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"HEAD", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"BRAIN", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"FACE", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"ORBIT", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"ORBITS", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"IAC", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PITUITARY", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								nil];
+								
+		NSArray *neckRegions = [NSArray arrayWithObjects: 
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"NECK", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"CERVICAL", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								nil];
+								
+		NSArray *chestRegions = [NSArray arrayWithObjects: 
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"CHEST", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"LUNG", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"THORAX", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"THORACIC", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PULMONARY", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"MEDIASTINUM", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"HEART", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"CARDIAC", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								nil];
+								
+		NSArray *abdomenRegions = [NSArray arrayWithObjects: 
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"ABDOMEN", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"ABD", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"LIVER", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PANCREAS", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"KIDNEY", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"RENAL", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"ADRENAL", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"IVP", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								nil];
+								
+			NSArray *pelvisRegions = [NSArray arrayWithObjects: 
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PELVIS", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PELVIC", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"BLADDER", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"APPENDIX", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"HIP", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"HIPS", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"UTERUS", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"OVARY", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"OVARIES", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								[NSDictionary dictionaryWithObjectsAndKeys:
+									NSLocalizedString(@"PROSTATE", nil), @"region",
+									[NSNumber numberWithBool:YES], @"isLeaf",
+									[NSNumber numberWithInt:0], @"count",
+									nil],
+								nil];
+													
+												
+	
+	 NSDictionary *headRegion = [NSDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"HEAD", nil), @"region",
+				[NSNumber numberWithBool:NO], @"isLeaf",
+				[NSNumber numberWithInt:[headRegions count]], @"count",
+				headRegions, @"keywords",
+				nil];
+	NSDictionary *neckRegion = [NSDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"NECK", nil), @"region",
+				[NSNumber numberWithBool:NO], @"isLeaf",
+				[NSNumber numberWithInt:[neckRegions count]], @"count",
+				neckRegions, @"keywords",
+				nil];
+	NSDictionary *chestRegion = [NSDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"CHEST", nil), @"region",
+				[NSNumber numberWithBool:NO], @"isLeaf",
+				[NSNumber numberWithInt:[chestRegions count]], @"count",
+				chestRegions, @"keywords",
+				nil];
+	NSDictionary *abdomenRegion = [NSDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"ABDOMEN", nil), @"region",
+				[NSNumber numberWithBool:NO], @"isLeaf",
+				[NSNumber numberWithInt:[abdomenRegions count]], @"count",
+				abdomenRegions, @"keywords",
+				nil];
+	NSDictionary *pelvisRegion = [NSDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"PELVIS", nil), @"region",
+				[NSNumber numberWithBool:NO], @"isLeaf",
+				[NSNumber numberWithInt:[pelvisRegions count]], @"count",
+				pelvisRegions, @"keywords",
+				nil];
+									
+	NSArray *bodyRegions = [NSArray arrayWithObjects:
+				headRegion,
+				neckRegion,
+				chestRegion,
+				abdomenRegion,
+				pelvisRegion,
+				nil];
+	
+	[defaultValues setObject:bodyRegions forKey:@"bodyRegions"];
 	return defaultValues;
 }
 @end
