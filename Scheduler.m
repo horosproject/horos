@@ -173,7 +173,7 @@
     _schedulableObject = schedObj;
 }
 
--(NSObject <Schedulable> *)schedulableObject {
+-(id <Schedulable>)schedulableObject {
     return _schedulableObject;
 }
 

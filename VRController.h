@@ -171,5 +171,6 @@
 
 - (NSString *)renderingMode;
 - (void)setRenderingMode:(NSString *)renderingMode;
+- (NSString *)curCLUTMenu;
 
 @end

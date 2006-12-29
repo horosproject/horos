@@ -284,6 +284,9 @@ typedef char* vtkPolyDataNormals;
 - (void) computeOrientationText;
 - (void) getOrientation: (float*) o;
 -(void) saView:(id) sender;
+-(void) axView:(id) sender;
+-(void) coView:(id) sender;
+-(void) saViewOpposite:(id) sender;
 
 -(IBAction) switchProjection:(id) sender;
 

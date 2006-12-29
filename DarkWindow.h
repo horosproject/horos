@@ -12,7 +12,4 @@
 @interface DarkWindow : NSWindow {
 
 }
-
-- (NSColor *)darkBackgroundColor;
-
 @end

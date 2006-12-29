@@ -1944,7 +1944,7 @@ return rect;
 		comments = [a retain];
 	}
 }
-- (RGBColor) color {return color;}
+- (RGBColor) rgbcolor {return color;}
 
 - (void) setColor:(RGBColor) a
 {

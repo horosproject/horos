@@ -162,7 +162,7 @@
 	curController = c;
 	curROI = iroi;
 	
-	RGBColor	rgb = [curROI color];
+	RGBColor	rgb = [curROI rgbcolor];
 	NSColor		*color = [NSColor colorWithDeviceRed:rgb.red/65535. green: rgb.green/65535. blue:rgb.blue/65535. alpha:1.0];
 	
 	[colorButton setColor: color];
@@ -229,7 +229,7 @@
 			if ( roi == curROI ) continue;
 			
 			if ( [[roi name] isEqualToString: [iROI name]] ) {
-				[roi setColor: [iROI color]];
+				[roi setColor: [iROI rgbcolor]];
 				[roi setThickness: [iROI thickness]];
 				[roi setOpacity: [iROI opacity]];
 				if ( newName ) [roi setName: newName];

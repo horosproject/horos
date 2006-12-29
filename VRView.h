@@ -406,6 +406,10 @@ typedef char* vtkMyCallbackVR;
 
 -(void) setViewSizeToMatrix3DExport;
 -(void) restoreViewSizeAfterMatrix3DExport;
+-(void) axView:(id) sender;
+-(void) coView:(id) sender;
+-(void) saViewOpposite:(id) sender;
+
 
 // export
 - (void) sendMail:(id) sender;

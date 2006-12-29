@@ -34,7 +34,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 @implementation LLMPRViewer
 
-- (id) initWithPixList: (NSMutableArray*) pix : (NSMutableArray*) pixToSubstract :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(LLScoutViewer*)sV;
+- (id) initWithPixList: (NSArray*) pix : (NSArray*) pixToSubstract :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(LLScoutViewer*)sV;
 {
 	[super initWithWindowNibName:@"LLMPR"];
 

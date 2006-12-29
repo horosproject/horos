@@ -106,8 +106,8 @@ BOOL useQuartz() {
 		
 	[[self window] setDelegate:self];
 	[[self window] setAlphaValue:0.0];
-	if (useQuartz())	
-		[view setAutostartsRendering:YES];
+//	if (useQuartz())	
+//		[view setAutostartsRendering:YES];
 }
 
 - (IBAction) switchVersion:(id) sender
@@ -135,19 +135,19 @@ BOOL useQuartz() {
 
 - (IBAction)showWindow:(id)sender{
 	[super showWindow:sender];	
-	if (useQuartz())
-		[self startRendering];
+//	if (useQuartz())
+//		[self startRendering];
 	//
 	//NSLog(@"show Splash screen");
 }
 
-- (void)startRendering
-{
-	NSString *path = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"qtz"];
-	[view loadCompositionFromFile:path];
-	[view setAutostartsRendering:YES];
-	[view startRendering];
-}
+//- (void)startRendering
+//{
+//	NSString *path = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"qtz"];
+//	[view loadCompositionFromFile:path];
+//	[view setAutostartsRendering:YES];
+//	[view startRendering];
+//}
 
 - (void) affiche
 {

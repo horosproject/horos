@@ -58,6 +58,8 @@
 - (void) setCameraViewUpRepresentation: (Camera*) aCamera;
 - (void) setCamera;
 - (void) setupToolbar;
+- (void) Apply2DCLUT:(id) sender;
+
 
 #pragma mark-
 #pragma mark VR Viewer methods

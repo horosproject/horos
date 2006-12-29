@@ -110,5 +110,5 @@ class vtkMyCallback;
 }
 
 - (short) setPixSource:(NSMutableArray*)pts;
-
+- (void) setROIActorVolume:(NSValue*)roiActorPointer;
 @end

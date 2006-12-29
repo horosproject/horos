@@ -40,9 +40,9 @@
 #include "setjmp.h"
 //#include "jpegless.h"       /* interface for JPEG lossless decompressor */
 //#include "jpeglib.h"	    /* interface for JPEG lossy decompressor */
-#include "jinclude16.h"
-#include "jpeglib16.h"
-#include "jerror16.h"
+//#include "jinclude16.h"
+//#include "jpeglib16.h"
+//#include "jerror16.h"
 
 #ifdef MAYO_WAVE
 #include "Mayo.h"	/* interface for wavelet decompressor */
@@ -235,38 +235,38 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 /*										*/
 /********************************************************************************/
 
-struct SErrorMgr 
-{
-  struct jpeg_error_mgr pub;	/* "public" fields */
-
-  jmp_buf setjmp_buffer;	/* for return to caller */
-}; /* struct */
-
-typedef struct SErrorMgr *SErrorMgrP;
-
-/********************************************************************************/
-/*									 	*/
-/* Here's the routine that will replace the standard error_exit method: 	*/
-/* for JPEG lossy								*/
-/*									 	*/
-/********************************************************************************/
-
-METHODDEF(void)
-my_error_exit (j_common_ptr ioCInfo)
-{
-  /* ioCInfo->err really points to a SErrorMgr struct, so coerce pointer */
-  SErrorMgrP theErr = (SErrorMgrP) ioCInfo->err;
-
-  /* Always display the message. */
-  /* We could postpone this until after returning, if we chose. */
-  (*ioCInfo->err->output_message) (ioCInfo);
-
-  /* Return control to the setjmp point */
-#ifdef Mac
-  longjmp (theErr->setjmp_buffer, 1);
-#endif
-
-} /* endofunction my_error_exit */
+//struct SErrorMgr 
+//{
+//  struct jpeg_error_mgr pub;	/* "public" fields */
+//
+//  jmp_buf setjmp_buffer;	/* for return to caller */
+//}; /* struct */
+//
+//typedef struct SErrorMgr *SErrorMgrP;
+//
+///********************************************************************************/
+///*									 	*/
+///* Here's the routine that will replace the standard error_exit method: 	*/
+///* for JPEG lossy								*/
+///*									 	*/
+///********************************************************************************/
+//
+//METHODDEF(void)
+//my_error_exit (j_common_ptr ioCInfo)
+//{
+//  /* ioCInfo->err really points to a SErrorMgr struct, so coerce pointer */
+//  SErrorMgrP theErr = (SErrorMgrP) ioCInfo->err;
+//
+//  /* Always display the message. */
+//  /* We could postpone this until after returning, if we chose. */
+//  (*ioCInfo->err->output_message) (ioCInfo);
+//
+//  /* Return control to the setjmp point */
+//#ifdef Mac
+//  longjmp (theErr->setjmp_buffer, 1);
+//#endif
+//
+//} /* endofunction my_error_exit */
 
 
 
@@ -594,7 +594,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 				{
 					jas_image_readcmpt(jasImage, 0, 0, y, width, 1, pixels[0]);
 					
-					char *px = newPixelData + y * width;
+					char *px = (char*) newPixelData + y * width;
 					
 					//ICI char * aulieu de 32
 					int_fast32_t	*ptr = &(pixels[0])->rows_[0][0];
@@ -610,7 +610,7 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 				for( i = 0 ; i < numcmpts; i++)
 					jas_image_readcmpt(jasImage, i, 0, y, width, 1, pixels[ i]);
 				
-				char *px = newPixelData + y * width * 3;
+				char *px = (char*) newPixelData + y * width * 3;
 				
 				int_fast32_t	*ptr1 = &(pixels[0])->rows_[0][0];
 				int_fast32_t	*ptr2 = &(pixels[1])->rows_[0][0];

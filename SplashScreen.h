@@ -26,6 +26,4 @@
 
 - (void) affiche;
 - (IBAction) switchVersion:(id) sender;
-- (void)startRendering;
-
 @end

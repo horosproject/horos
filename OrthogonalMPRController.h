@@ -34,7 +34,7 @@
 	short						thickSlabMode, thickSlab;
 }
 
-- (id) initWithPixList: (NSMutableArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer;
+- (id) initWithPixList: (NSArray*) pixList :(NSArray*) filesList :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer;
 
 - (void) reslice: (long) x: (long) y: (OrthogonalMPRView*) sender;
 - (void) flipVolume;
@@ -94,4 +94,8 @@
 - (void) loadROIonXReslicedView: (long) y;
 - (void) loadROIonYReslicedView: (long) x;
 - (void) loadROIonReslicedViews: (long) x: (long) y;
+
+- (NSMutableArray*) pointsROIAtX: (long) x;
+- (NSMutableArray*) pointsROIAtY: (long) y;
+
 @end

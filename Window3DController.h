@@ -97,4 +97,8 @@
 
 - (void) print:(id) sender;
 - (BOOL)is4D;
+
+- (NSArray*) pixList;
+- (NSArray*) fileList;
+
 @end

@@ -179,7 +179,7 @@ enum
 - (BOOL) needQuartz;
 - (void) setROIMode :(long) v;
 - (BOOL) deleteSelectedPoint;
-- (RGBColor) color;
+- (RGBColor) rgbcolor;
 - (void) setColor:(RGBColor) a;
 - (float) thickness;
 - (void) setThickness:(float) a;

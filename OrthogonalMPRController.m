@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "OrthogonalMPRController.h"
+#import "OrthogonalMPRViewer.h"
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
 
@@ -47,7 +48,7 @@
 	}
 }
 
-- (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
+- (id) initWithPixList: (NSArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC:(id) newViewer
 {
 	if (self = [super init])
 	{		
@@ -579,15 +580,15 @@
 {
 	if ([sender isEqual: originalView])
 	{
-		[viewer fullWindowView:0];
+		[viewer fullWindowView: (int) 0];
 	}
 	else if ([sender isEqual: xReslicedView])
 	{
-		[viewer fullWindowView:1];
+		[viewer fullWindowView: (int) 1];
 	}
 	else if ([sender isEqual: yReslicedView])
 	{
-		[viewer fullWindowView:2];
+		[viewer fullWindowView: (int) 2];
 	}
 }
 

@@ -53,6 +53,16 @@ extern NSString * documentsDirectory();
 
 @implementation Window3DController
 
+- (NSArray*) pixList
+{
+	return 0L;
+}
+
+- (NSArray*) fileList
+{
+	return 0L;
+}
+
 - (void)printOperationDidRun:(NSPrintOperation *)printOperation
                 success:(BOOL)success
                 contextInfo:(void*)info
