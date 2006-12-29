@@ -1367,18 +1367,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				height = Analyze->dime.dim[ 1];
-				if( intelByteOrder) height = EndianU16_LtoN( height);
+				if( intelByteOrder) height = Endian16_Swap( height);
 				height /= 2;
 				height *= 2;
 				width = Analyze->dime.dim[ 2];
-				if( intelByteOrder) width = EndianU16_LtoN( width);
+				if( intelByteOrder) width = Endian16_Swap( width);
 				width /= 2;
 				width *= 2;
 				
 				NoOfFrames = Analyze->dime.dim[ 3];
+				if( intelByteOrder) NoOfFrames = Endian16_Swap( NoOfFrames);
 				NoOfSeries = 1;
-				
-				if( intelByteOrder) NoOfFrames = EndianU16_LtoN( NoOfFrames);
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
