@@ -18,34 +18,9 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A6770A19C90000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A6760A19C90000FED357 /* Security.framework */; };
+		BF32C8500B45CC12003E12DC /* BodyRegionTreeController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */; };
+		BF32C8510B45CC12003E12DC /* BodyRegionTreeController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		06F27B30FFEEEFEF11CA0E56 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 0;
-				OPTIMIZATION_CFLAGS = "-O0";
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		06F27B31FFEEEFEF11CA0E56 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
 		089C1672FE841209C02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -58,6 +33,8 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIHangingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIHangingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A6760A19C90000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyRegionTreeController.h; sourceTree = "<group>"; };
+		BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyRegionTreeController.m; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHangingPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHangingPreferencePanePref.m; sourceTree = "<group>"; };
@@ -118,6 +95,8 @@
 				7EC5841B07298C5300429FC7 /* HangingTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */,
+				BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */,
+				BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -167,6 +146,7 @@
 				8D202CEA0486D31800D8A456 /* OSIHangingPreferencePane_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* OSIHangingPreferencePanePref.h in Headers */,
 				7EC5841C07298C5300429FC7 /* HangingTableView.h in Headers */,
+				BF32C8500B45CC12003E12DC /* BodyRegionTreeController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,36 +165,6 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OSIHangingPreferencePane_Prefix.pch;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
-				LIBRARY_SEARCH_PATHS = "";
-				LIBRARY_STYLE = Bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-bundle",
-					"-twolevel_namespace",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = OSIHangingPreferencePane;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				WRAPPER_EXTENSION = prefPane;
-			};
 			dependencies = (
 			);
 			name = OSIHangingPreferencePane;
@@ -229,12 +179,6 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = CE3E1F640875885B007FFD6F /* Build configuration list for PBXProject "OSIHangingPreferencePane" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				06F27B30FFEEEFEF11CA0E56 /* Development */,
-				06F27B31FFEEEFEF11CA0E56 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* OSIHangingPreferencePane */;
 			projectDirPath = "";
@@ -274,6 +218,7 @@
 			files = (
 				8D202CF10486D31800D8A456 /* OSIHangingPreferencePanePref.m in Sources */,
 				7EC5841D07298C5300429FC7 /* HangingTableView.m in Sources */,
+				BF32C8510B45CC12003E12DC /* BodyRegionTreeController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

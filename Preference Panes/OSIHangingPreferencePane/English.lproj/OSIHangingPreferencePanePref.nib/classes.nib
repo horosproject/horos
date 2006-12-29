@@ -1,5 +1,11 @@
 {
     IBClasses = (
+        {
+            ACTIONS = {addRemoveAction = id; }; 
+            CLASS = BodyRegionTreeController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTreeController; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = HangingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
@@ -13,6 +19,7 @@
             }; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             ACTIONS = {
                 deleteSelectedRow = id; 
