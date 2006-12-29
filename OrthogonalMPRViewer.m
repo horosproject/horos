@@ -335,16 +335,44 @@ NSString * documentsDirectory();
 	
 }
 
+- (void)applyWLWWForString:(NSString *)menuString{
+		if( curWLWWMenu != menuString)
+		{
+			[curWLWWMenu release];
+			curWLWWMenu = [menuString retain];
+		}
+		
+		if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+		{
+		}
+		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+		{
+			[self setWLWW:[[[[self window] firstResponder] curDCM] savedWL] :[[[[self window] firstResponder] curDCM] savedWW]];
+		}
+		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+		{
+			[self setWLWW:0 :0];
+		}
+		else
+		{
+			NSArray		*value;
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
+			[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
+		}
+		
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
+	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
+}
+
+
+
 - (void) ApplyWLWW:(id) sender
 {
-//    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-//    {
-//        NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'", [sender title]]);
-//    }
-//    else
-//    {
-		
-		if( curWLWWMenu != [sender title])
+	[self applyWLWWForString:[sender title]];
+/*
+	if( curWLWWMenu != [sender title])
 		{
 			[curWLWWMenu release];
 			curWLWWMenu = [[sender title] retain];
@@ -375,9 +403,8 @@ NSString * documentsDirectory();
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
-	
-//	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+*/	
+
 }
 
 - (void) setCurWLWWMenu: (NSString*) wlww
@@ -566,11 +593,7 @@ NSString * documentsDirectory();
 		[splitView setNeedsDisplay:YES];
 		[controller restoreScaleValue];
 		// if current tool is wlww, then set current tool to cross tool
-		if ([toolsMatrix selectedTag] == 0)
-		{
-			[controller setCurrentTool: tCross];
-			[toolsMatrix selectCellWithTag:8];
-		}
+		[self setCurrentTool:tCross];
 	}
 	else
 	{
@@ -578,11 +601,7 @@ NSString * documentsDirectory();
 		[controller saveScaleValue];
 		[controller displayResliceAxes:NO];
 		// if current tool is cross tool, then set current tool to wlww
-		if ([toolsMatrix selectedTag] == 8)
-		{
-			[controller setCurrentTool: tWL];
-			[toolsMatrix selectCellWithTag:0];
-		}
+		[self setCurrentTool:tWL];
 		
 		NSSize splitViewSize = [splitView frame].size;
 		
@@ -705,10 +724,10 @@ NSString * documentsDirectory();
 
 - (IBAction) changeTool:(id) sender
 {
-	if( [sender tag] >= 0)
+	int tag = [sender tag];
+	if( tag>= 0)
     {
-		[toolsMatrix selectCellWithTag: [[sender selectedCell] tag]];
-		[controller setCurrentTool: [[sender selectedCell] tag]];
+		[self setCurrentTool:tag];
     }
 }
 
@@ -1629,6 +1648,13 @@ NSString * documentsDirectory();
 }
 - (NSString *)curCLUTMenu{
 	return curCLUTMenu;
+}
+
+- (void)setCurrentTool:(int)currentTool{
+	if (currentTool > 0) {
+		[controller setCurrentTool: currentTool];
+		[toolsMatrix selectCellWithTag:currentTool];
+	}
 }
 
 @end

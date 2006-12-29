@@ -71,6 +71,7 @@
 - (void) ApplyCLUTString:(NSString*) str;
 - (void) setWLWW:(float) iwl :(float) iww;
 - (void) setCurWLWWMenu: (NSString*) wlww;
+- (void)applyWLWWForString:(NSString *)menuString;
 - (void) flipVolume;
 - (DCMView*) keyView;
 
@@ -122,5 +123,6 @@
 - (void) moviePosSliderAction:(id) sender;
 
 - (ViewerController *)viewerController;
+- (void)setCurrentTool:(int)currentTool;
 
 @end
