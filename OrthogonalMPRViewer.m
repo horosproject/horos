@@ -727,7 +727,7 @@ NSString * documentsDirectory();
 	int tag = [sender tag];
 	if( tag>= 0)
     {
-		[self setCurrentTool:tag];
+		[self setCurrentTool: [[sender selectedCell] tag]];
     }
 }
 
@@ -1651,7 +1651,7 @@ NSString * documentsDirectory();
 }
 
 - (void)setCurrentTool:(int)currentTool{
-	if (currentTool > 0) {
+	if (currentTool >= 0) {
 		[controller setCurrentTool: currentTool];
 		[toolsMatrix selectCellWithTag:currentTool];
 	}
