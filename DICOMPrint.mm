@@ -14,6 +14,8 @@ int main(int argc, const char *argv[])
 	//	argv[ 2] : baseName
 	//	argv[ 3] : xmlPath
 	
+	NSLog(@"DICOM Print Process Start");
+	
 	if( argv[ 1] && argv[ 2] && argv[ 3])
 	{
 		// send printjob
@@ -21,6 +23,8 @@ int main(int argc, const char *argv[])
 		
 		status = printSCU.sendPrintjob( argv[ 3]);
 	}
+
+	NSLog(@"DICOM Print Process End");
 	
 	[pool release];
 	

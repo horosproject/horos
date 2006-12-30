@@ -11918,6 +11918,10 @@
 		CE88576708AF938800B72DA7 /* ROIVolumeController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE88575B08AF938800B72DA7 /* ROIVolumeController.h */; };
 		CE88576808AF938800B72DA7 /* ROIVolumeController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */; };
 		CE88576908AF938800B72DA7 /* ROIVolumeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE88575D08AF938800B72DA7 /* ROIVolumeView.mm */; };
+		CE8CAB0B0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
+		CE8CAB0C0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
+		CE8CAB0D0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
+		CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */; };
 		CE90D8C4095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
 		CE90D8C5095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
 		CE90D8C6095F5B48004FC7E2 /* FlipData.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */; };
@@ -16741,6 +16745,7 @@
 		CE88575B08AF938800B72DA7 /* ROIVolumeController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeController.h; sourceTree = "<group>"; };
 		CE88575C08AF938800B72DA7 /* ROIVolumeController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeController.mm; sourceTree = "<group>"; };
 		CE88575D08AF938800B72DA7 /* ROIVolumeView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeView.mm; sourceTree = "<group>"; };
+		CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = DICOMPrint; path = build/Development/DICOMPrint; sourceTree = "<group>"; };
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
 		CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = itkMSRGFilter.h; sourceTree = "<group>"; };
 		CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = itkMSRGFilter.txx; sourceTree = "<group>"; };
@@ -17443,6 +17448,7 @@
 			children = (
 				B78675430AD9C56400731977 /* diameter570frame512.pbm */,
 				B78675440AD9C56400731977 /* diameter1140frame1024.pbm */,
+				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
 				CE9AF29C0AED5EE600606C3D /* Quicktime */,
 				ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
@@ -30012,6 +30018,7 @@
 				CE1366B50B41D0F200944876 /* mpeg2.tiff in Resources */,
 				CEF64DD10B44266700C1C902 /* Forward.tif in Resources */,
 				CEF64DD20B44266700C1C902 /* Back.tif in Resources */,
+				CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30329,6 +30336,7 @@
 				CEFBB19F0B358C9000666FA9 /* BackDisabled.tif in Resources */,
 				CEFBB1A00B358C9000666FA9 /* ForwardPressed.tif in Resources */,
 				CE1366B60B41D0F200944876 /* mpeg2.tiff in Resources */,
+				CE8CAB0C0B4715DD0068DBAE /* DICOMPrint in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30636,6 +30644,7 @@
 				BF045F160B135F6400F5B97D /* available.tif in Resources */,
 				BF2EEC890B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */,
 				BF6566A70B263D1E00574803 /* Layout.nib in Resources */,
+				CE8CAB0B0B4715DD0068DBAE /* DICOMPrint in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30953,6 +30962,7 @@
 				CEFBB1990B358C9000666FA9 /* BackDisabled.tif in Resources */,
 				CEFBB19A0B358C9000666FA9 /* ForwardPressed.tif in Resources */,
 				CE1366B70B41D0F200944876 /* mpeg2.tiff in Resources */,
+				CE8CAB0D0B4715DD0068DBAE /* DICOMPrint in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
