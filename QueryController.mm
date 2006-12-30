@@ -49,7 +49,7 @@ static QueryController	*currentQueryController = 0L;
 	return currentQueryController;
 }
 
-- (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet
++ (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet
 {
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
 	
@@ -333,7 +333,7 @@ static QueryController	*currentQueryController = 0L;
 			int numberPacketsReceived = 0;
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 			{
-				//if( [self echo: hostname port: [port intValue] AET:theirAET])
+				//if( [QueryController echo: hostname port: [port intValue] AET:theirAET])
 				{
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
@@ -973,7 +973,7 @@ static QueryController	*currentQueryController = 0L;
 	int numberPacketsReceived = 0;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [hostname UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
 	{
-		status = [self echo: hostname port: [port intValue] AET: theirAET];
+		status = [QueryController echo: hostname port: [port intValue] AET: theirAET];
 	}
 	else status = -1;
 	

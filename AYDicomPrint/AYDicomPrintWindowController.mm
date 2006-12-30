@@ -6,44 +6,11 @@
 //  Copyright 2006 aycan digitalsysteme gmbh. All rights reserved.
 //
 
+#import "QueryController.h"
 #include "AYDicomPrintWindowController.h"
-#include "AYDcmPrintSCU.h"
+//#include "AYDcmPrintSCU.h"
 #include "AYNSImageToDicom.h"
 
-// DICOM standard transfer syntaxes
-// used to verify dicom printer availability
-static const char* transferSyntaxes[] = {
-      UID_LittleEndianImplicitTransferSyntax,
-      UID_LittleEndianExplicitTransferSyntax,
-      UID_BigEndianExplicitTransferSyntax,
-      UID_JPEGProcess1TransferSyntax,
-      UID_JPEGProcess2_4TransferSyntax,
-      UID_JPEGProcess3_5TransferSyntax,
-      UID_JPEGProcess6_8TransferSyntax,
-      UID_JPEGProcess7_9TransferSyntax,
-      UID_JPEGProcess10_12TransferSyntax,
-      UID_JPEGProcess11_13TransferSyntax,
-      UID_JPEGProcess14TransferSyntax,
-      UID_JPEGProcess15TransferSyntax,
-      UID_JPEGProcess16_18TransferSyntax,
-      UID_JPEGProcess17_19TransferSyntax,
-      UID_JPEGProcess20_22TransferSyntax,
-      UID_JPEGProcess21_23TransferSyntax,
-      UID_JPEGProcess24_26TransferSyntax,
-      UID_JPEGProcess25_27TransferSyntax,
-      UID_JPEGProcess28TransferSyntax,
-      UID_JPEGProcess29TransferSyntax,
-      UID_JPEGProcess14SV1TransferSyntax,
-      UID_RLELosslessTransferSyntax,
-      UID_JPEGLSLosslessTransferSyntax,
-      UID_JPEGLSLossyTransferSyntax,
-      UID_DeflatedExplicitVRLittleEndianTransferSyntax,
-      UID_JPEG2000LosslessOnlyTransferSyntax,
-      UID_JPEG2000TransferSyntax,
-      UID_MPEG2MainProfileAtMainLevelTransferSyntax,
-      UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
-      UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax
-};
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -445,16 +412,32 @@ static const char* transferSyntaxes[] = {
 	if (![fileManager fileExistsAtPath: logPath])
 		[fileManager createDirectoryAtPath: logPath attributes: nil];
 
-	// send printjob
-	AYDcmPrintSCU printSCU = AYDcmPrintSCU([logPath UTF8String], 0, [baseName UTF8String]);
-	NSLog(@"Sending Printjob");
-	int status = printSCU.sendPrintjob([xmlPath UTF8String]);
+	NSTask *theTask = [[NSTask alloc] init];
+	
+	[theTask setArguments: [NSArray arrayWithObjects: logPath, baseName, xmlPath, 0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/DICOMPrint"]];
+	[theTask launch];
+	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !
+	
+	int status = [theTask terminationStatus];
+	[theTask release];
 
-	// show status
 	if (status != 0)
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Couldn't print images." waitUntilDone: NO];
 	else
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Images were printed successfully." waitUntilDone: NO];
+
+//	// send printjob
+//	AYDcmPrintSCU printSCU = AYDcmPrintSCU([logPath UTF8String], 0, [baseName UTF8String]);
+//	NSLog(@"Sending Printjob");
+//	int status = printSCU.sendPrintjob([xmlPath UTF8String]);
+//
+//	// show status
+//	if (status != 0)
+//		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Couldn't print images." waitUntilDone: NO];
+//	else
+//		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Images were printed successfully." waitUntilDone: NO];
 }
 
 - (void) _setProgressMessage: (NSString *) message
@@ -509,205 +492,245 @@ static const char* transferSyntaxes[] = {
 
 - (BOOL) _verifyConnection: (NSDictionary *) dict
 {
-	// en-/disable debug messages
-	BOOL debug = YES;
-
-	T_ASC_Association *assoc;
-	T_ASC_Network *net;
-	OFCondition cond;
-
-    DIC_US status;
-	T_DIMSE_BlockingMode blockMode;
-    DcmDataset *statusDetail = NULL;
-    T_ASC_Parameters *params;
-
-	// check if dicom.dic is available
-    if (!dcmDataDict.isDictionaryLoaded())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't find dicom.dic");
-		}
-		return NO;
-    }
-
-    // initialize network connection
-    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, ECHOTIMEOUT, &net);
-    if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't initialize network connection");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-    }
-
-    // initialize association parameters
-    cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
-    if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't create association parameters");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-    }
-
-	// set our/peer aeTitle
-	NSString *aeTitle = [[NSUserDefaults standardUserDefaults] valueForKey: @"AETITLE"];
-	if (!aeTitle)
-		aeTitle = [NSString stringWithString: @"OSIRIX_DICOM_PRINT"];
-    ASC_setAPTitles(params, [aeTitle UTF8String], [[dict valueForKey: @"aeTitle"] UTF8String], NULL);
-
-    // set transport layer type
-    cond = ASC_setTransportLayerType(params, OFFalse);
-    if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't set transport layer type");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-    }
-
-    // set presentation addresses
-	const char *localHost = [[[NSProcessInfo processInfo] hostName] UTF8String];
-	const char *peerHost = [[NSString stringWithFormat: @"%@:%@", [dict valueForKey: @"host"], [dict valueForKey: @"port"]] UTF8String];
-    ASC_setPresentationAddresses(params, localHost, peerHost);
-
-    // add presentation context
-	cond = ASC_addPresentationContext(params, 1, UID_VerificationSOPClass, transferSyntaxes, 1);
-	if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't add presentation context");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-	}
-
-    // create association
-    cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't request association");
-
-			if (cond == DUL_ASSOCIATIONREJECTED)
-			{
-				T_ASC_RejectParameters rej;
-				ASC_getRejectParameters(params, &rej);
-				ASC_printRejectParameters(stderr, &rej);
-			}
-			else
-			{
-				DimseCondition::dump(cond);
-			}
-		}
-		return NO;
-    }
-
-    // verification sop class
-    const char *sopClass = UID_VerificationSOPClass;
-
-    // find presentation context for verification sop class
-    T_ASC_PresentationContextID presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
-    if (presID == 0)
-    {
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't find presentation context for verification sop class");
-		}
-        return NO;
-    }
-
-	// zero request, response messages
-	T_DIMSE_Message req, rsp;
-    bzero((char*)&req, sizeof(req));
-    bzero((char*)&rsp, sizeof(rsp));
-
-	DIC_US msgId = assoc->nextMsgID++;
-    req.CommandField = DIMSE_C_ECHO_RQ;
-    req.msg.CEchoRQ.MessageID = msgId;
-    req.msg.CEchoRQ.DataSetType = DIMSE_DATASET_NULL;
-    strcpy(req.msg.CEchoRQ.AffectedSOPClassUID, sopClass);
-
-	// send dimse message
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, NULL, NULL, NULL);
-    if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't send dimse message");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-	}
-
-	// receive dimse response
-    cond = DIMSE_receiveCommand(assoc, blockMode, ECHOTIMEOUT, &presID, &rsp, &statusDetail);
-    if (cond == EC_Normal)
-	{
-		ASC_releaseAssociation(assoc);
-	}
-	else
-	{
-		ASC_abortAssociation(assoc);
-	}
-
-	// free association
-	cond = ASC_destroyAssociation(&assoc);
-	if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't destroy association");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-	}
-
-	// drop network connection
-	cond = ASC_dropNetwork(&net);
-	if (cond.bad())
-	{
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Couldn't drop network connection");
-			DimseCondition::dump(cond);
-		}
-		return NO;
-	}
-
-	// check if answers are right
-    if (rsp.CommandField != DIMSE_C_ECHO_RSP)
-    {
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Unexpected response command field");
-			// rsp.CommandField
-		}
-		return NO;
-    }
-
-    if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId)
-    {
-		if (debug)
-		{
-			NSLog(@"AYDicomPrint: Unexpected response msgId");
-			// rsp.msg.CEchoRSP.MessageIDBeingRespondedTo (is), msgId (expected)
-		}
-		return NO;
-    }
-
-    status = rsp.msg.CEchoRSP.DimseStatus;
-	return YES;
+	return [QueryController echo: [dict valueForKey: @"host"] port: [[dict valueForKey: @"port"] intValue] AET:[dict valueForKey: @"aeTitle"]];
 }
+
+// DICOM standard transfer syntaxes
+// used to verify dicom printer availability
+//static const char* transferSyntaxes[] = {
+//      UID_LittleEndianImplicitTransferSyntax,
+//      UID_LittleEndianExplicitTransferSyntax,
+//      UID_BigEndianExplicitTransferSyntax,
+//      UID_JPEGProcess1TransferSyntax,
+//      UID_JPEGProcess2_4TransferSyntax,
+//      UID_JPEGProcess3_5TransferSyntax,
+//      UID_JPEGProcess6_8TransferSyntax,
+//      UID_JPEGProcess7_9TransferSyntax,
+//      UID_JPEGProcess10_12TransferSyntax,
+//      UID_JPEGProcess11_13TransferSyntax,
+//      UID_JPEGProcess14TransferSyntax,
+//      UID_JPEGProcess15TransferSyntax,
+//      UID_JPEGProcess16_18TransferSyntax,
+//      UID_JPEGProcess17_19TransferSyntax,
+//      UID_JPEGProcess20_22TransferSyntax,
+//      UID_JPEGProcess21_23TransferSyntax,
+//      UID_JPEGProcess24_26TransferSyntax,
+//      UID_JPEGProcess25_27TransferSyntax,
+//      UID_JPEGProcess28TransferSyntax,
+//      UID_JPEGProcess29TransferSyntax,
+//      UID_JPEGProcess14SV1TransferSyntax,
+//      UID_RLELosslessTransferSyntax,
+//      UID_JPEGLSLosslessTransferSyntax,
+//      UID_JPEGLSLossyTransferSyntax,
+//      UID_DeflatedExplicitVRLittleEndianTransferSyntax,
+//      UID_JPEG2000LosslessOnlyTransferSyntax,
+//      UID_JPEG2000TransferSyntax,
+//      UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+//      UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax,
+//      UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax
+//};
+
+//- (BOOL) _verifyConnection: (NSDictionary *) dict
+//{
+//	// en-/disable debug messages
+//	BOOL debug = YES;
+//
+//	T_ASC_Association *assoc;
+//	T_ASC_Network *net;
+//	OFCondition cond;
+//
+//    DIC_US status;
+//	T_DIMSE_BlockingMode blockMode;
+//    DcmDataset *statusDetail = NULL;
+//    T_ASC_Parameters *params;
+//
+//	// check if dicom.dic is available
+//    if (!dcmDataDict.isDictionaryLoaded())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't find dicom.dic");
+//		}
+//		return NO;
+//    }
+//
+//    // initialize network connection
+//    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, ECHOTIMEOUT, &net);
+//    if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't initialize network connection");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//    }
+//
+//    // initialize association parameters
+//    cond = ASC_createAssociationParameters(&params, ASC_DEFAULTMAXPDU);
+//    if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't create association parameters");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//    }
+//
+//	// set our/peer aeTitle
+//	NSString *aeTitle = [[NSUserDefaults standardUserDefaults] valueForKey: @"AETITLE"];
+//	if (!aeTitle)
+//		aeTitle = [NSString stringWithString: @"OSIRIX_DICOM_PRINT"];
+//    ASC_setAPTitles(params, [aeTitle UTF8String], [[dict valueForKey: @"aeTitle"] UTF8String], NULL);
+//
+//    // set transport layer type
+//    cond = ASC_setTransportLayerType(params, OFFalse);
+//    if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't set transport layer type");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//    }
+//
+//    // set presentation addresses
+//	const char *localHost = [[[NSProcessInfo processInfo] hostName] UTF8String];
+//	const char *peerHost = [[NSString stringWithFormat: @"%@:%@", [dict valueForKey: @"host"], [dict valueForKey: @"port"]] UTF8String];
+//    ASC_setPresentationAddresses(params, localHost, peerHost);
+//
+//    // add presentation context
+//	cond = ASC_addPresentationContext(params, 1, UID_VerificationSOPClass, transferSyntaxes, 1);
+//	if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't add presentation context");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//	}
+//
+//    // create association
+//    cond = ASC_requestAssociation(net, params, &assoc);
+//    if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't request association");
+//
+//			if (cond == DUL_ASSOCIATIONREJECTED)
+//			{
+//				T_ASC_RejectParameters rej;
+//				ASC_getRejectParameters(params, &rej);
+//				ASC_printRejectParameters(stderr, &rej);
+//			}
+//			else
+//			{
+//				DimseCondition::dump(cond);
+//			}
+//		}
+//		return NO;
+//    }
+//
+//    // verification sop class
+//    const char *sopClass = UID_VerificationSOPClass;
+//
+//    // find presentation context for verification sop class
+//    T_ASC_PresentationContextID presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+//    if (presID == 0)
+//    {
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't find presentation context for verification sop class");
+//		}
+//        return NO;
+//    }
+//
+//	// zero request, response messages
+//	T_DIMSE_Message req, rsp;
+//    bzero((char*)&req, sizeof(req));
+//    bzero((char*)&rsp, sizeof(rsp));
+//
+//	DIC_US msgId = assoc->nextMsgID++;
+//    req.CommandField = DIMSE_C_ECHO_RQ;
+//    req.msg.CEchoRQ.MessageID = msgId;
+//    req.msg.CEchoRQ.DataSetType = DIMSE_DATASET_NULL;
+//    strcpy(req.msg.CEchoRQ.AffectedSOPClassUID, sopClass);
+//
+//	// send dimse message
+//    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, NULL, NULL, NULL);
+//    if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't send dimse message");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//	}
+//
+//	// receive dimse response
+//    cond = DIMSE_receiveCommand(assoc, blockMode, ECHOTIMEOUT, &presID, &rsp, &statusDetail);
+//    if (cond == EC_Normal)
+//	{
+//		ASC_releaseAssociation(assoc);
+//	}
+//	else
+//	{
+//		ASC_abortAssociation(assoc);
+//	}
+//
+//	// free association
+//	cond = ASC_destroyAssociation(&assoc);
+//	if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't destroy association");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//	}
+//
+//	// drop network connection
+//	cond = ASC_dropNetwork(&net);
+//	if (cond.bad())
+//	{
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Couldn't drop network connection");
+//			DimseCondition::dump(cond);
+//		}
+//		return NO;
+//	}
+//
+//	// check if answers are right
+//    if (rsp.CommandField != DIMSE_C_ECHO_RSP)
+//    {
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Unexpected response command field");
+//			// rsp.CommandField
+//		}
+//		return NO;
+//    }
+//
+//    if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId)
+//    {
+//		if (debug)
+//		{
+//			NSLog(@"AYDicomPrint: Unexpected response msgId");
+//			// rsp.msg.CEchoRSP.MessageIDBeingRespondedTo (is), msgId (expected)
+//		}
+//		return NO;
+//    }
+//
+//    status = rsp.msg.CEchoRSP.DimseStatus;
+//	return YES;
+//}
 
 - (void) drawerDidOpen: (NSNotification *) notification
 {

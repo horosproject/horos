@@ -50,6 +50,7 @@
 }
 
 + (QueryController*) currentQueryController;
++ (BOOL) echo: (NSString*) address port:(int) port AET:(NSString*) aet;
 
 - (IBAction) selectUniqueSource:(id) sender;
 - (void) refreshSources;
