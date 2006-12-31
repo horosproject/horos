@@ -728,8 +728,37 @@ NSString* asciiString (NSString* name);
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"])
 		{
-			NSString *iRadPath = [[NSBundle mainBundle] bundlePath];
-			[manager copyPath:iRadPath toPath: [NSString stringWithFormat:@"%@/Osirix.app",burnFolder] handler:nil];
+			NSString *OsiriXPath = [[NSBundle mainBundle] bundlePath];
+			[manager copyPath:OsiriXPath toPath: [NSString stringWithFormat:@"%@/Osirix.app", burnFolder] handler:nil];
+			
+			// Remove 64-bit binaries
+			
+			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/Osirix.app", burnFolder]] executablePath];
+			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
+			
+			// **********
+
+			NSTask		*todo = [[[NSTask alloc]init]autorelease];
+			[todo setLaunchPath: @"/usr/bin/lipo"];
+			
+			NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-remove", @"ppc64", @"-output", pathLightExecutable, 0L];
+
+			[todo setArguments:args];
+			[todo launch];
+			[todo waitUntilExit];
+			
+			// **********
+			
+			todo = [[[NSTask alloc]init]autorelease];
+			[todo setLaunchPath: @"/usr/bin/mv"];
+
+			args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", 0L];
+
+			[todo setArguments:args];
+			[todo launch];
+			[todo waitUntilExit];
+			
+			// **********
 		}
 		
 		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]  && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
