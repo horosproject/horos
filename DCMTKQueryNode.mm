@@ -499,6 +499,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         transferSyntaxes, numTransferSyntaxes);
 }
 
+- (void) errorMessage:(NSArray*) msg
+{
+	NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+}
+
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -815,7 +820,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 NS_HANDLER
 	{
 	NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [queryException name], [queryException description]];
-	NSRunCriticalAlertPanel( NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+	[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
 	NSLog(@"Exception: %@", [queryException description]);
 	}
 NS_ENDHANDLER
@@ -951,8 +956,8 @@ NS_ENDHANDLER
 				response = [response stringByAppendingFormat:@"\r\r\r%s", tmpString];
 				OFSTRINGSTREAM_FREESTR(tmpString)
 			  }
-			 
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
+			
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
 		}
 				
         if (_verbose) {
@@ -1083,7 +1088,8 @@ NS_ENDHANDLER
 		else if( rsp.DimseStatus != STATUS_Success && rsp.DimseStatus != STATUS_Pending)
 		{
 			DIMSE_printCMoveRSP(stdout, &rsp);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+			
+			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
 		}
 		
         if (_verbose)
@@ -1097,7 +1103,7 @@ NS_ENDHANDLER
     }
 	else
 	{
-		NSRunCriticalAlertPanel( NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil, nil) ;
+		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), 0L] waitUntilDone:YES];
         errmsg("Move Failed:");
         DimseCondition::dump(cond);
     }

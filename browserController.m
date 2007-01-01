@@ -6938,8 +6938,10 @@ static BOOL needToRezoom;
 							[[viewerPix[0] objectAtIndex: i] setID: i];
 							[[viewerPix[0] objectAtIndex: i] setTot: [viewerPix[0] count]];
 						}
-						
-						NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", 0L), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
+						if( [viewerPix[0] count] == 0)
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Files not available (readable)", 0L), NSLocalizedString(@"No files available (readable) in this series.", 0L), NSLocalizedString(@"Continue",nil), nil, nil);
+						else
+							NSRunCriticalAlertPanel( NSLocalizedString(@"Not all files available (readable)", 0L),  [NSString stringWithFormat: NSLocalizedString(@"Not all files are available (readable) in this series.\r%d files are missing.", 0L), [loadList count] - [viewerPix[0] count]], NSLocalizedString(@"Continue",nil), nil, nil);
 					}
 					//opening images refered to in viewerPix[0] in the adequate viewer
 					

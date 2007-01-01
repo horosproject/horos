@@ -4948,6 +4948,27 @@ static ViewerController *draggedController = 0L;
 	[popFusion selectItemWithTag:previousFusion];
 }
 
+- (short) orthogonalOrientation
+{
+	switch( orientationVector)
+	{
+		case eAxialPos:
+		case eAxialNeg:
+			return 0;
+		break;
+		
+		case eCoronalNeg:
+		case eCoronalPos:
+			return 1;
+		break;
+		
+		case eSagittalNeg:
+		case eSagittalPos:
+			return 2;
+		break;
+	}
+}
+
 -(short) orientationVector
 {
 	return orientationVector;

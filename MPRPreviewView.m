@@ -39,116 +39,121 @@
 	
 		NSArray *wwwl = nil;
 		unichar key = [hotKey characterAtIndex:0];
-		key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
-		MPR2DController *windowController = (MPR2DController *)[self  windowController];
-		NSString *wwwlMenuString;
-	
-		
-		int index = 1;
-		switch (key){
-		
-			case DefaultWWWLHotKeyAction:	// default WW/WL
-					wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
-					[windowController applyWLWWForString:wwwlMenuString];
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-					break;
-			case FullDynamicWWWLHotKeyAction:											// full dynamic WW/WL
-					wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
-					[windowController applyWLWWForString:wwwlMenuString];	
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];		
-					break;
-																					// 1 - 9 will be presets WW/WL
-			case Preset1WWWLHotKeyAction: if([wwwlValues count] >= 1)  {
-							wwwlMenuString = [wwwlValues objectAtIndex:0];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset2WWWLHotKeyAction: if([wwwlValues count] >= 2) {
-							wwwlMenuString = [wwwlValues objectAtIndex:1];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset3WWWLHotKeyAction: if([wwwlValues count] >= 3) {
-							wwwlMenuString = [wwwlValues objectAtIndex:2];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset4WWWLHotKeyAction: if([wwwlValues count] >= 4) {
-							wwwlMenuString = [wwwlValues objectAtIndex:3];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset5WWWLHotKeyAction: if([wwwlValues count] >= 5) {
-							wwwlMenuString = [wwwlValues objectAtIndex:4];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset6WWWLHotKeyAction: if([wwwlValues count] >= 6) {
-							wwwlMenuString = [wwwlValues objectAtIndex:5];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset7WWWLHotKeyAction: if([wwwlValues count] >= 7) {
-							wwwlMenuString = [wwwlValues objectAtIndex:6];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset8WWWLHotKeyAction: if([wwwlValues count] >= 8) {
-							wwwlMenuString = [wwwlValues objectAtIndex:7];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-			case Preset9WWWLHotKeyAction: if([wwwlValues count] >= 9) {
-							wwwlMenuString = [wwwlValues objectAtIndex:8];
-							[windowController applyWLWWForString:wwwlMenuString];
-							[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
-						}
-					break;
-	
-			// Flip
-			case FlipVerticalHotKeyAction: [self flipVertical:nil];
-					break;
-			case  FlipHorizontalHotKeyAction: [self flipHorizontal:nil];
-					break;
-			// mouse functions
-			case WWWLToolHotKeyAction:		
-				[windowController setCurrentTool:tWL];
-				break;
-			case MoveHotKeyAction:		
-				[windowController setCurrentTool:tTranslate];
-				break;
-			case ZoomHotKeyAction:		
-				[windowController setCurrentTool:tZoom];
-				break;
-			case RotateHotKeyAction:		
-				[windowController setCurrentTool:tRotate];
-				break;
-			case ScrollHotKeyAction:		
-				[windowController setCurrentTool:tNext];
-				break;
-			case LengthHotKeyAction:		
-				[windowController setCurrentTool:tMesure];
-				break;
-			case OvalHotKeyAction:		
-				[windowController setCurrentTool:tOval];
-				break;
-			case AngleHotKeyAction:		
-				[windowController setCurrentTool:tAngle];
-				break;
 
+		if( [_hotKeyDictionary objectForKey:hotKey])
+		{
+			key = [[_hotKeyDictionary objectForKey:hotKey] intValue];
+			MPR2DController *windowController = (MPR2DController *)[self  windowController];
+			NSString *wwwlMenuString;
+		
 			
-			default:
-				returnedVal = NO;
-			break;
+			int index = 1;
+			switch (key){
+			
+				case DefaultWWWLHotKeyAction:	// default WW/WL
+						wwwlMenuString = NSLocalizedString(@"Default WL & WW", 0L);	// default WW/WL
+						[windowController applyWLWWForString:wwwlMenuString];
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+						break;
+				case FullDynamicWWWLHotKeyAction:											// full dynamic WW/WL
+						wwwlMenuString = NSLocalizedString(@"Full dynamic", 0L);	
+						[windowController applyWLWWForString:wwwlMenuString];	
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];		
+						break;
+																						// 1 - 9 will be presets WW/WL
+				case Preset1WWWLHotKeyAction: if([wwwlValues count] >= 1)  {
+								wwwlMenuString = [wwwlValues objectAtIndex:0];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset2WWWLHotKeyAction: if([wwwlValues count] >= 2) {
+								wwwlMenuString = [wwwlValues objectAtIndex:1];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset3WWWLHotKeyAction: if([wwwlValues count] >= 3) {
+								wwwlMenuString = [wwwlValues objectAtIndex:2];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset4WWWLHotKeyAction: if([wwwlValues count] >= 4) {
+								wwwlMenuString = [wwwlValues objectAtIndex:3];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset5WWWLHotKeyAction: if([wwwlValues count] >= 5) {
+								wwwlMenuString = [wwwlValues objectAtIndex:4];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset6WWWLHotKeyAction: if([wwwlValues count] >= 6) {
+								wwwlMenuString = [wwwlValues objectAtIndex:5];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset7WWWLHotKeyAction: if([wwwlValues count] >= 7) {
+								wwwlMenuString = [wwwlValues objectAtIndex:6];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset8WWWLHotKeyAction: if([wwwlValues count] >= 8) {
+								wwwlMenuString = [wwwlValues objectAtIndex:7];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+				case Preset9WWWLHotKeyAction: if([wwwlValues count] >= 9) {
+								wwwlMenuString = [wwwlValues objectAtIndex:8];
+								[windowController applyWLWWForString:wwwlMenuString];
+								[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: wwwlMenuString userInfo: 0L];
+							}
+						break;
+		
+				// Flip
+				case FlipVerticalHotKeyAction: [self flipVertical:nil];
+						break;
+				case  FlipHorizontalHotKeyAction: [self flipHorizontal:nil];
+						break;
+				// mouse functions
+				case WWWLToolHotKeyAction:		
+					[windowController setCurrentTool:tWL];
+					break;
+				case MoveHotKeyAction:		
+					[windowController setCurrentTool:tTranslate];
+					break;
+				case ZoomHotKeyAction:		
+					[windowController setCurrentTool:tZoom];
+					break;
+				case RotateHotKeyAction:		
+					[windowController setCurrentTool:tRotate];
+					break;
+				case ScrollHotKeyAction:		
+					[windowController setCurrentTool:tNext];
+					break;
+				case LengthHotKeyAction:		
+					[windowController setCurrentTool:tMesure];
+					break;
+				case OvalHotKeyAction:		
+					[windowController setCurrentTool:tOval];
+					break;
+				case AngleHotKeyAction:		
+					[windowController setCurrentTool:tAngle];
+					break;
+
+				
+				default:
+					returnedVal = NO;
+				break;
+			}
 		}
+		else returnedVal = NO;
 	}
 	else returnedVal = NO;
 	

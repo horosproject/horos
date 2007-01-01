@@ -137,7 +137,7 @@ static const char* transferSyntaxes[] = {
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters]){
 			
-		_acse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+		_acse_timeout = _dimse_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 	}
 	return self;
 }

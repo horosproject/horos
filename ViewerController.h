@@ -525,6 +525,7 @@ enum
 - (IBAction) fullScreenMenu:(id) sender;
 - (void)exportTextFieldDidChange:(NSNotification *)note;
 - (short) orientationVector;
+- (short) orthogonalOrientation;
 // functions s that plugins can also play with globals
 + (ViewerController *) draggedController;
 + (void) setDraggedController:(ViewerController *) controller;
