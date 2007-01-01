@@ -1961,6 +1961,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	if( curDCM == 0L) return;
 	
+	[BrowserController updateActivity];
+	
 	NSPoint     eventLocation = [theEvent locationInWindow];
 	NSRect      size = [self frame];
 	

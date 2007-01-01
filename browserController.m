@@ -354,7 +354,8 @@ static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
 static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
 
 
-static BOOL			DICOMDIRCDMODE = NO;
+static NSTimeInterval	gLastActivity = 0;
+static BOOL				DICOMDIRCDMODE = NO;
 //static NSArray*		tableColumns = 0L;
 
 		NSArray*	statesArray = 0L;
@@ -364,6 +365,11 @@ static BOOL COMPLETEREBUILD = NO;
 
 + (BrowserController*) currentBrowser { return browserWindow;}
 + (NSArray*) statesArray { return statesArray;}
++ (void) updateActivity
+{
+	gLastActivity = [NSDate timeIntervalSinceReferenceDate];
+}
+
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #pragma mark-
@@ -2422,8 +2428,7 @@ static BOOL COMPLETEREBUILD = NO;
 	
 	if( isCurrentDatabaseBonjour) return;
 	if( managedObjectContext == 0L) return;
-	
-	// Logs cleaning
+	if( [NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return;
 	
 	if( [checkIncomingLock tryLock])
 	{

@@ -214,6 +214,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (BrowserController*) currentBrowser;
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;
++ (void) updateActivity;
 
 - (void) setDBDate;
 - (IBAction) querySelectedStudy:(id) sender;
