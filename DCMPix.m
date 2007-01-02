@@ -841,41 +841,55 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	NSRect imageRect;
 	float rescale = 1;
 	
-	// Rescale image if resolution is too high, compared to the original resolution
-	
-	#define MAXSIZE 1.3
-	
-	if(		[currentImage size].width > [dcmPix pwidth]*MAXSIZE &&
-			[currentImage size].height > [dcmPix pheight]*MAXSIZE)
-		{
-			if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
+	if(		[currentImage size].width > 512 &&
+			[currentImage size].height > 512)
+	{
+		// Rescale image if resolution is too high, compared to the original resolution
+		
+		float MAXSIZE = 1.3;
+		
+		int minWidth = [dcmPix pwidth]*MAXSIZE;
+		int minHeight = [dcmPix pheight]*MAXSIZE;
+		
+		if( minWidth < 512) MAXSIZE = 512 / [dcmPix pwidth];
+		if( minHeight < 512) MAXSIZE = 512 / [dcmPix pheight];
+		
+		minWidth = [dcmPix pwidth]*MAXSIZE;
+		minHeight = [dcmPix pheight]*MAXSIZE;
+		
+		if(		[currentImage size].width > minWidth &&
+				[currentImage size].height > minHeight)
 			{
-				float ratio = [currentImage size].width / ([dcmPix pwidth] * MAXSIZE);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
-			}
-			else
-			{
-				float ratio = [currentImage size].height / ([dcmPix pheight] * MAXSIZE);
-				imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
-				
-				NSLog( @"ratio: %f", ratio);
-			}
-		[currentImage setScalesWhenResized:YES];
-		
-		NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
-		
-		[compositingImage lockFocus];
-//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
-		[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
-		[compositingImage unlockFocus];
-		
-		NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
-		
-		return [compositingImage autorelease];
+				if( [currentImage size].width/[dcmPix pwidth] < [currentImage size].height / [dcmPix pheight])
+				{
+					float ratio = [currentImage size].width / (minWidth);
+					imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+					
+					NSLog( @"ratio: %f", ratio);
+				}
+				else
+				{
+					float ratio = [currentImage size].height / (minHeight);
+					imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
+					
+					NSLog( @"ratio: %f", ratio);
+				}
+			[currentImage setScalesWhenResized:YES];
+			
+			NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
+			
+			[compositingImage lockFocus];
+	//		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationDefault];
+			[currentImage drawInRect: imageRect fromRect: sourceRect operation: NSCompositeCopy fraction: 1.0];
+			[compositingImage unlockFocus];
+			
+			NSLog( @"New Size: %f %f", [compositingImage size].width, [compositingImage size].height);
+			
+			return [compositingImage autorelease];
+		}
 	}
-	else return currentImage;
+	
+	return currentImage;
 }
 
 - (NSImage*) image

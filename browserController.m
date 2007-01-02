@@ -4121,8 +4121,6 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-	
-	NSLog( [[databaseOutline sortDescriptors] description]);
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
