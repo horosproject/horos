@@ -37,7 +37,9 @@
 		// initialize printer state images
 		m_PrinterOnImage = [[NSImage imageNamed: @"available"] retain];
 		m_PrinterOffImage = [[NSImage imageNamed: @"away"] retain];
-
+		
+		printing = [[NSLock alloc] init];
+		
 		[[self window] center];
 	}
 
@@ -46,16 +48,10 @@
 
 - (void) dealloc
 {
+	[printing release];
 	[m_PrinterOnImage release];
-	m_PrinterOnImage = nil;
-
 	[m_PrinterOffImage release];
-	m_PrinterOffImage = nil;
-
-	// masu 2006-10-04
-	//[m_CurrentViewer release];
-	//m_CurrentViewer = nil;
-
+	
 	[super dealloc];
 }
 
@@ -382,7 +378,8 @@
 		[filmsession addChild: filmbox];
 	}
 
-	NSString *xmlPath = [NSString stringWithFormat: @"%@/printjob.xml", destPath];
+	NSString *xmlPath = [NSString stringWithFormat: @"%@/printjob-%@.xml", destPath, [[NSDate date] description]];
+	NSLog( xmlPath);
 	if (![[document XMLData] writeToFile: xmlPath atomically: YES])
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: @"Can't write to temporary directory." waitUntilDone: NO];
@@ -412,6 +409,10 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+	[xmlPath retain];
+	
+	[printing lock];
+	
 	// dicom log path & basename
 	NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/AYDicomPrint"];
 	NSString *baseName = [NSString stringWithString: @"AYDicomPrint"];
@@ -439,6 +440,10 @@
 
 	// remove temporary files
 	[[NSFileManager defaultManager] removeFileAtPath: [xmlPath stringByDeletingLastPathComponent] handler: nil];
+	
+	[printing unlock];
+	
+	[xmlPath release];
 	
 	[pool release];
 }

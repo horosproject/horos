@@ -36,6 +36,8 @@
 	
 	// masu 2006-08-15
 	IBOutlet NSTextField	*m_VersionNumberTextField;
+	
+	NSLock					*printing;
 }
 
 - (IBAction) cancel: (id) sender;
