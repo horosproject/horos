@@ -1,6 +1,13 @@
 {
     IBClasses = (
         {
+            ACTIONS = {addOrRemove = id; }; 
+            CLASS = BodyRegionArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = BodyRegionBrowser; LANGUAGE = ObjC; SUPERCLASS = NSBrowser; }, 
+        {
             ACTIONS = {addRemoveAction = id; }; 
             CLASS = BodyRegionTreeController; 
             LANGUAGE = ObjC; 
@@ -8,6 +15,12 @@
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = HangingTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {addOrRemove = id; }; 
+            CLASS = KeywordsArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
         {
             CLASS = NSPreferencePane; 
             LANGUAGE = ObjC; 
@@ -30,7 +43,9 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_authView" = SFAuthorizationView; 
+                bodyRegionController = NSArrayController; 
                 hangingProtocolTableView = NSTableView; 
+                myOutlet = id; 
                 newHangingProtocolButton = NSButton; 
             }; 
             SUPERCLASS = NSPreferencePane; 

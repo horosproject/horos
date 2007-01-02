@@ -18,8 +18,10 @@
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
 		AB80A6770A19C90000FED357 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB80A6760A19C90000FED357 /* Security.framework */; };
-		BF32C8500B45CC12003E12DC /* BodyRegionTreeController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */; };
-		BF32C8510B45CC12003E12DC /* BodyRegionTreeController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */; };
+		BF2FA4100B4B0F72000791F0 /* BodyRegionArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FA40E0B4B0F72000791F0 /* BodyRegionArrayController.h */; };
+		BF2FA4110B4B0F72000791F0 /* BodyRegionArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */; };
+		BF2FA4160B4B0FA1000791F0 /* KeywordsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */; };
+		BF2FA4170B4B0FA1000791F0 /* KeywordsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,8 +35,10 @@
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSIHangingPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSIHangingPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB80A6760A19C90000FED357 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyRegionTreeController.h; sourceTree = "<group>"; };
-		BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyRegionTreeController.m; sourceTree = "<group>"; };
+		BF2FA40E0B4B0F72000791F0 /* BodyRegionArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyRegionArrayController.h; sourceTree = "<group>"; };
+		BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyRegionArrayController.m; sourceTree = "<group>"; };
+		BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeywordsArrayController.h; sourceTree = "<group>"; };
+		BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeywordsArrayController.m; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHangingPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHangingPreferencePanePref.m; sourceTree = "<group>"; };
@@ -95,8 +99,10 @@
 				7EC5841B07298C5300429FC7 /* HangingTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */,
 				F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */,
-				BF32C84E0B45CC12003E12DC /* BodyRegionTreeController.h */,
-				BF32C84F0B45CC12003E12DC /* BodyRegionTreeController.m */,
+				BF2FA40E0B4B0F72000791F0 /* BodyRegionArrayController.h */,
+				BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */,
+				BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */,
+				BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -146,7 +152,8 @@
 				8D202CEA0486D31800D8A456 /* OSIHangingPreferencePane_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* OSIHangingPreferencePanePref.h in Headers */,
 				7EC5841C07298C5300429FC7 /* HangingTableView.h in Headers */,
-				BF32C8500B45CC12003E12DC /* BodyRegionTreeController.h in Headers */,
+				BF2FA4100B4B0F72000791F0 /* BodyRegionArrayController.h in Headers */,
+				BF2FA4160B4B0FA1000791F0 /* KeywordsArrayController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,7 +225,8 @@
 			files = (
 				8D202CF10486D31800D8A456 /* OSIHangingPreferencePanePref.m in Sources */,
 				7EC5841D07298C5300429FC7 /* HangingTableView.m in Sources */,
-				BF32C8510B45CC12003E12DC /* BodyRegionTreeController.m in Sources */,
+				BF2FA4110B4B0F72000791F0 /* BodyRegionArrayController.m in Sources */,
+				BF2FA4170B4B0FA1000791F0 /* KeywordsArrayController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

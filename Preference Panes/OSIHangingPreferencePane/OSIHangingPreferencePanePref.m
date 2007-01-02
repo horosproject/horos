@@ -15,6 +15,7 @@
 
 #import "OSIHangingPreferencePanePref.h"
 
+
 @implementation OSIHangingPreferencePanePref
 
 - (void)checkView:(NSView *)aView :(BOOL) OnOff
@@ -40,7 +41,7 @@
 - (void) enableControls: (BOOL) val
 {
 	[self checkView: [self mainView] :val];
-
+	[self setControlsAuthorized:val];
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
 //	[addServerSharing setEnabled: val];
@@ -80,6 +81,10 @@
 	
 	modalityForHangingProtocols = [[NSString stringWithString:@"CR"] retain];
 	[hangingProtocolTableView reloadData];
+	
+//	[bodyRegionBrowser setDoubleAction:@selector(browserDoubleAction:)];
+//	[bodyRegionBrowser setTarget:bodyRegionController];
+//	[bodyRegionBrowser setDelegate:bodyRegionController];
 }
 
 - (void)dealloc {
@@ -179,6 +184,19 @@
 		[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 	}
 }
+
+- (BOOL)controlsAuthorized{
+	return _controlsAuthorized;
+}
+- (void)setControlsAuthorized:(BOOL)authorized{
+	_controlsAuthorized = authorized;
+}
+
+- (void)willUnselect{
+	[[NSUserDefaults standardUserDefaults] setObject:[bodyRegionController content] forKey:@"bodyRegions"];
+}
+
+
 
 
 @end
