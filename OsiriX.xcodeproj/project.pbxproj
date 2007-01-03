@@ -29572,7 +29572,6 @@
 					ProjectRef = CE4E42E108758A1700D0AFDB /* OSIViewerPreferencePane.xcodeproj */;
 				},
 			);
-			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* Development */,
 				CECBFEE707539E3900576814 /* Development VolumePRO */,

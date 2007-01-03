@@ -1793,7 +1793,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
 					
 					NSDate	*test = [NSDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]];
-					NSLog(@"test:%@ %f", [test description], [test timeIntervalSinceReferenceDate]);
 					
 					if( DOB) [dicomElements setObject:test forKey:@"patientBirthDate"];
 				}
