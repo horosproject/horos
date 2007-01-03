@@ -78,8 +78,6 @@ enum
 	
 	short					currentOrientationTool, originalOrientation;
 	
-	IBOutlet NSView         *SyncView;
-	
     IBOutlet NSSlider       *slider, *speedSlider;
 	IBOutlet NSButton		*loopButton;
     IBOutlet NSView         *speedView;

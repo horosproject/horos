@@ -229,7 +229,6 @@
                 ReconstructionView = NSView; 
                 StatusPopup = NSPopUpButton; 
                 StatusView = NSView; 
-                SyncView = NSView; 
                 ThickIntervalWindow = NSWindow; 
                 WLWWView = NSView; 
                 addCLUTWindow = NSWindow; 
