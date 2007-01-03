@@ -12932,6 +12932,18 @@
 		CEDCDD5B099C8AA20026AA4B /* ROIManager.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */; };
 		CEDCDD5C099C8AA20026AA4B /* ROIManager.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */; };
 		CEDCDD5D099C8AA20026AA4B /* ROIManager.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */; };
+		CEDCFB390B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
+		CEDCFB3A0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
+		CEDCFB3B0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
+		CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */; };
+		CEDCFB400B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
+		CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
+		CEDCFB420B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
+		CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
+		CEDCFB440B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
+		CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
+		CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
+		CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
 		CEDDF44B085B926C001E0FF1 /* DCMSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E76BEDE085757E20073649A /* DCMSocket.m */; };
 		CEDE5B5E07F206B5003034B6 /* ROIDefaultsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */; };
 		CEDE5B5F07F206B5003034B6 /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
@@ -16831,6 +16843,9 @@
 		CEDB14FB0768392E00375F65 /* jas_version.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jas_version.h; sourceTree = "<group>"; };
 		CEDB15000768392E00375F65 /* jasper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jasper.h; sourceTree = "<group>"; };
 		CEDCDD5A099C8AA20026AA4B /* ROIManager.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIManager.tiff; sourceTree = "<group>"; };
+		CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tiff; sourceTree = "<group>"; };
+		CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmallLocked.tif; sourceTree = "<group>"; };
+		CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tif; sourceTree = "<group>"; };
 		CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ROIDefaultsWindow.m; sourceTree = "<group>"; };
 		CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIDefaultsWindow.h; sourceTree = "<group>"; };
 		CEDE5B6C07F206FA003034B6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIDefaults.nib; sourceTree = "<group>"; };
@@ -18291,6 +18306,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */,
+				CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */,
+				CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */,
 				CE1366B40B41D0F200944876 /* mpeg2.tiff */,
 				CEFBB1890B358C8F00666FA9 /* Back.tif */,
 				CEFBB18A0B358C8F00666FA9 /* Forward.tif */,
@@ -30018,6 +30036,9 @@
 				CEF64DD10B44266700C1C902 /* Forward.tif in Resources */,
 				CEF64DD20B44266700C1C902 /* Back.tif in Resources */,
 				CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */,
+				CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
+				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
+				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30336,6 +30357,9 @@
 				CEFBB1A00B358C9000666FA9 /* ForwardPressed.tif in Resources */,
 				CE1366B60B41D0F200944876 /* mpeg2.tiff in Resources */,
 				CE8CAB0C0B4715DD0068DBAE /* DICOMPrint in Resources */,
+				CEDCFB3A0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
+				CEDCFB420B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
+				CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30644,6 +30668,9 @@
 				BF2EEC890B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */,
 				BF6566A70B263D1E00574803 /* Layout.nib in Resources */,
 				CE8CAB0B0B4715DD0068DBAE /* DICOMPrint in Resources */,
+				CEDCFB390B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
+				CEDCFB400B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
+				CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30962,6 +30989,9 @@
 				CEFBB19A0B358C9000666FA9 /* ForwardPressed.tif in Resources */,
 				CE1366B70B41D0F200944876 /* mpeg2.tiff in Resources */,
 				CE8CAB0D0B4715DD0068DBAE /* DICOMPrint in Resources */,
+				CEDCFB3B0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
+				CEDCFB440B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
+				CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

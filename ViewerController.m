@@ -6361,8 +6361,6 @@ NSMutableArray		*array;
 	return blendedwin;
 }
 
-
-
 - (IBAction) endBlendingType:(id) sender
 {
 	long i;
@@ -6565,8 +6563,6 @@ NSMutableArray		*array;
 {
 	return blendingController;
 }
-
-
 
 #pragma mark-
 #pragma mark 4.1.3 Anchored graphical layer
