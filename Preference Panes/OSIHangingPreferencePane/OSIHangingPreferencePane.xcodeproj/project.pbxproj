@@ -22,6 +22,10 @@
 		BF2FA4110B4B0F72000791F0 /* BodyRegionArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */; };
 		BF2FA4160B4B0FA1000791F0 /* KeywordsArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */; };
 		BF2FA4170B4B0FA1000791F0 /* KeywordsArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */; };
+		BF2FAB050B4C6DED000791F0 /* UpperCaseStringFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FAB030B4C6DED000791F0 /* UpperCaseStringFormatter.h */; };
+		BF2FAB060B4C6DED000791F0 /* UpperCaseStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FAB040B4C6DED000791F0 /* UpperCaseStringFormatter.m */; };
+		BF2FAB1F0B4C73C2000791F0 /* UpperCaseTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */; };
+		BF2FAB200B4C73C2000791F0 /* UpperCaseTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +43,10 @@
 		BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BodyRegionArrayController.m; sourceTree = "<group>"; };
 		BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeywordsArrayController.h; sourceTree = "<group>"; };
 		BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeywordsArrayController.m; sourceTree = "<group>"; };
+		BF2FAB030B4C6DED000791F0 /* UpperCaseStringFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpperCaseStringFormatter.h; sourceTree = "<group>"; };
+		BF2FAB040B4C6DED000791F0 /* UpperCaseStringFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpperCaseStringFormatter.m; sourceTree = "<group>"; };
+		BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpperCaseTableColumn.h; sourceTree = "<group>"; };
+		BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpperCaseTableColumn.m; sourceTree = "<group>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIHangingPreferencePanePref.h; sourceTree = "<group>"; };
 		F506C03D013D9D7901CA16C8 /* OSIHangingPreferencePanePref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIHangingPreferencePanePref.m; sourceTree = "<group>"; };
@@ -95,6 +103,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				BF2FAB1D0B4C73C1000791F0 /* UpperCaseTableColumn.h */,
+				BF2FAB1E0B4C73C2000791F0 /* UpperCaseTableColumn.m */,
 				7EC5841A07298C5300429FC7 /* HangingTableView.h */,
 				7EC5841B07298C5300429FC7 /* HangingTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSIHangingPreferencePanePref.h */,
@@ -103,6 +113,8 @@
 				BF2FA40F0B4B0F72000791F0 /* BodyRegionArrayController.m */,
 				BF2FA4140B4B0FA1000791F0 /* KeywordsArrayController.h */,
 				BF2FA4150B4B0FA1000791F0 /* KeywordsArrayController.m */,
+				BF2FAB030B4C6DED000791F0 /* UpperCaseStringFormatter.h */,
+				BF2FAB040B4C6DED000791F0 /* UpperCaseStringFormatter.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -154,6 +166,8 @@
 				7EC5841C07298C5300429FC7 /* HangingTableView.h in Headers */,
 				BF2FA4100B4B0F72000791F0 /* BodyRegionArrayController.h in Headers */,
 				BF2FA4160B4B0FA1000791F0 /* KeywordsArrayController.h in Headers */,
+				BF2FAB050B4C6DED000791F0 /* UpperCaseStringFormatter.h in Headers */,
+				BF2FAB1F0B4C73C2000791F0 /* UpperCaseTableColumn.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +241,8 @@
 				7EC5841D07298C5300429FC7 /* HangingTableView.m in Sources */,
 				BF2FA4110B4B0F72000791F0 /* BodyRegionArrayController.m in Sources */,
 				BF2FA4170B4B0FA1000791F0 /* KeywordsArrayController.m in Sources */,
+				BF2FAB060B4C6DED000791F0 /* UpperCaseStringFormatter.m in Sources */,
+				BF2FAB200B4C73C2000791F0 /* UpperCaseTableColumn.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

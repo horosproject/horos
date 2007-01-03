@@ -50,7 +50,9 @@
             }; 
             SUPERCLASS = NSPreferencePane; 
         }, 
-        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
+        {CLASS = SFAuthorizationView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = UpperCaseStringFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }, 
+        {CLASS = UpperCaseTableColumn; LANGUAGE = ObjC; SUPERCLASS = NSTableColumn; }
     ); 
     IBVersion = 1; 
 }
