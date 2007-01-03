@@ -3091,8 +3091,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 - (void) startDrag:(NSTimer*)theTimer{
 	NS_DURING
 	_dragInProgress = YES;
-	[_mouseDownTimer release];
-	_mouseDownTimer = nil;
+	
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 

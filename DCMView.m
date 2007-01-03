@@ -2236,8 +2236,7 @@ static long scrollMode;
 		[self deleteMouseDownTimer];
 	}
 	if ([event type] == NSLeftMouseDown)
-		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo:event  repeats:NO] retain];
-	
+		_mouseDownTimer = [[NSTimer scheduledTimerWithTimeInterval:1.0 target:self   selector:@selector(startDrag:) userInfo: event  repeats:NO] retain];
 	
     if( dcmPixList)
     {
@@ -7997,10 +7996,9 @@ BOOL	lowRes = NO;
 {
 	NS_DURING
 	_dragInProgress = YES;
-	[_mouseDownTimer invalidate];
-	[_mouseDownTimer release];
-	_mouseDownTimer = nil;
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
+	NSLog( [event description]);
+	
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
 	NSMutableArray *pbTypes = [NSMutableArray array];
@@ -8077,7 +8075,7 @@ BOOL	lowRes = NO;
 	}
 	
 	[image release];
-	
+
 	NS_HANDLER
 		NSLog(@"Exception while dragging: %@", [localException description]);
 	NS_ENDHANDLER
