@@ -40,7 +40,7 @@
 
 - (void) enableControls: (BOOL) val
 {
-	[self checkView: [self mainView] :val];
+//	[self checkView: [self mainView] :val];
 	[self setControlsAuthorized:val];
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
