@@ -80,6 +80,7 @@ ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L,
 extern		NSMutableDictionary		*plugins;
 extern		NSMutableArray			*preProcessPlugins;
 extern		BrowserController		*browserWindow;
+			BOOL					SYNCSERIES = NO;
 
 NSMenu                  *presetsMenu,
 						*convMenu,
@@ -2223,11 +2224,20 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+
+- (BOOL) SYNCSERIES
+{
+	return SYNCSERIES;
+}
+
+- (void) setSYNCSERIES:(BOOL) v
+{
+}
+
 - (BOOL) xFlipped
 {
 	return xFlipped;
 }
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 

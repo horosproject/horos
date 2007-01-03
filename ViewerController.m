@@ -105,7 +105,7 @@ extern  AppController			*appController;
 extern  BrowserController       *browserWindow;
 extern  BOOL					USETOOLBARPANEL;
 extern  NSMenu					*fusionPluginsMenu;
-		BOOL					SYNCSERIES = NO;
+extern	BOOL					SYNCSERIES;
 
 		
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
@@ -8618,7 +8618,6 @@ int i,j,l;
 	return nil;
 }
 
-
 - (void) notificationSyncSeries:(NSNotification*)note
 {
 	if( SYNCSERIES)
@@ -8647,7 +8646,11 @@ int i,j,l;
 
 - (void) SyncSeries:(id) sender
 {
+	[appController willChangeValueForKey:@"SYNCSERIES"];
+	
 	SYNCSERIES = !SYNCSERIES;
+	
+	[appController didChangeValueForKey:@"SYNCSERIES"];
 	
 	float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
