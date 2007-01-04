@@ -13256,5 +13256,9 @@ sourceRef);
 	[imageView setScaleValue:scaleValue];
 }
 
+- (SeriesView *) seriesView{
+	return seriesView;
+}
+
 
 @end

@@ -165,6 +165,8 @@
 				[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
+				[seriesInfo setObject:[NSNumber numberWithInt:[[controller seriesView] imageRows]] forKey:@"imageRows"];
+				[seriesInfo setObject:[NSNumber numberWithInt:[[controller seriesView] imageColumns]] forKey:@"imageColumns"];
 			}
 			
 			//Save Viewer Class

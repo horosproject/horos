@@ -53,5 +53,7 @@
 - (void) setBlendingMode:(int) value;
 //- (void) setFusion:(short) mode :(short) stacks;
 - (void) ActivateBlending:(ViewerController*) bC blendingFactor:(float)blendingFactor;
+- (int)imageRows;
+- (int)imageColumns;
 
 @end

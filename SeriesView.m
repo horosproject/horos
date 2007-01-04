@@ -295,4 +295,13 @@
 		[view setBlendingFactor: blendingFactor];
 	}
 }
+
+- (int)imageRows{
+	return imageRows;
+}
+
+- (int)imageColumns{
+	return imageColumns;
+}
+
 @end

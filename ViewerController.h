@@ -600,5 +600,7 @@ enum
 - (EndoscopyViewer *)openEndoscopyViewer;
 - (SRController *)openSRViewer;
 
+- (SeriesView *) seriesView;
+
 
 @end
