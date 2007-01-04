@@ -402,6 +402,7 @@ WindowLayoutManager *sharedLayoutManager;
 	if ([[[study entity] name] isEqualToString:@"Study"]) {
 		[self setCurrentHangingProtocolForModality:nil description: nil];
 		_currentStudy = study;
+		
 			// DICOM & others
 			/* Need to improve Hanging Protocols	
 				Things Advanced Hanging Protocol needs to do.
@@ -422,6 +423,10 @@ WindowLayoutManager *sharedLayoutManager;
 		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
 		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
 		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+		
+		// get comparisons
+		//[self setRelatedStudies:[browserController relatedStudiesForStudy:_currentStudy]];
+		//NSLog(@"comparison: %@", [self comparionStudy]);
 
 		if ([filteredHangingProtocols count] > 0) {
 			// ? Add'l Filter for institution  or add'l attributes here ?
@@ -796,6 +801,61 @@ WindowLayoutManager *sharedLayoutManager;
 
 -(NSArray *)viewers2DForSeries:(id)series{
 }
+
+#pragma mark-
+#pragma mark Comparisons
+- (NSArray *)relatedStudies{
+	return _relatedStudies;
+}
+
+- (void)setRelatedStudies:(NSArray *)relatedStudies{
+	[_relatedStudies release];
+	_relatedStudies = [relatedStudies retain];
+}
+
+- (id)comparionStudy{
+	if ([[self comparisonStudies] count] > 0)
+		return [[self comparisonStudies] objectAtIndex:0];
+	return nil;
+}
+
+- (NSArray *)comparisonStudies{
+	NSMutableArray *comparisonStudies = [NSMutableArray array];
+	
+		NSArray *bodyRegions = [[NSUserDefaults standardUserDefaults] objectForKey:@"bodyRegions"];
+	NSEnumerator  *enumerator = [bodyRegions objectEnumerator];
+	NSDictionary *region;
+	NSDictionary *bodyRegion = nil;
+	NSString *studyDescription = [_currentStudy valueForKey:@"studyName"];
+	// find body Region
+	while ((region = [enumerator nextObject]) && bodyRegion == nil){
+		NSEnumerator *keywordEnumerator = [[region objectForKey:@"keywords"] objectEnumerator];
+		NSDictionary *keywordDict;
+		while (keywordDict = [keywordEnumerator  nextObject]){
+			NSString *keyword = [keywordDict valueForKey: @"region"];
+			if ([studyDescription rangeOfString:keyword options:NSCaseInsensitiveSearch].location != NSNotFound) {
+				bodyRegion =  region;
+			}
+		}
+	}
+	
+	// if we found a match for body region look for a match in between a keyword and the potential comparions study Name (description)
+	if (bodyRegion) {
+		id comparisonStudy = nil;
+		NSEnumerator *comparisonEnumerator = [_relatedStudies objectEnumerator];
+		while (comparisonStudy  = [comparisonEnumerator nextObject]) {
+			NSEnumerator *keywordEnumerator = [[bodyRegion objectForKey:@"keywords"] objectEnumerator];
+			NSDictionary *keywordDict;
+			while (keywordDict = [keywordEnumerator  nextObject]){
+				NSString *keyword = [keywordDict valueForKey: @"region"];
+				if ([[comparisonStudy valueForKey:@"studyName"] rangeOfString:keyword options:NSCaseInsensitiveSearch].location != NSNotFound)
+					[comparisonStudies addObject: comparisonStudy];
+			}
+		}
+	}
+	return comparisonStudies;
+}
+	
 
 
 

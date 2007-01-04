@@ -38,6 +38,7 @@ It is a shared class.
 	NSManagedObject		*_currentStudy;
 	NSArray				*_seriesSets;
 	int					_seriesSetIndex;
+	NSArray				*_relatedStudies;
 	
 }
 
@@ -81,6 +82,15 @@ It is a shared class.
 - (NSArray *)viewers2D;
 - (NSArray *)viewers3D;
 - (NSArray *)viewers;
+
+
+#pragma mark-
+#pragma mark Comparisons
+- (NSArray *)relatedStudies;
+- (void)setRelatedStudies:(NSArray *)relatedStudies;
+- (id)comparionStudy;
+- (NSArray *)comparisonStudies;
+
 
 
 

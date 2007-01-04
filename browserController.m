@@ -11976,5 +11976,35 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[self window] makeKeyAndOrderFront:sender];
 }
 
+//Comparisons
+// Finding Comparisons
+- (NSArray *)relatedStudiesForStudy:(id)study{
+	NSManagedObjectModel	*model = [self managedObjectModel];
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	// FIND ALL STUDIES of this patient
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
+	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
+	[dbRequest setPredicate: predicate];
+	
+	[context lock];
+	
+	NSError	*error = 0L;
+	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+	{
+		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+		[sort release];
+		NSMutableArray *studies = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+		// remove original study from array
+		[studies removeObject:study];
+		return studies;		
+	}
+	return studiesArray;
+}
+
 
 @end

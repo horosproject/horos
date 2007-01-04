@@ -377,6 +377,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) checkMemory:(id) sender;
 - (IBAction) buildAllThumbnails:(id) sender;
 
+// Finding Comparisons
+- (NSArray *)relatedStudiesForStudy:(id)study;
+
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
@@ -424,6 +427,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 OsirixAddToDBNotification posted when files are added to the DB
 
 */
+
+
 
 
 @end
