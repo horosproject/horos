@@ -645,6 +645,36 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self endWaitWindow: waitWindow];
 }
 
+- (void) vertFlipDataSet
+{
+//vImage_Error vImageVerticalReflect_PlanarF ( 
+//const vImage_Buffer *src, 
+//const vImage_Buffer *dest, 
+//vImage_Flags flags 
+//);
+}
+
+- (void) horzFlipDataSet
+{
+//vImage_Error vImageHorizontalReflect_PlanarF ( 
+//const vImage_Buffer *src, 
+//const vImage_Buffer *dest, 
+//vImage_Flags flags 
+//);
+}
+
+- (void) rotateDataSet
+{
+//	vImage_Error vImageRotate_PlanarF ( 
+//		const vImage_Buffer *src, 
+//		const vImage_Buffer *dest, 
+//		void *tempBuffer, 
+//		float angleInRadians, 
+//		Pixel_F backgroundColor, 
+//		vImage_Flags flags 
+//		);
+}
+
 - (IBAction) setOrientationTool:(id) sender
 {
 	short newOrientationTool = [[sender selectedCell] tag];
