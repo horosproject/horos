@@ -20,6 +20,12 @@
 
 #define USEVIMAGE
 
+typedef struct {
+   float x,y,z;
+} XYZ;
+
+extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
+
 @class xNSImage;
 @class ROI;
 @class ThickSlabController;

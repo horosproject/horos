@@ -82,12 +82,6 @@ typedef char* vtkLineWidget;
 #import "Scheduler.h"
 #import "StaticScheduler.h"
 
-typedef struct {
-   float x,y,z;
-} XYZ;
-
-XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
-
 @interface MPR2DView : NSOpenGLView <Schedulable>
 {
 	float				blendingAxis[ 3], blendingAngle, blendingAxis2[ 3], blendingAngle2;

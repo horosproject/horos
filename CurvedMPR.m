@@ -33,10 +33,6 @@ extern  AppController			*appController;
 
 static		float					deg2rad = 3.14159265358979/180.0; 
 
-typedef struct {
-   float x,y,z;
-} XYZ;
-
 /*
    Rotate a point p by angle theta around an arbitrary axis r
    Return the rotated point.

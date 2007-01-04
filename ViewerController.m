@@ -645,34 +645,177 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self endWaitWindow: waitWindow];
 }
 
-- (void) vertFlipDataSet
+- (IBAction) vertFlipDataSet:(id) sender
 {
-//vImage_Error vImageVerticalReflect_PlanarF ( 
-//const vImage_Buffer *src, 
-//const vImage_Buffer *dest, 
-//vImage_Flags flags 
-//);
+	int y, x;
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		DCMPix	*firstObject = [pixList[ y] objectAtIndex: 0];
+		float	*volumeDataPtr = [firstObject fImage];
+		
+		vImage_Buffer src, dest;
+		
+		src.height = dest.height = [firstObject pheight]*[pixList[ y] count];
+		src.width = dest.width = [firstObject pwidth];
+		src.rowBytes = dest.rowBytes = src.width*4;
+		src.data = dest.data = volumeDataPtr;
+		
+		vImageVerticalReflect_PlanarF ( &src, &dest, 0L);
+	}
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			float	o[ 9];
+			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
+			
+			[dcm orientation: o];
+			
+			o[ 3] *= -1;
+			o[ 4] *= -1;
+			o[ 5] *= -1;
+			
+			[dcm setOrientation: o];
+			[dcm setSliceInterval: 0];
+		}
+	}
+	
+	[self computeInterval];
+	[self updateImage: self];
 }
 
-- (void) horzFlipDataSet
+- (IBAction) horzFlipDataSet:(id) sender
 {
-//vImage_Error vImageHorizontalReflect_PlanarF ( 
-//const vImage_Buffer *src, 
-//const vImage_Buffer *dest, 
-//vImage_Flags flags 
-//);
+	int y, x;
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		DCMPix	*firstObject = [pixList[ y] objectAtIndex: 0];
+		float	*volumeDataPtr = [firstObject fImage];
+		
+		vImage_Buffer src, dest;
+		
+		src.height = dest.height = [firstObject pheight]*[pixList[ y] count];
+		src.width = dest.width = [firstObject pwidth];
+		src.rowBytes = dest.rowBytes = src.width*4;
+		src.data = dest.data = volumeDataPtr;
+		
+		vImageHorizontalReflect_PlanarF ( &src, &dest, 0L);
+	}
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			float	o[ 9];
+			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
+			
+			[dcm orientation: o];
+			
+			o[ 0] *= -1;
+			o[ 1] *= -1;
+			o[ 2] *= -1;
+			
+			[dcm setOrientation: o];
+			[dcm setSliceInterval: 0];
+		}
+	}
+	
+	[self computeInterval];
+	[self updateImage: self];
 }
 
-- (void) rotateDataSet
+- (void) rotateDataSet:(int) constant
 {
-//	vImage_Error vImageRotate_PlanarF ( 
-//		const vImage_Buffer *src, 
-//		const vImage_Buffer *dest, 
-//		void *tempBuffer, 
-//		float angleInRadians, 
-//		Pixel_F backgroundColor, 
-//		vImage_Flags flags 
-//		);
+	int y, x;
+	float rot = 0;
+	
+	switch( constant)
+	{
+		case kRotate90DegreesClockwise:		rot = 90;		break;
+		case kRotate180DegreesClockwise:	rot = 180;		break;
+		case kRotate270DegreesClockwise:	rot = 270;		break;
+	}
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		DCMPix	*firstObject = [pixList[ y] objectAtIndex: 0];
+		float	*volumeDataPtr = [firstObject fImage];
+		
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			vImage_Buffer src, dest;
+			
+			src.height = dest.height = [firstObject pheight];
+			src.width = dest.width = [firstObject pwidth];
+			
+//			if( constant == kRotate90DegreesClockwise || constant == kRotate270DegreesClockwise)
+//			{
+//				dest.height = [firstObject pwidth];
+//				dest.width = [firstObject pheight];
+//			}
+			
+			src.rowBytes = src.width*4;
+			dest.rowBytes = dest.width*4;
+			src.data = volumeDataPtr;
+			dest.data = malloc( [firstObject pheight] * [firstObject pwidth] * 4);
+			
+			vImageRotate90_PlanarF ( &src, &dest, constant, 0, 0L);
+			
+			memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
+			
+			free( dest.data);
+			
+			volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
+		}
+	}
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			float	o[ 9];
+			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
+			
+			if( constant == kRotate90DegreesClockwise || constant == kRotate270DegreesClockwise)
+			{
+				float x = [dcm pixelSpacingX];
+				float y = [dcm pixelSpacingY];
+				
+				[dcm setPixelSpacingX:  y];
+				[dcm setPixelSpacingY:  x];
+				
+				[dcm setPixelRatio: x/y];
+			}
+			
+			[dcm orientation: o];
+			
+			// Compute normal vector
+			o[6] = o[1]*o[5] - o[2]*o[4];
+			o[7] = o[2]*o[3] - o[0]*o[5];
+			o[8] = o[0]*o[4] - o[1]*o[3];
+			
+			XYZ vector, rotationVector; 
+			
+			rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
+			
+			vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
+			vector =  ArbitraryRotate(vector, -rot*deg2rad, rotationVector);
+			o[ 0] = vector.x;	o[ 1] = vector.y;	o[ 2] = vector.z;
+			
+			vector.x = o[ 3];	vector.y = o[ 4];	vector.z = o[ 5];
+			vector =  ArbitraryRotate(vector, -rot*deg2rad, rotationVector);
+			o[ 3] = vector.x;	o[ 4] = vector.y;	o[ 5] = vector.z;
+			
+			[dcm setOrientation: o];
+			[dcm setSliceInterval: 0];
+		}
+	}
+	
+	[self computeInterval];
+	[self updateImage: self];
 }
 
 - (IBAction) setOrientationTool:(id) sender
@@ -756,8 +899,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[self checkEverythingLoaded];
 						[self processReslice: 0 :newViewer];
 						
-						[imageView setYFlipped: YES];
-						[imageView setRotation: 0];
+						[self vertFlipDataSet: self];
+//						[imageView setYFlipped: YES];
+//						[imageView setRotation: 0];
 					break;
 					
 					case 1:
@@ -765,16 +909,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[imageView sendSyncMessage:1];
 						[self adjustSlider];
 						
-						[imageView setYFlipped: NO];
-						[imageView setRotation: 0];
+//						[imageView setYFlipped: NO];
+//						[imageView setRotation: 0];
 					break;
 					
 					case 2:
 						[self checkEverythingLoaded];
 						[self processReslice: 1 :newViewer];
 						
-						[imageView setYFlipped: NO];
-						[imageView setRotation: 90];
+						[self rotateDataSet: kRotate90DegreesClockwise];
+						
+//						[imageView setYFlipped: NO];
+//						[imageView setRotation: 90];
 					break;
 				}
 			}
@@ -788,16 +934,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[self checkEverythingLoaded];
 						[self processReslice: 0 :newViewer];
 						
-						[imageView setXFlipped: YES];
-						[imageView setRotation: 90];
+						[self rotateDataSet: kRotate90DegreesClockwise];
+						[self horzFlipDataSet: self];
+						
+//						[imageView setXFlipped: YES];
+//						[imageView setRotation: 90];
 					break;
 					
 					case 1:
 						[self checkEverythingLoaded];
 						[self processReslice: 1 :newViewer];
 						
-						[imageView setXFlipped: YES];
-						[imageView setRotation: 90];
+						[self rotateDataSet: kRotate90DegreesClockwise];
+						[self horzFlipDataSet: self];
+						
+//						[imageView setXFlipped: YES];
+//						[imageView setRotation: 90];
 					break;
 					
 					case 2:
@@ -805,8 +957,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[imageView sendSyncMessage:1];
 						[self adjustSlider];
 						
-						[imageView setXFlipped: NO];
-						[imageView setRotation: 0];
+//						[imageView setXFlipped: NO];
+//						[imageView setRotation: 0];
 					break;
 				}
 			}
@@ -1402,6 +1554,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
+//	[self rotateDataSet: kRotate90DegreesClockwise];
+//	return;
+
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
