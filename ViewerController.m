@@ -4950,6 +4950,28 @@ static ViewerController *draggedController = 0L;
 
 - (short) orthogonalOrientation
 {
+	float		vectors[ 9];
+	
+	[[pixList[ curMovieIndex] objectAtIndex:0] orientation: vectors];
+	
+	if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
+	{
+		if( vectors[6] > 0) orientationVector = eSagittalPos;
+		else orientationVector = eSagittalNeg;
+	}
+	
+	if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
+	{
+		if( vectors[7] > 0) orientationVector = eCoronalPos;
+		else orientationVector = eCoronalNeg;
+	}
+	
+	if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
+	{
+		if( vectors[8] > 0) orientationVector = eAxialPos;
+		else orientationVector = eAxialNeg;
+	}
+	
 	switch( orientationVector)
 	{
 		case eAxialPos:
@@ -4967,6 +4989,8 @@ static ViewerController *draggedController = 0L;
 			return 2;
 		break;
 	}
+	
+	return 0;
 }
 
 -(short) orientationVector
@@ -4977,7 +5001,7 @@ static ViewerController *draggedController = 0L;
 -(float) computeIntervalFlipNow: (NSNumber*) flipNowNumber
 {
 	float				interval = [[pixList[ curMovieIndex] objectAtIndex:0] sliceInterval];
-	float				vectors[ 9], vectorsB[ 9];
+	
 	long				i, x;
 	BOOL				flipNow = [flipNowNumber boolValue];
 	
@@ -4993,10 +5017,10 @@ static ViewerController *draggedController = 0L;
 	{
 		[orientationMatrix setEnabled: NO];
 		
-		BOOL equalVector = YES;
+		float		vectors[ 9], vectorsB[ 9];
+		BOOL		equalVector = YES;
 		
 		[[pixList[ curMovieIndex] objectAtIndex:0] orientation: vectors];
-		
 		[[pixList[ curMovieIndex] objectAtIndex:1] orientation: vectorsB];
 		
 		for( i = 0; i < 9; i++)
