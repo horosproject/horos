@@ -164,6 +164,7 @@ extern NSLock	*PapyrusLock;
 		}
 		else
 			imageType = nil;
+		
 		if( imageType) [dicomElements setObject:imageType forKey:@"imageType"];
 		
 		//SOPInstanceUID
@@ -435,7 +436,7 @@ extern NSLock	*PapyrusLock;
 			serieID = n;
 		}
 		
-		if( imageType != 0)
+		if( imageType != 0 && [self useSeriesDescription])
 		{
 			NSString	*n;
 			
@@ -504,7 +505,7 @@ extern NSLock	*PapyrusLock;
 			
 		if( patientID == 0L) patientID = [[NSString alloc] initWithString:@""];
 		
-				if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
+		if( NoOfFrames > 1) // SERIE ID MUST BE UNIQUE!!!!!
 		{
 			NSString *newSerieID = [[NSString alloc] initWithFormat:@"%@-%@-%@", serieID, imageID, [filePath lastPathComponent]];
 			[serieID release];
@@ -539,7 +540,7 @@ extern NSLock	*PapyrusLock;
 		}
 		else
 			[dicomElements setObject:serieID forKey:@"seriesID"];
-
+		
 		if( studyID == 0L)
 		{
 			studyID = [[NSString alloc] initWithString:name];

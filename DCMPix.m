@@ -8376,8 +8376,8 @@ float			iwl, iww;
 			
 			if( newWL - newWW/2 == 0)
 			{
-				newWW = (int) newWW;
-				newWL = (int) newWL;
+//				newWW = (int) newWW;
+//				newWL = (int) newWL;
 				
 				newWL = newWW/2;
 			}

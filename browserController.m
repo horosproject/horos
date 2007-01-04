@@ -762,7 +762,8 @@ static BOOL COMPLETEREBUILD = NO;
 								{
 									if( [iPodDirectory length] < [newFile length])
 									{
-										if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES) iPod = YES;
+										if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES)
+											iPod = YES;
 									}
 								}
 							}
@@ -780,7 +781,7 @@ static BOOL COMPLETEREBUILD = NO;
 								if( [[NSFileManager defaultManager] fileExistsAtPath:[image valueForKey:@"completePath"] isDirectory:&isDirectory])
 								{
 									if( produceAddedFiles)
-									[addedImagesArray addObject: image];
+										[addedImagesArray addObject: image];
 									
 									if( local)	// Delete this file, it's already in the DB folder
 									{
@@ -1007,7 +1008,7 @@ static BOOL COMPLETEREBUILD = NO;
 	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles :YES];
 }
 
-- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
+- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied
 {
     NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	NSMutableArray		*filesArray;
@@ -1059,16 +1060,31 @@ static BOOL COMPLETEREBUILD = NO;
 		}
 	}
 	
-	filesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
+	NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
 	
-	NSLog(@"Start Database");
-	NSArray	*newImages = [self addFilesToDatabase: filesArray];
-	NSLog(@"End Database");
+	if( newfilesArray == filesArray)
+	{
+		if( copied) *copied = NO;
+		mountedVolume = YES;
+	}
+	else
+	{
+		if( copied) *copied = YES;
+		filesArray = newfilesArray;
+	}
+	
+	NSArray	*newImages = [self addFilesToDatabase:filesArray];
+	mountedVolume = NO;
 	
 	[filesArray release];
 	[self outlineViewRefresh];
 	
 	return newImages;
+}
+
+- (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames
+{
+	return [self addFilesAndFolderToDatabase:(NSArray*) filenames copied: 0L];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -8612,13 +8628,9 @@ static NSArray*	openSubSeriesArray = 0L;
 					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
 					
 					if( newfilesArray == filesArray) mountedVolume = YES;
-					else
-					{
-						filesArray = newfilesArray;
-					}
+					else filesArray = newfilesArray;
 					
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-					
 					mountedVolume = NO;
 					
 					[self outlineViewRefresh];
@@ -10072,9 +10084,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSArray*	filenames = [NSArray arrayWithObject: path];
 			
-			mountedVolume = YES;
-			[self addFilesAndFolderToDatabase: filenames];
-			mountedVolume = NO;
+			BOOL		copied;
+			NSArray*	newImage = [self addFilesAndFolderToDatabase: filenames copied: &copied];
+			
+			if( copied == YES && [newImage count] == 0 && [filenames count] > 0)
+			{
+				[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+			}
+			else if( [newImage count] > 0 && [filenames count] > 0)
+			{
+				if( copied == YES)
+				{
+					if( NSRunInformationalAlertPanel( NSLocalizedString( @"iPod transfer", 0L), NSLocalizedString( @"The images have been succesfully transferred to your local database. Should I delete them in your iPod?", 0L),NSLocalizedString( @"Delete", 0L), NSLocalizedString( @"Don't Delete", 0L), 0L) == NSAlertDefaultReturn)
+					{
+						NSLog( @"iPod Delete");
+						[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+					}
+				}
+			}
 		}
 	}
 }
@@ -10344,7 +10371,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				// Find the DICOM folder
 				if( ![mySession fileExistsAtPath:path]) [mySession createDirectoryAtPath:path attributes:nil];
 				
-				Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",@"Copying to your iPod")];
+				Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iDisk",0L)];
 				
 				[splash setCancel:YES];
 				[splash showWindow:self];

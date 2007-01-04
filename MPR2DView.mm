@@ -829,12 +829,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 -(void) setBlendingPixSource:(ViewerController*) bC
 {
     long i;
-//	if( bC)
-//	{
-//		NSRunCriticalAlertPanel(@"Fusion Error", @"This version doesn't support Fusion in 2D MPR... Next version will!", @"OK", nil, nil);
-//	}
-//	
-//	return;
 	
 	blendingController = bC;
 	
@@ -842,6 +836,9 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	{
 		blendingPixList = [bC pixList];
 		[blendingPixList retain];
+		
+		filesListBlending = [bC fileList];
+		[filesListBlending retain];
 		
 		blendingData = [bC volumePtr];
 		
@@ -1006,6 +1003,9 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 			if( blendingSliceTransform) blendingSliceTransform->Delete();
 			
 			blendingAxial = 0L;
+			
+			[blendingPixList release];
+			[filesListBlending release];
 		}
 	}
 }
@@ -1715,7 +1715,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 					if( firstTimeBlending)
 					{
 						firstTimeBlending = NO;
-						[finalViewBlending setDCM:finalPixListBlending :filesList :0L :0 :'i' :YES];
+						[finalViewBlending setDCM:finalPixListBlending :filesListBlending :0L :0 :'i' :YES];
 						[finalViewBlending setStringID:@"FinalViewBlending"];
 					//	[finalView setRotation: 90];
 					

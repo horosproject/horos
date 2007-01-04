@@ -1395,48 +1395,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //	{
 //		display2DMPRLines =!display2DMPRLines;
 //	}
-	
-//	if( [stringID isEqualToString:@"MPR3D"])
-//	{
-//		if( c == 127) // Delete
-//		{
-//			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
-//			long	i;
-//			BOOL	done = NO;
-//			
-//			for( i = 0; i < [curRoiList count]; i++)
-//			{
-//				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selectedModify || [[curRoiList objectAtIndex:i] ROImode] == ROI_drawing)
-//				{
-//					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
-//					{
-//						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
-//						[curRoiList removeObjectAtIndex:i];
-//						i--;
-//					}
-//				}
-//			}
-//			
-//			for( i = 0; i < [curRoiList count]; i++)
-//			{
-//				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-//				{
-//					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
-//					[curRoiList removeObjectAtIndex:i];
-//					i--;
-//				}
-//			}
-//			
-//			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiRemovedFromArray" object: 0L userInfo: 0L];
-//			
-//			[self setNeedsDisplay:YES];
-//			
-//			curROI = 0L;
-//		}
-//		else [super keyDown:event];
-//		return;
-//	}
-	
+		
     if( dcmPixList)
     {
         short   inc, previmage = curImage;
@@ -1704,7 +1663,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			if( stringID)
 			{
-				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"MPR3D"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
+				if( [stringID isEqualToString:@"Perpendicular"]  || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
             // SYNCRO
@@ -2198,10 +2157,13 @@ static long scrollMode;
 	else if( [event type] == NSOtherMouseDown || [event type] == NSOtherMouseDragged || [event type] == NSOtherMouseUp) tool = tTranslate;
 	else tool = currentTool;
 	
-//	if (([event modifierFlags] & NSControlKeyMask))  tool = tRotate;	<- Pop-up menu
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
 	if (([event modifierFlags] & NSAlternateKeyMask))  tool = tWL;
-	if (([event modifierFlags] & NSControlKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tWLBlended;
+	if (([event modifierFlags] & NSControlKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+	{
+		if( blendingView) tool = tWLBlended;
+		else tool = tWL;
+	}
 	if( [self roiTool:currentTool] != YES)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
@@ -2222,6 +2184,11 @@ static long scrollMode;
 	startWL = [curDCM wl];
 	startMin = [curDCM wl] - [curDCM ww]/2;
 	startMax = [curDCM wl] + [curDCM ww]/2;
+	
+	bdstartWW = [[blendingView curDCM] ww];
+	bdstartWL = [[blendingView curDCM] wl];
+	bdstartMin = [[blendingView curDCM] wl] - [[blendingView curDCM] ww]/2;
+	bdstartMax = [[blendingView curDCM] wl] + [[blendingView curDCM] ww]/2;
 }
 
 - (void)mouseDown:(NSEvent *)event
@@ -2670,10 +2637,6 @@ static long scrollMode;
 			
 			[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 		}
-		else if( [stringID isEqualToString:@"MPR3D"])
-		{
-			[super scrollWheel: theEvent];
-		}
 		else if( [stringID isEqualToString:@"previewDatabase"])
 		{
 			[super scrollWheel: theEvent];
@@ -2781,7 +2744,7 @@ static long scrollMode;
 				
 			if( stringID)
 			{
-				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"MPR3D"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
+				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"Original"]  || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"FinalViewBlending"])
 					[[self windowController] adjustSlider];
 			}
 			
@@ -3005,15 +2968,7 @@ static long scrollMode;
 		
 		if( tool == t3DRotate)
 		{
-			if( [stringID isEqualToString:@"MPR3D"] == YES)
-			{
-				NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-				tempPt.y = size.size.height - tempPt.y ;
-				
-				tempPt = [self ConvertFromView2GL:tempPt];
-				
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"planesMove" object:stringID userInfo: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat:tempPt.y], @"Y", [NSNumber numberWithLong:tempPt.x],@"X",0L]];
-			}
+			
 		}
 		
 		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
@@ -3258,8 +3213,97 @@ static long scrollMode;
 		
 		if( tool == tWLBlended)
 		{
+			float WWAdapter = bdstartWW / 100.0;
 			
-		 }
+			if( WWAdapter < 0.001) WWAdapter = 0.001;
+			
+			if( [self is2DViewer] == YES)
+			{
+				[[[self windowController] thickSlabController] setLowQuality: YES];
+			}
+			
+			if( [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+			{
+				float startlevel;
+				float endlevel;
+				
+				float eWW, eWL;
+				
+				NSLog( @"PT");
+				
+				switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+				{
+					case 0:
+						eWL = bdstartWL + (current.y -  start.y)*WWAdapter;
+						eWW = bdstartWW + (current.x -  start.x)*WWAdapter;
+						
+						if( eWW < 0.1) eWW = 0.1;
+					break;
+					
+					case 1:
+						endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
+						
+						eWL = (endlevel - bdstartMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+						eWW = endlevel - bdstartMin;
+						
+						if( eWW < 0.1) eWW = 0.1;
+						if( eWL - eWW/2 < 0) eWL = eWW/2;
+					break;
+					
+					case 2:
+						endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
+						startlevel = bdstartMin + (current.x -  start.x) * WWAdapter ;
+						
+						if( startlevel < 0) startlevel = 0;
+						
+						eWL = startlevel + (endlevel - startlevel) / 2;
+						eWW = endlevel - startlevel;
+						
+						if( eWW < 0.1) eWW = 0.1;
+						if( eWL - eWW/2 < 0) eWL = eWW/2;
+					break;
+				}
+				
+				[[blendingView curDCM] changeWLWW :eWL  :eWW];
+			}
+			else
+			{
+				[[blendingView curDCM] changeWLWW : bdstartWL + (current.y -  start.y)*WWAdapter :bdstartWW + (current.x -  start.x)*WWAdapter];
+			}
+			
+			if( [self is2DViewer] == YES)
+			{
+				[[blendingView windowController] setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+			}
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object:NSLocalizedString(@"Other", 0L) userInfo: 0L];
+			
+			if( stringID)
+			{
+				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
+				{
+					[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
+				}
+				else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+				{
+					[self setWLWW: curWL :curWW];
+					[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+				}
+				else
+				{
+					[blendingView loadTextures];
+					[self loadTextures];
+				}
+			}
+			else
+			{
+				[blendingView loadTextures];
+				[self loadTextures];
+			}
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: blendingView userInfo:0L];
+		}
 		
         if( tool == tWL && !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
         {
@@ -3272,54 +3316,51 @@ static long scrollMode;
 				[[[self windowController] thickSlabController] setLowQuality: YES];
 			}
 			
-			if( [stringID isEqualToString:@"MPR3D"] == NO)
+			if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
 			{
-				if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+				float startlevel;
+				float endlevel;
+				
+				float eWW, eWL;
+				
+				switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 				{
-					float startlevel;
-					float endlevel;
-					
-					float eWW, eWL;
-					
-					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-					{
-						case 0:
-							eWL = startWL + (current.y -  start.y)*WWAdapter;
-							eWW = startWW + (current.x -  start.x)*WWAdapter;
-							
-							if( eWW < 0.1) eWW = 0.1;
-						break;
+					case 0:
+						eWL = startWL + (current.y -  start.y)*WWAdapter;
+						eWW = startWW + (current.x -  start.x)*WWAdapter;
 						
-						case 1:
-							endlevel = startMax + (current.y -  start.y) * WWAdapter ;
-							
-							eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-							eWW = endlevel - startMin;
-							
-							if( eWW < 0.1) eWW = 0.1;
-							if( eWL - eWW/2 < 0) eWL = eWW/2;
-						break;
-						
-						case 2:
-							endlevel = startMax + (current.y -  start.y) * WWAdapter ;
-							startlevel = startMin + (current.x -  start.x) * WWAdapter ;
-							
-							if( startlevel < 0) startlevel = 0;
-							
-							eWL = startlevel + (endlevel - startlevel) / 2;
-							eWW = endlevel - startlevel;
-							
-							if( eWW < 0.1) eWW = 0.1;
-							if( eWL - eWW/2 < 0) eWL = eWW/2;
-						break;
-					}
+						if( eWW < 0.1) eWW = 0.1;
+					break;
 					
-					[curDCM changeWLWW :eWL  :eWW];
+					case 1:
+						endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+						
+						eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+						eWW = endlevel - startMin;
+						
+						if( eWW < 0.1) eWW = 0.1;
+						if( eWL - eWW/2 < 0) eWL = eWW/2;
+					break;
+					
+					case 2:
+						endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+						startlevel = startMin + (current.x -  start.x) * WWAdapter ;
+						
+						if( startlevel < 0) startlevel = 0;
+						
+						eWL = startlevel + (endlevel - startlevel) / 2;
+						eWW = endlevel - startlevel;
+						
+						if( eWW < 0.1) eWW = 0.1;
+						if( eWL - eWW/2 < 0) eWL = eWW/2;
+					break;
 				}
-				else
-				{
-					[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
-				}
+				
+				[curDCM changeWLWW :eWL  :eWW];
+			}
+			else
+			{
+				[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
 			}
 			
             curWW = [curDCM ww];
@@ -3333,11 +3374,7 @@ static long scrollMode;
 			
 			if( stringID)
 			{
-				if( [stringID isEqualToString:@"MPR3D"])
-				{
-					[[NSNotificationCenter defaultCenter] postNotificationName: @"SetWLWWMPR3D" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithLong:(current.y -  previous.y)], @"WL", [NSNumber numberWithLong:(current.x -  previous.x)],@"WW",0L]];
-				}
-				else if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
+				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
 				{
 					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 				}
@@ -5122,15 +5159,9 @@ static long scrollMode;
 		
 		float	lwl, lww;
 		
-		if( [stringID isEqualToString:@"MPR3D"])
-		{
-			[[self windowController] getWLWW:&lwl :&lww];
-		}
-		else
-		{
-			lwl = [curDCM wl];
-			lww = [curDCM ww];
-		}
+	
+		lwl = [curDCM wl];
+		lww = [curDCM ww];
 		
 	//	if( fullText)
 		{
@@ -6019,32 +6050,6 @@ static long scrollMode;
 						[self subDrawRect: aRect];
 						[self setScaleValue: scaleValue];
 					}
-					
-					if( [stringID isEqualToString:@"MPR3D"])
-					{
-						long	xx, yy;
-						
-						[[self windowController] getPlanes:&xx :&yy];
-						
-						glColor3f (0.0f, 0.0f, 1.0f);
-			
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
-							glVertex2f( -origin.x -size.size.width/2.		, scaleValue * (yy-[curDCM pheight]/2.));
-							glVertex2f( -origin.x -size.size.width/2 + 100   , scaleValue * (yy-[curDCM pheight]/2.));
-							
-							if( yFlipped)
-							{
-								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2.)/[curDCM pixelRatio]);
-								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y -size.size.height/2. + 100)/[curDCM pixelRatio]);
-							}
-							else
-							{
-								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2.)/[curDCM pixelRatio]);
-								glVertex2f( scaleValue * (xx-[curDCM pwidth]/2.), (origin.y +size.size.height/2. - 100)/[curDCM pixelRatio]);
-							}
-						glEnd();
-					}
 				}
 				
 				
@@ -6732,6 +6737,12 @@ static long scrollMode;
 		
 		[self setNeedsDisplay:YES];
 	}
+}
+
+
+-(NSArray*) dcmFilesList
+{
+	return dcmFilesList;
 }
 
 -(NSMutableArray*) dcmPixList

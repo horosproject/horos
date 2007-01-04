@@ -125,6 +125,9 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	
     float			startWW, curWW, startMin, startMax;
     float			startWL, curWL;
+
+    float			bdstartWW, bdcurWW, bdstartMin, bdstartMax;
+    float			bdstartWL, bdcurWL;
 	
     NSSize          scaleStart, scaleInit;
     
@@ -209,6 +212,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 -(void) setFlippedData:(BOOL) f;
  -(NSMutableArray*) dcmPixList;
  -(NSMutableArray*) dcmRoiList;
+ -(NSArray*) dcmFilesList;
 - (long) indexForPix: (long) pixIndex; // Return the index into fileList that coresponds to the index in pixList
 - (long) syncSeriesIndex;
 - (void) setSyncSeriesIndex:(long) i;

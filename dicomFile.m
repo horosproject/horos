@@ -1978,7 +1978,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
-				if( imageType != 0)
+				if( imageType != 0 && useSeriesDescription)
 				{
 					NSString	*n;
 					
@@ -1987,7 +1987,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					serieID = n;
 				}
 				
-				if( serie != 0L  && useSeriesDescription)
+				if( serie != 0L && useSeriesDescription)
 				{
 					NSString	*n;
 					
@@ -2443,7 +2443,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			serieID = n;
 		}
 		
-		if( imageType != 0)
+		if( imageType != 0 && useSeriesDescription)
 		{
 			NSString	*n;
 			

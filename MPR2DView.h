@@ -97,7 +97,7 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	vtkTransform		*sliceTransform, *blendingSliceTransform, *perpendicularSliceTransform;
 
     NSMutableArray      *pixList;
-	NSArray				*filesList;
+	NSArray				*filesList, *filesListBlending;
     float				*data, *dataFRGB;
 	DCMPix              *firstObject;
 	
