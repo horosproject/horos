@@ -445,15 +445,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	volumeData[0] = vData;
 	
     float sliceThickness = fabs( [firstObject sliceInterval]);
-	
-	// Find Minimum Value
-	
-	if( [firstObject isRGB] == NO)
-	{
-		[self computeMinMax];
-	}
-	else minimumValue = 0;
-	
+		
 	  //fabs( [firstObject sliceLocation] - [[pixList objectAtIndex:1] sliceLocation]);
     
     if( sliceThickness == 0)
@@ -502,6 +494,13 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[volumeData[0] retain];
     viewer2D = [vC retain];
 	
+	blendingController = bC;
+	if( blendingController) blendingPixList = [blendingController pixList];
+	
+	// Find Minimum Value
+	if( [firstObject isRGB] == NO) [self computeMinMax];
+	else minimumValue = 0;
+
 	if( [style isEqualToString:@"standard"])
 		self = [super initWithWindowNibName:@"VR"];
 	else
@@ -517,11 +516,9 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
         [self dealloc];
         return 0L;
     }
-	    
-	blendingController = bC;
+	
 	if( blendingController) // Blending! Activate image fusion
 	{
-		blendingPixList = [blendingController pixList];
 		[view setBlendingPixSource: blendingController];
 		
 		[blendingSlider setEnabled:YES];

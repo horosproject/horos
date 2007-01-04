@@ -1799,7 +1799,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //			[self setNeedsDisplay:YES];
 //		}
 		
-		if( tool == tWL)
+		if( tool == tWL || tool == tWLBlended)
 		{
 			if( [self is2DViewer] == YES)
 			{
@@ -2201,7 +2201,7 @@ static long scrollMode;
 //	if (([event modifierFlags] & NSControlKeyMask))  tool = tRotate;	<- Pop-up menu
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
 	if (([event modifierFlags] & NSAlternateKeyMask))  tool = tWL;
-	if (([event modifierFlags] & NSControlKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = t3Dpoint;
+	if (([event modifierFlags] & NSControlKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tWLBlended;
 	if( [self roiTool:currentTool] != YES)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
@@ -2872,6 +2872,9 @@ static long scrollMode;
 
 -(NSMenu*) menuForEvent:(NSEvent *)theEvent {
 	if ( pluginOverridesMouse ) return nil;  // Turn off contextual menu.  RBR 3/26/06
+	
+	if (([theEvent modifierFlags] & NSControlKeyMask) && ([theEvent modifierFlags] & NSAlternateKeyMask)) return 0L;
+	
 	return [self menu];  // Default
 }
 	
@@ -2892,7 +2895,6 @@ static long scrollMode;
 
 - (void)mouseDragged:(NSEvent *)event
 {
-
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{
@@ -3254,9 +3256,13 @@ static long scrollMode;
 
         }        
 		
+		if( tool == tWLBlended)
+		{
+			
+		 }
+		
         if( tool == tWL && !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
         {
-		//	ICI
 			float WWAdapter = startWW / 100.0;
 			
 			if( WWAdapter < 0.001) WWAdapter = 0.001;

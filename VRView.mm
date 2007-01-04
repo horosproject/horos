@@ -1380,8 +1380,14 @@ public:
 	if (([event modifierFlags] & NSShiftKeyMask))  tool = tZoom;
 	if (([event modifierFlags] & NSCommandKeyMask))  tool = tTranslate;
 	if (([event modifierFlags] & NSAlternateKeyMask))  tool = tWL;
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
-	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSControlKeyMask))  tool = tCamera3D;
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+	{
+		tool = tWLBlended;
+	}
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSControlKeyMask))
+	{
+		tool = tCamera3D;
+	}
 	
 	return tool;
 }
@@ -2029,7 +2035,81 @@ public:
 		float WWAdapter, endlevel, startlevel;
 		int shiftDown;
 		int controlDown;
-		switch (_tool) {
+		switch (_tool)
+		{
+			case tWLBlended:	
+				_startWW = blendingWw;
+				_startWL = blendingWl;
+				_startMin = blendingWl - blendingWw/2;
+				_startMax = blendingWl + blendingWw/2;
+				WWAdapter  = _startWW / 100.0;
+				
+				if( [[[controller blendingController] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller blendingController] modality] isEqualToString:@"NM"] == YES))
+				{
+					switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+					{
+						case 0:
+							blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+							blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+							
+							if( blendingWw < 0.1) blendingWw = 0.1;
+						break;
+						
+						case 1:
+							endlevel = _startMax + (-[theEvent deltaY]) * WWAdapter ;
+							
+							blendingWl =  (endlevel - _startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+							blendingWw = endlevel - _startMin;
+							
+							if( blendingWw < 0.1) blendingWw = 0.1;
+							if( blendingWl - blendingWw/2 < 0) blendingWl = blendingWw/2;
+						break;
+						
+						case 2:
+							endlevel = _startMax - ([theEvent deltaY]) * WWAdapter ;
+							startlevel = _startMin + ([theEvent deltaX]) * WWAdapter ;
+							
+							if( startlevel < 0) startlevel = 0;
+							
+							blendingWl = startlevel + (endlevel - startlevel) / 2;
+							blendingWw = endlevel - startlevel;
+							
+							if( blendingWw < 0.1) blendingWw = 0.1;
+							if( blendingWl - blendingWw/2 < 0) wl = blendingWw/2;
+						break;
+					}
+				}
+				else
+				{
+					blendingWl =  (_startWL - (long) ([theEvent deltaY])*WWAdapter);
+					blendingWw =  (_startWW + (long) ([theEvent deltaX])*WWAdapter);
+				}
+				
+				if( blendingWw < 0.1) blendingWw = 0.1;
+				
+				//[self setOpacity: currentOpacityArray];
+				
+				if( isRGB)
+					blendingColorTransferFunction->BuildFunctionFromTable( blendingWl-blendingWw/2, blendingWl+blendingWw/2, 255, (double*) &blendingtable);
+				else
+					blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
+				
+
+//				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
+//				{
+//					if( blendingWw < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-blendingWw/2, wl+blendingWw/2);
+//					else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-blendingWw/2, wl+blendingWw/2);
+//				}
+//				else
+//				{
+//					if( blendingWw < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, blendingWw);
+//					else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, blendingWw);
+//				}
+//				
+//				textWLWW->SetInput( WLWWString);
+				[self setNeedsDisplay:YES];
+			break;
+
 			case tWL:	
 				_startWW = ww;
 				_startWL = wl;
@@ -2101,8 +2181,7 @@ public:
 				
 				textWLWW->SetInput( WLWWString);
 				[self setNeedsDisplay:YES];
-
-				break;
+			break;
 				
 				case t3DCut:
 				
@@ -2227,7 +2306,8 @@ public:
 	}
 	else {
 		switch (_tool) {
-			case tWL: 
+			case tWL:
+			case tWLBlended:
 			case tCamera3D:
 				[self setNeedsDisplay:YES];
 				break;
@@ -2438,6 +2518,16 @@ public:
 			_startWL = wl;
 			_startMin = wl - ww/2;
 			_startMax = wl + ww/2;
+			
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
+			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+		}
+		else if( tool == tWLBlended)
+		{
+			_startWW = blendingWw;
+			_startWL = blendingWl;
+			_startMin = blendingWl - blendingWw/2;
+			_startMax = blendingWl + blendingWw/2;
 			
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
@@ -3756,7 +3846,10 @@ public:
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
 				}
 				else
+				{
+					blendingValueFactor = 1;
 					vImageConvert_FTo16U( &blendingSrcf, &blendingDst8, -blendingOFFSET16, 1./blendingValueFactor, 0);
+				}
 			}
 		}
 		
@@ -4142,6 +4235,7 @@ public:
 			}
 			else
 			{
+				valueFactor = 1;
 				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
 			}
 		}
@@ -5681,7 +5775,7 @@ public:
 		c = [NSCursor rotateCursor];
 	else if (tool == tZoom)
 		c = [NSCursor zoomCursor];
-	else if (tool == tWL)
+	else if (tool == tWL || tool == tWLBlended)
 		c = [NSCursor contrastCursor];
 	else if (tool == tNext)
 		c = [NSCursor stackCursor];

@@ -7998,15 +7998,16 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), 0L] retain];
 	
-	// Set International dates for columns
-	[self setDBDate];
 
 	ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
 	[[databaseOutline tableColumnWithIdentifier:@"name"] setDataCell:cellName];
 	
 	ImageAndTextCell *cellReport = [[[ImageAndTextCell alloc] init] autorelease];
 	[[databaseOutline tableColumnWithIdentifier:@"reportURL"] setDataCell:cellReport];
-	
+
+	// Set International dates for columns
+	[self setDBDate];
+
 //	columnsMenu = [[NSMenu alloc] initWithTitle:@"Displayed Columns"];
 //	for( i = 0; i < [[databaseOutline tableColumns] count]; i++)
 //	{

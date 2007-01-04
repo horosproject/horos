@@ -53,7 +53,8 @@ enum
 	tCamera3D,					//	18
 	t2DPoint,					//	19
 	tPlain,						//	20
-	tBonesRemoval				//	21
+	tBonesRemoval,				//	21
+	tWLBlended					//  22
 };
 
 extern NSString *pasteBoardOsiriX;
