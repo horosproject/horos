@@ -2087,26 +2087,8 @@ public:
 				
 				if( blendingWw < 0.1) blendingWw = 0.1;
 				
-				//[self setOpacity: currentOpacityArray];
-				
-				if( isRGB)
-					blendingColorTransferFunction->BuildFunctionFromTable( blendingWl-blendingWw/2, blendingWl+blendingWw/2, 255, (double*) &blendingtable);
-				else
-					blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
-				
+				[self setBlendingWLWW: blendingWl :blendingWw];
 
-//				if( [[[controller viewer2D] modality] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[controller viewer2D] modality] isEqualToString:@"NM"] == YES))
-//				{
-//					if( blendingWw < 50) sprintf(WLWWString, "From: %0.4f   To: %0.4f", wl-blendingWw/2, wl+blendingWw/2);
-//					else sprintf(WLWWString, "From: %0.f   To: %0.f", wl-blendingWw/2, wl+blendingWw/2);
-//				}
-//				else
-//				{
-//					if( blendingWw < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, blendingWw);
-//					else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, blendingWw);
-//				}
-//				
-//				textWLWW->SetInput( WLWWString);
 				[self setNeedsDisplay:YES];
 			break;
 
