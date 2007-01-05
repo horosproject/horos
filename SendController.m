@@ -190,8 +190,6 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	if ([[self server] isKindOfClass:[NSDictionary class]])
 	{
 		int preferredTS = [[[self server] objectForKey:@"Transfer Syntax"] intValue];
-//		if (preferredTS < SendImplicitLittleEndian)
-//				[self  setOsirixTS:preferredTS];
 				
 		if (preferredTS ==  SendExplicitLittleEndian || 
 			preferredTS == SendImplicitLittleEndian || 

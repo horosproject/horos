@@ -153,7 +153,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 																						[NSString stringWithFormat:@"%d", port], @"Port",
 																						[NSNumber numberWithBool:YES] , @"QR",
 																						[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]], @"Description",
-																						[NSNumber numberWithInt:9], @"Transfer Syntax",
+																						[NSNumber numberWithInt:0], @"Transfer Syntax",
 																						0L]];
 			}
 		}
