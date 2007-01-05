@@ -565,7 +565,8 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 //		}
 //		else
 		{
-					//NSLog(@"
+			preferredTS = EXS_LittleEndianExplicit;
+			
 			//theirAET = [server objectForKey:@"AETitle"];
 			hostname = [server objectForKey:@"Address"];
 			port = [server objectForKey:@"Port"];

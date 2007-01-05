@@ -176,7 +176,7 @@
     [aServer setObject:@"4444" forKey:@"Port"];
 	[aServer setObject:[NSNumber numberWithBool:YES] forKey:@"QR"];
     [aServer setObject:@"PACSARCH PACS Server" forKey:@"Description"];
-	[aServer setObject:[NSNumber numberWithInt:9] forKey:@"Transfer Syntax"];
+	[aServer setObject:[NSNumber numberWithInt:0] forKey:@"Transfer Syntax"];
     
     [serverList addObject:aServer];
     
