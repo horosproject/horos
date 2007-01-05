@@ -862,6 +862,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( newOrientationTool != currentOrientationTool)
 	{
+		float previousZooming = [imageView scaleValue] / [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX];
+
 		if( displayOnlyKeyImages)
 		{
 			[keyImagePopUpButton selectItemAtIndex: 0];
@@ -904,7 +906,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		currentOrientationTool = newOrientationTool;
 		
-		float previousPixelSpacing = [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX];
 		
 		switch( originalOrientation)
 		{
@@ -990,11 +991,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		}
 		
-		if( previousPixelSpacing != [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX])
-		{
-			[imageView setScaleValue: [imageView scaleValue] * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX] / previousPixelSpacing];
-		}
-		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 
 		float   iwl, iww;
@@ -1010,6 +1006,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		NSLog( @"originalOrientation: %d", originalOrientation);
+		
+		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 	}
 }
 

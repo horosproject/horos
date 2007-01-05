@@ -3432,6 +3432,23 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 }
 
+- (NSManagedObject *) firstObjectForDatabaseOutlineSelection
+{
+	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	
+	if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
+	{
+		aFile = [[aFile valueForKey:@"series"] anyObject];
+	}
+	
+	if( [[aFile valueForKey:@"type"] isEqualToString:@"Series"])
+	{
+		aFile = [[aFile valueForKey:@"images"] anyObject];
+	}
+	
+	return aFile;
+}
+
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
 	long				i, x, type;
@@ -5025,7 +5042,7 @@ static BOOL withReset = NO;
 	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 	
     if( [theCell tag] >= 0 ) {
-		[self viewerDICOM: oMatrix];
+		[self viewerDICOM: [[oMatrix menu] itemAtIndex:0]];
     }
 }
 
@@ -5669,6 +5686,35 @@ static BOOL withReset = NO;
 	else
 	{
 		return proposedMin;
+	}
+}
+
+- (NSManagedObject *) firstObjectForDatabaseMatrixSelection
+{
+	NSArray				*cells = [oMatrix selectedCells];
+	NSManagedObject		*aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	
+	if( cells != 0L && aFile != 0L)
+    {
+		int x;
+		
+		for( x = 0; x < [cells count]; x++)
+		{
+			if( [[cells objectAtIndex: x] isEnabled] == YES)
+			{
+				NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[cells objectAtIndex: x] tag]];
+				
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Image"])
+				{
+					return curObj;
+				}
+				
+				if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+				{
+					return [[curObj valueForKey:@"images"] anyObject];
+				}
+			}
+		}
 	}
 }
 
@@ -7378,20 +7424,25 @@ static BOOL needToRezoom;
 - (void) newViewerDICOM: (id) sender
 {
 	long				index;
-	NSMutableArray		*images = [NSMutableArray arrayWithCapacity:0];
+	NSManagedObject		*image;
 	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) [self filesForDatabaseMatrixSelection: images];
-	else [self filesForDatabaseOutlineSelection: images];
-		
+	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+	{
+		image = [self firstObjectForDatabaseMatrixSelection];
+	}
+	else
+	{
+		image = [self firstObjectForDatabaseOutlineSelection];
+	}
 	// do nothing for a ZIP file with XML descriptor
 	BOOL zipFile = NO;
-	if ([[[images objectAtIndex:0] valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"])
+	if ([[image valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"])
 	{
 		NSSavePanel *savePanel = [NSSavePanel savePanel];
 		[savePanel setCanSelectHiddenExtension:YES];
 		[savePanel setRequiredFileType:@"zip"];
 		
-		NSString *filePath = [[images objectAtIndex:0] valueForKey:@"path"];
+		NSString *filePath = [image valueForKey:@"path"];
 		NSString *fileName = [filePath lastPathComponent];
 		if([savePanel runModalForDirectory:0L file:fileName] == NSFileHandlingPanelOKButton)
 		{
@@ -7416,9 +7467,9 @@ static BOOL needToRezoom;
 
 		return;
 	}
-	else if ([[[images objectAtIndex:0] valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
+	else if ([[image valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
 	{
-		NSString *filePath = [[images objectAtIndex:0] valueForKey:@"path"];
+		NSString *filePath = [image valueForKey:@"path"];
 		
 		if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
 		{

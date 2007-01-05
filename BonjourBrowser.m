@@ -1081,6 +1081,8 @@ NSLog(@"connectToService");
 	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 	long				size = 0, i = [images indexOfObject: image];
 	
+	NSLog( @"Bonjour noOfImages: %d", noOfImages);
+	
 	do
 	{
 		NSManagedObject	*curImage = [images objectAtIndex: i];
