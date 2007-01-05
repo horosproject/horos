@@ -5780,7 +5780,7 @@ static long scrollMode;
 					  // M_PI defined in cmath.h
 					  float alpha = i * 2 * M_PI /CIRCLERESOLUTION;
 					  
-					  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha));
+					  glVertex2f( crossB.x + BS*cos(alpha), crossB.y + BS*sin(alpha)/[curDCM pixelRatio]);
 					}
 					glEnd();
 				}

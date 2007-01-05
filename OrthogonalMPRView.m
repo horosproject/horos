@@ -231,7 +231,9 @@
 
 - (void) setScaleValue:(float) x
 {
-	[[self controller] setScaleValue :x];
+	if( [controller originalView] == self) [[self controller] setScaleValue: x ];
+	else if( [controller yReslicedView] == self) [[self controller] setScaleValue: x  * [[controller originalView] pixelSpacingX] / [self pixelSpacingX]];
+	else if( [controller xReslicedView] == self) [[self controller] setScaleValue: x  * [[controller originalView] pixelSpacingX] / [self pixelSpacingX]];
 }
 
 - (void) adjustScaleValue:(float) x

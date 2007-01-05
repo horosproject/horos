@@ -271,6 +271,8 @@
 
 -(void) flipVolume
 {
+	NSLog(@"flipVolume");
+	
 	sign = -sign;
 	[reslicer flipVolume];
 	[self reslice:	[originalView crossPositionX] : [originalView crossPositionY] :originalView];
@@ -472,8 +474,11 @@
 -(void) setScaleValue:(float) x
 {
 	[originalView adjustScaleValue: x];
-	[xReslicedView adjustScaleValue: x];
-	[yReslicedView adjustScaleValue: x];
+	
+	float scaleValue = [originalView scaleValue];
+	
+	[xReslicedView adjustScaleValue: scaleValue * [xReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
+	[yReslicedView adjustScaleValue: scaleValue * [yReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
 }
 
 - (void) resetImage

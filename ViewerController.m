@@ -234,6 +234,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	float *srcPtr, *dstPtr, *mainSrcPtr;
 	int count = [pixList[ curMovieIndex] count];
 	
+	count /= 2;
+	count *= 2;
+	
 	if( sign > 0)
 		mainSrcPtr = [[pixList[ curMovieIndex] objectAtIndex: count-1] fImage];
 	else
@@ -267,7 +270,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 -(void) processReslice:(long) directionm :(BOOL) newViewer
 {
 	DCMPix				*firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
-	DCMPix				*lastPix = [pixList[ curMovieIndex] lastObject];
+	DCMPix				*lastPix = 0L;
 	long				i, newTotal;
 	unsigned char		*emptyData;
 	ViewerController	*new2DViewer;
@@ -323,6 +326,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
+	newX /= 2;
+	newX *= 2;
+	
+	newY /= 2;
+	newY *= 2;
+	
+	i =  [pixList[ curMovieIndex] count];
+	i /= 2;
+	i *= 2;
+	i--;
+	lastPix = [pixList[ curMovieIndex] objectAtIndex: i];
+	
 	// Display a waiting window
 	id waitWindow = [self startWaitWindow:@"Reslicing..."];
 	
@@ -376,6 +391,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				int count = [pixList[ curMovieIndex] count];
 				int pwidth = [[pixList[ curMovieIndex] objectAtIndex: 0] pwidth];
 				
+				count /= 2;
+				count *= 2;
+				
 				if( sign > 0)
 				{
 					for( y = 0; y < count; y++)
@@ -400,7 +418,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					vImage_Buffer	srcVimage, dstVimage;
 					
 					srcVimage.data = [curPix fImage];
-					srcVimage.height =  [pixList[ curMovieIndex] count];
+					srcVimage.height =  count;
 					srcVimage.width = newX;
 					srcVimage.rowBytes = newX*4;
 					
@@ -651,17 +669,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{
-		DCMPix	*firstObject = [pixList[ y] objectAtIndex: 0];
-		float	*volumeDataPtr = [firstObject fImage];
+		DCMPix			*firstObject = [pixList[ y] objectAtIndex: 0];
+		float			*volumeDataPtr = [firstObject fImage];
+		vImage_Buffer	src, dest;
 		
-		vImage_Buffer src, dest;
+		dest.data = malloc( [firstObject pheight] * [firstObject pwidth] * 4);
 		
-		src.height = dest.height = [firstObject pheight]*[pixList[ y] count];
-		src.width = dest.width = [firstObject pwidth];
-		src.rowBytes = dest.rowBytes = src.width*4;
-		src.data = dest.data = volumeDataPtr;
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			src.height = dest.height = [firstObject pheight];
+			src.width = dest.width = [firstObject pwidth];
+			src.rowBytes = src.width*4;
+			dest.rowBytes = dest.width*4;
+			src.data = volumeDataPtr;
+			
+			vImageVerticalReflect_PlanarF ( &src, &dest, 0L);
+			
+			memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
+			volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
+		}
 		
-		vImageVerticalReflect_PlanarF ( &src, &dest, 0L);
+		free( dest.data);
 	}
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
@@ -741,35 +769,36 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{
-		DCMPix	*firstObject = [pixList[ y] objectAtIndex: 0];
-		float	*volumeDataPtr = [firstObject fImage];
+		DCMPix			*firstObject = [pixList[ y] objectAtIndex: 0];
+		float			*volumeDataPtr = [firstObject fImage];
+		vImage_Buffer	src, dest;
+		
+		dest.data = malloc( [firstObject pheight] * [firstObject pwidth] * 4);
 		
 		for( x = 0; x < [pixList[ y] count]; x++)
 		{
-			vImage_Buffer src, dest;
-			
 			src.height = dest.height = [firstObject pheight];
 			src.width = dest.width = [firstObject pwidth];
 			
-//			if( constant == kRotate90DegreesClockwise || constant == kRotate270DegreesClockwise)
-//			{
-//				dest.height = [firstObject pwidth];
-//				dest.width = [firstObject pheight];
-//			}
+			if( constant == kRotate90DegreesClockwise || constant == kRotate270DegreesClockwise)
+			{
+				dest.height = [firstObject pwidth];
+				dest.width = [firstObject pheight];
+			}
 			
 			src.rowBytes = src.width*4;
 			dest.rowBytes = dest.width*4;
 			src.data = volumeDataPtr;
-			dest.data = malloc( [firstObject pheight] * [firstObject pwidth] * 4);
+			
 			
 			vImageRotate90_PlanarF ( &src, &dest, constant, 0, 0L);
 			
 			memcpy( src.data, dest.data, [firstObject pheight] * [firstObject pwidth] * 4);
 			
-			free( dest.data);
-			
 			volumeDataPtr += [firstObject pheight]*[firstObject pwidth];
 		}
+		
+		free( dest.data);
 	}
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
@@ -788,6 +817,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[dcm setPixelSpacingY:  x];
 				
 				[dcm setPixelRatio: x/y];
+				
+				// ***************************
+				
+				x = [dcm pwidth];
+				y = [dcm pheight];
+
+				[dcm setPheight: x];
+				[dcm setPwidth: y];
+				[dcm setRowBytes: y*4];
 			}
 			
 			[dcm orientation: o];
@@ -866,6 +904,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		currentOrientationTool = newOrientationTool;
 		
+		float previousPixelSpacing = [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX];
+		
 		switch( originalOrientation)
 		{
 			case 0:
@@ -899,18 +939,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[self checkEverythingLoaded];
 						[self processReslice: 0 :newViewer];
 						
+						NSLog(@"here");
 						[self vertFlipDataSet: self];
-//						[imageView setYFlipped: YES];
-//						[imageView setRotation: 0];
 					break;
 					
 					case 1:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:1];
 						[self adjustSlider];
-						
-//						[imageView setYFlipped: NO];
-//						[imageView setRotation: 0];
 					break;
 					
 					case 2:
@@ -918,9 +954,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[self processReslice: 1 :newViewer];
 						
 						[self rotateDataSet: kRotate90DegreesClockwise];
-						
-//						[imageView setYFlipped: NO];
-//						[imageView setRotation: 90];
 					break;
 				}
 			}
@@ -936,9 +969,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 						
 						[self rotateDataSet: kRotate90DegreesClockwise];
 						[self horzFlipDataSet: self];
-						
-//						[imageView setXFlipped: YES];
-//						[imageView setRotation: 90];
 					break;
 					
 					case 1:
@@ -947,23 +977,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 						
 						[self rotateDataSet: kRotate90DegreesClockwise];
 						[self horzFlipDataSet: self];
-						
-//						[imageView setXFlipped: YES];
-//						[imageView setRotation: 90];
 					break;
 					
 					case 2:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
 						[imageView sendSyncMessage:1];
 						[self adjustSlider];
-						
-//						[imageView setXFlipped: NO];
-//						[imageView setRotation: 0];
 					break;
 				}
 			}
 			break;
 
+		}
+		
+		if( previousPixelSpacing != [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX])
+		{
+			[imageView setScaleValue: [imageView scaleValue] * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX] / previousPixelSpacing];
 		}
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
@@ -1554,8 +1583,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
-//	[self rotateDataSet: kRotate90DegreesClockwise];
-//	return;
+	[self vertFlipDataSet: self];
+	return;
 
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
@@ -5263,6 +5292,9 @@ static ViewerController *draggedController = 0L;
 				currentOrientationTool = 0;
 			}
 			
+			NSLog( @"Orientation Vector: %d", orientationVector);
+			NSLog( @"Interval: %2.2f", interval);
+			
 			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
 			if( interval < 0 && flipNow == YES)
 			{
@@ -5343,11 +5375,6 @@ static ViewerController *draggedController = 0L;
 					}
 				}
 			}
-			
-			NSLog( @"Interval: %2.2f", interval);
-			NSLog( @"%2.2f %2.2f %2.2f", vectors[0], vectors[1], vectors[2]);
-			NSLog( @"%2.2f %2.2f %2.2f", vectors[3], vectors[4], vectors[5]);
-			NSLog( @"%2.2f %2.2f %2.2f", vectors[6], vectors[7], vectors[8]);
 		}
 	}
 	else if( interval == 0) [orientationMatrix setEnabled: NO];
