@@ -26,6 +26,7 @@
 #import "VRControllerVPRO.h"
 #import "SRController.h"
 #import "EndoscopyViewer.h"
+#import "SeriesView.h"
 
 
 @implementation LayoutWindowController
@@ -65,9 +66,7 @@
 		if ([filteredHangingProtocols count] > 0) {	
 			_hangingProtocol = [[filteredHangingProtocols objectAtIndex:0] mutableCopy] ;
 			[self setHasProtocol:YES];
-			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
-			//NSArray *arrangedSeries = [hangingProtocol objectForKey:@"seriesSets"];
-			//NSArray *firstSet = [arrangedSeries objectAtIndex:0];
+
 		}
 		else [self setHasProtocol:NO];
 	}
@@ -79,12 +78,12 @@
 	if ([sender tag] == 1) {
 		//create Layout set
 		NSMutableDictionary *hangingProtocol = nil;
-		//NSLog(@"_hangingProtocol: %@", [_hangingProtocol description]);
+
 		 if (_addLayoutSet)
 			hangingProtocol = [_hangingProtocol mutableCopy];
 		
 		if (!hangingProtocol) {
-			//NSLog(@"new Hanging Protocol");
+
 			hangingProtocol = [[NSMutableDictionary dictionary] retain];
 		}
 		
@@ -110,7 +109,7 @@
 				 zoom	
 				*/
 				
-			//NSLog(@"save HangingProtocol: %@", [controller description]);
+		
 			NSMutableDictionary *seriesInfo = [NSMutableDictionary dictionary];
 			NSWindow *window = [controller window];
 			NSString *frame  = [window stringWithSavedFrame];
@@ -121,6 +120,7 @@
 			id series = [controller currentSeries];
 			[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
 			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
+			[seriesInfo setObject:[series valueForKey:@"seriesDescription"] forKey:@"protocolName"];
 			
 			// Not supported by OrthogonalMPRPETCTViewer
 			if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || [controller isKindOfClass:[SRController class]])) {
@@ -167,6 +167,8 @@
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 				[seriesInfo setObject:[NSNumber numberWithInt:[[controller seriesView] imageRows]] forKey:@"imageRows"];
 				[seriesInfo setObject:[NSNumber numberWithInt:[[controller seriesView] imageColumns]] forKey:@"imageColumns"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller xFlipped]] forKey:@"xFlipped"];
+				[seriesInfo setObject:[NSNumber numberWithBool:[controller yFlipped]] forKey:@"yFlipped"];
 			}
 			
 			//Save Viewer Class
@@ -177,11 +179,10 @@
 				[seriesInfo setObject:[(VRController  *)controller renderingMode] forKey:@"mode"];
 				
 			[seriesInfo setObject:[NSNumber numberWithBool:[window isKeyWindow]] forKey:@"isKeyWindow"];
-			//NSLog(@"blending");
+			
 			// Have blending.  Get Series Description for blending
 			
 			if ([controller isKindOfClass:[ViewerController class]] && [controller blendingController]) {
-				//NSLog(@"have blending");
 				id blendingSeries = [[controller blendingController] currentSeries];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"name"] forKey:@"blendingSeriesDescription"];
 				[seriesInfo setObject:[blendingSeries valueForKey:@"id"] forKey:@"blendingSeriesNumber"];	
@@ -190,9 +191,9 @@
 			[layoutArray addObject:seriesInfo];
 	
 		}	
-		//NSLog(@"add layout");
+
 		[arrangedSeries addObject:layoutArray];
-		//NSLog(@"add Set");
+
 		[hangingProtocol setObject:arrangedSeries forKey:@"seriesSets"];
 		[hangingProtocol setObject:_modality forKey:@"modality"];
 		[hangingProtocol setObject:_studyDescription forKey:@"studyDescription"];
@@ -206,7 +207,6 @@
 		[hangingProtocols removeObject:_hangingProtocol];
 		[hangingProtocols addObject:hangingProtocol];
 		[hangingProtocol release];
-		//NSLog(@"save prefs");
 		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		[hangingProtocols  release];
 	}

@@ -592,6 +592,8 @@ enum
 - (void)setRotation:(float)rotation;
 - (float)scaleValue;
 - (void)setScaleValue:(float)scaleValue;
+- (void)setYFlipped:(BOOL) v;
+- (void)setXFlipped:(BOOL) v;
 
 
 // Opening 3D Viewers
@@ -604,6 +606,7 @@ enum
 - (SRController *)openSRViewer;
 
 - (SeriesView *) seriesView;
+- (void)setImageRows:(int)rows columns:(int)columns;
 
 
 @end

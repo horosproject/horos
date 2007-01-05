@@ -13304,8 +13304,19 @@ sourceRef);
 	[imageView setScaleValue:scaleValue];
 }
 
+- (void)setYFlipped:(BOOL) v{
+	[imageView setYFlipped:(BOOL) v];
+}
+- (void)setXFlipped:(BOOL) v{
+	[imageView setXFlipped:(BOOL) v];
+}
+
 - (SeriesView *) seriesView{
 	return seriesView;
+}
+
+- (void)setImageRows:(int)rows columns:(int)columns{
+	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
 }
 
 

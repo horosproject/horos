@@ -57,9 +57,7 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark-
 #pragma mark WindowController registration
 - (void)registerWindowController:(OSIWindowController *)controller{
-		//NSLog(@"registerWindowController: %@", [controller description]);
 	if (![_windowControllers containsObject:controller]){
-		//NSLog(@"Add Controller");
 		[_windowControllers addObject:controller];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
 	}
@@ -163,7 +161,7 @@ WindowLayoutManager *sharedLayoutManager;
 	
 	int					keyWindow = 0, numberOfMonitors = [[[AppController sharedAppController] viewerScreens] count];	
 
-	//NSLog(@"tile Windows");
+
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
 	
@@ -182,8 +180,6 @@ WindowLayoutManager *sharedLayoutManager;
 	int viewerCount = [viewersList count];
 	
 	NSArray *screens = [[AppController sharedAppController] viewerScreens];
-	
-	//NSLog(@"viewers: %d, screens: %d", viewerCount, numberOfMonitors);
 	
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
@@ -212,7 +208,6 @@ WindowLayoutManager *sharedLayoutManager;
 	//excess viewers. Need to add spaces to accept
 	while (viewerCount > (rows * columns)){
 		float ratio = ((float)columns/(float)rows)/numberOfMonitors;
-		//NSLog(@"ratio: %f", ratio);
 		if (ratio > 1.5 && landscape)
 			rows ++;
 		else 
@@ -317,7 +312,6 @@ WindowLayoutManager *sharedLayoutManager;
 	}
 	else
 	{
-		//NSLog(@"NO tiling");
 		tileDone = NO;
 	}
 	
@@ -496,7 +490,17 @@ WindowLayoutManager *sharedLayoutManager;
 				id child = [[browserController childrenArray: _currentStudy] objectAtIndex:i];
 				// if series description is unnamed used series number
 				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
-					if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
+					//Try protocol name next
+					//NSLog(@"series Protocol: %@", [seriesInfo objectForKey:@"protocolName"]);
+					if ([[seriesInfo objectForKey:@"protocolName"] isEqualToString:@"unnamed"]) {
+						if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
+							[children addObject:child];
+							seriesToOpen = child;
+							openViewer = YES;
+							break;
+						}
+					}
+					else if ([[child valueForKey:@"seriesDescription"] isEqualToString:[seriesInfo objectForKey:@"protocolName"]]) {
 						[children addObject:child];
 						seriesToOpen = child;
 						openViewer = YES;
@@ -553,10 +557,16 @@ WindowLayoutManager *sharedLayoutManager;
 	while (seriesInfo = [enumerator nextObject]){
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
 			controller = [windowEnumerator nextObject];
+			if ([[seriesInfo objectForKey:@"imageRows"] intValue] > 1 || [[seriesInfo objectForKey:@"imageColumns"] intValue] > 1)
+				[controller setImageRows:[[seriesInfo objectForKey:@"imageRows"] intValue] columns:[[seriesInfo objectForKey:@"imageColumns"] intValue]];
 			[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
 			[controller setRotation:[[seriesInfo objectForKey:@"rotation"] floatValue]];
 			[controller setScaleValue:[[seriesInfo objectForKey:@"zoom"] floatValue]];
-			
+			if ([[seriesInfo objectForKey:@"yFlipped"] boolValue])
+				[controller  setYFlipped:YES];
+			if ([[seriesInfo objectForKey:@"xFlipped"] boolValue])
+				[controller  setXFlipped:YES];
+
 			if ([[seriesInfo objectForKey:@"wwwlMenuItem"] isEqualToString:NSLocalizedString(@"Other", nil)])
 				[controller setWL:[[seriesInfo objectForKey:@"wl"] floatValue] WW:[[seriesInfo objectForKey:@"wl"] floatValue]];
 			else {
@@ -598,14 +608,13 @@ WindowLayoutManager *sharedLayoutManager;
 	//ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
 		// have a 3D Viewer
-		//NSLog(@"look for 3D Viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
+		
 		if ( ![[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
-			//NSLog(@"have 3D Viewer");
 			windowEnumerator = [[self viewers2D] objectEnumerator];
 			id viewer2D;
 			id selectedViewer2D = nil;
 			// find the right 2D viewer based on Series Description and number
-			//NSLog(@"Look for 2D viewer");
+		
 			while (viewer2D = [windowEnumerator nextObject]) {
 				id viewerSeries = [viewer2D currentSeries];
 				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
@@ -623,31 +632,25 @@ WindowLayoutManager *sharedLayoutManager;
 			}
 			// if we found a 2D Viewer, open the 3D viewer based on the Class Name
 			if (selectedViewer2D) {
-				//NSLog(@"Have 2D viewer: %@", [selectedViewer2D description]);
+				
 				id viewer3D;
 				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRController class])] ) {
-					//NSLog(@"3D viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
+					
 					NSString *mode = @"VR";
 					viewer3D = [selectedViewer2D openVRViewerForMode:(NSString *)mode];
 					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
-					//float   iwl, iww;
-					//[[selectedViewer2D imageView] getWLWW:&iwl :&iww];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
 					[viewer3D load3DState];
 					[viewer3D showWindow:self];
 					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
-					//[[viewer3D window] makeKeyAndOrderFront:self];
 					[[viewer3D window] display];
 					if (![[[viewer3D window] title] hasSuffix:[[selectedViewer2D window] title]])
 						[[viewer3D window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer3D window] title], [[selectedViewer2D window] title]]];
 				}
 				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRPROController class])] ) {
-					//NSLog(@"3D viewer: %@", [seriesInfo objectForKey:@"Viewer Class"]);
 					NSString *mode = @"VR";
 					viewer3D = [selectedViewer2D openVRVPROViewerForMode:(NSString *)mode];
 					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
-					//float   iwl, iww;
-					//[[selectedViewer2D imageView] getWLWW:&iwl :&iww];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
 					[viewer3D load3DState];
 					[viewer3D showWindow:self];
@@ -668,8 +671,6 @@ WindowLayoutManager *sharedLayoutManager;
 				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([MPR2DController class])] ) { 
 					viewer3D = [selectedViewer2D openMPR2DViewer];
 					[viewer3D ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
-					//float   iwl, iww;
-					//[imageView getWLWW:&iwl :&iww];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
 					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D load3DState];
