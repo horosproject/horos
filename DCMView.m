@@ -5571,8 +5571,15 @@ static long scrollMode;
 	glScalef( 1.f, [curDCM pixelRatio], 1.f);
 }
 
+- (void) setDrawing:(BOOL) v
+{
+	drawing = v;
+}
+
 - (void) drawRect:(NSRect)aRect
 {
+	if( drawing == NO) return;
+	
 	@synchronized (self) {
 		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
 	}
@@ -7380,6 +7387,7 @@ BOOL	lowRes = NO;
 - (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns{
 	self = [self initWithFrameInt:frame];
     if (self) {
+		drawing = YES;
         _tag = 0;
 		_imageRows = rows;
 		_imageColumns = columns;

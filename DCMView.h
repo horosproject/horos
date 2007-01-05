@@ -202,6 +202,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
 	NSDictionary *_hotKeyDictionary;
+	
+	BOOL			drawing;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
@@ -364,6 +366,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (void) stopROIEditing;
 - (void) stopROIEditingForce:(BOOL) force;
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
+- (void) setDrawing:(BOOL) v;
 
 // methodes to access global variables (for plugins)
 + (BOOL) display2DMPRLines;

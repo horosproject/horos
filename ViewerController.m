@@ -894,6 +894,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 		BOOL newViewer = NO;
 		
+		[imageView setDrawing: NO];
+		
 		[imageView stopROIEditingForce: YES];
 		[self checkEverythingLoaded];
 
@@ -1006,8 +1008,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		NSLog( @"originalOrientation: %d", originalOrientation);
-		
+				
 		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
+		
+		[imageView setDrawing: YES];
+		
+		[self updateImage: self];
 	}
 }
 
