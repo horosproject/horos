@@ -543,6 +543,9 @@ enum
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(short*) matrix :(short) size :(short) norm;
 -(BOOL) checkFrameSize;
+- (IBAction) vertFlipDataSet:(id) sender;
+- (IBAction) horzFlipDataSet:(id) sender;
+- (void) rotateDataSet:(int) constant;
 
 #pragma mark-
 #pragma mark Brush ROI Filters
