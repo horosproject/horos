@@ -856,6 +856,33 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self updateImage: self];
 }
 
+- (IBAction) squareDataSet:(id) sender
+{
+	int x, y;
+	
+	for( y = 0 ; y < maxMovieIndex; y++)
+	{
+		DCMPix	*curPix = [pixList[ y] objectAtIndex: 0];
+		
+		int height = [curPix pheight];
+		int width = [curPix pwidth];
+		
+		if( [curPix pixelSpacingX] != [curPix pixelSpacingY])
+		{
+			if( [curPix pixelSpacingX] < [curPix pixelSpacingY])
+			{
+				[self resampleDataWithXFactor:1.0 yFactor:[curPix pixelSpacingX] / [curPix pixelSpacingY] zFactor:1.0];
+			}
+			else
+			{
+				[self resampleDataWithXFactor:[curPix pixelSpacingY] / [curPix pixelSpacingX] yFactor:1.0 zFactor:1.0];
+			}
+			
+			[self computeInterval];
+		}
+	}
+}
+
 - (IBAction) setOrientationTool:(id) sender
 {
 	short newOrientationTool = [[sender selectedCell] tag];
@@ -1579,9 +1606,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
-	[self vertFlipDataSet: self];
-	return;
-
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
