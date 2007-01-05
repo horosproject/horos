@@ -901,19 +901,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		if( blendingController) [self ActivateBlending: 0L];
 
-		if( currentOrientationTool != originalOrientation)
-		{
-			[browserWindow loadSeries :[[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"] :self :YES keyImagesOnly: displayOnlyKeyImages];
-		}
+//		if( currentOrientationTool != originalOrientation)
+//		{
+//			[browserWindow loadSeries :[[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"] :self :YES keyImagesOnly: displayOnlyKeyImages];
+//		}
 		
-		currentOrientationTool = newOrientationTool;
+//		currentOrientationTool = newOrientationTool;
 		
 		
-		switch( originalOrientation)
+		switch( currentOrientationTool)
 		{
 			case 0:
 			{
-				switch( currentOrientationTool)
+				switch( newOrientationTool)
 				{
 					case 0:
 						[imageView setIndex: [pixList[curMovieIndex] count]/2];
@@ -936,7 +936,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 			case 1:
 			{
-				switch( currentOrientationTool)
+				switch( newOrientationTool)
 				{
 					case 0:
 						[self checkEverythingLoaded];
@@ -964,7 +964,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 			case 2:
 			{
-				switch( currentOrientationTool)
+				switch( newOrientationTool)
 				{
 					case 0:
 						[self checkEverythingLoaded];
@@ -990,8 +990,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				}
 			}
 			break;
-
 		}
+		
+		currentOrientationTool = newOrientationTool;
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 
