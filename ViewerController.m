@@ -1946,11 +1946,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[keyObjectPopupController release];
 	
+	[contextualDictionaryPath release];
+	
 	[curCLUTMenu release];
 	[curConvMenu release];
 	[curWLWWMenu release];
 	[processorsLock release];
-	[contextualDictionaryPath release];
 	
     [super dealloc];
 
