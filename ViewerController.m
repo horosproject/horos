@@ -877,8 +877,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				[self resampleDataWithXFactor:[curPix pixelSpacingY] / [curPix pixelSpacingX] yFactor:1.0 zFactor:1.0];
 			}
-			
-			[self computeInterval];
 		}
 	}
 }
@@ -1606,6 +1604,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
+	[self squareDataSet: self];
+	return;
+
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
@@ -4599,7 +4600,7 @@ static ViewerController *draggedController = 0L;
 					break;
 			}
 			[copyPix setOrigin: newOrigin];
-			[copyPix setSliceInterval: interval];
+			[copyPix setSliceInterval: 0];
 			
 			[copyPix release];	// It's added to the newPixList array
 		}
