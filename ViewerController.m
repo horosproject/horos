@@ -6304,8 +6304,8 @@ short				matrix[25];
 		[aCLUTFilter setObject:gArray forKey:@"Green"];
 		[aCLUTFilter setObject:bArray forKey:@"Blue"];
 		
-		[aCLUTFilter setObject:[NSArray arrayWithArray:[[clutView getPoints] copy]] forKey:@"Points"];
-		[aCLUTFilter setObject:[NSArray arrayWithArray:[[clutView getColors] copy]] forKey:@"Colors"];
+		[aCLUTFilter setObject:[NSArray arrayWithArray: [[[clutView getPoints] copy] autorelease]] forKey:@"Points"];
+		[aCLUTFilter setObject:[NSArray arrayWithArray: [[[clutView getColors] copy] autorelease]] forKey:@"Colors"];
 		
 		[clutDict setObject: aCLUTFilter forKey: [clutName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
@@ -6468,7 +6468,7 @@ NSMutableArray		*array;
 		NSArray					*points;
 		long					i;
 		
-		[aOpacityFilter setObject: [[OpacityView getPoints] copy] forKey: @"Points"];
+		[aOpacityFilter setObject: [[[OpacityView getPoints] copy] autorelease] forKey: @"Points"];
 		[opacityDict setObject: aOpacityFilter forKey: [OpacityName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: opacityDict forKey: @"OPACITY"];
 		

@@ -211,10 +211,10 @@
 	[smallSliderCell setMinValue:0.0];
 	[smallSliderCell setMaxValue:1.0];
 	
-	[columnRed setDataCell:[smallSliderCell copy]];
-	[columnGreen setDataCell:[smallSliderCell copy]];
-	[columnBlue setDataCell:[smallSliderCell copy]];
-	[columnOpacity setDataCell:[smallSliderCell copy]];
+	[columnRed setDataCell:[[smallSliderCell copy] autorelease]];
+	[columnGreen setDataCell:[[smallSliderCell copy] autorelease]];
+	[columnBlue setDataCell:[[smallSliderCell copy] autorelease]];
+	[columnOpacity setDataCell:[[smallSliderCell copy] autorelease]];
 	
 	[smallSliderCell release];
 	

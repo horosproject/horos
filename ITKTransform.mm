@@ -173,7 +173,6 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		for( i = 0; i < [pixList count]; i++)
 		//for( i = 0; i < [[originalViewer pixList] count]; i++)
 		{
-			//curPix = [[[originalViewer pixList] objectAtIndex: i] copy];
 			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
 			

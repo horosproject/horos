@@ -698,7 +698,9 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
 	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
-	[dict writeToFile:str atomically:YES];
+	
+	if( [viewer2D postprocessed] == NO)
+		[dict writeToFile:str atomically:YES];
 }
 
 -(void) load3DState
@@ -715,6 +717,8 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
+	
+	if( [viewer2D postprocessed]) dict = 0L;
 	
 	[view set3DStateDictionary:dict];
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
