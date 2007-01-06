@@ -311,8 +311,11 @@
 }
 
 - (void)setValues:(NSMutableArray *)values{
-	[_values release];
-	_values = [values retain];
+	if( values != _values)
+	{
+		[_values release];
+		_values = [values retain];
+	}
 }
 
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{

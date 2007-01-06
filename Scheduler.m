@@ -51,7 +51,7 @@
     NSAssert( nil != schedObj, @"Schedulable object nil in performScheduleForWorkUnits:" );
 
     // Keep track of which units are still left to perform
-    [self _setWorkUnitsRemaining:[workUnits mutableCopy]];
+    [self _setWorkUnitsRemaining: [[workUnits mutableCopy] autorelease]];
 
     // Set the cancellation flag
     _scheduleWasCancelled = NO;

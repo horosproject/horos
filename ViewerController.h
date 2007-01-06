@@ -253,6 +253,7 @@ enum
 	DICOMExport				*exportDCM;
 	
 	BOOL					windowWillClose;
+	BOOL					postprocessed;
 	
 	NSRect					standardRect;
 	
@@ -344,6 +345,8 @@ enum
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
 
+- (void) setPostprocessed:(BOOL) v;
+- (BOOL) postprocessed;
 - (IBAction) setPagesToPrint:(id) sender;
 - (IBAction) endPrint:(id) sender;
 - (IBAction) startMSRG:(id) sender;

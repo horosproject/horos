@@ -207,6 +207,7 @@
 		[hangingProtocols removeObject:_hangingProtocol];
 		[hangingProtocols addObject:hangingProtocol];
 		[hangingProtocol release];
+		
 		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 		[hangingProtocols  release];
 	}

@@ -74,7 +74,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
 	DCMSequenceAttribute *seq = [super copyWithZone:zone];
-	[seq setSequenceItems:[[self sequenceItems] mutableCopy]];
+	[seq setSequenceItems: [[[self sequenceItems] mutableCopy] autorelease]];
 	return seq;
 }
 

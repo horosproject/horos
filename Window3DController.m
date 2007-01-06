@@ -278,7 +278,7 @@ static float oldsetww, oldsetwl;
     
     if( [sender tag])					//User clicks OK Button
     {
-		NSMutableDictionary *presetsDict=[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
         [presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:[newName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
@@ -298,7 +298,7 @@ static float oldsetww, oldsetwl;
 {
     if( returnCode == 1)
     {
-		NSMutableDictionary *presetsDict=[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
         [presetsDict removeObjectForKey:(id)contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
@@ -349,7 +349,7 @@ static float oldsetww, oldsetwl;
     
     if( [sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary *clutDict		= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy];
+		NSMutableDictionary *clutDict		= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
 		NSMutableDictionary *aCLUTFilter	= [NSMutableDictionary dictionary];
 		unsigned char		red[256], green[256], blue[256];
 		long				i;
@@ -464,7 +464,7 @@ static float oldsetww, oldsetwl;
 {
     if (returnCode==1)
     {
-		NSMutableDictionary *clutDict	= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy];
+		NSMutableDictionary *clutDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 
@@ -606,7 +606,7 @@ static float oldsetww, oldsetwl;
     
     if ([sender tag])						//User clicks OK Button
     {
-		NSMutableDictionary		*opacityDict		= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy];
+		NSMutableDictionary		*opacityDict		= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
 		NSMutableDictionary		*aOpacityFilter		= [NSMutableDictionary dictionary];
 		NSArray					*points;
 		long					i;
@@ -633,7 +633,7 @@ static float oldsetww, oldsetwl;
 {
     if (returnCode == 1)
     {
-		NSMutableDictionary *opacityDict = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy];
+		NSMutableDictionary *opacityDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
 		[opacityDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: opacityDict forKey: @"OPACITY"];
         

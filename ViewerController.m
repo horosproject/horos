@@ -180,6 +180,16 @@ int sortROIByName(id roi1, id roi2, void *context)
 #pragma mark-
 #pragma mark 1. window and workplace
 
+- (void) setPostprocessed:(BOOL) v
+{
+	postprocessed = v;
+}
+
+- (BOOL) postprocessed
+{
+	return postprocessed;
+}
+
 - (void) replaceSeriesWith:(NSMutableArray*)newPixList :(NSMutableArray*)newDcmList :(NSData*) newData
 {
 	[self changeImageData:newPixList :newDcmList :newData :NO];
@@ -658,6 +668,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[new2DViewer window] makeKeyAndOrderFront: self];
 		}
 		else [self replaceSeriesWith :newPixList :newDcmList :newData];
+		
+		postprocessed = YES;
 	}
 	
 	// Close the waiting window
@@ -711,6 +723,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
+	[self setPostprocessed: YES];
+	
 	[self computeInterval];
 	[self updateImage: self];
 }
@@ -751,6 +765,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[dcm setSliceInterval: 0];
 		}
 	}
+	
+	[self setPostprocessed: YES];
 	
 	[self computeInterval];
 	[self updateImage: self];
@@ -853,6 +869,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
+	[self setPostprocessed: YES];
+	
 	[self computeInterval];
 	[self updateImage: self];
 }
@@ -864,9 +882,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{
 		DCMPix	*curPix = [pixList[ y] objectAtIndex: 0];
-		
-		int height = [curPix pheight];
-		int width = [curPix pwidth];
 		
 		if( [curPix pixelSpacingX] != [curPix pixelSpacingY])
 		{
@@ -880,6 +895,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 	}
+	
+	[self setPostprocessed: YES];
 }
 
 - (IBAction) setOrientationTool:(id) sender
@@ -1636,6 +1653,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
+//	[self squareDataSet: self];
+//	return;
+
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
@@ -1810,7 +1830,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( [sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary *presetsDict = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
 		[presetsDict setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:[newName stringValue]];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
         
@@ -4498,7 +4518,11 @@ static ViewerController *draggedController = 0L;
 
 + (BOOL)resampleDataFromViewer:(ViewerController *)aViewer inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
 {
-	return [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+	[aViewer setPostprocessed: YES];
+	
+	BOOL result =  [ViewerController resampleDataFromPixArray:[aViewer pixList] fileArray:[aViewer fileList] inPixArray:aPixList fileArray:aFileList data:aData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
+	
+	return result;
 }
 
 + (BOOL)resampleDataFromPixArray:(NSArray *)originalPixlist fileArray:(NSArray*)originalFileList inPixArray:(NSMutableArray*)aPixList fileArray:(NSMutableArray*)aFileList data:(NSData**)aData withXFactor:(float)xFactor yFactor:(float)yFactor zFactor:(float)zFactor;
@@ -4533,12 +4557,29 @@ static ViewerController *draggedController = 0L;
 		
 		if( [originalPixlist count] > 1)
 		{
-			[[originalPixlist objectAtIndex:0] orientation: vectors];
-			[[originalPixlist objectAtIndex:1] orientation: vectorsB];
+			DCMPix	*firstObject = [originalPixlist objectAtIndex:0];
+			DCMPix	*secondObject = [originalPixlist objectAtIndex:1];
+			DCMPix	*lastObject = [originalPixlist lastObject];
 			
-			origin[ 0] = [[originalPixlist objectAtIndex:0] originX]; 
-			origin[ 1] = [[originalPixlist objectAtIndex:0] originY]; 
-			origin[ 2] = [[originalPixlist objectAtIndex:0] originZ]; 
+			[firstObject orientation: vectors];
+			[secondObject orientation: vectorsB];
+			
+//			if( [firstObject fImage] != [*aData bytes])
+//			{
+//				NSLog(@"flipped Data in resampleDataFromPixArray");
+//				
+//				if( [lastObject fImage] != [*aData bytes]) NSLog( @"uh?");
+//				
+//				origin[ 0] = [lastObject originX]; 
+//				origin[ 1] = [lastObject originY]; 
+//				origin[ 2] = [lastObject originZ]; 
+//			}
+//			else
+			{
+				origin[ 0] = [firstObject originX]; 
+				origin[ 1] = [firstObject originY]; 
+				origin[ 2] = [firstObject originZ]; 
+			}
 			
 			for( i = 0; i < 9; i++)
 			{
@@ -4549,28 +4590,22 @@ static ViewerController *draggedController = 0L;
 			{
 				if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
 				{
-					interval = [[originalPixlist objectAtIndex:0] originX] - [[originalPixlist objectAtIndex:1] originX];
+					interval = [secondObject originX] - [firstObject originX];
 					
-					if( vectors[6] > 0) interval = -( interval);
-					else interval = ( interval);
 					o = 0;
 				}
 				
 				if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
 				{
-					interval = [[originalPixlist objectAtIndex:0] originY] - [[originalPixlist objectAtIndex:1] originY];
+					interval = [secondObject originY] - [firstObject originY];
 					
-					if( vectors[7] > 0) interval = -( interval);
-					else interval = ( interval);
 					o = 1;
 				}
 				
 				if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
 				{
-					interval = [[originalPixlist objectAtIndex:0] originZ] - [[originalPixlist objectAtIndex:1] originZ];
+					interval = [secondObject originZ] - [firstObject originZ];
 					
-					if( vectors[8] > 0) interval = -( interval);
-					else interval = ( interval);
 					o = 2;
 				}
 			}
@@ -4580,16 +4615,6 @@ static ViewerController *draggedController = 0L;
 		
 		NSMutableArray	*newPixList = [NSMutableArray arrayWithCapacity: 0];
 		NSData *newData = [NSData dataWithBytesNoCopy:emptyData length:size freeWhenDone:YES];
-		
-//		float pos1 = [[originalPixlist objectAtIndex: 0] sliceLocation];
-//		
-//		if( [originalPixlist count] > 1)
-//		{
-//			float pos2 = [[originalPixlist objectAtIndex: 1] sliceLocation];
-//			float intervalSlice = pos2 - pos1;
-//		
-//			intervalSlice *= (float) zFactor;
-//		}
 		
 		for( z = 0 ; z < newZ; z ++)
 		{
@@ -5555,7 +5580,7 @@ static ViewerController *draggedController = 0L;
 {
     if( returnCode == 1)
     {
-		NSMutableDictionary *presetsDict = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy];
+		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
         [presetsDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
@@ -5814,7 +5839,7 @@ static float oldsetww, oldsetwl;
 {
     if( returnCode == 1)
     {
-		NSMutableDictionary		*convDict=[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] mutableCopy];
+		NSMutableDictionary		*convDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] mutableCopy] autorelease];
 
 		[convDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: convDict forKey: @"Convolution"];
@@ -6028,7 +6053,7 @@ long				x, y;
     if( [sender tag])   //User clicks OK Button
     {
 		NSMutableDictionary		*aConvFilter = [NSMutableDictionary dictionary];
-		NSMutableDictionary		*convDict=[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] mutableCopy];
+		NSMutableDictionary		*convDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] mutableCopy] autorelease];
 		NSMutableArray			*valArray;
 		short					matrix[25];
 		
@@ -6108,7 +6133,7 @@ short				matrix[25];
 {
     if( returnCode == 1)
     {
-		NSMutableDictionary *clutDict	= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy];
+		NSMutableDictionary *clutDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
@@ -6260,7 +6285,7 @@ short				matrix[25];
     
     if( [sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary *clutDict		= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy];
+		NSMutableDictionary *clutDict		= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] mutableCopy] autorelease];
 		NSMutableDictionary *aCLUTFilter	= [NSMutableDictionary dictionary];
 		unsigned char		red[256], green[256], blue[256];
 		long				i;
@@ -6438,7 +6463,7 @@ NSMutableArray		*array;
     
     if ([sender tag])   //User clicks OK Button
     {
-		NSMutableDictionary		*opacityDict	= [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy];
+		NSMutableDictionary		*opacityDict	= [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] mutableCopy] autorelease];
 		NSMutableDictionary		*aOpacityFilter	= [NSMutableDictionary dictionary];
 		NSArray					*points;
 		long					i;
@@ -12586,7 +12611,8 @@ long i;
 	
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	
+	[self squareDataSet: self];		// MPR2D works better if pixel are squares !
+
 	if( [self computeInterval] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
@@ -12597,7 +12623,6 @@ long i;
 	else
 	{
 		[self MovieStop: self];
-		[self squareDataSet: self];		// MPR2D works better if pixel are squares !
 		
 		MPR2DController *viewer = [appController FindViewer :@"MPR2D" :pixList[0]];
 		

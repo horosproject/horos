@@ -251,10 +251,12 @@ extern NSString * documentsDirectory();
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
 	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
-	[dict writeToFile:str atomically:YES];
+	
+	if( [viewer2D postprocessed] == NO)
+		[dict writeToFile:str atomically:YES];
 }
 
--(void) load3DState
+-(void) load3DState:(BOOL) load
 {
 	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
 	BOOL			isDir = YES;
@@ -267,6 +269,8 @@ extern NSString * documentsDirectory();
 	NSString	*str = [path stringByAppendingFormat: @"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
+	
+	if( [viewer2D postprocessed]) dict = 0L;
 	
 	[view set3DStateDictionary:dict];
 	
