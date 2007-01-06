@@ -1069,7 +1069,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 - (void) scaleBy2AndCenterShutter
 {
-	scaleValue *= 2;
+	scaleValue *= 1;//JF20070103 does make better sense not to apply zoom 200%
 	origin.x = (([curDCM pwidth] / 2) - ([curDCM DCMPixShutterRectOriginX] + ([curDCM DCMPixShutterRectWidth]/2))) * scaleValue;
 	origin.y = -(([curDCM pheight] / 2) - ([curDCM DCMPixShutterRectOriginY] + ([curDCM DCMPixShutterRectHeight]/2))) * scaleValue;
 	[self setNeedsDisplay:YES];
@@ -2835,11 +2835,19 @@ static long scrollMode;
 
 -(NSMenu*) menuForEvent:(NSEvent *)theEvent {
 	if ( pluginOverridesMouse ) return nil;  // Turn off contextual menu.  RBR 3/26/06
-	
+	NSPoint contextualMenuWhere = [theEvent locationInWindow]; 	//JF20070103 WindowAnchored ctrl-clickPoint registered 
+	contextualMenuInWindowPosX = contextualMenuWhere.x;
+	contextualMenuInWindowPosY = contextualMenuWhere.y;	
+	//NSLog(@"event.x:%f", contextualMenuWhere.x);//relative to Window	
+	//NSLog(@"event.y:%f", contextualMenuWhere.y);//relative to Window	
+	//NSLog(@"mouseXPos:%f", mouseXPos);//relative to DCMPix	
+	//NSLog(@"mouseYPos:%f", mouseYPos);//relative to DCMPix	
 	if (([theEvent modifierFlags] & NSControlKeyMask) && ([theEvent modifierFlags] & NSAlternateKeyMask)) return 0L;
-	
 	return [self menu];  // Default
 }
+
+- (float) contextualMenuInWindowPosX {return contextualMenuInWindowPosX;}
+- (float) contextualMenuInWindowPosY {return contextualMenuInWindowPosY;}
 	
 -(NSString*) stringID
 {

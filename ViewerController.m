@@ -91,6 +91,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "SRAnnotationController.h"
 #import "Reports.h"
 #import "ViewerControllerDCMTKCategory.h"
+#import "MenuDictionary.h"
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <InstantMessage/IMService.h>
@@ -1034,168 +1035,198 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
--(void)createDCMViewMenu{
-
-/******************* Tools menu ***************************/
-	NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-	NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
-	NSMenuItem *item;
-    NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
-												NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
-	NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
-	NSEnumerator *enumerator = [titles objectEnumerator];
-	NSEnumerator *enumerator2 = [images objectEnumerator];
-	NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
-	NSString *title;
-	NSString *image;
-	NSMenuItem *subItem;
-	int i = 0;
-	
-	[enumerator3 nextObject];	// First item is pop main menu
-	while (subItem = [enumerator3 nextObject])
+- (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath
+{
+	if (contextualDictionaryPath != newContextualDictionaryPath)
 	{
-		int tag = [subItem tag];
-		item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
-		[item setTag:tag];
-		[item setImage: [self imageForROI: tag]];
-		[item setTarget:self];
-		[submenu addItem:item];
-		[item release];
+		[contextualDictionaryPath release];
+		contextualDictionaryPath = [newContextualDictionaryPath copy];
+	}
+}
+
+- (NSString *) contextualDictionaryPath {return [[contextualDictionaryPath retain] autorelease];}
+
+-(void)createDCMViewMenu{
+// if contextualMenuPath says @"default", recreate the default menu once and again
+// if contextualMenuPath contains a path, create the new contextual menu
+// if contextualMenuPath says @"custom", don't do anything
+//	NSLog([self contextualDictionaryPath]);
+
+		if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
+		{
+
+		/******************* Tools menu ***************************/
+			NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
+			NSMenuItem *item;
+			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), 
+														NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), NSLocalizedString(@"ROI", nil), nil];
+			NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+			NSEnumerator *enumerator = [titles objectEnumerator];
+			NSEnumerator *enumerator2 = [images objectEnumerator];
+			NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
+			NSString *title;
+			NSString *image;
+			NSMenuItem *subItem;
+			int i = 0;
+			
+			[enumerator3 nextObject];	// First item is pop main menu
+			while (subItem = [enumerator3 nextObject])
+			{
+				int tag = [subItem tag];
+				item = [[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""];
+				[item setTag:tag];
+				[item setImage: [self imageForROI: tag]];
+				[item setTarget:self];
+				[submenu addItem:item];
+				[item release];
+			}
+
+			while (title = [enumerator nextObject]) {
+				image = [enumerator2 nextObject];
+				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
+				[item setTag:i++];
+				[item setTarget:self];
+				[item setImage:[NSImage imageNamed:image]];
+				[contextual addItem:item];
+				[item release];
+			}
+			[[contextual itemAtIndex:5] setSubmenu:submenu];
+			
+			[contextual addItem:[NSMenuItem separatorItem]];
+			
+		/******************* WW/WL menu items **********************/
+			NSMenu *mainMenu = [NSApp mainMenu];
+			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
+			NSMenu *menu = [presetsMenu copy];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
+			[item setSubmenu:menu];
+			[contextual addItem:item];
+			[item release];
+			[menu release];
+			
+			[contextual addItem:[NSMenuItem separatorItem]];
+			
+			
+			/************* window resize Menu ****************/
+			
+			[submenu release];
+			submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
+			
+			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
+			NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
+			i = 0;
+			NSString	*titleMenu;
+			while (titleMenu = [resizeEnumerator nextObject]) {
+				int tag = i++;
+				item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
+				[item setTag:tag];
+				[item setTarget:imageView];
+				[submenu addItem:item];
+				[item release];
+			}
+			
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
+			[item setSubmenu:submenu];
+			[contextual addItem:item];
+			[item release];
+			
+			[contextual addItem:[NSMenuItem separatorItem]];
+			
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
+			[contextual addItem:item];
+			[item release];
+			
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
+			[contextual addItem:item];
+			[item release];
+			
+			//Export Added 12/5/05
+			/*************Export submenu**************/
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
+			[contextual addItem:item];
+			NSMenu *exportSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)];
+			[item setSubmenu:exportSubmenu];
+				NSMenuItem *subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				
+				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
+				[subMenuItem setTarget:self];
+				[exportSubmenu addItem:subMenuItem];
+				[subMenuItem release];
+				
+				
+			
+			[exportSubmenu release];
+			[item release];
+			
+			/********** Flip submenu ************/ 
+			
+			[contextual addItem:[NSMenuItem separatorItem]];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Flip", nil) action: nil  keyEquivalent:@""];
+			[contextual addItem:item];
+			NSMenu *flipSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Flip", nil)];
+			[item setSubmenu:flipSubmenu ];
+			subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Vertical", nil)  action:@selector(flipVertical:) keyEquivalent:@""];
+			[subMenuItem setTarget:imageView];
+			[flipSubmenu addItem:subMenuItem];
+			[subMenuItem release];
+			subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Horizontal", nil)  action:@selector(flipHorizontal:) keyEquivalent:@""];
+			[subMenuItem setTarget:imageView];
+			[flipSubmenu addItem:subMenuItem];
+			[subMenuItem release];
+			[item release];
+			[flipSubmenu release];
+			
+			
+			[contextual addItem:[NSMenuItem separatorItem]];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
+			[item setTarget:self];
+			[contextual addItem:item];
+			[item release];
+
+			
+			//Add menu to view
+			[imageView setMenu:contextual];
+			[contextual release];
+			
+			[submenu release];
+	}
+	else //use the menuDictionary of the path JF20070102
+	{
+		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
+		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
+		   NSMenu *contextual = [[NSMenu alloc] initWithTitle:plistTitle
+											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
+										  forWindowController:self
+								 ];
+		   [imageView setMenu:contextual];
 	}
 
-	while (title = [enumerator nextObject]) {
-		image = [enumerator2 nextObject];
-		item = [[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""];
-		[item setTag:i++];
-		[item setTarget:self];
-		[item setImage:[NSImage imageNamed:image]];
-		[contextual addItem:item];
-		[item release];
-	}
-	[[contextual itemAtIndex:5] setSubmenu:submenu];
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	
-/******************* WW/WL menu items **********************/
-	NSMenu *mainMenu = [NSApp mainMenu];
-    NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
-    NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
-	NSMenu *menu = [presetsMenu copy];
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
-	[item setSubmenu:menu];
-	[contextual addItem:item];
-	[item release];
-	[menu release];
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	
-	
-	/************* window resize Menu ****************/
-	
-	[submenu release];
-	submenu =  [[NSMenu alloc] initWithTitle:@"Resize window"];
-	
-	NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-	NSEnumerator *resizeEnumerator = [resizeWindowArray objectEnumerator];
-	i = 0;
-	NSString	*titleMenu;
-	while (titleMenu = [resizeEnumerator nextObject]) {
-		int tag = i++;
-		item = [[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""];
-		[item setTag:tag];
-		[item setTarget:imageView];
-		[submenu addItem:item];
-		[item release];
-	}
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""];
-	[item setSubmenu:submenu];
-	[contextual addItem:item];
-	[item release];
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(actualSize:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
-	//Export Added 12/5/05
-	/*************Export submenu**************/
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
-	[contextual addItem:item];
-	NSMenu *exportSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)];
-	[item setSubmenu:exportSubmenu];
-		NSMenuItem *subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		
-		subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
-		[subMenuItem setTarget:self];
-		[exportSubmenu addItem:subMenuItem];
-		[subMenuItem release];
-		
-		
-	
-	[exportSubmenu release];
-	[item release];
-	
-	/********** Flip submenu ************/ 
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Flip", nil) action: nil  keyEquivalent:@""];
-	[contextual addItem:item];
-	NSMenu *flipSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Flip", nil)];
-	[item setSubmenu:flipSubmenu ];
-	subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Vertical", nil)  action:@selector(flipVertical:) keyEquivalent:@""];
-	[subMenuItem setTarget:imageView];
-	[flipSubmenu addItem:subMenuItem];
-	[subMenuItem release];
-	subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Horizontal", nil)  action:@selector(flipHorizontal:) keyEquivalent:@""];
-	[subMenuItem setTarget:imageView];
-	[flipSubmenu addItem:subMenuItem];
-	[subMenuItem release];
-	[item release];
-	[flipSubmenu release];
-	
-	
-	[contextual addItem:[NSMenuItem separatorItem]];
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
-	[item setTarget:self];
-	[contextual addItem:item];
-	[item release];
-
-	
-	//Add menu to view
-	[imageView setMenu:contextual];
-	
-	[contextual release];
-	[submenu release];
 }
 
 
@@ -1281,7 +1312,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)windowDidLoad
 {
 	[[self window] setInitialFirstResponder: imageView];
-	[self createDCMViewMenu];
+	contextualDictionaryPath = @"default";//JF20070103
+	//[self createDCMViewMenu];
 	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
 	seriesView = [[[studyView seriesViews] objectAtIndex:0] retain];
@@ -3660,7 +3692,7 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 	
 	displayOnlyKeyImages = NO;
-	
+		
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 #if !__LP64__
 	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
@@ -3888,7 +3920,7 @@ static ViewerController *draggedController = 0L;
 	if( status == 0L) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
 	
 	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 	else [CommentsField setTitle: com];
@@ -8813,6 +8845,53 @@ int i,j,l;
 #pragma mark-
 #pragma mark 4.1.4 Anchored textual layer
 
+- (void) contextualMenuEvent:(id)sender
+{
+	// Receives a NSMenuItem (each intermediate NSMenu is also a NSMenuItem)
+	// The complete title is obtain joining the ITEM title menu title with all its MENU supermenu titles, excepted the last one
+
+	// Window anchored annotations need to be updated
+	// Point clicked available in [imageView contextualMenuInWindowPosX] [imageView contextualMenuInWindowPosY]
+	
+	NSMenu *currentMenu = [sender menu];//init of menu
+	NSMenu *superMenu = [currentMenu supermenu];//init of supermenu
+	NSString *currentMenuTitle = [currentMenu title];
+	NSString *tail;
+	NSString *composedMenuTitle = [sender title];
+	int i=0;
+	while ( superMenu != nil)
+	{
+		tail = [composedMenuTitle copy];
+		[composedMenuTitle release];
+		composedMenuTitle = [NSString stringWithFormat:@"%@ %@",currentMenuTitle, tail];
+		currentMenu = superMenu;
+		currentMenuTitle = [currentMenu title];
+		superMenu = [currentMenu supermenu];
+		i++;
+	}
+	NSLog(composedMenuTitle);
+	
+	if ([composedMenuTitle isEqualToString:@"?"]) //creating a content panel
+	{
+		[NSApp beginSheet: CommentsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	}
+	else //same action as endSetComments, but with composedMenuTitle
+	{
+		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
+		
+		if([browserWindow isCurrentDatabaseBonjour])
+		{
+			[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+		}
+		
+		[[browserWindow databaseOutline] reloadData];
+		
+		[CommentsField setTitle: composedMenuTitle];
+		
+		[self buildMatrixPreview: NO];
+	}
+}
+
 #pragma mark-
 #pragma mark 4.1.5 Presentation in viewport
 
@@ -11816,7 +11895,7 @@ int i,j,l;
 	if( status == 0L) [StatusPopup selectItemWithTitle: @"empty"];
 	else [StatusPopup selectItemWithTag: [status intValue]];
 	
-	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.study.comment"];
+	NSString	*com = [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKeyPath:@"series.comment"];//JF20070103
 	
 	if( com == 0L || [com isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
 	else [CommentsField setTitle: com];
@@ -13088,7 +13167,23 @@ sourceRef);
     
     [NSApp endSheet:CommentsWindow returnCode:[sender tag]];
 	
-	if( [sender tag] == 1)
+	if( [sender tag] == 1) //series
+	{
+		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.comment"];
+		
+		if([browserWindow isCurrentDatabaseBonjour])
+		{
+			[browserWindow setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+		}
+		
+		[[browserWindow databaseOutline] reloadData];
+		
+		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+		else [CommentsField setTitle: [CommentsEditField stringValue]];
+		
+		[self buildMatrixPreview: NO];
+	}
+	else if( [sender tag] == 2) //study
 	{
 		[[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] setValue:[CommentsEditField stringValue] forKeyPath:@"series.study.comment"];
 		
@@ -13099,8 +13194,8 @@ sourceRef);
 		
 		[[browserWindow databaseOutline] reloadData];
 		
-		if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
-		else [CommentsField setTitle: [CommentsEditField stringValue]];
+		//if( [[CommentsEditField stringValue] isEqualToString:@""]) [CommentsField setTitle: NSLocalizedString(@"No Comments", nil)];
+		//else [CommentsField setTitle: [CommentsEditField stringValue]];
 		
 		[self buildMatrixPreview: NO];
 	}

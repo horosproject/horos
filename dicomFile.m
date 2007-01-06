@@ -2277,8 +2277,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
 		
 		[dicomElements setObject:date forKey:@"studyDate"];
+		
+		//JF20070103 if series title doesn't exist, replace it by series number, and the latter doesn't exist, keep unnamed
+		BOOL modalityNoSC = TRUE; //JF20070103
+		if ([[dcmObject attributeValueForKey:@"0008,0018"] isEqualToString:@"1.2.840.10008.5.1.4.1.1.7"] == YES) modalityNoSC=FALSE; //JF20070103
 		if (serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"SeriesDescription"]] retain])
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
+		else if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"instanceNumber"]] retain]) && modalityNoSC)
+			[dicomElements setObject:serie forKey:@"seriesDescription"]; //JF20070103
+		else if (!modalityNoSC) serie = [@"unnamed" retain]; //JF20070103 		
 		else {
 			serie = [@"unnamed" retain];
 			[dicomElements setObject:serie forKey:@"seriesDescription"];

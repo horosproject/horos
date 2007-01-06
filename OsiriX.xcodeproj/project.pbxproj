@@ -1322,7 +1322,7 @@
 		AB7252270ADE790D00A212A0 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6909B6828300545F5E /* jcdiffct.c */; };
 		AB7252280ADE790D00A212A0 /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6609B6828300545F5E /* jccoefct.c */; };
 		AB7252290ADE790E00A212A0 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
-		AB72522A0ADE790F00A212A0 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		AB72522A0ADE790F00A212A0 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		AB72522B0ADE791100A212A0 /* jdarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8009B6828300545F5E /* jdarith.c */; };
 		AB72522C0ADE791100A212A0 /* jctrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7D09B6828300545F5E /* jctrans.c */; };
 		AB72522D0ADE791100A212A0 /* jcshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7C09B6828300545F5E /* jcshuff.c */; };
@@ -1821,7 +1821,7 @@
 		ABE46FDB0A76410F00327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5E09B6828300545F5E /* jquant2.c */; };
 		ABE46FDC0A76410F00327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
 		ABE46FDD0A76410F00327466 /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
-		ABE46FE10A76411900327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		ABE46FE10A76411900327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		ABE46FE20A76411900327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		ABE46FE30A76411900327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		ABE46FE40A76411900327466 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6509B6828300545F5E /* jcarith.c */; };
@@ -2164,6 +2164,8 @@
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABFB2BB80A22DB8E00A587B5 /* SafeDBRebuild.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEA83840A21BE400094CAEF /* SafeDBRebuild.m */; };
+		B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = B78490F90B4BE86400BA93EF /* MenuDictionary.h */; };
+		B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = B78490FA0B4BE86400BA93EF /* MenuDictionary.m */; };
 		B78675450AD9C56400731977 /* diameter570frame512.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675430AD9C56400731977 /* diameter570frame512.pbm */; };
 		B78675460AD9C56400731977 /* diameter1140frame1024.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675440AD9C56400731977 /* diameter1140frame1024.pbm */; };
 		B78675470AD9C56400731977 /* diameter570frame512.pbm in Resources */ = {isa = PBXBuildFile; fileRef = B78675430AD9C56400731977 /* diameter570frame512.pbm */; };
@@ -4948,8 +4950,8 @@
 		BF0461560B135F6400F5B97D /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5809B6828300545F5E /* jmemnobs.c */; };
 		BF0461570B135F6400F5B97D /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5D09B6828300545F5E /* jquant1.c */; };
 		BF0461580B135F6400F5B97D /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5E09B6828300545F5E /* jquant2.c */; };
-		BF0461590B135F6400F5B97D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
-		BF04615A0B135F6400F5B97D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		BF0461590B135F6400F5B97D /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E; };
+		BF04615A0B135F6400F5B97D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		BF04615B0B135F6400F5B97D /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		BF04615C0B135F6400F5B97D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		BF04615D0B135F6400F5B97D /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6509B6828300545F5E /* jcarith.c */; };
@@ -5743,7 +5745,7 @@
 		BF7DEBB009D1FC6B00A332B8 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6509B6828300545F5E /* jcarith.c */; };
 		BF7DEBB109D1FC6C00A332B8 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		BF7DEBB209D1FC6D00A332B8 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
-		BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		BF7DEBB309D1FC6E00A332B8 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		BF83CD8C09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
 		BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */; };
 		BF83CD8E09E741BC002041F3 /* ReportPluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = BF83CD8A09E741BC002041F3 /* ReportPluginFilter.h */; };
@@ -12006,7 +12008,7 @@
 		CEA337BF06AD9BF6006D2357 /* iDiskSend.icns in Resources */ = {isa = PBXBuildFile; fileRef = CEA337BB06AD9BF6006D2357 /* iDiskSend.icns */; };
 		CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = CEA0C72607A6B186004E5D9D /* vtkVolumeProVP1000Mapper.cxx */; };
 		CEA656CC094EF64300D4E5E5 /* vli3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA656CB094EF64300D4E5E5 /* vli3.framework */; };
-		CEAF1D2F0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		CEAF1D2F0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		CEAF1D300A757C3200A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		CEAF1D310A757C3200A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		CEAF1D320A757C3200A0D729 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6509B6828300545F5E /* jcarith.c */; };
@@ -12083,7 +12085,7 @@
 		CEAF1D790A757C3200A0D729 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CAC09B6828400545F5E /* jquant2.c */; };
 		CEAF1D7A0A757C3200A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CAD09B6828400545F5E /* jutils.c */; };
 		CEAF1D7B0A757C3200A0D729 /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAE09B6828400545F5E /* jversion16.h */; };
-		CEAF1D7C0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
+		CEAF1D7C0A757C3200A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E; };
 		CEAF1D7D0A757C3200A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		CEAF1D7E0A757C3200A0D729 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
 		CEAF1D7F0A757C3200A0D729 /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6509B6828300545F5E /* jcarith.c */; };
@@ -12235,7 +12237,7 @@
 		CEAF1E600A757C4C00A0D729 /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5C09B6828300545F5E /* jpeglib12.h */; };
 		CEAF1E610A757C4C00A0D729 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5D09B6828300545F5E /* jquant1.c */; };
 		CEAF1E620A757C4C00A0D729 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5E09B6828300545F5E /* jquant2.c */; };
-		CEAF1E630A757C4C00A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
+		CEAF1E630A757C4C00A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E; };
 		CEAF1E640A757C4C00A0D729 /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
 		CEAF1E650A757C4C00A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		CEAF1E660A757C4C00A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
@@ -12312,7 +12314,7 @@
 		CEAF1EAD0A757C4C00A0D729 /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5C09B6828300545F5E /* jpeglib12.h */; };
 		CEAF1EAE0A757C4C00A0D729 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5D09B6828300545F5E /* jquant1.c */; };
 		CEAF1EAF0A757C4C00A0D729 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5E09B6828300545F5E /* jquant2.c */; };
-		CEAF1EB00A757C4C00A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
+		CEAF1EB00A757C4C00A0D729 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E; };
 		CEAF1EB10A757C4C00A0D729 /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
 		CEAF1F870A757E9500A0D729 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		CEAF1F880A757E9500A0D729 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
@@ -14172,6 +14174,8 @@
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
 		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		B78490F90B4BE86400BA93EF /* MenuDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuDictionary.h; sourceTree = "<group>"; };
+		B78490FA0B4BE86400BA93EF /* MenuDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MenuDictionary.m; sourceTree = "<group>"; };
 		B78675430AD9C56400731977 /* diameter570frame512.pbm */ = {isa = PBXFileReference; lastKnownFileType = file; path = diameter570frame512.pbm; sourceTree = "<group>"; };
 		B78675440AD9C56400731977 /* diameter1140frame1024.pbm */ = {isa = PBXFileReference; lastKnownFileType = file; path = diameter1140frame1024.pbm; sourceTree = "<group>"; };
 		B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Shutter.tif; sourceTree = "<group>"; };
@@ -18821,6 +18825,8 @@
 		BF952BA206C9C7F40063B562 /* Single Window */ = {
 			isa = PBXGroup;
 			children = (
+				B78490F90B4BE86400BA93EF /* MenuDictionary.h */,
+				B78490FA0B4BE86400BA93EF /* MenuDictionary.m */,
 				7E55AE1306C80E460059D6EB /* StudyView.h */,
 				7E55AE1406C80E460059D6EB /* StudyView.m */,
 				7E55ADDB06C7FFCD0059D6EB /* SeriesView.h */,
@@ -23649,6 +23655,7 @@
 				CEBED2F30B4050FD00A6731E /* DOClient.h in Headers */,
 				CEBED2F40B4050FD00A6731E /* DOServer.h in Headers */,
 				BF919C4A0B447753002D91E7 /* MPRPreviewView.h in Headers */,
+				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32120,6 +32127,7 @@
 				CEBED2F50B4050FD00A6731E /* DOClient.m in Sources */,
 				CEBED2F60B4050FD00A6731E /* DOServer.m in Sources */,
 				BF919C4B0B447753002D91E7 /* MPRPreviewView.m in Sources */,
+				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

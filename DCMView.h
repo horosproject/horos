@@ -160,6 +160,10 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
     NSRect          roiRect;
 	NSString		*stringID;
 	NSSize			previousViewSize;
+
+	float			contextualMenuInWindowPosX;
+	float			contextualMenuInWindowPosY;	
+
 	
 	float			mouseXPos, mouseYPos;
 	float			pixelMouseValue;
@@ -317,6 +321,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 - (IBAction) roiLoadFromXMLFiles: (id) sender;
 - (float)mouseXPos;
 - (float)mouseYPos;
+- (float) contextualMenuInWindowPosX;
+- (float) contextualMenuInWindowPosY;
 - (GLuint)fontListGL;
 - (void) drawRectIn:(NSRect) size :(GLuint *) texture :(NSPoint) offset :(long) tX :(long) tY;
 - (void) DrawNSStringGL: (NSString*) cstrOut :(GLuint) fontL :(long) x :(long) y;
