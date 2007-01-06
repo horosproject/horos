@@ -17,8 +17,8 @@
 		8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */ = {isa = PBXBuildFile; fileRef = F506C03D013D9D7901CA16C8 /* OSILocationsPreferencePanePref.m */; };
 		8D202CF30486D31800D8A456 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		8D202CF40486D31800D8A456 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F506C035013D953901CA16C8 /* PreferencePanes.framework */; };
-		B7555B780B403FDA00CA080E /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = B7555B760B403FDA00CA080E /* SimplePing.c */; };
-		B7555B790B403FDA00CA080E /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = B7555B770B403FDA00CA080E /* SimplePing.h */; };
+		CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */; };
+		CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */ = {isa = PBXBuildFile; fileRef = CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */; };
 		CE1EF6DE0AF0072000A728F2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE1EF6DC0AF0072000A728F2 /* Localizable.strings */; };
 		CE94D6FA0A17CC420010E3E8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE94D6F90A17CC420010E3E8 /* Security.framework */; };
 /* End PBXBuildFile section */
@@ -33,8 +33,8 @@
 		7EC5847607298EDC00429FC7 /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerTableView.m; sourceTree = "<group>"; };
 		8D202CF70486D31800D8A456 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D202CF80486D31800D8A456 /* OSILocationsPreferencePane.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OSILocationsPreferencePane.prefPane; sourceTree = BUILT_PRODUCTS_DIR; };
-		B7555B760B403FDA00CA080E /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SimplePing.c; sourceTree = "<group>"; };
-		B7555B770B403FDA00CA080E /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
+		CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SimplePing.h; path = ../../SimplePing.h; sourceTree = SOURCE_ROOT; };
+		CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = SimplePing.c; path = ../../SimplePing.c; sourceTree = SOURCE_ROOT; };
 		CE1EF6DD0AF0072000A728F2 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE94D6F90A17CC420010E3E8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		F506C035013D953901CA16C8 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
@@ -94,8 +94,8 @@
 		08FB77AFFE84173DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B7555B760B403FDA00CA080E /* SimplePing.c */,
-				B7555B770B403FDA00CA080E /* SimplePing.h */,
+				CE1DD8DD0B4FF18700B4AC4B /* SimplePing.h */,
+				CE1DD8DE0B4FF18700B4AC4B /* SimplePing.c */,
 				7EC5847507298EDC00429FC7 /* ServerTableView.h */,
 				7EC5847607298EDC00429FC7 /* ServerTableView.m */,
 				F506C03C013D9D7901CA16C8 /* OSILocationsPreferencePanePref.h */,
@@ -149,7 +149,7 @@
 				8D202CEA0486D31800D8A456 /* OSILocationsPreferencePane_Prefix.pch in Headers */,
 				8D202CEB0486D31800D8A456 /* OSILocationsPreferencePanePref.h in Headers */,
 				7EC5847707298EDC00429FC7 /* ServerTableView.h in Headers */,
-				B7555B790B403FDA00CA080E /* SimplePing.h in Headers */,
+				CE1DD8DF0B4FF18700B4AC4B /* SimplePing.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,7 +222,7 @@
 			files = (
 				8D202CF10486D31800D8A456 /* OSILocationsPreferencePanePref.m in Sources */,
 				7EC5847807298EDC00429FC7 /* ServerTableView.m in Sources */,
-				B7555B780B403FDA00CA080E /* SimplePing.c in Sources */,
+				CE1DD8E00B4FF18700B4AC4B /* SimplePing.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

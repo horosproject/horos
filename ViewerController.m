@@ -1040,11 +1040,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if (contextualDictionaryPath != newContextualDictionaryPath)
 	{
 		[contextualDictionaryPath release];
-		contextualDictionaryPath = [newContextualDictionaryPath copy];
+		contextualDictionaryPath = [newContextualDictionaryPath retain];
 	}
 }
 
-- (NSString *) contextualDictionaryPath {return [[contextualDictionaryPath retain] autorelease];}
+- (NSString *) contextualDictionaryPath {return contextualDictionaryPath;}
 
 -(void)createDCMViewMenu{
 // if contextualMenuPath says @"default", recreate the default menu once and again
@@ -1312,7 +1312,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)windowDidLoad
 {
 	[[self window] setInitialFirstResponder: imageView];
-	contextualDictionaryPath = @"default";//JF20070103
+	contextualDictionaryPath = [@"default" retain];//JF20070103
 	//[self createDCMViewMenu];
 	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
 	[keyImagePopUpButton selectItemAtIndex:displayOnlyKeyImages];
@@ -1950,6 +1950,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[curConvMenu release];
 	[curWLWWMenu release];
 	[processorsLock release];
+	[contextualDictionaryPath release];
 	
     [super dealloc];
 
