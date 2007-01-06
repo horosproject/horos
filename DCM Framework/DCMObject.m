@@ -70,14 +70,23 @@ static NSString *softwareVersion = @"001";
 	[object removePrivateTags];
 	//NSLog(@" Anonyimize Tags:%@", [tags description]);
 	while (tagArray = [enumerator nextObject]) {
-		//NSLog(@"tagArray %@", [tagArray description]);
 		tag = [tagArray objectAtIndex:0];
+		NSLog(@"tag %@", [tag name]);
 		id value = nil;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
-		if ((NSString *)tag == @"PatientID")
+		if ([[tag name] isEqualToString: @"PatientID"])
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
+		if ([[tag name] isEqualToString: @"InstanceCreationDate"]) {
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentDate"] replacingWith:value];
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
+		}
+		if ([[tag name] isEqualToString: @"InstanceCreationTime"]) {
+			NSLog(@"InstanceCreationTime");
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
+		}
 			
 	}
 	
