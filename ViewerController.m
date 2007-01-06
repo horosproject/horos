@@ -1604,9 +1604,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(IBAction) fullScreenMenu:(id) sender
 {
-	[self squareDataSet: self];
-	return;
-
     if( FullScreenOn == YES ) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
@@ -12519,6 +12516,7 @@ long i;
 	else
 	{
 		[self MovieStop: self];
+		[self squareDataSet: self];		// MPR2D works better if pixel are squares !
 		
 		MPR2DController *viewer = [appController FindViewer :@"MPR2D" :pixList[0]];
 		

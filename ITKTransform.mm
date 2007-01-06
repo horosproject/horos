@@ -174,7 +174,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		//for( i = 0; i < [[originalViewer pixList] count]; i++)
 		{
 			//curPix = [[[originalViewer pixList] objectAtIndex: i] copy];
-			curPix = [[pixList objectAtIndex: i] copy];
+			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * i)];
 			
 			// to keep settings propagated for MRI we need the old values for echotime & repetitiontime

@@ -79,7 +79,7 @@
 		NSMutableArray *newPixList = [NSMutableArray arrayWithCapacity:0];
 		for( i = 0; i < [pixList count]; i++)
 		{
-			curPix = [[pixList objectAtIndex: i] copy];
+			curPix = [[[pixList objectAtIndex: i] copy] autorelease];
 			[curPix setfImage: (float*) (fVolumePtr + [curPix pheight] * [curPix pwidth] * 4 * i)];
 			[newPixList addObject: curPix];
 		}
