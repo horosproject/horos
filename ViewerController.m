@@ -360,7 +360,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		for( i = 0 ; i < newTotal; i ++)
 		{
-			[newPixList addObject: [[pixList[ curMovieIndex] objectAtIndex: 0] copy]];
+			[newPixList addObject: [[[pixList[ curMovieIndex] objectAtIndex: 0] copy] autorelease]];
 			
 			// SUV
 			[[newPixList lastObject] setDisplaySUVValue: [firstPix displaySUVValue]];

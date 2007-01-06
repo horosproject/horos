@@ -2483,7 +2483,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 {
     long	i;
 	
-	self->imageObj = fromDcm->imageObj;
+	self->imageObj = [fromDcm->imageObj retain];
 	self->isBonjour = fromDcm->isBonjour;
 //	self->fImage = fromDcm->fImage;	// Don't load the image!
 	self->height = fromDcm->height;
@@ -2537,7 +2537,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	DCMPix *copy = [[[self class] allocWithZone: zone] myinit:self->srcFile :self->imID :self->imTot :self->fVolImage :self->frameNo :self->serieNo];
 	
-	copy->imageObj = self->imageObj;
+	copy->imageObj = [self->imageObj retain];
 	copy->isBonjour = self->isBonjour;
 	copy->fImage = self->fImage;	// Don't load the image!
 	copy->height = self->height;
