@@ -939,112 +939,115 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[imageView setDrawing: NO];
 		
-		[imageView stopROIEditingForce: YES];
-		[self checkEverythingLoaded];
-
-		if( blendingController) [self ActivateBlending: 0L];
-		
-		switch( currentOrientationTool)
-		{
-			case 0:
-			{
-				switch( newOrientationTool)
-				{
-					case 0:
-						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
-						[self adjustSlider];
-					break;
-					
-					case 1:
-						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
-					break;
-					
-					case 2:
-						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
-					break;
-				}
-			}
-			break;
-
-			case 1:
-			{
-				switch( newOrientationTool)
-				{
-					case 0:
-						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
-						
-						[self vertFlipDataSet: self];
-					break;
-					
-					case 1:
-						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
-						[self adjustSlider];
-					break;
-					
-					case 2:
-						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
-						
-						[self rotateDataSet: kRotate90DegreesClockwise];
-					break;
-				}
-			}
-			break;
-
-			case 2:
-			{
-				switch( newOrientationTool)
-				{
-					case 0:
-						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
-						
-						[self rotateDataSet: kRotate90DegreesClockwise];
-						[self horzFlipDataSet: self];
-					break;
-					
-					case 1:
-						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
-						
-						[self rotateDataSet: kRotate90DegreesClockwise];
-						[self horzFlipDataSet: self];
-					break;
-					
-					case 2:
-						[imageView setIndex: [pixList[curMovieIndex] count]/2];
-						[imageView sendSyncMessage:1];
-						[self adjustSlider];
-					break;
-				}
-			}
-			break;
-		}
-		
-		currentOrientationTool = newOrientationTool;
-		
-		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
-
-		float   iwl, iww;
-		[imageView getWLWW:&iwl :&iww];
-		[imageView setWLWW:iwl :iww];
-		
-		if( previousFusion != 0)
-		{
+		@synchronized (self)
+		{		
+			[imageView stopROIEditingForce: YES];
 			[self checkEverythingLoaded];
-			[self computeInterval];
-			[self setFusionMode: previousFusion];
-			[popFusion selectItemWithTag:previousFusion];
+
+			if( blendingController) [self ActivateBlending: 0L];
+			
+			switch( currentOrientationTool)
+			{
+				case 0:
+				{
+					switch( newOrientationTool)
+					{
+						case 0:
+							[imageView setIndex: [pixList[curMovieIndex] count]/2];
+							[imageView sendSyncMessage:1];
+							[self adjustSlider];
+						break;
+						
+						case 1:
+							[self checkEverythingLoaded];
+							[self processReslice: 0 :newViewer];
+						break;
+						
+						case 2:
+							[self checkEverythingLoaded];
+							[self processReslice: 1 :newViewer];
+						break;
+					}
+				}
+				break;
+
+				case 1:
+				{
+					switch( newOrientationTool)
+					{
+						case 0:
+							[self checkEverythingLoaded];
+							[self processReslice: 0 :newViewer];
+							
+							[self vertFlipDataSet: self];
+						break;
+						
+						case 1:
+							[imageView setIndex: [pixList[curMovieIndex] count]/2];
+							[imageView sendSyncMessage:1];
+							[self adjustSlider];
+						break;
+						
+						case 2:
+							[self checkEverythingLoaded];
+							[self processReslice: 1 :newViewer];
+							
+							[self rotateDataSet: kRotate90DegreesClockwise];
+						break;
+					}
+				}
+				break;
+
+				case 2:
+				{
+					switch( newOrientationTool)
+					{
+						case 0:
+							[self checkEverythingLoaded];
+							[self processReslice: 0 :newViewer];
+							
+							[self rotateDataSet: kRotate90DegreesClockwise];
+							[self horzFlipDataSet: self];
+						break;
+						
+						case 1:
+							[self checkEverythingLoaded];
+							[self processReslice: 1 :newViewer];
+							
+							[self rotateDataSet: kRotate90DegreesClockwise];
+							[self horzFlipDataSet: self];
+						break;
+						
+						case 2:
+							[imageView setIndex: [pixList[curMovieIndex] count]/2];
+							[imageView sendSyncMessage:1];
+							[self adjustSlider];
+						break;
+					}
+				}
+				break;
+			}
+			
+			currentOrientationTool = newOrientationTool;
+			
+			if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
+
+			float   iwl, iww;
+			[imageView getWLWW:&iwl :&iww];
+			[imageView setWLWW:iwl :iww];
+			
+			if( previousFusion != 0)
+			{
+				[self checkEverythingLoaded];
+				[self computeInterval];
+				[self setFusionMode: previousFusion];
+				[popFusion selectItemWithTag:previousFusion];
+			}
+			
+			NSLog( @"originalOrientation: %d", originalOrientation);
+					
+			[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 		}
-		
-		NSLog( @"originalOrientation: %d", originalOrientation);
-				
-		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 		
 		[imageView setDrawing: YES];
 		
@@ -11544,7 +11547,7 @@ int i,j,l;
 - clear8bitRepresentations
 {
 	// This function will free about 1/4 of the data
-
+	
 	int i, x;
 	
 	for( i = 0; i < maxMovieIndex; i++)
@@ -11555,6 +11558,8 @@ int i,j,l;
 				[[pixList[ i] objectAtIndex:x] kill8bitsImage];
 		}
 	}
+	
+	[self updateImage: self];	// <- compute at least current image...
 }
 
 -(float*) volumePtr

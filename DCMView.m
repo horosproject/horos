@@ -3486,11 +3486,11 @@ static long scrollMode;
     
     curWW = [curDCM ww];
     curWL = [curDCM wl];
-    
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
-	
+    	
     [self loadTextures];
     [self setNeedsDisplay:YES];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
 	
 	//set value for Series Object Presentation State
 	if( [curDCM SUVConverted] == NO)
@@ -5588,7 +5588,8 @@ static long scrollMode;
 {
 	if( drawing == NO) return;
 	
-	@synchronized (self) {
+	@synchronized (self)
+	{
 		[self drawRect:(NSRect)aRect withContext: [self openGLContext]];
 	}
 }
@@ -5612,8 +5613,6 @@ static long scrollMode;
 		NSPoint offset;
 		
 		offset.y = offset.x = 0;
-		
-
 		
 		// Make this context current
 		//[[self openGLContext] makeCurrentContext];
