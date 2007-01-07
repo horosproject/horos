@@ -199,7 +199,6 @@ int sortROIByName(id roi1, id roi2, void *context)
 	[imageView setIndex: [newPixList count]/2];
 	[imageView sendSyncMessage:1];
 	[self adjustSlider];
-	
 }
 
 static volatile int numberOfThreadsForRelisce = 0;
@@ -940,7 +939,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[imageView setDrawing: NO];
 		
 		@synchronized (self)
-		{		
+		{
 			[imageView stopROIEditingForce: YES];
 			[self checkEverythingLoaded];
 
@@ -3750,6 +3749,7 @@ static ViewerController *draggedController = 0L;
 	previousLocation = [[imageView curDCM] sliceLocation];
 	
 	[self setFusionMode: 0];
+	[imageView setIndex: 0];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"CloseViewerNotification" object: self userInfo: 0L];
 
@@ -9751,9 +9751,9 @@ int i,j,l;
 
 - (void) performAnimation:(id) sender
 {
-    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
-    short           val;
-    
+	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
+	short           val;
+	
 //	if( [self isEverythingLoaded] == NO) return;
 	
 	if( loadingPercentage < 0.5) return;
@@ -9764,22 +9764,22 @@ int i,j,l;
 		return;
 	}
 
-    if( thisTime - lastTimeFrame > 1.0)
-    {
+	if( thisTime - lastTimeFrame > 1.0)
+	{
 		[speedText setStringValue:[NSString stringWithFormat:@"%0.1f im/s", (float) speedometer * direction / (thisTime - lastTimeFrame) ]];
-        
+		
 		speedometer = 0;
 		
-        lastTimeFrame = thisTime;
-    }
+		lastTimeFrame = thisTime;
+	}
 	
 	if( thisTime - lastTime > 1.0 / [speedSlider floatValue])
-    {
-        val = [imageView curImage];
-        
+	{
+		val = [imageView curImage];
+		
 		if( [imageView flippedData]) val -= direction;
 		else val += direction;
-        
+		
 		if( [loopButton state] == NSOnState)
 		{
 			if( val < 0) val = [pixList[ curMovieIndex] count]-1;
@@ -9804,13 +9804,13 @@ int i,j,l;
 			}
 		}
 		
-        [imageView setIndex:val];
+		[imageView setIndex:val];
 		
 		[self adjustSlider];
-        
+		
 		[imageView sendSyncMessage:1];
 		
-        lastTime = thisTime;
+		lastTime = thisTime;
 		
 //		if( TICKPLAY)
 //		{
@@ -9823,7 +9823,7 @@ int i,j,l;
 		
 		[imageView displayIfNeeded];
 		speedometer++;
-    }
+	}
 }
 
 - (void) MovieStop:(id) sender
