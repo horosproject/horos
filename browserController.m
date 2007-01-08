@@ -495,10 +495,9 @@ static BOOL COMPLETEREBUILD = NO;
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
+	BOOL					newStudy = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
-	
-//	[incomingProgress performSelectorOnMainThread:@selector( startAnimation:) withObject:self waitUntilDone:NO];
 	
 //	#define RANDOMFILES
 	
@@ -677,6 +676,7 @@ static BOOL COMPLETEREBUILD = NO;
 								
 								[curSerieID release];	curSerieID = 0L;
 								
+								newStudy = YES;
 							}
 							else
 							{
@@ -978,15 +978,19 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( addFailed == NO)
 		{
-			[self performSelectorOnMainThread:@selector( outlineViewRefresh) withObject:0L waitUntilDone:YES];
+			if( newStudy) [self performSelectorOnMainThread:@selector( outlineViewRefresh) withObject:0L waitUntilDone:YES];
+			else
+			{
+				[databaseOutline performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
+				[albumTable performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
+				[self performSelectorOnMainThread:@selector( outlineViewSelectionDidChange:) withObject: 0L waitUntilDone:YES]; 
+			}
 			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
 			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
 	}
-	
-//	[incomingProgress performSelectorOnMainThread:@selector( stopAnimation:) withObject:self waitUntilDone:NO];
 	
 	if( addFailed)
 	{
@@ -3596,8 +3600,6 @@ static BOOL COMPLETEREBUILD = NO;
 		[previousItem release];
 		previousItem = 0L;
 	}
-	
-	
 }
 
 -(void) delItemMatrix: (NSManagedObject*) obj
@@ -6242,10 +6244,6 @@ static BOOL needToRezoom;
 	{
 		return [[self albumArray] count];
 	}
-//	else if ([aTableView isEqual:sendLogTable])
-//		return [sendLog count];
-//	else if ([aTableView isEqual:receiveLogTable])
-//		return [receiveLog count];
 	else if ([aTableView isEqual:bonjourServicesList])
 	{
 		if (bonjourBrowser!=nil)
@@ -7828,7 +7826,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		timer = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
 		IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
-		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:16.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
+		refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:63.33 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval:10*60 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];
 		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval:60*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain];
 		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain];

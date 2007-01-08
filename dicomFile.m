@@ -1708,7 +1708,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							
 							[studyDate release];
 						}
-						else date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+						else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
 					}
 				}
 				
@@ -2113,7 +2113,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 		if( date == 0L)
 		{
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
 			[dicomElements setObject:date forKey:@"studyDate"];
 		}
 		
@@ -2274,7 +2274,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		else if (studyDate && studyTime)
 			date = [[NSCalendarDate alloc] initWithString:[studyDate stringByAppendingString:studyTime] calendarFormat:@"%Y%m%d%H%M%S"];
 		else
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:0L] retain];
 		
 		[dicomElements setObject:date forKey:@"studyDate"];
 		
