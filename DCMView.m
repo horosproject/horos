@@ -1912,6 +1912,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{
@@ -2193,6 +2194,7 @@ static long scrollMode;
 
 - (void)mouseDown:(NSEvent *)event
 {
+	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{
@@ -2573,7 +2575,8 @@ static long scrollMode;
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	float				reverseScrollWheel;					// DDP (050913): allow reversed scroll wheel preference.
-
+	
+	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{

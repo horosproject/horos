@@ -933,120 +933,123 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
 			return;
 		}
+		
+		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with B/W data series.", nil), nil, nil, nil);
+			return;
+		}
 	
 		BOOL newViewer = NO;
 		
 		[imageView setDrawing: NO];
 		
-		@synchronized (self)
+		[imageView stopROIEditingForce: YES];
+		[self checkEverythingLoaded];
+
+		if( blendingController) [self ActivateBlending: 0L];
+		
+		switch( currentOrientationTool)
 		{
-			[imageView stopROIEditingForce: YES];
-			[self checkEverythingLoaded];
-
-			if( blendingController) [self ActivateBlending: 0L];
-			
-			switch( currentOrientationTool)
+			case 0:
 			{
-				case 0:
+				switch( newOrientationTool)
 				{
-					switch( newOrientationTool)
-					{
-						case 0:
-							[imageView setIndex: [pixList[curMovieIndex] count]/2];
-							[imageView sendSyncMessage:1];
-							[self adjustSlider];
-						break;
-						
-						case 1:
-							[self checkEverythingLoaded];
-							[self processReslice: 0 :newViewer];
-						break;
-						
-						case 2:
-							[self checkEverythingLoaded];
-							[self processReslice: 1 :newViewer];
-						break;
-					}
-				}
-				break;
-
-				case 1:
-				{
-					switch( newOrientationTool)
-					{
-						case 0:
-							[self checkEverythingLoaded];
-							[self processReslice: 0 :newViewer];
-							
-							[self vertFlipDataSet: self];
-						break;
-						
-						case 1:
-							[imageView setIndex: [pixList[curMovieIndex] count]/2];
-							[imageView sendSyncMessage:1];
-							[self adjustSlider];
-						break;
-						
-						case 2:
-							[self checkEverythingLoaded];
-							[self processReslice: 1 :newViewer];
-							
-							[self rotateDataSet: kRotate90DegreesClockwise];
-						break;
-					}
-				}
-				break;
-
-				case 2:
-				{
-					switch( newOrientationTool)
-					{
-						case 0:
-							[self checkEverythingLoaded];
-							[self processReslice: 0 :newViewer];
-							
-							[self rotateDataSet: kRotate90DegreesClockwise];
-							[self horzFlipDataSet: self];
-						break;
-						
-						case 1:
-							[self checkEverythingLoaded];
-							[self processReslice: 1 :newViewer];
-							
-							[self rotateDataSet: kRotate90DegreesClockwise];
-							[self horzFlipDataSet: self];
-						break;
-						
-						case 2:
-							[imageView setIndex: [pixList[curMovieIndex] count]/2];
-							[imageView sendSyncMessage:1];
-							[self adjustSlider];
-						break;
-					}
-				}
-				break;
-			}
-			
-			currentOrientationTool = newOrientationTool;
-			
-			if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
-
-			float   iwl, iww;
-			[imageView getWLWW:&iwl :&iww];
-			[imageView setWLWW:iwl :iww];
-			
-			if( previousFusion != 0)
-			{
-				[self checkEverythingLoaded];
-				[self computeInterval];
-				[self setFusionMode: previousFusion];
-				[popFusion selectItemWithTag:previousFusion];
-			}
-			
-			NSLog( @"originalOrientation: %d", originalOrientation);
+					case 0:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+					break;
 					
-			[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
+					case 1:
+						[self checkEverythingLoaded];
+						[self processReslice: 0 :newViewer];
+					break;
+					
+					case 2:
+						[self checkEverythingLoaded];
+						[self processReslice: 1 :newViewer];
+					break;
+				}
+			}
+			break;
+
+			case 1:
+			{
+				switch( newOrientationTool)
+				{
+					case 0:
+						[self checkEverythingLoaded];
+						[self processReslice: 0 :newViewer];
+						
+						[self vertFlipDataSet: self];
+					break;
+					
+					case 1:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+					break;
+					
+					case 2:
+						[self checkEverythingLoaded];
+						[self processReslice: 1 :newViewer];
+						
+						[self rotateDataSet: kRotate90DegreesClockwise];
+					break;
+				}
+			}
+			break;
+
+			case 2:
+			{
+				switch( newOrientationTool)
+				{
+					case 0:
+						[self checkEverythingLoaded];
+						[self processReslice: 0 :newViewer];
+						
+						[self rotateDataSet: kRotate90DegreesClockwise];
+						[self horzFlipDataSet: self];
+					break;
+					
+					case 1:
+						[self checkEverythingLoaded];
+						[self processReslice: 1 :newViewer];
+						
+						[self rotateDataSet: kRotate90DegreesClockwise];
+						[self horzFlipDataSet: self];
+					break;
+					
+					case 2:
+						[imageView setIndex: [pixList[curMovieIndex] count]/2];
+						[imageView sendSyncMessage:1];
+						[self adjustSlider];
+					break;
+				}
+			}
+			break;
 		}
+		
+		currentOrientationTool = newOrientationTool;
+		
+		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
+
+		float   iwl, iww;
+		[imageView getWLWW:&iwl :&iww];
+		[imageView setWLWW:iwl :iww];
+		
+		if( previousFusion != 0)
+		{
+			[self checkEverythingLoaded];
+			[self computeInterval];
+			[self setFusionMode: previousFusion];
+			[popFusion selectItemWithTag:previousFusion];
+		}
+		
+		NSLog( @"originalOrientation: %d", originalOrientation);
+				
+		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 		
 		[imageView setDrawing: YES];
 		
@@ -1422,6 +1425,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( FullScreenOn == YES ) [self fullScreenMenu: self];
 	
 	[imageView stopROIEditingForce: YES];
+	[imageView setDrawing: NO];
 	
 	windowWillClose = YES;
 	
@@ -3696,6 +3700,8 @@ static ViewerController *draggedController = 0L;
 {
 	self = [super initWithWindowNibName:@"Viewer"];
 	
+	[imageView setDrawing: NO];
+	
 	processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
 	
 	[self setPixelList:f fileList:d volumeData:v];
@@ -3705,11 +3711,7 @@ static ViewerController *draggedController = 0L;
 	   selector: @selector(updateImageView:)
 		   name: @"DCMUpdateCurrentImage"
 		 object: nil];
-//	[nc addObserver: self
-//	   selector: @selector(updateImageTiling:)
-//		   name:@"DCMImageTilingHasChanged"
-//		object: nil];
-		
+	
 	[seriesView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"]], @"toolIndex", nil];
@@ -3725,8 +3727,9 @@ static ViewerController *draggedController = 0L;
 #endif
 #endif
 	
+	[imageView setDrawing: YES];
+	
 	return self;
-
 }
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
@@ -3744,7 +3747,7 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
-	
+		
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
 	
@@ -3763,6 +3766,7 @@ static ViewerController *draggedController = 0L;
 		return;
 	}	
 	windowWillClose = YES;
+	[imageView setDrawing: NO];
 	
 	if( currentOrientationTool != originalOrientation)
 	{
@@ -3778,9 +3782,6 @@ static ViewerController *draggedController = 0L;
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
 	}
-	
-	
-	
 	
 	// Release previous data
 	
@@ -4062,6 +4063,8 @@ static ViewerController *draggedController = 0L;
 	[imageView becomeMainWindow];	// This will send the image sync order !
 	
 	windowWillClose = NO;
+	
+	[imageView setDrawing: YES];
 }
 
 - (void) showWindowTransition
