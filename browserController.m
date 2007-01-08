@@ -531,7 +531,7 @@ static BOOL COMPLETEREBUILD = NO;
 	ii = 0;
 	[context lock];
 	
-	[context setStalenessInterval: 120];
+	[context setStalenessInterval: 1200];
 	
 	// Find all current studies
 	
