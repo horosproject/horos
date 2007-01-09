@@ -365,54 +365,54 @@ extern BrowserController	*browserWindow;
 		case 0:
 		default:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIGeneralPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"General"];
+			[[self window] setTitle: NSLocalizedString( @"General", 0L)];
 			break;
 		case 4:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIViewerPreferencePane" ofType: @"prefPane"];	
-			[[self window] setTitle:@"Viewers"];
+			[[self window] setTitle: NSLocalizedString( @"Viewers", 0L)];
 			break;
 		case 2:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSICDPreferencePane" ofType: @"prefPane"];	
-			[[self window] setTitle:@"CD/DVD"];
+			[[self window] setTitle: NSLocalizedString( @"CD/DVD", 0L)];
 			break;
 		case 1:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIDatabasePreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"Database"];
+			[[self window] setTitle: NSLocalizedString( @"Database", 0L)];
 			break;
 		case 8:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIListenerPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"Listener"];
+			[[self window] setTitle: NSLocalizedString( @"Listener", 0L)];
 			break;
 		case 9:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSILocationsPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"Locations"];
+			[[self window] setTitle: NSLocalizedString( @"Locations", 0L)];
 			break;
 		case 11:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"AYDicomPrint" ofType: @"prefPane"];
-			[[self window] setTitle:@"DICOM Print"];
+			[[self window] setTitle: NSLocalizedString( @"DICOM Print", 0L)];
 			break;
 		case 3:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHangingPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"Protocols"];	
+			[[self window] setTitle: NSLocalizedString( @"Protocols", 0L)];	
 			break;
 		case 5:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSI3DPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"3D"];
+			[[self window] setTitle: NSLocalizedString( @"3D", 0L)];
 			break;
 		case 6:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIPETPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"PET"];
+			[[self window] setTitle: NSLocalizedString( @"PET", 0L)];
 			break;
 		case 10:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIAutoroutingPreferencePane" ofType: @"prefPane"];
-			[[self window] setTitle:@"Routing"];
+			[[self window] setTitle: NSLocalizedString( @"Routing", 0L)];
 			break;
 		case 7:
 			pathToPrefPaneBundle = [[NSBundle mainBundle] pathForResource: @"OSIHotKeys" ofType: @"prefPane"];
-			[[self window] setTitle:@"Hot Keys"];
+			[[self window] setTitle: NSLocalizedString( @"Hot Keys", 0L)];
 			break;
 	}
-	[[self window] setTitleWithRepresentedFilename: pathToPrefPaneBundle];
+	[[self window] setRepresentedFilename: pathToPrefPaneBundle];
 	
 	prefBundle = [NSBundle bundleWithPath: pathToPrefPaneBundle];
 	prefPaneClass = [prefBundle principalClass];
