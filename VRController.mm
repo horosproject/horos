@@ -73,6 +73,7 @@ static NSString*	FlyThruToolbarItemIdentifier	= @"FlyThru.tif";
 static NSString*	ScissorStateToolbarItemIdentifier	= @"ScissorState";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
+static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 
 @implementation VRController
 
@@ -208,6 +209,38 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[[blendingController imageView] getWLWW: &iwl :&iww];
 	[view setBlendingWLWW :iwl :iww];
 }
+
+- (IBAction) applyConvolution:(id) sender
+{
+	[viewer2D ApplyConvString: [sender title]];
+	[viewer2D applyConvolutionOnSource: self];
+}
+
+-(void) UpdateConvolutionMenu: (NSNotification*) note
+{
+    //*** Build the menu
+    NSMenu      *mainMenu;
+    NSMenu      *viewerMenu, *convMenu;
+    short       i;
+    NSArray     *keys;
+    NSArray     *sortedKeys;
+    
+    keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
+    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+    // Popup Menu
+
+    i = [[convolutionMenu menu] numberOfItems];
+    while(i-- > 0) [[convolutionMenu menu] removeItemAtIndex:0];
+	
+	[[convolutionMenu menu] addItemWithTitle: NSLocalizedString( @"Apply a filter", 0L) action:0L keyEquivalent:@""];
+	
+    for( i = 0; i < [sortedKeys count]; i++)
+    {
+        [[convolutionMenu menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (applyConvolution:) keyEquivalent:@""];
+    }
+}
+
 
 -(long) movieFrames { return maxMovieIndex;}
 
@@ -618,7 +651,13 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
            selector: @selector(CLUTChanged:)
                name: @"CLUTChanged"
              object: nil];
-	
+
+	[nc addObserver: self
+           selector: @selector(UpdateConvolutionMenu:)
+               name: @"UpdateConvolutionMenu"
+             object: nil];
+	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: 0L userInfo: 0L];
+			
 	 [nc addObserver: self
            selector: @selector(CloseViewerNotification:)
                name: @"CloseViewerNotification"
@@ -1557,6 +1596,17 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([OrientationsView frame]), NSHeight([OrientationsView frame]))];
     }
+	else if([itemIdent isEqualToString: ConvolutionViewToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Filters", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Filters", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Filters", nil)];
+	
+	// Use a custom view, a text field, for the search item 
+	[toolbarItem setView: convolutionView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
+    }
 	else if([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"3D Scissor State", nil)];
@@ -1656,6 +1706,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 												ShadingToolbarItemIdentifier,
 												EngineToolbarItemIdentifier,
 												PerspectiveToolbarItemIdentifier,
+												ConvolutionViewToolbarItemIdentifier,
 												BlendingToolbarItemIdentifier,
 												MovieToolbarItemIdentifier,
 												NSToolbarFlexibleSpaceItemIdentifier,
@@ -1719,6 +1770,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											FlyThruToolbarItemIdentifier,
 											ScissorStateToolbarItemIdentifier,
 											ROIManagerToolbarItemIdentifier,
+											ConvolutionViewToolbarItemIdentifier,
 											nil];
 	else
 		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,

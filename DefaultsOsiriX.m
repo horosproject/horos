@@ -585,7 +585,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey: @"DCMPRINT_Interval"];
 	
 	// ** STORESCP
-	[defaultValues setObject:@"5" forKey: @"LISTENERCHECKINTERVAL"];
+	[defaultValues setObject:@"10" forKey: @"LISTENERCHECKINTERVAL"];
 	
 	// ** AUTOTILING
 	[defaultValues setObject:@"1" forKey: @"AUTOTILING"];

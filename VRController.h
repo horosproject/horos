@@ -53,6 +53,9 @@
 
 	IBOutlet NSButton		*shadingCheck;
 	IBOutlet NSTextField    *shadingValues;
+
+	IBOutlet NSView			*convolutionView;
+	IBOutlet NSPopUpButton	*convolutionMenu;
 	
     NSToolbar				*toolbar;
 	
@@ -94,6 +97,7 @@
 	NSString				*_renderingMode;
 }
 
+- (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
 - (IBAction) resetShading:(id) sender;

@@ -81,6 +81,7 @@
                 ApplyWLWW = id; 
                 LODsliderAction = id; 
                 MoviePlayStop = id; 
+                applyConvolution = id; 
                 blendingSlider = id; 
                 editShadingValues = id; 
                 endShadingEditing = id; 
@@ -109,6 +110,8 @@
                 WLWWView = NSView; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
+                convolutionMenu = NSPopUpButton; 
+                convolutionView = NSView; 
                 enginePopup = NSPopUpButton; 
                 engineView = NSView; 
                 modeMatrix = NSMatrix; 
@@ -136,7 +139,9 @@
                 IBPropagate3DPointsSettings = id; 
                 IBSetSelected3DPointColor = id; 
                 IBSetSelected3DPointRadius = id; 
+                axView = id; 
                 bestRendering = id; 
+                coView = id; 
                 endDCMExportSettings = id; 
                 endQuicktimeSettings = id; 
                 endQuicktimeVRSettings = id; 
@@ -146,13 +151,14 @@
                 exportQuicktime = id; 
                 exportTIFF = id; 
                 resetImage = id; 
-                resizeWindow = id; 
                 saView = id; 
+                saViewOpposite = id; 
                 save3DPointsDefaultProperties = id; 
                 scissorStateButtons = id; 
                 sendMail = id; 
                 setCurrentdcmExport = id; 
                 setRenderMode = id; 
+                squareView = id; 
                 switchOrientationWidget = id; 
                 switchProjection = id; 
                 switchShading = id; 

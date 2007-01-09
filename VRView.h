@@ -169,10 +169,10 @@ typedef char* vtkMyCallbackVR;
 	BOOL						needToFlip, blendingNeedToFlip, firstTime;
 //	vtkImageFlip				*flip, *blendingFlip;
 	
-	IBOutlet NSWindow       *export3DWindow;
-	IBOutlet NSSlider		*framesSlider;
-	IBOutlet NSMatrix		*quality, *rotation, *orientation;
-	IBOutlet NSTextField	*pixelInformation;
+	IBOutlet NSWindow			*export3DWindow;
+	IBOutlet NSSlider			*framesSlider;
+	IBOutlet NSMatrix			*quality, *rotation, *orientation;
+	IBOutlet NSTextField		*pixelInformation;
 
 	IBOutlet NSWindow			*exportDCMWindow;
 	IBOutlet NSSlider			*dcmframesSlider;

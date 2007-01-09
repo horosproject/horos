@@ -253,7 +253,7 @@ extern BrowserController	*browserWindow;
 			deltaH = newWindowFrame.size.height - frameRect.size.height;
 			newY = y - deltaH;
 			newWindowFrame.origin.y = newY;
-						
+			
 			/*
 			NSLog(@"pane origin x:%f  y:%f   width:%f height %f", [[aPane mainView] frame].origin.x, [[aPane mainView] frame].origin.y, [[aPane mainView] frame].size.width,[[aPane mainView] frame].size.height);
 			NSLog(@"old origin x:%f  y:%f   width:%f height %f", frameRect.origin.x, frameRect.origin.y, frameRect.size.width,frameRect.size.height);
@@ -458,6 +458,7 @@ extern BrowserController	*browserWindow;
 	NSRect	finalFrame = [[self window] frame];
 	
 	[[self window] setTitle:@"Preferences"];
+	[[self window] setRepresentedFilename: 0L];
 	
 //	if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
 //	{
