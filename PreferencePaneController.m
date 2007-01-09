@@ -458,7 +458,7 @@ extern BrowserController	*browserWindow;
 	NSRect	finalFrame = [[self window] frame];
 	
 	[[self window] setTitle:@"Preferences"];
-	[[self window] setRepresentedFilename: 0L];
+	[[self window] setRepresentedFilename: @""];
 	
 //	if( [[NSScreen mainScreen] visibleFrame].size.height <= finalFrame.size.height)
 //	{
