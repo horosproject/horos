@@ -429,6 +429,8 @@ struct edge *UpdateActive( struct edge *active, struct edge *edgeTable[], long c
  * difficult to speed it way up.
  */
 
+static DCMPix	**restoreImageCache = 0L;
+
 inline void DrawRuns(	struct edge *active,
 						long curY,
 						float *pix,
@@ -447,7 +449,8 @@ inline void DrawRuns(	struct edge *active,
 						float *idev,
 						float imean,
 						long orientation,
-						long stackNo)		// Only if X/Y orientation
+						long stackNo,	// Only if X/Y orientation
+						BOOL restore)		
 {
     struct edge		*e;
 	long			xCoords[ 4096];
@@ -586,38 +589,79 @@ inline void DrawRuns(	struct edge *active,
 			{
 				start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 				end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
-				
+
 				switch( orientation)
 				{
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
+					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
 					case 2:		curPix = &pix[ (curY * w) + start];							break;
 				}
-				
+
 				x = end - start;
 				
-				if( RGB == NO)
+				if( restore)
 				{
-					while( x-- >= 0)
+					if( RGB == NO)
 					{
-						if( *curPix >= min && *curPix <= max) *curPix = newVal;
+						float	*restore = 0L;
 						
-						if( orientation) curPix ++;
-						else curPix += w;
+						if( orientation == 0)
+						{
+							if( restoreImageCache[ curY] == 0L) [restoreImageCache[ curY] CheckLoad];
+							
+							restore = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];
+							
+							while( x-- >= 0)
+							{
+								*curPix = *restore;
+								curPix += w;
+							}
+						}
+						else
+						{
+						
+						}
 					}
+//					else
+//					{
+//						while( x-- >= 0)
+//						{
+//							unsigned char*  rgbPtr = (unsigned char*) curPix;
+//							
+//							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
+//							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
+//							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+//							
+//							if( orientation) curPix ++;
+//							else curPix += w;
+//						}
+//					}
 				}
 				else
 				{
-					while( x-- >= 0)
+					if( RGB == NO)
 					{
-						unsigned char*  rgbPtr = (unsigned char*) curPix;
-						
-						if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
-						if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
-						if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
-						
-						if( orientation) curPix ++;
-						else curPix += w;
+						while( x-- >= 0)
+						{
+							if( *curPix >= min && *curPix <= max) *curPix = newVal;
+							
+							if( orientation) curPix ++;
+							else curPix += w;
+						}
+					}
+					else
+					{
+						while( x-- >= 0)
+						{
+							unsigned char*  rgbPtr = (unsigned char*) curPix;
+							
+							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
+							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
+							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+							
+							if( orientation) curPix ++;
+							else curPix += w;
+						}
 					}
 				}
 			}
@@ -644,7 +688,8 @@ void ras_FillPolygon(	NSPointInt *p,
 						float *idev,
 						float imean,
 						long orientation,
-						long stackNo)
+						long stackNo,
+						BOOL restore)
 {
 	struct edge *edgeTable[MAXVERTICAL];
     struct	edge *active;
@@ -662,7 +707,7 @@ void ras_FillPolygon(	NSPointInt *p,
 	
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
 	{
-		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo);
+		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
 	}
 	
 	if( clip)
@@ -1441,6 +1486,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo
 {
+	return [self fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :NO];
+}
+
+- (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore
+{
     long				count, i, no = 0;
 	long				x, y;
     long				upleftx, uplefty, downrightx, downrighty, ims = width * height;
@@ -1450,7 +1500,17 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	BOOL				clip;
 	
     [self CheckLoad];
-
+	
+	if( restore)
+	{
+		restoreImageCache = malloc( [pixArray count] * sizeof(void*));
+		
+		for( i = 0; i < [pixArray count]; i++)
+		{
+			restoreImageCache[ i] = 0L;
+		}
+	}
+	
 	if( roi)
 	{
 		if( [roi type] == tPlain)
@@ -1762,7 +1822,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	
 	if( ptsInt != 0L && no > 1)
 	{
-		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo);
+		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
 	}
 	else	
 	{	// Fill the image that contains no ROI :
@@ -1827,6 +1887,17 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( roi)
 	{
 		free( ptsInt);
+	}
+	
+	if( restoreImageCache)
+	{
+		for( i = 0; i < [pixArray count]; i++)
+		{
+			[restoreImageCache[ i] release];
+		}
+		
+		free( restoreImageCache);
+		restoreImageCache = 0L;
 	}
 }
 
@@ -2021,7 +2092,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				no = newNo;
 			}
 			
-			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0);
+			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
 			
 			if( max) *max = imax;
 			if( min) *min = imin;
@@ -2033,7 +2104,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 			{
 				idev = 0 ;
 				
-				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0);
+				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
 				
 				*dev = idev;
 				*dev = *dev / (count-1);

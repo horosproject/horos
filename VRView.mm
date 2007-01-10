@@ -3025,6 +3025,12 @@ public:
 	Transform->Delete();
 	
 	// Fill ROIs
+//	for ( i = 0; i < stackMax; i++ )
+//	{
+//		[controller applyScissor : [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], 0L]];
+//	}
+//	vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+//	[self setNeedsDisplay:YES];
 	
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];

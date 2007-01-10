@@ -656,7 +656,7 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
            selector: @selector(UpdateConvolutionMenu:)
                name: @"UpdateConvolutionMenu"
              object: nil];
-	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: 0L userInfo: 0L];
+	 [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateConvolutionMenu" object: NSLocalizedString( @"No Filter", 0L) userInfo: 0L];
 			
 	 [nc addObserver: self
            selector: @selector(CloseViewerNotification:)
@@ -805,23 +805,27 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 	}
 	else
 	{
+		BOOL test = NO;
+		
+		 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) test = YES;
+	
 		for( x = 0; x < maxMovieIndex; x++)
 		{
 			switch( stackOrientation)
 			{
 				case 2:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
-					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
+					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i  :test];
 					break;
 					
 				case 1:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i  :test];
 					break;
 					
 				case 0:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i  :test];
 					break;
 			}
 		}

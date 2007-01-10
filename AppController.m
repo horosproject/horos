@@ -855,37 +855,37 @@ NSRect screenFrame()
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
-    //*** Build the menu
-    NSMenu      *mainMenu;
-    NSMenu      *viewerMenu, *convMenu;
-    short       i;
-    NSArray     *keys;
-    NSArray     *sortedKeys;
-    
+	//*** Build the menu
+	NSMenu      *mainMenu;
+	NSMenu      *viewerMenu, *convMenu;
+	short       i;
+	NSArray     *keys;
+	NSArray     *sortedKeys;
+	
 //	NSLog( NSLocalizedString(@"Convolution Filters", nil));
 	
-    mainMenu = [NSApp mainMenu];
-    viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+	mainMenu = [NSApp mainMenu];
+	viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 //	if( viewerMenu == 0L) NSLog( @"not found");
 	
-    convMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Convolution Filters", nil)] submenu];
+	convMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Convolution Filters", nil)] submenu];
 //	if( convMenu == 0L) NSLog( @"not found");
 	
-    keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
-    sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    
-    i = [convMenu numberOfItems];
-    while(i-- > 0) [convMenu removeItemAtIndex:0];    
+	keys = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"Convolution"] allKeys];
+	sortedKeys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+	i = [convMenu numberOfItems];
+	while(i-- > 0) [convMenu removeItemAtIndex:0];    
 	
 	[convMenu addItemWithTitle:NSLocalizedString(@"No Filter", 0L) action:@selector (ApplyConv:) keyEquivalent:@""];
 	[convMenu addItem: [NSMenuItem separatorItem]];
 	
-    for( i = 0; i < [sortedKeys count]; i++)
-    {
-        [convMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
-    }
-    [convMenu addItem: [NSMenuItem separatorItem]];
-    [convMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
+	for( i = 0; i < [sortedKeys count]; i++)
+	{
+		[convMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
+	}
+	[convMenu addItem: [NSMenuItem separatorItem]];
+	[convMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
 	
 	[[convMenu itemWithTitle:[note object]] setState:NSOnState];
 }
