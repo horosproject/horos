@@ -82,10 +82,20 @@
 		int screenNumber = [[NSScreen screens] indexOfObject:screen];
 		[seriesInfo setObject:[NSNumber numberWithInt:screenNumber] forKey:@"screenNumber"];
 		id series = [controller currentSeries];
-		[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
-		[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
-		[seriesInfo setObject:[series valueForKey:@"seriesDescription"] forKey:@"protocolName"];
 		
+		if ([series valueForKey:@"name"])
+			[seriesInfo setObject:[series valueForKey:@"name"] forKey:@"seriesDescription"];
+		else 
+			[seriesInfo setObject:NSLocalizedString(@"unnamed", nil) forKey:@"seriesDescription"];
+			
+		if ([series valueForKey:@"id"])
+			[seriesInfo setObject:[series valueForKey:@"id"] forKey:@"seriesNumber"];
+			
+		if ([series valueForKey:@"seriesDescription"])
+			[seriesInfo setObject:[series valueForKey:@"seriesDescription"] forKey:@"protocolName"];
+		else
+			[seriesInfo setObject:NSLocalizedString(@"unnamed", nil) forKey:@"protocolName"];
+
 		// Not supported by OrthogonalMPRPETCTViewer
 		if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || [controller isKindOfClass:[SRController class]])) {
 			// WW/wl presets only work well with CT

@@ -28,17 +28,20 @@ It is a shared class.
 #import <Cocoa/Cocoa.h>
 
 @class OSIWindowController;
+@class LayoutWindowController;
 @interface WindowLayoutManager : NSObject {
-	BOOL				_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
-	NSMutableDictionary *_currentHangingProtocol;
-	NSDictionary		*_advancedHangingProtocol;
-	BOOL				_hangingProtocolInUse;
-	BOOL				_useToolbarPanel;
-	NSMutableArray		*_windowControllers;
-	NSManagedObject		*_currentStudy;
-	NSArray				*_seriesSets;
-	int					_seriesSetIndex;
-	NSArray				*_relatedStudies;
+	BOOL					_xFlipped, _yFlipped;  // Dependent on current DCMView settings.
+	NSMutableDictionary		*_currentHangingProtocol;
+	//NSDictionary			*_advancedHangingProtocol;
+	BOOL					_hangingProtocolInUse;
+	BOOL					_useToolbarPanel;
+	NSMutableArray			*_windowControllers;
+	NSManagedObject			*_currentStudy;
+	NSArray					*_seriesSets;
+	int						_seriesSetIndex;
+	NSArray					*_relatedStudies;
+	NSMutableDictionary		*_hangingProtocol;
+	LayoutWindowController	*_layoutWindowController;
 	
 }
 
@@ -68,13 +71,15 @@ It is a shared class.
 #pragma mark-
 #pragma mark Advanced Hanging
 -(BOOL)hangStudy:(id)study;
+- (NSDictionary *)hangingProtocol;
+- (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol;
 
 
 #pragma mark-
 #pragma mark Moving Through Series Sets
 - (void)nextSeriesSet;
 - (void)previousSeriesSet;
-- (void)hangSet:(NSArray *)seriesSet;
+- (void)hangSet:(NSDictionary *)seriesSet;
 - (BOOL)hangingProtocolInUse;
 
 #pragma mark-
@@ -92,6 +97,13 @@ It is a shared class.
 - (id)comparionStudy;
 - (NSArray *)comparisonStudies;
 
+#pragma mark-
+#pragma mark Layout Window
+- (IBAction)openLayoutWindow:(id)sender;
+
+- (id)currentStudy;
+- (void)setCurrentStudy:(id)study;
+- (NSArray *)seriesSets;
 
 
 

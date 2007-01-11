@@ -68,10 +68,10 @@ MODIFICATION HISTORY
 #import "DefaultsOsiriX.h"
 #import "OrthogonalMPRViewer.h"
 #import "OrthogonalMPRPETCTViewer.h"
-#import "LayoutWindowController.h"
+
 #import "WindowLayoutManager.h"
 #import "QueryController.h"
-#import "LayoutWindowController.h"
+
 
 #define BUILTIN_DCMTK YES
 
@@ -2189,18 +2189,9 @@ static BOOL initialized = NO;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 - (IBAction) saveLayout:(id) sender{
-	if (_layoutController)
-		[_layoutController release];
-		NSLog (@"save Layout");
-	_layoutController = [[LayoutWindowController alloc] init];
-	[_layoutController showWindow:self];
-	//[NSApp beginSheet:[layoutController window]  modalForWindow:[NSApp mainWindow] modalDelegate:self didEndSelector:@selector(layoutSheetDidEnd:returnCode:contextInfo:) contextInfo:layoutController];
-	
+	[[WindowLayoutManager sharedWindowLayoutManager] openLayoutWindow:sender];
 }
 
-- (void)layoutSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
-	[(LayoutWindowController *)contextInfo release];
-}
 
 //Deprecated use Window Layout Manager for Hanging Protocols
 - (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description

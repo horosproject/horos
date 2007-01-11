@@ -31,6 +31,7 @@
 #import "OrthogonalMPRViewer.h"
 #import "SRController.h"
 #import "EndoscopyViewer.h"
+#import "LayoutWindowController.h";
 
 
 
@@ -66,6 +67,8 @@ WindowLayoutManager *sharedLayoutManager;
 - (void)unregisterWindowController:(OSIWindowController *)controller{
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[controller window]];
 	[_windowControllers removeObject:controller];
+	if ([_windowControllers count] == 0)
+		[self setHangingProtocol:nil];
 }
 
 - (void)windowWillClose:(NSNotification *)notification{
@@ -392,10 +395,9 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark Advanced Hanging
 -(BOOL)hangStudy:(id)study{
 	// clear current Hanging Protocol;
-
 	if ([[[study entity] name] isEqualToString:@"Study"]) {
 		[self setCurrentHangingProtocolForModality:nil description: nil];
-		_currentStudy = study;
+		[self setCurrentStudy:study];
 		
 			// DICOM & others
 			/* Need to improve Hanging Protocols	
@@ -428,16 +430,29 @@ WindowLayoutManager *sharedLayoutManager;
 			// How to handle comparisons. Would like to a bodyRegion Attribute to study Ideally handle comparisons differently depending on comparison's Modality
 			// For now just use the first one
 			
-			NSDictionary *hangingProtocol = [filteredHangingProtocols objectAtIndex:0];
-			// Have a sequence of an arrangement of sets. Could loop through using the next and previous series buttons
-			_seriesSets = [hangingProtocol objectForKey:@"seriesSets"];
-			NSArray *firstSet = [_seriesSets objectAtIndex:0];
+			NSMutableDictionary *hangingProtocol = [NSMutableDictionary dictionaryWithDictionary:[filteredHangingProtocols objectAtIndex:0]];
+			//if someone has the early beta style. Update to the new format;
+			if (![hangingProtocol objectForKey:@"layouts"]) {
+				NSEnumerator *enumerator = [[hangingProtocol objectForKey:@"seriesSets"] objectEnumerator];
+				id seriesSet;
+				NSMutableArray *layouts = [NSMutableArray array];
+				int i = 1;
+				while (seriesSet = [enumerator nextObject]) {
+					NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+					[dictionary  setValue:seriesSet forKey:@"viewers"];
+					[dictionary  setValue:[NSString stringWithFormat:@"%@ %d", NSLocalizedString(@"Layout", nil), i++] forKey:@"name"];
+					[dictionary  setValue:[NSNumber numberWithBool:NO] forKey: @"hasComparison"];
+					[layouts addObject:dictionary];
+				}
+				[hangingProtocol setValue:layouts forKey:@"layouts"];
+			}
+			
 			
 			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
+			
+			[self setHangingProtocol:hangingProtocol];	
+			NSDictionary *firstSet = [[self seriesSets] objectAtIndex:0];	
 			[self hangSet:firstSet];
-					
-			[_advancedHangingProtocol release];
-			_advancedHangingProtocol = [hangingProtocol copy];
 			_hangingProtocolInUse = YES;
 			return YES;
 		}
@@ -456,42 +471,44 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark Moving Through Series Sets
 - (void)nextSeriesSet{
 	_seriesSetIndex++;
-	if (_seriesSetIndex >= [_seriesSets count])
+	if (_seriesSetIndex >= [[self seriesSets] count])
 		_seriesSetIndex = 0;
-	NSArray *array = [_seriesSets objectAtIndex:_seriesSetIndex];
-	[self hangSet:array];
+	NSDictionary *layout = [[self seriesSets] objectAtIndex:_seriesSetIndex];
+	[self hangSet:layout];
 }
 
 
 - (void)previousSeriesSet{
 	_seriesSetIndex--;
 	if (_seriesSetIndex < 0 )
-		_seriesSetIndex = [_seriesSets count] - 1;
-	NSArray *array = [_seriesSets objectAtIndex:_seriesSetIndex];
-	[self hangSet:array];
+		_seriesSetIndex = [[self seriesSets] count] - 1;
+	NSDictionary *layout = [[self seriesSets] objectAtIndex:_seriesSetIndex];
+	[self hangSet:layout];
 }
 
-- (void)hangSet:(NSArray *)seriesSet{
+- (void)hangSet:(NSDictionary *)seriesSet{
+	
 	//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
 	NSDictionary *seriesInfo;
-	NSEnumerator *enumerator = [seriesSet objectEnumerator];
+	NSArray *viewers = [seriesSet  valueForKey:@"viewers"];
+	NSEnumerator *enumerator = [viewers objectEnumerator];
 	NSMutableArray *children =  [NSMutableArray array];
 	BrowserController *browserController = [BrowserController currentBrowser];
-	int count = [[browserController childrenArray: _currentStudy] count];
+	int count = [[browserController childrenArray: [self currentStudy]]  count];
 	NSMutableArray *usableViewers = [NSMutableArray arrayWithArray:[self viewers2D]];
 	while (seriesInfo = [enumerator nextObject]){
 		// only load ViewerControllers first
-
+		
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
 			int i;	
 			id seriesToOpen = nil;	
 			BOOL openViewer = NO;					
 			for (i = 0; i < count; i++) {				
-				id child = [[browserController childrenArray: _currentStudy] objectAtIndex:i];
+				id child = [[browserController childrenArray: [self currentStudy]] objectAtIndex:i];
 				// if series description is unnamed used series number
 				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
 					//Try protocol name next
-					//NSLog(@"series Protocol: %@", [seriesInfo objectForKey:@"protocolName"]);
+					
 					if ([[seriesInfo objectForKey:@"protocolName"] isEqualToString:@"unnamed"]) {
 						if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
 							[children addObject:child];
@@ -551,7 +568,7 @@ WindowLayoutManager *sharedLayoutManager;
 	
 	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
 	// need to make this more efficient
-	enumerator = [seriesSet objectEnumerator];
+	enumerator = [viewers objectEnumerator];
 	NSEnumerator *windowEnumerator = [_windowControllers objectEnumerator];
 	ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
@@ -603,7 +620,7 @@ WindowLayoutManager *sharedLayoutManager;
 	// Need to do fusion/ Subtration/ open 3D Windows
 	// Once we have 2D windows opened and fused can look for 3D windows to open  
 	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-	enumerator = [seriesSet objectEnumerator];
+	enumerator = [viewers objectEnumerator];
 	
 	//ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
@@ -833,7 +850,7 @@ WindowLayoutManager *sharedLayoutManager;
 	NSEnumerator  *enumerator = [bodyRegions objectEnumerator];
 	NSDictionary *region;
 	NSDictionary *bodyRegion = nil;
-	NSString *studyDescription = [_currentStudy valueForKey:@"studyName"];
+	NSString *studyDescription = [[self currentStudy] valueForKey:@"studyName"];
 	// find body Region
 	while ((region = [enumerator nextObject]) && bodyRegion == nil){
 		NSEnumerator *keywordEnumerator = [[region objectForKey:@"keywords"] objectEnumerator];
@@ -861,6 +878,39 @@ WindowLayoutManager *sharedLayoutManager;
 		}
 	}
 	return comparisonStudies;
+}
+
+- (NSDictionary *)hangingProtocol{
+	return _hangingProtocol;
+}
+
+- (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol{
+	[_hangingProtocol release];
+	_hangingProtocol = [hangingProtocol retain];
+}
+
+#pragma mark-
+#pragma mark Layout Window
+- (IBAction)openLayoutWindow:(id)sender{
+	if (!_layoutWindowController) {
+		_layoutWindowController = [[LayoutWindowController alloc] init];
+		[_layoutWindowController bind:@"hangingProtocol" toObject:self withKeyPath:@"hangingProtocol" options:nil];
+	}
+	[_layoutWindowController showWindow:self];
+}
+
+- (id)currentStudy{
+	if (!_currentStudy && ([_windowControllers count] > 0))
+		_currentStudy = [[_windowControllers objectAtIndex:0] currentStudy];
+	
+	return _currentStudy;
+}
+- (void)setCurrentStudy:(id)study{
+	_currentStudy = study;
+}
+
+- (NSArray *)seriesSets{
+	return [_hangingProtocol objectForKey:@"layouts"];
 }
 	
 

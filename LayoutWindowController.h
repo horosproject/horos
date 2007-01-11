@@ -28,9 +28,6 @@ Saves and Creates Advanced Hanging Protocols
 @interface LayoutWindowController : NSWindowController {
 	NSArray *_windowControllers;
 	NSMutableDictionary *_hangingProtocol;
-	NSString *_studyDescription;
-	NSString *_modality;
-	NSString *_institution;
 	BOOL _hasProtocol;
 	BOOL _addLayoutSet;
 	IBOutlet LayoutArrayController *_layoutArrayController;
@@ -39,9 +36,7 @@ Saves and Creates Advanced Hanging Protocols
 
 - (IBAction)endSheet:(id)sender;
 - (NSString *)studyDescription;
-- (void)setStudyDescription:(NSString *)studyDescription;
 - (NSString *)modality;
-- (void)setModality:(NSString *)modality;
 - (NSArray *)windowControllers;
 - (void)setWindowControllers:(NSArray *)controllers;
 - (NSDictionary *)hangingProtocol;
@@ -51,7 +46,6 @@ Saves and Creates Advanced Hanging Protocols
 - (BOOL)addLayoutSet;
 - (void)setAddLayoutSet:(BOOL)addSet;
 - (NSString *)institution;
-- (void)setInstitution:(NSString *)institution;
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end

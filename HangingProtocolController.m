@@ -26,11 +26,15 @@
 
 - (id)newObject{
 	id hangingProtocol = [super newObject];
+	NSLog(@"new Object");
 	[hangingProtocol setValue:[_layoutWindowController modality] forKey:@"modality"];
 	[hangingProtocol setValue:[_layoutWindowController studyDescription] forKey:@"studyDescription"]; 
-	[hangingProtocol setObject:[_layoutWindowController institution] forKey:@"institution"]; 
+	[hangingProtocol setValue:[_layoutWindowController institution] forKey:@"institution"];
+	NSLog(@"get Layout"); 
 	id layout = [[_layoutArrayController newObject] autorelease];
+	NSLog(@"new Layout: %@", layout);
 	[hangingProtocol setValue:[NSArray arrayWithObject:layout] forKey:@"layouts"]; 
+	NSLog(@"new Hanging Protocol: %@", hangingProtocol);
 	return hangingProtocol;
 }
 
