@@ -587,80 +587,106 @@ inline void DrawRuns(	struct edge *active,
 			}
 			else		// INSIDE
 			{
+				float	*restorePtr = 0L;
+				
 				start = xCoords[i];		if( start < 0) start = 0;		if( start >= w) start = w;
 				end = xCoords[i + 1];	if( end < 0) end = 0;			if( end >= w) end = w;
-
+				
 				switch( orientation)
 				{
-					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		break;
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			break;
-					case 2:		curPix = &pix[ (curY * w) + start];							break;
+					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
+					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
+					case 2:		curPix = &pix[ (curY * w) + start];							restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
 				}
-
+				
 				x = end - start;
 				
-				if( restore)
+				if( x >= 0)
 				{
-					if( RGB == NO)
+					if( restore)
 					{
-						float	*restore = 0L;
-						
-						if( orientation == 0)
+						if( RGB == NO)
 						{
-							if( restoreImageCache[ curY] == 0L) [restoreImageCache[ curY] CheckLoad];
-							
-							restore = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];
-							
-							while( x-- >= 0)
+							if( orientation)
 							{
-								*curPix = *restore;
-								curPix += w;
+								while( x-- >= 0)
+								{
+									*curPix = *restorePtr;
+									
+									curPix ++;
+									restorePtr ++;
+								}
+							}
+							else
+							{
+								while( x-- >= 0)
+								{
+									*curPix = *restorePtr;
+									
+									curPix += w;
+									restorePtr += w;
+								}
 							}
 						}
 						else
 						{
-						
-						}
-					}
-//					else
-//					{
-//						while( x-- >= 0)
-//						{
-//							unsigned char*  rgbPtr = (unsigned char*) curPix;
-//							
-//							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
-//							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
-//							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
-//							
-//							if( orientation) curPix ++;
-//							else curPix += w;
-//						}
-//					}
-				}
-				else
-				{
-					if( RGB == NO)
-					{
-						while( x-- >= 0)
-						{
-							if( *curPix >= min && *curPix <= max) *curPix = newVal;
-							
-							if( orientation) curPix ++;
-							else curPix += w;
+							if( orientation)
+							{
+								while( x-- >= 0)
+								{
+									unsigned char*  rgbPtr = (unsigned char*) curPix;
+									unsigned char*  rgbSrcPtr = (unsigned char*) restorePtr;
+									
+									rgbPtr[ 1] = restorePtr[ 1];
+									rgbPtr[ 2] = restorePtr[ 2];
+									rgbPtr[ 3] = restorePtr[ 3];
+									
+									curPix ++;
+									restorePtr ++;
+								}
+							}
+							else
+							{
+								while( x-- >= 0)
+								{
+									unsigned char*  rgbPtr = (unsigned char*) curPix;
+									unsigned char*  rgbSrcPtr = (unsigned char*) restorePtr;
+									
+									rgbPtr[ 1] = restorePtr[ 1];
+									rgbPtr[ 2] = restorePtr[ 2];
+									rgbPtr[ 3] = restorePtr[ 3];
+									
+									curPix += w;
+									restorePtr += w;
+								}
+							}
 						}
 					}
 					else
 					{
-						while( x-- >= 0)
+						if( RGB == NO)
 						{
-							unsigned char*  rgbPtr = (unsigned char*) curPix;
-							
-							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
-							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
-							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
-							
-							if( orientation) curPix ++;
-							else curPix += w;
+							while( x-- >= 0)
+							{
+								if( *curPix >= min && *curPix <= max) *curPix = newVal;
+								
+								if( orientation) curPix ++;
+								else curPix += w;
+							}
+						}
+						else
+						{
+							while( x-- >= 0)
+							{
+								unsigned char*  rgbPtr = (unsigned char*) curPix;
+								
+								if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
+								if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
+								if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+								
+								if( orientation) curPix ++;
+								else curPix += w;
+							}
 						}
 					}
 				}
@@ -1489,6 +1515,37 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	return [self fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :NO];
 }
 
+- (void) prepareRestore
+{
+	int i;
+	
+	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
+	
+	for( i = 0; i < [pixArray count]; i++)
+	{
+		DCMPix	*s = [pixArray objectAtIndex:i];
+		
+		restoreImageCache[ i] = [[DCMPix alloc] myinit: [s srcFile] :i :[pixArray count] :0L :[s frameNo] :0];
+	}
+	
+	NSLog( @"prepare Restore cache");
+}
+
+- (void) freeRestore
+{
+	int i;
+	
+	for( i = 0; i < [pixArray count]; i++)
+	{
+		[restoreImageCache[ i] release];
+	}
+	
+	free( restoreImageCache);
+	restoreImageCache = 0L;
+	
+	NSLog( @"free Restore cache");
+}
+
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore
 {
     long				count, i, no = 0;
@@ -1500,16 +1557,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	BOOL				clip;
 	
     [self CheckLoad];
-	
-	if( restore)
-	{
-		restoreImageCache = malloc( [pixArray count] * sizeof(void*));
-		
-		for( i = 0; i < [pixArray count]; i++)
-		{
-			restoreImageCache[ i] = 0L;
-		}
-	}
 	
 	if( roi)
 	{
@@ -1887,17 +1934,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	if( roi)
 	{
 		free( ptsInt);
-	}
-	
-	if( restoreImageCache)
-	{
-		for( i = 0; i < [pixArray count]; i++)
-		{
-			[restoreImageCache[ i] release];
-		}
-		
-		free( restoreImageCache);
-		restoreImageCache = 0L;
 	}
 }
 

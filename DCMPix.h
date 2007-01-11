@@ -358,6 +358,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setThickSlabController:( ThickSlabController*) ts;
 - (void) setFixed8bitsWLWW:(BOOL) f;
 - (BOOL) generated;
+- (void) prepareRestore;
+- (void) freeRestore;
 
 //Database links
 - (NSManagedObject *)imageObj;

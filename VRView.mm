@@ -3024,17 +3024,13 @@ public:
 	
 	Transform->Delete();
 	
-	// Fill ROIs
-//	for ( i = 0; i < stackMax; i++ )
-//	{
-//		[controller applyScissor : [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], 0L]];
-//	}
-//	vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-//	[self setNeedsDisplay:YES];
+	[[pixList objectAtIndex: 0] prepareRestore];
 	
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
 	[sched setDelegate: self];
+	
+	 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) c = NSTabCharacter;
 	
 	// Create the work units. These can be anything. We will use NSNumbers
 	NSMutableSet *unitsSet = [NSMutableSet set];
@@ -3092,7 +3088,7 @@ public:
 		}
 	}
 	
-	if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter) && currentTool == t3DCut)
+	if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSDeleteCharacter || c == NSTabCharacter) && currentTool == t3DCut)
 	{
 		vtkPoints		*roiPts = ROI3DData->GetPoints();
 		
@@ -3162,6 +3158,9 @@ public:
 		if( isRGB == NO)
 			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
+	
+	[[pixList objectAtIndex: 0] freeRestore];
+	
 	[self setNeedsDisplay:YES];
 }
 

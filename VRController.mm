@@ -789,43 +789,45 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 		{
 			case 2:
 				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
+				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i :YES];
 				else [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
 				break;
 				
 			case 1:
 				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
+				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i :YES];
 				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
 				break;
 				
 			case 0:
 				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
+				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i :YES];
 				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
 				break;
 		}
 	}
 	else
 	{
-		BOOL test = NO;
-		
-		 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) test = YES;
-	
 		for( x = 0; x < maxMovieIndex; x++)
 		{
 			switch( stackOrientation)
 			{
 				case 2:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
-					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i  :test];
+					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i :YES];
+					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
 					break;
 					
 				case 1:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i  :test];
+					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i :YES];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
 					break;
 					
 				case 0:
 					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i  :test];
+					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i :YES];
+					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
 					break;
 			}
 		}
