@@ -25,23 +25,16 @@
 @implementation HangingProtocolController
 
 - (id)newObject{
-	NSLog(@"new Hanging Protocol");
 	id hangingProtocol = [super newObject];
 	[hangingProtocol setValue:[_layoutWindowController modality] forKey:@"modality"];
 	[hangingProtocol setValue:[_layoutWindowController studyDescription] forKey:@"studyDescription"]; 
 	[hangingProtocol setObject:[_layoutWindowController institution] forKey:@"institution"]; 
-	//[hangingProtocol setValue:[NSArray arrayWithObject:[_layoutArrayController newObject]] forKey:@"layouts"]; 
-	[hangingProtocol setValue:[NSArray array] forKey:@"layouts"]; 
+	id layout = [[_layoutArrayController newObject] autorelease];
+	[hangingProtocol setValue:[NSArray arrayWithObject:layout] forKey:@"layouts"]; 
 	return hangingProtocol;
 }
 
-/*
-- (void)add:(id)sender{
-	[super add:sender];
-	//[_layoutArrayController setContent:[[self selection] valueForKey:@"layouts"]];
-	//[_layoutArrayController add:self];
-}
-*/
+
 	
 	
 

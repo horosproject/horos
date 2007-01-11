@@ -43,12 +43,10 @@
 
 - (void)add:(id)sender{
 	[self addObject:[self newObject]];
-	NSLog(@"add object to content:%@", [self content]);
 }
 
 
 - (id)newObject{
-	NSLog(@"new Layout");
 	id newObject = [super newObject];
 	[newObject setValue:[NSString stringWithFormat:@"%@ %d", NSLocalizedString(@"Layout", nil), [[self content] count] + 1] forKey:@"name"];
 	[newObject setValue:[NSNumber numberWithBool:NO] forKey: @"hasComparison"];
@@ -163,6 +161,36 @@
 
 	}	
 	return viewersArray;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info 
+            row:(int)row dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard* pboard = [info draggingPasteboard];
+    NSData* rowData = [pboard dataForType:@"LayoutDraggingType"];
+    NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+    int dragRow = [rowIndexes firstIndex];
+	id dragObject = [[[self arrangedObjects] objectAtIndex:dragRow] retain];
+	[self removeObject:dragObject];
+	[self insertObject:dragObject  atArrangedObjectIndex:row];
+	[dragObject release];
+	return YES;
+    // Move the specified row to its new location...
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op 
+{
+    // Add code here to validate the drop
+    return NSDragOperationEvery;    
+}
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard 
+{
+    // Copy the row numbers to the pasteboard.
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
+    [pboard declareTypes:[NSArray arrayWithObject:@"LayoutDraggingType"] owner:self];
+    [pboard setData:data forType:@"LayoutDraggingType"];
+    return YES;
 }
 
 @end
