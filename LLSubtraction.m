@@ -342,4 +342,64 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	}
 }
 
+/*
+#pragma mark-
+#pragma mark Filtering
+
++ (void)erodeVolumeInZ:(float*)fVolume withWidth:(int)width height:(int)height maxZ:(int)maxZ structuringElementRadius:(int)structuringElementRadius;
+{
+	structuringElementRadius *= 2;
+	structuringElementRadius ++;
+	
+	unsigned char *kernel;
+	kernel = (unsigned char*) calloc( structuringElementRadius*structuringElementRadius, sizeof(unsigned char));
+	draw_filled_circle(kernel, structuringElementRadius, 0xFF);	
+	
+	int y;
+	for(y=0; y<height; y++)
+	{
+		vImage_Buffer srcbuf, dstBuf;
+		vImage_Error err;
+		srcbuf.data = fVolume;
+		dstBuf.data = malloc(width * maxZ);
+		dstBuf.height = srcbuf.height = height;
+		dstBuf.width = srcbuf.width = width;
+		dstBuf.rowBytes = srcbuf.rowBytes = width * height;
+		err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
+		if( err) NSLog(@"%d", err);
+		memcpy(buffer,dstBuf.data,width*height);
+		free( dstBuf.data);
+	}
+	free( kernel);
+}
+*/
+/*
++ (void)dilateBuffer:(unsigned char*)buffer withWidth:(int)width height:(int)height structuringElementRadius:(int)structuringElementRadius;
+{	
+	// add a margin to avoid border effects!!
+	// [aROI addMarginToBuffer: structuringElementRadius*2];
+	
+	structuringElementRadius *= 2;
+	structuringElementRadius ++;
+	
+	unsigned char *kernel;
+	kernel = (unsigned char*) calloc(structuringElementRadius*structuringElementRadius, sizeof(unsigned char));
+	memset(kernel,0xff,structuringElementRadius*structuringElementRadius);
+	draw_filled_circle(kernel, structuringElementRadius, 0x0);
+	
+	vImage_Buffer srcbuf, dstBuf;
+	vImage_Error err;
+	srcbuf.data = buffer;
+	dstBuf.data = malloc(width*height);
+	dstBuf.height = srcbuf.height = height;
+	dstBuf.width = srcbuf.width = width;
+	dstBuf.rowBytes = srcbuf.rowBytes = width;
+	err = vImageDilate_Planar8(&srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
+	if(err) NSLog(@"%d", err);
+	
+	memcpy(buffer, dstBuf.data, width*height);
+	free(dstBuf.data);
+	free(kernel);
+}
+*/
 @end

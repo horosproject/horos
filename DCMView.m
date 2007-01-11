@@ -439,6 +439,32 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 }
 
+- (void)drawPushBackToolArea;
+{
+	glEnable(GL_BLEND);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_POINT_SMOOTH);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	long i;
+	
+	int circleRes = 20;
+	circleRes = (pushBackRadius>5) ? 30 : circleRes;
+	circleRes = (pushBackRadius>10) ? 40 : circleRes;
+	circleRes = (pushBackRadius>50) ? 60 : circleRes;
+	circleRes = (pushBackRadius>70) ? 80 : circleRes;
+	
+	glColor4f(1.0,1.0,0.0,0.2);
+	glBegin(GL_POLYGON);	
+	for(i = 0; i < circleRes ; i++)
+	{
+		// M_PI defined in cmath.h
+		float alpha = i * 2 * M_PI /circleRes;
+		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue/[curDCM pixelRatio]);
+	}
+	glEnd();	
+	glDisable(GL_BLEND);
+}
+
 - (void) Display3DPoint:(NSNotification*) note
 {
 	if( stringID == 0L)
@@ -1808,8 +1834,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			[self setNeedsDisplay:YES];
 		}
+		
+		if(tool == tPushBack)
+		{
+			pushBackRadius = 0;
+			[self setNeedsDisplay:YES];
+		}
     }
-	
+
 	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
@@ -2566,6 +2598,51 @@ static long scrollMode;
 					}
 				}
 			}
+		}
+		
+		// push back!
+		if(tool == tPushBack)
+		{
+			[self deleteMouseDownTimer];
+			pushBackRadius = 0;
+			
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = size.size.height - tempPt.y ;
+			tempPt = [self ConvertFromView2GL:tempPt];
+			//pushBackPosition = tempPt;
+			
+			float dx, dx2, dy, dy2, d;
+			NSPoint pt;
+			float distance;
+			
+			if([curRoiList count]>0)
+			{
+				pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
+				dx = (pt.x-tempPt.x);
+				dx2 = dx * dx;
+				dy = (pt.y-tempPt.y);
+				dy2 = dy * dy;
+				distance = sqrt(dx2 + dy2);
+			}
+			else distance = 0.0;
+			
+			int i, j;
+			NSMutableArray *points;
+			for(i=0; i<[curRoiList count]; i++)
+			{
+				points = [[curRoiList objectAtIndex:i] points];
+				for(j=0; j<[points count]; j++)
+				{
+					pt = [[points objectAtIndex:j] point];
+					dx = (pt.x-tempPt.x);
+					dx2 = dx * dx;
+					dy = (pt.y-tempPt.y);
+					dy2 = dy * dy;
+					d = sqrt(dx2 + dy2);
+					distance = (d < distance) ? d : distance ;
+				}
+			}
+			pushBackRadius = (int) (distance + 0.5);
 		}
 		
 		[self mouseDragged:event];
@@ -3436,6 +3513,87 @@ static long scrollMode;
 		
 		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 //		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+
+		// push back!
+		if(tool == tPushBack)
+		{
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = size.size.height - tempPt.y ;
+			pushBackPosition = tempPt;
+			tempPt = [self ConvertFromView2GL:tempPt];
+			
+			float dx, dx2, dy, dy2, d;
+			NSPoint pt, pt2;
+
+			int i, j, k;
+			NSMutableArray *points;
+			for(i=0; i<[curRoiList count]; i++)
+			{
+				//if([[curRoiList objectAtIndex:i] type] == )
+				{
+					points = [[curRoiList objectAtIndex:i] points];
+					int n = 0;
+					for(j=0; j<[points count]; j++)
+					{
+						pt = [[points objectAtIndex:j] point];
+						dx = (pt.x-tempPt.x);
+						dx2 = dx * dx;
+						dy = (pt.y-tempPt.y);
+						dy2 = dy * dy;
+						d = sqrt(dx2 + dy2);
+						
+						if(d<pushBackRadius)
+						{
+							[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
+							pt.x += dx/d*pushBackRadius-dx;
+							pt.y += dy/d*pushBackRadius-dy;
+							
+							int delta;
+							for(delta=-1; delta<=1; delta++)
+							{
+								k = j+delta;
+								if([[curRoiList objectAtIndex:i] type] == tCPolygon || [[curRoiList objectAtIndex:i] type] == tPencil)
+								{
+									if(k==-1)
+										k = [points count]-1;
+									else if(k==[points count])
+										k = 0;
+								}
+								
+								if(k!=j && k>=0 && k<[points count])
+								{
+									pt2 = [[points objectAtIndex:k] point];
+									dx = (pt2.x-pt.x);
+									dx2 = dx * dx;
+									dy = (pt2.y-pt.y);
+									dy2 = dy * dy;
+									d = sqrt(dx2 + dy2);
+
+									if(d<=2 && d<pushBackRadius)
+									{
+										[points removeObjectAtIndex:k];
+										if(delta==-1) j--;
+									}
+									else if((d>=20 || d>=pushBackRadius) && n<50)
+									{
+										NSPoint pt3;
+										pt3.x = (pt2.x+pt.x)/2.0;
+										pt3.y = (pt2.y+pt.y)/2.0;
+										MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
+										int index = (delta==-1)? j : j+1 ;
+										if(delta==-1) j++;
+										[points insertObject:p atIndex:index];
+										n++;
+									}
+								}
+							}
+							[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+						}
+					}
+				}
+			}
+			
+		}
     }
 }
 
@@ -3874,6 +4032,9 @@ static long scrollMode;
 	_alternateContext = [[NSOpenGLContext alloc] initWithFormat:pixFmt shareContext:[self openGLContext]];
 
 	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
+	
+	pushBackRadius = 0;
+	
     return self;
 }
 
@@ -6242,6 +6403,11 @@ static long scrollMode;
 					
 				} //annotations >= annotBase
 				} //Annotation  != None
+				
+				if(pushBackRadius != 0)
+				{
+					[self drawPushBackToolArea];
+				}
 			}  
 		
 		else {  //no valid image  ie curImage = -1

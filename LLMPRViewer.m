@@ -1155,10 +1155,11 @@ NSLog(@"refreshSubtractedViews");
 
 #pragma mark-
 #pragma mark 2D/3D Result
+
 - (void)produceResultData:(NSMutableData**)volumeData pixList:(NSMutableArray*)pix;
 {
-	long				i;
-	float				*fVolumePtr;
+	long i;
+	float *fVolumePtr;
 	
 	// First calculate the amount of memory needed for the new serie
 	NSMutableArray	*pixList = [injectedMPRController originalDCMPixList];		
@@ -1166,7 +1167,7 @@ NSLog(@"refreshSubtractedViews");
 	long			mem = 0;
 	
 	int maxI = ([[controller originalDCMPixList] count] > [pixList count]) ? [pixList count] : [[controller originalDCMPixList] count] ;
-	//NSLog(@"maxI: %d", maxI);
+
 	for( i = 0; i < maxI; i++)
 	{
 		curPix = [pixList objectAtIndex: i];
@@ -1174,7 +1175,6 @@ NSLog(@"refreshSubtractedViews");
 	}
 	
 	fVolumePtr = malloc(mem);
-	//NSLog(@"mem: %d", mem);
 
 	if( fVolumePtr)
 	{		

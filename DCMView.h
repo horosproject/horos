@@ -54,7 +54,8 @@ enum
 	t2DPoint,					//	19
 	tPlain,						//	20
 	tBonesRemoval,				//	21
-	tWLBlended					//  22
+	tWLBlended,					//  22
+	tPushBack					//  23
 };
 
 extern NSString *pasteBoardOsiriX;
@@ -208,6 +209,9 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	NSDictionary *_hotKeyDictionary;
 	
 	BOOL			drawing;
+	
+	int				pushBackRadius;
+	NSPoint			pushBackPosition;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
