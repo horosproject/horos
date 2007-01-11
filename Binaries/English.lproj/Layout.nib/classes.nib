@@ -2,11 +2,31 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = HangingProtocolController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_layoutArrayController" = LayoutArrayController; 
+                "_layoutWindowController" = LayoutWindowController; 
+            }; 
+            SUPERCLASS = NSObjectController; 
+        }, 
+        {
+            ACTIONS = {addDeleteAction = id; }; 
+            CLASS = LayoutArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
             ACTIONS = {endSheet = id; }; 
             CLASS = LayoutWindowController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_hangingProtocolController" = HangingProtocolController; 
+                "_layoutArrayController" = LayoutArrayController; 
+            }; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }
     ); 
     IBVersion = 1; 
 }

@@ -801,6 +801,12 @@ WindowLayoutManager *sharedLayoutManager;
 }
 
 -(NSArray *)viewers2DForSeries:(id)series{
+	return nil;
+}
+
+
+- (NSArray *)placeholderWindowControllers{
+	return nil;
 }
 
 #pragma mark-

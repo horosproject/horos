@@ -23,14 +23,18 @@ Saves and Creates Advanced Hanging Protocols
 
 #import <Cocoa/Cocoa.h>
 
-
+@class LayoutArrayController;
+@class HangingProtocolController;
 @interface LayoutWindowController : NSWindowController {
 	NSArray *_windowControllers;
 	NSMutableDictionary *_hangingProtocol;
 	NSString *_studyDescription;
 	NSString *_modality;
+	NSString *_institution;
 	BOOL _hasProtocol;
 	BOOL _addLayoutSet;
+	IBOutlet LayoutArrayController *_layoutArrayController;
+	IBOutlet HangingProtocolController	*_hangingProtocolController;
 }
 
 - (IBAction)endSheet:(id)sender;
@@ -46,5 +50,8 @@ Saves and Creates Advanced Hanging Protocols
 - (void)setHasProtocol:(BOOL)hasProtocol;
 - (BOOL)addLayoutSet;
 - (void)setAddLayoutSet:(BOOL)addSet;
+- (NSString *)institution;
+- (void)setInstitution:(NSString *)institution;
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
 @end

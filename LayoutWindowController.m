@@ -28,10 +28,14 @@
 #import "EndoscopyViewer.h"
 #import "SeriesView.h"
 
+#import "LayoutArrayController.h"
+#import "HangingProtocolController.h"
+
 
 @implementation LayoutWindowController
 
 - (id)init{
+	NSLog(@"init LayoutWindowController");
 	if (self = [super initWithWindowNibName:@"Layout"]) {
 		_addLayoutSet = NO;
 	}
@@ -43,12 +47,26 @@
 	[_hangingProtocol release];
 	[_studyDescription release];
 	[_modality release];
+	[_institution release];
 	[super dealloc];
 }
 
-- (void)windowDidLoad{
+- (void)showWindow:(id)sender{
+	[super showWindow:sender];
+	if (!_hasProtocol) {
+		NSAlert *alert = [[NSAlert alloc] init];
+		[alert setMessageText:NSLocalizedString(@"No hanging protocol has been created for this study.", nil)];
+		[alert setInformativeText:NSLocalizedString(@"Create hanging protocol with current window layout?", nil)];
+		[alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+		[alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+		[alert setAlertStyle:NSInformationalAlertStyle];
+		[alert beginSheetModalForWindow:[self window] modalDelegate:self  didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:nil];
+	}
+}
+	
 	
 
+- (void)windowDidLoad{
 	[self setWindowControllers:[[WindowLayoutManager sharedWindowLayoutManager] viewers]];
 	if ([_windowControllers count]  > 0) {
 		id study = [[_windowControllers objectAtIndex:0] currentStudy];
@@ -60,18 +78,32 @@
 	
 		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
 		[self setStudyDescription: [study valueForKey:@"studyName"]];
+		[self setInstitution: [study valueForKey:@"institutionName"]];
 
 		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
 		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+		//NSLog(@"filteredHangingProtocols %@", filteredHangingProtocols);
 		if ([filteredHangingProtocols count] > 0) {	
-			_hangingProtocol = [[filteredHangingProtocols objectAtIndex:0] mutableCopy] ;
+			_hangingProtocol = [[filteredHangingProtocols objectAtIndex:0] mutableCopy];
 			[self setHasProtocol:YES];
 
 		}
-		else [self setHasProtocol:NO];
+		else {
+		//	_hangingProtocol = [[NSMutableDictionary alloc] init];
+			[self setHasProtocol:NO];
+		}
 	}
-		
-	
+			
+}
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+	NSLog(@"alert did end"); 
+	if (returnCode == NSAlertFirstButtonReturn){
+		[_hangingProtocolController add:self];
+		//[_layoutArrayController add:self];
+	}
+	[[alert window] orderOut:nil];
+	[alert release];
 }
 
 - (IBAction)endSheet:(id)sender{
@@ -124,8 +156,11 @@
 			
 			// Not supported by OrthogonalMPRPETCTViewer
 			if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || [controller isKindOfClass:[SRController class]])) {
-				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
-				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
+				// WW/wl presets only work well with CT
+				if ([[[controller currentStudy] valueForKey:@"modality"] isEqualToString:@"CT"]) {
+					[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
+					[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWL]] forKey:@"wl"];
+				}
 				[seriesInfo setObject:[controller curCLUTMenu] forKey:@"CLUTName"];
 			}
 			
@@ -162,7 +197,9 @@
 			}
 			
 			if ([controller isKindOfClass:[ViewerController class]]) {
-				[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
+				// WW/wl presets only work well with CT
+				if ([[[controller currentStudy] valueForKey:@"modality"] isEqualToString:@"CT"])
+					[seriesInfo setObject:[controller curWLWWMenu] forKey:@"wwwlMenuItem"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller rotation]] forKey:@"rotation"];
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller scaleValue]] forKey:@"zoom"];
 				[seriesInfo setObject:[NSNumber numberWithInt:[[controller seriesView] imageRows]] forKey:@"imageRows"];
@@ -262,6 +299,23 @@
 }
 - (void)setAddLayoutSet:(BOOL)addSet{
 	_addLayoutSet = addSet;
+}
+
+- (NSArray *)layouts{
+	return [_hangingProtocol objectForKey:@"seriesSets"];
+}
+
+
+- (void)setLayouts:(NSArray *)layouts{
+	[_hangingProtocol setObject: layouts forKey:@"seriesSets"];
+}
+
+- (NSString *)institution{
+	return _institution;
+}
+- (void)setInstitution:(NSString *)institution{
+	[_institution release];
+	_institution = [institution retain];
 }
 	
 

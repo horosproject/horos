@@ -82,6 +82,7 @@ It is a shared class.
 - (NSArray *)viewers2D;
 - (NSArray *)viewers3D;
 - (NSArray *)viewers;
+- (NSArray *)placeholderWindowControllers;
 
 
 #pragma mark-
@@ -90,6 +91,7 @@ It is a shared class.
 - (void)setRelatedStudies:(NSArray *)relatedStudies;
 - (id)comparionStudy;
 - (NSArray *)comparisonStudies;
+
 
 
 

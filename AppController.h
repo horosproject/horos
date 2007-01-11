@@ -33,6 +33,8 @@ enum
 
 NSRect screenFrame();
 
+@class LayoutWindowController;
+
 @interface AppController : NSObject		// <Client>
 {
 	IBOutlet BrowserController		*browserController;
@@ -56,6 +58,8 @@ NSRect screenFrame();
 	//DICOMStoreSCPDispatcher *dicomStoreSCPDispatcher;
 	NSMutableDictionary *currentHangingProtocol;
 	DCMNetServiceDelegate *dicomNetServiceDelegate;
+	
+	LayoutWindowController *_layoutController;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
