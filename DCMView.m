@@ -454,6 +454,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	circleRes = (pushBackRadius>70) ? 80 : circleRes;
 	
 	glColor4f(1.0,1.0,0.0,0.2);
+	glColor4f(1.0,1.0,0.0,pushBackAlpha);
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
 	{
@@ -463,6 +464,16 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 	glEnd();	
 	glDisable(GL_BLEND);
+}
+
+- (void)setAlphaPushBack:(NSTimer*)theTimer
+{
+	if (pushBackAlpha >= 0.4) pushBackAlphaSign = -1.0;
+	else if (pushBackAlpha <= 0.1) pushBackAlphaSign = 1.0;
+	
+	pushBackAlpha += pushBackAlphaSign*0.02;
+	
+	[self setNeedsDisplay:YES];
 }
 
 - (void) Display3DPoint:(NSNotification*) note
@@ -1291,6 +1302,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	[_hotKeyDictionary release];
 	
+	if(pushBackColorTimer)
+	{
+		[pushBackColorTimer invalidate];
+		[pushBackColorTimer release];
+		pushBackColorTimer = nil;
+	}
+	
     [super dealloc];
 }
 
@@ -1838,6 +1856,12 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		if(tool == tPushBack)
 		{
 			pushBackRadius = 0;
+			if(pushBackColorTimer)
+			{
+				[pushBackColorTimer invalidate];
+				[pushBackColorTimer release];
+				pushBackColorTimer = nil;
+			}
 			[self setNeedsDisplay:YES];
 		}
     }
@@ -2604,6 +2628,9 @@ static long scrollMode;
 		if(tool == tPushBack)
 		{
 			[self deleteMouseDownTimer];
+			pushBackColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaPushBack:) userInfo:event repeats:YES] retain];
+			pushBackAlpha = 0.1;
+			pushBackAlphaSign = 1.0;
 			pushBackRadius = 0;
 			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
@@ -7790,6 +7817,8 @@ BOOL	lowRes = NO;
 	else if (tool == t3DRotate)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tCross)
+		c = [NSCursor crosshairCursor];
+	else if (tool == tPushBack)
 		c = [NSCursor crosshairCursor];
 	else	
 		c = [NSCursor arrowCursor];

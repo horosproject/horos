@@ -456,6 +456,10 @@
 		A91CE49E098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE49F098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
 		A91CE4A0098F5464008665E3 /* ROIVolumeManager.nib in Resources */ = {isa = PBXBuildFile; fileRef = A91CE49C098F5464008665E3 /* ROIVolumeManager.nib */; };
+		A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
+		A91F01120B568EA600FCD57C /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
+		A91F01130B568EA600FCD57C /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
+		A91F01140B568EA600FCD57C /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
 		A92155FA0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A92155FB0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
 		A92155FC0ADCF319008D881E /* OsiriX Report.template in Resources */ = {isa = PBXBuildFile; fileRef = A92155E50ADCF319008D881E /* OsiriX Report.template */; };
@@ -13792,6 +13796,7 @@
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
+		A91F01100B568EA600FCD57C /* Repulsor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Repulsor.tif; sourceTree = "<group>"; };
 		A92155E50ADCF319008D881E /* OsiriX Report.template */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "OsiriX Report.template"; path = "Binaries/OsiriX Report.template"; sourceTree = "<group>"; };
 		A926BFC80A76577600F1B366 /* QTExportSeriesTemplate.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = QTExportSeriesTemplate.html; sourceTree = "<group>"; };
 		A932B957094D722D0085B58A /* EndoscopyViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EndoscopyViewer.h; sourceTree = "<group>"; };
@@ -18330,6 +18335,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A91F01100B568EA600FCD57C /* Repulsor.tif */,
 				CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */,
 				CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */,
 				CEDCFB380B4C4A4B00510ABD /* SyncSmall.tiff */,
@@ -30078,6 +30084,7 @@
 				CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
+				A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30399,6 +30406,7 @@
 				CEDCFB3A0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
 				CEDCFB420B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */,
+				A91F01130B568EA600FCD57C /* Repulsor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30710,6 +30718,7 @@
 				CEDCFB390B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
 				CEDCFB400B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */,
+				A91F01140B568EA600FCD57C /* Repulsor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31031,6 +31040,7 @@
 				CEDCFB3B0B4C4A4B00510ABD /* SyncSmall.tiff in Resources */,
 				CEDCFB440B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */,
+				A91F01120B568EA600FCD57C /* Repulsor.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

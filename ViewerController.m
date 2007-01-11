@@ -7058,6 +7058,7 @@ extern NSString * documentsDirectory();
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
+		case tPushBack:		filename = @"Repulsor";			break;
 	}
 	
 	return [NSImage imageNamed: filename];

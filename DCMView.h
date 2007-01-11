@@ -212,6 +212,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroPoint3D
 	
 	int				pushBackRadius;
 	NSPoint			pushBackPosition;
+	NSTimer			*pushBackColorTimer;
+	float			pushBackAlpha, pushBackAlphaSign;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
