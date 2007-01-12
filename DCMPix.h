@@ -113,6 +113,11 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	long				shutterRect_y;
 	long				shutterRect_w;
 	long				shutterRect_h;
+	
+	long				shutterCircular_x;
+	long				shutterCircular_y;
+	long				shutterCircular_radius;
+	
 	BOOL				DCMPixShutterOnOff;
 
 //-------------------------------------------------------	

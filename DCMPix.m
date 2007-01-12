@@ -856,6 +856,42 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	return size;
 }
 
+void erase_outside_circle(char *buf, int width, int height, int rad)
+{
+	int		x,y;
+	int		xsqr;
+	int		inw = width-1;
+	int		radsqr = (inw*inw)/4;
+	
+	for(x = 0; x < rad; x++)
+	{
+		xsqr = x*x;
+		for( y = 0 ; y < rad; y++)
+		{
+			if((xsqr + y*y) < radsqr)
+			{
+				
+			}
+			else
+			{
+				int xx, yy;
+				
+				xx = rad+x;	yy = rad+y;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				
+				xx = rad-x;	yy = rad+y;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				
+				xx = rad+x;	yy = rad-y;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				
+				xx = rad-x;	yy = rad-y;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+			}
+		}
+	}
+}
+
 @implementation DCMPix
 
 //- (void) convertToFull16Bits: (unsigned short*) rawdata size:(long) RawSize BitsAllocated:(long) BitsAllocated BitsStored:(long) BitsStored HighBitPosition:(long) HighBitPosition PixelSign:(BOOL) PixelSign
@@ -2544,26 +2580,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 		fImageTime = 0;
 				
 		DCMPixShutterOnOff = NSOffState;
-		shutterRect_x = 0;
-		shutterRect_y = 0;
-		shutterRect_w = 0;
-		shutterRect_h = 0;
-// to be improved with init using Philips corresponding tags value
-
-/*		//Shutter Shape (0018,1600) RECTANGULAR
-		subShutterLeftVerticalEdge; //(0018,1602)
-		subShutterRightVerticalEdge; //(0018,1604)
-		subShutterUpperHorizontalEdge; //(0018,1606)
-		subShutterLowerHorizontalEdge; //(0018,1608)
-		subPrivateCreatorGroup;//(0019,0010) type of configuration (always(?): CARDIO-D.R. 1.0)
-		subImageBlankingShape;//(0019,1000) CIRCULAR, RECTANGULAR
-		subImageBlankingLeftVerticalEdge;//(0019,1002)
-		subImageBlankingRightVerticalEdge;//(0019,1004)
-		subImageBlankingUpperHorizontalEdge;//(0019,1006)
-		subImageBlankingLowerHorizontalEdge;//(0019,1008)
-		subCenterOfCircularImageBlanking;//(0019,1010)
-		subRadiusOfCircularImageBlanking;//(0019,1012)
-*/
+		
 		//----------------------------------orientation		
 		orientation[ 0] = 1;
 		orientation[ 1] = 0;
@@ -5174,11 +5191,16 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 						}
 						else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
 						{
-							val = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbVal, &elemType);
-							if (val != NULL) NSLog( [NSString stringWithCString:val->a]);
+							tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
+							if (tmp != NULL && nbtmp == 2)
+							{
+								shutterCircular_x = [[NSString stringWithCString:tmp->a] intValue];
+								tmp++;
+								shutterCircular_y = [[NSString stringWithCString:tmp->a] intValue];
+							}
 						
-							val = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbVal, &elemType);
-							if (val != NULL) NSLog( [NSString stringWithCString:val->a]);
+							tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
+							if (tmp != NULL) shutterCircular_radius = [[NSString stringWithCString:tmp->a] intValue];
 						}
 						else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
 						
@@ -8225,6 +8247,11 @@ BOOL            readable = YES;
 				
 				dst += rowBytes;
 				src += rowBytes;
+			}
+			
+			if( shutterCircular_radius)
+			{
+				erase_outside_circle( tempMem, width, height, shutterCircular_radius);
 			}
 			
 			memcpy(baseAddr, tempMem, height * width * sizeof(char));

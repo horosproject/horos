@@ -3509,6 +3509,11 @@ static ViewerController *draggedController = 0L;
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultRightToolModified" object:sender userInfo: 0L];
 }
 
+- (void) setShutterOnOffButton:(NSNumber*) b
+{
+	[shutterOnOff setState: [b boolValue]];
+}
+
 //added by Jacques Fauquex 2006-09-30
 - (IBAction) shutterOnOff:(id) sender
 {
@@ -4319,6 +4324,11 @@ static ViewerController *draggedController = 0L;
 			{
 				[self performSelectorOnMainThread:@selector( setDefaultPETWLWW:) withObject:self waitUntilDone: YES];
 			}
+		}
+		
+		if( [[pixList[0] objectAtIndex: 0] DCMPixShutterOnOff])
+		{
+			[self performSelectorOnMainThread:@selector( setShutterOnOffButton:) withObject: [NSNumber numberWithBool: YES] waitUntilDone: YES];
 		}
 	}
 	
