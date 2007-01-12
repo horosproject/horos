@@ -3449,6 +3449,7 @@ static ViewerController *draggedController = 0L;
 		case tPencil:
 		case t2DPoint:
 		case tPlain:
+		case tPushBack:
 			[self setROIToolTag: tag];
 		break;
 		

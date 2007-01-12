@@ -1853,6 +1853,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			[self setNeedsDisplay:YES];
 		}
 		
+		if(pushBackROIEdition)
+		{
+			currentTool = tPushBack;
+			tool = tPushBack;
+			pushBackROIEdition = NO;
+		}
+		
 		if(tool == tPushBack)
 		{
 			pushBackRadius = 0;
@@ -2397,6 +2404,84 @@ static long scrollMode;
 		}
 		else crossMove = -1;
 		
+		// push back!
+		if(tool == tPushBack)
+		{
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = size.size.height - tempPt.y ;
+			tempPt = [self ConvertFromView2GL:tempPt];
+			//pushBackPosition = tempPt;
+			
+			int i, j;
+			BOOL clickInROI = NO;
+			for( i = 0; i < [curRoiList count]; i++)
+			{
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
+				{
+					clickInROI = YES;
+				}
+			}
+
+			if(!clickInROI)
+			{
+				for( i = 0; i < [curRoiList count]; i++)
+				{
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
+					{
+						clickInROI = YES;
+					}
+				}
+			}
+			
+			if(clickInROI)
+			{
+				currentTool = tPencil;
+				tool = tPencil;
+				pushBackROIEdition = YES;
+			}
+			else
+			{
+				[self deleteMouseDownTimer];
+				pushBackColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaPushBack:) userInfo:event repeats:YES] retain];
+				pushBackAlpha = 0.1;
+				pushBackAlphaSign = 1.0;
+				pushBackRadius = 0;
+								
+				float dx, dx2, dy, dy2, d;
+				NSPoint pt;
+				float distance;
+				
+				if([curRoiList count]>0)
+				{
+					pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
+					dx = (pt.x-tempPt.x);
+					dx2 = dx * dx;
+					dy = (pt.y-tempPt.y);
+					dy2 = dy * dy;
+					distance = sqrt(dx2 + dy2);
+				}
+				else distance = 0.0;
+				
+				NSMutableArray *points;
+				for(i=0; i<[curRoiList count]; i++)
+				{
+					points = [[curRoiList objectAtIndex:i] points];
+					for(j=0; j<[points count]; j++)
+					{
+						pt = [[points objectAtIndex:j] point];
+						dx = (pt.x-tempPt.x);
+						dx2 = dx * dx;
+						dy = (pt.y-tempPt.y);
+						dy2 = dy * dy;
+						d = sqrt(dx2 + dy2);
+						distance = (d < distance) ? d : distance ;
+					}
+				}
+				pushBackRadius = (int) ((distance + 0.5) * 0.8);
+				if(pushBackRadius<2) pushBackRadius = 2;
+			}
+		}
+		
 		// ROI TOOLS
 		if( [self roiTool:tool] == YES && crossMove == -1)
 		{
@@ -2622,54 +2707,6 @@ static long scrollMode;
 					}
 				}
 			}
-		}
-		
-		// push back!
-		if(tool == tPushBack)
-		{
-			[self deleteMouseDownTimer];
-			pushBackColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaPushBack:) userInfo:event repeats:YES] retain];
-			pushBackAlpha = 0.1;
-			pushBackAlphaSign = 1.0;
-			pushBackRadius = 0;
-			
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
-			tempPt = [self ConvertFromView2GL:tempPt];
-			//pushBackPosition = tempPt;
-			
-			float dx, dx2, dy, dy2, d;
-			NSPoint pt;
-			float distance;
-			
-			if([curRoiList count]>0)
-			{
-				pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
-				dx = (pt.x-tempPt.x);
-				dx2 = dx * dx;
-				dy = (pt.y-tempPt.y);
-				dy2 = dy * dy;
-				distance = sqrt(dx2 + dy2);
-			}
-			else distance = 0.0;
-			
-			int i, j;
-			NSMutableArray *points;
-			for(i=0; i<[curRoiList count]; i++)
-			{
-				points = [[curRoiList objectAtIndex:i] points];
-				for(j=0; j<[points count]; j++)
-				{
-					pt = [[points objectAtIndex:j] point];
-					dx = (pt.x-tempPt.x);
-					dx2 = dx * dx;
-					dy = (pt.y-tempPt.y);
-					dy2 = dy * dy;
-					d = sqrt(dx2 + dy2);
-					distance = (d < distance) ? d : distance ;
-				}
-			}
-			pushBackRadius = (int) (distance + 0.5);
 		}
 		
 		[self mouseDragged:event];
@@ -3556,7 +3593,6 @@ static long scrollMode;
 			NSMutableArray *points;
 			for(i=0; i<[curRoiList count]; i++)
 			{
-				//if([[curRoiList objectAtIndex:i] type] == )
 				{
 					points = [[curRoiList objectAtIndex:i] points];
 					int n = 0;
@@ -3571,7 +3607,12 @@ static long scrollMode;
 						
 						if(d<pushBackRadius)
 						{
-							[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
+						//[[curRoiList objectAtIndex:i] roiMove:NSMakePoint(dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy) :YES];
+							if([[curRoiList objectAtIndex:i] type] == t2DPoint)
+								[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
+							else
+								[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
+							
 							pt.x += dx/d*pushBackRadius-dx;
 							pt.y += dy/d*pushBackRadius-dy;
 							

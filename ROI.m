@@ -1849,7 +1849,7 @@ return rect;
 				break;
 		}
 	}
-	else if( type == tPencil)
+	else if( type == tPencil )
 	{
 		switch( mode)
 		{
