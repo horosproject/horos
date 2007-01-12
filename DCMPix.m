@@ -5147,10 +5147,45 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				}
 			}
 			
-//			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
-//			{
-//				val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
-//			}
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
+			{
+				val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
+				if (val != NULL)
+				{
+					PapyULong nbtmp;
+					
+					for( i = 0 ; i < nbVal; i++)
+					{
+						if( [[NSString stringWithCString:val->a] isEqualToString:@"RECTANGULAR"])
+						{
+							DCMPixShutterOnOff = YES;
+							
+							tmp = Papy3GetElement (theGroupP, papShutterLeftVerticalEdgeGr, &nbtmp, &elemType);
+							if (tmp != NULL) shutterRect_x = [[NSString stringWithCString:tmp->a] intValue];
+							
+							tmp = Papy3GetElement (theGroupP, papShutterRightVerticalEdgeGr, &nbtmp, &elemType);
+							if (tmp != NULL) shutterRect_w = [[NSString stringWithCString:tmp->a] intValue] - shutterRect_x;
+							
+							tmp = Papy3GetElement (theGroupP, papShutterUpperHorizontalEdgeGr, &nbtmp, &elemType);
+							if (tmp != NULL) shutterRect_y = [[NSString stringWithCString:tmp->a] intValue];
+							
+							tmp = Papy3GetElement (theGroupP, papShutterLowerHorizontalEdgeGr, &nbtmp, &elemType);
+							if (tmp != NULL) shutterRect_h = [[NSString stringWithCString:tmp->a] intValue] - shutterRect_y;
+						}
+						else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
+						{
+							val = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbVal, &elemType);
+							if (val != NULL) NSLog( [NSString stringWithCString:val->a]);
+						
+							val = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbVal, &elemType);
+							if (val != NULL) NSLog( [NSString stringWithCString:val->a]);
+						}
+						else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
+						
+						val++;
+					}
+				}
+			}
 			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
