@@ -1069,16 +1069,15 @@ static BOOL COMPLETEREBUILD = NO;
 	if( newfilesArray == filesArray)
 	{
 		if( copied) *copied = NO;
-		mountedVolume = YES;
 	}
 	else
 	{
 		if( copied) *copied = YES;
 		filesArray = newfilesArray;
+		mountedVolume = NO;
 	}
 	
 	NSArray	*newImages = [self addFilesToDatabase:filesArray];
-	mountedVolume = NO;
 	
 	[filesArray release];
 	[self outlineViewRefresh];
@@ -8679,7 +8678,8 @@ static NSArray*	openSubSeriesArray = 0L;
 					
 					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
 					
-					if( newfilesArray == filesArray) mountedVolume = YES;
+					if( newfilesArray == filesArray)
+						mountedVolume = YES;
 					else filesArray = newfilesArray;
 					
 					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
@@ -10137,7 +10137,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			NSArray*	filenames = [NSArray arrayWithObject: path];
 			
 			BOOL		copied;
+			
+			mountedVolume = YES;
 			NSArray*	newImage = [self addFilesAndFolderToDatabase: filenames copied: &copied];
+			mountedVolume = NO;
 			
 			if( copied == YES && [newImage count] == 0 && [filenames count] > 0)
 			{

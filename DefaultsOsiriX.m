@@ -834,8 +834,8 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"0" forKey: @"Ping"];
 	
-	//UseVOILUT
-	[defaultValues setObject:@"0" forKey: @"UseVOILUT"];
+	[defaultValues setObject:@"1" forKey: @"UseShutter"];
+	[defaultValues setObject:@"1" forKey: @"UseVOILUT"];
 	[defaultValues setObject:@"0" forKey: @"replaceAnonymize"];
 	[defaultValues setObject:@"0" forKey: @"anonymizedBeforeBurning"];
 		

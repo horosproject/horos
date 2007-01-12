@@ -5147,6 +5147,11 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				}
 			}
 			
+//			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
+//			{
+//				val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
+//			}
+			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
 		
@@ -5667,7 +5672,6 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 				if (found) fSetClut = YES;
 				if (found16) fSetClut16 = YES;
 			} // endif ...extraction of the color palette
-			
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"])
 			{
