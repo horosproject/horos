@@ -613,7 +613,7 @@ extern NSString * documentsDirectory();
 							path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
 					}
 					
-					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"File doesn't exist at path: %@, length: %d", path);
+					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"File doesn't exist at path: %@", path);
 					
 					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
 					

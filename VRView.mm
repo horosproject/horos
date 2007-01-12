@@ -3242,6 +3242,8 @@ public:
 
 -(void) setBlendingWLWW:(float) iwl :(float) iww
 {
+	if( blendingController == 0L) return;
+
     double newValues[2];
     
 	blendingWl = iwl;
