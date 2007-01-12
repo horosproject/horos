@@ -5311,27 +5311,30 @@ static BOOL withReset = NO;
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 		
 		NSArray	*files = [self imagesArray: series];
-		NSManagedObject *image = [files objectAtIndex: [files count]/2];
-		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
-		
-		if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
+		if( [files count] > 0)
 		{
-			//By default we put this 'blank' icon
-			[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
-			[self saveDatabase: currentDatabasePath];
+			NSManagedObject *image = [files objectAtIndex: [files count]/2];
+			NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
 			
-			NSLog( @"Build thumbnail for:");
-			NSLog( [image valueForKey:@"completePath"]);
-			DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
-			
-			if( dcmPix)
+			if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 			{
+				//By default we put this 'blank' icon
+				[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+				[self saveDatabase: currentDatabasePath];
 				
-				[dcmPix computeWImage:YES :0 :0];
-				NSImage *thumbnail = [dcmPix getImage];
-				NSData *data = [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5];
-				if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
-				[dcmPix release];
+				NSLog( @"Build thumbnail for:");
+				NSLog( [image valueForKey:@"completePath"]);
+				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				
+				if( dcmPix)
+				{
+					
+					[dcmPix computeWImage:YES :0 :0];
+					NSImage *thumbnail = [dcmPix getImage];
+					NSData *data = [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5];
+					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
+					[dcmPix release];
+				}
 			}
 		}
 		
