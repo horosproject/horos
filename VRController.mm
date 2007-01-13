@@ -1013,7 +1013,6 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 	[toolsMatrix selectCellWithTag:newTool];
 }
 
-
 - (void) setWLWW:(float) iwl :(float) iww
 {
 	[view setWLWW: iwl : iww];

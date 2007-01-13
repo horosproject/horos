@@ -426,6 +426,11 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
     }
 }
 
+- (void) setCurrentTool:(short) newTool
+{
+	[vrController setCurrentTool: newTool];
+}
+
 - (IBAction) change3DTool:(id) sender
 {
 	if( [sender tag] >= 0)

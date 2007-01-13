@@ -2602,19 +2602,6 @@ public:
 		}
 		else if( tool == t3Dpoint)
 		{
-			NSEvent *artificialPKeyDown = [NSEvent keyEventWithType:NSKeyDown
-												location:[theEvent locationInWindow]
-												modifierFlags:nil
-												timestamp:[theEvent timestamp]
-												windowNumber:[theEvent windowNumber]
-												context:[theEvent context]
-												characters:@"p"
-												charactersIgnoringModifiers:nil
-												isARepeat:NO
-												keyCode:112
-												];
-			[self keyDown:artificialPKeyDown];
-			
 			if (![self isAny3DPointSelected])
 			{
 				// add a point on the surface under the mouse click
