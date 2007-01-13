@@ -5804,6 +5804,14 @@
 		BF919C490B447753002D91E7 /* MPRPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF919C430B447752002D91E7 /* MPRPreviewView.m */; };
 		BF919C4A0B447753002D91E7 /* MPRPreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF919C420B447752002D91E7 /* MPRPreviewView.h */; };
 		BF919C4B0B447753002D91E7 /* MPRPreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF919C430B447752002D91E7 /* MPRPreviewView.m */; };
+		BF954D910B56A27400106F68 /* LayoutTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF954D8F0B56A27400106F68 /* LayoutTableView.h */; };
+		BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF954D900B56A27400106F68 /* LayoutTableView.m */; };
+		BF954D930B56A27400106F68 /* LayoutTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF954D8F0B56A27400106F68 /* LayoutTableView.h */; };
+		BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF954D900B56A27400106F68 /* LayoutTableView.m */; };
+		BF954D950B56A27400106F68 /* LayoutTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF954D8F0B56A27400106F68 /* LayoutTableView.h */; };
+		BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF954D900B56A27400106F68 /* LayoutTableView.m */; };
+		BF954D970B56A27400106F68 /* LayoutTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = BF954D8F0B56A27400106F68 /* LayoutTableView.h */; };
+		BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BF954D900B56A27400106F68 /* LayoutTableView.m */; };
 		BF9893B709D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
 		BF9893B809D351FF00D550EC /* DCMTKDataHandlerCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */; };
 		BF9893B909D351FF00D550EC /* DCMTKDataHandlerCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */; };
@@ -14327,6 +14335,8 @@
 		BF919C430B447752002D91E7 /* MPRPreviewView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRPreviewView.m; sourceTree = "<group>"; };
 		BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OsiriXSCPDataHandler.h; sourceTree = "<group>"; };
 		BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OsiriXSCPDataHandler.m; sourceTree = "<group>"; };
+		BF954D8F0B56A27400106F68 /* LayoutTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayoutTableView.h; sourceTree = "<group>"; };
+		BF954D900B56A27400106F68 /* LayoutTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayoutTableView.m; sourceTree = "<group>"; };
 		BF9893B509D351FF00D550EC /* DCMTKDataHandlerCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKDataHandlerCategory.h; sourceTree = "<group>"; };
 		BF9893B609D351FF00D550EC /* DCMTKDataHandlerCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKDataHandlerCategory.mm; sourceTree = "<group>"; };
 		BF9998FE0A1E695800F50753 /* DCMTKPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKPrintSCU.h; sourceTree = "<group>"; };
@@ -18751,6 +18761,8 @@
 				BF455DE20B556439007F1F2C /* LayoutArrayController.m */,
 				BF455DF00B557D1D007F1F2C /* HangingProtocolController.h */,
 				BF455DF10B557D1D007F1F2C /* HangingProtocolController.m */,
+				BF954D8F0B56A27400106F68 /* LayoutTableView.h */,
+				BF954D900B56A27400106F68 /* LayoutTableView.m */,
 			);
 			name = "Hanging Proctols";
 			sourceTree = "<group>";
@@ -23688,6 +23700,7 @@
 				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 				BF455DE70B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF60B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
+				BF954D970B56A27400106F68 /* LayoutTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25579,6 +25592,7 @@
 				BF919C460B447753002D91E7 /* MPRPreviewView.h in Headers */,
 				BF455DE50B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF40B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
+				BF954D950B56A27400106F68 /* LayoutTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27464,6 +27478,7 @@
 				BF919C480B447753002D91E7 /* MPRPreviewView.h in Headers */,
 				BF455DE90B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF80B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
+				BF954D910B56A27400106F68 /* LayoutTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29360,6 +29375,7 @@
 				BF919C440B447752002D91E7 /* MPRPreviewView.h in Headers */,
 				BF455DE30B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF20B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
+				BF954D930B56A27400106F68 /* LayoutTableView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32172,6 +32188,7 @@
 				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 				BF455DE80B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF70B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
+				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32913,6 +32930,7 @@
 				BF919C470B447753002D91E7 /* MPRPreviewView.m in Sources */,
 				BF455DE60B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF50B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
+				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34201,6 +34219,7 @@
 				BF919C490B447753002D91E7 /* MPRPreviewView.m in Sources */,
 				BF455DEA0B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF90B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
+				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34954,6 +34973,7 @@
 				BF919C450B447752002D91E7 /* MPRPreviewView.m in Sources */,
 				BF455DE40B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF30B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
+				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
