@@ -47,5 +47,6 @@ Saves and Creates Advanced Hanging Protocols
 - (void)setAddLayoutSet:(BOOL)addSet;
 - (NSString *)institution;
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)save;
 
 @end

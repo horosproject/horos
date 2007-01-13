@@ -446,6 +446,15 @@ WindowLayoutManager *sharedLayoutManager;
 				}
 				[hangingProtocol setValue:layouts forKey:@"layouts"];
 			}
+			else {
+				NSMutableArray *layouts = [NSMutableArray array];
+				NSEnumerator *enumerator = [[hangingProtocol objectForKey:@"layouts"] objectEnumerator];
+				id layout;
+				while (layout = [enumerator nextObject]) 
+					[layouts addObject:[NSMutableDictionary dictionaryWithDictionary:layout]];
+				
+				[hangingProtocol setValue:layouts forKey:@"layouts"];
+			}
 			
 			
 			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement

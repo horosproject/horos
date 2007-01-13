@@ -81,14 +81,21 @@
 }
 
 - (void)windowWillClose:(NSNotification *)note{
-	NSMutableArray *hangingProtocols = [[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"] mutableCopy];
-	if (!hangingProtocols)
-		hangingProtocols = [[NSMutableArray alloc] init];
+	[self save];
+}
 
-		[hangingProtocols removeObject:_hangingProtocol];
-		[hangingProtocols addObject:_hangingProtocol];
-		[[NSUserDefaults standardUserDefaults] setObject: hangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
-		[hangingProtocols  release];
+- (void)save{
+	id study = [[WindowLayoutManager sharedWindowLayoutManager] currentStudy];
+	NSMutableArray *advancedHangingProtocols = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"]];
+	if (!advancedHangingProtocols)
+		advancedHangingProtocols = [NSMutableArray array];
+	NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [study valueForKey:@"modality"]];
+	NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
+	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
+	NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
+	[advancedHangingProtocols removeObjectsInArray:filteredHangingProtocols];
+	[advancedHangingProtocols addObject:_hangingProtocol];
+	[[NSUserDefaults standardUserDefaults] setObject: advancedHangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 }
 
 
