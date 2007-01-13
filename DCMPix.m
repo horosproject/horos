@@ -856,37 +856,69 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	return size;
 }
 
-void erase_outside_circle(char *buf, int width, int height, int rad)
+void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad)
 {
 	int		x,y;
 	int		xsqr;
-	int		inw = width-1;
+	int		inw = rad*2;
 	int		radsqr = (inw*inw)/4;
+	
+	if( cx < 0 || cx >= width) return;
+	if( cy < 0 || cy >= height) return;
+	
+	cx -= rad;
+	cy -= rad;
+	
+	// top
+	for(y = 0; y <= cy; y++)
+	{
+		for(x = 0; x < width; x++) buf[ x + y*width] = 0;
+	}
+	
+	// bottom
+	for(y = cy+inw; y < height; y++)
+	{
+		for(x = 0; x < width; x++) buf[ x + y*width] = 0;
+	}
+	
+	// left + right
+	for(y = cy; y < cy+inw; y++)
+	{
+		for(x = 0; x <= cx; x++) buf[ x + y*width] = 0;
+		for(x = cx+inw; x < width; x++) buf[ x + y*width] = 0;
+	}
 	
 	for(x = 0; x < rad; x++)
 	{
 		xsqr = x*x;
 		for( y = 0 ; y < rad; y++)
 		{
+			char draw;
+			
 			if((xsqr + y*y) < radsqr)
 			{
-				
+				draw = 0;
 			}
 			else
 			{
+				draw = 1;
+			}
+			
+			if( draw)
+			{
 				int xx, yy;
 				
-				xx = rad+x;	yy = rad+y;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				xx = rad+x+cx;	yy = rad+y+cy;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
 				
-				xx = rad-x;	yy = rad+y;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				xx = rad-x+cx;	yy = rad+y+cy;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
 				
-				xx = rad+x;	yy = rad-y;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				xx = rad+x+cx;	yy = rad-y+cy;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
 				
-				xx = rad-x;	yy = rad-y;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = 0;
+				xx = rad-x+cx;	yy = rad-y+cy;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
 			}
 		}
 	}
@@ -8251,7 +8283,7 @@ BOOL            readable = YES;
 			
 			if( shutterCircular_radius)
 			{
-				erase_outside_circle( tempMem, width, height, shutterCircular_radius);
+				erase_outside_circle( tempMem, width, height, shutterCircular_x, shutterCircular_y, shutterCircular_radius);
 			}
 			
 			memcpy(baseAddr, tempMem, height * width * sizeof(char));
