@@ -4468,6 +4468,40 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
 	}	
 
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
+	{
+		if( [dcmObject attributeValueWithName:@"ShutterShape"])
+		{
+			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
+			
+			int i;
+			for( i = 0 ; i < [shutterArray count]; i++)
+			{
+				if( [[shutterArray objectAtIndex:i] isEqualToString:@"RECTANGULAR"])
+				{
+					DCMPixShutterOnOff = YES;
+					
+					shutterRect_x = [[dcmObject attributeValueWithName:@"ShutterLeftVerticalEdge"] floatValue]; 
+					shutterRect_w = [[dcmObject attributeValueWithName:@"ShutterRightVerticalEdge"] floatValue]  - shutterRect_x;
+					shutterRect_y = [[dcmObject attributeValueWithName:@"ShutterUpperHorizontalEdge"] floatValue]; 
+					shutterRect_h = [[dcmObject attributeValueWithName:@"ShutterLowerHorizontalEdge"] floatValue]  - shutterRect_y;
+				}
+				else if( [[shutterArray objectAtIndex:i] isEqualToString:@"CIRCULAR"])
+				{
+					NSArray *centerArray = [dcmObject attributeArrayWithName:@"CenterofCircularShutter"];
+					
+					if( [centerArray count] == 2)
+					{
+						shutterCircular_x = [[centerArray objectAtIndex:0] intValue];
+						shutterCircular_y = [[centerArray objectAtIndex:1] intValue];
+					}
+					
+					shutterCircular_radius = [[dcmObject attributeValueWithName:@"RadiusofCircularShutter"] floatValue];
+				}
+				else NSLog( @"Shutter not supported: %@", [shutterArray objectAtIndex:i]);
+			}
+		}
+	}
 	
 #pragma mark *MR/CT functional multiframe
 	
