@@ -286,6 +286,8 @@ enum
 	IBOutlet NSColorWell	*printColor;
 	IBOutlet NSPopUpButton	*printLayout;
 	IBOutlet NSTextField	*printText, *printPagesToPrint;
+	
+	NSMutableArray			*undoQueue, *redoQueue;
 }
 
 // Create a new 2D Viewer
@@ -344,6 +346,9 @@ enum
 
 // UNDOCUMENTED FUNCTIONS
 // For more informations: rossetantoine@bluewin.ch
+
+- (void) addToUndoQueue:(NSString*) string;
+- (id) prepareObjectForUndo:(NSString*) string;
 
 - (void) setPostprocessed:(BOOL) v;
 - (BOOL) postprocessed;

@@ -177,6 +177,92 @@ int sortROIByName(id roi1, id roi2, void *context)
 
 @implementation ViewerController
 
+#define UNDOQUEUESIZE 40
+
+- (void) executeUndo:(NSMutableArray*) u
+{
+	if( [u count])
+	{
+		if( [[[u lastObject] objectForKey: @"type"] isEqualToString:@"roi"])
+		{
+			NSMutableArray	*rois = [[u lastObject] objectForKey: @"rois"];
+			
+			int i, x, z;
+			
+			for( i = 0; i < maxMovieIndex; i++)
+			{
+				for( x = 0; x < [roiList[ i] count] ; x++)
+				{
+					for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
+				}
+				[roiList[ i] removeAllObjects];
+				
+				[roiList[ i] addObjectsFromArray: [NSUnarchiver unarchiveObjectWithData: [rois objectAtIndex: i]]];
+			}
+			
+			[imageView setIndex: [imageView curImage]];
+			
+			NSLog( @"roi undo");
+			
+			[u removeLastObject];
+		}
+	}
+}
+
+- (IBAction) redo:(id) sender
+{
+	if( [redoQueue count])
+	{
+		[undoQueue addObject: [self prepareObjectForUndo: [[redoQueue lastObject] objectForKey:@"type"]]];
+		
+		[self executeUndo: redoQueue];
+	}
+	else NSBeep();
+}
+
+- (IBAction) undo:(id) sender
+{
+	if( [undoQueue count])
+	{
+		[redoQueue addObject: [self prepareObjectForUndo: [[undoQueue lastObject] objectForKey:@"type"]]];
+		
+		[self executeUndo: undoQueue];
+	}
+	else NSBeep();
+}
+
+- (id) prepareObjectForUndo:(NSString*) string
+{
+	if( [string isEqualToString: @"roi"])
+	{
+		NSMutableArray	*rois = [NSMutableArray array];
+		
+		int i;
+		
+		for( i = 0; i < maxMovieIndex; i++)
+		{
+			[rois addObject: [NSArchiver archivedDataWithRootObject: roiList[ i]]];
+		}
+		
+		return [NSDictionary dictionaryWithObjectsAndKeys: string, @"type", rois, @"rois", 0L];
+	}
+}
+
+- (void) addToUndoQueue:(NSString*) string
+{
+	[undoQueue addObject: [self prepareObjectForUndo: string]];
+		
+	NSLog( @"add undo");
+	
+	if( [undoQueue count] > UNDOQUEUESIZE)
+	{
+		[undoQueue removeObjectAtIndex: 0];
+		
+		NSLog( @"undo queue size > UNDOQUEUESIZE");
+	}
+}
+
 #pragma mark-
 #pragma mark 1. window and workplace
 
@@ -1896,7 +1982,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	ThreadLoadImageLock = 0L;
 
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
+	
+	[undoQueue release];
+	[redoQueue release];
+	
 	[curOpacityMenu release];
 
 	[imageView release];
@@ -3701,7 +3790,6 @@ static ViewerController *draggedController = 0L;
 #pragma mark-
 #pragma mark 4.1. single viewport
 
-
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v
 {
 	self = [super initWithWindowNibName:@"Viewer"];
@@ -3709,6 +3797,9 @@ static ViewerController *draggedController = 0L;
 	[imageView setDrawing: NO];
 	
 	processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
+	
+	undoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
+	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 	
 	[self setPixelList:f fileList:d volumeData:v];
 	NSNotificationCenter *nc;
@@ -7871,12 +7962,16 @@ int i,j,l;
 
 - (IBAction) roiRename:(id) sender
 {
+	[self addToUndoQueue: @"roi"];
+	
 	[NSApp beginSheet: roiRenameWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 - (IBAction) roiDeleteWithName:(NSString*) name
 {
 	long i, x, y;
+	
+	[self addToUndoQueue: @"roi"];
 	
 	[imageView stopROIEditingForce: YES];
 	
@@ -7905,6 +8000,8 @@ int i,j,l;
 {
 	long i, x, y;
 	
+	[self addToUndoQueue: @"roi"];
+	
 	[imageView stopROIEditingForce: YES];
 	
 	for( y = 0; y < maxMovieIndex; y++)
@@ -7932,6 +8029,8 @@ int i,j,l;
 	
 	if( [pixList[curMovieIndex] count] > 1)
 	{
+		[self addToUndoQueue: @"roi"];
+	
 		// Find the first selected
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 		{
@@ -8057,10 +8156,14 @@ int i,j,l;
 	if( [[pixList[curMovieIndex] objectAtIndex:[imageView curImage]] stack] < 2)
 	{
 		NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Propagate Error", nil), NSLocalizedString(@"This function is only usefull if you use Thick Slab!", nil) , NSLocalizedString(@"OK", nil), nil, nil, nil);
+		
+		return;
 	}
 	
 	if( [pixList[curMovieIndex] count] > 1)
 	{
+		[self addToUndoQueue: @"roi"];
+		
 		long upToImage, startImage, i, x;
 		
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)

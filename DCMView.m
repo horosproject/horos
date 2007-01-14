@@ -724,6 +724,16 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[self setNeedsDisplay:YES];
 }
 
+- (void) undo:(id) sender
+{
+	if( [self is2DViewer]) [[self windowController] undo: sender];
+}
+
+- (void) redo:(id) sender
+{
+	if( [self is2DViewer]) [[self windowController] redo: sender];
+}
+
 - (void)paste:(id)sender
 {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
@@ -731,6 +741,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	if( archived_data)
 	{
+		if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+		
 		long	i;
 		NSMutableArray*	roiArray = [NSUnarchiver unarchiveObjectWithData: archived_data];
 		
@@ -797,6 +809,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	
 	long	i;
 	BOOL	done = NO;
+	
+	if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
 	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
@@ -1454,6 +1468,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		if( c == 127) // Delete
 		{
+			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
 			long	i;
 			BOOL	done = NO;
@@ -2407,6 +2423,8 @@ static long scrollMode;
 		// push back!
 		if(tool == tPushBack)
 		{
+			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 			tempPt = [self ConvertFromView2GL:tempPt];
@@ -2485,6 +2503,8 @@ static long scrollMode;
 		// ROI TOOLS
 		if( [self roiTool:tool] == YES && crossMove == -1)
 		{
+			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			
 			BOOL	DoNothing = NO;
 			long	selected = -1, i, x;
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
