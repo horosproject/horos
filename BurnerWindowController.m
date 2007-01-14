@@ -737,7 +737,9 @@ NSString* asciiString (NSString* name);
 			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
 			
 			// **********
-
+			
+			@try
+			{
 			NSTask		*todo = [[[NSTask alloc]init]autorelease];
 			[todo setLaunchPath: @"/usr/bin/lipo"];
 			
@@ -757,6 +759,12 @@ NSString* asciiString (NSString* name);
 			[todo setArguments:args];
 			[todo launch];
 			[todo waitUntilExit];
+			}
+			
+			@catch( NSException *ne)
+			{
+				NSLog( @"lipo / mv exception");
+			}
 			
 			// **********
 		}
