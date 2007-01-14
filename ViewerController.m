@@ -3921,6 +3921,9 @@ static ViewerController *draggedController = 0L;
 		[volumeData[ i] release];
 	}
 	
+	[undoQueue removeAllObjects];
+	[redoQueue removeAllObjects];
+	
 	if( thickSlab)
 	{
 		[thickSlab release];
