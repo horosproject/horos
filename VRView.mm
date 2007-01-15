@@ -1392,6 +1392,17 @@ public:
 	return tool;
 }
 
+- (void) resetAutorotate:(id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"] && [[[self window] windowController] isKindOfClass:[VRController class]])
+	{
+		[startAutoRotate invalidate];
+		[startAutoRotate release];
+		
+		startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+	}
+}
+
 - (void) startAutoRotate:(id) sender
 {
 	rotate = YES;
@@ -1506,7 +1517,7 @@ public:
 		mouseModifiers = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkMouseModifiers:) userInfo:nil repeats:YES] retain];
 		autoRotate = [[NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(autoRotate:) userInfo:nil repeats:YES] retain];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"] && [[[self window] windowController] isKindOfClass:[VRController class]])
 			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
@@ -2391,11 +2402,7 @@ public:
 		{
 			rotate = NO;
 			
-			[startAutoRotate invalidate];
-			[startAutoRotate release];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
-				startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
+			[self resetAutorotate: self];
 		}
 		
 		if( tool == tMesure)
@@ -4734,7 +4741,9 @@ public:
 	long				width, height, i, x, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*dataPtr;
-
+	
+	[self resetAutorotate: self];
+	
 	dataPtr = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES];
 
 	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;

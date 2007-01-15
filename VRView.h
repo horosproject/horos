@@ -299,7 +299,7 @@ typedef char* vtkMyCallbackVR;
 
 - (void) renderImageWithBestQuality: (BOOL) best waitDialog: (BOOL) wait;
 - (void) endRenderImageWithBestQuality;
-
+- (void) resetAutorotate:(id) sender;
 - (void) setEngine: (long) engineID showWait:(BOOL) showWait;
 - (void)changeColorWith:(NSColor*) color;
 - (void) exportDICOMFile:(id) sender;
