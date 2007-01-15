@@ -2374,11 +2374,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	radionuclideTotalDose = 0;
 	radionuclideTotalDoseCorrected = 0;
 	
-	orientation[ 0] = 0;
+	orientation[ 0] = 1;
 	orientation[ 1] = 0;
 	orientation[ 2] = 0;
 	orientation[ 3] = 0;
-	orientation[ 4] = 0;
+	orientation[ 4] = 1;
 	orientation[ 5] = 0;
 	// Compute normal vector
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
@@ -2613,10 +2613,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		DCMPixShutterOnOff = NSOffState;
 		
 		//----------------------------------orientation		
-		orientation[ 0] = 0;
+		orientation[ 0] = 1;
+		orientation[ 1] = 0;
 		orientation[ 2] = 0;
 		orientation[ 3] = 0;
-		orientation[ 4] = 0;
+		orientation[ 4] = 1;
 		orientation[ 5] = 0;
 		// Compute normal vector
 		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];

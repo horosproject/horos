@@ -3664,7 +3664,7 @@ static long scrollMode;
 						if(d<pushBackRadius)
 						{
 						//[[curRoiList objectAtIndex:i] roiMove:NSMakePoint(dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy) :YES];
-							if([[curRoiList objectAtIndex:i] type] == t2DPoint)
+							if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
 								[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
 							else
 								[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
@@ -3676,7 +3676,7 @@ static long scrollMode;
 							for(delta=-1; delta<=1; delta++)
 							{
 								k = j+delta;
-								if([[curRoiList objectAtIndex:i] type] == tCPolygon || [[curRoiList objectAtIndex:i] type] == tPencil)
+								if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
 								{
 									if(k==-1)
 										k = [points count]-1;
