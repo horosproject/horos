@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		3
+#define ROIVERSION		4
 
 static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
@@ -214,6 +214,17 @@ GLenum glReportError (void)
 		}
 		else zPositions = [[NSMutableArray arrayWithCapacity:0] retain];
 		
+		if( fileVersion >= 4)
+		{
+			offsetTextBox_x = [[coder decodeObject] floatValue];
+			offsetTextBox_y = [[coder decodeObject] floatValue];
+		}
+		else
+		{
+			offsetTextBox_x = 0;
+			offsetTextBox_y = 0;
+		}
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -283,6 +294,8 @@ GLenum glReportError (void)
 		[coder encodeObject:[NSData dataWithBytes:textureBuffer length:(textureWidth*textureHeight)]];
 	}
 	[coder encodeObject:zPositions];
+	[coder encodeObject:[NSNumber numberWithFloat:offsetTextBox_x]];
+	[coder encodeObject:[NSNumber numberWithFloat:offsetTextBox_y]];
 }
 
 - (NSData*) data
@@ -910,6 +923,17 @@ return rect;
 	return zPositions;
 }
 
+- (BOOL) clickInTextBox
+{
+	return clickInTextBox;
+}
+
+- (void) setTextBoxOffset:(NSPoint) o
+{
+	offsetTextBox_x += o.x;
+	offsetTextBox_y += o.y;
+}
+
 - (long) clickInROI:(NSPoint) pt :(float) offsetx :(float) offsety :(float) scale :(BOOL) testDrawRect
 {
 	NSRect		arect;
@@ -922,6 +946,8 @@ return rect;
 		return 0;
 	}
 	
+	clickInTextBox = NO;
+	
 	if( testDrawRect)
 	{
 		NSPoint cPt = [curView ConvertFromGL2View: pt];
@@ -929,6 +955,8 @@ return rect;
 		if( NSPointInRect( cPt, drawRect))
 		{
 			imode = ROI_selected;
+			
+			clickInTextBox = YES;
 		}
 	}
 	else
@@ -2257,9 +2285,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
 {
-	long	maxWidth = 0, line;
-
-	tPt = [curView ConvertFromGL2View: tPt];
+	long		maxWidth = 0, line;
+	NSPoint		origin, ctPt = tPt;
+	
+	tPt = [curView ConvertFromGL2View: ctPt];
+	origin = tPt;
+	
+	ctPt.x += offsetTextBox_x;
+	ctPt.y += offsetTextBox_y;
+	
+	tPt = [curView ConvertFromGL2View: ctPt];
 	drawRect.origin = tPt;
 	
 	line = 0;
@@ -2302,6 +2337,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
+//	if( fabs( offsetTextBox_x) > 5 || fabs( offsetTextBox_y) > 5) moved = NO;
+	
 	if( moved && ![curView suppressLabels])	// Draw bezier line
 	{
 		glLoadIdentity();
@@ -2311,7 +2348,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		const int OFF = 30;
 		
-		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);		ctrlpoints[0][2] = 0;
+		ctrlpoints[0][0] = origin.x;						ctrlpoints[0][1] = origin.y;				ctrlpoints[0][2] = 0;
 		ctrlpoints[1][0] = tPt.x - OFF;						ctrlpoints[1][1] = tPt.y;					ctrlpoints[1][2] = 0;
 		ctrlpoints[2][0] = tPt.x;							ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
 		
@@ -2344,6 +2381,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		[curView applyImageTransformation];
 	}
+}
+
+- (NSString*) description
+{
+	float mean = 0, min = 0, max = 0, total = 0, dev = 0;
+	
+	[pix computeROI:self :&mean :&total :&dev :&min :&max];
+	
+	return [NSString stringWithFormat:@"%@	%.3f	%.3f	%.3f	%.3f	%.3f", name, mean, min, max, total, dev];
 }
 
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY

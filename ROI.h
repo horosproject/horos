@@ -55,7 +55,7 @@ enum
 	float			opacity;
 	RGBColor		color;
 	
-	BOOL			closed;
+	BOOL			closed,clickInTextBox;
 	
 	NSString		*name;
 	NSString		*comments;
@@ -89,6 +89,8 @@ enum
 	
 	NSRect			drawRect;
 	
+	float			offsetTextBox_x, offsetTextBox_y;
+	
 	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 }
 
@@ -101,6 +103,8 @@ enum
 			  spacingX:(float) ipixelSpacingx spacingY:(float) ipixelSpacingy imageOrigin:(NSPoint) iimageOrigin;
 
 
+- (void) setTextBoxOffset:(NSPoint) o;
+- (BOOL) clickInTextBox;
 
 - (int)textureDownRightCornerX;
 - (int)textureDownRightCornerY;
@@ -192,7 +196,6 @@ enum
 - (void) resize: (float) factor :(NSPoint) center;
 - (void) setPix: (DCMPix*) newPix;
 - (DCMPix*) pix;
-
 - (BOOL) reduceTextureIfPossible;
 - (void) addMarginToBuffer: (int) margin;
 - (void) drawTextualData;

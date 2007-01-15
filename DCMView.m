@@ -798,8 +798,18 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 	else
 	{
-		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", nil] owner:nil];
+		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
 		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
+		
+		NSMutableString		*r = [NSMutableString string];
+		
+		for( i = 0 ; i < [roiSelectedArray count] ; i++)
+		{
+			[r appendString: [[roiSelectedArray objectAtIndex: i] description]];
+			if( i != [roiSelectedArray count]-1) [r appendString:@"\r"];
+		}
+		
+		[pb setString: r  forType:NSStringPboardType];
 	}
 }
 
@@ -2423,6 +2433,8 @@ static long scrollMode;
 		// push back!
 		if(tool == tPushBack)
 		{
+			[self deleteMouseDownTimer];
+			
 			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
 			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
@@ -2503,6 +2515,8 @@ static long scrollMode;
 		// ROI TOOLS
 		if( [self roiTool:tool] == YES && crossMove == -1)
 		{
+			[self deleteMouseDownTimer];
+			
 			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
 			
 			BOOL	DoNothing = NO;
@@ -3111,6 +3125,7 @@ static long scrollMode;
 				}
 				else
 				{
+					BOOL textBoxMove = NO;
 					NSPoint offset;
 					float   xx, yy;
 					
@@ -3131,7 +3146,28 @@ static long scrollMode;
 					{
 						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 						{
-							[[curRoiList objectAtIndex:i] roiMove: offset];
+							if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
+						}
+					}
+					
+					if( textBoxMove)
+					{
+						for( i = 0; i < [curRoiList count]; i++)
+						{
+							if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+							{
+								[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
+							}
+						}
+					}
+					else
+					{
+						for( i = 0; i < [curRoiList count]; i++)
+						{
+							if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+							{
+								[[curRoiList objectAtIndex:i] roiMove: offset];
+							}
 						}
 					}
 				}
