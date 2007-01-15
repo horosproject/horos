@@ -6307,6 +6307,27 @@ short				matrix[25];
 				[thickSlab setCLUT:red :green :blue];
 			}
 			
+			int darkness = 256 * 3;
+			int darknessIndex = 0;
+			
+			for( i = 0; i < 256; i++)
+			{
+				if( red[i] + green[i] + blue[i] < darkness)
+				{
+					darknessIndex = i;
+					darkness = red[i] + green[i] + blue[i];
+				}
+			}
+			
+			int x;
+			for ( x = 0; x < maxMovieIndex; x++)
+			{
+				for ( i = 0; i < [pixList[ x] count]; i ++)
+				{
+					[[pixList[ x] objectAtIndex:i] setBlackIndex: darknessIndex];
+				}
+			}
+			
 			[imageView setCLUT:red :green: blue];
 			[imageView setIndex:[imageView curImage]];
 			if( str != curCLUTMenu)

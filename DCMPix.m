@@ -84,7 +84,6 @@ void ConvertFloatToNative (float *theFloat)
 //	*myLongPtr = EndianU64_LtoN(*myLongPtr);
 //}
 
-
 uint64_t	MyGetTime( void )
 {
 	AbsoluteTime theTime = UpTime();
@@ -856,7 +855,7 @@ long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer)
 	return size;
 }
 
-void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad)
+void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int rad, char blackIndex)
 {
 	int		x,y;
 	int		xsqr;
@@ -872,20 +871,20 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	// top
 	for(y = 0; y <= cy; y++)
 	{
-		for(x = 0; x < width; x++) buf[ x + y*width] = 0;
+		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
 	// bottom
 	for(y = cy+inw; y < height; y++)
 	{
-		for(x = 0; x < width; x++) buf[ x + y*width] = 0;
+		for(x = 0; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
 	// left + right
 	for(y = cy; y < cy+inw; y++)
 	{
-		for(x = 0; x <= cx; x++) buf[ x + y*width] = 0;
-		for(x = cx+inw; x < width; x++) buf[ x + y*width] = 0;
+		for(x = 0; x <= cx; x++) buf[ x + y*width] = blackIndex;
+		for(x = cx+inw; x < width; x++) buf[ x + y*width] = blackIndex;
 	}
 	
 	for(x = 0; x < rad; x++)
@@ -909,16 +908,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				int xx, yy;
 				
 				xx = rad+x+cx;	yy = rad+y+cy;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
 				
 				xx = rad-x+cx;	yy = rad+y+cy;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
 				
 				xx = rad+x+cx;	yy = rad-y+cy;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
 				
 				xx = rad-x+cx;	yy = rad-y+cy;
-				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = draw;
+				if( xx >= 0 && xx < width && yy >= 0 && yy < height) buf[ xx + yy*width] = blackIndex;
 			}
 		}
 	}
@@ -2375,11 +2374,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	radionuclideTotalDose = 0;
 	radionuclideTotalDoseCorrected = 0;
 	
-	orientation[ 0] = 1;
+	orientation[ 0] = 0;
 	orientation[ 1] = 0;
 	orientation[ 2] = 0;
 	orientation[ 3] = 0;
-	orientation[ 4] = 1;
+	orientation[ 4] = 0;
 	orientation[ 5] = 0;
 	// Compute normal vector
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
@@ -2614,11 +2613,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		DCMPixShutterOnOff = NSOffState;
 		
 		//----------------------------------orientation		
-		orientation[ 0] = 1;
-		orientation[ 1] = 0;
+		orientation[ 0] = 0;
 		orientation[ 2] = 0;
 		orientation[ 3] = 0;
-		orientation[ 4] = 1;
+		orientation[ 4] = 0;
 		orientation[ 5] = 0;
 		// Compute normal vector
 		orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
@@ -4332,8 +4330,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		originZ = [[ipp objectAtIndex:2] floatValue];
 	}
 	
-	orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-	orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+	orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+	orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 	NSArray *iop = [dcmObject attributeArrayWithName:@"ImageOrientationPatient"];
 	if( iop)
 	{
@@ -4470,11 +4468,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
 	{
+		shutterRect_w = width;
+		shutterRect_h = height;
+		
 		if( [dcmObject attributeValueWithName:@"ShutterShape"])
 		{
 			NSArray *shutterArray = [dcmObject attributeArrayWithName:@"ShutterShape"];
 			
-			int i;
+			int i, x;
 			for( i = 0 ; i < [shutterArray count]; i++)
 			{
 				if( [[shutterArray objectAtIndex:i] isEqualToString:@"RECTANGULAR"])
@@ -4488,6 +4489,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				}
 				else if( [[shutterArray objectAtIndex:i] isEqualToString:@"CIRCULAR"])
 				{
+					DCMPixShutterOnOff = YES;
+					
 					NSArray *centerArray = [dcmObject attributeArrayWithName:@"CenterofCircularShutter"];
 					
 					if( [centerArray count] == 2)
@@ -4497,6 +4500,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 					
 					shutterCircular_radius = [[dcmObject attributeValueWithName:@"RadiusofCircularShutter"] floatValue];
+				}
+				else if( [[shutterArray objectAtIndex:i] isEqualToString:@"POLYGONAL"])
+				{
+					DCMPixShutterOnOff = YES;
+					
+					NSArray *locArray = [dcmObject attributeArrayWithName:@"VerticesofthePolygonalShutter"];
+					
+					if( shutterPolygonal) free( shutterPolygonal);
+					
+					shutterPolygonalSize = 0;
+					shutterPolygonal = malloc( [locArray count] * sizeof( NSPoint) / 2);
+					for( i = 0, x = 0; i < [locArray count]; i+=2, x++)
+					{
+						shutterPolygonal[ x].x = [[locArray objectAtIndex: i] intValue];
+						shutterPolygonal[ x].y = [[locArray objectAtIndex: i+1] intValue];
+						shutterPolygonalSize++;
+					}
 				}
 				else NSLog( @"Shutter not supported: %@", [shutterArray objectAtIndex:i]);
 			}
@@ -4518,8 +4538,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			//ImageOrientationPatient
 			
 			NSArray *iop = [planeOrientationObject attributeArrayWithName:@"ImageOrientationPatient"];
-			orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-			orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 			for (j = 0 ; j < [iop count]; j++) 
 				orientation[ j] = [[iop objectAtIndex:j] floatValue];
 			
@@ -5305,8 +5325,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				}
 			}
 			
-			orientation[ 0] = 1;	orientation[ 1] = 0;	orientation[ 2] = 0;
-			orientation[ 3] = 0;	orientation[ 4] = 1;	orientation[ 5] = 0;
+			orientation[ 0] = 0;	orientation[ 1] = 0;	orientation[ 2] = 0;
+			orientation[ 3] = 0;	orientation[ 4] = 0;	orientation[ 5] = 0;
 			
 			val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &elemType);
 			if (val != NULL)
@@ -8273,56 +8293,85 @@ BOOL            readable = YES;
 	updateToBeApplied = YES;
 }
 
+- (void) setBlackIndex:(int) i
+{
+	blackIndex = i;
+}
+
 -(void) applyShutter
 {
 	if (DCMPixShutterOnOff == NSOnState)
 	{
 		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
-			char*	tempMem = calloc( 1, height * width * 4*sizeof(char));
+			char*	tempMem = malloc( height * width * 4*sizeof(char));
 			
-			int i = shutterRect_h;
+			memset( tempMem, blackIndex, height * width);
 			
-			char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x*4);
-			char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x*4);
-			
-			while( i-- > 0)
+			if( tempMem)
 			{
-				memcpy( dst, src, shutterRect_w*4);
+				int i = shutterRect_h;
 				
-				dst += rowBytes;
-				src += rowBytes;
+				char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x*4);
+				char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x*4);
+				
+				while( i-- > 0)
+				{
+					memcpy( dst, src, shutterRect_w*4);
+					
+					dst += rowBytes;
+					src += rowBytes;
+				}
+				
+				memcpy(baseAddr, tempMem, height * width * 4*sizeof(char));
+				
+				free( tempMem);
 			}
-			
-			memcpy(baseAddr, tempMem, height * width * 4*sizeof(char));
-			
-			free( tempMem);
 		}
 		else
 		{
 			char*	tempMem = calloc( 1, height * width * sizeof(char));
 			
-			int i = shutterRect_h;
-			
-			char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x);
-			char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x);
-			
-			while( i-- > 0)
+			if( tempMem)
 			{
-				memcpy( dst, src, shutterRect_w);
+				int i = shutterRect_h;
 				
-				dst += rowBytes;
-				src += rowBytes;
+				char*	src = baseAddr + ((shutterRect_y * rowBytes) + shutterRect_x);
+				char*	dst = tempMem + ((shutterRect_y * rowBytes) + shutterRect_x);
+				
+				while( i-- > 0)
+				{
+					memcpy( dst, src, shutterRect_w);
+					
+					dst += rowBytes;
+					src += rowBytes;
+				}
+				
+				if( shutterCircular_radius)
+				{
+					erase_outside_circle( tempMem, width, height, shutterCircular_x, shutterCircular_y, shutterCircular_radius, blackIndex);
+				}
+				
+				if( shutterPolygonal)
+				{
+					int		x, y;
+					
+					for( y = 0 ; y < height; y++)
+					{
+						for( x = 0 ; x < width; x++)
+						{
+							if( pnpoly( shutterPolygonal, shutterPolygonalSize, x, y) == 0)
+							{
+								tempMem[ x + y*width] = blackIndex;
+							}
+						}
+					}
+				}
+				
+				memcpy(baseAddr, tempMem, height * width * sizeof(char));
+				
+				free( tempMem);
 			}
-			
-			if( shutterCircular_radius)
-			{
-				erase_outside_circle( tempMem, width, height, shutterCircular_x, shutterCircular_y, shutterCircular_radius);
-			}
-			
-			memcpy(baseAddr, tempMem, height * width * sizeof(char));
-			
-			free( tempMem);
 		}
 	}
 }
@@ -9024,6 +9073,8 @@ float			iwl, iww;
 
 - (void) dealloc
 {
+	if( shutterPolygonal) free( shutterPolygonal);
+
 	[processorsLock release];
 	[acquisitionTime release];
 	[radiopharmaceuticalStartTime release];

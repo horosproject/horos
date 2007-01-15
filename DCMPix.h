@@ -118,6 +118,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	long				shutterCircular_y;
 	long				shutterCircular_radius;
 	
+	NSPoint	 			*shutterPolygonal;
+	long				shutterPolygonalSize;
+	
 	BOOL				DCMPixShutterOnOff;
 
 //-------------------------------------------------------	
@@ -159,6 +162,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				useVOILUT;
 	int					VOILUT_first;
 	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
+	
+	char					blackIndex;
 }
 
 // Is it an RGB image (ARGB) or float image?
@@ -275,6 +280,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(void) ang:(float)newAng;
 -(float) ang;
 
+- (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;
 -(long) DCMPixShutterRectWidth;
