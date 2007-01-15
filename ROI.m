@@ -2328,8 +2328,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 		}
 		
-		tPt = [curView ConvertFromGL2View: tPt];
+		ctPt = tPt;
 		
+		tPt = [curView ConvertFromGL2View: ctPt];
+		origin = tPt;
+		
+		tPt = ctPt;
+		tPt.x += offsetTextBox_x;
+		tPt.y += offsetTextBox_y;
+		
+		tPt = [curView ConvertFromGL2View: tPt];
 		drawRect.origin = tPt;
 	}
 	
@@ -2337,7 +2345,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
-//	if( fabs( offsetTextBox_x) > 5 || fabs( offsetTextBox_y) > 5) moved = NO;
+//	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
 	
 	if( moved && ![curView suppressLabels])	// Draw bezier line
 	{
@@ -2348,9 +2356,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		const int OFF = 30;
 		
-		ctrlpoints[0][0] = origin.x;						ctrlpoints[0][1] = origin.y;				ctrlpoints[0][2] = 0;
-		ctrlpoints[1][0] = tPt.x - OFF;						ctrlpoints[1][1] = tPt.y;					ctrlpoints[1][2] = 0;
-		ctrlpoints[2][0] = tPt.x;							ctrlpoints[2][1] = tPt.y;					ctrlpoints[2][2] = 0;
+		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);							ctrlpoints[0][2] = 0;
+		ctrlpoints[1][0] = origin.x - OFF;					ctrlpoints[1][1] = origin.y;									ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = origin.x;						ctrlpoints[2][1] = origin.y;									ctrlpoints[2][2] = 0;
 		
 		glLineWidth( 3.0);
 		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
