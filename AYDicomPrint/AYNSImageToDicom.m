@@ -138,10 +138,16 @@
 - (NSArray *) dicomFileListForViewer: (ViewerController *) currentViewer destinationPath: (NSString *) destPath options: (NSDictionary*) options asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations 
 {
 	NSMutableArray *images = [NSMutableArray array];
-
+	NSArray *fileList = [currentViewer fileList];
+	
 	if( [[options valueForKey:@"mode"] intValue] == eCurrentImage)
 	{
-		[images addObject: [NSNumber numberWithInt: [[currentViewer imageView] curImage]]];
+		int i;
+		
+		if( [[currentViewer imageView] flippedData]) i = [fileList count] -1 -[[currentViewer imageView] curImage];
+		else i = [[currentViewer imageView] curImage];
+		
+		[images addObject: [NSNumber numberWithInt: i]];
 	}
 	else if ([[options valueForKey:@"mode"] intValue] == eAllImages)
 	{
@@ -155,8 +161,6 @@
 	}
 	else if ([[options valueForKey:@"mode"] intValue] == eKeyImages)
 	{
-		NSArray *fileList = [currentViewer fileList];
-
 		int i;
 		for (i = 0; i < [fileList count]; i++)
 		{
