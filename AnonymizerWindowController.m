@@ -182,6 +182,25 @@ Version 2.3
 		else
 			[[secondColumnValues cellWithTag:tag] setEnabled:[cell state]];
 	}
+	
+	NSDateFormatter	*dateFormat;
+	
+	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSShortDateFormatString] allowNaturalLanguage: YES] autorelease];
+	
+	[[firstColumnValues cellWithTag: 12] setFormatter: dateFormat];
+	[[firstColumnValues cellWithTag: 20] setFormatter: dateFormat];
+	[[firstColumnValues cellWithTag: 32] setFormatter: dateFormat];
+	[[firstColumnValues cellWithTag: 40] setFormatter: dateFormat];
+	
+	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSShortTimeDateFormatString] allowNaturalLanguage: YES] autorelease];
+	
+	[[firstColumnValues cellWithTag: 28] setFormatter: dateFormat];
+	
+	dateFormat = [[[NSDateFormatter alloc]  initWithDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: NSTimeFormatString] allowNaturalLanguage: YES] autorelease];
+	
+	[[firstColumnValues cellWithTag: 24] setFormatter: dateFormat];
+	[[firstColumnValues cellWithTag: 36] setFormatter: dateFormat];
+	[[firstColumnValues cellWithTag: 44] setFormatter: dateFormat];
 }
 
 - (void) anonymizeProcess:(NSString*) path
