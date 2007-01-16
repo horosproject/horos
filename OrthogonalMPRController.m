@@ -474,11 +474,19 @@
 -(void) setScaleValue:(float) x
 {
 	[originalView adjustScaleValue: x];
-	
-	float scaleValue = [originalView scaleValue];
-	
-	[xReslicedView adjustScaleValue: scaleValue * [xReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
-	[yReslicedView adjustScaleValue: scaleValue * [yReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
+
+	if( [xReslicedView pixelSpacingX] != 0 && [originalView pixelSpacingX] != 0)
+	{
+		float scaleValue = [originalView scaleValue];
+		
+		[xReslicedView adjustScaleValue: scaleValue * [xReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
+		[yReslicedView adjustScaleValue: scaleValue * [yReslicedView pixelSpacingX] / [originalView pixelSpacingX]];
+	}
+	else
+	{
+		[xReslicedView adjustScaleValue: x];	 
+		[yReslicedView adjustScaleValue: x];
+	}
 }
 
 - (void) resetImage

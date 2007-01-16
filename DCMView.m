@@ -5915,8 +5915,6 @@ static long scrollMode;
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT);
 		
-
-		
 		if( dcmPixList && curImage > -1)
 		{
 			if( blendingView != 0L)
@@ -5926,7 +5924,7 @@ static long scrollMode;
 			}
 			else glDisable( GL_BLEND);
 			
-			 [self drawRectIn:size :pTextureName :offset :textureX :textureY];
+			[self drawRectIn:size :pTextureName :offset :textureX :textureY];
 			
 			if( blendingView)
 			{
@@ -5968,7 +5966,7 @@ static long scrollMode;
 					[blendingView drawRectIn:size :blendingTextureName :offset :blendingTextureX :blendingTextureY];
 				else
 					NSLog( @"blendingTextureName == 0L");
-					
+				
 				glDisable( GL_BLEND);
 			}
 			
@@ -5980,7 +5978,7 @@ static long scrollMode;
 				glEnable(GL_POINT_SMOOTH);
 				glEnable(GL_LINE_SMOOTH);
 				glEnable(GL_POLYGON_SMOOTH);
-
+				
 				if(( mprVector[ 0] != 0 || mprVector[ 1] != 0))
 				{
 					float tvec[ 2];

@@ -636,7 +636,7 @@ NSString * documentsDirectory();
 	offset.x /= destPixelSpacingX;
 	offset.y /= destPixelSpacingY;
 	
-	NSLog( @"CT: %f %f", offset.x, offset.y);
+//	NSLog( @"CT: %f %f", offset.x, offset.y);
 	
 	newX = xSignDest * x * senderPixelSpacingX / destPixelSpacingX + destWidth/2.0f;
 	newY = ySignDest * y * senderPixelSpacingY / destPixelSpacingY + destHeight/2.0f;
@@ -669,7 +669,7 @@ NSString * documentsDirectory();
 	destOrigin[ 1] = [[[PETController performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[PETController performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[PETController performSelector:view] curDCM]  originZ] * vectorP[ 5];
 	destOrigin[ 2] = [[[PETController performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[PETController performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[PETController performSelector:view] curDCM]  originZ] * vectorP[ 8];
 	
-	NSLog( @"PET: %f %f", offset.x, offset.y);
+//	NSLog( @"PET: %f %f", offset.x, offset.y);
 	
 	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2 - (senderOrigin[ 0] + senderPixelSpacingX * [[[sender performSelector:view] curDCM] pwidth]/2);
 	offset.y = destOrigin[ 1] + destPixelSpacingY * destHeight/2 - (senderOrigin[ 1] + senderPixelSpacingY * [[[sender performSelector:view] curDCM] pheight]/2);
@@ -707,7 +707,7 @@ NSString * documentsDirectory();
 	destOrigin[ 1] = [[[PETCTController performSelector:view] curDCM]  originX] * vectorP[ 3] + [[[PETCTController performSelector:view] curDCM]  originY] * vectorP[ 4] + [[[PETCTController performSelector:view] curDCM]  originZ] * vectorP[ 5];
 	destOrigin[ 2] = [[[PETCTController performSelector:view] curDCM]  originX] * vectorP[ 6] + [[[PETCTController performSelector:view] curDCM]  originY] * vectorP[ 7] + [[[PETCTController performSelector:view] curDCM]  originZ] * vectorP[ 8];
 
-	NSLog( @"PETCT: %f %f", offset.x, offset.y);
+//	NSLog( @"PETCT: %f %f", offset.x, offset.y);
 	
 	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2 - (senderOrigin[ 0] + senderPixelSpacingX * [[[sender performSelector:view] curDCM] pwidth]/2);
 	offset.y = destOrigin[ 1] + destPixelSpacingY * destHeight/2 - (senderOrigin[ 1] + senderPixelSpacingY * [[[sender performSelector:view] curDCM] pheight]/2);
