@@ -29,5 +29,6 @@
 
 - (IBAction)addDeleteAction:( id)sender;
 - (NSArray *)viewers;
+- (IBOutlet)openLayout:(id)sender;
 
 @end

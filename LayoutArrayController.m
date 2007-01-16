@@ -229,4 +229,9 @@
     return YES;
 }
 
+- (IBOutlet)openLayout:(id)sender{
+	NSLog(@"open Layout");
+	[[WindowLayoutManager sharedWindowLayoutManager] hangSet:[[self arrangedObjects] objectAtIndex:[self selectionIndex]]];			
+}
+
 @end

@@ -28,6 +28,8 @@
 
 - (void)awakeFromNib{
 	[self registerForDraggedTypes:[NSArray arrayWithObject:@"LayoutDraggingType"]]; 
+	//[self setDoubleAction:@selector(openLayout:)];
+	//[self setTarget:[self dataSource]];
 }
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal {

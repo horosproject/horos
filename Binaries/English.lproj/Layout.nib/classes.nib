@@ -11,7 +11,7 @@
             SUPERCLASS = NSObjectController; 
         }, 
         {
-            ACTIONS = {addDeleteAction = id; }; 
+            ACTIONS = {addDeleteAction = id; openLayout = id; }; 
             CLASS = LayoutArrayController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSArrayController; 
