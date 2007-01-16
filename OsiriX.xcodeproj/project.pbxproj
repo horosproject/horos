@@ -18206,7 +18206,6 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				BF92F5350AD6E8A30028FFAD /* Exporting */,
 				BF348573095126B700B05AD2 /* Sending */,
 				7E0339E307415C330025DDB4 /* Burning */,
 				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
@@ -18855,13 +18854,6 @@
 				BF9998FF0A1E695800F50753 /* DCMTKPrintSCU.mm */,
 			);
 			name = Network;
-			sourceTree = "<group>";
-		};
-		BF92F5350AD6E8A30028FFAD /* Exporting */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Exporting;
 			sourceTree = "<group>";
 		};
 		BF952BA206C9C7F40063B562 /* Single Window */ = {

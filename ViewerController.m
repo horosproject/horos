@@ -10363,6 +10363,19 @@ int i,j,l;
 	
 	[self setPagesToPrint: self];
 	
+	if( [pixList[ curMovieIndex] count] == 1)
+	{
+		[printFrom setEnabled: NO];
+		[printTo setEnabled: NO];
+		[printInterval setEnabled: NO];
+	}
+	else
+	{
+		[printFrom setEnabled: YES];
+		[printTo setEnabled: YES];
+		[printInterval setEnabled: YES];
+	}
+	
 	[NSApp beginSheet: printWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 

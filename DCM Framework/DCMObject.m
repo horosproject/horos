@@ -87,7 +87,11 @@ static NSString *softwareVersion = @"001";
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"ContentTime"] replacingWith:value];
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
 		}
-			
+		if ([[tag name] isEqualToString: @"AcquisitionDatetime"])
+		{
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionDate"] replacingWith:value];
+			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"AcquisitionTime"] replacingWith:value];
+		}
 	}
 	
 	//get rid of some other tags containing addresses and phone numbers
