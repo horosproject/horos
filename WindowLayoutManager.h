@@ -96,6 +96,7 @@ It is a shared class.
 - (void)setRelatedStudies:(NSArray *)relatedStudies;
 - (id)comparionStudy;
 - (NSArray *)comparisonStudies;
+- (id)comparisonStudyForModality:(NSString *)modality studyDescription:(NSString *)studyDescription;
 
 #pragma mark-
 #pragma mark Layout Window
