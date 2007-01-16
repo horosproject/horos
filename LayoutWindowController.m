@@ -41,6 +41,8 @@
 - (id)init{
 	if (self = [super initWithWindowNibName:@"Layout"]) {
 		_addLayoutSet = NO;
+		_newButtonIsHidden = [[WindowLayoutManager sharedWindowLayoutManager] hangingProtocol] ? YES : NO;
+		//[[WindowLayoutManager sharedWindowLayoutManager] bind:@"hangingProtocol" toObject:self withKeyPath:@"hangingProtocol" options:nil];
 	}
 	return self;
 }
@@ -94,7 +96,8 @@
 	NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
 	NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
 	[advancedHangingProtocols removeObjectsInArray:filteredHangingProtocols];
-	[advancedHangingProtocols addObject:_hangingProtocol];
+	if (_hangingProtocol)
+		[advancedHangingProtocols addObject:_hangingProtocol];
 	[[NSUserDefaults standardUserDefaults] setObject: advancedHangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
 }
 
@@ -123,8 +126,12 @@
 }
 
 - (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol{
+	NSLog(@"Layout set Hanging Protocol: %@", hangingProtocol);
 	[_hangingProtocol release];
 	_hangingProtocol = [hangingProtocol retain];
+	BOOL isHidden = _hangingProtocol ? YES: NO;
+	[self setNewButtonIsHidden:isHidden];
+	[[WindowLayoutManager sharedWindowLayoutManager] setHangingProtocol:(NSMutableDictionary *)hangingProtocol];
 }
 
 
@@ -150,6 +157,19 @@
 
 - (void)setLayouts:(NSArray *)layouts{
 	[_hangingProtocol setObject: layouts forKey:@"seriesSets"];
+}
+
+- (BOOL)newButtonIsHidden{
+	NSLog(@"newButtonIsHidden: %d", _newButtonIsHidden);
+	return _newButtonIsHidden;
+}
+
+- (void)setNewButtonIsHidden:(BOOL)isHidden{
+	_newButtonIsHidden = isHidden;
+}
+
+- (id)windowLayoutManager{
+	return [WindowLayoutManager sharedWindowLayoutManager] ;
 }
 
 

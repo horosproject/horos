@@ -32,13 +32,13 @@ Saves and Creates Advanced Hanging Protocols
 	BOOL _addLayoutSet;
 	IBOutlet LayoutArrayController *_layoutArrayController;
 	IBOutlet HangingProtocolController	*_hangingProtocolController;
+	BOOL _newButtonIsHidden;
 }
 
-- (IBAction)endSheet:(id)sender;
+
 - (NSString *)studyDescription;
 - (NSString *)modality;
 - (NSArray *)windowControllers;
-- (void)setWindowControllers:(NSArray *)controllers;
 - (NSDictionary *)hangingProtocol;
 - (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol;
 - (BOOL) hasProtocol;
@@ -48,5 +48,8 @@ Saves and Creates Advanced Hanging Protocols
 - (NSString *)institution;
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)save;
+- (BOOL)newButtonIsHidden;
+- (void)setNewButtonIsHidden:(BOOL)isHidden;
+- (id)windowLayoutManager;
 
 @end
