@@ -685,11 +685,11 @@ WindowLayoutManager *sharedLayoutManager;
 
 			if ([[seriesInfo objectForKey:@"wwwlMenuItem"] isEqualToString:NSLocalizedString(@"Other", nil)])
 				[controller setWL:[[seriesInfo objectForKey:@"wl"] floatValue] WW:[[seriesInfo objectForKey:@"wl"] floatValue]];
-			else {
+			else if ([seriesInfo objectForKey:@"wwwlMenuItem"]){
 				[controller setCurWLWWMenu:[seriesInfo objectForKey:@"wwwlMenuItem"]];
 			}
-			
-			[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+			if ([seriesInfo objectForKey:@"CLUTName"])
+				[controller ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 			
 			NSString *blendingSeriesDescription = nil;
 			if (blendingSeriesDescription = [seriesInfo objectForKey:@"blendingSeriesDescription"]){
@@ -759,7 +759,8 @@ WindowLayoutManager *sharedLayoutManager;
 					
 					NSString *mode = @"VR";
 					viewer3D = [selectedViewer2D openVRViewerForMode:(NSString *)mode];
-					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					if ([seriesInfo objectForKey:@"CLUTName"])
+						[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
 					[viewer3D load3DState];
 					[viewer3D showWindow:self];
@@ -771,7 +772,8 @@ WindowLayoutManager *sharedLayoutManager;
 				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRPROController class])] ) {
 					NSString *mode = @"VR";
 					viewer3D = [selectedViewer2D openVRVPROViewerForMode:(NSString *)mode];
-					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					if ([seriesInfo objectForKey:@"CLUTName"])
+						[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
 					[viewer3D load3DState];
 					[viewer3D showWindow:self];
@@ -791,9 +793,11 @@ WindowLayoutManager *sharedLayoutManager;
 				}
 				else if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([MPR2DController class])] ) { 
 					viewer3D = [selectedViewer2D openMPR2DViewer];
-					[viewer3D ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					if ([seriesInfo objectForKey:@"CLUTName"])
+						[viewer3D ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
-					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					//if ([seriesInfo objectForKey:@"CLUTName"])
+					//	[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D load3DState];
 					[viewer3D showWindow:self];
 					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
@@ -803,7 +807,8 @@ WindowLayoutManager *sharedLayoutManager;
 				else if ([[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([OrthogonalMPRViewer class])] ) { 				
 					viewer3D = [selectedViewer2D openOrthogonalMPRViewer];
 					[viewer3D setWLWW:[[seriesInfo objectForKey:@"wl"] floatValue] :[[seriesInfo objectForKey:@"ww"] floatValue]];
-					[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
+					if ([seriesInfo objectForKey:@"CLUTName"])
+						[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D showWindow:self];
 					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];					
 					//float   iwl, iww;
@@ -974,7 +979,7 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (NSArray *)comparisonStudies{
 	NSMutableArray *comparisonStudies = [NSMutableArray array];
-	
+	NSLog(@"comparison");
 	NSArray *bodyRegions = [[NSUserDefaults standardUserDefaults] objectForKey:@"bodyRegions"];
 	NSEnumerator  *enumerator = [bodyRegions objectEnumerator];
 	NSDictionary *region;
@@ -995,7 +1000,12 @@ WindowLayoutManager *sharedLayoutManager;
 	// if we found a match for body region look for a match in between a keyword and the potential comparions study Name (description)
 	if (bodyRegion) {
 		id comparisonStudy = nil;
-		NSEnumerator *comparisonEnumerator = [_relatedStudies objectEnumerator];
+		NSLog(@"Related Studies count: %d", [_relatedStudies count]);
+		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date < %@", [[self currentStudy] valueForKey:@"date"]];
+		NSArray *subArray = [_relatedStudies filteredArrayUsingPredicate:datePredicate];
+		NSLog(@"filtered Studies count: %d", [subArray count]);
+		//NSEnumerator *comparisonEnumerator = [_relatedStudies objectEnumerator];
+		NSEnumerator *comparisonEnumerator = [subArray objectEnumerator];
 		while (comparisonStudy  = [comparisonEnumerator nextObject]) {
 			NSEnumerator *keywordEnumerator = [[bodyRegion objectForKey:@"keywords"] objectEnumerator];
 			NSDictionary *keywordDict;
@@ -1006,7 +1016,7 @@ WindowLayoutManager *sharedLayoutManager;
 			}
 		}
 	}
-	//NSLog(@"Comparisons: %@", comparisonStudies);
+
 	return comparisonStudies;
 }
 
