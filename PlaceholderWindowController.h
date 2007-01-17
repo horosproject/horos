@@ -29,9 +29,10 @@ Viewers
 
 #import <Cocoa/Cocoa.h>
 #import "OSIWindowController.h"
+#import "ViewerController.h"
 
 
-@interface PlaceholderWindowController : OSIWindowController {
+@interface PlaceholderWindowController : ViewerController {
 
 }
 

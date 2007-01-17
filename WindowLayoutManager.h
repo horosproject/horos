@@ -105,6 +105,8 @@ It is a shared class.
 - (id)currentStudy;
 - (void)setCurrentStudy:(id)study;
 - (NSArray *)seriesSets;
+- (void)setSeriesSetIndex: (int)seriesSetIndex;
+- (int)seriesSetIndex;
 
 
 

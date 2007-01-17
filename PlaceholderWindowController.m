@@ -29,6 +29,9 @@
 	}
 	return self;
 }
+- (void)windowDidLoad{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:[self window]];
+}
 
 - (NSManagedObject *)currentStudy{
 	return nil;
@@ -46,8 +49,9 @@
 }
 
 -(float)curWL{
-	return nil;
+	return 0.0;
 }
+
 
 - (void)windowWillClose:(NSNotification *)notification{
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -57,5 +61,6 @@
 - (void)closeAllWindows:(NSNotification *)note{
 	[[self window] performClose:self];
 }
+
 
 @end

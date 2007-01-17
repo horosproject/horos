@@ -65,7 +65,7 @@ WindowLayoutManager *sharedLayoutManager;
 - (void)registerWindowController:(OSIWindowController *)controller{
 	if (![_windowControllers containsObject:controller]){
 		[_windowControllers addObject:controller];
-		NSLog(@"register %@", controller);
+		//NSLog(@"register %@", controller);
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
 	}
 }
@@ -403,6 +403,7 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark Advanced Hanging
 -(BOOL)hangStudy:(id)study{
 	// clear current Hanging Protocol;
+	//NSLog(@"hang Study");
 	if ([[[study entity] name] isEqualToString:@"Study"]) {
 		[self setCurrentHangingProtocolForModality:nil description: nil];
 		[self setCurrentStudy:study];
@@ -427,7 +428,6 @@ WindowLayoutManager *sharedLayoutManager;
 		NSPredicate *studyDescriptionPredicate = [NSPredicate predicateWithFormat:@"studyDescription like[cd] %@", [study valueForKey:@"studyName"]];
 		NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:modalityPredicate, studyDescriptionPredicate, nil]];
 		NSArray *filteredHangingProtocols = [advancedHangingProtocols filteredArrayUsingPredicate:compoundPredicate];
-		
 		// get comparisons
 		[self setRelatedStudies:[browserController relatedStudiesForStudy:_currentStudy]];
 		//NSLog(@"comparison: %@", [self comparionStudy]);
@@ -468,10 +468,12 @@ WindowLayoutManager *sharedLayoutManager;
 			
 			
 			//rearrange Children based on SeriesDescription or Number then pass to viewerDICOMInt. At this time cannot control window size or arrangement
-			
+			//NSLog(@"setHangingProtocol: %@", hangingProtocol);
 			[self setHangingProtocol:hangingProtocol];	
-			NSDictionary *firstSet = [[self seriesSets] objectAtIndex:0];	
-			[self hangSet:firstSet];
+			//NSDictionary *firstSet = [[self seriesSets] objectAtIndex:0];	
+			//[self hangSet:firstSet];
+			_seriesSetIndex = -1;
+			[self nextSeriesSet];
 			_hangingProtocolInUse = YES;
 			return YES;
 		}
@@ -490,44 +492,57 @@ WindowLayoutManager *sharedLayoutManager;
 #pragma mark Moving Through Series Sets
 - (void)nextSeriesSet{
 	NSDictionary *layout = nil;
-	int startingIndex = _seriesSetIndex + 1;
+	int startingIndex = _seriesSetIndex;
 	if (startingIndex >= [[self seriesSets] count])
 		startingIndex = 0;
 	// look for next Set.  Need to either have no Comparison or a matching comparison to select set. Otherwise go to get set.
 	//Make sure we don't get into an infinite loop 
-	while (!layout && startingIndex != _seriesSetIndex) {
-		_seriesSetIndex++;
-		if (_seriesSetIndex >= [[self seriesSets] count])
-			_seriesSetIndex = 0;
-		NSDictionary *layoutTest = [[self seriesSets] objectAtIndex:_seriesSetIndex];
-		if ([[layoutTest objectForKey:@"hasComparison"] boolValue] == NO)
-			layout = layoutTest;		
+	int count = [[self seriesSets] count];
+	int index = 0;
+	while (!layout && index < count) {
+		startingIndex++;
+		index++;
+		if (startingIndex >= [[self seriesSets] count])
+			startingIndex = 0;
+		NSDictionary *layoutTest = [[self seriesSets] objectAtIndex:startingIndex];
+		if ([[layoutTest objectForKey:@"hasComparison"] boolValue] == NO) {
+			layout = layoutTest;	
+		}
 		else {
+			//NSLog(@"Next set. Look for comparisons");
 			id comparisonStudy = [self comparisonStudyForModality:[layoutTest objectForKey:@"comparisonModality"] studyDescription:[layoutTest objectForKey:@"seriesDescription"]];
-			if (comparisonStudy)
-				layout = layoutTest;		
+			if (comparisonStudy) {
+				layout = layoutTest;
+			}
 		}
 	}
 	// just in case we don't find a match
-	if (!layout)
+	if (!layout) {
+		startingIndex = _seriesSetIndex + 1;
+		if (startingIndex >= [[self seriesSets] count])
+			startingIndex = 0;
 		layout = [[self seriesSets] objectAtIndex:startingIndex];
-		
+	}
+	[self setSeriesSetIndex:startingIndex];
 	[self hangSet:layout];
 }
 
 
 - (void)previousSeriesSet{
 	NSDictionary *layout = nil;
-	int startingIndex = _seriesSetIndex - 1;
+	int startingIndex = _seriesSetIndex;
 	if (startingIndex <  0)
 		startingIndex = [[self seriesSets] count] - 1;
 	// look for previous Set.  Need to either have no Comparison or a matching comparison to select set. Otherwise go to get set.
 	//Make sure we don't get into an infinite loop 	
-	while (!layout && startingIndex != _seriesSetIndex) {	
-		_seriesSetIndex--;
-		if (_seriesSetIndex < 0 )
-			_seriesSetIndex = [[self seriesSets] count] - 1;
-		NSDictionary *layoutTest = [[self seriesSets] objectAtIndex:_seriesSetIndex];
+	int count = [[self seriesSets] count];
+	int index = 0;
+	while (!layout && index < count) {	
+		index++;
+		startingIndex--;
+		if (startingIndex < 0 )
+			startingIndex = [[self seriesSets] count] - 1;
+		NSDictionary *layoutTest = [[self seriesSets] objectAtIndex:startingIndex];
 				if ([[layoutTest objectForKey:@"hasComparison"] boolValue] == NO)
 			layout = layoutTest;		
 		else {
@@ -537,9 +552,13 @@ WindowLayoutManager *sharedLayoutManager;
 		}
 	}
 	// just in case we don't find a match
-	if (!layout)
+	if (!layout) {
+		startingIndex = _seriesSetIndex -1;
+		if (startingIndex < 0)
+			startingIndex = [[self seriesSets] count] - 1;
 		layout = [[self seriesSets] objectAtIndex:startingIndex];
-		
+	}
+	[self setSeriesSetIndex:startingIndex];		
 	[self hangSet:layout];
 }
 
@@ -553,37 +572,30 @@ WindowLayoutManager *sharedLayoutManager;
 	NSEnumerator *enumerator = [viewers objectEnumerator];
 	NSMutableArray *children =  [NSMutableArray array];
 	BrowserController *browserController = [BrowserController currentBrowser];
-	//int count = [[browserController childrenArray: [self currentStudy]]  count];
 	NSMutableArray *usableViewers = [NSMutableArray arrayWithArray:[self viewers2D]];
 	int comparisonSeriesIndex = 0;
 	while (seriesInfo = [enumerator nextObject]){
 		// only load ViewerControllers first
-		//NSLog(@"Next Viewer");
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] || 
 			[[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([PlaceholderWindowController class])] ) {
 			id studyToLoad = nil;
 			int count = 0;
-			//NSLog(@"is Viewer Controller");
 			//decide if we want study or comparison
 			if ( ![[seriesInfo objectForKey:@"isComparison"] boolValue]){
 				studyToLoad  = [self currentStudy];
-				//NSLog(@"current Study");
 			}
 			else {
-				//NSLog(@"comparison Study");
 				//@"comparisonModality" is a value for the Series Layout set, Not the viewer
 				studyToLoad  = [self comparisonStudyForModality:[seriesSet objectForKey:@"comparisonModality"] studyDescription:[seriesInfo objectForKey:@"seriesDescription"]];		
 			}
 			// if we have a study load it. May not have a study for comparisons.
 			if (studyToLoad) {
-				//NSLog(@"find series for Viewer");
 				BOOL openViewer = NO;
 				id seriesToOpen = nil;		
 			
 				if ([[seriesInfo objectForKey:@"isComparison"] boolValue]  && 
 					![[seriesSet objectForKey:@"comparisonModality"] isEqualToString:NSLocalizedString(@"Exact Match", nil)]) {
 						// if not an exact match we load the series in a row
-					//NSLog(@"load comparison Series. Not exact match");
 					count =  [[browserController childrenArray: studyToLoad]  count];
 					if (comparisonSeriesIndex < count) {
 						id child = [[browserController childrenArray: studyToLoad] objectAtIndex:comparisonSeriesIndex++];
@@ -593,7 +605,6 @@ WindowLayoutManager *sharedLayoutManager;
 					}
 				}
 				else {
-					//NSLog(@"load comparison Series. Find exact match");
 					count =  [[browserController childrenArray: studyToLoad]  count];
 					int i;	
 														
@@ -646,7 +657,7 @@ WindowLayoutManager *sharedLayoutManager;
 					if (viewerForSeries)
 						// save viewer
 						[usableViewers removeObject:viewerForSeries];
-					else	
+					else
 						// new Viewer
 						[browserController loadSeries:seriesToOpen :nil :NO keyImagesOnly:NO];
 				}
@@ -661,7 +672,6 @@ WindowLayoutManager *sharedLayoutManager;
 	ViewerController *viewer = nil;
 	NSEnumerator *viewerEnumerator = [usableViewers objectEnumerator];
 	while (viewer = [viewerEnumerator nextObject]) {
-		//NSLog(@"close unused 2D Viewers: %@", viewer);
 		[viewer close];
 	}
 	
@@ -672,10 +682,14 @@ WindowLayoutManager *sharedLayoutManager;
 	ViewerController *controller;
 	while (seriesInfo = [enumerator nextObject]){
 		// Viewer Controllers
-		//NSLog(@"go through viewerControllers and make adjustments" );
 		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] ){
 			controller = [windowEnumerator nextObject];
-			//NSLog(@"controller: %@", controller );
+			// Append Comparison to Title if it is a comparison
+			if ([[seriesInfo objectForKey:@"isComparison"] boolValue]) {
+				NSString *title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"COMPARISON", nil), [[controller window] title]];
+				NSLog(@"new Title: %@", title);
+				[[controller window] setTitle:title];
+			}
 			if ([[seriesInfo objectForKey:@"imageRows"] intValue] > 1 || [[seriesInfo objectForKey:@"imageColumns"] intValue] > 1)
 				[controller setImageRows:[[seriesInfo objectForKey:@"imageRows"] intValue] columns:[[seriesInfo objectForKey:@"imageColumns"] intValue]];
 			[[controller window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];
@@ -723,8 +737,7 @@ WindowLayoutManager *sharedLayoutManager;
 	// Once we have 2D windows opened and fused can look for 3D windows to open  
 	[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 	enumerator = [viewers objectEnumerator];
-	//NSLog(@"now load 3d Viewers");
-	//ViewerController *controller;
+
 	while (seriesInfo = [enumerator nextObject]){
 		// have a 3D Viewer
 		// Need to determine if 3D Viewer is for Current Study or Comparison. Not done yet.
@@ -733,30 +746,29 @@ WindowLayoutManager *sharedLayoutManager;
 			windowEnumerator = [[self viewers2D] objectEnumerator];
 			id viewer2D;
 			id selectedViewer2D = nil;
-			
+			BOOL isComparison = [[seriesInfo objectForKey:@"isComparison"] boolValue];
 			// find the right 2D viewer based on Series Description and number
-			//NSLog(@"loop through 2D");
 			while (viewer2D = [windowEnumerator nextObject]) {
-				//NSLog(@"find 2d viewer for 3d Window: %@", viewer2D);
-				id viewerSeries = [viewer2D currentSeries];
-				
-				if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
-					if ([[viewerSeries valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
-						selectedViewer2D = viewer2D;
-						break;
+				// only make sure viewer and Study match
+				if (([[viewer2D currentStudy] isEqual:[self currentStudy]] && !isComparison) ||
+				(![[viewer2D currentStudy] isEqual:[self currentStudy]] && isComparison)) {
+					id viewerSeries = [viewer2D currentSeries];
+					if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
+						if ([[viewerSeries valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
+							selectedViewer2D = viewer2D;
+							break;
+						}
+					}
+					else {
+						if ([[viewerSeries valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]]) {
+							selectedViewer2D = viewer2D;
+							break;
+						}				
 					}
 				}
-				else {
-					if ([[viewerSeries valueForKey:@"name"] isEqualToString:[seriesInfo objectForKey:@"seriesDescription"]]) {
-						selectedViewer2D = viewer2D;
-						break;
-					}
-				}
-				//NSLog(@"Have Viewer: %@", selectedViewer2D);
 			}
 			// if we found a 2D Viewer, open the 3D viewer based on the Class Name
 			if (selectedViewer2D) {
-				//NSLog(@"load 3d Viewer");
 				id viewer3D;
 				if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([VRController class])] ) {
 					
@@ -814,9 +826,7 @@ WindowLayoutManager *sharedLayoutManager;
 						[viewer3D  ApplyCLUTString:[seriesInfo objectForKey:@"CLUTName"]];
 					[viewer3D showWindow:self];
 					[[viewer3D window] setFrameFromString:[seriesInfo objectForKey:@"windowFrame"]];					
-					//float   iwl, iww;
-					//[imageView getWLWW:&iwl :&iww];
-					//[viewer3D setWLWW:iwl :iww];
+
 					if (![[[viewer3D window] title] hasSuffix:[[selectedViewer2D window] title]])
 						[[viewer3D window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer3D window] title], [[selectedViewer2D window] title]]];
 				}
@@ -982,7 +992,7 @@ WindowLayoutManager *sharedLayoutManager;
 
 - (NSArray *)comparisonStudies{
 	NSMutableArray *comparisonStudies = [NSMutableArray array];
-	NSLog(@"comparison");
+	//NSLog(@"comparison");
 	NSArray *bodyRegions = [[NSUserDefaults standardUserDefaults] objectForKey:@"bodyRegions"];
 	NSEnumerator  *enumerator = [bodyRegions objectEnumerator];
 	NSDictionary *region;
@@ -994,19 +1004,21 @@ WindowLayoutManager *sharedLayoutManager;
 		NSDictionary *keywordDict;
 		while (keywordDict = [keywordEnumerator  nextObject]){
 			NSString *keyword = [keywordDict valueForKey: @"region"];
+			//NSLog(@"keyword: %@", keyword);
 			if ([studyDescription rangeOfString:keyword options:NSCaseInsensitiveSearch].location != NSNotFound) {
 				bodyRegion =  region;
 			}
+			//NSLog(@"region: %@ Study Description: %@", region, studyDescription);
 		}
 	}
 	
 	// if we found a match for body region look for a match in between a keyword and the potential comparions study Name (description)
 	if (bodyRegion) {
 		id comparisonStudy = nil;
-		NSLog(@"Related Studies count: %d", [_relatedStudies count]);
+		//NSLog(@"Related Studies count: %d", [_relatedStudies count]);
 		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"date < %@", [[self currentStudy] valueForKey:@"date"]];
 		NSArray *subArray = [_relatedStudies filteredArrayUsingPredicate:datePredicate];
-		NSLog(@"filtered Studies count: %d", [subArray count]);
+		//NSLog(@"filtered Studies count: %d", [subArray count]);
 		//NSEnumerator *comparisonEnumerator = [_relatedStudies objectEnumerator];
 		NSEnumerator *comparisonEnumerator = [subArray objectEnumerator];
 		while (comparisonStudy  = [comparisonEnumerator nextObject]) {
@@ -1019,7 +1031,6 @@ WindowLayoutManager *sharedLayoutManager;
 			}
 		}
 	}
-
 	return comparisonStudies;
 }
 
@@ -1030,7 +1041,6 @@ WindowLayoutManager *sharedLayoutManager;
 - (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol{
 	[_hangingProtocol release];
 	_hangingProtocol = [hangingProtocol retain];
-	//NSLog(@"Window Layout set Hanging Protocol: %@", hangingProtocol);
 }
 
 #pragma mark-
@@ -1050,11 +1060,19 @@ WindowLayoutManager *sharedLayoutManager;
 	return _currentStudy;
 }
 - (void)setCurrentStudy:(id)study{
+	NSLog(@"setCurrentStudy");
 	_currentStudy = study;
 }
 
 - (NSArray *)seriesSets{
 	return [_hangingProtocol objectForKey:@"layouts"];
+}
+
+- (void)setSeriesSetIndex: (int)seriesSetIndex{
+	_seriesSetIndex = seriesSetIndex;
+}
+- (int)seriesSetIndex {
+	return _seriesSetIndex;
 }
 	
 
