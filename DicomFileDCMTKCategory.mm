@@ -70,7 +70,8 @@ extern NSLock	*PapyrusLock;
 	[PapyrusLock lock];
 	OFCondition status = fileformat.loadFile([filePath UTF8String]);
 	[PapyrusLock unlock];
-	if (status.good()){
+	if (status.good())
+	{
 		NSString *characterSet = 0L;
 		
 		encoding = NSISOLatin1StringEncoding;
@@ -89,6 +90,11 @@ extern NSLock	*PapyrusLock;
 				fileType = [[NSString stringWithString:@"DICOM"] retain];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 			}
+		}
+		else
+		{
+			fileType = [[NSString stringWithString:@"DICOM"] retain];
+			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
 		if ([self autoFillComments]  == YES ||[self checkForLAVIM] == YES)

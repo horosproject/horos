@@ -78,7 +78,7 @@ extern		AppController				*appController;
 static      short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
 extern		long						numberOf2DViewer;
-			BOOL						ALWAYSSYNC = NO, display2DMPRLines = YES;
+			BOOL						display2DMPRLines = YES;
 
 extern NSMutableDictionary				*plugins;
 
@@ -220,6 +220,8 @@ static void DrawGLTexelGrid (float textureWidth, float textureHeight, float imag
 static void DrawGLImageTile (unsigned long drawType, float imageWidth, float imageHeight, float zoom, float textureWidth, float textureHeight,
                             float offsetX, float offsetY, float endX, float endY, Boolean texturesOverlap, Boolean textureRectangle)
 {
+	NSLog( @"%f", textureWidth);
+	
 	float startXDraw = (offsetX - imageWidth * 0.5f) * zoom; // left edge of poly: offset is in image local coordinates convert to world coordinates
 	float endXDraw = (endX - imageWidth * 0.5f) * zoom; // right edge of poly: offset is in image local coordinates convert to world coordinates
 	float startYDraw = (offsetY - imageHeight * 0.5f) * zoom; // top edge of poly: offset is in image local coordinates convert to world coordinates
@@ -562,13 +564,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		[blendingView setOrigin: origin];
 		[blendingView setOriginOffset: originOffset];
 	}
-}
-
-- (IBAction) alwaysSyncMenu:(id) sender
-{
-	ALWAYSSYNC = !ALWAYSSYNC;
-	
-	[sender setState:!ALWAYSSYNC];
 }
 
 - (IBAction) roiLoadFromFiles: (id) sender
@@ -4421,6 +4416,13 @@ static long scrollMode;
 	}
 }
 
+- (IBAction) alwaysSyncMenu:(id) sender
+{
+	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"SAMESTUDY"] == NSOnState)
+		[[NSUserDefaults standardUserDefaults] setInteger: NSOnState forKey:@"SAMESTUDY"];
+	else [[NSUserDefaults standardUserDefaults] setInteger: NSOffState forKey:@"SAMESTUDY"];
+}
+
 -(void) doSyncronize:(NSNotification*)note
 {
 	if (![[[note object] superview] isEqual:[self superview]] && [self is2DViewer])
@@ -4476,7 +4478,7 @@ static long scrollMode;
 			point3D = YES;
 		}
 		
-		if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || ALWAYSSYNC == YES || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
+		if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]] || [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] == NO || syncSeriesIndex != -1)  // We received a message from the keyWindow -> display the slice cut to our window!
 		{
 			if( [oStudyId isEqualToString:[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"]])
 			{
@@ -4568,7 +4570,7 @@ static long scrollMode;
 										
 										fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
 									}
-									else if( ALWAYSSYNC == NO) noSlicePosition = YES;
+									else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"] ) noSlicePosition = YES;
 								}
 								
 								if( fdiff < 0) fdiff = -fdiff;
@@ -7677,7 +7679,7 @@ BOOL	lowRes = NO;
 - (id)initWithFrame:(NSRect)frame {
 
 	[AppController initialize];
-
+	
 	return [self initWithFrame:frame imageRows:1  imageColumns:1];
 
 }

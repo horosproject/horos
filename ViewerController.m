@@ -471,6 +471,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[newPixList lastObject] setUnits: [firstPix units]];
 			
 			[[newPixList lastObject] setPwidth: newX];
+			[[newPixList lastObject] setRowBytes: newX];
 			[[newPixList lastObject] setPheight: newY];
 			
 			[[newPixList lastObject] setfImage: (float*) (emptyData + imageSize * ([newPixList count] - 1))];
@@ -927,7 +928,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 				[dcm setPheight: x];
 				[dcm setPwidth: y];
-				[dcm setRowBytes: y*4];
+				[dcm setRowBytes: y];
 			}
 			
 			[dcm orientation: o];
@@ -1162,8 +1163,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
 		{
-
-		/******************* Tools menu ***************************/
+			/******************* Tools menu ***************************/
 			NSMenu *contextual =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
 			NSMenu *submenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)];
 			NSMenuItem *item;
@@ -1203,7 +1203,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			
-		/******************* WW/WL menu items **********************/
+			/******************* WW/WL menu items **********************/
 			NSMenu *mainMenu = [NSApp mainMenu];
 			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
@@ -1215,8 +1215,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[menu release];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			
+						
 			/************* window resize Menu ****************/
 			
 			[submenu release];

@@ -714,6 +714,8 @@ static NSString *hostName = @"";
 	// ** STILLMOVIEMODE
 	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	
+	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
+	
 	// ** ReserveScreenForDB
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
 	
