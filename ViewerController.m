@@ -437,8 +437,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	// Display a waiting window
 	id waitWindow = [self startWaitWindow:@"Reslicing..."];
 	
-	if( [firstPix sliceInterval] > 0) sign = 1.0;
-	else sign = -1.0;
+	sign = 1.0;
 	
 	imageSize = sizeof(float) * newX * newY;
 	size = newTotal * imageSize;
@@ -576,7 +575,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[curPix orientation: orientation];
 				
-				if( sign > 0)
+				if( sign)
 				{
 					origin[ 0] = [lastPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
 					origin[ 1] = [lastPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
@@ -584,9 +583,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				}
 				else
 				{
-					origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * -sign;
-					origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * -sign;
-					origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * -sign;
+					origin[ 0] = [firstPix originX] + (i * [firstPix pixelSpacingY]) * orientation[ 6] * sign;
+					origin[ 1] = [firstPix originY] + (i * [firstPix pixelSpacingY]) * orientation[ 7] * sign;
+					origin[ 2] = [firstPix originZ] + (i * [firstPix pixelSpacingY]) * orientation[ 8] * sign;
 				}
 				
 				if( fabs( orientation[6]) > fabs(orientation[7]) && fabs( orientation[6]) > fabs(orientation[8]))
@@ -765,6 +764,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (IBAction) vertFlipDataSet:(id) sender
 {
 	int y, x;
+	
+	NSLog( @"vertFlipDataSet");
 	
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{

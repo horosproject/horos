@@ -4183,7 +4183,7 @@ static long scrollMode;
 		{
 			long maxVal;
 			
-			if( flippedData) maxVal = curImage-([curDCM stack]-2);
+			if( flippedData) maxVal = curImage-([curDCM stack]-1);
 			else maxVal = curImage+[curDCM stack]-1;
 			if( maxVal < 0) maxVal = 0;
 			if( maxVal >= [dcmPixList count]) maxVal = [dcmPixList count]-1;
@@ -4270,7 +4270,7 @@ static long scrollMode;
 	originB[ 0] = [curDCM originX];		originB[ 1] = [curDCM originY];		originB[ 2] = [curDCM originZ];
 	
 	[oPix orientation: vectorA];		//vectorA[0] = vectorA[6];	vectorA[1] = vectorA[7];	vectorA[2] = vectorA[8];
-	if( oPix2) [oPix orientation: vectorA2];
+	if( oPix2) [oPix2 orientation: vectorA2];
 	[curDCM orientation: vectorB];		//vectorB[0] = vectorB[6];	vectorB[1] = vectorB[7];	vectorB[2] = vectorB[8];
 	
 	if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
@@ -4294,9 +4294,9 @@ static long scrollMode;
 		slicePoint[ 1] -= [curDCM originY];
 		slicePoint[ 2] -= [curDCM originZ];
 		
-	//	slicePoint[ 0] += perpendicular[ 0] * [oPix sliceThickness]/2.;
-	//	slicePoint[ 1] += perpendicular[ 1] * [oPix sliceThickness]/2.;
-	//	slicePoint[ 2] += perpendicular[ 2] * [oPix sliceThickness]/2.;
+		slicePoint[ 0] += perpendicular[ 0] * [oPix sliceThickness]/2.;
+		slicePoint[ 1] += perpendicular[ 1] * [oPix sliceThickness]/2.;
+		slicePoint[ 2] += perpendicular[ 2] * [oPix sliceThickness]/2.;
 		
 		slicePointO[ 0] = slicePoint[ 0] + perpendicular[ 0] * [oPix sliceThickness]/2.;
 		slicePointO[ 1] = slicePoint[ 1] + perpendicular[ 1] * [oPix sliceThickness]/2.;
