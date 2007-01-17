@@ -1,0 +1,16 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = OSIWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = PlaceholderWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = OSIWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -30,6 +30,7 @@
 
 #import "LayoutArrayController.h"
 #import "HangingProtocolController.h"
+#import "PlaceholderWindowController.h"
 
 
 @implementation LayoutWindowController
@@ -170,6 +171,11 @@
 
 - (id)windowLayoutManager{
 	return [WindowLayoutManager sharedWindowLayoutManager] ;
+}
+
+- (IBAction)placeholder:(id)sender{
+	PlaceholderWindowController *placeholder = [[PlaceholderWindowController alloc] init];
+	[placeholder showWindow:self];
 }
 
 

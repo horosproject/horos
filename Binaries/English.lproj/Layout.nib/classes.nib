@@ -1,6 +1,11 @@
 {
     IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
         {
             CLASS = HangingProtocolController; 
             LANGUAGE = ObjC; 
@@ -18,7 +23,7 @@
         }, 
         {CLASS = LayoutTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
-            ACTIONS = {endSheet = id; }; 
+            ACTIONS = {placeholder = id; }; 
             CLASS = LayoutWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {

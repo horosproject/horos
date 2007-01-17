@@ -34,18 +34,5 @@
 	return hangingProtocol;
 }
 
-/*
-- (IBAction)add: (id)sender{
-	[super add:sender];
-	[_layoutWindowController setNewButtonIsHidden:YES];
-}
-
-- (IBAction)remove: (id)sender {
-	[super remove:sender];
-	[_layoutWindowController setNewButtonIsHidden:NO];
-}
-*/
-	
-	
 
 @end

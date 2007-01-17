@@ -30,6 +30,7 @@
 #import "SRController.h"
 #import "EndoscopyViewer.h"
 #import "SeriesView.h"
+#import "PlaceholderWindowController.h"
 
 
 @implementation LayoutArrayController
@@ -122,7 +123,9 @@
 	
 
 		// Not supported by OrthogonalMPRPETCTViewer
-		if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || [controller isKindOfClass:[SRController class]])) {
+		if (!([controller isKindOfClass:[OrthogonalMPRPETCTViewer class]]  || 
+		[controller isKindOfClass:[SRController class]] || 
+		[controller isKindOfClass:[PlaceholderWindowController class]])) {
 			// WW/wl presets only work well with CT
 			if ([[[controller currentStudy] valueForKey:@"modality"] isEqualToString:@"CT"]) {
 				[seriesInfo setObject:[NSNumber numberWithFloat:[controller curWW]] forKey:@"ww"];
@@ -233,5 +236,6 @@
 	NSLog(@"open Layout");
 	[[WindowLayoutManager sharedWindowLayoutManager] hangSet:[[self arrangedObjects] objectAtIndex:[self selectionIndex]]];			
 }
+
 
 @end

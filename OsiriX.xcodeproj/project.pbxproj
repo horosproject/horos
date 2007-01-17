@@ -8006,6 +8006,18 @@
 		BFED84AB0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
 		BFED84AC0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
 		BFED84AD0A717E2500119174 /* smallKeyPlus.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFED84AA0A717E2500119174 /* smallKeyPlus.tif */; };
+		BFEEF82B0B5E87DA00DE7B7B /* Placeholder.nib in Resources */ = {isa = PBXBuildFile; fileRef = BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */; };
+		BFEEF82C0B5E87DA00DE7B7B /* Placeholder.nib in Resources */ = {isa = PBXBuildFile; fileRef = BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */; };
+		BFEEF82D0B5E87DB00DE7B7B /* Placeholder.nib in Resources */ = {isa = PBXBuildFile; fileRef = BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */; };
+		BFEEF82E0B5E87DB00DE7B7B /* Placeholder.nib in Resources */ = {isa = PBXBuildFile; fileRef = BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */; };
+		BFEEF8370B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */; };
+		BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */; };
+		BFEEF8390B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */; };
+		BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */; };
+		BFEEF83B0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */; };
+		BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */; };
+		BFEEF83D0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */; };
+		BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */; };
 		BFF27D4C0787AEC400D8766D /* DCMMoveSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C1700785D70A00806344 /* DCMMoveSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFF27D4D0787AEC700D8766D /* DCMMoveSCU.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E40C1710785D70A00806344 /* DCMMoveSCU.m */; };
 		BFF27D4E0787AEC900D8766D /* DCMFindSCU.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E40C16A0785D6F800806344 /* DCMFindSCU.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -15493,6 +15505,9 @@
 		BFEB763C0677FDA700F242F3 /* tagDictionary.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = tagDictionary.plist; sourceTree = "<group>"; };
 		BFEB767E0678071400F242F3 /* DCMUIDs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMUIDs.h; sourceTree = "<group>"; };
 		BFED84AA0A717E2500119174 /* smallKeyPlus.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smallKeyPlus.tif; sourceTree = "<group>"; };
+		BFEEF82A0B5E87DA00DE7B7B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Placeholder.nib; sourceTree = "<group>"; };
+		BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceholderWindowController.h; sourceTree = "<group>"; };
+		BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceholderWindowController.m; sourceTree = "<group>"; };
 		BFF5D23E09F93B3F0077E16B /* LogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogManager.h; sourceTree = "<group>"; };
 		BFF5D23F09F93B3F0077E16B /* LogManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LogManager.mm; sourceTree = "<group>"; };
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
@@ -17561,6 +17576,7 @@
 				BF038E8E0A3FB6CE00663EBB /* KeyObjectReport.nib */,
 				A94173210AB6B50000B9B487 /* SRAnnotation.nib */,
 				BF6566A20B263D1C00574803 /* Layout.nib */,
+				BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
@@ -18762,6 +18778,8 @@
 				BF455DF10B557D1D007F1F2C /* HangingProtocolController.m */,
 				BF954D8F0B56A27400106F68 /* LayoutTableView.h */,
 				BF954D900B56A27400106F68 /* LayoutTableView.m */,
+				BFEEF8350B5E883100DE7B7B /* PlaceholderWindowController.h */,
+				BFEEF8360B5E883100DE7B7B /* PlaceholderWindowController.m */,
 			);
 			name = "Hanging Proctols";
 			sourceTree = "<group>";
@@ -23693,6 +23711,7 @@
 				BF455DE70B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF60B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
 				BF954D970B56A27400106F68 /* LayoutTableView.h in Headers */,
+				BFEEF83B0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25585,6 +25604,7 @@
 				BF455DE50B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF40B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
 				BF954D950B56A27400106F68 /* LayoutTableView.h in Headers */,
+				BFEEF83D0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27471,6 +27491,7 @@
 				BF455DE90B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF80B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
 				BF954D910B56A27400106F68 /* LayoutTableView.h in Headers */,
+				BFEEF8370B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29368,6 +29389,7 @@
 				BF455DE30B556439007F1F2C /* LayoutArrayController.h in Headers */,
 				BF455DF20B557D1D007F1F2C /* HangingProtocolController.h in Headers */,
 				BF954D930B56A27400106F68 /* LayoutTableView.h in Headers */,
+				BFEEF8390B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30093,6 +30115,7 @@
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */,
+				BFEEF82B0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30415,6 +30438,7 @@
 				CEDCFB420B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01130B568EA600FCD57C /* Repulsor.tif in Resources */,
+				BFEEF82D0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30727,6 +30751,7 @@
 				CEDCFB400B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01140B568EA600FCD57C /* Repulsor.tif in Resources */,
+				BFEEF82E0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31049,6 +31074,7 @@
 				CEDCFB440B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01120B568EA600FCD57C /* Repulsor.tif in Resources */,
+				BFEEF82C0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32181,6 +32207,7 @@
 				BF455DE80B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF70B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
+				BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32923,6 +32950,7 @@
 				BF455DE60B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF50B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
+				BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34212,6 +34240,7 @@
 				BF455DEA0B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF90B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
+				BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34966,6 +34995,7 @@
 				BF455DE40B556439007F1F2C /* LayoutArrayController.m in Sources */,
 				BF455DF30B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
+				BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35328,6 +35358,14 @@
 				BFC68623065EF4B600AE4050 /* English */,
 			);
 			name = ToolbarPanel.nib;
+			sourceTree = "<group>";
+		};
+		BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFEEF82A0B5E87DA00DE7B7B /* English */,
+			);
+			name = Placeholder.nib;
 			sourceTree = "<group>";
 		};
 		CE07B72709641CFA00189FEC /* Endoscopy.nib */ = {

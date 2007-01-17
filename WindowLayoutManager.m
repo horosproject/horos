@@ -32,6 +32,7 @@
 #import "SRController.h"
 #import "EndoscopyViewer.h"
 #import "LayoutWindowController.h";
+#import "PlaceholderWindowController.h"
 
 
 
@@ -64,6 +65,7 @@ WindowLayoutManager *sharedLayoutManager;
 - (void)registerWindowController:(OSIWindowController *)controller{
 	if (![_windowControllers containsObject:controller]){
 		[_windowControllers addObject:controller];
+		NSLog(@"register %@", controller);
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
 	}
 }
@@ -557,7 +559,8 @@ WindowLayoutManager *sharedLayoutManager;
 	while (seriesInfo = [enumerator nextObject]){
 		// only load ViewerControllers first
 		//NSLog(@"Next Viewer");
-		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])]) {
+		if ( [[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([ViewerController class])] || 
+			[[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([PlaceholderWindowController class])] ) {
 			id studyToLoad = nil;
 			int count = 0;
 			//NSLog(@"is Viewer Controller");

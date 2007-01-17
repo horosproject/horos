@@ -1,8 +1,9 @@
 //
-//  LayoutArrayController.h
+//  PlaceholderWindowController.h
 //  OsiriX
 //
-//  Created by Lance Pysher on 1/10/07.
+//  Created by Lance Pysher on 1/17/07.
+
 /*=========================================================================
   Program:   OsiriX
 
@@ -17,19 +18,21 @@
      PURPOSE.
 =========================================================================*/
 
+/*************************************************************************
 
-// LayoutArrayController manages the Layout sets in the hanging Protocol
+PlaceholderWindowController manages the window when when placeholder windows 
+are created for positioning comparisons in Hanging Protocols
+Is a subclass of OSIWindowController so that it will show up in the list of 
+Viewers
+**************************************************************************/
+
 
 #import <Cocoa/Cocoa.h>
+#import "OSIWindowController.h"
 
 
-@interface LayoutArrayController : NSArrayController {
+@interface PlaceholderWindowController : OSIWindowController {
 
 }
-
-- (IBAction)addDeleteAction:( id)sender;
-- (NSArray *)viewers;
-- (IBOutlet)openLayout:(id)sender;
-
 
 @end

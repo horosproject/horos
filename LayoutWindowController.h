@@ -51,5 +51,6 @@ Saves and Creates Advanced Hanging Protocols
 - (BOOL)newButtonIsHidden;
 - (void)setNewButtonIsHidden:(BOOL)isHidden;
 - (id)windowLayoutManager;
+- (IBAction)placeholder:(id)sender;
 
 @end
