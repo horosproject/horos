@@ -220,8 +220,6 @@ static void DrawGLTexelGrid (float textureWidth, float textureHeight, float imag
 static void DrawGLImageTile (unsigned long drawType, float imageWidth, float imageHeight, float zoom, float textureWidth, float textureHeight,
                             float offsetX, float offsetY, float endX, float endY, Boolean texturesOverlap, Boolean textureRectangle)
 {
-	NSLog( @"%f", textureWidth);
-	
 	float startXDraw = (offsetX - imageWidth * 0.5f) * zoom; // left edge of poly: offset is in image local coordinates convert to world coordinates
 	float endXDraw = (endX - imageWidth * 0.5f) * zoom; // right edge of poly: offset is in image local coordinates convert to world coordinates
 	float startYDraw = (offsetY - imageHeight * 0.5f) * zoom; // top edge of poly: offset is in image local coordinates convert to world coordinates
