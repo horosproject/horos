@@ -2514,8 +2514,41 @@ NS_ENDHANDLER
             
 			} // for ...loop on the elements of the image to convert
 		}
+		else if ([theKind isEqualToString:@"YBR_FULL_422"])
+		{
+         // loop on the pixels of the image
+		  pYBR = (unsigned char *) [ybrData bytes];
           
-        else if ([theKind isEqualToString:@"YBR_FULL_422"] || [theKind isEqualToString:@"YBR_PARTIAL_422"])
+		  int yy, x;
+		  for( yy = 0; yy < _rows/2; yy++)
+		  {
+			unsigned char	*rr = pRGB;
+			unsigned char	*rr2 = pRGB+3*_columns;
+			
+			for( x = 0; x < _columns; x++)
+			{
+				y  = (int) pYBR [0];
+				b = (int) pYBR [1];
+				r = (int) pYBR [2];
+				
+				*(rr) = y;
+				*(rr+1) = b;
+				*(rr+2) = r;
+				
+				*(rr2) = y;
+				*(rr2+1) = b;
+				*(rr2+2) = r;
+				
+				pYBR += 3;
+				rr += 3;
+				rr2 += 3;
+			}
+			
+			pRGB += 2*_columns*3;
+		  }
+
+		}
+        else if ([theKind isEqualToString:@"YBR_PARTIAL_422"])
         {
           // loop on the pixels of the image
           for (loop = 0L, pYBR = (unsigned char *)[ybrData bytes]; loop < (size / 2); loop++)

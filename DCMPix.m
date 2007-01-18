@@ -1112,7 +1112,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
   long			loop, size;
   unsigned char		*pYBR, *pRGB;
   unsigned char		*theRGB;
-  int			y, y1, r;
+  int			y, y1, r, x, yy;
   
   
   // the planar configuration should be set to 0 whenever
@@ -1182,6 +1182,37 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
           break; // YBR_FULL
         
         case YBR_FULL_422 :	// YBR_FULL_422
+         // loop on the pixels of the image
+		  pYBR = ybrImage;
+          
+		  for( yy = 0; yy < h/2; yy++)
+		  {
+			unsigned char	*rr = pRGB;
+			unsigned char	*rr2 = pRGB+3*w;
+			
+			for( x = 0; x < w; x++)
+			{
+				y  = (int) pYBR [0];
+				b = (int) pYBR [1];
+				r = (int) pYBR [2];
+				
+				*(rr) = y;
+				*(rr+1) = b;
+				*(rr+2) = r;
+				
+				*(rr2) = y;
+				*(rr2+1) = b;
+				*(rr2+2) = r;
+				
+				pYBR += 3;
+				rr += 3;
+				rr2 += 3;
+			}
+			
+			pRGB += 2*w*3;
+		  }
+		break;
+		
         case YBR_PARTIAL_422 :	// YBR_PARTIAL_422
           // loop on the pixels of the image
           for (loop = 0L, pYBR = ybrImage; loop < (size / 2); loop++)
@@ -5439,7 +5470,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			val = Papy3GetElement (theGroupP, papPlanarConfigurationGr, &nbVal, &elemType);
 			if (val != NULL) fPlanarConf = (int) val->us;
 			else fPlanarConf = 0;
-		//	fPlanarConf = 1;
+			
+			if (gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY) 
+				fPlanarConf = 0;
 			
 			// PIXMIN
 		//	val = Papy3GetElement (theGroupP, papSmallestImagePixelValueGr, &nbVal, &elemType);

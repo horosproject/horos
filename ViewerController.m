@@ -765,8 +765,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int y, x;
 	
-	NSLog( @"vertFlipDataSet");
-	
 	for( y = 0 ; y < maxMovieIndex; y++)
 	{
 		DCMPix			*firstObject = [pixList[ y] objectAtIndex: 0];
@@ -807,6 +805,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm setOrientation: o];
 			[dcm setSliceInterval: 0];
+		}
+		
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
+			
+			float	o[3], o2[ 3];
+			
+			o[ 0] = [dcm originX];			o[ 1] = [dcm originY];			o[ 2] = [dcm originZ];
+			
+			o[ 1] -= [dcm pheight] * [dcm pixelSpacingY];
+			
+			[dcm setOrigin: o];
 		}
 	}
 	
@@ -851,6 +862,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[dcm setOrientation: o];
 			[dcm setSliceInterval: 0];
 		}
+		
+		for( x = 0; x < [pixList[ y] count]; x++)
+		{
+			DCMPix	*dcm = [pixList[ y] objectAtIndex: x];
+			
+			float	o[3], o2[ 3];
+			
+			o[ 0] = [dcm originX];			o[ 1] = [dcm originY];			o[ 2] = [dcm originZ];
+			
+			o[ 0] -= [dcm pwidth] * [dcm pixelSpacingX];
+			
+			[dcm setOrigin: o];
+		}
 	}
 	
 	[self setPostprocessed: YES];
@@ -893,7 +917,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			src.rowBytes = src.width*4;
 			dest.rowBytes = dest.width*4;
 			src.data = volumeDataPtr;
-			
 			
 			vImageRotate90_PlanarF ( &src, &dest, constant, 0, 0L);
 			
@@ -953,6 +976,29 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			[dcm setOrientation: o];
 			[dcm setSliceInterval: 0];
+			
+			// Origin
+			float		d[ 3];
+			float		yy, xx;
+			
+			switch( constant)
+			{
+				case kRotate90DegreesClockwise:		yy = 0;						xx = -[dcm pwidth];		break;
+				case kRotate180DegreesClockwise:	yy = [dcm pheight];			xx = -[dcm pwidth];		break;
+				case kRotate270DegreesClockwise:	yy = 0;						xx = [dcm pwidth];		break;
+			}
+			
+			float	originX, originY, originZ;
+			
+			originX = [dcm originX];
+			originY = [dcm originY];
+			originZ = [dcm originZ];
+			
+			d[0] = originX + yy*o[3]*[dcm pixelSpacingY] + xx*o[0]*[dcm pixelSpacingX];
+			d[1] = originY + yy*o[4]*[dcm pixelSpacingY] + xx*o[1]*[dcm pixelSpacingX];
+			d[2] = originZ + yy*o[5]*[dcm pixelSpacingY] + xx*o[2]*[dcm pixelSpacingX];
+
+			[dcm setOrigin: d];
 		}
 	}
 	
@@ -1062,7 +1108,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 			break;
 
-			case 1:
+			case 1:	// coronal
 			{
 				switch( newOrientationTool)
 				{
@@ -1089,7 +1135,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 			break;
 
-			case 2:
+			case 2:	// sagi
 			{
 				switch( newOrientationTool)
 				{
@@ -1140,6 +1186,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[imageView setScaleValue: previousZooming * [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX]];
 		
 		[imageView setDrawing: YES];
+		
+		[self propagateSettings];
 		
 		[self updateImage: self];
 	}
@@ -9249,7 +9297,8 @@ int i,j,l;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 		{
-			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
+//			if( [[vC curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES && [[self curCLUTMenu] isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES )
+			if( [[vC curCLUTMenu] isEqualToString:[self curCLUTMenu]] == YES)
 			{
 				BOOL	 propagate = YES;
 				
@@ -9258,6 +9307,11 @@ int i,j,l;
 				if( [[vC modality] isEqualToString:[self modality]] == NO) propagate = NO;
 				
 				if( [[vC modality] isEqualToString: @"CR"]) propagate = NO;
+				
+				if( [[vC modality] isEqualToString:@"PT"] == YES && [[self modality] isEqualToString:@"PT"] == YES)
+				{
+					if( [[imageView curDCM] SUVConverted] != [[[vC imageView] curDCM] SUVConverted]) propagate = NO;
+				}
 				
 				if( [[vC modality] isEqualToString:@"MR"] == YES && [[self modality] isEqualToString:@"MR"] == YES)
 				{
