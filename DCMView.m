@@ -2502,6 +2502,11 @@ static long scrollMode;
 				}
 				pushBackRadius = (int) ((distance + 0.5) * 0.8);
 				if(pushBackRadius<2) pushBackRadius = 2;
+				
+				if( [curRoiList count] == 0)
+				{
+					NSRunCriticalAlertPanel(NSLocalizedString(@"Repulsor",nil),NSLocalizedString(@"The Repulsor tool works only if there are ROIs on the image.",nil), NSLocalizedString(@"OK",nil), nil,nil);
+				}
 			}
 		}
 		

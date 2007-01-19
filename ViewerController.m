@@ -9339,8 +9339,8 @@ int i,j,l;
 			
 			if(  curvedController == 0L && [vC curvedController] == 0L)
 			{
-//				if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
-				if( curvedController == 0L)
+				if( (int) (vectorsA[ 6]*1000.) == (int) (vectorsB[ 6]*1000.) && (int) (vectorsA[ 7]*1000.) == (int) (vectorsB[ 7]*1000.) && (int) (vectorsA[ 8]*1000.) == (int) (vectorsB[ 8]*1000.) && curvedController == 0L)
+//				if( curvedController == 0L)
 				{
 				//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 					{
