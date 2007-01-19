@@ -5022,7 +5022,7 @@ public:
 }
 
 - (void)changeColor:(id)sender{
-	if(![point3DColorWell isActive])
+	if(![point3DColorWell isActive] && ![[controller clutOpacityPanel] isVisible])
 	{
 		//change background color
 		NSColor *color= [(NSColorPanel*)sender color];

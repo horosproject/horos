@@ -29,6 +29,8 @@
 // ROIs Volumes
 #define roi3Dvolume
 
+#import "CLUTOpacityView.h"
+
 @class VRView;
 @class ROIVolume;
 
@@ -95,6 +97,10 @@
 	NSMutableArray			*roiVolumes;
 	
 	NSString				*_renderingMode;
+	
+	// CLUT & Opacity panel
+	IBOutlet NSPanel		*clutOpacityPanel;
+	IBOutlet CLUTOpacityView *clutOpacityView;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -176,5 +182,7 @@
 - (NSString *)renderingMode;
 - (void)setRenderingMode:(NSString *)renderingMode;
 - (NSString *)curCLUTMenu;
+
+- (NSPanel*) clutOpacityPanel;
 
 @end

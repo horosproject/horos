@@ -704,7 +704,12 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 		[view setLOD: 1.0];
 		[LODSlider setIntValue: 1];
 	}
-		
+	
+//	[clutOpacityPanel orderFront:self];
+//	[clutOpacityView niceDisplay];
+//	[clutOpacityView setVolumePointer:[firstObject fImage] width:[firstObject pwidth] height:[firstObject pheight] numberOfSlices:[pix count]];
+//	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
+	
     return self;
 }
 
@@ -2449,6 +2454,11 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 }
 - (NSString *)curCLUTMenu{
 	return curCLUTMenu;
+}
+
+- (NSPanel*) clutOpacityPanel;
+{
+	return clutOpacityPanel;
 }
 
 @end

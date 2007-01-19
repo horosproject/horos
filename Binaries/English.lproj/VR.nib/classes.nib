@@ -2,6 +2,20 @@
     IBClasses = (
         {CLASS = BlackView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
+            ACTIONS = {
+                computeHistogram = id; 
+                newCurve = id; 
+                niceDisplay = id; 
+                sendToBack = id; 
+                setHistogramOpacity = id; 
+                setLineWidth = id; 
+                setPointDiameter = id; 
+            }; 
+            CLASS = CLUTOpacityView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
             ACTIONS = {renderButton = id; selectPicker = id; }; 
             CLASS = ColorTransferView; 
             LANGUAGE = ObjC; 
@@ -69,6 +83,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             ACTIONS = {renderButton = id; }; 
             CLASS = OpacityTransferView; 
@@ -110,6 +125,8 @@
                 WLWWView = NSView; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
+                clutOpacityPanel = NSPanel; 
+                clutOpacityView = CLUTOpacityView; 
                 convolutionMenu = NSPopUpButton; 
                 convolutionView = NSView; 
                 enginePopup = NSPopUpButton; 
