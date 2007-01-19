@@ -453,8 +453,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	circleRes = (pushBackRadius>50) ? 60 : circleRes;
 	circleRes = (pushBackRadius>70) ? 80 : circleRes;
 	
-	glColor4f(1.0,1.0,0.0,0.2);
+//	glColor4f(1.0,1.0,0.0,0.2);
 	glColor4f(1.0,1.0,0.0,pushBackAlpha);
+
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
 	{
@@ -462,7 +463,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		float alpha = i * 2 * M_PI /circleRes;
 		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue/[curDCM pixelRatio]);
 	}
-	glEnd();	
+	glEnd();
 	glDisable(GL_BLEND);
 }
 
@@ -6533,6 +6534,10 @@ static long scrollMode;
 				
 				if(pushBackRadius != 0)
 				{
+					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+					glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+					glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+					
 					[self drawPushBackToolArea];
 				}
 			}  
