@@ -148,6 +148,7 @@
                 outlineView = NSOutlineView; 
                 progressIndicator = NSProgressIndicator; 
                 searchBirth = NSDatePicker; 
+                searchFieldAN = NSSearchField; 
                 searchFieldID = NSSearchField; 
                 searchFieldName = NSSearchField; 
                 selectedResultSource = NSTextField; 

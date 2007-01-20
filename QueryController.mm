@@ -34,6 +34,7 @@
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
+static NSString *AccessionNumber = @"AccessionNumber";
 static NSString *StudyDate = @"StudyDate";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *Modality = @"Modality";
@@ -354,7 +355,8 @@ static QueryController	*currentQueryController = 0L;
 					{
 						case 0:		currentQueryKey = PatientName;		break;
 						case 1:		currentQueryKey = PatientID;		break;
-						case 2:		currentQueryKey = PatientBirthDate;	break;
+						case 2:		currentQueryKey = AccessionNumber;	break;
+						case 3:		currentQueryKey = PatientBirthDate;	break;
 					}
 					
 					BOOL queryItem = NO;
@@ -377,6 +379,16 @@ static QueryController	*currentQueryController = 0L;
 					else if( currentQueryKey == PatientID)
 					{
 						NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+							[queryManager addFilter:filterValue forDescription:currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					else if( currentQueryKey == AccessionNumber)
+					{
+						NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 						
 						if ([filterValue length] > 0)
 						{
@@ -476,6 +488,7 @@ static QueryController	*currentQueryController = 0L;
 	[progressIndicator stopAnimation:nil];
 	[searchFieldName setStringValue:@""];
 	[searchFieldID setStringValue:@""];
+	[searchFieldAN setStringValue:@""];
 	[outlineView reloadData];
 }
 
@@ -719,6 +732,31 @@ static QueryController	*currentQueryController = 0L;
 	{
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
+		id searchCell = [searchFieldAN cell];
+		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+								action:NULL
+								keyEquivalent:@""];
+		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
+		[cellMenu insertItem:item1 atIndex:0];
+		[item1 release];
+		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+								action:NULL
+								keyEquivalent:@""];
+		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
+		[cellMenu insertItem:item2 atIndex:1];
+		[item2 release];
+		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+								action:NULL
+								keyEquivalent:@""];
+		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
+		[cellMenu insertItem:item3 atIndex:2];
+		[item3 release];
+		[searchCell setSearchMenuTemplate:cellMenu];
+	}
+	
+	{
+		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
+		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldID cell];
 		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
 								action:NULL
@@ -907,6 +945,11 @@ static QueryController	*currentQueryController = 0L;
 - (void)windowDidLoad
 {
 	id searchCell = [searchFieldName cell];
+
+	[[searchCell cancelButtonCell] setTarget:self];
+	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
+
+	searchCell = [searchFieldAN cell];
 
 	[[searchCell cancelButtonCell] setTarget:self];
 	[[searchCell cancelButtonCell] setAction:@selector(clearQuery:)];
