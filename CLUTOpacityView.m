@@ -34,6 +34,8 @@
 		//[self newCurve];
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
+		[self createContextualMenu];
+		undoManager = [[NSUndoManager alloc] init];
 		[self niceDisplay];
     }
     return self;
@@ -45,7 +47,16 @@
 	if(histogram) free(histogram);
 	[curves release];
 	[pointColors release];
+	[contextualMenu release];
+	[undoManager release];
 	[super dealloc];
+}
+
+- (void)createContextualMenu;
+{
+	contextualMenu = [[NSMenu alloc] init];
+	[contextualMenu addItemWithTitle:NSLocalizedString(@"New Curve", nil) action:@selector(newCurve:) keyEquivalent:@""];
+	[contextualMenu addItemWithTitle:NSLocalizedString(@"Send to back", nil) action:@selector(sendToBack:) keyEquivalent:@""];
 }
 
 #pragma mark -
@@ -338,22 +349,16 @@
 	}
 }
 
-- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
+- (void)addCurveAtindex:(int)curveIndex withPoints:(NSArray*)pointsArray colors:(NSArray*)colorsArray;
 {
-	NSMutableArray *theCurve = [curves objectAtIndex:ic];
-	if([theCurve count]<=3)
-	{
-		[curves removeObjectAtIndex:ic];
-		[pointColors removeObjectAtIndex:ic];
-	}
-	else if(ip==0 || ip==[theCurve count]-1) return;
-	else
-	{
-		[theCurve removeObjectAtIndex:ip];
-		[[pointColors objectAtIndex:ic] removeObjectAtIndex:ip];
-	}
-	[self unselectPoints];
-	[self updateView];
+	[curves insertObject:pointsArray atIndex:curveIndex];
+	[pointColors insertObject:colorsArray atIndex:curveIndex];
+}
+
+- (void)deleteCurveAtIndex:(int)i;
+{
+	[curves removeObjectAtIndex:i];
+	[pointColors removeObjectAtIndex:i];
 }
 
 - (void)sendToBackCurveAtIndex:(int)i;
@@ -395,6 +400,24 @@
 {
 	NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 	selectedPoint = controlPoint;
+}
+
+- (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
+{
+	int i;
+	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
+	{
+		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:i withObject:color];
+	}
+}
+
+- (void)setColors:(NSArray*)colors forCurveAtIndex:(int)curveIndex;
+{
+	int i;
+	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
+	{
+		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:i withObject:[colors objectAtIndex:i]];
+	}
 }
 
 #pragma mark -
@@ -476,6 +499,7 @@
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 				if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
 				{
+					[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:i] objectAtIndex:j] forPointAtIndex:j inCurveAtIndex:i];
 					[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:[(NSColorPanel*)[notification object] color]];
 					[self updateView];
 					return;
@@ -484,11 +508,13 @@
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
 			{
-				for (j=0; j<[aCurve count]; j++)
-				{
-					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:[(NSColorPanel*)[notification object] color]];
-				}
+				[[undoManager prepareWithInvocationTarget:self] setColors:[NSArray arrayWithArray:[pointColors objectAtIndex:i]] forCurveAtIndex:i];
+				[self setColor:[(NSColorPanel*)[notification object] color] forCurveAtIndex:i];
+//				for (j=0; j<[aCurve count]; j++)
+//				{
+//					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
+//					[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:[(NSColorPanel*)[notification object] color]];
+//				}
 				[self updateView];
 				return;
 			}
@@ -496,12 +522,17 @@
 	}
 }
 
+- (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
+{
+	[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
+}
+
 - (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
 {
 	if(point.y<0.0) point.y = 0.0;
-	if(point.y>1.0) point.y = 1.0;
-	if(point.x<HUmin) point.x = HUmin;
-	if(point.x>HUmax) point.x = HUmax;
+//	if(point.y>1.0) point.y = 1.0;
+//	if(point.x<HUmin) point.x = HUmin;
+//	if(point.x>HUmax) point.x = HUmax;
 	
 	if(j==0 || j==[aCurve count]-1) point.y = 0.0;
 					
@@ -551,6 +582,29 @@
 	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 	[labelRect fill];
 	[label drawAtPoint:labelPosition];
+}
+
+- (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor*)color;
+{
+	[[curves objectAtIndex:curveIndex] insertObject:[NSValue valueWithPoint:point] atIndex:pointIndex];
+	[[pointColors objectAtIndex:curveIndex] insertObject:color atIndex:pointIndex];
+}
+
+- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
+{
+	NSMutableArray *theCurve = [curves objectAtIndex:ic];
+	if([theCurve count]<=3)
+	{
+		[self deleteCurveAtIndex:ic];
+	}
+	else if(ip==0 || ip==[theCurve count]-1) return;
+	else
+	{
+		[theCurve removeObjectAtIndex:ip];
+		[[pointColors objectAtIndex:ic] removeObjectAtIndex:ip];
+	}
+	[self unselectPoints];
+	[self updateView];
 }
 
 #pragma mark -
@@ -642,11 +696,12 @@
 	{
 		[transform invert];
 		NSPoint newPoint = [transform transformPoint:position];
-		[aCurve insertObject:[NSValue valueWithPoint:newPoint] atIndex:j-1];
+//	DELETE THIS LINE	[aCurve insertObject:[NSValue valueWithPoint:newPoint] atIndex:j-1];
 		selectedPoint.x = newPoint.x;
 		selectedPoint.y = newPoint.y;
-		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:j-2] pointValue].x) / ([[aCurve objectAtIndex:j] pointValue].x - [[aCurve objectAtIndex:j-2] pointValue].x);
-		[colors insertObject:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]] atIndex:j-1];
+		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:j-2] pointValue].x) / ([[aCurve objectAtIndex:j-1] pointValue].x - [[aCurve objectAtIndex:j-2] pointValue].x);
+//	DELETE THIS LINE	[colors insertObject:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]] atIndex:j-1];
+		[self addPoint:newPoint atIndex:j-1 inCurveAtIndex:i-1 withColor:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]]];
 		[self sendToFrontCurveAtIndex:i-1];
 		[self updateView];
 	}
@@ -675,6 +730,21 @@
 		[colorPanel orderFront:self];
 	}
 }
+
+- (void)rightMouseDown:(NSEvent *)theEvent
+{
+	NSLog(@"NSRightMouseDown");
+	[NSMenu popUpContextMenu:contextualMenu withEvent:theEvent forView:self];
+}
+
+//- (void)mouseUp:(NSEvent *)theEvent
+//{
+//	if([theEvent type] == NSRightMouseUp)
+//	{
+//		NSLog(@"NSRightMouseUp");
+//		[NSMenu popUpContextMenu:contextualMenu withEvent:theEvent forView:self];
+//	}
+//}
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
@@ -820,30 +890,32 @@
 	{
 		if([self isAnyPointSelected])
 		{
-			int i, j;
-			for (i=0; i<[curves count]; i++)
-			{
-				NSMutableArray *aCurve = [curves objectAtIndex:i];
-				for (j=0; j<[aCurve count]; j++)
-				{
-					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
-					{
-						[self removePointAtIndex:j inCurveAtIndex:i];
-						return;
-					}
-				}
-				
-				NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-				NSAffineTransform *transform = [self transform];
-				if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
-				{
-					[curves removeObjectAtIndex:i];
-					[pointColors removeObjectAtIndex:i];
-					[self updateView];
-					return;
-				}
-			}
+			[self delete:self];
+			return;
+//			int i, j;
+//			for (i=0; i<[curves count]; i++)
+//			{
+//				NSMutableArray *aCurve = [curves objectAtIndex:i];
+//				for (j=0; j<[aCurve count]; j++)
+//				{
+//					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
+//					if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
+//					{
+//						[self removePointAtIndex:j inCurveAtIndex:i];
+//						return;
+//					}
+//				}
+//				
+//				NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
+//				NSAffineTransform *transform = [self transform];
+//				if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
+//				{
+//					[curves removeObjectAtIndex:i];
+//					[pointColors removeObjectAtIndex:i];
+//					[self updateView];
+//					return;
+//				}
+//			}
 		}
 	}
 	[super keyDown:theEvent];
@@ -1006,7 +1078,8 @@
 			pt.x += delta;
 			[aNewCurve addObject:[NSValue valueWithPoint:pt]];
 		}
-
+		
+		[[undoManager prepareWithInvocationTarget:self] deleteCurveAtIndex:0];
 		[curves insertObject:aNewCurve atIndex:0];
 		[pointColors insertObject:newColors atIndex:0];
 		[self selectCurveAtIndex:0];
@@ -1027,6 +1100,7 @@
 					{
 						NSData* colorData = [pasteboard dataForType:type];
 						NSColor *color = [NSUnarchiver unarchiveObjectWithData:colorData];
+						[[undoManager prepareWithInvocationTarget:[pointColors objectAtIndex:i]] replaceObjectAtIndex:j withObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 						[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:color];
 						[self updateView];
 					}
@@ -1034,6 +1108,67 @@
 			}
 		}
 	}
+}
+
+- (IBAction)delete:(id)sender;
+{
+	int curveIndex = [self selectedCurveIndex];
+	
+	if(curveIndex >= 0)
+	{
+		[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:curveIndex withPoints:[curves objectAtIndex:curveIndex] colors:[pointColors objectAtIndex:curveIndex]];
+		[self deleteCurveAtIndex:curveIndex];
+		[self updateView];
+	}
+	else
+	{
+		if(selectedPoint.y>=0.0)
+		{
+			int i, j;
+			for (i=0; i<[curves count]; i++)
+			{
+				NSArray *aCurve = [curves objectAtIndex:i];
+				for (j=0; j<[aCurve count]; j++)
+				{
+					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
+					if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+					{
+						if([aCurve count]<=3)
+						{
+							[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:i withPoints:[curves objectAtIndex:i] colors:[pointColors objectAtIndex:i]];
+							[self deleteCurveAtIndex:i];
+						}
+						else
+						{
+							[[undoManager prepareWithInvocationTarget:self] addPoint:[[[curves objectAtIndex:i] objectAtIndex:j] pointValue] atIndex:j inCurveAtIndex:i withColor:[[pointColors
+							 objectAtIndex:i] objectAtIndex:j]];
+							[self removePointAtIndex:j inCurveAtIndex:i];
+						}
+						[self updateView];
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
+- (IBAction)cut:(id)sender;
+{
+	[self copy:self];
+	[self delete:self];
+}
+
+- (IBAction)undo:(id)sender;
+{
+	[undoManager undo];
+	[self updateView];
+}
+
+- (IBAction)redo:(id)sender;
+{
+	[undoManager redo];
+	[self updateView];
 }
 
 @end

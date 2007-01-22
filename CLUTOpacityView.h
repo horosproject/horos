@@ -23,7 +23,13 @@
 	NSColorPanel *colorPanel;
 	
 	NSMutableArray *curves, *pointColors;
+	
+	NSMenu *contextualMenu;
+	
+	NSUndoManager *undoManager;
 }
+
+- (void)createContextualMenu;
 
 #pragma mark -
 #pragma mark Histogram
@@ -37,11 +43,13 @@
 - (void)newCurve;
 - (void)fillCurvesInRect:(NSRect)rect;
 - (void)drawCurvesInRect:(NSRect)rect;
-- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
+- (void)deleteCurveAtIndex:(int)i;
 - (void)sendToBackCurveAtIndex:(int)i;
 - (void)sendToFrontCurveAtIndex:(int)i;
 - (int)selectedCurveIndex;
 - (void)selectCurveAtIndex:(int)i;
+- (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
+- (void)setColors:(NSArray*)colors forCurveAtIndex:(int)curveIndex;
 
 #pragma mark -
 #pragma mark Coordinate to NSView Transform
@@ -57,8 +65,11 @@
 - (void)unselectPoints;
 - (BOOL)isAnyPointSelected;
 - (void)changePointColor:(NSNotification *)notification;
+- (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 - (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
 - (void)drawPointLabelAtPosition:(NSPoint)pt;
+- (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor *)color;
+- (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
 
 #pragma mark -
 #pragma mark Control Point
@@ -84,5 +95,9 @@
 #pragma mark Copy / Paste
 - (IBAction)copy:(id)sender;
 - (IBAction)paste:(id)sender;
+- (IBAction)delete:(id)sender;
+- (IBAction)cut:(id)sender;
+- (IBAction)undo:(id)sender;
+- (IBAction)redo:(id)sender;
 
 @end
