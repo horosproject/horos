@@ -29,4 +29,5 @@
 -(DCMSequenceAttribute*) graphicAnnotationSequence;
 - (NSImage *)image;
 - (NSImage *)thumbnail;
+- (NSDictionary *)dictionary;
 @end

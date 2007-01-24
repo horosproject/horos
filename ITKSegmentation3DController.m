@@ -22,6 +22,8 @@
 
 #import "ITKSegmentation3DController.h"
 
+enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neighborhoodSegmentationType, confidenceSegmentationType};
+
 @implementation ITKSegmentation3DController
 
 +(id) segmentationControllerForViewer:(ViewerController*) v
@@ -431,7 +433,7 @@
 {
 	int i;
 	NSMenu *items = [[NSMenu alloc] initWithTitle:@""];
-
+	
 	for (i=0; i<[algorithms count]; i++)
 	{
 		NSMenuItem *item = [[[NSMenuItem alloc] init] autorelease];				
@@ -441,20 +443,90 @@
 	}
 	[algorithmPopup removeAllItems];
 	[algorithmPopup setMenu:items];
+	[algorithmPopup bind:@"selectedIndex" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionAlgorithm" options:nil];
 }
 
 - (IBAction) changeAlgorithm: (id) sender
 {
 	[self setNumberOfParameters: [[parameters objectAtIndex:[[algorithmPopup selectedItem] tag]] count]];
 	int i;
+	int algorithmType = [[algorithmPopup selectedItem] tag];
+	NSArray *titles= [parameters objectAtIndex:algorithmType];
+	NSArray *defaultValues = [defaultsParameters objectAtIndex:algorithmType];
+	NSFormCell *cell = nil;
+	switch (algorithmType) {
+		case intervalSegmentationType:	
+				cell = [params cellAtRow:0 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:0]];
+				[cell setStringValue:[defaultValues objectAtIndex:0]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionInterval" options:nil];	
+				break;								
+		case thresholdSegmentationType:
+				cell = [params cellAtRow:0 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:0]];
+				[cell setStringValue:[defaultValues objectAtIndex:0]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionLowerThreshold" options:nil];	
+				
+				cell = [params cellAtRow:1 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:1]];
+				[cell setStringValue:[defaultValues objectAtIndex:1]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionUpperThreshold" options:nil];	
+				break;	
+				
+		case neighborhoodSegmentationType:
+		
+				cell = [params cellAtRow:0 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:0]];
+				[cell setStringValue:[defaultValues objectAtIndex:0]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionLowerThreshold" options:nil];	
+				
+				cell = [params cellAtRow:1 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:1]];
+				[cell setStringValue:[defaultValues objectAtIndex:1]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionUpperThreshold" options:nil];
+				
+				cell = [params cellAtRow:2 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:2]];
+				[cell setStringValue:[defaultValues objectAtIndex:2]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionRadius" options:nil];
+
+				break;
+		case confidenceSegmentationType:
+		
+				cell = [params cellAtRow:0 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:0]];
+				[cell setStringValue:[defaultValues objectAtIndex:0]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionMultiplier" options:nil];	
+				
+				cell = [params cellAtRow:1 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:1]];
+				[cell setStringValue:[defaultValues objectAtIndex:1]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionIterations" options:nil];
+				
+				cell = [params cellAtRow:2 column:0] ;
+				[cell setTitleWidth:-1];
+				[cell setTitle:[titles objectAtIndex:2]];
+				[cell setStringValue:[defaultValues objectAtIndex:2]];
+				[cell bind:@"value" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.growingRegionRadius" options:nil];
+		break;
+	}
 	
+	/*
 	for(i=0; i<[[parameters objectAtIndex:[[algorithmPopup selectedItem] tag]] count]; i++)
 	{
 		[[params cellAtRow:i column:0] setTitleWidth:-1];
 		[[params cellAtRow:i column:0] setTitle:[[parameters objectAtIndex:[[algorithmPopup selectedItem] tag]] objectAtIndex:i]];
 		[[params cellAtRow:i column:0] setStringValue:[[defaultsParameters objectAtIndex:[[algorithmPopup selectedItem] tag]] objectAtIndex:i]];
 	}
-	
+	*/
 	[self preview: self];
 }
 

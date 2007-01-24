@@ -102,5 +102,14 @@
 		[array objectAtIndex:0];
 }
 
+- (NSDictionary *)dictionary{
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Series Description"];
+	[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Series Number"];
+	[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
+	[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Series Date"];
+	return dict;
+}
+
 
 @end

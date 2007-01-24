@@ -250,6 +250,38 @@ Version 2.3
 	return newArray;
 }
 
+- (NSDictionary *)dictionary{
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	if ([self primitiveValueForKey:@"name"])
+		[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Patients Name"];
+	if ([self primitiveValueForKey:@"patientID"])
+		[dict  setObject: [self primitiveValueForKey:@"patientID"] forKey: @"Patient ID"];
+	if ([self primitiveValueForKey:@"studyName"])
+		[dict  setObject: [self primitiveValueForKey:@"studyName"] forKey: @"Study Description"];
+	if ([self primitiveValueForKey:@"patientSex"] )
+		[dict  setObject: [self primitiveValueForKey:@"patientSex"] forKey: @"Patients Sex"];
+	if ([self primitiveValueForKey:@"dateOfBirth"] )
+		[dict  setObject: [self primitiveValueForKey:@"dateOfBirth"] forKey: @"Patients DOB"];
+	if ([self primitiveValueForKey:@"institutionName"])
+		[dict  setObject: [self primitiveValueForKey:@"institutionName"] forKey: @"Institution"];
+	if ([self primitiveValueForKey:@"accessionNumber"])
+		[dict  setObject: [self primitiveValueForKey:@"accessionNumber"] forKey: @"Accession Number"];
+	if ([self primitiveValueForKey:@"comment"])
+		[dict  setObject: [self primitiveValueForKey:@"comment"] forKey: @"Comment"];
+	if ([self primitiveValueForKey:@"modality"])
+		[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
+	if ([self primitiveValueForKey:@"date"])
+		[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Study Date"];
+	if ([self primitiveValueForKey:@"performingPhysician"] )
+		[dict  setObject: [self primitiveValueForKey:@"performingPhysician"] forKey: @"Performing Physician"];
+	if ([self primitiveValueForKey:@"referringPhysician"])
+		[dict  setObject: [self primitiveValueForKey:@"referringPhysician"] forKey: @"Referring Physician"];
+	if ([self primitiveValueForKey:@"id"])
+		[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Study ID"];
+
+	return dict;
+}
+
 	
 
 

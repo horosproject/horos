@@ -182,6 +182,11 @@ extern NSString * documentsDirectory();
 	[pix release];
 	return thumbnail;
 }
+
+- (NSDictionary *)dictionary{
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	return dict;
+}
 	
 
 

@@ -92,6 +92,8 @@ enum
 	float			offsetTextBox_x, offsetTextBox_y;
 	
 	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
+	
+	BOOL			_displayCalciumScoring;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -218,5 +220,14 @@ enum
 - (void) setReferencedSOPInstanceUID:(NSString *)uid;
 - (void) setReferencedSOPClassUID:(NSString *)uid;
 -(void) setFrameNumber:(int)frame;
+
+// Calcium Scoring
+
+- (int)calciumScoreCofactor;
+- (float)calciumScore;
+- (float)calciumVolume;
+- (float)calciumMass;
+- (void)setDisplayCalciumScoring:(BOOL)value;
+
 
 @end

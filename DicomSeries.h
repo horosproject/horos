@@ -25,4 +25,5 @@
 - (NSSet *)keyImages;
 - (NSArray *)sortedImages;
 - (NSString *)dicomSeriesInstanceUID;
+- (NSDictionary *)dictionary;
 @end

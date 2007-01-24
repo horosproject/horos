@@ -33,6 +33,7 @@
 - (NSArray *)presentationStateSeries;
 - (NSArray *)waveFormSeries;
 - (NSArray *)roiSRSeries;
+- (NSDictionary *)dictionary;
 
 
 @end

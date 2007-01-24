@@ -462,6 +462,7 @@ GLenum glReportError (void)
 		color.green = 0.90*65535.;
 		color.blue = 0.58*65535.;
 		name = [[NSString alloc] initWithString:tName];
+		
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	return self;
@@ -2508,18 +2509,26 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					float area = [self plainArea];
-					
-					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
-						if( area*pixelSpacingX*pixelSpacingY < 1. )
-							sprintf (line2, "A: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+					_displayCalciumScoring = NO;
+
+					if (!_displayCalciumScoring) {
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if( area*pixelSpacingX*pixelSpacingY < 1. )
+								sprintf (line2, "A: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+							else
+								sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+						}
 						else
-							sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+							sprintf (line2, "Area: %0.3f pix2", area);
+						
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 					}
-					else
-						sprintf (line2, "Area: %0.3f pix2", area);
-					
-					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
-					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+					else {
+						sprintf (line2, "Calcium Score: %0.1f", [self calciumScore]);
+						sprintf (line3, "Calcium Volume: %0.1f", [self calciumVolume]);
+						sprintf (line4, "Calcium Mass: %0.1f", [self calciumMass]);
+					}
 				}
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
@@ -3341,6 +3350,48 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[parentROI release];
 	
 	parentROI = [aROI retain];
+}
+
+
+// Calcium Scoring
+// Should we check to see if we using a brush ROI and other appropriate checks before return a calcium measurement?
+
+
+- (int)calciumScoreCofactor{
+	/* 
+	Cofactor values used by Agaston.  
+	Using a threshold of 90 rather than 130. Assuming
+	multislice CT rather than electron beam.
+	We could have a flag for Electron beam rather than multichannel CT
+	and use 130 as a cutoff
+	*/
+	if (rmax < 90)
+		return 0;
+	if (rmax < 200) 
+		return 1;
+	if (rmax < 300)
+		return 2;
+	if (rmax < 400)
+		return 3;
+	return 4;
+	
+}
+
+- (float)calciumScore{
+	// roi Area * cofactor;  need to see whether area in cm or mm.
+	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor];
+}
+
+- (float)calciumVolume{
+	// area * thickeness
+	return [self roiArea] * [self thickness];
+}
+- (float)calciumMass{
+	//Volume * mean CT Density / 250 
+	return ([self calciumVolume] * rmean)/ 250;
+}
+- (void)setDisplayCalciumScoring:(BOOL)value{
+	_displayCalciumScoring = value;
 }
 
 

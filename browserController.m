@@ -4260,18 +4260,24 @@ static BOOL COMPLETEREBUILD = NO;
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
 {
+	NSMutableArray *xmlArray = [NSMutableArray array];
 	int i;
 	for( i = 0 ; i < [pbItems count]; i++)
 	{
 		BOOL extend = i;
 		[olv selectRow:	[olv rowForItem: [pbItems objectAtIndex: i]] byExtendingSelection: extend];
+		[xmlArray addObject: [[pbItems objectAtIndex: i] dictionary]];
 	}
 	
-	[pboard declareTypes: [NSArray arrayWithObjects: albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, nil] owner:self];
+	[pboard declareTypes: [NSArray arrayWithObjects: albumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType,  @"OsirixXMLPboardType", nil] owner:self];
 	
 	[pboard setPropertyList:0L forType:albumDragType];
 	
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
+	//xml Export
+	
+
+	[pboard setData:[NSArchiver archivedDataWithRootObject:xmlArray]  forType:@"OsiriXPboardType"];
 
 	[draggedItems release];
 	draggedItems = [pbItems retain];
