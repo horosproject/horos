@@ -104,10 +104,20 @@
 
 - (NSDictionary *)dictionary{
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-	[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Series Description"];
-	[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Series Number"];
-	[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
-	[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Series Date"];
+	if ([self primitiveValueForKey:@"seriesDescription"])
+		[dict  setObject: [self primitiveValueForKey:@"seriesDescription"] forKey: @"Series Protocol"];
+	if ([self primitiveValueForKey:@"name"])
+		[dict  setObject: [self primitiveValueForKey:@"name"] forKey: @"Series Description"];
+	if ([self primitiveValueForKey:@"id"])
+		[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Series Number"];
+	if ([self primitiveValueForKey:@"modality"])
+		[dict  setObject: [self primitiveValueForKey:@"modality"] forKey: @"Modality"];
+	if ([self primitiveValueForKey:@"date"])
+		[dict  setObject: [self primitiveValueForKey:@"date"] forKey: @"Series Date"];
+	if ([self primitiveValueForKey:@"seriesDICOMUID"] )
+		[dict  setObject: [self primitiveValueForKey:@"seriesDICOMUID"] forKey: @"Series Instance UID"];
+	if ([self primitiveValueForKey:@"comment"] )
+		[dict  setObject: [self primitiveValueForKey:@"comment"] forKey: @"Comment"];
 	return dict;
 }
 

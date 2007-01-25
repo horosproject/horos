@@ -278,6 +278,8 @@ Version 2.3
 		[dict  setObject: [self primitiveValueForKey:@"referringPhysician"] forKey: @"Referring Physician"];
 	if ([self primitiveValueForKey:@"id"])
 		[dict  setObject: [self primitiveValueForKey:@"id"] forKey: @"Study ID"];
+	if ([self primitiveValueForKey:@"studyInstanceUID"])
+		[dict  setObject: [self primitiveValueForKey:@"studyInstanceUID"] forKey: @"Study Instance UID"];
 
 	return dict;
 }
