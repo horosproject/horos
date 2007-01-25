@@ -206,6 +206,7 @@
                 applyConvolutionOnSource = id; 
                 axView = id; 
                 barMenu = id; 
+                calciumScoring = id; 
                 calibrate = id; 
                 clearOffset = id; 
                 closeSelectedBrushROI = id; 

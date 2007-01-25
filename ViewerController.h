@@ -37,6 +37,7 @@
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
 @class EndoscopyViewer;
+@class CalciumScoringWindowController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -288,6 +289,7 @@ enum
 	IBOutlet NSTextField	*printText, *printPagesToPrint;
 	
 	NSMutableArray			*undoQueue, *redoQueue;
+	CalciumScoringWindowController *_calciumScoringWindowController;
 }
 
 // Create a new 2D Viewer
@@ -611,6 +613,8 @@ enum
 
 
 // Opening 3D Viewers
+#pragma mark-
+#pragma mark 3D Viewers
 - (VRController *)openVRViewerForMode:(NSString *)mode;
 - (VRPROController *)openVRVPROViewerForMode:(NSString *)mode;
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
@@ -621,6 +625,10 @@ enum
 
 - (SeriesView *) seriesView;
 - (void)setImageRows:(int)rows columns:(int)columns;
+
+#pragma mark-
+#pragma mark Calcium scoring
+- (IBAction)calciumScoring:(id)sender;
 
 
 @end

@@ -92,6 +92,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "Reports.h"
 #import "ViewerControllerDCMTKCategory.h"
 #import "MenuDictionary.h"
+#import "CalciumScoringWindowController.h"
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <InstantMessage/IMService.h>
@@ -2115,7 +2116,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[curConvMenu release];
 	[curWLWWMenu release];
 	[processorsLock release];
-	
+	[_calciumScoringWindowController release];
     [super dealloc];
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:
@@ -13653,6 +13654,13 @@ sourceRef);
 - (void)setImageRows:(int)rows columns:(int)columns{
 	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
 }
+
+- (IBAction)calciumScoring:(id)sender{
+	if (!_calciumScoringWindowController)
+		_calciumScoringWindowController = [[CalciumScoringWindowController alloc] initWithViewer:self];
+	[_calciumScoringWindowController showWindow:self];
+}
+	
 
 
 @end

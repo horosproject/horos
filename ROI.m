@@ -3378,8 +3378,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 }
 
 - (float)calciumScore{
-	// roi Area * cofactor;  need to see whether area in cm or mm.
-	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor];
+	// roi Area * cofactor;  area is is mm2.
+	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor] * 100;
 }
 
 - (float)calciumVolume{
