@@ -704,12 +704,6 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 		[view setLOD: 1.0];
 		[LODSlider setIntValue: 1];
 	}
-	
-//	[clutOpacityPanel orderFront:self];
-//	[clutOpacityView niceDisplay];
-//	[clutOpacityView setVolumePointer:[firstObject fImage] width:[firstObject pwidth] height:[firstObject pheight] numberOfSlices:[pix count]];
-//	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
-	
     return self;
 }
 
@@ -2452,13 +2446,30 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 -(float)curWL{
 	return [viewer2D curWL];
 }
+
 - (NSString *)curCLUTMenu{
 	return curCLUTMenu;
 }
 
-- (NSPanel*) clutOpacityPanel;
+- (NSPanel*)clutOpacityPanel;
 {
 	return clutOpacityPanel;
+}
+
+- (void)showCLUTOpacityPanel:(id)sender;
+{
+	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
+	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
+	[clutOpacityView computeHistogram];
+	[clutOpacityPanel orderFront:self];
+	[clutOpacityView niceDisplay];
+}
+
+- (void)UpdateCLUTMenu:(NSNotification*)note
+{
+	[super UpdateCLUTMenu:note];
+    [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
+    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"Add an advanced CLUT", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 }
 
 @end

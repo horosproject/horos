@@ -183,6 +183,7 @@
 - (void)setRenderingMode:(NSString *)renderingMode;
 - (NSString *)curCLUTMenu;
 
-- (NSPanel*) clutOpacityPanel;
+- (NSPanel*)clutOpacityPanel;
+- (void)showCLUTOpacityPanel:(id)sender;
 
 @end

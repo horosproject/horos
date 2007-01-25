@@ -4,12 +4,20 @@
         {
             ACTIONS = {
                 computeHistogram = id; 
+                copy = id; 
+                cut = id; 
+                delete = id; 
                 newCurve = id; 
                 niceDisplay = id; 
+                paste = id; 
+                redo = id; 
+                scroll = id; 
                 sendToBack = id; 
                 setHistogramOpacity = id; 
                 setLineWidth = id; 
                 setPointDiameter = id; 
+                setZoomFator = id; 
+                undo = id; 
             }; 
             CLASS = CLUTOpacityView; 
             LANGUAGE = ObjC; 

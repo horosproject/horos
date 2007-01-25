@@ -27,6 +27,10 @@
 	NSMenu *contextualMenu;
 	
 	NSUndoManager *undoManager;
+	BOOL nothingChanged;
+	
+	float zoomFactor;
+	float zoomFixedPoint;
 }
 
 - (void)createContextualMenu;
@@ -70,6 +74,7 @@
 - (void)drawPointLabelAtPosition:(NSPoint)pt;
 - (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor *)color;
 - (void)removePointAtIndex:(int)ip inCurveAtIndex:(int)ic;
+- (void)replacePointAtIndex:(int)ip inCurveAtIndex:(int)ic withPoint:(NSPoint)point;
 
 #pragma mark -
 #pragma mark Control Point
@@ -90,6 +95,8 @@
 - (void)niceDisplay;
 - (IBAction)niceDisplay:(id)sender;
 - (IBAction)sendToBack:(id)sender;
+- (IBAction)setZoomFator:(id)sender;
+- (IBAction)scroll:(id)sender;
 
 #pragma mark -
 #pragma mark Copy / Paste
