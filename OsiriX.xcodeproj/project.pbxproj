@@ -5264,6 +5264,18 @@
 		BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
 		BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BF2AC4920B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
+		BF2AC4930B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
+		BF2AC4940B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
+		BF2AC4950B695E7900C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
+		BF2AC4A00B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
+		BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A20B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
+		BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A40B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
+		BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A60B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
+		BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
 		BF2EEC860B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC870B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC880B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
@@ -14277,6 +14289,9 @@
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
 		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
+		BF2AC4910B695E7800C6F100 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/CalciumScoring.nib; sourceTree = "<group>"; };
+		BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
+		BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CalciumScoringWindowController.mm; sourceTree = "<group>"; };
 		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHotKeys.prefPane; path = "Preference Panes/OSIHotKeysPreferencePane/build/Release/OSIHotKeys.prefPane"; sourceTree = SOURCE_ROOT; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
@@ -17398,6 +17413,11 @@
 				A90D665D094D7071000B425B /* Endoscopy */,
 				A9523D0709BDB4880070CBD5 /* HornRegistration */,
 				A93CFF6E0A5169FE00078038 /* LL */,
+				BF348573095126B700B05AD2 /* Sending */,
+				7E0339E307415C330025DDB4 /* Burning */,
+				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
+				BF6566930B263BBF00574803 /* Hanging Proctols */,
+				BF2AC4980B695ED700C6F100 /* Calcium Scoring */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -17587,6 +17607,7 @@
 				A94173210AB6B50000B9B487 /* SRAnnotation.nib */,
 				BF6566A20B263D1C00574803 /* Layout.nib */,
 				BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */,
+				BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
@@ -18234,11 +18255,7 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				BF348573095126B700B05AD2 /* Sending */,
-				7E0339E307415C330025DDB4 /* Burning */,
-				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
 				CEF9E7BE0811B63000412C8A /* MultiThreads */,
-				BF6566930B263BBF00574803 /* Hanging Proctols */,
 				CEBED3000B40510500A6731E /* Distributed Objects */,
 				BF00C95806F3F43900715191 /* DCMCursor.h */,
 				BF00C95906F3F43900715191 /* DCMCursor.m */,
@@ -18726,6 +18743,15 @@
 			);
 			name = Papyrus;
 			sourceTree = SOURCE_ROOT;
+		};
+		BF2AC4980B695ED700C6F100 /* Calcium Scoring */ = {
+			isa = PBXGroup;
+			children = (
+				BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */,
+				BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */,
+			);
+			name = "Calcium Scoring";
+			sourceTree = "<group>";
 		};
 		BF2EEC310B1F82F4007E9088 /* Products */ = {
 			isa = PBXGroup;
@@ -23725,6 +23751,7 @@
 				BF954D970B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF83B0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
+				BF2AC4A60B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25619,6 +25646,7 @@
 				BF954D950B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF83D0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41C0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
+				BF2AC4A00B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27507,6 +27535,7 @@
 				BF954D910B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF8370B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41A0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
+				BF2AC4A40B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29406,6 +29435,7 @@
 				BF954D930B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF8390B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41E0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
+				BF2AC4A20B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30132,6 +30162,7 @@
 				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82B0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
+				BF2AC4920B695E7800C6F100 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30455,6 +30486,7 @@
 				CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01130B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82D0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
+				BF2AC4940B695E7800C6F100 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30768,6 +30800,7 @@
 				CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01140B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82E0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
+				BF2AC4950B695E7900C6F100 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -31091,6 +31124,7 @@
 				CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01120B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82C0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
+				BF2AC4930B695E7800C6F100 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32225,6 +32259,7 @@
 				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32969,6 +33004,7 @@
 				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34260,6 +34296,7 @@
 				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35016,6 +35053,7 @@
 				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35354,6 +35392,14 @@
 				BF1745CC08E0C57300822756 /* English */,
 			);
 			name = LogWindow.nib;
+			sourceTree = "<group>";
+		};
+		BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF2AC4910B695E7800C6F100 /* English */,
+			);
+			name = CalciumScoring.nib;
 			sourceTree = "<group>";
 		};
 		BF62904A0A2B7CC400BB0B62 /* StructuredReport.nib */ = {
