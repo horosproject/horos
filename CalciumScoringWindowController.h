@@ -31,7 +31,7 @@ Manages the Window for creating Calcium Scoring ROIs
 	int						_ctType;
 	int						_lowerThreshold;
 	int						_upperThreshold;
-	NSMutableArray			*_rois;
+	NSMutableSet			*_rois;
 	NSString				*_roiName;
 	
 	NSString				*_startingPointPixelPosition;
@@ -39,6 +39,11 @@ Manages the Window for creating Calcium Scoring ROIs
 	NSString				*_startingPointValue;
 	
 	NSPoint					_startingPoint;
+	
+	float					_totalCalciumScore;
+	float					_totalCalciumMass;
+	float					_totalCalciumVolume;
+	
 }
 
 - (int)ctType;
@@ -47,8 +52,8 @@ Manages the Window for creating Calcium Scoring ROIs
 - (void)setLowerThreshold:(int)lowerThreshold;
 - (int)upperThreshold;
 - (void)setUpperThreshold:(int)upperThreshold;
-- (NSMutableArray *)rois;
-- (void)setRois:(NSMutableArray *)rois;
+- (NSMutableSet *)rois;
+- (void)setRois:(NSMutableSet *)rois;
 - (NSString *)roiName;
 - (void)setRoiName:(NSString *)roiName;
 
@@ -58,5 +63,22 @@ Manages the Window for creating Calcium Scoring ROIs
 - (void)setStartingPointWorldPosition:(NSString *)position;
 -(NSString *)startingPointValue;
 - (void)setStartingPointValue:(NSString *)value;
+
+- (IBAction)preview: (id)sender;
+- (IBAction)compute: (id)sender;
+- (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
+
+- (void)updateTotals;
+
+- (float)totalCalciumScore;
+- (float)totalCalciumMass;
+- (float)totalCalciumVolume;
+
+- (void)setTotalCalciumScore: (float)score;
+- (void)setTotalCalciumMass: (float)mass;
+- (void)setTotalCalciumVolume: (float)volume;
+
+
+
 
 @end

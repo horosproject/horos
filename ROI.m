@@ -2509,7 +2509,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 					
 					float area = [self plainArea];
-					_displayCalciumScoring = NO;
 
 					if (!_displayCalciumScoring) {
 						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {

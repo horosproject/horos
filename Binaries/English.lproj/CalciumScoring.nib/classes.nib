@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {
+            ACTIONS = {compute = id; preview = id; }; 
             CLASS = CalciumScoringWindowController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSWindowController; 
