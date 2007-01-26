@@ -5269,13 +5269,13 @@
 		BF2AC4940B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
 		BF2AC4950B695E7900C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
 		BF2AC4A00B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
 		BF2AC4A20B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
 		BF2AC4A40B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
 		BF2AC4A60B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */; };
+		BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
 		BF2EEC860B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC870B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC880B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
@@ -14291,7 +14291,7 @@
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
 		BF2AC4910B695E7800C6F100 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/CalciumScoring.nib; sourceTree = "<group>"; };
 		BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
-		BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CalciumScoringWindowController.mm; sourceTree = "<group>"; };
+		BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHotKeys.prefPane; path = "Preference Panes/OSIHotKeysPreferencePane/build/Release/OSIHotKeys.prefPane"; sourceTree = SOURCE_ROOT; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
@@ -18747,8 +18747,8 @@
 		BF2AC4980B695ED700C6F100 /* Calcium Scoring */ = {
 			isa = PBXGroup;
 			children = (
+				BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */,
 				BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */,
-				BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.mm */,
 			);
 			name = "Calcium Scoring";
 			sourceTree = "<group>";
@@ -32259,7 +32259,7 @@
 				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
+				BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33004,7 +33004,7 @@
 				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
+				BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34296,7 +34296,7 @@
 				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
+				BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35053,7 +35053,7 @@
 				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.mm in Sources */,
+				BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
