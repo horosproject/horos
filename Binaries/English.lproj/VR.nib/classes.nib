@@ -3,6 +3,7 @@
         {CLASS = BlackView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {
+                chooseNameAndSave = id; 
                 computeHistogram = id; 
                 copy = id; 
                 cut = id; 
@@ -11,6 +12,7 @@
                 niceDisplay = id; 
                 paste = id; 
                 redo = id; 
+                save = id; 
                 scroll = id; 
                 sendToBack = id; 
                 setHistogramOpacity = id; 
@@ -21,6 +23,7 @@
             }; 
             CLASS = CLUTOpacityView; 
             LANGUAGE = ObjC; 
+            OUTLETS = {chooseNameAndSaveWindow = NSWindow; clutSavedName = NSTextField; }; 
             SUPERCLASS = NSView; 
         }, 
         {

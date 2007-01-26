@@ -1714,7 +1714,7 @@ NSLog(@"refreshSubtractedViews");
 }
 
 #pragma mark-
-#pragma mark Saved Settings
+#pragma mark Settings
 
 - (void)initialDefaultSettings;
 {

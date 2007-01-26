@@ -10,7 +10,7 @@
 #import <Accelerate/Accelerate.h>
 
 @interface CLUTOpacityView : NSView {
-	NSColor *backgroundColor, *histogramColor, *pointsColor, *pointsBorderColor, *curveColor, *selectedPointColor;
+	NSColor *backgroundColor, *histogramColor, *pointsColor, *pointsBorderColor, *curveColor, *selectedPointColor, *textLabelColor;
 	float histogramOpacity;
 	float *volumePointer;
 	int voxelCount;
@@ -18,7 +18,7 @@
 	int histogramSize;
 	float HUmin, HUmax; // houndsfield units bounds
 	NSPoint selectedPoint;
-	int pointDiameter, lineWidth;
+	int pointDiameter, lineWidth, pointBorder;
 	
 	NSColorPanel *colorPanel;
 	
@@ -31,8 +31,12 @@
 	
 	float zoomFactor;
 	float zoomFixedPoint;
+	
+	IBOutlet NSWindow *chooseNameAndSaveWindow;
+	IBOutlet NSTextField *clutSavedName;
 }
 
+- (void)cleanup;
 - (void)createContextualMenu;
 
 #pragma mark -
@@ -47,6 +51,7 @@
 - (void)newCurve;
 - (void)fillCurvesInRect:(NSRect)rect;
 - (void)drawCurvesInRect:(NSRect)rect;
+- (void)addCurveAtindex:(int)curveIndex withPoints:(NSArray*)pointsArray colors:(NSArray*)colorsArray;
 - (void)deleteCurveAtIndex:(int)i;
 - (void)sendToBackCurveAtIndex:(int)i;
 - (void)sendToFrontCurveAtIndex:(int)i;
@@ -106,5 +111,11 @@
 - (IBAction)cut:(id)sender;
 - (IBAction)undo:(id)sender;
 - (IBAction)redo:(id)sender;
+
+#pragma mark -
+#pragma mark Archiving
+- (void)chooseNameAndSave:(id)sender;
+- (IBAction)save:(id)sender;
+- (void)saveWithName:(NSString*)name;
 
 @end

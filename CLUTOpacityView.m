@@ -20,8 +20,9 @@
 		histogramColor = [NSColor lightGrayColor];
 		pointsColor = [NSColor blackColor];
 		pointsBorderColor = [NSColor blackColor];
-		selectedPointColor = [NSColor greenColor];
-		curveColor = [NSColor whiteColor];
+		textLabelColor = [NSColor whiteColor];
+		selectedPointColor = [NSColor whiteColor];
+		curveColor = [NSColor grayColor];
 		
 		HUmin = -1000.0;
 		HUmax = 1000.0;
@@ -30,7 +31,8 @@
 		colorPanel = [NSColorPanel sharedColorPanel];
 		selectedPoint.y = -1.0;
 		pointDiameter = 8;
-		lineWidth = 2;
+		lineWidth = 3;
+		pointBorder = 2;
 		zoomFactor = 1.0;
 		zoomFixedPoint = 0.0;
 		
@@ -43,22 +45,39 @@
     return self;
 }
 
+- (void)cleanup;
+{
+	if(curves) [curves release];
+	curves = [[NSMutableArray arrayWithCapacity:0] retain];
+	if(pointColors) [pointColors release];
+	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
+	[self computeHistogram];
+	[self niceDisplay];
+	[self updateView];
+}
+
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	if(histogram) free(histogram);
 	[curves release];
 	[pointColors release];
+	[selectedPointColor release];
 	[contextualMenu release];
 	[undoManager release];
 	[super dealloc];
 }
+
+#pragma mark -
+#pragma mark Contextual menu
 
 - (void)createContextualMenu;
 {
 	contextualMenu = [[NSMenu alloc] init];
 	[contextualMenu addItemWithTitle:NSLocalizedString(@"New Curve", nil) action:@selector(newCurve:) keyEquivalent:@""];
 	[contextualMenu addItemWithTitle:NSLocalizedString(@"Send to back", nil) action:@selector(sendToBack:) keyEquivalent:@""];
+	[contextualMenu addItem:[NSMenuItem separatorItem]];
+	[contextualMenu addItemWithTitle:NSLocalizedString(@"Save...", nil) action:@selector(chooseNameAndSave:) keyEquivalent:@""];
 }
 
 #pragma mark -
@@ -68,8 +87,6 @@
 {
 	volumePointer = ptr;
 	voxelCount = width * height * n;
-//	imgWidth = width;
-//	imgHeight = height;
 }
 
 - (void)setHUmin:(float)min HUmax:(float)max;
@@ -86,7 +103,6 @@
 	buffer.width = voxelCount;
 	buffer.rowBytes = voxelCount * sizeof(float);
 	
-	//histogramSize = 1000;
 	histogramSize = (HUmax-HUmin)/2;
 	if(histogram) free(histogram);
 	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * histogramSize);
@@ -140,24 +156,20 @@
 	{
 		if(histogram[i]>max) max = histogram[i];
 	}
-		
-	//float heightFactor = (max==0)? 1.0 : rect.size.height / max;
-	//float binWidth = rect.size.width / histogramSize;
+
 	float heightFactor = (max==0)? 1.0 : 1.0 / max;
 	float binWidth = (HUmax - HUmin) / histogramSize;
 
 	NSBezierPath *line = [NSBezierPath bezierPath];
-	//[line moveToPoint:NSMakePoint(0.0, 0.0)];
+
 	[line moveToPoint:[transform transformPoint:NSMakePoint(HUmin, 0.0)]];
 	for(i=0; i<histogramSize; i++)
 	{
-		//NSPoint pt = NSMakePoint(i * binWidth, histogram[i] * heightFactor);
 		NSPoint pt = NSMakePoint(HUmin + i * binWidth, histogram[i] * heightFactor);
 		pt = [transform transformPoint:pt];
 		[line lineToPoint:pt];
 	}
 	
-	// NSPoint pt = NSMakePoint(i * binWidth,0);
 	NSPoint pt = NSMakePoint(HUmin,0.0);
 	pt = [transform transformPoint:pt];
 	[line lineToPoint:pt];
@@ -179,30 +191,35 @@
 	NSMutableArray *theNewCurve = [NSMutableArray arrayWithCapacity:4];
 
 	NSPoint pt1, pt2, pt3, pt4;
-	float d, middle, x1, x2;
-	d = 0.05 * (HUmax-HUmin); // 10% of total graph width
-	middle = HUmin + (HUmax-HUmin) * 0.5;
-	x1 = middle - d;
-	x2 = middle + d;
 	
-	pt1 = NSMakePoint(x1, 0.0);
-	pt2 = NSMakePoint(x1, 0.5);
-	pt3 = NSMakePoint(x2, 0.5);
-	pt4 = NSMakePoint(x2, 0.0);
+	NSAffineTransform *transform = [self transform];
+	[transform invert];
 	
+	pt1 = NSMakePoint(0.9*[self bounds].size.width/2.0, 0.0);
+	pt2 = NSMakePoint(0.95*[self bounds].size.width/2.0, 0.0);
+	pt3 = NSMakePoint(1.05*[self bounds].size.width/2.0, 0.0);
+	pt4 = NSMakePoint(1.1*[self bounds].size.width/2.0, 0.0);
+
+	pt1 = [transform transformPoint:pt1];
+	pt2 = [transform transformPoint:pt2];
+	pt3 = [transform transformPoint:pt3];
+	pt4 = [transform transformPoint:pt4];
+
+	pt1.y = 0.0;
+	pt2.y = 0.5;
+	pt3.y = 0.5;
+	pt4.y = 0.0;
+
 	[theNewCurve addObject:[NSValue valueWithPoint:pt1]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt2]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt3]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt4]];
 	
-//	[curves insertObject:theNewCurve atIndex:0];
-	
 	NSMutableArray *theColors = [NSMutableArray arrayWithCapacity:4];
-	[theColors addObject:[NSColor yellowColor]];
-	[theColors addObject:[NSColor yellowColor]];
-	[theColors addObject:[NSColor redColor]];
-	[theColors addObject:[NSColor redColor]];
-//	[pointColors insertObject:theColors atIndex:0];
+	[theColors addObject:[NSColor colorWithDeviceRed:0.25 green:0.0 blue:0.0 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:0.5 green:0.0 blue:0.0 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.4 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0]];
 	
 	[self addCurveAtindex:0 withPoints:theNewCurve colors:theColors];
 	
@@ -235,7 +252,11 @@
 			int n;
 			for(n=0; n<numberOfSmallRect; n++)
 			{
-				smallRect = NSMakeRect(p0.x+n, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
+				if(p0.y<p1.y)
+					smallRect = NSMakeRect(p0.x+n, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
+				else
+					smallRect = NSMakeRect(p0.x+n-1, 0, 2, ((numberOfSmallRect-n)*p0.y+n*p1.y)/numberOfSmallRect);
+					
 				c = [c0 blendedColorWithFraction:(float)n/(float)numberOfSmallRect ofColor:c1];
 				[c set];
 				NSRectFill(smallRect);
@@ -274,20 +295,16 @@
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 			[line lineToPoint:pt];
 		}
-		//[line closePath];
 		line = [transform transformBezierPath:line];
 		[curveColor set];
 		if(controlPointSelected) [selectedPointColor set];
 		[line setLineWidth:lineWidth];
 		[line stroke];
-		
-		//[[curveColor colorWithAlphaComponent:0.2] set];
-		//[line fill];
-		
+				
 		// CONTROL POINT (DRAW)
 		NSRect frame = NSMakeRect(controlPoint.x-pointDiameter*0.5, controlPoint.y-pointDiameter*0.5, pointDiameter, pointDiameter);
 		NSBezierPath *control = [NSBezierPath bezierPathWithRect:frame];
-		[control setLineWidth:lineWidth];
+		[control setLineWidth:pointBorder];
 		[pointsColor set];
 		[control fill];
 		[curveColor set];
@@ -310,7 +327,7 @@
 			}
 			//border
 			NSPoint pt1 = [transform transformPoint:pt];
-			NSRect frame1 = NSMakeRect(pt1.x-pointDiameter*0.5-lineWidth, pt1.y-pointDiameter*0.5-lineWidth, pointDiameter+2*lineWidth, pointDiameter+2*lineWidth);
+			NSRect frame1 = NSMakeRect(pt1.x-pointDiameter*0.5-pointBorder, pt1.y-pointDiameter*0.5-pointBorder, pointDiameter+2*pointBorder, pointDiameter+2*pointBorder);
 			NSBezierPath *dot1 = [NSBezierPath bezierPathWithOvalInRect:frame1];
 			[pointsColor set];
 			[dot1 stroke];
@@ -325,7 +342,6 @@
 
 			[pointsColor set];
 			[dot stroke];
-			//if(selected)
 			[[[pointColors objectAtIndex:i] objectAtIndex:j] set];
 			[dot fill];
 			
@@ -404,12 +420,20 @@
 
 - (void)sendToBackCurveAtIndex:(int)i;
 {
-	[self moveCurveAtIndex:i toIndex:[curves count]-1];
+	if(i != [curves count]-1)
+	{
+		nothingChanged = NO;
+		[self moveCurveAtIndex:i toIndex:[curves count]-1];
+	}
 }
 
 - (void)sendToFrontCurveAtIndex:(int)i;
 {
-	[self moveCurveAtIndex:i toIndex:0];
+	if(i != 0)
+	{
+		nothingChanged = NO;
+		[self moveCurveAtIndex:i toIndex:0];
+	}
 }
 
 - (int)selectedCurveIndex;
@@ -450,12 +474,6 @@
 		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:i withObject:[colors objectAtIndex:i]];
 	}
 }
-//
-//- (void)replaceCurveAtIndex:(int)curveIndex withCurve:(NSArray*)curve;
-//{
-//	[curves replaceObjectAtIndex:curveIndex withObject:curve];
-//}
-
 
 #pragma mark -
 #pragma mark Coordinate to NSView Transform
@@ -466,7 +484,6 @@
 	[transform translateXBy:-HUmin*[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:0.0];
 	[transform scaleXBy:[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:[self bounds].size.height];
 	NSAffineTransform* transform2 = [NSAffineTransform transform];
-//	[transform2 scaleXBy:zoomFactor yBy:1.0];
 	[transform2 translateXBy:-zoomFixedPoint*(zoomFactor-1.0) yBy:0.0];
 	[transform appendTransform:transform2];
 	return transform;
@@ -529,7 +546,7 @@
 
 - (void)changePointColor:(NSNotification *)notification;
 {
-	if([self isAnyPointSelected])
+	if([self isAnyPointSelected] && [[self window] isKeyWindow])
 	{
 		int i, j;
 		for (i=0; i<[curves count]; i++)
@@ -540,9 +557,7 @@
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 				if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
 				{
-//					[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:i] objectAtIndex:j] forPointAtIndex:j inCurveAtIndex:i];
 					[self setColor:[(NSColorPanel*)[notification object] color] forPointAtIndex:j inCurveAtIndex:i];
-//					[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:[(NSColorPanel*)[notification object] color]];
 					[self updateView];
 					return;
 				}
@@ -550,13 +565,7 @@
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
 			{
-//				[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:i]] forCurveAtIndex:i];
 				[self setColor:[(NSColorPanel*)[notification object] color] forCurveAtIndex:i];
-//				for (j=0; j<[aCurve count]; j++)
-//				{
-//					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-//					[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:[(NSColorPanel*)[notification object] color]];
-//				}
 				[self updateView];
 				return;
 			}
@@ -566,7 +575,6 @@
 
 - (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 {
-//	[[undoManager prepareWithInvocationTarget:self] setColor:color forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
 }
@@ -574,9 +582,6 @@
 - (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
 {
 	if(point.y<0.0) point.y = 0.0;
-//	if(point.y>1.0) point.y = 1.0;
-//	if(point.x<HUmin) point.x = HUmin;
-//	if(point.x>HUmax) point.x = HUmax;
 	
 	if(j==0 || j==[aCurve count]-1) point.y = 0.0;
 					
@@ -591,7 +596,7 @@
 - (void)drawPointLabelAtPosition:(NSPoint)pt;
 {
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
-	[attrsDictionary setObject:curveColor forKey:NSForegroundColorAttributeName];
+	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	
 	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.2f", pt.x, pt.y] attributes:attrsDictionary];
 	NSAttributedString *labelValue = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f", pt.x] attributes:attrsDictionary];
@@ -621,7 +626,6 @@
 		labelPosition.x = rect.size.width - labelBounds.size.width;
 	}
 	
-//	NSRectFill(NSMakeRect(labelPosition.x-2.0,labelPosition.y,labelBounds.size.width,labelBounds.size.height));
 	NSBezierPath *labelRect = [NSBezierPath bezierPathWithRect:NSMakeRect(labelPosition.x-2.0,labelPosition.y,labelBounds.size.width,labelBounds.size.height)];
 	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 	[labelRect fill];
@@ -693,7 +697,6 @@
 		controlPoint = [self controlPointForCurveAtIndex:i];
 		if(position.x>=controlPoint.x-pointDiameter && position.y>=controlPoint.y-pointDiameter && position.x<=controlPoint.x+pointDiameter && position.y<=controlPoint.y+pointDiameter)
 		{
-			//[[undoManager prepareWithInvocationTarget:curves] replaceObjectAtIndex:i withObject:[NSMutableArray arrayWithArray:[curves objectAtIndex:i]]]; // to undo curve deplacement
 			selectedPoint = controlPoint;
 			[self sendToFrontCurveAtIndex:i];
 			[self updateView];
@@ -751,12 +754,9 @@
 		nothingChanged = NO;
 		[transform invert];
 		NSPoint newPoint = [transform transformPoint:position];
-//	DELETE THIS LINE	[aCurve insertObject:[NSValue valueWithPoint:newPoint] atIndex:j-1];
 		selectedPoint.x = newPoint.x;
 		selectedPoint.y = newPoint.y;
 		float blendingFactor = (newPoint.x - [[aCurve objectAtIndex:j-2] pointValue].x) / ([[aCurve objectAtIndex:j-1] pointValue].x - [[aCurve objectAtIndex:j-2] pointValue].x);
-//	DELETE THIS LINE	[colors insertObject:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]] atIndex:j-1];
-		//[[undoManager prepareWithInvocationTarget:self] removePointAtIndex:j-1 inCurveAtIndex:i-1];
 		[self addPoint:newPoint atIndex:j-1 inCurveAtIndex:i-1 withColor:[[colors objectAtIndex:j-2] blendedColorWithFraction:blendingFactor ofColor:[colors objectAtIndex:j-1]]];
 		[self sendToFrontCurveAtIndex:i-1];
 		[self updateView];
@@ -781,16 +781,9 @@
 	{
 		[self unselectPoints];
 		if(![self selectControlPointAtPosition:mousePositionInView])
-			if(![self clickOnLineAtPosition:mousePositionInView])
-			{
-				NSAffineTransform* transformView2Coordinate = [self transform];
-				[transformView2Coordinate invert];
-				//NSPoint pt = [transformView2Coordinate transformPoint:mousePositionInView];
-				NSPoint pt = mousePositionInView;
-				zoomFixedPoint = zoomFixedPoint + (pt.x - zoomFixedPoint) / zoomFactor;
-				[self updateView];
-				NSLog(@"zoomFixedPoint : %f", zoomFixedPoint);
-			}
+		{
+			[self clickOnLineAtPosition:mousePositionInView];
+		}
 		else if([theEvent clickCount] == 2)
 		{
 			[colorPanel orderFront:self];
@@ -841,11 +834,8 @@
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 					if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
 					{
-//						NSAffineTransform* transform = [self transform];
-//						[transform invert];
 						NSPoint newPoint = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
 						newPoint = [self legalizePoint:newPoint inCurve:aCurve atIndex:j];
-						//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:newPoint]];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:newPoint];
 						selectedPoint.x = newPoint.x;
 						selectedPoint.y = newPoint.y;
@@ -853,7 +843,7 @@
 					}
 				}
 			}
-			else //if(([theEvent modifierFlags] & NSAlternateKeyMask))
+			else
 			{	
 				firstPoint = [[aCurve objectAtIndex:0] pointValue];
 				lastPoint = [[aCurve lastObject] pointValue];
@@ -877,14 +867,12 @@
 							alpha = fabsf(pt.x - firstPoint.x) / d;
 						shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
-						//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:shiftedPoint]];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 					}
 					for (j=0; j<[aCurve count]; j++)
 					{
 						NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 						pt = [self legalizePoint:pt inCurve:aCurve atIndex:j];
-						//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:pt]];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:pt];
 					}
 					if(firstPointSelected)
@@ -927,7 +915,6 @@
 						if(shiftedPoint.x > controlPoint.x+10.0 || shiftedPoint.x < controlPoint.x-10.0 || pt.x == controlPoint.x || (pt.x < controlPoint.x+10.0 && shiftedPoint.x > controlPoint.x+10.0) || (pt.x > controlPoint.x-10.0 && shiftedPoint.x < controlPoint.x-10.0))
 						{
 							shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
-							//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:shiftedPoint]];
 							[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 							controlPoint = [self controlPointForCurveAtIndex:i];
 						}
@@ -936,7 +923,6 @@
 					{
 						shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y-shiftY);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
-						//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:shiftedPoint]];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 						controlPoint = [self controlPointForCurveAtIndex:i];
 					}
@@ -946,7 +932,6 @@
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 					pt = [self legalizePoint:pt inCurve:aCurve atIndex:j];
-					//[aCurve replaceObjectAtIndex:j withObject:[NSValue valueWithPoint:pt]];
 					[self replacePointAtIndex:j inCurveAtIndex:i withPoint:pt];
 				}
 				controlPoint = [self controlPointForCurveAtIndex:i];
@@ -961,7 +946,7 @@
 	{
 		if(fabsf([theEvent deltaX])>fabsf([theEvent deltaY]))
 		{
-			zoomFixedPoint -= [theEvent deltaX] * zoomFactor;
+			zoomFixedPoint -= [theEvent deltaX];
 		}
 		else
 		{
@@ -986,30 +971,6 @@
 		{
 			[self delete:self];
 			return;
-//			int i, j;
-//			for (i=0; i<[curves count]; i++)
-//			{
-//				NSMutableArray *aCurve = [curves objectAtIndex:i];
-//				for (j=0; j<[aCurve count]; j++)
-//				{
-//					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-//					if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
-//					{
-//						[self removePointAtIndex:j inCurveAtIndex:i];
-//						return;
-//					}
-//				}
-//				
-//				NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-//				NSAffineTransform *transform = [self transform];
-//				if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
-//				{
-//					[curves removeObjectAtIndex:i];
-//					[pointColors removeObjectAtIndex:i];
-//					[self updateView];
-//					return;
-//				}
-//			}
 		}
 	}
 	[super keyDown:theEvent];
@@ -1044,7 +1005,6 @@
 - (IBAction)setLineWidth:(id)sender;
 {
 	lineWidth = [sender floatValue];
-	NSLog(@"lineWidth : %f", lineWidth);
 	[self updateView];
 }
 
@@ -1103,14 +1063,12 @@
 - (IBAction)setZoomFator:(id)sender;
 {
 	zoomFactor = [sender floatValue];
-	NSLog(@"zoomFactor : %f", zoomFactor);
 	[self updateView];
 }
 
 - (IBAction)scroll:(id)sender;
 {
 	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
-	NSLog(@"zoomFixedPoint : %f", zoomFixedPoint);
 	[self updateView];
 }
 
@@ -1189,9 +1147,6 @@
 			[aNewCurve addObject:[NSValue valueWithPoint:pt]];
 		}
 		
-		//[[undoManager prepareWithInvocationTarget:self] deleteCurveAtIndex:0];
-		//[curves insertObject:aNewCurve atIndex:0];
-		//[pointColors insertObject:newColors atIndex:0];
 		[self addCurveAtindex:0 withPoints:aNewCurve colors:newColors];
 		[self selectCurveAtIndex:0];
 		[self updateView];
@@ -1211,8 +1166,6 @@
 					{
 						NSData* colorData = [pasteboard dataForType:type];
 						NSColor *color = [NSUnarchiver unarchiveObjectWithData:colorData];
-//						[[undoManager prepareWithInvocationTarget:[pointColors objectAtIndex:i]] replaceObjectAtIndex:j withObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
-//						[[pointColors objectAtIndex:i] replaceObjectAtIndex:j withObject:color];
 						[self setColor:color forPointAtIndex:j inCurveAtIndex:i];
 						[self updateView];
 					}
@@ -1228,7 +1181,6 @@
 	
 	if(curveIndex >= 0)
 	{
-		//[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:curveIndex withPoints:[curves objectAtIndex:curveIndex] colors:[pointColors objectAtIndex:curveIndex]];
 		[self deleteCurveAtIndex:curveIndex];
 		[self updateView];
 	}
@@ -1247,12 +1199,10 @@
 					{
 						if([aCurve count]<=3)
 						{
-							//[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:i withPoints:[curves objectAtIndex:i] colors:[pointColors objectAtIndex:i]];
 							[self deleteCurveAtIndex:i];
 						}
 						else
 						{
-							//[[undoManager prepareWithInvocationTarget:self] addPoint:[[[curves objectAtIndex:i] objectAtIndex:j] pointValue] atIndex:j inCurveAtIndex:i withColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 							[self removePointAtIndex:j inCurveAtIndex:i];
 						}
 						[self updateView];
@@ -1286,6 +1236,54 @@
 		[undoManager redo];
 		[self updateView];
 	}
+}
+
+#pragma mark -
+#pragma mark Archiving
+
+#define CLUTDATABASE @"/CLUTs/"
+
+- (void)chooseNameAndSave:(id)sender;
+{
+	[NSApp beginSheet:chooseNameAndSaveWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (IBAction)save:(id)sender;
+{
+	if([sender tag]==1)
+	{
+		if([[clutSavedName stringValue] length]>0)
+		{
+			[self saveWithName:[clutSavedName stringValue]];
+			[chooseNameAndSaveWindow orderOut:self];
+			[NSApp endSheet:chooseNameAndSaveWindow];
+		}
+	}
+	else
+	{
+		[chooseNameAndSaveWindow orderOut:self];
+		[NSApp endSheet:chooseNameAndSaveWindow];
+	}	
+}
+
+- (void)saveWithName:(NSString*)name;
+{
+	NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
+	[clut setObject:curves forKey:@"curves"];
+	[clut setObject:pointColors forKey:@"colors"];
+	[clut setObject:name forKey:@"name"];
+
+	NSMutableString *path = [NSMutableString stringWithString:documentsDirectory()];
+	[path appendString:CLUTDATABASE];
+	
+	BOOL isDir = YES;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	{
+		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	}
+	
+	[path appendString:name];
+	[NSArchiver archiveRootObject:clut toFile:path];
 }
 
 @end
