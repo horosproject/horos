@@ -135,6 +135,8 @@ ExtractGroup28Information (PapyShort inFileNb)
     gArrPhotoInterpret [inFileNb] = YBR_RCT;
   else if (strcmp (thePhotoInterpret, "YBR_ICT") == 0) 
     gArrPhotoInterpret [inFileNb] = YBR_ICT;
+   else if (strcmp (thePhotoInterpret, "YUV_RCT") == 0) 
+    gArrPhotoInterpret [inFileNb] = YUV_RCT;
 
   RETURN (papNoError);
   

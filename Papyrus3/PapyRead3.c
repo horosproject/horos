@@ -573,6 +573,8 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 			pixels[ i] = jas_matrix_create(1, (unsigned int) width);
 		}
 		
+		if( gArrPhotoInterpret [inFileNb] == MONOCHROME1 || gArrPhotoInterpret [inFileNb] == MONOCHROME2) numcmpts = 1;
+		
 		if( numcmpts == 1)
 		{
 			if (depth > 8)
@@ -1412,6 +1414,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       (gArrPhotoInterpret [inFileNb] == RGB ||
        gArrPhotoInterpret [inFileNb] == YBR_FULL  ||
 	   gArrPhotoInterpret [inFileNb] == YBR_ICT  ||
+	   gArrPhotoInterpret [inFileNb] == YUV_RCT  ||
 	   gArrPhotoInterpret [inFileNb] == YBR_RCT)) theBytesToRead *= 3L;
   /* if it is a YBR_FULL_422 or a YBR_PARTIAL_422 then multiply the bytes to read by 2 */
   else if (inModuleId == ImagePixel && 
@@ -1436,6 +1439,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
         gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
         gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
         gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+		gArrPhotoInterpret [inFileNb] == YUV_RCT	||
         gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)))
   {    
     /* if it is a DICOM file then jump to the right image */
@@ -1689,6 +1693,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 						gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
 						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
 						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
 						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
 						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
@@ -1724,6 +1729,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 						gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
 						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
 						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
 						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
 						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
@@ -1749,6 +1755,14 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     {
       theErr = ExtractJPEG2000 ((PapyShort) inFileNb, (PapyUChar *) theBufP, thePixelStart,
                             theOffsetTableP, inImageNb, (int) gx0028BitsAllocated [inFileNb], theFrameCount);
+	  
+	  if(		gArrPhotoInterpret [inFileNb] == YBR_FULL  	||
+						gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
+						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
+						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
+						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
+						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
+						gArrPhotoInterpret [inFileNb] = RGB;
 
     } /* if ...JPEG 2000 */
     /********************************************************************/

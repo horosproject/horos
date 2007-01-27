@@ -976,8 +976,7 @@ unsigned char scanJpegDataForBitDepth(
 	//unsigned char		theHigh, theLow;
 	//long				ok = FALSE;
 	NSMutableData				*pixelData;
-		
-		
+	
 	jas_image_t *jasImage;
 	jas_matrix_t *pixels[4];
 	char *fmtname;
@@ -1059,6 +1058,8 @@ unsigned char scanJpegDataForBitDepth(
 		}
 		else
 		{
+			[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"RGB"] forName:@"PhotometricInterpretation"];
+			
 			for (y=0; y < (long) height; y++)
 			{
 				for( i = 0 ; i < numcmpts; i++)
@@ -3178,7 +3179,7 @@ NS_ENDHANDLER
 			data = subData;
 		
 		NSString *colorspace = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"];
-		if (([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"]) && !colorspaceIsConverted){
+		if (([colorspace hasPrefix:@"YBR"] || [colorspace hasPrefix:@"PALETTE"] || [colorspace hasPrefix:@"YUV"]) && !colorspaceIsConverted){
 			data = [self convertDataToRGBColorSpace:data];	
 		}
 		else{
@@ -3238,7 +3239,7 @@ NS_ENDHANDLER
 		rescaleSlope = 1.0;
 		// color 
 	NSString *pi = [_dcmObject attributeValueWithName:@"PhotometricInterpretation"]; 
-	if ([pi isEqualToString:@"RGB"] || ([pi hasPrefix:@"YBR"] || [pi isEqualToString:@"PALETTE"] ) ) {
+	if ([pi isEqualToString:@"RGB"] || ([pi hasPrefix:@"YBR"] || [pi isEqualToString:@"PALETTE"] || [pi isEqualToString:@"YUV_RCT"] ) ) {
 		bmd = (unsigned char *)[data bytes];
 		spp = 3;
 		colorSpaceName = NSCalibratedRGBColorSpace;

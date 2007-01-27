@@ -593,9 +593,9 @@ inline void DrawRuns(	struct edge *active,
 				
 				switch( orientation)
 				{
-					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
-					case 2:		curPix = &pix[ (curY * w) + start];							restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
+					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
+					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
+					case 2:		curPix = &pix[ (curY * w) + start];							if( restore) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
 				}
 				
 				x = end - start;
