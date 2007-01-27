@@ -76,6 +76,15 @@ void ConvertFloatToNative (float *theFloat)
 	*myLongPtr = EndianU32_LtoN(*myLongPtr);
 }
 
+void SwitchFloat (float *theFloat)
+{
+	unsigned int		*myLongPtr;
+	
+	myLongPtr = (unsigned int *)theFloat;
+	*myLongPtr = Endian32_Swap(*myLongPtr);
+}
+
+
 //void ConvertDoubleToNative (double *theFloat)
 //{
 //	unsigned long long		*myLongPtr;
@@ -7369,34 +7378,34 @@ BOOL            readable = YES;
 						long			totSize;
 						struct dsr*		Analyze;
 						NSData			*fileData;
-						BOOL			intelByteOrder = NO;
+						BOOL			swapByteOrder = NO;
 						
 						Analyze = (struct dsr*) [file bytes];
 						
 						short endian = Analyze->dime.dim[ 0];		// dim[0] 
 						if ((endian < 0) || (endian > 15)) 
 						{
-							intelByteOrder = YES;
+							swapByteOrder = YES;
 						}
 						
 						height = Analyze->dime.dim[ 2];
-						if( intelByteOrder) height = Endian16_Swap( height);
+						if( swapByteOrder) height = Endian16_Swap( height);
 						realheight = height;
 						height /= 2;
 						height *= 2;
 						width = Analyze->dime.dim[ 1];
-						if( intelByteOrder) width = Endian16_Swap( width);
+						if( swapByteOrder) width = Endian16_Swap( width);
 						realwidth = width;
 						width /= 2;
 						width *= 2;
 						
 						pixelSpacingX = Analyze->dime.pixdim[ 1];
-						if( intelByteOrder) ConvertFloatToNative( &pixelSpacingX);
+						if( swapByteOrder) SwitchFloat( &pixelSpacingX);
 						pixelSpacingY = Analyze->dime.pixdim[ 2];
-						if( intelByteOrder) ConvertFloatToNative( &pixelSpacingY);
+						if( swapByteOrder) SwitchFloat( &pixelSpacingY);
 						sliceThickness = sliceInterval = Analyze->dime.pixdim[ 3];
-						if( intelByteOrder) ConvertFloatToNative( &sliceThickness);
-						if( intelByteOrder) ConvertFloatToNative( &sliceInterval);
+						if( swapByteOrder) SwitchFloat( &sliceThickness);
+						if( swapByteOrder) SwitchFloat( &sliceInterval);
 						
 						totSize = realheight * realwidth * 2;
 						oImage = malloc( totSize);
@@ -7404,7 +7413,7 @@ BOOL            readable = YES;
 						fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
 						
 						short datatype = Analyze->dime.datatype;
-						if( intelByteOrder) datatype = Endian16_Swap( datatype);
+						if( swapByteOrder) datatype = Endian16_Swap( datatype);
 						
 						switch( datatype)
 						{
@@ -7427,7 +7436,7 @@ BOOL            readable = YES;
 							
 							case 4:
 								memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
-								if( intelByteOrder)
+								if( swapByteOrder)
 								{
 									long			loop;
 									short			*ptr = oImage;
@@ -7453,7 +7462,7 @@ BOOL            readable = YES;
 								loop = totSize/2;
 								while( loop-- > 0)
 								{
-									if( intelByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
+									if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
 									else *ptr++ = *bufPtr++;
 								}
 							}
