@@ -96,7 +96,7 @@ static QueryController	*currentQueryController = 0L;
 				[outlineView scrollRowToVisible: [outlineView selectedRow]];
 			}
 		}
-	}	
+	}
 }
 
 - (void) refresh: (id) sender
@@ -287,6 +287,16 @@ static QueryController	*currentQueryController = 0L;
 
 -(void) query:(id)sender
 {
+	if ([sender isKindOfClass:[NSSearchField class]])
+	{
+		NSString	*chars = [[NSApp currentEvent] characters];
+		
+		if( [chars length])
+		{
+			if( [chars characterAtIndex:0] != 13 && [chars characterAtIndex:0] != 3) return;
+		}
+	}
+
 	NSString			*theirAET;
 	NSString			*hostname;
 	NSString			*port;

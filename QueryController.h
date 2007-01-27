@@ -45,7 +45,6 @@
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
 	
-	
 	QueryArrayController					*queryManager;
 }
 
