@@ -1830,7 +1830,7 @@ static BOOL initialized = NO;
 		
 		if (productVersionDict && currVersionNumber && latestVersionNumber)
 		{
-			NSLog( @"server:%d cur:%d", [latestVersionNumber intValue], [currVersionNumber intValue]);
+			NSLog( @"Internet Version Checking succeeded - server vers:%d installed vers:%d", [latestVersionNumber intValue], [currVersionNumber intValue]);
 		
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
