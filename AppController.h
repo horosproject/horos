@@ -41,8 +41,11 @@ NSRect screenFrame();
 	IBOutlet NSMenu					*roisMenu;
 	IBOutlet NSMenu					*othersMenu;
 	IBOutlet NSMenu					*dbMenu;
-	IBOutlet NSMenuItem				*syncSeriesMenuItem;
 	IBOutlet NSWindow				*dbWindow;
+	
+	IBOutlet NSDictionary			*previousDefaults;
+	
+	BOOL							showRestartNeeded;
 		
     SplashScreen					*splashController;
 	
@@ -72,8 +75,6 @@ NSRect screenFrame();
 - (IBAction) about:(id)sender;
 - (IBAction) showPreferencePanel:(id)sender;
 - (IBAction) checkForUpdates:(id) sender;
-//===============2D VIEWER=====================
-- ( NSMenuItem *)	syncSeriesMenuItem;
 //===============WINDOW========================
 - (void) tileWindows:(id)sender;
 - (IBAction) closeAllViewers: (id) sender;

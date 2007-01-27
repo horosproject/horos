@@ -12,11 +12,26 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
+
+//#import "DCMView.h"
+//#import "OpacityTransferView.h"
+//#import "ColorTransferView.h"
+//#import "MyPoint.h"
+//#import "ROI.h"
+//#import "ThickSlabController.h"
+//#import "StudyView.h"
+//#import "SeriesView.h"
+//#import "CurvedMPR.h"
+//#import "DICOMExport.h"
+//#import "KeyObjectPopupController.h"
+//#import "VRController.h"
+//#import "MPR2DController.h"
+//#import "OrthogonalMPRViewer.h"
+//#import "OrthogonalMPRPETCTViewer.h"
+//#import "SRController.h"
+//#import "EndoscopyViewer.h"
 
 @class DCMView;
 @class OpacityTransferView;
@@ -31,12 +46,12 @@
 @class DICOMExport;
 @class KeyObjectPopupController;
 @class VRController;
-@class VRPROController;
 @class MPR2DController;
 @class OrthogonalMPRViewer;
 @class OrthogonalMPRPETCTViewer;
 @class SRController;
 @class EndoscopyViewer;
+@class VRPROController;
 @class CalciumScoringWindowController;
 
 #import "Schedulable.h"
@@ -96,6 +111,8 @@ enum
     IBOutlet NSPopUpButton  *clutPopup;
 	IBOutlet NSPopUpButton  *OpacityPopup;
 	
+	IBOutlet NSView			*propagateSettingsView;
+	
 	IBOutlet NSView         *subCtrlView;
 			 BOOL			enableSubtraction;
 	IBOutlet NSButton		*subCtrlOnOff;
@@ -113,9 +130,7 @@ enum
 	IBOutlet NSButton		*sc7;
 	IBOutlet NSButton		*sc8;
 	IBOutlet NSButton		*sc9;
-
-    IBOutlet NSSlider       *subCtrlZero;
-    IBOutlet NSSlider       *subCtrlGamma;
+	
     IBOutlet NSSlider       *subCtrlSum;
     IBOutlet NSSlider       *subCtrlPercent;
 	IBOutlet NSButton		*subCtrlSharpenButton;
@@ -131,7 +146,6 @@ enum
 	IBOutlet NSWindow		*CommentsWindow;
 	IBOutlet NSTextField    *CommentsEditField;
 	
-	IBOutlet NSButton		*keyImageDisplay;
 	IBOutlet NSButton		*keyImageCheck;
 	
 	
@@ -289,6 +303,8 @@ enum
 	IBOutlet NSTextField	*printText, *printPagesToPrint;
 	
 	NSMutableArray			*undoQueue, *redoQueue;
+	
+	BOOL					SyncButtonBehaviorIsBetweenStudies;
 	CalciumScoringWindowController *_calciumScoringWindowController;
 }
 
@@ -352,6 +368,7 @@ enum
 - (void) addToUndoQueue:(NSString*) string;
 - (id) prepareObjectForUndo:(NSString*) string;
 
+- (void) copySettingsToOthers: (id)sender;
 - (void) setPostprocessed:(BOOL) v;
 - (BOOL) postprocessed;
 - (IBAction) setPagesToPrint:(id) sender;
@@ -562,6 +579,7 @@ enum
 - (IBAction) vertFlipDataSet:(id) sender;
 - (IBAction) horzFlipDataSet:(id) sender;
 - (void) rotateDataSet:(int) constant;
+- (void) SetSyncButtonBehavior:(id) sender;
 
 #pragma mark-
 #pragma mark Brush ROI Filters
@@ -616,7 +634,7 @@ enum
 #pragma mark-
 #pragma mark 3D Viewers
 - (VRController *)openVRViewerForMode:(NSString *)mode;
-- (VRPROController *)openVRVPROViewerForMode:(NSString *)mode;
+- (VRPROController*)openVRVPROViewerForMode:(NSString *)mode;
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer;
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer;
 - (MPR2DController *)openMPR2DViewer;
@@ -629,6 +647,5 @@ enum
 #pragma mark-
 #pragma mark Calcium scoring
 - (IBAction)calciumScoring:(id)sender;
-
 
 @end

@@ -148,6 +148,7 @@ static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
 static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
+static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 
@@ -1468,6 +1469,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidLoad
 {
+	[self checkView: subCtrlView :NO];
+	
 	[[self window] setInitialFirstResponder: imageView];
 	contextualDictionaryPath = [@"default" retain];//JF20070103
 	//[self createDCMViewMenu];
@@ -1559,6 +1562,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( FullScreenOn == YES ) [self fullScreenMenu: self];
 	
+	if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
+	
 	[imageView stopROIEditingForce: YES];
 	[imageView setDrawing: NO];
 	
@@ -1632,23 +1637,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (void) WindowDidResignMainNotification:(NSNotification *)aNotification
+- (void) windowDidResignMain:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
--(void) WindowDidResignKeyNotification:(NSNotification *)aNotification
+-(void) windowDidResignKey:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
-- (void) WindowDidBecomeMainNotification:(NSNotification *)aNotification
+- (void) windowDidBecomeMain:(NSNotification *)aNotification
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+	
+	[self SetSyncButtonBehavior: self];
 }
 
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
@@ -2204,17 +2211,26 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) checkFrameSize
 {
-	NSRect previous, frame;
+	NSRect	frameRight, previous, frame;
+	BOOL	visible = NO;
 	
 	frame = previous = [[[splitView subviews] objectAtIndex: 0] frame];
 	
-	if( frame.size.width > 0) frame.size.width = [previewMatrix cellSize].width+13;
+	if( frame.size.width > 0)
+	{
+		frame.size.width = [previewMatrix cellSize].width+13;
+		visible = YES;
+	}
 	
-	if( fabs( frame.size.width - previous.size.width) > 2)
-		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
-		
-	if( frame.size.width > 0) return YES;
-	else return NO;
+	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+	
+	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
+	frameRight.size.width = [splitView frame].size.width - frame.size.width - [splitView dividerThickness];
+	[[[splitView subviews] objectAtIndex: 1] setFrame: frameRight];
+	
+	[splitView adjustSubviews];
+	
+	return visible;
 }
 
 - (void) autoHideMatrix
@@ -2235,22 +2251,34 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
-	NSRect frame, previous;
+	NSRect	frameLeft, frameRight, previous;
 	
-	frame =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
-	if( hide == NO) frame.size.width = [previewMatrix cellSize].width+13;
-	else frame.size.width = 0;
+	frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
+	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
 	
-	if( previous.size.width != frame.size.width)
+	if( hide == NO)
 	{
-		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+		frameLeft.size.width = [previewMatrix cellSize].width+13;
+		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+	}
+	else
+	{
+		frameLeft.size.width = 0;
+		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+	}
+	
+	if( previous.size.width != frameLeft.size.width)
+	{
+		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
+		[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
+		
 		[splitView adjustSubviews];
 	}
 }
 
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
-	if( [note object] == [[splitView subviews] objectAtIndex: 0])
+	if( [note object] == [[splitView subviews] objectAtIndex: 1])
 	{
 		BOOL visible = [self checkFrameSize];
 		
@@ -2975,7 +3003,7 @@ static ViewerController *draggedController = 0L;
 	
 	[toolbarItem setLabel: NSLocalizedString(@"Browse", nil)];
 	[toolbarItem setPaletteLabel: NSLocalizedString(@"Browse", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Browse this series", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Browse this series", nil)];
 	[toolbarItem setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(PlayStop:)];
@@ -2984,19 +3012,17 @@ static ViewerController *draggedController = 0L;
 	
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(SyncSeries:)];
-	
+	[toolbarItem setToolTip: NSLocalizedString(@"Syncronize slice position", nil)];
 	if( SYNCSERIES)
 	{
-		[toolbarItem setLabel: NSLocalizedString(@"Stop Sync", nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Stop Sync", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Stop Sync", nil)];
+		[toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: @"SyncLock.tif"]];
 	}
 	else
 	{
-		[toolbarItem setLabel: NSLocalizedString(@"Sync Series", nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sync Series", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Sync series from different studies", nil)];
+		[toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
 	}
     } 
@@ -3278,6 +3304,17 @@ static ViewerController *draggedController = 0L;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([shutterView frame]), NSHeight([shutterView frame]))];
 	}
+	else if([itemIdent isEqualToString: PropagateSettingsToolbarItemIdentifier])
+	 {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Propagate", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Propagate", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Propagate settings (WL/WW, zoom, ...)", nil)];
+	
+	[toolbarItem setView: propagateSettingsView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([propagateSettingsView frame]), NSHeight([propagateSettingsView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([propagateSettingsView frame]), NSHeight([propagateSettingsView frame]))];
+	}
 	else if([itemIdent isEqualToString: ReconstructionToolbarItemIdentifier])
 	 {
 	// Set up the standard properties 
@@ -3381,6 +3418,7 @@ static ViewerController *draggedController = 0L;
 										NSToolbarFlexibleSpaceItemIdentifier,
 										QTSaveToolbarItemIdentifier,
 										SyncSeriesToolbarItemIdentifier,
+										PropagateSettingsToolbarItemIdentifier,
 										PlayToolbarItemIdentifier,
 										SpeedToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
@@ -3407,6 +3445,7 @@ static ViewerController *draggedController = 0L;
 														ReconstructionToolbarItemIdentifier,
 														BlendingToolbarItemIdentifier,
 														SyncSeriesToolbarItemIdentifier,
+														PropagateSettingsToolbarItemIdentifier,
 														ResetToolbarItemIdentifier,
 														RevertToolbarItemIdentifier,
 														SUVToolbarItemIdentifier,
@@ -3914,6 +3953,9 @@ static ViewerController *draggedController = 0L;
 	windowWillClose = YES;
 	[imageView setDrawing: NO];
 	
+	if( [subCtrlOnOff state]) [imageView setWLWW: 0 :0];
+	[self checkView: subCtrlView :NO];
+	
 	if( currentOrientationTool != originalOrientation)
 	{
 		[imageView setXFlipped: NO];
@@ -4281,6 +4323,8 @@ static ViewerController *draggedController = 0L;
 {
 	if( enableSubtraction)
 	{
+		[subCtrlOnOff setEnabled: YES];
+		
 		subCtrlMaskID = 1;
 		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"2"]];//changes tool text
 		
@@ -4298,12 +4342,8 @@ static ViewerController *draggedController = 0L;
 				}
 		subCtrlMinMax.x = subCtrlMin;
 		subCtrlMinMax.y = subCtrlMax;
-		
-		// By default, the tool should not be activated.
-		
-		[self checkView: subCtrlView :YES];
 	}
-	else [self checkView: subCtrlView :NO];
+	else [subCtrlOnOff setEnabled: NO];
 }
 
 //-(void) loadThread:(DCMPix*) pix
@@ -4921,20 +4961,29 @@ static ViewerController *draggedController = 0L;
 		long i;	
 		
 		if([subCtrlOnOff state])			// subtraction asked for
-			{	
-				for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-					[[[imageView dcmPixList]objectAtIndex:i]	setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
-				}
-			}	
-				
-		else //without subtraction
-			{				
+		{
+			[self checkView: subCtrlView :YES];
+		
+			[imageView setWLWW:128 :256];
+			
 			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-					[[[imageView dcmPixList] objectAtIndex:i]	setSubtractedfImage:0L :subCtrlMinMax];
-				}
+			{
+				[[[imageView dcmPixList]objectAtIndex:i] setSubtractedfImage:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage] :subCtrlMinMax];
 			}
+		}					
+		else //without subtraction
+		{				
+			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
+			{
+				[[[imageView dcmPixList] objectAtIndex:i]	setSubtractedfImage:0L :subCtrlMinMax];
+			}
+			
+			[imageView setWLWW:0 :0];
+			
+			[self checkView: subCtrlView :NO];
+			[subCtrlOnOff setEnabled: YES];
+		}
+		
 		[imageView setIndex: [imageView curImage]]; //refresh viewer only
 	}
 	else
@@ -5206,29 +5255,37 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) subCtrlSliders:(id) sender	
 {
-	if(enableSubtraction)
+	if( enableSubtraction)
 	{
 		if ([subCtrlOnOff state] == NSOnState) //only when in subtraction mode
 		{
+			float	cwl, cww;
+			[imageView getWLWW:&cwl :&cww];
+			
 			switch([sender tag]) //menu shortcut
 			{
-				case 37: [subCtrlGamma setFloatValue:[subCtrlGamma floatValue]-0.5];	break;  //Ctr - (min 0.5)
-				case 38: [subCtrlGamma setFloatValue:2];								break;
-				case 39: [subCtrlGamma setFloatValue:[subCtrlGamma floatValue]+0.5];	break;  //Ctr + (max 6.0)
-				case 34: [subCtrlZero setFloatValue:[subCtrlZero floatValue]-0.05];		break;  //Bri - (min 0.6)
-				case 35: [subCtrlZero setFloatValue:0.8];								break;
-				case 36: [subCtrlZero setFloatValue:[subCtrlZero floatValue]+0.05] ;	break;  //Bri + (max 1.2)
+				
+				// Gamma : wl
+				// Zero : ww
+				
+				case 37: [imageView setWLWW:cwl-5	:cww];			break;
+				case 38: [imageView setWLWW:128		:cww];			break;
+				case 39: [imageView setWLWW:cwl+5	:cww];			break;
+				
+				case 34: [imageView setWLWW:cwl	:cww-5];		break;
+				case 35: [imageView setWLWW:cwl	:256];			break;
+				case 36: [imageView setWLWW:cwl	:cww+5];		break;
 			}
+			
 			long i;				
 			for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-				[[[imageView dcmPixList] objectAtIndex:i]
-														setSubSlidersPercent:	[subCtrlPercent floatValue]
-														gamma:					[subCtrlGamma floatValue] 
-														zero:					[subCtrlZero floatValue]
-				];
-				}
-				NSLog(@"percent:%f   gamma:%f  zero:%f",[subCtrlPercent floatValue],[subCtrlGamma floatValue],[subCtrlZero floatValue]);
+			{
+				[[[imageView dcmPixList] objectAtIndex:i]	setSubSlidersPercent:	[subCtrlPercent floatValue]];
+//															gamma:					[subCtrlGamma floatValue] 
+//															zero:					[subCtrlZero floatValue]];
+			}
+			
+			//NSLog(@"percent:%f   gamma:%f  zero:%f",[subCtrlPercent floatValue],[subCtrlGamma floatValue],[subCtrlZero floatValue]);
 			[imageView setIndex:[imageView curImage]]; //refresh window image
 		}
 	}
@@ -6304,6 +6361,12 @@ short				matrix[25];
 {
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
+		int i, x;
+		for ( x = 0; x < maxMovieIndex; x++)
+		{
+			for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
+		}
+		
 		[imageView setCLUT: 0L :0L :0L];
 		if( thickSlab)
 		{
@@ -9170,41 +9233,106 @@ int i,j,l;
 
 - (void) notificationSyncSeries:(NSNotification*)note
 {
-	if( SYNCSERIES)
+	if( SyncButtonBehaviorIsBetweenStudies)
 	{
-		NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
-		float offset = [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
-		[imageView setSyncRelativeDiff:offset];
-		[[self findSyncSeriesButton] setLabel: NSLocalizedString(@"Stop Sync", nil)];
-		[[self findSyncSeriesButton] setPaletteLabel: NSLocalizedString(@"Stop Sync", nil)];
-		[[self findSyncSeriesButton] setToolTip: NSLocalizedString(@"Stop Sync", nil)];
-		[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
-		[[appController syncSeriesMenuItem] setState:NSOnState];
-		
-		[imageView setSyncSeriesIndex: [imageView curImage]];
+		if( SYNCSERIES)
+		{
+			NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
+			float offset = [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
+			[imageView setSyncRelativeDiff:offset];
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
+			
+			[imageView setSyncSeriesIndex: [imageView curImage]];
+		}
+		else
+		{
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+			[imageView setSyncSeriesIndex: -1];
+		}
 	}
 	else
 	{
-		[[self findSyncSeriesButton] setLabel: NSLocalizedString(@"Sync Series", nil)];
-		[[self findSyncSeriesButton] setPaletteLabel: NSLocalizedString(@"Sync Series", nil)];
-		[[self findSyncSeriesButton] setToolTip: NSLocalizedString(@"Sync series from different studies", nil)];
-		[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
-		[[appController syncSeriesMenuItem] setState:NSOffState];
-		[imageView setSyncSeriesIndex: -1];
+		if( [imageView syncro] != syncroOFF)
+		{
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
+		}
+		else
+		{
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+		}
 	}
 }
 
 - (void) SyncSeries:(id) sender
 {
-	[appController willChangeValueForKey:@"SYNCSERIES"];
+	if( SyncButtonBehaviorIsBetweenStudies)
+	{
+		[appController willChangeValueForKey:@"SYNCSERIES"];
+		
+		SYNCSERIES = !SYNCSERIES;
+		
+		[appController didChangeValueForKey:@"SYNCSERIES"];
+		
+		float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: userInfo];
+	}
+	else
+	{
+		if( [imageView syncro] == syncroOFF) [imageView setSyncro: syncroLOC];
+		else [imageView setSyncro: syncroOFF];
+		
+		[imageView becomeMainWindow];
+	}
+}
+
+- (NSString*) studyInstanceUID
+{
+	return [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath: @"series.study.studyInstanceUID"];
+}
+
+- (void) SetSyncButtonBehavior:(id) sender
+{
+	BOOL				allFromSameStudy = YES, previousSyncButtonBehaviorIsBetweenStudies = SyncButtonBehaviorIsBetweenStudies;
+	NSMutableArray		*viewersList = [NSMutableArray array];
+	int					i;
+	NSArray				*winList = [NSApp windows];
 	
-	SYNCSERIES = !SYNCSERIES;
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		{
+			if( self != [[winList objectAtIndex:i] windowController]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
+		}
+	}
 	
-	[appController didChangeValueForKey:@"SYNCSERIES"];
+	if( [viewersList count])
+	{
+		NSString	*studyID = [self studyInstanceUID];
+		
+		for( i = 0 ; i < [viewersList count]; i++)
+		{
+			ViewerController	*v = [viewersList objectAtIndex: i];
+		
+			if( [studyID isEqualToString: [v studyInstanceUID]] == NO)
+			{
+				allFromSameStudy = NO;
+			}
+		}
+	}
 	
-	float sliceLocation =  [[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat:sliceLocation] forKey:@"sliceLocation"];
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: userInfo];
+	if( allFromSameStudy == NO) SyncButtonBehaviorIsBetweenStudies = YES;
+	else SyncButtonBehaviorIsBetweenStudies = NO;
+		
+	if(( SyncButtonBehaviorIsBetweenStudies == YES && previousSyncButtonBehaviorIsBetweenStudies == NO) || SyncButtonBehaviorIsBetweenStudies == NO)
+	{
+		//NSLog( @"SyncButtonBehaviorIsBetweenStudies = %d", SyncButtonBehaviorIsBetweenStudies);
+		
+		[appController willChangeValueForKey:@"SYNCSERIES"];
+		SYNCSERIES = NO;
+		[appController didChangeValueForKey:@"SYNCSERIES"];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: 0L];
+	}
 }
 
 - (IBAction) reSyncOrigin:(id) sender
@@ -13327,14 +13455,14 @@ long i;
 		{
 			[keyImageCheck setState: NSOffState];
 			[keyImageCheck setEnabled: NO];
-			[keyImageDisplay setEnabled: NO];
+//			[keyImageDisplay setEnabled: NO];
 			[keyImagePopUpButton setEnabled: NO];
 			
 			return;
 		}
 	}
 	
-	[keyImageDisplay setEnabled: YES];
+//	[keyImageDisplay setEnabled: YES];
 	[keyImageCheck setEnabled: YES];
 	[keyImagePopUpButton setEnabled: YES];
 	

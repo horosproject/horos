@@ -58,6 +58,7 @@ MODIFICATION HISTORY
 #import "NSFont_OpenGL.h"
 #import "Survey.h"
 #import "PluginManager.h"
+#import "DicomFile.h"
 
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCM.h>
@@ -79,6 +80,7 @@ MODIFICATION HISTORY
 ToolbarPanelController		*toolbarPanel[10] = {0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L};
 
 extern		NSMutableDictionary		*plugins;
+extern		short					syncro;
 extern		NSMutableArray			*preProcessPlugins;
 extern		BrowserController		*browserWindow;
 			BOOL					SYNCSERIES = NO;
@@ -816,6 +818,93 @@ NSRect screenFrame()
 			}
         } 
     }
+}
+
+- (void) preferencesUpdated: (NSNotification*) note
+{
+	BOOL				restartListener = NO;
+	BOOL				refreshDatabase = NO;
+	BOOL				refreshColumns = NO;
+	BOOL				recomputePETBlending = NO;
+	BOOL				refreshViewer = NO;
+	
+	NS_DURING
+	
+	if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[[note object] stringForKey: @"PET Blending CLUT"]] == NO) 
+	{
+		recomputePETBlending = YES;
+	}
+	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[[note object] integerForKey: @"COPYSETTINGS"]) refreshViewer = YES;
+	if( [[previousDefaults valueForKey: @"DBDateFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateFormat"]] == NO) refreshDatabase = YES;
+	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateOfBirthFormat"]] == NO) refreshDatabase = YES;
+	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[[note object] integerForKey: @"DICOMTimeout"]) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[[note object] integerForKey: @"LISTENERCHECKINTERVAL"]) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[[note object] integerForKey: @"SINGLEPROCESS"]) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[[note object] stringForKey: @"AETITLE"]] == NO) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[[note object] stringForKey: @"STORESCPEXTRA"]] == NO) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"AEPORT"]					isEqualToString:	[[note object] stringForKey: @"AEPORT"]] == NO) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[[note object] stringForKey: @"AETransferSyntax"]] == NO) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"STORESCP"] intValue]					!=		[[note object] integerForKey: @"STORESCP"]) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue]				!=		[[note object] integerForKey: @"USESTORESCP"]) restartListener = YES;
+	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[[note object] integerForKey: @"HIDEPATIENTNAME"]) refreshDatabase = YES;
+	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[[note object] objectForKey: @"COLUMNSDATABASE"]] == NO) refreshColumns = YES;	
+	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[[note object] integerForKey: @"SERIESORDER"]) refreshDatabase = YES;
+	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[[note object] integerForKey: @"KeepStudiesOfSamePatientTogether"]) refreshDatabase = YES;
+	
+	[previousDefaults release];
+	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
+	
+	if (refreshDatabase)
+	{
+		[browserWindow setDBDate];
+		[browserWindow outlineViewRefresh];
+	}
+		
+	if (restartListener)
+	{
+		if( showRestartNeeded == YES)
+		{
+			showRestartNeeded = NO;
+			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", 0L), NSLocalizedString( @"Restart OsiriX to apply these changes.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
+		}
+	}
+		
+	if (refreshColumns)	
+		[browserWindow refreshColumns];
+	
+	if( recomputePETBlending)
+		[DCMView computePETBlendingCLUT];
+	
+	if( refreshViewer)
+	{
+		NSArray *windows = [NSApp windows];
+
+		int i;
+		for(i = 0; i < [windows count]; i++)
+		{
+			if([[[windows objectAtIndex: i] windowController] isKindOfClass: [ViewerController class]] &&
+				[[windows objectAtIndex: i] isMainWindow])
+			{
+				[[[windows objectAtIndex: i] windowController] copySettingsToOthers: self];
+			}
+		}
+	}
+	
+	if( [[note object] boolForKey: @"updateServers"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
+		[[QueryController currentQueryController] refreshSources];
+	}
+	
+	[[BrowserController currentBrowser] setNetworkLogs];
+	
+	[DicomFile resetDefaults];
+	[DicomFile setDefaults];
+		
+	NS_HANDLER
+		NSLog(@"Exception updating prefs: %@", [localException description]);
+	NS_ENDHANDLER
+	
 }
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
@@ -1578,14 +1667,27 @@ static BOOL initialized = NO;
 		
 	//Checks for Bonjour enabled dicom servers. Most likely other copies of OsiriX
 	[self startDICOMBonjourSearch];
+	
+	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
+	showRestartNeeded = YES;
+	
+	[[NSNotificationCenter defaultCenter]	addObserver: self
+											   selector: @selector(preferencesUpdated:)
+												   name: NSUserDefaultsDidChangeNotification
+												 object: nil];
+												 
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
 }
 
-- (IBAction) updateViews:(id) sender {
+- (IBAction) updateViews:(id) sender
+{
 	long				i;
 	NSArray				*winList = [NSApp windows];
 	
-	for( i = 0; i < [winList count]; i++) {
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) {
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		{
 			[[[winList objectAtIndex:i] windowController] needsDisplayUpdate];
 		}
 	}	
@@ -2220,6 +2322,33 @@ static BOOL initialized = NO;
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+- (BOOL) syncroOFF
+{
+	if( syncro == syncroOFF) return YES;
+	else return NO;
+}
+- (void) setSyncroOFF:(BOOL) v{}
+
+- (BOOL) syncroABS
+{
+	if( syncro == syncroABS) return YES;
+	else return NO;
+}
+- (void) setSyncroABS:(BOOL) v{}
+
+- (BOOL) syncroREL
+{
+	if( syncro == syncroREL) return YES;
+	else return NO;
+}
+- (void) setSyncroREL:(BOOL) v{}
+
+- (BOOL) syncroLOC
+{
+	if( syncro == syncroLOC) return YES;
+	else return NO;
+}
+- (void) setSyncroLOC:(BOOL) v{}
 
 - (BOOL) SYNCSERIES
 {
@@ -2256,10 +2385,6 @@ static BOOL initialized = NO;
 - (void) setYFlipped: (BOOL) v
 {
 	yFlipped = v;
-}
-
-- ( NSMenuItem *)	syncSeriesMenuItem{
-	return syncSeriesMenuItem;
 }
 
 #pragma mark-

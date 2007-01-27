@@ -380,7 +380,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			else if ([[[attr attrTag] name] isEqualToString:@"PatientID"]) {
 				value = [attr value];
 				predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", value];
-
+			}
+			else if ([[[attr attrTag] name] isEqualToString:@"AccessionNumber"]) {
+				value = [attr value];
+				predicate = [NSPredicate predicateWithFormat:@"accessionNumber LIKE[cd] %@", value];
 			}
 			else if ([[[attr attrTag] name] isEqualToString:@"StudyInstanceUID"]) {
 				value = [attr value];
@@ -616,7 +619,12 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 		[studyObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"patientID"]] forName:@"PatientID"];
 	else
 		[studyObject setAttributeValues:[NSMutableArray array] forName:@"PatientID"];
-		
+	
+	if ([fetchedObject valueForKey:@"accessionNumber"])	
+		[studyObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"accessionNumber"]] forName:@"AccessionNumber"];
+	else
+		[studyObject setAttributeValues:[NSMutableArray array] forName:@"AccessionNumber"];
+	
 	if ([fetchedObject valueForKey:@"studyName"])	
 		[studyObject setAttributeValues:[NSMutableArray arrayWithObject:[fetchedObject valueForKey:@"studyName"]] forName:@"StudyDescription"];
 	else

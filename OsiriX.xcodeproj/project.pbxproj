@@ -112,9 +112,6 @@
 		183C869608563FA8000E6A68 /* FlyThru.nib in Resources */ = {isa = PBXBuildFile; fileRef = 183C869408563FA8000E6A68 /* FlyThru.nib */; };
 		183C869708563FA8000E6A68 /* FlyThru.nib in Resources */ = {isa = PBXBuildFile; fileRef = 183C869408563FA8000E6A68 /* FlyThru.nib */; };
 		183C869808563FA8000E6A68 /* FlyThru.nib in Resources */ = {isa = PBXBuildFile; fileRef = 183C869408563FA8000E6A68 /* FlyThru.nib */; };
-		183C869E08563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
-		183C869F08563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
-		183C86A008563FE6000E6A68 /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
 		3A2D125A09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125609BC9AEF00CCBC80 /* MSRGMultiCriteriaHelper.h */; };
 		3A2D125B09BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx in Resources */ = {isa = PBXBuildFile; fileRef = 3A2D125709BC9AF000CCBC80 /* MSRGMultiCriteriaHelper.txx */; };
 		3A2D125C09BC9AF000CCBC80 /* MSRGWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A2D125809BC9AF000CCBC80 /* MSRGWindowController.h */; };
@@ -4238,7 +4235,6 @@
 		BF045E810B135F6400F5B97D /* 3DCut.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEF6A441080324E0001A8BF7 /* 3DCut.tif */; };
 		BF045E820B135F6400F5B97D /* Revert.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tiff */; };
 		BF045E830B135F6400F5B97D /* FlyThru.nib in Resources */ = {isa = PBXBuildFile; fileRef = 183C869408563FA8000E6A68 /* FlyThru.nib */; };
-		BF045E840B135F6400F5B97D /* FlyThru.icns in Resources */ = {isa = PBXBuildFile; fileRef = 183C869D08563FE6000E6A68 /* FlyThru.icns */; };
 		BF045E850B135F6400F5B97D /* FlyThruEnd.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9535085E0E910019992B /* FlyThruEnd.tiff */; };
 		BF045E860B135F6400F5B97D /* FlyThruStart.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9536085E0E910019992B /* FlyThruStart.tiff */; };
 		BF045E870B135F6400F5B97D /* FlyThruVia.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9DE9537085E0E910019992B /* FlyThruVia.tiff */; };
@@ -4276,7 +4272,6 @@
 		BF045EA70B135F6400F5B97D /* bonjour.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tiff */; };
 		BF045EA80B135F6400F5B97D /* OsiriXTables.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */; };
 		BF045EA90B135F6400F5B97D /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
-		BF045EAA0B135F6400F5B97D /* RSNA2005Pub.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */; };
 		BF045EAB0B135F6400F5B97D /* ROIVolume.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEFCA9C908AF9CC500ADBE64 /* ROIVolume.nib */; };
 		BF045EAC0B135F6400F5B97D /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		BF045EAD0B135F6400F5B97D /* Point.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEFC048108D4B1AA00058461 /* Point.tiff */; };
@@ -5264,18 +5259,6 @@
 		BF2684410A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF2684420A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; };
 		BF28B92B0783A7F000C71DA8 /* DCMNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BF2AC4920B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
-		BF2AC4930B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
-		BF2AC4940B695E7800C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
-		BF2AC4950B695E7900C6F100 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */; };
-		BF2AC4A00B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
-		BF2AC4A20B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
-		BF2AC4A40B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
-		BF2AC4A60B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */; };
-		BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */; };
 		BF2EEC860B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC870B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC880B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
@@ -8325,6 +8308,18 @@
 		CE26443306DCF0D3007F5B71 /* ITKSegmentation.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE26443006DCF0D1007F5B71 /* ITKSegmentation.nib */; };
 		CE279EEF06AEFB87008315C8 /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
 		CE279EF006AEFB87008315C8 /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
+		CE2808650B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */; };
+		CE2808660B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
+		CE2808670B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */; };
+		CE2808680B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
+		CE2808690B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */; };
+		CE28086A0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
+		CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */; };
+		CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
+		CE28086F0B6B76940093E9D3 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */; };
+		CE2808700B6B76940093E9D3 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */; };
+		CE2808710B6B76940093E9D3 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */; };
+		CE2808720B6B76940093E9D3 /* CalciumScoring.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */; };
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE286C130964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE286C140964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
@@ -12473,6 +12468,14 @@
 		CEBD8AD90875B233000E42D6 /* OSIListenerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A9A0875B233000E42D6 /* OSIListenerPreferencePane.prefPane */; };
 		CEBD8ADA0875B233000E42D6 /* OSILocationsPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */; };
 		CEBD8ADB0875B233000E42D6 /* OSIViewerPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */; };
+		CEBD8E5C0B675A75008FD772 /* Propagate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tiff */; };
+		CEBD8E5D0B675A75008FD772 /* Propagate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tiff */; };
+		CEBD8E5E0B675A75008FD772 /* Propagate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tiff */; };
+		CEBD8E5F0B675A75008FD772 /* Propagate.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tiff */; };
+		CEBD8EF50B6761CC008FD772 /* PropagateOn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */; };
+		CEBD8EF60B6761CC008FD772 /* PropagateOn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */; };
+		CEBD8EF70B6761CC008FD772 /* PropagateOn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */; };
+		CEBD8EF80B6761CC008FD772 /* PropagateOn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */; };
 		CEBED2F30B4050FD00A6731E /* DOClient.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBED2EF0B4050FC00A6731E /* DOClient.h */; };
 		CEBED2F40B4050FD00A6731E /* DOServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBED2F00B4050FC00A6731E /* DOServer.h */; };
 		CEBED2F50B4050FD00A6731E /* DOClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F10B4050FD00A6731E /* DOClient.m */; };
@@ -13117,9 +13120,6 @@
 		CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
 		CEF9E7E80811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
 		CEF9E7E90811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
-		CEFB87BB08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */; };
-		CEFB87BC08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */; };
-		CEFB87BD08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */; };
 		CEFBB1910B358C8F00666FA9 /* BackPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */; };
 		CEFBB1920B358C8F00666FA9 /* ForwardDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */; };
 		CEFBB1930B358C8F00666FA9 /* BackDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18D0B358C8F00666FA9 /* BackDisabled.tif */; };
@@ -13531,7 +13531,6 @@
 		183C864808563F3A000E6A68 /* VRFlyThruAdapter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRFlyThruAdapter.h; sourceTree = "<group>"; };
 		183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRFlyThruAdapter.m; sourceTree = "<group>"; };
 		183C869508563FA8000E6A68 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/FlyThru.nib; sourceTree = "<group>"; };
-		183C869D08563FE6000E6A68 /* FlyThru.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FlyThru.icns; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -14289,9 +14288,6 @@
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
 		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
-		BF2AC4910B695E7800C6F100 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/CalciumScoring.nib; sourceTree = "<group>"; };
-		BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
-		BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHotKeys.prefPane; path = "Preference Panes/OSIHotKeysPreferencePane/build/Release/OSIHotKeys.prefPane"; sourceTree = SOURCE_ROOT; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
@@ -15609,6 +15605,9 @@
 		CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3DController.h; sourceTree = "<group>"; };
 		CE26443106DCF0D1007F5B71 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ITKSegmentation.nib; sourceTree = "<group>"; };
 		CE279EEE06AEFB87008315C8 /* Mail.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Mail.icns; sourceTree = "<group>"; };
+		CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
+		CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
+		CE28086E0B6B76930093E9D3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/CalciumScoring.nib; sourceTree = "<group>"; };
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE2FE58B0753A4A4005C4F80 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/VRVPRO.nib; sourceTree = SOURCE_ROOT; };
 		CE3422CA0946237A00CCEA2A /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = Binaries/VTKLibs/libvtksys.a; sourceTree = "<group>"; };
@@ -16880,6 +16879,8 @@
 		CEBD8A9A0875B233000E42D6 /* OSIListenerPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIListenerPreferencePane.prefPane; path = "Preference Panes/OSIListenerPreferencePane/build/Development/OSIListenerPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSILocationsPreferencePane.prefPane; path = "Preference Panes/OSILocationsPreferencePane/build/Development/OSILocationsPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIViewerPreferencePane.prefPane; path = "Preference Panes/OSIViewerPreferencePane/build/Development/OSIViewerPreferencePane.prefPane"; sourceTree = "<group>"; };
+		CEBD8E5B0B675A75008FD772 /* Propagate.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Propagate.tiff; sourceTree = "<group>"; };
+		CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PropagateOn.tiff; sourceTree = "<group>"; };
 		CEBED2EF0B4050FC00A6731E /* DOClient.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DOClient.h; sourceTree = "<group>"; };
 		CEBED2F00B4050FC00A6731E /* DOServer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DOServer.h; sourceTree = "<group>"; };
 		CEBED2F10B4050FD00A6731E /* DOClient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DOClient.m; sourceTree = "<group>"; };
@@ -16960,7 +16961,6 @@
 		CEF9E7D60811B67D00412C8A /* Scheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scheduler.m; sourceTree = "<group>"; };
 		CEF9E7DE0811B69B00412C8A /* StaticScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StaticScheduler.h; sourceTree = "<group>"; };
 		CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StaticScheduler.m; sourceTree = "<group>"; };
-		CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = RSNA2005Pub.jpg; sourceTree = "<group>"; };
 		CEFBB1890B358C8F00666FA9 /* Back.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Back.tif; sourceTree = "<group>"; };
 		CEFBB18A0B358C8F00666FA9 /* Forward.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Forward.tif; sourceTree = "<group>"; };
 		CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BackPressed.tif; sourceTree = "<group>"; };
@@ -17413,11 +17413,6 @@
 				A90D665D094D7071000B425B /* Endoscopy */,
 				A9523D0709BDB4880070CBD5 /* HornRegistration */,
 				A93CFF6E0A5169FE00078038 /* LL */,
-				BF348573095126B700B05AD2 /* Sending */,
-				7E0339E307415C330025DDB4 /* Burning */,
-				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
-				BF6566930B263BBF00574803 /* Hanging Proctols */,
-				BF2AC4980B695ED700C6F100 /* Calcium Scoring */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -17565,6 +17560,7 @@
 				ABBB647A063587B200D9531F /* Icons */,
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				ABB36C120AF23CB900DBEEA2 /* AYDicomPrint.nib */,
+				CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */,
 				CEF989570A5E457D00D29732 /* QuicktimeExport.nib */,
 				3A2D126609BC9B0C00CCBC80 /* MSRGPanel.nib */,
 				CE3BF8E7098543F20000D64F /* PETCT.nib */,
@@ -17607,7 +17603,6 @@
 				A94173210AB6B50000B9B487 /* SRAnnotation.nib */,
 				BF6566A20B263D1C00574803 /* Layout.nib */,
 				BFEEF8290B5E87DA00DE7B7B /* Placeholder.nib */,
-				BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */,
 				CEE2146706B95E0100368199 /* OsiriX.scriptTerminology */,
 				CE5F9D730AE813A40042280F /* localizedTemplatesPages */,
 				AB851A68063E0A02003DE553 /* QuickManual.pdf */,
@@ -18255,7 +18250,11 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				BF348573095126B700B05AD2 /* Sending */,
+				7E0339E307415C330025DDB4 /* Burning */,
+				7ECB4B3C072EF9DF00C2CFC4 /* Routing */,
 				CEF9E7BE0811B63000412C8A /* MultiThreads */,
+				BF6566930B263BBF00574803 /* Hanging Proctols */,
 				CEBED3000B40510500A6731E /* Distributed Objects */,
 				BF00C95806F3F43900715191 /* DCMCursor.h */,
 				BF00C95906F3F43900715191 /* DCMCursor.m */,
@@ -18389,6 +18388,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				CEBD8EF40B6761CC008FD772 /* PropagateOn.tiff */,
+				CEBD8E5B0B675A75008FD772 /* Propagate.tiff */,
 				A91F01100B568EA600FCD57C /* Repulsor.tif */,
 				CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */,
 				CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */,
@@ -18454,7 +18455,6 @@
 				CE4CD8D80890DAC700CF4FE4 /* Realised2.tif */,
 				CE4CD8DA0890DAC700CF4FE4 /* Realised3.tif */,
 				CE4CD8D90890DAC700CF4FE4 /* Realised4.tif */,
-				CEFB87BA08AF4AE6001DB401 /* RSNA2005Pub.jpg */,
 				A9B411EE0890498600913770 /* small_sharedAlbum.tiff */,
 				A9B411B40890492F00913770 /* small_smartAlbum.tiff */,
 				A9B411C10890496400913770 /* small_sharedSmartAlbum.tiff */,
@@ -18465,14 +18465,13 @@
 				A9DE9535085E0E910019992B /* FlyThruEnd.tiff */,
 				A9DE9536085E0E910019992B /* FlyThruStart.tiff */,
 				A9DE9537085E0E910019992B /* FlyThruVia.tiff */,
-				183C869D08563FE6000E6A68 /* FlyThru.icns */,
 				CE1D97CE0883B65E005A3A22 /* FlyThru.tif */,
 				CE4E00BE0830B72F008DAFAE /* Revert.tiff */,
 				CEF6A441080324E0001A8BF7 /* 3DCut.tif */,
 				CE522648077C48D900EED851 /* Sync.tif */,
+				CEE67176077D5ECE00E4BB10 /* SyncLock.tif */,
 				7E54308107A05F7500500ABB /* burn_iris */,
 				7E54309007A05F7500500ABB /* burn_throb.tif */,
-				CEE67176077D5ECE00E4BB10 /* SyncLock.tif */,
 				BFD4BFEF06F2A96900EC9A90 /* Cursors */,
 				CE49E2C50760B93500444203 /* Empty.tif */,
 				CE646B150751D8D9002962B7 /* iPhotoSmall.tif */,
@@ -18744,15 +18743,6 @@
 			name = Papyrus;
 			sourceTree = SOURCE_ROOT;
 		};
-		BF2AC4980B695ED700C6F100 /* Calcium Scoring */ = {
-			isa = PBXGroup;
-			children = (
-				BF2AC49F0B695F2200C6F100 /* CalciumScoringWindowController.m */,
-				BF2AC49E0B695F2100C6F100 /* CalciumScoringWindowController.h */,
-			);
-			name = "Calcium Scoring";
-			sourceTree = "<group>";
-		};
 		BF2EEC310B1F82F4007E9088 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -18931,6 +18921,8 @@
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
 				BFDDDD4E0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.h */,
 				BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */,
+				CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */,
+				CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -23751,7 +23743,7 @@
 				BF954D970B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF83B0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
-				BF2AC4A60B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
+				CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25646,7 +25638,7 @@
 				BF954D950B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF83D0B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41C0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
-				BF2AC4A00B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
+				CE2808670B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27535,7 +27527,7 @@
 				BF954D910B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF8370B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41A0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
-				BF2AC4A40B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
+				CE2808650B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29435,7 +29427,7 @@
 				BF954D930B56A27400106F68 /* LayoutTableView.h in Headers */,
 				BFEEF8390B5E883100DE7B7B /* PlaceholderWindowController.h in Headers */,
 				A9F8A41E0B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
-				BF2AC4A20B695F2200C6F100 /* CalciumScoringWindowController.h in Headers */,
+				CE2808690B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29997,7 +29989,6 @@
 				CEF6A444080324E0001A8BF7 /* 3DCut.tif in Resources */,
 				CE4E00BF0830B72F008DAFAE /* Revert.tiff in Resources */,
 				183C869608563FA8000E6A68 /* FlyThru.nib in Resources */,
-				183C869E08563FE6000E6A68 /* FlyThru.icns in Resources */,
 				A9DE9538085E0E910019992B /* FlyThruEnd.tiff in Resources */,
 				A9DE9539085E0E910019992B /* FlyThruStart.tiff in Resources */,
 				A9DE953A085E0E910019992B /* FlyThruVia.tiff in Resources */,
@@ -30035,7 +30026,6 @@
 				A9B412D5089180A200913770 /* bonjour.tiff in Resources */,
 				CEAF4ECF089D6E9400DE46AF /* OsiriXTables.pdf in Resources */,
 				CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */,
-				CEFB87BB08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */,
 				CEFCA9CB08AF9CC500ADBE64 /* ROIVolume.nib in Resources */,
 				CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */,
 				CEFC048208D4B1AA00058461 /* Point.tiff in Resources */,
@@ -30162,7 +30152,9 @@
 				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82B0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
-				BF2AC4920B695E7800C6F100 /* CalciumScoring.nib in Resources */,
+				CEBD8E5F0B675A75008FD772 /* Propagate.tiff in Resources */,
+				CEBD8EF80B6761CC008FD772 /* PropagateOn.tiff in Resources */,
+				CE2808720B6B76940093E9D3 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30321,7 +30313,6 @@
 				CEF6A443080324E0001A8BF7 /* 3DCut.tif in Resources */,
 				CE4E00C10830B72F008DAFAE /* Revert.tiff in Resources */,
 				183C869808563FA8000E6A68 /* FlyThru.nib in Resources */,
-				183C86A008563FE6000E6A68 /* FlyThru.icns in Resources */,
 				A9DE953E085E0E910019992B /* FlyThruEnd.tiff in Resources */,
 				A9DE953F085E0E910019992B /* FlyThruStart.tiff in Resources */,
 				A9DE9540085E0E910019992B /* FlyThruVia.tiff in Resources */,
@@ -30358,7 +30349,6 @@
 				A9B412D7089180A200913770 /* bonjour.tiff in Resources */,
 				CEAF4ECD089D6E9400DE46AF /* OsiriXTables.pdf in Resources */,
 				CEB1DA6808A3B1040058C303 /* smalltrash.tif in Resources */,
-				CEFB87BD08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */,
 				CEFCA9CD08AF9CC500ADBE64 /* ROIVolume.nib in Resources */,
 				CE74DEB208CCE0C1005D12A7 /* SagOpposite.tif in Resources */,
 				CE96722408CEB9360083F80B /* FlyThru.tif in Resources */,
@@ -30486,7 +30476,9 @@
 				CEDCFB430B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01130B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82D0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
-				BF2AC4940B695E7800C6F100 /* CalciumScoring.nib in Resources */,
+				CEBD8E5D0B675A75008FD772 /* Propagate.tiff in Resources */,
+				CEBD8EF60B6761CC008FD772 /* PropagateOn.tiff in Resources */,
+				CE2808700B6B76940093E9D3 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30645,7 +30637,6 @@
 				BF045E810B135F6400F5B97D /* 3DCut.tif in Resources */,
 				BF045E820B135F6400F5B97D /* Revert.tiff in Resources */,
 				BF045E830B135F6400F5B97D /* FlyThru.nib in Resources */,
-				BF045E840B135F6400F5B97D /* FlyThru.icns in Resources */,
 				BF045E850B135F6400F5B97D /* FlyThruEnd.tiff in Resources */,
 				BF045E860B135F6400F5B97D /* FlyThruStart.tiff in Resources */,
 				BF045E870B135F6400F5B97D /* FlyThruVia.tiff in Resources */,
@@ -30683,7 +30674,6 @@
 				BF045EA70B135F6400F5B97D /* bonjour.tiff in Resources */,
 				BF045EA80B135F6400F5B97D /* OsiriXTables.pdf in Resources */,
 				BF045EA90B135F6400F5B97D /* smalltrash.tif in Resources */,
-				BF045EAA0B135F6400F5B97D /* RSNA2005Pub.jpg in Resources */,
 				BF045EAB0B135F6400F5B97D /* ROIVolume.nib in Resources */,
 				BF045EAC0B135F6400F5B97D /* SagOpposite.tif in Resources */,
 				BF045EAD0B135F6400F5B97D /* Point.tiff in Resources */,
@@ -30800,7 +30790,9 @@
 				CEDCFB410B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01140B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82E0B5E87DB00DE7B7B /* Placeholder.nib in Resources */,
-				BF2AC4950B695E7900C6F100 /* CalciumScoring.nib in Resources */,
+				CEBD8E5C0B675A75008FD772 /* Propagate.tiff in Resources */,
+				CEBD8EF50B6761CC008FD772 /* PropagateOn.tiff in Resources */,
+				CE28086F0B6B76940093E9D3 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30959,7 +30951,6 @@
 				CEF6A442080324E0001A8BF7 /* 3DCut.tif in Resources */,
 				CE4E00C00830B72F008DAFAE /* Revert.tiff in Resources */,
 				183C869708563FA8000E6A68 /* FlyThru.nib in Resources */,
-				183C869F08563FE6000E6A68 /* FlyThru.icns in Resources */,
 				A9DE953B085E0E910019992B /* FlyThruEnd.tiff in Resources */,
 				A9DE953C085E0E910019992B /* FlyThruStart.tiff in Resources */,
 				A9DE953D085E0E910019992B /* FlyThruVia.tiff in Resources */,
@@ -30997,7 +30988,6 @@
 				A9B412D6089180A200913770 /* bonjour.tiff in Resources */,
 				CEAF4ECE089D6E9400DE46AF /* OsiriXTables.pdf in Resources */,
 				CEB1DA6708A3B1040058C303 /* smalltrash.tif in Resources */,
-				CEFB87BC08AF4AE6001DB401 /* RSNA2005Pub.jpg in Resources */,
 				CEFCA9CC08AF9CC500ADBE64 /* ROIVolume.nib in Resources */,
 				CE22552108B654FB00330429 /* small_sharedSmartAlbum.tiff in Resources */,
 				CE74DEB108CCE0C1005D12A7 /* SagOpposite.tif in Resources */,
@@ -31124,7 +31114,9 @@
 				CEDCFB450B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01120B568EA600FCD57C /* Repulsor.tif in Resources */,
 				BFEEF82C0B5E87DA00DE7B7B /* Placeholder.nib in Resources */,
-				BF2AC4930B695E7800C6F100 /* CalciumScoring.nib in Resources */,
+				CEBD8E5E0B675A75008FD772 /* Propagate.tiff in Resources */,
+				CEBD8EF70B6761CC008FD772 /* PropagateOn.tiff in Resources */,
+				CE2808710B6B76940093E9D3 /* CalciumScoring.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32259,7 +32251,7 @@
 				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A70B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
+				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33004,7 +32996,7 @@
 				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A10B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
+				CE2808680B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34296,7 +34288,7 @@
 				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A50B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
+				CE2808660B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35053,7 +35045,7 @@
 				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
 				A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
-				BF2AC4A30B695F2200C6F100 /* CalciumScoringWindowController.m in Sources */,
+				CE28086A0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35394,14 +35386,6 @@
 			name = LogWindow.nib;
 			sourceTree = "<group>";
 		};
-		BF2AC4900B695E7800C6F100 /* CalciumScoring.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BF2AC4910B695E7800C6F100 /* English */,
-			);
-			name = CalciumScoring.nib;
-			sourceTree = "<group>";
-		};
 		BF62904A0A2B7CC400BB0B62 /* StructuredReport.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -35456,6 +35440,14 @@
 				CE26443106DCF0D1007F5B71 /* English */,
 			);
 			name = ITKSegmentation.nib;
+			sourceTree = "<group>";
+		};
+		CE28086D0B6B76930093E9D3 /* CalciumScoring.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE28086E0B6B76930093E9D3 /* English */,
+			);
+			name = CalciumScoring.nib;
 			sourceTree = "<group>";
 		};
 		CE286C100964196C001A4573 /* Localizable.strings */ = {

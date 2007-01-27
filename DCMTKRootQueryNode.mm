@@ -49,6 +49,7 @@
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> insertEmptyElement(DCM_PatientsName, OFTrue);
 	dataset-> insertEmptyElement(DCM_PatientID, OFTrue);
+	dataset-> insertEmptyElement(DCM_AccessionNumber, OFTrue);
 	dataset-> insertEmptyElement(DCM_PatientsBirthDate, OFTrue);
 	dataset-> insertEmptyElement(DCM_StudyDescription, OFTrue);
 	dataset-> insertEmptyElement(DCM_StudyDate, OFTrue);

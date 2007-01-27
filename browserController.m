@@ -5598,8 +5598,7 @@ static BOOL withReset = NO;
 
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
-
-	if( [note object] == [[splitViewVert subviews] objectAtIndex: 0])	// 1
+	if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])	// 1
 	{
 		NSSize size = [oMatrix cellSize];
         NSSize space = [oMatrix intercellSpacing];
@@ -5615,11 +5614,17 @@ static BOOL withReset = NO;
 		
 		width += 17;
 		
-		if( width != preWidth)
-		{
-			frame.size.width = width;
-			[[[splitViewVert subviews] objectAtIndex: 0] setFrame: frame];
-		}
+		while( [splitViewVert frame].size.width - width - [splitViewVert dividerThickness] <= 200 && width > 0) width -= cellsize;
+	
+		frame.size.width = width;
+		[[[splitViewVert subviews] objectAtIndex: 0] setFrame: frame];
+		
+		frame = [[[splitViewVert subviews] objectAtIndex: 1] frame];
+		frame.size.width = [splitViewVert frame].size.width - width - [splitViewVert dividerThickness];
+		
+		[[[splitViewVert subviews] objectAtIndex: 1] setFrame: frame];
+		
+		[splitViewVert adjustSubviews];
 	}
 
 }
@@ -5677,7 +5682,7 @@ static BOOL withReset = NO;
 	}
 	else
 	{
-		return proposedMax;
+		return [oMatrix cellSize].width;
 	}
 }
 

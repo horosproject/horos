@@ -75,7 +75,7 @@ extern		BOOL						USETOOLBARPANEL;
 extern		ToolbarPanelController		*toolbarPanel[10];
 extern      BrowserController			*browserWindow;
 extern		AppController				*appController;
-static      short						syncro = syncroLOC;
+			short						syncro = syncroLOC;
 static		float						deg2rad = 3.14159265358979/180.0; 
 extern		long						numberOf2DViewer;
 			BOOL						display2DMPRLines = YES;
@@ -784,7 +784,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 		im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
 		
-		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 		
 		
@@ -1335,8 +1334,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	long	i;
 	BOOL	keepIt;
 	
-	//if( index < 0) index = 0;
-	
     if( dcmPixList && index > -1)
     {
 		[self stopROIEditing];
@@ -1376,43 +1373,20 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		}
 		if( keepIt == NO) curROI = 0L;
 
-        if( curWW != [curDCM ww] | curWL != [curDCM wl] | [curDCM updateToApply] == YES)
+        if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
 		{
-			if( [curDCM baseAddr] == 0L)
-			{
-				[curDCM checkImageAvailble :curWW :curWL];
-			}
-			else
-			{
-				[curDCM changeWLWW :curWL: curWW];
-			}
+			[curDCM changeWLWW :curWL :curWW];
 		}
         else [curDCM checkImageAvailble :curWW :curWL];
 		
-//        NSSize  sizeView = [[self enclosingScrollView] contentSize];
-//        [self setFrameSize:sizeView];
         [self loadTextures];
 		
-//		if( [self windowController] != 0L)
-//		{
-//			if( [self is2DViewer] == YES) [[self window] setRepresentedFilename: [curDCM sourceFile]];
-//		}
-
-
-//		if( cross.x != -9999 && cross.y != -9999)
-//		{
-//			if( [stringID isEqualToString:@"Original"])
-//				[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: 0L];
-//		}
-
 		if( [self is2DViewer] == YES)
 		{
 			[[self windowController] setLoadingPause: NO];
 		}
     }
     
-//    [self display];
-
 	NSEvent *event = [[NSApplication sharedApplication] currentEvent];
 	
 	[self mouseMoved: event];
@@ -2503,6 +2477,7 @@ static long scrollMode;
 				}
 				pushBackRadius = (int) ((distance + 0.5) * 0.8);
 				if(pushBackRadius<2) pushBackRadius = 2;
+				if(pushBackRadius>[curDCM pwidth]/2) pushBackRadius = [curDCM pwidth]/2;
 				
 				if( [curRoiList count] == 0)
 				{
@@ -3691,8 +3666,8 @@ static long scrollMode;
 									dy = (pt2.y-pt.y);
 									dy2 = dy * dy;
 									d = sqrt(dx2 + dy2);
-
-									if(d<=2 && d<pushBackRadius)
+									
+									if(d<=3 && d<pushBackRadius)
 									{
 										[points removeObjectAtIndex:k];
 										if(delta==-1) j--;
@@ -4211,8 +4186,8 @@ static long scrollMode;
 																						[[dcmFilesList objectAtIndex:[self indexForPix:curImage]] valueForKeyPath:@"series.study.studyInstanceUID"], @"studyID", 
 																						[NSNumber numberWithFloat: syncRelativeDiff],@"offsetsync",
 																						curDCM, @"DCMPix",
-																						thickDCM, @"DCMPix2",		// WARNING thickDCM can be nil!! nothing after this one...
-																						 nil]
+																						thickDCM, @"DCMPix2", // WARNING thickDCM can be nil!! nothing after this one...
+																						nil]
                                                                                         autorelease];
         
 		if( stringID == 0L)		//|| [stringID isEqualToString:@"Original"])
@@ -4228,17 +4203,12 @@ static long scrollMode;
 			[self setNeedsDisplay: YES];
 		}
     }
-	/*
-	else
-		NSLog(@"NO message. Not key");
-	*/
 }
 
 -(void) becomeMainWindow
 {
 	[self setFusion: thickSlabMode :-1];
-
-	NSLog(@"BecomeMainWindow");
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMNewImageViewResponder" object: self userInfo: 0L];
 	
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
@@ -4734,32 +4704,31 @@ static long scrollMode;
     [nc postNotificationName: @"updateView" object: self userInfo: nil];
 }
 
+-(void) syncronize:(id) sender
+{
+	[self setSyncro: [sender tag]];
+}
+
 -(void) setSyncro:(long) s
 {
+	[appController willChangeValueForKey:@"syncroOFF"];
+	[appController willChangeValueForKey:@"syncroABS"];
+	[appController willChangeValueForKey:@"syncroREL"];
+	[appController willChangeValueForKey:@"syncroLOC"];
+	
 	syncro = s;
+	
+	[appController didChangeValueForKey:@"syncroOFF"];
+	[appController didChangeValueForKey:@"syncroABS"];
+	[appController didChangeValueForKey:@"syncroREL"];
+	[appController didChangeValueForKey:@"syncroLOC"];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"notificationSyncSeries" object:0L userInfo: 0L];
 }
 
 -(long) syncro
 {
 	return syncro;
-}
-
--(void) syncronize:(id) sender
-{
-    NSMenu   *menu = [sender menu];
-    short    i;
-    
-    i = [menu numberOfItems];
-    while(i-- > 0) [[menu itemAtIndex:i] setState:NSOffState];   
-    
-    syncro = [sender tag];
-    
-    [sender setState:NSOnState];
-	
-//	if( [sender tag] == 4)
-//	{
-//		[[self windowController] syncSetOffset];
-//	}
 }
 
 -(void) FindMinimumOpenGLCapabilities
@@ -5384,13 +5353,13 @@ static long scrollMode;
 	//draw line around edge for key Images only in 2D Viewer
 	
 	if ([[self windowController] isMemberOfClass:[ViewerController class]] && [[self windowController] isKeyImage:curImage] && stringID == 0L) {
-		glLineWidth(2.0);
+		glLineWidth(8.0);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
-			glVertex2f(1.0,                                      1.0);
-			glVertex2f(1.0,                   size.size.height - 1.0);
-			glVertex2f(size.size.width - 1.0, size.size.height - 1.0);
-			glVertex2f(size.size.width - 1.0,                    1.0);
+			glVertex2f(0.0,                                      0.0);
+			glVertex2f(0.0,                   size.size.height - 0.0);
+			glVertex2f(size.size.width - 0.0, size.size.height - 0.0);
+			glVertex2f(size.size.width - 0.0,                    0.0);
 		glEnd();
 	}
 		
@@ -6250,11 +6219,12 @@ static long scrollMode;
 				{
 					if( [[self window] isMainWindow] && isKeyView)
 					{
-						float heighthalf = size.size.height/2 - 1;
-						float widthhalf = size.size.width/2 - 1;
+						float heighthalf = size.size.height/2;
+						float widthhalf = size.size.width/2;
 						
-						glColor3f (1.0f, 0.0f, 0.0f);
-						glLineWidth(2.0);
+						glEnable(GL_BLEND);
+						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
+						glLineWidth(8.0);
 						glBegin(GL_LINE_LOOP);
 							glVertex2f(  -widthhalf, -heighthalf);
 							glVertex2f(  -widthhalf, heighthalf);
@@ -6262,6 +6232,7 @@ static long scrollMode;
 							glVertex2f(  widthhalf, -heighthalf);
 						glEnd();
 						glLineWidth(1.0);
+						glDisable(GL_BLEND);
 					}
 				}  //drawLines for ImageView Frames
 				
@@ -6599,23 +6570,7 @@ static long scrollMode;
 {
 	if( dcmPixList && [[self window] isVisible])
     {
-		NSRect rect;
-
-		//[super reshape];
-
-		[[self openGLContext] makeCurrentContext];
-//		[[self openGLContext] update];
-
-	//	[self setIndex:curImage];
-
-		rect = [self frame];//[self bounds];
-		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		glViewport(0, 0, (int) rect.size.width, (int) rect.size.height);
-		
-		//NSLog(@"View size: %d, %d", (int) rect.size.width, (int) rect.size.height);
+		NSRect rect = [self frame];
 		
 		if( previousViewSize.width != 0)
 		{
@@ -6651,7 +6606,7 @@ static long scrollMode;
 			originOffset.y *= maxChanged;
 			
 			if( [self is2DViewer] == YES)
-			[[self windowController] propagateSettings];
+				[[self windowController] propagateSettings];
 			
 			if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
 			if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
@@ -6989,7 +6944,21 @@ static long scrollMode;
 	NSString			*colorSpace;
 	unsigned char		*data;
 	
+	if( numberOf2DViewer > 1 && stringID == 0L && originalSize == NO)
+	{
+		stringID = [@"copy" retain];	// to remove the red square around the image
+		[self display];
+	}
+		
 	data = [self getRawPixels :&width :&height :&spp :&bpp :!originalSize : YES :NO :YES];
+	
+	if( [stringID isEqualToString:@"copy"])
+	{
+		[stringID release];
+		stringID = 0L;
+		
+		[self setNeedsDisplay: YES];
+	}
 	
 	if( spp == 3) colorSpace = NSCalibratedRGBColorSpace;
 	else colorSpace = NSCalibratedWhiteColorSpace;
@@ -7744,7 +7713,6 @@ BOOL	lowRes = NO;
 		[super resizeWithOldSuperviewSize:oldBoundsSiz];
 		return;
 	}
-	//NSLog(@"resizeWithOldSuperviewSize:");
 	NSRect superFrame = [[self superview] bounds];
 	float newWidth = superFrame.size.width / _imageColumns;
 	float newHeight = superFrame.size.height / _imageRows;

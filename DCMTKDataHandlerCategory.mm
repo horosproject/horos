@@ -79,6 +79,11 @@ extern BrowserController *browserWindow;
 				if (dcelem->getString(pid).good() && pid != NULL)
 					predicate = [NSPredicate predicateWithFormat:@"patientID LIKE[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
 			}
+			else if (key == DCM_AccessionNumber){
+				char *pid;
+				if (dcelem->getString(pid).good() && pid != NULL)
+					predicate = [NSPredicate predicateWithFormat:@"accessionNumber LIKE[cd] %@", [NSString stringWithCString:pid  DICOMEncoding:nil]];
+			}
 			else if (key == DCM_StudyInstanceUID ){
 				char *suid;
 				if (dcelem->getString(suid).good() && suid != NULL)
@@ -445,6 +450,11 @@ extern BrowserController *browserWindow;
 		dataset ->putAndInsertString(DCM_PatientID, [[fetchedObject valueForKey:@"patientID"] cStringUsingEncoding:encoding]);
 	else
 		dataset ->putAndInsertString(DCM_PatientID, NULL);
+		
+	if ([fetchedObject valueForKey:@"accessionNumber"])	
+		dataset ->putAndInsertString(DCM_AccessionNumber, [[fetchedObject valueForKey:@"accessionNumber"] cStringUsingEncoding:encoding]);
+	else
+		dataset ->putAndInsertString(DCM_AccessionNumber, NULL);
 		
 	if ([fetchedObject valueForKey:@"studyName"])	
 		dataset ->putAndInsertString( DCM_StudyDescription, [[fetchedObject valueForKey:@"studyName"] cStringUsingEncoding:encoding]);

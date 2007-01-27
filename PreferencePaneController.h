@@ -25,10 +25,7 @@
 {
 	int							curPaneIndex;
 	NSPreferencePane			*pane;
-	NSDictionary				*previousDefaults;
 	IBOutlet	NSView			*destView;
-	//IBOutlet	NSMatrix		*m_SelectionMatrix;
-	BOOL						showRestartNeeded;
 	IBOutlet	NSView			*allView;
 }
 

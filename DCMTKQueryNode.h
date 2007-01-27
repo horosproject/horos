@@ -41,6 +41,7 @@
 	NSString *_theDescription;
 	NSString *_name;
 	NSString *_patientID;
+	NSString *_accessionNumber;
 	DCMCalendarDate *_date;
 	DCMCalendarDate *_birthdate;
 	DCMCalendarDate *_time;
@@ -72,6 +73,7 @@
 - (NSString *)theDescription;
 - (NSString *)name;
 - (NSString *)patientID;
+- (NSString *)accessionNumber;
 - (DCMCalendarDate *)date;
 - (DCMCalendarDate *)time;
 - (NSString *)modality;

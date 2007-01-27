@@ -100,7 +100,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSPoint				subPixOffset;
 	NSPoint				subMinMax;
 	float				subtractedfPercent;
+	float				subtractedfZ;
 	float				subtractedfZero;
+	float				subtractedfGamma;
 	GammaFunction		subGammaFunction;
 	
 	long				maskID;
@@ -263,6 +265,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //DSA
 - (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z;
+- (void) setSubSlidersPercent: (float) p;
 - (NSPoint) subPixOffset;
 - (void) setSubPixOffset:(NSPoint) subOffset;
 - (NSPoint) subMinMax:(float*)input :(float*)subfImage;

@@ -50,6 +50,11 @@
         {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = NSLevelIndicator; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
+            CLASS = OSIWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {renderButton = id; }; 
             CLASS = OpacityTransferView; 
             LANGUAGE = ObjC; 
@@ -59,60 +64,13 @@
         {CLASS = StudyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {
-                ApplyCLUT = id; 
-                ApplyOpacity = id; 
-                LODsliderAction = id; 
-                MoviePlayStop = id; 
-                blendingSlider = id; 
-                endCLUT = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                moviePosSliderAction = id; 
-                movieRateSliderAction = id; 
-                setDefaultTool = id; 
-            }; 
-            CLASS = VRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                BlendingView = NSView; 
-                LODSlider = NSSlider; 
-                LODView = NSView; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
-                WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingSlider = NSSlider; 
-                blendingTypeWindow = NSWindow; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                moviePlayStop = NSButton; 
-                moviePosSlider = NSSlider; 
-                movieRateSlider = NSSlider; 
-                movieTextSlide = NSTextField; 
-                movieView = NSView; 
-                newName = NSTextField; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                view = VRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {
                 AddOpacity = id; 
                 ConvertToBWMenu = id; 
                 ConvertToRGBMenu = id; 
                 CurvedMPR = id; 
                 MPR2DViewer = id; 
                 MoviePlayStop = id; 
+                MovieStop = id; 
                 PagePadCreate = id; 
                 Panel3D = id; 
                 PlayStop = id; 
@@ -130,6 +88,7 @@
                 closeSelectedBrushROIWithRadius = id; 
                 clutAction = id; 
                 computeSum = id; 
+                contextualMenuEvent = id; 
                 convMatrixAction = id; 
                 createKeyObjectNote = id; 
                 dilateSelectedBrushROI = id; 
@@ -160,6 +119,7 @@
                 exportQuicktimeSlider = id; 
                 flipDataSeries = id; 
                 fullScreenMenu = id; 
+                horzFlipDataSet = id; 
                 keyImageCheckBox = id; 
                 keyImageDisplayButton = id; 
                 keyObjectNotes = id; 
@@ -208,6 +168,7 @@
                 updateImage = id; 
                 updateSUVValues = id; 
                 updateSetWLWW = id; 
+                vertFlipDataSet = id; 
             }; 
             CLASS = ViewerController; 
             LANGUAGE = ObjC; 
@@ -289,7 +250,6 @@
                 imageFormat = NSMatrix; 
                 imageSelection = NSMatrix; 
                 keyImageCheck = NSButton; 
-                keyImageDisplay = NSButton; 
                 keyImagePopUpButton = NSPopUpButton; 
                 keyImages = NSView; 
                 loopButton = NSButton; 
@@ -325,6 +285,7 @@
                 printTo = NSSlider; 
                 printToText = NSTextField; 
                 printWindow = NSWindow; 
+                propagateSettingsView = NSView; 
                 quicktimeBox = NSBox; 
                 quicktimeFrom = NSSlider; 
                 quicktimeFromText = NSTextField; 
@@ -371,14 +332,12 @@
                 structuringElementRadiusSlider = NSSlider; 
                 structuringElementRadiusTextField = NSTextField; 
                 studyView = StudyView; 
-                subCtrlGamma = NSSlider; 
                 subCtrlMaskText = NSTextField; 
                 subCtrlOnOff = NSButton; 
                 subCtrlPercent = NSSlider; 
                 subCtrlSharpenButton = NSButton; 
                 subCtrlSum = NSSlider; 
                 subCtrlView = NSView; 
-                subCtrlZero = NSSlider; 
                 suvConversion = NSMatrix; 
                 suvForm = NSForm; 
                 toolsMatrix = NSMatrix; 
@@ -390,7 +349,7 @@
                 ww = NSTextField; 
                 wwset = NSTextField; 
             }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = OSIWindowController; 
         }
     ); 
     IBVersion = 1; 

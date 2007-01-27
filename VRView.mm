@@ -3042,7 +3042,7 @@ public:
     
 	if( c == ' ')
 	{
-		rotate = !rotate;
+		if( [[[self window] windowController] isKindOfClass:[VRController class]]) rotate = !rotate;
 	}
 	
 	if( c == 27)

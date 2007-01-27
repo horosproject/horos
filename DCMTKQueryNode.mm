@@ -257,6 +257,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		_theDescription = nil;
 		_name = nil;
 		_patientID = nil;
+		_accessionNumber = nil;
 		_date = nil;
 		_birthdate = nil;
 		_time  = nil;
@@ -280,6 +281,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_theDescription release];
 	[_name release];
 	[_patientID release];
+	[_accessionNumber release];
 	[_date release];
 	[_birthdate release];
 	[_time release];
@@ -299,6 +301,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSString *)name{
 	return _name;
+}
+- (NSString *)accessionNumber{
+	return _accessionNumber;
 }
 - (NSString *)patientID{
 	return _patientID;
@@ -337,6 +342,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	STUDY NAMES
 		PatientsName
 		PatientID
+		AccessionNumber
 		StudyDescription
 		StudyDate
 		StudyTime
@@ -386,6 +392,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			if ([key isEqualToString:@"PatientsName"]) {	
 				string = [(NSString*)value cStringUsingEncoding:encoding];
 				dataset->putAndInsertString(DCM_PatientsName, string);
+			}
+			else if ([key isEqualToString:@"AccessionNumber"]) {
+				string = [(NSString*)value cStringUsingEncoding:encoding];
+				dataset->putAndInsertString(DCM_AccessionNumber, string);
 			}
 			else if ([key isEqualToString:@"PatientID"]) {
 				string = [(NSString*)value cStringUsingEncoding:encoding];

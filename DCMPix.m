@@ -2631,8 +2631,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		//----------------------------------angio
 		subPixOffset.x = subPixOffset.y = 0;
-		subtractedfPercent = 1;
+		subtractedfPercent = 1.0;
+		subtractedfZ = 0.8;
 		subtractedfZero = 0.8;
+		subtractedfGamma = 2.0;
 		subGammaFunction = 0L;
 		
 		ang = 0;
@@ -5195,7 +5197,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
 			val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType );
 			if (val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
-			else cineRate = 0;
 			
 			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 			if( val)
@@ -5258,7 +5259,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			val = Papy3GetElement (theGroupP, papCineRateGr, &nbVal, &elemType);
 			if (!cineRate && val != NULL) cineRate = [[NSString stringWithCString:val->a] floatValue];	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
-			else cineRate = 0;
 			
 			val = Papy3GetElement (theGroupP, papImagerPixelSpacingGr, &nbVal, &elemType);
 			if (val != NULL)
@@ -5309,6 +5309,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						}
 						else if( [[NSString stringWithCString:val->a] isEqualToString:@"CIRCULAR"])
 						{
+							DCMPixShutterOnOff = YES;
+							
 							tmp = Papy3GetElement (theGroupP, papCenterofCircularShutterGr, &nbtmp, &elemType);
 							if (tmp != NULL && nbtmp == 2)
 							{
@@ -5319,6 +5321,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						
 							tmp = Papy3GetElement (theGroupP, papRadiusofCircularShutterGr, &nbtmp, &elemType);
 							if (tmp != NULL) shutterCircular_radius = [[NSString stringWithCString:tmp->a] intValue];
+						}
+						else if( [[NSString stringWithCString:val->a] isEqualToString:@"POLYGONAL"])
+						{
+							DCMPixShutterOnOff = YES;
+							
+							tmp = Papy3GetElement (theGroupP, papVerticesofthePolygonalShutterGr, &nbtmp, &elemType);
+							
+							if( shutterPolygonal) free( shutterPolygonal);
+							
+							shutterPolygonalSize = 0;
+							shutterPolygonal = malloc( nbtmp * sizeof( NSPoint) / 2);
+							
+							int y, x;
+							for( y = 0, x = 0 ; y < nbtmp; y+=2, x++)
+							{
+								shutterPolygonal[ x].x = [[NSString stringWithCString:tmp->a] intValue];		tmp++;
+								shutterPolygonal[ x].y = [[NSString stringWithCString:tmp->a] intValue];		tmp++;
+								shutterPolygonalSize++;
+							}
 						}
 						else NSLog( @"Shutter not supported: %@", [NSString stringWithCString:val->a]);
 						
@@ -5448,6 +5469,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				if( realwidth != width) NSLog(@"width!=realwidth");
 			}
+			
+			if( shutterRect_w == 0)  shutterRect_w = width;
+			if( shutterRect_h == 0)  shutterRect_h = height;
 			
 			// PIXEL REPRESENTATION
 			val = Papy3GetElement (theGroupP, papPixelRepresentationGr, &nbVal, &elemType);
@@ -8237,11 +8261,20 @@ BOOL            readable = YES;
 - (void) setSubSlidersPercent: (float) p gamma: (float) g zero: (float) z	
 {
 	subtractedfPercent = p;
-	subtractedfZero = z - 0.8 + (p*0.8);
-	//subGammaFunction is a pointer which refers to the current gamma for the series
+	subtractedfZ = z;
+	subtractedfZero = subtractedfZ - 0.8 + (p*0.8);
+	subtractedfGamma = g;
+	
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
-	subGammaFunction = vImageCreateGammaFunction(g, kvImageGamma_UseGammaValue_half_precision, 0 );	
+	
+	subGammaFunction = vImageCreateGammaFunction( subtractedfGamma, kvImageGamma_UseGammaValue_half_precision, 0 );	
+	
 	updateToBeApplied = YES;
+}
+
+- (void) setSubSlidersPercent: (float) p
+{
+	[self setSubSlidersPercent: p gamma: subtractedfGamma zero: subtractedfZ];
 }
 
 -(NSPoint) subPixOffset {return subPixOffset;}
@@ -8338,9 +8371,7 @@ BOOL            readable = YES;
 	{
 		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
-			char*	tempMem = malloc( height * width * 4*sizeof(char));
-			
-			memset( tempMem, blackIndex, height * width);
+			char*	tempMem = calloc( 1, height * width * 4 * sizeof(char));
 			
 			if( tempMem)
 			{
@@ -8364,7 +8395,9 @@ BOOL            readable = YES;
 		}
 		else
 		{
-			char*	tempMem = calloc( 1, height * width * sizeof(char));
+			char*	tempMem = malloc( height * width * sizeof(char));
+			
+			memset( tempMem, blackIndex, height * width * sizeof(char));
 			
 			if( tempMem)
 			{
@@ -8685,10 +8718,17 @@ BOOL            readable = YES;
 
 - (void) changeWLWW:(float)newWL :(float)newWW
 {
-long			i;
-float			iwl, iww;
-
+	if( baseAddr == 0L)
+	{
+		[self checkImageAvailble:newWW :newWL];
+		return;
+	}
+	
+	long			i;
+	float			iwl, iww;
+	
 	[self CheckLoad]; 
+	
 	
 	if( newWW !=0 || newWL != 0)   // new values to be applied
     {
@@ -8773,11 +8813,23 @@ float			iwl, iww;
 				
 				if( subtractedfImage)
 				{
+					if( wl < 2) wl = 2;
+					if( ww < 2) ww = 2;
+					if( wl > 512) wl = 512;
+					if( ww > 512) ww = 512;
+					
+					iww = ww;
+					iwl = wl;
+					
+					float gamma = 2. * (iww / 256.);
+					float zero = 1.6 - 0.8 * (iwl / 128.);
+					
+					[self setSubSlidersPercent:subtractedfPercent gamma: gamma zero: zero];
+					
 					srcf.data = [self subtractImages: srcf.data :subtractedfImage];
 					
 					if( convolution) srcf.data = [self applyConvolutionOnImage: srcf.data RGB: NO];
-					
-					if( subGammaFunction == 0L) subGammaFunction = vImageCreateGammaFunction(2.0, kvImageGamma_UseGammaValue_half_precision, 0 );
+										
 					vImage_Error vIerr = vImageGamma_PlanarFtoPlanar8 (&srcf, &dst8, subGammaFunction, 0);
 				}
 				else
