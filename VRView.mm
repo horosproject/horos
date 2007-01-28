@@ -3024,8 +3024,6 @@ public:
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
 	[sched setDelegate: self];
 	
-	 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) c = NSTabCharacter;
-	
 	// Create the work units. These can be anything. We will use NSNumbers
 	NSMutableSet *unitsSet = [NSMutableSet set];
 	for ( i = 0; i < stackMax; i++ )
