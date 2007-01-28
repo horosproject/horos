@@ -23,7 +23,8 @@
 @implementation OSIWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName{
-	if (self = [super initWithWindowNibName:(NSString *)windowNibName]) {
+	if (self = [super initWithWindowNibName:(NSString *)windowNibName])
+	{
 		// Register with WindowLayoutManager
 		[[WindowLayoutManager sharedWindowLayoutManager] registerWindowController:self];
 	//	NSLog(@"Register Window: %@", NSStringFromClass([self class])); 

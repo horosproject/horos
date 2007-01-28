@@ -4162,7 +4162,7 @@ static ViewerController *draggedController = 0L;
 	}
 	else
 	{
-//		[self matrixPreviewSelectCurrentSeries];
+		[self matrixPreviewSelectCurrentSeries];
 	}
 	
 	// If same study, same patient and same orientation, try to go the same position (mm) if available
