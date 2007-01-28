@@ -9135,217 +9135,225 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	[checkIncomingLock lock];
 	
-    NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
-	NSString		*ERRpath = [documentsDirectory() stringByAppendingString:ERRPATH];
-    NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-	NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingString:DECOMPRESSIONPATH];
-	BOOL			isDir = YES;
-	BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
-	BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
-	BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
-	long			i;
-	
-	//NSLog(@"Scan folder START");
-	
-	if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
-	{	
-		//need to resolve aliases and symbolic links
-		INpath = [self folderPathResolvingAliasAndSymLink:INpath];
-		OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
-		ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
-		DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
+	@try
+	{
+		NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+		NSString		*ERRpath = [documentsDirectory() stringByAppendingString:ERRPATH];
+		NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+		NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingString:DECOMPRESSIONPATH];
+		BOOL			isDir = YES;
+		BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
+		BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
+		BOOL			COMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMPRESSDICOMLISTENER"];
+		long			i;
 		
-		NSString        *pathname;
-		NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
-		NSMutableArray	*compressedPathArray = [[NSMutableArray alloc] initWithCapacity:0];
+		//NSLog(@"Scan folder START");
 		
-		NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
-		
-		while (pathname = [enumer nextObject])
-		{
-			NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
-			NSString *originalPath = srcPath;
-			//NSLog(@"Incoming path: %@", srcPath);
-			if ([[[srcPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"])
-				continue;
+		if( bonjourDownloading == NO && isCurrentDatabaseBonjour == NO)
+		{	
+			//need to resolve aliases and symbolic links
+			INpath = [self folderPathResolvingAliasAndSymLink:INpath];
+			OUTpath = [self folderPathResolvingAliasAndSymLink:OUTpath];
+			ERRpath = [self folderPathResolvingAliasAndSymLink:ERRpath];
+			DECOMPRESSIONpath = [self folderPathResolvingAliasAndSymLink:DECOMPRESSIONpath];
 			
-			BOOL result, isAlias = [self isAliasPath: srcPath];
-			if( isAlias) srcPath = [self pathResolved: srcPath];
+			NSString        *pathname;
+			NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+			NSMutableArray	*compressedPathArray = [[NSMutableArray alloc] initWithCapacity:0];
 			
-			// Is it a real file? Is it writable (transfer done)?
-			if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)
+			NSDirectoryEnumerator *enumer = [[NSFileManager defaultManager] enumeratorAtPath:INpath];
+			
+			while (pathname = [enumer nextObject])
 			{
-				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
+				NSString *srcPath = [INpath stringByAppendingPathComponent:pathname];
+				NSString *originalPath = srcPath;
+				//NSLog(@"Incoming path: %@", srcPath);
+				if ([[[srcPath lastPathComponent] uppercaseString] isEqualToString:@".DS_STORE"])
+					continue;
 				
-				if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
+				BOOL result, isAlias = [self isAliasPath: srcPath];
+				if( isAlias) srcPath = [self pathResolved: srcPath];
+				
+				// Is it a real file? Is it writable (transfer done)?
+				if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)
 				{
-					NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
+					NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:srcPath traverseLink: YES];
 					
-					//Is this directory empty?? If yes, delete it!
-					//if alias assume nested folders should stay
-					if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-					if( [dirContent count] == 1)
+					if( [[fattrs objectForKey:NSFileType] isEqualToString: NSFileTypeDirectory] == YES)
 					{
-						if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-					}
-				}
-				else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
-				{
-					BOOL		isDicomFile;
-					BOOL		isJPEGCompressed;
-					NSString	*dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
-					
-					isDicomFile = [DicomFile isDICOMFile:srcPath compressed:&isJPEGCompressed];
-					
-					if( isDicomFile == YES		||
-						(([DicomFile isFVTiffFile:srcPath]		||
-						[DicomFile isTiffFile:srcPath]			||
-						[DicomFile isXMLDescriptedFile:srcPath]	||
-						[DicomFile isXMLDescriptorFile:srcPath]) 
-						&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
-					{
-						if (isDicomFile)
-						{
-							if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
-							{
-								NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingString:[srcPath lastPathComponent]];
-								
-								[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
-								
-								[compressedPathArray addObject: compressedPath];
-								
-								continue;
-							}
-							
-							dstPath = [self getNewFileDatabasePath:@"dcm"];
-						}
-						else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
-						//else dstPath = [self getNewFileDatabasePath:[[srcPath stringByDeletingPathExtension] lastPathComponent]: [[srcPath pathExtension] lowercaseString]];
+						NSArray		*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath: srcPath];
 						
-						if( isAlias)
+						//Is this directory empty?? If yes, delete it!
+						//if alias assume nested folders should stay
+						if( [dirContent count] == 0 && !isAlias) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+						if( [dirContent count] == 1)
 						{
-							result = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
-							[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+							if( [[[dirContent objectAtIndex: 0] uppercaseString] isEqualToString:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 						}
-						else
+					}
+					else if( fattrs != 0L && [[fattrs objectForKey:NSFileBusy] boolValue] == NO && [[fattrs objectForKey:NSFileSize] longLongValue] > 0)
+					{
+						BOOL		isDicomFile;
+						BOOL		isJPEGCompressed;
+						NSString	*dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
+						
+						isDicomFile = [DicomFile isDICOMFile:srcPath compressed:&isJPEGCompressed];
+						
+						if( isDicomFile == YES		||
+							(([DicomFile isFVTiffFile:srcPath]		||
+							[DicomFile isTiffFile:srcPath]			||
+							[DicomFile isXMLDescriptedFile:srcPath]	||
+							[DicomFile isXMLDescriptorFile:srcPath]) 
+							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 						{
-							if ([DicomFile isXMLDescriptorFile:srcPath]) // XML comes before ZIP in alphabetic order...
+							if (isDicomFile)
 							{
-								[[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil]; // move the XML first
-								srcPath = [[srcPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
-								dstPath = [[dstPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
-							}
-							
-							if([DicomFile isXMLDescriptedFile:srcPath])
-							{
-								if ([[NSFileManager defaultManager]
-										fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]])
+								if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
 								{
-									// move the XML first
-									[[NSFileManager defaultManager]
-											movePath	:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]
-											toPath		:[[dstPath stringByDeletingPathExtension] stringByAppendingString:@".xml"] 
-											handler		:nil];
-									// the ZIP will be moved next line
+									NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingString:[srcPath lastPathComponent]];
+									
+									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
+									
+									[compressedPathArray addObject: compressedPath];
+									
+									continue;
 								}
+								
+								dstPath = [self getNewFileDatabasePath:@"dcm"];
+							}
+							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
+							//else dstPath = [self getNewFileDatabasePath:[[srcPath stringByDeletingPathExtension] lastPathComponent]: [[srcPath pathExtension] lowercaseString]];
+							
+							if( isAlias)
+							{
+								result = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
+								[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+							}
+							else
+							{
+								if ([DicomFile isXMLDescriptorFile:srcPath]) // XML comes before ZIP in alphabetic order...
+								{
+									[[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil]; // move the XML first
+									srcPath = [[srcPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
+									dstPath = [[dstPath stringByDeletingPathExtension] stringByAppendingString:@".zip"];
+								}
+								
+								if([DicomFile isXMLDescriptedFile:srcPath])
+								{
+									if ([[NSFileManager defaultManager]
+											fileExistsAtPath:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]])
+									{
+										// move the XML first
+										[[NSFileManager defaultManager]
+												movePath	:[[srcPath stringByDeletingPathExtension] stringByAppendingString:@".xml"]
+												toPath		:[[dstPath stringByDeletingPathExtension] stringByAppendingString:@".xml"] 
+												handler		:nil];
+										// the ZIP will be moved next line
+									}
+								}
+								
+								result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
 							}
 							
-							result = [[NSFileManager defaultManager] movePath:srcPath toPath:dstPath handler:nil];
+							if( result == YES)
+							{
+								[filesArray addObject:dstPath];
+							}
 						}
-						
-						if( result == YES)
+						else // DELETE or MOVE THIS UNKNOWN FILE ?
 						{
-							[filesArray addObject:dstPath];
-						}
-					}
-					else // DELETE or MOVE THIS UNKNOWN FILE ?
-					{
-						if ( DELETEFILELISTENER)
-						{
-							[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
-						}
-						else
-						{
-						//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
-							
-							if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
+							if ( DELETEFILELISTENER)
 							{
 								[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
 							}
+							else
+							{
+							//	NSLog( [ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]);
+								
+								if( [[NSFileManager defaultManager] movePath:srcPath toPath:[ERRpath stringByAppendingPathComponent: [srcPath lastPathComponent]]  handler:nil] == NO)
+								{
+									[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+								}
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		if( [filesArray count] > 0)
-		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
-			{
-				[self listenerAnonymizeFiles: filesArray];
-			}
 			
-			for( i = 0; i < [preProcessPlugins count]; i++)
+			if( [filesArray count] > 0)
 			{
-				id				filter = [preProcessPlugins objectAtIndex:i];
-				
-				[filter processFiles: filesArray];
-			}
-		
-			NSArray*	addedFiles = [[self addFilesToDatabase: filesArray]  valueForKey:@"completePath"];
-			
-			if( addedFiles)
-			{
-			}
-			else	// Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
-			{
-				NSString *dstPath;
-				long i, x = 0;
-				
-				NSLog(@"Move the files back to the incoming folder...");
-				
-				for( i = 0; i < [filesArray count]; i++)
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
 				{
-					do
+					[self listenerAnonymizeFiles: filesArray];
+				}
+				
+				for( i = 0; i < [preProcessPlugins count]; i++)
+				{
+					id				filter = [preProcessPlugins objectAtIndex:i];
+					
+					[filter processFiles: filesArray];
+				}
+			
+				NSArray*	addedFiles = [[self addFilesToDatabase: filesArray]  valueForKey:@"completePath"];
+				
+				if( addedFiles)
+				{
+				}
+				else	// Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
+				{
+					NSString *dstPath;
+					long i, x = 0;
+					
+					NSLog(@"Move the files back to the incoming folder...");
+					
+					for( i = 0; i < [filesArray count]; i++)
 					{
-						dstPath = [NSString stringWithFormat:@"%@%d", INpath, x];
-						x++;
+						do
+						{
+							dstPath = [NSString stringWithFormat:@"%@%d", INpath, x];
+							x++;
+						}
+						while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
+						
+						[[NSFileManager defaultManager] movePath:[filesArray objectAtIndex: i] toPath:dstPath handler:nil];
 					}
-					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
-					
-					[[NSFileManager defaultManager] movePath:[filesArray objectAtIndex: i] toPath:dstPath handler:nil];
 				}
-			}
-			
-			if( COMPRESSDICOMLISTENER)
-			{
-				if( [filesArray count] > 0)
+				
+				if( COMPRESSDICOMLISTENER)
 				{
-					[decompressThreadRunning lock];
-					[decompressArrayLock lock];
-					[decompressArray addObjectsFromArray: filesArray];
-					[decompressArrayLock unlock];
-					[decompressThreadRunning unlock];
-					
-					[self decompressThread: [NSNumber numberWithChar: 'C']];
+					if( [filesArray count] > 0)
+					{
+						[decompressThreadRunning lock];
+						[decompressArrayLock lock];
+						[decompressArray addObjectsFromArray: filesArray];
+						[decompressArrayLock unlock];
+						[decompressThreadRunning unlock];
+						
+						[self decompressThread: [NSNumber numberWithChar: 'C']];
+					}
 				}
 			}
-		}
-		
-		[filesArray release];
-		
-		if( [compressedPathArray count] > 0)
-		{
-			[decompressThreadRunning lock];
 			
-			[decompressArrayLock lock];
-			[decompressArray addObjectsFromArray: compressedPathArray];
-			[decompressArrayLock unlock];
+			[filesArray release];
 			
-			[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
-			[decompressThreadRunning unlock];
+			if( [compressedPathArray count] > 0)
+			{
+				[decompressThreadRunning lock];
+				
+				[decompressArrayLock lock];
+				[decompressArray addObjectsFromArray: compressedPathArray];
+				[decompressArrayLock unlock];
+				
+				[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
+				[decompressThreadRunning unlock];
+			}
+			[compressedPathArray release];
 		}
-		[compressedPathArray release];
+	}
+	
+	@catch( NSException *ne)
+	{
+		NSLog( @"WARNING ******** - CheckIncomingThread Exception : %@", [ne description]);
 	}
 	
 	[checkIncomingLock unlock];
