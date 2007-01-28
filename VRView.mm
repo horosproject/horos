@@ -3090,6 +3090,10 @@ public:
 		{
 			NSRunAlertPanel(NSLocalizedString(@"3D Cut", nil), NSLocalizedString(@"Draw an ROI on the 3D image and then press Return (include) or Delete (exclude) keys.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
+		else if( c == NSTabCharacter && [[controller viewer2D] postprocessed] == YES)
+		{
+			NSRunAlertPanel(NSLocalizedString(@"Restore", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot restore it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
 		else
 		{
 			WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Scissor...", nil)];

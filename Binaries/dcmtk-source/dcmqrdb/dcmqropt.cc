@@ -83,7 +83,7 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , verbose_(0)
 , writeTransferSyntax_(EXS_Unknown)
 , blockMode_(DIMSE_BLOCKING)
-, dimse_timeout_(0)
+, dimse_timeout_(30)
 , acse_timeout_(30)
 {
 }

@@ -3269,6 +3269,8 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
     /* information, we need to try to receive a PDU on the network */
     if ((*association)->inputPDU == NO_PDU)
     {
+//		if( timeout == 0)
+//			printf("Timeout %d\r", timeout);
         /* try to receive data */
         cond = readPDUHeadTCP(association, buffer, maxLength, block, timeout,
              &(*association)->nextPDUType, &(*association)->nextPDUReserved, &(*association)->nextPDULength);

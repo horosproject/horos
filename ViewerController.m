@@ -13340,6 +13340,13 @@ long i;
 {
 	long i, x;
 	
+	if( postprocessed)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Revert", nil), NSLocalizedString(@"This dataset has been post processed (reslicing, MPR, ...). You cannot revert it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
+		return;
+	}
+	
 	[self checkEverythingLoaded];
 	
 	for( x = 0; x < maxMovieIndex; x++)
