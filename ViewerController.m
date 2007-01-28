@@ -2169,8 +2169,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( index != NSNotFound)
 	{
-		[previewMatrix selectCellAtRow:index column:0];
-		[previewMatrix scrollCellToVisibleAtRow: index column:0];
+		if( [previewMatrix selectedRow] != index)
+		{
+			[previewMatrix selectCellAtRow:index column:0];
+			[previewMatrix scrollCellToVisibleAtRow: index column:0];
+		}
 	}
 	else
 	{
