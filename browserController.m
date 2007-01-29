@@ -5110,7 +5110,10 @@ static BOOL withReset = NO;
 			[oMatrix setNeedsDisplay:YES];
 			return;
 		}
-
+		
+		if( i >= [previewPix count]) return;
+		if( i >= [previewPixThumbnails count]) return;
+		
 		DCMPix		*pix = [previewPix objectAtIndex: i];
 		NSImage		*img = 0L;
 		
@@ -5277,30 +5280,33 @@ static BOOL withReset = NO;
 	
 	@try
 	{
-		if( loadPreviewIndex < [previewPix count])
+		if( [previewPix count])
 		{
-			for( i = loadPreviewIndex; i < [previewPix count];i++)
+			if( loadPreviewIndex < [previewPix count])
 			{
-				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-				
-				if( [cell isEnabled] == NO)
+				for( i = loadPreviewIndex; i < [previewPix count];i++)
 				{
-					if( i < [previewPix count])
+					NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+					
+					if( [cell isEnabled] == NO)
 					{
-						if( [previewPix objectAtIndex: i] != 0L)
+						if( i < [previewPix count])
 						{
-							if( i < [matrixViewArray count])
+							if( [previewPix objectAtIndex: i] != 0L)
 							{
-								[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+								if( i < [matrixViewArray count])
+								{
+									[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+								}
 							}
 						}
 					}
 				}
+				
+				if( loadPreviewIndex == 0) [self initAnimationSlider];
+				
+				loadPreviewIndex = i;
 			}
-			
-			if( loadPreviewIndex == 0) [self initAnimationSlider];
-			
-			loadPreviewIndex = i;
 		}
 	}
 			

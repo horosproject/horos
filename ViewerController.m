@@ -12551,7 +12551,7 @@ int i,j,l;
 			}
 			else
 			{		
-				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self style:@"standard" mode: mode];
+				viewer = [[VRPROController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[ 0] :blendingController :self mode: mode];
 				for( i = 1; i < maxMovieIndex; i++)
 				{
 					[viewer addMoviePixList:pixList[ i] :volumeData[ i]];
