@@ -6329,7 +6329,6 @@ static long scrollMode;
 					}
 				}
 				
-				
 				//** SLICE CUT BETWEEN SERIES
 				
 				if( stringID == 0L)
@@ -6345,17 +6344,17 @@ static long scrollMode;
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePoint[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePoint[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePoint[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] - 10000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePoint[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePoint[ 1] + 10000*sliceVector[ 1]));
 						glEnd();
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointI[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePointI[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointI[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] - 10000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointI[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointI[ 1] + 10000*sliceVector[ 1]));
 						glEnd();
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointO[ 0] - 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 1000*sliceVector[ 1]));
-							glVertex2f( scaleValue*(slicePointO[ 0] + 1000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 1000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointO[ 0] - 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] - 10000*sliceVector[ 1]));
+							glVertex2f( scaleValue*(slicePointO[ 0] + 10000*sliceVector[ 0]), scaleValue*(slicePointO[ 1] + 10000*sliceVector[ 1]));
 						glEnd();
 					}
 					
@@ -6425,17 +6424,17 @@ static long scrollMode;
 						glColor3f (0.0f, 0.6f, 0.0f);
 						glLineWidth(2.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePoint2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePoint2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePoint2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] - 10000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePoint2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePoint2[ 1] + 10000*sliceVector2[ 1]));
 						glEnd();
 						glLineWidth(1.0);
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointI2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePointI2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointI2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] - 10000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointI2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointI2[ 1] + 10000*sliceVector2[ 1]));
 						glEnd();
 						glBegin(GL_LINES);
-							glVertex2f( scaleValue*(slicePointO2[ 0] - 1000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 1000*sliceVector2[ 1]));
-							glVertex2f( scaleValue*(slicePointO2[ 0] + 1000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 1000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointO2[ 0] - 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] - 10000*sliceVector2[ 1]));
+							glVertex2f( scaleValue*(slicePointO2[ 0] + 10000*sliceVector2[ 0]), scaleValue*(slicePointO2[ 1] + 10000*sliceVector2[ 1]));
 						glEnd();
 					}
 					

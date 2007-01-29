@@ -1932,6 +1932,10 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
+	#if __LP64__
+	return;
+	#endif
+	
 	long	pix[ 3];
 	float	pos[ 3], value;
 	
@@ -3607,8 +3611,10 @@ public:
 
 -(void) bestRendering:(id) sender
 {
+	NSLog( @"start Best");
 	[self renderImageWithBestQuality: YES waitDialog: YES];
 	[self endRenderImageWithBestQuality];
+	NSLog( @"end Best");
 }
 
 -(void) axView:(id) sender

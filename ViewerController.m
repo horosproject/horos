@@ -1651,13 +1651,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
-- (void) windowDidBecomeMain:(NSNotification *)aNotification
-{
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"]) [self autoHideMatrix];
-	
-	[self SetSyncButtonBehavior: self];
-}
-
 - (void)windowDidChangeScreen:(NSNotification *)aNotification
 {
 	long i;
@@ -1688,7 +1681,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
-- (void) windowDidBecomeKey:(NSNotification *)aNotification
+- (void) refreshToolbar
 {
 	long i;
 	
@@ -1727,6 +1720,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[browserWindow findAndSelectFile: 0L image:[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] shouldExpand:NO];
 	}
+	
+	[self SetSyncButtonBehavior: self];
+}
+
+- (void) windowDidBecomeMain:(NSNotification *)aNotification
+{
+	[self refreshToolbar];
+}
+
+- (void) windowDidBecomeKey:(NSNotification *)aNotification
+{
+	[self refreshToolbar];
 }
 
 /*
@@ -3917,6 +3922,8 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView setDrawing: YES];
 	
+	[self SetSyncButtonBehavior: self];
+	
 	return self;
 }
 
@@ -4259,6 +4266,8 @@ static ViewerController *draggedController = 0L;
 	windowWillClose = NO;
 	
 	[imageView setDrawing: YES];
+	
+	[self SetSyncButtonBehavior: self];
 }
 
 - (void) showWindowTransition
@@ -4582,6 +4591,11 @@ static ViewerController *draggedController = 0L;
 	if([note object] == blendingController) // our blended serie is closing itself....
 	{
 		[self ActivateBlending: 0L];
+	}
+	
+	if( [[self window] isMainWindow] || [[self window] isKeyWindow])
+	{
+		[self refreshToolbar];
 	}
 }
 

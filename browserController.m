@@ -2158,7 +2158,8 @@ static BOOL COMPLETEREBUILD = NO;
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
 		{
-			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: 0L];
+			[[NSFileManager defaultManager] removeFileAtPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: 0L];
+			[[NSFileManager defaultManager] movePath: currentDatabasePath toPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: 0L];
 		}
 
 	}
@@ -7821,8 +7822,11 @@ static NSArray*	openSubSeriesArray = 0L;
 			[currentDatabasePath release];
 			currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
 			
-			NEEDTOREBUILD = YES;
-			COMPLETEREBUILD = YES;
+			if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO)
+			{
+				NEEDTOREBUILD = YES;
+				COMPLETEREBUILD = YES;
+			}
 		}
 		
 		[self setFixedDocumentsDirectory];
