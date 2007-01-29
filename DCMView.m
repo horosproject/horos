@@ -453,7 +453,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	circleRes = (pushBackRadius>50) ? 60 : circleRes;
 	circleRes = (pushBackRadius>70) ? 80 : circleRes;
 	
-//	glColor4f(1.0,1.0,0.0,0.2);
 	glColor4f(1.0,1.0,0.0,pushBackAlpha);
 
 	glBegin(GL_POLYGON);	
@@ -461,7 +460,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		// M_PI defined in cmath.h
 		float alpha = i * 2 * M_PI /circleRes;
-		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue/[curDCM pixelRatio]);
+//		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue*[curDCM pixelRatio], pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue*[curDCM pixelRatio]);
+		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue);//*[curDCM pixelSpacingY]/[curDCM pixelSpacingX]
 	}
 	glEnd();
 	glDisable(GL_BLEND);
@@ -2454,7 +2454,7 @@ static long scrollMode;
 					pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
 					dx = (pt.x-tempPt.x);
 					dx2 = dx * dx;
-					dy = (pt.y-tempPt.y);
+					dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
 					dy2 = dy * dy;
 					distance = sqrt(dx2 + dy2);
 				}
@@ -2469,7 +2469,7 @@ static long scrollMode;
 						pt = [[points objectAtIndex:j] point];
 						dx = (pt.x-tempPt.x);
 						dx2 = dx * dx;
-						dy = (pt.y-tempPt.y);
+						dy = (pt.y-tempPt.y) *[self pixelSpacingY]/[self pixelSpacingX];
 						dy2 = dy * dy;
 						d = sqrt(dx2 + dy2);
 						distance = (d < distance) ? d : distance ;
@@ -3631,7 +3631,7 @@ static long scrollMode;
 						pt = [[points objectAtIndex:j] point];
 						dx = (pt.x-tempPt.x);
 						dx2 = dx * dx;
-						dy = (pt.y-tempPt.y);
+						dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
 						dy2 = dy * dy;
 						d = sqrt(dx2 + dy2);
 						
@@ -3663,7 +3663,7 @@ static long scrollMode;
 									pt2 = [[points objectAtIndex:k] point];
 									dx = (pt2.x-pt.x);
 									dx2 = dx * dx;
-									dy = (pt2.y-pt.y);
+									dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
 									dy2 = dy * dy;
 									d = sqrt(dx2 + dy2);
 									
