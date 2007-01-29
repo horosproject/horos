@@ -23,7 +23,6 @@ static NSString *hostName = @"";
 
 + (BOOL) isHUG
 {
-	return NO;
 	if( testIsHugDone == NO)
 	{
 		NSArray	*names = [[NSHost currentHost] names];
