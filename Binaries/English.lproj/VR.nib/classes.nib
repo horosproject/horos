@@ -96,6 +96,11 @@
         }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
+            CLASS = OSIWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {renderButton = id; }; 
             CLASS = OpacityTransferView; 
             LANGUAGE = ObjC; 
@@ -124,6 +129,7 @@
                 setEngine = id; 
                 setMode = id; 
                 setOrientation = id; 
+                showCLUTOpacityPanel = id; 
                 undo = id; 
             }; 
             CLASS = VRController; 
@@ -236,6 +242,7 @@
                 endOpacity = id; 
                 endSetWLWW = id; 
                 fullScreenMenu = id; 
+                print = id; 
                 updateSetWLWW = id; 
             }; 
             CLASS = Window3DController; 
@@ -260,7 +267,7 @@
                 ww = NSTextField; 
                 wwset = NSTextField; 
             }; 
-            SUPERCLASS = NSWindowController; 
+            SUPERCLASS = OSIWindowController; 
         }, 
         {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
     ); 

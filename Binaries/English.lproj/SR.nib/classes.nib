@@ -15,56 +15,8 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {
-                ApplyCLUT = id; 
-                LODsliderAction = id; 
-                blendingSlider = id; 
-                endNameWLWW = id; 
-                setDefaultTool = id; 
-                sliderAction = id; 
-            }; 
-            CLASS = MIPController; 
+            CLASS = OSIWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                BlendingView = NSView; 
-                LODSlider = NSSlider; 
-                LODView = NSView; 
-                WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingSlider = NSSlider; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                newName = NSTextField; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                view = MIPView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            ACTIONS = {endNameWLWW = id; setDefaultTool = id; sliderAction = id; }; 
-            CLASS = MPRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                WLWWView = NSView; 
-                Xslider = NSSlider; 
-                Yslider = NSSlider; 
-                Zslider = NSSlider; 
-                addWLWWWindow = NSWindow; 
-                axesView = NSView; 
-                newName = NSTextField; 
-                toolsView = NSView; 
-                view = MPRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {
@@ -179,51 +131,46 @@
             }; 
             SUPERCLASS = VTKView; 
         }, 
-        {
-            ACTIONS = {
-                ApplyCLUT = id; 
-                ApplyOpacity = id; 
-                LODsliderAction = id; 
-                blendingSlider = id; 
-                endCLUT = id; 
-                endNameWLWW = id; 
-                endOpacity = id; 
-                setDefaultTool = id; 
-            }; 
-            CLASS = VRController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                BlendingView = NSView; 
-                LODSlider = NSSlider; 
-                LODView = NSView; 
-                OpacityName = NSTextField; 
-                OpacityPopup = NSPopUpButton; 
-                OpacityView = OpacityTransferView; 
-                WLWWView = NSView; 
-                addCLUTWindow = NSWindow; 
-                addOpacityWindow = NSWindow; 
-                addWLWWWindow = NSWindow; 
-                blendingPercentage = NSTextField; 
-                blendingSlider = NSSlider; 
-                clutName = NSTextField; 
-                clutPopup = NSPopUpButton; 
-                clutView = ColorTransferView; 
-                newName = NSTextField; 
-                toolsMatrix = NSMatrix; 
-                toolsView = NSView; 
-                view = VRView; 
-                wl = NSTextField; 
-                wlwwPopup = NSPopUpButton; 
-                ww = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
         {CLASS = VRView; LANGUAGE = ObjC; SUPERCLASS = VTKView; }, 
         {CLASS = VTKView; LANGUAGE = ObjC; SUPERCLASS = vtkCocoaGLView; }, 
         {
+            ACTIONS = {
+                AddCLUT = id; 
+                ApplyCLUT = id; 
+                ApplyOpacity = id; 
+                SetWLWW = id; 
+                clutAction = id; 
+                endCLUT = id; 
+                endNameWLWW = id; 
+                endOpacity = id; 
+                endSetWLWW = id; 
+                fullScreenMenu = id; 
+                print = id; 
+                updateSetWLWW = id; 
+            }; 
             CLASS = Window3DController; 
             LANGUAGE = ObjC; 
-            SUPERCLASS = NSWindowController; 
+            OUTLETS = {
+                OpacityName = NSTextField; 
+                OpacityPopup = NSPopUpButton; 
+                OpacityView = OpacityTransferView; 
+                addCLUTWindow = NSWindow; 
+                addOpacityWindow = NSWindow; 
+                addWLWWWindow = NSWindow; 
+                clutName = NSTextField; 
+                clutPopup = NSPopUpButton; 
+                clutView = ColorTransferView; 
+                fromset = NSTextField; 
+                newName = NSTextField; 
+                setWLWWWindow = NSWindow; 
+                toset = NSTextField; 
+                wl = NSTextField; 
+                wlset = NSTextField; 
+                wlwwPopup = NSPopUpButton; 
+                ww = NSTextField; 
+                wwset = NSTextField; 
+            }; 
+            SUPERCLASS = OSIWindowController; 
         }, 
         {CLASS = vtkCocoaGLView; LANGUAGE = ObjC; SUPERCLASS = NSOpenGLView; }
     ); 
