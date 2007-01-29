@@ -1874,29 +1874,28 @@ public:
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
-	if (!interactor)
-	return;
+	if (!interactor) return;
 	
 	if( projectionMode != 2)
 	{
-		int shiftDown = 0;
-		int controlDown = 1;
-
-
-		NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		
-		interactor->SetEventInformation( (int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
-		if( [theEvent deltaY] > 0)
-		{
-			[self computeLength];
-			interactor->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
-		}
-		else
-		{
-			[self computeLength];
-			interactor->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
-		}
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+//		int shiftDown = 0;
+//		int controlDown = 1;
+//
+//
+//		NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+//		
+//		interactor->SetEventInformation( (int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
+//		if( [theEvent deltaY] > 0)
+//		{
+//			[self computeLength];
+//			interactor->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
+//		}
+//		else
+//		{
+//			[self computeLength];
+//			interactor->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
+//		}
+//		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 	}
 	else
 	{

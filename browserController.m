@@ -3130,7 +3130,7 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		for( i = 0; i < [outlineViewArray count] ; i++)
 		{
-			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientUID LIKE[cd] %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]]];
+			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientUID == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]]];
 		}
 		
 		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
