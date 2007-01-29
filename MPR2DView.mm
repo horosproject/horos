@@ -1765,8 +1765,6 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	vtkImageData	*tempIm;
 //	float			*imResult = 0L, *imResultBlending = 0L, *fullVolume = 0L, *fullVolumeBlending = 0L;
 	
-	//NSLog(@"start");
-	
 	if( thickSlabMode == 0) thickSlabCount = 1;
 	else thickSlabCount = thickSlab;
 	
@@ -2547,6 +2545,8 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
 	
 -(NSImage*) nsimage:(BOOL) notused
 {
+	[finalView display];	// Important for Quicktime export with rotation
+	
 	return [finalView nsimage: notused];
 }
 

@@ -5587,7 +5587,7 @@
 		BF7DEAC309D1F7AB00A332B8 /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */; };
 		BF7DEAC409D1F7AB00A332B8 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */; };
 		BF7DEAC509D1F7AC00A332B8 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */; };
-		BF7DEAC609D1F7AD00A332B8 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13006BF2C4F00C7EF1E; };
+		BF7DEAC609D1F7AD00A332B8 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */; };
 		BF7DEAC709D1F7B300A332B8 /* jdlossy.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */; };
 		BF7DEAC809D1F7B400A332B8 /* jdmainct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */; };
 		BF7DEAC909D1F7B400A332B8 /* jdmarker.c in Sources */ = {isa = PBXBuildFile; fileRef = BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */; };
@@ -14427,7 +14427,7 @@
 		BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = jdhuff8.h; sourceTree = "<group>"; };
 		BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdinput.c; sourceTree = "<group>"; };
 		BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdlhuff.c; sourceTree = "<group>"; };
-		BFAEB13006BF2C4F00C7EF1E = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdlossls.c; sourceTree = "<group>"; };
+		BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdlossls.c; sourceTree = "<group>"; };
 		BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdlossy.c; sourceTree = "<group>"; };
 		BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdmainct.c; sourceTree = "<group>"; };
 		BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = jdmarker.c; sourceTree = "<group>"; };
@@ -18973,7 +18973,7 @@
 				BFAEB12D06BF2C4F00C7EF1E /* jdhuff8.h */,
 				BFAEB12E06BF2C4F00C7EF1E /* jdinput.c */,
 				BFAEB12F06BF2C4F00C7EF1E /* jdlhuff.c */,
-				BFAEB13006BF2C4F00C7EF1E,
+				BFAEB13006BF2C4F00C7EF1E /* jdlossls.c */,
 				BFAEB13106BF2C4F00C7EF1E /* jdlossy.c */,
 				BFAEB13206BF2C4F00C7EF1E /* jdmainct.c */,
 				BFAEB13306BF2C4F00C7EF1E /* jdmarker.c */,

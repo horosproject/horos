@@ -27,18 +27,17 @@
 		<key>702</key>
 		<string>654 541 131 90 0 0 1440 878 </string>
 		<key>887</key>
-		<string>1187 1009 169 89 0 0 2560 1578 </string>
+		<string>1195 1006 185 91 0 0 2560 1578 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>197</integer>
-		<integer>364</integer>
 		<integer>209</integer>
-		<integer>575</integer>
+		<integer>887</integer>
 		<integer>631</integer>
-		<integer>239</integer>
+		<integer>364</integer>
+		<integer>197</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>

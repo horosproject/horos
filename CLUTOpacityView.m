@@ -7,7 +7,7 @@
 //
 
 #import "CLUTOpacityView.h"
-
+#import "BrowserController.h"
 
 @implementation CLUTOpacityView
 
@@ -1273,7 +1273,7 @@
 	[clut setObject:pointColors forKey:@"colors"];
 	[clut setObject:name forKey:@"name"];
 
-	NSMutableString *path = [NSMutableString stringWithString:documentsDirectory()];
+	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString:CLUTDATABASE];
 	
 	BOOL isDir = YES;
