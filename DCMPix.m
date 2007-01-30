@@ -2646,8 +2646,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		subtractedfGamma = 2.0;
 		subGammaFunction = 0L;
 		
-		ang = 0;
-		rot = 0;
+		//ang = 0;
+		//rot = 0;
 		maskID = 1;
 		maskTime = 0;
 		fImageTime = 0;
@@ -4487,6 +4487,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		isRGB = YES;			
 	} // endif ...extraction of the color palette
 	
+	//angles
+	if([dcmObject attributeValueWithName:@"PositionerPrimaryAngle"])   positionerPrimaryAngle=[[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"]retain]; //0018,1510
+	if([dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]) positionerSecondaryAngle=[[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]retain]; //0018,1511
+
 
 #pragma mark *RTSTRUCT	
 	//  Check for RTSTRUCT and create ROIs if needed	
@@ -8344,10 +8348,14 @@ BOOL            readable = YES;
 -(long) maskID {return maskID;}
 -(void) maskTime:(float)newMaskTime {maskTime = newMaskTime;}
 -(float) maskTime {return maskTime;}
--(void) rot:(float)newRot {rot = newRot;}
--(float) rot {return rot;}
--(void) ang:(float)newAng {ang = newAng;}
--(float) ang {return ang;}
+//-(void) rot:(float)newRot {rot = newRot;}
+//-(float) rot {return rot;}
+//-(void) ang:(float)newAng {ang = newAng;}
+//-(float) ang {return ang;}
+-(void) positionerPrimaryAngle:(NSNumber*)newPositionerPrimaryAngle{positionerPrimaryAngle=newPositionerPrimaryAngle;}
+-(NSNumber*) positionerPrimaryAngle{return positionerPrimaryAngle;}
+-(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle{positionerSecondaryAngle=newPositionerSecondaryAngle;}
+-(NSNumber*) positionerSecondaryAngle{return positionerSecondaryAngle;}
 
 
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;

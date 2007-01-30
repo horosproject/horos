@@ -108,8 +108,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	long				maskID;
 	float				maskTime;
 	float				fImageTime;
-	float				rot;
-	float				ang;
+	//float				rot;
+	//float				ang;
+	NSNumber			*positionerPrimaryAngle;
+	NSNumber			*positionerSecondaryAngle;
 	
 	long				shutterRect_x;
 	long				shutterRect_y;
@@ -278,10 +280,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(long) maskID;
 -(void) maskTime:(float)newMaskTime;
 -(float) maskTime;
--(void) rot:(float)newRot;
--(float) rot;
--(void) ang:(float)newAng;
--(float) ang;
+-(void) positionerPrimaryAngle:(NSNumber *)newPositionerPrimaryAngle;
+-(NSNumber*) positionerPrimaryAngle;
+-(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
+-(NSNumber*) positionerSecondaryAngle;
 
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;

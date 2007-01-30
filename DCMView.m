@@ -4680,16 +4680,7 @@ static long scrollMode;
 
 -(void) annotMenu:(id) sender
 {
-	//in case of tag=4 (plugin only) => check that  PLUGINdrawTextInfo.plugin exists
 	short chosenLine = [sender tag];
-	if (chosenLine == 4)
-	{
-		if( [plugins objectForKey:@"PLUGINdrawTextInfo"] == 0L)
-		{
-			chosenLine = 3;
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Annotations", nil), NSLocalizedString(@"PLUGINdrawTextInfo not available, full annotation chosen instead.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		}
-	}
 
     NSMenu   *menu = [sender menu];
     short    i;
@@ -5369,7 +5360,8 @@ static long scrollMode;
 	glLineWidth(1.0);
 	
 	
-	if (annotations != 4) //everything but plugin only
+	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo" object: self];
+	else //none, base, noName, full annotation
 	{
 		NSString	*tempString;
 		long		yRaster = 1, xRaster;
@@ -5719,111 +5711,7 @@ static long scrollMode;
 			}
 		}
 	}
-	else
-	{
-	// plugin only
-		if ( [plugins objectForKey:@"PLUGINdrawTextInfo"] != 0L)
-		{
-			// the plugin exists	
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			
-			NSString *SOPclassUID = [file valueForKeyPath:@"series.seriesSOPClassUID"];
-			NSString *Modality = [file valueForKeyPath:@"series.modality"];
-			NSString *PatientName = [NSString stringWithString:[file valueForKeyPath:@"series.study.name"]];
-			NSString *BirthDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.dateOfBirth"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-			NSString *PatientSex; //this field may be empty in the database
-			if ( [file valueForKeyPath:@"series.study.patientSex"]) PatientSex = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientSex"]];
-			else PatientSex = @" ";
-			NSString *PatientID = [NSString stringWithString:[file valueForKeyPath:@"series.study.patientID"]];
-			NSNumber *FrameTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] fImageTime]];
-			NSNumber *MaskTime = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] maskTime]];
-			NSString *SeriesTime = [NSString stringWithString:[[file valueForKeyPath:@"series.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
-			NSString *StudyDate = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:shortDateString timeZone:0L locale:localeDictionnary]];
-			NSString *StudyTime = [NSString stringWithString:[[file valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:@"%H:%M:%S" timeZone:0L locale:localeDictionnary]];
-			NSNumber *Rot = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] rot]];
-			NSNumber *Ang = [NSNumber numberWithFloat:[[dcmPixList objectAtIndex: curImage] ang]];
-			NSNumber *CurFrame = [NSNumber numberWithInt:curImage+1];
-			NSNumber *CurMask = [NSNumber numberWithInt:[[dcmPixList objectAtIndex: curImage] maskID]+1];
-			NSNumber *FrameCount = [NSNumber numberWithInt:[dcmPixList count]];
-			NSNumber *SeriesNumber = [file valueForKeyPath:@"series.id"];
-			
-			NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-				SOPclassUID, @"SOPclassUID",
-				Modality, @"Modality",
-				PatientName, @"PatientName",
-				BirthDate, @"BirthDate",
-				PatientSex, @"PatientSex",
-				PatientID, @"PatientID",
-				FrameTime, @"FrameTime",
-				MaskTime, @"MaskTime",
-				SeriesTime, @"SeriesTime",															
-				StudyDate, @"StudyDate",
-				StudyTime, @"StudyTime",
-				Rot, @"Rot",
-				Ang, @"Ang",
-				CurFrame, @"CurFrame",
-				CurMask, @"CurMask",
-				FrameCount, @"FrameCount",
-				SeriesNumber, @"SeriesNumber",
-			nil ];
-
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"PLUGINdrawTextInfo"
-																object: self
-															userInfo: userInfo];
-			[pool release];
-		}
-	}
 }
-- (void) DrawNSStringGLPLUGINonly:(NSString*)str :(long)flor :(_Bool)right
-{	
-	NSRect size = [self frame];
-	unsigned char	*lstr = (unsigned char*) [str UTF8String];
-	short lstrLength = [str length];
-	GLint i = -1;
-	short rasterTab = margin;
-
-	//fontRasterY class variable
-	switch(flor)
-	{
-		case 1:	// top
-			fontRasterY = stringSize.height + margin;
-		break;
-		
-		case 2:	// down
-			fontRasterY += (stringSize.height * 1.1); //+1.1em
-		break;
-
-		case 3:	// up
-			fontRasterY -= (stringSize.height * 1.1); //-1.1em		
-		break;
-		
-		case 4:	// bottom
-			fontRasterY = (short) (size.size.height - margin); //bottom
-		break;
-		
-		default:
-		NSLog(@"Line option %d not valid",flor);
-		return;
-	}
-
-	if (right == TRUE) // right margin -> left
-	{
-		rasterTab = size.size.width - margin;
-		//loop variable avoiding last character (NULL terminating C string)
-		while (i++ < lstrLength) rasterTab -= fontListGLSize[ lstr[ i]];
-	}
-	
-	glColor4f (0.0f, 0.0f, 0.0f, 0.0f); //black
-	glRasterPos3d (rasterTab+1, fontRasterY+1, 0);
-	i=-1;
-	while (i++ < lstrLength) glCallList (fontListGL + lstr[i] - ' ');
-
-	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); //white
-	glRasterPos3d (rasterTab, fontRasterY, 0);
-	i=-1;
-	while (i++ < lstrLength) glCallList (fontListGL + lstr[i] - ' ');
-}
-
 
 #pragma mark-
 #pragma mark image transformation
