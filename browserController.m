@@ -10722,74 +10722,78 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObjectModel		*model = [self managedObjectModel];
 	
 	[checkIncomingLock lock];
-	[context lock];
-	DatabaseIsEdited = YES;
 	
-	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-	NSError	*error = 0L;
-	NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
-
-	Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
-	[splash showWindow:self];
-
-	if( [seriesArray count] > 0)
+	if( [context tryLock])
 	{
-		NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
-		
-		for( i = 0; i < [[NSApp windows] count]; i++)
+		DatabaseIsEdited = YES;
+
+		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+		NSError	*error = 0L;
+		NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
+
+		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Unmounting volume...",@"Unmounting volume")];
+		[splash showWindow:self];
+
+		if( [seriesArray count] > 0)
 		{
-			if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
-		}
-		
-		[[splash progress] setMaxValue:[seriesArray count]/50];
-		
-		@try
-		{
-			// Find unavailable files
-			for( i = 0; i < [seriesArray count]; i++)
+			NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
+			
+			for( i = 0; i < [[NSApp windows] count]; i++)
 			{
-				NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
-				if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
+				if( [[[[NSApp windows] objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[[NSApp windows] objectAtIndex:i] windowController]];
+			}
+			
+			[[splash progress] setMaxValue:[seriesArray count]/50];
+			
+			@try
+			{
+				// Find unavailable files
+				for( i = 0; i < [seriesArray count]; i++)
 				{
-					NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
-					
-					needsUpdate = YES;
-					
-					// Is a viewer containing this study opened? -> close it
-					for( x = 0; x < [viewersList count]; x++)
+					NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
+					if( [[image  valueForKey:@"completePath"] compare:sNewDrive options:NSCaseInsensitiveSearch range:range] == 0)
 					{
-						if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKeyPath:@"study"];
+						
+						needsUpdate = YES;
+						
+						// Is a viewer containing this study opened? -> close it
+						for( x = 0; x < [viewersList count]; x++)
 						{
-							[[[viewersList objectAtIndex: x] window] close];
+							if( study == [[[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
+							{
+								[[[viewersList objectAtIndex: x] window] close];
+							}
 						}
+						
+						[context deleteObject: study];
 					}
 					
-					[context deleteObject: study];
+					if( i % 50 == 0) [splash incrementBy:1];
 				}
-				
-				if( i % 50 == 0) [splash incrementBy:1];
 			}
+			@catch( NSException *ne)
+			{
+				NSLog( @"Unmount exception");
+			}
+			
+			if( needsUpdate)
+			{
+				[self saveDatabase: currentDatabasePath];
+			}
+			
+			[self outlineViewRefresh];
 		}
-		@catch( NSException *ne)
-		{
-			NSLog( @"Unmount exception");
-		}
-		
-		if( needsUpdate)
-		{
-			[self saveDatabase: currentDatabasePath];
-		}
-		
-		[self outlineViewRefresh];
+
+		[splash close];
+		[splash release];
+		[context unlock];
 	}
 	
-	[splash close];
-	[splash release];
-
 	[checkIncomingLock unlock];
-	[context unlock];
+	
 	DatabaseIsEdited = NO;
 }
 
