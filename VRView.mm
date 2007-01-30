@@ -6079,5 +6079,42 @@ public:
 	return returnedVal;
 }
 
+#pragma mark -
+#pragma mark Advanced CLUT / Opacity
+
+- (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
+{
+	NSArray *curves = [clut objectForKey:@"curves"];
+	NSArray *pointColors = [clut objectForKey:@"colors"];
+	NSArray *name = [clut objectForKey:@"name"];
+	
+	NSArray *firstCurve = [curves objectAtIndex:0];
+	NSArray *firstColors = [pointColors objectAtIndex:0];
+	
+	colorTransferFunction->RemoveAllPoints();
+	opacityTransferFunction->RemoveAllPoints();
+	
+	int i,j;
+	for(i=0; i<[curves count]; i++)
+	{
+		NSArray *aCurve = [curves objectAtIndex:i];
+		NSArray *someColors = [pointColors objectAtIndex:i];
+		for(j=0; j<[aCurve count]; j++)
+		{
+			colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
+			opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
+		}
+	}
+	
+	if(volumeMapper)
+	{
+		if(lowRes)
+			volumeMapper->SetMinimumImageSampleDistance(LOD*3);
+		else
+			volumeMapper->SetMinimumImageSampleDistance(LOD);
+	}
+	
+    [self setNeedsDisplay:YES];
+}
 
 @end

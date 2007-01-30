@@ -35,6 +35,7 @@
 		pointBorder = 2;
 		zoomFactor = 1.0;
 		zoomFixedPoint = 0.0;
+		vrViewLowResolution = NO;
 		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
@@ -504,6 +505,7 @@
 - (void)updateView;
 {
 	[self setNeedsDisplay:YES];
+	[self setCLUTtoVRView];
 }
 
 #pragma mark -
@@ -590,6 +592,12 @@
 	if(j<[aCurve count]-1)
 		if(point.x>=[[aCurve objectAtIndex:j+1] pointValue].x) point.x = [[aCurve objectAtIndex:j+1] pointValue].x;
 	
+//	point.y += 1;
+//	point.y = log(point.y);
+		
+//	if(point.y<0.75) point.y *= 0.5;
+//	if(point.y<0.75) point.y = 2 * point.y - ;
+		
 	return point;
 }
 
@@ -598,9 +606,9 @@
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	
-	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.2f", pt.x, pt.y] attributes:attrsDictionary];
+	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.3f", pt.x, pt.y*pt.y] attributes:attrsDictionary];
 	NSAttributedString *labelValue = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f", pt.x] attributes:attrsDictionary];
-	NSAttributedString *labelAlpha = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"alpha : %1.2f", pt.y] attributes:attrsDictionary];
+	NSAttributedString *labelAlpha = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"alpha : %1.3f", pt.y*pt.y] attributes:attrsDictionary];
 	
 	NSAffineTransform* transform = [self transform];
 	NSPoint pt1 = [transform transformPoint:pt];
@@ -637,6 +645,7 @@
 	[[undoManager prepareWithInvocationTarget:self] removePointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	
 	[[curves objectAtIndex:curveIndex] insertObject:[NSValue valueWithPoint:point] atIndex:pointIndex];
+	//[[curves objectAtIndex:curveIndex] insertObject:[NSValue valueWithPoint:NSMakePoint(point.x,point.y)] atIndex:pointIndex];
 	[[pointColors objectAtIndex:curveIndex] insertObject:color atIndex:pointIndex];
 }
 
@@ -777,6 +786,8 @@
 	nothingChanged = YES;
 	[undoManager beginUndoGrouping];
 	
+	vrViewLowResolution = YES;
+	
 	if(![self selectPointAtPosition:mousePositionInView])
 	{
 		[self unselectPoints];
@@ -803,6 +814,9 @@
 	{
 		[undoManager undoNestedGroup];
 	}
+	
+	vrViewLowResolution = NO;
+	[self setCLUTtoVRView];
 	[super mouseUp:theEvent];
 }
 
@@ -957,6 +971,11 @@
 		}
 		[self updateView];
 	}
+}
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+	return YES;
 }
 
 #pragma mark -
@@ -1284,6 +1303,22 @@
 	
 	[path appendString:name];
 	[NSArchiver archiveRootObject:clut toFile:path];
+}
+
+#pragma mark -
+#pragma mark Connection to VRView
+
+- (void)setCLUTtoVRView
+{
+	if([curves count]>0)
+	{
+		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
+		[clut setObject:curves forKey:@"curves"];
+		[clut setObject:pointColors forKey:@"colors"];
+	//	[clut setObject:name forKey:@"name"];
+		
+		[vrView setAdvancedCLUT:clut lowResolution:vrViewLowResolution];
+	}
 }
 
 @end

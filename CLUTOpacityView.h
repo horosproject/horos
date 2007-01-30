@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
 
+@class VRView;
+
 @interface CLUTOpacityView : NSView {
 	NSColor *backgroundColor, *histogramColor, *pointsColor, *pointsBorderColor, *curveColor, *selectedPointColor, *textLabelColor;
 	float histogramOpacity;
@@ -34,6 +36,9 @@
 	
 	IBOutlet NSWindow *chooseNameAndSaveWindow;
 	IBOutlet NSTextField *clutSavedName;
+	
+	IBOutlet VRView *vrView;
+	BOOL vrViewLowResolution;
 }
 
 - (void)cleanup;

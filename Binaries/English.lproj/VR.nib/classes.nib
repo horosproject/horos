@@ -23,7 +23,11 @@
             }; 
             CLASS = CLUTOpacityView; 
             LANGUAGE = ObjC; 
-            OUTLETS = {chooseNameAndSaveWindow = NSWindow; clutSavedName = NSTextField; }; 
+            OUTLETS = {
+                chooseNameAndSaveWindow = NSWindow; 
+                clutSavedName = NSTextField; 
+                vrView = VRView; 
+            }; 
             SUPERCLASS = NSView; 
         }, 
         {
