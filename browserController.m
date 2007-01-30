@@ -5316,6 +5316,19 @@ static BOOL withReset = NO;
 	}
 }
 
+- (NSData*) produceJPEGThumbnail:(NSImage*) image
+{
+	NSData *imageData = [image  TIFFRepresentation];
+	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.2] forKey:NSImageCompressionFactor];
+	
+	NSData	*result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
+	
+	NSLog( @"thumbnail size: %d", [result length]);
+	
+	return result;
+}
+
 - (void) buildThumbnail:(NSManagedObject*) series
 {
 	if( [series valueForKey:@"thumbnail"] == 0L)
@@ -5326,12 +5339,11 @@ static BOOL withReset = NO;
 		if( [files count] > 0)
 		{
 			NSManagedObject *image = [files objectAtIndex: [files count]/2];
-			NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
 			
 			if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 			{
 				//By default we put this 'blank' icon
-				[series setValue: [notFound TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+				[series setValue: notFoundDataThumbnail forKey:@"thumbnail"];
 				[self saveDatabase: currentDatabasePath];
 				
 				NSLog( @"Build thumbnail for:");
@@ -5343,7 +5355,8 @@ static BOOL withReset = NO;
 					
 					[dcmPix computeWImage:YES :0 :0];
 					NSImage *thumbnail = [dcmPix getImage];
-					NSData *data = [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5];
+					NSData *data = [self produceJPEGThumbnail: thumbnail];
+
 					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
 					[dcmPix release];
 				}
@@ -5517,7 +5530,8 @@ static BOOL withReset = NO;
 				
 				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel && thumbnail != 0L)
 				{
-					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: [thumbnail TIFFRepresentationUsingCompression: NSTIFFCompressionPackBits factor:0.5] forKey:@"thumbnail"];
+					NSData *data = [self produceJPEGThumbnail: thumbnail];
+					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: data forKey:@"thumbnail"];
 				}
 				
 				if( thumbnail == 0L)
@@ -7772,6 +7786,9 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		long       i;
 		NSString    *str;
+		
+		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
+		notFoundDataThumbnail = [[self produceJPEGThumbnail: notFound] retain];
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		

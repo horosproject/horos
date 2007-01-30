@@ -292,6 +292,8 @@ typedef char* vtkMyCallbackVR;
 	float						firstPixel, secondPixel;
 	
 	NSDictionary				*_hotKeyDictionary;
+	
+	NSLock						*deleteRegion;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;

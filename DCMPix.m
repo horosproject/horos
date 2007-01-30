@@ -602,16 +602,16 @@ inline void DrawRuns(	struct edge *active,
 				
 				switch( orientation)
 				{
-					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
-					case 2:		curPix = &pix[ (curY * w) + start];							if( restore) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
+					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
+					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
+					case 2:		curPix = &pix[ (curY * w) + start];							if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
 				}
 				
 				x = end - start;
 				
 				if( x >= 0)
 				{
-					if( restore)
+					if( restore && restoreImageCache)
 					{
 						if( RGB == NO)
 						{
@@ -1628,29 +1628,38 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
-	for( i = 0; i < [pixArray count]; i++)
-	{
-		DCMPix	*s = [pixArray objectAtIndex:i];
-		
-		restoreImageCache[ i] = [[DCMPix alloc] myinit: [s srcFile] :i :[pixArray count] :0L :[s frameNo] :0];
-	}
+	NSLog( @"%d", sizeof(void*));
 	
-	NSLog( @"prepare Restore cache");
+	if( restoreImageCache)
+	{
+		for( i = 0; i < [pixArray count]; i++)
+		{
+			DCMPix	*s = [pixArray objectAtIndex:i];
+			
+			restoreImageCache[ i] = [[DCMPix alloc] myinit: [s srcFile] :i :[pixArray count] :0L :[s frameNo] :0];
+		}
+		
+		NSLog( @"prepare Restore cache");
+	}
+	else NSLog( @"prepare Restore cache - FAILED");
 }
 
 - (void) freeRestore
 {
 	int i;
 	
-	for( i = 0; i < [pixArray count]; i++)
+	if( restoreImageCache)
 	{
-		[restoreImageCache[ i] release];
+		for( i = 0; i < [pixArray count]; i++)
+		{
+			[restoreImageCache[ i] release];
+		}
+		
+		free( restoreImageCache);
+		restoreImageCache = 0L;
+		
+		NSLog( @"free Restore cache");
 	}
-	
-	free( restoreImageCache);
-	restoreImageCache = 0L;
-	
-	NSLog( @"free Restore cache");
 }
 
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore

@@ -1437,6 +1437,8 @@ public:
 		currentTool = t3DRotate;
 		[self setCursorForView: currentTool];
 		
+		deleteRegion = [[NSLock alloc] init];
+		
 		valueFactor = 1.0;
 		OFFSET16 = 1500;
 		blendingValueFactor = 1.0;
@@ -1678,6 +1680,11 @@ public:
 	long i;
 	
     NSLog(@"Dealloc VRView");
+	
+	[deleteRegion lock];
+	[deleteRegion unlock];
+	[deleteRegion release];
+	
 	[exportDCM release];
 	[splash close];
 	[splash release];
@@ -3020,7 +3027,7 @@ public:
 	}
 	
 	Transform->Delete();
-	
+		
 	[[pixList objectAtIndex: 0] prepareRestore];
 	
 	// Create a scheduler
@@ -3035,6 +3042,12 @@ public:
 	}
 	// Perform work schedule
 	[sched performScheduleForWorkUnits:unitsSet];
+	
+	// Delete current ROI
+	vtkPoints *pts = vtkPoints::New();
+	vtkCellArray *rect = vtkCellArray::New();
+	ROI3DData-> SetPoints( pts);		pts->Delete();
+	ROI3DData-> SetLines( rect);		rect->Delete();
 }
 
 - (void) keyDown:(NSEvent *)event
@@ -3100,13 +3113,16 @@ public:
 			WaitRendering	*waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Applying Scissor...", nil)];
 			[waiting showWindow:self];
 			
-			[self deleteRegion: c :pixList :NO];
+			if( [deleteRegion tryLock])
+			{
+				[self deleteRegion: c :pixList :NO];
+			}
 			
 //			if( blendingController)
 //			{
 //				[self deleteRegion: c :blendingPixList :YES];
 //			}
-
+			
 			[waiting close];
 			[waiting release];
 		}
@@ -3127,15 +3143,6 @@ public:
 
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
 {
-	// Delete current ROI
-	vtkPoints *pts = vtkPoints::New();
-	vtkCellArray *rect = vtkCellArray::New();
-	ROI3DData-> SetPoints( pts);		pts->Delete();
-	ROI3DData-> SetLines( rect);		rect->Delete();
-	
-	//vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
-	//[self setNeedsDisplay:YES];
-	
 	NSLog(@"Scissor End");
 	
 	// Update everything..
@@ -3161,6 +3168,8 @@ public:
 	[[pixList objectAtIndex: 0] freeRestore];
 	
 	[self setNeedsDisplay:YES];
+	
+	[deleteRegion unlock];
 }
 
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
@@ -3326,28 +3335,31 @@ public:
 {
 	long	i;
 	
-	if( r)
+	if( blendingController)
 	{
-		for( i = 0; i < 256; i++)
+		if( r)
 		{
-			blendingtable[i][0] = r[i] / 255.;
-			blendingtable[i][1] = g[i] / 255.;
-			blendingtable[i][2] = b[i] / 255.;
+			for( i = 0; i < 256; i++)
+			{
+				blendingtable[i][0] = r[i] / 255.;
+				blendingtable[i][1] = g[i] / 255.;
+				blendingtable[i][2] = b[i] / 255.;
+			}
+			blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
-	}
-	else
-	{
-		for( i = 0; i < 256; i++)
+		else
 		{
-			blendingtable[i][0] = i / 255.;
-			blendingtable[i][1] = i / 255.;
-			blendingtable[i][2] = i / 255.;
+			for( i = 0; i < 256; i++)
+			{
+				blendingtable[i][0] = i / 255.;
+				blendingtable[i][1] = i / 255.;
+				blendingtable[i][2] = i / 255.;
+			}
+			blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( blendingValueFactor*(blendingOFFSET16 + blendingWl-blendingWw/2), blendingValueFactor*(blendingOFFSET16 + blendingWl+blendingWw/2), 255, (double*) &blendingtable);
+		
+		[self setNeedsDisplay:YES];
 	}
-	
-    [self setNeedsDisplay:YES];
 }
 
 -(void) setOpacity:(NSArray*) array

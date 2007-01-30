@@ -3201,78 +3201,83 @@ public:
 	long	i;
 	float   val, ii;
 	double  alpha[ 256];
-	
-	blendingFactor = a;
-	
-	if( a <= 0)
+
+	if( blendingController)
 	{
-		a += 256;
+		blendingFactor = a;
 		
-		for(i=0; i < 256; i++) 
+		if( a <= 0)
 		{
-			ii = i;
-			val = (a * ii) / 256.;
+			a += 256;
 			
-			if( val > 255) val = 255;
-			if( val < 0) val = 0;
-			
-			alpha[ i] = val / 255.;
-		}
-	}
-	else
-	{
-		if( a == 256)
-		{
-			for(i=0; i < 256; i++)
-			{
-				alpha[ i] = 1.0;
-			}
-		}
-		else
-		{
 			for(i=0; i < 256; i++) 
 			{
 				ii = i;
-				val = (256. * ii)/(256 - a);
+				val = (a * ii) / 256.;
 				
 				if( val > 255) val = 255;
 				if( val < 0) val = 0;
 				
-				alpha[ i] = val / 255.0;
+				alpha[ i] = val / 255.;
 			}
 		}
+		else
+		{
+			if( a == 256)
+			{
+				for(i=0; i < 256; i++)
+				{
+					alpha[ i] = 1.0;
+				}
+			}
+			else
+			{
+				for(i=0; i < 256; i++) 
+				{
+					ii = i;
+					val = (256. * ii)/(256 - a);
+					
+					if( val > 255) val = 255;
+					if( val < 0) val = 0;
+					
+					alpha[ i] = val / 255.0;
+				}
+			}
+		}
+		
+		blendingOpacityTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &alpha);
+		
+		[self setNeedsDisplay: YES];
 	}
-	
-	blendingOpacityTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &alpha);
-	
-	[self setNeedsDisplay: YES];
 }
 
 -(void) setBlendingCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	long	i;
 	
-	if( r)
+	if( blendingController)
 	{
-		for( i = 0; i < 256; i++)
+		if( r)
 		{
-			table[i][0] = r[i] / 255.;
-			table[i][1] = g[i] / 255.;
-			table[i][2] = b[i] / 255.;
+			for( i = 0; i < 256; i++)
+			{
+				table[i][0] = r[i] / 255.;
+				table[i][1] = g[i] / 255.;
+				table[i][2] = b[i] / 255.;
+			}
+			blendingColorTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &table);
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &table);
-	}
-	else
-	{
-		for( i = 0; i < 256; i++)
+		else
 		{
-			table[i][0] = i / 255.;
-			table[i][1] = i / 255.;
-			table[i][2] = i / 255.;
+			for( i = 0; i < 256; i++)
+			{
+				table[i][0] = i / 255.;
+				table[i][1] = i / 255.;
+				table[i][2] = i / 255.;
+			}
+			blendingColorTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &table);
 		}
-		blendingColorTransferFunction->BuildFunctionFromTable( 0, 255, 255, (double*) &table);
 	}
-	
     [self setNeedsDisplay:YES];
 }
 

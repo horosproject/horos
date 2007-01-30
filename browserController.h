@@ -72,6 +72,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSNumberFormatter		*numFmt;
     
+	NSData					*notFoundDataThumbnail;
+	
     DCMPix                  *curPreviewPix;
     
     NSTimer                 *timer, *IncomingTimer, *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer, *bonjourTimer, *bonjourRunLoopTimer, *deleteQueueTimer, *autoroutingQueueTimer;
