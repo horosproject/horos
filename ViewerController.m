@@ -3431,6 +3431,7 @@ static ViewerController *draggedController = 0L;
 										SpeedToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
 										PrintToolbarItemIdentifier,
+										XMLToolbarItemIdentifier,
 										nil];
 }
 
@@ -3911,7 +3912,7 @@ static ViewerController *draggedController = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 	
 	displayOnlyKeyImages = NO;
-		
+	
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 #if !__LP64__
 	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)

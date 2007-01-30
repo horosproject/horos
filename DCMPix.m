@@ -5266,6 +5266,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			if (val != NULL) viewPosition = [[NSString stringWithCString:val->a] retain];
 			else viewPosition = 0;
 			
+			val = Papy3GetElement (theGroupP, papPositionerPrimaryAngleGr, &nbVal, &elemType);
+			if (val != NULL) positionerPrimaryAngle = [[NSNumber numberWithFloat: [[NSString stringWithCString:val->a] floatValue]] retain];
+			
+			val = Papy3GetElement (theGroupP, papPositionerSecondaryAngleGr, &nbVal, &elemType);
+			if (val != NULL) positionerSecondaryAngle = [[NSNumber numberWithFloat: [[NSString stringWithCString:val->a] floatValue]] retain];
+			
 			val = Papy3GetElement (theGroupP, papPatientPositionGr, &nbVal, &elemType);
 			if (val != NULL) patientPosition = [[NSString stringWithCString:val->a] retain];
 			else patientPosition = 0;
