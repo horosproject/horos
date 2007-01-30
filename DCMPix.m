@@ -4371,6 +4371,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 #pragma mark *pixel and image
 
+	//angles
+	NSNumber *multiframePrimaryAngle = [[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"]retain];
+	NSNumber  *multiframeSecondaryAngle = [[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]retain];
 	//orientation
 	
 	originX = 0;	originY = 0;	originZ = 0;
@@ -4496,10 +4499,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		isRGB = YES;			
 	} // endif ...extraction of the color palette
 	
-	//angles
-	if([dcmObject attributeValueWithName:@"PositionerPrimaryAngle"])   positionerPrimaryAngle=[[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"]retain]; //0018,1510
-	if([dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]) positionerSecondaryAngle=[[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]retain]; //0018,1511
-
 
 #pragma mark *RTSTRUCT	
 	//  Check for RTSTRUCT and create ROIs if needed	
@@ -4815,7 +4814,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //		if ([dcmObject attributeValueWithName:@"PixelData"]) {
 //			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
 
-		
+
+		//angles
+			[[pixArray objectAtIndex: ee] positionerPrimaryAngle:multiframePrimaryAngle];
+			[[pixArray objectAtIndex: ee] positionerSecondaryAngle:multiframeSecondaryAngle];
+			//NSLog(@"primary angle:%f",[positionerPrimaryAngle floatValue]);
+			//NSLog(@"secondary angle:%f",[positionerSecondaryAngle floatValue]);
+
 		//get PixelData
 			NSData *pixData = [pixelAttr decodeFrameAtIndex:ee];
 			oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
@@ -4846,6 +4851,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		isRGB = NO;
 		inverseVal = NO;
+
 				
 		NSString *colorspace = [dcmObject attributeValueWithName:@"PhotometricInterpretation"];		
 		if ([colorspace rangeOfString:@"MONOCHROME1"].location != NSNotFound) {inverseVal = YES; savedWL = -savedWL;}													
