@@ -8352,9 +8352,24 @@ BOOL            readable = YES;
 //-(float) rot {return rot;}
 //-(void) ang:(float)newAng {ang = newAng;}
 //-(float) ang {return ang;}
--(void) positionerPrimaryAngle:(NSNumber*)newPositionerPrimaryAngle{positionerPrimaryAngle=newPositionerPrimaryAngle;}
+-(void) positionerPrimaryAngle:(NSNumber*)newPositionerPrimaryAngle
+{
+	if( positionerPrimaryAngle != newPositionerPrimaryAngle)
+	{
+		[positionerPrimaryAngle release];
+		positionerPrimaryAngle = [newPositionerPrimaryAngle retain];
+	}
+}
 -(NSNumber*) positionerPrimaryAngle{return positionerPrimaryAngle;}
--(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle{positionerSecondaryAngle=newPositionerSecondaryAngle;}
+-(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle
+{
+	if( positionerSecondaryAngle != newPositionerSecondaryAngle)
+	{
+		[positionerSecondaryAngle release];
+		positionerSecondaryAngle = [newPositionerSecondaryAngle retain];
+	}
+}
+
 -(NSNumber*) positionerSecondaryAngle{return positionerSecondaryAngle;}
 
 
@@ -9177,7 +9192,9 @@ BOOL            readable = YES;
 - (void) dealloc
 {
 	if( shutterPolygonal) free( shutterPolygonal);
-
+	
+	[positionerPrimaryAngle release];
+	[positionerSecondaryAngle release];
 	[processorsLock release];
 	[acquisitionTime release];
 	[radiopharmaceuticalStartTime release];
