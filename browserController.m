@@ -1133,39 +1133,42 @@ static BOOL COMPLETEREBUILD = NO;
 		{
 			NSDictionary	*routingRule = [autoroutingRules objectAtIndex: i];
 			
-			NSManagedObjectContext *context = [self managedObjectContext];
-			[context lock];
-			 
-			NSPredicate			*predicate = 0L;
-			NSArray				*result;
-			
-			@try
+			if( [routingRule valueForKey:@"activated"] == 0L || [[routingRule valueForKey:@"activated"] boolValue] == YES)
 			{
-				predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
-				if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
-			}
-			
-			@catch( NSException *ne)
-			{
-				result = 0L;
-				NSLog( @"Error in autorouting filter :");
-				NSLog( [ne name]);
-				NSLog( [ne reason]);
-			}
-			
-			if( [result count])
-			{
-				if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
-				if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
-				if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
+				NSManagedObjectContext *context = [self managedObjectContext];
+				[context lock];
+				 
+				NSPredicate			*predicate = 0L;
+				NSArray				*result;
 				
-				[autoroutingQueue lock];
+				@try
+				{
+					predicate = [self smartAlbumPredicateString: [routingRule objectForKey:@"filter"]];
+					if( predicate) result = [newImages filteredArrayUsingPredicate: predicate];
+				}
 				
-				[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server", 0L]];
+				@catch( NSException *ne)
+				{
+					result = 0L;
+					NSLog( @"Error in autorouting filter :");
+					NSLog( [ne name]);
+					NSLog( [ne reason]);
+				}
 				
-				[autoroutingQueue unlock];
+				if( [result count])
+				{
+					if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
+					if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
+					if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
+					
+					[autoroutingQueue lock];
+					
+					[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server", 0L]];
+					
+					[autoroutingQueue unlock];
+				}
+				[context unlock];
 			}
-			[context unlock];
 		}
 	}
 }

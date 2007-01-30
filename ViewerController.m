@@ -5732,7 +5732,7 @@ static ViewerController *draggedController = 0L;
     if( [sender tag])   //User clicks OK Button
     {
 		long i, x, y;
-		float v[ 6], o[ 3];
+		float v[ 9], o[ 3];
 		
 		for( i = 0; i < 6; i++) v[ i] = [[customVectors cellWithTag: i] floatValue];
 		for( i = 0; i < 3; i++) o[ i] = [[customOrigin cellWithTag: i] floatValue];
@@ -5743,23 +5743,13 @@ static ViewerController *draggedController = 0L;
 			int		dir = 2;
 			float	vectors[ 9], vectorsB[ 9];
 			
-			if( [pixList[ i] count] > 1)
-			{
-				[[pixList[ i] objectAtIndex:0] orientation: vectors];
-				[[pixList[ i] objectAtIndex:1] orientation: vectorsB];
-				
-				for( x = 0; x < 9; x++)
-				{
-					if( vectors[ x] != vectorsB[ x]) equalVector = NO;
-				}
-			
-				if( equalVector)
-				{
-					if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8])) dir = 0;
-					if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8])) dir = 1;
-					if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7])) dir = 2;
-				}
-			}
+			v[6] = v[1]*v[5] - v[2]*v[4];
+			v[7] = v[2]*v[3] - v[0]*v[5];
+			v[8] = v[0]*v[4] - v[1]*v[3];
+
+			if( fabs( v[6]) > fabs(v[7]) && fabs( v[6]) > fabs(v[8])) dir = 0;
+			if( fabs( v[7]) > fabs(v[6]) && fabs( v[7]) > fabs(v[8])) dir = 1;
+			if( fabs( v[8]) > fabs(v[6]) && fabs( v[8]) > fabs(v[7])) dir = 2;
 			
 			for( x = 0; x < [pixList[ i] count]; x++)
 			{

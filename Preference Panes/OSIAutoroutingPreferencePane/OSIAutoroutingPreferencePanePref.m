@@ -73,6 +73,18 @@
 	routesArray = [[[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy] retain];
 	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
 	
+	int i;
+	for( i = 0 ; i < [routesArray count] ; i++)
+	{
+		NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
+		[routesArray replaceObjectAtIndex: i withObject:newDict];
+		
+		if( [newDict valueForKey:@"activated"] == 0)
+		{
+			[newDict setValue: [NSNumber numberWithBool: YES] forKey:@"activated"];
+		}
+	}
+	
 	[routesTable reloadData];
 	
 	[routesTable setDelegate:self];
@@ -127,7 +139,7 @@ static BOOL newRouteMode = NO;
 	{
 		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
 		
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", 0L]];
+		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", [NSNumber numberWithBool:YES], @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", 0L]];
 	}
 	else
 	{
@@ -255,6 +267,12 @@ static BOOL newRouteMode = NO;
 	}
 	
 	return 0L;
+}
+
+- (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+{
+	if( [[aTableColumn identifier] isEqualToString:@"activated"])
+		[[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
