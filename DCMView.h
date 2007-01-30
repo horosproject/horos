@@ -336,7 +336,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y;
 - (void) DrawCStringGL: ( char *) cstrOut :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex;
-- (void) DrawNSStringGLPLUGINonly:(NSString*)str :(long)line :(_Bool)right;
 - (void) drawTextualData:(NSRect) size :(long) annotations;
 - (void) draw2DPointMarker;
 - (void) setSyncro:(long) s;

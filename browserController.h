@@ -211,6 +211,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSView					*reportTemplatesView;
 	IBOutlet NSImageView			*reportTemplatesImageView;
 	IBOutlet NSPopUpButton			*reportTemplatesListPopUpButton;
+	
+	NSConditionLock					*newFilesConditionLock;
+	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 }
 
 + (BrowserController*) currentBrowser;

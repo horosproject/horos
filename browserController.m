@@ -405,30 +405,30 @@ static BOOL COMPLETEREBUILD = NO;
 	return dstPath;
 }
 
-- (void) reloadViewers: (NSMutableArray*) viewersListToReload
+- (void) reloadViewers: (NSMutableArray*) vl
 {
 	long i;
 	
 	// Reload series if needed
-	for( i = 0; i < [viewersListToReload count]; i++)
+	for( i = 0; i < [vl count]; i++)
 	{
-		if( [[[viewersListToReload objectAtIndex: i] window] isVisible])
-			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[viewersListToReload objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[viewersListToReload objectAtIndex: i] keyImagesOnly: NO];
+		if( [[[vl objectAtIndex: i] window] isVisible])
+			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[[vl objectAtIndex: i] fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer :[vl objectAtIndex: i] keyImagesOnly: NO];
 	}
 	
 	[[QueryController currentQueryController] refresh: self];
 }
 
-- (void) rebuildViewers: (NSMutableArray*) viewersListToRebuild
+- (void) rebuildViewers: (NSMutableArray*) vlToRebuild
 {
 	long i;
 	
 	// Refresh preview matrix if needed
-	for( i = 0; i < [viewersListToRebuild count]; i++)
+	for( i = 0; i < [vlToRebuild count]; i++)
 	{
-		if( [[[viewersListToRebuild objectAtIndex: i] window] isVisible])
-			[[viewersListToRebuild objectAtIndex: i] buildMatrixPreview: NO];
-	//	[[viewersListToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
+		if( [[[vlToRebuild objectAtIndex: i] window] isVisible])
+			[[vlToRebuild objectAtIndex: i] buildMatrixPreview: NO];
+	//	[[vlToRebuild objectAtIndex: i] matrixPreviewSelectCurrentSeries];
 	}
 }
 
@@ -489,13 +489,16 @@ static BOOL COMPLETEREBUILD = NO;
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	NSManagedObjectContext	*context = [self managedObjectContext];
-	NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0], *viewersListToRebuild = [NSMutableArray arrayWithCapacity:0], *viewersListToReload = [NSMutableArray arrayWithCapacity:0];
+	NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*addedImagesArray = 0L;
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	BOOL					newStudy = NO;
+	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
+	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
+	
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
@@ -809,14 +812,14 @@ static BOOL COMPLETEREBUILD = NO;
 									
 									if( [[curDict objectForKey: @"patientID"] caseInsensitiveCompare: [firstObject valueForKeyPath:@"series.study.patientID"]] == NSOrderedSame)
 									{
-										if( [viewersListToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
-											[viewersListToRebuild addObject: [viewersList objectAtIndex: x]];
+										if( [vlToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
+											[vlToRebuild addObject: [viewersList objectAtIndex: x]];
 									}
 									
 									if( seriesTable == [firstObject valueForKey:@"series"])
 									{
-										if( [viewersListToReload containsObject:[viewersList objectAtIndex: x]] == NO)
-											[viewersListToReload addObject: [viewersList objectAtIndex: x]];
+										if( [vlToReload containsObject:[viewersList objectAtIndex: x]] == NO)
+											[vlToReload addObject: [viewersList objectAtIndex: x]];
 									}
 								}
 								
@@ -978,15 +981,27 @@ static BOOL COMPLETEREBUILD = NO;
 		
 		if( addFailed == NO)
 		{
-			if( newStudy) [self performSelectorOnMainThread:@selector( outlineViewRefresh) withObject:0L waitUntilDone:YES];
-			else
-			{
-				[databaseOutline performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
-				[albumTable performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
-				[self performSelectorOnMainThread:@selector( outlineViewSelectionDidChange:) withObject: 0L waitUntilDone:YES]; 
-			}
-			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
-			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
+			[newFilesConditionLock lockWhenCondition: 0];
+			
+			if( [viewersListToReload count] != 0) NSLog( @"WARNING ----- [viewersListToReload count] != 0");
+			if( [viewersListToRebuild count] != 0) NSLog( @"WARNING ----- [viewersListToRebuild count] != 0");
+			
+			[viewersListToReload addObjectsFromArray: vlToReload];
+			[viewersListToRebuild addObjectsFromArray: vlToRebuild];
+
+			if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
+			else [newFilesConditionLock unlockWithCondition: 2];
+			
+			
+//			if( newStudy) [self performSelectorOnMainThread:@selector( outlineViewRefresh) withObject:0L waitUntilDone:YES];
+//			else
+//			{
+//				[databaseOutline performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
+//				[albumTable performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
+//				[self performSelectorOnMainThread:@selector( outlineViewSelectionDidChange:) withObject: 0L waitUntilDone:YES]; 
+//			}
+//			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
+//			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
@@ -1000,6 +1015,33 @@ static BOOL COMPLETEREBUILD = NO;
 	}
 	
 	return addedImagesArray;
+}
+
+- (void) newFilesGUIUpdate
+{
+	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
+	{
+		NSLog( @"newFilesGUIUpdate");
+		
+		if( [newFilesConditionLock condition] == 1)
+		{
+			[self outlineViewRefresh];
+		}
+		else
+		{
+			[databaseOutline reloadData];
+			[albumTable reloadData];
+			[self outlineViewSelectionDidChange: 0L];
+		}
+		
+		[self reloadViewers: viewersListToReload];
+		[self rebuildViewers: viewersListToRebuild];
+		
+		[viewersListToReload removeAllObjects];
+		[viewersListToRebuild removeAllObjects];
+		
+		[newFilesConditionLock unlockWithCondition: 0];
+	}
 }
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
@@ -5281,6 +5323,8 @@ static BOOL withReset = NO;
 	if( bonjourDownloading) return;
 	if( managedObjectContext == 0L) return;
 	
+	[self newFilesGUIUpdate];
+	
 	@try
 	{
 		if( [previewPix count])
@@ -7789,6 +7833,10 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		long       i;
 		NSString    *str;
+		
+		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
+		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
+		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
 		notFoundDataThumbnail = [[self produceJPEGThumbnail: notFound] retain];
