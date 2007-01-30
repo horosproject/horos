@@ -2030,7 +2030,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) dealloc
 {
 	long	i;
-
+	[_calciumScoringWindowController release];
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
@@ -2128,7 +2128,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[curConvMenu release];
 	[curWLWWMenu release];
 	[processorsLock release];
-	[_calciumScoringWindowController release];
+	
     [super dealloc];
 
 //	[appController tileWindows: 0L];	<- We cannot do this, because:

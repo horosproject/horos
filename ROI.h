@@ -94,6 +94,8 @@ enum
 	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
 	
 	BOOL			_displayCalciumScoring;
+	int				_calciumThreshold;
+	float			_sliceThickness;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -228,6 +230,10 @@ enum
 - (float)calciumVolume;
 - (float)calciumMass;
 - (void)setDisplayCalciumScoring:(BOOL)value;
+- (void)setCalciumThreshold:(int)threshold;
+
+- (float) sliceThickness;
+- (void) setSliceThickness:(float)sliceThickness;
 
 
 @end

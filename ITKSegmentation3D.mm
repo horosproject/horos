@@ -659,6 +659,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					[theNewROI setROIMode: ROI_selected];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"roiSelected" object:theNewROI userInfo: nil];
 				}
+				[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 				[theNewROI release];
 				
 				buff+= buffHeight*buffWidth;
@@ -682,7 +683,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 											spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
 											imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
 			[theNewROI reduceTextureIfPossible];
-			
+			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
 			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo: 0L];	
 			[theNewROI setROIMode: ROI_selected];

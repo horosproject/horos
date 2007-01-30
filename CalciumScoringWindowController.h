@@ -43,6 +43,12 @@ Manages the Window for creating Calcium Scoring ROIs
 	float					_totalCalciumScore;
 	float					_totalCalciumMass;
 	float					_totalCalciumVolume;
+		
+	NSArray					*_vessels;
+	NSArray					*_vesselNames;
+	
+
+	
 	
 }
 
@@ -77,6 +83,13 @@ Manages the Window for creating Calcium Scoring ROIs
 - (void)setTotalCalciumScore: (float)score;
 - (void)setTotalCalciumMass: (float)mass;
 - (void)setTotalCalciumVolume: (float)volume;
+
+- (NSArray *)vessels;
+- (void)setVessels:(NSArray *)vessels;
+
+- (NSArray *)vesselNames;
+- (void)setVesselNames:(NSArray *)name;
+
 
 
 

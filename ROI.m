@@ -3363,8 +3363,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	multislice CT rather than electron beam.
 	We could have a flag for Electron beam rather than multichannel CT
 	and use 130 as a cutoff
-	*/
-	if (rmax < 90)
+	*/	
+	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+
+	if (rmax < _calciumThreshold)
 		return 0;
 	if (rmax < 200) 
 		return 1;
@@ -3378,19 +3380,37 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (float)calciumScore{
 	// roi Area * cofactor;  area is is mm2.
-	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor] * 100;
+	//plainArea is number of pixels 
+	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor];
 }
 
 - (float)calciumVolume{
 	// area * thickeness
-	return [self roiArea] * [self thickness];
+	//
+	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	return [self plainArea] * pixelSpacingX * pixelSpacingY * _sliceThickness;
+	//return [self roiArea] * [self thickness] * 100;
 }
 - (float)calciumMass{
 	//Volume * mean CT Density / 250 
+	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	return ([self calciumVolume] * rmean)/ 250;
 }
 - (void)setDisplayCalciumScoring:(BOOL)value{
 	_displayCalciumScoring = value;
+}
+
+- (void)setCalciumThreshold:(int)threshold{
+	_calciumThreshold = threshold;
+}
+
+- (float) sliceThickness{
+	return _sliceThickness;
+}
+
+- (void) setSliceThickness:(float)sliceThickness{
+	_sliceThickness = sliceThickness;
 }
 
 
