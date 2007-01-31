@@ -25,6 +25,9 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "ROI.h"
+#import "browserController.h"
+#import <OsiriX/DCM.h>
+#import <OsiriX/DCMNetworking.h>
 
 
 
@@ -107,9 +110,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (void)setCtType:(int)ctType{
 	_ctType = ctType;
 	if (_ctType == ElectronCTType)
-		[self setLowerThreshold:130];
-	if (_ctType == MultiSliceCTType) 
 		[self setLowerThreshold:90];
+	if (_ctType == MultiSliceCTType) 
+		[self setLowerThreshold:130];
 	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:_ctType] forKey:@"CalciumScoreCTType"];
 	[self updateTotals];
 }
@@ -118,6 +121,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	return _lowerThreshold;
 }
 - (void)setLowerThreshold:(int)lowerThreshold{
+	NSLog(@"set Lower Threshold: %d", lowerThreshold);
 	_lowerThreshold = lowerThreshold;
 }
 - (int)upperThreshold{
@@ -256,13 +260,76 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 -(IBAction) compute:(id) sender {
 	[self computeROIsWithName:_roiName addROIs:YES];
+	
 }
 
 - (IBAction)saveDocument: (id)sender{
 	// save ROI as DICOM PDF
 	NSLog(@"Save Calcium Score");
-	NSData *pdf = [_printView dataWithPDFInsideRect:[_printView frame]];
+	NSMutableData *pdf = [NSMutableData dataWithData:[_printView dataWithPDFInsideRect:[_printView frame]]];
+		//if we have an image  get the info we need from the imageRep.
+	if (pdf ){	
+		id study = [_viewer currentStudy]; 
+		// pad data
+		if ([pdf length] % 2 != 0)
+			[pdf increaseLengthBy:1];
+		// create DICOM OBJECT
+		DCMObject *dcmObject = [DCMObject newEncapsulatedPDF:pdf];
+		
+		[dcmObject setAttributeValues:[NSArray arrayWithObject:[study valueForKey:@"studyInstanceUID"]] forName:@"StudyInstanceUID"];
+		//[dcmObject setAttributeValues:[NSArray arrayWithObject:_seriesInstanceUID] forName:@"SeriesInstanceUID"];
+		[dcmObject setAttributeValues:[NSArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
+		
+		if ([self patientsName])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsName]] forName:@"PatientsName"];
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@""] forName:@"PatientsName"];
+		if ([self patientID])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientID]] forName:@"PatientID"];
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"0"] forName:@"PatientID"];
+			
+		if ([self patientsSex])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsSex]] forName:@"PatientsSex"];
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@""] forName:@"PatientsSex"];
+			
+		if ([self patientsDOB])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsDOB]] forName:@"PatientsBirthDate"];
+			
+
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"Calcium Score"] forName:@"DocumentTitle"];
+		
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 1]] forName:@"InstanceNumber"];
+			
+		if ([study valueForKey:@"id"])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", [study valueForKey:@"id"]]] forName:@"StudyID"];
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 0001]] forName:@"StudyID"];
+			
+		if ([study valueForKey:@"date"])
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]]] forName:@"StudyDate"];	
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"StudyDate"];
+			
+		if ([study valueForKey:@"date"])	
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[study valueForKey:@"date"]]] forName:@"StudyTime"];
+		else
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"StudyTime"];
 	
+
+		
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"SeriesDate"];			
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"SeriesTime"];
+				
+		//NSLog(@"pdf: %@", [dcmObject description]);
+		//get Incoming Folder Path;
+		NSString *destination = [NSString stringWithFormat: @"%@/INCOMING/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] documentsDirectory], 1, 1];
+		//destination = [NSString stringWithFormat: @"%@/Desktop/%@.dcm", NSHomeDirectory(), _docTitle]; 
+	
+		if ([dcmObject writeToFile:destination withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES])
+			NSLog(@"Wrote PDF to %@", destination);
+	}
 }
 
 
@@ -286,7 +353,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	if( itk)
 	{
 
-
+		NSLog(@"Lower Threshold: %d", _lowerThreshold);
 		NSArray *parametersArray = [NSArray arrayWithObjects:
 					[NSNumber numberWithInt:_lowerThreshold],
 					[NSNumber numberWithInt:_upperThreshold],

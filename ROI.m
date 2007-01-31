@@ -3365,31 +3365,37 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	and use 130 as a cutoff
 	*/	
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+	if (_calciumCofactor == 0)
+		_calciumCofactor =  [[curView curDCM] calciumCofactorForROI:self threshold:_calciumThreshold];
+	//NSLog(@"cofactor: %d", _calciumCofactor);
+	return _calciumCofactor;
 
-	if (rmax < _calciumThreshold)
-		return 0;
-	if (rmax < 200) 
-		return 1;
-	if (rmax < 300)
-		return 2;
-	if (rmax < 400)
-		return 3;
-	return 4;
-	
 }
 
 - (float)calciumScore{
 	// roi Area * cofactor;  area is is mm2.
 	//plainArea is number of pixels 
+	// still to compensate for overlapping slices interval/sliceThickness
+	
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-	return [self plainArea] * pixelSpacingX * pixelSpacingY * [self calciumScoreCofactor];
+	//area needs to be > 1 mm
+	float intervalRatio = fabs([[curView curDCM] sliceInterval] / _sliceThickness);
+	if (intervalRatio > 1)
+		intervalRatio = 1;
+	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
+	if (area < 1)
+		return 0;
+	return area * [self calciumScoreCofactor] * intervalRatio ;   
 }
 
 - (float)calciumVolume{
 	// area * thickeness
 	//
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-	return [self plainArea] * pixelSpacingX * pixelSpacingY * _sliceThickness;
+	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
+	if (area < 1)
+		return 0;
+	return area * _sliceThickness;
 	//return [self roiArea] * [self thickness] * 100;
 }
 - (float)calciumMass{

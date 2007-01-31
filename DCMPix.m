@@ -2058,6 +2058,67 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	[self fillROI:roi :newVal :minValue :maxValue :outside :2 :-1];
 }
 
+- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold{
+	int cf1Count = 0;
+	int cf2Count = 0;
+	int cf3Count = 0;
+	int cf4Count = 0;
+	float val;
+	int x;
+	int y;
+	int count = 0;
+	[self CheckLoad];
+	
+	if( [roi type] == tPlain)
+	{
+		long			textWidth = [roi textureWidth];
+		long			textHeight = [roi textureHeight];
+		long			textureUpLeftCornerX = [roi textureUpLeftCornerX];
+		long			textureUpLeftCornerY = [roi textureUpLeftCornerY];
+		unsigned char	*buf = [roi textureBuffer];
+		float			*fImageTemp;
+		
+		for( y = 0; y < textHeight; y++)
+		{
+			fImageTemp = fImage + ((y + textureUpLeftCornerY) * width) + textureUpLeftCornerX;
+			
+			for( x = 0; x < textWidth; x++, fImageTemp++)
+			{
+				if( *buf++ != 0)
+				{
+					long	xx = (x + textureUpLeftCornerX);
+					long	yy = (y + textureUpLeftCornerY);
+					
+					if( xx >= 0 && xx < width && yy >= 0 && yy < height)
+					{
+						if( isRGB)
+						{
+	
+						}
+						else
+						{
+							float	val = *fImageTemp;
+							
+							count++;
+							//NSLog(@"x: %d  y: %d Calcium %f",xx, yy,  val);
+							if(val > threshold) cf1Count++;
+							if(val > 200) cf2Count++;
+							if(val > 300) cf3Count++;
+							if(val > 400) cf4Count++; 
+						}
+					}
+				}
+			}
+		}
+		if (cf4Count > 2) return 4;
+		if (cf3Count > 2) return 3;
+		if (cf2Count > 2) return 2;
+		return 1;
+	}
+	else
+		return 0;
+}
+
 - (void) computeROIInt:(ROI*) roi :(float*) mean :(float *)total :(float *)dev :(float *)min :(float *)max
 {
 	long			count, i, no, x, y;

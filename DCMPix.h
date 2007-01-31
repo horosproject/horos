@@ -200,6 +200,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setMinValueOfSeries: (float) f;
 
 // Compute ROI data
+- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
 // Fill a ROI with a value!

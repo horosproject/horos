@@ -96,6 +96,7 @@ enum
 	BOOL			_displayCalciumScoring;
 	int				_calciumThreshold;
 	float			_sliceThickness;
+	int				_calciumCofactor;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
