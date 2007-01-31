@@ -5363,11 +5363,11 @@ static BOOL withReset = NO;
 	}
 }
 
-- (NSData*) produceJPEGThumbnail:(NSImage*) image
++ (NSData*) produceJPEGThumbnail:(NSImage*) image
 {
 	NSData *imageData = [image  TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.01] forKey:NSImageCompressionFactor];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
 	
 	NSData	*result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
 	
@@ -5402,7 +5402,7 @@ static BOOL withReset = NO;
 					
 					[dcmPix computeWImage:YES :0 :0];
 					NSImage *thumbnail = [dcmPix getImage];
-					NSData *data = [self produceJPEGThumbnail: thumbnail];
+					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
 
 					if( thumbnail && data) [series setValue: data forKey:@"thumbnail"];
 					[dcmPix release];
@@ -5577,7 +5577,7 @@ static BOOL withReset = NO;
 				
 				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel && thumbnail != 0L)
 				{
-					NSData *data = [self produceJPEGThumbnail: thumbnail];
+					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
 					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: data forKey:@"thumbnail"];
 				}
 				
@@ -7839,7 +7839,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
-		notFoundDataThumbnail = [[self produceJPEGThumbnail: notFound] retain];
+		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		
@@ -12153,9 +12153,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
-		studiesArray = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+		NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
 		// remove original study from array
-		[studiesArray removeObject:study];
+		[s removeObject:study];
+		
+		studiesArray = [NSArray arrayWithArray: s];
 	}
 	
 	[context unlock];

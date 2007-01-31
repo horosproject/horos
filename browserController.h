@@ -220,6 +220,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) replaceNotAdmitted:(NSMutableString*) name;
 + (NSArray*) statesArray;
 + (void) updateActivity;
++ (NSData*) produceJPEGThumbnail:(NSImage*) image;
 
 - (void) setDBDate;
 - (IBAction) querySelectedStudy:(id) sender;
