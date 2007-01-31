@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-static long TIMEOUT	= 30;
+static long TIMEOUT	= 60;
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();

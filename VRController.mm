@@ -212,6 +212,7 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 
 - (IBAction) applyConvolution:(id) sender
 {
+	[self prepareUndo];
 	[viewer2D ApplyConvString: [sender title]];
 	[viewer2D applyConvolutionOnSource: self];
 }

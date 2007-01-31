@@ -5367,7 +5367,7 @@ static BOOL withReset = NO;
 {
 	NSData *imageData = [image  TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.7] forKey:NSImageCompressionFactor];
 	
 	NSData	*result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
 	
