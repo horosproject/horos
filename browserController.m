@@ -1017,7 +1017,7 @@ static BOOL COMPLETEREBUILD = NO;
 	return addedImagesArray;
 }
 
-- (void) newFilesGUIUpdate
+- (void) newFilesGUIUpdate:(id) sender
 {
 	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
@@ -5323,8 +5323,6 @@ static BOOL withReset = NO;
 	if( bonjourDownloading) return;
 	if( managedObjectContext == 0L) return;
 	
-	[self newFilesGUIUpdate];
-	
 	@try
 	{
 		if( [previewPix count])
@@ -7927,6 +7925,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		
 		loadPreviewIndex = 0;
 		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
+		
+		[[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain];
 		
 		/* notifications from workspace */
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
