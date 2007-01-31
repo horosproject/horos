@@ -75,6 +75,7 @@ Manages the Window for creating Calcium Scoring ROIs
 - (IBAction)preview: (id)sender;
 - (IBAction)compute: (id)sender;
 - (IBAction)saveDocument: (id)sender;
+- (void)print:(id)sender;
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 
 - (void)updateTotals;

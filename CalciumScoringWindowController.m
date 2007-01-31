@@ -261,6 +261,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (IBAction)saveDocument: (id)sender{
 	// save ROI as DICOM PDF
 	NSLog(@"Save Calcium Score");
+	NSData *pdf = [_printView dataWithPDFInsideRect:[_printView frame]];
+	
 }
 
 
@@ -418,10 +420,35 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	return [[_viewer currentStudy] valueForKey:@"patientSex"];
 }
 - (NSString *)patientsAge{
+	NSCalendarDate *dob = [[[_viewer currentStudy] valueForKey:@"dateOfBirth"] dateWithCalendarFormat:nil timeZone:nil];
+	NSCalendarDate *studyDate = [[[_viewer currentStudy] valueForKey:@"date"] dateWithCalendarFormat:nil timeZone:nil];
+	int years;
+	int days;
+	int months;
+	if (dob && studyDate) {
+		[studyDate years:&years
+		 months:&months
+		 days:&days
+		 hours:nil
+		 minutes:nil
+		 seconds:nil
+		 sinceDate:dob] ;
+		 if (years > 0)
+			return [NSString stringWithFormat:@"%d Y", years];
+		else if (months > 0)
+			return [NSString stringWithFormat: @"%d M", months];
+		else
+			return [NSString stringWithFormat: @"%d D", days];
+	}
 	return nil;
 }
+
 - (NSDate *)patientsDOB{
 	return [[_viewer currentStudy] valueForKey:@"dateOfBirth"];
+}
+
+- (void)print:(id)sender{
+	[_printView print:sender];
 }
 
 
