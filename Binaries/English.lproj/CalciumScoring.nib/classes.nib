@@ -1,7 +1,7 @@
 {
     IBClasses = (
         {
-            ACTIONS = {compute = id; preview = id; }; 
+            ACTIONS = {compute = id; preview = id; print = id; }; 
             CLASS = CalciumScoringWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {"_printView" = id; }; 
