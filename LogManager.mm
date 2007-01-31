@@ -100,6 +100,7 @@ LogManager *currentLogManager;
 					NSString *newfile = [file stringByAppendingString:@"reading"];
 					
 					rename( [file UTF8String], [newfile UTF8String]);
+					remove( [file UTF8String]);
 					
 					FILE * pFile;
 					pFile = fopen ( [newfile UTF8String], "r");

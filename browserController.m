@@ -9416,14 +9416,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [compressedPathArray count] > 0)
 			{
-				//[decompressThreadRunning lock];
-				
 				[decompressArrayLock lock];
 				[decompressArray addObjectsFromArray: compressedPathArray];
 				[decompressArrayLock unlock];
 				
 				[NSThread detachNewThreadSelector: @selector( decompressThread:) toTarget:self withObject: [NSNumber numberWithChar: 'I']];
-				//[decompressThreadRunning unlock];
 			}
 			[compressedPathArray release];
 		}
