@@ -12153,7 +12153,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
-		NSMutableArray *studiesArray = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+		studiesArray = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
 		// remove original study from array
 		[studiesArray removeObject:study];
 	}
