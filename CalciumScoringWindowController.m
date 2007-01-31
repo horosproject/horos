@@ -258,6 +258,11 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	[self computeROIsWithName:_roiName addROIs:YES];
 }
 
+- (IBAction)saveDocument: (id)sender{
+	// save ROI as DICOM PDF
+	NSLog(@"Save Calcium Score");
+}
+
 
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 {
@@ -323,7 +328,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	NSMutableDictionary *vessel;
 	while (vessel = [vesselEnumerator nextObject]) {
 		NSString *vesselName = [vessel objectForKey:@"vesselName"];
-		NSLog(@"vessel: %@", vesselName);
+		//NSLog(@"vessel: %@", vesselName);
 		if ([vesselName isEqualToString:NSLocalizedString(@"Total", nil)]) {
 			[vessel setValue:[NSNumber numberWithFloat:totalScore] forKey:@"score"];
 			[vessel setValue:[NSNumber numberWithFloat:totalMass] forKey:@"mass"];
@@ -339,7 +344,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		float segmentMass = 0.0;
 		float segmentVolume = 0.0;
 		while (roi = [enumerator nextObject]) {
-			NSLog(@"roi: %@", [roi name]);
+			//NSLog(@"roi: %@", [roi name]);
 			[roi setCalciumThreshold:_lowerThreshold];
 			totalScore += [roi calciumScore];
 			totalMass += [roi calciumMass];
@@ -394,6 +399,29 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 - (void)setVesselNames:(NSArray *)names{
 	[_vesselNames release];
 	_vesselNames = [names retain];
+}
+
+// for printing and PDF creation
+- (NSString *)institution{
+	return [[_viewer currentStudy] valueForKey:@"institutionName"];
+}
+- (NSString *)patientID{
+	return [[_viewer currentStudy] valueForKey:@"patientID"];
+}
+- (NSDate *)studyDate{
+	return [[_viewer currentStudy] valueForKey:@"date"];
+}
+- (NSString *)patientsName{
+	return [[_viewer currentStudy] valueForKey:@"name"];
+}
+- (NSString *)patientsSex{
+	return [[_viewer currentStudy] valueForKey:@"patientSex"];
+}
+- (NSString *)patientsAge{
+	return nil;
+}
+- (NSDate *)patientsDOB{
+	return [[_viewer currentStudy] valueForKey:@"dateOfBirth"];
 }
 
 

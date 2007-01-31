@@ -47,6 +47,8 @@ Manages the Window for creating Calcium Scoring ROIs
 	NSArray					*_vessels;
 	NSArray					*_vesselNames;
 	
+	IBOutlet	NSView		*_printView;
+	
 
 	
 	
@@ -72,6 +74,7 @@ Manages the Window for creating Calcium Scoring ROIs
 
 - (IBAction)preview: (id)sender;
 - (IBAction)compute: (id)sender;
+- (IBAction)saveDocument: (id)sender;
 - (void)computeROIsWithName:(NSString *)name addROIs:(BOOL)addROIs;
 
 - (void)updateTotals;
@@ -89,6 +92,15 @@ Manages the Window for creating Calcium Scoring ROIs
 
 - (NSArray *)vesselNames;
 - (void)setVesselNames:(NSArray *)name;
+
+- (NSString *)institution;
+- (NSString *)patientID;
+- (NSDate *)studyDate;
+- (NSString *)patientsName;
+- (NSString *)patientsSex;
+- (NSString *)patientsAge;
+- (NSDate *)patientsDOB;
+
 
 
 

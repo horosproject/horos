@@ -4,6 +4,7 @@
             ACTIONS = {compute = id; preview = id; }; 
             CLASS = CalciumScoringWindowController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {"_printView" = id; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

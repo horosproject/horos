@@ -3943,7 +3943,8 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
-		
+	[_calciumScoringWindowController release];
+	_calciumScoringWindowController = nil;	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
 	
