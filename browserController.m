@@ -12131,9 +12131,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 //Comparisons
 // Finding Comparisons
-- (NSArray *)relatedStudiesForStudy:(id)study{
+- (NSArray *)relatedStudiesForStudy:(id)study
+{
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	NSManagedObjectContext	*context = [self managedObjectContext];
+	
 	// FIND ALL STUDIES of this patient
 	
 	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
@@ -12151,11 +12153,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
-		NSMutableArray *studies = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+		NSMutableArray *studiesArray = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
 		// remove original study from array
-		[studies removeObject:study];
-		return studies;		
+		[studiesArray removeObject:study];
 	}
+	
+	[context unlock];
+	
 	return studiesArray;
 }
 
