@@ -8324,9 +8324,13 @@ BOOL            readable = YES;
 {
 	long			i			= height * width;	
 	float			*result		= malloc( i * sizeof(float));
+	
 	vDSP_vsub (subfImage,1,input,1,result,1,i);				//mask - frame
 	vDSP_minv (result,1,&subMinMax.x,i);					//black pixel	
-	vDSP_maxv (result,1,&subMinMax.y,i);					//white pixel	
+	vDSP_maxv (result,1,&subMinMax.y,i);					//white pixel
+	
+	free( result);
+	
 	return subMinMax;
 }
 

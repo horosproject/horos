@@ -4347,13 +4347,14 @@ static ViewerController *draggedController = 0L;
 		long subCtrlMax = 0;
 		long i;
 		for ( i = 0; i < [[imageView dcmPixList] count]; i ++)
-				{
-					subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
-																						:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
-									];
-					if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-					if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
-				}
+		{
+			subCtrlMinMax = [[[imageView dcmPixList]objectAtIndex:i]   subMinMax:[[[imageView dcmPixList]objectAtIndex:i]fImage]
+																				:[[[imageView dcmPixList]objectAtIndex:subCtrlMaskID]fImage]
+							];
+							
+			if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+			if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+		}
 		subCtrlMinMax.x = subCtrlMin;
 		subCtrlMinMax.y = subCtrlMax;
 	}
