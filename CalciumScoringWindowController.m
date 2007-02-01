@@ -309,18 +309,18 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@""] forName:@"PatientsSex"];
 			
 		if ([self patientsDOB])
-			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsDOB]] forName:@"PatientsBirthDate"];
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"dateOfBirth"]]] forName:@"PatientsBirthDate"];
 			
 
-		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"Calcium Score"] forName:@"DocumentTitle"];
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"Calcium Score "] forName:@"DocumentTitle"];
 		
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 1]] forName:@"InstanceNumber"];
 			
 		if ([study valueForKey:@"id"])
-			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", [study valueForKey:@"id"]]] forName:@"StudyID"];
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[study valueForKey:@"id"]] forName:@"StudyID"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 0001]] forName:@"StudyID"];
-			
+	
 		if ([study valueForKey:@"date"])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]]] forName:@"StudyDate"];	
 		else
@@ -335,14 +335,13 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"SeriesDate"];			
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"SeriesTime"];
-				
+			
 		//NSLog(@"pdf: %@", [dcmObject description]);
 		//get Incoming Folder Path;
-		NSString *destination = [NSString stringWithFormat: @"%@/INCOMING/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] documentsDirectory], 1, 1];
-		//destination = [NSString stringWithFormat: @"%@/Desktop/%@.dcm", NSHomeDirectory(), _docTitle]; 
+		NSString *destination = [NSString stringWithFormat: @"%@/INCOMING/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] documentsDirectory], 1, 1]; 
 	
 		if ([dcmObject writeToFile:destination withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES])
-			NSLog(@"Wrote PDF to %@", destination);
+			NSLog(@"Wrote Calcium Score to %@", destination);
 	}
 }
 

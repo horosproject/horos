@@ -3401,7 +3401,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (float)calciumMass{
 	//Volume * mean CT Density / 250 
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-	return ([self calciumVolume] * rmean)/ 250;
+	return fabs([self calciumVolume] * rmean)/ 250;
 }
 - (void)setDisplayCalciumScoring:(BOOL)value{
 	_displayCalciumScoring = value;
