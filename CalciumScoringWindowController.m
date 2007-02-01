@@ -92,6 +92,15 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	return self;
 }
 
+- (void)windowDidLoad{
+	[self updateTotals];
+	[[NSNotificationCenter defaultCenter] addObserver: self
+				selector: @selector(windowDidBeomeKey:)
+				   name:  NSWindowDidBecomeMainNotification
+				 object: [self window]];
+	
+}
+
 - (void)dealloc{
 	[_rois release];
 	[_roiName release];
@@ -167,6 +176,11 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 - (void)removeROI:(NSNotification*) note{
 	[_rois removeObject:[note object]];
+	[self updateTotals];
+}
+
+- (void)windowDidBeomeKey:(NSNotification*) note {
+	[self updateTotals];
 }
 
 - (void) mouseViewerDown:(NSNotification*) note

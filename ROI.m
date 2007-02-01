@@ -3383,8 +3383,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if (intervalRatio > 1)
 		intervalRatio = 1;
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
-	if (area < 1)
-		return 0;
+	//if (area < 1)
+	//	return 0;
 	return area * [self calciumScoreCofactor] * intervalRatio ;   
 }
 
@@ -3393,8 +3393,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	//
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
-	if (area < 1)
-		return 0;
+	//if (area < 1)
+	//	return 0;
 	return area * _sliceThickness;
 	//return [self roiArea] * [self thickness] * 100;
 }
