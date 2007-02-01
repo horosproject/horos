@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		4
+#define ROIVERSION		5
 
 static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
@@ -225,6 +225,11 @@ GLenum glReportError (void)
 			offsetTextBox_y = 0;
 		}
 		
+		if (fileVersion > 5) {
+			_calciumThreshold = [[coder decodeObject] intValue];
+			_displayCalciumScoring = [[coder decodeObject] boolValue];
+		}	
+		
 		[points retain];
 		[name retain];
 		[comments retain];
@@ -296,6 +301,8 @@ GLenum glReportError (void)
 	[coder encodeObject:zPositions];
 	[coder encodeObject:[NSNumber numberWithFloat:offsetTextBox_x]];
 	[coder encodeObject:[NSNumber numberWithFloat:offsetTextBox_y]];
+	[coder encodeObject:[NSNumber numberWithInt:_calciumThreshold]];
+	[coder encodeObject:[NSNumber numberWithBool:_displayCalciumScoring]];
 }
 
 - (NSData*) data
@@ -3379,7 +3386,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 	if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 	//area needs to be > 1 mm
-	float intervalRatio = fabs([[curView curDCM] sliceInterval] / _sliceThickness);
+	float intervalRatio = fabs([[curView curDCM] sliceInterval] / [[curView curDCM] sliceThickness]);
 	if (intervalRatio > 1)
 		intervalRatio = 1;
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
@@ -3395,7 +3402,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	float area = [self plainArea] * pixelSpacingX * pixelSpacingY;
 	//if (area < 1)
 	//	return 0;
-	return area * _sliceThickness;
+	return area * [[curView curDCM] sliceThickness];
 	//return [self roiArea] * [self thickness] * 100;
 }
 - (float)calciumMass{

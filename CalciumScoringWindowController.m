@@ -60,6 +60,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 															[NSNumber numberWithFloat:0.0], @"mass",
 															[NSNumber numberWithFloat:0.0], @"volume",
 															nil]];
+				// get exisiting ROIs
+				NSArray *roiList = [_viewer roisWithName:name];
+				[_rois addObjectsFromArray:roiList];
 		}
 		
 		[(NSMutableArray *)_vessels addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys: NSLocalizedString(@"Total", nil), @"vesselName",
@@ -87,6 +90,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 				selector: @selector(removeROI:)
 				   name:  @"removeROI"
 				 object: nil];
+				 
+
+
 				
 	}
 	return self;
@@ -94,6 +100,8 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 - (void)windowDidLoad{
 	[self updateTotals];
+	
+	
 	[[NSNotificationCenter defaultCenter] addObserver: self
 				selector: @selector(windowDidBeomeKey:)
 				   name:  NSWindowDidBecomeMainNotification
