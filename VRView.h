@@ -141,6 +141,8 @@ typedef char* vtkMyCallbackVR;
 @class Camera;
 @class VRController;
 
+#import "CLUTOpacityView.h"
+
 @interface VRView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate, *startAutoRotate;
@@ -294,6 +296,9 @@ typedef char* vtkMyCallbackVR;
 	NSDictionary				*_hotKeyDictionary;
 	
 	NSLock						*deleteRegion;
+	
+	IBOutlet CLUTOpacityView	*clutOpacityView;
+	BOOL						advancedCLUT;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;

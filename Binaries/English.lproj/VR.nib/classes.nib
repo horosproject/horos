@@ -188,6 +188,7 @@
                 exportJPEG = id; 
                 exportQuicktime = id; 
                 exportTIFF = id; 
+                resetAutorotate = id; 
                 resetImage = id; 
                 saView = id; 
                 saViewOpposite = id; 
@@ -207,6 +208,7 @@
             OUTLETS = {
                 VRFrames = NSMatrix; 
                 VRquality = NSMatrix; 
+                clutOpacityView = CLUTOpacityView; 
                 controller = VRController; 
                 dcmBox = NSBox; 
                 dcmExportMode = NSMatrix; 

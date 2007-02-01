@@ -29,8 +29,8 @@
 // ROIs Volumes
 #define roi3Dvolume
 
-#import "CLUTOpacityView.h"
 
+@class CLUTOpacityView;
 @class VRView;
 @class ROIVolume;
 

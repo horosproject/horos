@@ -8,8 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Accelerate/Accelerate.h>
+#import "VRController.h"
+#import "VRView.h"
 
-@class VRView;
 
 @interface CLUTOpacityView : NSView {
 	NSColor *backgroundColor, *histogramColor, *pointsColor, *pointsBorderColor, *curveColor, *selectedPointColor, *textLabelColor;
@@ -122,5 +123,11 @@
 - (void)chooseNameAndSave:(id)sender;
 - (IBAction)save:(id)sender;
 - (void)saveWithName:(NSString*)name;
+
+#pragma mark -
+#pragma mark Connection to VRView
+- (void)setCLUTtoVRView;
+- (void)setCLUTtoVRView:(BOOL)lowRes;
+- (void)setWL:(float)wl ww:(float)ww;
 
 @end

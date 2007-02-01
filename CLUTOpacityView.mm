@@ -37,11 +37,16 @@
 		zoomFixedPoint = 0.0;
 		vrViewLowResolution = NO;
 		
+		//[self newCurve];
+		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
-		[self niceDisplay];
+		
+		[[self window] setAlphaValue:0.0];
+		
+		//[self niceDisplay];
     }
     return self;
 }
@@ -53,7 +58,8 @@
 	if(pointColors) [pointColors release];
 	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
 	[self computeHistogram];
-	[self niceDisplay];
+//	[self newCurve];
+//	[self niceDisplay];
 	[self updateView];
 }
 
@@ -171,7 +177,7 @@
 		[line lineToPoint:pt];
 	}
 	
-	NSPoint pt = NSMakePoint(HUmin,0.0);
+	NSPoint pt = NSMakePoint(HUmax,0.0);
 	pt = [transform transformPoint:pt];
 	[line lineToPoint:pt];
 		
@@ -193,23 +199,28 @@
 
 	NSPoint pt1, pt2, pt3, pt4;
 	
-	NSAffineTransform *transform = [self transform];
-	[transform invert];
+//	NSAffineTransform *transform = [self transform];
+//	[transform invert];
 	
-	pt1 = NSMakePoint(0.9*[self bounds].size.width/2.0, 0.0);
-	pt2 = NSMakePoint(0.95*[self bounds].size.width/2.0, 0.0);
-	pt3 = NSMakePoint(1.05*[self bounds].size.width/2.0, 0.0);
-	pt4 = NSMakePoint(1.1*[self bounds].size.width/2.0, 0.0);
+//	pt1 = NSMakePoint(0.9*[self bounds].size.width/2.0, 0.0);
+//	pt2 = NSMakePoint(0.95*[self bounds].size.width/2.0, 0.0);
+//	pt3 = NSMakePoint(1.05*[self bounds].size.width/2.0, 0.0);
+//	pt4 = NSMakePoint(1.1*[self bounds].size.width/2.0, 0.0);
+//
+//	pt1 = [transform transformPoint:pt1];
+//	pt2 = [transform transformPoint:pt2];
+//	pt3 = [transform transformPoint:pt3];
+//	pt4 = [transform transformPoint:pt4];
+//
+//	pt1.y = 0.0;
+//	pt2.y = 0.027;
+//	pt3.y = 0.133;
+//	pt4.y = 0.682;
 
-	pt1 = [transform transformPoint:pt1];
-	pt2 = [transform transformPoint:pt2];
-	pt3 = [transform transformPoint:pt3];
-	pt4 = [transform transformPoint:pt4];
-
-	pt1.y = 0.0;
-	pt2.y = 0.5;
-	pt3.y = 0.5;
-	pt4.y = 0.0;
+	pt1 = NSMakePoint(12, 0.0);
+	pt2 = NSMakePoint(202, sqrt(0.027));
+	pt3 = NSMakePoint(404, sqrt(0.133));
+	pt4 = NSMakePoint(549, sqrt(0.682));
 
 	[theNewCurve addObject:[NSValue valueWithPoint:pt1]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt2]];
@@ -217,10 +228,10 @@
 	[theNewCurve addObject:[NSValue valueWithPoint:pt4]];
 	
 	NSMutableArray *theColors = [NSMutableArray arrayWithCapacity:4];
-	[theColors addObject:[NSColor colorWithDeviceRed:0.25 green:0.0 blue:0.0 alpha:1.0]];
-	[theColors addObject:[NSColor colorWithDeviceRed:0.5 green:0.0 blue:0.0 alpha:1.0]];
-	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.4 alpha:1.0]];
-	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.0 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.0 alpha:1.0]];
+	[theColors addObject:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 	
 	[self addCurveAtindex:0 withPoints:theNewCurve colors:theColors];
 	
@@ -476,6 +487,20 @@
 	}
 }
 
+- (void)shiftCurveAtIndex:(int)curveIndex shift:(float)aShift
+{
+	[[undoManager prepareWithInvocationTarget:self] shiftCurveAtIndex:curveIndex shift:-aShift];
+	NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
+	NSPoint pt;
+	int i;
+	for (i=0; i<[theCurve count]; i++)
+	{
+		pt = [[theCurve objectAtIndex:i] pointValue];
+		pt.y += aShift;
+		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
+	}
+}
+
 #pragma mark -
 #pragma mark Coordinate to NSView Transform
 
@@ -584,20 +609,15 @@
 - (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
 {
 	if(point.y<0.0) point.y = 0.0;
+	if(point.y>=0.999) point.y = 0.999;
 	
-	if(j==0 || j==[aCurve count]-1) point.y = 0.0;
+	//if(j==0 || j==[aCurve count]-1) point.y = 0.0;
 					
 	if(j>0)
 		if(point.x<=[[aCurve objectAtIndex:j-1] pointValue].x) point.x = [[aCurve objectAtIndex:j-1] pointValue].x;
 	if(j<[aCurve count]-1)
 		if(point.x>=[[aCurve objectAtIndex:j+1] pointValue].x) point.x = [[aCurve objectAtIndex:j+1] pointValue].x;
-	
-//	point.y += 1;
-//	point.y = log(point.y);
-		
-//	if(point.y<0.75) point.y *= 0.5;
-//	if(point.y<0.75) point.y = 2 * point.y - ;
-		
+			
 	return point;
 }
 
@@ -692,6 +712,9 @@
 		controlPoint.x = ([[aCurve objectAtIndex:[aCurve count]/2-1] pointValue].x + [[aCurve objectAtIndex:[aCurve count]/2] pointValue].x)/2.0;
 		controlPoint.y = ([[aCurve objectAtIndex:[aCurve count]/2-1] pointValue].y + [[aCurve objectAtIndex:[aCurve count]/2] pointValue].y)/4.0;
 	}
+	
+	controlPoint.x = ([[aCurve lastObject] pointValue].x + [[aCurve objectAtIndex:0] pointValue].x)/2.0;
+	
 	controlPoint = [transform transformPoint:controlPoint];
 	return controlPoint;
 }
@@ -936,6 +959,7 @@
 					else
 					{
 						shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y-shiftY);
+						if(j==0) shiftedPoint = NSMakePoint(pt.x+shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
 						controlPoint = [self controlPointForCurveAtIndex:i];
@@ -976,6 +1000,21 @@
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
 {
 	return YES;
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent
+{
+	[super mouseMoved:theEvent];
+	
+	NSAffineTransform* transformView2Coordinate = [self transform];
+	[transformView2Coordinate invert];
+	NSPoint location = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+	
+	NSString *title = @"CLUT & Opacity";//[[self window] title];
+	NSMutableString *newTitle = [NSMutableString stringWithString:title];
+	[newTitle appendFormat:@" - x: %d", (int)location.x];
+	
+	[[self window] setTitle:newTitle];
 }
 
 #pragma mark -
@@ -1035,10 +1074,17 @@
 
 - (void)niceDisplay;
 {
-	NSRect newFrame = [[[self window] screen] frame];
+	NSRect screenFrame = [[[self window] screen] frame];
+	
+	//NSRect startingFrame = NSMakeRect(screenFrame.size.width/2.0, screenFrame.size.height/2.0, 200, 200);
+	//[[self window] setFrame:startingFrame display:YES animate:YES];
+	//[[self window] setFrameTopLeftPoint:NSMakePoint(0.0, screenFrame.size.height)];
+		
+	NSRect newFrame = screenFrame;
 	newFrame.size.height = 200;
 	[[self window] setBackgroundColor:[NSColor blackColor]];
-	[[self window] setFrame:newFrame display:YES animate:YES];
+	[[self window] setFrame:newFrame display:YES animate:NO];
+	[[self window] setAlphaValue:1.0];
 }
 
 - (IBAction)niceDisplay:(id)sender;
@@ -1305,20 +1351,82 @@
 	[NSArchiver archiveRootObject:clut toFile:path];
 }
 
+- (void)loadFromFileWithName:(NSString*)name;
+{
+	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:CLUTDATABASE];
+	[path appendString:name];
+	
+	NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+	curves = [clut objectForKey:@"curves"];
+	pointColors = [clut objectForKey:@"colors"];
+}
+
 #pragma mark -
 #pragma mark Connection to VRView
 
-- (void)setCLUTtoVRView
+- (void)setCLUTtoVRView;
 {
+	[self setCLUTtoVRView:vrViewLowResolution];
+}
+
+- (void)setCLUTtoVRView:(BOOL)lowRes;
+{
+	NSLog(@"setCLUTtoVRView");
 	if([curves count]>0)
 	{
 		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
 		[clut setObject:curves forKey:@"curves"];
 		[clut setObject:pointColors forKey:@"colors"];
-	//	[clut setObject:name forKey:@"name"];
+		//[clut setObject:name forKey:@"name"];
 		
-		[vrView setAdvancedCLUT:clut lowResolution:vrViewLowResolution];
+		[vrView setAdvancedCLUT:clut lowResolution:lowRes];
+
+		int curveIndex = [self selectedCurveIndex];
+		if(curveIndex<0) curveIndex = 0;
+		
+		NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
+		NSPoint firstPoint = [[theCurve objectAtIndex:0] pointValue];
+		NSPoint lastPoint = [[theCurve lastObject] pointValue];
+		float ww = (lastPoint.x - firstPoint.x);
+		float wl = (lastPoint.x + firstPoint.x) / 2.0;
+		NSLog(@"wl: %f, ww: %f", wl, ww);
+		[vrView setWLWW:(float)wl :(float)ww];
+		NSLog(@"wl: %f, ww: %f", wl, ww);
 	}
+}
+
+- (void)setWL:(float)wl ww:(float)ww;
+{
+	int curveIndex = [self selectedCurveIndex];
+	if(curveIndex<0) curveIndex = 0;
+	
+	NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
+	NSPoint firstPoint = [[theCurve objectAtIndex:0] pointValue];
+	NSPoint lastPoint = [[theCurve lastObject] pointValue];
+	float half = (lastPoint.x - firstPoint.x) / 2.0;
+	float middle = firstPoint.x + half;
+	
+	// wl
+	float shiftWL = wl - middle;
+	
+	//ww
+	float shiftWW = firstPoint.x - (wl - 0.5 * ww);
+	
+	NSPoint pt;
+	float factor = 1.0;
+	int i;
+	for (i=0; i<[theCurve count]; i++)
+	{
+		pt = [[theCurve objectAtIndex:i] pointValue];
+		factor = fabsf(pt.x - middle) / half;
+		pt.x += shiftWL;
+		if(i<[theCurve count]/2.0) pt.x -= shiftWW * factor;
+		else  pt.x += shiftWW * factor;
+		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
+	}
+	
+	[self updateView];
 }
 
 @end

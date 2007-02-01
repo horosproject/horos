@@ -38,6 +38,7 @@ MODIFICATION HISTORY
 #import "ROI.h"
 #import "ROIVolume.h"
 #import "ROIVolumeManagerController.h"
+#import "CLUTOpacityView.h"
 
 extern "C"
 {
@@ -130,6 +131,9 @@ static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
+	
+    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
+    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Advanced CLUT & Opacity", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 }
 
 
@@ -2459,19 +2463,22 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (void)showCLUTOpacityPanel:(id)sender;
 {
-	[clutOpacityView cleanup];
+	[clutOpacityView cleanup];	
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
+	[clutOpacityPanel setAlphaValue:0.0];
 	[clutOpacityPanel orderFront:self];
 	[clutOpacityView niceDisplay];
+	[clutOpacityView newCurve:self];
+//	[clutOpacityView updateView];
 }
 
 - (void)UpdateCLUTMenu:(NSNotification*)note
 {
 	[super UpdateCLUTMenu:note];
     [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"Add an advanced CLUT", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"Advanced CLUT & Opacity", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 }
 
 @end

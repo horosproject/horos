@@ -1523,6 +1523,7 @@ public:
 			startAutoRotate = [[NSTimer scheduledTimerWithTimeInterval:60*3 target:self selector:@selector(startAutoRotate:) userInfo:nil repeats:NO] retain];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
+		advancedCLUT = NO;
 	}
     
     return self;
@@ -2167,6 +2168,12 @@ public:
 				
 				if( isRGB)
 					colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
+				else if (advancedCLUT)
+				{
+					[clutOpacityView setWL:wl ww:ww];
+					[clutOpacityView setCLUTtoVRView:YES];
+					return;
+				}
 				else
 					colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 				
@@ -3414,6 +3421,7 @@ public:
 
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
+	advancedCLUT = NO;
 	long	i;
 
 	if( isRGB)
@@ -3471,6 +3479,7 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
+	NSLog(@"iwl: %f, iww: %f", iwl, iww);
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -3486,12 +3495,14 @@ public:
 	
 	wl = iwl;
 	ww = iww;
-
-	[self setOpacity: currentOpacityArray];
+	NSLog(@"wl: %f, ww: %f", wl, ww);
+	
+	if(!advancedCLUT)
+		[self setOpacity: currentOpacityArray];
 	
 	if( isRGB)
 		colorTransferFunction->BuildFunctionFromTable( wl-ww/2, wl+ww/2, 255, (double*) &table);
-	else
+	else if(!advancedCLUT)
 		colorTransferFunction->BuildFunctionFromTable( valueFactor*(OFFSET16 + wl-ww/2), valueFactor*(OFFSET16 + wl+ww/2), 255, (double*) &table);
 	
 //	vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, wl + ww/2, wl - ww/2, 0);
@@ -4397,7 +4408,7 @@ public:
 	[self setShadingValues:0.15 :0.9 :0.3 :15];
 
 //	volumeProperty->ShadeOn();
-    volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();
+    volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 	
 		
 	compositeFunction = vtkVolumeRayCastCompositeFunction::New();
@@ -6084,6 +6095,7 @@ public:
 
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 {
+	advancedCLUT = YES;
 	NSArray *curves = [clut objectForKey:@"curves"];
 	NSArray *pointColors = [clut objectForKey:@"colors"];
 	NSArray *name = [clut objectForKey:@"name"];
@@ -6114,7 +6126,11 @@ public:
 			volumeMapper->SetMinimumImageSampleDistance(LOD);
 	}
 	
-    [self setNeedsDisplay:YES];
+    //[self setNeedsDisplay:YES];
+}
+
+- (void)setAdvancedCLUTWithName:(NSString*)name;
+{
 }
 
 @end

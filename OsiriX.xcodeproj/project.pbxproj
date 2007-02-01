@@ -740,13 +740,13 @@
 		A9F6E55708FEB5C00060285A /* sameWidthsSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E55508FEB5C00060285A /* sameWidthsSplitView.tif */; };
 		A9F6E55808FEB5C00060285A /* sameWidthsSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E55508FEB5C00060285A /* sameWidthsSplitView.tif */; };
 		A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */; };
-		A9F8A4190B5F6460002CC763 /* CLUTOpacityView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */; };
+		A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */; };
 		A9F8A41A0B5F6460002CC763 /* CLUTOpacityView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */; };
-		A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */; };
+		A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */; };
 		A9F8A41C0B5F6460002CC763 /* CLUTOpacityView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */; };
-		A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */; };
+		A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */; };
 		A9F8A41E0B5F6460002CC763 /* CLUTOpacityView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */; };
-		A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */; };
+		A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */; };
 		A9FEC1400907EBA600B218BE /* orthogonalReslice.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */; };
 		A9FEC1410907EBA600B218BE /* orthogonalReslice.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */; };
 		A9FEC1420907EBA600B218BE /* orthogonalReslice.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */; };
@@ -13939,7 +13939,7 @@
 		A9F6E55008FEB5B30060285A /* sameHeightsSplitView.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = sameHeightsSplitView.tif; sourceTree = "<group>"; };
 		A9F6E55508FEB5C00060285A /* sameWidthsSplitView.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = sameWidthsSplitView.tif; sourceTree = "<group>"; };
 		A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CLUTOpacityView.h; sourceTree = "<group>"; };
-		A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CLUTOpacityView.m; sourceTree = "<group>"; };
+		A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = CLUTOpacityView.mm; sourceTree = "<group>"; };
 		A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = orthogonalReslice.tif; sourceTree = "<group>"; };
 		AB0128620635991400A74AA1 /* QuicktimeExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuicktimeExport.h; sourceTree = "<group>"; };
 		AB0128630635991400A74AA1 /* QuicktimeExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuicktimeExport.m; sourceTree = "<group>"; };
@@ -18212,7 +18212,7 @@
 				AB6AC6440624AC5200AFC7AF /* VRController.h */,
 				AB6AC6450624AC5200AFC7AF /* VRController.mm */,
 				A9F8A4160B5F6460002CC763 /* CLUTOpacityView.h */,
-				A9F8A4170B5F6460002CC763 /* CLUTOpacityView.m */,
+				A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */,
 			);
 			name = "VR/MIP 3D";
 			sourceTree = "<group>";
@@ -32250,7 +32250,7 @@
 				BF455DF70B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D980B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83C0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
-				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -32995,7 +32995,7 @@
 				BF455DF50B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D960B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83E0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
-				A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				A9F8A41D0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE2808680B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34287,7 +34287,7 @@
 				BF455DF90B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D920B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF8380B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
-				A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				A9F8A41B0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE2808660B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -35044,7 +35044,7 @@
 				BF455DF30B557D1D007F1F2C /* HangingProtocolController.m in Sources */,
 				BF954D940B56A27400106F68 /* LayoutTableView.m in Sources */,
 				BFEEF83A0B5E883100DE7B7B /* PlaceholderWindowController.m in Sources */,
-				A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.m in Sources */,
+				A9F8A41F0B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086A0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
