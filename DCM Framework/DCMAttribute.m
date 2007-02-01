@@ -261,9 +261,11 @@
 		case ST:	//short Text 1024 char max
 		case UI:    //String for UID             
 		case UT:	//unlimited text
-		case QQ: 		
+		case QQ: 
+					//length may be different with different Character Sets
 			string = [_values componentsJoinedByString:@"\\"];
-			length = [string length];
+			length = [string lengthOfBytesUsingEncoding:[characterSet encoding]];
+			 //[string length];
 			break;
 		default: 
 			length = [(NSData *)[_values objectAtIndex:0] length];
