@@ -2475,6 +2475,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (void)showCLUTOpacityPanel:(id)sender;
 {
+	if([clutOpacityPanel isVisible]) return;
 	[clutOpacityView cleanup];	
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
@@ -2483,7 +2484,6 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[clutOpacityPanel orderFront:self];
 	[clutOpacityView niceDisplay];
 	[clutOpacityView newCurve:self];
-//	[clutOpacityView updateView];
 }
 
 - (void)UpdateCLUTMenu:(NSNotification*)note

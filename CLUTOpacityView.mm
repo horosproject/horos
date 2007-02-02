@@ -41,11 +41,11 @@
 		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:@"NSWindowWillCloseNotification" object:nil];
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
 		
 		[[self window] setAlphaValue:0.0];
-		
 		//[self niceDisplay];
     }
     return self;
@@ -469,6 +469,7 @@
 
 - (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
 {
+	nothingChanged = NO;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
 	int i;
 	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
@@ -479,6 +480,7 @@
 
 - (void)setColors:(NSArray*)colors forCurveAtIndex:(int)curveIndex;
 {
+	nothingChanged = NO;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
 	int i;
 	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
@@ -530,7 +532,7 @@
 - (void)updateView;
 {
 	[self setNeedsDisplay:YES];
-	[self setCLUTtoVRView];
+	if(!nothingChanged)[self setCLUTtoVRView];
 }
 
 #pragma mark -
@@ -602,6 +604,7 @@
 
 - (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 {
+	nothingChanged = NO;
 	[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
 }
@@ -839,7 +842,7 @@
 	}
 	
 	vrViewLowResolution = NO;
-	[self setCLUTtoVRView];
+	if(!nothingChanged)[self setCLUTtoVRView];
 	[super mouseUp:theEvent];
 }
 
@@ -851,6 +854,7 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	[super mouseDragged:theEvent];
+	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
 	{
 		nothingChanged = NO;
@@ -1006,15 +1010,53 @@
 {
 	[super mouseMoved:theEvent];
 	
+	//[[NSCursor arrowCursor] set];	
+	
+	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	
+	if(!NSPointInRect(mousePositionInView, [self bounds]))
+	{
+		[[NSCursor arrowCursor] set];
+		return;
+	}
+	
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
-	NSPoint location = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+	NSPoint location = [transformView2Coordinate transformPoint:mousePositionInView];
+//	
+//	NSString *title = @"CLUT & Opacity";//[[self window] title];
+//	NSMutableString *newTitle = [NSMutableString stringWithString:title];
+//	[newTitle appendFormat:@" - x: %d", (int)location.x];
+//
+//	[[self window] setTitle:newTitle];
 	
-	NSString *title = @"CLUT & Opacity";//[[self window] title];
-	NSMutableString *newTitle = [NSMutableString stringWithString:title];
-	[newTitle appendFormat:@" - x: %d", (int)location.x];
 	
-	[[self window] setTitle:newTitle];
+//	NSImage *cursorImage = [[[NSCursor arrowCursor] image] copy];
+////	NSImage *newCursor = [self cursorImageWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];
+////	cursorImage = newCursor;
+//
+//	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
+//	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
+//	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"x: %d", (int)location.x] attributes:attrsDictionary];
+//	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
+//	NSSize imageSize = [cursorImage size];
+//	float arrowWidth = imageSize.width;
+//	imageSize.width += labelBounds.size.width;
+//	[cursorImage setSize:imageSize];
+//	
+//	NSPoint labelPosition = NSMakePoint(arrowWidth -8., .0);
+//	
+//	[cursorImage lockFocus];
+//	// draw
+//	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
+//	NSRectFill(NSMakeRect(labelPosition.x-1, labelPosition.y+1, labelBounds.size.width+2, labelBounds.size.height+2));
+//	[label drawAtPoint:NSMakePoint(arrowWidth -8., .0)];
+//	[cursorImage unlockFocus];
+//	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(7,7)];
+//	[cursor set];
+	
+	[self setCursorLabelWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];
+	
 }
 
 #pragma mark -
@@ -1083,8 +1125,15 @@
 	NSRect newFrame = screenFrame;
 	newFrame.size.height = 200;
 	[[self window] setBackgroundColor:[NSColor blackColor]];
-	[[self window] setFrame:newFrame display:YES animate:NO];
+	
+	NSRect vrFrame = [[vrView window] frame];
+	vrFrame.size.height = vrFrame.size.height - newFrame.size.height +8;
+	vrFrame.origin.y = vrFrame.origin.y + newFrame.size.height -8;
+	[[vrView window] setFrame:vrFrame display:YES animate:NO];
+	
 	[[self window] setAlphaValue:1.0];
+	[[self window] setAcceptsMouseMovedEvents:YES];
+	[[self window] setFrame:newFrame display:YES animate:NO];
 }
 
 - (IBAction)niceDisplay:(id)sender;
@@ -1372,7 +1421,6 @@
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 {
-	NSLog(@"setCLUTtoVRView");
 	if([curves count]>0)
 	{
 		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -1390,9 +1438,8 @@
 		NSPoint lastPoint = [[theCurve lastObject] pointValue];
 		float ww = (lastPoint.x - firstPoint.x);
 		float wl = (lastPoint.x + firstPoint.x) / 2.0;
-		NSLog(@"wl: %f, ww: %f", wl, ww);
+
 		[vrView setWLWW:(float)wl :(float)ww];
-		NSLog(@"wl: %f, ww: %f", wl, ww);
 	}
 }
 
@@ -1427,6 +1474,47 @@
 	}
 	
 	[self updateView];
+}
+
+#pragma mark -
+#pragma mark Window
+
+- (void)windowWillClose:(NSNotification *)aNotification
+{
+	if([[aNotification object] isEqualTo:[self window]])
+	{
+		if(vrView) [[vrView window] zoom:self];
+	}
+}
+
+#pragma mark -
+#pragma mark Cursor
+
+- (void)setCursorLabelWithText:(NSString*)text;
+{
+	NSPoint hotSpot = [[NSCursor arrowCursor] hotSpot];
+	NSImage *cursorImage = [[[NSCursor arrowCursor] image] copy];
+
+	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
+	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
+	NSAttributedString *label = [[NSAttributedString alloc] initWithString:text attributes:attrsDictionary];
+	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
+
+	NSSize imageSize = [cursorImage size];
+	float arrowWidth = imageSize.width;
+	imageSize.width += labelBounds.size.width;
+	[cursorImage setSize:imageSize];
+	NSPoint labelPosition = NSMakePoint(arrowWidth-6, .0);
+	
+	// draw
+	[cursorImage lockFocus];
+	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
+	//NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, labelBounds.size.height+4));
+	NSRectFill(NSMakeRect(labelPosition.x-2, labelPosition.y+1, labelBounds.size.width+4, 13)); // nicer if the height stays the same when moving the mouse
+	[label drawAtPoint:labelPosition];
+	[cursorImage unlockFocus];
+	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:hotSpot];
+	[cursor set];
 }
 
 @end
