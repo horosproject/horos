@@ -6121,7 +6121,7 @@ public:
 	if(volumeMapper)
 	{
 		if(lowRes)
-			volumeMapper->SetMinimumImageSampleDistance(LOD*3);
+			volumeMapper->SetMinimumImageSampleDistance(LOD*5);
 		else
 			volumeMapper->SetMinimumImageSampleDistance(LOD);
 	}
