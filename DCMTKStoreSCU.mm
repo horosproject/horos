@@ -169,9 +169,6 @@ static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
 static const char *opt_dhparam = NULL;
 #endif
 
-NSException* localException;
-
-
 static void
 errmsg(const char *msg,...)
 {
@@ -924,7 +921,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[super dealloc];
 }
 			
-- (void)run:(id)sender{
+- (void)run:(id)sender
+{
+	NSException* localException = 0L;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
@@ -1243,7 +1243,7 @@ NS_DURING
     cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
 		[localException raise];
         //return;
     }
@@ -1266,7 +1266,7 @@ NS_DURING
 	DimseCondition::dump(cond);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-		localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could create association parameters" userInfo:nil] retain];
 		[localException raise];
 		//return;
     }
@@ -1281,7 +1281,7 @@ NS_DURING
 	cond = ASC_setTransportLayerType(params, opt_secureConnection);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not set transport layer" userInfo:nil];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not set transport layer" userInfo:nil] retain];
 		[localException raise];
 		//return;
 	}
@@ -1299,7 +1299,7 @@ NS_DURING
 	cond = addStoragePresentationContexts(params, sopClassUIDList);
 	if (cond.bad()) {
 		DimseCondition::dump(cond);
-		localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not get presentation contexts" userInfo:nil];
+		localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Could not get presentation contexts" userInfo:nil] retain];
 		[localException raise];
 		//return;
 	}
@@ -1323,14 +1323,14 @@ NS_DURING
 			ASC_getRejectParameters(params, &rej);
 			errmsg("Association Rejected:");
 			ASC_printRejectParameters(stderr, &rej);
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association Rejected" userInfo:nil];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association Rejected" userInfo:nil] retain];
 			[localException raise];
 			//return;
 
 		} else {
 			errmsg("Association Request Failed:");
 			DimseCondition::dump(cond);
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association request failed" userInfo:nil];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Association request failed" userInfo:nil] retain];
 			[localException raise];
 			//return;
 		}
@@ -1357,7 +1357,7 @@ NS_DURING
 		/* If there are none, finish the execution */
 		if (ASC_countAcceptedPresentationContexts(params) == 0) {
 			errmsg("No Acceptable Presentation Contexts");
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"No acceptable presentation contexts" userInfo:nil] retain];
 			[localException raise];
 			//return;
 		}
@@ -1410,7 +1410,7 @@ NS_DURING
             if (cond.bad()) {
                 errmsg("Association Abort Failed:");
                 DimseCondition::dump(cond);
-                localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 				[localException raise];
 				//return;
             }
@@ -1423,7 +1423,7 @@ NS_DURING
             {
                 errmsg("Association Release Failed:");
                 DimseCondition::dump(cond);
-                localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Release Failed" userInfo:nil];
+                localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Release Failed" userInfo:nil] retain];
 				[localException raise];
 				//return;
             }
@@ -1438,7 +1438,7 @@ NS_DURING
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-            localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+            localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 			[localException raise];
 			//return;
         }
@@ -1457,7 +1457,7 @@ NS_DURING
         if (cond.bad()) {
             errmsg("Association Abort Failed:");
             DimseCondition::dump(cond);
-			localException = [NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil];
+			localException = [[NSException exceptionWithName:@"DICOM Network Failure (storescu)" reason:@"Abort Failed" userInfo:nil] retain];
 			[localException raise];
 			//return;
         }
@@ -1541,8 +1541,13 @@ NS_ENDHANDLER
  
 	//get rid of temp folder
 	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
+	
 	[paths release];
 	[pool release];
+	
+	[localException autorelease];
+	
+	[localException raise];
 }
 
 - (void)updateLogEntry: (NSMutableDictionary*) userInfo

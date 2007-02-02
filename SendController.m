@@ -314,6 +314,12 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 #pragma mark Sending functions	
 
+- (void) showErrorMessage:(NSException*) ne
+{
+	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@", NSLocalizedString( @"DICOM StoreSCU operation failed.", nil), [ne name], [ne reason]];
+
+	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+}
 
 - (void) sendDICOMFilesOffis:(NSMutableArray *)files
 {
@@ -339,7 +345,19 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			transferSyntax:_offisTS
 			compression: 1.0
 			extraParameters:nil];
-	[storeSCU run:self];
+	
+	@try
+	{
+		[storeSCU run:self];
+	}
+	
+	@catch( NSException *ne)
+	{
+		if( _waitSendWindow)
+		{
+			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+		}
+	}
 	
 	[filesToSend release];
 

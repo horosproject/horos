@@ -1261,7 +1261,18 @@ static BOOL COMPLETEREBUILD = NO;
 																	transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
 																	compression: 1.0
 																	extraParameters: nil];
-				[storeSCU run:self];
+				@try
+				{
+					[storeSCU run:self];
+				}
+				
+				@catch (NSException *ne)
+				{
+					NSLog( @"Autorouting FAILED");
+					NSLog( [ne name]);
+					NSLog( [ne reason]);
+				}
+				
 				[storeSCU release];
 			}
 			else
