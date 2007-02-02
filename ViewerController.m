@@ -7899,10 +7899,12 @@ int i,j,l;
 	if( [checkMinValue state] == NSOnState) minValue = [minValueText floatValue];
 
 	BOOL propagateIn4D = [setROI4DSeries state] == NSOnState;
+	
 	float newValue = [newValueText floatValue];
+//	BOOL revertToSaved = [setToMatrix selectedTag];
 	
 	// proceed
-	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue];
+	[self roiSetPixels:selectedROI :allRois :propagateIn4D :outside :minValue :maxValue :newValue :NO];
 	
 	// Recompute!!!! Apply WL/WW
 	float   iwl, iww;
@@ -7948,19 +7950,20 @@ int i,j,l;
 	}
 }
 
-- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
+- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) revert
 {
 	long			i, x, y, z;
 	float			volume = 0;
 	long			err = 0;
 	BOOL			done, proceed;
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
-	NSNumber		*nsnewValue, *nsminValue, *nsmaxValue, *nsoutside;
+	NSNumber		*nsnewValue, *nsminValue, *nsmaxValue, *nsoutside, *nsrevert;
 	
 	nsnewValue	= [NSNumber numberWithFloat: newValue];
 	nsminValue	= [NSNumber numberWithFloat: minValue];
 	nsmaxValue	= [NSNumber numberWithFloat: maxValue];
 	nsoutside	= [NSNumber numberWithBool: outside];
+	nsrevert	= [NSNumber numberWithBool: revert];
 	
 	[self checkEverythingLoaded];
 	
@@ -7983,7 +7986,7 @@ int i,j,l;
 				if( allRois == 2)
 				{
 					DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
 					
 					done = YES;
 				}
@@ -7998,7 +8001,7 @@ int i,j,l;
 								for( z = 0; z < maxMovieIndex; z++)
 								{
 									DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-									[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+									[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
 									
 									done = YES;
 								}
@@ -8006,7 +8009,7 @@ int i,j,l;
 							else
 							{
 								DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-								[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+								[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [[roiList[y] objectAtIndex: x] objectAtIndex: i], @"roi", curPix, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
 								
 								done = YES;
 							}
@@ -8021,26 +8024,38 @@ int i,j,l;
 						for( z = 0; z < maxMovieIndex; z++)
 						{
 							DCMPix *curPix = [pixList[ z] objectAtIndex: x];
-							[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+							[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
 
 						}
 					}
 					else
 					{
 						DCMPix *curPix = [pixList[ y] objectAtIndex: x];
-						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+						[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys: curPix, @"curPix", @"setPixel", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsrevert, @"revert", 0L]];
 					}
 				}
 			}
+			
+			
 		}
 	}
 	
+//	if( propagateIn4D == NO || maxMovieIndex == 1)
+//		[[pixList[ curMovieIndex] objectAtIndex: 0] prepareRestore];
+//	
 	[self roiSetStartScheduler: roiToProceed];
+	
+//	[[pixList[ curMovieIndex] objectAtIndex: 0] freeRestore];
 	
 	[splash close];
 	[splash release];
 			
 	NSLog(@"endSetPixel");
+}
+
+- (IBAction) roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue
+{
+	return [self roiSetPixels:(ROI*)aROI :(short)allRois :(BOOL) propagateIn4D :(BOOL)outside :(float)minValue :(float)maxValue :(float)newValue :(BOOL) NO];
 }
 
 - (IBAction) endRoiRename:(id) sender
@@ -8663,10 +8678,10 @@ int i,j,l;
 		// ** Set Pixels
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"setPixel"])
-			[[object objectForKey:@"curPix"] fillROI:0L :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1];
+			[[object objectForKey:@"curPix"] fillROI:0L :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1 :[[object objectForKey:@"revert"] boolValue]];
 
 		if( [[object valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
-			[[object objectForKey:@"curPix"] fillROI:[object objectForKey:@"roi"] :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1];
+			[[object objectForKey:@"curPix"] fillROI:[object objectForKey:@"roi"] :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1 :[[object objectForKey:@"revert"] boolValue]];
 		
 		// ** Math Morphology
 		

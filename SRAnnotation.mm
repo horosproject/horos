@@ -85,9 +85,17 @@
 			NSData *archiveData;
 			if (fileformat.getDataset()->findAndGetUint8Array(DCM_OsirixROI, buffer, &length, OFFalse).good())
 			{
-				NSLog(@"Unarchive from SR");
-				archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
-				_rois = [[NSUnarchiver unarchiveObjectWithData:archiveData] retain];
+				NSLog(@"Unarchive from SR - SRAnnotation");
+				@try
+				{
+					archiveData = [NSData dataWithBytes:buffer length:(unsigned)length];
+					_rois = [[NSUnarchiver unarchiveObjectWithData:archiveData] retain];
+				}
+				
+				@catch( NSException *ne)
+				{
+					NSLog(@"SRAnnotation exception: %@", [ne description]);
+				}
 			}
 				
 		}

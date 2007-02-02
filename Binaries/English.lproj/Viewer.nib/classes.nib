@@ -75,6 +75,7 @@
                 Panel3D = id; 
                 PlayStop = id; 
                 SRViewer = id; 
+                SetSyncButtonBehavior = id; 
                 SyncSeries = id; 
                 VRVPROViewer = id; 
                 VRViewer = id; 
@@ -82,6 +83,7 @@
                 blendingMode = id; 
                 blendingSlider = id; 
                 brushTool = id; 
+                calciumScoring = id; 
                 changeMatrixSize = id; 
                 closeBrushROIFilterOptionsSheet = id; 
                 closeSelectedBrushROI = id; 
@@ -90,6 +92,7 @@
                 computeSum = id; 
                 contextualMenuEvent = id; 
                 convMatrixAction = id; 
+                copySettingsToOthers = id; 
                 createKeyObjectNote = id; 
                 dilateSelectedBrushROI = id; 
                 dilateSelectedBrushROIWithRadius = id; 

@@ -123,7 +123,7 @@
 		
 		[NSApp runModalSession:session];
 		
-		if( thisTime - lastTimeFrame > 5.0)
+		if( thisTime - lastTimeFrame > 1.0)
 		{
 			NSTimeInterval  elapsedTime;
 			long hours, minutes, seconds;

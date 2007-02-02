@@ -225,7 +225,7 @@ GLenum glReportError (void)
 			offsetTextBox_y = 0;
 		}
 		
-		if (fileVersion > 5) {
+		if (fileVersion >= 5) {
 			_calciumThreshold = [[coder decodeObject] intValue];
 			_displayCalciumScoring = [[coder decodeObject] boolValue];
 		}	

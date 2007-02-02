@@ -605,7 +605,7 @@ inline void DrawRuns(	struct edge *active,
 				switch( orientation)
 				{
 					case 0:		curPix = &pix[ (curY * ims) + (start * w) + stackNo];		if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][(start * w) + stackNo];			break;
-					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];			break;
+					case 1:		curPix = &pix[ (curY * ims) + start + stackNo *w];			if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ curY] fImage][start + stackNo *w];				break;
 					case 2:		curPix = &pix[ (curY * w) + start];							if( restore && restoreImageCache) restorePtr = &[restoreImageCache[ stackNo] fImage][(curY * w) + start];			break;
 				}
 				
@@ -1639,9 +1639,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	int i;
 	
-	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
+	if( restoreImageCache) [self freeRestore];
 	
-	NSLog( @"%d", sizeof(void*));
+	restoreImageCache = malloc( [pixArray count] * sizeof(void*));
 	
 	if( restoreImageCache)
 	{

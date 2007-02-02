@@ -3530,7 +3530,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			{
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :0]];
+					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :5]];
 				}
 			}
 			else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -3550,7 +3550,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				{
 					for( x = 0; x < [imagesArray count]; x++)
 					{
-						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :0]];
+						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :5]];
 					}
 				}
 				else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -5833,7 +5833,7 @@ static BOOL withReset = NO;
 				{
 					if( isCurrentDatabaseBonjour)
 					{
-						[selectedFiles addObject: [self getLocalDCMPath: curObj :0]];
+						[selectedFiles addObject: [self getLocalDCMPath: curObj :5]];
 					}
 					else [selectedFiles addObject: [curObj valueForKey: @"completePath"]];
 					
@@ -5848,7 +5848,7 @@ static BOOL withReset = NO;
 					{
 						for( i = 0; i < [imagesArray count]; i++)
 						{
-							[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :0]];
+							[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :5]];
 						}
 					}
 					else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
