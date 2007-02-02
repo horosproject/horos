@@ -75,6 +75,7 @@ static NSString*	ScissorStateToolbarItemIdentifier	= @"ScissorState";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
+static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
 
 @implementation VRController
 
@@ -1616,6 +1617,16 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([convolutionView frame]), NSHeight([convolutionView frame]))];
     }
+	else if([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Color", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Color", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
+	
+	[toolbarItem setView: BackgroundColorView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+    }
 	else if([itemIdent isEqualToString: ScissorStateToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"3D Scissor State", nil)];
@@ -1780,6 +1791,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 											ScissorStateToolbarItemIdentifier,
 											ROIManagerToolbarItemIdentifier,
 											ConvolutionViewToolbarItemIdentifier,
+											BackgroundColorViewToolbarItemIdentifier,
 											nil];
 	else
 		return [NSArray arrayWithObjects: 	NSToolbarCustomizeToolbarItemIdentifier,

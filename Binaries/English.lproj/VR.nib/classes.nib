@@ -139,6 +139,7 @@
             CLASS = VRController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                BackgroundColorView = NSView; 
                 BlendingView = NSView; 
                 LODSlider = NSSlider; 
                 LODView = NSView; 
@@ -179,6 +180,8 @@
                 IBSetSelected3DPointRadius = id; 
                 axView = id; 
                 bestRendering = id; 
+                changeColor = id; 
+                changeColorWith = id; 
                 coView = id; 
                 endDCMExportSettings = id; 
                 endQuicktimeSettings = id; 

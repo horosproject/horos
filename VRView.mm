@@ -5051,18 +5051,9 @@ public:
 	}
 }
 
-- (void)changeColor:(id)sender{
-	if(![point3DColorWell isActive] && ![[controller clutOpacityPanel] isVisible])
-	{
-		//change background color
-		NSColor *color= [(NSColorPanel*)sender color];
-		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
-		
-		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5) textWLWW->GetTextProperty()->SetColor(1,1,1);
-		else textWLWW->GetTextProperty()->SetColor(0,0,0);
-		
-		[self setNeedsDisplay:YES];
-	}
+- (void)changeColor:(id)sender
+{
+	[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace]];
 }
 
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D

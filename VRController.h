@@ -45,6 +45,8 @@
 	
 	IBOutlet NSView			*OrientationsView;
 	
+	IBOutlet NSView			*BackgroundColorView;
+	
 	IBOutlet NSMatrix		*modeMatrix;
 	
 	IBOutlet NSMatrix		*toolsMatrix;
