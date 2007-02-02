@@ -5053,7 +5053,8 @@ public:
 
 - (void)changeColor:(id)sender
 {
-	[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace]];
+	if( [backgroundColor isActive])
+		[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace]];
 }
 
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D

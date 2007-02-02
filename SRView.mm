@@ -2445,9 +2445,12 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 
 - (IBAction)changeColor:(id)sender
 {	
-	NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
-	aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
-	[self setNeedsDisplay:YES];
+	if( [backgroundColor isActive])
+	{
+		NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+		[self setNeedsDisplay:YES];
+	}
 }
 
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D

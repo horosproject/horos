@@ -166,6 +166,9 @@ typedef char* vtkPolyDataNormals;
 	
 	IBOutlet NSWindow			*export3DVRWindow;
 	IBOutlet NSMatrix			*VRFrames;
+	
+	IBOutlet NSColorWell		*backgroundColor;
+	
 	double						camPosition[ 3];
 	double						camFocal[ 3];
 	

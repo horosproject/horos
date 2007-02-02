@@ -112,6 +112,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 VRFrames = NSMatrix; 
+                backgroundColor = NSColorWell; 
                 controller = SRController; 
                 dcmBox = NSBox; 
                 dcmExportMode = NSMatrix; 

@@ -211,6 +211,7 @@
             OUTLETS = {
                 VRFrames = NSMatrix; 
                 VRquality = NSMatrix; 
+                backgroundColor = NSColorWell; 
                 clutOpacityView = CLUTOpacityView; 
                 controller = VRController; 
                 dcmBox = NSBox; 
