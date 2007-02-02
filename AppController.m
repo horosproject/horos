@@ -83,6 +83,7 @@ extern		NSMutableDictionary		*plugins;
 extern		short					syncro;
 extern		NSMutableArray			*preProcessPlugins;
 extern		BrowserController		*browserWindow;
+
 			BOOL					SYNCSERIES = NO;
 
 NSMenu                  *presetsMenu,
@@ -92,6 +93,7 @@ NSMenu                  *presetsMenu,
 
 NSThread				*mainThread;
 BOOL					NEEDTOREBUILD = NO;
+BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
 short					Altivec;
 
@@ -1408,7 +1410,7 @@ static BOOL initialized = NO;
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
 			{
 				[AppController cleanOsiriXSubProcesses];
-				
+								
 				initialized = YES;
 				
 				long	i;
@@ -1470,9 +1472,14 @@ static BOOL initialized = NO;
 				NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
-					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database. Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Rebuild",nil), NSLocalizedString(@"Cancel",nil), nil);
+					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
 					
-					if( result == NSAlertDefaultReturn) NEEDTOREBUILD = YES;
+					if( result == NSAlertOtherReturn)
+					{
+						NEEDTOREBUILD = YES;
+						COMPLETEREBUILD = YES;
+					}
+					if( result == NSAlertAlternateReturn) [DCMPix setRunOsiriXInProtectedMode: YES];
 				}
 				
 				[path writeToFile:path atomically:NO];
@@ -1670,12 +1677,12 @@ static BOOL initialized = NO;
 	
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
 	showRestartNeeded = YES;
-	
+		
 	[[NSNotificationCenter defaultCenter]	addObserver: self
 											   selector: @selector(preferencesUpdated:)
 												   name: NSUserDefaultsDidChangeNotification
 												 object: nil];
-												 
+	
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"SAMESTUDY"];
 }
 

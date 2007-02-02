@@ -145,7 +145,7 @@ extern NSMutableDictionary		*reportPlugins;
 extern AppController			*appController;
 extern NSMutableDictionary		*plugins, *pluginsDict;
 extern NSThread					*mainThread;
-extern BOOL						NEEDTOREBUILD;
+extern BOOL						NEEDTOREBUILD, COMPLETEREBUILD;
 extern NSMutableDictionary		*DATABASECOLUMNS;
 extern NSLock					*PapyrusLock;
 
@@ -361,7 +361,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSArray*	statesArray = 0L;
 
 
-static BOOL COMPLETEREBUILD = NO;
+
 
 + (BrowserController*) currentBrowser { return browserWindow;}
 + (NSArray*) statesArray { return statesArray;}
@@ -5398,9 +5398,9 @@ static BOOL withReset = NO;
 			
 			if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 			{
-				//By default we put this 'blank' icon
-				[series setValue: notFoundDataThumbnail forKey:@"thumbnail"];
-				[self saveDatabase: currentDatabasePath];
+//				//By default we put this 'blank' icon
+//				[series setValue: notFoundDataThumbnail forKey:@"thumbnail"];
+//				[self saveDatabase: currentDatabasePath];
 				
 				NSLog( @"Build thumbnail for:");
 				NSLog( [image valueForKey:@"completePath"]);
@@ -5425,6 +5425,8 @@ static BOOL withReset = NO;
 
 - (IBAction) buildAllThumbnails:(id) sender
 {
+	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
+
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	long i;
@@ -5445,7 +5447,7 @@ static BOOL withReset = NO;
 				
 				int maxSeries = [seriesArray count];
 				
-				if( maxSeries > 30) maxSeries = 30;	// We will continue next time...
+				if( maxSeries > 20) maxSeries = 20;	// We will continue next time...
 				
 				for( i = 0; i < maxSeries; i++)
 				{
@@ -7827,6 +7829,22 @@ static NSArray*	openSubSeriesArray = 0L;
 #pragma mark GUI functions
 
 
++ (unsigned int)_currentModifierFlags;
+{
+    unsigned int flags = 0;
+    UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
+    if (currentKeyModifiers & cmdKey)
+        flags |= NSCommandKeyMask;
+    if (currentKeyModifiers & shiftKey)
+        flags |= NSShiftKeyMask;
+    if (currentKeyModifiers & optionKey)
+        flags |= NSAlternateKeyMask;
+    if (currentKeyModifiers & controlKey)
+        flags |= NSControlKeyMask;
+
+    return flags;
+}
+
 - (id)initWithWindow:(NSWindow *)window
 {
 	[AppController initialize];
@@ -7842,6 +7860,17 @@ static NSArray*	openSubSeriesArray = 0L;
 	{
 		long       i;
 		NSString    *str;
+		
+		if( [BrowserController _currentModifierFlags] & NSShiftKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask)
+		{
+			NSLog( @"WARNING ---- Protected Mode Activated");
+			[DCMPix setRunOsiriXInProtectedMode: YES];
+		}
+		
+		if( [DCMPix isRunOsiriXInProtectedModeActivated])
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
 		
 		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];

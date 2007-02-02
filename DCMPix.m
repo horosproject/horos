@@ -37,6 +37,8 @@
 
 #define PREVIEWSIZE 70.0
 
+BOOL	runOsiriXInProtectedMode = NO;
+
 struct NSPointInt
 {
 	long x;
@@ -981,6 +983,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //		}
 //	}
 //}
+
++ (void) setRunOsiriXInProtectedMode:(BOOL) v
+{
+	runOsiriXInProtectedMode = v;
+}
+
++ (BOOL) isRunOsiriXInProtectedModeActivated
+{
+	return runOsiriXInProtectedMode;
+}
+
 
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix
 {
@@ -7281,6 +7294,8 @@ BOOL            readable = YES;
 	#endif
 	 {
 		BOOL	success = NO;
+		
+		if( runOsiriXInProtectedMode) return;
 		
 		if( srcFile == 0L) return;
 		

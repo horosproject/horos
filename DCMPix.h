@@ -377,6 +377,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (BOOL) generated;
 - (void) prepareRestore;
 - (void) freeRestore;
++ (void) setRunOsiriXInProtectedMode:(BOOL) v;
++ (BOOL) isRunOsiriXInProtectedModeActivated;
 
 //Database links
 - (NSManagedObject *)imageObj;
