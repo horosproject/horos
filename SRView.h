@@ -287,7 +287,7 @@ typedef char* vtkPolyDataNormals;
 -(void) axView:(id) sender;
 -(void) coView:(id) sender;
 -(void) saViewOpposite:(id) sender;
-
+- (IBAction)changeColor:(id)sender;
 -(IBAction) switchProjection:(id) sender;
 
 // 3D Points

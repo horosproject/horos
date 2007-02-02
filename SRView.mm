@@ -2443,15 +2443,11 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 }
 
 
-- (void)changeColor:(id)sender
+- (IBAction)changeColor:(id)sender
 {	
-	if(![point3DColorWell isActive] && ![point3DTextColorWell isActive])
-	{
-		//change background color
-		NSColor *color= [(NSColorPanel*)sender color];
-		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
-		[self setNeedsDisplay:YES];
-	} // else, the color of selected point is changed through setSelected3DPointColor
+	NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+	aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
+	[self setNeedsDisplay:YES];
 }
 
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D

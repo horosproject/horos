@@ -44,6 +44,7 @@ static NSString*	ResetToolbarItemIdentifier			= @"Reset.tiff";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
+static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
 
 //static NSString*	LODToolbarItemIdentifier		= @"LOD";
 //static NSString*	BlendingToolbarItemIdentifier   = @"2DBlending";
@@ -683,6 +684,16 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(resetImage:)];
     }
+	else if([itemIdent isEqualToString: BackgroundColorViewToolbarItemIdentifier]) {
+	// Set up the standard properties 
+	[toolbarItem setLabel: NSLocalizedString(@"Color", nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Color", nil)];
+	[toolbarItem setToolTip: NSLocalizedString(@"Background Color", nil)];
+	
+	[toolbarItem setView: BackgroundColorView];
+	[toolbarItem setMinSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+	[toolbarItem setMaxSize:NSMakeSize(NSWidth([BackgroundColorView frame]), NSHeight([BackgroundColorView frame]))];
+    }
 	else if([itemIdent isEqualToString: OrientationsViewToolbarItemIdentifier]) {
 	// Set up the standard properties 
 	[toolbarItem setLabel: NSLocalizedString(@"Orientations", nil)];
@@ -727,6 +738,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 											Export3DFileFormat,
 											OrientationsViewToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
+											BackgroundColorViewToolbarItemIdentifier,
                                             nil];
 }
 
@@ -758,6 +770,7 @@ static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 										PerspectiveToolbarItemIdentifier,
 										ResetToolbarItemIdentifier,
 										ExportToolbarItemIdentifier,
+										BackgroundColorViewToolbarItemIdentifier,
                                         nil];
 }
 

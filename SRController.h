@@ -36,7 +36,9 @@
 	IBOutlet SRView			*view;	
 
 	IBOutlet NSView			*OrientationsView;
-
+	
+	IBOutlet NSView			*BackgroundColorView;
+	
 	IBOutlet NSWindow       *SRSettingsWindow;
 	IBOutlet NSButton		*checkFirst, *checkSecond;
 	IBOutlet NSTextField    *firstValue, *secondValue;

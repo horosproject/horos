@@ -41,6 +41,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 BSRSettingsWindow = NSWindow; 
+                BackgroundColorView = NSView; 
                 BcheckFirst = NSButton; 
                 BcheckSecond = NSButton; 
                 Bdecimate = NSTextField; 
@@ -90,6 +91,9 @@
                 IBSetSelected3DPointColor = id; 
                 IBSetSelected3DPointRadius = id; 
                 SwitchStereoMode = id; 
+                axView = id; 
+                changeColor = id; 
+                coView = id; 
                 endDCMExportSettings = id; 
                 endQuicktimeSettings = id; 
                 endQuicktimeVRSettings = id; 
@@ -97,8 +101,10 @@
                 exportDICOMFile = id; 
                 exportQuicktime = id; 
                 saView = id; 
+                saViewOpposite = id; 
                 save3DPointsDefaultProperties = id; 
                 setCurrentdcmExport = id; 
+                squareView = id; 
                 switchOrientationWidget = id; 
                 switchProjection = id; 
             }; 
@@ -112,7 +118,6 @@
                 dcmSeriesName = NSTextField; 
                 dcmframesSlider = NSSlider; 
                 dcmorientation = NSMatrix; 
-                dcmquality = NSMatrix; 
                 dcmrotation = NSMatrix; 
                 export3DVRWindow = NSWindow; 
                 export3DWindow = NSWindow; 
