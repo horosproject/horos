@@ -216,7 +216,6 @@
                 customizeViewerToolBar = id; 
                 dilateSelectedBrushROI = id; 
                 displayDICOMOverlays = id; 
-                erodeSelectedBrushROI = id; 
                 export2PACS = id; 
                 export2iPhoto = id; 
                 exportAsDICOMSR = id; 
@@ -234,6 +233,7 @@
                 flyThruButtonMenu = id; 
                 fullScreenMenu = id; 
                 loadSerie = id; 
+                morphoSelectedBrushROI = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
                 printDICOM = id; 

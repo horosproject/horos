@@ -8752,173 +8752,61 @@ int i,j,l;
 	[structuringElementRadiusTextField setStringValue:[NSString stringWithFormat:@"%d",[structuringElementRadiusSlider intValue]]];
 }
 
-- (IBAction) closeBrushROIFilterOptionsSheet: (id) sender
+- (IBAction) morphoSelectedBrushROIWithRadius: (id) sender
 {
-	[brushROIFilterOptionsWindow orderOut:sender];
-	[NSApp endSheet:brushROIFilterOptionsWindow];
+	[brushROIFilterOptionsWindow orderOut: sender];
+	[NSApp endSheet: brushROIFilterOptionsWindow];
+	
+	if( [sender tag])
+	{
+		ROI *selectedROI = [self selectedROI];
+		
+		// do the morpho function...
+		ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
+
+		WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing...",0L)];
+		[wait showWindow:self];
+		if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
+		{
+			[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:morphoFunction radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
+		}
+		else
+		{
+			[self applyMorphology: [self roisWithName:[selectedROI name]] action:morphoFunction radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
+		}
+		[filter release];
+		[wait close];
+		[wait release];
+	}
 }
 
-- (IBAction) erodeSelectedBrushROIWithRadius: (id) sender
-{
-	[self closeBrushROIFilterOptionsSheet:self];
-	
-	ROI *selectedROI = [self selectedROI];
-
-	// do the erosion...
-	
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Erosion...",0L)];
-	[wait showWindow:self];
-	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
-	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"erode" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	else
-	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"erode" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	[wait close];
-	[wait release];
-}
-
-- (IBAction) erodeSelectedBrushROI: (id) sender
+- (IBAction) morphoSelectedBrushROI: (id) sender
 {
 	ROI *selectedROI = [self selectedROI];
 	
-	if (selectedROI && [selectedROI type]==tPlain)
+	[morphoFunction release];
+	
+	switch( [sender tag])
 	{
+		case 0:		morphoFunction = [@"erode" retain];		break;
+		case 1:		morphoFunction = [@"dilate" retain];	break;
+		case 2:		morphoFunction = [@"close" retain];		break;
+		case 3:		morphoFunction = [@"open" retain];		break;
+	}
+	
+	if (selectedROI && [selectedROI type] == tPlain)
+	{
+		[self addToUndoQueue: @"roi"];
+		
 		[NSApp beginSheet:brushROIFilterOptionsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-		[brushROIFilterOptionsOKButton setAction:@selector(erodeSelectedBrushROIWithRadius:)];
-		[brushROIFilterOptionsOKButton setTarget:self];
 	}
 	else
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Erode Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
 		return;
 	}
 }
 
-- (IBAction) dilateSelectedBrushROIWithRadius: (id) sender
-{
-	[self closeBrushROIFilterOptionsSheet:self];
-	
-	ROI *selectedROI = [self selectedROI];
-
-	// do the dilatation...
-	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
-
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Dilatation...",0L)];
-	[wait showWindow:self];
-	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
-	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"dilate" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	else
-	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"dilate" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	[filter release];
-	[wait close];
-	[wait release];
-}
-
-- (IBAction) dilateSelectedBrushROI: (id) sender
-{
-	ROI *selectedROI = [self selectedROI];
-	
-	if (selectedROI && [selectedROI type]==tPlain)
-	{
-		[NSApp beginSheet:brushROIFilterOptionsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-		[brushROIFilterOptionsOKButton setAction:@selector(dilateSelectedBrushROIWithRadius:)];
-		[brushROIFilterOptionsOKButton setTarget:self];
-	}
-	else
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Dilate Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-		return;
-	}
-}
-
-- (IBAction) closeSelectedBrushROIWithRadius: (id) sender
-{
-	[self closeBrushROIFilterOptionsSheet:self];
-	
-	ROI *selectedROI = [self selectedROI];
-
-	// do the closing...
-	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
-
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Closing...",0L)];
-	[wait showWindow:self];
-	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
-	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"close" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	else
-	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"close" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	[filter release];
-	[wait close];
-	[wait release];
-}
-
-- (IBAction) closeSelectedBrushROI: (id) sender
-{
-	ROI *selectedROI = [self selectedROI];
-	
-	if (selectedROI && [selectedROI type]==tPlain)
-	{
-		[NSApp beginSheet:brushROIFilterOptionsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-		[brushROIFilterOptionsOKButton setAction:@selector(closeSelectedBrushROIWithRadius:)];
-		[brushROIFilterOptionsOKButton setTarget:self];
-	}
-	else
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Close Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-		return;
-	}
-}
-
-- (IBAction) openSelectedBrushROIWithRadius: (id) sender
-{
-	[self closeBrushROIFilterOptionsSheet:self];
-	
-	ROI *selectedROI = [self selectedROI];
-
-	// do the opening...
-	ITKBrushROIFilter *filter = [[ITKBrushROIFilter alloc] init];
-
-	WaitRendering	*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Processing Opening...",0L)];
-	[wait showWindow:self];
-	if ([brushROIFilterOptionsAllWithSameName state]==NSOffState)
-	{
-		[self applyMorphology: [NSArray arrayWithObject:selectedROI] action:@"open" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	else
-	{
-		[self applyMorphology: [self roisWithName:[selectedROI name]] action:@"open" radius: [structuringElementRadiusSlider intValue] sendNotification:YES];
-	}
-	[filter release];
-	[wait close];
-	[wait release];
-}
-
-- (IBAction) openSelectedBrushROI: (id) sender
-{
-	ROI *selectedROI = [self selectedROI];
-	
-	if (selectedROI && [selectedROI type]==tPlain)
-	{
-		[NSApp beginSheet:brushROIFilterOptionsWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-		[brushROIFilterOptionsOKButton setAction:@selector(openSelectedBrushROIWithRadius:)];
-		[brushROIFilterOptionsOKButton setTarget:self];
-	}
-	else
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Brush ROI Open Error", nil), NSLocalizedString(@"Select a Brush ROI before to run the filter.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-		return;
-	}
-}
 #pragma mark SUV
 
 - (float) factorPET2SUV

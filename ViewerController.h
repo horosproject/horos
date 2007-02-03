@@ -278,6 +278,8 @@ enum
 	IBOutlet NSTextField	*structuringElementRadiusTextField;
 	IBOutlet NSButton		*brushROIFilterOptionsAllWithSameName;
 	IBOutlet NSButton		*brushROIFilterOptionsOKButton;
+	NSString				*morphoFunction;
+	BOOL					morphoFunctionPreviewApplied;
 	IBOutlet NSPopUpButton	*keyImagePopUpButton;
 	
 	KeyObjectPopupController *keyObjectPopupController;
@@ -488,7 +490,6 @@ enum
 //- (IBAction) MPRViewer:(id) sender;
 - (IBAction) VRVPROViewer:(id) sender;
 - (IBAction) VRViewer:(id) sender;
-
 - (IBAction) MPR2DViewer:(id) sender;
 
 - (IBAction) orthogonalMPRViewer:(id) sender;
@@ -590,14 +591,14 @@ enum
 - (ROI*) selectedROI;
 
 - (IBAction) setStructuringElementRadius: (id) sender;
-- (IBAction) closeBrushROIFilterOptionsSheet: (id) sender;
+//- (IBAction) closeBrushROIFilterOptionsSheet: (id) sender;
 
-- (IBAction) erodeSelectedBrushROIWithRadius: (id) sender;
-- (IBAction) erodeSelectedBrushROI: (id) sender;
-- (IBAction) dilateSelectedBrushROIWithRadius: (id) sender;
-- (IBAction) dilateSelectedBrushROI: (id) sender;
-- (IBAction) closeSelectedBrushROIWithRadius: (id) sender;
-- (IBAction) closeSelectedBrushROI: (id) sender;
+- (IBAction) morphoSelectedBrushROIWithRadius: (id) sender;
+- (IBAction) morphoSelectedBrushROI: (id) sender;
+//- (IBAction) dilateSelectedBrushROIWithRadius: (id) sender;
+//- (IBAction) dilateSelectedBrushROI: (id) sender;
+//- (IBAction) closeSelectedBrushROIWithRadius: (id) sender;
+//- (IBAction) closeSelectedBrushROI: (id) sender;
 
 #pragma mark-
 #pragma mark Registration
