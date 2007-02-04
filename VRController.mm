@@ -168,7 +168,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     
     for( i = 0; i < [sortedKeys count]; i++)
     {
-        [[wlwwPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+        [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
     [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     [[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
@@ -1997,9 +1997,13 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			// add the ROI to our list
 			[roi2DPointsArray addObject:new2DPointROI];
 			[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:sliceNumber]];
+			
 			[x2DPointsArray addObject:[NSNumber numberWithFloat:x/[self factor]]];
 			[y2DPointsArray addObject:[NSNumber numberWithFloat:y/[self factor]]];
 			[z2DPointsArray addObject:[NSNumber numberWithFloat:z/[self factor]]];
+			
+			NSLog( @"%f %f %f", [[x2DPointsArray lastObject] floatValue], [[y2DPointsArray lastObject] floatValue], [[z2DPointsArray lastObject] floatValue]);
+			
 			// notify the change
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object: new2DPointROI userInfo: 0L];
 		}
@@ -2012,7 +2016,9 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	{
 		long cur2DPointIndex = 0;
 		BOOL found = NO;
-
+		
+		NSLog( @"%f %f %f", x, y, z);
+		
 		while(!found && cur2DPointIndex<[roi2DPointsArray count])
 		{		
 			if(	[[x2DPointsArray objectAtIndex:cur2DPointIndex] floatValue]==x/[self factor] 

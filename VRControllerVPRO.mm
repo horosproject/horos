@@ -165,7 +165,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     
     for( i = 0; i < [sortedKeys count]; i++)
     {
-        [[wlwwPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+        [[wlwwPopup menu] addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
     }
     [[wlwwPopup menu] addItem: [NSMenuItem separatorItem]];
     [[wlwwPopup menu] addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];

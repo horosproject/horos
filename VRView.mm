@@ -2626,6 +2626,19 @@ public:
 		}
 		else if( tool == t3Dpoint)
 		{
+			NSEvent *artificialPKeyDown = [NSEvent keyEventWithType:NSKeyDown
+  												location:[theEvent locationInWindow]
+  												modifierFlags:nil
+  												timestamp:[theEvent timestamp]
+  												windowNumber:[theEvent windowNumber]
+  												context:[theEvent context]
+  												characters:@"p"
+  												charactersIgnoringModifiers:nil
+  												isARepeat:NO
+  												keyCode:112
+  												];
+  			[super keyDown:artificialPKeyDown];
+			
 			if (![self isAny3DPointSelected])
 			{
 				// add a point on the surface under the mouse click
@@ -3142,10 +3155,8 @@ public:
 			[self removeSelected3DPoint];
 		}
 	}
-
+	
 	if( [self actionForHotKey:[event characters]] == NO) [super keyDown:event];
-
-	//[super keyDown:event];
 }
 
 -(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
@@ -3479,7 +3490,6 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
-	NSLog(@"iwl: %f, iww: %f", iwl, iww);
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -3495,7 +3505,6 @@ public:
 	
 	wl = iwl;
 	ww = iww;
-	NSLog(@"wl: %f, ww: %f", wl, ww);
 	
 	if(!advancedCLUT)
 		[self setOpacity: currentOpacityArray];
