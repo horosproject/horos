@@ -846,6 +846,11 @@
 	[super mouseUp:theEvent];
 }
 
+-(NSMenu*) menuForEvent:(NSEvent *)theEvent
+{
+	return contextualMenu;
+}
+
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
 	[NSMenu popUpContextMenu:contextualMenu withEvent:theEvent forView:self];
