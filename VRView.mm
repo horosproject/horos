@@ -5593,7 +5593,6 @@ public:
 		float position[3];
 		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position];
 		
-		
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
 		// the 3D Point is removed through notification (sent in [controller remove2DPoint..)

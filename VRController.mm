@@ -2017,6 +2017,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	{
 		long cur2DPointIndex = 0;
 		BOOL found = NO;
+		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
 		
 		x /= [self factor];
 		y /= [self factor];
@@ -2032,9 +2033,9 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			
 			NSLog( @"%f %f %f", sx, sy, sz);
 						
-			if(	sx == x 
-				&& sy == y
-				&& sz == z)
+			if(	(x < sx + [firstDCMPix pixelSpacingX] && x > sx - [firstDCMPix pixelSpacingX])		&&
+				(y < sy + [firstDCMPix pixelSpacingY] && y > sy - [firstDCMPix pixelSpacingY])		&&
+				(z < sz + [firstDCMPix sliceInterval] && z > sz - [firstDCMPix sliceInterval]))
 			{
 				found = YES;
 			}
