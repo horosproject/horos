@@ -1971,7 +1971,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 }
 
 // 3D points
-- (void) add2DPoint: (float) x : (float) y : (float) z
+- (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm
 {
 	if (viewer2D)
 	{
@@ -1998,10 +1998,11 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 			[roi2DPointsArray addObject:new2DPointROI];
 			[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:sliceNumber]];
 			
-			[x2DPointsArray addObject:[NSNumber numberWithFloat:x/[self factor]]];
-			[y2DPointsArray addObject:[NSNumber numberWithFloat:y/[self factor]]];
-			[z2DPointsArray addObject:[NSNumber numberWithFloat:z/[self factor]]];
+			[x2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 0]]];
+			[y2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 1]]];
+			[z2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 2]]];
 			
+//			NSLog( @"%f %f %f", x, y, z);
 			NSLog( @"%f %f %f", [[x2DPointsArray lastObject] floatValue], [[y2DPointsArray lastObject] floatValue], [[z2DPointsArray lastObject] floatValue]);
 			
 			// notify the change
@@ -2017,13 +2018,23 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		long cur2DPointIndex = 0;
 		BOOL found = NO;
 		
+		x /= [self factor];
+		y /= [self factor];
+		z /= [self factor];
+		
 		NSLog( @"%f %f %f", x, y, z);
 		
 		while(!found && cur2DPointIndex<[roi2DPointsArray count])
-		{		
-			if(	[[x2DPointsArray objectAtIndex:cur2DPointIndex] floatValue]==x/[self factor] 
-				&& [[y2DPointsArray objectAtIndex:cur2DPointIndex] floatValue]==y/[self factor]
-				&& [[z2DPointsArray objectAtIndex:cur2DPointIndex] floatValue]==z/[self factor])
+		{
+			float sx = [[x2DPointsArray objectAtIndex:cur2DPointIndex] floatValue];
+			float sy = [[y2DPointsArray objectAtIndex:cur2DPointIndex] floatValue];
+			float sz = [[z2DPointsArray objectAtIndex:cur2DPointIndex] floatValue];
+			
+			NSLog( @"%f %f %f", sx, sy, sz);
+						
+			if(	sx == x 
+				&& sy == y
+				&& sz == z)
 			{
 				found = YES;
 			}

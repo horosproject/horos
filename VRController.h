@@ -150,7 +150,7 @@
 - (void)createContextualMenu;
 - (float) factor;
 - (void) remove3DPoint: (NSNotification*) note;
-- (void) add2DPoint: (float) x : (float) y : (float) z;
+- (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm;
 - (void) remove2DPoint: (float) x : (float) y : (float) z;
 - (NSMutableArray*) roi2DPointsArray;
 - (NSMutableArray*) sliceNumber2DPointsArray;

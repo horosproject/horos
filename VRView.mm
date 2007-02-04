@@ -5180,23 +5180,6 @@ public:
 	}
 }
 
-//- (void) vtkThrow3DPointOnSurface: (double) x : (double) y			<- Doesn't always work.......
-//{
-//	vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
-//	picker->Pick(x, y, 0.0, aRenderer);
-//	double wXYZ[3];
-//	picker->GetPickPosition(wXYZ);
-//	
-////	double origin[3];
-////	volume->GetPosition(origin);	//GetOrigin
-////	wXYZ[0] -= origin[0];
-////	wXYZ[1] -= origin[1];
-////	wXYZ[2] -= origin[2];
-////	NSLog(@"picked x: %f, y: %f, z: %f", wXYZ[0], wXYZ[1], wXYZ[2]);
-//	[self add3DPoint: (float)wXYZ[0]/factor : (float)wXYZ[1]/factor : (float)wXYZ[2]/factor];
-//	[controller add2DPoint: (float)wXYZ[0] : (float)wXYZ[1] : (float)wXYZ[2]];
-//}
-
 - (BOOL) get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val
 {
 	[self get3DPixelUnder2DPositionX:(float) x Y:(float) y pixel: (long*) pix position:(float*) position value:(float*) val maxOpacity: 1.1 minValue: 0];
@@ -5477,6 +5460,23 @@ public:
 	return pointFound;
 }
 
+//- (void) vtkThrow3DPointOnSurface: (double) x : (double) y			<- Doesn't always work.......
+//{
+//	vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
+//	picker->Pick(x, y, 0.0, aRenderer);
+//	double wXYZ[3];
+//	picker->GetPickPosition(wXYZ);
+//	
+////	double origin[3];
+////	volume->GetPosition(origin);	//GetOrigin
+////	wXYZ[0] -= origin[0];
+////	wXYZ[1] -= origin[1];
+////	wXYZ[2] -= origin[2];
+////	NSLog(@"picked x: %f, y: %f, z: %f", wXYZ[0], wXYZ[1], wXYZ[2]);
+//	[self add3DPoint: (float)wXYZ[0]/factor : (float)wXYZ[1]/factor : (float)wXYZ[2]/factor];
+//	[controller add2DPoint: (float)wXYZ[0] : (float)wXYZ[1] : (float)wXYZ[2]];
+//}
+
 - (void) throw3DPointOnSurface: (double) x : (double) y
 {
 	long	pix[ 3];
@@ -5485,12 +5485,8 @@ public:
 	if( [self get3DPixelUnder2DPositionX:x Y:y pixel:pix position:pos value:&value])
 	{
 		[self add3DPoint: pos[0] : pos[1] : pos[2]];
-
-		long sliceNo;
 		
-		sliceNo = pix[ 2];
-
-		[controller add2DPoint: pix[0] : pix[1] : sliceNo];
+		[controller add2DPoint: pix[0] : pix[1] : pix[ 2] :pos];
 	}
 }
 
@@ -5596,6 +5592,8 @@ public:
 		// remove 2D Point
 		float position[3];
 		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position];
+		
+		
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
 		// the 3D Point is removed through notification (sent in [controller remove2DPoint..)
