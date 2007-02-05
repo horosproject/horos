@@ -1462,8 +1462,12 @@
 		NSPoint lastPoint = [[theCurve lastObject] pointValue];
 		float ww = (lastPoint.x - firstPoint.x);
 		float wl = (lastPoint.x + firstPoint.x) / 2.0;
-
-		[vrView setWLWW:(float)wl :(float)ww];
+		
+		float savedWl, savedWw;
+		[vrView getWLWW: &savedWl :&savedWw];
+		
+		if( savedWl != wl || savedWw != ww)
+			[vrView setWLWW: wl : ww];
 	}
 }
 

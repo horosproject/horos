@@ -1753,6 +1753,7 @@ public:
 	[destinationImage release];
 	
 	[_hotKeyDictionary release];
+	[appliedCurves release];
 	
     [super dealloc];
 }
@@ -1980,7 +1981,7 @@ public:
 	
 	NSRect  selfFrame = [[[self window] contentView] frame];
 	
-	selfFrame.size.height -= 10;
+	selfFrame.size.height -= 30;
 	
 	NSRect	newFrame = selfFrame;
 	NSRect	beforeFrame = selfFrame;
@@ -6104,6 +6105,7 @@ public:
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 {
 	advancedCLUT = YES;
+	
 	NSArray *curves = [clut objectForKey:@"curves"];
 	NSArray *pointColors = [clut objectForKey:@"colors"];
 	NSArray *name = [clut objectForKey:@"name"];
@@ -6111,30 +6113,37 @@ public:
 	NSArray *firstCurve = [curves objectAtIndex:0];
 	NSArray *firstColors = [pointColors objectAtIndex:0];
 	
-	colorTransferFunction->RemoveAllPoints();
-	opacityTransferFunction->RemoveAllPoints();
+	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution != lowRes && lowRes == NO))
+	{	
+		colorTransferFunction->RemoveAllPoints();
+		opacityTransferFunction->RemoveAllPoints();
 	
-	int i,j;
-	for(i=0; i<[curves count]; i++)
-	{
-		NSArray *aCurve = [curves objectAtIndex:i];
-		NSArray *someColors = [pointColors objectAtIndex:i];
-		for(j=0; j<[aCurve count]; j++)
+		int i,j;
+		for(i=0; i<[curves count]; i++)
 		{
-			colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
-			opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
+			NSArray *aCurve = [curves objectAtIndex:i];
+			NSArray *someColors = [pointColors objectAtIndex:i];
+			for(j=0; j<[aCurve count]; j++)
+			{
+				colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
+				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
+			}
 		}
+		
+		[appliedCurves release];
+		appliedCurves = [[NSArchiver archivedDataWithRootObject: clut] retain];
+		appliedResolution = lowRes;
+		
+		if(volumeMapper)
+		{
+			if(lowRes)
+				volumeMapper->SetMinimumImageSampleDistance(LOD*5);
+			else
+				volumeMapper->SetMinimumImageSampleDistance(LOD);
+		}
+		
+		[self setNeedsDisplay: YES];
 	}
-	
-	if(volumeMapper)
-	{
-		if(lowRes)
-			volumeMapper->SetMinimumImageSampleDistance(LOD*5);
-		else
-			volumeMapper->SetMinimumImageSampleDistance(LOD);
-	}
-	
-    //[self setNeedsDisplay:YES];
 }
 
 - (void)setAdvancedCLUTWithName:(NSString*)name;

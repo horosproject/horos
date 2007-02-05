@@ -300,6 +300,8 @@ typedef char* vtkMyCallbackVR;
 	
 	IBOutlet CLUTOpacityView	*clutOpacityView;
 	BOOL						advancedCLUT;
+	NSData						*appliedCurves;
+	BOOL						appliedResolution;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
