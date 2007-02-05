@@ -36,12 +36,16 @@
 		zoomFactor = 1.0;
 		zoomFixedPoint = 0.0;
 		vrViewLowResolution = NO;
+		didResizeVRVIew = NO;
 		
 		//[self newCurve];
 		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:@"NSWindowWillCloseNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:) name:@"NSWindowDidMoveNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
+		
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
 		
@@ -58,6 +62,7 @@
 	if(pointColors) [pointColors release];
 	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
 	[self computeHistogram];
+	didResizeVRVIew = NO;
 //	[self newCurve];
 //	[self niceDisplay];
 	[self updateView];
@@ -104,6 +109,7 @@
 
 - (void)computeHistogram;
 {
+	NSLog(@"computeHistogram");
 	vImage_Buffer buffer;
 	buffer.data = volumePointer;
 	buffer.height = 1;
@@ -159,7 +165,7 @@
 	NSAffineTransform *transform = [self transform];
 	
 	int i, max = 0;
-	for(i=2; i<histogramSize; i++)
+	for(i=0; i<histogramSize; i++)
 	{
 		if(histogram[i]>max) max = histogram[i];
 	}
@@ -864,6 +870,8 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	[super mouseDragged:theEvent];
+	if(![[self window] isVisible]) return;
+	
 	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
 	{
@@ -1019,6 +1027,7 @@
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	[super mouseMoved:theEvent];
+	if(![[self window] isVisible]) return;
 	
 	//[[NSCursor arrowCursor] set];	
 	
@@ -1126,7 +1135,7 @@
 
 - (void)niceDisplay;
 {
-	NSRect screenFrame = [[[self window] screen] frame];
+	NSRect screenFrame = [[[vrView window] screen] frame];
 	
 	//NSRect startingFrame = NSMakeRect(screenFrame.size.width/2.0, screenFrame.size.height/2.0, 200, 200);
 	//[[self window] setFrame:startingFrame display:YES animate:YES];
@@ -1139,7 +1148,12 @@
 	NSRect vrFrame = [[vrView window] frame];
 	vrFrame.size.height = vrFrame.size.height - newFrame.size.height +8;
 	vrFrame.origin.y = vrFrame.origin.y + newFrame.size.height -8;
-	[[vrView window] setFrame:vrFrame display:YES animate:NO];
+	if(!didResizeVRVIew)
+	{
+		[[vrView window] setFrame:vrFrame display:YES animate:NO];
+		[vrView squareView:self];
+		didResizeVRVIew = YES;
+	}
 	
 	[[self window] setAlphaValue:1.0];
 	[[self window] setAcceptsMouseMovedEvents:YES];
@@ -1502,9 +1516,27 @@
 {
 	if([[aNotification object] isEqualTo:[self window]])
 	{
-		if(vrView) [[vrView window] zoom:self];
+		if(vrView)
+		{
+			[[vrView window] zoom:self];
+			[vrView squareView:self];
+		}
+		didResizeVRVIew = NO;
+	}
+	else if([[aNotification object] isEqualTo:[vrView window]])
+	{
+		didResizeVRVIew = NO;
 	}
 }
+
+- (void)windowDidMove:(NSNotification *)aNotification
+{
+	if([[aNotification object] isEqualTo:[vrView window]])
+	{
+		if(vrView && [[self window] isVisible]) [self niceDisplay];
+	}
+}
+
 
 #pragma mark -
 #pragma mark Cursor
@@ -1534,6 +1566,7 @@
 	[cursorImage unlockFocus];
 	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:hotSpot];
 	[cursor set];
+	[cursorImage release];
 }
 
 @end

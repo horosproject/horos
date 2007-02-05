@@ -40,6 +40,7 @@
 	
 	IBOutlet VRView *vrView;
 	BOOL vrViewLowResolution;
+	BOOL didResizeVRVIew;
 }
 
 - (void)cleanup;

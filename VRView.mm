@@ -1978,18 +1978,22 @@ public:
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
 	
-	NSRect	newFrame = [self frame];
-	NSRect	beforeFrame = [self frame];
+	NSRect  selfFrame = [[[self window] contentView] frame];
 	
-	int		border = [self frame].size.height-1;
+	selfFrame.size.height -= 10;
 	
-	if( border > [self frame].size.width) border = [self frame].size.width;
+	NSRect	newFrame = selfFrame;
+	NSRect	beforeFrame = selfFrame;
+	
+	int		border = selfFrame.size.height-1;
+	
+	if( border > selfFrame.size.width) border = selfFrame.size.width;
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 2) border = 512;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 3) border = 768;
 	
-	newFrame.size.width = border;
-	newFrame.size.height = border;
+	newFrame.size.width = (int)border;
+	newFrame.size.height = (int)border;
 
 	newFrame.origin.x = (int) ((beforeFrame.size.width - border) / 2);
 	newFrame.origin.y = (int) (10 + (beforeFrame.size.height - border) / 2);
@@ -3188,6 +3192,12 @@ public:
 	[self setNeedsDisplay:YES];
 	
 	[deleteRegion unlock];
+	
+	if(clutOpacityView)
+	{
+		[clutOpacityView computeHistogram];
+		[clutOpacityView updateView];
+	}
 }
 
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler

@@ -837,6 +837,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			}
 		}
 	}
+
 }
 
 - (void) prepareUndo
