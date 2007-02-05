@@ -1205,7 +1205,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					[autoroutingQueue lock];
 					
-					[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [result valueForKey:@"completePath"], @"completePathArray", [routingRule objectForKey:@"server"], @"server", 0L]];
+					[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: result, @"objects", [routingRule objectForKey:@"server"], @"server", 0L]];
 					
 					[autoroutingQueue unlock];
 				}
@@ -1235,7 +1235,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
 		for( i = 0; i < [copyArray count]; i++)
 		{
-			NSArray			*filesToSend = [[copyArray objectAtIndex: i] objectForKey:@"completePathArray"];
+			NSArray			*objectsToSend = [[copyArray objectAtIndex: i] objectForKey:@"objects"];
 			NSString		*serverName = [[copyArray objectAtIndex: i] objectForKey:@"server"];
 			NSDictionary	*server = 0L;
 			
@@ -1253,27 +1253,56 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( server)
 			{
-				DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-																	calledAET: [server objectForKey:@"AETitle"] 
-																	hostname: [server objectForKey:@"Address"] 
-																	port: [[server objectForKey:@"Port"] intValue] 
-																	filesToSend: filesToSend
-																	transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
-																	compression: 1.0
-																	extraParameters: nil];
-				@try
-				{
-					[storeSCU run:self];
-				}
+				NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+				NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 				
-				@catch (NSException *ne)
-				{
-					NSLog( @"Autorouting FAILED");
-					NSLog( [ne name]);
-					NSLog( [ne reason]);
-				}
+				objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 				
-				[storeSCU release];
+				int					x;
+				NSString			*previousPatientUID = 0L;
+				NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+				
+				for( x = 0; x < [objectsToSend count] ; x++)
+				{
+					if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]] && x != [objectsToSend count]-1)
+					{
+						[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
+					}
+					else
+					{
+						// Send the collected files from the same patient
+					
+						DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+																			calledAET: [server objectForKey:@"AETitle"] 
+																			hostname: [server objectForKey:@"Address"] 
+																			port: [[server objectForKey:@"Port"] intValue] 
+																			filesToSend: [samePatientArray valueForKey: @"completePath"]
+																			transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
+																			compression: 1.0
+																			extraParameters: nil];
+						
+						@try
+						{
+							[storeSCU run:self];
+						}
+						
+						@catch (NSException *ne)
+						{
+							NSLog( @"Autorouting FAILED");
+							NSLog( [ne name]);
+							NSLog( [ne reason]);
+						}
+						
+						[storeSCU release];
+						storeSCU = 0L;
+						
+						// Reset
+						[samePatientArray removeAllObjects];
+						[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
+						
+						previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"];
+					}
+				}
 			}
 			else
 			{
@@ -2559,9 +2588,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 				error = 0L;
 				studiesArray = [context executeFetchRequest:request error:&error];
 				
-				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
-				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-				[sort release];
+//				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
+//				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+//				[sort release];
 				
 				for( i = 0; i < [studiesArray count]; i++)
 				{
@@ -2764,9 +2793,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 				error = 0L;
 				studiesArray = [context executeFetchRequest:request error:&error];
 				
-				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
-				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-				[sort release];
+//				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
+//				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+//				[sort release];
 				
 				for( i = 0; i < [studiesArray count]; i++)
 				{

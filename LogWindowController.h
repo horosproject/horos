@@ -22,8 +22,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface LogWindowController : NSWindowController {
-
+@interface LogWindowController : NSWindowController
+{
 }
 
 @end

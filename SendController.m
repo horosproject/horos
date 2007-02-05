@@ -254,8 +254,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSArray *objectsToSend = _files;
 	
 	if( [sender tag])   //User clicks OK Button
-    {
-		
+    {		
 		if (_keyImageIndex == 1)
 		{
 			NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"];
@@ -269,7 +268,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		}
 
 		NSMutableArray	*files2Send = [objectsToSend valueForKey: @"completePath"];
-
+		
 		if( files2Send != 0L && [files2Send count] > 0)
 		{
 			// DONT REMOVE THESE LINES - THANX ANTOINE
@@ -284,29 +283,14 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 					files2Send = 0L;
 				}
 			}
-		}	
 			
-		if( files2Send != 0L && [files2Send count] > 0)
-		{
-			//NSLog( @"Will send %d files", [files2Send count]);
-						
 			_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...",@"Sending files") :NO];
 			[_waitSendWindow  setTarget:self];
 			[_waitSendWindow showWindow:self];
 			[[_waitSendWindow progress] setMaxValue:[files2Send count]];
 			
-//			if(_serverToolIndex == 1)
-//			{
-//				[_waitSendWindow setCancel:YES];
-//				[NSThread detachNewThreadSelector: @selector(sendDICOMFiles:) toTarget:self withObject: files2Send];
-//			}
-//			else
-			{
-				[_waitSendWindow setCancel:YES];
-				//[[_waitSendWindow progress] setIndeterminate: YES];
-				//[_waitSendWindow setElapsedString:@"working..."];
-				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: files2Send];
-			}
+			[_waitSendWindow setCancel:YES];
+			[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
 		}		
 	}
 
@@ -321,57 +305,75 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
 }
 
-- (void) sendDICOMFilesOffis:(NSMutableArray *)files
+- (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
 {
-	NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
-	
-	NSMutableArray		*filesToSend = [files retain];
-	
-	NSString *calledAET;
-	NSString *hostname;
-	NSString *destPort;
-	NSString *transferSyntax;
-	NSLog(@"Server destination: %@", [[self server] description]);	
-	
-	calledAET = [[self server] objectForKey:@"AETitle"];
-	hostname = [[self server] objectForKey:@"Address"];
-	destPort = [[self server] objectForKey:@"Port"];
+	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 
-	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-			calledAET:calledAET 
-			hostname:hostname 
-			port:[destPort intValue] 
-			filesToSend:(NSArray *)filesToSend
-			transferSyntax:_offisTS
-			compression: 1.0
-			extraParameters:nil];
+	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+	NSString *hostname = [[self server] objectForKey:@"Address"];
+	NSString *destPort = [[self server] objectForKey:@"Port"];
 	
-	@try
-	{
-		[storeSCU run:self];
-	}
+	NSLog(@"Server destination: %@", [[self server] description]);	
+			
+	int					i;
+	NSString			*previousPatientUID = 0L;
+	NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 	
-	@catch( NSException *ne)
+	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+	NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
+
+	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+	
+	for( i = 0; i < [objectsToSend count] ; i++)
 	{
-		if( _waitSendWindow)
+		if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"]] && i != [objectsToSend count]-1)
 		{
-			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
+		}
+		else
+		{
+			// Send the collected files from the same patient
+		
+			storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+					calledAET:calledAET 
+					hostname:hostname 
+					port:[destPort intValue] 
+					filesToSend: [samePatientArray valueForKey: @"completePath"]
+					transferSyntax:_offisTS
+					compression: 1.0
+					extraParameters:nil];
+			
+			@try
+			{
+				[storeSCU run:self];
+			}
+			
+			@catch( NSException *ne)
+			{
+				if( _waitSendWindow)
+				{
+					[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+				}
+			}
+			
+			[storeSCU release];
+			storeSCU = 0L;
+			
+			// Reset
+			[samePatientArray removeAllObjects];
+			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
+			
+			previousPatientUID = [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"];
 		}
 	}
 	
-	[filesToSend release];
-
 	NSMutableDictionary *info = [NSMutableDictionary dictionary];
-	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"SendTotal"];
-	[info setObject:[NSNumber numberWithInt:[filesToSend count]] forKey:@"NumberSent"];
+	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
+	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
 	[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
 	[info setObject:calledAET forKey:@"CalledAET"];
 	
 	[self performSelectorOnMainThread:@selector(closeSendPanel:) withObject:nil waitUntilDone:YES];	
-	
-	[storeSCU release];
-	storeSCU = 0L;
-	
 	
 	//need to unlock to allow release of self after send complete
 	[_lock unlock];
@@ -389,20 +391,10 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (void) setSendMessageThread:(NSDictionary*) info
 {
-	int count = [[info objectForKey:@"SendTotal"] intValue];
-	int numberSent = [[info objectForKey:@"NumberSent"] intValue];
-
 	if( _waitSendWindow)
 	{
 		[_waitSendWindow incrementBy:1];
 		[[[_waitSendWindow window] contentView] setNeedsDisplay:YES];
-
-		if( numberSent >= count-1)
-		{
-			[_waitSendWindow close];
-			[_waitSendWindow release];
-			_waitSendWindow = 0L;
-		}
 	}
 }
 
