@@ -108,6 +108,7 @@
 - (IBAction)sendToBack:(id)sender;
 - (IBAction)setZoomFator:(id)sender;
 - (IBAction)scroll:(id)sender;
+- (void)setCursorLabelWithText:(NSString*)text;
 
 #pragma mark -
 #pragma mark Copy / Paste
