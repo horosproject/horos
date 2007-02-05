@@ -826,11 +826,13 @@
 		}
 		else if([theEvent clickCount] == 2)
 		{
+			nothingChanged = YES;
 			[colorPanel orderFront:self];
 		}
 	}
 	else if([theEvent clickCount] == 2)
 	{
+		nothingChanged = YES;
 		[colorPanel orderFront:self];
 	}
 }
@@ -1466,7 +1468,7 @@
 	float shiftWL = wl - middle;
 	
 	//ww
-	float shiftWW = firstPoint.x - (wl - 0.5 * ww);
+	float shiftWW = firstPoint.x + shiftWL - (wl - 0.5 * ww);
 	
 	NSPoint pt;
 	float factor = 1.0;
