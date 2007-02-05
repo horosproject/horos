@@ -88,6 +88,7 @@
 	contextualMenu = [[NSMenu alloc] init];
 	[contextualMenu addItemWithTitle:NSLocalizedString(@"New Curve", nil) action:@selector(newCurve:) keyEquivalent:@""];
 	[contextualMenu addItemWithTitle:NSLocalizedString(@"Send to back", nil) action:@selector(sendToBack:) keyEquivalent:@""];
+	[contextualMenu addItemWithTitle:NSLocalizedString(@"Remove All Curves", nil) action:@selector(removeAllCurves:) keyEquivalent:@""];
 	[contextualMenu addItem:[NSMenuItem separatorItem]];
 	[contextualMenu addItemWithTitle:NSLocalizedString(@"Save...", nil) action:@selector(chooseNameAndSave:) keyEquivalent:@""];
 }
@@ -1155,9 +1156,10 @@
 		didResizeVRVIew = YES;
 	}
 	
-	[[self window] setAlphaValue:1.0];
 	[[self window] setAcceptsMouseMovedEvents:YES];
 	[[self window] setFrame:newFrame display:YES animate:NO];
+	[[self window] setAlphaValue:1.0];
+	if([curves count]==0) [self newCurve];
 }
 
 - (IBAction)niceDisplay:(id)sender;
@@ -1207,6 +1209,12 @@
 - (IBAction)scroll:(id)sender;
 {
 	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
+	[self updateView];
+}
+
+- (IBAction)removeAllCurves:(id)sender;
+{
+	[curves removeAllObjects];
 	[self updateView];
 }
 
@@ -1432,7 +1440,9 @@
 	
 	NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
 	curves = [clut objectForKey:@"curves"];
+	[curves retain];
 	pointColors = [clut objectForKey:@"colors"];
+	[pointColors retain];
 }
 
 #pragma mark -

@@ -110,6 +110,7 @@
 - (IBAction)setZoomFator:(id)sender;
 - (IBAction)scroll:(id)sender;
 - (void)setCursorLabelWithText:(NSString*)text;
+- (IBAction)removeAllCurves:(id)sender;
 
 #pragma mark -
 #pragma mark Copy / Paste

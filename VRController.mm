@@ -2495,21 +2495,45 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 - (void)showCLUTOpacityPanel:(id)sender;
 {
 	if([clutOpacityPanel isVisible]) return;
-	[clutOpacityView cleanup];	
+//	[clutOpacityView cleanup];	
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
 	[clutOpacityPanel setAlphaValue:0.0];
 	[clutOpacityPanel orderFront:self];
 	[clutOpacityView niceDisplay];
-	[clutOpacityView newCurve:self];
+//	[clutOpacityView newCurve:self];
+}
+
+- (void)loadAdvancedCLUTOpacity:(id)sender;
+{
+	[clutOpacityView loadFromFileWithName:[sender title]];
+	[clutOpacityView setCLUTtoVRView:NO];
 }
 
 - (void)UpdateCLUTMenu:(NSNotification*)note
 {
 	[super UpdateCLUTMenu:note];
+	
+	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:@"/CLUTs"];
+
+	BOOL isDir;
+	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	{
+		NSArray *cluts = [[NSFileManager defaultManager] directoryContentsAtPath:path];
+		int i;
+		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
+		for (i=0; i<[cluts count]; i++)
+		{
+			if(![[cluts objectAtIndex:i] isEqualToString:@".DS_Store"])
+				[[clutPopup menu] insertItemWithTitle:[cluts objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+		}
+	}
+	
     [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
     [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"Advanced CLUT & Opacity", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+	[[[clutPopup menu] itemAtIndex:0] setTitle:@"Advanced CLUT"];
 }
 
 @end
