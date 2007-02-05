@@ -1271,30 +1271,35 @@ static BOOL				DICOMDIRCDMODE = NO;
 					else
 					{
 						// Send the collected files from the same patient
-					
-						DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-																			calledAET: [server objectForKey:@"AETitle"] 
-																			hostname: [server objectForKey:@"Address"] 
-																			port: [[server objectForKey:@"Port"] intValue] 
-																			filesToSend: [samePatientArray valueForKey: @"completePath"]
-																			transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
-																			compression: 1.0
-																			extraParameters: nil];
 						
-						@try
+						if( [samePatientArray count])
 						{
-							[storeSCU run:self];
+							NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
+							
+							DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+																				calledAET: [server objectForKey:@"AETitle"] 
+																				hostname: [server objectForKey:@"Address"] 
+																				port: [[server objectForKey:@"Port"] intValue] 
+																				filesToSend: [samePatientArray valueForKey: @"completePath"]
+																				transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
+																				compression: 1.0
+																				extraParameters: nil];
+							
+							@try
+							{
+								[storeSCU run:self];
+							}
+							
+							@catch (NSException *ne)
+							{
+								NSLog( @"Autorouting FAILED");
+								NSLog( [ne name]);
+								NSLog( [ne reason]);
+							}
+							
+							[storeSCU release];
+							storeSCU = 0L;
 						}
-						
-						@catch (NSException *ne)
-						{
-							NSLog( @"Autorouting FAILED");
-							NSLog( [ne name]);
-							NSLog( [ne reason]);
-						}
-						
-						[storeSCU release];
-						storeSCU = 0L;
 						
 						// Reset
 						[samePatientArray removeAllObjects];

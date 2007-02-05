@@ -332,32 +332,35 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		}
 		else
 		{
-			// Send the collected files from the same patient
-		
-			storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-					calledAET:calledAET 
-					hostname:hostname 
-					port:[destPort intValue] 
-					filesToSend: [samePatientArray valueForKey: @"completePath"]
-					transferSyntax:_offisTS
-					compression: 1.0
-					extraParameters:nil];
-			
-			@try
+			if( [samePatientArray count])
 			{
-				[storeSCU run:self];
-			}
+				// Send the collected files from the same patient
 			
-			@catch( NSException *ne)
-			{
-				if( _waitSendWindow)
+				storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+						calledAET:calledAET 
+						hostname:hostname 
+						port:[destPort intValue] 
+						filesToSend: [samePatientArray valueForKey: @"completePath"]
+						transferSyntax:_offisTS
+						compression: 1.0
+						extraParameters:nil];
+				
+				@try
 				{
-					[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+					[storeSCU run:self];
 				}
+				
+				@catch( NSException *ne)
+				{
+					if( _waitSendWindow)
+					{
+						[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+					}
+				}
+				
+				[storeSCU release];
+				storeSCU = 0L;
 			}
-			
-			[storeSCU release];
-			storeSCU = 0L;
 			
 			// Reset
 			[samePatientArray removeAllObjects];

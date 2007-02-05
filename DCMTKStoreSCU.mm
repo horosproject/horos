@@ -1538,7 +1538,26 @@ NS_ENDHANDLER
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
- 
+
+	{
+		NSMutableDictionary  *userInfo = [NSMutableDictionary dictionary];
+		[userInfo setObject:[NSNumber numberWithInt:_numberOfFiles] forKey:@"SendTotal"];
+		[userInfo setObject:[NSNumber numberWithInt:_numberSent] forKey:@"NumberSent"];
+		[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+		[userInfo setObject:[NSNumber numberWithInt:NO] forKey:@"Sent"];
+		
+		if( _numberSent !=  _numberOfFiles)
+		{
+			[userInfo setObject:@"Incomplete" forKey:@"Message"];
+			_numberErrors = _numberOfFiles - _numberSent;
+			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+		}
+		else
+			[userInfo setObject:@"Complete" forKey:@"Message"];
+			
+		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
+	}
+
 	//get rid of temp folder
 	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
 	
@@ -1577,14 +1596,8 @@ NS_ENDHANDLER
 	[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
 	[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
 	[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
-	if (_numberSent + _numberErrors < _numberOfFiles) {
-		[_logEntry setValue:@"In Progress" forKey:@"message"];
-	}
-	else{
-		[_logEntry setValue:@"Complete" forKey:@"message"];
-	
-	}
 	[_logEntry setValue:[NSDate date] forKey:@"endTime"];
+	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
 	
 	[context unlock];
 }
