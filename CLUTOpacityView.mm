@@ -199,29 +199,31 @@
 
 	NSPoint pt1, pt2, pt3, pt4;
 	
-//	NSAffineTransform *transform = [self transform];
-//	[transform invert];
-	
-//	pt1 = NSMakePoint(0.9*[self bounds].size.width/2.0, 0.0);
-//	pt2 = NSMakePoint(0.95*[self bounds].size.width/2.0, 0.0);
-//	pt3 = NSMakePoint(1.05*[self bounds].size.width/2.0, 0.0);
-//	pt4 = NSMakePoint(1.1*[self bounds].size.width/2.0, 0.0);
-//
-//	pt1 = [transform transformPoint:pt1];
-//	pt2 = [transform transformPoint:pt2];
-//	pt3 = [transform transformPoint:pt3];
-//	pt4 = [transform transformPoint:pt4];
-//
-//	pt1.y = 0.0;
-//	pt2.y = 0.027;
-//	pt3.y = 0.133;
-//	pt4.y = 0.682;
-
 	pt1 = NSMakePoint(12, 0.0);
 	pt2 = NSMakePoint(202, sqrt(0.027));
 	pt3 = NSMakePoint(404, sqrt(0.133));
 	pt4 = NSMakePoint(549, sqrt(0.682));
 
+	BOOL needsShift = NO;
+	NSPoint c1, c2;
+	int i;
+	for (i=0; i<[curves count]; i++)
+	{
+		c1 = [[[curves objectAtIndex:i] objectAtIndex:0] pointValue];
+		c2 = [[[curves objectAtIndex:i] lastObject] pointValue];
+		needsShift = (pt1.x>c1.x-40 && pt1.x<c1.x+40) || (pt2.x>c2.x-40 && pt2.x<c2.x+40);
+		
+		if(needsShift)
+		{
+			pt1.x += 40;
+			pt2.x += 40;
+			pt3.x += 40;
+			pt4.x += 40;
+			i=-1;
+			needsShift = NO;
+		}
+	}
+	
 	[theNewCurve addObject:[NSValue valueWithPoint:pt1]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt2]];
 	[theNewCurve addObject:[NSValue valueWithPoint:pt3]];
@@ -402,6 +404,7 @@
 
 - (void)deleteCurveAtIndex:(int)curveIndex;
 {
+	nothingChanged = NO;
 	[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:curveIndex withPoints:[NSMutableArray arrayWithArray:[curves objectAtIndex:curveIndex]] colors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]]];
 	[curves removeObjectAtIndex:curveIndex];
 	[pointColors removeObjectAtIndex:curveIndex];
@@ -617,9 +620,9 @@
 	//if(j==0 || j==[aCurve count]-1) point.y = 0.0;
 					
 	if(j>0)
-		if(point.x<=[[aCurve objectAtIndex:j-1] pointValue].x) point.x = [[aCurve objectAtIndex:j-1] pointValue].x;
+		if(point.x<=[[aCurve objectAtIndex:j-1] pointValue].x+10) point.x = [[aCurve objectAtIndex:j-1] pointValue].x+10;
 	if(j<[aCurve count]-1)
-		if(point.x>=[[aCurve objectAtIndex:j+1] pointValue].x) point.x = [[aCurve objectAtIndex:j+1] pointValue].x;
+		if(point.x>=[[aCurve objectAtIndex:j+1] pointValue].x-10) point.x = [[aCurve objectAtIndex:j+1] pointValue].x-10;
 			
 	return point;
 }
@@ -1472,12 +1475,21 @@
 	{
 		pt = [[theCurve objectAtIndex:i] pointValue];
 		factor = fabsf(pt.x - middle) / half;
+		if(factor<0.0) factor = 0.0;
 		pt.x += shiftWL;
 		if(i<[theCurve count]/2.0) pt.x -= shiftWW * factor;
 		else  pt.x += shiftWW * factor;
+		pt = [self legalizePoint:pt inCurve:theCurve atIndex:i];
 		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
 	}
-	
+
+	for (i=0; i<[theCurve count]; i++)
+	{
+		pt = [[theCurve objectAtIndex:i] pointValue];
+		pt = [self legalizePoint:pt inCurve:theCurve atIndex:i];
+		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
+	}
+	nothingChanged = YES;
 	[self updateView];
 }
 

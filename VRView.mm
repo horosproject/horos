@@ -2171,7 +2171,6 @@ public:
 				else if (advancedCLUT)
 				{
 					[clutOpacityView setWL:wl ww:ww];
-					[clutOpacityView setCLUTtoVRView:YES];
 					return;
 				}
 				else
