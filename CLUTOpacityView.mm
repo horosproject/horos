@@ -51,6 +51,7 @@
 		
 		[[self window] setAlphaValue:0.0];
 		//[self niceDisplay];
+		[self updateView];
     }
     return self;
 }
@@ -564,7 +565,7 @@
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
 				[colorPanel setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 				[self sendToFrontCurveAtIndex:i];
-				[self updateView];
+				//[self updateView];
 				return YES;
 			}
 		}
@@ -744,7 +745,7 @@
 		{
 			selectedPoint = controlPoint;
 			[self sendToFrontCurveAtIndex:i];
-			[self updateView];
+			//[self updateView];
 			return YES;
 		}
 	}
