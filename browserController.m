@@ -10112,18 +10112,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSOpenPanel			*sPanel			= [NSOpenPanel openPanel];
 	
-	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
-	
-	NSLog( [sender description]);
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
-	{
-		//Burn additional Files. Not just images. Add SRs
-		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:NO];
-		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
-	}
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:NO];
-	
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
 	[sPanel setAllowsMultipleSelection:NO];
@@ -10137,6 +10125,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([sPanel runModalForDirectory:0L file:0L types:0L] == NSFileHandlingPanelOKButton)
 	{
+		NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+		NSMutableArray *filesToExport;
+		
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing the files...", nil)];
+		[wait showWindow:self];
+		
+		NSLog( [sender description]);
+		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
+		{
+			//Burn additional Files. Not just images. Add SRs
+			filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages:NO];
+			NSLog(@"Files from contextual menu: %d", [filesToExport count]);
+		}
+		else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages:NO];
+		
+		[wait close];
+		[wait release];
+		
 		[self exportDICOMFileInt: [[sPanel filenames] objectAtIndex:0] files: filesToExport objects: dicomFiles2Export];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger:[compressionMatrix selectedTag] forKey:@"Compression Mode for Export"];
