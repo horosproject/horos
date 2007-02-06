@@ -89,7 +89,7 @@
 		[params setObject:[NSNumber numberWithInt:0] forKey:@"debugLevel"];
 		if (![params objectForKey:@"moveDestination"])
 			[params setObject:[params objectForKey:@"callingAET"]  forKey:@"moveDestination"];
-		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
+		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];			//ExplicitVRLittleEndianTransferSyntax
 		[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelMove] forKey:@"affectedSOPClassUID"];
 		[params setObject:[NSNumber numberWithInt:1000000] forKey:@"timeout"];
 		

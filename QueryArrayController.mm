@@ -110,7 +110,7 @@
 									calledAET:calledAET 
 									hostname:hostname
 									port:[port intValue]
-									transferSyntax:nil		//EXS_LittleEndianExplicit
+									transferSyntax:0L		//EXS_LittleEndianExplicit
 									compression: nil
 									extraParameters:nil] retain];
 	NSMutableArray *filterArray = [NSMutableArray array];
@@ -149,7 +149,7 @@
 			[params setObject:port forKey:@"port"];
 		}
 
-		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];
+		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 		[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
 	NS_HANDLER
 		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Unable to perform Q/R. There was a missing parameter. Make sure you have AE Titles, IP addresses and ports for the queried computer"];

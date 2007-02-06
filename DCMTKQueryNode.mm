@@ -503,7 +503,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         numTransferSyntaxes = 3;
         break;
     }
-
+	
     return ASC_addPresentationContext(
         params, 1, abstractSyntax,
         transferSyntaxes, numTransferSyntaxes);
@@ -551,7 +551,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	SetDebugLevel(3);
 	
 	//Use Little Endian TS
-	_networkTransferSyntax = EXS_LittleEndianExplicit;
+	_networkTransferSyntax = EXS_LittleEndianExplicit;	//EXS_LittleEndianExplicit;
 	
 	
 	NS_DURING
