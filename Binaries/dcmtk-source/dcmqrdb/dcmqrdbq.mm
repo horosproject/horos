@@ -906,22 +906,22 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::cancelFindRequest (DcmQueryRet
 			MOVE
 **************************************/
 //have preferred Syntax for move
-OFCondition nextMoveResponse(
+OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
       char *SOPClassUID,
       char *SOPInstanceUID,
       char *imageFileName,
-	  E_TransferSyntax preferredTS,
       unsigned short *numberOfRemainingSubOperations,
       DcmQueryRetrieveDatabaseStatus *status)
 {
 	  
-	return (EC_Normal) ;
+	return this->nextMoveResponse( SOPClassUID, SOPInstanceUID, imageFileName, EXS_LittleEndianExplicit, numberOfRemainingSubOperations, status);
 }
 
 OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
                 char            *SOPClassUID,
                 char            *SOPInstanceUID,
                 char            *imageFileName,
+				E_TransferSyntax preferredTS,
                 unsigned short  *numberOfRemainingSubOperations,
                 DcmQueryRetrieveDatabaseStatus  *status)
 {
@@ -952,8 +952,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		/* figure out which of the accepted presentation contexts should be used */
 		DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 		//on the fly conversion:
-		//currently we will convert everything to EXS_LittleEndianExplicit. Eventually this should be the preferred syntax for the destination
-		E_TransferSyntax moveTransferSyntax = EXS_LittleEndianExplicit;
+		E_TransferSyntax moveTransferSyntax = preferredTS;
 		T_ASC_PresentationContextID presId;
 		DcmXfer preferredXfer(moveTransferSyntax);
 		OFBool status = YES;
@@ -985,13 +984,9 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		
 	}
 	else NSLog( @"Error");
-
+	
 	//read file to get SOPClass and SOPInstanceUIDs
 	
-	
-	
-	
-	 
 	 return cond;
 	//return DcmQROsiriXDatabaseError;
 }
@@ -1133,7 +1128,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::startMoveRequest(
         return (DcmQROsiriXDatabaseError) ;
     }
 	
-	    switch (handle->rootLevel)
+	switch (handle->rootLevel)
     {
       case PATIENT_ROOT :
         qLevel = PATIENT_LEVEL ;

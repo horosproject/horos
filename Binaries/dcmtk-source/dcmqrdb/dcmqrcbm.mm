@@ -449,9 +449,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		when the file is read to get SOPInstance and SOPClass. It would be nice to only open the file once.
 		This may not be feasible.
 	*/
-    dbcond = dbHandle.nextMoveResponse(
-	subImgSOPClass, subImgSOPInstance, subImgFileName,
-	&nRemaining, dbStatus);
+    dbcond = dbHandle.nextMoveResponse( subImgSOPClass, subImgSOPInstance, subImgFileName, &nRemaining, dbStatus);
     if (dbcond.bad()) {
 	DcmQueryRetrieveOptions::errmsg("moveSCP: Database: nextMoveResponse Failed (%s):",
 	    DU_cmoveStatusString(dbStatus->status()));
