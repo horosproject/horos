@@ -126,6 +126,7 @@
 - (void)chooseNameAndSave:(id)sender;
 - (IBAction)save:(id)sender;
 - (void)saveWithName:(NSString*)name;
+- (void)loadFromFileWithName:(NSString*)name;
 
 #pragma mark -
 #pragma mark Connection to VRView

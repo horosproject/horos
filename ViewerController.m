@@ -3848,7 +3848,7 @@ static ViewerController *draggedController = 0L;
         [[clutPopup menu] addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
     }
     [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"Add a CLUT", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
+    [[clutPopup menu] addItemWithTitle: NSLocalizedString(@"8-bit CLUT Editor", nil) action:@selector (AddCLUT:) keyEquivalent:@""];
 
 	[[[clutPopup menu] itemAtIndex:0] setTitle:curCLUTMenu];
 }

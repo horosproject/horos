@@ -1159,7 +1159,12 @@
 	[[self window] setAcceptsMouseMovedEvents:YES];
 	[[self window] setFrame:newFrame display:YES animate:NO];
 	[[self window] setAlphaValue:1.0];
-	if([curves count]==0) [self newCurve];
+
+	NSLog(@"[curves count]: %d", [curves count]);
+	if([curves count]==0)
+	{
+		[self newCurve];
+	}
 }
 
 - (IBAction)niceDisplay:(id)sender;

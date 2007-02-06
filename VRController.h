@@ -187,5 +187,6 @@
 
 - (NSPanel*)clutOpacityPanel;
 - (void)showCLUTOpacityPanel:(id)sender;
+- (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
 
 @end

@@ -132,9 +132,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Add an Opacity Table", nil) action:@selector (AddOpacity:) keyEquivalent:@""];
 
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
-	
-    [[OpacityPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[OpacityPopup menu] addItemWithTitle:NSLocalizedString(@"Advanced CLUT & Opacity", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 }
 
 
@@ -1159,6 +1156,15 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 -(void) ApplyCLUTString:(NSString*) str
 {
 	if( str == 0L) return;
+	
+	[OpacityPopup setEnabled:YES];
+	[clutOpacityView cleanup];
+	if([clutOpacityPanel isVisible])
+	{
+		[clutOpacityPanel close];
+	}
+	
+	[self ApplyOpacityString:curOpacityMenu];
 	
 	if( curCLUTMenu != str)
 	{
@@ -2502,13 +2508,29 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[clutOpacityPanel setAlphaValue:0.0];
 	[clutOpacityPanel orderFront:self];
 	[clutOpacityView niceDisplay];
+	[clutOpacityView updateView];
+	[clutOpacityView setCLUTtoVRView:NO];
 //	[clutOpacityView newCurve:self];
+	[[[clutPopup menu] itemAtIndex:0] setTitle:@"16-bit CLUT"];
+	[OpacityPopup setEnabled:NO];
 }
 
 - (void)loadAdvancedCLUTOpacity:(id)sender;
 {
-	[clutOpacityView loadFromFileWithName:[sender title]];
-	[clutOpacityView setCLUTtoVRView:NO];
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+    {
+        NSBeginAlertSheet(NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window],
+		  self, @selector(delete16BitCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: @"Are you sure you want to delete this CLUT : '%@'", [sender title]]);
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
+	}
+	else
+	{
+		[clutOpacityView loadFromFileWithName:[sender title]];
+		[clutOpacityView setCLUTtoVRView:NO];
+		[clutOpacityView updateView];
+		[[[clutPopup menu] itemAtIndex:0] setTitle:[sender title]];
+		[OpacityPopup setEnabled:NO];
+	}
 }
 
 - (void)UpdateCLUTMenu:(NSNotification*)note
@@ -2530,10 +2552,24 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 				[[clutPopup menu] insertItemWithTitle:[cluts objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 		}
 	}
-	
-    [[clutPopup menu] addItem: [NSMenuItem separatorItem]];
-    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"Advanced CLUT & Opacity", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
-	[[[clutPopup menu] itemAtIndex:0] setTitle:@"Advanced CLUT"];
+    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+}
+
+- (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
+{
+    if (returnCode==1)
+    {
+		NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+		[path appendString:@"/CLUTs/"];
+		[path appendString:(id)contextInfo];
+		NSLog(@"path : ", path);
+		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
+			NSLog(@"fileExistsAtPath");
+			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: 0L];
+    }
 }
 
 @end
