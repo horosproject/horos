@@ -971,6 +971,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	}
 }
 
+- (void)windowDidResize:(NSNotification *)aNotification
+{
+	if( [style isEqualToString:@"panel"] == NO) [view squareView: self];
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];

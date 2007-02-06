@@ -335,32 +335,33 @@ NSString * documentsDirectory();
 	
 }
 
-- (void)applyWLWWForString:(NSString *)menuString{
-		if( curWLWWMenu != menuString)
-		{
-			[curWLWWMenu release];
-			curWLWWMenu = [menuString retain];
-		}
-		
-		if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
-		{
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
-		{
-			[self setWLWW:[[[[self window] firstResponder] curDCM] savedWL] :[[[[self window] firstResponder] curDCM] savedWW]];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
-		{
-			[self setWLWW:0 :0];
-		}
-		else
-		{
-			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
-			[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
-		}
-		
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+- (void)applyWLWWForString:(NSString *)menuString
+{
+	if( curWLWWMenu != menuString)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [menuString retain];
+	}
+	
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+	{
+		[self setWLWW:[[[[self window] firstResponder] curDCM] savedWL] :[[[[self window] firstResponder] curDCM] savedWW]];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+	{
+		[self setWLWW:0 :0];
+	}
+	else
+	{
+		NSArray		*value;
+		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
+		[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
+	}
+	
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];

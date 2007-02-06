@@ -465,12 +465,12 @@ NSString * documentsDirectory();
 	}
 }
 
-- (void) ApplyWLWW:(id) sender
+- (void)applyWLWWForString:(NSString *)menuString
 {
-	if( curWLWWMenu != [sender title])
+	if( curWLWWMenu != menuString)
 	{
 		[curWLWWMenu release];
-		curWLWWMenu = [[sender title] retain];
+		curWLWWMenu = [menuString retain];
 	}
 //    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 //    {
@@ -478,25 +478,25 @@ NSString * documentsDirectory();
 //    }
 //    else
 //    {
-		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+		if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 		{
 			//[imageView setWLWW:0 :0];
 		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 		{
 			[self setWLWW:[[[self keyView] curDCM] savedWL] :[[[self keyView] curDCM] savedWW] : [[self keyView] controller]];
 		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 		{
 			[self setWLWW:0 :0 : [[self keyView] controller]];
 		}
 		else
 		{
 			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:[sender title]];
+			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
 			[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : [[self keyView] controller]];
 		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 //		[self propagateSettings];
 //    }
 	
@@ -505,6 +505,11 @@ NSString * documentsDirectory();
 	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 //	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 //	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
+}
+
+- (void) ApplyWLWW:(id) sender
+{
+	[self applyWLWWForString:[sender title]];
 }
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRPETCTView*) sender
@@ -835,14 +840,21 @@ NSString * documentsDirectory();
 	[blendingViewerController Panel3D: sender];
 }
 
+
+- (void)setCurrentTool:(int)currentTool{
+	if (currentTool >= 0)
+	{
+		[toolsMatrix selectCellWithTag: currentTool];
+		[CTController setCurrentTool: currentTool];
+		[PETCTController setCurrentTool: currentTool];
+		[PETController setCurrentTool: currentTool];
+	}
+}
 - (IBAction) changeTool:(id) sender
 {
 	if( [sender tag] >= 0)
     {
-		[toolsMatrix selectCellWithTag: [[sender selectedCell] tag]];
-		[CTController setCurrentTool: [[sender selectedCell] tag]];
-		[PETCTController setCurrentTool: [[sender selectedCell] tag]];
-		[PETController setCurrentTool: [[sender selectedCell] tag]];
+		[self setCurrentTool: [sender tag]];
     }
 }
 
