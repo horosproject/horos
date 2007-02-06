@@ -248,6 +248,9 @@
 	// select the new curve
 	NSPoint controlPoint = [self controlPointForCurveAtIndex:0];
 	selectedPoint = controlPoint;
+	
+	nothingChanged = NO;
+	[self updateView];
 }
 
 - (void)fillCurvesInRect:(NSRect)rect;
@@ -1120,7 +1123,6 @@
 - (IBAction)newCurve:(id)sender;
 {
 	[self newCurve];
-	[self updateView];
 }
 
 - (IBAction)setLineWidth:(id)sender;
