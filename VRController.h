@@ -101,7 +101,8 @@
 	NSString				*_renderingMode;
 	
 	// CLUT & Opacity panel
-	IBOutlet NSPanel		*clutOpacityPanel;
+	//IBOutlet NSPanel		*clutOpacityPanel;
+	IBOutlet NSDrawer		*clutOpacityDrawer;
 	IBOutlet CLUTOpacityView *clutOpacityView;
 }
 
@@ -185,7 +186,7 @@
 - (void)setRenderingMode:(NSString *)renderingMode;
 - (NSString *)curCLUTMenu;
 
-- (NSPanel*)clutOpacityPanel;
+- (NSDrawer*)clutOpacityDrawer;
 - (void)showCLUTOpacityPanel:(id)sender;
 - (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
 

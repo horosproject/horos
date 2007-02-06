@@ -147,7 +147,7 @@
                 WLWWView = NSView; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
-                clutOpacityPanel = NSPanel; 
+                clutOpacityDrawer = NSDrawer; 
                 clutOpacityView = CLUTOpacityView; 
                 convolutionMenu = NSPopUpButton; 
                 convolutionView = NSView; 

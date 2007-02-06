@@ -438,5 +438,6 @@ typedef char* vtkMyCallbackVR;
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 - (void)setAdvancedCLUTWithName:(NSString*)name;
+-(VRController*)controller;
 
 @end

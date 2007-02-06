@@ -111,6 +111,7 @@
 - (IBAction)scroll:(id)sender;
 - (void)setCursorLabelWithText:(NSString*)text;
 - (IBAction)removeAllCurves:(id)sender;
+- (void)addCurveIfNeeded;
 
 #pragma mark -
 #pragma mark Copy / Paste

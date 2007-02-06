@@ -1159,9 +1159,9 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	
 	[OpacityPopup setEnabled:YES];
 	[clutOpacityView cleanup];
-	if([clutOpacityPanel isVisible])
+	if([clutOpacityDrawer state]==NSDrawerOpenState)
 	{
-		[clutOpacityPanel close];
+		[clutOpacityDrawer close];
 	}
 	
 	[self ApplyOpacityString:curOpacityMenu];
@@ -2493,21 +2493,27 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	return curCLUTMenu;
 }
 
-- (NSPanel*)clutOpacityPanel;
+- (NSDrawer*)clutOpacityDrawer;
 {
-	return clutOpacityPanel;
+	return clutOpacityDrawer;
 }
 
 - (void)showCLUTOpacityPanel:(id)sender;
 {
-	if([clutOpacityPanel isVisible]) return;
+//	if([clutOpacityDrawer isVisible]) return;
+	//[clutOpacityView niceDisplay];
+	if([clutOpacityDrawer state]==NSDrawerClosedState)
+		[clutOpacityDrawer openOnEdge:NSMinYEdge];
+	else
+		[clutOpacityDrawer close];
 //	[clutOpacityView cleanup];	
 	[clutOpacityView setVolumePointer:[[pixList[0] objectAtIndex: 0] fImage] width:[[pixList[0] objectAtIndex: 0] pwidth] height:[[pixList[0] objectAtIndex: 0] pheight] numberOfSlices:[pixList[0] count]];
 	[clutOpacityView setHUmin:minimumValue HUmax:maximumValue];
 	[clutOpacityView computeHistogram];
-	[clutOpacityPanel setAlphaValue:0.0];
-	[clutOpacityPanel orderFront:self];
-	[clutOpacityView niceDisplay];
+//	[clutOpacityPanel setAlphaValue:0.0];
+//	[clutOpacityPanel orderFront:self];
+	//[clutOpacityView niceDisplay];
+	[clutOpacityView addCurveIfNeeded];
 	[clutOpacityView updateView];
 	[clutOpacityView setCLUTtoVRView:NO];
 //	[clutOpacityView newCurve:self];
@@ -2570,6 +2576,16 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: 0L];
     }
+}
+
+- (BOOL)drawerDidClose:(NSDrawer *)sender
+{
+	[[self window] zoom:self];
+}
+
+- (BOOL)drawerDidOpen:(NSDrawer *)sender
+{
+	[[self window] zoom:self];
 }
 
 @end

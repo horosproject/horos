@@ -42,14 +42,17 @@
 		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:@"NSWindowWillCloseNotification" object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:) name:@"NSWindowDidMoveNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:@"NSWindowWillCloseNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:) name:@"NSWindowDidMoveNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:@"NSWindowDidResignMainNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:@"NSWindowDidBecomeMainNotification" object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:@"NSWindowDidBecomeKeyNotification" object:nil];
 		
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
 		
-		[[self window] setAlphaValue:0.0];
+//		[[self window] setAlphaValue:0.0];
 		//[self niceDisplay];
 		[self updateView];
     }
@@ -78,6 +81,9 @@
 	[selectedPointColor release];
 	[contextualMenu release];
 	[undoManager release];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	
 	[super dealloc];
 }
 
@@ -589,7 +595,7 @@
 
 - (void)changePointColor:(NSNotification *)notification;
 {
-	if([self isAnyPointSelected] && [[self window] isKeyWindow])
+	if([self isAnyPointSelected])// && [[self window] isKeyWindow])
 	{
 		int i, j;
 		for (i=0; i<[curves count]; i++)
@@ -875,7 +881,7 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	[super mouseDragged:theEvent];
-	if(![[self window] isVisible]) return;
+//	if(![[self window] isVisible]) return;
 	
 	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
@@ -1032,7 +1038,7 @@
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	[super mouseMoved:theEvent];
-	if(![[self window] isVisible]) return;
+//	if(![[self window] isVisible]) return;
 	
 	//[[NSCursor arrowCursor] set];	
 	
@@ -1147,7 +1153,7 @@
 		
 	NSRect newFrame = screenFrame;
 	newFrame.size.height = 200;
-	[[self window] setBackgroundColor:[NSColor blackColor]];
+	//[[self window] setBackgroundColor:[NSColor blackColor]];
 	
 	NSRect vrFrame = [[vrView window] frame];
 	vrFrame.size.height = vrFrame.size.height - newFrame.size.height +8;
@@ -1159,15 +1165,17 @@
 		didResizeVRVIew = YES;
 	}
 	
-	[[self window] setAcceptsMouseMovedEvents:YES];
-	[[self window] setFrame:newFrame display:YES animate:NO];
-	[[self window] setAlphaValue:1.0];
+	//[[self window] setAcceptsMouseMovedEvents:YES];
+	//[[self window] setFrame:newFrame display:YES animate:NO];
+	//[[self window] setAlphaValue:1.0];
 
 	NSLog(@"[curves count]: %d", [curves count]);
 	if([curves count]==0)
 	{
 		[self newCurve];
 	}
+//	[[vrView window] addChildWindow:[self window] ordered:NSWindowAbove];
+	//[[[[vrView window] drawers] objectAtIndex:0] open];
 }
 
 - (IBAction)niceDisplay:(id)sender;
@@ -1224,6 +1232,14 @@
 {
 	[curves removeAllObjects];
 	[self updateView];
+}
+
+- (void)addCurveIfNeeded;
+{
+	if([curves count]==0)
+	{
+		[self newCurve];
+	}
 }
 
 #pragma mark -
@@ -1438,6 +1454,7 @@
 	
 	[path appendString:name];
 	[NSArchiver archiveRootObject:clut toFile:path];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:0L];
 }
 
 - (void)loadFromFileWithName:(NSString*)name;
@@ -1534,31 +1551,83 @@
 #pragma mark -
 #pragma mark Window
 
-- (void)windowWillClose:(NSNotification *)aNotification
-{
-	if([[aNotification object] isEqualTo:[self window]])
-	{
-		if(vrView)
-		{
-			[[vrView window] zoom:self];
-			[vrView squareView:self];
-		}
-		didResizeVRVIew = NO;
-	}
-	else if([[aNotification object] isEqualTo:[vrView window]])
-	{
-		didResizeVRVIew = NO;
-	}
-}
+//- (void)windowWillClose:(NSNotification *)aNotification
+//{
+//	if(vrView)
+//	{
+//		if([[aNotification object] isEqualTo:[self window]])
+//		{
+////			[[vrView window] removeChildWindow:[self window]];
+//	[[[[vrView window] drawers] objectAtIndex:0] close];
+//			if([vrView controller])
+//			{
+//				[[vrView window] zoom:self];
+//				[vrView squareView:self];
+//				[[[vrView controller] OpacityPopup] setEnabled:YES];
+//			}
+//			didResizeVRVIew = NO;
+//		}
+//		else if([[aNotification object] isEqualTo:[vrView window]])
+//		{
+//			didResizeVRVIew = NO;
+//		}
+//	}
+//}
 
-- (void)windowDidMove:(NSNotification *)aNotification
-{
-	if([[aNotification object] isEqualTo:[vrView window]])
-	{
-		if(vrView && [[self window] isVisible]) [self niceDisplay];
-	}
-}
-
+//- (void)windowDidMove:(NSNotification *)aNotification
+//{
+//	if(vrView)
+//	{
+//		if([[aNotification object] isEqualTo:[vrView window]])
+//		{
+//			if(vrView && [[self window] isVisible]) [self niceDisplay];
+//		}
+//	}
+//}
+//
+//- (void)windowDidResignMain:(NSNotification *)aNotification
+//{
+//	if(vrView)
+//	{
+//		if([[aNotification object] isEqualTo:[vrView window]])
+//		{
+//			if([[self window] isVisible])
+//				[[self window] orderWindow:NSWindowBelow relativeTo:[[vrView window] windowNumber]];
+//	//			[[self window] orderBack:self];
+//				
+//		}
+//	}
+//}
+//
+//- (void)windowDidBecomeMain:(NSNotification *)aNotification
+//{
+//	if(vrView)
+//	{
+//		if([[aNotification object] isEqualTo:[vrView window]])
+//		{
+//			if([[self window] isVisible])
+//				[[self window] orderFront:self];
+//				//[[self window] orderWindow:NSWindowBelow relativeTo:[[vrView window] windowNumber]];
+//				//[[self window] orderFront:self];
+//		}
+////		else if([[aNotification object] isEqualTo:[self window]])
+////		{
+////			//[[vrView window] orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
+////			[[vrView window] orderFront:self];
+////		}
+//	}
+//}
+//
+//- (void)windowDidBecomeKey:(NSNotification *)aNotification
+//{
+//	if(vrView)
+//	{
+//		if([[aNotification object] isEqualTo:[self window]])
+//		{
+//			[[vrView window] orderFront:self];
+//		}
+//	}
+//}
 
 #pragma mark -
 #pragma mark Cursor
