@@ -26,7 +26,7 @@
 	NSDate  *startTime;
 	BOOL	cancel, aborted, openSession;
 	NSModalSession session;
-	NSTimeInterval lastTimeFrame, lastTimeFrameUpdate;
+	NSTimeInterval lastTimeFrame, lastTimeFrameUpdate, firstTime;
 }
 
 - (void)incrementBy:(double)delta;

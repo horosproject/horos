@@ -827,7 +827,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 								[seriesTable setValue:today forKey:@"dateAdded"];
 								
 								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
-								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
+//								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
@@ -7910,8 +7910,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		
-		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
-		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
+//		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
+//		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];
 		

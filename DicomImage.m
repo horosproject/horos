@@ -35,6 +35,11 @@ extern NSString * documentsDirectory();
 
 @implementation DicomImage
 
+- (NSString*) type
+{
+	return @"Image";
+}
+
 - (void) dealloc
 {
 	[completePathCache release];

@@ -44,7 +44,7 @@
 		
 		if( intervalElapsed > 2)
 		{
-			if( thisTime - lastTimeFrame > 2.0)
+			if( thisTime - lastTimeFrame > 2.0 && thisTime - firstTime > 10.0)
 			{
 				lastTimeFrame = thisTime;
 				
@@ -107,6 +107,7 @@
 	aborted = NO;
 	openSession = useSession;
 	_target = 0L;
+	firstTime = [NSDate timeIntervalSinceReferenceDate];
 	
 	return self;
 }

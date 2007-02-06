@@ -33,6 +33,11 @@
 
 @implementation DicomSeries
 
+- (NSString*) type
+{
+	return @"Series";
+}
+
 - (NSString *) localstring
 {
 	NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];

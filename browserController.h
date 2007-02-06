@@ -72,7 +72,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSNumberFormatter		*numFmt;
     
-	NSData					*notFoundDataThumbnail;
+//	NSData					*notFoundDataThumbnail;
 	
     DCMPix                  *curPreviewPix;
     

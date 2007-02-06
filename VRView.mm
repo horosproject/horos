@@ -6113,7 +6113,7 @@ public:
 	NSArray *firstCurve = [curves objectAtIndex:0];
 	NSArray *firstColors = [pointColors objectAtIndex:0];
 	
-	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution != lowRes && lowRes == NO))
+	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
 	{	
 		colorTransferFunction->RemoveAllPoints();
 		opacityTransferFunction->RemoveAllPoints();

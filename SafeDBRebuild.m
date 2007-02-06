@@ -271,7 +271,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 							{
 								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
 								[image setValue:[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] forKey:@"instanceNumber"];
-								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
+//								[image setValue:[[curDict objectForKey: [@"imageID" stringByAppendingString:SeriesNum]] stringValue] forKey:@"name"];
 								[image setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];

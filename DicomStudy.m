@@ -28,6 +28,11 @@ Version 2.3
 
 @implementation DicomStudy
 
+- (NSString*) type
+{
+	return @"Study";
+}
+
 - (NSString *) localstring
 {
 	NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
