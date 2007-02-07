@@ -155,6 +155,8 @@
 	
 	[histogramColor set];
 	NSRectFillList(rects, histogramSize);
+	
+	free( rects);
 }
 
 - (void)drawHistogramInRect:(NSRect)rect;
@@ -645,9 +647,9 @@
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	
-	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.3f", pt.x, pt.y*pt.y] attributes:attrsDictionary];
-	NSAttributedString *labelValue = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f", pt.x] attributes:attrsDictionary];
-	NSAttributedString *labelAlpha = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"alpha : %1.3f", pt.y*pt.y] attributes:attrsDictionary];
+	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.3f", pt.x, pt.y*pt.y] attributes:attrsDictionary] autorelease];
+	NSAttributedString *labelValue = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f", pt.x] attributes:attrsDictionary] autorelease];
+	NSAttributedString *labelAlpha = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"alpha : %1.3f", pt.y*pt.y] attributes:attrsDictionary] autorelease];
 	
 	NSAffineTransform* transform = [self transform];
 	NSPoint pt1 = [transform transformPoint:pt];
@@ -677,10 +679,6 @@
 	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 	[labelRect fill];
 	[label drawAtPoint:labelPosition];
-	
-	[label release];
-	[labelValue release];
-	[labelAlpha release];
 }
 
 - (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor*)color;
@@ -1606,7 +1604,7 @@
 
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
-	NSAttributedString *label = [[NSAttributedString alloc] initWithString:text attributes:attrsDictionary];
+	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:text attributes:attrsDictionary] autorelease];
 	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
 
 	NSSize imageSize = [cursorImage size];
@@ -1627,7 +1625,6 @@
 	
 	[cursorImage release];
 	[cursor release];
-	[label release];
 }
 
 @end
