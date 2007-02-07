@@ -1153,7 +1153,7 @@
 		
 	NSRect newFrame = screenFrame;
 	newFrame.size.height = 200;
-	//[[self window] setBackgroundColor:[NSColor blackColor]];
+	[[self window] setBackgroundColor:[NSColor blackColor]];
 	
 	NSRect vrFrame = [[vrView window] frame];
 	vrFrame.size.height = vrFrame.size.height - newFrame.size.height +8;

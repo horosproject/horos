@@ -3519,7 +3519,12 @@ public:
 	wl = iwl;
 	ww = iww;
 	
-	if(!advancedCLUT)
+	if(advancedCLUT)
+	{
+		[clutOpacityView setWL:wl ww:ww];
+		[clutOpacityView setCLUTtoVRView:YES];
+	}
+	else
 		[self setOpacity: currentOpacityArray];
 	
 	if( isRGB)
