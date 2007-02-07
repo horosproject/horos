@@ -526,13 +526,13 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		
 			if( no <= 1 || force == YES)
 			{
-				[curROI setROIMode: ROI_sleep];
+				[curROI setROIMode: ROI_selected];
 				curROI = 0L;
 			}
 		}
 		else
 		{
-			[curROI setROIMode: ROI_sleep];
+			[curROI setROIMode: ROI_selected];
 			curROI = 0L;
 		}
 	}
@@ -2491,7 +2491,10 @@ static long scrollMode;
 		{
 			[self deleteMouseDownTimer];
 			
-			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			if( [self is2DViewer])
+			{
+				[[self windowController] addToUndoQueue:@"roi"];
+			}
 			
 			BOOL	DoNothing = NO;
 			long	selected = -1, i, x;

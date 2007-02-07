@@ -12797,6 +12797,8 @@ long i;
 			{
 				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
 				
+				[selectedRoi setROIMode: ROI_selected];
+				
 				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil)
 				{
 				
