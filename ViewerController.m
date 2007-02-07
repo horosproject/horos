@@ -13710,7 +13710,4 @@ sourceRef);
 		_calciumScoringWindowController = [[CalciumScoringWindowController alloc] initWithViewer:self];
 	[_calciumScoringWindowController showWindow:self];
 }
-	
-
-
 @end
