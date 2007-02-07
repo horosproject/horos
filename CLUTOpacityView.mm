@@ -113,26 +113,28 @@
 	buffer.width = voxelCount;
 	buffer.rowBytes = voxelCount * sizeof(float);
 	
-	histogramSize = (HUmax-HUmin)/2;
+	histogramSize = (int)((HUmax-HUmin)/2);
 	if(histogram) free(histogram);
 	histogram = (vImagePixelCount*) malloc(sizeof(vImagePixelCount) * histogramSize);
 	vImageHistogramCalculation_PlanarF(&buffer, histogram, histogramSize, HUmin, HUmax, kvImageDoNotTile);
 	
-	int i, min = -1, max = 0;
+	int i;
+	vImagePixelCount min = histogram[0], max = 0;
+	
 	for(i=0; i<histogramSize; i++)
 	{
-		if(histogram[i]<min || min<0) min = histogram[i];
+		if(histogram[i]<min) min = histogram[i];
 		if(histogram[i]>max) max = histogram[i];
 	}
 
 	float temp;
 	for(i=0; i<histogramSize; i++)
 	{
-		temp = ((float)(histogram[i] - min) / (float)max)*10000;
-		if (temp > 0)
-			histogram[i] = log(temp)*1000;
+		temp = ((float)(histogram[i] - min) / (float)max)*10000.0;
+		if (temp >= 1)
+			histogram[i] = (vImagePixelCount)(log(temp)*1000);
 		else
-			histogram[i] = temp;
+			histogram[i] = (vImagePixelCount)temp;
 	}
 }
 
@@ -163,13 +165,16 @@
 {
 	NSAffineTransform *transform = [self transform];
 	
-	int i, max = 0;
+	int i;
+	vImagePixelCount max = 0;
 	for(i=0; i<histogramSize; i++)
 	{
 		if(histogram[i]>max) max = histogram[i];
 	}
-
+NSLog(@"max : %u", max);
+NSLog(@"max : %qu", max);
 	float heightFactor = (max==0)? 1.0 : 1.0 / max;
+	NSLog(@"heightFactor : %f", heightFactor);
 	float binWidth = (HUmax - HUmin) / histogramSize;
 
 	NSBezierPath *line = [NSBezierPath bezierPath];
@@ -178,6 +183,7 @@
 	for(i=0; i<histogramSize; i++)
 	{
 		NSPoint pt = NSMakePoint(HUmin + i * binWidth, histogram[i] * heightFactor);
+		//NSLog(@"pt : %f, %f", pt.x, pt.y);
 		NSPoint ptInView = [transform transformPoint:pt];
 		[line lineToPoint:ptInView];
 		
@@ -836,7 +842,12 @@
 		[self unselectPoints];
 		if(![self selectControlPointAtPosition:mousePositionInView])
 		{
-			[self clickOnLineAtPosition:mousePositionInView];
+			if(![self clickOnLineAtPosition:mousePositionInView])
+			{
+				NSAffineTransform* transformView2Coordinate = [self transform];
+				[transformView2Coordinate invert];
+				zoomFixedPoint = [transformView2Coordinate transformPoint:mousePositionInView].x;
+			}
 		}
 		else if([theEvent clickCount] == 2)
 		{
