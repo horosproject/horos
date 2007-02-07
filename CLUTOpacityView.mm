@@ -37,7 +37,8 @@
 		zoomFixedPoint = 0.0;
 		vrViewLowResolution = NO;
 		didResizeVRVIew = NO;
-				
+		mousePositionX = 0.0;
+		
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
@@ -175,8 +176,17 @@
 	for(i=0; i<histogramSize; i++)
 	{
 		NSPoint pt = NSMakePoint(HUmin + i * binWidth, histogram[i] * heightFactor);
-		pt = [transform transformPoint:pt];
-		[line lineToPoint:pt];
+		NSPoint ptInView = [transform transformPoint:pt];
+		[line lineToPoint:ptInView];
+		
+		if(mousePositionX > pt.x-1 && mousePositionX < pt.x+1)
+		{
+			NSRect dotFrame = NSMakeRect(ptInView.x-3, ptInView.y-3, 6, 6);
+			NSBezierPath *dot = [NSBezierPath bezierPathWithOvalInRect:dotFrame];
+			NSColor *cDot = [histogramColor colorWithAlphaComponent:histogramOpacity*3.0];
+			[cDot set];
+			[dot fill];
+		}
 	}
 	
 	NSPoint pt = NSMakePoint(HUmax,0.0);
@@ -667,6 +677,10 @@
 	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
 	[labelRect fill];
 	[label drawAtPoint:labelPosition];
+	
+	[label release];
+	[labelValue release];
+	[labelAlpha release];
 }
 
 - (void)addPoint:(NSPoint)point atIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex withColor:(NSColor*)color;
@@ -875,7 +889,10 @@
 		NSAffineTransform* transformView2Coordinate = [self transform];
 		[transformView2Coordinate invert];
 		NSPoint firstPoint, lastPoint;
-				
+		
+		NSPoint mouseLocation = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+		mousePositionX = mouseLocation.x;
+			
 		int i, j;
 		for (i=0; i<[curves count]; i++)
 		{
@@ -1023,7 +1040,10 @@
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	[super mouseMoved:theEvent];
-	
+
+	if(![[self window] isMainWindow]) return;
+	if(![[self window] isKeyWindow]) return;
+
 	//[[NSCursor arrowCursor] set];	
 	
 	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -1038,7 +1058,10 @@
 	[transformView2Coordinate invert];
 	NSPoint location = [transformView2Coordinate transformPoint:mousePositionInView];
 	
-	[self setCursorLabelWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];	
+	[self setCursorLabelWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];
+	
+	mousePositionX = location.x;
+	[self updateView];
 }
 
 #pragma mark -
@@ -1488,6 +1511,7 @@
 		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
 	}
 	nothingChanged = NO;
+	vrViewLowResolution = YES;
 	[self updateView];
 }
 
@@ -1600,7 +1624,10 @@
 	[cursorImage unlockFocus];
 	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:hotSpot];
 	[cursor set];
+	
 	[cursorImage release];
+	[cursor release];
+	[label release];
 }
 
 @end

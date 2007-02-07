@@ -41,6 +41,8 @@
 	IBOutlet VRView *vrView;
 	BOOL vrViewLowResolution;
 	BOOL didResizeVRVIew;
+	
+	float mousePositionX;
 }
 
 - (void)cleanup;
