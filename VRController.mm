@@ -2554,6 +2554,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[path appendString:@"/CLUTs"];
 
 	BOOL isDir;
+	[[clutPopup menu] setAutoenablesItems:NO];
 	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
 		NSArray *cluts = [[NSFileManager defaultManager] directoryContentsAtPath:path];
@@ -2562,15 +2563,19 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		for (i=0; i<[cluts count]; i++)
 		{
 			if(![[cluts objectAtIndex:i] isEqualToString:@".DS_Store"])
-				[[clutPopup menu] insertItemWithTitle:[cluts objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+			{
+				NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[cluts objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+				if([view isRGB]) [item setEnabled:NO];
+			}
 		}
 	}
-    [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+    NSMenuItem *item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+	if([[pixList[ 0] objectAtIndex:0] isRGB]) [item setEnabled:NO];
 }
 
 - (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
 {
-    if (returnCode==1)
+    if (returnCode==1 && ![view isRGB])
     {
 		NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 		[path appendString:@"/CLUTs/"];

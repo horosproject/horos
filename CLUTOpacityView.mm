@@ -37,23 +37,14 @@
 		zoomFixedPoint = 0.0;
 		vrViewLowResolution = NO;
 		didResizeVRVIew = NO;
-		
-		//[self newCurve];
-		
+				
 		[self computeHistogram];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:@"NSColorPanelColorDidChangeNotification" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:@"NSWindowWillCloseNotification" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:) name:@"NSWindowDidMoveNotification" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:@"updateVolumeData" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:@"NSWindowDidResignMainNotification" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:@"NSWindowDidBecomeMainNotification" object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:@"NSWindowDidBecomeKeyNotification" object:nil];
 		
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
 		
-//		[[self window] setAlphaValue:0.0];
-		//[self niceDisplay];
 		[self updateView];
     }
     return self;
@@ -67,8 +58,6 @@
 	pointColors = [[NSMutableArray arrayWithCapacity:0] retain];
 	[self computeHistogram];
 	didResizeVRVIew = NO;
-//	[self newCurve];
-//	[self niceDisplay];
 	[self updateView];
 }
 
@@ -117,7 +106,6 @@
 
 - (void)computeHistogram;
 {
-	NSLog(@"computeHistogram");
 	vImage_Buffer buffer;
 	buffer.data = volumePointer;
 	buffer.height = 1;
@@ -595,7 +583,7 @@
 
 - (void)changePointColor:(NSNotification *)notification;
 {
-	if([self isAnyPointSelected])// && [[self window] isKeyWindow])
+	if([self isAnyPointSelected])
 	{
 		int i, j;
 		for (i=0; i<[curves count]; i++)
@@ -633,8 +621,6 @@
 {
 	if(point.y<0.0) point.y = 0.0;
 	if(point.y>=0.999) point.y = 0.999;
-	
-	//if(j==0 || j==[aCurve count]-1) point.y = 0.0;
 					
 	if(j>0)
 		if(point.x<=[[aCurve objectAtIndex:j-1] pointValue].x+10) point.x = [[aCurve objectAtIndex:j-1] pointValue].x+10;
@@ -688,7 +674,6 @@
 	[[undoManager prepareWithInvocationTarget:self] removePointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	
 	[[curves objectAtIndex:curveIndex] insertObject:[NSValue valueWithPoint:point] atIndex:pointIndex];
-	//[[curves objectAtIndex:curveIndex] insertObject:[NSValue valueWithPoint:NSMakePoint(point.x,point.y)] atIndex:pointIndex];
 	[[pointColors objectAtIndex:curveIndex] insertObject:color atIndex:pointIndex];
 }
 
@@ -881,7 +866,6 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	[super mouseDragged:theEvent];
-//	if(![[self window] isVisible]) return;
 	
 	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
@@ -1025,6 +1009,7 @@
 			if([theEvent deltaY]>0.0) zoomFactor -= 0.1;
 			if(zoomFactor<1.0) zoomFactor = 1.0;
 			if(zoomFactor>5.0) zoomFactor = 5.0;
+			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
 		}
 		[self updateView];
 	}
@@ -1038,7 +1023,6 @@
 - (void)mouseMoved:(NSEvent *)theEvent
 {
 	[super mouseMoved:theEvent];
-//	if(![[self window] isVisible]) return;
 	
 	//[[NSCursor arrowCursor] set];	
 	
@@ -1053,40 +1037,8 @@
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
 	NSPoint location = [transformView2Coordinate transformPoint:mousePositionInView];
-//	
-//	NSString *title = @"CLUT & Opacity";//[[self window] title];
-//	NSMutableString *newTitle = [NSMutableString stringWithString:title];
-//	[newTitle appendFormat:@" - x: %d", (int)location.x];
-//
-//	[[self window] setTitle:newTitle];
 	
-	
-//	NSImage *cursorImage = [[[NSCursor arrowCursor] image] copy];
-////	NSImage *newCursor = [self cursorImageWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];
-////	cursorImage = newCursor;
-//
-//	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
-//	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
-//	NSAttributedString *label = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"x: %d", (int)location.x] attributes:attrsDictionary];
-//	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
-//	NSSize imageSize = [cursorImage size];
-//	float arrowWidth = imageSize.width;
-//	imageSize.width += labelBounds.size.width;
-//	[cursorImage setSize:imageSize];
-//	
-//	NSPoint labelPosition = NSMakePoint(arrowWidth -8., .0);
-//	
-//	[cursorImage lockFocus];
-//	// draw
-//	[[[NSColor blackColor] colorWithAlphaComponent:0.5] set];
-//	NSRectFill(NSMakeRect(labelPosition.x-1, labelPosition.y+1, labelBounds.size.width+2, labelBounds.size.height+2));
-//	[label drawAtPoint:NSMakePoint(arrowWidth -8., .0)];
-//	[cursorImage unlockFocus];
-//	NSCursor *cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(7,7)];
-//	[cursor set];
-	
-	[self setCursorLabelWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];
-	
+	[self setCursorLabelWithText:[NSString stringWithFormat:@"x: %d", (int)location.x]];	
 }
 
 #pragma mark -
@@ -1146,11 +1098,7 @@
 - (void)niceDisplay;
 {
 	NSRect screenFrame = [[[vrView window] screen] frame];
-	
-	//NSRect startingFrame = NSMakeRect(screenFrame.size.width/2.0, screenFrame.size.height/2.0, 200, 200);
-	//[[self window] setFrame:startingFrame display:YES animate:YES];
-	//[[self window] setFrameTopLeftPoint:NSMakePoint(0.0, screenFrame.size.height)];
-		
+			
 	NSRect newFrame = screenFrame;
 	newFrame.size.height = 200;
 	[[self window] setBackgroundColor:[NSColor blackColor]];
@@ -1166,16 +1114,11 @@
 	}
 	
 	//[[self window] setAcceptsMouseMovedEvents:YES];
-	//[[self window] setFrame:newFrame display:YES animate:NO];
-	//[[self window] setAlphaValue:1.0];
 
-	NSLog(@"[curves count]: %d", [curves count]);
 	if([curves count]==0)
 	{
 		[self newCurve];
 	}
-//	[[vrView window] addChildWindow:[self window] ordered:NSWindowAbove];
-	//[[[[vrView window] drawers] objectAtIndex:0] open];
 }
 
 - (IBAction)niceDisplay:(id)sender;
@@ -1544,7 +1487,7 @@
 		pt = [self legalizePoint:pt inCurve:theCurve atIndex:i];
 		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
 	}
-	nothingChanged = YES;
+	nothingChanged = NO;
 	[self updateView];
 }
 

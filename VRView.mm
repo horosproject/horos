@@ -6162,4 +6162,9 @@ public:
 	return controller;
 }
 
+- (BOOL)isRGB;
+{
+	return isRGB;
+}
+
 @end
