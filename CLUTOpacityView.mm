@@ -171,10 +171,8 @@
 	{
 		if(histogram[i]>max) max = histogram[i];
 	}
-NSLog(@"max : %u", max);
-NSLog(@"max : %qu", max);
+
 	float heightFactor = (max==0)? 1.0 : 1.0 / max;
-	NSLog(@"heightFactor : %f", heightFactor);
 	float binWidth = (HUmax - HUmin) / histogramSize;
 
 	NSBezierPath *line = [NSBezierPath bezierPath];
@@ -183,7 +181,6 @@ NSLog(@"max : %qu", max);
 	for(i=0; i<histogramSize; i++)
 	{
 		NSPoint pt = NSMakePoint(HUmin + i * binWidth, histogram[i] * heightFactor);
-		//NSLog(@"pt : %f, %f", pt.x, pt.y);
 		NSPoint ptInView = [transform transformPoint:pt];
 		[line lineToPoint:ptInView];
 		
