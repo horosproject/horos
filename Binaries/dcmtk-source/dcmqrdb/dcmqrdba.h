@@ -41,6 +41,7 @@
 #define INCLUDE_UNISTD
 #include "ofstdinc.h"
 #include "ofcond.h"
+#include "dcxfer.h"
 
 class DcmDataset;
 class DcmQueryRetrieveDatabaseStatus;
@@ -183,6 +184,14 @@ public:
       unsigned short *numberOfRemainingSubOperations,
       DcmQueryRetrieveDatabaseStatus *status) = 0;
 
+  virtual OFCondition nextMoveResponse(
+      char *SOPClassUID,
+      char *SOPInstanceUID,
+      char *imageFileName,
+	  E_TransferSyntax preferredTS,
+      unsigned short *numberOfRemainingSubOperations,
+      DcmQueryRetrieveDatabaseStatus *status) = 0;
+	  
   /** cancel the ongoing MOVE request, stop and reset every running operation
    *  associated with this request, delete existing temporary files.
    *  @param status pointer to DB status object in which a DIMSE status code

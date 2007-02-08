@@ -2474,6 +2474,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
                 char            *SOPClassUID,
                 char            *SOPInstanceUID,
                 char            *imageFileName,
+				E_TransferSyntax preferredTS,
+                unsigned short  *numberOfRemainingSubOperations,
+                DcmQueryRetrieveDatabaseStatus  *status)
+{
+
+}
+				
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
+                char            *SOPClassUID,
+                char            *SOPInstanceUID,
+                char            *imageFileName,
                 unsigned short  *numberOfRemainingSubOperations,
                 DcmQueryRetrieveDatabaseStatus  *status)
 {

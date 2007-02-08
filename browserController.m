@@ -351,8 +351,6 @@ static NSString*	BurnerToolbarItemIdentifier			= @"Burner.tif";
 static NSString*	ToggleDrawerToolbarItemIdentifier   = @"StartupDisk.tiff";
 static NSString*	SearchToolbarItemIdentifier			= @"Search";
 static NSString*	TimeIntervalToolbarItemIdentifier	= @"TimeInterval";
-static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
-
 
 static NSTimeInterval	gLastActivity = 0;
 static BOOL				DICOMDIRCDMODE = NO;
@@ -3564,7 +3562,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			{
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :5]];
+					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :50]];
 				}
 			}
 			else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -3584,7 +3582,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				{
 					for( x = 0; x < [imagesArray count]; x++)
 					{
-						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :5]];
+						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :50]];
 					}
 				}
 				else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -5867,7 +5865,7 @@ static BOOL withReset = NO;
 				{
 					if( isCurrentDatabaseBonjour)
 					{
-						[selectedFiles addObject: [self getLocalDCMPath: curObj :5]];
+						[selectedFiles addObject: [self getLocalDCMPath: curObj :50]];
 					}
 					else [selectedFiles addObject: [curObj valueForKey: @"completePath"]];
 					
@@ -5882,7 +5880,7 @@ static BOOL withReset = NO;
 					{
 						for( i = 0; i < [imagesArray count]; i++)
 						{
-							[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :5]];
+							[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :50]];
 						}
 					}
 					else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -11629,14 +11627,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setMinSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
 		[toolbarItem setMaxSize:NSMakeSize(NSWidth([timeIntervalView frame]), NSHeight([timeIntervalView frame]))];
     } 
-	else if ([itemIdent isEqualToString: DatabaseWindowToolbarItemIdentifier]) {		
-		[toolbarItem setLabel: NSLocalizedString(@"Database", nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Database", nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Close viewers and open Database window", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: DatabaseWindowToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(databaseWindow:)];
-    }
 	else
 	{
 		// Is it a plugin menu item?
@@ -11719,7 +11709,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 											TrashToolbarItemIdentifier,
 											ReportToolbarItemIdentifier,
 											ToggleDrawerToolbarItemIdentifier,
-											DatabaseWindowToolbarItemIdentifier,
 											nil];
 
 	long		i;
@@ -12197,16 +12186,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	   }
 	}
 	return selectedItems;
-}
-
-- (IBAction)databaseWindow:(id)sender{
-	NSEnumerator *enumerator = [[NSApp windows] objectEnumerator];
-	NSWindow *window;
-	while (window = [enumerator nextObject]) {
-		if (![window isEqual:[self window]])
-			[window close];
-	}
-	[[self window] makeKeyAndOrderFront:sender];
 }
 
 //Comparisons

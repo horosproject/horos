@@ -309,7 +309,7 @@ volatile static BOOL threadIsRunning = NO;
 					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 					pos += 4;
 					
-					NSData	*curData = [data subdataWithRange: NSMakeRange(pos, size)];
+					NSData	*curData = [NSData dataWithBytesNoCopy:[data bytes] + pos length:size freeWhenDone:NO];		//[data subdataWithRange: NSMakeRange(pos, size)];
 					pos += size;
 					
 					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
@@ -327,11 +327,6 @@ volatile static BOOL threadIsRunning = NO;
 //						[[NSFileManager defaultManager] removeFileAtPath: localPath handler:0L];
 //						success = [[NSFileManager defaultManager] createFileAtPath: [localPath stringByAppendingString:@"RENAME"] contents:curData attributes:nil];
 //						success = [[NSFileManager defaultManager] movePath:[localPath stringByAppendingString:@"RENAME"] toPath:localPath handler:0L];
-						
-						if( success == NO)
-						{
-							NSLog(@"Bonjour transfer failed");
-						}
 					}
 				}
 			}

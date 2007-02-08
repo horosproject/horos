@@ -3777,7 +3777,10 @@ public:
 		
 		#if __ppc__
 		LOD += 0.5;
+		#else
+		LOD += 0.2;
 		#endif
+		
 		if( LOD < 1.5) LOD = 1.5;
 		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);

@@ -609,7 +609,7 @@
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 				if((int) pt.x==(int) selectedPoint.x && (int) pt.y==(int) selectedPoint.y)
 				{
-					[self setColor:[(NSColorPanel*)[notification object] color] forPointAtIndex:j inCurveAtIndex:i];
+					[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forPointAtIndex:j inCurveAtIndex:i];
 					[self updateView];
 					return;
 				}
@@ -617,7 +617,7 @@
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if((int) controlPoint.x==(int) selectedPoint.x && (int) controlPoint.y==(int) selectedPoint.y)
 			{
-				[self setColor:[(NSColorPanel*)[notification object] color] forCurveAtIndex:i];
+				[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forCurveAtIndex:i];
 				[self updateView];
 				return;
 			}
