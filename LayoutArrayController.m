@@ -236,8 +236,9 @@
 - (IBOutlet)openLayout:(id)sender{
 	// need to change selection Index first than hang the set
 	int index = [layoutTableView clickedRow];
+	//NSLog(@"clicked Row: %d", index);
 	if (index < [[self arrangedObjects] count] && index > -1)
-		[[WindowLayoutManager sharedWindowLayoutManager] hangSet:[[self arrangedObjects] objectAtIndex:[self selectionIndex]]];			
+		[[WindowLayoutManager sharedWindowLayoutManager] hangSet:[[self arrangedObjects] objectAtIndex:index]];			
 }
 
 
