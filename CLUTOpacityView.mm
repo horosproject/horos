@@ -535,7 +535,7 @@
 	[transform translateXBy:-HUmin*[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:0.0];
 	[transform scaleXBy:[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:[self bounds].size.height];
 	NSAffineTransform* transform2 = [NSAffineTransform transform];
-	[transform2 translateXBy:-zoomFixedPoint*(zoomFactor-1.0) yBy:0.0];
+	[transform2 translateXBy:-zoomFixedPoint*(zoomFactor) yBy:0.0];		// -1.0
 	[transform appendTransform:transform2];
 	return transform;
 }
@@ -843,7 +843,7 @@
 			{
 				NSAffineTransform* transformView2Coordinate = [self transform];
 				[transformView2Coordinate invert];
-				zoomFixedPoint = [transformView2Coordinate transformPoint:mousePositionInView].x;
+			//	zoomFixedPoint = [transformView2Coordinate transformPoint:mousePositionInView].x;
 			}
 		}
 		else if([theEvent clickCount] == 2)
@@ -1024,14 +1024,18 @@
 	{
 		if(fabsf([theEvent deltaX])>fabsf([theEvent deltaY]))
 		{
-			zoomFixedPoint -= [theEvent deltaX];
+			zoomFixedPoint -= [theEvent deltaX] / zoomFactor;
 		}
 		else
 		{
-			if([theEvent deltaY]<0.0) zoomFactor += 0.1;
-			if([theEvent deltaY]>0.0) zoomFactor -= 0.1;
-			if(zoomFactor<1.0) zoomFactor = 1.0;
-			if(zoomFactor>5.0) zoomFactor = 5.0;
+			float inc = -[theEvent deltaY] / 30.;
+			
+			if( zoomFactor +inc < 1.0) inc = 1.0 - zoomFactor;
+			if( zoomFactor +inc > 5.0) inc = 5.0 - zoomFactor;
+			
+			zoomFactor += inc;
+			zoomFixedPoint += (inc * [self frame].size.width / (zoomFactor*2)) / 2.0 ;	// 
+			
 			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
 		}
 		[self updateView];
