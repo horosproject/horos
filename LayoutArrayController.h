@@ -26,6 +26,7 @@
 
 @interface LayoutArrayController : NSArrayController {
 	LayoutWindowController *layoutWindowController;
+	IBOutlet NSTableView *layoutTableView;
 }
 
 - (IBAction)addDeleteAction:( id)sender;

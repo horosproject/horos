@@ -19,6 +19,7 @@
             ACTIONS = {addDeleteAction = id; openLayout = id; }; 
             CLASS = LayoutArrayController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {layoutTableView = NSTableView; layoutWindowController = id; }; 
             SUPERCLASS = NSArrayController; 
         }, 
         {CLASS = LayoutTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 

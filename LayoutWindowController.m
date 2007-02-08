@@ -43,6 +43,7 @@
 	if (self = [super initWithWindowNibName:@"Layout"]) {
 		_addLayoutSet = NO;
 		_newButtonIsHidden = [[WindowLayoutManager sharedWindowLayoutManager] hangingProtocol] ? YES : NO;
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 		//[[WindowLayoutManager sharedWindowLayoutManager] bind:@"hangingProtocol" toObject:self withKeyPath:@"hangingProtocol" options:nil];
 	}
 	return self;
@@ -87,7 +88,13 @@
 	[self save];
 }
 
+- (void)applicationWillTerminate:(NSNotification *)aNotification{
+	NSLog(@"App Will Terminate");
+	[self save];
+}
+
 - (void)save{
+	NSLog(@"Save Hanging Protocols");
 	id study = [[WindowLayoutManager sharedWindowLayoutManager] currentStudy];
 	NSMutableArray *advancedHangingProtocols = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"]];
 	if (!advancedHangingProtocols)
