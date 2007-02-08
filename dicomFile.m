@@ -66,6 +66,87 @@ static int COMMENTSGROUP;
 static int COMMENTSELEMENT;
 static BOOL SEPARATECARDIAC4D;
 
+inline int charToInt( unsigned char c)
+{
+	switch( c)
+	{
+		case '0':		return 1;		break;
+		case '1':		return 2;		break;
+		case '2':		return 3;		break;
+		case '3':		return 4;		break;
+		case '4':		return 5;		break;
+		case '5':		return 6;		break;
+		case '6':		return 7;		break;
+		case '7':		return 8;		break;
+		case '8':		return 9;		break;
+		case '9':		return 10;		break;
+		case '.':		return 11;		break;
+	}
+}
+
+inline unsigned char intToChar( int c)
+{
+	switch( c)
+	{
+		case 1:		return '0';		break;
+		case 2:		return '1';		break;
+		case 3:		return '2';		break;
+		case 4:		return '3';		break;
+		case 5:		return '4';		break;
+		case 6:		return '5';		break;
+		case 7:		return '6';		break;
+		case 8:		return '7';		break;
+		case 9:		return '8';		break;
+		case 10:	return '9';		break;
+		case 11:	return '.';		break;
+	}
+}
+
+
+void* sopInstanceUIDEncode( NSString *sopuid)
+{
+	int				i, x;
+	unsigned char	*r = malloc( 128);
+	
+	for( i = 0, x = 0; i < [sopuid length];)
+	{
+		unsigned char c1, c2;
+		
+		c1 = [sopuid characterAtIndex: i];
+		i++;
+		c2 = [sopuid characterAtIndex: i];
+		i++;
+		
+		r[ x] = (charToInt( c1) << 4) + charToInt( c2);
+		x++;
+	}
+	
+	r[ x] = 0;
+	
+	return r;
+}
+
+NSString* sopInstanceUIDDecode( unsigned char *r)
+{
+	int					i, x, length = strlen( r);
+	unsigned char		str[ 256];
+	
+	for( i = 0, x = 0; i < length; i++)
+	{
+		unsigned char c1, c2;
+		
+		c1 = r[ i] >> 4;
+		c2 = r[ i] & 15;
+		
+		str[ x] = intToChar( c1);
+		x++;
+		str[ x] = intToChar( c2);
+		x++;
+	}
+	
+	return [NSString stringWithCString:str length:x];
+}
+
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
 {
@@ -1629,7 +1710,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if (val != NULL) SOPUID = [[NSString alloc] initWithCString:val->a];
 				else SOPUID = 0L;
 				if( SOPUID) [dicomElements setObject:SOPUID forKey:@"SOPUID"];
-								
+				
+				// TEST
+				
+//				char*	t = sopInstanceUIDEncode( SOPUID);
+//				NSLog( SOPUID);
+//				NSLog( sopInstanceUIDDecode( t));
+//				NSLog( @"%d %d", strlen( t), [SOPUID length]);
+//				free( t);
+				
 				val = Papy3GetElement (theGroupP, papStudyDescriptionGr, &nbVal, &itemType); //
 				if (val != NULL) study = [[NSString alloc] initWithBytes: replaceBadCharacter(val->a, encoding) length: strlen(val->a) encoding:encoding]; //study = [[NSString alloc] initWithCString: replaceBadCharacter(val->a)];
 				else study = [[NSString alloc] initWithString:@"unnamed"];

@@ -956,8 +956,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::nextMoveResponse(
 		T_ASC_PresentationContextID presId;
 		DcmXfer preferredXfer(moveTransferSyntax);
 		OFBool status = YES;
-
-			
+		
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated()) {
 				// do nothing
 		}

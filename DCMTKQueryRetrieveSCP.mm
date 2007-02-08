@@ -193,7 +193,7 @@ void errmsg(const char* msg, ...)
 	*/
 	
 	//outgoing syntaxes we should determine this by server. not globally
-	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;EXS_JPEGProcess14TransferSyntax
+	options.networkTransferSyntaxOut_ =  EXS_LittleEndianExplicit;	//;	//EXS_LittleEndianExplicit;	//;EXS_JPEGProcess14TransferSyntax		EXS_JPEG2000
 	/*
 	options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
 	options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
