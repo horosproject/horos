@@ -22,9 +22,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class LayoutWindowController;
 
 @interface LayoutArrayController : NSArrayController {
-
+	LayoutWindowController *layoutWindowController;
 }
 
 - (IBAction)addDeleteAction:( id)sender;

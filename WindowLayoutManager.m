@@ -74,8 +74,8 @@ WindowLayoutManager *sharedLayoutManager;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[controller window]];
 	[_windowControllers removeObject:controller];
 	if ([_windowControllers count] == 0) {
-		[self setHangingProtocol:nil];
-		[[_layoutWindowController window] performClose:self];		
+		[[_layoutWindowController window] performClose:self];	
+		[self setHangingProtocol:nil];	
 	}
 }
 

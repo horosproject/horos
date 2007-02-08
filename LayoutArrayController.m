@@ -31,6 +31,7 @@
 #import "EndoscopyViewer.h"
 #import "SeriesView.h"
 #import "PlaceholderWindowController.h"
+#import "LayoutWindowController.h"
 
 
 @implementation LayoutArrayController
@@ -44,6 +45,7 @@
 
 - (void)add:(id)sender{
 	[self addObject:[self newObject]];
+	[layoutWindowController save];
 }
 
 
@@ -234,6 +236,7 @@
 
 - (IBOutlet)openLayout:(id)sender{
 	NSLog(@"open Layout");
+	// need to change selection Index first than hang the set
 	[[WindowLayoutManager sharedWindowLayoutManager] hangSet:[[self arrangedObjects] objectAtIndex:[self selectionIndex]]];			
 }
 
