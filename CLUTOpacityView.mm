@@ -1034,7 +1034,7 @@
 			if( zoomFactor +inc > 5.0) inc = 5.0 - zoomFactor;
 			
 			zoomFactor += inc;
-			zoomFixedPoint += (inc * [self frame].size.width / (zoomFactor*2)) / 2.0 ;	// 
+			zoomFixedPoint += (inc * [self bounds].size.width / (zoomFactor*2)) / 2.0 ;	// 
 			
 			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
 		}
