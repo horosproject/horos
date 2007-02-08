@@ -314,7 +314,7 @@
 		BOOL controlPointSelected = NO;
 		if([self isAnyPointSelected])
 		{
-			if(selectedPoint.x==controlPoint.x && selectedPoint.y==controlPoint.y)
+			if((int) selectedPoint.x==(int) controlPoint.x && (int) selectedPoint.y==(int) controlPoint.y)
 			{
 				[selectedPointColor set];
 				controlPointSelected = YES;
@@ -354,7 +354,7 @@
 			BOOL selected = NO;
 			if([self isAnyPointSelected])
 			{
-				if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+				if((int) selectedPoint.x==(int) pt.x && (int) selectedPoint.y==(int) pt.y)
 				{
 					selected = YES;
 				}
@@ -478,7 +478,7 @@
 	for (i=0; i<[curves count] && curveIndex<0; i++)
 	{
 		NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-		if(selectedPoint.x==controlPoint.x && selectedPoint.y==controlPoint.y)
+		if((int) selectedPoint.x==(int) controlPoint.x && (int) selectedPoint.y==(int) controlPoint.y)
 			curveIndex = i;
 	}
 	return curveIndex;
@@ -607,7 +607,7 @@
 			for (j=0; j<[aCurve count]; j++)
 			{
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-				if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
+				if((int) pt.x==(int) selectedPoint.x && (int) pt.y==(int) selectedPoint.y)
 				{
 					[self setColor:[(NSColorPanel*)[notification object] color] forPointAtIndex:j inCurveAtIndex:i];
 					[self updateView];
@@ -615,7 +615,7 @@
 				}
 			}
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
+			if((int) controlPoint.x==(int) selectedPoint.x && (int) controlPoint.y==(int) selectedPoint.y)
 			{
 				[self setColor:[(NSColorPanel*)[notification object] color] forCurveAtIndex:i];
 				[self updateView];
@@ -909,7 +909,7 @@
 				for (j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if(pt.x==selectedPoint.x && pt.y==selectedPoint.y)
+					if((int) pt.x==(int) selectedPoint.x && (int) pt.y==(int) selectedPoint.y)
 					{
 						NSPoint newPoint = [transformView2Coordinate transformPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
 						newPoint = [self legalizePoint:newPoint inCurve:aCurve atIndex:j];
@@ -924,8 +924,8 @@
 			{	
 				firstPoint = [[aCurve objectAtIndex:0] pointValue];
 				lastPoint = [[aCurve lastObject] pointValue];
-				BOOL firstPointSelected = (firstPoint.x==selectedPoint.x && firstPoint.y==selectedPoint.y);
-				BOOL lastPointSelected = (lastPoint.x==selectedPoint.x && lastPoint.y==selectedPoint.y);
+				BOOL firstPointSelected = ((int) firstPoint.x==(int) selectedPoint.x && (int) firstPoint.y==(int) selectedPoint.y);
+				BOOL lastPointSelected = ((int) lastPoint.x==(int) selectedPoint.x && (int) lastPoint.y==(int) selectedPoint.y);
 				firstPoint = [transformCoordinate2View transformPoint:firstPoint];
 				lastPoint = [transformCoordinate2View transformPoint:lastPoint];
 				if( firstPointSelected || lastPointSelected)
@@ -962,7 +962,7 @@
 			}
 			
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if(controlPoint.x==selectedPoint.x && controlPoint.y==selectedPoint.y)
+			if( (int) controlPoint.x == (int) selectedPoint.x && (int) controlPoint.y == (int) selectedPoint.y)
 			{			
 				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
@@ -1166,7 +1166,7 @@
 		for (j=0; j<[aCurve count] && curveIndex<0; j++)
 		{
 			NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-			if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+			if((int) selectedPoint.x==(int) pt.x && (int) selectedPoint.y==(int) pt.y)
 				curveIndex = i;
 		}
 	}
@@ -1176,7 +1176,7 @@
 		for (i=0; i<[curves count] && curveIndex<0; i++)
 		{
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
-			if(selectedPoint.x==controlPoint.x && selectedPoint.y==controlPoint.y)
+			if((int) selectedPoint.x==(int) controlPoint.x && (int) selectedPoint.y==(int) controlPoint.y)
 				curveIndex = i;
 		}
 	}
@@ -1244,7 +1244,7 @@
 				for (j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+					if((int) selectedPoint.x==(int) pt.x && (int) selectedPoint.y==(int) pt.y)
 					{
 						NSData* colorData = [NSArchiver archivedDataWithRootObject:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 						NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
@@ -1304,7 +1304,7 @@
 				for (j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+					if((int) selectedPoint.x==(int) pt.x && (int) selectedPoint.y==(int) pt.y)
 					{
 						NSData* colorData = [pasteboard dataForType:type];
 						NSColor *color = [NSUnarchiver unarchiveObjectWithData:colorData];
@@ -1337,7 +1337,7 @@
 				for (j=0; j<[aCurve count]; j++)
 				{
 					NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
-					if(selectedPoint.x==pt.x && selectedPoint.y==pt.y)
+					if((int) selectedPoint.x==(int) pt.x && (int) selectedPoint.y==(int) pt.y)
 					{
 						if([aCurve count]<=3)
 						{
