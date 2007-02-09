@@ -330,6 +330,15 @@ unsigned char scanJpegDataForBitDepth(
 	_pixelDepth = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsStored"]] value] intValue];
 	_bitsStored = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"BitsAllocated"]] value] intValue];
 	
+//	NSLog( [[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PhotometricInterpretation"]]value]);
+//	
+//	if( _pixelDepth == 8 && _bitsStored == 16 && [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"PhotometricInterpretation"]]value] isEqualToString:@"RGB"] == YES)
+//	{
+//		_bitsStored = 8;
+//		NSLog( @"YES");
+//		[_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:8]] forName:@"BitsStored"];
+//	}
+	
 	if ([ts isExplicit] && ([vr isEqualToString:@"OB"] || [vr isEqualToString:@"OW"]))
 		theVR = vr;	
 	else if (_bitsStored <= 8 || [dicomData isEncapsulated]) 

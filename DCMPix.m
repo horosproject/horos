@@ -5551,10 +5551,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			val = Papy3GetElement (theGroupP, papBitsStoredGr, &nbVal, &elemType);
 			bitsStored = (int) val->us;
-//			if( val->us == 8 && bitsAllocated == 16)
-//			{
-//				bitsAllocated = 8;
-//			}
+			
+			if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret [fileNb] == RGB)
+			{
+				bitsAllocated = 8;
+			}
 			
 			// extract nb of rows and cols
 			width = height = 0;
