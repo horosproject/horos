@@ -70,6 +70,7 @@ inline int charToInt( unsigned char c)
 {
 	switch( c)
 	{
+		case 0:			return 0;		break;
 		case '0':		return 1;		break;
 		case '1':		return 2;		break;
 		case '2':		return 3;		break;
@@ -88,6 +89,7 @@ inline unsigned char intToChar( int c)
 {
 	switch( c)
 	{
+		case 0:		return 0;		break;
 		case 1:		return '0';		break;
 		case 2:		return '1';		break;
 		case 3:		return '2';		break;
@@ -105,7 +107,7 @@ inline unsigned char intToChar( int c)
 
 void* sopInstanceUIDEncode( NSString *sopuid)
 {
-	int				i, x;
+	unsigned int	i, x;
 	unsigned char	*r = malloc( 128);
 	
 	for( i = 0, x = 0; i < [sopuid length];)
@@ -114,7 +116,8 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 		
 		c1 = [sopuid characterAtIndex: i];
 		i++;
-		c2 = [sopuid characterAtIndex: i];
+		if( i == [sopuid length]) c2 = 0;
+		else c2 = [sopuid characterAtIndex: i];
 		i++;
 		
 		r[ x] = (charToInt( c1) << 4) + charToInt( c2);
@@ -128,7 +131,7 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r)
 {
-	int					i, x, length = strlen( r);
+	unsigned int		i, x, length = strlen( r);
 	unsigned char		str[ 256];
 	
 	for( i = 0, x = 0; i < length; i++)
