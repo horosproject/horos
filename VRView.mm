@@ -2382,6 +2382,8 @@ public:
     NSPoint		mouseLoc, mouseLocPre;
 	short		tool;
 	
+	[cursor set];
+	
 	noWaitDialog = YES;
 	tool = currentTool;
 		
