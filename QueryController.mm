@@ -588,6 +588,7 @@ static QueryController	*currentQueryController = 0L;
 		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+//		[dictionary setObject:@"OSIRIX_ADMI_ADMI" forKey: @"moveDestination"];
 		
 		int numberPacketsReceived = 0;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))

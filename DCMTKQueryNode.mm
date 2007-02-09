@@ -515,7 +515,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 
 //common network code for move and query
-- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset{
+- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	OFCondition cond;
@@ -537,6 +538,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     T_ASC_Association *assoc = NULL;
    
 	NSLog(@"hostname: %@ calledAET %@", _hostname, _calledAET);
+	
 	opt_peer = [_hostname UTF8String];
 	opt_port = _port;
 	
@@ -686,7 +688,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	gethostname(localHost, sizeof(localHost) - 1);
 	sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
 	//NSLog(@"peer host: %s", peerHost);
-	ASC_setPresentationAddresses(params, localHost, peerHost);
+	ASC_setPresentationAddresses(params, localHost, peerHost);	//localHost
 	
 	/* Set the presentation contexts which will be negotiated */
     /* when the network connection will be established */
