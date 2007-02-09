@@ -493,8 +493,9 @@ WindowLayoutManager *sharedLayoutManager;
 - (void)nextSeriesSet{
 	NSDictionary *layout = nil;
 	int startingIndex = _seriesSetIndex;
-	if (startingIndex >= [[self seriesSets] count])
-		startingIndex = 0;
+	if (startingIndex >= [[self seriesSets] count]) {
+		startingIndex = -1;
+	}
 	// look for next Set.  Need to either have no Comparison or a matching comparison to select set. Otherwise go to get set.
 	//Make sure we don't get into an infinite loop 
 	int count = [[self seriesSets] count];
@@ -518,6 +519,7 @@ WindowLayoutManager *sharedLayoutManager;
 	}
 	// just in case we don't find a match
 	if (!layout) {
+		
 		startingIndex = _seriesSetIndex + 1;
 		if (startingIndex >= [[self seriesSets] count])
 			startingIndex = 0;
@@ -532,7 +534,7 @@ WindowLayoutManager *sharedLayoutManager;
 	NSDictionary *layout = nil;
 	int startingIndex = _seriesSetIndex;
 	if (startingIndex <  0)
-		startingIndex = [[self seriesSets] count] - 1;
+		startingIndex = [[self seriesSets] count];
 	// look for previous Set.  Need to either have no Comparison or a matching comparison to select set. Otherwise go to get set.
 	//Make sure we don't get into an infinite loop 	
 	int count = [[self seriesSets] count];
@@ -580,6 +582,7 @@ WindowLayoutManager *sharedLayoutManager;
 			[[seriesInfo objectForKey:@"Viewer Class"] isEqualToString:NSStringFromClass([PlaceholderWindowController class])] ) {
 			id studyToLoad = nil;
 			int count = 0;
+			
 			//decide if we want study or comparison
 			if ( ![[seriesInfo objectForKey:@"isComparison"] boolValue]){
 				studyToLoad  = [self currentStudy];
@@ -641,6 +644,30 @@ WindowLayoutManager *sharedLayoutManager;
 					} //for
 					
 				}// else
+				
+				
+				//We didn't find a matching Series. Default to Series Number				
+				if (openViewer == NO) {
+					//NSLog(@"No series match. Using Series number as default");
+					count =  [[browserController childrenArray: studyToLoad]  count];
+					int i;	
+														
+					for (i = 0; i < count; i++) {				
+						id child = [[browserController childrenArray: studyToLoad] objectAtIndex:i];
+						if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
+							[children addObject:child];
+							seriesToOpen = child;
+							openViewer = YES;
+							break;
+						}
+					}
+				}
+				
+				// No match for any Series Description or Number
+				if (openViewer == NO) {
+					NSLog(@"Cannot find a matching series for Hanging Protocol");
+				}
+				 
 				// Reuse Viewer if Series Already open
 				if (openViewer == YES) {							
 					ViewerController *viewer = nil;
@@ -665,6 +692,7 @@ WindowLayoutManager *sharedLayoutManager;
 		}
 	}
 
+
 	
 	//resizeWindows
 	// A new hanging protocol should start with a fresh set of WindowControllers that should match the 2D Viewers
@@ -674,6 +702,20 @@ WindowLayoutManager *sharedLayoutManager;
 	while (viewer = [viewerEnumerator nextObject]) {
 		[viewer close];
 	}
+	/*
+	// No matching series we found. Open a window with first Series if there is one.
+	if ([_windowControllers count] == 0) {
+		id studyToLoad  = [self currentStudy];
+		if ([[browserController childrenArray: studyToLoad] count] > 0) {
+			id child = [[browserController childrenArray: studyToLoad] objectAtIndex:0];
+			[browserController loadSeries:child :nil :NO keyImagesOnly:NO];
+			return;
+		} 
+		else {
+			return;
+		}
+	}
+	*/
 	
 	//go through a second time for 2d viewers to adjust window frame, zoom, wwwl, rotation, etc
 	// need to make this more efficient
@@ -687,7 +729,7 @@ WindowLayoutManager *sharedLayoutManager;
 			// Append Comparison to Title if it is a comparison
 			if ([[seriesInfo objectForKey:@"isComparison"] boolValue]) {
 				NSString *title = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"COMPARISON", nil), [[controller window] title]];
-				NSLog(@"new Title: %@", title);
+				//NSLog(@"new Title: %@", title);
 				[[controller window] setTitle:title];
 			}
 			if ([[seriesInfo objectForKey:@"imageRows"] intValue] > 1 || [[seriesInfo objectForKey:@"imageColumns"] intValue] > 1)
@@ -1060,7 +1102,7 @@ WindowLayoutManager *sharedLayoutManager;
 	return _currentStudy;
 }
 - (void)setCurrentStudy:(id)study{
-	NSLog(@"setCurrentStudy");
+	//NSLog(@"setCurrentStudy");
 	_currentStudy = study;
 }
 
