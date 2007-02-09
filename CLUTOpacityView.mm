@@ -1051,18 +1051,15 @@
 {
 	[super mouseMoved:theEvent];
 
-	if(![[self window] isMainWindow]) return;
-	if(![[self window] isKeyWindow]) return;
-
-	//[[NSCursor arrowCursor] set];	
+	if( ![[self window] isMainWindow]) return;
 	
-	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	
-	if(!NSPointInRect(mousePositionInView, [self bounds]))
+	if( NSPointInRect( [NSEvent mouseLocation], [[self window] frame]) == NO)
 	{
 		[[NSCursor arrowCursor] set];
 		return;
 	}
+	
+	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
