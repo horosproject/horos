@@ -96,6 +96,9 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			*/
 			
 			NSString *moveDestination = [[moveRequest moveDestination] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			
+			NSLog( @"C-MOVE : MoveDestination : %@", moveDestination);
+			
 //			NSArray *servers = serversArray;
 //			NSArray					*bonjourServers		= [[DCMNetServiceDelegate sharedNetServiceDelegate] dicomServices];
 			NSArray					*serversArray		= [DCMNetServiceDelegate DICOMServersList];			
@@ -123,7 +126,8 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 			numberMoving = 0;
 //			NSNetService *netService= nil;
 			
-			if ([serverSelection count]) {
+			if ([serverSelection count])
+			{
 				id server = [serverSelection objectAtIndex:0];
 //				if ([server isMemberOfClass:[NSNetService class]]) {
 //					
@@ -219,7 +223,10 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 					[scpDelegate sendCommand:moveResponse data:[DCMObject dcmObject] forAffectedSOPClassUID:[moveRequest affectedSOPClassUID]];
 				}
 			}
-			else{
+			else
+			{
+				NSLog( @"C-MOVE MoveDestination NOT FOUND... on the local DICOM nodes list (see Preferences)");
+			
 				DCMCMoveResponse *moveResponse = [DCMCMoveResponse cMoveResponseWithAffectedSOPClassUID:[moveRequest affectedSOPClassUID]  
 						priority:[moveRequest priority]
 						messageIDBeingRespondedTo:[moveRequest messageIDBeingRespondedTo]

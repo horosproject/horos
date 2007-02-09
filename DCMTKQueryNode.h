@@ -84,18 +84,20 @@
 - (DcmDataset *)moveDataset;
 // values are a NSDictionary the key for the value is @"value" key for the name is @"name"  name is the tag descriptor from the tag dictionary
 - (void)queryWithValues:(NSArray *)values;
-- (void)move:(id)sender;
+- (void)move:(NSDictionary*) dict;
 - (NSManagedObject *)logEntry;
 - (void)setLogEntry:(NSManagedObject *)logEntry;
 
 //common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset;
+- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination;
 - (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax;
 
 - (OFCondition)findSCU:(T_ASC_Association *)assoc dataset:( DcmDataset *)dataset;
 - (OFCondition) cfind:(T_ASC_Association *)assoc dataset:(DcmDataset *)dataset;
 
 - (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset;
-- (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset;
-
+- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) destination;
+- (OFCondition) moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset;
+- (OFCondition) moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: (char*) destination;
 @end

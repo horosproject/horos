@@ -440,11 +440,15 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 }
 
-- (void) move:(id)sender{
+- (void) move:(NSDictionary*) dict
+{
 	DcmDataset *dataset = [self moveDataset];
-	if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset]) {
-	 }
-	 if (dataset != NULL) delete dataset;
+	if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+	{
+	
+	}
+	
+	if (dataset != NULL) delete dataset;
 	 
 }
 
@@ -514,8 +518,13 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
 }
 
-//common network code for move and query
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset
+{
+	return [self setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination: 0L];
+}
+
+//common network code for move and query
+- (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset destination:(NSString*) destination
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
@@ -757,8 +766,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			cond = [self cfind:assoc dataset:dataset];
 		  }
 	}
-	else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0) { 
-		cond = [self cmove:assoc network:net dataset:dataset];
+	else if (strcmp(abstractSyntax, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
+	{
+		if( destination) cond = [self cmove:assoc network:net dataset:dataset destination: (char*) [destination UTF8String]];
+		else cond = [self cmove:assoc network:net dataset:dataset];
 	}
 	else {
 		NSLog(@"Q/R SCU bad Abstract Sytnax: %s", abstractSyntax);
@@ -1025,8 +1036,13 @@ NS_ENDHANDLER
     return cond;
 }
 
+- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset
+{
+	return [self cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) 0L];
+}
 
-- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset{
+- (OFCondition) cmove:(T_ASC_Association *)assoc network:(T_ASC_Network *)net dataset:(DcmDataset *)dataset destination: (char*) destination
+{
     /* opt_repeatCount specifies how many times a certain file shall be processed */
     //int n = (int)_repeatCount;
 	int n = 1;
@@ -1035,7 +1051,7 @@ NS_ENDHANDLER
 	//only do move if we aren't already moving
     while (cond == EC_Normal && n-- && ![[MoveManager sharedManager] containsMove:self]) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
-        cond = [self moveSCU:assoc network:(T_ASC_Network *)net dataset:dataset];
+        cond = [self moveSCU:assoc network:(T_ASC_Network *)net dataset:dataset destination: destination];
     }
 
     /* return result value */
@@ -1043,6 +1059,11 @@ NS_ENDHANDLER
 }
 
 - (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset
+{
+	return [self moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: 0L];
+}
+
+- (OFCondition)moveSCU:(T_ASC_Association *)assoc  network:(T_ASC_Network *)net dataset:( DcmDataset *)dataset destination: (char*) destination
 {
 	//add self to list of moves. Prevents deallocating  the move if a new query is done
 	[[MoveManager sharedManager] addMove:self];
@@ -1078,9 +1099,15 @@ NS_ENDHANDLER
     req.Priority = DIMSE_PRIORITY_MEDIUM;
     req.DataSetType = DIMSE_DATASET_PRESENT;
  
-	/* set the destination to be me */
-	ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
-
+	if( destination)
+	{
+		strcpy(req.MoveDestination, destination);
+	}
+	else
+	{
+		/* set the destination to be me */
+		ASC_getAPTitles(assoc->params, req.MoveDestination, NULL, NULL);
+	}
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dataset,
         moveCallback, &callbackData, _blockMode, _dimse_timeout,
