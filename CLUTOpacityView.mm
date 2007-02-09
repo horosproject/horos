@@ -1368,6 +1368,7 @@
 	if([undoManager canUndo])
 	{
 		[undoManager undo];
+		vrViewLowResolution = NO;
 		[self updateView];
 	}
 }
@@ -1377,6 +1378,7 @@
 	if([undoManager canRedo])
 	{
 		[undoManager redo];
+		vrViewLowResolution = NO;
 		[self updateView];
 	}
 }
@@ -1414,7 +1416,6 @@
 	NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
 	[clut setObject:curves forKey:@"curves"];
 	[clut setObject:pointColors forKey:@"colors"];
-	[clut setObject:name forKey:@"name"];
 
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString:CLUTDATABASE];
@@ -1521,87 +1522,6 @@
 	vrViewLowResolution = YES;
 	[self updateView];
 }
-
-#pragma mark -
-#pragma mark Window
-
-//- (void)windowWillClose:(NSNotification *)aNotification
-//{
-//	if(vrView)
-//	{
-//		if([[aNotification object] isEqualTo:[self window]])
-//		{
-////			[[vrView window] removeChildWindow:[self window]];
-//	[[[[vrView window] drawers] objectAtIndex:0] close];
-//			if([vrView controller])
-//			{
-//				[[vrView window] zoom:self];
-//				[vrView squareView:self];
-//				[[[vrView controller] OpacityPopup] setEnabled:YES];
-//			}
-//			didResizeVRVIew = NO;
-//		}
-//		else if([[aNotification object] isEqualTo:[vrView window]])
-//		{
-//			didResizeVRVIew = NO;
-//		}
-//	}
-//}
-
-//- (void)windowDidMove:(NSNotification *)aNotification
-//{
-//	if(vrView)
-//	{
-//		if([[aNotification object] isEqualTo:[vrView window]])
-//		{
-//			if(vrView && [[self window] isVisible]) [self niceDisplay];
-//		}
-//	}
-//}
-//
-//- (void)windowDidResignMain:(NSNotification *)aNotification
-//{
-//	if(vrView)
-//	{
-//		if([[aNotification object] isEqualTo:[vrView window]])
-//		{
-//			if([[self window] isVisible])
-//				[[self window] orderWindow:NSWindowBelow relativeTo:[[vrView window] windowNumber]];
-//	//			[[self window] orderBack:self];
-//				
-//		}
-//	}
-//}
-//
-//- (void)windowDidBecomeMain:(NSNotification *)aNotification
-//{
-//	if(vrView)
-//	{
-//		if([[aNotification object] isEqualTo:[vrView window]])
-//		{
-//			if([[self window] isVisible])
-//				[[self window] orderFront:self];
-//				//[[self window] orderWindow:NSWindowBelow relativeTo:[[vrView window] windowNumber]];
-//				//[[self window] orderFront:self];
-//		}
-////		else if([[aNotification object] isEqualTo:[self window]])
-////		{
-////			//[[vrView window] orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
-////			[[vrView window] orderFront:self];
-////		}
-//	}
-//}
-//
-//- (void)windowDidBecomeKey:(NSNotification *)aNotification
-//{
-//	if(vrView)
-//	{
-//		if([[aNotification object] isEqualTo:[self window]])
-//		{
-//			[[vrView window] orderFront:self];
-//		}
-//	}
-//}
 
 #pragma mark -
 #pragma mark Cursor

@@ -137,4 +137,8 @@
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 - (void)setWL:(float)wl ww:(float)ww;
 
+#pragma mark -
+#pragma mark Cursor
+- (void)setCursorLabelWithText:(NSString*)text;
+
 @end

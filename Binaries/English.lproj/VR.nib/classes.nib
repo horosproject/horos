@@ -12,6 +12,7 @@
                 niceDisplay = id; 
                 paste = id; 
                 redo = id; 
+                removeAllCurves = id; 
                 save = id; 
                 scroll = id; 
                 sendToBack = id; 
