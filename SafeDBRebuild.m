@@ -30,7 +30,7 @@ void InverseLongs(register vector unsigned int *unaligned_input, register long s
 {
 	register long						i = size / 4;
 	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( long )- 1 ) );
+	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
 	
 	while(i-- > 0)
 	{

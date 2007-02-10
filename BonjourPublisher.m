@@ -270,7 +270,7 @@ static char *GetPrivateIP()
 				if( pswd) val = NSSwapHostLongToBig(1);
 				else val = 0;
 				
-				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(long)];
+				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"PASWD" length: 6]])
 			{
@@ -293,7 +293,7 @@ static char *GetPrivateIP()
 					val = NSSwapHostLongToBig(1);
 				}
 				
-				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(long)];
+				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
 			{
