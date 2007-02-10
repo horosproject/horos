@@ -69,4 +69,6 @@
 
 - (long) BonjourServices;
 - (void) buildFixedIPList;
+
+- (void) getDICOMDestinationInfo:(int) index;
 @end

@@ -195,6 +195,11 @@ volatile static BOOL threadIsRunning = NO;
 				
 			//	success = [[NSFileManager defaultManager] createFileAtPath: dbFileName contents:data attributes:nil];
 			}
+			else if ( strcmp( messageToRemoteService, "GETD") == 0)
+			{
+				NSDictionary	*dictionary = [NSUnarchiver unarchiveObjectWithData: data];
+				NSLog( [dictionary description]);
+			}
 			else if ( strcmp( messageToRemoteService, "MFILE") == 0)
 			{
 				[FileModificationDate release];
@@ -692,8 +697,9 @@ volatile static BOOL threadIsRunning = NO;
 		[services insertObject:aNetService atIndex:BonjourServices];
 //		[aNetService setDelegate: self];
 //		[aNetService startMonitoring];
-		
 		BonjourServices ++;
+		
+		[self getDICOMDestinationInfo: BonjourServices-1];
 	}
 	
 	// update interface
@@ -844,6 +850,15 @@ volatile static BOOL threadIsRunning = NO;
 
 #pragma mark-
 #pragma mark Network functions
+
+- (void) getDICOMDestinationInfo:(int) index
+{
+	[BonjourBrowser waitForLock: lock];
+	
+	[self connectToServer: index message:@"GETD"];
+	
+	[lock unlock];
+}
 
 - (BOOL) isBonjourDatabaseUpToDate: (int) index
 {

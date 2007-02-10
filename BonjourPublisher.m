@@ -27,6 +27,25 @@
 
 extern NSString * documentsDirectory();
 
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+static char *GetPrivateIP()
+{
+	struct			hostent *h;
+	char			hostname[100];
+	gethostname(hostname, 99);
+	if ((h=gethostbyname(hostname)) == NULL)
+	{
+        perror("Error: ");
+        return "(Error locating Private IP Address)";
+    }
+	
+    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+}
+
 @implementation BonjourPublisher
 
 - (id) initWithBrowserController: (BrowserController*) bC
@@ -204,6 +223,15 @@ extern NSString * documentsDirectory();
 				NSString *databasePath = [interfaceOsiriX localDatabasePath];
 				
 				representationToSend = [NSMutableData dataWithData: [[NSFileManager defaultManager] contentsAtPath:databasePath]];
+				
+			//	NSLog( [incomingConnection description]);
+			}
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETD" length: 6]])
+			{
+				NSString *address = [NSString stringWithCString:GetPrivateIP()];
+				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", 0L];
+				
+				representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
 				
 			//	NSLog( [incomingConnection description]);
 			}
