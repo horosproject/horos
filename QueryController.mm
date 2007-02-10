@@ -41,6 +41,20 @@ static NSString *Modality = @"Modality";
 
 static QueryController	*currentQueryController = 0L;
 
+char *GetPrivateIP()
+{
+	struct			hostent *h;
+	char			hostname[100];
+	gethostname(hostname, 99);
+	if ((h=gethostbyname(hostname)) == NULL)
+	{
+        perror("Error: ");
+        return "(Error locating Private IP Address)";
+    }
+	
+    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+}
+
 @implementation QueryController
 
 //******	OUTLINEVIEW
@@ -588,7 +602,15 @@ static QueryController	*currentQueryController = 0L;
 		[dictionary setObject:[object valueForKey:@"hostname"] forKey:@"hostname"];
 		[dictionary setObject:[object valueForKey:@"port"] forKey:@"port"];
 		[dictionary setObject:[object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
-//		[dictionary setObject:@"444" forKey: @"moveDestination"];
+
+		if( [sendToPopup indexOfSelectedItem] != 0)
+		{
+			int index = [sendToPopup indexOfSelectedItem] -2;
+			
+			
+			
+			[dictionary setObject: [[[DCMNetServiceDelegate DICOMServersList] objectAtIndex: index] valueForKey:@"AETitle"]  forKey: @"moveDestination"];
+		}
 		
 		int numberPacketsReceived = 0;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"Ping"] == NO || (SimplePing( [[dictionary valueForKey:@"hostname"] UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0))
@@ -820,6 +842,8 @@ static QueryController	*currentQueryController = 0L;
 	[[[outlineView tableColumnWithIdentifier: @"birthdate"] dataCell] setFormatter: dateFomat];
 	
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
+	
+	[self refreshSources];
 }
 
 //******
@@ -896,6 +920,30 @@ static QueryController	*currentQueryController = 0L;
 	[sourcesTable reloadData];
 	
 	[self didChangeValueForKey:@"sourcesArray"];
+	
+	// *********** Update Send To popup menu
+	
+	NSString	*previousItem = [[[sendToPopup selectedItem] title] retain];
+	
+	[sendToPopup removeAllItems];
+	
+	serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
+	
+	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+	[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"This Computer - %@:%@", ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+
+	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
+	
+	for( i = 0; i < [serversArray count]; i++)
+	{
+		NSDictionary *server = [serversArray objectAtIndex: i];
+		
+		[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"%@ - %@:%@", [server valueForKey:@"Description"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]]];
+		
+		if( [[[sendToPopup lastItem] title] isEqualToString: previousItem]) [sendToPopup selectItemWithTitle: previousItem];
+	}
+	
+	[previousItem release];
 }
 
 -(id) init

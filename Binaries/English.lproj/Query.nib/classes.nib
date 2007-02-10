@@ -152,6 +152,7 @@
                 searchFieldID = NSSearchField; 
                 searchFieldName = NSSearchField; 
                 selectedResultSource = NSTextField; 
+                sendToPopup = NSPopUpButton; 
                 sourcesTable = sourcesTableView; 
                 toDate = NSDatePicker; 
             }; 

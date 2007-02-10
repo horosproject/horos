@@ -34,7 +34,8 @@
 	IBOutlet	NSMatrix					*modalityFilterMatrix;
 	IBOutlet	NSTabView					*PatientModeMatrix;
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
-    
+    IBOutlet	NSPopUpButton				*sendToPopup;
+	
 	NSMutableString							*pressedKeys;
     NSMutableArray							*resultArray;
     NSMutableArray							*queryFilters;

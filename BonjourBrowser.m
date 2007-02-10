@@ -683,11 +683,11 @@ volatile static BOOL threadIsRunning = NO;
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
 	// remove my own sharing service
-//	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
-//	{
-//		
-//	}
-//	else
+	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
+	{
+		
+	}
+	else
 	{
 		[services insertObject:aNetService atIndex:BonjourServices];
 //		[aNetService setDelegate: self];
