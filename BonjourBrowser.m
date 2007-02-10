@@ -379,8 +379,8 @@ volatile static BOOL threadIsRunning = NO;
 //socket.h
 - (BOOL) connectToService: (struct sockaddr_in*) socketAddress
 {
-
-NSLog(@"connectToService");
+	NSLog(@"connectToService");
+	
 	BOOL succeed = NO;
 	
 	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -673,18 +673,26 @@ NSLog(@"connectToService");
 		[self connectToService: (struct sockaddr_in *) socketAddress];
 	}
 }
+//
+//- (void)netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)myData
+//{
+//	NSLog( [[NSNetService dictionaryFromTXTRecordData: myData] description]);
+//}
 
 // This object is the delegate of its NSNetServiceBrowser object.
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
 	// remove my own sharing service
-	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
-	{
-		
-	}
-	else
+//	if( aNetService == [publisher netService] || [[aNetService name] isEqualToString: [publisher serviceName]] == YES)
+//	{
+//		
+//	}
+//	else
 	{
 		[services insertObject:aNetService atIndex:BonjourServices];
+//		[aNetService setDelegate: self];
+//		[aNetService startMonitoring];
+		
 		BonjourServices ++;
 	}
 	

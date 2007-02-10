@@ -116,6 +116,15 @@ extern NSString * documentsDirectory();
         // to be registered in the default registration domain, which will currently always be "local"
         netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirix._tcp." name:serviceName port:chosenPort];
         [netService setDelegate:self];
+		
+		NSMutableDictionary *params = [NSMutableDictionary dictionary];
+		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
+		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+		
+		if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
+		{
+			NSLog( @"ERROR - NSNetService setTXTRecordData FAILED");
+		}
     }
 
     if(netService && listeningSocket) {
