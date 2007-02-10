@@ -479,6 +479,11 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	[[[vrController flyThruController] exportButtonOption] setAction:@selector(setExportAllViews:)];
 }
 
+- (void) applyWLWWForString:(NSString*) str
+{
+//	[mprController applyWLWWForString: str];
+}
+
 - (void) ApplyWLWW:(id) sender
 {
 	if([[sender menu] isEqualTo: [[vrController wlwwPopup] menu]])

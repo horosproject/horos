@@ -91,6 +91,7 @@
                 PETCTController = OrthogonalMPRPETCTController; 
                 PETController = OrthogonalMPRPETCTController; 
                 WLWWView = NSView; 
+                blendingModePopup = NSPopUpButton; 
                 blendingPercentage = NSTextField; 
                 blendingSlider = NSSlider; 
                 blendingToolView = NSView; 

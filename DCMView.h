@@ -218,6 +218,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
++ (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix;
 - (void) applyImageTransformation;
 - (void) initFont;
 - (NSMutableArray*) rectArray;

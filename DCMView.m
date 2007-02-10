@@ -343,6 +343,29 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 @implementation DCMView
 
++ (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix
+{
+	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
+	NSArray			*allKeys = [list allKeys];
+	
+	int i;
+	
+	for( i = 0 ; i < [allKeys count] ; i++)
+	{
+		NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: [allKeys objectAtIndex: i]];
+		
+		if( [[value objectAtIndex: 0] floatValue] == wl && [[value objectAtIndex: 1] floatValue] == ww) return [allKeys objectAtIndex: i];
+	}
+	
+	if( pix)
+	{
+		if( wl == [pix fullwl] && ww == [pix fullww]) return NSLocalizedString( @"Full Dynamic", 0L);
+		if( wl == [pix savedWL] && ww == [pix savedWW]) return NSLocalizedString(@"Default WL & WW", nil);
+	}
+	
+	return NSLocalizedString( @"Other", 0L);
+}
+
 - (IBAction)print:(id)sender
 {
 	if ([self is2DViewer] == YES)
@@ -356,8 +379,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		NSLog(@"Orientation %d", [printInfo orientation]);
 		
 		NSImage *im = [self nsimage: [[NSUserDefaults standardUserDefaults] boolForKey: @"ORIGINALSIZE"]];
-		
-	//	NSRect	r = NSMakeRect( 0, 0, [im size].width/2, [im size].height/2);
 		
 		NSLog( @"w:%f, h:%f", [im size].width, [im size].height);
 		
@@ -3458,10 +3479,10 @@ static long scrollMode;
 			
 			if( [self is2DViewer] == YES)
 			{
-				[[blendingView windowController] setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+				[[blendingView windowController] setCurWLWWMenu: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM]];
 			}
 			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object:NSLocalizedString(@"Other", 0L) userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: 0L];
 			
 			if( stringID)
 			{
@@ -3553,9 +3574,9 @@ static long scrollMode;
             
 			if( [self is2DViewer] == YES)
 			{
-				[[self windowController] setCurWLWWMenu: NSLocalizedString(@"Other", 0L)];
+				[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object:NSLocalizedString(@"Other", 0L) userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
 			
 			if( stringID)
 			{
@@ -4227,7 +4248,6 @@ static long scrollMode;
 
 -(void) becomeKeyWindow
 {
-
 	sliceVector[ 0] = sliceVector[ 1] = sliceVector[ 2] = 0;
 	slicePoint3D[ 0] = slicePoint3D[ 1] = slicePoint3D[ 2] = 0;
 	sliceVector2[ 0] = sliceVector2[ 1] = sliceVector2[ 2] = 0;

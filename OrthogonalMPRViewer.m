@@ -329,7 +329,7 @@ NSString * documentsDirectory();
    // [[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
 	//[[wlwwPopup menu] addItemWithTitle: NSLocalizedString(@"Set WL/WW Manually", nil) action:@selector (SetWLWW:) keyEquivalent:@""];
 	
-	[[[wlwwPopup menu] itemAtIndex:0] setTitle:[[controller originalView] curWLWWMenu]];
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle: curWLWWMenu];
 	
 //	[self createDCMViewMenu];
 	
@@ -337,12 +337,6 @@ NSString * documentsDirectory();
 
 - (void)applyWLWWForString:(NSString *)menuString
 {
-	if( curWLWWMenu != menuString)
-	{
-		[curWLWWMenu release];
-		curWLWWMenu = [menuString retain];
-	}
-	
 	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
 	{
 	}
@@ -361,51 +355,38 @@ NSString * documentsDirectory();
 		[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 	}
 	
+	if( curWLWWMenu != menuString)
+	{
+		[curWLWWMenu release];
+		curWLWWMenu = [menuString retain];
+	}
+	
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
 }
 
 
 
 - (void) ApplyWLWW:(id) sender
 {
-	[self applyWLWWForString:[sender title]];
-/*
-	if( curWLWWMenu != [sender title])
-		{
-			[curWLWWMenu release];
-			curWLWWMenu = [[sender title] retain];
-		}
-		
-		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
-		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
-		{
-			[self setWLWW:[[[[self window] firstResponder] curDCM] savedWL] :[[[[self window] firstResponder] curDCM] savedWW]];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
-		{
-			[self setWLWW:0 :0];
-		}
-		else
-		{
-			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:[sender title]];
-			[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
-		}
-		
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
-//		[self propagateSettings];
-//    }
-
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
-*/	
-
+	NSString	*menuString = [sender title];
+	
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+	{
+	}
+	else
+	{
+		menuString = [menuString substringFromIndex: 4];
+	}
+	
+	[self applyWLWWForString: menuString];
 }
 
 - (void) setCurWLWWMenu: (NSString*) wlww

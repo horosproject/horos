@@ -224,8 +224,7 @@ NSString * documentsDirectory();
 	
 	[moviePosSlider setMaxValue:maxMovieIndex-1];
 	[moviePosSlider setNumberOfTickMarks:maxMovieIndex];
-
-
+	
 	[[self window] setShowsResizeIndicator:YES];
 //	[[self window] performZoom:self];
 //	[[self window] display];
@@ -452,7 +451,7 @@ NSString * documentsDirectory();
 	|| [PETController containsView: [self keyView]]
 	|| [PETCTController containsView: [self keyView]])
 	{
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[(OrthogonalMPRView*)[self keyView] curWLWWMenu]];
+		[[[wlwwPopup menu] itemAtIndex:0] setTitle: curWLWWMenu];
 	}
 	
 	if ([PETCTController containsView: [self keyView]])
@@ -467,49 +466,55 @@ NSString * documentsDirectory();
 
 - (void)applyWLWWForString:(NSString *)menuString
 {
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	{
+		//[imageView setWLWW:0 :0];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+	{
+		[self setWLWW:[[[self keyView] curDCM] savedWL] :[[[self keyView] curDCM] savedWW] : [[self keyView] controller]];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+	{
+		[self setWLWW:0 :0 : [[self keyView] controller]];
+	}
+	else
+	{
+		NSArray		*value;
+		value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
+		[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : [[self keyView] controller]];
+	}
+	
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+		
 	if( curWLWWMenu != menuString)
 	{
 		[curWLWWMenu release];
 		curWLWWMenu = [menuString retain];
 	}
-//    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-//    {
-//        NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'", [sender title]]);
-//    }
-//    else
-//    {
-		if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
-		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
-		{
-			[self setWLWW:[[[self keyView] curDCM] savedWL] :[[[self keyView] curDCM] savedWW] : [[self keyView] controller]];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
-		{
-			[self setWLWW:0 :0 : [[self keyView] controller]];
-		}
-		else
-		{
-			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey:menuString];
-			[self setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : [[self keyView] controller]];
-		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
-//		[self propagateSettings];
-//    }
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
-
-	curWLWWMenu = [NSLocalizedString(@"Other", 0L) retain];
-//	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: imageView userInfo: userInfo];
 }
 
 - (void) ApplyWLWW:(id) sender
 {
-	[self applyWLWWForString:[sender title]];
+	NSString *menuString = [sender title];
+	
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+	{
+	}
+	else
+	{
+		menuString = [menuString substringFromIndex: 4];
+	}
+	
+	[self applyWLWWForString: menuString];
 }
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRPETCTView*) sender
@@ -873,6 +878,12 @@ NSString * documentsDirectory();
 {
 	NSLog(@"[sender tag] : %d", [sender tag]);
 	[PETCTController setBlendingMode: [sender tag]];
+}
+
+- (void) setBlendingMode: (long) m
+{
+	[blendingModePopup selectItemWithTag: m];
+	[self blendingMode: [blendingModePopup selectedItem]];
 }
 
 - (IBAction) resetImage:(id) sender

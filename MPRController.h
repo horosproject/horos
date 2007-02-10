@@ -75,5 +75,5 @@ enum { xSlider = 0, ySlider = 1, zSlider = 2};
 - (void) moviePosSliderAction:(id) sender;
 -(void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
 -(IBAction) slider2DAction:(id) sender;
-
+- (void) ApplyWLWW:(id) sender;
 @end

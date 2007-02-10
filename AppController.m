@@ -928,14 +928,20 @@ NSRect screenFrame()
     i = [presetsMenu numberOfItems];
     while(i-- > 0) [presetsMenu removeItemAtIndex:0];   
 	
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"]; 
-	[presetsMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
+	[presetsMenu addItemWithTitle:NSLocalizedString(@"Default WL & WW", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"l"];
+	if( [[note object] isEqualToString: [[[presetsMenu itemArray] lastObject] title]]) [[[presetsMenu itemArray] lastObject] setState: NSOnState];
+	
 	[presetsMenu addItemWithTitle:NSLocalizedString(@"Other", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@""];
+	[presetsMenu addItemWithTitle:NSLocalizedString(@"Full dynamic", 0L) action:@selector (ApplyWLWW:) keyEquivalent:@"y"];
+	if( [[note object] isEqualToString: [[[presetsMenu itemArray] lastObject] title]]) [[[presetsMenu itemArray] lastObject] setState: NSOnState];
+	
 	[presetsMenu addItem: [NSMenuItem separatorItem]];
 	
     for( i = 0; i < [sortedKeys count]; i++)
     {
-        [presetsMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+        [presetsMenu addItemWithTitle:[NSString stringWithFormat:@"%d - %@", i+1, [sortedKeys objectAtIndex:i]] action:@selector (ApplyWLWW:) keyEquivalent:@""];
+		
+		if( [[note object] isEqualToString: [sortedKeys objectAtIndex:i]]) [[[presetsMenu itemArray] lastObject] setState: NSOnState];
     }
     [presetsMenu addItem: [NSMenuItem separatorItem]];
     [presetsMenu addItemWithTitle:NSLocalizedString(@"Add Current WL/WW", nil) action:@selector (AddCurrentWLWW:) keyEquivalent:@""];
@@ -970,11 +976,14 @@ NSRect screenFrame()
 	while(i-- > 0) [convMenu removeItemAtIndex:0];    
 	
 	[convMenu addItemWithTitle:NSLocalizedString(@"No Filter", 0L) action:@selector (ApplyConv:) keyEquivalent:@""];
+	if( [[note object] isEqualToString: [[[convMenu itemArray] lastObject] title]]) [[[convMenu itemArray] lastObject] setState: NSOnState];
+	
 	[convMenu addItem: [NSMenuItem separatorItem]];
 	
 	for( i = 0; i < [sortedKeys count]; i++)
 	{
 		[convMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyConv:) keyEquivalent:@""];
+		if( [[note object] isEqualToString: [[[convMenu itemArray] lastObject] title]]) [[[convMenu itemArray] lastObject] setState: NSOnState];
 	}
 	[convMenu addItem: [NSMenuItem separatorItem]];
 	[convMenu addItemWithTitle:NSLocalizedString(@"Add a Filter", 0L) action:@selector (AddConv:) keyEquivalent:@""];
@@ -1002,11 +1011,14 @@ NSRect screenFrame()
     while(i-- > 0) [clutMenu removeItemAtIndex:0];    
 	
 	[clutMenu addItemWithTitle:NSLocalizedString(@"No CLUT", nil) action:@selector (ApplyCLUT:) keyEquivalent:@""];
+	if( [[note object] isEqualToString: [[[clutMenu itemArray] lastObject] title]]) [[[clutMenu itemArray] lastObject] setState: NSOnState];
+	
 	[clutMenu addItem: [NSMenuItem separatorItem]];
 	
     for( i = 0; i < [sortedKeys count]; i++)
     {
         [clutMenu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector (ApplyCLUT:) keyEquivalent:@""];
+		if( [[note object] isEqualToString: [[[clutMenu itemArray] lastObject] title]]) [[[clutMenu itemArray] lastObject] setState: NSOnState];
     }
     [clutMenu addItem: [NSMenuItem separatorItem]];
     [clutMenu addItemWithTitle:NSLocalizedString(@"Add a CLUT", nil) action:@selector (AddCLUT:) keyEquivalent:@""];

@@ -689,78 +689,63 @@ extern NSString * documentsDirectory();
 
 - (void) ApplyWLWW:(id) sender
 {
-    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-    {
-        NSBeginAlertSheet(NSLocalizedString ( @"Delete a WL/WW preset",nil),NSLocalizedString ( @"Delete",nil),NSLocalizedString ( @"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", [sender title]]);
-    }
-    else
-    {
-		[self applyWLWWForString:[sender title]];
-	/*
-		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
-		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
-		{
-			[view adjustWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW] :@"set"];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
-		{
-			[view adjustWLWW:0 :0 :@"set"];
-		}
-		else
-		{
-			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: [sender title]];
-			
-			[view adjustWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : @"set"];
-			
-			
-		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
-	*/
-    }
+	NSString *menuString = [sender title];
 	
-//	if( [sender title] != curWLWWMenu)
-//	{
-//		[curWLWWMenu release];
-//		curWLWWMenu = [[sender title] retain];
-//	}
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	{
+	}
+	else
+	{
+		menuString = [menuString substringFromIndex: 4];
+	}
 	
+	[self applyWLWWForString: menuString];
+		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
-- (void)applyWLWWForString:(NSString *)menuString{
+- (void)applyWLWWForString:(NSString *) menuString
+{
 	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	{
+		//[imageView setWLWW:0 :0];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	{
+		[view adjustWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW] :@"set"];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	{
+		[view adjustWLWW:0 :0 :@"set"];
+	}
+	else
+	{
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
-		{
-			[view adjustWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW] :@"set"];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
-		{
-			[view adjustWLWW:0 :0 :@"set"];
+			NSBeginAlertSheet(NSLocalizedString ( @"Delete a WL/WW preset",nil),NSLocalizedString ( @"Delete",nil),NSLocalizedString ( @"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, menuString, [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
 		}
 		else
 		{
 			NSArray		*value;
 			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: menuString];
-			
+		
 			[view adjustWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue] : @"set"];
-			
-			
 		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+	}
+	
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
 		
 	if( ![menuString isEqualToString: curWLWWMenu])
 	{
 		[curWLWWMenu release];
 		curWLWWMenu = [menuString retain];
 	}
-
 }
 
 

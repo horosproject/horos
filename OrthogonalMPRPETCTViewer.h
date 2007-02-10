@@ -53,7 +53,8 @@
     IBOutlet NSPopUpButton					*wlwwPopup;
     IBOutlet NSPopUpButton					*clutPopup;
 	IBOutlet NSPopUpButton					*OpacityPopup;
-
+	IBOutlet NSPopUpButton					*blendingModePopup;
+	
 	NSString								*curWLWWMenu, *curCLUTMenu;//, *curOpacityMenu, *curConvMenu;
 	
 	long									fistCTSlice, fistPETSlice, sliceRangeCT, sliceRangePET;
@@ -94,6 +95,7 @@
 - (IBAction) changeBlendingFactor:(id) sender;
 - (void) moveBlendingFactorSlider:(float) f;
 - (IBAction) blendingMode:(id) sender;
+- (void) setBlendingMode: (long) m;
 
 // NSToolbar
 - (void) setupToolbar;

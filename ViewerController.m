@@ -5817,39 +5817,43 @@ static ViewerController *draggedController = 0L;
 
 - (void) ApplyWLWW:(id) sender
 {
+	NSString	*name = [sender title];
 	
-    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-    {
-        NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", [sender title]]);
-    }
-    else
-    {
-		if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	if( [[sender title] isEqualToString:NSLocalizedString(@"Other", nil)] == YES)
+	{
+	}
+	else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
+	{
+		[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
+	}
+	else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
+	{
+		[imageView setWLWW:0 :0];
+	}
+	else
+	{
+		name = [[sender title] substringFromIndex: 4];
+		
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
-		{
-			[imageView setWLWW:[[imageView curDCM] savedWL] :[[imageView curDCM] savedWW]];
-		}
-		else if( [[sender title] isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
-		{
-			[imageView setWLWW:0 :0];
+			NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, name, [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", name]);
+			
+			return;
 		}
 		else
-		{			
-			NSArray		*value;
-			value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: [sender title]];
+		{
+			NSArray		*value = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] objectForKey: name];
 			[imageView setWLWW:[[value objectAtIndex: 0] floatValue] :[[value objectAtIndex: 1] floatValue]];
 		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:[sender title]];
-		[self propagateSettings];
-    }
+	}
 	
-	if( curWLWWMenu != [sender title])
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle: [sender title]];
+	[self propagateSettings];
+	
+	if( curWLWWMenu != name)
 	{
 		[curWLWWMenu release];
-		curWLWWMenu = [[sender title] retain];
+		curWLWWMenu = [name retain];
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 	
@@ -12247,6 +12251,8 @@ int i,j,l;
 					[viewer ApplyCLUTString: @"B/W Inverse"];
 				else
 					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+				
+				[viewer ApplyOpacityString: @"Logarithmic Table"];
 			}
 			else
 			{
@@ -12468,6 +12474,8 @@ int i,j,l;
 						[viewer ApplyCLUTString: @"B/W Inverse"];
 					else
 						[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+						
+					[viewer ApplyOpacityString: @"Logarithmic Table"];
 				}
 				else
 				{
@@ -12519,6 +12527,8 @@ int i,j,l;
 				[viewer ApplyCLUTString: @"B/W Inverse"];
 			else
 				[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+				
+			[viewer ApplyOpacityString: @"Logarithmic Table"];
 		}
 		else
 		{
@@ -12594,6 +12604,8 @@ int i,j,l;
 					[viewer ApplyCLUTString: @"B/W Inverse"];
 				else
 					[viewer ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
+					
+				[viewer ApplyOpacityString: @"Logarithmic Table"];
 			}
 			else
 			{
@@ -12976,6 +12988,9 @@ long i;
 		[[viewer CTController] setWLWW:iwl :iww];
 		[[blendingController imageView] getWLWW:&iwl :&iww];
 		[[viewer PETController] setWLWW:iwl :iww];
+		
+		[viewer setBlendingMode: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTPETFUSION"]];
+		
 		return viewer;
 	}
 	return nil;	

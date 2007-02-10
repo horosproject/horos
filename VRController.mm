@@ -1033,30 +1033,46 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) ApplyWLWW:(id) sender
 {
-    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-    {
-        NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", [sender title]]);
-    }
-    else
-    {
-		[self applyWLWWForString:[sender title]];
-    }
+	NSString	*menuString = [sender title];
+	
+	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	{
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	{
+	}
+	else
+	{
+		menuString = [menuString substringFromIndex: 4];
+	}
+	
+	[self applyWLWWForString: menuString];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
 }
 
-- (void)applyWLWWForString:(NSString *)menuString{
+- (void)applyWLWWForString:(NSString *)menuString
+{
 	if( [menuString isEqualToString:NSLocalizedString(@"Other", 0L)] == YES)
+	{
+		//[imageView setWLWW:0 :0];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
+	{
+		[view setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
+	}
+	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
+	{
+		[view setWLWW:0 :0];
+	}
+	else
+	{
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			//[imageView setWLWW:0 :0];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", 0L)] == YES)
-		{
-			[view setWLWW:[[pixList[0] objectAtIndex:0] savedWL] :[[pixList[0] objectAtIndex:0] savedWW]];
-		}
-		else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", 0L)] == YES)
-		{
-			[view setWLWW:0 :0];
+			NSBeginAlertSheet( NSLocalizedString(@"Delete a WL/WW preset",nil), NSLocalizedString(@"Delete",nil), NSLocalizedString(@"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, menuString, [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
 		}
 		else
 		{
@@ -1066,8 +1082,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			
 			[view setWLWW:[[value objectAtIndex:0] floatValue] :[[value objectAtIndex:1] floatValue]];
 		}
-		[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
-		
+	}
+	
+	[[[wlwwPopup menu] itemAtIndex:0] setTitle:menuString];
+	
 	if( curWLWWMenu != menuString)
 	{
 		[curWLWWMenu release];
