@@ -21,8 +21,10 @@
         {
             ACTIONS = {
                 deleteSelectedRow = id; 
+                loadFrom = id; 
                 newServer = id; 
                 osirixNewServer = id; 
+                saveAs = id; 
                 setStringEncoding = id; 
                 setTransferSyntax = id; 
                 test = id; 

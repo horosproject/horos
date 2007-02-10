@@ -301,6 +301,70 @@
 	[serverTable reloadData];
 }
 
+- (IBAction) saveAs:(id) sender;
+{
+	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
+
+	[sPanel setRequiredFileType:@"plist"];
+	
+	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriX Locations.plist", nil)] == NSFileHandlingPanelOKButton)
+	{
+		[serverList writeToFile:[sPanel filename] atomically: YES];
+	}
+}
+
+- (IBAction) loadFrom:(id) sender;
+{
+	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
+
+	[sPanel setRequiredFileType:@"plist"];
+	
+	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
+	{
+		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
+		
+		if( r)
+		{
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load locations", 0L), NSLocalizedString(@"Should I add or replace this locations list to the current list?", 0L), NSLocalizedString(@"Add",nil), NSLocalizedString(@"Replace",nil), nil) == NSAlertDefaultReturn)
+			{
+				
+			}
+			else [serverList removeAllObjects];
+			
+			[serverList addObjectsFromArray: r];
+			
+			int i, x;
+			
+			for( i = 0; i < [serverList count]; i++)
+			{
+				NSDictionary	*server = [serverList objectAtIndex: i];
+				
+				for( x = 0; x < [serverList count]; x++)
+				{
+					NSDictionary	*c = [serverList objectAtIndex: x];
+					
+					if( c != server)
+					{
+						if( [[server valueForKey:@"AETitle"] isEqualToString: [c valueForKey:@"AETitle"]] &&
+							[[server valueForKey:@"Address"] isEqualToString: [c valueForKey:@"Address"]] &&
+							[[server valueForKey:@"Port"] isEqualToString: [c valueForKey:@"Port"]])
+							{
+								[serverList removeObjectAtIndex: i];
+								i--;
+								x = [serverList count];
+							}
+					}
+				}
+			}
+			
+			[serverTable reloadData];
+			
+			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+		}
+	}
+}
+
 - (IBAction) test:(id) sender
 {
 	int i;

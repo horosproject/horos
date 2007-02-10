@@ -36,4 +36,6 @@
 - (IBAction)setTransferSyntax:(id)sender;
 - (IBAction) test:(id) sender;
 - (void) resetTest;
+- (IBAction) saveAs:(id) sender;
+- (IBAction) loadFrom:(id) sender;
 @end
