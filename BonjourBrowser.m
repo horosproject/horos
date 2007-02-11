@@ -69,6 +69,7 @@ volatile static BOOL threadIsRunning = NO;
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
+		servicesDICOMListener = [[NSMutableArray array] retain];
 		
 		[self buildFixedIPList];
 		
@@ -112,6 +113,7 @@ volatile static BOOL threadIsRunning = NO;
 
 - (void) dealloc
 {
+	[dicomListener release];
 	[path release];
 	[paths release];
 	[dbFileName release];
@@ -126,6 +128,11 @@ volatile static BOOL threadIsRunning = NO;
 - (NSMutableArray*) services
 {
 	return services;
+}
+
+- (NSMutableArray*) servicesDICOMListener
+{
+	return servicesDICOMListener;
 }
 
 //- (BOOL) unzipToPath:(NSString*)_toPath
@@ -198,7 +205,12 @@ volatile static BOOL threadIsRunning = NO;
 			else if ( strcmp( messageToRemoteService, "GETD") == 0)
 			{
 				NSDictionary	*dictionary = [NSUnarchiver unarchiveObjectWithData: data];
+				if( dictionary == 0L) dictionary = [NSDictionary dictionary];
+				
 				NSLog( [dictionary description]);
+				
+				if( dicomListener) NSLog( @"dicomListener != 0L !!! ??");
+				dicomListener = [dictionary retain];
 			}
 			else if ( strcmp( messageToRemoteService, "MFILE") == 0)
 			{
@@ -589,11 +601,10 @@ volatile static BOOL threadIsRunning = NO;
 	long			i;
 	NSArray			*osirixServersArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
 	
-	
-	
 	for( i = 0; i < [osirixServersArray count]; i++)
 	{
 		[services addObject: [osirixServersArray objectAtIndex: i]];
+		[servicesDICOMListener addObject: [self getDICOMDestinationInfo: [services count]-1]];
 	}
 }
 
@@ -602,7 +613,11 @@ volatile static BOOL threadIsRunning = NO;
 
 - (void) updateFixedIPList: (NSNotification*) note
 {
-	[services removeObjectsInRange: NSMakeRange( BonjourServices, [services count] - BonjourServices)];
+	NSRange	range = NSMakeRange( BonjourServices, [services count] - BonjourServices);
+	
+	[services removeObjectsInRange: range];
+	[servicesDICOMListener removeObjectsInRange: range];
+	
 	[self buildFixedIPList];
 	[interfaceOsiriX displayBonjourServices];
 }
@@ -694,12 +709,10 @@ volatile static BOOL threadIsRunning = NO;
 	}
 	else
 	{
-		[services insertObject:aNetService atIndex:BonjourServices];
-//		[aNetService setDelegate: self];
-//		[aNetService startMonitoring];
+		[services addObject: aNetService];
 		BonjourServices ++;
 		
-		[self getDICOMDestinationInfo: BonjourServices-1];
+		[servicesDICOMListener addObject: [self getDICOMDestinationInfo: BonjourServices-1]];
 	}
 	
 	// update interface
@@ -726,7 +739,9 @@ volatile static BOOL threadIsRunning = NO;
 			}
 
 			// deleting service from list
-            [services removeObject:currentNetService];
+			int index = [services indexOfObject: currentNetService];
+            [services removeObjectAtIndex: index];
+			[servicesDICOMListener removeObjectAtIndex: index];
 
 			BonjourServices --;
             break;
@@ -851,13 +866,18 @@ volatile static BOOL threadIsRunning = NO;
 #pragma mark-
 #pragma mark Network functions
 
-- (void) getDICOMDestinationInfo:(int) index
+- (NSDictionary*) getDICOMDestinationInfo:(int) index
 {
 	[BonjourBrowser waitForLock: lock];
+	
+	[dicomListener release];
+	dicomListener = 0L;
 	
 	[self connectToServer: index message:@"GETD"];
 	
 	[lock unlock];
+	
+	return dicomListener;
 }
 
 - (BOOL) isBonjourDatabaseUpToDate: (int) index

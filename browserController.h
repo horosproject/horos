@@ -414,7 +414,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) rebuildThumbnails:(id) sender;
 
 - (NSArray *)databaseSelection;
-- (IBAction)databaseWindow:(id)sender;
 
 - (IBAction) decompressSelectedFiles:(id) sender;
 - (IBAction) compressSelectedFiles:(id) sender;

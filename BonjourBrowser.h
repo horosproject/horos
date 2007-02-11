@@ -21,6 +21,7 @@
 	NSLock				*lock;
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
+	NSMutableArray		*servicesDICOMListener;
     NSNetService		*serviceBeingResolved;
 	int					serviceBeingResolvedIndex, BonjourServices;
 	BrowserController	*interfaceOsiriX;
@@ -42,6 +43,8 @@
 	NSString			*filePathToLoad;
 	
 	NSString			*FileModificationDate;
+	
+	NSDictionary		*dicomListener;
 	
 	volatile BOOL		resolved;
 }
@@ -70,5 +73,5 @@
 - (long) BonjourServices;
 - (void) buildFixedIPList;
 
-- (void) getDICOMDestinationInfo:(int) index;
+- (NSDictionary*) getDICOMDestinationInfo:(int) index;
 @end

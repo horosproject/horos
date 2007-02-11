@@ -928,14 +928,14 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
-	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
+//	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
 	
 	//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
-	
-	if ([fileManager createDirectoryAtPath:tempFolder attributes:nil]) NSLog(@"created Folder: %@", tempFolder);
+//	NSFileManager *fileManager = [NSFileManager defaultManager];
+//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
+//	
+//	if ([fileManager createDirectoryAtPath:tempFolder attributes:nil]) NSLog(@"created Folder: %@", tempFolder);
 	
 	OFCondition cond;
 	const char *opt_peer = NULL;
@@ -1559,7 +1559,7 @@ NS_ENDHANDLER
 	}
 
 	//get rid of temp folder
-	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
+//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
 	
 	[paths release];
 	[pool release];
