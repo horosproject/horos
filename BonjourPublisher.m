@@ -226,7 +226,7 @@ static char *GetPrivateIP()
 				
 			//	NSLog( [incomingConnection description]);
 			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETD" length: 6]])
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
 			{
 				NSString *address = [NSString stringWithCString:GetPrivateIP()];
 				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", 0L];
@@ -265,16 +265,16 @@ static char *GetPrivateIP()
 				// is this database protected by a password
 				NSString *pswd = [interfaceOsiriX bonjourPassword];
 				
-				long val = 0;
+				int val = 0;
 				
-				if( pswd) val = NSSwapHostLongToBig(1);
+				if( pswd) val = NSSwapHostIntToBig(1);
 				else val = 0;
 				
 				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"PASWD" length: 6]])
 			{
-				long pos = 6, stringSize;
+				int pos = 6, stringSize;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -286,22 +286,22 @@ static char *GetPrivateIP()
 				NSString *incomingPswd = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 				pos += stringSize;
 				
-				long val = 0;
+				int val = 0;
 				
 				if( [incomingPswd isEqualToString: [interfaceOsiriX bonjourPassword]] || [interfaceOsiriX bonjourPassword] == 0L)
 				{
-					val = NSSwapHostLongToBig(1);
+					val = NSSwapHostIntToBig(1);
 				}
 				
 				representationToSend = [NSMutableData dataWithBytes: &val length:sizeof(int)];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SENDD" length: 6]])
 			{
-				long pos = 6, i;
+				int pos = 6, i;
 				
 				// We read 4 bytes that contain the no of file
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-				long fileNo;
+				int fileNo;
 				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileNo];
 				fileNo = NSSwapBigIntToHost( fileNo);
 				pos += 4;
@@ -311,7 +311,7 @@ static char *GetPrivateIP()
 					// We read 4 bytes that contain the file size
 					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 					
-					long fileSize;
+					int fileSize;
 					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &fileSize];
 					fileSize = NSSwapBigIntToHost( fileSize);
 					pos += 4;
@@ -321,7 +321,7 @@ static char *GetPrivateIP()
 					NSString	*incomingFolder = [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING"];
 					NSString	*dstPath;
 					
-					long index = [NSDate timeIntervalSinceReferenceDate];
+					int index = [NSDate timeIntervalSinceReferenceDate];
 					
 					do
 					{
@@ -339,7 +339,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"SETVA" length: 6]])
 			{
-				long pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, size, noOfFiles = 0, stringSize, i;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -411,7 +411,7 @@ static char *GetPrivateIP()
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
 			{
-				long pos = 6, stringSize, size;
+				int pos = 6, stringSize, size;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -434,7 +434,7 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"RFILE" length: 6]])
 			{
 				NSLog(@"subConnectionReceived : RFILE");
-				long pos = 6, stringSize, size;
+				int pos = 6, stringSize, size;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -477,13 +477,13 @@ static char *GetPrivateIP()
 				
 				representationToSend = [NSMutableData data];
 				
-				stringSize = NSSwapHostLongToBig( [content length]);
+				stringSize = NSSwapHostIntToBig( [content length]);
 				[representationToSend appendBytes:&stringSize length: 4];
 				[representationToSend appendData: content];
 				
 				NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
 				content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
-				stringSize = NSSwapHostLongToBig( [content length]);
+				stringSize = NSSwapHostIntToBig( [content length]);
 				[representationToSend appendBytes:&stringSize length: 4];
 				[representationToSend appendData: content];
 				
@@ -494,7 +494,7 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"WFILE" length: 6]])
 			{
 				NSLog(@"subConnectionReceived : WFILE");
-				long pos = 6, stringSize, dataSize, size;
+				int pos = 6, stringSize, dataSize, size;
 				
 				// We read 4 bytes that contain the string size
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
@@ -553,10 +553,17 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 			{
 				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
+				
+				int pos = 6, size, noOfFiles = 0, stringSize, i;
+				
+			}
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
+			{
+				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
 				NSMutableArray	*dstPaths = [NSMutableArray arrayWithCapacity:0];
 				
 				// We read now the path for the DICOM file(s)
-				long pos = 6, size, noOfFiles = 0, stringSize, i;
+				int pos = 6, size, noOfFiles = 0, stringSize, i;
 				
 				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
@@ -623,7 +630,7 @@ static char *GetPrivateIP()
 	//				}
 				}
 				
-				long temp = NSSwapHostLongToBig( noOfFiles);
+				int temp = NSSwapHostIntToBig( noOfFiles);
 				[representationToSend appendBytes: &temp length: 4];	
 				for( i = 0; i < noOfFiles; i++)
 				//for( i = 0; i < [localPaths count]; i++)
@@ -634,7 +641,7 @@ static char *GetPrivateIP()
 					{
 						NSString	*extension = [path pathExtension];
 						
-						long val = [[path stringByDeletingPathExtension] intValue];
+						int val = [[path stringByDeletingPathExtension] intValue];
 						
 						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
 						//[documentsDirectory() stringByAppendingString:@"/Database.sql"];	//[[BrowserController currentBrowser] currentDatabasePath];
@@ -654,12 +661,12 @@ static char *GetPrivateIP()
 					
 					NSData	*content = [[NSFileManager defaultManager] contentsAtPath: path];
 					
-					size = NSSwapHostLongToBig( [content length]);
+					size = NSSwapHostIntToBig( [content length]);
 					[representationToSend appendBytes: &size length: 4];
 					[representationToSend appendData: content];
 					
 					const char* string = [[dstPaths objectAtIndex: i] UTF8String];
-					long stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+					int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					
 					[representationToSend appendBytes:&stringSize length: 4];
 					[representationToSend appendBytes:string length: strlen( string)+1];

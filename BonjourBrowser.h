@@ -46,6 +46,8 @@
 	
 	NSDictionary		*dicomListener;
 	
+	NSDictionary		*dicomDestination;
+	
 	volatile BOOL		resolved;
 }
 
@@ -59,7 +61,7 @@
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
 
-- (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (long) noOfImages;
+- (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages;
 - (NSString*) getDatabaseFile:(int) index ;
 - (void) setBonjourDatabaseValue:(int) index item:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key;
 
@@ -70,7 +72,7 @@
 - (BOOL) sendFile:(NSString*) pathFile index:(int) index;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 
-- (long) BonjourServices;
+- (int) BonjourServices;
 - (void) buildFixedIPList;
 
 - (NSDictionary*) getDICOMDestinationInfo:(int) index;

@@ -26,7 +26,7 @@
 
 #define FILESSIZE 512*512*2
 
-static long TIMEOUT	= 60;
+static int TIMEOUT	= 60;
 #define USEZIP NO
 
 extern NSString			*documentsDirectory();
@@ -64,7 +64,7 @@ volatile static BOOL threadIsRunning = NO;
 	self = [super init];
 	if (self != nil)
 	{
-		long i;
+		int i;
 		
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
@@ -202,7 +202,7 @@ volatile static BOOL threadIsRunning = NO;
 				
 			//	success = [[NSFileManager defaultManager] createFileAtPath: dbFileName contents:data attributes:nil];
 			}
-			else if ( strcmp( messageToRemoteService, "GETD") == 0)
+			else if ( strcmp( messageToRemoteService, "GETDI") == 0)
 			{
 				NSDictionary	*dictionary = [NSUnarchiver unarchiveObjectWithData: data];
 				if( dictionary == 0L) dictionary = [NSDictionary dictionary];
@@ -256,7 +256,7 @@ volatile static BOOL threadIsRunning = NO;
 				NSString *destPath = [BonjourBrowser bonjour2local: zipFilePathToLoad];
 				[[NSFileManager defaultManager] removeFileAtPath: destPath handler:0L];
 				
-				long	pos = 0, size;
+				int	pos = 0, size;
 				NSData	*curData = 0L;
 				
 				// The File
@@ -316,7 +316,7 @@ volatile static BOOL threadIsRunning = NO;
 			{
 				// we asked for a DICOM file(s), let's write it on disc
 				
-				long pos = 0, noOfFiles, size, i;
+				int pos = 0, noOfFiles, size, i;
 				
 				noOfFiles = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 				pos += 4;
@@ -362,14 +362,14 @@ volatile static BOOL threadIsRunning = NO;
 			}
 			else if (strcmp( messageToRemoteService, "PASWD") == 0)
 			{
-				long result = NSSwapBigIntToHost( *((int*) [data bytes]));
+				int result = NSSwapBigIntToHost( *((int*) [data bytes]));
 				
 				if( result) wrongPassword = NO;
 				else wrongPassword = YES;
 			}
 			else if (strcmp( messageToRemoteService, "ISPWD") == 0)
 			{
-				long result = NSSwapBigIntToHost( *((int*) [data bytes]));
+				int result = NSSwapBigIntToHost( *((int*) [data bytes]));
 				
 				if( result) isPasswordProtected = YES;
 				else isPasswordProtected = NO;
@@ -422,10 +422,10 @@ volatile static BOOL threadIsRunning = NO;
 				if (strcmp( messageToRemoteService, "SETVA") == 0)
 				{
 					const char* string;
-					long stringSize;
+					int stringSize;
 					
 					string = [setValueObject UTF8String];
-					stringSize  = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
@@ -438,12 +438,12 @@ volatile static BOOL threadIsRunning = NO;
 					else if( [setValueValue isKindOfClass:[NSNumber class]])
 					{
 						string = [[setValueValue stringValue] UTF8String];
-						stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+						stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					}
 					else
 					{
 						string = [setValueValue UTF8String];
-						stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+						stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					}
 					
 					[toTransfer appendBytes:&stringSize length: 4];
@@ -451,7 +451,7 @@ volatile static BOOL threadIsRunning = NO;
 						[toTransfer appendBytes:string length: strlen( string)+1];
 					
 					string = [setValueKey UTF8String];
-					stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+					stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
@@ -461,7 +461,7 @@ volatile static BOOL threadIsRunning = NO;
 				{
 					NSLog(@"ask for : %@", filePathToLoad);
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
-					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
+					int stringSize = NSSwapHostIntToBig( [filenameData length]);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
@@ -470,7 +470,7 @@ volatile static BOOL threadIsRunning = NO;
 				if (strcmp( messageToRemoteService, "MFILE") == 0)
 				{
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
-					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
+					int stringSize = NSSwapHostIntToBig( [filenameData length]);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
@@ -504,27 +504,27 @@ volatile static BOOL threadIsRunning = NO;
 					}
 				
 					NSData	*filenameData = [filePathToLoad dataUsingEncoding: NSUnicodeStringEncoding];
-					long stringSize = NSSwapHostLongToBig( [filenameData length]);	// +1 to include the last 0 !
+					int stringSize = NSSwapHostIntToBig( [filenameData length]);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:[filenameData bytes] length: [filenameData length]];
 					
 					NSData	*fileData = [NSData dataWithContentsOfFile: filePathToLoad];
-					long dataSize = NSSwapHostLongToBig( [fileData length]);
+					int dataSize = NSSwapHostIntToBig( [fileData length]);
 					[toTransfer appendBytes:&dataSize length: 4];
 					[toTransfer appendData: fileData];
 				}
 				
 				if (strcmp( messageToRemoteService, "DICOM") == 0)
 				{
-					long i, temp, noOfFiles = [paths count];
+					int i, temp, noOfFiles = [paths count];
 					
-					temp = NSSwapHostLongToBig( noOfFiles);
+					temp = NSSwapHostIntToBig( noOfFiles);
 					[toTransfer appendBytes:&temp length: 4];
 					for( i = 0; i < noOfFiles ; i++)
 					{
 						const char* string = [[paths objectAtIndex: i] UTF8String];
-						long stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+						int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 						
 						[toTransfer appendBytes:&stringSize length: 4];
 						[toTransfer appendBytes:string length: strlen( string)+1];
@@ -533,25 +533,63 @@ volatile static BOOL threadIsRunning = NO;
 					for( i = 0; i < noOfFiles ; i++)
 					{
 						const char* string = [[dicomFileNames objectAtIndex: i] UTF8String];
-						long stringSize = NSSwapHostLongToBig( strlen( string)+1);	// +1 to include the last 0 !
+						int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
 						
 						[toTransfer appendBytes:&stringSize length: 4];
 						[toTransfer appendBytes:string length: strlen( string)+1];
 					}
 				}
 				
+				if (strcmp( messageToRemoteService, "DCMSE") == 0)
+				{
+					int i, temp, noOfFiles = [paths count];
+					
+					const char* string;
+					int stringSize;
+					
+					// DICOM DESTINATION: DICOM NODE : AETitle, IP Address, and Port
+					
+					string = [[dicomDestination valueForKey:@"AETitle"] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+					
+					string = [[dicomDestination valueForKey:@"Address"] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+					
+					string = [[dicomDestination valueForKey:@"Port"] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+					
+					// Which Files
+					
+					temp = NSSwapHostIntToBig( noOfFiles);
+					[toTransfer appendBytes:&temp length: 4];
+					for( i = 0; i < noOfFiles ; i++)
+					{
+						const char* string = [[paths objectAtIndex: i] UTF8String];
+						int stringSize = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+						
+						[toTransfer appendBytes:&stringSize length: 4];
+						[toTransfer appendBytes:string length: strlen( string)+1];
+					}
+				}
+			
 				if ((strcmp( messageToRemoteService, "SENDD") == 0))
 				{
-					long i, temp, noOfFiles = [paths count];
+					int i, temp, noOfFiles = [paths count];
 					
-					temp = NSSwapHostLongToBig( noOfFiles);
+					temp = NSSwapHostIntToBig( noOfFiles);
 					[toTransfer appendBytes:&temp length: 4];
 					
 					for( i = 0; i < noOfFiles ; i++)
 					{
 						NSData	*file = [NSData dataWithContentsOfFile: [paths objectAtIndex: i]];
 						
-						long fileSize = NSSwapHostLongToBig( [file length]);
+						int fileSize = NSSwapHostIntToBig( [file length]);
 						[toTransfer appendBytes:&fileSize length: 4];
 						[toTransfer appendData:file];
 					}
@@ -560,7 +598,7 @@ volatile static BOOL threadIsRunning = NO;
 				if ((strcmp( messageToRemoteService, "PASWD") == 0))
 				{
 					const char* passwordUTF = [password UTF8String];
-					long stringSize = NSSwapHostLongToBig( strlen( passwordUTF)+1);	// +1 to include the last 0 !
+					int stringSize = NSSwapHostIntToBig( strlen( passwordUTF)+1);	// +1 to include the last 0 !
 					
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:passwordUTF length: strlen( passwordUTF)+1];
@@ -591,14 +629,14 @@ volatile static BOOL threadIsRunning = NO;
 	return succeed;
 }
 
-- (long) BonjourServices
+- (int) BonjourServices
 {
 	return BonjourServices;
 }
 
 - (void) buildFixedIPList
 {
-	long			i;
+	int			i;
 	NSArray			*osirixServersArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
 	
 	for( i = 0; i < [osirixServersArray count]; i++)
@@ -839,7 +877,7 @@ volatile static BOOL threadIsRunning = NO;
 	threadIsRunning = NO;
 }
 
-- (BOOL) connectToServer:(long) index message:(NSString*) message
+- (BOOL) connectToServer:(int) index message:(NSString*) message
 {
 	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: index], @"index", message, @"msg", 0L];
 	
@@ -873,7 +911,7 @@ volatile static BOOL threadIsRunning = NO;
 	[dicomListener release];
 	dicomListener = 0L;
 	
-	[self connectToServer: index message:@"GETD"];
+	[self connectToServer: index message:@"GETDI"];
 	
 	[lock unlock];
 	
@@ -1075,7 +1113,7 @@ volatile static BOOL threadIsRunning = NO;
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
 {
-	long i;
+	int i;
 	
 	for( i = 0 ; i < [ip count]; i++)
 	{
@@ -1094,7 +1132,7 @@ volatile static BOOL threadIsRunning = NO;
 	return YES;
 }
 
-- (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (long) noOfImages
+- (NSString*) getDICOMFile:(int) index forObject:(NSManagedObject*) image noOfImages: (int) noOfImages
 {
 	[BonjourBrowser waitForLock: lock];
 	
@@ -1117,7 +1155,7 @@ volatile static BOOL threadIsRunning = NO;
 	
 	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease];
 	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-	long				size = 0, i = [images indexOfObject: image];
+	int				size = 0, i = [images indexOfObject: image];
 	
 	NSLog( @"Bonjour noOfImages: %d", noOfImages);
 	
