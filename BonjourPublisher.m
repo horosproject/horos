@@ -15,6 +15,7 @@
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 #import "DCMPix.h"
+#import "DCMTKStoreSCU.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -194,6 +195,37 @@ static char *GetPrivateIP()
 //  return result;
 //}
 
+- (void) sendDICOMFilesToOsiriXNode:(NSDictionary*) todo
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+																calledAET: [todo objectForKey:@"AETitle"] 
+																hostname: [todo objectForKey:@"Address"] 
+																port: [[todo objectForKey:@"Port"] intValue] 
+																filesToSend: [todo valueForKey: @"Files"]
+																transferSyntax: [[todo objectForKey:@"Transfer Syntax"] intValue] 
+																compression: 1.0
+																extraParameters: nil];
+							
+	@try
+	{
+		[storeSCU run:self];
+	}
+	
+	@catch (NSException *ne)
+	{
+		NSLog( @"Bonjour DICOM Send FAILED");
+		NSLog( [ne name]);
+		NSLog( [ne reason]);
+	}
+	
+	[storeSCU release];
+	storeSCU = 0L;
+	
+	[pool release];
+}
+
 - (void) subConnectionReceived:(NSFileHandle *)incomingConnection
 {
 	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
@@ -229,11 +261,10 @@ static char *GetPrivateIP()
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
 			{
 				NSString *address = [NSString stringWithCString:GetPrivateIP()];
-				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", 0L];
+				
+				NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", 0L];
 				
 				representationToSend = [NSMutableData dataWithData: [NSArchiver archivedDataWithRootObject: dictionary]];
-				
-			//	NSLog( [incomingConnection description]);
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"VERSI" length: 6]])
 			{
@@ -550,12 +581,73 @@ static char *GetPrivateIP()
 
 				[path release];
 			}
-			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
+			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DCMSE" length: 6]])
 			{
 				NSMutableArray	*localPaths = [NSMutableArray arrayWithCapacity:0];
 				
 				int pos = 6, size, noOfFiles = 0, stringSize, i;
 				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *AETitle = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *Address = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *Port = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+				// We read 4 bytes that contain the string size
+				while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+				pos += 4;
+				// We read the string
+				while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				NSString *TransferSyntax = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+				pos += stringSize;
+				
+while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+				
+				[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &noOfFiles];	noOfFiles = NSSwapBigIntToHost( noOfFiles);
+				pos += 4;
+				
+				representationToSend = [NSMutableData dataWithCapacity: 0];
+				
+				for( i = 0; i < noOfFiles; i++)
+				{
+					// We read 4 bytes that contain the string size
+					while ( [data length] < pos + 4 && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					[[data subdataWithRange: NSMakeRange(pos, 4)] getBytes: &stringSize];	stringSize = NSSwapBigIntToHost( stringSize);
+					pos += 4;
+					
+					// We read the string
+					while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
+					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+					pos += stringSize;
+					
+					[localPaths addObject: path];
+				}
+				
+				NSDictionary	*todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"Transfer Syntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", 0L];
+				
+				[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DICOM" length: 6]])
 			{

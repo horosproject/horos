@@ -564,6 +564,11 @@ volatile static BOOL threadIsRunning = NO;
 					[toTransfer appendBytes:&stringSize length: 4];
 					[toTransfer appendBytes:string length: strlen( string)+1];
 					
+					string = [[dicomDestination valueForKey:@"Transfer Syntax"] UTF8String];
+					stringSize  = NSSwapHostIntToBig( strlen( string)+1);	// +1 to include the last 0 !
+					[toTransfer appendBytes:&stringSize length: 4];
+					[toTransfer appendBytes:string length: strlen( string)+1];
+					
 					// Which Files
 					
 					temp = NSSwapHostIntToBig( noOfFiles);
@@ -915,6 +920,12 @@ volatile static BOOL threadIsRunning = NO;
 	
 	[lock unlock];
 	
+	if( dicomListener == 0L)
+	{
+		NSLog( @"dicomListener == 0L");
+		dicomListener = [NSDictionary dictionary];
+	}
+	
 	return dicomListener;
 }
 
@@ -1109,6 +1120,33 @@ volatile static BOOL threadIsRunning = NO;
 	[lock unlock];
 	
 	return dbFileName;
+}
+
+- (BOOL) sendDICOMFileWithSTORESCU:(int) index paths:(NSArray*) ip
+{
+	int i;
+	
+	//Do we have DICOM Node informations about the destination node?
+	if( [[servicesDICOMListener objectAtIndex: index] valueForKey: @"Address"] == 0L) return NO;
+	
+	for( i = 0 ; i < [ip count]; i++)
+	{
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [ip objectAtIndex: i]] == NO) return NO;
+	}
+	
+	[BonjourBrowser waitForLock: lock];
+	
+	[paths release];
+	paths = [ip retain];
+	
+	[dicomDestination release];
+	dicomDestination = [[servicesDICOMListener objectAtIndex: index] retain];
+	
+	[self connectToServer: index message:@"DCMSE"];
+	
+	[lock unlock];
+	
+	return YES;
 }
 
 - (BOOL) sendDICOMFile:(int) index paths:(NSArray*) ip
