@@ -922,7 +922,6 @@ volatile static BOOL threadIsRunning = NO;
 	
 	if( dicomListener == 0L)
 	{
-		NSLog( @"dicomListener == 0L");
 		dicomListener = [NSDictionary dictionary];
 	}
 	
