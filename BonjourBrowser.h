@@ -58,6 +58,7 @@
 - (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg;
 
 - (NSMutableArray*) services;
+- (NSMutableArray*) servicesDICOMListener;
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
 
@@ -70,6 +71,7 @@
 
 - (NSString*) getFile:(NSString*) pathFile index:(int) index;
 - (BOOL) sendFile:(NSString*) pathFile index:(int) index;
+- (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 
 - (int) BonjourServices;

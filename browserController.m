@@ -6583,6 +6583,41 @@ static BOOL needToRezoom;
 	}
 }
 
+- (void) sendDICOMFilesToOsiriXNode:(NSDictionary*) todo
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+
+	[autoroutingInProgress lock];
+	
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+																calledAET: [todo objectForKey:@"AETitle"] 
+																hostname: [todo objectForKey:@"Address"] 
+																port: [[todo objectForKey:@"Port"] intValue] 
+																filesToSend: [todo valueForKey: @"Files"]
+																transferSyntax: [[todo objectForKey:@"Transfer Syntax"] intValue] 
+																compression: 1.0
+																extraParameters: nil];
+							
+	@try
+	{
+		[storeSCU run:self];
+	}
+	
+	@catch (NSException *ne)
+	{
+		NSLog( @"Bonjour DICOM Send FAILED");
+		NSLog( [ne name]);
+		NSLog( [ne reason]);
+	}
+	
+	[storeSCU release];
+	storeSCU = 0L;
+	
+	[autoroutingInProgress unlock];
+	
+	[pool release];
+}
+
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
 	long i;
@@ -6652,75 +6687,117 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			if( row == 0 && isCurrentDatabaseBonjour == YES) // Copying FROM
+			if( isCurrentDatabaseBonjour == YES) // row == 0 &&  // Copying FROM Distant to local OR distant
 			{
 				Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying from OsiriX database...", nil)];
+				BOOL OnlyDICOM = YES;
+				BOOL succeed = NO;
 				
 				[splash showWindow:self];
 				[[splash progress] setMaxValue:[imagesArray count]];
-
+				
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
-					filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :100];
-					destPath = [[documentsDirectory() stringByAppendingString:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
-					
-					// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
-					
-					[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
-					
-					if([[filePath pathExtension] isEqualToString:@"zip"])
+					if( [[[imagesArray objectAtIndex:i] objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+				}
+				
+				if( OnlyDICOM)
+				{
+					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
+				}
+				
+				if( succeed == NO || OnlyDICOM == NO)
+				{
+					for( i = 0; i < [imagesArray count]; i++)
 					{
-						// it is a ZIP
-						NSString *xmlPath = [[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-						NSString *xmlDestPath = [[destPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-						[[NSFileManager defaultManager] copyPath:xmlPath toPath:xmlDestPath handler:nil];
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
+						filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :100];
+						destPath = [[documentsDirectory() stringByAppendingString:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
+						
+						// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
+						
+						[[NSFileManager defaultManager] copyPath:filePath toPath:destPath handler:nil];
+						
+						if([[filePath pathExtension] isEqualToString:@"zip"])
+						{
+							// it is a ZIP
+							NSString *xmlPath = [[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+							NSString *xmlDestPath = [[destPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+							[[NSFileManager defaultManager] copyPath:xmlPath toPath:xmlDestPath handler:nil];
+						}
+						
+						[splash incrementBy:1];
+						
+						[pool release];
 					}
-					
-					[splash incrementBy:1];
-					
-					[pool release];
 				}
 				
 				[splash close];
 				[splash release];
 			}
-			else if( [bonjourServicesList selectedRow] != row)	 // Copying TO
+			else if( [bonjourServicesList selectedRow] != row)	 // Copying From Local to distant
 			{
-				Wait *splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
-				long x;
+				Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+				long	x;
+				BOOL	OnlyDICOM = YES;
 				
 				[splash showWindow:self];
 				[[splash progress] setMaxValue:[imagesArray count]];
-
-				for( i = 0; i < [imagesArray count];)
+				
+				NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
+				
+				for( i = 0; i < [imagesArray count]; i++)
 				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
+					NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+				
+					[packArray addObject: sendPath];
 					
-					for( x = 0; x < 10; x++)
+					if( [[[imagesArray objectAtIndex:i] objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+					
+					[splash incrementBy:1];
+				}
+				
+				NSDictionary *dcmNode = [[bonjourBrowser servicesDICOMListener] objectAtIndex: row-1];
+				
+				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
+				{
+					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+					
+					[todo setObject: packArray forKey:@"Files"];
+				
+					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+				}
+				else
+				{
+					for( i = 0; i < [imagesArray count];)
 					{
-						if( i <  [imagesArray count])
-						{
-							NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 						
-							[packArray addObject: sendPath];
-							
-							if([[sendPath pathExtension] isEqualToString:@"zip"])
+						for( x = 0; x < 10; x++)
+						{
+							if( i <  [imagesArray count])
 							{
-								// it is a ZIP
-								NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-								[packArray addObject: xmlPath];
+								NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+							
+								[packArray addObject: sendPath];
+								
+								if([[sendPath pathExtension] isEqualToString:@"zip"])
+								{
+									// it is a ZIP
+									NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+									[packArray addObject: xmlPath];
+								}
+								[splash incrementBy:1];
 							}
-							[splash incrementBy:1];
+							i++;
 						}
-						i++;
+						
+						[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
+						
+						[pool release];
 					}
-					
-					[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
-					
-					[pool release];
 				}
 								
 				[splash close];

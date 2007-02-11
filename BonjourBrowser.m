@@ -1121,12 +1121,12 @@ volatile static BOOL threadIsRunning = NO;
 	return dbFileName;
 }
 
-- (BOOL) sendDICOMFileWithSTORESCU:(int) index paths:(NSArray*) ip
+- (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip
 {
 	int i;
 	
 	//Do we have DICOM Node informations about the destination node?
-	if( [[servicesDICOMListener objectAtIndex: index] valueForKey: @"Address"] == 0L) return NO;
+	if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
 	
 	for( i = 0 ; i < [ip count]; i++)
 	{
@@ -1139,9 +1139,9 @@ volatile static BOOL threadIsRunning = NO;
 	paths = [ip retain];
 	
 	[dicomDestination release];
-	dicomDestination = [[servicesDICOMListener objectAtIndex: index] retain];
+	dicomDestination = [[servicesDICOMListener objectAtIndex: indexTo] retain];
 	
-	[self connectToServer: index message:@"DCMSE"];
+	[self connectToServer: indexFrom message:@"DCMSE"];
 	
 	[lock unlock];
 	
