@@ -642,6 +642,21 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 					NSString *path = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 					pos += stringSize;
 					
+					if( [path cString] [ 0] != '/')
+					{
+						NSString	*extension = [path pathExtension];
+						
+						int val = [[path stringByDeletingPathExtension] intValue];
+						
+						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
+						
+						val /= 10000;
+						val++;
+						val *= 10000;
+						
+						path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
+					}
+					
 					[localPaths addObject: path];
 				}
 				

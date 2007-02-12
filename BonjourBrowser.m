@@ -229,13 +229,15 @@ static char *GetPrivateIP()
 			}
 			else if ( strcmp( messageToRemoteService, "GETDI") == 0)
 			{
-				NSDictionary	*dictionary = [NSUnarchiver unarchiveObjectWithData: data];
-				if( dictionary == 0L) dictionary = [NSDictionary dictionary];
+				[dicomListener release];
+				dicomListener = 0L;
+			
+				dicomListener = [NSUnarchiver unarchiveObjectWithData: data];
+				if( dicomListener == 0L) dicomListener = [NSDictionary dictionary];
 				
-				NSLog( [dictionary description]);
+				dicomListener = [dicomListener retain];
 				
-				if( dicomListener) NSLog( @"dicomListener != 0L !!! ??");
-				dicomListener = [dictionary retain];
+				NSLog( [dicomListener description]);
 			}
 			else if ( strcmp( messageToRemoteService, "MFILE") == 0)
 			{
@@ -421,8 +423,6 @@ static char *GetPrivateIP()
 //socket.h
 - (BOOL) connectToService: (struct sockaddr_in*) socketAddress
 {
-	NSLog(@"connectToService");
-	
 	BOOL succeed = NO;
 	
 	int socketToRemoteServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -758,8 +758,8 @@ static char *GetPrivateIP()
             }
         }
 		
-		int numberPacketsReceived = 0;
-		if( SimplePing( [ipAddressString UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+//		int numberPacketsReceived = 0;
+//		if( SimplePing( [ipAddressString UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
 		{
 			[self connectToService: (struct sockaddr_in *) socketAddress];
 		}
@@ -960,6 +960,7 @@ static char *GetPrivateIP()
 	
 	if( dicomListener == 0L)
 	{
+		NSLog( @"empty");
 		dicomListener = [[NSDictionary dictionary] retain];
 	}
 	
@@ -1167,13 +1168,16 @@ static char *GetPrivateIP()
 	if( indexTo >= 0)	// indexTo == -1: this computer
 	{
 		[servicesDICOMListener replaceObjectAtIndex:indexTo withObject:[self getDICOMDestinationInfo: indexTo]];
-		
 		if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
 	}
-	
-	for( i = 0 ; i < [ip count]; i++)
+	if( indexFrom >= 0)	// indexFrom == -1: this computer
 	{
-		if( [[NSFileManager defaultManager] fileExistsAtPath: [ip objectAtIndex: i]] == NO) return NO;
+		[servicesDICOMListener replaceObjectAtIndex:indexFrom withObject:[self getDICOMDestinationInfo: indexFrom]];
+		
+		NSLog( [[servicesDICOMListener objectAtIndex: indexFrom] description]);
+		
+		if( [[servicesDICOMListener objectAtIndex: indexFrom] valueForKey: @"Address"] == 0L) return NO;
+
 	}
 	
 	[BonjourBrowser waitForLock: lock];

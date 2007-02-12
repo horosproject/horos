@@ -844,6 +844,17 @@ static char *GetPrivateIP()
 	[sourcesTable setDoubleAction: @selector( selectUniqueSource:)];
 	
 	[self refreshSources];
+	
+	int i;
+	for( i = 0; i < [sourcesArray count]; i++)
+	{
+		if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
+		{
+			[sourcesTable selectRow: i byExtendingSelection: NO];
+			[sourcesTable scrollRowToVisible: i];
+			break;
+		}
+	}
 }
 
 //******
@@ -971,7 +982,7 @@ static char *GetPrivateIP()
 		if( sourcesArray == 0L) sourcesArray = [[NSMutableArray array] retain];
 		
 		[self refreshSources];
-		
+				
 		[[self window] setDelegate:self];
 		
 		currentQueryController = self;

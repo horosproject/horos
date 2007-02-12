@@ -6704,6 +6704,7 @@ static BOOL needToRezoom;
 				if( OnlyDICOM)
 				{
 					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
+					if( succeed) NSLog( @"retrieveDICOMFilesWithSTORESCU succeed");
 				}
 				
 				if( succeed == NO || OnlyDICOM == NO)
