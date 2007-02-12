@@ -451,6 +451,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    VisibleLightPhotographicImageStorage ,
 		    PETImageStorage ,
 		    RTImageStorage ,
+			PDFStorageClassUID ,
 			nil];
 	}
 
