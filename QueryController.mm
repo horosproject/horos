@@ -930,7 +930,7 @@ static char *GetPrivateIP()
 	serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 	
 	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
-	[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"This Computer - %@:%@", ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+	[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"This Computer - %@/%@:%@", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
 
 	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 	
@@ -938,7 +938,7 @@ static char *GetPrivateIP()
 	{
 		NSDictionary *server = [serversArray objectAtIndex: i];
 		
-		[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"%@ - %@:%@", [server valueForKey:@"Description"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]]];
+		[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"%@ - %@/%@:%@", [server valueForKey:@"Description"], [server valueForKey:@"AETitle"], [server valueForKey:@"Address"], [server valueForKey:@"Port"]]];
 		
 		if( [[[sendToPopup lastItem] title] isEqualToString: previousItem]) [sendToPopup selectItemWithTitle: previousItem];
 	}
