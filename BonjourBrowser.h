@@ -58,7 +58,7 @@
 - (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg;
 
 - (NSMutableArray*) services;
-- (NSMutableArray*) servicesDICOMListener;
+- (NSDictionary*) servicesDICOMListenerForIndex: (int) i;
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
 

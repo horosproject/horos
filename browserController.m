@@ -6758,7 +6758,7 @@ static BOOL needToRezoom;
 					[splash incrementBy:1];
 				}
 				
-				NSDictionary *dcmNode = [[bonjourBrowser servicesDICOMListener] objectAtIndex: row-1];
+				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
 				
 				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
 				{

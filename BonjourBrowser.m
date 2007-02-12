@@ -18,6 +18,7 @@
 #import "BrowserController.h"
 #import "AppController.h"
 #import "DicomFile.h"
+#include "SimplePing.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -149,9 +150,14 @@ static char *GetPrivateIP()
 	return services;
 }
 
-- (NSMutableArray*) servicesDICOMListener
+- (NSDictionary*) servicesDICOMListenerForIndex: (int) i
 {
-	return servicesDICOMListener;
+	if( [[servicesDICOMListener objectAtIndex: i] valueForKey:@"Address"] == 0L)
+	{
+		[servicesDICOMListener replaceObjectAtIndex: i withObject: [self getDICOMDestinationInfo: i]];
+	}
+	
+	return [servicesDICOMListener objectAtIndex: i];
 }
 
 //- (BOOL) unzipToPath:(NSString*)_toPath
@@ -666,8 +672,7 @@ static char *GetPrivateIP()
 	for( i = 0; i < [osirixServersArray count]; i++)
 	{
 		[services addObject: [osirixServersArray objectAtIndex: i]];
-		[servicesDICOMListener addObject: [self getDICOMDestinationInfo: [services count]-1]];
-		NSLog( [servicesDICOMListener description]);
+		[servicesDICOMListener addObject: [NSDictionary dictionary]];
 	}
 }
 
@@ -753,7 +758,11 @@ static char *GetPrivateIP()
             }
         }
 		
-		[self connectToService: (struct sockaddr_in *) socketAddress];
+		int numberPacketsReceived = 0;
+		if( SimplePing( [ipAddressString UTF8String], 1, [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"], 1,  &numberPacketsReceived) == 0 && numberPacketsReceived > 0)
+		{
+			[self connectToService: (struct sockaddr_in *) socketAddress];
+		}
 	}
 }
 //
@@ -773,10 +782,9 @@ static char *GetPrivateIP()
 	else
 	{
 		[services insertObject:aNetService atIndex:BonjourServices];
-		BonjourServices ++;
+		[servicesDICOMListener insertObject: [NSDictionary dictionary] atIndex: BonjourServices];
 		
-		NSLog( [servicesDICOMListener description]);
-		[servicesDICOMListener insertObject: [self getDICOMDestinationInfo: BonjourServices-1] atIndex: BonjourServices-1];
+		BonjourServices ++;
 	}
 	
 	// update interface
@@ -1157,7 +1165,11 @@ static char *GetPrivateIP()
 	
 	//Do we have DICOM Node informations about the destination node?
 	if( indexTo >= 0)	// indexTo == -1: this computer
+	{
+		[servicesDICOMListener replaceObjectAtIndex:indexTo withObject:[self getDICOMDestinationInfo: indexTo]];
+		
 		if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
+	}
 	
 	for( i = 0 ; i < [ip count]; i++)
 	{
