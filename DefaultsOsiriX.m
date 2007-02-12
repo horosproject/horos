@@ -531,7 +531,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATE"];
 	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATEPRODUCED"];
 	[defaultValues setObject:@"0" forKey:@"AUTOCLEANINGDATEOPENED"];
-	
+	[defaultValues setObject:@"0" forKey:@"IndependentCRWLWW"];
 	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"];
 	[defaultValues setObject:@"90" forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
 	

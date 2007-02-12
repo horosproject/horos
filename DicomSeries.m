@@ -69,15 +69,8 @@
 	else return [self primitiveValueForKey:@"numberOfImages"];
 }
 
-- (NSSet *)paths{
-/*
-	NSMutableSet *set = [NSMutableSet set];
-	NSEnumerator *enumerator = [[self primitiveValueForKey:@"images"] objectEnumerator];
-	id object;
-	while (object = [enumerator nextObject])
-		[set unionSet:[object paths]];
-	return set;
-*/
+- (NSSet *)paths
+{
 	return  [self valueForKeyPath:@"images.completePath"];
 }
 

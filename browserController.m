@@ -618,7 +618,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				}
 				
 				// For now, we cannot add non-image DICOM files
-				if( [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				if( [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]])
 				{
 					[curDict release];
 					curDict = 0L;

@@ -1393,12 +1393,19 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			//	[[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 		}
 		if( keepIt == NO) curROI = 0L;
-
-        if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
+		
+		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue])
 		{
-			[curDCM changeWLWW :curWL :curWW];
+			[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
 		}
-        else [curDCM checkImageAvailble :curWW :curWL];
+		else
+		{
+			if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
+			{
+				[curDCM changeWLWW :curWL :curWW];
+			}
+			else [curDCM checkImageAvailble :curWW :curWL];
+		}
 		
         [self loadTextures];
 		
@@ -3732,6 +3739,8 @@ static long scrollMode;
 - (void) changeWLWW: (NSNotification*) note
 {
 	DCMPix	*otherPix = [note object];
+	
+	if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) return;
 	
 	if( [dcmPixList containsObject: otherPix])
 	{

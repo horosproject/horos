@@ -12,6 +12,7 @@
 #include "DicomFile.h"
 #include "BrowserController.h"
 #import <OsiriX/DCMCalendarDate.h>
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 
 NSLock	*PapyrusLock = 0L;
 NSMutableDictionary *fileFormatPlugins = 0L;
@@ -135,6 +136,13 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 					curFile = 0L;
 				}
 				else curDict = [curDict retain];
+				
+				// For now, we cannot add non-image DICOM files
+				if( [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]])
+				{
+					[curDict release];
+					curDict = 0L;
+				}
 				
 				if( curDict != 0L)
 				{
@@ -426,7 +434,6 @@ int main(int argc, const char *argv[])
 		COMMENTSAUTOFILL = [[dict objectForKey: @"COMMENTSAUTOFILL"] intValue];
 		
 		// Context & Model
-		
 		model = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [NSString stringWithContentsOfFile: m]]];
 		
 		
