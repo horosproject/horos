@@ -2525,7 +2525,7 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 {
 //	if([clutOpacityDrawer isVisible]) return;
 	//[clutOpacityView niceDisplay];
-//[[clutOpacityView window] setBackgroundColor:[NSColor blackColor]];
+	[[clutOpacityView window] setBackgroundColor:[NSColor blackColor]];
 	[clutOpacityDrawer setTrailingOffset:[clutOpacityDrawer leadingOffset]];
 	if([clutOpacityDrawer state]==NSDrawerClosedState)
 		[clutOpacityDrawer openOnEdge:NSMinYEdge];
