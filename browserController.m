@@ -6698,7 +6698,7 @@ static BOOL needToRezoom;
 				
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					if( [[[imagesArray objectAtIndex:i] objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
 				if( OnlyDICOM)
@@ -6753,7 +6753,7 @@ static BOOL needToRezoom;
 				
 					[packArray addObject: sendPath];
 					
-					if( [[[imagesArray objectAtIndex:i] objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
 					
 					[splash incrementBy:1];
 				}

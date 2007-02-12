@@ -34,6 +34,25 @@ extern NSThread			*mainThread;
 
 volatile static BOOL threadIsRunning = NO;
 
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+static char *GetPrivateIP()
+{
+	struct			hostent *h;
+	char			hostname[100];
+	gethostname(hostname, 99);
+	if ((h=gethostbyname(hostname)) == NULL)
+	{
+        perror("Error: ");
+        return "(Error locating Private IP Address)";
+    }
+	
+    return (char*) inet_ntoa(*((struct in_addr *)h->h_addr));
+}
+
 @implementation BonjourBrowser
 
 + (void) waitForLock:(NSLock*) l
@@ -648,6 +667,7 @@ volatile static BOOL threadIsRunning = NO;
 	{
 		[services addObject: [osirixServersArray objectAtIndex: i]];
 		[servicesDICOMListener addObject: [self getDICOMDestinationInfo: [services count]-1]];
+		NSLog( [servicesDICOMListener description]);
 	}
 }
 
@@ -752,10 +772,11 @@ volatile static BOOL threadIsRunning = NO;
 	}
 	else
 	{
-		[services addObject: aNetService];
+		[services insertObject:aNetService atIndex:BonjourServices];
 		BonjourServices ++;
 		
-		[servicesDICOMListener addObject: [self getDICOMDestinationInfo: BonjourServices-1]];
+		NSLog( [servicesDICOMListener description]);
+		[servicesDICOMListener insertObject: [self getDICOMDestinationInfo: BonjourServices-1] atIndex: BonjourServices-1];
 	}
 	
 	// update interface
@@ -842,17 +863,26 @@ volatile static BOOL threadIsRunning = NO;
 		succeed = [self fixedIP: index];
 	}
 	else
-	{        
-        serviceBeingResolved = [services objectAtIndex:index];
-        [serviceBeingResolved retain];
-        [serviceBeingResolved setDelegate:self];
+	{   
+		@try
+		{
+			serviceBeingResolved = [services objectAtIndex:index];
+			[serviceBeingResolved retain];
+			[serviceBeingResolved setDelegate:self];
+			
+	//		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
+			[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
+			
+			resolved = NO;
+			[serviceBeingResolved resolveWithTimeout: TIMEOUT];
+			succeed = YES;
+		}
 		
-//		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: NSDefaultRunLoopMode];
-		[serviceBeingResolved scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
-		
-		resolved = NO;
-		[serviceBeingResolved resolveWithTimeout: TIMEOUT];
-		succeed = YES;
+		@catch( NSException *ne)
+		{
+			NSLog( [ne description]);
+			NSLog( @"resolveServiceWithIndex FAILED");
+		}
     }
 	
 	return succeed;
@@ -922,7 +952,7 @@ volatile static BOOL threadIsRunning = NO;
 	
 	if( dicomListener == 0L)
 	{
-		dicomListener = [NSDictionary dictionary];
+		dicomListener = [[NSDictionary dictionary] retain];
 	}
 	
 	return dicomListener;
@@ -1126,7 +1156,8 @@ volatile static BOOL threadIsRunning = NO;
 	int i;
 	
 	//Do we have DICOM Node informations about the destination node?
-	if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
+	if( indexTo >= 0)	// indexTo == -1: this computer
+		if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
 	
 	for( i = 0 ; i < [ip count]; i++)
 	{
@@ -1139,7 +1170,18 @@ volatile static BOOL threadIsRunning = NO;
 	paths = [ip retain];
 	
 	[dicomDestination release];
-	dicomDestination = [[servicesDICOMListener objectAtIndex: indexTo] retain];
+	if( indexTo >= 0)
+	{
+		dicomDestination = [[servicesDICOMListener objectAtIndex: indexTo] retain];
+	}
+	else // indexTo == -1: this computer
+	{
+		NSString *address = [NSString stringWithCString:GetPrivateIP()];
+		
+		dicomDestination = [NSDictionary dictionaryWithObjectsAndKeys: address, @"Address", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], @"AETitle", [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"], @"Port", @"0", @"Transfer Syntax", 0L];
+		
+		[dicomDestination retain];
+	}
 	
 	[self connectToServer: indexFrom message:@"DCMSE"];
 	
