@@ -100,6 +100,7 @@
 	else {
 		series = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 		[series setValue:study forKey:@"study"];
+		
 		[series setValue:[sr seriesInstanceUID] forKey:@"seriesDICOMUID"];
 		[series setValue:[sr seriesInstanceUID] forKey:@"seriesInstanceUID"];
 		[series setValue:[sr sopClassUID] forKey:@"seriesSOPClassUID"];
@@ -117,6 +118,7 @@
 		[im setValue:series forKey:@"series"];
 		[im setValue:sopInstanceUID forKey:@"sopInstanceUID"];
 		[im setValue:path forKey:@"path"];
+		[im setValue:@"DICOM" forKey:@"fileType"];
 		[im setValue:[NSNumber numberWithBool: YES] forKey:@"inDatabaseFolder"];	// this will allow the automatic deletion of the file when the study is removed
 	}
 	//Search for object with this UID

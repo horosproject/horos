@@ -1177,7 +1177,6 @@ static char *GetPrivateIP()
 		NSLog( [[servicesDICOMListener objectAtIndex: indexFrom] description]);
 		
 		if( [[servicesDICOMListener objectAtIndex: indexFrom] valueForKey: @"Address"] == 0L) return NO;
-
 	}
 	
 	[BonjourBrowser waitForLock: lock];

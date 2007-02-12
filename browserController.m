@@ -617,6 +617,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 					}
 				}
 				
+				// For now, we cannot add non-image DICOM files
+				if( [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO)
+				{
+					[curDict release];
+					curDict = 0L;
+				}
+				
 				if( splash)
 				{
 					if( (ii++) % 30 == 0) [splash incrementBy:1];
@@ -6704,8 +6711,12 @@ static BOOL needToRezoom;
 				if( OnlyDICOM)
 				{
 					succeed = [bonjourBrowser retrieveDICOMFilesWithSTORESCU: [bonjourServicesList selectedRow]-1 to: row-1 paths: [imagesArray valueForKey:@"path"]];
-					if( succeed) NSLog( @"retrieveDICOMFilesWithSTORESCU succeed");
+					if( succeed)
+					{
+						for( i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
+					}
 				}
+				else NSLog( @"Not Only DICOM !");
 				
 				if( succeed == NO || OnlyDICOM == NO)
 				{
@@ -6755,18 +6766,20 @@ static BOOL needToRezoom;
 					[packArray addObject: sendPath];
 					
 					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
-					
-					[splash incrementBy:1];
 				}
 				
 				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
+				
+				if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
 				
 				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
 				{
 					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
 					
 					[todo setObject: packArray forKey:@"Files"];
-				
+					
+					for( i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
+					
 					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 				}
 				else

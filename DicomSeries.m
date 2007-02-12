@@ -30,6 +30,7 @@
 
 
 #import "DicomSeries.h"
+#import <OsiriX/DCMAbstractSyntaxUID.h>
 
 @implementation DicomSeries
 
@@ -54,8 +55,15 @@
 {
 	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] == 0)
 	{
-		NSNumber	*no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
-		[self setPrimitiveValue:no forKey:@"numberOfImages"];
+		NSNumber	*no;
+		
+		if( [DCMAbstractSyntaxUID isImageStorage: [self valueForKey: @"seriesSOPClassUID"]])
+		{
+			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
+			[self setPrimitiveValue:no forKey:@"numberOfImages"];
+		}
+		else no = [NSNumber numberWithInt: 0];
+		
 		return no;
 	}
 	else return [self primitiveValueForKey:@"numberOfImages"];
