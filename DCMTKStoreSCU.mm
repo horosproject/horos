@@ -1174,9 +1174,13 @@ NS_DURING
       {
         ignoreName = OFFalse;
 		NSStringEncoding encoding = [NSString defaultCStringEncoding];
+		
 		//currentFilename = (const char *)[(NSString *)[_filesToSend objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
-		currentFilename = (const char *)[(NSString *)[paths objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
-	  
+		
+		//currentFilename = (const char *)[(NSString *)[paths objectAtIndex:i]  cStringUsingEncoding:[NSString defaultCStringEncoding]];
+		
+		currentFilename = [[paths objectAtIndex:i] UTF8String];
+		
         if (access(currentFilename, R_OK) < 0)
         {
           errormsg = "cannot access file: ";
