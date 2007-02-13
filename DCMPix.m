@@ -7090,7 +7090,7 @@ BOOL            readable = YES;
 
 	if( imageObj)
 	{
-		if( [[imageObj valueForKey:@"fileType"] isEqualToString:@"DICOM"] == NO) readable = NO;
+		if( [[imageObj valueForKey:@"fileType"] hasPrefix:@"DICOM"] == NO) readable = NO;
 	}
 	else
 	{

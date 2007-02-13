@@ -335,7 +335,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			if( [samePatientArray count])
 			{
 				// Send the collected files from the same patient
-			
+				
 				storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
 						calledAET:calledAET 
 						hostname:hostname 

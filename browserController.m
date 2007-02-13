@@ -610,7 +610,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( onlyDICOM)
 				{
-					if( [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOM"] == NO && [[curDict objectForKey: @"fileType"] isEqualToString:@"DICOMMPEG2"] == NO)
+					if( [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
 					{
 						[curDict release];
 						curDict = 0L;
@@ -6705,7 +6705,7 @@ static BOOL needToRezoom;
 				
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
 				if( OnlyDICOM)
@@ -6765,7 +6765,7 @@ static BOOL needToRezoom;
 				
 					[packArray addObject: sendPath];
 					
-					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] isEqualToString:@"DICOM"] == NO) OnlyDICOM = NO;
+					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
 				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
@@ -9253,7 +9253,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		for( i = 0 ; i < [filesToExport count] ; i++)
 		{
-			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] hasPrefix:@"DICOM"])
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
 		
@@ -9287,7 +9287,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		for( i = 0 ; i < [filesToExport count] ; i++)
 		{
-			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] isEqualToString:@"DICOM"])
+			if( [[[dicomFiles2Export objectAtIndex:i] valueForKey:@"fileType"] hasPrefix:@"DICOM"])
 				[result addObject: [filesToExport objectAtIndex: i]];
 		}
 		
@@ -9987,7 +9987,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [curImage valueForKey: @"fileType"])
 		{
-			if( [[curImage valueForKey: @"fileType"] isEqualToString:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
+			if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 		}
 		
 		if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"]; 
@@ -10106,7 +10106,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[[NSFileManager defaultManager] copyPath:[filesToExport objectAtIndex:i] toPath:dest handler:0L];
 		
-		if( [[curImage valueForKey: @"fileType"] isEqualToString:@"DICOM"])
+		if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
 		{
 			switch( [compressionMatrix selectedTag])
 			{
@@ -10473,7 +10473,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if( [curImage valueForKey: @"fileType"])
 						{
-							if( [[curImage valueForKey: @"fileType"] isEqualToString:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
+							if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
 						}
 						
 						if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"];
@@ -10706,7 +10706,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						if([curImage valueForKey: @"fileType"])
 						{
-							if( [[curImage valueForKey: @"fileType"] isEqualToString:@"DICOM"])
+							if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
 							{
 								extension = [NSString stringWithString:@"dcm"];
 							}

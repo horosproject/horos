@@ -35,6 +35,14 @@ extern NSString * documentsDirectory();
 
 @implementation DicomImage
 
+- (NSString*) fileType
+{
+	NSString	*f = [self primitiveValueForKey:@"fileType"];
+	
+	if( f == 0 || [f isEqualToString:@""]) return @"DICOM";
+	else return f;
+}
+
 - (NSString*) type
 {
 	return @"Image";

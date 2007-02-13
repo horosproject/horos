@@ -137,8 +137,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 				}
 				else curDict = [curDict retain];
 				
-				// For now, we cannot add non-image DICOM files
-				if( [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]])
+				if( [curDict objectForKey:@"SOPClassUID"] != nil && [DCMAbstractSyntaxUID isImageStorage: [curDict objectForKey: @"SOPClassUID"]] == NO && [DCMAbstractSyntaxUID isRadiotherapy: [curDict objectForKey: @"SOPClassUID"]] == NO)
 				{
 					[curDict release];
 					curDict = 0L;
