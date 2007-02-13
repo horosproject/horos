@@ -857,9 +857,9 @@ NSString * documentsDirectory();
 }
 - (IBAction) changeTool:(id) sender
 {
-	if( [sender tag] >= 0)
+	if( [[sender selectedCell] tag] >= 0)
     {
-		[self setCurrentTool: [sender tag]];
+		[self setCurrentTool: [[sender selectedCell] tag]];
     }
 }
 
