@@ -221,6 +221,19 @@
 	pt3 = NSMakePoint(404, sqrt(0.133));
 	pt4 = NSMakePoint(549, sqrt(0.682));
 
+	float shift = 40.0;
+
+	if(pt1.x<HUmin || pt4.x>HUmax)
+	{
+		float middle = (HUmin + HUmax)/2.0;
+		float length = HUmax - HUmin;
+		pt1.x = middle - 0.05*length;
+		pt2.x = middle;
+		pt3.x = middle + 0.05*length;
+		pt4.x = middle + 0.1*length;
+		shift = 0.01*length;
+	}
+	
 	BOOL needsShift = NO;
 	NSPoint c1, c2;
 	int i;
@@ -228,14 +241,14 @@
 	{
 		c1 = [[[curves objectAtIndex:i] objectAtIndex:0] pointValue];
 		c2 = [[[curves objectAtIndex:i] lastObject] pointValue];
-		needsShift = (pt1.x>c1.x-40 && pt1.x<c1.x+40) || (pt2.x>c2.x-40 && pt2.x<c2.x+40);
+		needsShift = (pt1.x>c1.x-shift && pt1.x<c1.x+shift) || (pt4.x>c2.x-shift && pt4.x<c2.x+shift);
 		
 		if(needsShift)
 		{
-			pt1.x += 40;
-			pt2.x += 40;
-			pt3.x += 40;
-			pt4.x += 40;
+			pt1.x += shift;
+			pt2.x += shift;
+			pt3.x += shift;
+			pt4.x += shift;
 			i=-1;
 			needsShift = NO;
 		}
@@ -259,6 +272,7 @@
 	selectedPoint = controlPoint;
 	
 	nothingChanged = NO;
+	vrViewLowResolution = NO;
 	[self updateView];
 }
 
@@ -1027,18 +1041,18 @@
 		{
 			zoomFixedPoint -= [theEvent deltaX] / zoomFactor;
 		}
-		else
-		{
-			float inc = -[theEvent deltaY] / 30.;
-			
-			if( zoomFactor +inc < 1.0) inc = 1.0 - zoomFactor;
-			if( zoomFactor +inc > 5.0) inc = 5.0 - zoomFactor;
-			
-			zoomFactor += inc;
-			zoomFixedPoint += (inc * [self bounds].size.width / (zoomFactor*2)) / 2.0 ;	// 
-			
-			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
-		}
+//		else
+//		{
+//			float inc = -[theEvent deltaY] / 30.;
+//			
+//			if( zoomFactor +inc < 1.0) inc = 1.0 - zoomFactor;
+//			if( zoomFactor +inc > 5.0) inc = 5.0 - zoomFactor;
+//			
+//			zoomFactor += inc;
+//			zoomFixedPoint += (inc * [self bounds].size.width / (zoomFactor*2)) / 2.0 ;	// 
+//			
+//			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
+//		}
 		[self updateView];
 	}
 }
@@ -1326,6 +1340,7 @@
 	if(curveIndex >= 0)
 	{
 		[self deleteCurveAtIndex:curveIndex];
+		vrViewLowResolution = NO;
 		[self updateView];
 	}
 	else
@@ -1555,6 +1570,53 @@
 	
 	[cursorImage release];
 	[cursor release];
+}
+
+
+#pragma mark -
+#pragma mark Overlapping curves
+
+- (BOOL)doesCurve:(NSArray*)curveA overlapCurve:(NSArray*)curveB;
+{
+	NSPoint firstPointCurveA = [[curveA objectAtIndex:0] pointValue];
+	NSPoint lastPointCurveA = [[curveA lastObject] pointValue];
+	NSPoint firstPointCurveB = [[curveB objectAtIndex:0] pointValue];
+	NSPoint lastPointCurveB = [[curveB lastObject] pointValue];
+	
+	BOOL b1 = (firstPointCurveA.x>=firstPointCurveB.x) && (firstPointCurveA.x<=lastPointCurveB.x);
+	BOOL b2 = (lastPointCurveA.x>=firstPointCurveB.x) && (lastPointCurveA.x<=lastPointCurveB.x);
+	BOOL b3 = (firstPointCurveB.x>=firstPointCurveA.x) && (firstPointCurveB.x<=lastPointCurveA.x);
+	BOOL b4 = (lastPointCurveB.x>=firstPointCurveA.x) && (lastPointCurveB.x<=lastPointCurveA.x);
+	
+	return b1 || b2 || b3 || b4;
+}
+
+- (NSArray*)resolveOverlappingCurves;
+{
+	NSMutableArray *resolvedCurves = [NSMutableArray arrayWithCapacity:0];
+	
+	int i, j, k, l;
+	for (i=0; i<[curves count]; i++)
+	{
+		for (j=i+1; j<[curves count]; j++)
+		{
+			NSArray *curveI = [curves objectAtIndex:i];
+			NSArray *curveJ = [curves objectAtIndex:j];
+			if([self doesCurve:curveI overlapCurve:curveJ])
+			{
+				int minX = ([[curveJ objectAtIndex:0] pointValue].x < [[curveI objectAtIndex:0] pointValue].x)? [[curveJ objectAtIndex:0] pointValue].x : [[curveI objectAtIndex:0] pointValue].x;
+				int maxX = ([[curveJ lastObject] pointValue].x < [[curveI lastObject] pointValue].x)? [[curveJ lastObject] pointValue].x : [[curveI lastObject] pointValue].x;
+				k=0;
+				l=0;
+				while(k<[curveI count] && l<[curveJ count])
+				{
+					
+				}
+			}
+		}
+	}
+	
+	return resolvedCurves;
 }
 
 @end

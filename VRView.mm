@@ -3448,6 +3448,12 @@ public:
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	advancedCLUT = NO;
+	if(appliedCurves)
+	{
+		[appliedCurves release];
+		appliedCurves = nil;
+	}
+	
 	long	i;
 
 	if( isRGB)
@@ -6124,6 +6130,15 @@ public:
 	
 	NSArray *firstCurve = [curves objectAtIndex:0];
 	NSArray *firstColors = [pointColors objectAtIndex:0];
+	
+	NSLog(@"setAdvancedCLUT");
+	if([[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO)
+		NSLog(@"isEqualToData");
+	if(appliedResolution == YES)
+		NSLog(@"appliedResolution = YES");
+	if(lowRes == NO)
+		NSLog(@"lowRes = NO");
+	NSLog(@"/////");
 	
 	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
 	{	
