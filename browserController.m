@@ -2091,7 +2091,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
 	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
 	NSString				*incomingPath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
-	int						i;
+	int						i, listenerInterval = [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"];
 	BOOL					studySelected = NO;
 	NSTimeInterval			lastCheck = [NSDate timeIntervalSinceReferenceDate];
 	
@@ -2150,7 +2150,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					}
 					else [context unlock];
 				}
-				else if( [NSDate timeIntervalSinceReferenceDate] - lastCheck > 5)
+				else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5)
 				{
 					lastCheck = [NSDate timeIntervalSinceReferenceDate];
 					[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
