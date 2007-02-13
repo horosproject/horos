@@ -646,12 +646,15 @@ extern BrowserController *browserWindow;
 		error = 0L;
 		
 		NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+		
+		[context retain];
 		[context lock];
 		
 		[findArray release];
 		findArray = [context executeFetchRequest:request error:&error];
 		
 		[context unlock];
+		[context release];
 		
 		if (error) {
 			findArray = nil;
@@ -700,7 +703,10 @@ extern BrowserController *browserWindow;
 	error = 0L;
 	
 	NSManagedObjectContext		*context = [browserWindow managedObjectContext];
+	
+	[context retain];
 	[context lock];
+	
 	NSArray *array = [context executeFetchRequest:request error:&error];
 	OFCondition cond;
 	
@@ -756,6 +762,7 @@ extern BrowserController *browserWindow;
 	}
 	
 	[context unlock];
+	[context release];
 	
 	[moveEnumerator release];
 	moveEnumerator = [[moveArray objectEnumerator] retain];

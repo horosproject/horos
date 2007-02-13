@@ -2342,6 +2342,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
 	
+	[context retain];
 	[context lock];
 	error = 0L;
 	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
@@ -2508,6 +2509,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[previewMatrix setNeedsDisplay:YES];
 	
 	[context unlock];
+	[context release];
 }
 
 

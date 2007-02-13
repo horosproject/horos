@@ -150,7 +150,9 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	NSManagedObject *logEntry = [node logEntry];
 	if (!logEntry)
 	{
+		[context retain];
 		[context lock];
+		
 		logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
 		[logEntry setValue:[NSDate date] forKey:@"startTime"];
 		[logEntry setValue:@"Move" forKey:@"type"];
@@ -163,6 +165,7 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 		[node setLogEntry:logEntry];
 		
 		[context unlock];
+		[context release];
 	
 	}	
 	int numberPending = response -> NumberOfRemainingSubOperations;

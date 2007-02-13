@@ -69,7 +69,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 	NSManagedObject			*image, *seriesTable, *study, *album;
 	NSDate					*today = [NSDate date];
 	
-	
+	[context retain];
 	[context lock];
 	
 	[context setStalenessInterval: 120];
@@ -96,6 +96,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
 		
 		[context unlock];
+		[context release];
 		
 		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
 		addFailed = YES;
@@ -395,6 +396,7 @@ void addFilesToDatabaseSafe(NSArray* newFilesArray, NSManagedObjectContext* cont
 		[curSerieID release];
 		
 		[context unlock];
+		[context release];
 	}
 }
 

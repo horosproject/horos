@@ -44,11 +44,13 @@ LogManager *currentLogManager;
 {
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
 	
+	[context retain];
 	[context lock];
 	
 	[_currentLogs removeAllObjects];
 	
 	[context unlock];
+	[context release];
 }
 
 - (void)dealloc{
@@ -149,13 +151,15 @@ LogManager *currentLogManager;
 							[logEntry setValue:[NSString stringWithUTF8String: logStudyDescription] forKey:@"studyName"];
 							[_currentLogs setObject:logEntry forKey:uid];
 						}
-						
-						//update logEntry
-						[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
-						[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
-						[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-						[logEntry setValue:0 forKey:@"numberError"];
-						[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
+						else if( [logEntry isFault] == NO && [logEntry isDeleted] == NO)
+						{
+							//update logEntry
+							[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
+							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberImages"];
+							[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
+							[logEntry setValue:0 forKey:@"numberError"];
+							[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
+						}
 					}
 				}
 			}

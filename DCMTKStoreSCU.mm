@@ -1582,6 +1582,7 @@ NS_ENDHANDLER
 	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextLoadIfNecessary: NO];
 	if( context == 0L) return;
 	
+	[context retain];
 	[context lock];
 	
 	if (!_logEntry) {		
@@ -1604,6 +1605,7 @@ NS_ENDHANDLER
 	[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
 	
 	[context unlock];
+	[context release];
 }
 
 - (void)abort{

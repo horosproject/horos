@@ -530,6 +530,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	ii = 0;
+	[context retain];
 	[context lock];
 	
 	[context setStalenessInterval: 1200];
@@ -557,6 +558,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		managedObjectContext = 0L;
 		[context setStalenessInterval: 1200];
 		[context unlock];
+		[context release];
 		
 		//All these files were NOT saved..... due to an error. Move them back to the INCOMING folder.
 		addFailed = YES;
@@ -983,6 +985,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		[context setStalenessInterval: 1200];
 		[context unlock];
+		[context release];
 		
 		if( addFailed == NO)
 		{
@@ -1182,6 +1185,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			if( [routingRule valueForKey:@"activated"] == 0L || [[routingRule valueForKey:@"activated"] boolValue] == YES)
 			{
 				NSManagedObjectContext *context = [self managedObjectContext];
+				
+				[context retain];
 				[context lock];
 				 
 				NSPredicate			*predicate = 0L;
@@ -1214,6 +1219,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[autoroutingQueue unlock];
 				}
 				[context unlock];
+				[context release];
 			}
 		}
 	}
@@ -2050,6 +2056,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			NSError *error = nil;
 			long	i;
 			
+			[context retain];
 			[context lock];
 			
 			[context save: &error];
@@ -2060,6 +2067,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				retError = -1L;
 			}
 			[context unlock];
+			[context release];
 			
 			if( path == 0L) path = currentDatabasePath;
 			
@@ -2140,17 +2148,24 @@ static BOOL				DICOMDIRCDMODE = NO;
 					[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
 					
+					[context retain];
 					[context lock];
+					
 					error = 0L;
 					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
 					if( [studiesArray count])
 					{
 						[context unlock];
+						[context release];
 						
 						[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
 						studySelected = YES;
 					}
-					else [context unlock];
+					else
+					{
+						[context unlock];
+						[context release];
+					}
 				}
 				else if( listenerInterval > 5 && ([NSDate timeIntervalSinceReferenceDate] - lastCheck) > 5)
 				{
@@ -2471,6 +2486,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSManagedObjectContext		*context = [self managedObjectContext];
 	NSManagedObjectModel		*model = [self managedObjectModel];
 	
+	[context retain];
 	[context lock];
 	
 	NSFetchRequest	*dbRequest;
@@ -2568,6 +2584,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[checkIncomingLock unlock];
 	
 	[context unlock];
+	[context release];
 }
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
@@ -2660,6 +2677,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"LogEntry"]];
 		[request setPredicate: predicate];
 		
+		[context retain];
 		[context lock];
 		error = 0L;
 		logArray = [context executeFetchRequest:request error:&error];
@@ -2668,6 +2686,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[context deleteObject: [logArray objectAtIndex: i]];
 		
 		[context unlock];
+		[context release];
 		
 		[checkIncomingLock unlock];
 	}
@@ -2696,7 +2715,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 				[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 				[request setPredicate: predicate];
 				
+				[context retain];
 				[context lock];
+				
 				error = 0L;
 				studiesArray = [context executeFetchRequest:request error:&error];
 				
@@ -2857,6 +2878,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				}
 				
 				[context unlock];
+				[context release];
 				
 				[checkIncomingLock unlock];
 			}
@@ -2890,6 +2912,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			NSArray				*studiesArray;
 			NSManagedObjectContext *context = [self managedObjectContext];
 			
+			[context retain];
 			[context lock];
 			[request setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 			[request setPredicate: predicate];
@@ -2974,6 +2997,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[self outlineViewRefresh];
 			
 			[context unlock];
+			[context release];
 		}
 	}
 }
@@ -3297,6 +3321,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[request setPredicate: predicate];
 	
 	NSManagedObjectContext *context = [self managedObjectContext];
+	
+	[context retain];
 	[context lock];
 	error = 0L;
 	[outlineViewArray release];
@@ -3363,6 +3389,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	outlineViewArray = [[outlineViewArray sortedArrayUsingDescriptors: sortDescriptors] retain];
 	
 	[context unlock];
+	[context release];
 	
 	[databaseOutline reloadData];
 	
@@ -3841,6 +3868,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[animationCheck setState: NSOffState];
 	
+	[context retain];
 	[context lock];
 	
 	if( matrixThumbnails)
@@ -4091,6 +4119,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[[QueryController currentQueryController] refresh: self];
 	
 	[context unlock];
+	[context release];
 	
 	[animationCheck setState: animState];
 	
@@ -4103,6 +4132,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSEnumerator	*enumerator			= [columnsDatabase keyEnumerator];
 	NSString		*key;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	while( key = [enumerator nextObject])
@@ -4126,6 +4156,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 }
 
 //- (void) columnsMenuAction:(id) sender
@@ -4170,6 +4201,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	id returnVal = 0L;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if( item == 0L) 
@@ -4182,6 +4214,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -4190,12 +4223,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	BOOL returnVal = NO;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = NO;
 	else returnVal = YES;
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -4206,6 +4241,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	int returnVal = 0;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if (!item)
@@ -4221,6 +4257,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -4312,11 +4349,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	if( managedObjectContext == 0L) return 0L;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	id returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 	
 	return returnVal;
 }
@@ -4325,6 +4364,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	DatabaseIsEdited = NO;
 	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	if( isCurrentDatabaseBonjour)
@@ -4341,6 +4381,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors
@@ -4362,6 +4403,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	
+	[context retain];
 	[context lock];
 	
 	if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
@@ -4424,6 +4466,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 	
 	[context unlock];
+	[context release];
 	
 // doesn't work with NSPopupButtonCell	
 //	if ([outlineView isEqual:databaseOutline])
@@ -4484,6 +4527,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
@@ -4499,10 +4543,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 }
 
 - (void)outlineViewItemWillExpand:(NSNotification *)notification
 {
+	[managedObjectContext retain];
 	[managedObjectContext lock];
 	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
@@ -4510,6 +4556,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
 	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 }
 
 - (MyOutlineView*) databaseOutline {return databaseOutline;}
@@ -4711,6 +4758,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
+				[context retain];
 				[context lock];
 				error = 0L;
 				NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
@@ -4731,6 +4779,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				}
 				[curFile release];
 				[context unlock];
+				[context release];
 			}
 		}
 	}
@@ -4879,6 +4928,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 		[dbRequest setPredicate: predicate];
 		
+		[context retain];
 		[context lock];
 		
 		NSError	*error = 0L;
@@ -4956,6 +5006,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		}
 		
 		[context unlock];
+		[context release];
 		
 		[viewersList release];
 	}
@@ -5317,6 +5368,7 @@ static BOOL withReset = NO;
 		img = [previewPixThumbnails objectAtIndex: i];
 		if( img == 0L) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == 0L");
 		
+		[managedObjectContext retain];
 		[managedObjectContext lock];
 		
 		@try
@@ -5428,6 +5480,7 @@ static BOOL withReset = NO;
 		}
 		
 		[managedObjectContext unlock];
+		[managedObjectContext release];
 	}
 	[oMatrix setNeedsDisplay:YES];
 }
@@ -5453,9 +5506,14 @@ static BOOL withReset = NO;
 	//creating file and opening it with preview
 	NSManagedObject		*curObj = [matrixViewArray objectAtIndex: [[sender selectedCell] tag]];
 	NSLog([curObj valueForKey: @"type"]);
+	
+	[managedObjectContext retain];
 	[managedObjectContext lock];
+	
 	if( [[curObj valueForKey:@"type"] isEqualToString: @"Series"] == YES) curObj = [[self childrenArray: curObj] objectAtIndex: 0];
+	
 	[managedObjectContext unlock];
+	[managedObjectContext release];
 
 	NSLog([curObj valueForKey: @"completePath"]);	
 	
@@ -5576,6 +5634,8 @@ static BOOL withReset = NO;
 	{	
 		if( [context tryLock])
 		{
+			[context retain];
+			
 			DatabaseIsEdited = YES;
 			
 			@try
@@ -5607,6 +5667,7 @@ static BOOL withReset = NO;
 			}
 			
 			[context unlock];
+			[context release];
 		}
 		[checkIncomingLock unlock];
 	}
@@ -5621,6 +5682,7 @@ static BOOL withReset = NO;
 	NSManagedObjectModel    *model = [self managedObjectModel];
 	NSError					*error = 0L;
 	
+	[context retain];
 	[context lock];
 	
 	NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
@@ -5660,6 +5722,7 @@ static BOOL withReset = NO;
 	[self outlineViewRefresh];
 	
 	[context unlock];
+	[context release];
 	
 	previousItem = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
@@ -6136,6 +6199,7 @@ static BOOL withReset = NO;
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		NSManagedObjectContext *context = [self managedObjectContext];
 		
+		[context retain];
 		[context lock];
 		error = 0L;
 		NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
@@ -6171,6 +6235,7 @@ static BOOL withReset = NO;
 		[albumTable selectRow:[[self albumArray] indexOfObject: album] byExtendingSelection: NO];
 		
 		[context unlock];
+		[context release];
 		
 		[self outlineViewRefresh];
 	}
@@ -6206,6 +6271,8 @@ static BOOL withReset = NO;
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
 				NSManagedObjectContext *context = [self managedObjectContext];
+				
+				[context retain];
 				[context lock];
 				error = 0L;
 				NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
@@ -6225,6 +6292,8 @@ static BOOL withReset = NO;
 				[albumTable reloadData];
 				
 				[context unlock];
+				[context release];
+				
 				[self outlineViewRefresh];
 			}
 		}
@@ -6245,6 +6314,8 @@ static BOOL withReset = NO;
 		{
 			long					i, x, row;
 			NSManagedObjectContext	*context = [self managedObjectContext];
+			
+			[context retain];
 			[context lock];
 			
 			if( [albumTable selectedRow] > 0)	// We cannot delete the first item !
@@ -6267,6 +6338,7 @@ static BOOL withReset = NO;
 			[albumTable reloadData];
 			
 			[context unlock];
+			[context release];
 			
 			[self outlineViewRefresh];
 		}
@@ -6356,6 +6428,8 @@ static BOOL needToRezoom;
 				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 				
 				NSManagedObjectContext *context = [self managedObjectContext];
+				
+				[context retain];
 				[context lock];
 				error = 0L;
 				NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
@@ -6383,6 +6457,7 @@ static BOOL needToRezoom;
 				[albumTable reloadData];
 				
 				[context unlock];
+				[context release];
 			}
 		}
 		else
@@ -6412,6 +6487,8 @@ static BOOL needToRezoom;
 					[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Album"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 					NSManagedObjectContext *context = [self managedObjectContext];
+					
+					[context retain];
 					[context lock];
 					error = 0L;
 					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
@@ -6431,6 +6508,7 @@ static BOOL needToRezoom;
 					[albumTable reloadData];
 					
 					[context unlock];
+					[context release];
 				}
 			}
 		}
@@ -6447,6 +6525,7 @@ static BOOL needToRezoom;
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	
+	[context retain];
 	[context lock];
 	
 	//Find all albums
@@ -6461,6 +6540,7 @@ static BOOL needToRezoom;
 	result = [NSArray arrayWithObject: [NSDictionary dictionaryWithObject: @"Database" forKey:@"name"]];
 	
 	[context unlock];
+	[context release];
 	
 	return [result arrayByAddingObjectsFromArray: albumsArray];
 }
@@ -6518,10 +6598,14 @@ static BOOL needToRezoom;
 					[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 					[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 					NSManagedObjectContext *context = [self managedObjectContext];
+					
+					[context retain];
 					[context lock];
 					error = 0L;
 					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					
 					[context unlock];
+					[context release];
 					
 					[albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
 				}
@@ -6532,6 +6616,8 @@ static BOOL needToRezoom;
 					if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
 					{
 						NSManagedObjectContext *context = [self managedObjectContext];
+						
+						[context retain];
 						[context lock];
 						
 						@try
@@ -6555,6 +6641,7 @@ static BOOL needToRezoom;
 						}
 						
 						[context unlock];
+						[context release];
 					}
 					else [albumNoOfStudiesCache replaceObjectAtIndex:rowIndex withObject: [NSString stringWithFormat:@"%@", [numFmt stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]]];
 				}
@@ -8165,7 +8252,7 @@ static NSArray*	openSubSeriesArray = 0L;
 				COMPLETEREBUILD = YES;
 			}
 		}
-		
+		[self loadDatabase: currentDatabasePath];
 		[self setFixedDocumentsDirectory];
 		[self setNetworkLogs];
 
@@ -8286,9 +8373,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[toolbar setVisible:YES];
 	[self showDatabase: self];
 	
-	
-	[self loadDatabase: currentDatabasePath];
-
 	// SCAN FOR AN IPOD!
 	[self loadDICOMFromiPod];
 	
@@ -10477,6 +10561,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) loadDICOMFromiPod
 {
+	if( isCurrentDatabaseBonjour) return;
+	
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
 	int i, x, index;
 
@@ -10673,6 +10759,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) loadDICOMFromiDisk:(id) sender
 {
+	if( isCurrentDatabaseBonjour) return;
+	
 	#if !__LP64__
 	
 	BOOL				delete, success;
@@ -10948,7 +11036,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 -(void)volumeMount:(NSNotification *)notification
 {
 	NSLog(@"volume mounted");
-
+	
+	if( isCurrentDatabaseBonjour) return;
+	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"] == NO) return;
 	
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
@@ -10966,10 +11056,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	long		i, x;
 
+	if( isCurrentDatabaseBonjour) return;
+	
 	// FIND ALL images that ARENT local, and REMOVE non-available images
 	NSManagedObjectContext		*context = [self managedObjectContext];
 	NSManagedObjectModel		*model = [self managedObjectModel];
 	
+	[context retain];
 	[context lock];
 	
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -11016,6 +11109,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[context unlock];
+	[context release];
 }
 
 -(void)volumeUnmount:(NSNotification *)notification
@@ -11042,6 +11136,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [context tryLock])
 	{
+		[context retain];
+		
 		DatabaseIsEdited = YES;
 
 		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -11107,6 +11203,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[splash close];
 		[splash release];
 		[context unlock];
+		[context release];
 	}
 	
 	[checkIncomingLock unlock];
@@ -12393,6 +12490,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
 	
+	[context retain];
 	[context lock];
 	
 	NSError	*error = 0L;
@@ -12411,6 +12509,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[context unlock];
+	[context release];
 	
 	return studiesArray;
 }

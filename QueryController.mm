@@ -166,11 +166,13 @@ static char *GetPrivateIP()
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
 		
+		[context retain];
 		[context lock];
 		
 		studyArray = [context executeFetchRequest:request error:&error];
 		
 		[context unlock];
+		[context release];
 	}
 	
 	return studyArray;
@@ -205,7 +207,7 @@ static char *GetPrivateIP()
 //			
 //			[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
 //			[request setPredicate: predicate];
-//			
+//			[context retain];
 //			[context lock];
 //			seriesArray = [context executeFetchRequest:request error:&error];
 //			
@@ -222,6 +224,7 @@ static char *GetPrivateIP()
 //			else [(ImageAndTextCell *)cell setImage: 0L];
 //			
 //			[context unlock];
+//			[context release];
 //		}
 		else [(ImageAndTextCell *)cell setImage: 0L];
 		
@@ -643,7 +646,9 @@ static char *GetPrivateIP()
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Study"]];
 		[request setPredicate: predicate];
 		
+		[context retain];
 		[context lock];
+		
 		studyArray = [context executeFetchRequest:request error:&error];
 		if( [studyArray count] > 0)
 		{
@@ -670,7 +675,9 @@ static char *GetPrivateIP()
 		[request setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey:@"Series"]];
 		[request setPredicate: predicate];
 		
+		[context retain];
 		[context lock];
+		
 		seriesArray = [context executeFetchRequest:request error:&error];
 		if( [seriesArray count] > 0)
 		{
@@ -704,6 +711,7 @@ static char *GetPrivateIP()
 	}
 	
 	[context unlock];
+	[context release];
 }
 
 - (IBAction) view:(id) sender

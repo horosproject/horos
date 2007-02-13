@@ -411,9 +411,11 @@ static char *GetPrivateIP()
 				pos += stringSize;
 				
 				NSManagedObjectContext *context = [interfaceOsiriX managedObjectContext];
+				[context retain];
 				[context lock];
 				NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
 				[context unlock];
+				[context release];
 				
 				//NSLog(@"URL:%@", object);
 				if( item)
