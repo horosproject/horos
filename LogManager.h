@@ -28,5 +28,6 @@
 + (id)currentLogManager;
 - (void)checkLogs:(NSTimer *)timer;
 - (NSString *)logFolder;
+- (void) resetLogs;
 
 @end

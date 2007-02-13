@@ -1990,6 +1990,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[self updateDatabaseModel: path :DBVersion];
 	}
 	
+	[[LogManager currentLogManager] resetLogs];
+	
 	[managedObjectContext lock];
 	[managedObjectContext unlock];
 	[managedObjectContext release];
