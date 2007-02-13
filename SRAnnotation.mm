@@ -225,7 +225,7 @@
 	else
 		refsopInstanceUID = OFString([[aROI referencedSOPInstanceUID]  UTF8String]);
 	
-	NSNumber *frameIndex = [[[aROI pix] imageObj] valueForKey:@"frameNo"];
+	NSNumber *frameIndex = [NSNumber numberWithInt: [[aROI pix] frameNo]];
 	document->getTree().addContentItem(DSRTypes::RT_selectedFrom, DSRTypes::VT_Image);
 	DSRImageReferenceValue imageRef(refsopClassUID, refsopInstanceUID);
 	// add frame reference

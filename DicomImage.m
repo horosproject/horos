@@ -174,8 +174,8 @@ extern NSString * documentsDirectory();
 	 return graphicAnnotationSequence;
 }
 
-- (NSImage *)image{
-	//[self primitiveValueForKey:@"frameNo"]
+- (NSImage *)image
+{
 	DCMPix *pix = [[DCMPix alloc] myinit:[self valueForKey:@"completePath"] :0 :0 :0L :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	//[pix computeWImage:NO :[[self valueForKeyPath:@"series.windowLevel"] floatValue] :[[self valueForKeyPath:@"series.windowWidth"] floatValue]];
 	[pix computeWImage:NO :0 :0];
