@@ -1271,7 +1271,7 @@ NSRect screenFrame()
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
 	long				i;
-	NSMutableArray		*filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray		*filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
@@ -1318,8 +1318,6 @@ NSRect screenFrame()
 			[[browserWindow databaseOutline] scrollRowToVisible: [[browserWindow databaseOutline] selectedRow]];
 		}
 	}
-	
-	[filesArray release];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification

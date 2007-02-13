@@ -1112,6 +1112,7 @@ static char *GetPrivateIP()
 	for( i = 0 ; i < [sourcesArray count]; i++)
 	{
 		[sourcesTable selectRow: i byExtendingSelection: NO];
+		[sourcesTable scrollRowToVisible: i];
 		
 		NSMutableDictionary *aServer = [sourcesArray objectAtIndex: i];
 		

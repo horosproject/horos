@@ -1066,7 +1066,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	long				i;
 	BOOL				isDirectory = NO;
 	
-	filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+	filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
 	for( i = 0; i < [filenames count]; i++)
 	{
@@ -1126,7 +1126,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	NSArray	*newImages = [self addFilesToDatabase:filesArray];
 	
-	[filesArray release];
 	[self outlineViewRefresh];
 	
 	return newImages;
@@ -2078,8 +2077,103 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return retError;
 }
 
+- (void) selectThisStudy:(id) study
+{
+	NSLog( [study description]);
+	[self outlineViewRefresh];
+	
+	[databaseOutline selectRow: [databaseOutline rowForItem: study] byExtendingSelection: NO];
+	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+}
+
+- (void) copyFilesThread : (NSArray*) filesInput
+{
+	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
+	NSString				*incomingPath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+	int						i;
+	BOOL					studySelected = NO;
+	NSTimeInterval			lastCheck = [NSDate timeIntervalSinceReferenceDate];
+	
+	[autoroutingInProgress lock];
+	
+	for( i = 0 ; i < [filesInput count]; i++)
+	{
+		NSString	*dstPath, *srcPath = [filesInput objectAtIndex:i];
+		NSString	*extension = [srcPath pathExtension];
+		
+		if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+		{
+			DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
+			
+			if( curFile)
+			{
+				if([extension isEqualToString:@""])
+					extension = [NSString stringWithString:@"dcm"]; 
+				
+				int x = 0;
+				do
+				{
+					dstPath = [incomingPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d-%@", x, [srcPath lastPathComponent]]];
+					x++;
+				}
+				while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath]);
+				
+				[[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
+				
+				if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+				{
+					[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+				}
+				
+				if( i == 0) [self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
+				
+				else if( studySelected == NO)
+				{
+					NSManagedObject			*study;
+					NSManagedObjectContext	*context = [self managedObjectContext];
+					NSError					*error = 0L;
+					
+					NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+					[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+					[dbRequest setPredicate: [NSPredicate predicateWithFormat:  @"studyInstanceUID == %@", [curFile elementForKey: @"studyID"]]];
+					
+					[context lock];
+					error = 0L;
+					NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+					if( [studiesArray count])
+					{
+						[context unlock];
+						
+						[self performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[studiesArray objectAtIndex: 0] waitUntilDone: YES];
+						studySelected = YES;
+					}
+					else [context unlock];
+				}
+				else if( [NSDate timeIntervalSinceReferenceDate] - lastCheck > 5)
+				{
+					lastCheck = [NSDate timeIntervalSinceReferenceDate];
+					[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: YES];
+				}
+				
+				[curFile release];
+			}
+		}
+	}
+	
+	[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: NO];
+	
+	[autoroutingInProgress unlock];
+	
+	[pool release];
+}
 
 -(NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput
+{
+	return [self copyFilesIntoDatabaseIfNeeded: filesInput async: NO];
+}
+
+-(NSMutableArray*) copyFilesIntoDatabaseIfNeeded:(NSMutableArray*) filesInput async: (BOOL) async
 {
 	if ([ filesInput count] == 0) return filesInput;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] == NO) return filesInput;
@@ -2156,54 +2250,60 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
 	
 	NSString        *pathname;
-    NSMutableArray  *filesOutput = [[NSMutableArray alloc] initWithCapacity:0];
+    NSMutableArray  *filesOutput = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	
-	Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...",@"Copying into Database...")];
-	
-    [splash showWindow:self];
-    [[splash progress] setMaxValue:[filesInput count]];
-	
-	for( i = 0 ; i < [filesInput count]; i++)
+	if( async)
 	{
-		NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+		[NSThread detachNewThreadSelector:@selector(copyFilesThread:) toTarget:self withObject: filesInput];
+	}
+	else
+	{
+		Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying into Database...",@"Copying into Database...")];
 		
-		NSString	*dstPath, *srcPath = [filesInput objectAtIndex:i];
-		NSString	*extension = [srcPath pathExtension];
+		[splash showWindow:self];
+		[[splash progress] setMaxValue:[filesInput count]];
 		
-		if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
+		for( i = 0 ; i < [filesInput count]; i++)
 		{
-			DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
+			NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 			
-			if( curFile)
+			NSString	*dstPath, *srcPath = [filesInput objectAtIndex:i];
+			NSString	*extension = [srcPath pathExtension];
+			
+			if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:INpath] == NO)
 			{
-				[curFile release];
-			
-				if([extension isEqualToString:@""])
-					extension = [NSString stringWithString:@"dcm"]; 
+				DicomFile	*curFile = [[DicomFile alloc] init: srcPath];
 				
-				dstPath = [self getNewFileDatabasePath:extension];	
-				
-				if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
+				if( curFile)
 				{
-					[filesOutput addObject:dstPath];
-				}
+					[curFile release];
 				
-				if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-				{
-					[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+					if([extension isEqualToString:@""])
+						extension = [NSString stringWithString:@"dcm"]; 
+					
+					dstPath = [self getNewFileDatabasePath:extension];	
+					
+					if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil] == YES)
+					{
+						[filesOutput addObject:dstPath];
+					}
+					
+					if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
+					{
+						[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+					}
 				}
 			}
+			
+			[splash incrementBy:1];
+			
+			[pool release];
 		}
-		
-		[splash incrementBy:1];
-		
-		[pool release];
+	
+		[splash close];
+		[splash release];
 	}
 	
-	[splash close];
-	[splash release];
-	
-	[filesInput release];
 	return filesOutput;
 }
 
@@ -8821,7 +8921,7 @@ static NSArray*	openSubSeriesArray = 0L;
                 if( GetAdditionalVolumeInfo((char *) volumeParms.vMDeviceID) == YES)
 				{
 					// ADD ALL FILES OF THIS VOLUME TO THE DATABASE!
-					NSMutableArray  *filesArray = [[NSMutableArray alloc] initWithCapacity:0];
+					NSMutableArray  *filesArray = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 					
 					found = YES;
 					
@@ -8928,26 +9028,24 @@ static NSArray*	openSubSeriesArray = 0L;
 						
 					}
 					
-					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray];
+					NSMutableArray	*newfilesArray = [self copyFilesIntoDatabaseIfNeeded:filesArray async: YES];
 					
 					if( newfilesArray == filesArray)
-						mountedVolume = YES;
-					else filesArray = newfilesArray;
-					
-					NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
-					mountedVolume = NO;
-					
-					[self outlineViewRefresh];
-					
-					if( [newImages count] > 0)
 					{
-						NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
-						
-						[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
-						[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-					}
+						mountedVolume = YES;
+						NSArray	*newImages = [self addFilesToDatabase:filesArray :YES];
+						mountedVolume = NO;
 					
-					[filesArray release];
+						[self outlineViewRefresh];
+					
+						if( [newImages count] > 0)
+						{
+							NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+						
+							[databaseOutline selectRow: [databaseOutline rowForItem: object] byExtendingSelection: NO];
+							[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+						}
+					}
 				}
             }
         }
