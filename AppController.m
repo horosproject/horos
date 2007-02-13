@@ -654,23 +654,6 @@ short HasAltiVec ( )
 	return hasAltiVec;                   
 }
 
-BOOL hasMacOSXVersion()
-{
-	OSErr		err;
-	SInt32      osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{             
-		if ( osVersion < 0x1030 )
-		{
-			return NO;
-		}
-	}       
-	return YES;                   
-}
-
-
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 BOOL hasMacOSXTiger()
@@ -690,6 +673,18 @@ BOOL hasMacOSXTiger()
 	return YES;                   
 }
 
+SInt32 osVersion()
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		return osVersion;
+	}
+	return 0;                   
+}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -1428,7 +1423,8 @@ static BOOL initialized = NO;
 				srandom(time(NULL));
 				
 				#if !__LP64__
-				[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
+				if( osVersion() < 0x1050UL)		// Not tested with MacOS 10.5
+					[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
 				#endif
 				
 				mainThread = [NSThread currentThread];
