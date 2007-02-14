@@ -178,15 +178,12 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 		int family = result->sa_family;
 		if (family == AF_INET)
 		{
-			NSLog(@"Bonjour IP4 address found");
-			
 			if (inet_ntop(AF_INET, &((struct sockaddr_in *)result)->sin_addr, buffer, sizeof(buffer)))
 			{
 				hostname = [NSString stringWithCString:buffer];
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
 				
-				NSLog( hostname);
-				NSLog( portString);
+				NSLog( @"%@:%@", hostname, portString);
 				
 				if(port) *port = [portString intValue];
 			}

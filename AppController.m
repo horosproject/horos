@@ -2035,12 +2035,13 @@ static BOOL initialized = NO;
 		viewers =  [NSScreen screens] ; 
 	
 	
-	//once we have the list of viewers we need to arrange them left to right
+	//once we have the list of viewers we need to arrange them left to right, and keep the db screen as the last screen
 	int count = [viewers count];
 	int i;
 	int position;
 	NSMutableArray *arrangedViewers = [NSMutableArray array];
-	for (i = 0; i < count; i++) {
+	for (i = 0; i < count; i++)
+	{
 		NSScreen *aScreen = [viewers objectAtIndex:i];
 		float x = [aScreen frame].origin.x;
 		NSEnumerator *enumerator = [arrangedViewers objectEnumerator];
@@ -2048,7 +2049,8 @@ static BOOL initialized = NO;
 		position = i;
 		int current = 0;
 		while (screen = [enumerator nextObject]) {
-			if (x < [screen frame].origin.x) {
+			if (x < [screen frame].origin.x)
+			{
 				position = current;
 				current ++;
 				break;
@@ -2056,9 +2058,13 @@ static BOOL initialized = NO;
 		}
 		
 		[arrangedViewers insertObject:aScreen atIndex:position];
-
 	}
 	
+	if( [dbWindow screen])
+	{
+		[arrangedViewers removeObject: [dbWindow screen]];
+		[arrangedViewers addObject: [dbWindow screen]];
+	}
 	return arrangedViewers;
 		
 }
@@ -2099,15 +2105,60 @@ static BOOL initialized = NO;
 	}
 }
 
+- (void) displayViewers: (NSArray*) viewers OnThisScreen: (NSScreen*) screen
+{
+	NSRect screenRect = [screen visibleFrame];
+	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
+
+	int rows = 1,  columns = 1, viewerCount = [viewers count];
+	
+	while (viewerCount > (rows * columns))
+	{
+		float ratio = ((float)columns/(float)rows);
+		
+		if (ratio > 1.5 && landscape)
+			rows ++;
+		else 
+			columns ++;
+	}
+	
+	int i;
+	
+	for( i = 0; i < viewerCount; i++)
+	{
+		int row = i/columns;
+		int columnIndex = (i - (row * columns));
+		int viewerPosition = i;
+		
+		NSRect frame = [screen visibleFrame];
+
+		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+		
+		frame.size.width /= columns;
+		frame.origin.x += (frame.size.width * columnIndex);
+		
+		if( i == viewerCount-1)
+		{
+			frame.size.width = [screen visibleFrame].size.width - (frame.origin.x - [screen visibleFrame].origin.x);
+		}
+		
+		frame.size.height /= rows;
+		frame.origin.y += frame.size.height * ((rows - 1) - row);
+		
+		[[viewers objectAtIndex:i] setWindowFrame:frame];
+	}
+}
+
 - (void) tileWindows:(id)sender
 {
-	long				i, j, k;
+	long				i, j, k, x;
 	NSArray				*winList = [NSApp windows];
 	NSMutableArray		*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
-	BOOL				tileDone = NO, origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
+	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect				screenRect =  screenFrame();
-	
-	int					keyWindow = 0, numberOfMonitors = [[self viewerScreens] count];	
+	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	NSMutableArray		*studyList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+	int					keyWindow = 0, numberOfMonitors;	
 
 	NSLog(@"tile Windows");
 	
@@ -2124,22 +2175,40 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	// get viewer count
+	if( keepSameStudyOnSameScreen)
+	{
+		//get 2D viewer study arrays
+		for( i = 0; i < [viewersList count]; i++)
+		{
+			NSString	*studyUID = [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
+			
+			BOOL found = NO;
+			for( x = 0; x < [studyList count]; x++)
+			{
+				if( [[[[[[studyList objectAtIndex: x] objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID])
+				{
+					[[studyList objectAtIndex: x] addObject: [viewersList objectAtIndex: i]];
+					found = YES;
+				}
+			}
+			
+			if( found == NO)
+			{
+				[studyList addObject: [NSMutableArray array]];
+				[[studyList lastObject] addObject: [viewersList objectAtIndex: i]];
+			}
+		}
+	}
+	
+	NSLog( [studyList description]);
+	
 	int viewerCount = [viewersList count];
-	
 	NSArray *screens = [self viewerScreens];
-	
-	//NSLog(@"viewers: %d, screens: %d", viewerCount, numberOfMonitors);
+	numberOfMonitors = [screens count];
 	
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
-	if (landscape)
-		NSLog(@"Landscape");
-	else
-		NSLog(@"portrait");
 
-	tileDone = YES;
-		
 	int rows = [[currentHangingProtocol objectForKey:@"Rows"] intValue];
 	int columns = [[currentHangingProtocol objectForKey:@"Columns"] intValue];
 	
@@ -2169,31 +2238,59 @@ static BOOL initialized = NO;
 	// set image tiling to 1 row and columns
 	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGEROWS"])
 		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGEROWS"];
+		
 	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
 		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
+	
+	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && currentHangingProtocol == 0L)
+	{
+		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
+		{
+			NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
+			
+			if( i == numberOfMonitors -1 || i == [studyList count]-1)
+			{
+				// Take all remaining studies
+				
+				for ( x = i+1; x < [studyList count]; x++)
+				{
+					[viewersForThisScreen addObjectsFromArray: [studyList objectAtIndex: x]];
+				}
+			}
+			
+			[self displayViewers: viewersForThisScreen OnThisScreen: [screens objectAtIndex:i]];
+		}
+	}
+	
 	//I will generalize the options once I get a handle on the issues. LP
 	// if monitor count is greater than or equal to viewers. One viewer per window
-	if (viewerCount <= numberOfMonitors) {
+	
+	else if (viewerCount <= numberOfMonitors)
+	{
 		int count = [viewersList count];
 		int skipScreen = 0;
 		
-		for( i = 0; i < count; i++) {
+		for( i = 0; i < count; i++)
+		{
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: [self resizeWindow: [[viewersList objectAtIndex:i] window] withInRect: frame]];				
-
 		}
-	} 
+	}
+	
 	/* 
 	Will have columns but no rows. 
 	There are more columns than monitors. 
 	 Need to separate columns among the window evenly
 	 */
-	else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0)){
+	
+	else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0))
+	{
 		int viewersPerScreen = viewerCount / numberOfMonitors;
-		for( i = 0; i < viewerCount; i++) {
+		for( i = 0; i < viewerCount; i++)
+		{
 			int index = (int) i/viewersPerScreen;
 			int viewerPosition = i % viewersPerScreen;
 			NSScreen *screen = [screens objectAtIndex:index];
@@ -2264,7 +2361,6 @@ static BOOL initialized = NO;
 	else
 	{
 		NSLog(@"NO tiling");
-		tileDone = NO;
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];

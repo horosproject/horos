@@ -284,13 +284,16 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 				}
 			}
 			
-			_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...",@"Sending files") :NO];
-			[_waitSendWindow  setTarget:self];
-			[_waitSendWindow showWindow:self];
-			[[_waitSendWindow progress] setMaxValue:[files2Send count]];
-			
-			[_waitSendWindow setCancel:YES];
-			[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
+			if( files2Send)
+			{
+				_waitSendWindow = [[Wait alloc] initWithString: NSLocalizedString(@"Sending files...",@"Sending files") :NO];
+				[_waitSendWindow  setTarget:self];
+				[_waitSendWindow showWindow:self];
+				[[_waitSendWindow progress] setMaxValue:[files2Send count]];
+				
+				[_waitSendWindow setCancel:YES];
+				[NSThread detachNewThreadSelector: @selector(sendDICOMFilesOffis:) toTarget:self withObject: objectsToSend];
+			}
 		}		
 	}
 
@@ -303,6 +306,40 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@", NSLocalizedString( @"DICOM StoreSCU operation failed.", nil), [ne name], [ne reason]];
 
 	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+}
+
+- (void) executeSend :(NSArray*) samePatientArray
+{
+	// Send the collected files from the same patient
+
+	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+	NSString *hostname = [[self server] objectForKey:@"Address"];
+	NSString *destPort = [[self server] objectForKey:@"Port"];
+
+	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+			calledAET:calledAET 
+			hostname:hostname 
+			port:[destPort intValue] 
+			filesToSend: [samePatientArray valueForKey: @"completePath"]
+			transferSyntax:_offisTS
+			compression: 1.0
+			extraParameters:nil];
+	
+	@try
+	{
+		[storeSCU run:self];
+	}
+	
+	@catch( NSException *ne)
+	{
+		if( _waitSendWindow)
+		{
+			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+		}
+	}
+	
+	[storeSCU release];
+	storeSCU = 0L;
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
@@ -326,41 +363,13 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 	for( i = 0; i < [objectsToSend count] ; i++)
 	{
-		if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"]] && i != [objectsToSend count]-1)
+		if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"]])
 		{
 			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
 		}
 		else
 		{
-			if( [samePatientArray count])
-			{
-				// Send the collected files from the same patient
-				
-				storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-						calledAET:calledAET 
-						hostname:hostname 
-						port:[destPort intValue] 
-						filesToSend: [samePatientArray valueForKey: @"completePath"]
-						transferSyntax:_offisTS
-						compression: 1.0
-						extraParameters:nil];
-				
-				@try
-				{
-					[storeSCU run:self];
-				}
-				
-				@catch( NSException *ne)
-				{
-					if( _waitSendWindow)
-					{
-						[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
-					}
-				}
-				
-				[storeSCU release];
-				storeSCU = 0L;
-			}
+			if( [samePatientArray count]) [self executeSend: samePatientArray];
 			
 			// Reset
 			[samePatientArray removeAllObjects];
@@ -369,6 +378,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			previousPatientUID = [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"];
 		}
 	}
+	
+	if( [samePatientArray count]) [self executeSend: samePatientArray];
 	
 	NSMutableDictionary *info = [NSMutableDictionary dictionary];
 	[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];

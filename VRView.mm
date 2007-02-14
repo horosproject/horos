@@ -1887,29 +1887,20 @@ public:
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
 	if (!interactor) return;
 	
+	rotate = NO;
+	[self resetAutorotate: self];
+	
 	if( projectionMode != 2)
 	{
-//		int shiftDown = 0;
-//		int controlDown = 1;
-//
-//
-//		NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-//		
-//		interactor->SetEventInformation( (int)mouseLoc.x, (int)mouseLoc.y, controlDown, shiftDown);
-//		if( [theEvent deltaY] > 0)
-//		{
-//			[self computeLength];
-//			interactor->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
-//		}
-//		else
-//		{
-//			[self computeLength];
-//			interactor->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
-//		}
-//		[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+		// Rotate
+		[self Azimuth: [theEvent deltaY] * 2];
+		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
+		[self setNeedsDisplay: YES];
 	}
 	else
 	{
+		// Endoscopy - Zoom in/out
+		
 		float distance = aCamera->GetDistance();
 		
 		float dolly = [theEvent deltaY] / 40.;

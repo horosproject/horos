@@ -2192,27 +2192,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[browserWindow loadSeries :[[sender selectedCell] representedObject] :0L :YES keyImagesOnly: displayOnlyKeyImages];
 		
-//		[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
-//		[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:0L];
-		
 		[self matrixPreviewSelectCurrentSeries];
-		
-		// For toolbar
-		[[NSNotificationCenter defaultCenter] postNotificationName:NSWindowDidBecomeKeyNotification object:[self window]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 			[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 		else
 			[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+
+		int i;
+		for( i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: 0L];
+		[[self window] makeKeyAndOrderFront: self];
+		[self refreshToolbar];
 	}
 	else
 	{
 		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
 		{
 			[browserWindow loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
-			
-//			[browserWindow findAndSelectFile: 0L image: [[[[sender selectedCell] representedObject] valueForKey:@"images"] anyObject] shouldExpand:NO];
-//			[browserWindow viewerDICOMInt:NO dcmFile:[NSArray arrayWithObject: [[sender selectedCell] representedObject]] viewer:self];
+
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+				[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
+			else
+				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
 		}
 	}
 }
@@ -2512,6 +2513,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[context release];
 }
 
+- (void) showCurrentThumbnail:(id) sender;
+{
+	int row, column;
+	
+	[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
+	[previewMatrix scrollCellToVisibleAtRow: row column:0];
+}
 
 - (void) buildMatrixPreview
 {

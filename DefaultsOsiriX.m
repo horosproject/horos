@@ -710,6 +710,8 @@ static NSString *hostName = @"";
 	// ** WINDOWSIZEVIEWER
 	[defaultValues setObject: @"0" forKey: @"WINDOWSIZEVIEWER"];
 	
+	[defaultValues setObject: @"1" forKey: @"KeepStudiesTogetherOnSameScreen"];
+	
 	// ** STILLMOVIEMODE
 	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	

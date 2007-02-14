@@ -1074,12 +1074,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			{
 				if( [event clickCount] == 2)
 				{
-					rotation += 90;
-				}
-				
-				if( [event clickCount] == 3)
-				{
-					rotation += 180;
+					if ([event modifierFlags] & NSAlternateKeyMask) rotation -= 90;		// -> 180
+					else if ([event modifierFlags] & NSShiftKeyMask) rotation -= 45;	// -> 90
+					else rotation += 45;	// -> 90
 				}
 				[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 			}
@@ -2342,6 +2339,9 @@ static long scrollMode;
 		}
 		else if( [event clickCount] > 1 && stringID == 0L)
 		{
+			if( [self is2DViewer] == YES)
+				[[self windowController] showCurrentThumbnail: self];
+				
 			float location[ 3];
 			
 			[curDCM convertPixX: mouseXPos pixY: mouseYPos toDICOMCoords: location];

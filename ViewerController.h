@@ -496,7 +496,7 @@ enum
 
 - (IBAction) endoscopyViewer:(id) sender;
 - (IBAction) CurvedMPR:(id) sender;
-
+- (void) showCurrentThumbnail:(id) sender;
 
 - (IBAction) SRViewer:(id) sender;
 - (void)createDCMViewMenu;
