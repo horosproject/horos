@@ -12271,7 +12271,7 @@ int i,j,l;
 				[viewer setWLWW:iwl :iww];
 			}
 			
-			
+			[[viewer window] setFrameOrigin: [[[self window] screen] visibleFrame].origin];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
@@ -12432,7 +12432,8 @@ int i,j,l;
 					[imageView getWLWW:&iwl :&iww];
 					[viewer setWLWW:iwl :iww];
 					[viewer load3DState];
-					[[viewer window] performZoom:self];
+					[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+//					[[viewer window] performZoom:self];
 					[viewer showWindow:self];
 					[[viewer window] makeKeyAndOrderFront:self];
 					[[viewer window] display];
@@ -12645,7 +12646,8 @@ int i,j,l;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
-			[[viewer window] performZoom:self];
+			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+//			[[viewer window] performZoom:self];
 			[viewer showWindow:self];			
 			[[viewer window] makeKeyAndOrderFront:self];
 			[[viewer window] display];
@@ -12689,7 +12691,8 @@ int i,j,l;
 		else
 		{
 			viewer = [self openSRViewer];
-			[[viewer window] performZoom:self];
+			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+//			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] makeKeyAndOrderFront:self];
 			[viewer ChangeSettings:self];
@@ -12931,7 +12934,8 @@ long i;
 			[imageView getWLWW:&iwl :&iww];
 			[viewer setWLWW:iwl :iww];
 			[viewer load3DState];
-			[[viewer window] performZoom:self];
+			[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+//			[[viewer window] performZoom:self];
 			[viewer showWindow:self];
 			[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
 		}
@@ -12982,7 +12986,8 @@ long i;
 		return viewer;
 	if (blendingController) {	
 		viewer = [[OrthogonalMPRPETCTViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self : blendingController];
-		[[viewer window] performZoom:self];
+		[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+//		[[viewer window] performZoom:self];
 		[[viewer CTController] ApplyCLUTString:curCLUTMenu];
 		[[viewer PETController] ApplyCLUTString:[blendingController curCLUTMenu]];
 		[[viewer PETCTController] ApplyCLUTString:curCLUTMenu];
@@ -13098,7 +13103,9 @@ long i;
 				else [viewer ApplyCLUTString:curCLUTMenu];
 			*/
 				viewer = [self openOrthogonalMPRViewer];
-				[[viewer window] performZoom:self];
+				
+				[[viewer window] setFrame: [[[self window] screen] visibleFrame] display:NO];
+				//[[viewer window] performZoom:self];
 				[viewer showWindow:self];
 				
 				float   iwl, iww;

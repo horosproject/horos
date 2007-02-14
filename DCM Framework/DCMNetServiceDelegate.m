@@ -183,7 +183,7 @@ DCMNetServiceDelegate *_netServiceDelegate = 0L;
 				hostname = [NSString stringWithCString:buffer];
 				portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)result)->sin_port)];
 				
-				NSLog( @"%@:%@", hostname, portString);
+				//NSLog( @"%@:%@", hostname, portString);
 				
 				if(port) *port = [portString intValue];
 			}
