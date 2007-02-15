@@ -1239,38 +1239,47 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server
 {
-	NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
-							
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-														calledAET: [server objectForKey:@"AETitle"] 
-														hostname: [server objectForKey:@"Address"] 
-														port: [[server objectForKey:@"Port"] intValue] 
-														filesToSend: [samePatientArray valueForKey: @"completePath"]
-														transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
-														compression: 1.0
-														extraParameters: nil];
+	BOOL	isFault = NO;
 	
-	@try
+	int x;
+	for( x = 0; x < [samePatientArray count] ; x++) if( [[samePatientArray objectAtIndex: x] isFault]) isFault = YES;
+	
+	if( isFault) NSLog( @"Fault on objects: not available for sending");
+	else
 	{
-		[storeSCU run:self];
-	}
-	
-	@catch (NSException *ne)
-	{
-		NSLog( @"Autorouting FAILED");
-		NSLog( [ne name]);
-		NSLog( [ne reason]);
+		NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
+								
+		DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+															calledAET: [server objectForKey:@"AETitle"] 
+															hostname: [server objectForKey:@"Address"] 
+															port: [[server objectForKey:@"Port"] intValue] 
+															filesToSend: [samePatientArray valueForKey: @"completePath"]
+															transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
+															compression: 1.0
+															extraParameters: nil];
 		
-		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", 0L] waitUntilDone: NO];
+		@try
+		{
+			[storeSCU run:self];
+		}
 		
-		// We will try again later...
-		[autoroutingQueue lock];
-		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", 0L]];
-		[autoroutingQueue unlock];
+		@catch (NSException *ne)
+		{
+			NSLog( @"Autorouting FAILED");
+			NSLog( [ne name]);
+			NSLog( [ne reason]);
+			
+			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", 0L] waitUntilDone: NO];
+			
+			// We will try again later...
+			[autoroutingQueue lock];
+			[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", 0L]];
+			[autoroutingQueue unlock];
+		}
+		
+		[storeSCU release];
+		storeSCU = 0L;
 	}
-	
-	[storeSCU release];
-	storeSCU = 0L;
 }
 
 - (void) processAutorouting
@@ -1311,10 +1320,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( server)
 			{
-				BOOL	isFault = NO;
 				int		x;
-				
-				for( x = 0; x < [objectsToSend count] ; x++) if( [[objectsToSend objectAtIndex: x] isFault]) isFault = YES;
 				
 				NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
 				NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
@@ -2001,12 +2007,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[[AppController sharedAppController] closeAllViewers: self];
 	
-	if( threadRunning)
-	{
-		shouldDie = YES;
-		while (threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-		shouldDie = NO;
-	}
+	shouldDie = YES;
+	[matrixLoadIconsLock lock];
+	[matrixLoadIconsLock unlock];
+	shouldDie = NO;
 	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	
@@ -2841,13 +2845,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 				if( [toBeRemoved count] > 0)							// (DDP: 051109) was > 1, i.e. required at least 2 studies out of date to be removed.
 				{														// Stop thread
-					if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-					if( threadRunning)
-					{
-						shouldDie = YES;
-						while (threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-						shouldDie = NO;
-					}
+					shouldDie = YES;
+					[matrixLoadIconsLock lock];
+					[matrixLoadIconsLock unlock];
+					shouldDie = NO;
 					
 					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
 					
@@ -3798,16 +3799,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 		if( refreshMatrix)
 		{
-			// STOP les 2 threads!
-			if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-			if( threadRunning == YES)
-			{
-				shouldDie = YES;
-				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				shouldDie = NO;
-			}
-			
-			threadWillRunning = YES;
+			shouldDie = YES;
+			[matrixLoadIconsLock lock];
+			[matrixLoadIconsLock unlock];
+			shouldDie = NO;
 			
 			[animationSlider setEnabled:NO];
 			[animationSlider setMaxValue:0];
@@ -3833,7 +3828,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			[self matrixInit: [matrixViewArray count]];
 			
-			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: item];
+			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: [self imagesArray: item preferredObject:oFirstForFirst]];
 			
 			if( previousItem == item)
 			{
@@ -3940,14 +3935,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( [databaseOutline selectedRow] >= 0)
 		{
-			//Stop le thread
-			if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-			if( threadRunning == YES)
-			{
-				shouldDie = YES;
-				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				shouldDie = NO;
-			}
+			shouldDie = YES;
+			[matrixLoadIconsLock lock];
+			[matrixLoadIconsLock unlock];
+			shouldDie = NO;
 			
 			for( x = 0; x < [selectedRows count] ; x++)
 			{
@@ -3988,14 +3979,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( [databaseOutline selectedRow] >= 0)
 		{
-			//Stop the thread
-			if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-			if( threadRunning == YES)
-			{
-				shouldDie = YES;
-				while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-				shouldDie = NO;
-			}
+			shouldDie = YES;
+			[matrixLoadIconsLock lock];
+			[matrixLoadIconsLock unlock];
+			shouldDie = NO;
 			
 			// Try to find images that aren't stored in the local database
 			
@@ -5136,9 +5123,8 @@ static BOOL withReset = NO;
 	BOOL	animate = NO;
 	long	noOfImages = 0;
 	
-    // Wait loading all images !!!
-    if( threadWillRunning == YES) return;
-    if( threadRunning == YES)  return;
+	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
+	else return;
 	
     NSButtonCell    *cell = [oMatrix selectedCell];
     if( cell)
@@ -5246,8 +5232,8 @@ static BOOL withReset = NO;
 	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
 	if( [animationCheck state] == NSOffState) return;
-    if( threadWillRunning == YES) return;
-    if( threadRunning == YES)  return;
+	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
+	else return;
     if( [[self window] isKeyWindow] == NO) return;
     if( [animationSlider isEnabled] == NO) return;
 	
@@ -5270,9 +5256,9 @@ static BOOL withReset = NO;
 	float change = reverseScrollWheel * [theEvent deltaY];
 
     // Wait loading all images !!!
-    if( threadWillRunning == YES) return;
-    if( threadRunning == YES)  return;
-
+	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
+	else return;
+	
 	int	pos = [animationSlider intValue];
 
 	if( change > 0)
@@ -5720,14 +5706,10 @@ static BOOL withReset = NO;
 		
 	if( [databaseOutline selectedRow] >= 0)
 	{
-		//Stop le thread
-		if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-		if( threadRunning == YES)
-		{
-			shouldDie = YES;
-			while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-			shouldDie = NO;
-		}
+		shouldDie = YES;
+		[matrixLoadIconsLock lock];
+		[matrixLoadIconsLock unlock];
+		shouldDie = NO;
 		
 		for( x = 0; x < [selectedRows count] ; x++)
 		{
@@ -5759,36 +5741,29 @@ static BOOL withReset = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
 }
 
-- (void) matrixLoadIcons:(NSManagedObject*) item
+- (void) matrixLoadIcons:(NSArray*) files
 {
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
-	[item retain];
-	
 	long							i, subGroupCount = 1, position = 0;
 	BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 	BOOL							imageLevel = NO;
 	
-	threadWillRunning = NO;
-	threadRunning = YES;
-
+	[matrixLoadIconsLock lock];
+	
 	while( [managedObjectContext tryLock] == NO)
 	{
 		if( shouldDie == YES)
 		{
-			[item release];
 			[pool release];
 			shouldDie = NO;
-			threadRunning = NO;
 			return;
 		}
 	}
-	
+
 	[managedObjectContext retain];
 	
 	@try
 	{
-		NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
-		
 		if( [files count] > 1)
 		{
 			if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"])
@@ -5799,11 +5774,7 @@ static BOOL withReset = NO;
 		}
 		
 		if( imageLevel)	[managedObjectContext unlock];
-		else
-		{
-			for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
-		}
-			
+		
 		for( i = 0; i < [files count];i++)
 		{
 			DCMPix*     dcmPix;
@@ -5860,15 +5831,13 @@ static BOOL withReset = NO;
 				
 				[dcmPix release];
 			}
+			
+			//Delay( 30, 0L);
 		}
 		
 		if( imageLevel == NO)	[managedObjectContext unlock];
 		
-		threadRunning = NO;
 		shouldDie = NO;
-		
-		[item release];
-		item = 0L;
 		
 		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: NO];
 	}
@@ -5877,10 +5846,11 @@ static BOOL withReset = NO;
 	{
 		NSLog(@"matrixLoadIcons exception: %@", [ne description]);
 		[managedObjectContext unlock];
-		[item release];
 	}
 	
 	[managedObjectContext release];
+	
+	[matrixLoadIconsLock unlock];
 	
     [pool release];
 }
@@ -6361,14 +6331,10 @@ static BOOL withReset = NO;
 			
 			if( [albumTable selectedRow] > 0)	// We cannot delete the first item !
 			{
-				//Stop le thread
-				if( threadWillRunning == YES) while( threadWillRunning == YES) {[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];}
-				if( threadRunning == YES)
-				{
-					shouldDie = YES;
-					while( threadRunning == YES) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.002]];
-					shouldDie = NO;
-				}
+				shouldDie = YES;
+				[matrixLoadIconsLock lock];
+				[matrixLoadIconsLock unlock];
+				shouldDie = NO;
 				
 				[context deleteObject: [[self albumArray]  objectAtIndex: [albumTable selectedRow]]];
 			}
@@ -8117,8 +8083,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
-    if( threadWillRunning == YES) return;
-    if( threadRunning == YES)  return;
+	if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
+	else return;
 	
 	[animationSlider setIntValue: subFrom-1];
 	[self previewSliderAction: animationSlider];
@@ -8132,8 +8098,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
-    if( threadWillRunning == YES) return;
-    if( threadRunning == YES)  return;
+    if( [matrixLoadIconsLock tryLock]) [matrixLoadIconsLock unlock];
+	else return;
 	
 	[animationSlider setIntValue: subTo-1];
 	[self previewSliderAction: animationSlider];
@@ -8240,6 +8206,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[numFmt setFormat:@"0"];
 		[numFmt setHasThousandSeparators: YES];
 		
+		matrixLoadIconsLock = [[NSLock alloc] init];
 		checkBonjourUpToDateThreadLock = [[NSLock alloc] init];
 		checkIncomingLock = [[NSRecursiveLock alloc] init];
 		decompressArrayLock = [[NSLock alloc] init];
@@ -8300,8 +8267,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
 		
 		shouldDie = NO;
-		threadRunning = NO;
-		threadWillRunning = NO;
 		bonjourDownloading = NO;
 		
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];

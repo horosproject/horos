@@ -310,36 +310,45 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 
 - (void) executeSend :(NSArray*) samePatientArray
 {
-	// Send the collected files from the same patient
-
-	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-	NSString *hostname = [[self server] objectForKey:@"Address"];
-	NSString *destPort = [[self server] objectForKey:@"Port"];
-
-	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-			calledAET:calledAET 
-			hostname:hostname 
-			port:[destPort intValue] 
-			filesToSend: [samePatientArray valueForKey: @"completePath"]
-			transferSyntax:_offisTS
-			compression: 1.0
-			extraParameters:nil];
+	BOOL	isFault = NO;
 	
-	@try
-	{
-		[storeSCU run:self];
-	}
+	int x;
+	for( x = 0; x < [samePatientArray count] ; x++) if( [[samePatientArray objectAtIndex: x] isFault]) isFault = YES;
 	
-	@catch( NSException *ne)
+	if( isFault) NSLog( @"Fault on objects: not available for sending");
+	else
 	{
-		if( _waitSendWindow)
+		// Send the collected files from the same patient
+		
+		NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+		NSString *hostname = [[self server] objectForKey:@"Address"];
+		NSString *destPort = [[self server] objectForKey:@"Port"];
+
+		storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+				calledAET:calledAET 
+				hostname:hostname 
+				port:[destPort intValue] 
+				filesToSend: [samePatientArray valueForKey: @"completePath"]
+				transferSyntax:_offisTS
+				compression: 1.0
+				extraParameters:nil];
+		
+		@try
 		{
-			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
+			[storeSCU run:self];
 		}
+		
+		@catch( NSException *ne)
+		{
+			if( _waitSendWindow)
+			{
+				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
+			}
+		}
+		
+		[storeSCU release];
+		storeSCU = 0L;
 	}
-	
-	[storeSCU release];
-	storeSCU = 0L;
 }
 
 - (void) sendDICOMFilesOffis:(NSArray *) objectsToSend
@@ -358,7 +367,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	
 	NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
 	NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-
+	
 	objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 	
 	for( i = 0; i < [objectsToSend count] ; i++)

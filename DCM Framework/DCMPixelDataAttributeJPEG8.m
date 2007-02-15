@@ -449,8 +449,8 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
 			NSString *photometricInterpretation = [attr value];
 			
-//			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
-//			else
+			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+			else
 			if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
