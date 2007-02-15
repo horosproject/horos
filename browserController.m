@@ -1225,6 +1225,54 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 }
 
+- (void) showErrorMessage:(NSDictionary*) dict
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ShowErrorMessagesForAutorouting"] == NO) return;
+	
+	NSException	*ne = [dict objectForKey: @"exception"];
+	NSDictionary *server = [dict objectForKey:@"server"];
+	
+	NSString	*message = [NSString stringWithFormat:@"%@\r\r%@\r%@\r\rServer:%@-%@:%@", NSLocalizedString( @"Autorouting DICOM StoreSCU operation failed.\rI will try again in 30 secs.", nil), [ne name], [ne reason], [server objectForKey:@"AETitle"], [server objectForKey:@"Address"], [server objectForKey:@"Port"]];
+
+	NSRunCriticalAlertPanel(NSLocalizedString(@"Autorouting Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+}
+
+- (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server
+{
+	NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
+							
+	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
+														calledAET: [server objectForKey:@"AETitle"] 
+														hostname: [server objectForKey:@"Address"] 
+														port: [[server objectForKey:@"Port"] intValue] 
+														filesToSend: [samePatientArray valueForKey: @"completePath"]
+														transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
+														compression: 1.0
+														extraParameters: nil];
+	
+	@try
+	{
+		[storeSCU run:self];
+	}
+	
+	@catch (NSException *ne)
+	{
+		NSLog( @"Autorouting FAILED");
+		NSLog( [ne name]);
+		NSLog( [ne reason]);
+		
+		[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", server, @"server", 0L] waitUntilDone: NO];
+		
+		// We will try again later...
+		[autoroutingQueue lock];
+		[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", 0L]];
+		[autoroutingQueue unlock];
+	}
+	
+	[storeSCU release];
+	storeSCU = 0L;
+}
+
 - (void) processAutorouting
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -1274,7 +1322,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				for( x = 0; x < [objectsToSend count] ; x++)
 				{
-					if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]] && x != [objectsToSend count]-1)
+					if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]])
 					{
 						[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
 					}
@@ -1282,34 +1330,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					{
 						// Send the collected files from the same patient
 						
-						if( [samePatientArray count])
-						{
-							NSLog( @"%@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"]);
-							
-							DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
-																				calledAET: [server objectForKey:@"AETitle"] 
-																				hostname: [server objectForKey:@"Address"] 
-																				port: [[server objectForKey:@"Port"] intValue] 
-																				filesToSend: [samePatientArray valueForKey: @"completePath"]
-																				transferSyntax: [[server objectForKey:@"Transfer Syntax"] intValue] 
-																				compression: 1.0
-																				extraParameters: nil];
-							
-							@try
-							{
-								[storeSCU run:self];
-							}
-							
-							@catch (NSException *ne)
-							{
-								NSLog( @"Autorouting FAILED");
-								NSLog( [ne name]);
-								NSLog( [ne reason]);
-							}
-							
-							[storeSCU release];
-							storeSCU = 0L;
-						}
+						if( [samePatientArray count]) [self executeSend: samePatientArray server: server];
 						
 						// Reset
 						[samePatientArray removeAllObjects];
@@ -1318,13 +1339,18 @@ static BOOL				DICOMDIRCDMODE = NO;
 						previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"];
 					}
 				}
+				
+				if( [samePatientArray count]) [self executeSend: samePatientArray server: server];
 			}
 			else
 			{
 				NSLog(@"server not found for autorouting: %@", serverName);
+				NSException *ne = [NSException exceptionWithName:@"Unknown destination server. Add it to the Locations list - see Preferences." reason:serverName userInfo:0L];
+				
+				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", 0L] waitUntilDone: NO];
 			}
-
 		}
+		
 		NSLog(@"autorouting Queue end");
 	}
 	
@@ -5752,19 +5778,27 @@ static BOOL withReset = NO;
 		}
 	}
 	
+	[managedObjectContext retain];
+	
 	@try
 	{
 		NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
 		
 		if( [files count] > 1)
 		{
-			if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+			if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"])
+			{
+				NSLog( @"image level");
+				imageLevel = YES;
+			}
 		}
 		
-		for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
-		
 		if( imageLevel)	[managedObjectContext unlock];
-		
+		else
+		{
+			for( i = 0; i < [files count];i++) [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];	// ANR: important to avoid 'state is still active'
+		}
+			
 		for( i = 0; i < [files count];i++)
 		{
 			DCMPix*     dcmPix;
@@ -5831,7 +5865,7 @@ static BOOL withReset = NO;
 		[item release];
 		item = 0L;
 		
-		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: YES];
+		[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:0L waitUntilDone: NO];
 	}
 	
 	@catch( NSException *ne)
@@ -5840,6 +5874,8 @@ static BOOL withReset = NO;
 		[managedObjectContext unlock];
 		[item release];
 	}
+	
+	[managedObjectContext release];
 	
     [pool release];
 }

@@ -334,7 +334,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	{
 		if( _waitSendWindow)
 		{
-			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone:YES];	
+			[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject:ne waitUntilDone: NO];
 		}
 	}
 	

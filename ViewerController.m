@@ -4523,20 +4523,20 @@ static ViewerController *draggedController = 0L;
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
 			{
-				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: YES];
+				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: NO];
 				
-				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:0L waitUntilDone: YES];
+				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:0L waitUntilDone: NO];
 			}
 			
 			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DEFAULTPETWLWW"] != 0)
 			{
-				[self performSelectorOnMainThread:@selector( setDefaultPETWLWW:) withObject:self waitUntilDone: YES];
+				[self performSelectorOnMainThread:@selector( setDefaultPETWLWW:) withObject:self waitUntilDone: NO];
 			}
 		}
 		
 		if( [[pixList[0] objectAtIndex: 0] DCMPixShutterOnOff])
 		{
-			[self performSelectorOnMainThread:@selector( setShutterOnOffButton:) withObject: [NSNumber numberWithBool: YES] waitUntilDone: YES];
+			[self performSelectorOnMainThread:@selector( setShutterOnOffButton:) withObject: [NSNumber numberWithBool: YES] waitUntilDone: NO];
 		}
 	}
 	
@@ -4547,8 +4547,8 @@ static ViewerController *draggedController = 0L;
 	
 	if( stopThreadLoadImage == NO)
 	{
-		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: YES];
-		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: YES];
+		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
+		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
 		
 		switch( orientationVector)
 		{
