@@ -55,6 +55,7 @@ WindowLayoutManager *sharedLayoutManager;
 		_windowControllers = [[NSMutableArray alloc] init];
 		_hangingProtocolInUse = NO;
 		_seriesSetIndex = 0;
+
 	}
 	return self;
 }
@@ -67,11 +68,13 @@ WindowLayoutManager *sharedLayoutManager;
 		[_windowControllers addObject:controller];
 		//NSLog(@"register %@", controller);
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object:[controller window]];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name: NSWindowDidBecomeMainNotification object:[controller window]];
 	}
 }
 
 - (void)unregisterWindowController:(OSIWindowController *)controller{
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[controller window]];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeMainNotification object:[controller window]];
 	[_windowControllers removeObject:controller];
 	if ([_windowControllers count] == 0) {
 		[[_layoutWindowController window] performClose:self];	
@@ -83,6 +86,15 @@ WindowLayoutManager *sharedLayoutManager;
 	NSWindowController *controller = [[notification  object] windowController];
 	if ([controller isKindOfClass:[OSIWindowController class]])
 		[self unregisterWindowController:(OSIWindowController *)controller];
+	if ([_currentViewer isEqual:controller]) {
+		[_currentViewer release];
+		_currentViewer = nil;
+	}
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification{
+	[_currentViewer release];
+	_currentViewer = [[[notification object] windowController] retain];
 }
 
 
@@ -615,18 +627,11 @@ WindowLayoutManager *sharedLayoutManager;
 						id child = [[browserController childrenArray: studyToLoad] objectAtIndex:i];
 						// if series description is unnamed used series number
 						//find the right matching series
-						if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:@"unnamed"]){
-							//Try protocol name next
-							
-							if ([[seriesInfo objectForKey:@"protocolName"] isEqualToString:@"unnamed"]) {
-								if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
-									[children addObject:child];
-									seriesToOpen = child;
-									openViewer = YES;
-									break;
-								}
-							}
-							else if ([[child valueForKey:@"seriesDescription"] isEqualToString:[seriesInfo objectForKey:@"protocolName"]]) {
+						if ([[seriesInfo objectForKey:@"seriesDescription"] isEqualToString:NSLocalizedString(@"unnamed", nil)] && 
+												[[child valueForKey:@"name"] isEqualToString:NSLocalizedString(@"unnamed", nil)] ){
+							// use Series Number if no description
+							NSLog(@"Use Series Number: %d", [[seriesInfo objectForKey:@"seriesNumber"] intValue]);
+							if ([[child valueForKey:@"id"] intValue] == [[seriesInfo objectForKey:@"seriesNumber"] intValue]) {
 								[children addObject:child];
 								seriesToOpen = child;
 								openViewer = YES;
@@ -1115,6 +1120,9 @@ WindowLayoutManager *sharedLayoutManager;
 }
 - (int)seriesSetIndex {
 	return _seriesSetIndex;
+}
+- (NSWindowController	*)currentViewer{
+	return _currentViewer;
 }
 	
 

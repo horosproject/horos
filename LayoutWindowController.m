@@ -85,18 +85,20 @@
 }
 
 - (void)windowWillClose:(NSNotification *)note{
+	//NSLog(@"Advanced Window Closing");
 	[self save];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
-	NSLog(@"App Will Terminate");
-	[self save];
+	//NSLog(@"App Will Terminate");
+	//[self save];
 }
 
 - (void)save{
-	NSLog(@"Save Hanging Protocols");
+	//NSLog(@"Save Hanging Protocols");
 	id study = [[WindowLayoutManager sharedWindowLayoutManager] currentStudy];
 	NSMutableArray *advancedHangingProtocols = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"]];
+	//NSLog(@"****** HangingProtocols *************\n%@", _hangingProtocol);
 	if (!advancedHangingProtocols)
 		advancedHangingProtocols = [NSMutableArray array];
 	NSPredicate *modalityPredicate = [NSPredicate predicateWithFormat:@"modality like[cd] %@", [study valueForKey:@"modality"]];
@@ -134,7 +136,7 @@
 }
 
 - (void)setHangingProtocol:(NSMutableDictionary *)hangingProtocol{
-	NSLog(@"Layout set Hanging Protocol: %@", hangingProtocol);
+	//NSLog(@"Layout set Hanging Protocol: %@", hangingProtocol);
 	[_hangingProtocol release];
 	_hangingProtocol = [hangingProtocol retain];
 	BOOL isHidden = _hangingProtocol ? YES: NO;
@@ -168,7 +170,6 @@
 }
 
 - (BOOL)newButtonIsHidden{
-	NSLog(@"newButtonIsHidden: %d", _newButtonIsHidden);
 	return _newButtonIsHidden;
 }
 

@@ -42,6 +42,7 @@ It is a shared class.
 	NSArray					*_relatedStudies;
 	NSMutableDictionary		*_hangingProtocol;
 	LayoutWindowController	*_layoutWindowController;
+	OSIWindowController		*_currentViewer;
 	
 }
 
@@ -107,6 +108,8 @@ It is a shared class.
 - (NSArray *)seriesSets;
 - (void)setSeriesSetIndex: (int)seriesSetIndex;
 - (int)seriesSetIndex;
+
+- (NSWindowController	*)currentViewer;
 
 
 
