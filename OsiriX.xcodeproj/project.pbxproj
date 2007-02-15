@@ -12488,12 +12488,6 @@
 		CEBED2FC0B4050FD00A6731E /* DOServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEBED2F00B4050FC00A6731E /* DOServer.h */; };
 		CEBED2FD0B4050FD00A6731E /* DOClient.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F10B4050FD00A6731E /* DOClient.m */; };
 		CEBED2FE0B4050FD00A6731E /* DOServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F20B4050FD00A6731E /* DOServer.m */; };
-		CEBED3960B405C7400A6731E /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
-		CEBED3970B405C7400A6731E /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
-		CEBED3980B405C7400A6731E /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
-		CEBED3C70B405ED500A6731E /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
-		CEBED3F80B405EE500A6731E /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
-		CEBED3F90B405EF900A6731E /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEBED3950B405C7400A6731E /* ILCrashReporter.framework */; };
 		CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
 		CEC172060874839C0021C3FC /* burn_anim02.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171FA0874839C0021C3FC /* burn_anim02.tif */; };
@@ -13467,7 +13461,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEBED3C70B405ED500A6731E /* ILCrashReporter.framework in CopyFiles */,
 				AB7D548D0AF6428F00012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606B0979B1ED00891EA9 /* DotMacKit.framework in CopyFiles */,
@@ -13482,7 +13475,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEBED3F90B405EF900A6731E /* ILCrashReporter.framework in CopyFiles */,
 				AB7D548F0AF6429900012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908520AF20BA700E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CE6D6F30098139E7009F0B5A /* DotMacKit.framework in CopyFiles */,
@@ -13497,7 +13489,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEBED3F80B405EE500A6731E /* ILCrashReporter.framework in CopyFiles */,
 				AB7D548E0AF6429400012A2F /* libxerces-c.27.dylib in CopyFiles */,
 				ABD908500AF20B8A00E47345 /* libdcmprintscu.dylib in CopyFiles */,
 				CEFE606C0979B1F600891EA9 /* DotMacKit.framework in CopyFiles */,
@@ -16885,7 +16876,6 @@
 		CEBED2F00B4050FC00A6731E /* DOServer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DOServer.h; sourceTree = "<group>"; };
 		CEBED2F10B4050FD00A6731E /* DOClient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DOClient.m; sourceTree = "<group>"; };
 		CEBED2F20B4050FD00A6731E /* DOServer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DOServer.m; sourceTree = "<group>"; };
-		CEBED3950B405C7400A6731E /* ILCrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ILCrashReporter.framework; path = Binaries/ILCrashReporter.framework; sourceTree = "<group>"; };
 		CEC171F80874839C0021C3FC /* burn_anim00.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim00.tif; sourceTree = "<group>"; };
 		CEC171F90874839C0021C3FC /* burn_anim01.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim01.tif; sourceTree = "<group>"; };
 		CEC171FA0874839C0021C3FC /* burn_anim02.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim02.tif; sourceTree = "<group>"; };
@@ -17073,7 +17063,6 @@
 				ABD908480AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				CEBED3960B405C7400A6731E /* ILCrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17154,7 +17143,6 @@
 				AB6B75EB0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 				ABD9084A0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C90AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				CEBED3970B405C7400A6731E /* ILCrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17370,7 +17358,6 @@
 				AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 				ABD9084C0AF20B7C00E47345 /* libdcmprintscu.dylib in Frameworks */,
 				CE6693C80AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
-				CEBED3980B405C7400A6731E /* ILCrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17640,7 +17627,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CEBED3950B405C7400A6731E /* ILCrashReporter.framework */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */,
 				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,

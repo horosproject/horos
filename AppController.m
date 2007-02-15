@@ -42,9 +42,9 @@ MODIFICATION HISTORY
   
 ****************************************************************/
 
-#if !__LP64__
-#import <ILCrashReporter/ILCrashReporter.h>
-#endif
+//#if !__LP64__
+//#import <ILCrashReporter/ILCrashReporter.h>
+//#endif
 
 #import "DOClient.h"
 #import "ToolbarPanel.h"
@@ -1422,10 +1422,10 @@ static BOOL initialized = NO;
 				
 				srandom(time(NULL));
 				
-				#if !__LP64__
-				if( osVersion() < 0x1050UL)		// Not tested with MacOS 10.5
-					[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
-				#endif
+//				#if !__LP64__
+//				if( osVersion() < 0x1050UL)		// Not tested with MacOS 10.5
+//					[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"rossetantoine@mac.com"];
+//				#endif
 				
 				mainThread = [NSThread currentThread];
 							
