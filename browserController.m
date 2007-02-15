@@ -3828,7 +3828,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			[self matrixInit: [matrixViewArray count]];
 			
-			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: [self imagesArray: item preferredObject:oFirstForFirst]];
+			BOOL imageLevel = NO;
+			NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
+			if( [files count] > 1)
+			{
+				if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
+			}
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
+			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 			
 			if( previousItem == item)
 			{
@@ -5741,12 +5749,13 @@ static BOOL withReset = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
 }
 
-- (void) matrixLoadIcons:(NSArray*) files
+- (void) matrixLoadIcons:(NSDictionary*) dict
 {
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
 	long							i, subGroupCount = 1, position = 0;
 	BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
-	BOOL							imageLevel = NO;
+	BOOL							imageLevel = [[dict valueForKey: @"imageLevel"] boolValue];
+	NSArray							*files = [dict valueForKey: @"files"];
 	
 	[matrixLoadIconsLock lock];
 	
@@ -5764,15 +5773,6 @@ static BOOL withReset = NO;
 	
 	@try
 	{
-		if( [files count] > 1)
-		{
-			if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"])
-			{
-				NSLog( @"image level");
-				imageLevel = YES;
-			}
-		}
-		
 		if( imageLevel)	[managedObjectContext unlock];
 		
 		for( i = 0; i < [files count];i++)
