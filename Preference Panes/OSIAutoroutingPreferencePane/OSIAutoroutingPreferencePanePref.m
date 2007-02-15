@@ -92,6 +92,23 @@
 	[routesTable setTarget: self];
 	
 	[autoroutingActivated setState: [defaults boolForKey:@"AUTOROUTINGACTIVATED"]];
+	
+	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+	
+	for( i = 0; i < [routesArray count]; i++)
+	{
+		NSLog( [[routesArray objectAtIndex:i] valueForKey:@"server"]);
+		
+		int		x;
+		BOOL	found = NO;
+		for( x = 0; x < [serversArray count]; x++)
+		{
+			if( [[[serversArray objectAtIndex: x] valueForKey:@"Description"] isEqualToString: [[routesArray objectAtIndex:i] valueForKey:@"server"]]) found = YES;
+		}
+		
+		if( found == NO)
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server",nil), [NSString stringWithFormat:NSLocalizedString( @"This server doesn't exist in the Locations list: %@",nil), [[routesArray objectAtIndex: i] valueForKey:@"server"]],NSLocalizedString( @"OK",nil), nil, nil);
+	}
 }
 
 -(void) willUnselect

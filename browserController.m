@@ -1311,12 +1311,17 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( server)
 			{
+				BOOL	isFault = NO;
+				int		x;
+				
+				for( x = 0; x < [objectsToSend count] ; x++) if( [[objectsToSend objectAtIndex: x] isFault]) isFault = YES;
+				
 				NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
 				NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 				
 				objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
 				
-				int					x;
+				
 				NSString			*previousPatientUID = 0L;
 				NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 				
@@ -1345,7 +1350,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			else
 			{
 				NSLog(@"server not found for autorouting: %@", serverName);
-				NSException *ne = [NSException exceptionWithName:@"Unknown destination server. Add it to the Locations list - see Preferences." reason:serverName userInfo:0L];
+				NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", 0L) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:0L];
 				
 				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", 0L] waitUntilDone: NO];
 			}

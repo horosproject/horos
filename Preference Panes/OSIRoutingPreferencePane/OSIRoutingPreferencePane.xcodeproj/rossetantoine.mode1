@@ -220,8 +220,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -267,8 +265,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
-									<integer>11</integer>
+									<integer>5</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -292,7 +290,7 @@
 							<real>263</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>-1680 127 1411 773 -1680 -150 1680 1050 </string>
+						<string>1069 222 1411 773 0 0 2560 1578 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -303,6 +301,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -320,10 +320,16 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AB95E1DD0AC02C7800F8BEE3</string>
+										<string>ABC4FFB20B84BDE700D6CFC4</string>
 										<key>history</key>
 										<array>
-											<string>AB381B330ABEA14900239326</string>
+											<string>ABC4FF870B84B80100D6CFC4</string>
+											<string>ABC4FF880B84B80100D6CFC4</string>
+										</array>
+										<key>prevStack</key>
+										<array>
+											<string>ABC4FF890B84B80100D6CFC4</string>
+											<string>ABC4FF8A0B84B80100D6CFC4</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -337,7 +343,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1126, 727}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1680 127 1411 773 -1680 -150 1680 1050 </string>
+								<string>1069 222 1411 773 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -357,7 +363,7 @@
 								<key>Frame</key>
 								<string>{{0, 732}, {1126, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1680 127 1411 773 -1680 -150 1680 1050 </string>
+								<string>1069 222 1411 773 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -381,9 +387,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>AB95E1A30AC02A4E00F8BEE3</string>
+				<string>ABC4FF8C0B84B80100D6CFC4</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>AB95E1A40AC02A4E00F8BEE3</string>
+				<string>ABC4FF8D0B84B80100D6CFC4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -517,10 +523,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>ABA06BCE09AB1C8B00CCC284</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIRoutingPreferencePane/OSIRoutingPreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>-1680 127 1411 773 -1680 -150 1680 1050 </string>
+	<string>1069 222 1411 773 0 0 2560 1578 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -550,7 +557,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {500, 218}}</string>
 								<key>RubberWindowFrame</key>
-								<string>396 289 500 500 0 0 1440 878 </string>
+								<string>868 796 500 500 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -574,7 +581,7 @@
 								<key>Frame</key>
 								<string>{{0, 223}, {500, 236}}</string>
 								<key>RubberWindowFrame</key>
-								<string>396 289 500 500 0 0 1440 878 </string>
+								<string>868 796 500 500 0 0 2560 1578 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -597,14 +604,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>ABA06BCE09AB1C8B00CCC284</string>
-				<string>AB80AB180A19CD4100FED357</string>
+				<string>ABC4FFA20B84BCC000D6CFC4</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>396 289 500 500 0 0 1440 878 </string>
+			<string>868 796 500 500 0 0 2560 1578 </string>
 			<key>WindowToolGUID</key>
 			<string>ABA06BCE09AB1C8B00CCC284</string>
 			<key>WindowToolIsVisible</key>

@@ -78,6 +78,7 @@
 	routingCalendars = [[[defaults arrayForKey:@"ROUTING CALENDARS"]  mutableCopy] retain];
 	//setup GUI
 	[routingActivated setState: [defaults boolForKey:@"ROUTINGACTIVATED"]];
+	
 	//[calendarTable setEnabled:[routingActivated state]];
 }
 
