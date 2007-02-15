@@ -206,11 +206,11 @@ ExtractFileMetaInformation3 (PapyShort inFileNb)
     gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
     gArrCompression  [inFileNb] = JPEG_LOSSY;
   }
-//  else if (strcmp (theValP->a, "1.2.840.10008.1.2.4.50") == 0)
-//  {
-//    gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
-//    gArrCompression  [inFileNb] = JPEG_LOSSY;
-//  }
+  else if (strcmp (theValP->a, "1.2.840.10008.1.2.4.50") == 0)
+  {
+    gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_EXPL;
+    gArrCompression  [inFileNb] = JPEG_LOSSY;
+  }
   else if (strcmp (theValP->a, "1.2.756.777.1.2.4.70") == 0) /* PAPYRUS defined transfert syntax */
   {
     gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_IMPL;

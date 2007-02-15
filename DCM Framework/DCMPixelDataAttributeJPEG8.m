@@ -414,8 +414,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 
 - (NSMutableData *)convertJPEG8LosslessToHost:(NSData *)jpegData{
 //[jpegData writeToFile:[NSString stringWithFormat: @"%@/CT.jpg", NSHomeDirectory()] atomically:YES];
-if (DEBUG)
-		NSLog(@"convertjpeg8LosslessToHost");
+	if (DEBUG) NSLog(@"convertjpeg8LosslessToHost");
 	struct jpeg_error_mgr			theJErr;		 /* the JPEG error manager var */
 	struct jpeg_decompress_struct	theCInfo;
 	unsigned long				 theLimit;
@@ -424,11 +423,7 @@ if (DEBUG)
 	unsigned char					*theWrkCh8P; 		/* ptr to the image 8 bits */
 	unsigned char					*theBuffer8P;
 	NSMutableData					*rawData = nil ;
-	//initialize jpeg decompressor
 	
-	NSLog(@"decompress JPEG 8 frame length: %d", [jpegData length]);
-
-		
 	theCInfo.err = jpeg_std_error (&theJErr);
 	jpeg_create_decompress (&theCInfo);
 	
@@ -454,8 +449,9 @@ if (DEBUG)
 			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
 			NSString *photometricInterpretation = [attr value];
 			
-			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
-			else if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+//			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+//			else
+			if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 			else if([photometricInterpretation isEqualToString:@"YBR_ICT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
@@ -479,7 +475,7 @@ if (DEBUG)
 					break;
 				}
 			}
-			else theCInfo.jpeg_color_space = JCS_RGB;
+//			else theCInfo.jpeg_color_space = JCS_YCbCr;
 		}
 		break;
 	}

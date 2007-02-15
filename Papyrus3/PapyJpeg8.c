@@ -191,8 +191,9 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 		break;
     
 		case 3:
-			if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
-			else if(	mode == YBR_FULL_422 ||
+//			if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
+//			else
+			if(	mode == YBR_FULL_422 ||
 						mode == YBR_RCT ||
 						mode == YBR_ICT ||
 						mode == YBR_PARTIAL_422 ||
@@ -216,7 +217,7 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 					break;
 				}
 			}
-			else theCInfo.jpeg_color_space = JCS_RGB;
+			else theCInfo.jpeg_color_space = JCS_YCbCr;
 			
 			theCInfo.out_color_space = JCS_RGB;
 		break;

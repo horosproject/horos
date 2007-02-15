@@ -1408,7 +1408,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		theBytesToRead = (PapyULong) gx0028Rows [inFileNb] * (PapyULong) gx0028Columns [inFileNb] * 
     		     (PapyULong) (((gx0028BitsAllocated [inFileNb] - 1) / 8) + 1L);
 	}
-
+	
   /* if it is a RGB or a YBR_FULL image, multiply the bytes to read by 3 */
   if (inModuleId == ImagePixel && 
       (gArrPhotoInterpret [inFileNb] == RGB ||
