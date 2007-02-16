@@ -84,19 +84,20 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	yShift = 0;
 	zShift = 0;
 		
-	closingRadius = 2;
+	closingRadius = 1;//2;
+//	[closingRadiusSlider setIntValue:MORPH_RESAMPLE];
 	[closingRadiusSlider setMaxValue:10.0];
 	[closingRadiusSlider setMinValue:1.0];
 //	[closingRadiusSlider setNumberOfTickMarks:MORPH_RESAMPLE*2+1];
 	[closingRadiusSlider setNumberOfTickMarks:10];
-	[closingRadiusSlider setFloatValue:closingRadius+1];
+	[closingRadiusSlider setFloatValue:(float)closingRadius];
 
-	dilatationRadius = 0;
+	dilatationRadius = 1;
 	[dilatationRadiusSlider setMaxValue:10.0];
 	[dilatationRadiusSlider setMinValue:1.0];
 //	[dilatationRadiusSlider setNumberOfTickMarks:MORPH_RESAMPLE*2+1];
 	[dilatationRadiusSlider setNumberOfTickMarks:10];
-	[dilatationRadiusSlider setFloatValue:dilatationRadius+1];
+	[dilatationRadiusSlider setFloatValue:dilatationRadius];
 	
 	lowPassFilterSize = 0;
 	[lowPassFilterSizeSlider setIntValue:lowPassFilterSize];
@@ -369,31 +370,25 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void) resliceFromNotification: (NSNotification*) notification;
 {
-NSLog(@"LLMPRViewer resliceFromNotification");
 	if(injectedMPRController==nil) return;
-NSLog(@"injectedMPRController!=nil");
 	if(controller==nil) return;
-NSLog(@"controller!=nil");	
 
 	if([injectedMPRController thickSlab]!=[controller thickSlab] || [injectedMPRController thickSlabMode]!=[controller thickSlabMode])
 		return;
-NSLog(@"thickSlab");
 	
 	[injectedMPRController resliceFromNotification: notification];
 	[(LLMPRController*)controller resliceFromNotification: notification];
 
 	if([[[injectedMPRController originalView] dcmPixList] count]==0 || [[[injectedMPRController xReslicedView] dcmPixList] count]==0 || [[[injectedMPRController yReslicedView] dcmPixList] count]==0)
 		return;
-NSLog(@"dcmPixList count");
 	if([[[controller originalView] dcmPixList] count]==0 || [[[controller xReslicedView] dcmPixList] count]==0 || [[[controller yReslicedView] dcmPixList] count]==0)
 		return;
-NSLog(@"dcmPixList count");
 	[self refreshSubtractedViews];
 }
 
 - (void)refreshSubtractedViews;
 {
-NSLog(@"refreshSubtractedViews");
+	//NSLog(@"refreshSubtractedViews");
 	NSAutoreleasePool *tempPool;
 	
 	DCMPix *curPix;
@@ -1105,7 +1100,7 @@ NSLog(@"refreshSubtractedViews");
 	seed[0] = (long) x;
 	seed[1] = (long) y;
 	seed[2] = (long) z;
-	NSLog( @"seed : %d, %d, %d", x, y, z);
+	//NSLog( @"seed : %d, %d, %d", x, y, z);
 	NSArray	*roiList =	[ITKSegmentation3D fastGrowingRegionWithVolume:		[notInjectedViewer volumePtr]
 																			width:		[[[notInjectedViewer pixList] objectAtIndex: 0] pwidth]
 																			height:		[[[notInjectedViewer pixList] objectAtIndex: 0] pheight]
@@ -1115,9 +1110,9 @@ NSLog(@"refreshSubtractedViews");
 																		pixList:		[notInjectedViewer pixList]];		
 	NSLog( @">>>> Growing3D");
 	// Dilatation
-	NSLog( @"dilate");
+	//NSLog( @"dilate");
 	[notInjectedViewer applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
-	NSLog( @"erode");
+	//NSLog( @"erode");
 	[notInjectedViewer applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 	
 	// Bone Removal
@@ -1128,19 +1123,19 @@ NSLog(@"refreshSubtractedViews");
 	NSMutableArray	*roiToProceed = [NSMutableArray array];
 	int				i;
 	
-	NSLog( @"for");
+	//NSLog( @"for");
 	for( i = 0 ; i < [roiList count]; i++)
 	{
 		NSDictionary	*rr = [roiList objectAtIndex: i];
 		
-		NSLog( @"i : %d", i);
-		NSLog( @"[[notInjectedViewer pixList] indexOfObject: ] : %d", [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]);
+		//NSLog( @"i : %d", i);
+		//NSLog( @"[[notInjectedViewer pixList] indexOfObject: ] : %d", [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]);
 				
 		DCMPix	*injectedDCM = [[viewer pixList] objectAtIndex: [[notInjectedViewer pixList] indexOfObject: [rr objectForKey:@"curPix"]]];
 		
 		[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", injectedDCM, @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
 	}
-	NSLog( @"end for");
+	//NSLog( @"end for");
 	[viewer roiSetStartScheduler: roiToProceed];
 	
 	// Update views
@@ -1266,7 +1261,7 @@ NSLog(@"refreshSubtractedViews");
 	if([*volumeData length]< mem || [pix count]==0)
 	{
 		//NSLog(@"Not enough memory");
-		NSRunCriticalAlertPanel(@"Memory Error", @"Not enough memory", @"OK", nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"Memory Error", nil), NSLocalizedString(@"Not enough memory", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	else
 	{
@@ -1440,6 +1435,7 @@ NSLog(@"refreshSubtractedViews");
 		[subtractedOriginalView getWLWW:&iwl :&iww];
 		[vrPanel setWLWW:iwl :iww];
 		
+		[[vrPanel window] zoom:self];
 		[vrPanel showWindow:self];
 		[[vrPanel window] makeKeyAndOrderFront:self];
 		[[vrPanel window] display];
@@ -1652,7 +1648,7 @@ NSLog(@"refreshSubtractedViews");
 {
 	closingRadius = [sender intValue];
 	[closingRadiusTextField setFloatValue:(closingRadius-1)/(MORPH_RESAMPLE*1.0)];
-	NSLog(@"setClosingRadius : %d", closingRadius);
+	//NSLog(@"setClosingRadius : %d", closingRadius);
 	[self refreshSubtractedViews];
 }
 
@@ -1718,8 +1714,8 @@ NSLog(@"refreshSubtractedViews");
 
 - (void)initialDefaultSettings;
 {
-	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"])
-		return;
+//	if([[NSUserDefaults standardUserDefaults] dictionaryForKey:@"LLSubtractionParameters"])
+//		return;
 
 	injectedMinValue = 10;
 	injectedMaxValue = 500;
@@ -1729,10 +1725,10 @@ NSLog(@"refreshSubtractedViews");
 	subtractionMaxValue = 500;
 
 	dilatationRadius = 1;
-	closingRadius = 2;
+	closingRadius = 1;
 	displayBones = NO;
 	bonesThreshold = 200;
-	settingsName = @"Default";
+	settingsName = NSLocalizedString(@"Default", nil);
 	[self saveSettingsAs:settingsName];
 }
 
@@ -1743,7 +1739,7 @@ NSLog(@"refreshSubtractedViews");
 
 - (IBAction)cancelAddSettings:(id)sender;
 {
-	NSLog(@"cancelAddSettings");
+	//NSLog(@"cancelAddSettings");
 	[settingsNameSheetWindow orderOut:self];
 	[NSApp endSheet:settingsNameSheetWindow];
 	[settingsPopup selectItemWithTitle:settingsName];
@@ -1873,8 +1869,8 @@ NSLog(@"refreshSubtractedViews");
 		[menu addItemWithTitle:[sortedKeys objectAtIndex:i] action:@selector(applySettings:) keyEquivalent:@""];
 	}
 	if([sortedKeys count])[menu addItem:[NSMenuItem separatorItem]];
-	[menu addItemWithTitle:@"Save current settings as..." action:@selector(addCurrentSettings:) keyEquivalent:@""];
-	[menu addItemWithTitle:@"Remove current settings" action:@selector(removeCurrentSettings:) keyEquivalent:@""];
+	[menu addItemWithTitle:NSLocalizedString(@"Save current settings as...", nil) action:@selector(addCurrentSettings:) keyEquivalent:@""];
+	[menu addItemWithTitle:NSLocalizedString(@"Remove current settings", nil) action:@selector(removeCurrentSettings:) keyEquivalent:@""];
 	[settingsPopup setMenu:menu];
 }
 
