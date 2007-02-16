@@ -7329,6 +7329,8 @@ BOOL            readable = YES;
 		{
 			// LOAD THE FILE FROM BONJOUR SHARED DATABASE
 			
+			if( imageObj == 0L) NSLog( @"We need imageObj for Bonjour loading");
+			
 			[srcFile release];
 			srcFile = 0L;
 			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: imageObj :0];
@@ -7898,8 +7900,14 @@ BOOL            readable = YES;
 
 	[checking lock];
 	
-	[self CheckLoadIn];
-	
+	@try
+	{
+		[self CheckLoadIn];
+	}
+	@catch (NSException *ne)
+	{
+		NSLog( @"CheckLoad Exception");
+	}
 	[checking unlock];
 }
 

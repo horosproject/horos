@@ -3909,6 +3909,7 @@ static ViewerController *draggedController = 0L;
 	redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 	
 	[self setPixelList:f fileList:d volumeData:v];
+	
 	NSNotificationCenter *nc;
 	nc = [NSNotificationCenter defaultCenter];
 	[nc addObserver: self

@@ -3862,7 +3862,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				for( i = 0; i < [files count];i++) [previewPixThumbnails addObject: notFoundImage];
 			}
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
 			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 			
 			if( previousItem == item)
@@ -5789,6 +5789,7 @@ static BOOL withReset = NO;
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
 	long							i, subGroupCount = 1, position = 0;
 	BOOL							imageLevel = [[dict valueForKey: @"imageLevel"] boolValue];
+	NSArray							*files = [dict valueForKey: @"files"];
 	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
 	
 	[matrixLoadIconsLock lock];
@@ -5802,7 +5803,7 @@ static BOOL withReset = NO;
 			
 			thumbnail = [previewPixThumbnails objectAtIndex: i];
 			
-			dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:0L];
+			dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
 			if( dcmPix)
 			{
