@@ -402,8 +402,38 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	ROI *roi ;
 	while (roi = [enumerator nextObject]) {
 		[roi setDisplayCalciumScoring:YES];
-		if (addROIs)
+		if (addROIs) {
+			RGBColor aColor;
 			[_rois addObject:roi];
+			if ([[roi name] isEqualToString:NSLocalizedString(@"Left Coronary Artery", nil)]) {
+					aColor.red = 65535;
+					aColor.green =0;
+					aColor.blue = 0;
+			}	
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Anterior Descending Artery", nil)]) {
+					aColor.red = 0;
+					aColor.green =0;
+					aColor.blue = 65535;
+			}
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Left Circumflex Artery", nil)]) {
+					aColor.red = 65535;
+					aColor.green =65535;
+					aColor.blue = 0;
+			}
+			else if ([[roi name] isEqualToString:NSLocalizedString(@"Right Coronary Artery", nil)]) {
+					aColor.red = 65535;
+					aColor.green =0;
+					aColor.blue = 65535;
+			}
+			else {
+					aColor.red = 0;
+					aColor.green =65535;
+					aColor.blue = 0;
+			}
+			
+			[roi setColor:aColor];
+		}
+			
 	}
 	
 	if (addROIs)
