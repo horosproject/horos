@@ -624,6 +624,7 @@
 				if((int) pt.x==(int) selectedPoint.x && (float) pt.y==(float) selectedPoint.y)
 				{
 					[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forPointAtIndex:j inCurveAtIndex:i];
+					vrViewLowResolution = NO;
 					[self updateView];
 					return;
 				}
@@ -642,7 +643,7 @@
 - (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 {
 	nothingChanged = NO;
-	vrViewLowResolution = NO;
+	//vrViewLowResolution = NO;
 	[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
 	[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
 }
@@ -665,9 +666,9 @@
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	
-	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f\nalpha : %1.3f", pt.x, pt.y*pt.y] attributes:attrsDictionary] autorelease];
-	NSAttributedString *labelValue = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"value : %.0f", pt.x] attributes:attrsDictionary] autorelease];
-	NSAttributedString *labelAlpha = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"alpha : %1.3f", pt.y*pt.y] attributes:attrsDictionary] autorelease];
+	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"value : %.0f\nalpha : %1.3f", @"don't translate the 'backslash n' before 'alpha', it is a new line symbol!"), pt.x, pt.y*pt.y] attributes:attrsDictionary] autorelease];
+	NSAttributedString *labelValue = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"value : %.0f", nil), pt.x] attributes:attrsDictionary] autorelease];
+	NSAttributedString *labelAlpha = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"alpha : %1.3f", nil), pt.y*pt.y] attributes:attrsDictionary] autorelease];
 	
 	NSAffineTransform* transform = [self transform];
 	NSPoint pt1 = [transform transformPoint:pt];
@@ -1051,7 +1052,7 @@
 //			zoomFactor += inc;
 //			zoomFixedPoint += (inc * [self bounds].size.width / (zoomFactor*2)) / 2.0 ;	// 
 //			
-//			[self setCursorLabelWithText:[NSString stringWithFormat:@"zoom x %.1f", zoomFactor]];
+//			[self setCursorLabelWithText:[NSString stringWithFormat:NSLocalizedString(@"zoom x %.1f", nil), zoomFactor]];
 //		}
 		[self updateView];
 	}

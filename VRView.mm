@@ -6122,30 +6122,67 @@ public:
 	NSArray *firstCurve = [curves objectAtIndex:0];
 	NSArray *firstColors = [pointColors objectAtIndex:0];
 	
-	NSLog(@"setAdvancedCLUT");
-	if([[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO)
-		NSLog(@"isEqualToData");
-	if(appliedResolution == YES)
-		NSLog(@"appliedResolution = YES");
-	if(lowRes == NO)
-		NSLog(@"lowRes = NO");
-	NSLog(@"/////");
-	
 	if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
 	{	
 		colorTransferFunction->RemoveAllPoints();
 		opacityTransferFunction->RemoveAllPoints();
 	
+		opacityTransferFunction->AddSegment([controller minimumValue], 0.0, [controller maximumValue], 0.0);
+		
 		int i,j;
 		for(i=0; i<[curves count]; i++)
 		{
-			NSArray *aCurve = [curves objectAtIndex:i];
-			NSArray *someColors = [pointColors objectAtIndex:i];
+			NSMutableArray *aCurve = [NSMutableArray arrayWithArray:[curves objectAtIndex:i]];
+			NSMutableArray *someColors = [NSMutableArray arrayWithArray:[pointColors objectAtIndex:i]];
 			for(j=0; j<[aCurve count]; j++)
 			{
 				colorTransferFunction->AddRGBPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[someColors objectAtIndex:j] redComponent], [[someColors objectAtIndex:j] greenComponent], [[someColors objectAtIndex:j] blueComponent]);
 				opacityTransferFunction->AddPoint(OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x, [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y);
 			}
+			
+//			float x0, x1, x00, x11, alpha0, alpha1, alpha00, alpha11, r0, g0, b0, r1, g1, b1;
+//			
+//			opacityTransferFunction->AddSegment([controller minimumValue], 0.0, [[aCurve objectAtIndex:0] pointValue].x, 0.0);
+//			opacityTransferFunction->AddSegment([[aCurve lastObject] pointValue].x, 0.0, [controller maximumValue], 0.0);
+//					
+//			for(j=1; j<[aCurve count]; j++)
+//			{
+//				x0 = OFFSET16 + [[aCurve objectAtIndex:j-1] pointValue].x;
+//				x1 = OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x;
+//				x00 = [[aCurve objectAtIndex:j-1] pointValue].x;
+//				x11 = [[aCurve objectAtIndex:j] pointValue].x;
+//				alpha0 = [[aCurve objectAtIndex:j-1] pointValue].y * [[aCurve objectAtIndex:j-1] pointValue].y;
+//				alpha1 = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y;
+//				alpha00 = [[aCurve objectAtIndex:j-1] pointValue].y;
+//				alpha11 = [[aCurve objectAtIndex:j] pointValue].y;
+//				
+//				r0 = [[someColors objectAtIndex:j-1] redComponent];
+//				g0 = [[someColors objectAtIndex:j-1] greenComponent];
+//				b0 = [[someColors objectAtIndex:j-1] blueComponent];
+//				
+//				r1 = [[someColors objectAtIndex:j] redComponent];
+//				g1 = [[someColors objectAtIndex:j] greenComponent];
+//				b1 = [[someColors objectAtIndex:j] blueComponent];
+//				
+//				if(alpha0 >= opacityTransferFunction->GetValue(x0) && alpha1 >= opacityTransferFunction->GetValue(x1))
+//				{
+//					colorTransferFunction->AddRGBSegment(x0, r0, g0, b0, x1, r1, g1, b1);
+//					opacityTransferFunction->AddSegment(x0, alpha0, x1, alpha1);
+//				}
+//				else if(alpha0 <= opacityTransferFunction->GetValue(x0) && alpha1 >= opacityTransferFunction->GetValue(x1))
+//				{
+//					[aCurve replaceObjectAtIndex:j-1 withObject:[NSValue valueWithPoint:NSMakePoint((x00+x11)*0.5, (alpha00+alpha11)*0.5)]];
+//					[someColors replaceObjectAtIndex:j-1 withObject:[[someColors objectAtIndex:j-1] blendedColorWithFraction:0.5 ofColor:[someColors objectAtIndex:j]]];
+//					j--;
+//				}
+//				else if(alpha0 > opacityTransferFunction->GetValue(x0) && alpha1 < opacityTransferFunction->GetValue(x1))
+//				{
+//					[aCurve insertObject:[NSValue valueWithPoint:NSMakePoint((x00+x11)*0.5, (alpha00+alpha11)*0.5)] atIndex:j];
+//					[someColors insertObject:[[someColors objectAtIndex:j-1] blendedColorWithFraction:0.5 ofColor:[someColors objectAtIndex:j]] atIndex:j];
+//					j--;
+//				}
+//				// else means that the 2 points are under an oder curve -> they are invisible -> don't add them
+//			}
 		}
 		
 		[appliedCurves release];

@@ -2598,10 +2598,9 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 		NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 		[path appendString:@"/CLUTs/"];
 		[path appendString:(id)contextInfo];
-		NSLog(@"path : ", path);
+		
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
-			NSLog(@"fileExistsAtPath");
 			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object:curCLUTMenu userInfo: 0L];
