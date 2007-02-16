@@ -4884,6 +4884,31 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			ee = imageNb;
 		}
 		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"] && ee != frameNo && maxFrame > 1)
+		{
+			imPix->shutterRect_x = shutterRect_x;
+			imPix->shutterRect_y = shutterRect_y;
+			imPix->shutterRect_w = shutterRect_w;
+			imPix->shutterRect_h = shutterRect_h;
+			
+			imPix->shutterCircular_x = shutterCircular_x;
+			imPix->shutterCircular_y = shutterCircular_y;
+			imPix->shutterCircular_radius = shutterCircular_radius;
+			
+			if( shutterPolygonalSize)
+			{
+				imPix->shutterPolygonalSize = shutterPolygonalSize;
+				imPix->shutterPolygonal = malloc( shutterPolygonalSize * sizeof( NSPoint));
+				int x;
+				for( x = 0; x < shutterPolygonalSize; x++)
+				{
+					imPix->shutterPolygonal[ x] = shutterPolygonal[ x];
+				}
+			}
+			
+			imPix->DCMPixShutterOnOff = DCMPixShutterOnOff;
+		}
+		
 //moved outside the loop (same *pixelAttr contains the data for all the frames)
 //		if ([dcmObject attributeValueWithName:@"PixelData"]) {
 //			DCMPixelDataAttribute *pixelAttr = (DCMPixelDataAttribute *)[dcmObject attributeWithName:@"PixelData"];
