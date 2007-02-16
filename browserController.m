@@ -1297,74 +1297,85 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[autoroutingQueueArray removeAllObjects];
 	[autoroutingQueue unlock];
 	
-	if( [copyArray count])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
-		NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
-		for( i = 0; i < [copyArray count]; i++)
+		if( [copyArray count])
 		{
-			NSArray			*objectsToSend = [[copyArray objectAtIndex: i] objectForKey:@"objects"];
-			NSString		*serverName = [[copyArray objectAtIndex: i] objectForKey:@"server"];
-			NSDictionary	*server = 0L;
-			
-			NSDictionary	*aServer;
-			NSEnumerator	*serverEnumerator	= [serversArray objectEnumerator];
-			while (aServer = [serverEnumerator nextObject])
+			NSLog(@"autorouting Queue start: %d objects", [copyArray count]);
+			for( i = 0; i < [copyArray count]; i++)
 			{
-				if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
+				NSArray			*objectsToSend = [[copyArray objectAtIndex: i] objectForKey:@"objects"];
+				NSString		*serverName = [[copyArray objectAtIndex: i] objectForKey:@"server"];
+				NSDictionary	*server = 0L;
+				
+				NSDictionary	*aServer;
+				NSEnumerator	*serverEnumerator	= [serversArray objectEnumerator];
+				while (aServer = [serverEnumerator nextObject])
 				{
-					NSLog( [aServer description]);
-					server = aServer;
-					break;
-				}
-			}
-			
-			if( server)
-			{
-				int		x;
-				
-				NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
-				NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-				
-				objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-				
-				
-				NSString			*previousPatientUID = 0L;
-				NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-				
-				for( x = 0; x < [objectsToSend count] ; x++)
-				{
-					if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]])
+					if ([[aServer objectForKey:@"Description"] isEqualToString: serverName]) 
 					{
-						[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
+						NSLog( [aServer description]);
+						server = aServer;
+						break;
 					}
-					else
+				}
+				
+				if( server)
+				{
+					int		x;
+					
+					@try
 					{
-						// Send the collected files from the same patient
+						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
+						
+						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
+						
+						
+						NSString			*previousPatientUID = 0L;
+						NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+						
+						for( x = 0; x < [objectsToSend count] ; x++)
+						{
+							if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]])
+							{
+								[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
+							}
+							else
+							{
+								// Send the collected files from the same patient
+								
+								if( [samePatientArray count]) [self executeSend: samePatientArray server: server];
+								
+								// Reset
+								[samePatientArray removeAllObjects];
+								[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
+								
+								previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"];
+							}
+						}
 						
 						if( [samePatientArray count]) [self executeSend: samePatientArray server: server];
-						
-						// Reset
-						[samePatientArray removeAllObjects];
-						[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
-						
-						previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"];
+					}
+					
+					@catch( NSException *ne)
+					{
+						NSLog( [ne name]);
+						NSLog( [ne reason]);
 					}
 				}
-				
-				if( [samePatientArray count]) [self executeSend: samePatientArray server: server];
+				else
+				{
+					NSLog(@"server not found for autorouting: %@", serverName);
+					NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", 0L) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:0L];
+					
+					[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", 0L] waitUntilDone: NO];
+				}
 			}
-			else
-			{
-				NSLog(@"server not found for autorouting: %@", serverName);
-				NSException *ne = [NSException exceptionWithName: NSLocalizedString(@"Unknown destination server. Add it to the Locations list - see Preferences.", 0L) reason: [NSString stringWithFormat:@"Destination: %@", serverName] userInfo:0L];
-				
-				[self performSelectorOnMainThread:@selector(showErrorMessage:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ne, @"exception", [NSDictionary dictionary], @"server", 0L] waitUntilDone: NO];
-			}
+			
+			NSLog(@"autorouting Queue end");
 		}
-		
-		NSLog(@"autorouting Queue end");
 	}
-	
 	[autoroutingInProgress unlock];
 	[pool release];
 }

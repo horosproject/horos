@@ -40,6 +40,10 @@
 {
 	[self checkView: [self mainView] :val];
 
+	if( val == YES)
+	{
+		[[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"] forKey: @"AUTOTILING"];
+	}
 //	[characterSetPopup setEnabled: val];
 //	[addServerDICOM setEnabled: val];
 //	[addServerSharing setEnabled: val];

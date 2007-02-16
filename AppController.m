@@ -2069,29 +2069,29 @@ static BOOL initialized = NO;
 		
 }
 
-- (NSRect) resizeWindow:(NSWindow*) win	withInRect:(NSRect) destRect
-{
-	NSRect	returnRect = [win frame];
-	
-	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
-	{
-		case 0:
-			returnRect = destRect;
-		break;
-		
-		default:
-			if( returnRect.size.width > destRect.size.width) returnRect.size.width = destRect.size.width;
-			if( returnRect.size.height > destRect.size.height) returnRect.size.height = destRect.size.height;
-			
-			// Center
-			
-			returnRect.origin.x = destRect.origin.x + destRect.size.width/2 - returnRect.size.width/2;
-			returnRect.origin.y = destRect.origin.y + destRect.size.height/2 - returnRect.size.height/2;
-		break;
-	}
-	
-	return returnRect;
-}
+//- (NSRect) resizeWindow:(NSWindow*) win	withInRect:(NSRect) destRect
+//{
+//	NSRect	returnRect = [win frame];
+//	
+//	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"WINDOWSIZEVIEWER"])
+//	{
+//		case 0:
+//			returnRect = destRect;
+//		break;
+//		
+//		default:
+//			if( returnRect.size.width > destRect.size.width) returnRect.size.width = destRect.size.width;
+//			if( returnRect.size.height > destRect.size.height) returnRect.size.height = destRect.size.height;
+//			
+//			// Center
+//			
+//			returnRect.origin.x = destRect.origin.x + destRect.size.width/2 - returnRect.size.width/2;
+//			returnRect.origin.y = destRect.origin.y + destRect.size.height/2 - returnRect.size.height/2;
+//		break;
+//	}
+//	
+//	return returnRect;
+//}
 
 - (void) checkAllWindowsAreVisible:(id) sender
 {
@@ -2276,7 +2276,7 @@ static BOOL initialized = NO;
 			NSRect frame = [screen visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
-			[[viewersList objectAtIndex:i] setWindowFrame: [self resizeWindow: [[viewersList objectAtIndex:i] window] withInRect: frame]];				
+			[[viewersList objectAtIndex:i] setWindowFrame: frame];				
 		}
 	}
 	
