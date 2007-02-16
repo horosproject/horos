@@ -3846,7 +3846,23 @@ static BOOL				DICOMDIRCDMODE = NO;
 				if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
 			}
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
+			int i;
+			if( imageLevel == NO)
+			{
+				for( i = 0; i < [files count];i++)
+				{
+					NSImage *thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
+					if( thumbnail == 0L) thumbnail = notFoundImage;
+					
+					[previewPixThumbnails addObject: thumbnail];
+				}
+			}
+			else
+			{
+				for( i = 0; i < [files count];i++) [previewPixThumbnails addObject: notFoundImage];
+			}
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", 0L];
 			[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 			
 			if( previousItem == item)
@@ -5409,9 +5425,31 @@ static BOOL withReset = NO;
 		
 		@try
 		{
-			NSString	*modality = [[pix imageObj] valueForKey: @"modality"];
-			NSString	*seriesSOPClassUID = [[pix seriesObj] valueForKey: @"seriesSOPClassUID"];
-			NSString	*fileType = [[pix imageObj] valueForKey: @"fileType"];
+			NSString	*modality, *seriesSOPClassUID, *fileType;
+			
+			if( [[curFile valueForKey:@"type"] isEqualToString:@"Image"])
+			{
+				modality = [curFile valueForKey: @"modality"];
+				seriesSOPClassUID = [curFile valueForKeyPath: @"series.seriesSOPClassUID"];
+				fileType = [curFile valueForKey: @"fileType"];
+			}
+			else	// Series
+			{
+				seriesSOPClassUID = [curFile valueForKey: @"seriesSOPClassUID"];
+				
+				DicomImage *im = [[curFile valueForKey:@"images"] anyObject];
+				modality = [im valueForKey: @"modality"];
+				fileType = [im valueForKey: @"fileType"];
+				
+				if( img != notFoundImage)
+				{
+					if( [curFile valueForKey:@"thumbnail"] == 0L)
+					{
+						NSData *data = [BrowserController produceJPEGThumbnail: img];
+						[curFile setValue: data forKey:@"thumbnail"];
+					}
+				}
+			}
 			
 			if( img || [modality isEqualToString: @"RTSTRUCT"])
 			{
@@ -5459,24 +5497,10 @@ static BOOL withReset = NO;
 						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", 0L), name, count]];
 					}
 					else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", 0L), name, count]];
-					
-//					int state = [[curFile valueForKey:@"stateText"] intValue];
-//					
-//					if( state == 0)
-//					{
-//						state = [[curFile valueForKeyPath:@"study.stateText"] intValue];
-//					}
-//					
-//					if( state) [cell setFont:[NSFont boldSystemFontOfSize:10]];
-					
-					//	[oMatrix setToolTip:[NSString stringWithFormat:@"%@ (%@)", [curFile valueForKey:@"name"],[curFile valueForKey:@"id"]] forCell:cell];
 				}
-				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) {
-					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
-				}
-				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Study"]) {
-					[cell setTitle: name];
-					[oMatrix setToolTip:[curFile valueForKey:@"name"] forCell:cell];
+				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
+				{
+					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
 				}
 				
 				[cell setButtonType:NSPushOnPushOffButton];
@@ -5764,89 +5788,51 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
 	long							i, subGroupCount = 1, position = 0;
-	BOOL							StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 	BOOL							imageLevel = [[dict valueForKey: @"imageLevel"] boolValue];
-	NSArray							*files = [dict valueForKey: @"files"];
+	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
 	
 	[matrixLoadIconsLock lock];
 	
-	while( [managedObjectContext tryLock] == NO)
-	{
-		if( shouldDie == YES)
-		{
-			[pool release];
-			shouldDie = NO;
-			return;
-		}
-	}
-
-	[managedObjectContext retain];
-	
 	@try
 	{
-		if( imageLevel)	[managedObjectContext unlock];
-		
-		for( i = 0; i < [files count];i++)
+		for( i = 0; i < [filesPaths count];i++)
 		{
 			DCMPix*     dcmPix;
 			NSImage		*thumbnail = 0L;
-			BOOL		computeThumbnail = NO;
 			
-			if( StoreThumbnailsInDB && !imageLevel)
-			{
-				thumbnail = [[[NSImage alloc] initWithData: [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
-				if( thumbnail == 0L) computeThumbnail = YES;
-			}
+			thumbnail = [previewPixThumbnails objectAtIndex: i];
 			
-			dcmPix  = [[DCMPix alloc] myinit:[[files objectAtIndex:i] valueForKey:@"completePath"] :position :subGroupCount :0L :0 :[[[files objectAtIndex:i] valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:[files objectAtIndex:i]];
+			dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj:0L];
 			
 			if( dcmPix)
 			{
-				if( thumbnail == 0L)
+				if( thumbnail == notFoundImage)
 				{
 					[dcmPix computeWImage:YES :0 :0];
 					if( [dcmPix getImage] == 0L) NSLog(@"getImage == 0L");
 					[dcmPix revert];	// <- Kill the raw data
+					
+					thumbnail = [dcmPix getImage];
+					if( thumbnail == 0L) thumbnail = notFoundImage;
+					
+					[previewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
 				}
 				
-				if( thumbnail == 0L) thumbnail = [dcmPix getImage];
-				
-				if( StoreThumbnailsInDB && computeThumbnail && !imageLevel && thumbnail != 0L)
-				{
-					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
-					[[[files objectAtIndex:i] valueForKey: @"series"] setValue: data forKey:@"thumbnail"];
-				}
-				
-				if( thumbnail == 0L)
-				{
-					thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-					NSLog(@"thumbnail failed");
-				}
-				
-				[previewPixThumbnails addObject: thumbnail];
 				[previewPix addObject: dcmPix];
-				
 				[dcmPix release];
 				
-				if (shouldDie == YES)
-				{
-					i = [files count];
-					NSLog(@"LoadPreview should die");
-				}
+				if (shouldDie == YES) i = [filesPaths count];
 			}
 			else
 			{
 				dcmPix = [[DCMPix alloc] myinitEmpty];
 				[previewPix addObject: dcmPix];
-				[previewPixThumbnails addObject: [NSImage imageNamed: @"FileNotFound.tif"]];
-				
+				[previewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
 				[dcmPix release];
 			}
 			
-			//Delay( 30, 0L);
+//			Delay( 10, 0L);
 		}
-		
-		if( imageLevel == NO)	[managedObjectContext unlock];
 		
 		shouldDie = NO;
 		
@@ -5856,10 +5842,7 @@ static BOOL withReset = NO;
 	@catch( NSException *ne)
 	{
 		NSLog(@"matrixLoadIcons exception: %@", [ne description]);
-		[managedObjectContext unlock];
 	}
-	
-	[managedObjectContext release];
 	
 	[matrixLoadIconsLock unlock];
 	
@@ -8206,7 +8189,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		
-//		NSImage	*notFound = [NSImage imageNamed:@"FileNotFound.tif"];
+		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
 //		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
 		
 		bonjourReportFilesToCheck = [[NSMutableDictionary dictionary] retain];

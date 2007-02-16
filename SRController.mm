@@ -83,7 +83,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[self setShouldSmooth:YES];
 	[self setFirstSurface:300.0];
 	[self setSecondSurface: -500.0];
-	[self setResolution: 0.5];
 	[self setFirstTransparency: 1.0];
 	[self setSecondTransparency: 1.0];
 	[self setDecimate: 0.5];
@@ -99,7 +98,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[self setFusionShouldSmooth:YES];
 	[self setFusionFirstSurface:300.0];
 	[self setFusionSecondSurface: -500.0];
-	[self setFusionResolution: 0.5];
 	[self setFusionFirstTransparency: 1.0];
 	[self setFusionSecondTransparency: 1.0];
 	[self setFusionDecimate: 0.5];

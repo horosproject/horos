@@ -214,6 +214,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSConditionLock					*newFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
+	
+	NSImage							*notFoundImage;
 }
 
 + (BrowserController*) currentBrowser;
