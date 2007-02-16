@@ -268,8 +268,6 @@ PluginManager			*pluginManager = 0L;
 	else return (NSString *)resolvedPath;
 }
 
-
-
 - (void) discoverPlugins
 {
 	BOOL		conflict = NO;
@@ -362,13 +360,10 @@ PluginManager			*pluginManager = 0L;
 								[pluginsDict setObject:plugin forKey:[menuTitles objectAtIndex: 0]];
 							}
 						}
-						
-						
 					}
 					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Report"]) 
 					{
-						//NSLog(@"report PLugin: %@", [[plugin infoDictionary] description]);
 						[reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
 					}
 				}
@@ -380,6 +375,69 @@ PluginManager			*pluginManager = 0L;
 -(void) noPlugins:(id) sender
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/Plugins.html"]];
+}
+
+- (NSString*)activePluginsDirectoryPath
+{
+	return @"Library/Application Support/OsiriX/Plugins/";
+}
+
+- (NSString*)inactivePluginsDirectoryPath
+{
+	return @"Library/Application Support/OsiriX/Plugins (off)/";
+}
+
+- (NSString*)userActivePluginsDirectoryPath
+{
+	return [NSHomeDirectory() stringByAppendingPathComponent:[self activePluginsDirectoryPath]];
+}
+
+- (NSString*)userInactivePluginsDirectoryPath
+{
+	return [NSHomeDirectory() stringByAppendingPathComponent:[self inactivePluginsDirectoryPath]];
+}
+
+- (NSString*)systemActivePluginsDirectoryPath
+{
+	NSString *s = @"/";
+	return [s stringByAppendingPathComponent:[self activePluginsDirectoryPath]];
+}
+
+- (NSString*)systemInactivePluginsDirectoryPath
+{
+	NSString *s = @"/";
+	return [s stringByAppendingPathComponent:[self inactivePluginsDirectoryPath]];
+}
+
+- (NSArray*)pluginsList
+{
+	NSString *userPath = [self userActivePluginsDirectoryPath];
+	NSString *sysPath = [self systemActivePluginsDirectoryPath];
+
+	NSArray *paths = [NSArray arrayWithObjects:userPath, sysPath, nil];
+    NSEnumerator *pathEnum = [paths objectEnumerator];
+    NSString *path;
+	
+    NSMutableArray *plugins = [[NSMutableArray alloc] init];
+	Class filterClass;
+    while(path=[pathEnum nextObject])
+	{
+		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+		NSString *name;
+		
+		while(name = [e nextObject])
+		{
+			if([[name pathExtension] isEqualToString:@"plugin"])
+			{
+				NSBundle *plugin = [NSBundle bundleWithPath:[self pathResolved:[path stringByAppendingPathComponent:name]]];
+				if (filterClass = [plugin principalClass])	
+				{
+					[plugins addObject:[name stringByDeletingPathExtension]];
+				}
+			}
+		}
+	}
+	return plugins;
 }
 
 @end
