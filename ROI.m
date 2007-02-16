@@ -2227,6 +2227,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (BOOL) isTextualDataDisplayed
 {
+	// NO text for Calcium Score
+	if (_displayCalciumScoring)
+		return NO;
+		
 	BOOL drawTextBox = NO;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTIFSELECTED"] == NO || mode == ROI_selected)
@@ -2490,7 +2494,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				case 	ROI_selected:
 				case 	ROI_selectedModify:
 					glColor3f (0.5f, 0.5f, 1.0f);
-					glPointSize( 8.0);
+					//smaller points for calcium scoring
+					if (_displayCalciumScoring)
+						glPointSize( 3.0);
+					else
+						glPointSize( 8.0);
 					glBegin(GL_POINTS);
 					glVertex3f(screenXUpL, screenYUpL, 0.0);
 					glVertex3f(screenXDr, screenYUpL, 0.0);
@@ -2536,6 +2544,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						sprintf (line4, "Calcium Mass: %0.1f", [self calciumMass]);
 					}
 				}
+				//if (!_displayCalciumScoring)
 				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 			}
 		}
