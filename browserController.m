@@ -748,6 +748,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 									
 									// Relations
 									[seriesTable setValue:study forKey:@"study"];
+									// If a study has an SC or other non primary image  series. May need to change modality to true modality
+									if (([[study valueForKey:@"modality"] isEqualToString:@"OT"]  || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
+										&& !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
+										[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
 								}
 								else
 								{
