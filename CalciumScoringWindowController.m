@@ -301,46 +301,54 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 		[dcmObject setAttributeValues:[NSArray arrayWithObject:[study valueForKey:@"studyInstanceUID"]] forName:@"StudyInstanceUID"];
 		//[dcmObject setAttributeValues:[NSArray arrayWithObject:_seriesInstanceUID] forName:@"SeriesInstanceUID"];
 		[dcmObject setAttributeValues:[NSArray arrayWithObject:@"PDF"] forName:@"SeriesDescription"];
-		
+		//Add name
 		if ([self patientsName])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsName]] forName:@"PatientsName"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@""] forName:@"PatientsName"];
+		//add ID	
 		if ([self patientID])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientID]] forName:@"PatientID"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"0"] forName:@"PatientID"];
-			
+		// Add sex
 		if ([self patientsSex])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[self patientsSex]] forName:@"PatientsSex"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@""] forName:@"PatientsSex"];
-			
+		// add DOB	
 		if ([self patientsDOB])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"dateOfBirth"]]] forName:@"PatientsBirthDate"];
-			
-
-		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"Calcium Score "] forName:@"DocumentTitle"];
 		
+		// set Title
+		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"Calcium Score "] forName:@"DocumentTitle"];
+		// Instance Number
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 1]] forName:@"InstanceNumber"];
-			
+		// add Study ID	
 		if ([study valueForKey:@"id"])
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[study valueForKey:@"id"]] forName:@"StudyID"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSString stringWithFormat:@"%d", 0001]] forName:@"StudyID"];
 	
-		if ([study valueForKey:@"date"])
-			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]]] forName:@"StudyDate"];	
+		
+		// Add Dates
+		DCMCalendarDate *date = [DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]];
+		if (date) {
+			NSLog(@"Date: %@", [study valueForKey:@"date"]);
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[study valueForKey:@"date"]]] forName:@"StudyDate"];
+		}
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"StudyDate"];
 			
-		if ([study valueForKey:@"date"])	
-			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[study valueForKey:@"date"]]] forName:@"StudyTime"];
+	
+		DCMCalendarDate *time = [DCMCalendarDate dicomTimeWithDate:[study valueForKey:@"date"]];
+		if (time)	
+			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:time] forName:@"StudyTime"];
 		else
 			[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"StudyTime"];
 	
 
-		
+
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomDateWithDate:[NSDate date]]] forName:@"SeriesDate"];			
 		[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]] forName:@"SeriesTime"];
 			

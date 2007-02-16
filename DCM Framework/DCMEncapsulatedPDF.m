@@ -35,6 +35,7 @@
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"NO"] forName:@"BurnedInAnnotation"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"AcquisitionDatetime"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"DocumentTitle"];
+	[dcmObject setCharacterSet:[[[DCMCharacterSet alloc] initWithCode:@"ISO_IR 192"] autorelease]];
 	//Patient Info
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"PatientsName"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"PatientID"];
