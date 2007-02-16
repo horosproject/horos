@@ -5500,7 +5500,10 @@ static BOOL withReset = NO;
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
-					[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
+					if( [[curFile valueForKey: @"sliceLocation"] floatValue])
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
+					else
+						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
 				}
 				
 				[cell setButtonType:NSPushOnPushOffButton];
