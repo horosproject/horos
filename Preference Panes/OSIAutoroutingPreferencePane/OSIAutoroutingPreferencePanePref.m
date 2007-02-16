@@ -182,61 +182,67 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) editRoute:(id) sender
 {
-	newRouteMode = NO;
-	
-	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
-	if( [serversArray count] == 0)
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"New Route",nil),NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-	}
-	else
-	{
-		NSDictionary	*selectedRoute = [routesArray objectAtIndex: [routesTable selectedRow]];
+		newRouteMode = NO;
 		
-		if( selectedRoute)
+		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+		
+		if( [serversArray count] == 0)
 		{
-			int i;
-			[serverPopup removeItemAtIndex: 0];
-			for( i = 0; i < [serversArray count]; i++)
+			NSRunCriticalAlertPanel(NSLocalizedString(@"New Route",nil),NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+		}
+		else
+		{
+			NSDictionary	*selectedRoute = [routesArray objectAtIndex: [routesTable selectedRow]];
+			
+			if( selectedRoute)
 			{
-				NSString	*name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
-			
-				[serverPopup addItemWithTitle: name];
-			}
-			
-			[newName setStringValue: [selectedRoute valueForKey: @"name"]];
-			[newDescription setStringValue: [selectedRoute valueForKey: @"description"]];
-			[newFilter setStringValue: [selectedRoute valueForKey: @"filter"]];
-			
-			for( i = 0; i < [serversArray count]; i++)
-			{
-				if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]]) 
+				int i;
+				[serverPopup removeItemAtIndex: 0];
+				for( i = 0; i < [serversArray count]; i++)
 				{
-					[serverPopup selectItemAtIndex: i];
+					NSString	*name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
+				
+					[serverPopup addItemWithTitle: name];
 				}
+				
+				[newName setStringValue: [selectedRoute valueForKey: @"name"]];
+				[newDescription setStringValue: [selectedRoute valueForKey: @"description"]];
+				[newFilter setStringValue: [selectedRoute valueForKey: @"filter"]];
+				
+				for( i = 0; i < [serversArray count]; i++)
+				{
+					if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]]) 
+					{
+						[serverPopup selectItemAtIndex: i];
+					}
+				}
+				
+				[self selectServer: serverPopup];
+				
+				[NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 			}
-			
-			[self selectServer: serverPopup];
-			
-			[NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 		}
 	}
 }
 
 - (IBAction) newRoute:(id) sender
 {
-	NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-	
-	[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", 0L]];
-	
-	[routesTable reloadData];
-	
-	[routesTable selectRow: [routesArray count]-1 byExtendingSelection: NO];
-	
-	[self editRoute: self];
-	
-	newRouteMode = YES;
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		NSArray	*serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+		
+		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(modality like[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", 0L]];
+		
+		[routesTable reloadData];
+		
+		[routesTable selectRow: [routesArray count]-1 byExtendingSelection: NO];
+		
+		[self editRoute: self];
+		
+		newRouteMode = YES;
+	}
 }
 
 - (void) deleteSelectedRow:(id)sender
@@ -288,8 +294,11 @@ static BOOL newRouteMode = NO;
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
-	if( [[aTableColumn identifier] isEqualToString:@"activated"])
-		[[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		if( [[aTableColumn identifier] isEqualToString:@"activated"])
+			[[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
+	}
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex

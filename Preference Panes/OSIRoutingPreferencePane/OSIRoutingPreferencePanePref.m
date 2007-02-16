@@ -104,14 +104,17 @@
 
 - (IBAction) newCalendar:(id)sender
 {
-    [routingCalendars addObject:@"OsiriX Calendar"];    
-    [calendarTable reloadData];
-	
-//Set to edit new entry
-	[calendarTable selectRow:[routingCalendars count] - 1 byExtendingSelection:NO];
-	[calendarTable editColumn:0 row:[routingCalendars count] - 1  withEvent:nil select:YES];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:routingCalendars forKey:@"ROUTING CALENDARS"];
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
+		[routingCalendars addObject:@"OsiriX Calendar"];    
+		[calendarTable reloadData];
+		
+	//Set to edit new entry
+		[calendarTable selectRow:[routingCalendars count] - 1 byExtendingSelection:NO];
+		[calendarTable editColumn:0 row:[routingCalendars count] - 1  withEvent:nil select:YES];
+		
+		[[NSUserDefaults standardUserDefaults] setObject:routingCalendars forKey:@"ROUTING CALENDARS"];
+	}
 }
 
 //****** TABLEVIEW
@@ -125,18 +128,24 @@
     setObjectValue:anObject
     forTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
-{  
+{
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+	{
 		NSParameterAssert(rowIndex >= 0 && rowIndex < [routingCalendars count]);
 		[routingCalendars replaceObjectAtIndex:rowIndex withObject:anObject];
 		
 		[[NSUserDefaults standardUserDefaults] setObject:routingCalendars forKey:@"ROUTING CALENDARS"];
+	}
 }
 
 - (id)tableView:(NSTableView *)aTableView
     objectValueForTableColumn:(NSTableColumn *)aTableColumn
     row:(int)rowIndex
 {
-	return [routingCalendars objectAtIndex:rowIndex];
+	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
+		return [routingCalendars objectAtIndex:rowIndex];
+	else
+		return 0;
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex

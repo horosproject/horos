@@ -30,12 +30,12 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 193247210;
-			PBXWorkspaceStateSaveDate = 193247210;
+			PBXPerProjectTemplateStateSaveDate = 193306812;
+			PBXWorkspaceStateSaveDate = 193306812;
 		};
 		perUserProjectItems = {
+			AB258E830B85A27800CDF2B7 /* PBXTextBookmark */ = AB258E830B85A27800CDF2B7 /* PBXTextBookmark */;
 			ABC4FF870B84B80100D6CFC4 /* PBXTextBookmark */ = ABC4FF870B84B80100D6CFC4 /* PBXTextBookmark */;
-			ABC4FF880B84B80100D6CFC4 /* PBXTextBookmark */ = ABC4FF880B84B80100D6CFC4 /* PBXTextBookmark */;
 			ABC4FF890B84B80100D6CFC4 /* PBXTextBookmark */ = ABC4FF890B84B80100D6CFC4 /* PBXTextBookmark */;
 			ABC4FF8A0B84B80100D6CFC4 /* PBXTextBookmark */ = ABC4FF8A0B84B80100D6CFC4 /* PBXTextBookmark */;
 			ABC4FFB20B84BDE700D6CFC4 /* PBXTextBookmark */ = ABC4FFB20B84BDE700D6CFC4 /* PBXTextBookmark */;
@@ -46,6 +46,16 @@
 	};
 	8D202CE80486D31800D8A456 /* OSIRoutingPreferencePane */ = {
 		activeExec = 0;
+	};
+	AB258E830B85A27800CDF2B7 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F506C03D013D9D7901CA16C8 /* OSIRoutingPreferencePanePref.m */;
+		name = "if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)";
+		rLen = 71;
+		rLoc = 3595;
+		rType = 0;
+		vrLen = 1599;
+		vrLoc = 3135;
 	};
 	ABA06BC909AB1C6C00CCC284 /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -67,16 +77,6 @@
 		rLoc = 0;
 		rType = 0;
 		vrLen = 694;
-		vrLoc = 0;
-	};
-	ABC4FF880B84B80100D6CFC4 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F506C03D013D9D7901CA16C8 /* OSIRoutingPreferencePanePref.m */;
-		name = "OSIRoutingPreferencePanePref.m: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 1330;
 		vrLoc = 0;
 	};
 	ABC4FF890B84B80100D6CFC4 /* PBXTextBookmark */ = {
@@ -119,16 +119,16 @@
 	F506C03C013D9D7901CA16C8 /* OSIRoutingPreferencePanePref.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1236, 1134}}";
-			sepNavSelRange = "{706, 16}";
+			sepNavSelRange = "{674, 13}";
 			sepNavVisRect = "{{0, 0}, {1236, 1134}}";
 			sepNavWindowFrame = "{{15, 325}, {1281, 1248}}";
 		};
 	};
 	F506C03D013D9D7901CA16C8 /* OSIRoutingPreferencePanePref.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1079, 2240}}";
-			sepNavSelRange = "{2259, 0}";
-			sepNavVisRect = "{{0, 766}, {1079, 710}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1079, 2366}}";
+			sepNavSelRange = "{3595, 71}";
+			sepNavVisRect = "{{0, 1584}, {1079, 710}}";
 			sepNavWindowFrame = "{{-1665, -155}, {1354, 1050}}";
 		};
 	};
