@@ -903,6 +903,8 @@
 {
 	[super mouseDragged:theEvent];
 	
+	vrViewLowResolution = YES;
+	
 	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
 	{
@@ -998,6 +1000,8 @@
 					NSPoint shiftedPoint;
 					if([theEvent modifierFlags] & NSAlternateKeyMask)
 					{
+						shiftY = 0;
+						
 						float alpha = 1.0;
 						if(j>0 && j<[aCurve count]-1)
 							alpha = 2.0*fabsf(middlePointX - pt.x) / d;
