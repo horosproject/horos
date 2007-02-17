@@ -401,8 +401,22 @@ extern BrowserController *browserWindow;
 			else if (key == DCM_SOPInstanceUID) {
 				NSLog(@"sop Instance");
 				char *string;
+//				if (dcelem->getString(string).good() && string != NULL)
+//					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+					
 				if (dcelem->getString(string).good() && string != NULL)
-					predicate = [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+				{
+					NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+					NSArray *predicateArray = [NSArray array];
+					
+					int x;
+					for(x = 0; x < [uids count]; x++)
+					{
+						predicateArray = [predicateArray arrayByAddingObject: [NSPredicate predicateWithFormat:@"sopInstanceUID == %@", [uids objectAtIndex: x]]];
+					}
+					
+					predicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+				}
 			}
 			else if (key == DCM_InstanceNumber) {
 				char *string;
