@@ -34,7 +34,7 @@
 		codeMeaning:(NSString *)cm{
 	
 	DCMSequenceAttribute *sequence = [DCMSequenceAttribute sequenceAttributeWithName:@"ConceptNameCodeSequence"];
-	DCMObject *dcmObject = [DCMObject object];
+	DCMObject *dcmObject = [DCMObject dcmObject];
 	[dcmObject setAttributeValues:[NSArray arrayWithObject:codeValue] forName:@"CodeValue"];
 	[dcmObject setAttributeValues:[NSArray arrayWithObject:csd] forName:@"CodingSchemeDesignator"];
 	[dcmObject setAttributeValues:[NSArray arrayWithObject:cm] forName:@"CodeMeaning"];

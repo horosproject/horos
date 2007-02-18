@@ -27,7 +27,4 @@
 }
 
 
-- (id)initWithSopClassUID:(NSString *)sopClassUID  
-		sopInstanceUID:(NSString *)sopInstanceUID;
-
 @end

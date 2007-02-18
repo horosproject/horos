@@ -4473,8 +4473,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	
 	fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
 	bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue]; 
+	
+	if( [[dcmObject attributeValueWithName:@"BitsStored"] intValue] == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
+	{
+		bitsAllocated = 8;
+	}
+	
 	spp = 1;
 	if ([dcmObject attributeValueWithName:@"SamplesperPixel"]) spp = [[dcmObject attributeValueWithName:@"SamplesperPixel"] intValue];
+	
+	
 	
 	offset = 0.0;
 	if ([dcmObject attributeValueWithName:@"RescaleIntercept"]) offset = [[dcmObject attributeValueWithName:@"RescaleIntercept"] floatValue];	
