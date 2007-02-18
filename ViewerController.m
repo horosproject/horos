@@ -2174,15 +2174,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( index != NSNotFound)
 	{
-		if( [previewMatrix selectedRow] != index)
+		NSButtonCell *cell = [previewMatrix cellAtRow:index column: 0];
+			
+		if( [cell isBordered])
 		{
-			[previewMatrix selectCellAtRow:index column:0];
-			[previewMatrix scrollCellToVisibleAtRow: index column:0];
+			int i;
+			NSArray	*cells = [previewMatrix cells];
+			for( i = 0; i < [cells count] ; i++) [[cells objectAtIndex: i] setBordered: YES];
+			
+			[cell setBackgroundColor: [NSColor colorWithDeviceRed:181./256. green:213./256. blue:251./256. alpha:1.0]];
+			[cell setBordered: NO];
+			
+//			[previewMatrix selectCellAtRow:index column:0];
+//			[previewMatrix scrollCellToVisibleAtRow: index column:0];
 		}
 	}
 	else
 	{
-		[previewMatrix selectCellAtRow:-1 column:-1];
+		int i;
+		NSArray	*cells = [previewMatrix cells];
+		for( i = 0; i < [cells count] ; i++) [[cells objectAtIndex: i] setBordered: YES];
+//			
+//		[previewMatrix selectCellAtRow:-1 column:-1];
 	}
 }
 
@@ -2214,6 +2227,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
 			else
 				[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
+				
+			[self matrixPreviewSelectCurrentSeries];
 		}
 	}
 }
@@ -2425,7 +2440,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setImagePosition: NSImageBelow];
 				[cell setAction: @selector(matrixPreviewPressed:)];
 				[cell setTarget: self];
-				[cell setButtonType:NSPushOnPushOffButton];
+				[cell setButtonType:NSMomentaryPushInButton];
 				[cell setEnabled:YES];
 				
 				NSString	*name = [curSeries valueForKey:@"name"];
@@ -2451,7 +2466,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				if( [curImage valueForKey:@"series"] == curSeries)
 				{
-					[previewMatrix selectCellAtRow:index column:0];
+					[cell setBackgroundColor: [NSColor colorWithDeviceRed:181./256. green:213./256. blue:251./256. alpha:1.0]];
+					[cell setBordered: NO];
+//					[previewMatrix selectCellAtRow:index column:0];
 				}
 				
 				if( visible)
@@ -2503,8 +2520,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( showSelected)
 	{
-		[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
-		[previewMatrix scrollCellToVisibleAtRow: row column:0];
+		long				index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+		
+		if( index != NSNotFound)
+			[previewMatrix scrollCellToVisibleAtRow: index column:0];
 	}
 	
 	[previewMatrix setNeedsDisplay:YES];
@@ -2515,10 +2534,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) showCurrentThumbnail:(id) sender;
 {
-	int row, column;
-	
-	[previewMatrix getRow:&row column:&column ofCell:[previewMatrix selectedCell]];
-	[previewMatrix scrollCellToVisibleAtRow: row column:0];
+	long				index = [[[previewMatrix cells] valueForKey:@"representedObject"] indexOfObject: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]];
+		
+	if( index != NSNotFound)
+		[previewMatrix scrollCellToVisibleAtRow: index column:0];
 }
 
 - (void) buildMatrixPreview

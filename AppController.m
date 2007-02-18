@@ -2200,7 +2200,8 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	NSLog( [studyList description]);
+	if( [studyList count])
+		NSLog( [studyList description]);
 	
 	int viewerCount = [viewersList count];
 	NSArray *screens = [self viewerScreens];
