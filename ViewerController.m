@@ -2182,7 +2182,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			NSArray	*cells = [previewMatrix cells];
 			for( i = 0; i < [cells count] ; i++) [[cells objectAtIndex: i] setBordered: YES];
 			
-			[cell setBackgroundColor: [NSColor colorWithDeviceRed:181./256. green:213./256. blue:251./256. alpha:1.0]];
+			[cell setBackgroundColor: [NSColor selectedControlColor]];
 			[cell setBordered: NO];
 			
 //			[previewMatrix selectCellAtRow:index column:0];
@@ -2463,10 +2463,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				else [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[curSeries valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], count, type]];
 				
 				[previewMatrix setToolTip:[NSString stringWithFormat:@"Series ID:%@\rClick + Option:\rOpen in new window", [curSeries valueForKey:@"id"]] forCell:cell];
-				
 				if( [curImage valueForKey:@"series"] == curSeries)
 				{
-					[cell setBackgroundColor: [NSColor colorWithDeviceRed:181./256. green:213./256. blue:251./256. alpha:1.0]];
+					[cell setBackgroundColor: [NSColor selectedControlColor]];
 					[cell setBordered: NO];
 //					[previewMatrix selectCellAtRow:index column:0];
 				}
