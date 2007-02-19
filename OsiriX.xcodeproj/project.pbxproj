@@ -18161,10 +18161,10 @@
 				BF83CD8B09E741BC002041F3 /* ReportPluginFilter.m */,
 				BFAFEE9208F2220B002AD789 /* PluginFileFormatDecoder.h */,
 				BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */,
-				AB2C24E00677861300A08910 /* PluginFilter.m */,
 				AB2C24E10677861300A08910 /* PluginFilter.h */,
-				AB2C25200677873200A08910 /* PluginManager.m */,
+				AB2C24E00677861300A08910 /* PluginFilter.m */,
 				AB2C25210677873200A08910 /* PluginManager.h */,
+				AB2C25200677873200A08910 /* PluginManager.m */,
 			);
 			name = Plugins;
 			sourceTree = "<group>";
