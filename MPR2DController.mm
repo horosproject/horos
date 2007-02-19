@@ -728,7 +728,7 @@ extern NSString * documentsDirectory();
 	{
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			NSBeginAlertSheet(NSLocalizedString ( @"Delete a WL/WW preset",nil),NSLocalizedString ( @"Delete",nil),NSLocalizedString ( @"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, menuString, [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
+			NSBeginAlertSheet(NSLocalizedString ( @"Delete a WL/WW preset",nil),NSLocalizedString ( @"Delete",nil),NSLocalizedString ( @"Cancel",nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [menuString retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", menuString]);
 		}
 		else
 		{

@@ -5834,14 +5834,18 @@ static ViewerController *draggedController = 0L;
 
 - (void)deleteWLWW:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
+	NSString	*name = (id) contextInfo;
+	
     if( returnCode == 1)
     {
 		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
-        [presetsDict removeObjectForKey: (id) contextInfo];
+		[presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		
         [[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
     }
+	
+	[name release];
 }
 
 - (void) ApplyWLWW:(id) sender
@@ -5865,7 +5869,7 @@ static ViewerController *draggedController = 0L;
 		
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 		{
-			NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, name, [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", name]);
+			NSBeginAlertSheet( NSLocalizedString(@"Remove a WL/WW preset", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteWLWW:returnCode:contextInfo:), NULL, [name retain], [NSString stringWithFormat:@"Are you sure you want to delete preset : '%@'?", name]);
 			
 			return;
 		}

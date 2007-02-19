@@ -296,13 +296,17 @@ static float oldsetww, oldsetwl;
 
 - (void) deleteWLWW: (NSWindow *) sheet returnCode: (int) returnCode contextInfo: (void*) contextInfo
 {
+	NSString	*name = (id) contextInfo;
+	
     if( returnCode == 1)
     {
 		NSMutableDictionary *presetsDict = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"] mutableCopy] autorelease];
-        [presetsDict removeObjectForKey:(id)contextInfo];
+        [presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey: @"WLWW3"];
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: curWLWWMenu userInfo: 0L];
     }
+	
+	[name release];
 }
 
 
