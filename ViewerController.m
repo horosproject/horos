@@ -2341,7 +2341,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSError					*error = 0L;
 	long					i, x, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
-	BOOL					StoreThumbnailsInDB = [[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
+	BOOL					StoreThumbnailsInDB = YES;	//[[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
 	
 	BOOL visible = [self checkFrameSize];
 	
@@ -2469,6 +2469,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[cell setBordered: NO];
 //					[previewMatrix selectCellAtRow:index column:0];
 				}
+				else [cell setBordered: YES];
 				
 				if( visible)
 				{
