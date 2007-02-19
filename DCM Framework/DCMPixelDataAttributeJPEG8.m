@@ -475,7 +475,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 					break;
 				}
 			}
-//			else theCInfo.jpeg_color_space = JCS_RGB;
+			else theCInfo.jpeg_color_space = JCS_RGB;
 		}
 		break;
 	}
@@ -490,16 +490,12 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	 
 	/* JSAMPLEs per row in output buffer */
 	theRowStride = theCInfo.output_width * theCInfo.output_components;
-
     theBuffer8P = (unsigned char *) malloc ((unsigned long) theRowStride);
 	rawData = [NSMutableData dataWithLength: _rows * _columns * _samplesPerPixel];
     theWrkCh8P = [rawData mutableBytes];
 	
-
-  
-  theLimit = theCInfo.output_width * theCInfo.output_components;
-  
- 
+	theLimit = theCInfo.output_width * theCInfo.output_components;
+	
     while (theCInfo.output_scanline < theCInfo.output_height) 
     {
       (void) jpeg_read_scanlines (&theCInfo, (JSAMPARRAY) &theWrkCh8P, 1);

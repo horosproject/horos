@@ -1416,10 +1416,9 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	   gArrPhotoInterpret [inFileNb] == YBR_ICT  ||
 	   gArrPhotoInterpret [inFileNb] == YUV_RCT  ||
 	   gArrPhotoInterpret [inFileNb] == YBR_RCT)) theBytesToRead *= 3L;
-  /* if it is a YBR_FULL_422 or a YBR_PARTIAL_422 then multiply the bytes to read by 2 */
   else if (inModuleId == ImagePixel && 
            (gArrPhotoInterpret [inFileNb] == YBR_FULL_422 ||
-            gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)) theBytesToRead *= 2L;
+            gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)) theBytesToRead *= 3L;
   
   /* allocate the memory for the pixel data */
   
