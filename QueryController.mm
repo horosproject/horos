@@ -495,6 +495,11 @@ static char *GetPrivateIP()
 	
 	if( atLeastOneSource == NO)
 		NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
+
+	if ([sender isKindOfClass:[NSSearchField class]])
+	{
+		[sender selectText: self];
+	}
 }
 
 // This function calls many GUI function, it has to be called from the main thread
