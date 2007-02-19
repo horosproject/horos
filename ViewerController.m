@@ -1300,6 +1300,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[contextual addItem:item];
 			[item release];
 			
+			// Tiling
+			NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
+			menu = [tilingMenu copy];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""];
+			[item setSubmenu:menu];
+			[contextual addItem:item];
+			[item release];
+			[menu release];
+			
 			//Export Added 12/5/05
 			/*************Export submenu**************/
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
