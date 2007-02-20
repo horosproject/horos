@@ -4615,19 +4615,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (MyOutlineView*) databaseOutline {return databaseOutline;}
 
-- (IBAction) databaseDoublePressed:(id)sender
+- (void) databaseOpenStudy:(NSManagedObject	*) item
 {
-	if( [databaseOutline clickedRow] == -1) return;
-
-    NSManagedObject		*item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
-    long				i;
+	long				i;
 					
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
 		// ZIP files with XML descriptor
 		NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
 		NSArray *imagesArray = [imagesSet allObjects];
-		if([imagesArray count]==1)
+		if([imagesArray count] == 1)
 		{
 			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
 			{
@@ -4664,6 +4661,20 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 				return;
 			}
+			else if ([[imagesArray objectAtIndex:0] isEqualToString:@"DICOMMPEG2"])
+			{
+				imagesSet = [item valueForKeyPath: @"images.path"];
+				imagesArray = [imagesSet allObjects];
+				NSString *filePath = [imagesArray objectAtIndex:0];
+				
+				if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
+				{
+					NSRunAlertPanel(@"MPEG-2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
+				}
+				
+				return;
+			}
+
 		}	
 		
 		// DICOM & others
@@ -4673,7 +4684,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	else	// STUDY - HANGING PROTOCOLS
 	{
-	
 		// files with XML descriptor, do nothing
 		NSSet *imagesSet = [item valueForKeyPath: @"series.images.fileType"];
 		NSArray *imagesArray = [[[imagesSet allObjects] objectAtIndex:0] allObjects];
@@ -4722,6 +4732,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 			}
 		}
 	}
+}
+
+- (IBAction) databaseDoublePressed:(id)sender
+{
+	NSManagedObject		*item;
+	
+	if( [databaseOutline clickedRow] != -1) item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
+	else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+	
+	[self databaseOpenStudy: item];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -4868,7 +4888,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			NSArray	*seriesArray = [self childrenArray: study];
 			
+			[self outlineViewSelectionDidChange: 0L];
+			
 			[self matrixDisplayIcons: self];	//Display the icons, if necessary
+			
+			[matrixLoadIconsLock lock];
+			[matrixLoadIconsLock unlock];
 			
 			long seriesPosition = [seriesArray indexOfObject: [curImage valueForKey:@"series"]];
 			
@@ -7523,6 +7548,11 @@ static BOOL needToRezoom;
 	
     cells = [oMatrix selectedCells];
 	
+	if( [cells count] == 0 && [[oMatrix cells] count] > 0)
+	{
+		cells = [NSArray arrayWithObject: [[oMatrix cells] objectAtIndex: 0]];
+	}
+	
 	//////////////////////////////////////
 	// Open selected images only !!!
 	//////////////////////////////////////
@@ -7833,101 +7863,112 @@ static BOOL needToRezoom;
 - (void) newViewerDICOM: (id) sender
 {
 	long				index;
-	NSManagedObject		*image;
-	
-	if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu])
-	{
-		image = [self firstObjectForDatabaseMatrixSelection];
-	}
-	else
-	{
-		image = [self firstObjectForDatabaseOutlineSelection];
-	}
-	// do nothing for a ZIP file with XML descriptor
-	BOOL zipFile = NO;
-	if ([[image valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"])
-	{
-		NSSavePanel *savePanel = [NSSavePanel savePanel];
-		[savePanel setCanSelectHiddenExtension:YES];
-		[savePanel setRequiredFileType:@"zip"];
-		
-		NSString *filePath = [image valueForKey:@"path"];
-		NSString *fileName = [filePath lastPathComponent];
-		if([savePanel runModalForDirectory:0L file:fileName] == NSFileHandlingPanelOKButton)
-		{
-			// write the file to the specified location on the disk
-			NSFileManager *fileManager = [NSFileManager defaultManager];
-			// zip
-			NSString *newFilePath = [[savePanel URL] path];
-			if ([fileManager fileExistsAtPath:filePath])
-				[fileManager copyPath:filePath toPath:newFilePath handler:nil];
-			// xml
-			NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
-			[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
-			[xmlFilePath appendString: @"xml"];
-			NSLog(@"xmlFilePath : %@", xmlFilePath);
-			NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
-			[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
-			[newXmlFilePath appendString: @"xml"];
-			NSLog(@"newXmlFilePath : %@", newXmlFilePath);
-			if ([fileManager fileExistsAtPath:xmlFilePath])
-				[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
-		}
-
-		return;
-	}
-	else if ([[image valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
-	{
-		NSString *filePath = [image valueForKey:@"path"];
-		
-		if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
-		{
-			NSRunAlertPanel(@"MPEG-2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
-		}
-		
-		return;
-	}
-
-	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
-	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
 	NSManagedObject		*item					= [databaseOutline itemAtRow: [databaseOutline selectedRow]];
-
-	// regular files:
-	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	
+	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 	{
-       if ([selectedRowIndexes containsIndex:index])
-	   {
-			[selectedItems addObject: [databaseOutline itemAtRow:index]];
-//			NSLog(@"Add Item: %@", [[databaseOutline itemAtRow:index] description]);
-	   }
+		[self databaseOpenStudy: [databaseOutline itemAtRow: [databaseOutline selectedRow]]];
 	}
-
-	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
+	else	// Matrix
 	{
-		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
-		NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
-		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
-		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+		NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
+		NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
+		
+	
+		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 		{
-			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+		   if ([selectedRowIndexes containsIndex:index]) [selectedItems addObject: [databaseOutline itemAtRow:index]];
 		}
-		else {
-			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-			if( count < 1) count = 1;
-			
-			NSMutableArray *children =  [NSMutableArray array];
-			int i;
-			for (i = 0; i < count; i++)
-				[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
-			
-			[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
-		}
-	}
-	else														// Called by double click in matrix.
-	{
+
 		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
 		[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
 	}
+	
+//	// do nothing for a ZIP file with XML descriptor
+//	BOOL zipFile = NO;
+//	if ([[image valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"])
+//	{
+//		NSSavePanel *savePanel = [NSSavePanel savePanel];
+//		[savePanel setCanSelectHiddenExtension:YES];
+//		[savePanel setRequiredFileType:@"zip"];
+//		
+//		NSString *filePath = [image valueForKey:@"path"];
+//		NSString *fileName = [filePath lastPathComponent];
+//		if([savePanel runModalForDirectory:0L file:fileName] == NSFileHandlingPanelOKButton)
+//		{
+//			// write the file to the specified location on the disk
+//			NSFileManager *fileManager = [NSFileManager defaultManager];
+//			// zip
+//			NSString *newFilePath = [[savePanel URL] path];
+//			if ([fileManager fileExistsAtPath:filePath])
+//				[fileManager copyPath:filePath toPath:newFilePath handler:nil];
+//			// xml
+//			NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
+//			[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
+//			[xmlFilePath appendString: @"xml"];
+//			NSLog(@"xmlFilePath : %@", xmlFilePath);
+//			NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
+//			[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
+//			[newXmlFilePath appendString: @"xml"];
+//			NSLog(@"newXmlFilePath : %@", newXmlFilePath);
+//			if ([fileManager fileExistsAtPath:xmlFilePath])
+//				[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
+//		}
+//
+//		return;
+//	}
+//	else if ([[image valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
+//	{
+//		NSString *filePath = [image valueForKey:@"path"];
+//		
+//		if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
+//		{
+//			NSRunAlertPanel(@"MPEG-2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
+//		}
+//		
+//		return;
+//	}
+//
+//	NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
+//	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
+//	NSManagedObject		*item					= [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+//
+//	// regular files:
+//	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+//	{
+//       if ([selectedRowIndexes containsIndex:index])
+//	   {
+//			[selectedItems addObject: [databaseOutline itemAtRow:index]];
+////			NSLog(@"Add Item: %@", [[databaseOutline itemAtRow:index] description]);
+//	   }
+//	}
+//
+//	if (sender==Nil && [[oMatrix selectedCells] count]==1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
+//	{
+//		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: [item valueForKey: @"modality"] description: [item valueForKey: @"studyName"]];	
+//		NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+//		//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
+//		if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"imageSeries"] count])
+//		{
+//			[self viewerDICOMInt :NO  dcmFile:[self childrenArray: item] viewer:0L];
+//		}
+//		else {
+//			unsigned count = [[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue];
+//			if( count < 1) count = 1;
+//			
+//			NSMutableArray *children =  [NSMutableArray array];
+//			int i;
+//			for (i = 0; i < count; i++)
+//				[children addObject:[[self childrenArray: item] objectAtIndex:i] ];
+//			
+//			[self viewerDICOMInt :NO  dcmFile:children viewer:0L];
+//		}
+//	}
+//	else														// Called by double click in matrix.
+//	{
+//		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
+//		[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
+//	}
 }
 
 

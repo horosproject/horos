@@ -663,13 +663,6 @@ static char *GetPrivateIP()
 			if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO])
 			{
 				[[BrowserController currentBrowser] databaseDoublePressed: self];
-	//			[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
-				
-//				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-//					[NSApp sendAction: @selector(tileWindows:) to:0L from: self];
-//				else
-//					[NSApp sendAction: @selector(checkAllWindowsAreVisible:) to:0L from: self];
-					
 				success = YES;
 			}
 		}
