@@ -85,6 +85,7 @@ extern NSMutableDictionary				*plugins;
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
 static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
@@ -858,7 +859,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 - (void) setYFlipped:(BOOL) v {
 	yFlipped = v;
 	[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-//	NSLog( @"Vertical" );
+	
 	[appController setYFlipped: yFlipped];	
     [self setNeedsDisplay:YES];
 }
@@ -870,17 +871,19 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 - (void) setXFlipped:(BOOL) v {
 	xFlipped = v;
 	[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-//	NSLog( @"Horizontal" );
+
 	[appController setXFlipped: xFlipped];
     [self setNeedsDisplay:YES];
 }
 
 - (void)flipVertical: (id)sender {
 	[self setYFlipped: !yFlipped];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
 - (void)flipHorizontal: (id)sender {
 	[self setXFlipped: !xFlipped];
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
 - (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray
@@ -1072,19 +1075,29 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		case tRotate:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2)
+				if( [event clickCount] == 2 && gClickCountSet == NO)
 				{
-					if ([event modifierFlags] & NSAlternateKeyMask) rotation -= 90;		// -> 180
-					else if ([event modifierFlags] & NSShiftKeyMask) rotation -= 45;	// -> 90
-					else rotation += 45;	// -> 90
+					gClickCountSet = YES;
+					
+					if ([event modifierFlags] & NSAlternateKeyMask) rotation -= 180;		// -> 180
+					else if ([event modifierFlags] & NSShiftKeyMask) rotation -= 90;	// -> 90
+					else rotation += 90;	// -> 90
+					
+					[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+					
+					[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 				}
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 			}
 		break;
 	}
 	
 	[self setCursorForView : currentTool];
 	[self setNeedsDisplay:YES];
+}
+
+- (void) gClickCountSetReset
+{
+	gClickCountSet = NO;
 }
 
 -(void) checkVisible
@@ -1771,9 +1784,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-					   [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
-
+	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt:curImage], @"curImage", event, @"event", nil];
+	
 	if( [[self window] isVisible] == NO) return;
 	if( [self is2DViewer] == YES)
 	{
@@ -1800,7 +1812,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 			return;
 		}
-				
+		
 		long tool = [self getTool:event];
 		
 		if( crossMove >= 0) tool = tCross;

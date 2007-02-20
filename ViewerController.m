@@ -2445,6 +2445,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 					[cell setBordered: NO];
 //					[previewMatrix selectCellAtRow:index column:0];
 				}
+//				else if( [[[blendedwin fileList] objectAtIndex: 0] valueForKey:@"series"] == curSeries)
+//				{
+//					[cell setBackgroundColor: [NSColor colorWithDeviceRed:1.0 green:0.8 blue:0.2 alpha:1.0]];
+//					[cell setBordered: NO];
+//				}
 				else [cell setBordered: YES];
 				
 				if( visible)
@@ -3687,6 +3692,8 @@ static ViewerController *draggedController = 0L;
 //revised lp 4/22/04 to work with contextual menus.
 -(void) setDefaultTool:(id) sender
 {
+	[imageView gClickCountSetReset];
+
 	if( [[buttonToolMatrix selectedCell] tag] == 0)
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: 0L];
 	else
@@ -6928,6 +6935,8 @@ NSMutableArray		*array;
 	
 	if (bC != self)
 		[seriesView ActivateBlending:bC blendingFactor:[blendingSlider floatValue]];
+		
+	[self buildMatrixPreview: NO];
 }
 
 -(ViewerController*) blendedWindow

@@ -223,6 +223,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void) initFont;
 - (NSMutableArray*) rectArray;
 -(BOOL) flippedData;
+- (void) gClickCountSetReset;
 -(void) setFlippedData:(BOOL) f;
  -(NSMutableArray*) dcmPixList;
  -(NSMutableArray*) dcmRoiList;

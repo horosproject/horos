@@ -4150,6 +4150,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			// Remove studies without series !
 			for( i = 0; i < [studiesArray count]; i++)
 			{
+				NSLog( @"Delete Study: %@ - %@", [[studiesArray objectAtIndex: i] valueForKey:@"name"], [[studiesArray objectAtIndex: i] valueForKey:@"patientID"]);
+				
 				if( [[[studiesArray objectAtIndex: i] valueForKey:@"imageSeries"] count] == 0)
 				{
 					[context deleteObject: [studiesArray objectAtIndex: i]];
