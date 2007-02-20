@@ -225,7 +225,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
-	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:nil range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@"^" withString:@"," options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
@@ -2804,7 +2804,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
 	NSString	*string = [NSString stringWithFormat:@"%@-%@-%.0lf", [dicomElements valueForKey:@"patientName"], [dicomElements valueForKey:@"patientID"], [[dicomElements valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]];
 	
-	return [DicomFile NSreplaceBadCharacter: string];
+	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
 }
 
 - (long) NoOfFrames { return NoOfFrames;}
