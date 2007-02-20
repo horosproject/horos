@@ -256,7 +256,15 @@ static char *GetPrivateIP()
 				
 				representationToSend = [NSMutableData dataWithData: [[NSFileManager defaultManager] contentsAtPath:databasePath]];
 				
-			//	NSLog( [incomingConnection description]);
+				struct sockaddr serverAddress;
+				socklen_t namelen = sizeof(serverAddress);
+				
+				if (getsockname( [incomingConnection fileDescriptor], (struct sockaddr *)&serverAddress, &namelen) >= 0)
+				{
+					char client_ip_address[20];
+					sprintf(client_ip_address, "%-d.%-d.%-d.%-d", ((int) serverAddress.sa_data[2]) & 0xff, ((int) serverAddress.sa_data[3]) & 0xff, ((int) serverAddress.sa_data[4]) & 0xff, ((int) serverAddress.sa_data[5]) & 0xff);
+					NSLog( @"Bonjour Connection Received from: %s", client_ip_address);
+				}
 			}
 			else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"GETDI" length: 6]])
 			{

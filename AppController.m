@@ -656,6 +656,24 @@ short HasAltiVec ( )
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+BOOL hasMacOSXLeopard()
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		NSLog( @"OS: %X", osVersion);
+		if ( osVersion < 0x1050UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
+
 BOOL hasMacOSXTiger()
 {
 	OSErr						err;       
@@ -1836,10 +1854,22 @@ static BOOL initialized = NO;
 	if( sender != self) verboseUpdateCheck = YES;
 	else verboseUpdateCheck = NO;
 	
-	if (hasMacOSXTiger())
-		url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/versionTiger.xml"];
+	if (hasMacOSXLeopard())
+		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionLeopard.xml"];
+	else if (hasMacOSXTiger())
+		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/versionTiger.xml"];
 	else
-		url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/version.xml"];
+		url=[NSURL URLWithString:@"http://pubimage.hcuge.ch:8080/version.xml"];
+	
+	if( url == 0L)
+	{
+		if (hasMacOSXLeopard())
+			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/versionLeopard.xml"];
+		else if (hasMacOSXTiger())
+			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/versionTiger.xml"];
+		else
+			url=[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/version.xml"];
+	}
 	
 	if (url)
 	{
