@@ -2440,11 +2440,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 				NSManagedObject	*curSeries = [series objectAtIndex:i];
 				
 				int keyImagesNumber = 0, z;
-				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];
-				for( z = 0; z < [keyImagesArray count]; z++)
-				{
-					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
-				}
+//				NSArray	*keyImagesArray = [[[curSeries valueForKey:@"images"] allObjects] valueForKey:@"isKeyImage"];		<- This is too slow......
+//				for( z = 0; z < [keyImagesArray count]; z++)
+//				{
+//					if( [[keyImagesArray objectAtIndex: z] boolValue]) keyImagesNumber++;
+//				}
 				
 				NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 				
@@ -2462,7 +2462,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( [name length] > 15) name = [name substringToIndex: 15];
 				
 				NSString	*type = @"Image";
-				long count = [[curSeries valueForKey:@"images"] count];
+				long count = [[curSeries valueForKey:@"noFiles"] intValue];
 				if( count == 1)
 				{
 					long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
@@ -2490,10 +2490,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					NSImage	*img = 0L;
 					
-					if( StoreThumbnailsInDB)
-					{
-						img = [[[NSImage alloc] initWithData: [[images objectAtIndex:i] valueForKeyPath:@"series.thumbnail"]] autorelease];
-					}
+					img = [[[NSImage alloc] initWithData: [curSeries valueForKey:@"thumbnail"]] autorelease];
 					
 					if( img == 0L)
 					{
@@ -2506,11 +2503,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 							if( img)
 							{
 								[cell setImage: img];
-								
-								if( StoreThumbnailsInDB)
-								{
-									[[[images objectAtIndex:i] valueForKey: @"series"] setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
-								}
+								[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
 							}
 							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
 							
