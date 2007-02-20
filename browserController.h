@@ -224,6 +224,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (void) updateActivity;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
 
+- (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
 - (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;

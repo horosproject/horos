@@ -258,6 +258,9 @@
                 roiSetPixels = id; 
                 roiSetPixelsSetup = id; 
                 roiVolume = id; 
+                rotate0 = id; 
+                rotate180 = id; 
+                rotate90 = id; 
                 saView = id; 
                 saViewOpposite = id; 
                 scissorStateButtons = id; 

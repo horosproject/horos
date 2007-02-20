@@ -11,7 +11,7 @@
 		<key>11581</key>
 		<string>696 673 287 74 0 0 1680 1028 </string>
 		<key>11583</key>
-		<string>782 772 162 182 0 0 1920 1178 </string>
+		<string>675 656 162 182 0 0 1680 1028 </string>
 		<key>11606</key>
 		<string>765 676 150 68 0 0 1680 1028 </string>
 		<key>12309</key>
@@ -23,7 +23,7 @@
 		<key>1580</key>
 		<string>610 53 220 815 0 0 1440 878 </string>
 		<key>29</key>
-		<string>26 1133 561 44 0 0 1920 1178 </string>
+		<string>319 959 561 44 0 0 1680 1028 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
@@ -32,6 +32,6 @@
 		<integer>29</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8L2127</string>
+	<string>8L127</string>
 </dict>
 </plist>

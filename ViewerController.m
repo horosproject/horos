@@ -1257,6 +1257,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			/******************* WW/WL menu items **********************/
 			NSMenu *mainMenu = [NSApp mainMenu];
 			NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
+			NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
 			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 			NSMenu *menu = [presetsMenu copy];
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""];
@@ -1308,67 +1309,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[contextual addItem:item];
 			[item release];
 			[menu release];
+
+			/********** Orientation submenu ************/ 
 			
+			NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
+			menu = [orientationMenu copy];
+			for( i = 0; i < [menu numberOfItems]; i++) [[menu itemAtIndex: i] setState: NSOffState];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""];
+			[item setSubmenu:menu];
+			[contextual addItem:item];
+			[item release];
+			[menu release];
+
 			//Export Added 12/5/05
 			/*************Export submenu**************/
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil  keyEquivalent:@""];
+			NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
+			menu = [exportMenu copy];
+			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""];
+			[item setSubmenu:menu];
 			[contextual addItem:item];
-			NSMenu *exportSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Export", nil)];
-			[item setSubmenu:exportSubmenu];
-				NSMenuItem *subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"QuickTime", nil)  action:@selector(exportQuicktime:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				
-				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"DICOM", nil)  action:@selector(exportDICOMFile:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Email", nil)  action:@selector(sendMail:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"JPEG", nil)  action:@selector(exportJPEG:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"TIFF", nil)  action:@selector(exportTIFF:) keyEquivalent:@""];
-				[subMenuItem setTarget:self];
-				[exportSubmenu addItem:subMenuItem];
-				[subMenuItem release];
-				
-				
-			
-			[exportSubmenu release];
 			[item release];
-			
-			/********** Flip submenu ************/ 
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Flip", nil) action: nil  keyEquivalent:@""];
-			[contextual addItem:item];
-			NSMenu *flipSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Flip", nil)];
-			[item setSubmenu:flipSubmenu ];
-			subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Vertical", nil)  action:@selector(flipVertical:) keyEquivalent:@""];
-			[subMenuItem setTarget:imageView];
-			[flipSubmenu addItem:subMenuItem];
-			[subMenuItem release];
-			subMenuItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Horizontal", nil)  action:@selector(flipHorizontal:) keyEquivalent:@""];
-			[subMenuItem setTarget:imageView];
-			[flipSubmenu addItem:subMenuItem];
-			[subMenuItem release];
-			[item release];
-			[flipSubmenu release];
-			
+			[menu release];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
 			item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Open database", nil) action: @selector(databaseWindow:)  keyEquivalent:@""];
@@ -9149,6 +9110,23 @@ int i,j,l;
     [imageView flipHorizontal:sender];
 }
 
+- (void) rotate0:(id) sender
+{
+    [imageView setRotation: 0];
+	[imageView setNeedsDisplay: YES];
+}
+
+- (void) rotate90:(id) sender
+{
+    [imageView setRotation: 90];
+	[imageView setNeedsDisplay: YES];
+}
+
+- (void) rotate180:(id) sender
+{
+    [imageView setRotation: 180];
+	[imageView setNeedsDisplay: YES];
+}
 
 - (void)displayDICOMOverlays: (id)sender
 {
