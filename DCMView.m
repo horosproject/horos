@@ -7089,6 +7089,8 @@ static long scrollMode;
 	if( rotation > 360) rotation -= 360;
 	
 	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
 - (void) orientationCorrectedToView:(float*) correctedOrientation
