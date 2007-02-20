@@ -170,6 +170,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	char					blackIndex;
 }
 
++ (void) checkUserDefaults: (BOOL) update;
+
 // Is it an RGB image (ARGB) or float image?
 - (BOOL) isRGB;
 

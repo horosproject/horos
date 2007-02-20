@@ -897,7 +897,9 @@ NSRect screenFrame()
 	
 	[DicomFile resetDefaults];
 	[DicomFile setDefaults];
-		
+	
+	[DCMPix checkUserDefaults: YES];
+	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);
 	NS_ENDHANDLER

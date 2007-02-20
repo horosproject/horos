@@ -984,6 +984,34 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //	}
 //}
 
+BOOL gUserDefaultsSet = NO;
+BOOL gUseShutter;
+BOOL gDisplayDICOMOverlays;
+BOOL gUseVOILUT;
+BOOL gUSEPAPYRUSDCMPIX;
+
++ (void) checkUserDefaults: (BOOL) update
+{
+	// Why this? NSUserDefaults performances are poor if not in main thread
+
+	if( update) gUserDefaultsSet = NO;
+	
+	if( gUserDefaultsSet == NO)
+	{
+		gUserDefaultsSet = YES;
+		
+		gUseShutter = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"];
+		gDisplayDICOMOverlays = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"];
+		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
+		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"];
+		
+//		NSLog( @"gUseShutter == %d", gUseShutter);
+//		NSLog( @"gDisplayDICOMOverlays == %d", gDisplayDICOMOverlays);
+//		NSLog( @"gUseVOILUT == %d", gUseVOILUT);
+//		NSLog( @"gUSEPAPYRUSDCMPIX == %d", gUSEPAPYRUSDCMPIX);
+	}
+}
+
 + (void) setRunOsiriXInProtectedMode:(BOOL) v
 {
 	runOsiriXInProtectedMode = v;
@@ -2531,6 +2559,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	//NSLog(@"initwithdata");
 	if( self = [super init])
     {
+		[DCMPix checkUserDefaults: NO];
+		
 		acquisitionTime = 0L;
 		radiopharmaceuticalStartTime = 0L;
 		radionuclideTotalDose = 0;
@@ -4603,7 +4633,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
 	}	
 
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
+	if( gUseShutter)
 	{
 		shutterRect_w = width;
 		shutterRect_h = height;
@@ -4892,7 +4922,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			ee = imageNb;
 		}
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"] && ee != frameNo && maxFrame > 1)
+		if( gUseShutter && ee != frameNo && maxFrame > 1)
 		{
 			imPix->shutterRect_x = shutterRect_x;
 			imPix->shutterRect_y = shutterRect_y;
@@ -5107,7 +5137,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			else imPix->fImage = (float*) oImage;
 			oImage = 0L;
 			
-			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			if( oData && gDisplayDICOMOverlays )
 			{
 				unsigned char	*rgbData = (unsigned char*) imPix->fImage;
 				long			y, x;
@@ -5205,7 +5235,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				oImage = 0L;
 			}
 			
-			if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+			if( oData && gDisplayDICOMOverlays)
 			{
 				long			y, x;
 				
@@ -5423,7 +5453,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				}
 			}
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"])
+			if( gUseShutter)
 			{
 				val = Papy3GetElement (theGroupP, papShutterShapeGr, &nbVal, &elemType);
 				if (val != NULL)
@@ -6016,7 +6046,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				if (found16) fSetClut16 = YES;
 			} // endif ...extraction of the color palette
 			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"])
+			if( gUseVOILUT)
 			{
 				val = Papy3GetElement (theGroupP, papVOILUTSequenceGr, &pos, &elemType );
 				
@@ -6949,7 +6979,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				else imPix->fImage = (float*) oImage;
 				oImage = 0L;
 				
-				if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+				if( oData && gDisplayDICOMOverlays)
 				{
 					unsigned char	*rgbData = (unsigned char*) imPix->fImage;
 					long			y, x;
@@ -7057,7 +7087,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					oImage = 0L;
 				}
 				
-				if( oData && [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"] )
+				if( oData && gDisplayDICOMOverlays)
 				{
 					long			y, x;
 					
@@ -7357,7 +7387,7 @@ BOOL            readable = YES;
 			
 			// PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USEPAPYRUSDCMPIX"])
+			if( gUSEPAPYRUSDCMPIX)
 			{
 				success = [self loadDICOMPapyrus];
 				//only try again if is strict DICOM

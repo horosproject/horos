@@ -3571,9 +3571,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[sort release];
 		NSArray *sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		
-//		if([sortedArray count] == 1 && [[[sortedArray objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
-//			return [NSArray arrayWithObject:item];
-
 		return sortedArray;
 	}
 	
@@ -5641,6 +5638,7 @@ static BOOL withReset = NO;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image
 {
 	NSData *imageData = [image  TIFFRepresentation];
+	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
 	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.7] forKey:NSImageCompressionFactor];
 	

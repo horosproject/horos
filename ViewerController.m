@@ -1266,7 +1266,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[menu release];
 			
 			[contextual addItem:[NSMenuItem separatorItem]];
-						
+			
 			/************* window resize Menu ****************/
 			
 			[submenu release];
@@ -2362,7 +2362,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	// FIND ALL STUDIES of this patient
 	
-	predicate = [NSPredicate predicateWithFormat: @"(patientUID LIKE[cd] %@)", [study valueForKey:@"patientUID"]];  // , [study valueForKey:@"name"]
+	NSLog(@"buildMatrixPreview");
+	
+	predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", [study valueForKey:@"patientUID"]];  // , [study valueForKey:@"name"]
 	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
@@ -2383,11 +2385,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
 		NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
 		
+		NSMutableArray	*seriesArray = [NSMutableArray array];
+		
 		i = 0;
 		for( x = 0; x < [studiesArray count]; x++)
 		{
-			NSArray				*series = [browserWindow childrenArray: [studiesArray objectAtIndex: x]];
-			i += [series count];
+			[seriesArray addObject: [browserWindow childrenArray: [studiesArray objectAtIndex: x]]];
+			i += [[seriesArray objectAtIndex: x] count];
 		}
 		
 		if( [previewMatrix numberOfRows] != i+[studiesArray count])
@@ -2399,7 +2403,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		for( x = 0; x < [studiesArray count]; x++)
 		{
 			NSManagedObject		*curStudy = [studiesArray objectAtIndex: x];
-			NSArray				*series = [browserWindow childrenArray: curStudy];
+			NSArray				*series = [seriesArray objectAtIndex: x];
 			NSArray				*images = [browserWindow imagesArray: curStudy preferredObject: oAny];
 			
 			if( [series count] != [images count])
@@ -12234,7 +12238,7 @@ int i,j,l;
 	[[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications:YES]; 
 	[splitView restoreDefault:@"SPLITVIEWER"];
 	
-	[self buildMatrixPreview];
+	if( matrixPreviewBuilt == NO) [self buildMatrixPreview];
 	
 	[self matrixPreviewSelectCurrentSeries];
 }
