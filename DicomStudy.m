@@ -121,7 +121,7 @@ Version 2.3
 		for( i = 0; i < [array count]; i++)
 		{
 			if( [DCMAbstractSyntaxUID isStructuredReport: [[array objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]] == NO)
-				sum += [[[array objectAtIndex:i] valueForKey:@"noFiles"] count];
+				sum += [[[array objectAtIndex:i] valueForKey:@"noFiles"] intValue];
 		}
 		
 		NSNumber	*no = [NSNumber numberWithInt:sum];
