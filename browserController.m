@@ -3419,7 +3419,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	for( i = 0; i < [outlineViewArray count]; i++)
 	{
 		images += [[[outlineViewArray objectAtIndex: i] valueForKey:@"noFiles"] intValue];
-		NSLog( [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]);
+//		NSLog( [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]);
 	}
 	
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [numFmt stringForObjectValue:[NSNumber numberWithInt:images]]];
