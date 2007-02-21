@@ -120,8 +120,8 @@ Version 2.3
 		
 		for( i = 0; i < [array count]; i++)
 		{
-			if( [DCMAbstractSyntaxUID isImageStorage: [[array objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
-				sum += [[[array objectAtIndex:i] valueForKey:@"images"] count];
+			if( [DCMAbstractSyntaxUID isStructuredReport: [[array objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]] == NO)
+				sum += [[[array objectAtIndex:i] valueForKey:@"noFiles"] count];
 		}
 		
 		NSNumber	*no = [NSNumber numberWithInt:sum];

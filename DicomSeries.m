@@ -57,7 +57,7 @@
 	{
 		NSNumber	*no;
 		
-		if( [DCMAbstractSyntaxUID isImageStorage: [self valueForKey: @"seriesSOPClassUID"]])
+		if( [DCMAbstractSyntaxUID isStructuredReport: [self valueForKey: @"seriesSOPClassUID"]] == NO)
 		{
 			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
 			[self setPrimitiveValue:no forKey:@"numberOfImages"];

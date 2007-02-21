@@ -4307,7 +4307,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	else
 	{
 		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
-		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"images"] count];
+		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
 		//if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
 		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"imageSeries"] count];
 	}
@@ -5515,7 +5515,7 @@ static BOOL withReset = NO;
 				}
 				else if ([fileType isEqualToString: @"DICOMMPEG2"])
 				{
-					long count = [[curFile valueForKey:@"images"] count];
+					long count = [[curFile valueForKey:@"noFiles"] intValue];
 					
 					if( count == 1) {
 						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
@@ -5527,7 +5527,7 @@ static BOOL withReset = NO;
 					img = [[NSImage alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForImageResource:@"mpeg2"]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) {
-					long count = [[curFile valueForKey:@"images"] count];
+					long count = [[curFile valueForKey:@"noFiles"] intValue];
 					
 					if( count == 1) {
 						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
