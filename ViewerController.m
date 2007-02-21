@@ -2423,7 +2423,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( [name length] > 15) name = [name substringToIndex: 15];
 				
 				NSString	*type = @"Image";
-				long count = [[curSeries valueForKey:@"noFiles"] intValue];
+				long count = [[curSeries valueForKey:@"images"] count];
 				if( count == 1)
 				{
 					long frames = [[[[curSeries valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
