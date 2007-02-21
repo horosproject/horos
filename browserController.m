@@ -4624,10 +4624,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
 		// ZIP files with XML descriptor
-		NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
-		NSArray *imagesArray = [imagesSet allObjects];
-		if([imagesArray count] == 1)
+		if([[item valueForKey:@"noFiles"] intValue] == 1)
 		{
+			NSSet *imagesSet = [item valueForKeyPath: @"images.fileType"];
+			NSArray *imagesArray = [imagesSet allObjects];
 			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
 			{
 				NSLog(@"******** XMLDESCRIPTOR ********");
@@ -7873,15 +7873,8 @@ static BOOL needToRezoom;
 	}
 	else	// Matrix
 	{
-		NSMutableArray		*selectedItems			= [NSMutableArray arrayWithCapacity: 0];
-		NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
+		NSMutableArray		*selectedItems			= [NSMutableArray arrayWithObject: [databaseOutline itemAtRow: [databaseOutline selectedRow]]];
 		
-	
-		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
-		{
-		   if ([selectedRowIndexes containsIndex:index]) [selectedItems addObject: [databaseOutline itemAtRow:index]];
-		}
-
 		[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
 		[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
 	}
