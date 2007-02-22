@@ -123,7 +123,7 @@
 	}
 	
 	[sender setEnabled: NO];
-	//[NSThread detachNewThreadSelector: @selector(_createPrintjob:) toTarget: self withObject: nil];
+	
 	[self _createPrintjob: nil];
 }
 
@@ -318,17 +318,21 @@
 		return;
 	}
 
-	int from = [entireSeriesFrom intValue];
+	int from = [entireSeriesFrom intValue]-1;
 	int to = [entireSeriesTo intValue];
-	
-	if( to == from) to = from+1;
+
 	if( to < from)
 	{
 		to = [entireSeriesFrom intValue];
-		from = [entireSeriesTo intValue];
+		from = [entireSeriesTo intValue]-1;
 	}
 
+	if( from < 0) from = 0;
+	if( to == from) to = from+1;
+
 	NSDictionary	*options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: [[m_ImageSelection selectedCell] tag]], @"mode", [NSNumber numberWithInt: from], @"from", [NSNumber numberWithInt: to], @"to", entireSeriesInterval, @"interval", 0L];
+	
+	NSLog( [options description]);
 	
 	// collect images for printing
 	AYNSImageToDicom *dicomConverter = [[AYNSImageToDicom alloc] init];
