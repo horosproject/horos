@@ -2067,6 +2067,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( [DBVersion isEqualToString: DATABASEVERSION] == NO )
 	{
 		[self updateDatabaseModel: path :DBVersion];
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"recomputePatientUID"];
 	}
 		
 	[[LogManager currentLogManager] resetLogs];
