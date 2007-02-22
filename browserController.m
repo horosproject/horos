@@ -487,16 +487,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	NSManagedObjectContext	*context = [self managedObjectContext];
-	NSMutableArray			*viewersList = [NSMutableArray arrayWithCapacity:0];
-	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*addedImagesArray = 0L;
+	NSMutableArray			*addedSeries = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
 	BOOL					newStudy = NO;
 	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
-	
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 	
@@ -516,12 +514,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		NSLog( @"safe Process DB process");
 	}
-	
-	for( i = 0; i < [winList count]; i++)
-	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex:i] windowController]];
-	}
-	
+		
 	if( [newFilesArray count] > 50 && mainThread == [NSThread currentThread])
 	{
 		splash = [[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString(@"Adding %@ files...", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt:[newFilesArray count]]]]];
@@ -724,12 +717,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 								index = [[seriesArray valueForKey:@"seriesInstanceUID"] indexOfObject:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]]];
 								if( index == NSNotFound)
 								{
-									[viewersList removeAllObjects];
-									for( x = 0; x < [winList count]; x++)	// We are not in the main thread, viewers can be created at anytime...
-									{
-										if( [[[winList objectAtIndex: x] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex: x] windowController]];
-									}
-								
 									// Fields
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];
@@ -815,25 +802,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 							{
 								needDBRefresh = YES;
 								
-								for( x = 0; x < [viewersList count]; x++)
-								{
-									NSManagedObject	*firstObject = [[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0];
-									
-									// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
-									
-									if( [[curDict objectForKey: @"patientID"] caseInsensitiveCompare: [firstObject valueForKeyPath:@"series.study.patientID"]] == NSOrderedSame)
-									{
-										if( [vlToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
-											[vlToRebuild addObject: [viewersList objectAtIndex: x]];
-									}
-									
-									if( seriesTable == [firstObject valueForKey:@"series"])
-									{
-										if( [vlToReload containsObject:[viewersList objectAtIndex: x]] == NO)
-											[vlToReload addObject: [viewersList objectAtIndex: x]];
-									}
-								}
-								
 								[study setValue:today forKey:@"dateAdded"];
 								[seriesTable setValue:today forKey:@"dateAdded"];
 								
@@ -885,6 +853,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 								
 								if( produceAddedFiles)
 									[addedImagesArray addObject: image];
+								
+								if( [addedSeries containsObject: seriesTable] == NO) [addedSeries addObject: seriesTable];
 								
 								if([curDict valueForKey:@"album"] !=nil)
 								{
@@ -986,6 +956,42 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			lastSaved = [NSDate timeIntervalSinceReferenceDate];
 		}
+				
+		if( addFailed == NO)
+		{
+			NSMutableArray		*viewersList = [NSMutableArray arrayWithCapacity:0];
+			NSArray				*winList = [NSApp windows];
+			
+			for( x = 0; x < [winList count]; x++)
+			{
+				if( [[[winList objectAtIndex: x] windowController] isKindOfClass:[ViewerController class]]) [viewersList addObject: [[winList objectAtIndex: x] windowController]];
+			}
+			
+			for( i = 0; i < [addedSeries count]; i++)
+			{
+				NSManagedObject		*seriesTable = [addedSeries objectAtIndex: i];
+				NSString			*curPatientID = [seriesTable valueForKeyPath:@"study.patientID"];
+								
+				for( x = 0; x < [viewersList count]; x++)
+				{
+					NSManagedObject	*firstObject = [[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0];
+					
+					// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
+					
+					if( [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
+					{
+						if( [vlToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
+							[vlToRebuild addObject: [viewersList objectAtIndex: x]];
+					}
+					
+					if( seriesTable == [firstObject valueForKey:@"series"])
+					{
+						if( [vlToReload containsObject:[viewersList objectAtIndex: x]] == NO)
+							[vlToReload addObject: [viewersList objectAtIndex: x]];
+					}
+				}
+			}
+		}
 		
 		[context setStalenessInterval: 1200];
 		[context unlock];
@@ -1003,17 +1009,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 			if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
 			else [newFilesConditionLock unlockWithCondition: 2];
-			
-			
-//			if( newStudy) [self performSelectorOnMainThread:@selector( outlineViewRefresh) withObject:0L waitUntilDone:YES];
-//			else
-//			{
-//				[databaseOutline performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
-//				[albumTable performSelectorOnMainThread:@selector( reloadData) withObject: 0L waitUntilDone:YES];
-//				[self performSelectorOnMainThread:@selector( outlineViewSelectionDidChange:) withObject: 0L waitUntilDone:YES]; 
-//			}
-//			[self performSelectorOnMainThread:@selector( reloadViewers:) withObject:viewersListToReload waitUntilDone:YES];
-//			[self performSelectorOnMainThread:@selector( rebuildViewers:) withObject:viewersListToRebuild waitUntilDone:YES];
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
@@ -1175,12 +1170,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (void) OsirixAddToDBNotification:(NSNotification *) note
 {
+	NSArray					*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
+	int						i, x;
+	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 	{
-		NSArray	*newImages = [[note userInfo] objectForKey:@"OsiriXAddToDBArray"];
-		
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
-		int i;
 		
 		for( i = 0; i < [autoroutingRules count]; i++)
 		{
@@ -2016,6 +2011,34 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 }
 
+- (void) recomputePatientUIDs
+{		
+	// Find all studies
+	NSError			*error = 0L;
+	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+	[dbRequest setEntity: [[[self managedObjectModel] entitiesByName] objectForKey:@"Study"]];
+	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	NSManagedObjectContext *context = [self managedObjectContext];
+	
+	[context retain];
+	[context lock];
+	error = 0L;
+	NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+	
+	int i;
+	for( i = 0 ; i < [studiesArray count]; i++)
+	{
+		NSManagedObject *o = [[[[[studiesArray objectAtIndex: i] valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
+		DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+		
+		[[studiesArray objectAtIndex: i] setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
+		
+		[dcm release];
+	}
+	[context unlock];
+	[context release];
+}
+
 -(void) loadDatabase:(NSString*) path
 {
 	long        i;
@@ -2045,7 +2068,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		[self updateDatabaseModel: path :DBVersion];
 	}
-	
+		
 	[[LogManager currentLogManager] resetLogs];
 	
 	[managedObjectContext lock];
@@ -2054,6 +2077,21 @@ static BOOL				DICOMDIRCDMODE = NO;
 	managedObjectContext = 0L;
 	[self setFixedDocumentsDirectory];
 	[self managedObjectContext];
+
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"recomputePatientUID"])
+	{
+		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"recomputePatientUID"];
+		
+		@try
+		{
+			[self recomputePatientUIDs];
+		}
+		@catch (NSException *ne)
+		{
+			NSLog( @"recomputePatientUIDs exception: %@ %@", [ne name], [ne reason]);
+		}
+	}
+
 
 	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?
 	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingString:@"/DICOMDIR"];

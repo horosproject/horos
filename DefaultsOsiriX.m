@@ -717,6 +717,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	
 	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
+	[defaultValues setObject: @"1" forKey: @"recomputePatientUID"];
 	
 	// ** ReserveScreenForDB
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];

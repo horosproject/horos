@@ -1589,7 +1589,6 @@ static BOOL initialized = NO;
     NSLog(@"Finishing Launching");
     
 	theTask = nil;
-	verboseUpdateCheck = NO;
 	
 	appController = self;
 	[self initDCMTK];
@@ -1680,10 +1679,9 @@ static BOOL initialized = NO;
 //			[NSTimer scheduledTimerWithTimeInterval:2.0 target:splashController selector:@selector(windowShouldClose:) userInfo:nil repeats:0]; 
 		}
 	}
-
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CHECKUPDATES"])
-		[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
-
+	
+	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+	
 	/// *****************************
 	/// *****************************
 	// HUG SPECIFIC CODE - DO NOT REMOVE - Thanks! Antoine Rosset
@@ -1843,9 +1841,6 @@ static BOOL initialized = NO;
 	}
 }
 
-
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
 - (IBAction) checkForUpdates: (id) sender
 {
 	NSURL				*url;
@@ -1879,7 +1874,7 @@ static BOOL initialized = NO;
 		
 		if (productVersionDict && currVersionNumber && latestVersionNumber)
 		{
-			NSLog( @"Internet Version Checking succeeded - server vers:%d installed vers:%d", [latestVersionNumber intValue], [currVersionNumber intValue]);
+			NSLog( @"Server vers (svn version) :%d Installed vers:%d", [latestVersionNumber intValue], [currVersionNumber intValue]);
 		
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
@@ -1888,7 +1883,8 @@ static BOOL initialized = NO;
 			}
 			else
 			{
-				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
+				if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CHECKUPDATES"] || verboseUpdateCheck == YES)
+					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone:YES];				
 			}
 		}
 		else
@@ -1901,42 +1897,11 @@ static BOOL initialized = NO;
 	[pool release];
 }
 
-
-//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-- (void) URLResourceDidFinishLoading: (NSURL*) sender
-{
-	NSString *currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"];
-	NSDictionary *productVersionDict = [NSDictionary dictionaryWithContentsOfURL: sender];
-	NSString *latestVersionNumber = [productVersionDict valueForKey:@"OsiriX"];
-	
-	if (productVersionDict && currVersionNumber && latestVersionNumber)
-	{
-		if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
-		{
-			if (verboseUpdateCheck)
-				NSRunAlertPanel( NSLocalizedString( @"OsiriX is up-to-date", 0L), NSLocalizedString( @"You have the most recent version of OsiriX.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
-		}
-		else
-		{
-			int button = NSRunAlertPanel( NSLocalizedString( @"New Version Available", 0L), NSLocalizedString( @"A new version of OsiriX is available. Would you like to download the new version now?", 0L), NSLocalizedString( @"OK", 0L), NSLocalizedString( @"Cancel", 0L), nil);
-			
-			if (NSOKButton == button)
-			{
-				[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://homepage.mac.com/rossetantoine/osirix/"]];
-			}
-		}
-	}
-}
-
-
-
 - (void) URL: (NSURL*) sender resourceDidFailLoadingWithReason: (NSString*) reason
 {
 	if (verboseUpdateCheck)
 		NSRunAlertPanel( NSLocalizedString( @"No connection available", 0L), reason, NSLocalizedString( @"OK", 0L), nil, nil);
 }	
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
