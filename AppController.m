@@ -1637,7 +1637,7 @@ static BOOL initialized = NO;
 		{
 			case 0:
 				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CHECKUPDATES"];
-				break;
+			break;
 		}
 	}
 	else

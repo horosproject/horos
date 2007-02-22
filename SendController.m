@@ -389,8 +389,6 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
 			
 			previousPatientUID = [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"];
-			
-			NSLog( [[[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study"] description]);
 		}
 	}
 	
