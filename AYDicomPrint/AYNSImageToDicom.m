@@ -212,7 +212,7 @@
 	
 	currentImage = [DCMPix resizeIfNecessary: currentImage dcmPix: [[viewer imageView] curDCM]];
 	
-	[currentImage setFlipped: YES];
+//	[currentImage setFlipped: YES];
 	
 	[currentImage lockFocus];
 	
