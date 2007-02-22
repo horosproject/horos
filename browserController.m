@@ -2012,7 +2012,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 }
 
 - (void) recomputePatientUIDs
-{		
+{
+	NSLog( @"recomputePatientUIDs");
+	
 	// Find all studies
 	NSError			*error = 0L;
 	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
