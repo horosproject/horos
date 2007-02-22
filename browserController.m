@@ -5745,17 +5745,15 @@ static BOOL withReset = NO;
 			
 			if( [NSData dataWithContentsOfFile: [image valueForKey:@"completePath"]])	// This means the file is readable...
 			{
-//				//By default we put this 'blank' icon
-//				[series setValue: notFoundDataThumbnail forKey:@"thumbnail"];
-//				[self saveDatabase: currentDatabasePath];
+				int frame = 0;
+				if( [[image valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[image valueForKey:@"numberOfFrames"] intValue]/2;
 				
 				NSLog( @"Build thumbnail for:");
 				NSLog( [image valueForKey:@"completePath"]);
-				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :0 :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
+				DCMPix	*dcmPix  = [[DCMPix alloc] myinit:[image valueForKey:@"completePath"] :0 :1 :0L :frame :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:image];
 				
 				if( dcmPix)
 				{
-					
 					[dcmPix computeWImage:YES :0 :0];
 					NSImage *thumbnail = [dcmPix getImage];
 					NSData *data = [BrowserController produceJPEGThumbnail: thumbnail];
@@ -5891,7 +5889,10 @@ static BOOL withReset = NO;
 			
 			thumbnail = [previewPixThumbnails objectAtIndex: i];
 			
-			dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :0 :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
+			int frame = 0;
+			if( [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
+			
+			dcmPix  = [[DCMPix alloc] myinit:[filesPaths objectAtIndex:i] :position :subGroupCount :0L :frame :0 isBonjour:isCurrentDatabaseBonjour imageObj: [files objectAtIndex: i]];
 			
 			if( dcmPix)
 			{
