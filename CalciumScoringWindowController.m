@@ -98,15 +98,35 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	return self;
 }
 
-- (void)windowDidLoad{
+- (void)windowDidLoad
+{
 	[self updateTotals];
 	
+	
+	[[self window] setDelegate: self];
 	
 	[[NSNotificationCenter defaultCenter] addObserver: self
 				selector: @selector(windowDidBeomeKey:)
 				   name:  NSWindowDidBecomeMainNotification
 				 object: [self window]];
+
+	[[NSNotificationCenter defaultCenter] addObserver: self
+           selector: @selector(CloseViewerNotification:)
+               name: @"CloseViewerNotification"
+             object: nil];
 	
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+	
+	[self release];
+}
+
+-(void) CloseViewerNotification:(NSNotification*) note
+{
+	if( [note object] == _viewer) [self close];
 }
 
 - (void)dealloc{

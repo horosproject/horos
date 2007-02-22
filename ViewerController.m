@@ -2000,7 +2000,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) dealloc
 {
 	long	i;
-	[_calciumScoringWindowController release];
+	
 	stopThreadLoadImage = YES;
 	if( [browserWindow isCurrentDatabaseBonjour])
 	{
@@ -3949,8 +3949,7 @@ static ViewerController *draggedController = 0L;
 	NSString	*previousStudyInstanceUID = [[[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] retain];
 	float		previousOrientation[ 9];
 	float		previousLocation = 0;
-	[_calciumScoringWindowController release];
-	_calciumScoringWindowController = nil;	
+	
 	[[pixList[ 0] objectAtIndex:0] orientation: previousOrientation];
 	previousLocation = [[imageView curDCM] sliceLocation];
 	
@@ -13756,9 +13755,21 @@ sourceRef);
 	[seriesView setImageViewMatrixForRows:(int)rows  columns:columns];
 }
 
-- (IBAction)calciumScoring:(id)sender{
-	if (!_calciumScoringWindowController)
-		_calciumScoringWindowController = [[CalciumScoringWindowController alloc] initWithViewer:self];
-	[_calciumScoringWindowController showWindow:self];
+- (IBAction)calciumScoring:(id)sender
+{
+	BOOL	found = NO;
+	NSArray *winList = [NSApp windows];
+	long i;
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"CalciumScoring"]) found = YES;
+	}
+	
+	if( !found)
+	{
+		CalciumScoringWindowController *calciumScoringWindowController = [[CalciumScoringWindowController alloc] initWithViewer:self];
+		[calciumScoringWindowController showWindow:self];
+	}
 }
 @end

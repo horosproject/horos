@@ -52,7 +52,6 @@
 @class SRController;
 @class EndoscopyViewer;
 @class VRPROController;
-@class CalciumScoringWindowController;
 
 #import "Schedulable.h"
 #import "Scheduler.h"
@@ -307,7 +306,6 @@ enum
 	NSMutableArray			*undoQueue, *redoQueue;
 	
 	BOOL					SyncButtonBehaviorIsBetweenStudies;
-	CalciumScoringWindowController *_calciumScoringWindowController;
 }
 
 // Create a new 2D Viewer
