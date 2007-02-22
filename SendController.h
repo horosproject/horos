@@ -56,6 +56,7 @@ enum SendServerType { osirixServer, offisServer };
 	int					_offisTS;
 	Wait				*_waitSendWindow;
 	BOOL				_readyForRelease;
+	BOOL				_abort;
 	NSLock				*_lock;
 	DCMTKStoreSCU		*storeSCU;
 	

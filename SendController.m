@@ -80,7 +80,9 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 }
 
 - (id)initWithFiles:(NSArray *)files{
-	if (self = [super initWithWindowNibName:@"Send"]){
+	if (self = [super initWithWindowNibName:@"Send"])
+	{
+		_abort = NO;
 		_files = [files copy];
 		int count = [_files  count];
 		if(count == 1)
@@ -312,6 +314,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 {
 	BOOL	isFault = NO;
 	
+	if( _abort) return;
+	
 	int x;
 	for( x = 0; x < [samePatientArray count] ; x++) if( [[samePatientArray objectAtIndex: x] isFault]) isFault = YES;
 	
@@ -385,6 +389,8 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 			[samePatientArray addObject: [objectsToSend objectAtIndex: i]];
 			
 			previousPatientUID = [[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study.patientUID"];
+			
+			NSLog( [[[objectsToSend objectAtIndex: i] valueForKeyPath:@"series.study"] description]);
 		}
 	}
 	
@@ -464,6 +470,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 - (void)abort
 {
 	[self listenForAbort:nil];
+	_abort = YES;
 }
 
 

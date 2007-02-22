@@ -2031,7 +2031,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSManagedObject *o = [[[[[studiesArray objectAtIndex: i] valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 		DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
 		
-		[[studiesArray objectAtIndex: i] setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
+		if( dcm)
+		{
+			if( [dcm elementForKey:@"patientUID"])
+				[[studiesArray objectAtIndex: i] setValue: [dcm elementForKey:@"patientUID"] forKey:@"patientUID"];
+		}
 		
 		[dcm release];
 	}
