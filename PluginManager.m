@@ -415,14 +415,26 @@ PluginManager			*pluginManager = 0L;
 	return [s stringByAppendingPathComponent:[self inactivePluginsDirectoryPath]];
 }
 
+- (NSString*)appActivePluginsDirectoryPath;
+{
+	return [[NSBundle mainBundle] builtInPlugInsPath];
+}
+
+- (NSString*)appInactivePluginsDirectoryPath;
+{
+	NSMutableString *appPath = [NSMutableString stringWithString:[[NSBundle mainBundle] builtInPlugInsPath]];
+	[appPath appendString:@" (off)"];
+	return appPath;
+}
+
 - (NSArray*)activeDirectories;
 {
-	return [NSArray arrayWithObjects:[self userActivePluginsDirectoryPath], [self systemActivePluginsDirectoryPath], nil];
+	return [NSArray arrayWithObjects:[self userActivePluginsDirectoryPath], [self systemActivePluginsDirectoryPath], [self appActivePluginsDirectoryPath], nil];
 }
 
 - (NSArray*)inactiveDirectories;
 {
-	return [NSArray arrayWithObjects:[self userInactivePluginsDirectoryPath], [self systemInactivePluginsDirectoryPath], nil];
+	return [NSArray arrayWithObjects:[self userInactivePluginsDirectoryPath], [self systemInactivePluginsDirectoryPath], [self appInactivePluginsDirectoryPath], nil];
 }
 
 #pragma mark activation
@@ -454,7 +466,7 @@ PluginManager			*pluginManager = 0L;
 {
 	NSTask *aTask = [[NSTask alloc] init];
     NSMutableArray *args = [NSMutableArray array];
-   
+
     [args addObject:sourcePath];
     [args addObject:destinationPath];
     [aTask setLaunchPath:@"/bin/mv"];
@@ -462,29 +474,61 @@ PluginManager			*pluginManager = 0L;
     [aTask launch];
 }
 
-- (void)activatePluginWithName:(NSString*)name;
+- (void)activatePluginWithName:(NSString*)pluginName;
 {
-	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
-	[paths addObjectsFromArray:[self activeDirectories]];
+	NSMutableArray *activePaths = [NSMutableArray arrayWithArray:[self activeDirectories]];
+	NSMutableArray *inactivePaths = [NSMutableArray arrayWithArray:[self inactiveDirectories]];
 	
-	NSEnumerator *pathEnum = [paths objectEnumerator];
-    NSString *path;
-	while(path=[pathEnum nextObject])
+	NSEnumerator *activePathEnum = [activePaths objectEnumerator];
+    NSString *activePath;
+	NSEnumerator *inactivePathEnum = [inactivePaths objectEnumerator];
+    NSString *inactivePath;
+	
+	while(inactivePath = [inactivePathEnum nextObject])
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+		activePath = [activePathEnum nextObject];
+		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:inactivePath] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name stringByDeletingPathExtension] isEqualToString:name])
+			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
 			{
-				// move path1 to path2
+				NSString *sourcePath = [NSString stringWithFormat:@"%@/%@", inactivePath, name];
+				NSString *destinationPath = [NSString stringWithFormat:@"%@/%@", activePath, name];
+				[self movePluginFromPath:sourcePath toPath:destinationPath];
 			}
 		}
 	}
 }
 
-- (void)desactivatePluginWithName:(NSString*)name;
+- (void)desactivatePluginWithName:(NSString*)pluginName;
 {
+	NSMutableArray *activePaths = [NSMutableArray arrayWithArray:[self activeDirectories]];
+	NSMutableArray *inactivePaths = [NSMutableArray arrayWithArray:[self inactiveDirectories]];
+	
+	NSEnumerator *activePathEnum = [activePaths objectEnumerator];
+    NSString *activePath;
+	NSEnumerator *inactivePathEnum = [inactivePaths objectEnumerator];
+    NSString *inactivePath;
+	
+	while(activePath = [activePathEnum nextObject])
+	{
+		inactivePath = [inactivePathEnum nextObject];
+		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:activePath] objectEnumerator];
+		NSString *name;
+		while(name = [e nextObject])
+		{
+			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
+			{
+				BOOL isDir = YES;
+				if (![[NSFileManager defaultManager] fileExistsAtPath:inactivePath isDirectory:&isDir] && isDir)
+					[[NSFileManager defaultManager] createDirectoryAtPath:inactivePath attributes:nil];
+				NSString *sourcePath = [NSString stringWithFormat:@"%@/%@", activePath, name];
+				NSString *destinationPath = [NSString stringWithFormat:@"%@/%@", inactivePath, name];
+				[self movePluginFromPath:sourcePath toPath:destinationPath];
+			}
+		}
+	}
 }
 
 #pragma mark plugins
@@ -520,7 +564,7 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 //		BOOL active = ([path isEqualToString:userActivePath] || [path isEqualToString:sysActivePath]);
 //		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath]);
 		BOOL active = [[self activeDirectories] containsObject:path];
-		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath]);
+		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath] || [path isEqualToString:[self appActivePluginsDirectoryPath]] || [path isEqualToString:[self appInactivePluginsDirectoryPath]]);
 		
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
@@ -558,6 +602,10 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 	NSLog(@"user inactive : %@", [self userInactivePluginsDirectoryPath]);
 	NSLog(@"sys active : %@", [self systemActivePluginsDirectoryPath]);
 	NSLog(@"sys inactive : %@", [self systemInactivePluginsDirectoryPath]);
+
+	NSLog(@"app active : %@", [self appActivePluginsDirectoryPath]);
+	NSLog(@"app inactive : %@", [self appInactivePluginsDirectoryPath]);	
+	
 	NSLog(@"Plugin list (sorted) : %@", [self pluginsList]);
 	
 //	if([self pluginIsActiveForName:@"Cobb"])
@@ -565,7 +613,9 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 //	if([self pluginIsActiveForName:@"Michel"])
 //		NSLog(@"Michel active");
 
-	//[self movePluginFromPath:@"path1" toPath:@"path2"];
+	//[self movePluginFromPath:@"/Library/Application\ Support/OsiriX/Plugins/Ejection\ Fraction.plugin/" toPath:@"/Library/Application\ Support/OsiriX/Ejection\ Fraction.plugin/"];
+	//[self activatePluginWithName:@"Ejection Fraction"];
+//	[self activatePluginWithName:@"baloo"];
 	NSLog(@"------------------------");
 }
 
