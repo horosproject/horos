@@ -3695,7 +3695,7 @@ static ViewerController *draggedController = 0L;
 	[imageView gClickCountSetReset];
 
 	if( [[buttonToolMatrix selectedCell] tag] == 0)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: 0L];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: self];
 	else
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultRightToolModified" object:sender userInfo: 0L];
 }
@@ -9121,18 +9121,24 @@ int i,j,l;
 - (void) rotate0:(id) sender
 {
     [imageView setRotation: 0];
+	[self propagateSettings];
+	
 	[imageView setNeedsDisplay: YES];
 }
 
 - (void) rotate90:(id) sender
 {
     [imageView setRotation: 90];
+	[self propagateSettings];
+	
 	[imageView setNeedsDisplay: YES];
 }
 
 - (void) rotate180:(id) sender
 {
     [imageView setRotation: 180];
+	[self propagateSettings];
+	
 	[imageView setNeedsDisplay: YES];
 }
 

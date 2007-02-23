@@ -1075,7 +1075,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		case tRotate:
 			if( [event type] != NSKeyDown)
 			{
-				if( [event clickCount] == 2 && gClickCountSet == NO)
+				if( [event clickCount] == 2 && gClickCountSet == NO && [[self window] isKeyWindow])
 				{
 					gClickCountSet = YES;
 					
@@ -1084,6 +1084,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					else rotation += 90;	// -> 90
 					
 					[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+					
+					if( [self is2DViewer] == YES) [[self windowController] propagateSettings];
 					
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 				}
