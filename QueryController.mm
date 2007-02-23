@@ -660,11 +660,14 @@ static char *GetPrivateIP()
 			NSManagedObject	*study = [studyArray objectAtIndex: 0];
 			NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: study] objectAtIndex:0];
 			
-			if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO])
+			if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
 			{
-				[[BrowserController currentBrowser] databaseDoublePressed: self];
-				success = YES;
+				[[BrowserController currentBrowser] showEntireDatabase];
+				if( [[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
 			}
+			else success = YES;
+			
+			if( success) [[BrowserController currentBrowser] databaseOpenStudy: study];
 		}
 	}
 	

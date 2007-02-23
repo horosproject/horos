@@ -1183,7 +1183,7 @@ NSRect screenFrame()
 
 -(void) displayListenerError: (NSString*) err
 {
-	NSRunCriticalAlertPanel(@"DICOM Listener Error", err, @"OK", nil, nil);
+	NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", 0L), err, NSLocalizedString( @"OK", 0L), nil, nil);
 }
 
 -(void) startSTORESCP:(id) sender

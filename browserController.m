@@ -548,7 +548,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if (error)
 	{
 		NSLog( @"addFilesToDatabase ERROR: %@", [error localizedDescription]);
-		managedObjectContext = 0L;
+		//managedObjectContext = 0L;
 		[context setStalenessInterval: 1200];
 		[context unlock];
 		[context release];
@@ -2043,6 +2043,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	[context unlock];
 	[context release];
+}
+
+- (void) showEntireDatabase
+{
+	[albumTable selectRow:0 byExtendingSelection:NO];
+	[self setSearchString: @""];
 }
 
 -(void) loadDatabase:(NSString*) path
@@ -4720,7 +4726,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( [[NSWorkspace sharedWorkspace]openFile: filePath withApplication:@"VLC"] == NO)
 				{
-					NSRunAlertPanel(@"MPEG-2 File", @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", nil, nil, nil);
+					NSRunAlertPanel( NSLocalizedString( @"MPEG-2 File", 0L), NSLocalizedString( @"MPEG-2 DICOM files require the VLC application. Available for free here: http://www.videolan.org/vlc/", 0L), nil, nil, nil);
 				}
 				
 				return YES;
@@ -4753,10 +4759,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSArray *imagesArray = [[[imagesSet allObjects] objectAtIndex:0] allObjects];
 		if([imagesArray count]==1)
 		{
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
-			{
-				return;
-			}
+			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"]) return;
 		}
 	
 		// DICOM & others
@@ -4775,7 +4778,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if (![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item])
 		{
-		//Use Basic Hanging Protocols
+			//Use Basic Hanging Protocols
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
 			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
 			//if ([[currentHangingProtocol objectForKey:@"Rows"] intValue] * [[currentHangingProtocol objectForKey:@"Columns"] intValue] >= [[item valueForKey:@"series"] count])
@@ -8381,7 +8384,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	NSRect f = [segmentedAlbumButton frame];
 	f.size.height = 25;
 	[segmentedAlbumButton setFrame: f];
-	
 	
 	[databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
 	[databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];

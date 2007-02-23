@@ -95,9 +95,9 @@
 }
 
 - (void)save{
-	//NSLog(@"Save Hanging Protocols");
+	NSLog(@"Save Hanging Protocols");
 	id study = [[WindowLayoutManager sharedWindowLayoutManager] currentStudy];
-	NSMutableArray *advancedHangingProtocols = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS"]];
+	NSMutableArray *advancedHangingProtocols = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey: @"ADVANCEDHANGINGPROTOCOLS2"]];
 	//NSLog(@"****** HangingProtocols *************\n%@", _hangingProtocol);
 	if (!advancedHangingProtocols)
 		advancedHangingProtocols = [NSMutableArray array];
@@ -108,7 +108,7 @@
 	[advancedHangingProtocols removeObjectsInArray:filteredHangingProtocols];
 	if (_hangingProtocol)
 		[advancedHangingProtocols addObject:_hangingProtocol];
-	[[NSUserDefaults standardUserDefaults] setObject: advancedHangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS"];
+	[[NSUserDefaults standardUserDefaults] setObject: advancedHangingProtocols forKey: @"ADVANCEDHANGINGPROTOCOLS2"];
 }
 
 

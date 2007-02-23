@@ -245,7 +245,7 @@ NSString* asciiString (NSString* name);
 			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
 		}
 		else
-			NSBeginAlertSheet(@"Burn Warning" , @"OK", nil, nil, nil, nil, nil, nil, nil,@"Please add CD name");
+			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", 0L) , NSLocalizedString( @"OK", 0L), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", 0L));
 	}
 }
 
