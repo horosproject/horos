@@ -142,6 +142,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSMatrix				*rebuildType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
 	
+	IBOutlet NSPopUpButton			*timeIntervalPopup;
 	IBOutlet NSWindow				*customTimeIntervalWindow;
 	IBOutlet NSDatePicker			*customStart, *customEnd, *customStart2, *customEnd2;
 	IBOutlet NSView					*timeIntervalView;

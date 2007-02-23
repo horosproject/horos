@@ -56,13 +56,14 @@
                 bonjourServiceClicked = id; 
                 buildAllThumbnails = id; 
                 burnDICOM = id; 
+                checkIncoming = id; 
                 checkIncomingThread = id; 
                 checkMemory = id; 
                 compressSelectedFiles = id; 
                 createDatabase = id; 
                 customIntervalNow = id; 
                 customize = id; 
-                databaseWindow = id; 
+                databaseDoublePressed = id; 
                 decompressSelectedFiles = id; 
                 delItem = id; 
                 deleteReport = id; 
@@ -170,6 +171,7 @@
                 subSeriesWindow = NSWindow; 
                 supOpenButtons = NSMatrix; 
                 thumbnailsScrollView = NSScrollView; 
+                timeIntervalPopup = NSPopUpButton; 
                 timeIntervalView = NSView; 
                 urlString = NSTextField; 
                 urlWindow = NSWindow; 

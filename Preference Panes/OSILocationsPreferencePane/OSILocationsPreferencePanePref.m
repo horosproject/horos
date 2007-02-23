@@ -36,6 +36,30 @@
 
 @implementation OSILocationsPreferencePanePref
 
+- (void) checkUniqueAETitle
+{
+	int i, x;
+	
+	for( x = 0; x < [serverList count]; x++)
+	{
+		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
+		
+		for( i = 0; i < [serverList count]; i++)
+		{
+			if( i != x)
+			{
+				if( [currentAETitle isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"AETitle"]])
+				{
+					NSRunInformationalAlertPanel(NSLocalizedString(@"Same AETitle", 0L), [NSString stringWithFormat: NSLocalizedString(@"This AETitle is not unique: %@. AETitles should be unique, otherwise Q&R (C-Move SCP/SCU) can fail.", 0L), currentAETitle], NSLocalizedString(@"OK",nil), nil, nil);
+					
+					i = [serverList count];
+					x = [serverList count];
+				}
+			}
+		}
+	}
+}
+
 - (int) echoAddress: (NSString*) address port:(int) port AET:(NSString*) aet
 {
 	NSTask* theTask = [[[NSTask alloc]init]autorelease];
@@ -156,7 +180,9 @@
 		tag = 1;
 	}
 			
-	[characterSetPopup selectItemAtIndex:tag];	
+	[characterSetPopup selectItemAtIndex:tag];
+	
+	[self checkUniqueAETitle];
 }
 
 - (void)dealloc{
@@ -267,6 +293,8 @@
 			[serverList replaceObjectAtIndex:rowIndex withObject: theRecord];
 			
 			[[NSUserDefaults standardUserDefaults] setObject:serverList forKey:@"SERVERS"];
+			
+			[self checkUniqueAETitle];
 		}
 		
 		if( [aTableView tag] == 1)

@@ -2047,6 +2047,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (void) showEntireDatabase
 {
+	timeIntervalType = 0;
+	[timeIntervalPopup selectItemWithTag: 0];
+	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	[self setSearchString: @""];
 }

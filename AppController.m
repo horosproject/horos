@@ -1874,8 +1874,6 @@ static BOOL initialized = NO;
 		
 		if (productVersionDict && currVersionNumber && latestVersionNumber)
 		{
-			NSLog( @"Server vers (svn version) :%d Installed vers:%d", [latestVersionNumber intValue], [currVersionNumber intValue]);
-		
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
 				if (verboseUpdateCheck)
