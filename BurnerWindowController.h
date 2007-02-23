@@ -41,6 +41,7 @@
 	NSArray *filesToBurn;
 	BOOL _releaseAfterBurn;
 	BOOL _multiplePatients;
+	BOOL writeDMG;
 }
 - (IBAction) setAnonymizedCheck: (id) sender;
 - (id) initWithFiles:(NSArray *)theFiles;

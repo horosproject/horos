@@ -219,7 +219,10 @@ NSString* asciiString (NSString* name);
 		[nameField setEnabled: NO];
 		[compressionMode setEnabled: NO];
 		[anonymizedCheckButton setEnabled: NO];
-		
+
+		writeDMG = NO;
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
+
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
 			AnonymizerWindowController	*anonymizer = [[AnonymizerWindowController alloc] init];
@@ -250,11 +253,7 @@ NSString* asciiString (NSString* name);
 }
 
 - (void)performBurn: (id) object
-{
-	BOOL writeDMG = NO;
-
-	 if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
-	 
+{	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isSettingUpBurn = YES;
 	[self addDicomdir];
