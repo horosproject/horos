@@ -4476,8 +4476,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 #pragma mark *pixel and image
 
 	//angles
-	NSNumber *multiframePrimaryAngle = [[dcmObject attributeValueWithName:@"PositionerPrimaryAngle"]retain];
-	NSNumber  *multiframeSecondaryAngle = [[dcmObject attributeValueWithName:@"PositionerSecondaryAngle"]retain];
+	NSNumber *multiframePrimaryAngle = [dcmObject attributeValueWithName:@"PositionerPrimaryAngle"] ;
+	NSNumber  *multiframeSecondaryAngle = [dcmObject attributeValueWithName:@"PositionerSecondaryAngle"] ;
 	//orientation
 	
 	originX = 0;	originY = 0;	originZ = 0;

@@ -705,7 +705,7 @@ static char *GetPrivateIP()
 	{
 		[[BrowserController currentBrowser] checkIncoming: self];
 		
-		if( checkAndViewTry-- > 0)
+		if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
 			[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
 		else success = YES;
 	}
