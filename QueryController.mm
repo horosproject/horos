@@ -635,6 +635,8 @@ static char *GetPrivateIP()
 
 - (void) checkAndView:(id) item
 {
+	if( [[self window] isVisible] == NO) return;
+	
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
 	NSError						*error = 0L;
