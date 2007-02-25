@@ -23,6 +23,11 @@ extern BrowserController	*browserWindow;
 
 @implementation DICOMExport
 
+- (NSString*) seriesDescription
+{
+	return exportSeriesDescription;
+}
+
 - (void) setSeriesDescription: (NSString*) desc
 {
 	if( desc != exportSeriesDescription)

@@ -62,6 +62,7 @@
 // Write the image data
 - (long) writeDCMFile: (NSString*) dstPath;
 
+- (NSString*) seriesDescription;
 - (void) setSeriesDescription: (NSString*) desc;
 - (void) setSeriesNumber: (long) no;
 - (void) setDefaultWWWL: (long) ww :(long) wl;

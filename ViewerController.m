@@ -10753,7 +10753,12 @@ int i,j,l;
 		if( exportDCM == 0L) exportDCM = [[DICOMExport alloc] init];
 		
 		[exportDCM setSourceFile: [[fileList[ curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] valueForKey:@"completePath"]];
-		[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+		
+		if( [[exportDCM seriesDescription] isEqualToString: [dcmSeriesName stringValue]] == NO)
+		{
+			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+			[exportDCM setSeriesNumber: 8200 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];
+		}
 		
 		[imageView getWLWW:&cwl :&cww];
 		[exportDCM setDefaultWWWL: cww :cwl];
