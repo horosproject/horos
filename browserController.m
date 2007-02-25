@@ -5735,9 +5735,9 @@ static BOOL withReset = NO;
 	NSData *imageData = [image  TIFFRepresentation];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.7] forKey:NSImageCompressionFactor];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.6] forKey:NSImageCompressionFactor];
 	
-	NSData	*result = [imageRep representationUsingType:NSJPEG2000FileType properties:imageProps];
+	NSData	*result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];	//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!!
 	
 	NSLog( @"thumbnail size: %d", [result length]);
 	
