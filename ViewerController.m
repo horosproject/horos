@@ -2469,7 +2469,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 							if( img)
 							{
 								[cell setImage: img];
-								[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+								
+								if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+									[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
 							}
 							else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
 							

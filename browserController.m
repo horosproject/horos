@@ -5541,8 +5541,11 @@ static BOOL withReset = NO;
 				{
 					if( [curFile valueForKey:@"thumbnail"] == 0L)
 					{
-						NSData *data = [BrowserController produceJPEGThumbnail: img];
-						[curFile setValue: data forKey:@"thumbnail"];
+						if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+						{
+							NSData *data = [BrowserController produceJPEGThumbnail: img];
+							[curFile setValue: data forKey:@"thumbnail"];
+						}
 					}
 				}
 			}
@@ -5735,7 +5738,7 @@ static BOOL withReset = NO;
 	NSData *imageData = [image  TIFFRepresentation];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.4] forKey:NSImageCompressionFactor];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
 	
 	NSData	*result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];	//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
 	
@@ -5783,6 +5786,7 @@ static BOOL withReset = NO;
 - (IBAction) buildAllThumbnails:(id) sender
 {
 	if( [DCMPix isRunOsiriXInProtectedModeActivated]) return;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"] == NO) return;
 
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSManagedObjectModel	*model = [self managedObjectModel];
