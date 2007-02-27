@@ -1635,14 +1635,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 		
+		BOOL found = NO;
 		for( i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
 				[toolbarPanel[ i] setToolbar: toolbar];
-				NSLog(@"found");
+				found = YES;
 			}
+			else [[toolbarPanel[ i] window] orderOut:self];
 		}
+		if( found == NO) NSLog( @"Toolbar NOT found");
 	}
 	else
 	{
@@ -1671,14 +1674,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 		
+		BOOL found = NO;
 		for( i = 0; i < [[NSScreen screens] count]; i++)
 		{
 			if( [[self window] screen] == [[NSScreen screens] objectAtIndex: i])
 			{
 				[toolbarPanel[ i] setToolbar: toolbar];
-				NSLog(@"found");
+				found = YES;
 			}
+			else [[toolbarPanel[ i] window] orderOut:self];
 		}
+		if( found == NO) NSLog( @"Toolbar NOT found");
 	}
 	else
 	{
@@ -3697,7 +3703,7 @@ static ViewerController *draggedController = 0L;
 	[imageView gClickCountSetReset];
 
 	if( [[buttonToolMatrix selectedCell] tag] == 0)
-		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: self];
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:sender userInfo: 0L];
 	else
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultRightToolModified" object:sender userInfo: 0L];
 }

@@ -7936,12 +7936,15 @@ static BOOL needToRezoom;
 
 - (void) newViewerDICOM: (id) sender
 {
-	long				index;
-	NSManagedObject		*item					= [databaseOutline itemAtRow: [databaseOutline selectedRow]];
+	NSManagedObject		*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 	
 	if (sender == Nil && [[oMatrix selectedCells] count] == 1 && [[item valueForKey:@"type"] isEqualToString:@"Study"] == YES)
 	{
-		[self databaseOpenStudy: [databaseOutline itemAtRow: [databaseOutline selectedRow]]];
+		NSArray *a = [self databaseSelection];
+		
+		int i;
+		for( i = 0; i < [a count]; i++)
+			[self databaseOpenStudy: [a objectAtIndex: i]];
 	}
 	else
 	{
