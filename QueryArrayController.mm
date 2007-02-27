@@ -51,6 +51,10 @@
 }
 
 - (void)dealloc{
+	[queryLock lock];
+	[queryLock unlock];
+	[queryLock release];
+	
 	[rootNode release];
 	[filters release];
 	[calledAET release];
@@ -84,6 +88,8 @@
 
 - (void)performQuery{
 	NS_DURING
+	if( queryLock == 0L) queryLock = [[NSLock alloc] init];
+	[queryLock lock];
 	//NSLog(@"query");
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
 	[params setObject:[NSNumber numberWithInt:1] forKey:@"debugLevel"];
@@ -133,6 +139,8 @@
 		NSLog(@"performQuery exception: %@", [localException name]);
 		[alert runModal];
 	NS_ENDHANDLER
+	
+	[queryLock unlock];
 }
 
 - (NSDictionary *)parameters{	

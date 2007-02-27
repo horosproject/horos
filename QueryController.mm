@@ -505,6 +505,8 @@ static char *GetPrivateIP()
 // This function calls many GUI function, it has to be called from the main thread
 - (void)performQuery:(id)object
 {
+	checkAndViewTry = -1;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[progressIndicator startAnimation:nil];
 	[queryManager performQuery];
@@ -590,6 +592,8 @@ static char *GetPrivateIP()
 
 - (void) performRetrieve:(NSArray*) array
 {
+	checkAndViewTry = -1;
+	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
 
@@ -636,6 +640,7 @@ static char *GetPrivateIP()
 - (void) checkAndView:(id) item
 {
 	if( [[self window] isVisible] == NO) return;
+	if( checkAndViewTry < 0) return;
 	
 	[[BrowserController currentBrowser] checkIncoming: self];
 	

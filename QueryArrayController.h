@@ -28,6 +28,7 @@
 	NSString *port;
 	NSArray *queries;
 	NSNetService *_netService;
+	NSLock *queryLock;
 }
 
 - (id)initWithCallingAET:(NSString *)myAET calledAET:(NSString *)theirAET  hostName:(NSString *)host  port:(NSString *)tcpPort netService:(NSNetService *)netService;

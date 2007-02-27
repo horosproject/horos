@@ -7943,14 +7943,12 @@ static BOOL needToRezoom;
 	{
 		[self databaseOpenStudy: [databaseOutline itemAtRow: [databaseOutline selectedRow]]];
 	}
-	else	// Matrix
+	else
 	{
 		if( [self isUsingExternalViewer: [matrixViewArray objectAtIndex: [[oMatrix selectedCell] tag]]] == NO)
 		{
-			NSMutableArray		*selectedItems			= [NSMutableArray arrayWithObject: item];
-		
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality: Nil description: Nil];	
-			[self viewerDICOMInt:NO	dcmFile: selectedItems viewer:0L];
+			[self viewerDICOMInt:NO	dcmFile: [self databaseSelection] viewer:0L];
 		}
 	}
 }
@@ -8001,13 +7999,9 @@ static BOOL needToRezoom;
 	[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:nil description:nil];
 
 	NSIndexSet				*selectedRowIndexes = [databaseOutline selectedRowIndexes];
-
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{
-       if ([selectedRowIndexes containsIndex:index])
-	   {			
-			[selectedItems addObject: [databaseOutline itemAtRow:index]];
-	   }
+       if ([selectedRowIndexes containsIndex:index]) [selectedItems addObject: [databaseOutline itemAtRow:index]];
 	}
 	
 	[self viewerDICOMInt:YES dcmFile: selectedItems viewer:0L];
