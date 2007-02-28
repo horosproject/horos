@@ -325,14 +325,9 @@ NSString* asciiString (NSString* name);
 			DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
 
 			[bpp setDelegate:self];
-
-			// And start off the burn itself. This will put up the progress dialog 
-			// and do all the nice pretty things that a happy app does.
-			[bpp beginProgressPanelForBurn:[bsp burnObject] layout:track];
 			
 			// If you wanted to run this as a sheet you would have sent
-			 // [bpp beginProgressSheetForBurn:[bsp burnObject] layout:tracks modalForWindow:aWindow];
-			//
+			[bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
 		}
 		else
 			runBurnAnimation = NO;
