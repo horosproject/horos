@@ -2014,7 +2014,7 @@ static BOOL initialized = NO;
 	{
 		if ([[NSUserDefaults standardUserDefaults] integerForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
 			return [NSArray arrayWithObject: [NSScreen mainScreen]];
-			
+		
 		NSMutableArray *array = [NSMutableArray array];
 		NSEnumerator *enumerator = [[NSScreen screens] objectEnumerator];
 		NSScreen *screen;
@@ -2030,7 +2030,7 @@ static BOOL initialized = NO;
 		viewers =  [NSScreen screens] ; 
 	
 	
-	//once we have the list of viewers we need to arrange them left to right, and keep the db screen as the last screen
+	//once we have the list of viewers we need to arrange them left to right
 	int count = [viewers count];
 	int i;
 	int position;
@@ -2055,11 +2055,13 @@ static BOOL initialized = NO;
 		[arrangedViewers insertObject:aScreen atIndex:position];
 	}
 	
-	if( [dbWindow screen])
+	if( [self dbScreen] == 0L)
 	{
 		[arrangedViewers removeObject: [dbWindow screen]];
 		[arrangedViewers addObject: [dbWindow screen]];
 	}
+	else [arrangedViewers removeObject: [dbWindow screen]];
+	
 	return arrangedViewers;
 		
 }
@@ -2204,7 +2206,7 @@ static BOOL initialized = NO;
 	
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
-
+	
 	int rows = [[currentHangingProtocol objectForKey:@"Rows"] intValue];
 	int columns = [[currentHangingProtocol objectForKey:@"Columns"] intValue];
 	
