@@ -217,6 +217,11 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
 	NSImage							*notFoundImage;
+	
+	BOOL							newFilesInIncoming;
+	NSImage							*standardOsiriXIcon;
+	NSImage							*downloadingOsiriXIcon;
+	NSImage							*currentIcon;
 }
 
 + (BrowserController*) currentBrowser;
@@ -227,6 +232,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
+-(void) setDockIcon;
 - (void) showEntireDatabase;
 - (IBAction) querySelectedStudy:(id) sender;
 - (NSPredicate*) smartAlbumPredicate:(NSManagedObject*) album;

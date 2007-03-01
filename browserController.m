@@ -5359,6 +5359,8 @@ static BOOL withReset = NO;
 
 -(void) previewPerformAnimation:(id) sender
 {
+	[self setDockIcon];
+	
     // Wait loading all images !!!
 	if( managedObjectContext == 0L) return;
 	if( bonjourDownloading) return;
@@ -8217,6 +8219,9 @@ static NSArray*	openSubSeriesArray = 0L;
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		
+		downloadingOsiriXIcon = [[NSImage imageNamed:@"OsirixDownload.icns"] retain];
+		standardOsiriXIcon = [[NSImage imageNamed:@"Osirix.icns"] retain];
+		
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
 //		notFoundDataThumbnail = [[BrowserController produceJPEGThumbnail: notFound] retain];
 		
@@ -9658,6 +9663,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 							[DicomFile isXMLDescriptorFile:srcPath]) 
 							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 						{
+							newFilesInIncoming = YES;
+							
 							if (isDicomFile)
 							{
 								if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
@@ -9734,6 +9741,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( [filesArray count] > 0)
 			{
+				newFilesInIncoming = YES;
+				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
 				{
 					[self listenerAnonymizeFiles: filesArray];
@@ -9785,6 +9794,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 				}
 			}
+			else
+			{
+				if( [compressedPathArray count] == 0) newFilesInIncoming = NO;
+				else newFilesInIncoming = YES;
+			}
 			
 			[filesArray release];
 			
@@ -9798,6 +9812,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			[compressedPathArray release];
 		}
+		else newFilesInIncoming = NO;
 	}
 	
 	@catch( NSException *ne)
@@ -9810,6 +9825,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[pool release];
 }
 
+-(void) setDockIcon
+{
+	NSImage	*image = 0L;
+	
+	if( newFilesInIncoming) image = downloadingOsiriXIcon;
+	else image = standardOsiriXIcon;
+	
+	if( currentIcon != image)
+	{
+		currentIcon = image;
+		[[NSApplication sharedApplication] setApplicationIconImage: image];
+		NSLog( @"dock icon set");
+	}
+}
+
 -(void) checkIncoming:(id) sender
 {
 	if( isCurrentDatabaseBonjour) return;
@@ -9820,7 +9850,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[NSThread detachNewThreadSelector: @selector(checkIncomingThread:) toTarget:self withObject: self];
 		[checkIncomingLock unlock];
 	}
-	else NSLog(@"checkIncoming locked...");
+	else
+	{
+		NSLog(@"checkIncoming locked...");
+		newFilesInIncoming = YES;
+	}
+	
+	[self setDockIcon];
 }
 
 - (void) writeMovie: (NSArray*) imagesArray name: (NSString*) fileName
