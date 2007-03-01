@@ -10226,6 +10226,7 @@ int i,j,l;
 	int columns = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(0, 1)] intValue];
 	int rows = [[[[printLayout selectedItem] title] substringWithRange: NSMakeRange(2, 1)] intValue];
 	int ipp = columns * rows;
+	if( ipp < 1) ipp = 1;
 	
 	switch( [[printSelection selectedCell] tag])
 	{
@@ -10482,7 +10483,7 @@ int i,j,l;
 		[printFormat selectCellWithTag: [[p valueForKey: @"format"] intValue]];
 		[printInterval setIntValue: [[p valueForKey: @"interval"] intValue]];
 		
-		[printText setStringValue: [p valueForKey: @"comments"]];
+		if( [p valueForKey: @"comments"]) [printText setStringValue: [p valueForKey: @"comments"]];
 	}
 	
 	// ****
