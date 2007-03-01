@@ -559,6 +559,7 @@ static char *GetPrivateIP()
 		   }
 		}
 		
+		checkAndViewTry = -1;
 		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
 	}
 }
@@ -592,8 +593,6 @@ static char *GetPrivateIP()
 
 - (void) performRetrieve:(NSArray*) array
 {
-	checkAndViewTry = -1;
-	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[array retain];
 
@@ -714,7 +713,8 @@ static char *GetPrivateIP()
 		
 		if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
 			[self performSelector:@selector( checkAndView:) withObject:item afterDelay:1.0];
-		else success = YES;
+		else
+			success = YES;
 	}
 	
 	if( success)
