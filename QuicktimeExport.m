@@ -356,7 +356,7 @@ NSString * documentsDirectory();
 			}
 			[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
 		}
-		
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXNewMovieSaved" object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"path", nil]];
 		return fileName;
 	}
 	
