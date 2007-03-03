@@ -2060,7 +2060,7 @@ static BOOL initialized = NO;
 		[arrangedViewers removeObject: [dbWindow screen]];
 		[arrangedViewers addObject: [dbWindow screen]];
 	}
-	else [arrangedViewers removeObject: [dbWindow screen]];
+	else if( [arrangedViewers count] > 1) [arrangedViewers removeObject: [dbWindow screen]];
 	
 	return arrangedViewers;
 		

@@ -6113,7 +6113,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			else decayCorrection = 0L;
 			
 			val = Papy3GetElement (theGroupP, papDecayFactorGr, &pos, &elemType );
-			if( val) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : nil;
+			if( val) decayFactor = val? [[NSString stringWithCString:val->a] floatValue] : 0;
 			else decayFactor = 1.0;
 			
 			//  Note: Following def for papRadiopharmaceuticalInformationSequence is off by 6!!!!

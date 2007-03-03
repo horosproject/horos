@@ -336,7 +336,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 - (double)nextDouble{
@@ -352,7 +352,7 @@
 	}
 	else 
 		[exception raise];
-	return nil;
+	return 0;
 }
 
 
