@@ -1933,9 +1933,9 @@ public:
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-	#if __LP64__
-	return;
-	#endif
+//	#if __LP64__
+//	return;
+//	#endif
 	
 	long	pix[ 3];
 	float	pos[ 3], value;
@@ -4650,12 +4650,12 @@ public:
 	
 	aRenderer->AddActor2D( Line2DActor);
 	
-	#if !__LP64__
+//	#if !__LP64__
 	orientationWidget->SetInteractor( [self getInteractor] );
 	orientationWidget->SetEnabled( 1 );
 	orientationWidget->SetViewport( 0.90, 0.90, 1, 1);
-	orientationWidget->InteractiveOff();
-	#endif
+//	orientationWidget->InteractiveOff();
+//	#endif
 	
 	[self saView:self];
 	
