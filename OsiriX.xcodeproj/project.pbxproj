@@ -26,7 +26,6 @@
 				CEACC7B50878781000CF466E /* PBXTargetDependency */,
 				CEACC7B70878781000CF466E /* PBXTargetDependency */,
 				CEACC7B90878781000CF466E /* PBXTargetDependency */,
-				CEACC7BB0878781000CF466E /* PBXTargetDependency */,
 				AB381B090ABE9FA600239326 /* PBXTargetDependency */,
 				ABD908E50AF211C500E47345 /* PBXTargetDependency */,
 				CEAB83080B20979D0019A9AE /* PBXTargetDependency */,
@@ -4259,7 +4258,6 @@
 		BF045E920B135F6400F5B97D /* burn_anim09.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172010874839C0021C3FC /* burn_anim09.tif */; };
 		BF045E930B135F6400F5B97D /* burn_anim10.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172020874839C0021C3FC /* burn_anim10.tif */; };
 		BF045E940B135F6400F5B97D /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC172030874839C0021C3FC /* burn_anim11.tif */; };
-		BF045E950B135F6400F5B97D /* OSIRoutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */; };
 		BF045E960B135F6400F5B97D /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		BF045E970B135F6400F5B97D /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		BF045E980B135F6400F5B97D /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
@@ -4904,8 +4902,8 @@
 		BF0461190B135F6400F5B97D /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
 		BF04611A0B135F6400F5B97D /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		BF04611B0B135F6400F5B97D /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
-		BF04611C0B135F6400F5B97D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1609B6828200545F5E /* jcapistd.c */; };
-		BF04611D0B135F6400F5B97D /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1709B6828200545F5E /* jcarith.c */; };
+		BF04611C0B135F6400F5B97D /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1609B6828200545F5E; };
+		BF04611D0B135F6400F5B97D /* jcarith.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1709B6828200545F5E; };
 		BF04611E0B135F6400F5B97D /* jccoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1809B6828200545F5E /* jccoefct.c */; };
 		BF04611F0B135F6400F5B97D /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1909B6828200545F5E /* jccolor.c */; };
 		BF0461200B135F6400F5B97D /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1A09B6828200545F5E /* jcdctmgr.c */; };
@@ -12455,9 +12453,6 @@
 		CEB36D58098A69500089D2D3 /* ROIVolume.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E80E3F0986897C005121AA /* ROIVolume.mm */; };
 		CEB7179806CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
 		CEB7179906CE7CBD00084CA5 /* libjasper2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEB7179706CE7CBD00084CA5 /* libjasper2.a */; };
-		CEBD8A380875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */; };
-		CEBD8A390875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */; };
-		CEBD8A3A0875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */; };
 		CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */; };
 		CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */; };
 		CEBD8ACA0875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */; };
@@ -13396,13 +13391,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D202CE80486D31800D8A456;
 			remoteInfo = OSIListenerPreferencePane;
-		};
-		CEACC7BA0878781000CF466E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CE4E42F308758A1700D0AFDB /* OSIRoutingPreferencePane.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D202CE80486D31800D8A456;
-			remoteInfo = OSIRoutingPreferencePane;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -16873,7 +16861,6 @@
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
 		CEB7179706CE7CBD00084CA5 /* libjasper2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjasper2.a; path = Binaries/Jasper/libjasper2.a; sourceTree = SOURCE_ROOT; };
-		CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIRoutingPreferencePane.prefPane; path = "Preference Panes/OSIRoutingPreferencePane/build/Development/OSIRoutingPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A5E0875B233000E42D6 /* OSICDPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSICDPreferencePane.prefPane; path = "Preference Panes/OSICDPreferencePane/build/Development/OSICDPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A7C0875B233000E42D6 /* OSIGeneralPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIGeneralPreferencePane.prefPane; path = "Preference Panes/OSIGeneralPreferencePane/build/Development/OSIGeneralPreferencePane.prefPane"; sourceTree = "<group>"; };
 		CEBD8A8B0875B233000E42D6 /* OSIHangingPreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHangingPreferencePane.prefPane; path = "Preference Panes/OSIHangingPreferencePane/build/Development/OSIHangingPreferencePane.prefPane"; sourceTree = "<group>"; };
@@ -21607,7 +21594,6 @@
 				CEBD8A9A0875B233000E42D6 /* OSIListenerPreferencePane.prefPane */,
 				CEBD8AA90875B233000E42D6 /* OSILocationsPreferencePane.prefPane */,
 				CEBD8AB80875B233000E42D6 /* OSIViewerPreferencePane.prefPane */,
-				CEBD8A370875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane */,
 			);
 			name = Pane;
 			sourceTree = "<group>";
@@ -29627,7 +29613,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -29703,7 +29688,6 @@
 				},
 			);
 			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				AB28B42E05B7921E00A9906C /* Development */,
 				CECBFEE707539E3900576814 /* Development VolumePRO */,
@@ -30006,7 +29990,6 @@
 				CEC1720D0874839C0021C3FC /* burn_anim09.tif in Resources */,
 				CEC1720E0874839C0021C3FC /* burn_anim10.tif in Resources */,
 				CEC1720F0874839C0021C3FC /* burn_anim11.tif in Resources */,
-				CEBD8A380875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */,
 				CEBD8AC70875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */,
 				CEBD8AC90875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */,
 				CEBD8ACA0875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */,
@@ -30332,7 +30315,6 @@
 				CEC172250874839C0021C3FC /* burn_anim09.tif in Resources */,
 				CEC172260874839C0021C3FC /* burn_anim10.tif in Resources */,
 				CEC172270874839C0021C3FC /* burn_anim11.tif in Resources */,
-				CEBD8A3A0875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */,
 				CEBD8AD50875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */,
 				CEBD8AD70875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */,
 				CEBD8AD80875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */,
@@ -30658,7 +30640,6 @@
 				BF045E920B135F6400F5B97D /* burn_anim09.tif in Resources */,
 				BF045E930B135F6400F5B97D /* burn_anim10.tif in Resources */,
 				BF045E940B135F6400F5B97D /* burn_anim11.tif in Resources */,
-				BF045E950B135F6400F5B97D /* OSIRoutingPreferencePane.prefPane in Resources */,
 				BF045E960B135F6400F5B97D /* OSICDPreferencePane.prefPane in Resources */,
 				BF045E970B135F6400F5B97D /* OSIGeneralPreferencePane.prefPane in Resources */,
 				BF045E980B135F6400F5B97D /* OSIHangingPreferencePane.prefPane in Resources */,
@@ -30974,7 +30955,6 @@
 				CEC172190874839C0021C3FC /* burn_anim09.tif in Resources */,
 				CEC1721A0874839C0021C3FC /* burn_anim10.tif in Resources */,
 				CEC1721B0874839C0021C3FC /* burn_anim11.tif in Resources */,
-				CEBD8A390875B00E000E42D6 /* OSIRoutingPreferencePane.prefPane in Resources */,
 				CEBD8ACE0875B233000E42D6 /* OSICDPreferencePane.prefPane in Resources */,
 				CEBD8AD00875B233000E42D6 /* OSIGeneralPreferencePane.prefPane in Resources */,
 				CEBD8AD10875B233000E42D6 /* OSIHangingPreferencePane.prefPane in Resources */,
@@ -35178,11 +35158,6 @@
 			isa = PBXTargetDependency;
 			name = OSIListenerPreferencePane;
 			targetProxy = CEACC7B80878781000CF466E /* PBXContainerItemProxy */;
-		};
-		CEACC7BB0878781000CF466E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OSIRoutingPreferencePane;
-			targetProxy = CEACC7BA0878781000CF466E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
