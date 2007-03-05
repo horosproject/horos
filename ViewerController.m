@@ -1350,8 +1350,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
 		   NSMenu *contextual = [[NSMenu alloc] initWithTitle:plistTitle
 											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
-										  forWindowController:self
-								 ];
+										  forWindowController:self ];
 		   [imageView setMenu:contextual];
 	}
 

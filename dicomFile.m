@@ -2802,7 +2802,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 - (NSString*) patientUID
 {
-	NSString	*string = [NSString stringWithFormat:@"%@-%@-%@", [dicomElements valueForKey:@"patientName"], [dicomElements valueForKey:@"patientID"], [[dicomElements valueForKey:@"patientBirthDate"] descriptionWithCalendarFormat:@"%Y%m%d"]];
+	NSString	*string = [NSString stringWithFormat:@"%@-%@-%@", [dicomElements valueForKey:@"patientName"], [dicomElements valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[dicomElements valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
 	//[[dicomElements valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]];
 	
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
