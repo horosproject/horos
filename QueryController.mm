@@ -969,7 +969,7 @@ static char *GetPrivateIP()
 	serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 	
 	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
-	[sendToPopup addItemWithTitle: [NSString stringWithFormat:@"This Computer - %@/%@:%@", [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
+	[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%@", 0L), [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"], ip, [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]]];
 
 	[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];
 	

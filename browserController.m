@@ -4126,7 +4126,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 						
 						if([seriesArray containsObject: series] == NO)
 						{
-							[seriesArray addObject: series];
+							if( series) [seriesArray addObject: series];
 							[series setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 							[series setValue: 0L forKey:@"thumbnail"];
 						}
@@ -4139,7 +4139,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 							
 							if([studiesArray containsObject: study] == NO)
 							{
-								[studiesArray addObject: study];
+								if( study) [studiesArray addObject: study];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 							}
 							

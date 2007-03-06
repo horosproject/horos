@@ -288,8 +288,8 @@
 	float fValue = [sender scaleValue] / [sender pixelSpacing];
 	[originalView setScaleValue: fValue * [originalView pixelSpacing]];
 	[originalView setRotation: [sender rotation]];
+	
 	[originalView setOrigin: [sender origin]];
-	[originalView setOriginOffset: [sender originOffset]];
 	
 	NSPoint		pt;
 	
@@ -298,18 +298,10 @@
 	pt.x = [sender origin].x;
 	[xReslicedView setOrigin: pt];
 
-	pt.y = [xReslicedView originOffset].y;
-	pt.x = [sender originOffset].x;
-	[xReslicedView setOriginOffset: pt];
-
 	// Y - Views
 	pt.y = [yReslicedView origin].y;
 	pt.x = -[sender origin].y;
 	[yReslicedView setOrigin: pt];
-
-	pt.y = [yReslicedView originOffset].y;
-	pt.x = -[sender originOffset].y;
-	[yReslicedView setOriginOffset: pt];
 }
 
 - (void) blendingPropagateX:(OrthogonalMPRView*) sender

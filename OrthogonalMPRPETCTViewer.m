@@ -520,8 +520,9 @@ NSString * documentsDirectory();
 - (void) blendingPropagateOriginal:(OrthogonalMPRPETCTView*) sender
 {
 	[CTController blendingPropagateOriginal: sender];
-	[PETController blendingPropagateOriginal: sender];
 	[PETCTController blendingPropagateOriginal: sender];
+	
+	[PETController blendingPropagateOriginal: sender];
 }
 
 - (void) blendingPropagateX:(OrthogonalMPRPETCTView*) sender
