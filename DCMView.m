@@ -8461,138 +8461,138 @@ BOOL	lowRes = NO;
 #pragma mark -
 #pragma mark IMAVManager delegate methods.
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-#if !__LP64__
-/*
-// The IMAVManager will call this to ask for the context we'll be providing frames with.
-- (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
-	NSLog(@"alt context: %@ format: %@", [_alternateContext description], [[self pixelFormat] description]);
-    *contextOut = [_alternateContext CGLContextObj];
-    *pixelFormatOut = [[self pixelFormat] CGLPixelFormatObj];
-}
-
-// The IMAVManager will call this when it wants a frame.
-// Note that this will be called on a non-main thread.
-
-- (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
-	// We ignore the timestamp, signifying that we're providing content for 'now'.
-	NSLog(@"renderIntoOpenGLBuffer:");
-	// Make sure we agree on the screen ID.
- 	CGLContextObj cgl_ctx = [_alternateContext CGLContextObj];
-	CGLGetVirtualScreen(cgl_ctx, screenInOut);
-	NSLog(@"get virtual screen");
-	// Attach the OpenGLBuffer and render into the _alternateContext.
-    if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
-        // In case the buffers have changed in size, reset the viewport.
-        NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
-        GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
-        GLfloat height = [[attributes objectForKey:(NSString *)kCVOpenGLBufferHeight] floatValue];
-		NSLog(@"width %f  height %f:", width, height);
-
-		NSLog(@"render");
-		// Render!
-        [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
-        return YES;
-    } else {
-        // This should never happen.  The safest thing to do if it does it return
-        // 'NO' (signifying that the frame has not changed).
-        return NO;
-    }
-}
-
-*/
-// Callback from IMAVManager asking what pixel format we'll be providing frames in.
-- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
-    *pixelFormatOut = kCVPixelFormatType_32ARGB;
-}
-
-// This callback is called periodically when we're in the IMAVActive state.
-// We copy (actually, re-render) what's currently on the screen into the provided 
-// CVPixelBufferRef.
+//#if !__LP64__
+///*
+//// The IMAVManager will call this to ask for the context we'll be providing frames with.
+//- (void)getOpenGLBufferContext:(CGLContextObj *)contextOut pixelFormat:(CGLPixelFormatObj *)pixelFormatOut {
+//	NSLog(@"alt context: %@ format: %@", [_alternateContext description], [[self pixelFormat] description]);
+//    *contextOut = [_alternateContext CGLContextObj];
+//    *pixelFormatOut = [[self pixelFormat] CGLPixelFormatObj];
+//}
 //
-// Note that this will be called on a non-main thread. 
-- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
-    // We ignore the timestamp, signifying that we're providing content for 'now'.
-	CVReturn err;
-	
-	// If the image has not changed since we provided the last one return 'NO'.
-    // This enables more efficient transmission of the frame when there is no
-    // new information.
-	if ([self checkHasChanged])
-		return NO;
-	
-    // Lock the pixel buffer's base address so that we can draw into it.
-	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
-        // This should not happen.  If it does, the safe thing to do is return 
-        // 'NO'.
-		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
-		return NO;
-	}
-    @synchronized (self) {
-    // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
-    // pixel format returned in getPixelBufferPixelFormat:, above, width and
-    // height should be read from the provided CVPixelBuffer.
-    size_t width = CVPixelBufferGetWidth(buffer); 
-    size_t height = CVPixelBufferGetHeight(buffer);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
-                                                   width, height,
-                                                   8,
-                                                   CVPixelBufferGetBytesPerRow(buffer),
-                                                   colorSpace,
-                                                   kCGImageAlphaPremultipliedFirst);
-    CGColorSpaceRelease(colorSpace);
-    
-    // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
-    // to draw.
-    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
-    [NSGraphicsContext setCurrentContext:context];
-	//get NSImage and draw in the rect
-	
-    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
-    [context flushGraphics];
-    
-    // Clean up - remember to unlock the pixel buffer's base address (we locked
-    // it above so that we could draw into it).
-    CGContextRelease(cgContext);
-    CVPixelBufferUnlockBaseAddress(buffer, 0);
-    }
-    return YES;
-}
-
-
-
-- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect{
-    // We synchronise to make sure we're not drawing in two threads
-    // simultaneously.
-   
-		[[NSColor blackColor] set];
-		NSRectFill(rect);
-		
-		if (image != nil) {
-			NSRect imageBounds = { NSZeroPoint, [image size] };
-			float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
-			float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
-			
-			if (scaledHeight < scaledWidth) {
-				// rect is wider than image: fit height
-				float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
-				rect.origin.x += horizMargin / 2.0;
-				rect.size.width -= horizMargin;
-			} else {
-				// rect is taller than image: fit width
-				float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
-				rect.origin.y += vertMargin / 2.0;
-				rect.size.height -= vertMargin;
-			}
-			
-			[image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
-		}
-
-	//}
-}
-
-
-#endif
+//// The IMAVManager will call this when it wants a frame.
+//// Note that this will be called on a non-main thread.
+//
+//- (BOOL)renderIntoOpenGLBuffer:(CVOpenGLBufferRef)buffer onScreen:(int *)screenInOut forTime:(CVTimeStamp*)timeStamp {
+//	// We ignore the timestamp, signifying that we're providing content for 'now'.
+//	NSLog(@"renderIntoOpenGLBuffer:");
+//	// Make sure we agree on the screen ID.
+// 	CGLContextObj cgl_ctx = [_alternateContext CGLContextObj];
+//	CGLGetVirtualScreen(cgl_ctx, screenInOut);
+//	NSLog(@"get virtual screen");
+//	// Attach the OpenGLBuffer and render into the _alternateContext.
+//    if (CVOpenGLBufferAttach(buffer, [_alternateContext CGLContextObj], 0, 0, *screenInOut) == kCVReturnSuccess) {
+//        // In case the buffers have changed in size, reset the viewport.
+//        NSDictionary *attributes = (NSDictionary *)CVOpenGLBufferGetAttributes(buffer);
+//        GLfloat width = [[attributes objectForKey:(NSString *)kCVOpenGLBufferWidth] floatValue];
+//        GLfloat height = [[attributes objectForKey:(NSString *)kCVOpenGLBufferHeight] floatValue];
+//		NSLog(@"width %f  height %f:", width, height);
+//
+//		NSLog(@"render");
+//		// Render!
+//        [self drawRect:NSMakeRect(0,0,width,height) withContext:_alternateContext];
+//        return YES;
+//    } else {
+//        // This should never happen.  The safest thing to do if it does it return
+//        // 'NO' (signifying that the frame has not changed).
+//        return NO;
+//    }
+//}
+//
+//*/
+//// Callback from IMAVManager asking what pixel format we'll be providing frames in.
+//- (void)getPixelBufferPixelFormat:(OSType *)pixelFormatOut {
+//    *pixelFormatOut = kCVPixelFormatType_32ARGB;
+//}
+//
+//// This callback is called periodically when we're in the IMAVActive state.
+//// We copy (actually, re-render) what's currently on the screen into the provided 
+//// CVPixelBufferRef.
+////
+//// Note that this will be called on a non-main thread. 
+//- (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp {
+//    // We ignore the timestamp, signifying that we're providing content for 'now'.
+//	CVReturn err;
+//	
+//	// If the image has not changed since we provided the last one return 'NO'.
+//    // This enables more efficient transmission of the frame when there is no
+//    // new information.
+//	if ([self checkHasChanged])
+//		return NO;
+//	
+//    // Lock the pixel buffer's base address so that we can draw into it.
+//	if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
+//        // This should not happen.  If it does, the safe thing to do is return 
+//        // 'NO'.
+//		NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
+//		return NO;
+//	}
+//    @synchronized (self) {
+//    // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
+//    // pixel format returned in getPixelBufferPixelFormat:, above, width and
+//    // height should be read from the provided CVPixelBuffer.
+//    size_t width = CVPixelBufferGetWidth(buffer); 
+//    size_t height = CVPixelBufferGetHeight(buffer);
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
+//                                                   width, height,
+//                                                   8,
+//                                                   CVPixelBufferGetBytesPerRow(buffer),
+//                                                   colorSpace,
+//                                                   kCGImageAlphaPremultipliedFirst);
+//    CGColorSpaceRelease(colorSpace);
+//    
+//    // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
+//    // to draw.
+//    NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+//    [NSGraphicsContext setCurrentContext:context];
+//	//get NSImage and draw in the rect
+//	
+//    [self drawImage:[self nsimage:NO] inBounds:NSMakeRect(0.0, 0.0, width, height)];
+//    [context flushGraphics];
+//    
+//    // Clean up - remember to unlock the pixel buffer's base address (we locked
+//    // it above so that we could draw into it).
+//    CGContextRelease(cgContext);
+//    CVPixelBufferUnlockBaseAddress(buffer, 0);
+//    }
+//    return YES;
+//}
+//
+//
+//
+//- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect{
+//    // We synchronise to make sure we're not drawing in two threads
+//    // simultaneously.
+//   
+//		[[NSColor blackColor] set];
+//		NSRectFill(rect);
+//		
+//		if (image != nil) {
+//			NSRect imageBounds = { NSZeroPoint, [image size] };
+//			float scaledHeight = NSWidth(rect) * NSHeight(imageBounds);
+//			float scaledWidth  = NSHeight(rect) * NSWidth(imageBounds);
+//			
+//			if (scaledHeight < scaledWidth) {
+//				// rect is wider than image: fit height
+//				float horizMargin = NSWidth(rect) - scaledWidth / NSHeight(imageBounds);
+//				rect.origin.x += horizMargin / 2.0;
+//				rect.size.width -= horizMargin;
+//			} else {
+//				// rect is taller than image: fit width
+//				float vertMargin = NSHeight(rect) - scaledHeight / NSWidth(imageBounds);
+//				rect.origin.y += vertMargin / 2.0;
+//				rect.size.height -= vertMargin;
+//			}
+//			
+//			[image drawInRect:rect fromRect:imageBounds operation:NSCompositeSourceOver fraction:fraction];
+//		}
+//
+//	//}
+//}
+//
+//
+//#endif
 #endif
 
 // The _hasChanged flag is set to 'NO' after any check (by a client of this 

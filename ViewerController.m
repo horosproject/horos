@@ -2117,10 +2117,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSLog(@"ViewController dealloc End");
 	
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-#if !__LP64__
-	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
-	[[IMService notificationCenter] removeObserver:self];
-#endif
+//#if !__LP64__
+//	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
+//	[[IMService notificationCenter] removeObserver:self];
+//#endif
 #endif
 }
 
@@ -3927,11 +3927,11 @@ static ViewerController *draggedController = 0L;
 	displayOnlyKeyImages = NO;
 	
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-#if !__LP64__
-	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
-                                           name:IMAVManagerStateChangedNotification object:nil];
-	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
-#endif
+//#if !__LP64__
+//	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:)
+//                                           name:IMAVManagerStateChangedNotification object:nil];
+//	[[IMAVManager sharedAVManager] setVideoDataSource:imageView];
+//#endif
 #endif
 	
 	[imageView setDrawing: YES];
@@ -11711,25 +11711,25 @@ int i,j,l;
 }
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-#if !__LP64__
-// IMAVManager notification callback.
-- (void)_stateChanged:(NSNotification *)aNotification {
-    // Read the state.
-    IMAVManagerState state = [[IMAVManager sharedAVManager] state];
-}
-
-- (void) iChatBroadcast:(id) sender
-{
-	NSLog(@"ichat broadcast");
-    IMAVManager *avManager = [IMAVManager sharedAVManager];
-    if ([avManager state] != IMAVRunning) {
-        [avManager start];
-		NSLog(@"Start broadcast");
-    } else {
-        [avManager stop];
-    }
-}
-#endif
+//#if !__LP64__
+//// IMAVManager notification callback.
+//- (void)_stateChanged:(NSNotification *)aNotification {
+//    // Read the state.
+//    IMAVManagerState state = [[IMAVManager sharedAVManager] state];
+//}
+//
+//- (void) iChatBroadcast:(id) sender
+//{
+//	NSLog(@"ichat broadcast");
+//    IMAVManager *avManager = [IMAVManager sharedAVManager];
+//    if ([avManager state] != IMAVRunning) {
+//        [avManager start];
+//		NSLog(@"Start broadcast");
+//    } else {
+//        [avManager stop];
+//    }
+//}
+//#endif
 #else
 
 - (void) iChatBroadcast:(id) sender

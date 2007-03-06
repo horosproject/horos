@@ -3170,7 +3170,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
 	long			i, x, y, totSize;
 	int				realwidth;
-	long			w, h, row;
+	int				w, h, row;
 	short			bpp, count, tifspp;
 	short			cur_page, number_of_pages, dataType = 0;
 	
@@ -3479,27 +3479,27 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// early am and late pm respectively.  After the second iteration it has been 
 	// tested on new and old style 16 and 8 bit LSM tiff files.  Comments?
 	FILE	*fp = fopen( [srcFile UTF8String], "r");
-	long	i,it = 0;
-	long	nextoff = 0;
+	int	i,it = 0;
+	int	nextoff = 0;
 	int		counter = 0;
-	long	pos = 8, k;
+	int	pos = 8, k;
 	short   shortval;
 	int		lsmDebug=0;  // Flag to determine if debugging messages are printed
 	
-	long	realwidth, realheight;
+	int	realwidth, realheight;
 
-	long	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
-	long	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
-	long	TIF_CZ_LSMINFO, TIF_COMPRESSION; // GJ: Offset of additional data about image
+	int	TIF_NEWSUBFILETYPE = 0; // GJ: flag indicating whether image is "real" or thumbnail 
+	int	LENGTH2, TIF_STRIPOFFSETS; // GJ: Number of channels & offset containing file offset to image data
+	int	TIF_CZ_LSMINFO, TIF_COMPRESSION; // GJ: Offset of additional data about image
 	/* No longer required as of 040609 pm with simplified reader
-	long	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
-	long	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
-	long	TIF_STRIPOFFSETS1, TIF_STRIPOFFSETS2, TIF_STRIPOFFSETS3;
-	long	TIF_STRIPBYTECOUNTS1, TIF_STRIPBYTECOUNTS2, TIF_STRIPBYTECOUNTS3;
-	long	TIF_STRIPOFFSETS_ARRAY[3];
+	int	LENGTH1, TIF_BITSPERSAMPLE_CHANNEL1, TIF_BITSPERSAMPLE_CHANNEL2, TIF_BITSPERSAMPLE_CHANNEL3;
+	int	TIF_COMPRESSION, TIF_PHOTOMETRICINTERPRETATION, TIF_STRIPOFFSETS, TIF_SAMPLESPERPIXEL, TIF_STRIPBYTECOUNTS;
+	int	TIF_STRIPOFFSETS1, TIF_STRIPOFFSETS2, TIF_STRIPOFFSETS3;
+	int	TIF_STRIPBYTECOUNTS1, TIF_STRIPBYTECOUNTS2, TIF_STRIPBYTECOUNTS3;
+	int	TIF_STRIPOFFSETS_ARRAY[3];
 	*/
 	// GJ: this will store the location of the data for this frame
-	long	imageDataOffsetForThisFrame;
+	int	imageDataOffsetForThisFrame;
 	int		goodFramesChecked=0;
 	int		timeSeries = 0;
 	
@@ -3528,9 +3528,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 			fread( &tags2, 12, 1, fp);
 			
 			int TAGTYPE = 0;
-			long LENGTH = 0;
+			int LENGTH = 0;
 			int MASK = 0x00ff;
-			long MASK2 = 0x000000ff;
+			int MASK2 = 0x000000ff;
 			
 			TAGTYPE = ((tags2[1] & MASK) << 8) | ((tags2[0] & MASK ) <<0);
 			LENGTH = ((tags2[7] & MASK2) << 24) | ((tags2[6] & MASK2) << 16) | ((tags2[5] & MASK2) << 8) | (tags2[4] & MASK2);
@@ -3568,7 +3568,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 //		{
 //			fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 //			
-//			long	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2;
+//			int	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2;
 //			short   SCANTYPE, SPECTRALSCAN;
 //			double   VOXELSIZE_X, VOXELSIZE_Y, VOXELSIZE_Z;
 //			
@@ -3644,7 +3644,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// we assume this will contain a real image (rather than a thumbnail)
 	/* Searches for the number of tags in the first image directory */
 
-	long iterator1;
+	int iterator1;
 	fseek(fp, 8, SEEK_SET);
 	fread(&shortval, 2, 1, fp);
 	iterator1 = EndianU16_LtoN( shortval);
@@ -3658,9 +3658,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		
 		{
 			int TAGTYPE = 0;
-			long LENGTH = 0;
+			int LENGTH = 0;
 			int MASK = 0x00ff;
-			long MASK2 = 0x000000ff;
+			int MASK2 = 0x000000ff;
 			
 			
 			TAGTYPE = ((TAG1[1] & MASK) << 8) | ((TAG1[0] & MASK ) <<0);
@@ -3727,7 +3727,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	{
 		fseek(fp, TIF_CZ_LSMINFO + 8, SEEK_SET);
 		
-		long	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2;
+		int	DIMENSION_X, DIMENSION_Y, DIMENSION_Z, NUMBER_OF_CHANNELS, TIMESTACKSIZE, DATATYPE, DATATYPE2;
 		short   SCANTYPE, SPECTRALSCAN;
 		double   VOXELSIZE_X, VOXELSIZE_Y, VOXELSIZE_Z;
 		
@@ -3763,7 +3763,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( fVolImage) fImage = fVolImage;
 		else fImage = malloc(width*height*sizeof(float) + 100);
 		
-		long numPixels=height * width;
+		int numPixels=height * width;
 		
 		// GJ: Move to correct location for image data
 		fseek(fp, imageDataOffsetForThisFrame, SEEK_SET);
@@ -4354,7 +4354,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		unsigned char *srcImage = [TIFFRep bitmapData];
 		
 		unsigned char   *ptr, *tmpImage ;
-		long			loop;
+		int				loop;
 		unsigned char   *argbImage, *tmpPtr, *srcPtr;
 		int x,y;
 		
@@ -4541,9 +4541,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	//window level & width
 	
 	savedWL = 0;
-	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (long)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
 	savedWW = 0;
-	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (long) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
 	//NSLog(@"ww: %d wl: %d", savedWW, savedWL);
 	
 	
@@ -5005,7 +5005,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			//NSLog(@"is RGB");		
 			unsigned char   *ptr, *tmpImage;
 			// realwidth = width = tag columns
-			long			loop = (long) height * (long) realwidth;
+			int			loop = (int) height * (int) realwidth;
 			tmpImage = malloc (loop * 4L);
 			ptr   = tmpImage;
 						
@@ -5061,15 +5061,15 @@ BOOL gUSEPAPYRUSDCMPIX;
 			//-> 16 bits image
 			unsigned char   *bufPtr;
 			short			*ptr, *tmpImage;
-			long			loop, totSize;
+			int			loop, totSize;
 			
-			totSize = (long) ((long) height * (long) realwidth * 2L);
+			totSize = (int) ((int) height * (int) realwidth * 2L);
 			tmpImage = malloc( totSize);
 			
 			bufPtr = (unsigned char*) oImage;
 			ptr    = tmpImage;
  /*
-				long vImage_Error;
+				int vImage_Error;
 				vImage_Error = vImageConvert_Planar8to16U (bufPtr, ptr, 0); //0=no flag
  */				
 			
@@ -5140,7 +5140,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			if( oData && gDisplayDICOMOverlays )
 			{
 				unsigned char	*rgbData = (unsigned char*) imPix->fImage;
-				long			y, x;
+				int			y, x;
 				
 				for( y = 0; y < oRows; y++)
 				{
@@ -5161,8 +5161,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			//NSLog(@"not RGB");
 			if( bitsAllocated == 32)
 			{
-				unsigned long	*uslong = (unsigned long*) oImage;
-				long			*slong = (long*) oImage;
+				unsigned int	*usint = (unsigned int*) oImage;
+				int				*sint = (int*) oImage;
 				float			*tDestF;
 				
 				if( imPix->fVolImage)
@@ -5176,18 +5176,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 				
 				if( fIsSigned > 0)
 				{
-					long x = height * width;
+					int x = height * width;
 					while( x-->0)
 					{
-						*tDestF++ = ((float) (*slong++)) * slope + offset;
+						*tDestF++ = ((float) (*sint++)) * slope + offset;
 					}
 				}
 				else
 				{
-					long x = height * width;
+					int x = height * width;
 					while( x-->0)
 					{
-						*tDestF++ = ((float) (*uslong++)) * slope + offset;
+						*tDestF++ = ((float) (*usint++)) * slope + offset;
 					}
 				}
 				
@@ -5237,7 +5237,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			if( oData && gDisplayDICOMOverlays)
 			{
-				long			y, x;
+				int			y, x;
 				
 				for( y = 0; y < oRows; y++)
 				{
@@ -6675,9 +6675,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 							unsigned char   *bufPtr = (unsigned char*) oImage;
 							unsigned short	*bufPtr16 = (unsigned short*) oImage;
 							unsigned char   *tmpImage;
-							long			loop, totSize, pixelR, pixelG, pixelB, x, y;
+							int			loop, totSize, pixelR, pixelG, pixelB, x, y;
 
-							totSize = (long) ((long) height * (long) realwidth * 3L);
+							totSize = (int) ((int) height * (int) realwidth * 3L);
 							tmpImage = malloc( totSize);
 							
 							fPlanarConf = NO;
@@ -6738,12 +6738,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 					{
 						unsigned short	*bufPtr = (unsigned short*) oImage;
 						unsigned char   *tmpImage;
-						long			loop, totSize, x, y, ii;
+						int				loop, totSize, x, y, ii;
 						unsigned short pixel;
 						
 						fPlanarConf = NO;
 						
-						totSize = (long) ((long) height * (long) realwidth * 3L);
+						totSize = (int) ((int) height * (int) realwidth * 3L);
 						tmpImage = malloc( totSize);
 						
 						if( bitsAllocated != 16) NSLog(@"Segmented Palette with a non-16 bit image???");
@@ -6803,13 +6803,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 					{
 						
 						unsigned char   *ptr, *tmpImage;
-						long			loop, totSize;
+						int				loop, totSize;
 						
 						isRGB = YES;
 						
 						// CONVERT RGB TO ARGB FOR BETTER PERFORMANCE THRU VIMAGE
 						
-						totSize = (long) ((long) height * (long) realwidth * 4L);
+						totSize = (int) ((int) height * (int) realwidth * 4L);
 						tmpImage = malloc( totSize);
 						if( tmpImage)
 						{
@@ -6826,8 +6826,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 								
 								if( fPlanarConf > 0)	// PLANAR MODE
 								{
-									long imsize = (long) height * (long) realwidth;
-									long x = 0;
+									int imsize = (int) height * (int) realwidth;
+									int x = 0;
 									
 									loop = totSize/4;
 									while( loop-- > 0)
@@ -6859,8 +6859,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 								
 								if( fPlanarConf > 0)	// PLANAR MODE
 								{
-									long imsize = (long) height * (long) realwidth;
-									long x = 0;
+									int imsize = (int) height * (int) realwidth;
+									int x = 0;
 									
 									loop = totSize/4;
 									while( loop-- > 0)
@@ -6902,9 +6902,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 					{
 						unsigned char   *bufPtr;
 						short			*ptr, *tmpImage;
-						long			loop, totSize;
+						int				loop, totSize;
 						
-						totSize = (long) ((long) height * (long) realwidth * 2L);
+						totSize = (int) ((int) height * (int) realwidth * 2L);
 						tmpImage = malloc( totSize);
 						
 						bufPtr = (unsigned char*) oImage;
@@ -6922,7 +6922,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 					}
 //					else if( bitsStored != 16 && fIsSigned == YES && bitsAllocated == 16)
 //					{
-//						long totSize = (long) ((long) height * (long) realwidth * 2L);
+//						int totSize = (int) ((int) height * (int) realwidth * 2L);
 //						
 //						[self convertToFull16Bits: (unsigned short*) oImage size: totSize BitsAllocated: bitsAllocated BitsStored: bitsStored HighBitPosition: highBit PixelSign: fIsSigned];
 //					}
@@ -6982,7 +6982,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				if( oData && gDisplayDICOMOverlays)
 				{
 					unsigned char	*rgbData = (unsigned char*) imPix->fImage;
-					long			y, x;
+					int				y, x;
 					
 					for( y = 0; y < oRows; y++)
 					{
@@ -7002,8 +7002,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 			{
 				if( bitsAllocated == 32)
 				{
-					unsigned long	*uslong = (unsigned long*) oImage;
-					long			*slong = (long*) oImage;
+					unsigned int	*usint = (unsigned int*) oImage;
+					int				*sint = (int*) oImage;
 					float			*tDestF;
 					
 					if( imPix->fVolImage)
@@ -7017,18 +7017,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 					
 					if( fIsSigned)
 					{
-						long x = height * width;
+						int x = height * width;
 						while( x-->0)
 						{
-							*tDestF++ = ((float) (*slong++)) * slope + offset;
+							*tDestF++ = ((float) (*sint++)) * slope + offset;
 						}
 					}
 					else
 					{
-						long x = height * width;
+						int x = height * width;
 						while( x-->0)
 						{
-							*tDestF++ = ((float) (*uslong++)) * slope + offset;
+							*tDestF++ = ((float) (*usint++)) * slope + offset;
 						}
 					}
 					
@@ -7089,7 +7089,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				
 				if( oData && gDisplayDICOMOverlays)
 				{
-					long			y, x;
+					int			y, x;
 					
 					for( y = 0; y < oRows; y++)
 					{
