@@ -559,8 +559,16 @@ static char *GetPrivateIP()
 		   }
 		}
 		
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting Retrieving...", nil)];
+		[wait showWindow:self];
+		
 		checkAndViewTry = -1;
 		[NSThread detachNewThreadSelector:@selector(performRetrieve:) toTarget:self withObject: selectedItems];
+		
+		Delay( 30, 0L);
+		
+		[wait close];
+		[wait release];
 	}
 }
 
