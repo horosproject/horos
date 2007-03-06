@@ -288,7 +288,6 @@
 	float fValue = [sender scaleValue] / [sender pixelSpacing];
 	[originalView setScaleValue: fValue * [originalView pixelSpacing]];
 	[originalView setRotation: [sender rotation]];
-	
 	[originalView setOrigin: [sender origin]];
 	
 	NSPoint		pt;
