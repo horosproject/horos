@@ -51,7 +51,6 @@
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSMutableDictionary *fileFormatPlugins;
 extern NSLock	*PapyrusLock;
-long gGlobaluniqueID = 0;
 
 static BOOL DEFAULTSSET = NO;
 static int TOOLKITPARSER;
