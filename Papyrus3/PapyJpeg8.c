@@ -189,41 +189,49 @@ ExtractJPEGlossy8 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelSt
 			theCInfo.jpeg_color_space = JCS_GRAYSCALE;
 			theCInfo.out_color_space = JCS_GRAYSCALE;
 		break;
-    
+		
 		case 3:
-			if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
+		
+			if( mode == UNKNOWN_COLOR)
+			{
+				
+			}
 			else
-			if(	mode == YBR_FULL_422 ||
-						mode == YBR_RCT ||
-						mode == YBR_ICT ||
-						mode == YBR_PARTIAL_422 ||
-						mode == YBR_FULL) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if (theCInfo.saw_JFIF_marker)
 			{
-				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
-			}
-			else if (theCInfo.saw_Adobe_marker)
-			{
-				switch (theCInfo.Adobe_transform)
+				if( mode == RGB) theCInfo.jpeg_color_space = JCS_RGB;
+				else
+				if(	mode == YBR_FULL_422 ||
+							mode == YBR_RCT ||
+							mode == YBR_ICT ||
+							mode == YBR_PARTIAL_422 ||
+							mode == YBR_FULL) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if (theCInfo.saw_JFIF_marker)
 				{
-					case 0:
-						theCInfo.jpeg_color_space = JCS_RGB;
-					break;
-					case 1:
-						theCInfo.jpeg_color_space = JCS_YCbCr;
-					break;
-					default:
-						theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
-					break;
+					theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
 				}
+				else if (theCInfo.saw_Adobe_marker)
+				{
+					switch (theCInfo.Adobe_transform)
+					{
+						case 0:
+							theCInfo.jpeg_color_space = JCS_RGB;
+						break;
+						case 1:
+							theCInfo.jpeg_color_space = JCS_YCbCr;
+						break;
+						default:
+							theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
+						break;
+					}
+				}
+				else theCInfo.jpeg_color_space = JCS_RGB;
 			}
-			else theCInfo.jpeg_color_space = JCS_RGB;
 			
 			theCInfo.out_color_space = JCS_RGB;
 		break;
 	}
   /* theCInfo.out_color_space = JCS_YCbCr; */
-    
+  
   /* start the decompressor (set the decompression default params) */
   (void) jpeg_start_decompress (&theCInfo);
 

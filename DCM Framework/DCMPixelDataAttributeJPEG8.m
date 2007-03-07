@@ -449,33 +449,39 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
 			NSString *photometricInterpretation = [attr value];
 			
-			if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
+			{
+				
+			}
 			else
-			if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if([photometricInterpretation isEqualToString:@"YBR_ICT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if([photometricInterpretation isEqualToString:@"YBR_FULL"]) theCInfo.jpeg_color_space = JCS_YCbCr;
-			else if (theCInfo.saw_JFIF_marker)
 			{
-				theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
-			}
-			else if (theCInfo.saw_Adobe_marker)
-			{
-				switch (theCInfo.Adobe_transform)
+				if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
+				else if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if([photometricInterpretation isEqualToString:@"YBR_RCT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if([photometricInterpretation isEqualToString:@"YBR_ICT"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if([photometricInterpretation isEqualToString:@"YBR_FULL"]) theCInfo.jpeg_color_space = JCS_YCbCr;
+				else if (theCInfo.saw_JFIF_marker)
 				{
-					case 0:
-						theCInfo.jpeg_color_space = JCS_RGB;
-					break;
-					case 1:
-						theCInfo.jpeg_color_space = JCS_YCbCr;
-					break;
-					default:
-						theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
-					break;
+					theCInfo.jpeg_color_space = JCS_YCbCr; /* JFIF implies YCbCr */
 				}
+				else if (theCInfo.saw_Adobe_marker)
+				{
+					switch (theCInfo.Adobe_transform)
+					{
+						case 0:
+							theCInfo.jpeg_color_space = JCS_RGB;
+						break;
+						case 1:
+							theCInfo.jpeg_color_space = JCS_YCbCr;
+						break;
+						default:
+							theCInfo.jpeg_color_space = JCS_YCbCr; /* assume it's YCbCr */
+						break;
+					}
+				}
+				else theCInfo.jpeg_color_space = JCS_RGB;
 			}
-			else theCInfo.jpeg_color_space = JCS_RGB;
 		}
 		break;
 	}

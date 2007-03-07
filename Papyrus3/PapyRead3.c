@@ -1412,6 +1412,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
   /* if it is a RGB or a YBR_FULL image, multiply the bytes to read by 3 */
   if (inModuleId == ImagePixel && 
       (gArrPhotoInterpret [inFileNb] == RGB ||
+	   gArrPhotoInterpret [inFileNb] == UNKNOWN_COLOR  ||
        gArrPhotoInterpret [inFileNb] == YBR_FULL  ||
 	   gArrPhotoInterpret [inFileNb] == YBR_ICT  ||
 	   gArrPhotoInterpret [inFileNb] == YUV_RCT  ||
@@ -1435,6 +1436,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
         gArrPhotoInterpret [inFileNb] == PALETTE     	||
         gArrPhotoInterpret [inFileNb] == RGB         	||
         gArrPhotoInterpret [inFileNb] == YBR_FULL  	||
+		gArrPhotoInterpret [inFileNb] == UNKNOWN_COLOR  ||
         gArrPhotoInterpret [inFileNb] == YBR_FULL_422	||
         gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
         gArrPhotoInterpret [inFileNb] == YBR_ICT	||
@@ -1693,6 +1695,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
 						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
 						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
+						gArrPhotoInterpret [inFileNb] == UNKNOWN_COLOR  ||
 						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
 						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
@@ -1729,6 +1732,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
 						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
 						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
+						gArrPhotoInterpret [inFileNb] == UNKNOWN_COLOR  ||
 						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
 						gArrPhotoInterpret [inFileNb] = RGB;
 			break;
@@ -1760,6 +1764,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 						gArrPhotoInterpret [inFileNb] == YBR_RCT  	||
 						gArrPhotoInterpret [inFileNb] == YBR_ICT	||
 						gArrPhotoInterpret [inFileNb] == YUV_RCT	||
+						gArrPhotoInterpret [inFileNb] == UNKNOWN_COLOR  ||
 						gArrPhotoInterpret [inFileNb] == YBR_PARTIAL_422)
 						gArrPhotoInterpret [inFileNb] = RGB;
 
