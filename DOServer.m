@@ -1,12 +1,21 @@
 // DOServer.h
 
+#import <Foundation/Foundation.h>
 #import "DOServer.h"
 
 @implementation DOServer
 
-- (void)log: (NSString*)string
+- (id)log: (id)string
 {
-	NSLog(string);
+	NSLog( string);
+	
+	return [NSMutableArray arrayWithObject: @"prout"];
+}
+
+- (void)bye
+{
+	NSLog( @"bye");
+	exit( 0);
 }
 
 - (void)serve
@@ -18,17 +27,18 @@
 
 - (NSConnection*) createConnectionName:(NSString*)name
 {
-   NSConnection* newConnection=[[NSConnection alloc] init];
-   if ([newConnection registerName:name])
-     {
-       [newConnection setRootObject:self];
-     }
-   else
-     {
-       [newConnection release];
-       newConnection=nil;
-     }
-   return newConnection;
+	NSConnection* newConnection=[[NSConnection alloc] init];
+	if ([newConnection registerName:name])
+	{
+		[newConnection setRootObject:self];
+	}
+	else
+	{
+		[newConnection release];
+		newConnection=nil;
+	}
+	
+	return newConnection;
 }
 
 @end

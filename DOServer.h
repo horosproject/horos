@@ -1,10 +1,11 @@
 //// DOServer.h
 
-@interface DOServer:NSObject
+@interface DOServer : NSObject
 {
          NSConnection* serverConnection;
 }
-- (void)log: (NSString*)string;
+- (id)log: (id)string;
 - (void)serve;
 - (NSConnection*) createConnectionName:(NSString*)name;
+- (void) bye;
 @end

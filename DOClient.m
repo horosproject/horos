@@ -9,9 +9,14 @@
    serverObject=[NSConnection rootProxyForConnectionWithRegisteredName:@"OsiriX_DistributedObjects_OsiriX" host: nil];
 }
 
-- (void)log: (NSString*)string
+- (id)log: (id)string
 {
-         [serverObject log: string];
+	return [serverObject log: string];
+}
+
+- (void)bye
+{
+	[serverObject bye];
 }
 
 @end

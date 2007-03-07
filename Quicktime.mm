@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <QTKit/QTKit.h>
+#import "DOServer.h"
 
 // WHY THIS EXTERNAL APPLICATION FOR QUICKTIME?
 
@@ -11,6 +12,12 @@ int main(int argc, const char *argv[])
 	NSAutoreleasePool	*pool	= [[NSAutoreleasePool alloc] init];
 	
 	EnterMovies();
+	
+	DOServer *server = [[DOServer alloc] init];
+	
+	[server serve];
+	
+	[server release];
 	
 	//	argv[ 1] : what to do?
 	//	argv[ 2] : Path for Quicktime file

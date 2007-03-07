@@ -16,7 +16,6 @@
 
 
 #import <AppKit/AppKit.h>
-#import "DOServer.h"
 
 @class PreferenceController;
 @class BrowserController;

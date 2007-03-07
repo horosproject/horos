@@ -21,6 +21,7 @@
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "BrowserController.h"
+#import "DOClient.h"
 
 #import "ROI.h"
 
@@ -38,6 +39,8 @@
 #define PREVIEWSIZE 70.0
 
 BOOL	runOsiriXInProtectedMode = NO;
+BOOL	quicktimeRunning = NO;
+NSLock	*quicktimeThreadLock = 0L;
 
 struct NSPointInt
 {
@@ -7342,6 +7345,24 @@ BOOL            readable = YES;
 
 }
 
+- (void) startQuicktimeThread
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+	quicktimeRunning = YES;
+	
+	NSTask			*theTask = [[NSTask alloc] init];
+	
+	NSImage *frame = 0L;
+	
+	[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Quicktime"]];
+	
+	[theTask launch];
+	
+	[pool release];
+}
+
 - (void) getFrameFromMovie:(NSString*) extension
 {
 	
@@ -7350,18 +7371,23 @@ BOOL            readable = YES;
 		[extension isEqualToString:@"mpeg"] == YES ||
 		[extension isEqualToString:@"avi"] == YES)
 		{
-			NSTask			*theTask = [[NSTask alloc] init];
+			if( quicktimeThreadLock == 0L) quicktimeThreadLock = [[NSLock alloc] init];
 			
-			NSImage *frame = 0L;
+			[quicktimeThreadLock lock];
 			
-			[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
-			[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Quicktime"]];
-			[theTask launch];
-			while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-			//	[theTask waitUntilExit]; <- The problem with this: it calls the current running loop.... problems with current Lock !
-			[theTask release];
-		
-			//[self getDataFromNSImage: [result objectAtIndex: 0]];
+			if( quicktimeRunning == NO)
+				[NSThread detachNewThreadSelector:@selector( startQuicktimeThread) toTarget:self withObject: 0L];
+			DOClient	*client = [[DOClient alloc] init];
+			
+			[client connect];
+			
+			NSMutableArray *arrayTest = [client log: @"hhhh"];
+			
+			NSLog( [arrayTest description]);
+			
+			[client release];
+			
+			[quicktimeThreadLock unlock];
 		}
 }
 

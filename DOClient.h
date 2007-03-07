@@ -8,6 +8,6 @@
 }
 
 - (void) connect;
-- (void)log: (NSString*)string;
-
+- (id)log: (id)string;
+- (void)bye;
 @end

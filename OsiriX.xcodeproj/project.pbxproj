@@ -13117,6 +13117,7 @@
 		CEF9E7E70811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
 		CEF9E7E80811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
 		CEF9E7E90811B6AD00412C8A /* StaticScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9E7E60811B6AD00412C8A /* StaticScheduler.m */; };
+		CEFB849A0B9F5DDA0063ACD3 /* DOServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBED2F20B4050FD00A6731E /* DOServer.m */; };
 		CEFBB1910B358C8F00666FA9 /* BackPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */; };
 		CEFBB1920B358C8F00666FA9 /* ForwardDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */; };
 		CEFBB1930B358C8F00666FA9 /* BackDisabled.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB18D0B358C8F00666FA9 /* BackDisabled.tif */; };
@@ -34258,6 +34259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE7A0F650AED582700540017 /* Quicktime.mm in Sources */,
+				CEFB849A0B9F5DDA0063ACD3 /* DOServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
