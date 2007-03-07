@@ -4781,6 +4781,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if (![[WindowLayoutManager sharedWindowLayoutManager] hangStudy:item])
 		{
+			NSLog( [item description]);
+			
 			//Use Basic Hanging Protocols
 			[[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[item valueForKey:@"modality"] description:[item valueForKey:@"studyName"]];
 			NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
@@ -7946,7 +7948,10 @@ static BOOL needToRezoom;
 		
 		int i;
 		for( i = 0; i < [a count]; i++)
+		{
+			[databaseOutline selectRow: [databaseOutline rowForItem:  [a objectAtIndex: i]] byExtendingSelection: NO];
 			[self databaseOpenStudy: [a objectAtIndex: i]];
+		}
 	}
 	else
 	{
