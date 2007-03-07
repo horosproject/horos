@@ -988,7 +988,9 @@ BOOL gUserDefaultsSet = NO;
 BOOL gUseShutter;
 BOOL gDisplayDICOMOverlays;
 BOOL gUseVOILUT;
+BOOL gForceColorSpace;
 BOOL gUSEPAPYRUSDCMPIX;
+int  gForcedColorSpaceMode;
 
 + (void) checkUserDefaults: (BOOL) update
 {
@@ -1004,6 +1006,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 		gDisplayDICOMOverlays = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"];
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
 		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX"];
+		gForceColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"ForceColorSpace"];
+		gForcedColorSpaceMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"ForcedColorSpaceMode"];
 		
 //		NSLog( @"gUseShutter == %d", gUseShutter);
 //		NSLog( @"gDisplayDICOMOverlays == %d", gDisplayDICOMOverlays);
@@ -6623,6 +6627,22 @@ BOOL gUSEPAPYRUSDCMPIX;
 					
 					// PIXEL DATA
 					[PapyrusLock lock];
+					
+					if( gForceColorSpace)
+					{
+						if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY)
+						{
+							if(	gArrPhotoInterpret [fileNb] == YBR_FULL  	||
+								gArrPhotoInterpret [fileNb] == YBR_FULL_422	||
+								gArrPhotoInterpret [fileNb] == YBR_RCT  	||
+								gArrPhotoInterpret [fileNb] == YBR_ICT	||
+								gArrPhotoInterpret [fileNb] == YUV_RCT	||
+								gArrPhotoInterpret [fileNb] == YBR_PARTIAL_422 ||
+								gArrPhotoInterpret [fileNb] == RGB)
+								gArrPhotoInterpret [fileNb] = gForcedColorSpaceMode;
+						}
+					}
+					
 					oImage = (short *)Papy3GetPixelData (fileNb, ee+1, theGroupP, ImagePixel);
 					[PapyrusLock unlock];
 					
