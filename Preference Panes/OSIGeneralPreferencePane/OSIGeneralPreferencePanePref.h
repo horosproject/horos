@@ -19,7 +19,6 @@
 @interface OSIGeneralPreferencePanePref : NSPreferencePane 
 {
 	IBOutlet NSButton		*CheckUpdatesOnOff;
-	IBOutlet NSButton		*DcmTkJpegOnOff;
 	IBOutlet NSButton		*securityOnOff;
 	
 	IBOutlet NSMatrix		*readerMatrix, *parserMatrix;

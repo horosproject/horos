@@ -88,7 +88,6 @@
 	
 	//setup GUI
 	[CheckUpdatesOnOff setState:[defaults boolForKey:@"CHECKUPDATES"]];
-	[DcmTkJpegOnOff setState:[defaults boolForKey:@"DCMTKJPEG"]];
 	[securityOnOff setState:[defaults boolForKey:@"AUTHENTICATION"]];
 	
 	[readerMatrix selectCellWithTag: [defaults boolForKey: @"USEPAPYRUSDCMPIX"]];

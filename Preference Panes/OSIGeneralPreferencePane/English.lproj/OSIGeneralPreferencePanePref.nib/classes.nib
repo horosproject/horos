@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = DCMPix; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             CLASS = NSPreferencePane; 
@@ -26,7 +27,6 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 CheckUpdatesOnOff = NSButton; 
-                DcmTkJpegOnOff = NSButton; 
                 "_authView" = SFAuthorizationView; 
                 parserMatrix = NSMatrix; 
                 readerMatrix = NSMatrix; 

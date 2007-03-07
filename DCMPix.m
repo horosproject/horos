@@ -990,7 +990,6 @@ BOOL gDisplayDICOMOverlays;
 BOOL gUseVOILUT;
 BOOL gUseJPEGColorSpace;
 BOOL gUSEPAPYRUSDCMPIX;
-int  gForcedColorSpaceMode;
 
 + (void) checkUserDefaults: (BOOL) update
 {
