@@ -31,7 +31,11 @@ extern BOOL USETOOLBARPANEL;
 {
 	NSRect  dstframe;
 	NSRect screenRect    = [[[NSScreen screens] objectAtIndex: screen] visibleFrame];
+	
+//	if( [[[self window] toolbar] isVisible] == NO) dstframe.size.height = 12;
+//	else dstframe.size.height = [ToolbarPanelController fixedHeight];
 
+	if( [[[self window] toolbar] isVisible] == NO) [[[self window] toolbar] setVisible: YES];
 	dstframe.size.height = [ToolbarPanelController fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
@@ -65,8 +69,8 @@ extern BOOL USETOOLBARPANEL;
 {
 	if( [aNotification object] == [self window])
 	{
+		[self fixSize];
 		[[self window] setFrameTopLeftPoint: NSMakePoint([[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.x, [[[NSScreen screens] objectAtIndex: screen] visibleFrame].origin.y+[[[NSScreen screens] objectAtIndex: screen] visibleFrame].size.height)];
-
 	}
 }
 

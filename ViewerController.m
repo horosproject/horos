@@ -11980,6 +11980,26 @@ int i,j,l;
 {
 	long i;
 	
+	numberOf2DViewer++;
+	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+	{
+		if( USETOOLBARPANEL == NO)
+		{
+			USETOOLBARPANEL = YES;
+			
+			NSArray				*winList = [NSApp windows];
+			
+			for( i = 0; i < [winList count]; i++)
+			{
+				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+				{
+					if( [[winList objectAtIndex:i] toolbar])
+						[[winList objectAtIndex:i] toggleToolbarShown: self];
+				}
+			}
+		}
+	}
+
 	speedometer = 0;
 	matrixPreviewBuilt = NO;
 	
@@ -12162,9 +12182,7 @@ int i,j,l;
 				[self ApplyCLUTString: [[NSUserDefaults standardUserDefaults] stringForKey:@"PET Default CLUT"]];
 		}
 	}
-	
-	numberOf2DViewer++;
-	
+		
 	//
 	for( i = 0; i < [popupRoi numberOfItems]; i++)
 	{
@@ -12203,24 +12221,24 @@ int i,j,l;
 		}
 	}
 	
-	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
-	{
-		if( USETOOLBARPANEL == NO)
-		{
-			USETOOLBARPANEL = YES;
-			
-			NSArray				*winList = [NSApp windows];
-			
-			for( i = 0; i < [winList count]; i++)
-			{
-				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
-				{
-					if( [[winList objectAtIndex:i] toolbar])
-						[[winList objectAtIndex:i] toggleToolbarShown: self];
-				}
-			}
-		}
-	}
+//	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL"] == YES)
+//	{
+//		if( USETOOLBARPANEL == NO)
+//		{
+//			USETOOLBARPANEL = YES;
+//			
+//			NSArray				*winList = [NSApp windows];
+//			
+//			for( i = 0; i < [winList count]; i++)
+//			{
+//				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+//				{
+//					if( [[winList objectAtIndex:i] toolbar])
+//						[[winList objectAtIndex:i] toggleToolbarShown: self];
+//				}
+//			}
+//		}
+//	}
 	
 	[[self window] setInitialFirstResponder: imageView];
 	
