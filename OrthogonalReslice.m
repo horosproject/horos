@@ -75,7 +75,7 @@
 
 - (void) xReslice: (long) x
 {
- 	[self axeReslice:0:x];
+ 	[self axeReslice:0: x];
 }
 
 - (void) xResliceThread: (NSNumber*) xNum

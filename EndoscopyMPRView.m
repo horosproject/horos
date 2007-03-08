@@ -199,7 +199,7 @@ extern  short		annotations;
 	}
 }
 
-- (void) setCrossPosition: (long) x: (long) y
+- (void) setCrossPosition: (float) x: (float) y
 {
 	[super setCrossPosition: x: y];
 	//focalShiftX = focalPointX - crossPositionX;
@@ -210,13 +210,13 @@ extern  short		annotations;
 	[(EndoscopyViewer*)[[self controller] viewer] setCamera];
 }
 
-- (void) setCrossPositionX: (long) x
+- (void) setCrossPositionX: (float) x
 {
 	[super setCrossPositionX: x];
 	//focalShiftX = focalPointX - crossPositionX;
 }
 
-- (void) setCrossPositionY: (long) y
+- (void) setCrossPositionY: (float) y
 {
 	[super setCrossPositionY: y];
 	//focalShiftY = focalPointY - crossPositionY;
@@ -236,8 +236,8 @@ extern  short		annotations;
 	
 //	y = ([[self controller] sign]>0)? [[originalView dcmPixList] count]-sliceIndex-1 : sliceIndex ;
 //	[[self controller] reslice: (long)x+0.5:  (long)y+0.5: self];
-//	[self setCrossPositionX: (long)x];
-//	[self setCrossPositionY: (long)y];
+//	[self setCrossPositionX: (float)x];
+//	[self setCrossPositionY: (float)y];
 //	[self setCrossPosition:x+[[self curDCM] pwidth]/2 :y+[[self curDCM] pwidth]/2];
 }
 

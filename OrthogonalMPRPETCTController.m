@@ -26,7 +26,7 @@
 	isBlending = (bC != nil);
 }
 
-- (void) setCrossPosition: (long) x: (long) y: (id) sender
+- (void) setCrossPosition: (float) x: (float) y: (id) sender
 {
 	if ([sender isEqual: originalView])
 	{
@@ -115,21 +115,21 @@
 	[super scaleToFit];
 }
 
-- (void) resliceFromOriginal: (long) x: (long) y
+- (void) resliceFromOriginal: (float) x: (float) y
 {
 	[originalView setCrossPositionX:x];
 	[originalView setCrossPositionY:y];
 	[self reslice:x:y:originalView];
 }
 
-- (void) resliceFromX: (long) x: (long) y
+- (void) resliceFromX: (float) x: (float) y
 {
 	[xReslicedView setCrossPositionX:x];
 	[xReslicedView setCrossPositionY:y];
 	[self reslice:x:y:xReslicedView];
 }
 
-- (void) resliceFromY: (long) x: (long) y
+- (void) resliceFromY: (float) x: (float) y
 {
 	[yReslicedView setCrossPositionX:x];
 	[yReslicedView setCrossPositionY:y];
@@ -223,7 +223,7 @@
 		[yReslicedView setCrossPositionX:[[[viewer CTController] yReslicedView] crossPositionX]];
 		[yReslicedView setCrossPositionY:[[[viewer CTController] yReslicedView] crossPositionY]];
 	}
-	
+
 	if(xOldValues)
 	{
 		// scale
@@ -269,7 +269,7 @@
 	[self blendingPropagate: originalView];
 	[self blendingPropagate: xReslicedView];
 	[self blendingPropagate: yReslicedView];
-	
+
 	[originalView setNeedsDisplay: YES];
 	[xReslicedView setNeedsDisplay: YES];
 	[yReslicedView setNeedsDisplay: YES];

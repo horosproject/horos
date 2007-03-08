@@ -78,9 +78,9 @@
 - (void) setWLWW:(float) iwl :(float) iww:(id) sender;
 - (IBAction) flipVolume;
 
-- (void) resliceFromOriginal: (long) x: (long) y: (id) sender;
-- (void) resliceFromX: (long) x: (long) y: (id) sender;
-- (void) resliceFromY: (long) x: (long) y: (id) sender;
+- (void) resliceFromOriginal: (float) x: (float) y: (id) sender;
+- (void) resliceFromX: (float) x: (float) y: (id) sender;
+- (void) resliceFromY: (float) x: (float) y: (id) sender;
 
 - (void) blendingPropagateOriginal:(OrthogonalMPRPETCTView*) sender;
 - (void) blendingPropagateX:(OrthogonalMPRPETCTView*) sender;

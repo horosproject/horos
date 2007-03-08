@@ -6,6 +6,7 @@
 //  Copyright 2006 HUG. All rights reserved.
 //
 
+#import "OrthogonalMPRController.h"
 #import "LLMPRView.h"
 #import "DCMCursor.h"
 

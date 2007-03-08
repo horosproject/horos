@@ -39,8 +39,8 @@ Version 2.3
 #import "AppController.h"
 #import "MPR2DController.h"
 #import "MPR2DView.h"
-#import "OrthogonalMPRView.h"
 #import "OrthogonalMPRController.h"
+#import "OrthogonalMPRView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
 
@@ -1822,8 +1822,10 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"]) {
 			[nc postNotificationName: @"crossMove" object: stringID userInfo: [NSDictionary dictionaryWithObject:@"mouseUp" forKey:@"action"]];
 		}
-		//		else if ( tool == tCross && [[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
+		
+//		if ([[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
 //		{
+//			[[self controller] propa];
 //			NSPoint     eventLocation = [event locationInWindow];
 //			NSRect size = [self frame];
 //			eventLocation = [self convertPoint:eventLocation fromView: self];
@@ -1831,7 +1833,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 //			eventLocation.y = size.size.height - eventLocation.y;
 //			eventLocation = [self ConvertFromView2GL:eventLocation];
 //
-//			[self setCrossPosition:(long)eventLocation.x : (long)eventLocation.y];
+//			[self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
 //			[self setNeedsDisplay:YES];
 //		}
 		
@@ -3263,10 +3265,10 @@ static long scrollMode;
 			eventLocation = [self ConvertFromView2GL:eventLocation];
 			
 			if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
-				[(OrthogonalMPRView*)self setCrossPosition:(long)eventLocation.x : (long)eventLocation.y];
+				[(OrthogonalMPRView*)self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
 			}
 			
-			//[self setCrossPosition:(long)mouseXPos : (long)mouseYPos];
+			//[self setCrossPosition:(float)mouseXPos : (float)mouseYPos];
 			[self setNeedsDisplay:YES];
 		}
 		
@@ -5839,26 +5841,29 @@ static long scrollMode;
 			{
 				if( [curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingY] != 0 &&  [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGS"] == YES)
 				{
-					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
+//					float vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
+//					
+//					[curDCM orientation: vectorP];
+//					
+//					tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
+//					tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
+//					tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+//					
+//					tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
+//					tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
+//					tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
+//					
+//					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
+//					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
+//					
+//					offset.x *= scaleValue;
+//					offset.x /= [curDCM pixelSpacingX];
+//					
+//					offset.y *= scaleValue;
+//					offset.y /= [curDCM pixelSpacingY];
 					
-					[curDCM orientation: vectorP];
-					
-					tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
-					tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
-					tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
-					
-					tempOriginBlending[ 0] = [[blendingView curDCM] originX] * vectorP[ 0] + [[blendingView curDCM] originY] * vectorP[ 1] + [[blendingView curDCM] originZ] * vectorP[ 2];
-					tempOriginBlending[ 1] = [[blendingView curDCM] originX] * vectorP[ 3] + [[blendingView curDCM] originY] * vectorP[ 4] + [[blendingView curDCM] originZ] * vectorP[ 5];
-					tempOriginBlending[ 2] = [[blendingView curDCM] originX] * vectorP[ 6] + [[blendingView curDCM] originY] * vectorP[ 7] + [[blendingView curDCM] originZ] * vectorP[ 8];
-					
-					offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[blendingView curDCM] pwidth]*[[blendingView curDCM] pixelSpacingX]/2.));
-					offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[blendingView curDCM] pheight]*[[blendingView curDCM] pixelSpacingY]/2.));
-					
-					offset.x *= scaleValue;
-					offset.x /= [curDCM pixelSpacingX];
-					
-					offset.y *= scaleValue;
-					offset.y /= [curDCM pixelSpacingY];
+					offset.y = 0;
+					offset.x = 0;
 				}
 				else
 				{

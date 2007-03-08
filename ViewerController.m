@@ -9458,11 +9458,17 @@ int i,j,l;
 				{
 //					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]]) // We should be able to propagate across series -JS
 					{
-						NSPoint pan;
-					
+						NSPoint pan, delta;
+						
 						pan = [imageView origin];
-						[[vC imageView] setOrigin: NSMakePoint( pan.x, pan.y)];
-					
+						
+						delta = [DCMPix originDeltaBetween:[[vC imageView] curDCM] And:[imageView curDCM]];
+						
+						delta.x *= [imageView scaleValue];
+						delta.y *= [imageView scaleValue];
+						
+						[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
+						
 						fValue = [imageView rotation];
 						[[vC imageView] setRotation: fValue];
 					}

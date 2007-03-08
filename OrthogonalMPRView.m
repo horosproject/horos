@@ -12,9 +12,10 @@
      PURPOSE.
 =========================================================================*/
 
+#import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
 #import "DCMPix.h"
-#import "OrthogonalMPRController.h"
+
 #import "OrthogonalMPRViewer.h"
 #import "ROI.h"
 #import "DefaultsOsiriX.h"
@@ -164,7 +165,7 @@
 	return controller;
 }
 
-- (void) setCrossPosition: (long) x: (long) y
+- (void) setCrossPosition: (float) x: (float) y
 {
 //	cx = (x<0)? 0 : x;
 //	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
@@ -178,7 +179,7 @@
 	[controller reslice: x:  y: self];
 }
 
-- (void) setCrossPositionX: (long) x
+- (void) setCrossPositionX: (float) x
 {
 	if(crossPositionX == x)
 		return;
@@ -187,7 +188,7 @@
 	crossPositionX = x;
 }
 
-- (void) setCrossPositionY: (long) y
+- (void) setCrossPositionY: (float) y
 {
 	if(crossPositionY == y)
 		return;
@@ -248,12 +249,12 @@
 	[super setScaleValueCentered:x];
 }
 
-- (long) crossPositionX
+- (float) crossPositionX
 {
 	return crossPositionX;
 }
 
-- (long) crossPositionY
+- (float) crossPositionY
 {
 	return crossPositionY;
 }

@@ -60,6 +60,8 @@
 - (OrthogonalMPRView*) xReslicedView;
 - (OrthogonalMPRView*) yReslicedView;
 - (NSMutableArray*) originalDCMFilesList;
+- (void) setCrossPosition: (float) x: (float) y: (id) sender;
+- (void) setBlendingFactor:(float) f;
 - (id) viewer;
 - (float) sign;
 

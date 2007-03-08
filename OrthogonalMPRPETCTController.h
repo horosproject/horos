@@ -24,10 +24,10 @@
 }
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer;
 
-- (void) setCrossPosition: (long) x: (long) y: (id) sender;
-- (void) resliceFromOriginal: (long) x: (long) y;
-- (void) resliceFromX: (long) x: (long) y;
-- (void) resliceFromY: (long) x: (long) y;
+- (void) setCrossPosition: (float) x: (float) y: (id) sender;
+- (void) resliceFromOriginal: (float) x: (float) y;
+- (void) resliceFromX: (float) x: (float) y;
+- (void) resliceFromY: (float) x: (float) y;
 
 - (void) superSetWLWW:(float) iwl :(float) iww;
 

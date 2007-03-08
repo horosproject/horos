@@ -13,14 +13,17 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+
+#import "OrthogonalMPRController.h"
+
 #import "DCMView.h"
 
-@class OrthogonalMPRController;
+//@class OrthogonalMPRController;
 
 // this view displays a cross to show where the 2 orthogonal plane are crossing
 
 @interface OrthogonalMPRView : DCMView {
-	long						crossPositionX, crossPositionY; // coordinate x and Y of the cross
+	float						crossPositionX, crossPositionY; // coordinate x and Y of the cross
 	OrthogonalMPRController		*controller;
 	long						displayResliceAxes;
 	float						savedScaleValue;
@@ -35,11 +38,11 @@
 - (void) setController: (OrthogonalMPRController*) newController;
 - (OrthogonalMPRController*) controller;
 
-- (void) setCrossPosition: (long) x: (long) y;
-- (void) setCrossPositionX: (long) x;
-- (void) setCrossPositionY: (long) y;
-- (long) crossPositionX;
-- (long) crossPositionY;
+- (void) setCrossPosition: (float) x: (float) y;
+- (void) setCrossPositionX: (float) x;
+- (void) setCrossPositionY: (float) y;
+- (float) crossPositionX;
+- (float) crossPositionY;
 
 - (void) adjustWLWW:(float) wl :(float) ww;
 

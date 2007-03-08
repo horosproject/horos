@@ -6,6 +6,7 @@
 //  Copyright 2006 HUG. All rights reserved.
 //
 
+#import "OrthogonalMPRController.h"
 #import "LLScoutView.h"
 #import "DCMPix.h"
 #import "OrthogonalMPRController.h"

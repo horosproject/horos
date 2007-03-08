@@ -70,7 +70,7 @@ NSString * documentsDirectory();
 	{
 		OrthogonalMPRView *view = [PETController originalView];
 		
-		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] floatValue] :[[[note userInfo] valueForKey:@"y"] floatValue]];
 		
 		view = [PETController xReslicedView];
 		
@@ -81,7 +81,7 @@ NSString * documentsDirectory();
 	{
 		OrthogonalMPRView *view = [CTController originalView];
 		
-		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] intValue] :[[[note userInfo] valueForKey:@"y"] intValue]];
+		[view setCrossPosition: [[[note userInfo] valueForKey:@"x"] floatValue] :[[[note userInfo] valueForKey:@"y"] floatValue]];
 		
 		view = [CTController xReslicedView];
 		
@@ -521,7 +521,6 @@ NSString * documentsDirectory();
 {
 	[CTController blendingPropagateOriginal: sender];
 	[PETCTController blendingPropagateOriginal: sender];
-	
 	[PETController blendingPropagateOriginal: sender];
 }
 
@@ -601,7 +600,7 @@ NSString * documentsDirectory();
 #pragma mark-
 #pragma mark reslice
 
-- (void) resliceFromView: (SEL) view : (NSInvocation*) invoc : (long) x: (long) y: (id) sender
+- (void) resliceFromView: (SEL) view : (NSInvocation*) invoc : (float) x: (float) y: (id) sender
 {
 	x = x - (float)[[[sender performSelector:view] curDCM] pwidth]/2.0f;
 	y = y - (float)[[[sender performSelector:view] curDCM] pheight]/2.0f;
@@ -616,7 +615,7 @@ NSString * documentsDirectory();
 	NSPoint offset;
 	offset = NSMakePoint(0,0);
 	float destWidth, destHeight, senderPixelSpacingX, senderPixelSpacingY, destPixelSpacingX, destPixelSpacingY;
-	long newX, newY;
+	float newX, newY;
 	BOOL isSenderXFlipped, isSenderYFlipped, isDestXFlipped, isDestYFlipped;
 	int xSignSender, ySignSender, xSignDest, ySignDest;
 	
@@ -742,7 +741,7 @@ NSString * documentsDirectory();
 	[invoc invoke];
 }
 
-- (void) resliceFromOriginal: (long) x: (long) y: (id) sender
+- (void) resliceFromOriginal: (float) x: (float) y: (id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromOriginal::)]];
 	[invoc setSelector:  @selector(resliceFromOriginal::)];
@@ -750,7 +749,7 @@ NSString * documentsDirectory();
 	[self resliceFromView: @selector(originalView) : invoc : x: y: sender];
 }
 
-- (void) resliceFromX: (long) x: (long) y: (id) sender
+- (void) resliceFromX: (float) x: (float) y: (id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromX::)]];
 	[invoc setSelector:  @selector(resliceFromX::)];
@@ -758,7 +757,7 @@ NSString * documentsDirectory();
 	[self resliceFromView: @selector(xReslicedView) : invoc : x: y: sender];
 }
 
-- (void) resliceFromY: (long) x: (long) y: (id) sender
+- (void) resliceFromY: (float) x: (float) y: (id) sender
 {
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature: [CTController methodSignatureForSelector: @selector(resliceFromY::)]];
 	[invoc setSelector:  @selector(resliceFromY::)];

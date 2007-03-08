@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "OrthogonalMPRController.h"
 #import "OrthogonalMPRPETCTView.h"
 
 
@@ -32,7 +33,7 @@
 	return self;
 }
 
-- (void) setCrossPosition: (long) x: (long) y
+- (void) setCrossPosition: (float) x: (float) y
 {
 	if(crossPositionX == x && crossPositionY == y)
 		return;

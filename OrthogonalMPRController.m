@@ -21,6 +21,14 @@
 
 @implementation OrthogonalMPRController
 
+- (void) setCrossPosition: (float) x: (float) y: (id) sender
+{
+}
+
+-(void) setBlendingFactor:(float) f
+{
+}
+
 - (void) applyOrientation
 {
 	switch( orientationVector)
@@ -288,18 +296,23 @@
 	float fValue = [sender scaleValue] / [sender pixelSpacing];
 	[originalView setScaleValue: fValue * [originalView pixelSpacing]];
 	[originalView setRotation: [sender rotation]];
-	[originalView setOrigin: [sender origin]];
+	
+	NSPoint pan = [sender origin];
+	NSPoint delta = [DCMPix originDeltaBetween:[originalView curDCM] And:[sender curDCM]];
+	delta.x *= [sender scaleValue];
+	delta.y *= [sender scaleValue];
+	[originalView setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
 	
 	NSPoint		pt;
 	
 	// X - Views
 	pt.y = [xReslicedView origin].y;
-	pt.x = [sender origin].x;
+	pt.x = [sender origin].x + delta.x;
 	[xReslicedView setOrigin: pt];
 
 	// Y - Views
 	pt.y = [yReslicedView origin].y;
-	pt.x = -[sender origin].y;
+	pt.x = -[sender origin].y + delta.y;
 	[yReslicedView setOrigin: pt];
 }
 
@@ -308,28 +321,25 @@
 	float fValue = [sender scaleValue] / [sender pixelSpacing];
 	[xReslicedView setScaleValue: fValue * [xReslicedView pixelSpacing]];
 	[xReslicedView setRotation: [sender rotation]];
-	[xReslicedView setOrigin: [sender origin]];
-	[xReslicedView setOriginOffset: [sender originOffset]];
+
+	NSPoint pan = [sender origin];
+	NSPoint delta = [DCMPix originDeltaBetween:[xReslicedView curDCM] And:[sender curDCM]];
+	delta.x *= [sender scaleValue];
+	delta.y *= [sender scaleValue];
+	delta.y = 0;
+	[xReslicedView setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
 	
 	NSPoint		pt;
 	
 	// X - Views
 	pt.y = [originalView origin].y;
-	pt.x = [sender origin].x;
+	pt.x = [sender origin].x + delta.x;
 	[originalView setOrigin: pt];
-
-	pt.y = [originalView originOffset].y;
-	pt.x = [sender originOffset].x;
-	[originalView setOriginOffset: pt];
 
 	// Y - Views
 	pt.x = [yReslicedView origin].x;
-	pt.y = [sender origin].y;
+	pt.y = [sender origin].y + delta.y;
 	[yReslicedView setOrigin: pt];
-
-	pt.x = [yReslicedView originOffset].x;
-	pt.y = [sender originOffset].y;
-	[yReslicedView setOriginOffset: pt];
 }
 
 - (void) blendingPropagateY:(OrthogonalMPRView*) sender
@@ -337,28 +347,25 @@
 	float fValue = [sender scaleValue] / [sender pixelSpacing];
 	[yReslicedView setScaleValue: fValue * [yReslicedView pixelSpacing]];
 	[yReslicedView setRotation: [sender rotation]];
-	[yReslicedView setOrigin: [sender origin]];
-	[yReslicedView setOriginOffset: [sender originOffset]];
+
+	NSPoint pan = [sender origin];
+	NSPoint delta = [DCMPix originDeltaBetween:[yReslicedView curDCM] And:[sender curDCM]];
+	delta.x *= [sender scaleValue];
+	delta.y *= [sender scaleValue];
+	delta.y = 0;
+	[yReslicedView setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
 	
 	NSPoint		pt;
 	
 	// X - Views
 	pt.x = [originalView origin].x;
-	pt.y = -[sender origin].x;
+	pt.y = -([sender origin].x + delta.x);
 	[originalView setOrigin: pt];
-
-	pt.x = [originalView originOffset].x;
-	pt.y = -[sender originOffset].x;
-	[originalView setOriginOffset: pt];
 
 	// Y - Views
 	pt.x = [xReslicedView origin].x;
-	pt.y = [sender origin].y;
+	pt.y = [sender origin].y + delta.y;
 	[xReslicedView setOrigin: pt];
-
-	pt.x = [xReslicedView originOffset].x;
-	pt.y = [sender originOffset].y;
-	[xReslicedView setOriginOffset: pt];
 }
 
 - (void) blendingPropagate:(OrthogonalMPRView*) sender

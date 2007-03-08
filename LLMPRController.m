@@ -60,8 +60,8 @@
 	else if ([[[notification userInfo] objectForKey:@"view"] isEqualTo:@"yReslicedView"])
 		sender = yReslicedView;
 		
-	[sender setCrossPositionX:[[[notification userInfo] objectForKey:@"x"] intValue]];
-	[sender setCrossPositionY:[[[notification userInfo] objectForKey:@"y"] intValue]];
+	[sender setCrossPositionX:[[[notification userInfo] objectForKey:@"x"] floatValue]];
+	[sender setCrossPositionY:[[[notification userInfo] objectForKey:@"y"] floatValue]];
 	[super reslice: [[[notification userInfo] objectForKey:@"x"] intValue]: [[[notification userInfo] objectForKey:@"y"] intValue]: sender];
 }
 

@@ -183,19 +183,19 @@ static NSString*	LODToolbarItemIdentifier				= @"LOD";
 	sliceIndex = (sliceIndex<0)? 0 :sliceIndex;
 	sliceIndex = (sliceIndex>=[[[mprController originalView] dcmPixList] count])? [[[mprController originalView] dcmPixList] count]-1 :sliceIndex;
 	[[mprController originalView] setIndex:sliceIndex];
-	[[mprController originalView] setCrossPositionX: (long)(pos2D[0]+0.5)];
-	[[mprController originalView] setCrossPositionY: (long)(pos2D[1]+0.5)];
+	[[mprController originalView] setCrossPositionX: (float)(pos2D[0]+0.5)];
+	[[mprController originalView] setCrossPositionY: (float)(pos2D[1]+0.5)];
 		
 	// xReslicedView
 	[(EndoscopyMPRView*)[mprController xReslicedView] setCameraPosition:pos2D[0] :pos2D[2]];
 	long h = pos2D[2]+0.5;
 	h = ([mprController sign]>0)? [[[mprController originalView] dcmPixList] count]-h-1 : h ;
-	[[mprController xReslicedView] setCrossPositionX: (long)(pos2D[0]+0.5)];
+	[[mprController xReslicedView] setCrossPositionX: (float)(pos2D[0]+0.5)];
 	[[mprController xReslicedView] setCrossPositionY: h];
 	
 	// yReslicedView
 	[(EndoscopyMPRView*)[mprController yReslicedView] setCameraPosition:pos2D[1] :pos2D[2]];
-	[[mprController yReslicedView] setCrossPositionX: (long)(pos2D[1]+0.5)];
+	[[mprController yReslicedView] setCrossPositionX: (float)(pos2D[1]+0.5)];
 	[[mprController yReslicedView] setCrossPositionY: h];
 
 }

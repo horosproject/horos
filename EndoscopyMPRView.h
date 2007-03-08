@@ -14,6 +14,7 @@
 //  Created by joris on 12/12/05.
 
 #import <Cocoa/Cocoa.h>
+#import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
 
 @interface EndoscopyMPRView : OrthogonalMPRView {

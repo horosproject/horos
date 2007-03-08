@@ -287,7 +287,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(NSNumber*) positionerPrimaryAngle;
 -(void) positionerSecondaryAngle:(NSNumber*)newPositionerSecondaryAngle;
 -(NSNumber*) positionerSecondaryAngle;
-
++ (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2;
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 -(void) DCMPixShutterRect:(long)x:(long)y:(long)w:(long)h;

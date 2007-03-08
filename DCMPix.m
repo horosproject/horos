@@ -1027,6 +1027,40 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return runOsiriXInProtectedMode;
 }
 
++ (NSPoint) originDeltaBetween:(DCMPix*) pix1 And:(DCMPix*) pix2
+{
+	float destPixelSpacingX = [pix1 pixelSpacingX];
+	float destPixelSpacingY = [pix1 pixelSpacingY];
+	float senderPixelSpacingX = [pix2 pixelSpacingX];
+	float senderPixelSpacingY = [pix2 pixelSpacingY];
+	float destWidth = [pix1 pwidth];
+	float destHeight =[pix1 pheight];
+	float vectorP1[ 9];
+	float destOrigin[ 3];
+	
+	[pix1 orientation: vectorP1];
+	destOrigin[ 0] = [pix1  originX] * vectorP1[ 0] + [pix1  originY] * vectorP1[ 1] + [pix1  originZ] * vectorP1[ 2];
+	destOrigin[ 1] = [pix1  originX] * vectorP1[ 3] + [pix1  originY] * vectorP1[ 4] + [pix1  originZ] * vectorP1[ 5];
+	destOrigin[ 2] = [pix1  originX] * vectorP1[ 6] + [pix1  originY] * vectorP1[ 7] + [pix1  originZ] * vectorP1[ 8];
+
+	float vectorP2[ 9];
+	float senderOrigin[ 3];
+	
+	[pix2 orientation: vectorP2];
+	senderOrigin[ 0] = [pix2  originX] * vectorP2[ 0] + [pix2  originY] * vectorP2[ 1] + [pix2  originZ] * vectorP2[ 2];
+	senderOrigin[ 1] = [pix2  originX] * vectorP2[ 3] + [pix2  originY] * vectorP2[ 4] + [pix2  originZ] * vectorP2[ 5];
+	senderOrigin[ 2] = [pix2  originX] * vectorP2[ 6] + [pix2  originY] * vectorP2[ 7] + [pix2  originZ] * vectorP2[ 8];
+	
+	NSPoint offset;
+	
+	offset.x = destOrigin[ 0] + destPixelSpacingX * destWidth/2. - (senderOrigin[ 0] + senderPixelSpacingX * [pix2 pwidth]/2.);
+	offset.y = destOrigin[ 1] + destPixelSpacingY * destHeight/2. - (senderOrigin[ 1] + senderPixelSpacingY * [pix2 pheight]/2.);
+	
+	offset.x /= senderPixelSpacingX;
+	offset.y /= senderPixelSpacingY;
+	
+	return offset;
+}
 
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix
 {
