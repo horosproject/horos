@@ -2288,7 +2288,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+#if !__LP64__
 - (float)splitView:(NSSplitView *)sender constrainSplitPosition:(float)proposedPosition ofSubviewAt:(int)offset
+#else
+- (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
+#endif
 {
     if( [sender isVertical] == YES)
     {

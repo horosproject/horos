@@ -195,17 +195,35 @@ NSString * documentsDirectory();
 	
 	return data;
 }
+#else
+- (NSArray *)availableComponents
+{
+	return [NSArray array];
+}
+
+- (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
+{
+	return 0L;
+}
+#endif
 
 - (BOOL) writeMovie:(QTMovie *)movie toFile:(NSString *)file withComponent:(NSDictionary *)component withExportSettings:(NSData *)exportSettings
 {
-	if( exportSettings == 0L) return;
+	NSDictionary *attributes = 0L;
 	
-	NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-		[NSNumber numberWithBool:YES], QTMovieExport,
-		[component objectForKey:@"subtype"], QTMovieExportType,
-		[component objectForKey:@"manufacturer"], QTMovieExportManufacturer,
-		exportSettings, QTMovieExportSettings,
-		nil];
+	if( component && exportSettings)
+	{
+		attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSNumber numberWithBool:YES], QTMovieExport,
+			[component objectForKey:@"subtype"], QTMovieExportType,
+			[component objectForKey:@"manufacturer"], QTMovieExportManufacturer,
+			exportSettings, QTMovieExportSettings,
+			nil];
+	}
+	else
+	{
+		attributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]  forKey:QTMovieFlatten];
+	}
 	
 	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Movie encoding...", nil)];
 	[wait showWindow:self];
@@ -224,13 +242,16 @@ NSString * documentsDirectory();
 
 - (IBAction) changeExportType:(id) sender
 {
-	unsigned long subtype = [[[exportTypes objectAtIndex: [type indexOfSelectedItem]] valueForKey:@"subtype"] unsignedLongValue];
-	
-	if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
-	if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];
-	if( subtype == kQTFileTypeMP4)	[panel setRequiredFileType:@"mpg4"];
-	
-	[[NSUserDefaults standardUserDefaults] setInteger:[type indexOfSelectedItem] forKey:@"selectedMenuQuicktimeExport"];
+	if( [exportTypes count])
+	{
+		unsigned long subtype = [[[exportTypes objectAtIndex: [type indexOfSelectedItem]] valueForKey:@"subtype"] unsignedLongValue];
+		
+		if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
+		if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];
+		if( subtype == kQTFileTypeMP4)	[panel setRequiredFileType:@"mpg4"];
+		
+		[[NSUserDefaults standardUserDefaults] setInteger:[type indexOfSelectedItem] forKey:@"selectedMenuQuicktimeExport"];
+	}
 }
 
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
@@ -258,8 +279,9 @@ NSString * documentsDirectory();
 		
 		[panel setAccessoryView: view];
 		[type removeAllItems];
-				
-		[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
+		
+		if( [exportTypes count])
+			[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
 		
 		[type selectItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey:@"selectedMenuQuicktimeExport"]];
 		[self changeExportType: self];
@@ -272,7 +294,6 @@ NSString * documentsDirectory();
 	if( result == NSFileHandlingPanelOKButton)
 	{
 		int				maxImage, myState, curSample = 0;
-		Movie			qtMovie = 0L;
 		QTTime			curTime;
 		QTMovie			*mMovie = 0L;
 		BOOL			aborted = NO;
@@ -341,17 +362,21 @@ NSString * documentsDirectory();
 			
 			if( aborted == NO)
 			{
-				NSData	*exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
-			
-				if( exportSettings)
-				{
-					[self writeMovie:mMovie toFile:fileName withComponent:[exportTypes objectAtIndex: [type indexOfSelectedItem]] withExportSettings: exportSettings];
+				NSData	*exportSettings = 0L;
+				id		component = 0L;
 				
-					if( openIt)
-					{
-						NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-						[ws openFile:fileName];
-					}
+				if( [exportTypes count])
+				{
+					exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
+					component = [exportTypes objectAtIndex: [type indexOfSelectedItem]];
+				}
+				
+				[self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
+				
+				if( openIt)
+				{
+					NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+					[ws openFile:fileName];
 				}
 			}
 			[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:0L];
@@ -362,6 +387,6 @@ NSString * documentsDirectory();
 	
 	return 0L;
 }
-#endif
+//#endif
 
 @end

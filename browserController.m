@@ -5964,7 +5964,11 @@ static BOOL withReset = NO;
     return COLUMN;
 }
 
+#if !__LP64__
 - (float)splitView:(NSSplitView *)sender constrainSplitPosition:(float)proposedPosition ofSubviewAt:(int)offset
+#else
+- (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
+#endif
 {
 	if ([sender isEqual:sourcesSplitView])
 	{
@@ -5988,7 +5992,7 @@ static BOOL withReset = NO;
         pos *= (size.width + space.width*2);
 		pos += 17;
 		
-        return (float) pos;
+        return pos;
     }
 
     return proposedPosition;
@@ -6070,7 +6074,11 @@ static BOOL withReset = NO;
 	else return YES;
 }
 
-- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMax ofSubviewAt:(int)offset
+#if __LP64__
+- (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)offset
+#else
+- (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset
+#endif
 {
 	
 	if ([sender isEqual:sourcesSplitView])
@@ -6078,14 +6086,21 @@ static BOOL withReset = NO;
 		// minimum size of the top view (db, albums)
 		return 200;
 	}
+	else if ([sender isEqual: splitViewHorz])
+	{
+		return [oMatrix cellSize].height;
+	}
 	else
 	{
 		return [oMatrix cellSize].width;
 	}
 }
 
-
-- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMin ofSubviewAt:(int)offset
+#if __LP64__
+- (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
+#else
+- (float)splitView:(NSSplitView *)sender constrainMaxCoordinate:(float)proposedMax ofSubviewAt:(int)offset
+#endif
 {
 	if ([sender isEqual:splitViewVert])
 	{
@@ -6096,9 +6111,13 @@ static BOOL withReset = NO;
 		// maximum size of the top view (db, album) = opposite of the minimum size of the bottom view (bonjour)
 		return [sender bounds].size.height-200;
 	}
+	else if ([sender isEqual: splitViewHorz])
+	{
+		return [sender bounds].size.height- (2*[oMatrix cellSize].height);
+	}
 	else
 	{
-		return proposedMin;
+		return [oMatrix cellSize].width;
 	}
 }
 
