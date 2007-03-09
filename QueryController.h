@@ -72,4 +72,5 @@
 - (IBAction)controlAction:(id)sender;
 - (void) refresh: (id) sender;
 - (IBAction) pressButtons:(id) sender;
+- (NSArray*) localStudy:(id) item;
 @end

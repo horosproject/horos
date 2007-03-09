@@ -4858,6 +4858,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand
 {
+	return [self findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: NO];
+}
+
+-(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection
+{
 	if( curImage == 0L)
 	{
 		BOOL isDirectory;
@@ -4942,7 +4947,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 			if( [databaseOutline rowForItem: [curImage valueForKey:@"series"]] != [databaseOutline selectedRow])
 			{
-				[databaseOutline selectRow:[databaseOutline rowForItem: [curImage valueForKey:@"series"]] byExtendingSelection: NO];
+				[databaseOutline selectRow:[databaseOutline rowForItem: [curImage valueForKey:@"series"]] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}
@@ -4950,7 +4955,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
 			{
-				[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: NO];
+				[databaseOutline selectRow:[databaseOutline rowForItem: study] byExtendingSelection: extendingSelection];
 				[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 			}
 		}

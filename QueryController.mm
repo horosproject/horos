@@ -92,7 +92,35 @@ static char *GetPrivateIP()
 	
 	if( [[self window] firstResponder] == outlineView)
 	{
-		if(c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
+		if( c == NSDeleteCharacter)
+		{
+			[[BrowserController currentBrowser] showEntireDatabase];
+			
+			NSIndexSet* indices = [outlineView selectedRowIndexes];
+			int i;
+			BOOL extendingSelection = NO;
+			
+			for( i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+			{
+				if( [indices containsIndex: i])
+				{
+					NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+		
+					if( [studyArray count] > 0)
+					{
+						NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0]] objectAtIndex:0];
+						[[BrowserController currentBrowser] findAndSelectFile:0L image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+						extendingSelection = YES;
+					}
+				} 
+			}
+			
+			if( extendingSelection)
+			{
+				[[BrowserController currentBrowser] delItem: self];
+			}
+		}
+		else if( c == NSNewlineCharacter || c == NSEnterCharacter || c == NSCarriageReturnCharacter)
 		{
 			[self retrieveAndView: self];
 		}

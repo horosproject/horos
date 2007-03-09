@@ -258,6 +258,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) addURLToDatabase:(id) sender;
 - (NSArray*) addURLToDatabaseFiles:(NSArray*) URLs;
 -(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand;
+-(BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (IBAction) sendiDisk:(id) sender;
 - (IBAction) sendiPod:(id) sender;
 - (void) selectServer: (NSArray*) files;
