@@ -1033,6 +1033,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	float destPixelSpacingY = [pix1 pixelSpacingY];
 	float senderPixelSpacingX = [pix2 pixelSpacingX];
 	float senderPixelSpacingY = [pix2 pixelSpacingY];
+	
+	
+	if( destPixelSpacingX == 0 || destPixelSpacingY == 0 || senderPixelSpacingX == 0 || senderPixelSpacingY == 0)
+	{
+		return NSMakePoint( 0, 0);
+	}
+	
 	float destWidth = [pix1 pwidth];
 	float destHeight =[pix1 pheight];
 	float vectorP1[ 9];

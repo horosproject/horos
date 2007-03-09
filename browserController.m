@@ -8739,6 +8739,9 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+	newFilesInIncoming = NO;
+	[self setDockIcon];
+
 	[decompressThreadRunning lock];
 	[decompressThreadRunning unlock];
 	
