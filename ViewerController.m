@@ -13147,7 +13147,11 @@ long i;
 				NSLog(@"have blending controller");
 				OrthogonalMPRPETCTViewer *pcviewer = [self openOrthogonalMPRPETCTViewer];
 				NSDate *studyDate = [[fileList[curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.study.date"];
-				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[pcviewer window] title], [[self window] title]]];
+				
+				NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
+				NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+				
+				[[pcviewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[pcviewer window] title], [studyDate descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [[self window] title]]];
 			}
 			else
 			{
@@ -13176,8 +13180,11 @@ long i;
 				float   iwl, iww;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
-//				[[viewer controller] setCurWLWWMenu:curWLWWMenu];				
+				
+				NSString*		sdf = [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"];
+				NSDictionary*	locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+				
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [[[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [[self window] title]]];
 			}
 		}
 	}
