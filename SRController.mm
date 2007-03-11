@@ -733,6 +733,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 											ROIManagerToolbarItemIdentifier,
 											QTExportToolbarItemIdentifier,
 											QTExportVRToolbarItemIdentifier,
+											ExportToolbarItemIdentifier,
 											Export3DFileFormat,
 											OrientationsViewToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
