@@ -75,6 +75,9 @@ static NSString *softwareVersion = @"001";
 		id value = nil;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
+		
+		NSLog( [value description]);
+		
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
 		if ([[tag name] isEqualToString: @"PatientID"])
 			[object anonyimizeAttributeForTag:[DCMAttributeTag tagWithName:@"OtherPatientIDs"] replacingWith:value];
@@ -1059,12 +1062,12 @@ PixelRepresentation
 	  
 	*/
 	// NSLog(@"anonyimizeAttributeForTag:%@  aValue%@", tag, aValue);
-	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsSex"]])
-		[attr setValues:[NSMutableArray array]];
-		if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsBirthDate"]])
-		[attr setValues:[NSMutableArray array]];
-	else
-	 if (attr && [tag group] != 0x0002 && ![[tag vr] isEqualToString:@"UI"]) {
+//	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsSex"]])
+//		[attr setValues:[NSMutableArray array]];
+//	if ([(DCMAttributeTag *)[attr attrTag] isEquaToTag:[DCMAttributeTag tagWithName:@"PatientsBirthDate"]])
+//		[attr setValues:[NSMutableArray array]];
+//	else
+	if (attr && [tag group] != 0x0002 && ![[tag vr] isEqualToString:@"UI"]) {
 		const char *chars = [[tag vr] UTF8String];
 		int vr = chars[0]<<8 | chars[1];
 		NSMutableArray *values = [attr values];

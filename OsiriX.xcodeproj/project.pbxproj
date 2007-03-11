@@ -35589,8 +35589,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
 					i386,
+					ppc,
 				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = NO;
@@ -35606,8 +35606,10 @@
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
