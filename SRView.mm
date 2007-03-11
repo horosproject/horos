@@ -130,6 +130,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 		case 1:		[self setFrame: [self centerRect: NSMakeRect(0,0,512,512) inRect: windowFrame]];	break;
 		case 2:		[self setFrame: [self centerRect: NSMakeRect(0,0,768,768) inRect: windowFrame]];	break;
 	}
+	
+	[self display];
 }
 
 - (void) getOrientationText:(char *) string : (float *) vector :(BOOL) inv

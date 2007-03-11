@@ -509,7 +509,7 @@ NSString * documentsDirectory()
 				
 				if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 				
-				return path;// not sure if s is in UTF8 encoding:  What's opposite of -[NSString fileSystemRepresentation]?
+				return path;
 			}
 			break;
 			
@@ -518,7 +518,8 @@ NSString * documentsDirectory()
 			NSString	*path;
 			BOOL		isDir = YES;
 			
-			path=[[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"] stringByAppendingString:@"/OsiriX Data"];
+			path = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"] stringByAppendingPathComponent:@"/OsiriX Data"];
+			
 			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 			
 			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])	// STILL NOT AVAILABLE??
@@ -531,7 +532,7 @@ NSString * documentsDirectory()
 			
 			return path;
 		}
-			break;
+		break;
 	}
 	
 	return nil;
