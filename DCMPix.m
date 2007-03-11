@@ -2864,6 +2864,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	self->echotime = [fromDcm->echotime retain];
 	self->flipAngle = [fromDcm->flipAngle retain];
+	self->laterality = [fromDcm->laterality retain];
 	self->repetitiontime = [fromDcm->repetitiontime retain];
 	self->protocolName = [fromDcm->protocolName retain];
 	self->convertedDICOM = [fromDcm->convertedDICOM retain];
@@ -2918,6 +2919,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	copy->echotime = [self->echotime retain];
 	copy->flipAngle = [self->flipAngle retain];
+	copy->laterality = [self->laterality retain];
 	copy->repetitiontime = [self->repetitiontime retain];
 	copy->protocolName = [self->protocolName retain];
 	copy->convertedDICOM = [self->convertedDICOM retain];
@@ -2954,6 +2956,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 }
 
 - (NSString*) repetitiontime {return repetitiontime;}
+- (NSString*) laterality {return laterality;}
 - (NSString*) echotime {return echotime;}
 - (NSString*) flipAngle {return flipAngle;}
 - (void) setRepetitiontime:(NSString*)rep {repetitiontime = rep;}
@@ -4667,7 +4670,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
 	if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
 	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
-	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];	
+	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
+	if( [dcmObject attributeValueWithName:@"ImageLaterality"])		laterality = [[dcmObject attributeValueWithName:@"ImageLaterality"] retain];	
+	if( laterality == 0L && [dcmObject attributeValueWithName:@"Laterality"])		laterality = [[dcmObject attributeValueWithName:@"Laterality"] retain];	
 	if( [dcmObject attributeValueWithName:@"ProtocolName"])		protocolName = [[dcmObject attributeValueWithName:@"ProtocolName"] retain];
 	if( [dcmObject attributeValueWithName:@"ViewPosition"])		viewPosition = [[dcmObject attributeValueWithName:@"ViewPosition"] retain];
 	if( [dcmObject attributeValueWithName:@"PatientPosition"])	patientPosition = [[dcmObject attributeValueWithName:@"PatientPosition"] retain];
@@ -5616,6 +5621,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 //					sliceLocation = [[NSString stringWithCString:val->a] floatValue];
 //				}
 //				else sliceLocation = -1;
+			
+			
+			val = Papy3GetElement (theGroupP, papImageLateralityGr, &nbVal, &elemType);
+			if (val != NULL) laterality = [[NSString stringWithCString:val->a] retain];
+			
+			if( laterality == 0L)
+			{
+				val = Papy3GetElement (theGroupP, papLateralityGr, &nbVal, &elemType);
+				if (val != NULL) laterality = [[NSString stringWithCString:val->a] retain];
+			}
 			
 			theErr = Papy3GroupFree (&theGroupP, TRUE);
 		}
@@ -9431,6 +9446,7 @@ BOOL            readable = YES;
 	[repetitiontime release];					repetitiontime = 0L;
 	[echotime release];							echotime = 0L;
 	[flipAngle release];						flipAngle = 0L;
+	[laterality release];						laterality = 0L;
 	[protocolName release];						protocolName = 0L;
 	[viewPosition release];						viewPosition = 0L;
 	[patientPosition release];					patientPosition = 0L;
@@ -9463,6 +9479,7 @@ BOOL            readable = YES;
 	[repetitiontime release];
 	[echotime release];
 	[flipAngle release];
+	[laterality release];
 	[units release];
 	[protocolName release];
 	[patientPosition release];

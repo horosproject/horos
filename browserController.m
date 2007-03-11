@@ -5986,7 +5986,7 @@ static BOOL withReset = NO;
         NSSize space = [oMatrix intercellSpacing];
         NSRect frame = [[oMatrix enclosingScrollView] frame];
 		
-        long pos = proposedPosition;
+        int pos = proposedPosition;
 		
 		pos += size.width/2;
 		pos -= 17;
@@ -6011,9 +6011,9 @@ static BOOL withReset = NO;
         NSSize space = [oMatrix intercellSpacing];
         NSRect frame = [[[splitViewVert subviews] objectAtIndex: 0] frame];
 		
-		long preWidth = frame.size.width+1;
-		long width = frame.size.width;
-		long cellsize = (size.width + space.width*2);
+		int preWidth = frame.size.width+1;
+		int width = frame.size.width;
+		int cellsize = (size.width + space.width*2);
 		
 		width += cellsize/2;
 		width /=  cellsize;
@@ -6047,8 +6047,8 @@ static BOOL withReset = NO;
 	
     if( newColumn != COLUMN)
     {
-        long	i, minrow, row;
-        long	selectedCellTag = [[oMatrix selectedCell] tag];
+        int	i, minrow, row;
+        int	selectedCellTag = [[oMatrix selectedCell] tag];
 		
         COLUMN = newColumn;
         if( COLUMN == 0) { COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}

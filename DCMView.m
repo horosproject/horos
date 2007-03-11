@@ -5339,6 +5339,8 @@ static long scrollMode;
 	[self getOrientationText:string :vectors+3 :YES];
 	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
 	
+	if( [curDCM laterality]) [self DrawNSStringGL: [curDCM laterality] : labelFontListGL :size.size.width/2 :12 + stringSize.height];
+	
 	[self getOrientationText:string :vectors+3 :NO];
 	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
 }
