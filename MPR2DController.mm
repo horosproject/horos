@@ -107,7 +107,7 @@ extern NSString * documentsDirectory();
 			
 			[mov createMovieQTKit: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			
-			[mov dealloc];
+			[mov release];
 		}
 		
 		// 4D
@@ -117,7 +117,7 @@ extern NSString * documentsDirectory();
 			
 			[mov createMovieQTKit: YES  :EXPORT2IPHOTO :[[fileList objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			
-			[mov dealloc];
+			[mov release];
 		}
 		
 		if( EXPORT2IPHOTO)
@@ -443,28 +443,11 @@ extern NSString * documentsDirectory();
     err = [view setPixSource:pixList[0] :files :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
-        [self dealloc];
+       // [self dealloc];
         return 0L;
     }
 	
-//	[view setPlaneSource: originalView : perpendicularView];
-	
-	
-//    err = [originalView setPixSource:pixList[0] :[volumeData[0] bytes]];
-//    if( err != 0)
-//    {
-//        [self dealloc];
-//        return 0L;
-//    }
-	
-//    err = [perpendicularView setPixSource:pixList[0] :[volumeData[0] bytes]];
-//    if( err != 0)
-//    {
-//        [self dealloc];
-//        return 0L;
-//    }
-	
-//	[[self window] performZoom:self];
+
 	
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
@@ -616,6 +599,13 @@ extern NSString * documentsDirectory();
 	[super dealloc];
 	NSLog(@"Dealloc MPR2DController C");
 }
+
+
+- (void)finalize {
+	[self save3DState];
+	[super finalize];
+}
+
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
