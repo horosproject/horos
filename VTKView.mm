@@ -70,6 +70,17 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	//destroy C++ references
+	_interactor->Delete();
+    _renderer->Delete();
+	_cocoaRenderWindow->Delete();
+	[super finalize];	
+}
+
+
+
 - (BOOL)mouseDownCanMoveWindow
 {
 	return NO;

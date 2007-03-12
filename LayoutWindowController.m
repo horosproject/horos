@@ -55,6 +55,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void)showWindow:(id)sender{
 	[super showWindow:sender];
 	if (![self hangingProtocol]) {

@@ -324,5 +324,10 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 
 @end

@@ -231,6 +231,12 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     [super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 /******************
  * Main processing
  ******************/

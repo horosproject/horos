@@ -186,6 +186,11 @@
 	[super dealloc];
 }
 
+/* Nothing to do
+- (void)finalize {
+}
+*/
+
 - (void) setRoiVolumes: (NSMutableArray*) volumes
 {
 //	NSLog(@"setRoiVolumes : [volumes count] : %d", [volumes count]);

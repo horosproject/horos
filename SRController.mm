@@ -188,7 +188,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
     err = [view setPixSource:pixList :(float*) [volumeData bytes]];
     if( err != 0)
     {
-        [self dealloc];
+       // [self dealloc];
         return 0L;
     }
     
@@ -312,6 +312,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 	[super dealloc];
 }
+
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
+
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {

@@ -155,6 +155,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void) setString:(NSString*) str
 {
 	[string release];

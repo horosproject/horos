@@ -111,6 +111,13 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	delete document;
+	[super finalize];
+}
+
+
 #pragma mark -
 #pragma mark ROIs
 

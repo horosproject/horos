@@ -315,6 +315,25 @@ XYZ ArbitraryRotate(XYZ p,double theta,XYZ r)
     return self;
 }
 
+- (void)finalize {
+if( reader)
+	{
+		if( [firstObject isRGB]) free( dataFRGB);
+	
+		reader->Delete();		
+		bwLut->Delete();
+		axialColors->Delete();
+		axial->Delete();		
+		rotate->Delete();
+		rotatePerpendicular->Delete();
+		perpendicularSliceTransform->Delete();		
+		sliceTransform->Delete();		
+		aCamera->Delete();
+	}
+	[super finalize];
+}
+
+
 
 -(void)dealloc
 {

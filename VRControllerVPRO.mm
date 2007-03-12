@@ -416,7 +416,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     err = [view setPixSource:pixList[0] : (float*) [volumeData[0] bytes]];
     if( err != 0)
     {
-        [self dealloc];
+        //[self dealloc];
         return 0L;
     }
 	
@@ -746,9 +746,25 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
 	[toolbar setDelegate: 0L];
 	[toolbar release];
-	[_renderingMode dealloc];
+	[_renderingMode release];
 	
 	[super dealloc];
+}
+
+- (void)finalize {
+	// Release Undo system
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];
+		
+		if( undodata[ i])
+		{
+			free( undodata[ i]);
+		}
+	}
+	
+	[self save3DState];
+	[super finalize];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note

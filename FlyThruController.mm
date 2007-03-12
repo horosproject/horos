@@ -126,6 +126,12 @@ MODIFICATION HISTORY
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	// nothing to do
+}
+*/
+
 //Getting values
 - (int)numberOfRowsInTableView:(NSTableView *)aTableView
 {
@@ -545,7 +551,7 @@ MODIFICATION HISTORY
 		
 		QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame:maxFrame:) :numberOfFrames];	
 		[mov createMovieQTKit: YES  :NO :[[[[self window3DController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
-		[mov dealloc];
+		[mov release];
 	}
 	else
 	{

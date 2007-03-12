@@ -80,6 +80,11 @@
     return self;
 }
 
+/* Nothing to do
+- (void)finalize {
+}
+*/
+
 -(void) dealloc
 {
     NSLog(@"Dealloc ROIVolumeController");

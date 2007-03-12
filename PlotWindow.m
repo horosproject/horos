@@ -66,6 +66,13 @@ float	iY, aY;
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	if( data) free( data);
+	[super finalize];
+}
+
+
 - (void) removeROI :(NSNotification*) note
 {
 	if( [note object] == curROI)

@@ -94,5 +94,10 @@
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 
 @end

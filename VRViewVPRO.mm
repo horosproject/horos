@@ -1157,7 +1157,7 @@ public:
 		
 		[mov createMovieQTKit: YES  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
-		[mov dealloc];
+		[mov release];
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 		
@@ -1241,7 +1241,7 @@ public:
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 		
-		[mov dealloc];
+		[mov release];
 		
 	//	aRenderer->AddActor(outlineRect);
 		aRenderer->AddActor(textX);
@@ -1363,7 +1363,7 @@ public:
 		
 			[mov createMovieQTKit: YES :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 			
-			[mov dealloc];
+			[mov release];
 		}
 	}
 	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
@@ -1665,6 +1665,50 @@ public:
 	[cursor release];
 	
     [super dealloc];
+}
+
+ 
+- (void)finalize {
+	[splash close];
+	
+	cbStart->Delete();
+	opacityTransferFunction->Delete();
+	volumeProperty->Delete();
+	compositeFunction->Delete();
+	orientationWidget->Delete();
+	
+	if( volumeMapper) volumeMapper->Delete();
+	if( textureMapper) textureMapper->Delete();
+//	if( shearWarpMapper) shearWarpMapper->Delete();
+	
+	volume->Delete();
+	outlineData->Delete();
+	mapOutline->Delete();
+//	outlineRect->Delete();
+	croppingBox->Delete();
+	textWLWW->Delete();
+	textX->Delete();
+	for( i = 0; i < 4; i++) oText[ i]->Delete();
+	colorTransferFunction->Delete();
+	reader->Delete();
+	
+    aCamera->Delete();
+
+	ROI3D->Delete();
+	ROI3DData->Delete();
+	ROI3DActor->Delete();
+	
+	Line2D->Delete();
+	Line2DActor->Delete();
+	Line2DText->Delete();
+	
+	
+	if( isRGB) free( dataFRGB);
+	
+	free( data8);
+	
+	[super finalize];
+
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent

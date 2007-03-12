@@ -152,6 +152,28 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	[super dealloc];
 }
 
+- (void)finalize 
+{	
+
+	if(subtractedOriginalBuffer)
+	{
+		free(subtractedOriginalBuffer);
+		subtractedOriginalBuffer = 0L;
+	}
+	if(subtractedXReslicedBuffer)
+	{
+		free(subtractedXReslicedBuffer);
+		subtractedXReslicedBuffer = 0L;
+	}
+	if(subtractedYReslicedBuffer)
+	{
+		free(subtractedYReslicedBuffer);
+		subtractedYReslicedBuffer = 0L;
+	}
+	
+	[super finalize];
+}
+
 - (IBAction)showWindow:(id)sender
 {
 	[super showWindow:sender];

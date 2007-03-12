@@ -83,6 +83,12 @@ XYZ ArbitraryRotateCurvedMPR(XYZ p,double theta,XYZ r)
 	
 	[super dealloc];
  }
+ 
+ /*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
 
 -(float) lengthPoints:(NSPoint) mesureA :(NSPoint) mesureB :(float) ratio
 {

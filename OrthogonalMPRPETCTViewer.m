@@ -250,6 +250,11 @@ NSString * documentsDirectory();
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 #pragma mark-
 #pragma mark DCMView methods
 

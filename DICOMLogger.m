@@ -57,5 +57,11 @@ static DICOMLogger *sharedLogger = nil;
     if (self != sharedLogger) [super dealloc];	// Don't free the shared instance
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 
 @end

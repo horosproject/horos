@@ -171,6 +171,11 @@ NSString * documentsDirectory();
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 - (OrthogonalMPRController*) controller
 {
 	return controller;

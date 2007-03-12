@@ -105,6 +105,14 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	if(adRot) free(adRot);
+	if(adTrans) free(adTrans);
+	[super finalize];
+}
+
+
 - (void) addModelPointX: (double) x Y: (double) y Z: (double) z 
 {
 	//double *modelPoint;

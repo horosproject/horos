@@ -35,6 +35,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void)addKeyImages:(NSNotification *)note{
 	NSArray *keyImages = [[note userInfo] objectForKey:@"images"];
 	NSEnumerator *enumerator = [keyImages objectEnumerator];

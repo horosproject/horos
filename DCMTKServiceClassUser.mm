@@ -85,6 +85,11 @@
 	[super dealloc];
 }
 
+/* does nothing . Don't call
+- (void)finalize {
+}
+*/
+
 - (OFCondition) addPresentationContext:(T_ASC_Parameters *)params abstractSyntax:(const char *)abstractSyntax{
    /*
     ** We prefer to use Explicitly encoded transfer syntaxes.

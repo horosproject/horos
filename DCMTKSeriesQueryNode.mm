@@ -112,6 +112,12 @@
 	[super dealloc];
 }
 
+/*
+- (void) finalize {
+	// nothing to do . Don't call
+}
+*/
+
 - (DcmDataset *)queryPrototype{
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> insertEmptyElement(DCM_InstanceCreationDate, OFTrue);

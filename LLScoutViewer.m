@@ -125,6 +125,11 @@
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 - (void)windowWillClose:(NSNotification *)aNotification
 {
 //	if(mprViewerTop)[[mprViewerTop window] close];

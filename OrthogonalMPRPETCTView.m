@@ -25,6 +25,11 @@
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 - (id)initWithFrame:(NSRect)frameRect
 {
 	[super initWithFrame:frameRect];

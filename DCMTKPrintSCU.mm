@@ -110,6 +110,11 @@
 	[super dealloc];
 }
 
+/* Nothing to do
+- (void)finalize {
+}
+*/
+
 - (void)createPrintJob{
 	// turn on debug code
 	_verbose=OFTrue;

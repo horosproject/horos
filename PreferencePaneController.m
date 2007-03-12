@@ -157,6 +157,15 @@ extern BrowserController	*browserWindow;
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	[pane shouldUnselect];
+	[pane willUnselect];
+	[pane didUnselect];
+	[super finalize];
+}
+
+
 //Pane management
 - (void) setPane: (NSPreferencePane *) aPane
 {

@@ -26,6 +26,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void)windowDidLoad
 {
 	[[self window] center];

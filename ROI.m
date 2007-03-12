@@ -334,6 +334,14 @@ GLenum glReportError (void)
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	if (type == tPlain)
+		free (textureBuffer);
+	[super finalize];
+}
+
+
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin
 {
 	[self setOriginAndSpacing :ipixelSpacing :ipixelSpacing :iimageOrigin];

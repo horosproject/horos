@@ -9517,6 +9517,32 @@ BOOL            readable = YES;
     [super dealloc];
 }
 
+
+- (void)finalize {
+	if( shutterPolygonal) free( shutterPolygonal);
+	
+	if( fVolImage == 0L)
+	{
+		if( fImage != 0L)
+		{
+			free(fImage);
+		}
+	}
+	
+	if( oImage != 0L) 
+    {
+        free ( oImage);
+    }
+	
+	if( oData) free( oData);
+	if( VOILUT_table) free( VOILUT_table);
+
+	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
+	
+	[super finalize];
+}
+
+
 // Accessor methods needed for SUV calculations
 #pragma mark-
 #pragma mark SUV

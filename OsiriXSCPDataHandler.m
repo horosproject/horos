@@ -50,6 +50,14 @@ NSString * const OsiriXFileReceivedNotification = @"OsiriXFileReceivedNotificati
 	[super dealloc];
 }
 
+
+- (void) finalize {
+	if (tempMoveFolder && [[NSFileManager defaultManager] fileExistsAtPath:tempMoveFolder])
+		[[NSFileManager defaultManager] removeFileAtPath:tempMoveFolder handler:nil];
+	[super finalize];
+}
+
+
 + (id)requestDataHandlerWithDestinationFolder:(NSString *)destination  debugLevel:(int)debug{
 	return [[[OsiriXSCPDataHandler alloc] initWithDestinationFolder:(NSString *)destination
 					debugLevel:(int)debug] autorelease];

@@ -115,6 +115,11 @@
 	[super dealloc];
 }
 
+/* nothing to do
+- (void)finalize {
+}
+*/
+
 #pragma mark-
 #pragma mark Orthogonal reslice methods
 

@@ -2079,11 +2079,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[volumeData[ i] release];
 	}
 	
+
+
+
 //	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 //	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 //	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 	
 //	for( i = 0; i < [[NSScreen screens] count] ; i++)
+
 	[toolbar setDelegate: 0L];
 	[toolbar release];
 	
@@ -2123,6 +2127,45 @@ static volatile int numberOfThreadsForRelisce = 0;
 //#endif
 #endif
 }
+
+
+- (void)finalize {
+	stopThreadLoadImage = YES;
+	if( [browserWindow isCurrentDatabaseBonjour])
+	{
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+	}
+	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+	
+	
+			if( USETOOLBARPANEL)
+	{
+		int i;
+		for( i = 0 ; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] toolbarWillClose : toolbar];
+	}
+	
+	
+	numberOf2DViewer--;
+	if( numberOf2DViewer == 0)
+	{
+		USETOOLBARPANEL = NO;
+		int i;
+		for( i = 0; i < [[NSScreen screens] count]; i++)
+			[[toolbarPanel[ i] window] orderOut:self];
+	}
+	int i;
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		[self saveROI: i];
+	}
+	
+	[super finalize];
+}
+
 
 
 - (DCMView*) imageView { return imageView;}

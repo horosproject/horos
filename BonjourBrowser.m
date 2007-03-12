@@ -145,6 +145,12 @@ static char *GetPrivateIP()
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (NSMutableArray*) services
 {
 	return services;

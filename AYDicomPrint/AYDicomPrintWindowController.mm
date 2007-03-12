@@ -55,6 +55,12 @@
 	[super dealloc];
 }
 
+
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
 - (NSString *) windowNibName
 {
 	return @"AYDicomPrint";

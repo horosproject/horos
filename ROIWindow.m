@@ -88,6 +88,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void) removeROI :(NSNotification*) note
 {
 	if( [note object] == curROI )

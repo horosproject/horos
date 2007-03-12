@@ -1362,6 +1362,36 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
     [super dealloc];
 }
 
+
+- (void)finalize {
+	// cleanup openGL
+	[[self openGLContext] makeCurrentContext];
+	
+    glDeleteLists (fontListGL, 150);
+	glDeleteLists(labelFontListGL, 150);
+	
+	if( pTextureName)
+	{
+		glDeleteTextures (textureX * textureY, pTextureName);
+		free( (Ptr) pTextureName);
+		pTextureName = 0L;
+	}
+	if( blendingTextureName)
+	{
+		glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
+		free( (Ptr) blendingTextureName);
+		blendingTextureName = 0L;
+	}
+	if( colorBuf) free( colorBuf);
+	if( blendingColorBuf) free( blendingColorBuf);
+	
+	// not sure about this being needed
+	if(pushBackColorTimer)
+		[pushBackColorTimer invalidate];
+	
+}
+
+
 - (void) setIndex:(short) index
 {
 	long	i;

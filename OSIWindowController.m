@@ -38,6 +38,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (NSMutableArray*) pixList{
 	// let subclasses handle it for now
 	return nil;

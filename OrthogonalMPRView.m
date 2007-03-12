@@ -58,11 +58,16 @@
 
 - (void) dealloc
 {
-	long i;
 	[controller release];
 	[curWLWWMenu release];
 	[super dealloc];
 }
+
+/* nothing to do
+- (void)finalize {
+}
+*/
+	
 
 - (void) setPixList: (NSMutableArray*) pix :(NSArray*) files :(NSMutableArray*) rois
 {

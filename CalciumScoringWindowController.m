@@ -140,6 +140,12 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (int)ctType{
 	return _ctType;
 }

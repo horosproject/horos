@@ -40,6 +40,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void) routingDestination: (NSMutableArray*) routingDestination
 {
 	NSAppleEventDescriptor *description  = [compiledScript executeAndReturnError:nil];

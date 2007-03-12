@@ -74,6 +74,12 @@ static char *GetPrivateIP()
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void)toggleSharing:(BOOL)boo
 {
     uint16_t chosenPort;

@@ -41,10 +41,15 @@
 
 -(void) dealloc
 {
-	[points release];
-	
+	[points release];	
 	[super dealloc];
 }
+
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
 
 - (void)mouseDragged:(NSEvent *)event
 {

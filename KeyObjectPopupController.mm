@@ -45,6 +45,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (NSArray *)reports{
 	return _reports;
 }

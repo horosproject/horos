@@ -215,6 +215,13 @@
 	[super dealloc];
 	
 }
+
+
+- (void)finalize {
+	delete _doc;
+	[super finalize];
+}
+
 	
 - (BOOL)writeFileAtPath:(NSString *)path{
 	//NSLog(@"Write file at Path: %@", path);

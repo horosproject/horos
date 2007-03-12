@@ -46,15 +46,18 @@
 }
 
 -(void)dealloc
-{
-	long i;
-	
+{	
     NSLog(@"Dealloc ROIVolumeView");
 		
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
     [super dealloc];
 }
+
+/* Nothing to do
+- (void)finalize {
+}
+*/
 
 - (short) setPixSource:(NSMutableArray*)pts
 {

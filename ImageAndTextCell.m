@@ -52,6 +52,12 @@
     [super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - copyWithZone:(NSZone *)zone {
     ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
     cell->image = [image retain];

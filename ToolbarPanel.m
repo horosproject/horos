@@ -64,6 +64,12 @@ extern BOOL USETOOLBARPANEL;
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 
 - (void) WindowDidMoveNotification:(NSNotification *)aNotification
 {

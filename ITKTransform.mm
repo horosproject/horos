@@ -37,6 +37,12 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (void) computeAffineTransformWithRotation: (double*)aRotation translation: (double*)aTranslation resampleOnViewer:(ViewerController*)referenceViewer
 {
 	double *parameters = (double*) malloc(12*sizeof(double));

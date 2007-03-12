@@ -30,6 +30,13 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	free (data);
+	[super finalize];
+}
+
+
 - (void) removeROI :(NSNotification*) note
 {
 	if( [note object] == curROI)

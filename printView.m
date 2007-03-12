@@ -126,6 +126,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (id)initWithViewer:(id) v settings:(NSDictionary*) s files:(NSArray*) f
 {
 	NSPrintInfo	*pi = [NSPrintInfo sharedPrintInfo];

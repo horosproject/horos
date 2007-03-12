@@ -46,6 +46,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 //********************************************************************************************
 // returnValue must be retained and released by caller
 //********************************************************************************************

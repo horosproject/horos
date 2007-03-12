@@ -82,6 +82,12 @@
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	// nothing to do
+}
+*/
+
 -(void) setPosition: (Point3D*)p
 {
 	[position setPoint3D: p];

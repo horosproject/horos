@@ -111,6 +111,12 @@ static NSString *addKeyImagesToolbarIdentifier = @"smallKeyPlus.tif";
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (StructuredReport *)createReportForStudy:(id)study{
 	return [self createReportForStudy:(id)study path:nil];
 }

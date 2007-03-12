@@ -36,6 +36,13 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	importFilter->Delete();
+	[super finalize];
+}
+
+
 - (ImportFilterType::Pointer) itkImporter
 {
 	return importFilter;

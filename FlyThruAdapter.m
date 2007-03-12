@@ -30,6 +30,12 @@
 {
 	[super dealloc];
 }
+
+/*
+- (void)finalize {
+	// nothing to do
+}
+*/
 - (Camera*) getCurrentCamera{return nil;}
 - (void) setCurrentViewToCamera:(Camera*)aCamera{}
 - (NSImage*) getCurrentCameraImage:(BOOL) highQuality {return nil;}

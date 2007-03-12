@@ -1031,7 +1031,7 @@ public:
 //		[mov generateMovie: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		[mov createMovieQTKit:YES :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
 		
-		[mov dealloc];
+		[mov release];
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 	}
@@ -1113,7 +1113,7 @@ public:
 			[[NSWorkspace sharedWorkspace] openFile:path];
 		}
 		
-		[mov dealloc];
+		[mov release];
 		
 		[self restoreViewSizeAfterMatrix3DExport];
 		
@@ -1289,7 +1289,7 @@ public:
 		{
 			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(image4DForFrame: maxFrame:) :[controller movieFrames]];
 			[mov createMovieQTKit: YES  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];			
-			[mov dealloc];
+			[mov release];
 		}
 	}
 	else [NSApp beginSheet: export3DWindow modalForWindow:[self window] modalDelegate:self didEndSelector:0L contextInfo:(void*) 0L];
@@ -1759,6 +1759,56 @@ public:
 	
     [super dealloc];
 }
+
+
+- (void)finalize {
+	[deleteRegion lock];
+	[deleteRegion unlock];
+	
+	cbStart->Delete();
+	opacityTransferFunction->Delete();
+	volumeProperty->Delete();
+	compositeFunction->Delete();
+	
+	orientationWidget->Delete();
+	
+	if( volumeMapper) volumeMapper->Delete();
+	if( textureMapper) textureMapper->Delete();
+//	if( shearWarpMapper) shearWarpMapper->Delete();
+	
+	red->Delete();
+	green->Delete();
+	blue->Delete();
+	
+	volume->Delete();
+	outlineData->Delete();
+	mapOutline->Delete();
+	outlineRect->Delete();
+	croppingBox->Delete();
+	textWLWW->Delete();
+	textX->Delete();
+	int i;
+	for( i = 0; i < 4; i++) oText[ i]->Delete();
+	colorTransferFunction->Delete();
+	reader->Delete();
+    aCamera->Delete();
+//	aRenderer->Delete();
+	
+	ROI3DData->Delete();
+	ROI3D->Delete();
+	ROI3DActor->Delete();
+	
+	Line2D->Delete();
+	Line2DActor->Delete();
+	Line2DText->Delete();
+	
+	if( dataFRGB) free( dataFRGB);	
+	if( data8) free( data8);
+	
+	[super finalize];
+
+}
+
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {

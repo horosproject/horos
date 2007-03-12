@@ -38,6 +38,15 @@
 	[super dealloc];
 }
 
+- (void) finalize
+{
+	xSpline->Delete();
+	ySpline->Delete();
+	zSpline->Delete();
+
+	[super finalize];
+}
+
 - (void) addPoint: (float) t : (Point3D*) p
 {
 	float x, y, z;

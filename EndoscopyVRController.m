@@ -111,7 +111,7 @@ extern NSString * documentsDirectory();
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
-        [self dealloc];
+        //[self dealloc];
         return 0L;
     }
 	

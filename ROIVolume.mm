@@ -52,6 +52,15 @@
 	[super dealloc];
 }
 
+
+- (void)finalize {
+	if(roiVolumeActor != 0L)
+		roiVolumeActor->Delete();
+		
+	[super finalize];
+}
+
+
 - (void) setROIList: (NSArray*) newRoiList
 {
 	int i;

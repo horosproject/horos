@@ -2799,6 +2799,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     [super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (NSString*) patientUID
 {
 	NSString	*string = [NSString stringWithFormat:@"%@-%@-%@", [dicomElements valueForKey:@"patientName"], [dicomElements valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[dicomElements valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];

@@ -100,6 +100,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	[super dealloc];
 }
 
+/*
+- (void)finalize {
+	//nothing to do does not need to be called
+}
+*/
+
 - (id) initWithViewers: (ViewerController*) fV :(ViewerController*) mV :(long) s
 {
     if (self = [super init])
