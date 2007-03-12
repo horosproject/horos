@@ -549,7 +549,7 @@ extern NSString * documentsDirectory();
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -568,7 +568,7 @@ extern NSString * documentsDirectory();
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	

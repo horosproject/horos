@@ -592,11 +592,11 @@ NSString* convertDICOM( NSString *inputfile)
 //	NSLog(@"IN");
 //	NSTask *convertTask = [[NSTask alloc] init];
 //    
-////    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-////    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmdjpeg"]];
+////    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+////    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdjpeg"]];
 //
-//	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-//	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingString:@"/dcmdjpeg"]]; 
+//	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+//	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingPathComponent:@"/dcmdjpeg"]]; 
 //	
 //    [theArguments addObject:inputfile];
 //    [theArguments addObject:outputfile];
@@ -1094,7 +1094,7 @@ NSRect screenFrame()
 //		}
 		
 		//make sure that there exist a receiver folder at @"folder" path
-		NSString            *path = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 		BOOL				isDir = YES;
 		
 		if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) 
@@ -1216,15 +1216,15 @@ NSRect screenFrame()
 	theTask = [[NSTask alloc] init];
 	
 	// set DICOMDICTPATH in the environment of execution and choose storescp command
-	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/storescp"]];
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/storescp"]];
 	
 	// initialize arguments for CLI
 	NSMutableArray *theArguments = [NSMutableArray array];
 	[theArguments addObject: @"-aet"];
 	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]];
 	[theArguments addObject: @"-od"];
-	[theArguments addObject: [documentsDirectory() stringByAppendingString:INCOMINGPATH]];
+	[theArguments addObject: [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH]];
 	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETransferSyntax"]];
 	[theArguments addObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]];
 	[theArguments addObject: @"--fork"];
@@ -1378,15 +1378,15 @@ NSRect screenFrame()
 	[AppController cleanOsiriXSubProcesses];
 	
 	// DELETE THE TEMP DIRECTORY...
-	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 	
 	// DELETE THE DUMP DIRECTORY...
-	NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
+	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: 0L];
 	
 	// DELETE THE DECOMPRESSION DIRECTORY...
-	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingString:@"/DECOMPRESSION/"];
+	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: 0L];
 }
 
@@ -1504,7 +1504,7 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
-				NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
+				NSString            *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
 					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
@@ -1519,35 +1519,35 @@ static BOOL initialized = NO;
 				
 				[path writeToFile:path atomically:NO];
 				
-				NSString *reportsDirectory = [documentsDirectory() stringByAppendingString:@"/REPORTS/"];
+				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
 
 				// DELETE & CREATE THE TEMP DIRECTORY...
-				NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+				NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 				
-				NSString *dumpDirectory = [documentsDirectory() stringByAppendingString:@"/DUMP/"];
+				NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:dumpDirectory attributes:nil];
 				
 				// CHECK IF THE REPORT TEMPLATE IS AVAILABLE
 				
 				NSString *reportFile;
 				
-				reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"];
+				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.doc"] handler:0L];
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"] handler:0L];
 
-				reportFile = [documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"];
+				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingString:@"/ReportTemplate.rtf"] handler:0L];
+					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"] handler:0L];
 				
 				[AppController checkForHTMLTemplates];
 				[AppController checkForPagesTemplate];
 				
 				// CHECK FOR THE HTML TEMPLATES DIRECTORY
 //				
-//				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
+//				NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/"];
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 //					[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
 //				
@@ -1555,26 +1555,26 @@ static BOOL initialized = NO;
 //				
 //				NSString *templateFile;
 //				
-//				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
+//				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
 //				NSLog(templateFile);
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
 //
-//				templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
+//				templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
 //				NSLog(templateFile);
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
 //					
 //				// CHECK FOR THE HTML EXTRA DIRECTORY
 //				
-//				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
+//				NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
 //					[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
 //					
 //				// CSS file
-//				NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
+//				NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 //				if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
+//					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:0L];				
 			}
 		}
 	}
@@ -2548,37 +2548,37 @@ static BOOL initialized = NO;
 + (void)checkForHTMLTemplates;
 {
 	// directory
-	NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/"];
+	NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
 	
 	// HTML templates
 	NSString *templateFile;
 
-	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportPatientsTemplate.html"];
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:0L];
 
-	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportStudiesTemplate.html"];
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:0L];
 
-	templateFile = [htmlTemplatesDirectory stringByAppendingString:@"QTExportSeriesTemplate.html"];
+	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
 	NSLog(templateFile);
 	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:0L];
 	
 	// HTML-extra directory
-	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingString:@"html-extra/"];
+	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
 		
 	// CSS file
-	NSString *cssFile = [htmlExtraDirectory stringByAppendingString:@"style.css"];
+	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/QTExportStyle.css"] toPath:cssFile handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:0L];
 }
 
 #pragma mark-
@@ -2600,7 +2600,7 @@ static BOOL initialized = NO;
 	NSArray *LocalizedTemplateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", nil];
 	NSString *localizedDirectory;
 	
-	NSArray	*localizedList = [NSArray arrayWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/localizedTemplatesPages"]];
+	NSArray	*localizedList = [NSArray arrayWithContentsOfFile: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/localizedTemplatesPages"]];
 	
 	for( i = 0 ; i < [localizedList count]; i++)
 	{
@@ -2611,10 +2611,10 @@ static BOOL initialized = NO;
 	}
 	
 	// Pages template
-	NSString *reportFile = [templateDirectory stringByAppendingString:@"/OsiriX Basic Report.template"];
+	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
 	{
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingString:@"/OsiriX Basic Report.template"] handler:0L];
+		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:0L];
 	}
 	
 	// Pages templates in the OsiriX Data folder

@@ -73,7 +73,7 @@ extern NSString *documentsDirectory();
 	while (series = [enumerator nextObject])
 	{
 		tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
-		//linkToPatientPage = [asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingString:@"/index.html"];
+		//linkToPatientPage = [asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]) stringByAppendingPathComponent:@"/index.html"];
 		linkToPatientPage = [NSString stringWithFormat:@"./%@/%@", asciiString([[series objectAtIndex:0] valueForKeyPath:@"study.name"]), @"index.html"];
 		
 		[tempListItemTemplate replaceOccurrencesOfString:@"%patient_i_page%" withString:[QTExportHTMLSummary nonNilString:linkToPatientPage] options:NSLiteralSearch range:NSMakeRange(0, [tempListItemTemplate length])];
@@ -256,7 +256,7 @@ extern NSString *documentsDirectory();
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 
 	NSString *htmlContent = [self fillPatientsListTemplates];
-	[fileManager createFileAtPath:[rootPath stringByAppendingString:@"/index.html"] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+	[fileManager createFileAtPath:[rootPath stringByAppendingPathComponent:@"/index.html"] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
 }
 
 - (void)createHTMLStudiesList;
@@ -277,10 +277,10 @@ extern NSString *documentsDirectory();
 - (void)createHTMLExtraDirectory;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *htmlExtraDirectory = [documentsDirectory() stringByAppendingString:@"/HTML_TEMPLATES/html-extra/"];
+	NSString *htmlExtraDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/html-extra/"];
 	NSArray *directoryContent = [fileManager subpathsAtPath:htmlExtraDirectory];
 	//if([directoryContent count])
-	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingString:@"/html-extra/"] handler:NO];
+	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingPathComponent:@"/html-extra/"] handler:NO];
 }
 
 - (void)createHTMLSeriesPage:(NSManagedObject*)series numberOfImages:(int)imagesCount outPutFileName:(NSString*)fileName;

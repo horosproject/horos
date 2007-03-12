@@ -50,7 +50,7 @@
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"compress", 0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 //	[theTask waitUntilExit]; <- The problem with this: it calls the current running loop.... problems with current Lock !
@@ -65,7 +65,7 @@
 	NSTask *theTask = [[NSTask alloc] init];
 	
 	[theTask setArguments: [NSArray arrayWithObjects:path, @"decompress", dest,  0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Decompress"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 	[theTask launch];
 	while( [theTask isRunning]) [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 //	[theTask waitUntilExit];	<- The problem with this: it calls the current running loop.... problems with current Lock !

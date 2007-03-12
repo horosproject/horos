@@ -2079,7 +2079,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[volumeData[ i] release];
 	}
 	
-//	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+//	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 //	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 //	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 	
@@ -4049,7 +4049,7 @@ static ViewerController *draggedController = 0L;
 		thickSlab = 0L;
 	}
 	
-//	NSString *tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+//	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 //	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
 //	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 	
@@ -7173,7 +7173,7 @@ extern NSString * documentsDirectory();
 #define ROIDATABASE @"/ROIs/"
 - (void) loadROI:(long) mIndex
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:ROIDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
 	long			i, x;
 	NSMutableArray  *array;
@@ -7213,7 +7213,7 @@ extern NSString * documentsDirectory();
 
 - (void) saveROI:(long) mIndex
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:ROIDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:ROIDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -11101,19 +11101,19 @@ int i,j,l;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	//check if the folder PAGES exists in OsiriX document folder
-	NSString *pathToPAGES = [documentsDirectory() stringByAppendingString:@"/PAGES/"];
+	NSString *pathToPAGES = [documentsDirectory() stringByAppendingPathComponent:@"/PAGES/"];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
 
 	//pathToPAGES = timeStamp
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
-	pathToPAGES = [pathToPAGES stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
+	pathToPAGES = [pathToPAGES stringByAppendingPathComponent: [datetimeFormatter stringFromDate:[NSDate date]]];
 
 	if (!([[sender title] isEqualToString: @"SCAN"]))
 	{
 		//create pathToTemplate
-		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/PAGES/"];
-		pathToTemplate = [pathToTemplate stringByAppendingString:[sender title]];
+		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/PAGES/"];
+		pathToTemplate = [pathToTemplate stringByAppendingPathComponent:[sender title]];
 		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 		
 		//copy file pathToTemplate to pathToPAGES

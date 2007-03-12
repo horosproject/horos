@@ -16880,7 +16880,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED8BC7B097F93D1002665CE /* SUV.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SUV.tif; sourceTree = "<group>"; };

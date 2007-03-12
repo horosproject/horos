@@ -761,7 +761,7 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 						int val = [[path stringByDeletingPathExtension] intValue];
 						
 						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
-						//[documentsDirectory() stringByAppendingString:@"/Database.sql"];	//[[BrowserController currentBrowser] currentDatabasePath];
+						//[documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"];	//[[BrowserController currentBrowser] currentDatabasePath];
 						
 						val /= 10000;
 						val++;

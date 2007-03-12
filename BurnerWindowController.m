@@ -590,8 +590,8 @@ NSString* asciiString (NSString* name);
 	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", burnFolder,  nil];
 	//NSLog(@"burn args: %@", [theArguments description]);
 	theTask = [[NSTask alloc] init];
-	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmmkdir"]];
+	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
 	[theTask setCurrentDirectoryPath:[self folderToBurn]];
 	[theTask setArguments:theArguments];		
 

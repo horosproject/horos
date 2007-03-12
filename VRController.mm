@@ -713,7 +713,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(NSString*) getUniqueFilenameScissorState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -726,7 +726,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -746,7 +746,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	

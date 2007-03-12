@@ -501,7 +501,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(NSString*) getUniqueFilenameScissorState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -514,7 +514,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(void) save3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	
@@ -534,7 +534,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 -(void) load3DState
 {
-	NSString		*path = [documentsDirectory() stringByAppendingString:STATEDATABASE];
+	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
 	

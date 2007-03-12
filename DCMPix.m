@@ -4017,7 +4017,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 	if ( choice == NSAlertDefaultReturn ) return;
 	
-	NSString *dirPath = [documentsDirectory() stringByAppendingString:@"/ROIs/"];
+	NSString *dirPath = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
 
 	
 	// Get all referenced images up front.
@@ -7412,7 +7412,7 @@ BOOL            readable = YES;
 	NSImage *frame = 0L;
 	
 	[theTask setArguments: [NSArray arrayWithObjects:@"getFrame", srcFile, [NSString stringWithFormat:@"%d", frameNo], 0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Quicktime"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Quicktime"]];
 	
 	[theTask launch];
 	

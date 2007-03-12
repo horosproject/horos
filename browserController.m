@@ -376,7 +376,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 - (NSString*) getNewFileDatabasePath: (NSString*) extension
 {
-	NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+	NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	NSString		*dstPath;
 	NSString		*subFolder;
 	long			subFolderInt;
@@ -434,7 +434,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
 	NSFileManager		*fm = [NSFileManager defaultManager];
-	NSString			*tempDirectory = [documentsDirectory() stringByAppendingString:@"/TEMP/"];
+	NSString			*tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
 	NSString			*arrayFile = [tempDirectory stringByAppendingPathComponent:@"array.plist"];
 	NSString			*databaseFile = [tempDirectory stringByAppendingPathComponent:@"database.plist"];
 	NSString			*modelFile = [tempDirectory stringByAppendingPathComponent:@"model.plist"];
@@ -444,12 +444,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[fm removeFileAtPath:modelFile handler:0L];
 	
 	[newFilesArray writeToFile:arrayFile atomically: YES];
-	[[documentsDirectory() stringByAppendingString:DATABASEFPATH] writeToFile:databaseFile atomically: YES];
+	[[documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH] writeToFile:databaseFile atomically: YES];
 	
 	NSMutableSet *allBundles = [[NSMutableSet alloc] init];
 	[allBundles addObject: [NSBundle mainBundle]];
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    [[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES];
+    [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"] writeToFile:modelFile atomically: YES];
     [allBundles release];
 	
 	[[NSUserDefaults standardUserDefaults] synchronize];
@@ -458,7 +458,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[theTask setCurrentDirectoryPath: tempDirectory];
 	[theTask setArguments: [NSArray arrayWithObjects:arrayFile, databaseFile, modelFile, 0L]];
-	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/SafeDBRebuild"]];
+	[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/SafeDBRebuild"]];
 	[theTask launch];
 	[theTask waitUntilExit];
 	[theTask release];
@@ -483,7 +483,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	DicomImage				*image;
 	long					ii, i, x;
 	unsigned long			index;
-	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
+	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
 	NSManagedObjectContext	*context = [self managedObjectContext];
@@ -1606,7 +1606,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[allBundles addObject: [NSBundle mainBundle]];
 	[allBundles addObjectsFromArray: [NSBundle allFrameworks]];
     
-    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriXDB_DataModel.mom"]]];
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"]]];
     [allBundles release];
     
     return managedObjectModel;
@@ -1843,15 +1843,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	NSString	*model = [NSString stringWithFormat:@"/OsiriXDB_Previous_DataModel%@.mom", DBVersion];
 
-	if( [[NSFileManager defaultManager] fileExistsAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString: model]] )
+	if( [[NSFileManager defaultManager] fileExistsAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: model]] )
 	{
 		Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Updating database model...", nil)];
 		[splash showWindow:self];
 	
 		long							x, z, xx, zz, yy;
 		NSError							*error = nil;
-		NSManagedObjectModel			*previousModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingString: model]]];
-		NSManagedObjectModel			*currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/OsiriXDB_DataModel.mom"]]];
+		NSManagedObjectModel			*previousModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: model]]];
+		NSManagedObjectModel			*currentModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriXDB_DataModel.mom"]]];
 		NSPersistentStoreCoordinator	*previousSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: previousModel];
 		NSPersistentStoreCoordinator	*currentSC = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: currentModel];
 		NSManagedObjectContext			*currentContext = [[NSManagedObjectContext alloc] init];
@@ -1861,7 +1861,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[previousContext setPersistentStoreCoordinator: previousSC];
 		
 		[previousSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: currentDatabasePath] options:nil error:&error];
-		[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingString:@"/Database3.sql"]] options:nil error:&error];
+		[currentSC addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL: [NSURL fileURLWithPath: [documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"]] options:nil error:&error];
 		
 		NSArray	*previousEntities = [previousModel entities];
 		NSEntityDescription		*currentStudyTable, *currentSeriesTable, *currentImageTable, *currentAlbumTable;
@@ -1988,7 +1988,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[currentContext save: &error];
 		
 		[[NSFileManager defaultManager] removeFileAtPath:currentDatabasePath handler:nil];
-		[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingString:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
+		[[NSFileManager defaultManager] movePath:[documentsDirectory() stringByAppendingPathComponent:@"/Database3.sql"] toPath:currentDatabasePath handler:nil];
 		
 		[previousModel release];
 		[currentModel release];
@@ -2111,7 +2111,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 
 	// CHECK IF A DICOMDIR FILE IS AVAILABLE AT SAME LEVEL AS OSIRIX!?
-	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingString:@"/DICOMDIR"];
+	NSString	*dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir])
 	{
 		DICOMDIRCDMODE = YES;
@@ -2204,8 +2204,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 - (void) copyFilesThread : (NSArray*) filesInput
 {
 	NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
-	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
-	NSString				*incomingPath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
+	NSString				*incomingPath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 	int						i, listenerInterval = [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"];
 	BOOL					studySelected = NO;
 	NSTimeInterval			lastCheck = [NSDate timeIntervalSinceReferenceDate];
@@ -2301,7 +2301,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"COPYDATABASE"] == NO) return filesInput;
 	
 	NSMutableArray			*newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
-	NSString				*INpath = [documentsDirectory() stringByAppendingString:DATABASEFPATH];
+	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
 	long					i;
 	
 	for( i = 0; i < [filesInput count]; i++)
@@ -2366,7 +2366,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		break;
 	}
 
-    NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+    NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	BOOL			isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
@@ -2502,8 +2502,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 	// SCAN THE DATABASE FOLDER, TO BE SURE WE HAVE EVERYTHING!
 	
-	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-	NSString	*incomingPath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+	NSString	*aPath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
+	NSString	*incomingPath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 	BOOL		isDir = YES;
 	long		totalFiles = 0;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:aPath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:aPath attributes:nil];
@@ -2721,7 +2721,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	long i;
 	long totalFiles = 0;
-	NSString	*aPath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+	NSString	*aPath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 	NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
 	for( i = 0; i < [dirContent count]; i++)
 	{
@@ -5134,7 +5134,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 							NSMutableArray  *filesAr = [[NSMutableArray alloc] initWithCapacity:0];
 							float			*fVolumePtr = 0L;
 							NSData			*volumeData = 0L;
-							NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Empty.tif"];
+							NSString		*path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"];
 										
 							NSDictionary	*curFile = [NSDictionary dictionaryWithObjectsAndKeys:path, @"completePath", @"xxx", @"uniqueFilename", @"OT", @"modality", 0L];
 							[filesAr addObject: curFile];
@@ -5664,13 +5664,13 @@ static BOOL withReset = NO;
 		
 	NSLog(@"open pdf with Preview");
 		//check if the folder PDF exists in OsiriX document folder
-	NSString *pathToPDF = [documentsDirectory() stringByAppendingString:@"/PDF/"];
+	NSString *pathToPDF = [documentsDirectory() stringByAppendingPathComponent:@"/PDF/"];
 	if (!([[NSFileManager defaultManager] fileExistsAtPath:pathToPDF]))
 	[[NSFileManager defaultManager] createDirectoryAtPath:pathToPDF attributes:nil];
 	
 	//pathToPDF = /PDF/yyyymmdd.hhmmss.pdf
 	NSDateFormatter *datetimeFormatter = [[[NSDateFormatter alloc]initWithDateFormat:@"%Y%m%d.%H%M%S" allowNaturalLanguage:NO] autorelease];
-	pathToPDF = [pathToPDF stringByAppendingString: [datetimeFormatter stringFromDate:[NSDate date]]];
+	pathToPDF = [pathToPDF stringByAppendingPathComponent: [datetimeFormatter stringFromDate:[NSDate date]]];
 	pathToPDF = [pathToPDF stringByAppendingPathExtension:@"pdf"];
 	NSLog(pathToPDF);
 		
@@ -7049,7 +7049,7 @@ static BOOL needToRezoom;
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
 						filePath = [self getLocalDCMPath: [imagesArray objectAtIndex: i] :100];
-						destPath = [[documentsDirectory() stringByAppendingString:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
+						destPath = [[documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH] stringByAppendingPathComponent: [filePath lastPathComponent]];
 						
 						// The files are moved to the INCOMING folder : they will be automatically added when switching back to local database!
 						
@@ -8301,14 +8301,14 @@ static NSArray*	openSubSeriesArray = 0L;
 		COLUMN = 4;
 		isCurrentDatabaseBonjour = NO;
 		currentDatabasePath = 0L;
-		currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
+		currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];
 		if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO)
 		{
 			// Switch back to default location
 			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
 			
 			[currentDatabasePath release];
-			currentDatabasePath = [[documentsDirectory() stringByAppendingString:DATAFILEPATH] retain];
+			currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath] == NO)
 			{
@@ -8718,7 +8718,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	@catch( NSException *ne)
 	{
 		NSLog(@"AwakeFromNib exception: %@", [ne description]);
-		NSString            *path = [documentsDirectory() stringByAppendingString:@"/Loading"];
+		NSString            *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 		[path writeToFile:path atomically:NO];
 	}
 	
@@ -9435,7 +9435,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSString			*INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
+	NSString			*INpath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 	
 	[self decompressDICOM:compressedPath to: [INpath stringByAppendingString:[compressedPath lastPathComponent]]];
 		
@@ -9626,10 +9626,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@try
 	{
-		NSString        *INpath = [documentsDirectory() stringByAppendingString:INCOMINGPATH];
-		NSString		*ERRpath = [documentsDirectory() stringByAppendingString:ERRPATH];
-		NSString        *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
-		NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingString:DECOMPRESSIONPATH];
+		NSString        *INpath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
+		NSString		*ERRpath = [documentsDirectory() stringByAppendingPathComponent:ERRPATH];
+		NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
+		NSString        *DECOMPRESSIONpath = [documentsDirectory() stringByAppendingPathComponent:DECOMPRESSIONPATH];
 		BOOL			isDir = YES;
 		BOOL			DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"];
 		BOOL			DECOMPRESSDICOMLISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DECOMPRESSDICOMLISTENER"];
@@ -9684,7 +9684,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						BOOL		isDicomFile;
 						BOOL		isJPEGCompressed;
-						NSString	*dstPath = [OUTpath stringByAppendingString:[srcPath lastPathComponent]];
+						NSString	*dstPath = [OUTpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 						
 						isDicomFile = [DicomFile isDICOMFile:srcPath compressed:&isJPEGCompressed];
 						
@@ -9701,7 +9701,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							{
 								if( isJPEGCompressed && DECOMPRESSDICOMLISTENER)
 								{
-									NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingString:[srcPath lastPathComponent]];
+									NSString	*compressedPath = [DECOMPRESSIONpath stringByAppendingPathComponent:[srcPath lastPathComponent]];
 									
 									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
 									
@@ -10004,7 +10004,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			{
 				NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
 				if(!thumbnail)
-					thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/Empty.tif"]];
+					thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
 
 				if( thumbnail)
 				{
@@ -10455,8 +10455,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", tempPath,  nil];
 				
 				theTask = [[NSTask alloc] init];
-				[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/dcmmkdir"]];
+				[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
+				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
 				[theTask setCurrentDirectoryPath:tempPath];
 				[theTask setArguments:theArguments];		
 
@@ -10902,7 +10902,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 				// Move the new DICOM FILES to the DATABASE folder
 				
-				NSString        *dstPath, *OUTpath = [documentsDirectory() stringByAppendingString:DATABASEPATH];
+				NSString        *dstPath, *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
 				BOOL			isDir = YES;
 				
 				if (![[NSFileManager defaultManager] fileExistsAtPath:OUTpath isDirectory:&isDir] && isDir) [[NSFileManager defaultManager] createDirectoryAtPath:OUTpath attributes:nil];
@@ -12285,7 +12285,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	else
 	{
-		NSString	*path = [documentsDirectory() stringByAppendingString:DATAFILEPATH];
+		NSString	*path = [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 		
 		[segmentedAlbumButton setEnabled: YES];
 
@@ -12300,7 +12300,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSString*) localDatabasePath
 {
-	return [documentsDirectory() stringByAppendingString:DATAFILEPATH];
+	return [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 }
 
 - (NSBox*) bonjourSourcesBox

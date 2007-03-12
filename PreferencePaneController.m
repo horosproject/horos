@@ -127,7 +127,7 @@ extern BrowserController	*browserWindow;
 
 - (void) reopenDatabase
 {
-	[browserWindow openDatabaseIn: [documentsDirectory() stringByAppendingString:@"/Database.sql"] Bonjour: NO];
+	[browserWindow openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
 }
 
 - (void) windowDidLoad
