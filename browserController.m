@@ -383,18 +383,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 	do
 	{
-		
 		subFolderInt = 10000L * ((DATABASEINDEX / 10000L) +1);
-		
-//		if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-//			subFolder = [NSString stringWithFormat:@"%@TIF", OUTpath];
-//		else
-			subFolder = [NSString stringWithFormat:@"%@%d", OUTpath, subFolderInt];
+		subFolder = [OUTpath stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", subFolderInt]];
 
 		if (![[NSFileManager defaultManager] fileExistsAtPath:subFolder])
 			[[NSFileManager defaultManager] createDirectoryAtPath:subFolder attributes:nil];
 		
-		dstPath = [NSString stringWithFormat:@"%@/%d.%@", subFolder, DATABASEINDEX, extension];
+		dstPath = [subFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d.%@", DATABASEINDEX, extension]];
 		
 		DATABASEINDEX++;
 	}

@@ -130,7 +130,7 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r)
 {
-	unsigned int		i, x, length = strlen( r);
+	unsigned int		i, x, length = strlen( (char*) r);
 	unsigned char		str[ 256];
 	
 	for( i = 0, x = 0; i < length; i++)
@@ -146,7 +146,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 		x++;
 	}
 	
-	return [NSString stringWithCString:str length:x];
+	return [NSString stringWithCString: (char*) str length:x];
 }
 
 
@@ -787,7 +787,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Rect			tempRect;
 				
 				GetMovieBox (mov, &tempRect);
-				OffsetRect (&tempRect, -tempRect.left, -tempRect.top);
+				tempRect.right -= tempRect.left;
+				tempRect.bottom -= tempRect.top;
+				tempRect.left = 0;
+				tempRect.top = 0;
 				
 				height = tempRect.bottom;
 				height /= 2;
