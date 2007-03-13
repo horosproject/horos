@@ -5417,7 +5417,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &elemType );
 			if( val)
 			{
-				NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
+				NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 				
 				acquisitionTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];
@@ -6197,7 +6197,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 							val = Papy3GetElement (gr, papRadiopharmaceuticalStartTimeGr, &pos, &elemType );
 							if( val)
 							{
-								NSString		*cc = [[NSString alloc] initWithCString:val->a length:strlen(val->a)];
+								NSString		*cc = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 								NSCalendarDate	*cd = [[NSCalendarDate alloc] initWithString:cc calendarFormat:@"%H%M%S"];
 								
 								radiopharmaceuticalStartTime = [[NSCalendarDate	dateWithString: [cd descriptionWithCalendarFormat:@"%Y-%m-%d %H:%M:%S %z"]] retain];

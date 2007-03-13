@@ -192,7 +192,7 @@ extern NSLock	*PapyrusLock;
 		
 		//Modality
 		if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL){
-			Modality = [[NSString alloc] initWithCString:string];
+			Modality = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
 			Modality = [[NSString alloc] initWithString:@"OT"];
@@ -201,10 +201,10 @@ extern NSLock	*PapyrusLock;
 		
 		//Acquistion Date
 		if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string];
+			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithCString:string length:6];
+				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 				[studyTime release];
@@ -214,10 +214,10 @@ extern NSLock	*PapyrusLock;
 			[studyDate release];
 		}
 		else if (dataset->findAndGetString(DCM_SeriesDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string];
+			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithCString:string length:6];
+				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 				[studyTime release];
@@ -228,10 +228,10 @@ extern NSLock	*PapyrusLock;
 		}
 		
 		else if (dataset->findAndGetString(DCM_StudyDate, string, OFFalse).good() && string != NULL){
-			NSString	*studyDate = [[NSString alloc] initWithCString:string];
+			NSString	*studyDate = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL){
 				NSString*   completeDate;
-				NSString*   studyTime = [[NSString alloc] initWithCString:string length:6];
+				NSString*   studyTime = [[NSString alloc] initWithBytes:string length:6 encoding: NSASCIIStringEncoding];
 				completeDate = [studyDate stringByAppendingString:studyTime];
 				date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
 				[studyTime release];
@@ -289,7 +289,7 @@ extern NSLock	*PapyrusLock;
 		if (dataset->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != NULL){
 			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
 			name  = [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
-			if(name == 0L) name = [[NSString alloc] initWithCString: string];
+			if(name == 0L) name = [[NSString alloc] initWithCString: string encoding: encoding];
 		}
 		else
 			name = [[NSString alloc] initWithString:@"No name"];
@@ -297,27 +297,27 @@ extern NSLock	*PapyrusLock;
 		
 		//Patient ID
 		if (dataset->findAndGetString(DCM_PatientID, string, OFFalse).good() && string != NULL){
-			patientID  = [[NSString alloc] initWithCString:string];
+			patientID  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:patientID forKey:@"patientID"];
 		}
 		
 		//Patients Age
 		if (dataset->findAndGetString(DCM_PatientsAge, string, OFFalse).good() && string != NULL){
-			NSString *patientAge  = [[NSString alloc] initWithCString:string];
+			NSString *patientAge  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:patientAge forKey:@"patientAge"];	
 			[patientAge  release];
 		}
 		
 		//Patients BD
 		if (dataset->findAndGetString(DCM_PatientsBirthDate, string, OFFalse).good() && string != NULL){
-			NSString		*patientDOB =  [[[NSString alloc] initWithCString:string] autorelease];
+			NSString		*patientDOB =  [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease];
 			NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
 			if( DOB) [dicomElements setObject:DOB forKey:@"patientBirthDate"];
 		}
 		
 		//Patients Sex
 		if (dataset->findAndGetString(DCM_PatientsSex, string, OFFalse).good() && string != NULL){
-			NSString *patientSex  = [[NSString alloc] initWithCString:string];
+			NSString *patientSex  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:patientSex forKey:@"patientSex"];	
 			[patientSex  release];
 		}
@@ -348,19 +348,19 @@ extern NSLock	*PapyrusLock;
 		
 		//Protocol Name
 		if (dataset->findAndGetString(DCM_ProtocolName, string, OFFalse).good() && string != NULL){
-			NSString *protocol  = [[NSString alloc] initWithCString:string];
+			NSString *protocol  = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:protocol  forKey:@"protocolName"];	
 			[protocol   release];
 		}
 		
 		//Echo Time
 		if (dataset->findAndGetString(DCM_EchoTime, string, OFFalse).good() && string != NULL){
-			echoTime = [[[NSString alloc] initWithCString:string] autorelease];		
+			echoTime = [[[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding] autorelease];		
 		}
 		
 		//Image Number
 		if (dataset->findAndGetString(DCM_InstanceNumber, string, OFFalse).good() && string != NULL){
-			imageID = [[NSString alloc] initWithCString:string];
+			imageID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			int val = [imageID intValue];
 			[imageID release];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];
@@ -407,7 +407,7 @@ extern NSLock	*PapyrusLock;
 		
 		//Series Number
 		if (dataset->findAndGetString(DCM_SeriesNumber, string, OFFalse).good() && string != NULL){
-			seriesNo = [[NSString alloc] initWithCString:string];
+			seriesNo = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
 			seriesNo = [[NSString alloc] initWithString: @"0"];
@@ -415,7 +415,7 @@ extern NSLock	*PapyrusLock;
 		
 		//Series Instance UID		
 		if (dataset->findAndGetString(DCM_SeriesInstanceUID, string, OFFalse).good() && string != NULL){
-			serieID = [[NSString alloc] initWithCString:string];
+			serieID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 			[dicomElements setObject:serieID forKey:@"seriesDICOMUID"];
 		}
 		else
@@ -471,7 +471,7 @@ extern NSLock	*PapyrusLock;
 		
 		//Study Instance UID
 		if (dataset->findAndGetString(DCM_StudyInstanceUID, string, OFFalse).good() && string != NULL){
-			studyID = [[NSString alloc] initWithCString:string];
+			studyID = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
 			studyID = [[NSString alloc] initWithString:name];
@@ -479,7 +479,7 @@ extern NSLock	*PapyrusLock;
 			
 		//StudyID
 		if (dataset->findAndGetString(DCM_StudyID, string, OFFalse).good() && string != NULL){
-			studyIDs = [[NSString alloc] initWithCString:string];
+			studyIDs = [[NSString alloc] initWithCString:string encoding: NSASCIIStringEncoding];
 		}
 		else
 			studyIDs = [[NSString alloc] initWithString:@"0"];
