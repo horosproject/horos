@@ -509,7 +509,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 }
 
 -(void) save3DState
@@ -522,7 +522,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRVP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRVP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
@@ -542,7 +542,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRVP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRVP-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	

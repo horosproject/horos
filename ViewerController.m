@@ -7231,7 +7231,7 @@ extern NSString * documentsDirectory();
 			{
 				NSMutableString		*mutStr = [NSMutableString stringWithString: [[fileList[mIndex] objectAtIndex:i] valueForKey:@"uniqueFilename"]];
 				[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-				NSString			*str = [path stringByAppendingFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
+				NSString			*str = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d",mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]]];
 											
 				NSData *data = [self roiFromDICOM:[str stringByAppendingPathExtension:@"dcm"]];	
 				//If data, we successfully unarchived from SR style ROI
@@ -7281,7 +7281,7 @@ extern NSString * documentsDirectory();
 					{
 						NSMutableString		*mutStr = [NSMutableString stringWithString: [image valueForKey:@"uniqueFilename"]];
 						[mutStr replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [mutStr length])];
-						NSString *str = [path stringByAppendingFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]];
+						NSString *str = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d", mutStr , [[pixList[mIndex] objectAtIndex:i] frameNo]]];
 						if( [[roiList[ mIndex] objectAtIndex: i] count] > 0)
 						{
 							// [NSArchiver archiveRootObject: [roiList[ mIndex] objectAtIndex: i] toFile : str];

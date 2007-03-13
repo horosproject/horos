@@ -1504,7 +1504,7 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
 				
 				// CREATE A TEMPORATY FILE DURING STARTUP
-				NSString            *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
+				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
 				{
 					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", 0L), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", 0L), NSLocalizedString(@"Continue normaly",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));

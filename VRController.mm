@@ -721,7 +721,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 }
 
 -(void) save3DState
@@ -734,7 +734,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
@@ -755,7 +755,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
 	
-	NSString	*str = [path stringByAppendingFormat: @"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	

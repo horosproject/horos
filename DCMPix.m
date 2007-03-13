@@ -4267,7 +4267,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			[str replaceOccurrencesOfString:@"/" withString:@"-" options:NSLiteralSearch range:NSMakeRange(0, [str length])];
 
-			NSString *roiPath = [dirPath stringByAppendingFormat: @"%@-%d", str, 0];
+			NSString *roiPath = [dirPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@-%d", str, 0]];
 			NSMutableArray *roiArray = [NSUnarchiver unarchiveObjectWithFile: roiPath];
 			
 			if ( roiArray == nil ) roiArray = [NSMutableArray arrayWithCapacity: 1];

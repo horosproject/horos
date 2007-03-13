@@ -246,7 +246,7 @@ extern NSString * documentsDirectory();
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
@@ -266,7 +266,7 @@ extern NSString * documentsDirectory();
 	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	}
-	NSString	*str = [path stringByAppendingFormat: @"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]];
+	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	

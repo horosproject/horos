@@ -181,7 +181,7 @@ int main(int argc, const char *argv[])
 				
 				if( dest == path) [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 				
-				[[NSFileManager defaultManager] movePath:[path stringByAppendingPathComponent:@" temp"] toPath:dest handler: 0L];
+				[[NSFileManager defaultManager] movePath:[path stringByAppendingString:@" temp"] toPath:dest handler: 0L];
 			}
 			else if (filexfer.getXfer() != EXS_LittleEndianExplicit)
 			{
