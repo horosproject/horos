@@ -9715,4 +9715,17 @@ BOOL            readable = YES;
 	return srcFile;
 }
 
+- (NSString *)description {
+	NSMutableString *description = [NSMutableString string];
+	[description appendString:[NSString stringWithFormat: @"source File: %@\n", srcFile]];
+	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
+	[description appendString:[NSString stringWithFormat: @"width: %f\n", width]];
+	[description appendString:[NSString stringWithFormat: @"height: %f\n", height]];
+	[description appendString:[NSString stringWithFormat: @"pixelRatio: %f\n", pixelRatio]];
+	[description appendString:[NSString stringWithFormat: @"origin X: %f Y: %f  Z: %f\n", originX, originY, originZ]];
+
+	return description;
+	
+}
+
 @end

@@ -161,4 +161,31 @@
 }
 
 
+
+- (void) scaleToFit {
+	NSRect  sizeView = [self bounds];	
+	//Need ratio of image Size to view size to scale.
+	float  width;
+	float height;
+	width = [[[curDCM imageObj] valueForKey:@"width"] floatValue];
+	height = [[[curDCM imageObj] valueForKey:@"height"] floatValue];
+	float ratio;
+	// for some reason checking the height and width here and then calling the super
+	// create correct scaling
+	NSLog(@"ratio: %f", ratio);
+	if (width > 0.0 ||  height > 0.0) {
+		if( sizeView.size.width/width < sizeView.size.height/height)
+			ratio = sizeView.size.width/width; 
+		else
+			ratio = sizeView.size.height/height;
+		// scale better if multiplied by 1.5 
+		[self setScaleValue: ratio * 1.5];
+		[self setNeedsDisplay:YES];
+	}
+	//DCMPixs for MPRs don't scale correctly. Need to address MPR Views still
+	else [super scaleToFit];
+}
+
+
+
 @end
