@@ -83,13 +83,13 @@ extern NSString * documentsDirectory();
 		{
 			NSString	*extension = [path pathExtension];
 			long		val = [[path stringByDeletingPathExtension] intValue];
-			NSString	*dbLocation = [[BrowserController currentBrowser] fixedDocumentsDirectory];
+			NSString	*dbLocation = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent: @"DATABASE"];
 			
 			val /= 10000;
 			val++;
 			val *= 10000;
 			
-			completePathCache = [[dbLocation stringByAppendingFormat:@"/DATABASE/%d/%@", val, path] retain];
+			completePathCache = [[[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path] retain];
 			
 			return completePathCache;
 		}

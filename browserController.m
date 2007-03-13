@@ -117,10 +117,11 @@ Version 2.5
 
 #define DATABASEPATH @"/DATABASE/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
-#define DATABASEFPATH @"/DATABASE"
-#define DATAFILEPATH @"/Database.sql"
 #define INCOMINGPATH @"/INCOMING/"
 #define ERRPATH @"/NOT READABLE/"
+#define DATABASEFPATH @"/DATABASE"
+#define DATAFILEPATH @"/Database.sql"
+
 
 enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 
@@ -9432,7 +9433,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	NSString			*INpath = [documentsDirectory() stringByAppendingPathComponent:INCOMINGPATH];
 	
-	[self decompressDICOM:compressedPath to: [INpath stringByAppendingString:[compressedPath lastPathComponent]]];
+	[self decompressDICOM:compressedPath to: [INpath stringByAppendingPathComponent:[compressedPath lastPathComponent]]];
 		
 	[processorsLock lock];
 	if( numberOfThreadsForJPEG >= 0) numberOfThreadsForJPEG--;
@@ -9798,7 +9799,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					{
 						do
 						{
-							dstPath = [NSString stringWithFormat:@"%@%d", INpath, x];
+							dstPath = [INpath stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", x]];
 							x++;
 						}
 						while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);

@@ -370,7 +370,7 @@ static char *GetPrivateIP()
 					
 					do
 					{
-						dstPath = [NSString stringWithFormat:@"%@/%d", incomingFolder, index];
+						dstPath = [incomingFolder stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", index]];
 						index++;
 					}
 					while( [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == YES);
@@ -445,7 +445,7 @@ static char *GetPrivateIP()
 							}
 							else if( [[key pathComponents] count] == 1)
 							{
-								value = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [value lastPathComponent]];
+								value = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [value lastPathComponent]];
 							}
 						}
 						
@@ -561,8 +561,8 @@ static char *GetPrivateIP()
 				// We read the data
 				while ( [data length] < pos + dataSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 				
-				NSString	*localpath = [NSString stringWithFormat: @"%@/REPORTS/%@", documentsDirectory(), [path lastPathComponent]];
-					NSLog(@"subConnectionReceived, localpath : %@", localpath);
+				NSString	*localpath = [[documentsDirectory() stringByAppendingPathComponent: @"/REPORTS/"] stringByAppendingPathComponent: [path lastPathComponent]];
+				
 				[[NSFileManager defaultManager] removeFileAtPath: localpath handler:0L];
 				[[data subdataWithRange: NSMakeRange(pos,dataSize)] writeToFile: localpath atomically:YES];
 				pos += dataSize;
@@ -766,18 +766,13 @@ while ( [data length] < pos + 4 && (readData = [incomingConnection availableData
 						
 						int val = [[path stringByDeletingPathExtension] intValue];
 						
-						NSString *dbLocation = [interfaceOsiriX localDatabasePath];
-						//[documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"];	//[[BrowserController currentBrowser] currentDatabasePath];
-						
 						val /= 10000;
 						val++;
 						val *= 10000;
-
-	//					if (![extension caseInsensitiveCompare:@"tif"] || ![extension caseInsensitiveCompare:@"tiff"])
-	//						path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/TIF/%@", path];
-	//					else
-	//					
-							path = [[dbLocation stringByDeletingLastPathComponent] stringByAppendingFormat:@"/DATABASE/%d/%@", val, path];
+						
+						NSString	*local = [[interfaceOsiriX localDatabasePath] stringByDeletingLastPathComponent];
+						
+						path = [[[local stringByAppendingPathComponent:@"/DATABASE/"] stringByAppendingPathComponent: [NSString stringWithFormat:@"%d", val]] stringByAppendingPathComponent: path];
 					}
 					
 					if ([[NSFileManager defaultManager] fileExistsAtPath: path] == NO) NSLog( @"Bonjour Publisher - File doesn't exist at path: %@", path);
