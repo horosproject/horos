@@ -17,6 +17,8 @@
 #import "ViewerController.h"
 
 #import "browserController.h"
+#import "BLAuthentication.h"
+
 extern BrowserController *browserWindow;
 
 NSMutableDictionary		*plugins = 0L, *pluginsDict = 0L, *fileFormatPlugins = 0L;
@@ -463,17 +465,22 @@ PluginManager			*pluginManager = 0L;
 
 + (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
 {
-	NSTask *aTask = [[NSTask alloc] init];
     NSMutableArray *args = [NSMutableArray array];
-
 	[args addObject:@"-f"];
     [args addObject:sourcePath];
     [args addObject:destinationPath];
-    [aTask setLaunchPath:@"/bin/mv"];
-    [aTask setArguments:args];
-    [aTask launch];
-	[aTask waitUntilExit];
-	[aTask release];
+
+	if([[sourcePath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userActivePluginsDirectoryPath]] || [[sourcePath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userInactivePluginsDirectoryPath]] || [[destinationPath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userActivePluginsDirectoryPath]] || [[destinationPath stringByDeletingLastPathComponent] isEqualToString:[PluginManager userInactivePluginsDirectoryPath]])
+	{
+		NSTask *aTask = [[NSTask alloc] init];
+		[aTask setLaunchPath:@"/bin/mv"];
+		[aTask setArguments:args];
+		[aTask launch];
+		[aTask waitUntilExit];
+		[aTask release];
+	}
+	else
+		[[BLAuthentication sharedInstance] executeCommand:@"/bin/mv" withArgs:args];
 }
 
 + (void)activatePluginWithName:(NSString*)pluginName;
@@ -524,10 +531,58 @@ PluginManager			*pluginManager = 0L;
 			{
 				BOOL isDir = YES;
 				if (![[NSFileManager defaultManager] fileExistsAtPath:inactivePath isDirectory:&isDir] && isDir)
-					[[NSFileManager defaultManager] createDirectoryAtPath:inactivePath attributes:nil];
+					[PluginManager createDirectory:inactivePath];
+				//	[[NSFileManager defaultManager] createDirectoryAtPath:inactivePath attributes:nil];
 				NSString *sourcePath = [NSString stringWithFormat:@"%@/%@", activePath, name];
 				NSString *destinationPath = [NSString stringWithFormat:@"%@/%@", inactivePath, name];
 				[PluginManager movePluginFromPath:sourcePath toPath:destinationPath];
+			}
+		}
+	}
+}
+
++ (void)createDirectory:(NSString*)directoryPath;
+{
+	BOOL isDir = YES;
+	BOOL directoryCreated = NO;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:directoryPath isDirectory:&isDir] && isDir)
+		directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath attributes:nil];
+
+	if(!directoryCreated)
+	{
+	    NSMutableArray *args = [NSMutableArray array];
+		[args addObject:directoryPath];
+		[[BLAuthentication sharedInstance] executeCommand:@"/bin/mkdir" withArgs:args];
+	}
+}
+
+#pragma mark Deletion
+
++ (void)deletePluginWithName:(NSString*)pluginName;
+{
+	NSMutableArray *pluginsPaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
+	[pluginsPaths addObjectsFromArray:[PluginManager inactiveDirectories]];
+	
+	NSEnumerator *pluginsPathEnum = [pluginsPaths objectEnumerator];
+    NSString *path;
+	
+	while(path = [pluginsPathEnum nextObject])
+	{
+		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+		NSString *name;
+		while(name = [e nextObject])
+		{
+			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
+			{
+				// delete
+				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
+				if(!deleted)
+				{
+					NSMutableArray *args = [NSMutableArray array];
+					[args addObject:@"-r"];
+					[args addObject:[NSString stringWithFormat:@"%@/%@", path, name]];
+					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
+				}
 			}
 		}
 	}

@@ -2,7 +2,13 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {changeWebView = id; download = id; loadPlugins = id; modifiy = id; }; 
+            ACTIONS = {
+                changeWebView = id; 
+                delete = id; 
+                download = id; 
+                loadPlugins = id; 
+                modifiy = id; 
+            }; 
             CLASS = PluginManagerController; 
             LANGUAGE = ObjC; 
             OUTLETS = {

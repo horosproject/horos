@@ -75,8 +75,24 @@
 	{
 		[PluginManager activatePluginWithName:pluginName];
 	}
+	
+	[self willChangeValueForKey:@"plugins"];
 	[plugins removeAllObjects];
 	[plugins addObjectsFromArray:[PluginManager pluginsList]];
+	[self didChangeValueForKey:@"plugins"];
+}
+
+- (IBAction)delete:(id)sender;
+{
+	NSArray *pluginsList = [PluginManager pluginsList];
+	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"name"];
+
+	[PluginManager deletePluginWithName:pluginName];
+	
+	[self willChangeValueForKey:@"plugins"];
+	[plugins removeAllObjects];
+	[plugins addObjectsFromArray:[PluginManager pluginsList]];
+	[self didChangeValueForKey:@"plugins"];
 }
 
 

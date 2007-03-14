@@ -33,6 +33,7 @@
 
 - (NSMutableArray*)plugins;
 - (IBAction)modifiy:(id)sender;
+- (IBAction)delete:(id)sender;
 - (void)loadPlugins;
 - (IBAction)loadPlugins:(id)sender;
 

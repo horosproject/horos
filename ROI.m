@@ -1054,9 +1054,11 @@ return rect;
 //				// bring selected layer to front
 //				if(imode == ROI_selected)
 //				{
+//					[[[curView windowController] roiLock] lock];
 //					NSMutableArray *curROIList = [[curView dcmRoiList] objectAtIndex:[curView curImage]]; // ROI List for this slice
 //					[curROIList removeObject:self];
 //					[curROIList insertObject:self atIndex:0];
+//					[[[curView windowController] roiLock] unlock];
 //				}
 			}
 			break;
