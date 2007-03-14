@@ -1,0 +1,386 @@
+//
+//  PluginManagerController.m
+//  OsiriX
+//
+//  Created by joris on 26/02/07.
+//  Copyright 2007 OsiriX Team. All rights reserved.
+//
+
+#import "PluginManagerController.h"
+#import <Message/NSMailDelivery.h>
+
+// this is the address of the plist containing the list of the available plugins.
+// the alternative link will be use if the first one doesn't reply...
+#define PLUGIN_LIST_URL @"http://129.195.133.18/~joris/osirix_plugins/plugins.plist"
+#define PLUGIN_LIST_ALT_URL @"http://129.195.133.18/~joris/osirix_plugins/plugins1.plist"
+
+#define PLUGIN_SUBMISSION_URL @"http://129.195.133.18/~joris/osirix_plugins/submit_plugin/index.html"
+#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://129.195.133.18/~joris/osirix_plugins/submit_plugin/index_no_mail_app.html"
+
+@implementation PluginManagerController
+
+- (id)init
+{
+	self = [super initWithWindowNibName:@"PluginManager"];
+	
+	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
+	
+	// uncomment next line when the 2 addresses PLUGIN_LIST_URL and PLUGIN_LIST_ALT_URL are good.
+//	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
+	// next line to be deleted
+	pluginsListURLs = [[NSArray array] retain];
+
+	NSRect windowFrame = [[self window] frame];
+	[[self window] setFrame:NSMakeRect(windowFrame.origin.x,windowFrame.origin.y,500,700) display:YES];
+	 
+	[webView setPolicyDelegate:self];
+	
+	[statusTextField setHidden:YES];
+	[statusProgressIndicator setHidden:YES];
+	downloadedFilePath = @"";
+	
+	[[webView backForwardList] setCapacity:0];
+	
+	return self;
+}
+
+- (void)dealloc
+{
+	if(plugins) [plugins release];
+	if(pluginsListURLs) [pluginsListURLs release];
+	if(downloadURL) [downloadURL release];
+	if(downloadedFilePath) [downloadedFilePath release];
+	[super dealloc];
+}
+
+#pragma mark -
+#pragma mark installed
+
+- (NSMutableArray*)plugins;
+{
+	return plugins;
+}
+
+- (IBAction)modifiy:(id)sender;
+{
+	NSArray *pluginsList = [PluginManager pluginsList];
+	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
+	BOOL pluginIsActive = [[[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"active"] boolValue];
+
+	if(pluginIsActive)
+	{
+		[PluginManager desactivatePluginWithName:pluginName];
+	}
+	else
+	{
+		[PluginManager activatePluginWithName:pluginName];
+	}
+	[plugins removeAllObjects];
+	[plugins addObjectsFromArray:[PluginManager pluginsList]];
+}
+
+
+- (void)loadPlugins;
+{
+	while([filtersMenu numberOfItems]>0)
+	{
+		[filtersMenu removeItemAtIndex:0];
+	}
+		
+	while([roisMenu numberOfItems]>0)
+	{
+		[roisMenu removeItemAtIndex:0];
+	}
+	
+	while([othersMenu numberOfItems]>0)
+	{
+		[othersMenu removeItemAtIndex:0];
+	}
+
+	while([dbMenu numberOfItems]>0)
+	{
+		[dbMenu removeItemAtIndex:0];
+	}
+
+	[[PluginManager alloc] discoverPlugins];
+	[[PluginManager alloc] setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
+}
+
+- (IBAction)loadPlugins:(id)sender;
+{
+	[self loadPlugins];
+}
+
+- (void)windowWillClose:(NSNotification *)aNotification;
+{
+	[self loadPlugins];
+}
+
+#pragma mark -
+#pragma mark web view
+
+#pragma mark pop up menu
+
+int sortPluginArrayByName(id plugin1, id plugin2, void *context)
+{
+    NSString *name1 = [plugin1 objectForKey:@"name"];
+    NSString *name2 = [plugin2 objectForKey:@"name"];
+    
+	return [name1 compare:name2];
+}
+
+- (NSArray*) availablePlugins;
+{
+	NSString *pluginsListURL = @"";
+	NSArray *pluginsList = nil;
+	
+	int i;
+	for (i=0; i<[pluginsListURLs count] && !pluginsList; i++)
+	{
+		pluginsListURL = [pluginsListURLs objectAtIndex:i];
+		pluginsList = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:pluginsListURL]];
+	}
+
+	if(!pluginsList) return nil;
+	
+	NSArray *sortedPlugins = [pluginsList sortedArrayUsingFunction:sortPluginArrayByName context:NULL];
+	return sortedPlugins;
+}
+
+- (void)generateAvailablePluginsMenu;
+{
+	[pluginsListPopUp removeAllItems];
+	
+	NSArray *availablePlugins = [self availablePlugins];
+	int i;
+	for (i=0; i<[availablePlugins count]; i++)
+	{
+		[pluginsListPopUp addItemWithTitle:[[availablePlugins objectAtIndex:i] objectForKey:@"name"]];
+	}
+	
+	[[pluginsListPopUp menu] addItem:[NSMenuItem separatorItem]];
+	[pluginsListPopUp addItemWithTitle:NSLocalizedString(@"Your Plugin here!", nil)];
+}
+
+#pragma mark web page
+
+- (void)awakeFromNib
+{
+	if(![self availablePlugins])
+	{
+		[pluginsListPopUp removeAllItems];
+		[pluginsListPopUp setEnabled:NO];
+		[downloadButton setEnabled:NO];
+		[statusTextField setHidden:NO];
+		[statusTextField setStringValue:NSLocalizedString(@"No plugin server available.", nil)];
+		return;
+	}
+	
+	[self generateAvailablePluginsMenu];
+	[self setURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"url"]];
+	[self setDownloadURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+}
+
+- (void)setURL:(NSString*)url;
+{
+	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+	[statusTextField setHidden:YES];
+	[statusProgressIndicator setHidden:YES];
+}
+
+- (void)setURLforPluginWithName:(NSString*)name;
+{
+	NSArray* availablePlugins = [self availablePlugins];
+	int i;
+	for(i=0; i<[availablePlugins count]; i++)
+	{
+		if([[[availablePlugins objectAtIndex:i] valueForKey:@"name"] isEqualTo:name])
+		{
+			[self setURL:[[availablePlugins objectAtIndex:i] valueForKey:@"url"]];
+			[self setDownloadURL:[[availablePlugins objectAtIndex:i] valueForKey:@"download_url"]];
+			return;
+		}
+		else if([name isEqualTo:NSLocalizedString(@"Your Plugin here!", nil)])
+		{
+			[self loadSubmitPluginPage];
+		}
+	}
+}
+
+- (IBAction)changeWebView:(id)sender;
+{
+	[self setURLforPluginWithName:[sender title]];
+}
+
+#pragma mark download
+
+- (void)setDownloadURL:(NSString*)url;
+{
+	if(downloadURL) [downloadURL release];
+	downloadURL = url;
+	[downloadURL retain];
+	if([downloadURL isEqualToString:@""])
+		[downloadButton setHidden:YES];
+	else
+		[downloadButton setHidden:NO];
+}
+
+- (IBAction)download:(id)sender;
+{
+	NSURLDownload *download = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self];
+	downloadedFilePath = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	[download setDestination:downloadedFilePath allowOverwrite:YES];
+}
+
+- (void)downloadDidBegin:(NSURLDownload *)download
+{
+	[statusTextField setHidden:NO];
+	[statusTextField setStringValue:NSLocalizedString(@"Downloading...", nil)];
+	[statusProgressIndicator setHidden:NO];
+	[statusProgressIndicator startAnimation:self];
+}
+
+- (void)downloadDidFinish:(NSURLDownload *)download
+{
+	[statusTextField setStringValue:NSLocalizedString(@"Plugin downloaded", nil)];
+	[statusProgressIndicator setHidden:YES];
+	[statusProgressIndicator stopAnimation:self];
+	[self installDownloadedPluginAtPath:downloadedFilePath];
+}
+
+- (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error
+{
+	[statusTextField setHidden:NO];
+	[statusTextField setStringValue:[NSString stringWithFormat:@"%@ (%@)",NSLocalizedString(@"Download failed", nil), [error localizedDescription]]];
+	[statusProgressIndicator setHidden:YES];
+	[statusProgressIndicator stopAnimation:self];
+}
+
+#pragma mark install
+
+- (void)installDownloadedPluginAtPath:(NSString*)path;
+{
+	[statusProgressIndicator setHidden:NO];
+	[statusProgressIndicator startAnimation:self];
+	
+	[statusTextField setStringValue:NSLocalizedString(@"Installing...", nil)];
+	
+	NSString *pluginPath = path;
+	
+	if([self isZippedFileAtPath:path])
+	{
+		if(![self unZipFileAtPath:path])
+		{
+			[statusTextField setStringValue:NSLocalizedString(@"Error: bad zip file.", nil)];
+			[statusProgressIndicator setHidden:YES];
+			[statusProgressIndicator stopAnimation:self];
+			return;
+		}
+		pluginPath = [path stringByDeletingPathExtension];
+		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+	}
+	
+	NSString *userPluginsDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
+
+	if([[NSFileManager defaultManager] fileExistsAtPath:[userPluginsDirectoryPath stringByAppendingPathComponent:[pluginPath lastPathComponent]]])
+	{
+		[[NSFileManager defaultManager] removeFileAtPath:[userPluginsDirectoryPath stringByAppendingPathComponent:[pluginPath lastPathComponent]] handler:nil];
+	}
+	
+	[PluginManager movePluginFromPath:pluginPath toPath:userPluginsDirectoryPath];	
+
+	[statusTextField setStringValue:NSLocalizedString(@"Plugin Installed", nil)];
+	[statusProgressIndicator setHidden:YES];
+	[statusProgressIndicator stopAnimation:self];
+
+	[self willChangeValueForKey:@"plugins"];
+	[plugins removeAllObjects];
+	[plugins addObjectsFromArray:[PluginManager pluginsList]];
+	[self didChangeValueForKey:@"plugins"];
+}
+
+- (BOOL)isZippedFileAtPath:(NSString*)path;
+{
+	return [[path pathExtension] isEqualTo:@"zip"];
+}
+
+- (BOOL)unZipFileAtPath:(NSString*)path;
+{
+	NSTask *aTask = [[NSTask alloc] init];
+    NSMutableArray *args = [NSMutableArray array];
+
+	[args addObject:@"-o"];
+    [args addObject:path];
+    [args addObject:@"-d"];
+	[args addObject:[path stringByDeletingLastPathComponent]];
+    [aTask setLaunchPath:@"/usr/bin/unzip"];
+    [aTask setArguments:args];
+    [aTask launch];
+	[aTask waitUntilExit];
+		
+	if([[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]])
+	{
+		return YES;
+	}
+	else
+	{
+		BOOL boo = [[NSWorkspace sharedWorkspace] openFile:path];
+		while(![[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]]){ /*wait until unzip ends*/}
+		return boo;
+	}
+	
+	[aTask release];
+}
+
+#pragma mark submit plugin
+
+- (void)loadSubmitPluginPage;
+{
+	if([NSMailDelivery hasDeliveryClassBeenConfigured])
+		[self setURL:PLUGIN_SUBMISSION_URL];
+	else
+		[self setURL:PLUGIN_SUBMISSION_NO_MAIL_APP_URL];
+	[self setDownloadURL:@""];
+}
+
+- (void)sendPluginSubmission:(NSString*)request;
+{
+	NSString *parameters = [[request componentsSeparatedByString:@"?"] objectAtIndex:1];
+	NSArray *parametersArray = [parameters componentsSeparatedByString:@"&"];
+		
+	NSMutableString *emailMessage = [NSMutableString stringWithString:@""];
+	
+	int i;
+	for (i=0; i<[parametersArray count]; i++)
+	{
+		NSArray *param = [[parametersArray objectAtIndex:i] componentsSeparatedByString:@"="];
+		[emailMessage appendFormat:@"%@: %@ \n", [param objectAtIndex:0], [[param objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	}
+	
+	NSString *emailAddress = @"joris.heuberger@sim.hcuge.ch,rossetantoine@bluewin.ch";
+	NSString *emailSubject = @"OsiriX: New Plugin Submission"; // don't localize this. This is the subject of the email WE will receive.
+	
+	[NSMailDelivery deliverMessage:emailMessage subject:emailSubject to:emailAddress];
+}
+
+#pragma mark WebPolicyDelegate Protocol methods
+
+- (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id<WebPolicyDecisionListener>)listener;
+{
+	if(![sender isEqualTo:webView]) [listener use];
+
+	if([[actionInformation valueForKey:WebActionNavigationTypeKey] intValue]==WebNavigationTypeLinkClicked)
+	{
+		[[NSWorkspace sharedWorkspace] openURL:[request URL]];
+	}
+	else if([[actionInformation valueForKey:WebActionNavigationTypeKey] intValue]==WebNavigationTypeFormSubmitted)
+	{
+		[self sendPluginSubmission:[[request URL] absoluteString]];
+	}
+	else
+	{
+		[listener use];
+	}
+}
+
+@end

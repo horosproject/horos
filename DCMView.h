@@ -55,10 +55,12 @@ enum
 	tPlain,						//	20
 	tBonesRemoval,				//	21
 	tWLBlended,					//  22
-	tPushBack					//  23
+	tPushBack,					//  23
+	tLayerROI					//	24
 };
 
 extern NSString *pasteBoardOsiriX;
+extern NSString *pasteBoardOsiriXPlugin;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };
 enum { barHide = 0, barOrigin, barFused, barBoth };

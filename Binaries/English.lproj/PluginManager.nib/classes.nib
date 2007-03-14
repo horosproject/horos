@@ -1,0 +1,25 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {changeWebView = id; download = id; loadPlugins = id; modifiy = id; }; 
+            CLASS = PluginManagerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                dbMenu = NSMenu; 
+                downloadButton = NSButton; 
+                filtersMenu = NSMenu; 
+                othersMenu = NSMenu; 
+                pluginTable = NSTableView; 
+                pluginsListPopUp = NSPopUpButton; 
+                roisMenu = NSMenu; 
+                statusProgressIndicator = NSProgressIndicator; 
+                statusTextField = NSTextField; 
+                tabView = NSTabView; 
+                webView = WebView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

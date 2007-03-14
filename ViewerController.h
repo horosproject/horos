@@ -384,7 +384,8 @@ enum
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff;
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name;
--(void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
+- (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
+-(void)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
 - (NSLock*) roiLock;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;

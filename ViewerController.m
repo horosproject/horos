@@ -2669,6 +2669,14 @@ static ViewerController *draggedController = 0L;
 			if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
 		}
 	}
+	else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriXPlugin]] isEqualToString: pasteBoardOsiriXPlugin])
+	{
+		// in this case, the drag operation was performed from a plugin.
+		NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
+		[userInfo setValue:self forKey:@"destination"];
+		[userInfo setValue:sender forKey:@"dragOperation"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"PluginDragOperationNotification" object:nil userInfo:userInfo];
+	}
 	else
 	{
 	    NSArray			*types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];
@@ -7752,6 +7760,19 @@ int i,j,l;
 	}
 }
 
+-(void)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
+{
+	DCMPix *curPix = [[self pixList] objectAtIndex:[[self imageView] curImage]];
+
+	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint([curPix originX], [curPix originY])] autorelease];
+	[theNewROI setLayerReferenceFilePath:path];
+	[theNewROI setLayerImage:image];
+	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
+
+	[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
+}
+
 - (void) deleteSeriesROIwithName: (NSString*) name
 {
 	long	x, i;
@@ -12223,7 +12244,7 @@ int i,j,l;
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:@"OsirixDeletedReport" object:nil];
 	[nc addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 	
-	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, nil]];
+	[[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType, pasteBoardOsiriX, pasteBoardOsiriXPlugin, nil]];
 	
 	if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)
 	{

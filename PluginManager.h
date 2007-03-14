@@ -23,4 +23,21 @@
 
 - (void)discoverPlugins;
 - (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
+
++ (NSString*)activePluginsDirectoryPath;
++ (NSString*)inactivePluginsDirectoryPath;
++ (NSString*)userActivePluginsDirectoryPath;
++ (NSString*)userInactivePluginsDirectoryPath;
++ (NSString*)systemActivePluginsDirectoryPath;
++ (NSString*)systemInactivePluginsDirectoryPath;
++ (NSString*)appActivePluginsDirectoryPath;
++ (NSString*)appInactivePluginsDirectoryPath;
++ (NSArray*)activeDirectories;
++ (NSArray*)inactiveDirectories;
++ (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
++ (void)activatePluginWithName:(NSString*)pluginName;
++ (void)desactivatePluginWithName:(NSString*)pluginName;
++ (NSArray*)pluginsList;
+
+
 @end

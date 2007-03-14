@@ -311,6 +311,19 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            ACTIONS = {modifiy = id; }; 
+            CLASS = PluginManagerController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                dbMenu = NSMenu; 
+                filtersMenu = NSMenu; 
+                othersMenu = NSMenu; 
+                pluginTable = NSTableView; 
+                roisMenu = NSMenu; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
             ACTIONS = {newServer = id; switchListener = id; }; 
             CLASS = PreferenceController; 
             LANGUAGE = ObjC; 
