@@ -257,6 +257,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void)setXFlipped: (BOOL)v;
 - (BOOL)yFlipped;
 - (void)setYFlipped:(BOOL) v;
+// checks to see if tool is for ROIs.  maybe better name - (BOOL)isToolforROIs:(long)tool
 - (BOOL) roiTool:(long) tool;
 - (void) sliderAction2DMPR:(id) sender;
 - (void) setStringID:(NSString*) str;
@@ -406,4 +407,22 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 // New Draw method to allow for IChat Theater
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx;
 - (BOOL)_checkHasChanged:(BOOL)flag;
+
+// Methods for mouse drag response  Can be modified for subclassing
+// This allow the various tools to  have different responses indifferent subclasses.
+// Making it easie to modify mouseDragged:
+- (NSPoint)currentPointInView:(NSEvent *)event;
+- (BOOL)checkROIsForHitAtPoint:(NSPoint)point forEvent:(NSEvent *)event;
+- (void)mouseDraggedForROIs:(NSEvent *)event;
+- (void)mouseDraggedCrosshair:(NSEvent *)event;
+- (void)mouseDragged3DRotate:(NSEvent *)event;
+- (void)mouseDraggedZoom:(NSEvent *)event;
+- (void)mouseDraggedTranslate:(NSEvent *)event;
+- (void)mouseDraggedRotate:(NSEvent *)event;
+- (void)mouseDraggedImageScroll:(NSEvent *)event;
+- (void)mouseDraggedBlending:(NSEvent *)event;
+- (void)mouseDraggedWindowLevel:(NSEvent *)event;
+- (void)mouseDraggedRepulsor:(NSEvent *)event;
+
+
 @end

@@ -1994,6 +1994,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 }
 
+// checks to see if tool is a valid ID for ROIs
+// A better name might be  - (BOOL)isToolforROIs:(long)tool;
 -(BOOL) roiTool:(long) tool
 {
 	switch( tool)
@@ -3093,22 +3095,32 @@ static long scrollMode;
 	}
 }
 
+
+#pragma mark-
+#pragma mark Mouse dragging methods	
 - (void)mouseDragged:(NSEvent *)event
 {
+	// if window is not visible do nothing
 	if( [[self window] isVisible] == NO) return;
+	
+	// if window will close do nothing
 	if( [self is2DViewer] == YES)
 	{
 		if( [[self windowController] windowWillClose]) return;
 	}
 	
+	// We have dragged before timer went off turn off timer and contine with drag
 	if (_dragInProgress == NO && ([event deltaX] != 0 || [event deltaY] != 0)) {
 		[self deleteMouseDownTimer];
 	}
 	
+	// we are dragging don't do anything
 	if (_dragInProgress == YES) return;
 	
+	// if we have images do drag
     if( dcmPixList)
     {
+		
         NSPoint     eventLocation = [event locationInWindow];
         NSPoint     current = [self convertPoint:eventLocation fromView:self];
         short       tool;
@@ -3120,6 +3132,8 @@ static long scrollMode;
 		
 		if( crossMove >= 0) tool = tCross;
 		
+		// if ROI tool is valid continue with drag
+		/**************** ROI actions *********************************/
 		if( [self roiTool: tool])
 		{
 			long	i;
@@ -3127,117 +3141,196 @@ static long scrollMode;
 			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			
+			// get point in Open GL
 			tempPt.y = size.size.height - tempPt.y;
 			tempPt = [self ConvertFromView2GL:tempPt];
 			
+			// check rois for hit Test.
+			action = [self checkROIsForHitAtPoint:tempPt forEvent:event];
+			
+			// if we have action the ROI is being drawn. Don't move and rotate ROI
+			if( action == NO) // Is there a selected ROI -> rotate or move it
+				[self mouseDraggedForROIs:(NSEvent *)event];
+		}
+		
+		/********** Actions for Various Tools *********************/
+		else {
+			switch (tool) {
+				case t3DRotate:[self mouseDragged3DRotate:event];
+					break;
+				case tCross: [self mouseDraggedCrosshair:event];
+					break;
+				case tZoom: [self mouseDraggedZoom:event];
+					break;
+				case tTranslate:[self mouseDraggedTranslate:event];
+					break;
+				case tRotate:[self mouseDraggedRotate:event];
+					break;
+				case tNext:[self mouseDraggedImageScroll:event];
+					break;
+				case tWLBlended: [self mouseDraggedBlending:event];
+					break;
+				case tWL:[self mouseDraggedWindowLevel:event];
+					break;
+				case tPushBack: [self mouseDraggedRepulsor:event];
+					break;
+				default:break;
+			}
+		}
+   
+		
+		
+		/****************** Update Display ***********************/
+		
+		previous = current;
+        
+        [self setNeedsDisplay:YES];
+		
+		if( [self is2DViewer] == YES)
+			[[self windowController] propagateSettings];
+		
+		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
+//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
+
+
+
+    }
+}
+
+
+// get current Point for Event in the local view Coordinates
+- (NSPoint)currentPointInView:(NSEvent *)event{
+	NSPoint     eventLocation = [event locationInWindow];
+	return [self convertPoint:eventLocation fromView:self];
+}
+
+// Check to see if an roi is selected at the Open GL point
+- (BOOL)checkROIsForHitAtPoint:(NSPoint)point  forEvent:(NSEvent *)event{
+	BOOL haveHit = NO;
+	int i;
+	for( i = 0; i < [curRoiList count]; i++)
+	{
+		if( [[curRoiList objectAtIndex:i] mouseRoiDragged: point :[event modifierFlags] :scaleValue] != NO)
+		{
+			haveHit = YES;
+		}
+	}
+	return haveHit;			
+}
+
+// Modifies the Selected ROIs for the drag. Can rotate, scalem move the ROI or the Text Box.
+- (void)mouseDraggedForROIs:(NSEvent *)event{
+	
+	NSRect  frame = [self frame];
+	NSPoint current = [self currentPointInView:event];
+	int i = 0;
+	// Command and Alternate rotate ROI
+	if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
+	{
+		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
+		rotatePoint.y = frame.size.height - start.y ;
+		rotatePoint = [self ConvertFromView2GL: rotatePoint];
+
+		NSPoint offset;
+		float   xx, yy;
+		
+		offset.x = - (previous.x - current.x) / scaleValue;
+		offset.y =  (previous.y - current.y) / scaleValue;
+		
+		for( i = 0; i < [curRoiList count]; i++)
+		{
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
+		}
+	}
+	// Command and Shift scale
+	else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
+	{
+		NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
+		rotatePoint.y = frame.size.height - start.y ;
+		rotatePoint = [self ConvertFromView2GL: rotatePoint];
+
+		NSPoint offset;
+		float   xx, yy;
+		
+		offset.x = - (previous.x - current.x) / scaleValue;
+		offset.y =  (previous.y - start.y) / scaleValue;
+		
+		for( i = 0; i < [curRoiList count]; i++)
+		{
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: 1 + (offset.x)/20. :rotatePoint];
+		}
+	}
+	// Move ROI
+	else
+	{
+		BOOL textBoxMove = NO;
+		NSPoint offset;
+		float   xx, yy;
+		
+		offset.x = - (previous.x - current.x) / scaleValue;
+		offset.y =  (previous.y - current.y) / scaleValue;
+		
+		if( xFlipped) offset.x = -offset.x;
+		if( yFlipped) offset.y = -offset.y;
+		
+		xx = offset.x;		yy = offset.y;
+		
+		offset.x = xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
+		offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
+		
+		offset.y /=  [curDCM pixelRatio];
+		// hit test for text box
+		for( i = 0; i < [curRoiList count]; i++)
+		{
+			if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+			{
+				if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
+			}
+		}
+		// Move text Box
+		if( textBoxMove)
+		{
 			for( i = 0; i < [curRoiList count]; i++)
 			{
-				if( [[curRoiList objectAtIndex:i] mouseRoiDragged: tempPt :[event modifierFlags] :scaleValue] != NO)
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
-					action = YES;
-				}
-			}
-			
-			if( action == NO) // Is there a selected ROI -> rotate or move it
-			{
-				if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))
-				{
-					NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-					rotatePoint.y = size.size.height - start.y ;
-					rotatePoint = [self ConvertFromView2GL: rotatePoint];
-			
-					NSPoint offset;
-					float   xx, yy;
-					
-					offset.x = - (previous.x - current.x) / scaleValue;
-					offset.y =  (previous.y - current.y) / scaleValue;
-					
-					for( i = 0; i < [curRoiList count]; i++)
-					{
-						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] rotate: offset.x :rotatePoint];
-					}
-				}
-				else if (([event modifierFlags] & NSCommandKeyMask) && !([event modifierFlags] & NSShiftKeyMask))
-				{
-					NSPoint rotatePoint = [[[event window] contentView] convertPoint:start toView:self];
-					rotatePoint.y = size.size.height - start.y ;
-					rotatePoint = [self ConvertFromView2GL: rotatePoint];
-			
-					NSPoint offset;
-					float   xx, yy;
-					
-					offset.x = - (previous.x - current.x) / scaleValue;
-					offset.y =  (previous.y - start.y) / scaleValue;
-					
-					for( i = 0; i < [curRoiList count]; i++)
-					{
-						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected) [[curRoiList objectAtIndex:i] resize: 1 + (offset.x)/20. :rotatePoint];
-					}
-				}
-				else
-				{
-					BOOL textBoxMove = NO;
-					NSPoint offset;
-					float   xx, yy;
-					
-					offset.x = - (previous.x - current.x) / scaleValue;
-					offset.y =  (previous.y - current.y) / scaleValue;
-					
-					if( xFlipped) offset.x = -offset.x;
-					if( yFlipped) offset.y = -offset.y;
-					
-					xx = offset.x;		yy = offset.y;
-					
-					offset.x = xx*cos(rotation*deg2rad) + yy*sin(rotation*deg2rad);
-					offset.y = -xx*sin(rotation*deg2rad) + yy*cos(rotation*deg2rad);
-					
-					offset.y /=  [curDCM pixelRatio];
-					
-					for( i = 0; i < [curRoiList count]; i++)
-					{
-						if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-						{
-							if( [[curRoiList objectAtIndex: i] clickInTextBox]) textBoxMove = YES;
-						}
-					}
-					
-					if( textBoxMove)
-					{
-						for( i = 0; i < [curRoiList count]; i++)
-						{
-							if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-							{
-								[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
-							}
-						}
-					}
-					else
-					{
-						for( i = 0; i < [curRoiList count]; i++)
-						{
-							if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
-							{
-								[[curRoiList objectAtIndex:i] roiMove: offset];
-							}
-						}
-					}
+					[[curRoiList objectAtIndex: i] setTextBoxOffset: offset];
 				}
 			}
 		}
-		
-		if( tool == t3DRotate)
+		// move ROI
+		else
 		{
-			
+			for( i = 0; i < [curRoiList count]; i++)
+			{
+				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
+				{
+					[[curRoiList objectAtIndex:i] roiMove: offset];
+				}
+			}
 		}
-		
-		if( tool == tCross && ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
+	}
+}
+
+
+// Method for mouse dragging while 3D rotate. Does nothing
+- (void)mouseDragged3DRotate:(NSEvent *)event{
+}
+
+- (void)mouseDraggedCrosshair:(NSEvent *)event{
+	//subclassing would get rid of the string ID. The  subclasses would take care of the proper behavior
+	
+	NSRect  frame = [self frame];
+	NSPoint current = [self currentPointInView:event];
+	NSPoint   eventLocation = [event locationInWindow];
+	if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
 		{
 			crossPrev = cross;
 			
 			if( crossMove)
 			{
 				NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-				tempPt.y = size.size.height - tempPt.y ;
+				tempPt.y = frame.size.height - tempPt.y ;
 				
 				
 				cross = [self ConvertFromView2GL:tempPt];
@@ -3247,7 +3340,7 @@ static long scrollMode;
 				float newAngle;
 				
 				NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-				tempPt.y = size.size.height - tempPt.y ;
+				tempPt.y = frame.size.height - tempPt.y ;
 				
 				tempPt = [self ConvertFromView2GL:tempPt];
 				
@@ -3287,491 +3380,465 @@ static long scrollMode;
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
 		}
-		else if ( tool == tCross && [[self stringID] isEqualToString:@"OrthogonalMPRVIEW"] && ( [event type] != NSRightMouseDown))
+		// More things to do if Right Mouse is Down
+		else if ([[self stringID] isEqualToString:@"OrthogonalMPRVIEW"] && ( [event type] != NSRightMouseDown))
 		{
 			eventLocation = [self convertPoint:eventLocation fromView: self];
 			eventLocation = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			eventLocation.y = size.size.height - eventLocation.y;
+			eventLocation.y = frame.size.height - eventLocation.y;
 			eventLocation = [self ConvertFromView2GL:eventLocation];
 			
 			if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
 				[(OrthogonalMPRView*)self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
 			}
 			
-			//[self setCrossPosition:(float)mouseXPos : (float)mouseYPos];
 			[self setNeedsDisplay:YES];
 		}
-		
-//        if (tool == tMesure)
-//        {
-//            mesureB = [[[event window] contentView] convertPoint:eventLocation toView:self];
-//            mesureB.y = size.size.height - mesureB.y ;
-//        }
-        
-//        if( tool == tROI)
-//        {
-//            roiRect.size.width = (current.x - start.x);
-//            roiRect.size.height = -(current.y - start.y);
-//			
-//			[self setQuartzExtreme: YES];
-//        }
-//		else [self setQuartzExtreme: NO];
 
-        if (tool == tZoom)
-        {
-			[self setScaleValue: (startScaleValue + (current.y - start.y) / (80.))];
-			
-//          scaleValue = startScaleValue + (current.y - start.y)/50.;
-//          
-//          if( scaleValue < 0.01) scaleValue = 0.01;
-//          if( scaleValue > 100) scaleValue = 100;
-
-			origin.x = ((originStart.x * scaleValue) / startScaleValue);
-			origin.y = ((originStart.y * scaleValue) / startScaleValue);
-			
-			originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
-			originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
-			
-			//set value for Series Object Presentation State
-			if ([self is2DViewer] == YES)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:1] forKey:@"displayStyle"];
-			}
-		}
-        
-        if (tool == tTranslate)
-        {
-            float xmove, ymove, xx, yy;
-       //     GLfloat deg2rad = 3.14159265358979/180.0; 
-            
-            xmove = (current.x - start.x);
-            ymove = -(current.y - start.y);
-            
-            if( xFlipped) xmove = -xmove;
-            if( yFlipped) ymove = -ymove;
-            
-            xx = xmove*cos((rotation)*deg2rad) + ymove*sin((rotation)*deg2rad);
-            yy = xmove*sin((rotation)*deg2rad) - ymove*cos((rotation)*deg2rad);
-            
-            origin.x = originStart.x + xx;
-            origin.y = originStart.y + yy;
-			
-			//set value for Series Object Presentation State
-			if ([self is2DViewer] == YES)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-			}
-        }
-        
-        if (tool == tRotate)
-        {
-            rotation = rotationStart - (current.x - start.x);
-			while( rotation < 0) rotation += 360;
-			while( rotation > 360) rotation -= 360;
-			
-			//set value for Series Object Presentation State
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-			//NSLog(@"set Series rotation: %f", [[[self seriesObj] valueForKey:@"rotationAngle"] floatValue]);
-        }
-        
-        if (tool == tNext)
-        {
-            short   inc, now, prev, previmage;
-			BOOL	movie4Dmove = NO;
-            
-			if( scrollMode == 0)
-			{
-				if( fabs( start.x - current.x) < fabs( start.y - current.y))
-				{
-					prev = start.y/2;
-					now = current.y/2;
-					if( fabs( start.y - current.y) > 3) scrollMode = 1;
-				}
-				else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
-				{
-					prev = start.x/2;
-					now = current.x/2;
-					if( fabs( start.x - current.x) > 3) scrollMode = 2;
-				}
-				
-			//	NSLog(@"scrollMode : %d", scrollMode);
-			}
-			
-			if( movie4Dmove == NO && ![stringID isEqualToString:@"OrthogonalMPRVIEW"])
-			{
-				previmage = curImage;
-				
-				if( scrollMode == 2)
-				{
-					curImage = startImage + ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
-				}
-				else if( scrollMode == 1)
-				{
-					curImage = startImage + ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
-				}
-				
-				if( curImage < 0) curImage = 0;
-				if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
-				
-//				if( prev > now)
-//				{
-//					inc = -1;
-//					if( curImage > 0) curImage--;
-//				}
-//				else if(prev < now)
-//				{
-//					inc = 1;
-//					if( curImage < [dcmPixList count]-1) curImage++;
-//				}
-				
-				if(previmage != curImage)
-				{
-					if( listType == 'i') [self setIndex:curImage];
-					else [self setIndexWithReset:curImage :YES];
-					
-					if( matrix) [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
-					
-					if( [self is2DViewer] == YES)
-						[[self windowController] adjustSlider];
-					
-					if( stringID) [[self windowController] adjustSlider];
-					
-					// SYNCRO
-					[self sendSyncMessage: curImage - previmage];
-				}
-			}
-			else if( movie4Dmove == NO && [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-			{
-				long from, to, startLocation;
-				if( scrollMode == 2)
-				{
-					from = current.x;
-					to = start.x;
-				}
-				else if( scrollMode == 1)
-				{
-					from = start.y;
-					to = current.y;
-				}
-				else
-				{
-					from = 0;
-					to = 0;
-				}
-				
-				if ( fabs( from-to ) >= 1 && [self isKindOfClass: [OrthogonalMPRView class]] ) {
-					[(OrthogonalMPRView*)self scrollTool: from : to];
-				}
-			}
-
-        }        
-		
-		if( tool == tWLBlended)
-		{
-			float WWAdapter = bdstartWW / 100.0;
-			
-			if( WWAdapter < 0.001) WWAdapter = 0.001;
-			
-			if( [self is2DViewer] == YES)
-			{
-				[[[self windowController] thickSlabController] setLowQuality: YES];
-			}
-			
-			if( [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
-			{
-				float startlevel;
-				float endlevel;
-				
-				float eWW, eWL;
-				
-				NSLog( @"PT");
-				
-				switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-				{
-					case 0:
-						eWL = bdstartWL + (current.y -  start.y)*WWAdapter;
-						eWW = bdstartWW + (current.x -  start.x)*WWAdapter;
-						
-						if( eWW < 0.1) eWW = 0.1;
-					break;
-					
-					case 1:
-						endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
-						
-						eWL = (endlevel - bdstartMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-						eWW = endlevel - bdstartMin;
-						
-						if( eWW < 0.1) eWW = 0.1;
-						if( eWL - eWW/2 < 0) eWL = eWW/2;
-					break;
-					
-					case 2:
-						endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
-						startlevel = bdstartMin + (current.x -  start.x) * WWAdapter ;
-						
-						if( startlevel < 0) startlevel = 0;
-						
-						eWL = startlevel + (endlevel - startlevel) / 2;
-						eWW = endlevel - startlevel;
-						
-						if( eWW < 0.1) eWW = 0.1;
-						if( eWL - eWW/2 < 0) eWL = eWW/2;
-					break;
-				}
-				
-				[[blendingView curDCM] changeWLWW :eWL  :eWW];
-			}
-			else
-			{
-				[[blendingView curDCM] changeWLWW : bdstartWL + (current.y -  start.y)*WWAdapter :bdstartWW + (current.x -  start.x)*WWAdapter];
-			}
-			
-			if( [self is2DViewer] == YES)
-			{
-				[[blendingView windowController] setCurWLWWMenu: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM]];
-			}
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: 0L];
-			
-			if( stringID)
-			{
-				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
-				{
-					[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
-					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
-				}
-				else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-				{
-					[self setWLWW: curWL :curWW];
-					[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
-				}
-				else
-				{
-					[blendingView loadTextures];
-					[self loadTextures];
-				}
-			}
-			else
-			{
-				[blendingView loadTextures];
-				[self loadTextures];
-			}
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: blendingView userInfo:0L];
-		}
-		
-        if( tool == tWL && !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
-        {
-			float WWAdapter = startWW / 100.0;
-			
-			if( WWAdapter < 0.001) WWAdapter = 0.001;
-			
-			if( [self is2DViewer] == YES)
-			{
-				[[[self windowController] thickSlabController] setLowQuality: YES];
-			}
-			
-			if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
-			{
-				float startlevel;
-				float endlevel;
-				
-				float eWW, eWL;
-				
-				switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
-				{
-					case 0:
-						eWL = startWL + (current.y -  start.y)*WWAdapter;
-						eWW = startWW + (current.x -  start.x)*WWAdapter;
-						
-						if( eWW < 0.1) eWW = 0.1;
-					break;
-					
-					case 1:
-						endlevel = startMax + (current.y -  start.y) * WWAdapter ;
-						
-						eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
-						eWW = endlevel - startMin;
-						
-						if( eWW < 0.1) eWW = 0.1;
-						if( eWL - eWW/2 < 0) eWL = eWW/2;
-					break;
-					
-					case 2:
-						endlevel = startMax + (current.y -  start.y) * WWAdapter ;
-						startlevel = startMin + (current.x -  start.x) * WWAdapter ;
-						
-						if( startlevel < 0) startlevel = 0;
-						
-						eWL = startlevel + (endlevel - startlevel) / 2;
-						eWW = endlevel - startlevel;
-						
-						if( eWW < 0.1) eWW = 0.1;
-						if( eWL - eWW/2 < 0) eWL = eWW/2;
-					break;
-				}
-				
-				[curDCM changeWLWW :eWL  :eWW];
-			}
-			else
-			{
-				[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
-			}
-			
-            curWW = [curDCM ww];
-            curWL = [curDCM wl];
-            
-			if( [self is2DViewer] == YES)
-			{
-				[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
-			}
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
-			
-			if( stringID)
-			{
-				if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
-				{
-					[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
-				}
-				else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-				{
-					// change Window level
-					//[[self windowController] setWLWW: curWL :curWW];
-					[self setWLWW: curWL :curWW];
-				}
-				else [self loadTextures];
-			}
-			else [self loadTextures];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
-			
-			if( [curDCM SUVConverted] == NO)
-			{
-				//set value for Series Object Presentation State
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-			}
-			else
-			{
-				if( [self is2DViewer] == YES)
-				{
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-				}
-			}
-		}
-        else if( tool == tWL && [stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
-		{
-			// change blending value
-			blendingFactor = blendingFactorStart + (current.x - start.x);
-				
-			if( blendingFactor < -256.0) blendingFactor = -256.0;
-			if( blendingFactor > 256.0) blendingFactor = 256.0;
-			
-			[self setBlendingFactor: blendingFactor];
-		}
-        previous = current;
-        
-    //    [self checkVisible];
-        [self setNeedsDisplay:YES];
-		
-		if( [self is2DViewer] == YES)
-			[[self windowController] propagateSettings];
-		
-		if( [stringID isEqualToString:@"FinalView"] == YES || [stringID isEqualToString:@"OrthogonalMPRVIEW"]) [self blendingPropagate];
-//		if( [stringID isEqualToString:@"Original"] == YES) [self blendingPropagate];
-
-		// push back!
-		if(tool == tPushBack)
-		{
-			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			tempPt.y = size.size.height - tempPt.y ;
-			pushBackPosition = tempPt;
-			tempPt = [self ConvertFromView2GL:tempPt];
-			
-			float dx, dx2, dy, dy2, d;
-			NSPoint pt, pt2;
-
-			int i, j, k;
-			NSMutableArray *points;
-			for(i=0; i<[curRoiList count]; i++)
-			{
-				{
-					points = [[curRoiList objectAtIndex:i] points];
-					int n = 0;
-					for(j=0; j<[points count]; j++)
-					{
-						pt = [[points objectAtIndex:j] point];
-						dx = (pt.x-tempPt.x);
-						dx2 = dx * dx;
-						dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-						dy2 = dy * dy;
-						d = sqrt(dx2 + dy2);
-						
-						if(d<pushBackRadius)
-						{
-						//[[curRoiList objectAtIndex:i] roiMove:NSMakePoint(dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy) :YES];
-							if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
-								[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
-							else
-								[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
-							
-							pt.x += dx/d*pushBackRadius-dx;
-							pt.y += dy/d*pushBackRadius-dy;
-							
-							int delta;
-							for(delta=-1; delta<=1; delta++)
-							{
-								k = j+delta;
-								if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
-								{
-									if(k==-1)
-										k = [points count]-1;
-									else if(k==[points count])
-										k = 0;
-								}
-								
-								if(k!=j && k>=0 && k<[points count])
-								{
-									pt2 = [[points objectAtIndex:k] point];
-									dx = (pt2.x-pt.x);
-									dx2 = dx * dx;
-									dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-									dy2 = dy * dy;
-									d = sqrt(dx2 + dy2);
-									
-									if(d<=3 && d<pushBackRadius)
-									{
-										[points removeObjectAtIndex:k];
-										if(delta==-1) j--;
-									}
-									else if((d>=20 || d>=pushBackRadius) && n<50)
-									{
-										NSPoint pt3;
-										pt3.x = (pt2.x+pt.x)/2.0;
-										pt3.y = (pt2.y+pt.y)/2.0;
-										MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
-										int index = (delta==-1)? j : j+1 ;
-										if(delta==-1) j++;
-										[points insertObject:p atIndex:index];
-										n++;
-									}
-								}
-							}
-							[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
-						}
-					}
-				}
-			}
-			
-		}
-    }
 }
 
+
+// Methods for Zooming with mouse Drag
+- (void)mouseDraggedZoom:(NSEvent *)event{
+	NSPoint current = [self currentPointInView:event];
+	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80.))];
+
+	origin.x = ((originStart.x * scaleValue) / startScaleValue);
+	origin.y = ((originStart.y * scaleValue) / startScaleValue);
+	
+	originOffset.x = ((originOffsetStart.x * scaleValue) / startScaleValue);
+	originOffset.y = ((originOffsetStart.y * scaleValue) / startScaleValue);
+	
+	//set value for Series Object Presentation State
+	if ([self is2DViewer] == YES)
+	{
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:1] forKey:@"displayStyle"];
+	}
+
+}
+
+
+// Method for translating the image while dragging
+- (void)mouseDraggedTranslate:(NSEvent *)event{
+	NSPoint current = [self currentPointInView:event];
+	float xmove, ymove, xx, yy;
+            
+	xmove = (current.x - start.x);
+	ymove = -(current.y - start.y);
+	
+	if( xFlipped) xmove = -xmove;
+	if( yFlipped) ymove = -ymove;
+	
+	xx = xmove*cos((rotation)*deg2rad) + ymove*sin((rotation)*deg2rad);
+	yy = xmove*sin((rotation)*deg2rad) - ymove*cos((rotation)*deg2rad);
+	
+	origin.x = originStart.x + xx;
+	origin.y = originStart.y + yy;
+	
+	//set value for Series Object Presentation State
+	if ([self is2DViewer] == YES)
+	{
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+		[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+	}
+
+}
+
+
+//Method for rotating
+- (void)mouseDraggedRotate:(NSEvent *)event{
+	NSPoint current = [self currentPointInView:event];
+	rotation = rotationStart - (current.x - start.x);
+	while( rotation < 0) rotation += 360;
+	while( rotation > 360) rotation -= 360;
+	
+	//set value for Series Object Presentation State
+	[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+}
+
+//Scrolling through images with Mouse
+// could be cleaned up by subclassing DCMView
+- (void)mouseDraggedImageScroll:(NSEvent *)event{
+	short   inc, now, prev, previmage;
+	BOOL	movie4Dmove = NO;
+	NSPoint current = [self currentPointInView:event];
+	if( scrollMode == 0)
+	{
+		if( fabs( start.x - current.x) < fabs( start.y - current.y))
+		{
+			prev = start.y/2;
+			now = current.y/2;
+			if( fabs( start.y - current.y) > 3) scrollMode = 1;
+		}
+		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
+		{
+			prev = start.x/2;
+			now = current.x/2;
+			if( fabs( start.x - current.x) > 3) scrollMode = 2;
+		}
+		
+	//	NSLog(@"scrollMode : %d", scrollMode);
+	}
+	
+	if( movie4Dmove == NO && ![stringID isEqualToString:@"OrthogonalMPRVIEW"])
+	{
+		previmage = curImage;
+		
+		if( scrollMode == 2)
+		{
+			curImage = startImage + ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
+		}
+		else if( scrollMode == 1)
+		{
+			curImage = startImage + ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
+		}
+		
+		if( curImage < 0) curImage = 0;
+		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
+		
+		if(previmage != curImage)
+		{
+			if( listType == 'i') [self setIndex:curImage];
+			else [self setIndexWithReset:curImage :YES];
+			
+			if( matrix) [matrix selectCellAtRow :curImage/[browserWindow COLUMN] column:curImage%[browserWindow COLUMN]];
+			
+			if( [self is2DViewer] == YES)
+				[[self windowController] adjustSlider];
+			
+			if( stringID) [[self windowController] adjustSlider];
+			
+			// SYNCRO
+			[self sendSyncMessage: curImage - previmage];
+		}
+	}
+	else if( movie4Dmove == NO && [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+	{
+		long from, to, startLocation;
+		if( scrollMode == 2)
+		{
+			from = current.x;
+			to = start.x;
+		}
+		else if( scrollMode == 1)
+		{
+			from = start.y;
+			to = current.y;
+		}
+		else
+		{
+			from = 0;
+			to = 0;
+		}
+		
+		if ( fabs( from-to ) >= 1 && [self isKindOfClass: [OrthogonalMPRView class]] ) {
+			[(OrthogonalMPRView*)self scrollTool: from : to];
+		}
+	}
+
+}
+
+- (void)mouseDraggedBlending:(NSEvent *)event{
+	float WWAdapter = bdstartWW / 100.0;
+	NSPoint current = [self currentPointInView:event];
+	if( WWAdapter < 0.001) WWAdapter = 0.001;
+
+	if( [self is2DViewer] == YES)
+	{
+		[[[self windowController] thickSlabController] setLowQuality: YES];
+	}
+
+	if( [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[[blendingView dcmFilesList] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+	{
+		float startlevel;
+		float endlevel;
+		
+		float eWW, eWL;
+		
+		NSLog( @"PT");
+		
+		switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+		{
+			case 0:
+				eWL = bdstartWL + (current.y -  start.y)*WWAdapter;
+				eWW = bdstartWW + (current.x -  start.x)*WWAdapter;
+				
+				if( eWW < 0.1) eWW = 0.1;
+			break;
+			
+			case 1:
+				endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
+				
+				eWL = (endlevel - bdstartMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+				eWW = endlevel - bdstartMin;
+				
+				if( eWW < 0.1) eWW = 0.1;
+				if( eWL - eWW/2 < 0) eWL = eWW/2;
+			break;
+			
+			case 2:
+				endlevel = bdstartMax + (current.y -  start.y) * WWAdapter ;
+				startlevel = bdstartMin + (current.x -  start.x) * WWAdapter ;
+				
+				if( startlevel < 0) startlevel = 0;
+				
+				eWL = startlevel + (endlevel - startlevel) / 2;
+				eWW = endlevel - startlevel;
+				
+				if( eWW < 0.1) eWW = 0.1;
+				if( eWL - eWW/2 < 0) eWL = eWW/2;
+			break;
+		}
+		
+		[[blendingView curDCM] changeWLWW :eWL  :eWW];
+	}
+	else
+	{
+		[[blendingView curDCM] changeWLWW : bdstartWL + (current.y -  start.y)*WWAdapter :bdstartWW + (current.x -  start.x)*WWAdapter];
+	}
+
+	if( [self is2DViewer] == YES)
+	{
+		[[blendingView windowController] setCurWLWWMenu: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM]];
+	}
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: 0L];
+
+	if( stringID)
+	{
+		if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
+		{
+			[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+			[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
+		}
+		else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+		{
+			[self setWLWW: curWL :curWW];
+			[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+		}
+		else
+		{
+			[blendingView loadTextures];
+			[self loadTextures];
+		}
+	}
+	else
+	{
+		[blendingView loadTextures];
+		[self loadTextures];
+	}
+
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: blendingView userInfo:0L];
+
+}
+
+- (void)mouseDraggedWindowLevel:(NSEvent *)event{
+	NSPoint current = [self currentPointInView:event];
+	if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
+	{
+		float WWAdapter = startWW / 100.0;
+
+		if( WWAdapter < 0.001) WWAdapter = 0.001;
+		
+		if( [self is2DViewer] == YES)
+		{
+			[[[self windowController] thickSlabController] setLowQuality: YES];
+		}
+		
+		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+		{
+			float startlevel;
+			float endlevel;
+			
+			float eWW, eWL;
+			
+			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+			{
+				case 0:
+					eWL = startWL + (current.y -  start.y)*WWAdapter;
+					eWW = startWW + (current.x -  start.x)*WWAdapter;
+					
+					if( eWW < 0.1) eWW = 0.1;
+				break;
+				
+				case 1:
+					endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+					
+					eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+					eWW = endlevel - startMin;
+					
+					if( eWW < 0.1) eWW = 0.1;
+					if( eWL - eWW/2 < 0) eWL = eWW/2;
+				break;
+				
+				case 2:
+					endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+					startlevel = startMin + (current.x -  start.x) * WWAdapter ;
+					
+					if( startlevel < 0) startlevel = 0;
+					
+					eWL = startlevel + (endlevel - startlevel) / 2;
+					eWW = endlevel - startlevel;
+					
+					if( eWW < 0.1) eWW = 0.1;
+					if( eWL - eWW/2 < 0) eWL = eWW/2;
+				break;
+			}
+			
+			[curDCM changeWLWW :eWL  :eWW];
+		}
+		else
+		{
+			[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
+		}
+		
+		curWW = [curDCM ww];
+		curWL = [curDCM wl];
+		
+		if( [self is2DViewer] == YES)
+		{
+			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
+		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
+		
+		if( stringID)
+		{
+			if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
+			{
+				[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
+			}
+			else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
+			{
+				// change Window level
+				//[[self windowController] setWLWW: curWL :curWW];
+				[self setWLWW: curWL :curWW];
+			}
+			else [self loadTextures];
+		}
+		else [self loadTextures];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
+		
+		if( [curDCM SUVConverted] == NO)
+		{
+			//set value for Series Object Presentation State
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		}
+		else
+		{
+			if( [self is2DViewer] == YES)
+			{
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			}
+		}
+	}
+	else if([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
+	{
+		// change blending value
+		blendingFactor = blendingFactorStart + (current.x - start.x);
+			
+		if( blendingFactor < -256.0) blendingFactor = -256.0;
+		if( blendingFactor > 256.0) blendingFactor = 256.0;
+		
+		[self setBlendingFactor: blendingFactor];
+	}
+
+}
+
+- (void)mouseDraggedRepulsor:(NSEvent *)event{
+	NSRect frame = [self frame];
+	NSPoint     eventLocation = [event locationInWindow];
+	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	tempPt.y = frame.size.height - tempPt.y ;
+	pushBackPosition = tempPt;
+	tempPt = [self ConvertFromView2GL:tempPt];
+	
+	float dx, dx2, dy, dy2, d;
+	NSPoint pt, pt2;
+
+	int i, j, k;
+	NSMutableArray *points;
+	for(i=0; i<[curRoiList count]; i++)
+	{
+		{
+			points = [[curRoiList objectAtIndex:i] points];
+			int n = 0;
+			for(j=0; j<[points count]; j++)
+			{
+				pt = [[points objectAtIndex:j] point];
+				dx = (pt.x-tempPt.x);
+				dx2 = dx * dx;
+				dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+				dy2 = dy * dy;
+				d = sqrt(dx2 + dy2);
+				
+				if(d<pushBackRadius)
+				{
+				//[[curRoiList objectAtIndex:i] roiMove:NSMakePoint(dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy) :YES];
+					if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
+						[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
+					else
+						[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
+					
+					pt.x += dx/d*pushBackRadius-dx;
+					pt.y += dy/d*pushBackRadius-dy;
+					
+					int delta;
+					for(delta=-1; delta<=1; delta++)
+					{
+						k = j+delta;
+						if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
+						{
+							if(k==-1)
+								k = [points count]-1;
+							else if(k==[points count])
+								k = 0;
+						}
+						
+						if(k!=j && k>=0 && k<[points count])
+						{
+							pt2 = [[points objectAtIndex:k] point];
+							dx = (pt2.x-pt.x);
+							dx2 = dx * dx;
+							dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+							dy2 = dy * dy;
+							d = sqrt(dx2 + dy2);
+							
+							if(d<=3 && d<pushBackRadius)
+							{
+								[points removeObjectAtIndex:k];
+								if(delta==-1) j--;
+							}
+							else if((d>=20 || d>=pushBackRadius) && n<50)
+							{
+								NSPoint pt3;
+								pt3.x = (pt2.x+pt.x)/2.0;
+								pt3.y = (pt2.y+pt.y)/2.0;
+								MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
+								int index = (delta==-1)? j : j+1 ;
+								if(delta==-1) j++;
+								[points insertObject:p atIndex:index];
+								n++;
+							}
+						}
+					}
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
+				}
+			}
+		}
+	}
+}
+		
+
+
+
+#pragma mark-
+#pragma mark ww/wl
 - (void) getWLWW:(float*) wl :(float*) ww
 {
 	if( curDCM == 0L) NSLog(@"curDCM 0L");
