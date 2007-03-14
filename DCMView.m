@@ -3318,82 +3318,68 @@ static long scrollMode;
 }
 
 - (void)mouseDraggedCrosshair:(NSEvent *)event{
-	//subclassing would get rid of the string ID. The  subclasses would take care of the proper behavior
+	//Moved OrthogonalMPRView specific code to that class
 	
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
 	NSPoint   eventLocation = [event locationInWindow];
 	if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
+	{
+		crossPrev = cross;
+		
+		if( crossMove)
 		{
-			crossPrev = cross;
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = frame.size.height - tempPt.y ;
 			
-			if( crossMove)
-			{
-				NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-				tempPt.y = frame.size.height - tempPt.y ;
-				
-				
-				cross = [self ConvertFromView2GL:tempPt];
-			}
-			else
-			{
-				float newAngle;
-				
-				NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-				tempPt.y = frame.size.height - tempPt.y ;
-				
-				tempPt = [self ConvertFromView2GL:tempPt];
-				
-				tempPt.x -= cross.x;
-				tempPt.y -= cross.y;
-				
-				if( tempPt.y < 0) newAngle = 180 + atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
-				else newAngle = atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
-				newAngle += 90;
-				newAngle = 360 - newAngle;
-				
-			//	NSLog(@"%2.2f", newAngle);
-				if( switchAngle == -1)
-				{
-					if( fabs( newAngle - angle) > 90 && fabs( newAngle - angle) < 270)
-					{
-						switchAngle = 1;
-					}
-					else switchAngle = 0;
-				}
-				
-			//	NSLog(@"AV: old angle: %2.2f new angle: %2.2f", angle, newAngle);
-				
-				if( switchAngle == 1)
-				{
-			//		NSLog(@"switch");
-					newAngle -= 180;
-					if( newAngle < 0) newAngle += 360;
-				}
-				
-			//	NSLog(@"AP: old angle: %2.2f new angle: %2.2f", angle, newAngle);
-				
-				[self setMPRAngle: newAngle];
-			}
 			
-			[self mouseMoved: event];	// Update some variables...
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
+			cross = [self ConvertFromView2GL:tempPt];
 		}
-		// More things to do if Right Mouse is Down
-		else if ([[self stringID] isEqualToString:@"OrthogonalMPRVIEW"] && ( [event type] != NSRightMouseDown))
+		else
 		{
-			eventLocation = [self convertPoint:eventLocation fromView: self];
-			eventLocation = [[[event window] contentView] convertPoint:eventLocation toView:self];
-			eventLocation.y = frame.size.height - eventLocation.y;
-			eventLocation = [self ConvertFromView2GL:eventLocation];
+			float newAngle;
 			
-			if ( [self isKindOfClass: [OrthogonalMPRView class]] ) {
-				[(OrthogonalMPRView*)self setCrossPosition:(float)eventLocation.x : (float)eventLocation.y];
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = frame.size.height - tempPt.y ;
+			
+			tempPt = [self ConvertFromView2GL:tempPt];
+			
+			tempPt.x -= cross.x;
+			tempPt.y -= cross.y;
+			
+			if( tempPt.y < 0) newAngle = 180 + atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
+			else newAngle = atan( (float) tempPt.x / (float) tempPt.y) / deg2rad;
+			newAngle += 90;
+			newAngle = 360 - newAngle;
+			
+		//	NSLog(@"%2.2f", newAngle);
+			if( switchAngle == -1)
+			{
+				if( fabs( newAngle - angle) > 90 && fabs( newAngle - angle) < 270)
+				{
+					switchAngle = 1;
+				}
+				else switchAngle = 0;
 			}
 			
-			[self setNeedsDisplay:YES];
+		//	NSLog(@"AV: old angle: %2.2f new angle: %2.2f", angle, newAngle);
+			
+			if( switchAngle == 1)
+			{
+		//		NSLog(@"switch");
+				newAngle -= 180;
+				if( newAngle < 0) newAngle += 360;
+			}
+			
+		//	NSLog(@"AP: old angle: %2.2f new angle: %2.2f", angle, newAngle);
+			
+			[self setMPRAngle: newAngle];
 		}
+		
+		[self mouseMoved: event];	// Update some variables...
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
+	}
 
 }
 
