@@ -3001,6 +3001,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
  		NSLog(@"HD Free Space: %d MB", (long) free);
 		
+		[[NSUserDefaults standardUserDefaults]  setInteger:40*1024 forKey:@"AUTOCLEANINGSPACESIZE"];
+		
 		if( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
 		{
 			NSError				*error = 0L;
@@ -3081,21 +3083,31 @@ static BOOL				DICOMDIRCDMODE = NO;
 					if( oldestOpenedStudy) [context deleteObject: oldestOpenedStudy];
 				}
 				
+				[deleteInProgress lock];
+				[deleteInProgress unlock];
+				
+				[self emptyDeleteQueueThread];
+				
+				[deleteInProgress lock];
+				[deleteInProgress unlock];
+				
 				fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath: currentDatabasePath];
 				
 				free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 				free /= 1024;
 				free /= 1024;
 				NSLog(@"HD Free Space: %d MB", (long) free);
+				
+				
 			}
 			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [studiesArray count] > 0);
 			
 			[self saveDatabase: currentDatabasePath];
 			
-			[self outlineViewRefresh];
-			
 			[context unlock];
 			[context release];
+			
+			[self outlineViewRefresh];
 		}
 	}
 }
