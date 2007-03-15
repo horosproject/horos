@@ -3097,8 +3097,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 				free /= 1024;
 				free /= 1024;
 				NSLog(@"HD Free Space: %d MB", (long) free);
-				
-				
 			}
 			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [studiesArray count] > 0);
 			
@@ -3107,7 +3105,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[context unlock];
 			[context release];
 			
-			[self outlineViewRefresh];
+			// This will do a outlineViewRefresh
+			[newFilesConditionLock lockWhenCondition: 0];
+			[newFilesConditionLock unlockWithCondition: 1];
 		}
 	}
 }
