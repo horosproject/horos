@@ -9,13 +9,13 @@
 		<key>209</key>
 		<string>497 522 158 89 0 0 1152 848 </string>
 		<key>239</key>
-		<string>819 770 281 80 0 0 1920 1178 </string>
+		<string>819 746 281 80 0 0 1920 1178 </string>
 		<key>360</key>
 		<string>655 549 129 75 0 0 1440 878 </string>
 		<key>373</key>
 		<string>547 518 186 75 0 0 1280 832 </string>
 		<key>494</key>
-		<string>811 770 297 80 0 0 1920 1178 </string>
+		<string>811 746 297 80 0 0 1920 1178 </string>
 		<key>608</key>
 		<string>605 517 70 78 0 0 1280 832 </string>
 	</dict>
@@ -24,7 +24,6 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>494</integer>
-		<integer>144</integer>
 		<integer>239</integer>
 	</array>
 	<key>IBSystem Version</key>

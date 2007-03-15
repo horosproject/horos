@@ -2602,7 +2602,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
-	//NSLog(@"initwithdata");
+	NSLog(@"initwithdata: xDim: %f yDim: %f", xDim, yDim);
 	if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];
@@ -9717,10 +9717,11 @@ BOOL            readable = YES;
 
 - (NSString *)description {
 	NSMutableString *description = [NSMutableString string];
-	[description appendString:[NSString stringWithFormat: @"source File: %@\n", srcFile]];
+	[description appendString:NSStringFromClass([self class])];
+	[description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
 	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
-	[description appendString:[NSString stringWithFormat: @"width: %f\n", width]];
-	[description appendString:[NSString stringWithFormat: @"height: %f\n", height]];
+	[description appendString:[NSString stringWithFormat: @"width: %d\n", width]];
+	[description appendString:[NSString stringWithFormat: @"height: %d\n", height]];
 	[description appendString:[NSString stringWithFormat: @"pixelRatio: %f\n", pixelRatio]];
 	[description appendString:[NSString stringWithFormat: @"origin X: %f Y: %f  Z: %f\n", originX, originY, originZ]];
 

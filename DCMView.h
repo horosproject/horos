@@ -217,6 +217,7 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	NSTimer			*pushBackColorTimer;
 	float			pushBackAlpha, pushBackAlphaSign;
 	BOOL			pushBackROIEdition;
+	long            scrollMode;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;

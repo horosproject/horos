@@ -17,6 +17,7 @@
 
 #import "MPR2DController.h"
 #import "MPR2DView.h"
+#import "DCMVolumePix.h"
 
 #import "DCMPix.h"
 #include <Accelerate/Accelerate.h>
@@ -1435,7 +1436,7 @@ if( reader)
 		
 		width = imExtent[ 1]-imExtent[ 0]+1;
 		height = imExtent[ 3]-imExtent[ 2]+1;
-		
+
 		if( thickSlabCount > 1 && uu == 0)
 		{
 			imResult = (float*) malloc( width * height * sizeof(float));
@@ -1519,13 +1520,13 @@ if( reader)
 				
 				free( fullVolume);
 				
-				mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+				mypix = [[DCMVolumePix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
 				[mypix setFixed8bitsWLWW:YES];
 				free( rgbaImage);
 			}
 			else
 			{
-				mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+				mypix = [[DCMVolumePix alloc] initwithdata:(float*) im :32 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
 				[mypix copySUVfrom: firstObject];
 			}
 			[finalPixList removeAllObjects];
@@ -1708,7 +1709,7 @@ if( reader)
 					free( fullVolume);
 					free( fullVolumeBlending);
 					
-					DCMPix* mypix = [[DCMPix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+					DCMPix* mypix = [[DCMVolumePix alloc] initwithdata:(float*) rgbaImage :7 :width :height :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
 					[mypix setFixed8bitsWLWW:YES];
 					free( rgbaImage);
 					
@@ -1724,7 +1725,7 @@ if( reader)
 				}
 				else
 				{
-					DCMPix*		mypix = [[DCMPix alloc] initwithdata:(float*) im :32 :imExtent[ 1]-imExtent[ 0]+1 :imExtent[ 3]-imExtent[ 2]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+					DCMPix*		mypix = [[DCMVolumePix alloc] initwithdata:(float*) im :32 :imExtent[ 1]-imExtent[ 0]+1 :imExtent[ 3]-imExtent[ 2]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
 					[mypix copySUVfrom: firstObject];
 					
 					[finalPixListBlending removeAllObjects];
@@ -1971,7 +1972,7 @@ if( reader)
 				NSLog(@"Scalar Type Error!");
 			}
 			
-			DCMPix*			mypix = [[DCMPix alloc] initwithdata:im :32 :imExtent[ 1]+1 :imExtent[ 3]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
+			DCMPix*			mypix = [[DCMVolumePix alloc] initwithdata:im :32 :imExtent[ 1]+1 :imExtent[ 3]+1 :space[0] :space[1] :origin[0] :origin[1] :origin[2]];
 			[mypix copySUVfrom: firstObject];
 			[perPixList addObject: mypix];
 			[mypix release];

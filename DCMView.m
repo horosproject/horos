@@ -2278,7 +2278,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	}
 }
 
-static long scrollMode;
+
 
 - (long) getTool: (NSEvent*) event
 {
@@ -3323,8 +3323,8 @@ static long scrollMode;
 	NSRect  frame = [self frame];
 	NSPoint current = [self currentPointInView:event];
 	NSPoint   eventLocation = [event locationInWindow];
-	if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
-	{
+	//if( ![[self stringID] isEqualToString:@"OrthogonalMPRVIEW"])
+	//{
 		crossPrev = cross;
 		
 		if( crossMove)
@@ -3379,7 +3379,7 @@ static long scrollMode;
 		[self mouseMoved: event];	// Update some variables...
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object:stringID userInfo: [NSDictionary dictionaryWithObject:@"dragged" forKey:@"action"]];
-	}
+	//}
 
 }
 
@@ -3469,7 +3469,7 @@ static long scrollMode;
 	//	NSLog(@"scrollMode : %d", scrollMode);
 	}
 	
-	if( movie4Dmove == NO && ![stringID isEqualToString:@"OrthogonalMPRVIEW"])
+	if( movie4Dmove == NO)
 	{
 		previmage = curImage;
 		
@@ -3501,30 +3501,6 @@ static long scrollMode;
 			[self sendSyncMessage: curImage - previmage];
 		}
 	}
-	else if( movie4Dmove == NO && [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-	{
-		long from, to, startLocation;
-		if( scrollMode == 2)
-		{
-			from = current.x;
-			to = start.x;
-		}
-		else if( scrollMode == 1)
-		{
-			from = start.y;
-			to = current.y;
-		}
-		else
-		{
-			from = 0;
-			to = 0;
-		}
-		
-		if ( fabs( from-to ) >= 1 && [self isKindOfClass: [OrthogonalMPRView class]] ) {
-			[(OrthogonalMPRView*)self scrollTool: from : to];
-		}
-	}
-
 }
 
 - (void)mouseDraggedBlending:(NSEvent *)event{
@@ -3593,29 +3569,9 @@ static long scrollMode;
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: [[blendingView curDCM] wl] :[[blendingView curDCM] ww] :curDCM] userInfo: 0L];
 
-	if( stringID)
-	{
-		if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
-		{
-			[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
-			[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
-		}
-		else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-		{
-			[self setWLWW: curWL :curWW];
-			[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
-		}
-		else
-		{
-			[blendingView loadTextures];
-			[self loadTextures];
-		}
-	}
-	else
-	{
-		[blendingView loadTextures];
-		[self loadTextures];
-	}
+
+	[blendingView loadTextures];
+	[self loadTextures];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: blendingView userInfo:0L];
 
@@ -3623,7 +3579,8 @@ static long scrollMode;
 
 - (void)mouseDraggedWindowLevel:(NSEvent *)event{
 	NSPoint current = [self currentPointInView:event];
-	if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
+	// Not blending
+	//if( !([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L)))
 	{
 		float WWAdapter = startWW / 100.0;
 
@@ -3689,19 +3646,14 @@ static long scrollMode;
 			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
 		}
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
-		
+		// Probably can move this to the end of MPRPreview after calling the super 
 		if( stringID)
 		{
 			if( [stringID isEqualToString:@"Perpendicular"] || [stringID isEqualToString:@"FinalView"] || [stringID isEqualToString:@"Original"] || [stringID isEqualToString:@"FinalViewBlending"])
 			{
 				[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 			}
-			else if( [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-			{
-				// change Window level
-				//[[self windowController] setWLWW: curWL :curWW];
-				[self setWLWW: curWL :curWW];
-			}
+
 			else [self loadTextures];
 		}
 		else [self loadTextures];
@@ -3723,6 +3675,8 @@ static long scrollMode;
 			}
 		}
 	}
+	//Blending and OrthogonalMPRVIEW
+	/*
 	else if([stringID isEqualToString:@"OrthogonalMPRVIEW"] && (blendingView != 0L))
 	{
 		// change blending value
@@ -3733,7 +3687,7 @@ static long scrollMode;
 		
 		[self setBlendingFactor: blendingFactor];
 	}
-
+	*/
 }
 
 - (void)mouseDraggedRepulsor:(NSEvent *)event{
@@ -4328,7 +4282,7 @@ static long scrollMode;
 			nc = [NSNotificationCenter defaultCenter];
 			[nc postNotificationName: @"sync" object: self userInfo: instructions];
 		}
-		
+		// most subclasses just need this. NO sync notification for subclasses.
 		if( blendingView) // We have to reload the blending image..
 		{
 			[self loadTextures];

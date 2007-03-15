@@ -802,6 +802,170 @@
 	}
 }
 
+- (void)mouseDraggedImageScroll:(NSEvent *) event {
+	short   inc, now, prev, previmage;
+	BOOL	movie4Dmove = NO;
+	NSPoint current = [self currentPointInView:event];
+	if( scrollMode == 0)
+	{
+		if( fabs( start.x - current.x) < fabs( start.y - current.y))
+		{
+			prev = start.y/2;
+			now = current.y/2;
+			if( fabs( start.y - current.y) > 3) scrollMode = 1;
+		}
+		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
+		{
+			prev = start.x/2;
+			now = current.x/2;
+			if( fabs( start.x - current.x) > 3) scrollMode = 2;
+		}
+		
+	//	NSLog(@"scrollMode : %d", scrollMode);
+	}
+
+
+ if( movie4Dmove == NO)
+	{
+		long from, to, startLocation;
+		if( scrollMode == 2)
+		{
+			from = current.x;
+			to = start.x;
+		}
+		else if( scrollMode == 1)
+		{
+			from = start.y;
+			to = current.y;
+		}
+		else
+		{
+			from = 0;
+			to = 0;
+		}
+		
+		if ( fabs( from-to ) >= 1) {
+			[self scrollTool: from : to];
+		}
+	}
+}
+
+- (void)mouseDraggedBlending:(NSEvent *)event{
+	[super mouseDraggedBlending:event];
+	[self setWLWW: curWL :curWW];
+	[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+}
+
+
+- (void)mouseDraggedWindowLevel: (NSEvent *)event {
+	NSPoint current = [self currentPointInView:event];
+
+	if( blendingView == 0L)
+	{
+		float WWAdapter = startWW / 100.0;
+
+		if( WWAdapter < 0.001) WWAdapter = 0.001;
+		
+		if( [self is2DViewer] == YES)
+		{
+			[[[self windowController] thickSlabController] setLowQuality: YES];
+		}
+		
+		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
+		{
+			float startlevel;
+			float endlevel;
+			
+			float eWW, eWL;
+			
+			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
+			{
+				case 0:
+					eWL = startWL + (current.y -  start.y)*WWAdapter;
+					eWW = startWW + (current.x -  start.x)*WWAdapter;
+					
+					if( eWW < 0.1) eWW = 0.1;
+				break;
+				
+				case 1:
+					endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+					
+					eWL = (endlevel - startMin) / 2 + [[NSUserDefaults standardUserDefaults] integerForKey: @"PETMinimumValue"];
+					eWW = endlevel - startMin;
+					
+					if( eWW < 0.1) eWW = 0.1;
+					if( eWL - eWW/2 < 0) eWL = eWW/2;
+				break;
+				
+				case 2:
+					endlevel = startMax + (current.y -  start.y) * WWAdapter ;
+					startlevel = startMin + (current.x -  start.x) * WWAdapter ;
+					
+					if( startlevel < 0) startlevel = 0;
+					
+					eWL = startlevel + (endlevel - startlevel) / 2;
+					eWW = endlevel - startlevel;
+					
+					if( eWW < 0.1) eWW = 0.1;
+					if( eWL - eWW/2 < 0) eWL = eWW/2;
+				break;
+			}
+			
+			[curDCM changeWLWW :eWL  :eWW];
+		}
+		else
+		{
+			[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
+		}
+		
+		curWW = [curDCM ww];
+		curWL = [curDCM wl];
+		
+		if( [self is2DViewer] == YES)
+		{
+			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
+		}
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateWLWWMenu" object: [DCMView findWLWWPreset: curWL :curWW :curDCM] userInfo: 0L];
+		
+
+		// change Window level
+		[self setWLWW: curWL :curWW];
+
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName: @"changeWLWW" object: curDCM userInfo:0L];
+		
+		if( [curDCM SUVConverted] == NO)
+		{
+			//set value for Series Object Presentation State
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+		}
+		else
+		{
+			if( [self is2DViewer] == YES)
+			{
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+			}
+		}
+	}
+	//Blending and OrthogonalMPRVIEW
+	
+	else
+	{
+		// change blending value
+		blendingFactor = blendingFactorStart + (current.x - start.x);
+			
+		if( blendingFactor < -256.0) blendingFactor = -256.0;
+		if( blendingFactor > 256.0) blendingFactor = 256.0;
+		
+		[self setBlendingFactor: blendingFactor];
+	}
+	
+}
+
+
+
 
 
 @end
