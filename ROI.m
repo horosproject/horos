@@ -333,6 +333,12 @@ GLenum glReportError (void)
 	if(layerImage) [layerImage release];
 	if(layerImageWhenSelected) [layerImageWhenSelected release];
 	
+	if(textualBoxLine1) [textualBoxLine1 release];
+	if(textualBoxLine2) [textualBoxLine2 release];
+	if(textualBoxLine3) [textualBoxLine3 release];
+	if(textualBoxLine4) [textualBoxLine4 release];
+	if(textualBoxLine5) [textualBoxLine5 release];
+	
 	[super dealloc];
 }
 
@@ -2515,16 +2521,20 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				glEnable(GL_POLYGON_SMOOTH);
-				
-				// TEXT
-				line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
-				
+							
 				if( [self isTextualDataDisplayed])
 				{
+					// TEXT
+					line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
 					NSPoint tPt = [self lowerRightPoint];
-					long line = 0;
-					
-					if([name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				
+					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name cString]);
+					if(![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 cString]);
+					if(![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 cString]);
+					if(![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 cString]);
+					if(![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 cString]);
+					if(![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 cString]);
+
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
 			}
@@ -3678,6 +3688,41 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 	x = cos(alphaRad) * (point.x - center.x) - sin(alphaRad) * (point.y - center.y);
 	y = sin(alphaRad) * (point.x - center.x) + cos(alphaRad) * (point.y - center.y);
 	return NSMakePoint(x+center.x, y+center.y);
+}
+
+- (void)setTextualBoxLine1:(NSString*)line;
+{
+	if(textualBoxLine1) [textualBoxLine1 release];
+	textualBoxLine1 = line;
+	[textualBoxLine1 retain];
+}
+
+- (void)setTextualBoxLine2:(NSString*)line;
+{
+	if(textualBoxLine2) [textualBoxLine2 release];
+	textualBoxLine2 = line;
+	[textualBoxLine2 retain];
+}
+
+- (void)setTextualBoxLine3:(NSString*)line;
+{
+	if(textualBoxLine3) [textualBoxLine3 release];
+	textualBoxLine3 = line;
+	[textualBoxLine3 retain];
+}
+
+- (void)setTextualBoxLine4:(NSString*)line;
+{
+	if(textualBoxLine4) [textualBoxLine4 release];
+	textualBoxLine4 = line;
+	[textualBoxLine4 retain];
+}
+
+- (void)setTextualBoxLine5:(NSString*)line;
+{
+	if(textualBoxLine5) [textualBoxLine5 release];
+	textualBoxLine5 = line;
+	[textualBoxLine5 retain];
 }
 
 @end

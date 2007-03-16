@@ -92,6 +92,7 @@ enum
 	float			offsetTextBox_x, offsetTextBox_y;
 	
 	char			line1[ 256], line2[ 256], line3[ 256], line4[ 256], line5[ 256];
+	NSString		*textualBoxLine1, *textualBoxLine2, *textualBoxLine3, *textualBoxLine4, *textualBoxLine5;
 	
 	BOOL			_displayCalciumScoring;
 	int				_calciumThreshold;
@@ -244,5 +245,11 @@ enum
 - (void)setLayerImageWhenSelected:(NSImage*)image;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
+
+- (void)setTextualBoxLine1:(NSString*)line;
+- (void)setTextualBoxLine2:(NSString*)line;
+- (void)setTextualBoxLine3:(NSString*)line;
+- (void)setTextualBoxLine4:(NSString*)line;
+- (void)setTextualBoxLine5:(NSString*)line;
 
 @end
