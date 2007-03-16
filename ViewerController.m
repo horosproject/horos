@@ -7760,7 +7760,7 @@ int i,j,l;
 	}
 }
 
--(void)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
+-(ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[[self imageView] curImage]];
 
@@ -7771,6 +7771,7 @@ int i,j,l;
 
 	[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
+	return theNewROI;
 }
 
 - (void) deleteSeriesROIwithName: (NSString*) name

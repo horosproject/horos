@@ -100,9 +100,6 @@ enum
 	
 	NSString		*layerReferenceFilePath;
 	NSImage			*layerImage, *layerImageWhenSelected;
-	NSPoint			layerUpperLeftCornerPosition, layerLowerRightCornerPosition;
-	float			layerRotationAngle;
-	NSPoint			layerRotationCenter, layerTranslation;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -244,6 +241,7 @@ enum
 
 - (void)setLayerReferenceFilePath:(NSString*)path;
 - (void)setLayerImage:(NSImage*)image;
+- (void)setLayerImageWhenSelected:(NSImage*)image;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
 

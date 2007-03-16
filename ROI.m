@@ -561,11 +561,6 @@ GLenum glReportError (void)
 			[layerReferenceFilePath retain];
 			layerImage = nil;
 			layerImageWhenSelected = nil;
-			layerUpperLeftCornerPosition = NSMakePoint(0, 0);
-			layerLowerRightCornerPosition = NSMakePoint(100, 100);
-			layerRotationAngle = 0;
-			layerRotationCenter = NSMakePoint(0, 0);
-			layerTranslation = NSMakePoint(0, 0);
 			name = [[NSString alloc] initWithString:@"Layer"];
 		}
 		else
@@ -818,6 +813,7 @@ GLenum glReportError (void)
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
+		case tLayerROI:
 		
 			xmin = xmax = [[points objectAtIndex:0] x];
 			ymin = ymax = [[points objectAtIndex:0] y];
@@ -996,70 +992,13 @@ return rect;
 			case tLayerROI:
 			{
 				NSPoint p1, p2, p3, p4;
-				p1 = layerUpperLeftCornerPosition;
-				p2 = layerLowerRightCornerPosition;
-				p3 = NSMakePoint(layerUpperLeftCornerPosition.x,layerLowerRightCornerPosition.y);
-				p4 = NSMakePoint(layerLowerRightCornerPosition.x,layerUpperLeftCornerPosition.y);
+				p1 = [[points objectAtIndex:0] point];
+				p2 = [[points objectAtIndex:1] point];
+				p3 = [[points objectAtIndex:2] point];
+				p4 = [[points objectAtIndex:3] point];
 
-				NSLog(@"angle : %f // center: %f, %f", layerRotationAngle, layerRotationCenter.x, layerRotationCenter.y);
-//				if(layerRotationAngle>0)
-//				{
-					p1 = [self rotatePoint:p1 withAngle:layerRotationAngle aroundCenter:layerRotationCenter];
-					p2 = [self rotatePoint:p2 withAngle:layerRotationAngle aroundCenter:layerRotationCenter];
-					p3 = [self rotatePoint:p3 withAngle:layerRotationAngle aroundCenter:layerRotationCenter];
-					p4 = [self rotatePoint:p4 withAngle:layerRotationAngle aroundCenter:layerRotationCenter];
-//				}
-
-				
-				NSLog(@"layerTranslation : %f, %f", layerTranslation.x, layerTranslation.y);				
-				if(layerTranslation.x!=0)
-				{
-					p1.x += layerTranslation.x;
-					p2.x += layerTranslation.x;
-					p3.x += layerTranslation.x;
-					p4.x += layerTranslation.x;
-				}
-				
-				if(layerTranslation.y!=0)
-				{
-					p1.y += layerTranslation.y;
-					p2.y += layerTranslation.y;
-					p3.y += layerTranslation.y;
-					p4.y += layerTranslation.y;
-				}
-				
-				if(layerRotationAngle==0) // no rotation...
-				{
-					NSLog(@"no rotation");
-					if(pt.x>=layerUpperLeftCornerPosition.x+layerTranslation.x && pt.x<=layerLowerRightCornerPosition.x+layerTranslation.x && pt.y<=layerLowerRightCornerPosition.y+layerTranslation.y && pt.y>=layerUpperLeftCornerPosition.y+layerTranslation.y)
-					{
-						NSLog(@"in layer !");
-						imode = ROI_selected;
-					}
-					else
-					{
-						NSLog(@"out...");
-					}					
-				}
-				else if([self isPoint:pt inRectDefinedByPointA:p1 pointB:p2 pointC:p3 pointD:p4])
-				{
-					NSLog(@"in layer !");
+				if([self isPoint:pt inRectDefinedByPointA:p1 pointB:p2 pointC:p3 pointD:p4])
 					imode = ROI_selected;
-				}
-				else
-				{
-					NSLog(@"out...");
-				}
-				
-//				// bring selected layer to front
-//				if(imode == ROI_selected)
-//				{
-//					[[[curView windowController] roiLock] lock];
-//					NSMutableArray *curROIList = [[curView dcmRoiList] objectAtIndex:[curView curImage]]; // ROI List for this slice
-//					[curROIList removeObject:self];
-//					[curROIList insertObject:self atIndex:0];
-//					[[[curView windowController] roiLock] unlock];
-//				}
 			}
 			break;
 			case tPlain:
@@ -1397,14 +1336,6 @@ return rect;
 
 - (void) rotate: (float) angle :(NSPoint) center
 {
-	if(type==tLayerROI)
-	{
-		layerRotationAngle += angle;
-		if(layerRotationAngle>=360) layerRotationAngle -= 360;
-		//layerRotationCenter = center;
-		return;
-	}
-
     float theta;
     float dtheta;
     long i;
@@ -1595,19 +1526,11 @@ return rect;
 			case tArrow:
 			case tAngle:
 			case tPencil:
+			case tLayerROI:
 				for( i = 0; i < [points count]; i++)
 				{
 					[[points objectAtIndex: i] move: offset.x : offset.y];
 				}
-			break;
-			
-			case tLayerROI:
-//				layerUpperLeftCornerPosition.x += offset.x;
-//				layerUpperLeftCornerPosition.y += offset.y;
-//				layerLowerRightCornerPosition.x += offset.x;
-//				layerLowerRightCornerPosition.y += offset.y;
-				layerTranslation.x += offset.x;
-				layerTranslation.y += offset.y;
 			break;
 		}
 		
@@ -2559,32 +2482,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 									
 				glBlendEquation(GL_FUNC_ADD);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				
-				glTranslatef(layerTranslation.x*scaleValue, layerTranslation.y*scaleValue, 0.0f);	
-		
-				screenXUpL = (layerUpperLeftCornerPosition.x-offsetx)*scaleValue;
-				screenYUpL = (layerUpperLeftCornerPosition.y-offsety)*scaleValue;
-				screenXDr = (layerLowerRightCornerPosition.x-offsetx)*scaleValue;
-				screenYDr = (layerLowerRightCornerPosition.y-offsety)*scaleValue;
-
-				NSPoint center = NSMakePoint((layerRotationCenter.x-offsetx)*scaleValue,(layerRotationCenter.y-offsety)*scaleValue);
-				
-				NSPoint screenUpL = NSMakePoint(screenXUpL, screenYUpL);
-				screenUpL = [self rotatePoint:screenUpL withAngle:-layerRotationAngle aroundCenter:center];
-				screenXUpL = screenUpL.x;
-				screenYUpL = screenUpL.y;
-				
-				NSPoint screenDr = NSMakePoint(screenXDr, screenYDr);
-				screenDr = [self rotatePoint:screenDr withAngle:-layerRotationAngle aroundCenter:center];
-				screenXDr = screenDr.x;
-				screenYDr = screenDr.y;
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			
 				
 				NSPoint p1, p2, p3, p4;
-				p1 = layerUpperLeftCornerPosition;
-				p2 = layerLowerRightCornerPosition;
-				p3 = NSMakePoint(layerUpperLeftCornerPosition.x,layerLowerRightCornerPosition.y);
-				p4 = NSMakePoint(layerLowerRightCornerPosition.x,layerUpperLeftCornerPosition.y);
+				p1 = [[points objectAtIndex:0] point];
+				p2 = [[points objectAtIndex:1] point];
+				p3 = [[points objectAtIndex:2] point];
+				p4 = [[points objectAtIndex:3] point];
 				
 				p1.x = (p1.x-offsetx)*scaleValue;
 				p1.y = (p1.y-offsety)*scaleValue;
@@ -2594,31 +2498,35 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				p3.y = (p3.y-offsety)*scaleValue;
 				p4.x = (p4.x-offsetx)*scaleValue;
 				p4.y = (p4.y-offsety)*scaleValue;
-							
-				p1 = [self rotatePoint:p1 withAngle:layerRotationAngle aroundCenter:center];
-				p2 = [self rotatePoint:p2 withAngle:layerRotationAngle aroundCenter:center];
-				p3 = [self rotatePoint:p3 withAngle:layerRotationAngle aroundCenter:center];
-				p4 = [self rotatePoint:p4 withAngle:layerRotationAngle aroundCenter:center];
-
 				
 				glBegin(GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
 					glTexCoord2f(0, 0); // draw upper left in world coordinates
 					glVertex3d(p1.x, p1.y, 0.0);
 					
 					glTexCoord2f(imageWidth, 0); // draw lower left in world coordinates
-					glVertex3d(p4.x, p4.y, 0.0);
+					glVertex3d(p2.x, p2.y, 0.0);
 					
 					glTexCoord2f(0, imageHeight); // draw upper right in world coordinates
 					glVertex3d(p3.x, p3.y, 0.0);
 					
 					glTexCoord2f(imageWidth, imageHeight); // draw lower right in world coordinates
-					glVertex3d(p2.x, p2.y, 0.0);
+					glVertex3d(p4.x, p4.y, 0.0);
 				glEnd();
-
-				glTranslatef(-layerTranslation.x*scaleValue, -layerTranslation.y*scaleValue, 0.0f);
 
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				glEnable(GL_POLYGON_SMOOTH);
+				
+				// TEXT
+				line1[0] = 0; line2[0] = 0; line3[0] = 0; line4[0] = 0; line5[0] = 0;
+				
+				if( [self isTextualDataDisplayed])
+				{
+					NSPoint tPt = [self lowerRightPoint];
+					long line = 0;
+					
+					if([name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+				}
 			}
 		}
 		break;
@@ -3644,15 +3552,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	layerImage = image;
 	[layerImage retain];
 	
-	layerLowerRightCornerPosition.x = layerUpperLeftCornerPosition.x + [image size].width;
-	layerLowerRightCornerPosition.y = layerUpperLeftCornerPosition.y + [image size].height;
-
-	layerRotationCenter.x = (layerLowerRightCornerPosition.x + layerUpperLeftCornerPosition.x) /2.0;
-	layerRotationCenter.y = (layerLowerRightCornerPosition.y + layerUpperLeftCornerPosition.y) /2.0;
-	
 	NSSize imageSize = [layerImage size];
 	float imageWidth = imageSize.width;
 	float imageHeight = imageSize.height;
+	
+	NSPoint p1, p2, p3, p4;
+	p1 = NSMakePoint(0.0, 0.0);
+	p2 = NSMakePoint(imageWidth, 0.0);
+	p3 = NSMakePoint(0.0, imageHeight);
+	p4 = NSMakePoint(imageWidth, imageHeight);
+
+	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1], [MyPoint point:p2], [MyPoint point:p3], [MyPoint point:p4], nil];
+	[points setArray:pts];
 
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
@@ -3715,31 +3626,27 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 	p3 = [[sortedPoints objectAtIndex:2] pointValue];
 	p4 = [[sortedPoints objectAtIndex:3] pointValue];
 
-//	if(p4.y < p3.y)
-//	{
-//		tempPoint = p4;
-//		p4 = p3;
-//		p3 = tempPoint;
-//	}
-	
 	if(p2.y > p3.y)
 	{
 		tempPoint = p2;
 		p2 = p3;
 		p3 = tempPoint;
 	}
-
-	NSLog(@"point : %f, %f", point.x, point.y);
-	NSLog(@"sortedPoints");
-	NSLog(@"p1 : %f, %f", p1.x, p1.y);
-	NSLog(@"p2 : %f, %f", p2.x, p2.y);
-	NSLog(@"p3 : %f, %f", p3.x, p3.y);
-	NSLog(@"p4 : %f, %f", p4.x, p4.y);
 	
-	if(p1.x==p2.x || p1.x==p3.x || layerRotationAngle==0) // no rotation...
+	if(p1.x==p2.x || p1.x==p3.x) // no rotation...
 	{
-		NSLog(@"no rotation");
-		return (point.x>=p1.x && point.x<=p4.x && point.y<=p3.y && point.y>=p2.y);
+		float minX = p1.x;
+		float maxX = p4.x;
+
+		float minY = p1.y;
+		if(p2.y<minY) minY = p2.y;
+		if(p4.y<minY) minY = p4.y;
+
+		float maxY = p1.y;
+		if(p2.y>maxY) maxY = p2.y;
+		if(p4.y>maxY) maxY = p4.y;
+
+		return (point.x>=minX && point.x<=maxX && point.y<=maxY && point.y>=minY);
 	}
 	
 	float a, b; // y = ax+b

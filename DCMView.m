@@ -2488,7 +2488,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			
 			int i, j;
 			BOOL clickInROI = NO;
-			for( i = 0; i < [curRoiList count]; i++)
+			for( i = 0; i < [curRoiList count]; i++) 
 			{
 				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
 				{
@@ -2584,14 +2584,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			BOOL roiFound = NO;
 			
 			if (!(([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSShiftKeyMask)))
-			for( i = 0; i < [curRoiList count]; i++)
-			{
-				if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
+				for( i = 0; i < [curRoiList count] && !roiFound; i++)
 				{
-					selected = i;
-					roiFound = YES;
+					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
+					{
+						selected = i;
+						roiFound = YES;
+					}
 				}
-			}
 			
 			if( roiFound == NO)
 			{
@@ -2600,9 +2600,12 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					if( [[curRoiList objectAtIndex: i] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
 					{
 						selected = i;
+						break;
 					}
 				}
 			}
+			
+			
 			
 			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
 			{
@@ -2629,6 +2632,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				if( selected >= 0 && drawingROI == NO)
 				{
 					curROI = 0L;
+					
+					// Bring the selected ROI to the first position in array
+					ROI	*roi = [[curRoiList objectAtIndex: selected] retain];
+					[curRoiList removeObject: roi];
+					[curRoiList insertObject: roi atIndex: 0];
+					[roi release];
+					
+					selected = 0;
 					
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];
