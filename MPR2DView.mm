@@ -330,6 +330,7 @@ if( reader)
 		perpendicularSliceTransform->Delete();		
 		sliceTransform->Delete();		
 		aCamera->Delete();
+		changeImageInfo->Delete();
 	}
 	[super finalize];
 }
@@ -363,6 +364,7 @@ if( reader)
 		rotate->Delete();
 		rotatePerpendicular->Delete();
 		perpendicularSliceTransform->Delete();
+		changeImageInfo->Delete();
 		
 		sliceTransform->Delete();
 		
@@ -1406,13 +1408,18 @@ if( reader)
 
 -(void) computeFinalViewForSlice:(NSNumber*) numb
 {
+	// itk output data;
 	vtkImageData	*tempIm;
+	// original view
 	DCMView			*oView = [[[self window] windowController] originalView];
 	int				uu = [numb intValue];
 	
+	// angle or original view
 	float angle = [oView angle];
+	// angle of perpendicular view
 	float angle2 = [perpendicularView angle];
 	
+	// get output for original slice
 	tempIm = rotate->GetOutput();
 	tempIm->Update();
 	
@@ -1424,7 +1431,7 @@ if( reader)
 		NSPoint			ttO, ttOffset;
 		
 		tempIm->GetWholeExtent( imExtent);
-//		NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
+		NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
 		
 		float *im = (float*) tempIm->GetScalarPointer();
 		
@@ -1432,11 +1439,17 @@ if( reader)
 		
 		tempIm->GetSpacing( space);
 		tempIm->GetOrigin( origin);
-//			NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+		
+		NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+		NSLog(@"Spcaing: %f %f %f", space[ 0], space[ 1], space[ 2]);
 		
 		width = imExtent[ 1]-imExtent[ 0]+1;
 		height = imExtent[ 3]-imExtent[ 2]+1;
-
+		
+		NSLog(@"width =  %d height = %d", width, height);
+		
+		// calculations and image creation for Thick Slabs
+		// what is uu ??
 		if( thickSlabCount > 1 && uu == 0)
 		{
 			imResult = (float*) malloc( width * height * sizeof(float));
@@ -1506,7 +1519,7 @@ if( reader)
 		if( uu == thickSlabCount - 1)
 		{
 			DCMPix*		mypix;
-			
+			// we have a volume and no blending controller thick slab mode 4 or 5
 			if( fullVolume != 0L && blendingController == 0L && (thickSlabMode == 4 || thickSlabMode == 5))
 			{
 				unsigned char   *rgbaImage;
@@ -1534,7 +1547,7 @@ if( reader)
 			[mypix release];
 			
 			//NSLog(@"spacing:%2.2f %2.2f", space[0], space[1]);
-			
+			// add image to final view
 			if( firstTime)
 			{
 				firstTime = NO;
@@ -1551,6 +1564,7 @@ if( reader)
 			
 			ttOffset.x = origin[ 0]*[finalView scaleValue]/space[0];
 			ttOffset.y = -origin[ 1]*[finalView scaleValue]/space[1];
+			// Appears to work better without adjusting to offset
 			[finalView setOriginOffset: ttOffset];
 			[finalView setIndex:0];
 			[oView getWLWW:&swl :&sww];
@@ -2393,12 +2407,17 @@ if( reader)
 	perpendicularSliceTransform = vtkTransform::New();
 	perpendicularSliceTransform->Identity();
 	
+	changeImageInfo = vtkImageChangeInformation::New();
+	changeImageInfo->CenterImageOn();	
+	changeImageInfo->SetInput( reader->GetOutput());
 	// FINAL IMAGE RESLICE
 	
 	rotate = vtkImageReslice::New();
 	rotate->SetAutoCropOutput( true);
-	rotate->SetInformationInput( reader->GetOutput());
-	rotate->SetInput( reader->GetOutput());
+	//rotate->SetInformationInput( reader->GetOutput());
+	//rotate->SetInput( reader->GetOutput());
+	rotate->SetInformationInput( changeImageInfo->GetOutput());
+	rotate->SetInput( changeImageInfo->GetOutput());
 	rotate->SetOptimization( true);
 	rotate->SetResliceTransform( sliceTransform);
 
