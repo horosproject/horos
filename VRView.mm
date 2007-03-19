@@ -3100,6 +3100,28 @@ public:
 		
 	[[pixList objectAtIndex: 0] prepareRestore];
 	
+	
+	BOOL	addition = NO;
+	float	newVal = 0;
+	
+	if( [[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
+	{
+		addition = YES;
+		gDataValuesChanged = YES;
+		
+		newVal = 1024;
+	}
+	
+	if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
+	{
+		addition = YES;
+		gDataValuesChanged = YES;
+		
+		newVal = -1024;
+	}
+	
+	
+	
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
 	[sched setDelegate: self];
@@ -3108,7 +3130,7 @@ public:
 	NSMutableSet *unitsSet = [NSMutableSet set];
 	for ( i = 0; i < stackMax; i++ )
 	{
-		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], 0L]];
+		[unitsSet addObject: [NSArray arrayWithObjects: [NSNumber numberWithInt:i], [NSNumber numberWithInt:stackOrientation], [NSNumber numberWithInt: c], [ROIList objectAtIndex: i], [NSNumber numberWithInt: blendedSeries], [NSNumber numberWithBool: addition], [NSNumber numberWithFloat: newVal], 0L]];
 	}
 	// Perform work schedule
 	[sched performScheduleForWorkUnits:unitsSet];
@@ -3221,11 +3243,13 @@ public:
 	
 	[scheduler release];
 	
-	if( textureMapper) 
+	if( textureMapper || gDataValuesChanged)
 	{
+		[self computeValueFactor];
 		// Force min/max recomputing
 		[self movieChangeSource: data];
-		//reader->Modified();
+		
+		gDataValuesChanged = NO;
 	}
 	else
 	{
@@ -4178,6 +4202,28 @@ public:
 	}
 }
 
+- (void) computeValueFactor
+{
+	if( [firstObject SUVConverted])
+	{
+		valueFactor = 4095. / [controller maximumValue];
+		OFFSET16 = 0;
+	}
+	else
+	{
+		if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
+		{
+			valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
+			OFFSET16 = -[controller minimumValue];
+		}
+		else
+		{
+			valueFactor = 1;
+			OFFSET16 = 1500;
+		}
+	}
+}
+
 -(short) setPixSource:(NSMutableArray*)pix :(float*) volumeData
 {
 	short   error = 0;
@@ -4309,28 +4355,8 @@ public:
 		*(data+0) = [controller maximumValue];		// To avoid the min/max saturation problem with 4D data...
 		*(data+1) = [controller minimumValue];		// To avoid the min/max saturation problem with 4D data...
 		
-		if( [firstObject SUVConverted])
-		{
-			valueFactor = 4095. / [controller maximumValue];
-			OFFSET16 = 0;
-			
-			vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-		}
-		else
-		{
-			if( [controller maximumValue] - [controller minimumValue] > 4095 || [controller maximumValue] - [controller minimumValue] < 50)
-			{
-				valueFactor = 4095. / ([controller maximumValue] - [controller minimumValue]);
-				OFFSET16 = -[controller minimumValue];
-				
-				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-			}
-			else
-			{
-				valueFactor = 1;
-				vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1, 0);
-			}
-		}
+		[self computeValueFactor];
+		vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
 	}
 	
 	reader = vtkImageImport::New();

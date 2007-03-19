@@ -302,6 +302,7 @@ typedef char* vtkMyCallbackVR;
 	BOOL						advancedCLUT;
 	NSData						*appliedCurves;
 	BOOL						appliedResolution;
+	BOOL						gDataValuesChanged;
 }
 
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
@@ -411,7 +412,7 @@ typedef char* vtkMyCallbackVR;
 - (float) valueFactor;
 - (void) setViewportResizable: (BOOL) boo;
 - (void) squareView:(id) sender;
-
+- (void) computeValueFactor;
 - (void) setRotate: (BOOL) r;
 - (float) factor;
 

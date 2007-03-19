@@ -779,62 +779,48 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) applyScissor : (NSArray*) object
 {
-	long		x, i				= [[object objectAtIndex: 0] intValue];
-	long		stackOrientation	= [[object objectAtIndex: 1] intValue];
-	long		c					= [[object objectAtIndex: 2] intValue];
+	int			x, i				= [[object objectAtIndex: 0] intValue];
+	int			stackOrientation	= [[object objectAtIndex: 1] intValue];
+	int			c					= [[object objectAtIndex: 2] intValue];
 	ROI*		roi					= [object objectAtIndex: 3];
 	BOOL		blendedSeries		= [[object objectAtIndex: 4] intValue];
+	BOOL		addition			= [[object objectAtIndex: 5] intValue];
+	float		newVal				= [[object objectAtIndex: 6] intValue];
+	
+	NSArray		*array;
+	int			index;
+		
+	switch( stackOrientation)
+	{
+		case 2:
+			index = i;
+		break;
+			
+		case 1:
+		case 0:
+			index = 0;
+		break;
+	}
+	
+	BOOL outside = NO;
+	BOOL restore = NO;
+
+	if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) outside = YES;
+	else if( c == NSTabCharacter) restore = YES;
+	
+	if( addition == NO) newVal = minimumValue;
 	
 	if( blendedSeries)
 	{
-		switch( stackOrientation)
-		{
-			case 2:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
-				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i :YES];
-				else [[blendingPixList objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
-				break;
-				
-			case 1:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
-				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i :YES];
-				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
-				break;
-				
-			case 0:
-				if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
-				else if( c == NSTabCharacter) [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i :YES];
-				else [[blendingPixList objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
-				break;
-		}
+		[[blendingPixList objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition];
 	}
 	else
 	{
 		for( x = 0; x < maxMovieIndex; x++)
 		{
-			switch( stackOrientation)
-			{
-				case 2:
-					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :YES :2 :i];
-					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i :YES];
-					else [[pixList[ x] objectAtIndex: i] fillROI: roi :minimumValue :-999999 :999999 :NO :2 :i];
-					break;
-					
-				case 1:
-					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :1 :i];
-					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i :YES];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :1 :i];
-					break;
-					
-				case 0:
-					if( c == NSCarriageReturnCharacter || c == NSEnterCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :YES :0 : i];
-					else if( c == NSTabCharacter) [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i :YES];
-					else [[pixList[ x] objectAtIndex: 0] fillROI: roi :minimumValue :-999999 :999999 :NO :0 :i];
-					break;
-			}
+			[[pixList[ x] objectAtIndex: index] fillROI:roi newVal:newVal minValue:-999999 maxValue:999999 outside:outside orientationStack:stackOrientation stackNo:i restore:restore addition:addition];
 		}
 	}
-
 }
 
 - (void) prepareUndo

@@ -453,6 +453,7 @@ inline void DrawRuns(	struct edge *active,
 						float max,
 						BOOL outside,
 						float newVal,
+						BOOL addition,
 						BOOL RGB,
 						BOOL compute,
 						float *imax,
@@ -566,12 +567,26 @@ inline void DrawRuns(	struct edge *active,
 					}
 				
 					x = end - start;
-					while( x-- > 0)
+					
+					if( addition)
 					{
-						if( *curPix >= min && *curPix <= max) *curPix = newVal;
-						
-						if( orientation) curPix ++;
-						else curPix += w;
+						while( x-- > 0)
+						{
+							if( *curPix >= min && *curPix <= max) *curPix += newVal;
+							
+							if( orientation) curPix ++;
+							else curPix += w;
+						}
+					}
+					else
+					{
+						while( x-- > 0)
+						{
+							if( *curPix >= min && *curPix <= max) *curPix = newVal;
+							
+							if( orientation) curPix ++;
+							else curPix += w;
+						}
 					}
 				}
 				else
@@ -589,9 +604,18 @@ inline void DrawRuns(	struct edge *active,
 					{
 						unsigned char*  rgbPtr = (unsigned char*) curPix;
 						
-						if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
-						if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
-						if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+						if( addition)
+						{
+							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
+							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
+							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] += newVal;
+						}
+						else
+						{
+							if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
+							if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
+							if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+						}
 						
 						if( orientation) curPix ++;
 						else curPix += w;
@@ -679,12 +703,25 @@ inline void DrawRuns(	struct edge *active,
 					{
 						if( RGB == NO)
 						{
-							while( x-- >= 0)
+							if( addition)
 							{
-								if( *curPix >= min && *curPix <= max) *curPix = newVal;
-								
-								if( orientation) curPix ++;
-								else curPix += w;
+								while( x-- >= 0)
+								{
+									if( *curPix >= min && *curPix <= max) *curPix += newVal;
+									
+									if( orientation) curPix ++;
+									else curPix += w;
+								}
+							}
+							else
+							{
+								while( x-- >= 0)
+								{
+									if( *curPix >= min && *curPix <= max) *curPix = newVal;
+									
+									if( orientation) curPix ++;
+									else curPix += w;
+								}
 							}
 						}
 						else
@@ -693,9 +730,18 @@ inline void DrawRuns(	struct edge *active,
 							{
 								unsigned char*  rgbPtr = (unsigned char*) curPix;
 								
-								if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
-								if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
-								if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+								if( addition)
+								{
+									if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] += newVal;
+									if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] += newVal;
+									if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] += newVal;
+								}
+								else
+								{
+									if( rgbPtr[ 1] >= min && rgbPtr[ 1] <= max) rgbPtr[ 1] = newVal;
+									if( rgbPtr[ 2] >= min && rgbPtr[ 2] <= max) rgbPtr[ 2] = newVal;
+									if( rgbPtr[ 3] >= min && rgbPtr[ 3] <= max) rgbPtr[ 3] = newVal;
+								}
 								
 								if( orientation) curPix ++;
 								else curPix += w;
@@ -718,6 +764,7 @@ void ras_FillPolygon(	NSPointInt *p,
 						float max,
 						BOOL outside,
 						float newVal,
+						BOOL addition,
 						BOOL RGB,
 						BOOL compute,
 						float *imax,
@@ -746,7 +793,7 @@ void ras_FillPolygon(	NSPointInt *p,
 	
     for (active = NULL; (active = UpdateActive(active, edgeTable, curY)) != NULL; curY++)
 	{
-		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
+		DrawRuns(active, curY, pix, w, h, min, max, outside, newVal, addition, RGB, compute, imax, imin, count, itotal, idev, imean, orientation, stackNo, restore);
 	}
 	
 	if( clip)
@@ -1704,11 +1751,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	return result;
 }
 
-- (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo
-{
-	return [self fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :NO];
-}
-
 - (void) prepareRestore
 {
 	int i;
@@ -1749,7 +1791,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	}
 }
 
-- (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore
+- (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition;
 {
     long				count, i, no = 0;
 	long				x, y;
@@ -2072,7 +2114,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if( ptsInt != 0L && no > 1)
 	{
-		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
+		ras_FillPolygon( ptsInt, no, fImage, width, height, [pixArray count], minValue, maxValue, outside, newVal, addition, isRGB, NO, 0L, 0L, 0L, 0L, 0L, 0, orientationStack, stackNo, restore);
 	}
 	else	
 	{	// Fill the image that contains no ROI :
@@ -2138,6 +2180,16 @@ BOOL gUSEPAPYRUSDCMPIX;
 	{
 		free( ptsInt);
 	}
+}
+
+- (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo
+{
+	return [self fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :NO];
+}
+
+- (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore
+{
+	[self fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue:(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) NO];
 }
 
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside
@@ -2392,7 +2444,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 				no = newNo;
 			}
 			
-			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
+			ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, NO, isRGB, YES, &imax, &imin, &count, &itotal, 0L, 0, 2, 0, NO);
 			
 			if( max) *max = imax;
 			if( min) *min = imin;
@@ -2404,7 +2456,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			{
 				idev = 0 ;
 				
-				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
+				ras_FillPolygon( pts, no, fImage, width, height, [pixArray count], 0, 0, NO, 0, NO, isRGB, YES, 0L, 0L, 0L, 0L, &idev, imean, 2, 0, NO);
 				
 				*dev = idev;
 				*dev = *dev / (count-1);
