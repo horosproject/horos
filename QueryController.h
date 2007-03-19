@@ -46,6 +46,8 @@
 	NSMutableDictionary						*activeMoves;
 	int										checkAndViewTry;
 	
+	NSImage									*Realised3, *Realised2;
+	
 	QueryArrayController					*queryManager;
 }
 

@@ -219,9 +219,9 @@ static char *GetPrivateIP()
 			if( [studyArray count] > 0)
 			{
 				if( [[[studyArray objectAtIndex: 0] valueForKey: @"noFiles"] intValue] >= [[item valueForKey:@"numberImages"] intValue])
-					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];
+					[(ImageAndTextCell *)cell setImage: Realised3];
 				else
-					[(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];
+					[(ImageAndTextCell *)cell setImage: Realised2];
 			}
 			else [(ImageAndTextCell *)cell setImage: 0L];
 		}
@@ -1029,6 +1029,9 @@ static char *GetPrivateIP()
 		echoSuccess = 0L;
 		activeMoves = 0L;
 		
+		Realised2 = [[NSImage imageNamed:@"Realised2.tif"] retain];
+		Realised3 = [[NSImage imageNamed:@"Realised3.tif"] retain];
+		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
@@ -1067,6 +1070,8 @@ static char *GetPrivateIP()
 	[activeMoves release];
 	[sourcesArray release];
 	[resultArray release];
+	[Realised2 release];
+	[Realised3 release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 	
