@@ -995,7 +995,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( addFailed == NO)
 		{
-			[newFilesConditionLock lockWhenCondition: 0];
+			if( mainThread == [NSThread currentThread]) [newFilesConditionLock lock];
+			else [newFilesConditionLock lockWhenCondition: 0];
 			
 			if( [viewersListToReload count] != 0) NSLog( @"WARNING ----- [viewersListToReload count] != 0");
 			if( [viewersListToRebuild count] != 0) NSLog( @"WARNING ----- [viewersListToRebuild count] != 0");
@@ -3001,8 +3002,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
  		NSLog(@"HD Free Space: %d MB", (long) free);
 		
-		[[NSUserDefaults standardUserDefaults]  setInteger:40*1024 forKey:@"AUTOCLEANINGSPACESIZE"];
-		
 		if( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
 		{
 			NSError				*error = 0L;
@@ -3032,29 +3031,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 //				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 //				[sort release];
 				
-				for( i = 0; i < [studiesArray count]; i++)
+				if( [studiesArray count] > 2)
 				{
-					NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
-					long		to, from = i;
-					
-					if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+					for( i = 0; i < [studiesArray count]; i++)
 					{
-						oldestStudy = [studiesArray objectAtIndex: i];
-						producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-					}
-					
-					openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
-					if( openedDate == 0L) openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
-					
-					if( [openedDate timeIntervalSinceNow] < openedInterval)
-					{
-						oldestOpenedStudy = [studiesArray objectAtIndex: i];
-						openedInterval = [openedDate timeIntervalSinceNow];
-					}
-					
-					while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
-					{
-						i++;
+						NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
+						long		to, from = i;
+						
 						if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
 						{
 							oldestStudy = [studiesArray objectAtIndex: i];
@@ -3069,13 +3052,32 @@ static BOOL				DICOMDIRCDMODE = NO;
 							oldestOpenedStudy = [studiesArray objectAtIndex: i];
 							openedInterval = [openedDate timeIntervalSinceNow];
 						}
+						
+						while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
+						{
+							i++;
+							if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
+							{
+								oldestStudy = [studiesArray objectAtIndex: i];
+								producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
+							}
+							
+							openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
+							if( openedDate == 0L) openedDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+							
+							if( [openedDate timeIntervalSinceNow] < openedInterval)
+							{
+								oldestOpenedStudy = [studiesArray objectAtIndex: i];
+								openedInterval = [openedDate timeIntervalSinceNow];
+							}
+						}
+						to = i;
 					}
-					to = i;
 				}
 				
 				if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
 				{
-					[context deleteObject: oldestStudy];
+					if( oldestStudy) [context deleteObject: oldestStudy];
 				}
 				
 				if( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
@@ -3098,7 +3100,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				free /= 1024;
 				NSLog(@"HD Free Space: %d MB", (long) free);
 			}
-			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [studiesArray count] > 0);
+			while( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue] && [studiesArray count] > 2);
 			
 			[self saveDatabase: currentDatabasePath];
 			
@@ -3106,7 +3108,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[context release];
 			
 			// This will do a outlineViewRefresh
-			[newFilesConditionLock lockWhenCondition: 0];
+			[newFilesConditionLock lock];
 			[newFilesConditionLock unlockWithCondition: 1];
 		}
 	}
