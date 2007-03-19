@@ -49,5 +49,6 @@
 - (void)installDownloadedPluginAtPath:(NSString*)path;
 - (BOOL)isZippedFileAtPath:(NSString*)path;
 - (BOOL)unZipFileAtPath:(NSString*)path;
+- (void)loadSubmitPluginPage;
 
 @end

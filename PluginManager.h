@@ -39,6 +39,6 @@
 + (void)desactivatePluginWithName:(NSString*)pluginName;
 + (void)deletePluginWithName:(NSString*)pluginName;
 + (NSArray*)pluginsList;
-
++ (void)createDirectory:(NSString*)directoryPath;
 
 @end

@@ -2891,7 +2891,35 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		{
 			if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX))
 			{
-				if( [theEvent modifierFlags]  & NSShiftKeyMask)
+				if( [theEvent modifierFlags]  & NSAlternateKeyMask)
+				{
+					if( [self is2DViewer])
+					{
+						// 4D Direction scroll - Cardiac CT eg
+						
+						float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
+						
+						if( change > 0)
+						{
+							change = ceil( change);
+							if( change < 1) change = 1;
+							
+							change += [[self windowController] curMovieIndex];
+							while( change >= [[self windowController] maxMovieIndex]) change -= [[self windowController] maxMovieIndex];
+						}
+						else
+						{
+							change = floor( change);
+							if( change > -1) change = -1;
+							
+							change += [[self windowController] curMovieIndex];
+							while( change < 0) change += [[self windowController] maxMovieIndex];
+						}
+						
+						[[self windowController] setMovieIndex: change];
+					}
+				}
+				else if( [theEvent modifierFlags]  & NSShiftKeyMask)
 				{
 					float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
 					
