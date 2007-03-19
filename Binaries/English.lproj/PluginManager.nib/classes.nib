@@ -7,7 +7,7 @@
                 delete = id; 
                 download = id; 
                 loadPlugins = id; 
-                modifiy = id; 
+                modifiyActivation = id; 
             }; 
             CLASS = PluginManagerController; 
             LANGUAGE = ObjC; 
@@ -15,6 +15,7 @@
                 dbMenu = NSMenu; 
                 downloadButton = NSButton; 
                 filtersMenu = NSMenu; 
+                installedPluginsTabViewItem = NSTabViewItem; 
                 othersMenu = NSMenu; 
                 pluginTable = NSTableView; 
                 pluginsListPopUp = NSPopUpButton; 
@@ -23,6 +24,7 @@
                 statusTextField = NSTextField; 
                 tabView = NSTabView; 
                 webView = WebView; 
+                webViewTabViewItem = NSTabViewItem; 
             }; 
             SUPERCLASS = NSWindowController; 
         }

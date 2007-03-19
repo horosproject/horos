@@ -39,6 +39,7 @@
 	[statusProgressIndicator setHidden:YES];
 	downloadedFilePath = @"";
 	
+	// desactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
 	
 	return self;
@@ -61,7 +62,7 @@
 	return plugins;
 }
 
-- (IBAction)modifiy:(id)sender;
+- (IBAction)modifiyActivation:(id)sender;
 {
 	NSArray *pluginsList = [PluginManager pluginsList];
 	NSString *pluginName = [[pluginsList objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
@@ -76,10 +77,8 @@
 		[PluginManager activatePluginWithName:pluginName];
 	}
 	
-	[self willChangeValueForKey:@"plugins"];
-	[plugins removeAllObjects];
-	[plugins addObjectsFromArray:[PluginManager pluginsList]];
-	[self didChangeValueForKey:@"plugins"];
+	[self refreshPluginList];
+	[pluginTable selectRow:[pluginTable clickedRow] byExtendingSelection:NO];
 }
 
 - (IBAction)delete:(id)sender;
@@ -89,10 +88,7 @@
 
 	[PluginManager deletePluginWithName:pluginName];
 	
-	[self willChangeValueForKey:@"plugins"];
-	[plugins removeAllObjects];
-	[plugins addObjectsFromArray:[PluginManager pluginsList]];
-	[self didChangeValueForKey:@"plugins"];
+	[self refreshPluginList];
 }
 
 
@@ -129,7 +125,30 @@
 
 - (void)windowWillClose:(NSNotification *)aNotification;
 {
+	[self refreshPluginList];
 	[self loadPlugins];
+}
+
+- (IBAction)showWindow:(id)sender;
+{
+	[super showWindow:sender];
+	[self refreshPluginList];
+}
+
+- (void)refreshPluginList;
+{
+	[self willChangeValueForKey:@"plugins"];
+	[plugins removeAllObjects];
+	[plugins addObjectsFromArray:[PluginManager pluginsList]];
+	[self didChangeValueForKey:@"plugins"];
+}
+
+#pragma mark NSTabView Delegate methods
+
+- (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem
+{
+	if([tabViewItem isEqualTo:installedPluginsTabViewItem])
+		[self refreshPluginList];
 }
 
 #pragma mark -
@@ -309,10 +328,7 @@ int sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
 
-	[self willChangeValueForKey:@"plugins"];
-	[plugins removeAllObjects];
-	[plugins addObjectsFromArray:[PluginManager pluginsList]];
-	[self didChangeValueForKey:@"plugins"];
+	[self refreshPluginList];
 }
 
 - (BOOL)isZippedFileAtPath:(NSString*)path;

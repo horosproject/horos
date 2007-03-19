@@ -21,6 +21,7 @@
 	IBOutlet NSTableView *pluginTable;
 	
 	IBOutlet NSTabView *tabView;
+	IBOutlet NSTabViewItem *installedPluginsTabViewItem, *webViewTabViewItem;
 	
 	IBOutlet WebView *webView;
 	NSArray *pluginsListURLs;
@@ -32,10 +33,11 @@
 }
 
 - (NSMutableArray*)plugins;
-- (IBAction)modifiy:(id)sender;
+- (IBAction)modifiyActivation:(id)sender;
 - (IBAction)delete:(id)sender;
 - (void)loadPlugins;
 - (IBAction)loadPlugins:(id)sender;
+- (void)refreshPluginList;
 
 - (NSArray*)availablePlugins;
 - (void)generateAvailablePluginsMenu;
