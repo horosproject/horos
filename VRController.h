@@ -104,6 +104,9 @@
 	//IBOutlet NSPanel		*clutOpacityPanel;
 	IBOutlet NSDrawer		*clutOpacityDrawer;
 	IBOutlet CLUTOpacityView *clutOpacityView;
+	
+	IBOutlet NSPanel			*shadingPanel;
+	IBOutlet NSArrayController	*shadingsPresets;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -167,6 +170,8 @@
 - (float) blendingMaximumValue;
 - (FlyThruController *) flyThruController;
 - (IBAction) flyThruControllerInit:(id) sender;
+- (IBAction) addShading:(id) sender;
+- (IBAction) selectShading:(id) sender;
 
 #ifdef roi3Dvolume
 // ROIs Volumes

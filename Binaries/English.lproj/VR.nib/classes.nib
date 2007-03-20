@@ -117,6 +117,7 @@
                 ApplyWLWW = id; 
                 LODsliderAction = id; 
                 MoviePlayStop = id; 
+                addShading = id; 
                 applyConvolution = id; 
                 blendingSlider = id; 
                 editShadingValues = id; 
@@ -129,6 +130,7 @@
                 movieRateSliderAction = id; 
                 resetShading = id; 
                 roiGetManager = id; 
+                selectShading = id; 
                 sendMail = id; 
                 setDefaultTool = id; 
                 setEngine = id; 
@@ -166,8 +168,10 @@
                 shadingCheck = NSButton; 
                 shadingEditWindow = NSWindow; 
                 shadingForm = NSForm; 
+                shadingPanel = NSPanel; 
                 shadingValues = NSTextField; 
                 shadingView = NSView; 
+                shadingsPresets = NSArrayController; 
                 toolsMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = VRView; 
@@ -237,6 +241,7 @@
                 quality = NSMatrix; 
                 rotation = NSMatrix; 
                 scissorStateMatrix = NSMatrix; 
+                shadingController = NSObjectController; 
             }; 
             SUPERCLASS = VTKView; 
         }, 

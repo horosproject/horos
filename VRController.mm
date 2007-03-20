@@ -79,6 +79,45 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 @implementation VRController
 
+//- (float) ambient
+//{
+//	return [view ambient];
+//}
+//
+//- (float) diffuse
+//{
+//	return [view diffuse];
+//}
+//
+//- (float) specular
+//{
+//	return [view specular];
+//}
+//
+//- (float) specularPower
+//{
+//	return [view specularPower];
+//}
+//
+//- (void) setAmbient:(float) v
+//{
+//	 [view setAmbient: v];
+//}
+//
+//- (void) setDiffuse:(float) v
+//{
+//	 [view setDiffuse: v];
+//}
+//
+//- (void) setSpecular:(float) v
+//{
+//	 [view setSpecular: v];
+//}
+//
+//- (void) setSpecularPower:(float) v
+//{
+//	 [view setSpecularPower: v];
+//}
 
 - (IBAction) setOrientation:(id) sender
 {
@@ -1082,6 +1121,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
+- (IBAction) addShading:(id) sender
+{
+	NSMutableDictionary *shading = [NSMutableDictionary dictionary];
+	
+	[shading setValue: [NSString stringWithFormat: @"Preset %d", [[shadingsPresets arrangedObjects] count]+1] forKey: @"name"];
+	[shading setValue: @"0.15" forKey: @"ambient"];
+	[shading setValue: @"0.9" forKey: @"diffuse"];
+	[shading setValue: @"0.3" forKey: @"specular"];
+	[shading setValue: @"15" forKey: @"specularPower"];
+
+	// add new printer & select it
+	[shadingsPresets addObject: shading];
+	[shadingsPresets setSelectedObjects: [NSArray arrayWithObject: shading]];
+}
+
 - (IBAction) resetShading:(id) sender
 {
 	float ambient, diffuse, specular, specularpower;
@@ -1136,14 +1190,18 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (IBAction) editShadingValues:(id) sender
 {
-	[view getShadingValues: &savedambient :&saveddiffuse :&savedspecular :&savedspecularpower];
-
-	[[shadingForm cellAtIndex: 0] setFloatValue: savedambient];
-	[[shadingForm cellAtIndex: 1] setFloatValue: saveddiffuse];
-	[[shadingForm cellAtIndex: 2] setFloatValue: savedspecular];
-	[[shadingForm cellAtIndex: 3] setFloatValue: savedspecularpower];
-
-    [NSApp beginSheet: shadingEditWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+//	[view getShadingValues: &savedambient :&saveddiffuse :&savedspecular :&savedspecularpower];
+//
+//	[[shadingForm cellAtIndex: 0] setFloatValue: savedambient];
+//	[[shadingForm cellAtIndex: 1] setFloatValue: saveddiffuse];
+//	[[shadingForm cellAtIndex: 2] setFloatValue: savedspecular];
+//	[[shadingForm cellAtIndex: 3] setFloatValue: savedspecularpower];
+//
+//    [NSApp beginSheet: shadingEditWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	
+	
+	
+	[shadingPanel makeKeyAndOrderFront: self];
 }
 
 

@@ -190,6 +190,8 @@ typedef char* vtkMyCallbackVR;
 	IBOutlet NSMatrix		*scissorStateMatrix;
 	IBOutlet NSColorWell	*backgroundColor;
 	
+	IBOutlet NSObjectController	*shadingController;
+	
 	long					numberOfFrames;
 	BOOL					bestRenderingMode;
 	float					rotationValue, factor;
