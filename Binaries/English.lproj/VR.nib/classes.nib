@@ -171,7 +171,7 @@
                 shadingPanel = NSPanel; 
                 shadingValues = NSTextField; 
                 shadingView = NSView; 
-                shadingsPresets = NSArrayController; 
+                shadingsPresetsController = NSArrayController; 
                 toolsMatrix = NSMatrix; 
                 toolsView = NSView; 
                 view = VRView; 

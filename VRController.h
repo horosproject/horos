@@ -106,8 +106,8 @@
 	IBOutlet CLUTOpacityView *clutOpacityView;
 	
 	IBOutlet NSPanel			*shadingPanel;
-	IBOutlet NSArrayController	*shadingsPresets;
-	NSMutableArray				*shadingPresets;
+	IBOutlet NSArrayController	*shadingsPresetsController;
+	NSMutableArray				*shadingsPresets;
 }
 
 - (IBAction) applyConvolution:(id) sender;
