@@ -946,6 +946,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	long i;
 	
+	[shadingPanel orderOut: self];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:shadingsPresets forKey:@"shadingsPresets"];
 	
     NSLog(@"Dealloc VRController");
@@ -1126,9 +1128,42 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
 - (NSMutableArray*) shadingsPresets
 {
-	if( shadingsPresets == 0L) shadingsPresets = [[NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"]] retain];
-
+	if( shadingsPresets == 0L)
+	{
+		NSArray	*saved = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
+		
+		shadingsPresets = [[NSMutableArray array] retain];
+	
+		int i;
+		for( i = 0; i < [saved count] ; i++)
+		{
+			[shadingsPresets addObject: [NSMutableDictionary dictionaryWithDictionary: [saved objectAtIndex: i]]];
+		}
+	}
+	
+	if( [shadingsPresets count] <= 0)
+	{
+		[self addShading: self];
+	}
+	
 	return shadingsPresets;
+}
+
+- (IBAction) applyShading:(id) sender
+{
+	NSDictionary	*dict = [[shadingsPresetsController selectedObjects] lastObject];
+	
+	float ambient, diffuse, specular, specularpower;
+	
+	ambient = [[dict valueForKey:@"ambient"] floatValue];
+	diffuse = [[dict valueForKey:@"diffuse"] floatValue];
+	specular = [[dict valueForKey:@"specular"] floatValue];
+	specularpower = [[dict valueForKey:@"specularPower"] floatValue];
+	
+	[view setShadingValues: ambient :diffuse :specular :specularpower];
+	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
+	
+	[view setNeedsDisplay: YES];
 }
 
 - (IBAction) addShading:(id) sender
@@ -1146,6 +1181,8 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[self didChangeValueForKey:@"shadingsPresets"];
 	
 	[shadingsPresetsController setSelectedObjects: [NSArray arrayWithObject: shading]];
+	
+	[self applyShading: self];
 }
 
 - (IBAction) resetShading:(id) sender

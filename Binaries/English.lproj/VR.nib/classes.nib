@@ -119,6 +119,7 @@
                 MoviePlayStop = id; 
                 addShading = id; 
                 applyConvolution = id; 
+                applyShading = id; 
                 blendingSlider = id; 
                 editShadingValues = id; 
                 endShadingEditing = id; 
