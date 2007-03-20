@@ -2776,11 +2776,11 @@ public:
 				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
 				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 				
-				BOOL addition = YES;
+				BOOL addition = NO;
 				
 				// Bone Removal
-				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -2000];
-				NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];
+				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];		//-1000
+				NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];		//-99999
 				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
 				NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
@@ -4517,8 +4517,9 @@ public:
 	[self setShadingValues:0.15 :0.9 :0.3 :15];
 
 //	volumeProperty->ShadeOn();
-    volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
-	
+
+	if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
+    else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 		
 	compositeFunction = vtkVolumeRayCastCompositeFunction::New();
 //	compositeFunction->SetCompositeMethodToClassifyFirst();
