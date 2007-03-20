@@ -107,6 +107,7 @@
 	
 	IBOutlet NSPanel			*shadingPanel;
 	IBOutlet NSArrayController	*shadingsPresets;
+	NSMutableArray				*shadingPresets;
 }
 
 - (IBAction) applyConvolution:(id) sender;

@@ -1121,18 +1121,27 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 
+- (NSMutableArray*) shadingPresets
+{
+	if( shadingPresets == 0L) shadingPresets = [[NSMutableArray array] retain];
+
+	return shadingPresets;
+}
+
 - (IBAction) addShading:(id) sender
 {
 	NSMutableDictionary *shading = [NSMutableDictionary dictionary];
 	
-	[shading setValue: [NSString stringWithFormat: @"Preset %d", [[shadingsPresets arrangedObjects] count]+1] forKey: @"name"];
+	[shading setValue: [NSString stringWithFormat: @"Preset %d", [shadingPresets count]+1] forKey: @"name"];
 	[shading setValue: @"0.15" forKey: @"ambient"];
 	[shading setValue: @"0.9" forKey: @"diffuse"];
 	[shading setValue: @"0.3" forKey: @"specular"];
 	[shading setValue: @"15" forKey: @"specularPower"];
 
-	// add new printer & select it
-	[shadingsPresets addObject: shading];
+	[self willChangeValueForKey:@"shadingPresets"];
+	[shadingPresets addObject: shading];
+	[self didChangeValueForKey:@"shadingPresets"];
+	
 	[shadingsPresets setSelectedObjects: [NSArray arrayWithObject: shading]];
 }
 

@@ -60,6 +60,7 @@
 #include "vtkMapper2D.h"
 #include "vtkPicker.h"
 #include "vtkPointPicker.h"
+#include "vtkImageChangeInformation.h"
 #undef id
 #else
 typedef char* vtkTransform;
@@ -134,7 +135,6 @@ typedef char* vtkLineWidget;
 	
 	vtkLineWidget		*line;
 	float				slicePt[3];
-	
 	
 	IBOutlet PreviewView	*perpendicularView;
 	IBOutlet PreviewView	*finalView;
