@@ -1828,9 +1828,18 @@ BOOL gUSEPAPYRUSDCMPIX;
 							{
 								if( x >= 0 && x < width && y >= 0 && y < height)
 								{
-									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
-									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
-									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+									if( addition)
+									{
+										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
+										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
+										if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] += newVal;
+									}
+									else
+									{
+										if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
+										if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
+										if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+									}
 								}
 							}
 							rgbPtr += 4;
@@ -1845,7 +1854,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 							{
 								if( x >= 0 && x < width && y >= 0 && y < height)
 								{
-									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+									if( addition)
+									{
+										if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage += newVal;
+									}
+									else
+									{
+										if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+									}
 								}
 							}
 							fTempImage++;
@@ -1879,15 +1895,31 @@ BOOL gUSEPAPYRUSDCMPIX;
 							{
 								unsigned char*  rgbPtr = (unsigned char*) &fImage[ (yy * width) + xx];
 								
-								if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
-								if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
-								if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+								if( addition)
+								{
+									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] += newVal;
+									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] += newVal;
+									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] += newVal;
+								}
+								else
+								{
+									if( rgbPtr[ 1] >= minValue && rgbPtr[ 1] <= maxValue) rgbPtr[ 1] = newVal;
+									if( rgbPtr[ 2] >= minValue && rgbPtr[ 2] <= maxValue) rgbPtr[ 2] = newVal;
+									if( rgbPtr[ 3] >= minValue && rgbPtr[ 3] <= maxValue) rgbPtr[ 3] = newVal;
+								}
 							}
 							else
 							{
 								float	*fTempImage = &fImage[ (yy * width) + xx];
 								
-								if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+								if( addition)
+								{
+									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage += newVal;
+								}
+								else
+								{
+									if( *fTempImage >= minValue && *fTempImage <= maxValue) *fTempImage = newVal;
+								}
 							}
 						}
 					}

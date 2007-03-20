@@ -330,7 +330,7 @@ if( reader)
 		perpendicularSliceTransform->Delete();		
 		sliceTransform->Delete();		
 		aCamera->Delete();
-		changeImageInfo->Delete();
+		//changeImageInfo->Delete();
 	}
 	[super finalize];
 }
@@ -364,7 +364,7 @@ if( reader)
 		rotate->Delete();
 		rotatePerpendicular->Delete();
 		perpendicularSliceTransform->Delete();
-		changeImageInfo->Delete();
+		//changeImageInfo->Delete();
 		
 		sliceTransform->Delete();
 		
@@ -2407,17 +2407,17 @@ if( reader)
 	perpendicularSliceTransform = vtkTransform::New();
 	perpendicularSliceTransform->Identity();
 	
-	changeImageInfo = vtkImageChangeInformation::New();
-	changeImageInfo->CenterImageOn();	
-	changeImageInfo->SetInput( reader->GetOutput());
+//	changeImageInfo = vtkImageChangeInformation::New();
+//	changeImageInfo->CenterImageOn();	
+//	changeImageInfo->SetInput( reader->GetOutput());
 	// FINAL IMAGE RESLICE
 	
 	rotate = vtkImageReslice::New();
 	rotate->SetAutoCropOutput( true);
-	//rotate->SetInformationInput( reader->GetOutput());
-	//rotate->SetInput( reader->GetOutput());
-	rotate->SetInformationInput( changeImageInfo->GetOutput());
-	rotate->SetInput( changeImageInfo->GetOutput());
+	rotate->SetInformationInput( reader->GetOutput());
+	rotate->SetInput( reader->GetOutput());
+	//rotate->SetInformationInput( changeImageInfo->GetOutput());
+	//rotate->SetInput( changeImageInfo->GetOutput());
 	rotate->SetOptimization( true);
 	rotate->SetResliceTransform( sliceTransform);
 

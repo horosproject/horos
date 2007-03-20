@@ -8769,11 +8769,30 @@ int i,j,l;
 		// ** Set Pixels
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"setPixel"])
-			[[object objectForKey:@"curPix"] fillROI:0L :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1 :[[object objectForKey:@"revert"] boolValue]];
-
-		if( [[object valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
-			[[object objectForKey:@"curPix"] fillROI:[object objectForKey:@"roi"] :[[object objectForKey:@"newValue"] floatValue] :[[object objectForKey:@"minValue"] floatValue] :[[object objectForKey:@"maxValue"] floatValue] :[[object objectForKey:@"outside"] boolValue] :2 :-1 :[[object objectForKey:@"revert"] boolValue]];
+		{
+			[[object objectForKey:@"curPix"]	fillROI:		0L
+												newVal:			[[object objectForKey:@"newValue"] floatValue]
+												minValue:		[[object objectForKey:@"minValue"] floatValue]
+												maxValue:		[[object objectForKey:@"maxValue"] floatValue]
+												outside:		[[object objectForKey:@"outside"] boolValue]
+												orientationStack:2
+												stackNo:		-1
+												restore:		[[object objectForKey:@"revert"] boolValue]
+												addition:		[[object objectForKey:@"addition"] boolValue]];
+		}
 		
+		if( [[object valueForKey:@"action"] isEqualToString:@"setPixelRoi"])
+		{
+			[[object objectForKey:@"curPix"]	fillROI:			[object objectForKey:@"roi"]
+												newVal:				[[object objectForKey:@"newValue"] floatValue]
+												minValue:			[[object objectForKey:@"minValue"] floatValue]
+												maxValue:			[[object objectForKey:@"maxValue"] floatValue]
+												outside:			[[object objectForKey:@"outside"] boolValue]
+												orientationStack:	2
+												stackNo:			-1
+												restore:			[[object objectForKey:@"revert"] boolValue]
+												addition:			[[object objectForKey:@"addition"] boolValue]];
+		}
 		// ** Math Morphology
 		
 		if( [[object valueForKey:@"action"] isEqualToString:@"close"])

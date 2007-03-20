@@ -2776,18 +2776,21 @@ public:
 				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"dilate" radius: 10 sendNotification:NO];
 				[[controller viewer2D] applyMorphology: [roiList valueForKey:@"roi"] action:@"erode" radius: 6 sendNotification:NO];
 				
+				BOOL addition = YES;
+				
 				// Bone Removal
-				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -1000];
+				NSNumber		*nsnewValue	= [NSNumber numberWithFloat: -2000];
 				NSNumber		*nsminValue	= [NSNumber numberWithFloat: -99999];
 				NSNumber		*nsmaxValue	= [NSNumber numberWithFloat: 99999];
 				NSNumber		*nsoutside	= [NSNumber numberWithBool: NO];
+				NSNumber		*nsaddition	= [NSNumber numberWithBool: addition];
 				NSMutableArray	*roiToProceed = [NSMutableArray array];
 				
 				for( i = 0 ; i < [roiList count]; i++)
 				{
 					NSDictionary	*rr = [roiList objectAtIndex: i];
 				
-					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", 0L]];
+					[roiToProceed addObject: [NSDictionary dictionaryWithObjectsAndKeys:  [rr objectForKey:@"roi"], @"roi", [rr objectForKey:@"curPix"], @"curPix", @"setPixelRoi", @"action", nsnewValue, @"newValue", nsminValue, @"minValue", nsmaxValue, @"maxValue", nsoutside, @"outside", nsaddition, @"addition", 0L]];
 				}
 				
 				[[controller viewer2D] roiSetStartScheduler: roiToProceed];
@@ -3074,21 +3077,21 @@ public:
 						roiID = ptInt[0];
 						
 						if( roiID >= 0 && roiID < stackMax)
-							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
+							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[1], ptInt[2])]];
 					break;
 					
 					case 1:
 						roiID = ptInt[1];
 						
 						if( roiID >= 0 && roiID < stackMax)
-							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
+							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[2])]];
 					break;
 					
 					case 2:
 						roiID = ptInt[2];
 						
 						if( roiID >= 0 && roiID < stackMax)
-							[[ [ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
+							[[[ROIList objectAtIndex: roiID] points] addObject: [MyPoint point: NSMakePoint(ptInt[0], ptInt[1])]];
 					break;
 				}
 //				NSLog(@"Slide ID: %d", roiID);
@@ -3097,29 +3100,30 @@ public:
 	}
 	
 	Transform->Delete();
-		
-	[[pixList objectAtIndex: 0] prepareRestore];
 	
+	[[pixList objectAtIndex: 0] prepareRestore];
 	
 	BOOL	addition = NO;
 	float	newVal = 0;
 	
-	if( [[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
+	if( c == NSDeleteCharacter)
 	{
-		addition = YES;
-		gDataValuesChanged = YES;
+		if( [[NSApp currentEvent] modifierFlags] & NSShiftKeyMask)
+		{
+			addition = YES;
+			gDataValuesChanged = YES;
+			
+			newVal = 1024;
+		}
 		
-		newVal = 1024;
+		if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
+		{
+			addition = YES;
+			gDataValuesChanged = YES;
+			
+			newVal = -1024;
+		}
 	}
-	
-	if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
-	{
-		addition = YES;
-		gDataValuesChanged = YES;
-		
-		newVal = -1024;
-	}
-	
 	
 	
 	// Create a scheduler
