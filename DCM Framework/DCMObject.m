@@ -68,15 +68,13 @@ static NSString *softwareVersion = @"001";
 	NSArray *tagArray;
 	DCMAttributeTag *tag;
 	[object removePrivateTags];
-	//NSLog(@" Anonyimize Tags:%@", [tags description]);
-	while (tagArray = [enumerator nextObject]) {
+	while (tagArray = [enumerator nextObject])
+	{
 		tag = [tagArray objectAtIndex:0];
-		NSLog(@"tag %@", [tag name]);
+		
 		id value = nil;
 		if ([tagArray count] > 1)
 			value = [tagArray objectAtIndex:1];
-		
-		NSLog( [value description]);
 		
 		[object anonyimizeAttributeForTag:tag replacingWith:value];
 		if ([[tag name] isEqualToString: @"PatientID"])
