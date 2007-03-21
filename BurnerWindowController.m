@@ -517,6 +517,7 @@ NSString* asciiString (NSString* name);
 		NSFileManager *manager = [NSFileManager defaultManager];
 		[manager removeFileAtPath: [self folderToBurn] handler:nil];
 		[manager removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+		[manager removeFileAtPath: [self folderToBurn] handler:nil];
 		
 		[filesToBurn release];
 		filesToBurn = nil;
@@ -769,12 +770,12 @@ NSString* asciiString (NSString* name);
 			// **********
 		}
 		
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"]  && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
 			[self performSelectorOnMainThread:@selector(produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
-	// Look for and if present copy a second folder for eg windows viewer or html files.
+		// Look for and if present copy a second folder for eg windows viewer or html files.
 
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"])
 		{
