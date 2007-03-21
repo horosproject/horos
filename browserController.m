@@ -1002,7 +1002,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				[viewersListToReload addObjectsFromArray: vlToReload];
 				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
-
+				
 				if( newStudy) [self newFilesGUIUpdateRun: 1];
 				else [self newFilesGUIUpdateRun: 2];
 			}
@@ -1012,7 +1012,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				[viewersListToReload addObjectsFromArray: vlToReload];
 				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
-
+				
 				if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
 				else [newFilesConditionLock unlockWithCondition: 2];
 			}

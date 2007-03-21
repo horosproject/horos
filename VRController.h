@@ -172,8 +172,8 @@
 - (FlyThruController *) flyThruController;
 - (IBAction) flyThruControllerInit:(id) sender;
 - (IBAction) addShading:(id) sender;
-- (IBAction) selectShading:(id) sender;
 - (IBAction) applyShading:(id) sender;
+- (void) findShadingPreset:(id) sender;
 
 #ifdef roi3Dvolume
 // ROIs Volumes

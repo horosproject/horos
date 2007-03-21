@@ -523,7 +523,34 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
 	
+	NSMutableArray *presets = [NSMutableArray array];
+	NSDictionary	*shading;
 	
+	shading = [NSDictionary dictionary];
+	[shading setValue: @"Default" forKey: @"name"];
+	[shading setValue: @"0.15" forKey: @"ambient"];
+	[shading setValue: @"0.9" forKey: @"diffuse"];
+	[shading setValue: @"0.3" forKey: @"specular"];
+	[shading setValue: @"15" forKey: @"specularPower"];
+	[presets addObject: shading];
+	
+	shading = [NSDictionary dictionary];
+	[shading setValue: @"Glossy Vascular" forKey: @"name"];
+	[shading setValue: @"0.15" forKey: @"ambient"];
+	[shading setValue: @"0.28" forKey: @"diffuse"];
+	[shading setValue: @"1.42" forKey: @"specular"];
+	[shading setValue: @"50" forKey: @"specularPower"];
+	[presets addObject: shading];
+	
+	shading = [NSDictionary dictionary];
+	[shading setValue: @"Glossy Bone" forKey: @"name"];
+	[shading setValue: @"0.15" forKey: @"ambient"];
+	[shading setValue: @"0.24" forKey: @"diffuse"];
+	[shading setValue: @"1.17" forKey: @"specular"];
+	[shading setValue: @"6.98" forKey: @"specularPower"];
+	[presets addObject: shading];
+	
+	[defaultValues setObject:presets forKey:@"shadingsPresets"];
 	// *************
 	// AUTO-CLEANING
 	// *************

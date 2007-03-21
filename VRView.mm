@@ -1123,11 +1123,6 @@ public:
 
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower
 {
-//	[shadingController setValue:[NSNumber numberWithFloat: diffuse] forKey: @"diffuse"];
-//	[shadingController setValue:[NSNumber numberWithFloat: specular] forKey: @"specular"];
-//	[shadingController setValue:[NSNumber numberWithFloat: specularpower] forKey: @"specularPower"];
-//	[shadingController setValue:[NSNumber numberWithFloat: ambient] forKey: @"ambient"];
-	
 	volumeProperty->SetAmbient(ambient);
 	volumeProperty->SetDiffuse(diffuse);
 	volumeProperty->SetSpecular(specular);

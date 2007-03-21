@@ -1124,8 +1124,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 }
 
-static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
-
 - (NSMutableArray*) shadingsPresets
 {
 	if( shadingsPresets == 0L)
@@ -1159,18 +1157,25 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	diffuse = [[dict valueForKey:@"diffuse"] floatValue];
 	specular = [[dict valueForKey:@"specular"] floatValue];
 	specularpower = [[dict valueForKey:@"specularPower"] floatValue];
+
+	float sambient, sdiffuse, sspecular, sspecularpower;	
+	[view getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
 	
-	[view setShadingValues: ambient :diffuse :specular :specularpower];
-	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
+	if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+	{
+		[view setShadingValues: ambient :diffuse :specular :specularpower];
+		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
 	
-	[view setNeedsDisplay: YES];
+		[view setNeedsDisplay: YES];
+	}
 }
 
 - (IBAction) addShading:(id) sender
 {
 	NSMutableDictionary *shading = [NSMutableDictionary dictionary];
 	
-	[shading setValue: [NSString stringWithFormat: @"Preset %d", [shadingsPresets count]+1] forKey: @"name"];
+	if( [shadingsPresets count] == 0) [shading setValue: @"Default" forKey: @"name"];
+	else [shading setValue: [NSString stringWithFormat: @"Preset %d", [shadingsPresets count]+1] forKey: @"name"];
 	[shading setValue: @"0.15" forKey: @"ambient"];
 	[shading setValue: @"0.9" forKey: @"diffuse"];
 	[shading setValue: @"0.3" forKey: @"specular"];
@@ -1185,74 +1190,32 @@ static float	savedambient, saveddiffuse, savedspecular, savedspecularpower;
 	[self applyShading: self];
 }
 
-- (IBAction) resetShading:(id) sender
+- (void) findShadingPreset:(id) sender
 {
 	float ambient, diffuse, specular, specularpower;
 	
-	ambient = 0.15;
-	diffuse = 0.9;
-	specular = 0.3;
-	specularpower = 15;
+	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	
-	[[shadingForm cellAtIndex: 0] setFloatValue: ambient];
-	[[shadingForm cellAtIndex: 1] setFloatValue: diffuse];
-	[[shadingForm cellAtIndex: 2] setFloatValue: specular];
-	[[shadingForm cellAtIndex: 3] setFloatValue: specularpower];
-	
-	[self endShadingEditing: sender];
-}
-
-- (IBAction) endShadingEditing:(id) sender
-{
-    if( [sender tag])   //User clicks OK Button
-    {
-		float ambient, diffuse, specular, specularpower;
-		
-//		NSLog(@"ambient: %@, diffuse: %@, specular: %@, specularpower: %@", [[shadingForm cellAtIndex: 0] stringValue], [[shadingForm cellAtIndex: 1] stringValue], [[shadingForm cellAtIndex: 2] stringValue], [[shadingForm cellAtIndex: 3] stringValue]);
-		
-		ambient = [[shadingForm cellAtIndex: 0] floatValue];
-		diffuse = [[shadingForm cellAtIndex: 1] floatValue];
-		specular = [[shadingForm cellAtIndex: 2] floatValue];
-		specularpower = [[shadingForm cellAtIndex: 3] floatValue];
-		
-//		NSLog(@"ambient: %f, diffuse: %f, specular: %f, specularpower: %f", ambient, diffuse, specular, specularpower);
-		
-		[view setShadingValues: ambient :diffuse :specular :specularpower];
-		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", ambient, diffuse, specular, specularpower]];
-    }
-	
-	if( [sender tag] == 0)
+	NSArray	*shadings = [shadingsPresetsController arrangedObjects];
+	int i;
+	for( i = 0; i < [shadings count]; i++)
 	{
-		[view setShadingValues: savedambient :saveddiffuse :savedspecular :savedspecularpower];
-		[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.2f\nDiffuse: %2.2f\nSpecular :%2.2f, %2.2f", savedambient, saveddiffuse, savedspecular, savedspecularpower]];
+		NSDictionary	*dict = [shadings objectAtIndex: i];
+	
+		if( ambient == [[dict valueForKey:@"ambient"] floatValue] && diffuse == [[dict valueForKey:@"diffuse"] floatValue] && specular == [[dict valueForKey:@"specular"] floatValue] && specularpower == [[dict valueForKey:@"specularPower"] floatValue])
+		{
+			[shadingsPresetsController setSelectedObjects: [NSArray arrayWithObject: dict]];
+		}
 	}
 	
-	[view setNeedsDisplay: YES];
-	
-	if( [sender tag] == 2) return;
-	
-    [shadingEditWindow orderOut:sender];
-    
-    [NSApp endSheet:shadingEditWindow returnCode:[sender tag]];
-
+	[self applyShading: self];
 }
 
 - (IBAction) editShadingValues:(id) sender
 {
-//	[view getShadingValues: &savedambient :&saveddiffuse :&savedspecular :&savedspecularpower];
-//
-//	[[shadingForm cellAtIndex: 0] setFloatValue: savedambient];
-//	[[shadingForm cellAtIndex: 1] setFloatValue: saveddiffuse];
-//	[[shadingForm cellAtIndex: 2] setFloatValue: savedspecular];
-//	[[shadingForm cellAtIndex: 3] setFloatValue: savedspecularpower];
-//
-//    [NSApp beginSheet: shadingEditWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-	
-	
-	
 	[shadingPanel makeKeyAndOrderFront: self];
+	[self findShadingPreset: self];
 }
-
 
 - (void) AddCurrentWLWW:(id) sender
 {
