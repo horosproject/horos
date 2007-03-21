@@ -108,6 +108,7 @@
 	IBOutlet NSPanel			*shadingPanel;
 	IBOutlet NSArrayController	*shadingsPresetsController;
 	NSMutableArray				*shadingsPresets;
+	BOOL						shadingEditable;
 }
 
 - (IBAction) applyConvolution:(id) sender;
