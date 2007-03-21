@@ -2377,7 +2377,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSLog(@"buildMatrixPreview");
 	
-	predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", [study valueForKey:@"patientUID"]];  // , [study valueForKey:@"name"]
+	predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", [study valueForKey:@"patientID"]];  // , [study valueForKey:@"name"]
 	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];

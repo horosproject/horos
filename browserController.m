@@ -995,17 +995,27 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		if( addFailed == NO)
 		{
-			if( mainThread == [NSThread currentThread]) [newFilesConditionLock lock];
-			else [newFilesConditionLock lockWhenCondition: 0];
-			
-			if( [viewersListToReload count] != 0) NSLog( @"WARNING ----- [viewersListToReload count] != 0");
-			if( [viewersListToRebuild count] != 0) NSLog( @"WARNING ----- [viewersListToRebuild count] != 0");
-			
-			[viewersListToReload addObjectsFromArray: vlToReload];
-			[viewersListToRebuild addObjectsFromArray: vlToRebuild];
+			if( mainThread == [NSThread currentThread])
+			{
+				// Purge viewersListToReload & viewersListToReload arrays
+				[self newFilesGUIUpdate: self];
+				
+				[viewersListToReload addObjectsFromArray: vlToReload];
+				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
 
-			if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
-			else [newFilesConditionLock unlockWithCondition: 2];
+				if( newStudy) [self newFilesGUIUpdateRun: 1];
+				else [self newFilesGUIUpdateRun: 2];
+			}
+			else
+			{
+				[newFilesConditionLock lockWhenCondition: 0];
+				
+				[viewersListToReload addObjectsFromArray: vlToReload];
+				[viewersListToRebuild addObjectsFromArray: vlToRebuild];
+
+				if( newStudy) [newFilesConditionLock unlockWithCondition: 1];
+				else [newFilesConditionLock unlockWithCondition: 2];
+			}
 			
 			databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 		}
@@ -1021,28 +1031,32 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return addedImagesArray;
 }
 
+- (void) newFilesGUIUpdateRun:(int) state
+{
+	if( state == 1)
+	{
+		[self outlineViewRefresh];
+	}
+	else
+	{
+		[databaseOutline reloadData];
+		[albumTable reloadData];
+		[self outlineViewSelectionDidChange: 0L];
+	}
+	
+	[self reloadViewers: viewersListToReload];
+	[self rebuildViewers: viewersListToRebuild];
+	
+	[viewersListToReload removeAllObjects];
+	[viewersListToRebuild removeAllObjects];
+}
+
 - (void) newFilesGUIUpdate:(id) sender
 {
 	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
 		NSLog( @"newFilesGUIUpdate");
-		
-		if( [newFilesConditionLock condition] == 1)
-		{
-			[self outlineViewRefresh];
-		}
-		else
-		{
-			[databaseOutline reloadData];
-			[albumTable reloadData];
-			[self outlineViewSelectionDidChange: 0L];
-		}
-		
-		[self reloadViewers: viewersListToReload];
-		[self rebuildViewers: viewersListToRebuild];
-		
-		[viewersListToReload removeAllObjects];
-		[viewersListToRebuild removeAllObjects];
+		[self newFilesGUIUpdateRun: [newFilesConditionLock condition]];
 		
 		[newFilesConditionLock unlockWithCondition: 0];
 	}
