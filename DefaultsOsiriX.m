@@ -526,7 +526,7 @@ static NSString *hostName = @"";
 	NSMutableArray *presets = [NSMutableArray array];
 	NSDictionary	*shading;
 	
-	shading = [NSDictionary dictionary];
+	shading = [NSMutableDictionary dictionary];
 	[shading setValue: @"Default" forKey: @"name"];
 	[shading setValue: @"0.15" forKey: @"ambient"];
 	[shading setValue: @"0.9" forKey: @"diffuse"];
@@ -534,7 +534,7 @@ static NSString *hostName = @"";
 	[shading setValue: @"15" forKey: @"specularPower"];
 	[presets addObject: shading];
 	
-	shading = [NSDictionary dictionary];
+	shading = [NSMutableDictionary dictionary];
 	[shading setValue: @"Glossy Vascular" forKey: @"name"];
 	[shading setValue: @"0.15" forKey: @"ambient"];
 	[shading setValue: @"0.28" forKey: @"diffuse"];
@@ -542,7 +542,7 @@ static NSString *hostName = @"";
 	[shading setValue: @"50" forKey: @"specularPower"];
 	[presets addObject: shading];
 	
-	shading = [NSDictionary dictionary];
+	shading = [NSMutableDictionary dictionary];
 	[shading setValue: @"Glossy Bone" forKey: @"name"];
 	[shading setValue: @"0.15" forKey: @"ambient"];
 	[shading setValue: @"0.24" forKey: @"diffuse"];

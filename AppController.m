@@ -846,26 +846,43 @@ NSRect screenFrame()
 	
 	NS_DURING
 	
-	if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[[note object] stringForKey: @"PET Blending CLUT"]] == NO) 
+	if( previousDefaults)
 	{
-		recomputePETBlending = YES;
+		if ([[previousDefaults valueForKey: @"PET Blending CLUT"]		isEqualToString:	[[note object] stringForKey: @"PET Blending CLUT"]] == NO) 
+			recomputePETBlending = YES;
+		if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[[note object] integerForKey: @"COPYSETTINGS"])
+			refreshViewer = YES;
+		if( [[previousDefaults valueForKey: @"DBDateFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateFormat"]] == NO)
+			refreshDatabase = YES;
+		if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateOfBirthFormat"]] == NO)
+			refreshDatabase = YES;
+		if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[[note object] integerForKey: @"DICOMTimeout"])
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[[note object] integerForKey: @"LISTENERCHECKINTERVAL"])
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[[note object] integerForKey: @"SINGLEPROCESS"])
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[[note object] stringForKey: @"AETITLE"]] == NO)
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[[note object] stringForKey: @"STORESCPEXTRA"]] == NO)
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"AEPORT"]					isEqualToString:	[[note object] stringForKey: @"AEPORT"]] == NO)
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[[note object] stringForKey: @"AETransferSyntax"]] == NO)
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"STORESCP"] intValue]					!=		[[note object] integerForKey: @"STORESCP"])
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue]				!=		[[note object] integerForKey: @"USESTORESCP"])
+			restartListener = YES;
+		if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[[note object] integerForKey: @"HIDEPATIENTNAME"])
+			refreshDatabase = YES;
+		if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[[note object] objectForKey: @"COLUMNSDATABASE"]] == NO)
+			refreshColumns = YES;	
+		if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[[note object] integerForKey: @"SERIESORDER"])
+			refreshDatabase = YES;
+		if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[[note object] integerForKey: @"KeepStudiesOfSamePatientTogether"])
+			refreshDatabase = YES;
 	}
-	if( [[previousDefaults valueForKey: @"COPYSETTINGS"] intValue]				!=		[[note object] integerForKey: @"COPYSETTINGS"]) refreshViewer = YES;
-	if( [[previousDefaults valueForKey: @"DBDateFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateFormat"]] == NO) refreshDatabase = YES;
-	if( [[previousDefaults valueForKey: @"DBDateOfBirthFormat"]			isEqualToString:	[[note object] stringForKey: @"DBDateOfBirthFormat"]] == NO) refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"DICOMTimeout"]intValue]		!=		[[note object] integerForKey: @"DICOMTimeout"]) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"]intValue]		!=		[[note object] integerForKey: @"LISTENERCHECKINTERVAL"]) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"]intValue]				!=		[[note object] integerForKey: @"SINGLEPROCESS"]) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AETITLE"]					isEqualToString:	[[note object] stringForKey: @"AETITLE"]] == NO) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCPEXTRA"]			isEqualToString:	[[note object] stringForKey: @"STORESCPEXTRA"]] == NO) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AEPORT"]					isEqualToString:	[[note object] stringForKey: @"AEPORT"]] == NO) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"AETransferSyntax"]		isEqualToString:	[[note object] stringForKey: @"AETransferSyntax"]] == NO) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"STORESCP"] intValue]					!=		[[note object] integerForKey: @"STORESCP"]) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"USESTORESCP"] intValue]				!=		[[note object] integerForKey: @"USESTORESCP"]) restartListener = YES;
-	if ([[previousDefaults valueForKey: @"HIDEPATIENTNAME"] intValue]			!=		[[note object] integerForKey: @"HIDEPATIENTNAME"]) refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"COLUMNSDATABASE"]			isEqualToDictionary:[[note object] objectForKey: @"COLUMNSDATABASE"]] == NO) refreshColumns = YES;	
-	if ([[previousDefaults valueForKey: @"SERIESORDER"]intValue]				!=		[[note object] integerForKey: @"SERIESORDER"]) refreshDatabase = YES;
-	if ([[previousDefaults valueForKey: @"KeepStudiesOfSamePatientTogether"]intValue]				!=		[[note object] integerForKey: @"KeepStudiesOfSamePatientTogether"]) refreshDatabase = YES;
 	
 	[previousDefaults release];
 	previousDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
@@ -880,6 +897,7 @@ NSRect screenFrame()
 	{
 		if( showRestartNeeded == YES)
 		{
+			
 			showRestartNeeded = NO;
 			NSRunAlertPanel( NSLocalizedString( @"DICOM Listener", 0L), NSLocalizedString( @"Restart OsiriX to apply these changes.", 0L), NSLocalizedString( @"OK", 0L), nil, nil);
 		}
