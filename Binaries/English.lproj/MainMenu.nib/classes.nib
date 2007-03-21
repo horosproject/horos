@@ -78,6 +78,7 @@
                 matrixDisplayIcons = id; 
                 matrixDoublePressed = id; 
                 matrixPressed = id; 
+                newFilesGUIUpdate = id; 
                 newViewerDICOM = id; 
                 openDatabase = id; 
                 pdfPreview = id; 
@@ -165,7 +166,8 @@
                 sourcesSplitView = NSSplitView; 
                 splitViewHorz = NSSplitView; 
                 splitViewVert = NSSplitView; 
-                subOpenMatrix = NSMatrix; 
+                subOpenMatrix3D = NSMatrix; 
+                subOpenMatrix4D = NSMatrix; 
                 subOpenWindow = NSWindow; 
                 subSeriesOKButton = NSButton; 
                 subSeriesWindow = NSWindow; 

@@ -7770,32 +7770,57 @@ static BOOL needToRezoom;
 				float interval, previousinterval = 0;
 				
 				[splittedSeries addObject: [NSMutableArray array]];
-				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 				
-				for( x = 1; x < [singleSeries count]; x++)
+				if( [singleSeries count] > 1)
 				{
+					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+					
 					interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 					
-					if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+					if( interval == 0)	// 4D - 3D
 					{
-						[splittedSeries addObject: [NSMutableArray array]];
-						NSLog(@"split at: %d", x);
-						
-						previousinterval = 0;
-					}
-					else if( previousinterval)
-					{
-						if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+						int pos3Dindex = 1;
+						for( x = 1; x < [singleSeries count]; x++)
 						{
-							[splittedSeries addObject: [NSMutableArray array]];
-							NSLog(@"split at: %d", x);
-							previousinterval = 0;
+							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( interval != 0) pos3Dindex = 0;
+							
+							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
+							
+							[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
+							
+							pos3Dindex++;
 						}
-						else previousinterval = interval;
 					}
-					else previousinterval = interval;
-					
-					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+					else	// 3D - 4D
+					{				
+						for( x = 1; x < [singleSeries count]; x++)
+						{
+							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+							{
+								[splittedSeries addObject: [NSMutableArray array]];
+								NSLog(@"split at: %d", x);
+								
+								previousinterval = 0;
+							}
+							else if( previousinterval)
+							{
+								if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+								{
+									[splittedSeries addObject: [NSMutableArray array]];
+									NSLog(@"split at: %d", x);
+									previousinterval = 0;
+								}
+								else previousinterval = interval;
+							}
+							else previousinterval = interval;
+							
+							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+						}
+					}
 				}
 				
 				toOpenArray = splittedSeries;
@@ -7842,35 +7867,60 @@ static BOOL needToRezoom;
 				float interval, previousinterval = 0;
 				
 				[splittedSeries addObject: [NSMutableArray array]];
-				[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 				
-				for( x = 1; x < [singleSeries count]; x++)
+				if( [singleSeries count] > 1)
 				{
+					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+					
 					interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
 					
-					if( [[splittedSeries lastObject] count] > 2)
+					if( interval == 0)	// 4D - 3D
 					{
-						if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+						int pos3Dindex = 1;
+						for( x = 1; x < [singleSeries count]; x++)
 						{
-							[splittedSeries addObject: [NSMutableArray array]];
-							NSLog(@"split at: %d", x);
-							previousinterval = 0;
+							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( interval != 0) pos3Dindex = 0;
+							
+							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
+							
+							[[splittedSeries objectAtIndex: pos3Dindex] addObject: [singleSeries objectAtIndex: x]];
+							
+							pos3Dindex++;
 						}
-						else if( previousinterval)
+					}
+					else	// 3D - 4D
+					{
+						for( x = 1; x < [singleSeries count]; x++)
 						{
-							if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+							
+							if( [[splittedSeries lastObject] count] > 2)
 							{
-								[splittedSeries addObject: [NSMutableArray array]];
-								NSLog(@"split at: %d", x);
-								previousinterval = 0;
+								if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+								{
+									[splittedSeries addObject: [NSMutableArray array]];
+									NSLog(@"split at: %d", x);
+									previousinterval = 0;
+								}
+								else if( previousinterval)
+								{
+									if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+									{
+										[splittedSeries addObject: [NSMutableArray array]];
+										NSLog(@"split at: %d", x);
+										previousinterval = 0;
+									}
+									else previousinterval = interval;
+								}
+								else previousinterval = interval;
 							}
 							else previousinterval = interval;
+							
+							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 						}
-						else previousinterval = interval;
 					}
-					else previousinterval = interval;
-					
-					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 				}
 				
 				if( [splittedSeries count] > 1)
@@ -7879,16 +7929,27 @@ static BOOL needToRezoom;
 					[wait release];
 					wait = 0L;
 					
-					[subOpenMatrix renewRows: 1 columns: [splittedSeries count]];
-					[subOpenMatrix sizeToCells];
-					[subOpenMatrix setTarget:self];
-					[subOpenMatrix setAction: @selector( selectSubSeriesAndOpen:)];
+					[subOpenMatrix3D renewRows: 1 columns: [splittedSeries count]];
+					[subOpenMatrix3D sizeToCells];
+					[subOpenMatrix3D setTarget:self];
+					[subOpenMatrix3D setAction: @selector( selectSubSeriesAndOpen:)];
+					
+					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
+					[subOpenMatrix4D sizeToCells];
+					[subOpenMatrix4D setTarget:self];
+					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
 					
 					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
 					
+					BOOL	areData4D = YES;
+					
 					for( i = 0 ; i < [splittedSeries count]; i++)
 					{
-						if( [[splittedSeries objectAtIndex: 0] count] != [[splittedSeries objectAtIndex:i] count]) [[supOpenButtons cellWithTag: 3] setEnabled: NO];
+						if( [[splittedSeries objectAtIndex: 0] count] != [[splittedSeries objectAtIndex:i] count])
+						{
+							[[supOpenButtons cellWithTag: 3] setEnabled: NO];
+							areData4D = NO;
+						}
 					}
 					
 					for( i = 0 ; i < [splittedSeries count]; i++)
@@ -7903,7 +7964,7 @@ static BOOL needToRezoom;
 							
 							NSImage	 *img = [dcmPix getImage];
 							
-							NSButtonCell *cell = [subOpenMatrix cellAtRow:0 column: i];
+							NSButtonCell *cell = [subOpenMatrix3D cellAtRow:0 column: i];
 							[cell setTransparent:NO];
 							[cell setEnabled:YES];
 							[cell setFont:[NSFont systemFontOfSize:10]];
@@ -7912,6 +7973,38 @@ static BOOL needToRezoom;
 							[cell setImage: img];
 							[dcmPix release];
 						}
+					}
+					
+					if( areData4D)
+					{
+						for( i = 0 ; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+						{
+							NSManagedObject	*oob = [[splittedSeries objectAtIndex: 0] objectAtIndex: i];
+							
+							DCMPix *dcmPix  = [[DCMPix alloc] myinit:[oob valueForKey:@"completePath"] :0 :1 :0L :0 :[[oob valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: oob];
+							
+							if( dcmPix)
+							{
+								[dcmPix computeWImage:YES :0 :0];
+								
+								NSImage	 *img = [dcmPix getImage];
+								
+								NSButtonCell *cell = [subOpenMatrix4D cellAtRow:0 column: i];
+								[cell setTransparent:NO];
+								[cell setEnabled:YES];
+								[cell setFont:[NSFont systemFontOfSize:10]];
+								[cell setImagePosition: NSImageBelow];
+								[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
+								[cell setImage: img];
+								[dcmPix release];
+							}
+						}
+					}
+					else
+					{
+						[subOpenMatrix4D renewRows: 0 columns: 0];
+						[subOpenMatrix4D sizeToCells];
+						[subOpenMatrix4D setEnabled: NO];
 					}
 					
 					[NSApp beginSheet: subOpenWindow
@@ -7925,7 +8018,11 @@ static BOOL needToRezoom;
 					{
 						[supOpenButtons selectCellWithTag: 2];
 						
-						if( [subOpenMatrix selectedColumn] < 0) result = 0;
+						if( [subOpenMatrix3D selectedColumn] < 0)
+						{
+							if( [subOpenMatrix4D selectedColumn] < 0) result = 0;
+							else result = 5;
+						}
 					}
 					else result = [supOpenButtons selectedTag];
 					
@@ -7942,14 +8039,28 @@ static BOOL needToRezoom;
 						
 						break;
 						
-						case 2: // selected
-							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix selectedColumn]]];
+						case 2: // selected 3D
+							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
 						break;
 						
-						case 3:	// 4D
+						case 3:	// 4D Viewer
 							toOpenArray = splittedSeries;
 							movieViewer = YES;
 						break;
+						
+						case 5: // selected 4D
+							{
+								NSMutableArray	*array4D = [NSMutableArray array];
+								
+								for( i = 0; i < [splittedSeries count]; i++)
+								{
+									[array4D addObject: [[splittedSeries objectAtIndex: i] objectAtIndex: [subOpenMatrix4D selectedColumn]]];
+								}
+								
+								toOpenArray = [NSMutableArray arrayWithObject: array4D];
+							}
+						break;
+						
 					}
 				}
 			}

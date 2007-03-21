@@ -120,7 +120,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	int								subFrom, subTo, subInterval, subMax;
 	
 	IBOutlet NSWindow				*subOpenWindow;
-	IBOutlet NSMatrix				*subOpenMatrix, *supOpenButtons;
+	IBOutlet NSMatrix				*subOpenMatrix3D, *subOpenMatrix4D, *supOpenButtons;
 	
 	IBOutlet NSWindow				*subSeriesWindow;
 	IBOutlet NSButton				*subSeriesOKButton;
