@@ -594,17 +594,19 @@
 
 - (void) fullWindowView: (id) sender
 {
+	OrthogonalMPRViewer *mprViewer = viewer;
+	
 	if ([sender isEqual: originalView])
 	{
-		[viewer fullWindowView: (int) 0];
+		[mprViewer fullWindowView: 0];
 	}
 	else if ([sender isEqual: xReslicedView])
 	{
-		[viewer fullWindowView: (int) 1];
+		[mprViewer fullWindowView: 1];
 	}
 	else if ([sender isEqual: yReslicedView])
 	{
-		[viewer fullWindowView: (int) 2];
+		[mprViewer fullWindowView: 2];
 	}
 }
 

@@ -92,7 +92,8 @@ extern NSString * documentsDirectory();
 	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
 	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
 
-	NSImage *im = [[[self view] nsimageQuicktime] autorelease];
+	NSImage *im = ( [[self view] respondsToSelector: @selector(nsimageQuicktime:)] ) ?
+		[[[self view] nsimageQuicktime] autorelease] : nil;
 	
 	NSData *imageData = [im  TIFFRepresentation];
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];

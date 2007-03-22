@@ -582,7 +582,7 @@
 
 - (void)addSignedChar:(signed char)sChar{
 	char *buffer;
-	buffer = &sChar;
+	buffer = (char *)&sChar;
 	[dicomData appendBytes:buffer length:1];
 
 }

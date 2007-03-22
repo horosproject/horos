@@ -14,6 +14,7 @@
 
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRPETCTView.h"
+#import "OrthogonalMPRPETCTController.h"
 
 
 @implementation OrthogonalMPRPETCTView
@@ -44,7 +45,7 @@
 		return;
 	crossPositionX = x;
 	crossPositionY = y;
-	[controller setCrossPosition: x: y: self];
+	[(OrthogonalMPRPETCTController*)controller setCrossPosition: x: y: self];
 }
 
 -(void) setBlendingFactor:(float) f
@@ -59,7 +60,7 @@
 
 - (void) flipVertical:(id) sender
 {
-	[controller flipVertical: sender : self];
+	[(OrthogonalMPRPETCTController*)controller flipVertical: sender : self];
 }
 
 - (void) superFlipVertical:(id) sender
@@ -69,7 +70,7 @@
 
 - (void) flipHorizontal:(id) sender
 {
-	[controller flipHorizontal: sender : self];
+	[(OrthogonalMPRPETCTController*)controller flipHorizontal: sender : self];
 }
 
 - (void) superFlipHorizontal:(id) sender

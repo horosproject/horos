@@ -507,32 +507,28 @@ MODIFICATION HISTORY
 	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 	short           val;
     
-    //if( thisTime - lastMovieTime > 1.0 / 10.0)//[movieRateSlider floatValue])
-    //{
-        val = curMovieIndex;
-        val ++;
-        
-		if( val < 0) val = 0;
-		if( val > [framesSlider maxValue]) val = 0;
+	val = curMovieIndex;
+	val ++;
+	
+	if( val < 0) val = 0;
+	if( val > [framesSlider maxValue]) val = 0;
+	
+	curMovieIndex = val;
+	
+	if( [[self window3DController] movieFrames] > 1)
+	{	
+		short movieIndex = curMovieIndex;
 		
-		curMovieIndex = val;
+		while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
+		if( movieIndex < 0) movieIndex = 0;
 		
-		if( [[self window3DController] movieFrames] > 1)
-		{	
-			short movieIndex = curMovieIndex;
-		
-			while( movieIndex >= [[self window3DController] movieFrames]) movieIndex -= [[self window3DController] movieFrames];
-			if( movieIndex < 0) movieIndex = 0;
-		
-			[[self window3DController] setMovieFrame: movieIndex];
-		}
-		
-		[framesSlider setIntValue:curMovieIndex];
-	//	[FTAdapter setCurrentViewToCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
-		[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
-		
-        lastMovieTime = thisTime;
-    //}
+		[[self window3DController] setMovieFrame: movieIndex];
+	}
+	
+	[framesSlider setIntValue:curMovieIndex];
+	[FTAdapter setCurrentViewToLowResolutionCamera:[[FT pathCameras] objectAtIndex:curMovieIndex]];
+	
+	lastMovieTime = thisTime;
 }
 
 - (IBAction) flyThruQuicktimeExport :(id) sender

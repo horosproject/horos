@@ -347,7 +347,8 @@ NSString * documentsDirectory();
 	}
 	else if( [menuString isEqualToString:NSLocalizedString(@"Default WL & WW", nil)] == YES)
 	{
-		[self setWLWW:[[[[self window] firstResponder] curDCM] savedWL] :[[[[self window] firstResponder] curDCM] savedWW]];
+		id firstResponder = [[self window] firstResponder];
+		[self setWLWW:[[firstResponder curDCM] savedWL] :[[firstResponder curDCM] savedWW]];
 	}
 	else if( [menuString isEqualToString:NSLocalizedString(@"Full dynamic", nil)] == YES)
 	{

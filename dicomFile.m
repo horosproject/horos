@@ -130,8 +130,8 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 
 NSString* sopInstanceUIDDecode( unsigned char *r)
 {
-	unsigned int		i, x, length = strlen( (char*) r);
-	unsigned char		str[ 256];
+	unsigned int	i, x, length = strlen( (char *)r );  // Assumes length will always be < 256!
+	char			str[ 256];
 	
 	for( i = 0, x = 0; i < length; i++)
 	{
@@ -146,7 +146,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r)
 		x++;
 	}
 	
-	return [NSString stringWithCString: (char*) str length:x];
+	str[ x ] = '\0';
+	
+	return [NSString stringWithCString:str encoding: NSASCIIStringEncoding];
 }
 
 
