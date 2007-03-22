@@ -440,16 +440,14 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 -(void) decompressDICOMJPEG:(NSString*) compressedPath;
 
 - (void)updateReportToolbarIcon:(NSNotification *)note;
-/******Notifactions posted by browserController***********
 
+- (BonjourBrowser *) bonjourBrowser;
+
+/******Notifactions posted by browserController***********
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser
 @"Close All Viewers" posted when close open windows if option key pressed.	
 @"DCMImageTilingHasChanged" when image tiling has changed
 OsirixAddToDBNotification posted when files are added to the DB
-
 */
-
-
-
 
 @end

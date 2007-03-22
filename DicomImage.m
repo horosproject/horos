@@ -27,6 +27,7 @@ Version 2.5
 
 #import "DicomImage.h"
 #import "browserController.h"
+#import "BonjourBrowser.h"
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
 #import "DCMPix.h"
@@ -77,19 +78,28 @@ extern NSString * documentsDirectory();
 	
 	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
 	{
-		NSString	*path = [self primitiveValueForKey:@"path"];
+		NSString			*path = [self primitiveValueForKey:@"path"];
+		BrowserController	*cB = [BrowserController currentBrowser];
 		
 		if( [path cString] [ 0] != '/')
 		{
-			NSString	*extension = [path pathExtension];
-			long		val = [[path stringByDeletingPathExtension] intValue];
-			NSString	*dbLocation = [[[BrowserController currentBrowser] fixedDocumentsDirectory] stringByAppendingPathComponent: @"DATABASE"];
-			
-			val /= 10000;
-			val++;
-			val *= 10000;
-			
-			completePathCache = [[[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path] retain];
+			if( [cB isCurrentDatabaseBonjour])
+			{
+//				NSLog( @"*** Warning - CompletePath on Shared Database");
+				completePathCache = [[[cB bonjourBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
+			}
+			else
+			{
+				NSString	*extension = [path pathExtension];
+				long		val = [[path stringByDeletingPathExtension] intValue];
+				NSString	*dbLocation = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: @"DATABASE"];
+				
+				val /= 10000;
+				val++;
+				val *= 10000;
+				
+				completePathCache = [[[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path] retain];
+			}
 			
 			return completePathCache;
 		}

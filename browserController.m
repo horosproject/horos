@@ -1336,7 +1336,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 					
 					@try
 					{
-						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
+						NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientID" ascending:YES] autorelease];
 						NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 						
 						objectsToSend = [objectsToSend sortedArrayUsingDescriptors: sortDescriptors];
@@ -1347,7 +1347,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 						
 						for( x = 0; x < [objectsToSend count] ; x++)
 						{
-							if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"]])
+							if( [previousPatientUID isEqualToString: [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientID"]])
 							{
 								[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
 							}
@@ -1361,7 +1361,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 								[samePatientArray removeAllObjects];
 								[samePatientArray addObject: [objectsToSend objectAtIndex: x]];
 								
-								previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientUID"];
+								previousPatientUID = [[objectsToSend objectAtIndex: x] valueForKeyPath:@"series.study.patientID"];
 							}
 						}
 						
@@ -2837,20 +2837,19 @@ static BOOL				DICOMDIRCDMODE = NO;
 				error = 0L;
 				studiesArray = [context executeFetchRequest:request error:&error];
 				
-//				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
-//				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-//				[sort release];
+				NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 				
 				for( i = 0; i < [studiesArray count]; i++)
 				{
-					NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
+					NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
 					NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
 					NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
 					
 					if( openedStudyDate == 0L) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
 					long		to, from = i;
 					
-					while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
+					while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
 					{
 						i++;
 						studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
@@ -3016,8 +3015,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
  		NSLog(@"HD Free Space: %d MB", (long) free);
 		
-		if( (long) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
+		if( (int) free < [[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue])
 		{
+			NSLog(@"Limit Reached - Starting autoCleanDatabaseFreeSpace");
+			
 			NSError				*error = 0L;
 			long				i, x;
 			NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
@@ -3041,15 +3042,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 				error = 0L;
 				studiesArray = [context executeFetchRequest:request error:&error];
 				
-//				NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES];
-//				NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-//				[sort release];
+				NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 				
 				if( [studiesArray count] > 2)
 				{
 					for( i = 0; i < [studiesArray count]; i++)
 					{
-						NSString	*patientUID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
+						NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientID"];
 						long		to, from = i;
 						
 						if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
@@ -3067,7 +3067,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 							openedInterval = [openedDate timeIntervalSinceNow];
 						}
 						
-						while( i < [studiesArray count]-1 && [patientUID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
+						while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
 						{
 							i++;
 							if( [[[studiesArray objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
@@ -3091,12 +3091,20 @@ static BOOL				DICOMDIRCDMODE = NO;
 				
 				if( [defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
 				{
-					if( oldestStudy) [context deleteObject: oldestStudy];
+					if( oldestStudy)
+					{
+						NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
+						[context deleteObject: oldestStudy];
+					}
 				}
 				
 				if( [defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
 				{
-					if( oldestOpenedStudy) [context deleteObject: oldestOpenedStudy];
+					if( oldestOpenedStudy)
+					{
+						NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
+						[context deleteObject: oldestOpenedStudy];
+					}
 				}
 				
 				[deleteInProgress lock];
@@ -3479,7 +3487,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		for( i = 0; i < [outlineViewArray count] ; i++)
 		{
-			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientUID == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]]];
+			[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [[outlineViewArray objectAtIndex: i] valueForKey:@"patientID"]]];
 		}
 		
 		[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
@@ -3498,7 +3506,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 	for( i = 0; i < [outlineViewArray count]; i++)
 	{
 		images += [[[outlineViewArray objectAtIndex: i] valueForKey:@"noFiles"] intValue];
-//		NSLog( [[outlineViewArray objectAtIndex: i] valueForKey:@"patientUID"]);
 	}
 	
 	description = [description stringByAppendingFormat: NSLocalizedString(@" / Result = %@ studies (%@ images)", nil), [numFmt stringForObjectValue:[NSNumber numberWithInt: [outlineViewArray count]]], [numFmt stringForObjectValue:[NSNumber numberWithInt:images]]];
@@ -3544,6 +3551,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[databaseDescription setStringValue: description];
 	
 	[albumTable reloadData];
+}
+
+- (BonjourBrowser *) bonjourBrowser;
+{
+	return bonjourBrowser;
 }
 
 -(void) checkBonjourUpToDateThread:(id) sender
