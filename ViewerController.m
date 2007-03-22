@@ -7760,11 +7760,13 @@ int i,j,l;
 	}
 }
 
--(ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
+- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[[self imageView] curImage]];
 
 	ROI *theNewROI = [[[ROI alloc] initWithType:tLayerROI :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint([curPix originX], [curPix originY])] autorelease];
+	[theNewROI setLayerPixelSpacingX:layerPixelSpacingX];
+	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
 	[theNewROI setLayerImage:image];
 	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
@@ -7772,6 +7774,126 @@ int i,j,l;
 	[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
 	return theNewROI;
+}
+
+- (ROI*)createLayerROIFromROI:(ROI*)roi;
+{
+	float *data;
+	float *locations;
+	long dataSize;
+	data = [[[roi curView] curDCM] getROIValue:&dataSize :roi :&locations];
+
+	float minX = locations[0];
+	float minY = locations[1];	
+	float maxX = locations[0];
+	float maxY = locations[1];
+	float x, y;
+	int i;
+	for (i=1; i<dataSize; i++)
+	{
+		x = locations[2*i];
+		y = locations[2*i+1];
+		if(x<minX) minX = x;
+		if(y<minY) minY = y;
+		if(x>maxX) maxX = x;
+		if(y>maxY) maxY = y;
+	}
+	
+	float imageHeight = maxY - minY;
+	float imageWidth = maxX - minX;
+	NSLog(@"imageWidth : %f, imageHeight: %f", imageWidth, imageHeight);
+//	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(imageWidth, imageHeight)];
+//	[image lockFocus];
+//	[[NSColor clearColor] set];
+//    NSRectFill(NSMakeRect(0, 0, imageWidth, imageHeight));
+//	[image unlockFocus];
+	
+	NSBitmapImageRep *bitmap;
+
+	bitmap = [[NSBitmapImageRep alloc] 
+						initWithBitmapDataPlanes:0L
+						pixelsWide:imageWidth
+						pixelsHigh:imageHeight
+						bitsPerSample:8
+						samplesPerPixel:4
+						hasAlpha:YES
+						isPlanar:NO
+						colorSpaceName:NSCalibratedRGBColorSpace
+						bytesPerRow:imageWidth*4
+						bitsPerPixel:32
+						];
+	
+//	bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
+	
+	unsigned char *imageBuffer = [bitmap bitmapData];
+
+	// need the window level to do a RGB image
+	float windowLevel, windowWidth;
+	[imageView getWLWW:&windowLevel :&windowWidth];
+	float windowLevelMax = windowLevel + 0.5 * windowWidth;
+	float windowLevelMin = windowLevel - 0.5 * windowWidth;
+	
+	float value;
+	char imageValue;
+
+int bytesPerRow = [bitmap bytesPerRow];
+
+//	NSBitmapFormat format = [bitmap bitmapFormat];
+	
+	for (i=0; i<dataSize; i++)
+	{
+		x = locations[2*i] - minX;
+		y = locations[2*i+1] - minY;
+		value = data[i];
+		if(value>windowLevelMax) imageValue = 255;
+		else if(value<windowLevelMin) imageValue = 0;
+		else
+		{
+			imageValue = (char)(value - windowLevel + 0.5 * windowWidth);
+		}
+
+//		imageBuffer[(int)x*4+(int)y*(int)imageWidth] = imageValue;
+		
+		imageBuffer[4*(int)x+(int)y*(int)bytesPerRow] = imageValue;
+		imageBuffer[4*(int)x+1+(int)y*(int)bytesPerRow] = imageValue;
+		imageBuffer[4*(int)x+2+(int)y*(int)bytesPerRow] = imageValue;
+		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
+		//imageBuffer[(int)x+(int)y*bytesPerRow] = imageValue;
+	}
+
+	NSImage *image = [[NSImage alloc] init] ;
+	[image addRepresentation: bitmap];
+			
+//	[image lockFocus];
+//	[bitmap draw];
+//	[image unlockFocus];
+	
+	NSLog(@"image: %f, %f", [image size].width, [image size].height);
+	NSLog(@"pixelSpacing: %f, %f", [[imageView curDCM] pixelSpacingX], [[imageView curDCM] pixelSpacingY]);
+	
+	NSLog(@"addLayerRoiToCurrentSliceWithImage");	
+	ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image imageWhenSelected:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
+	
+	NSLog(@"setName");
+	[theNewROI setName:@"new ROI"];
+	
+	free(data);
+	free(locations);
+	[image release];
+	[bitmap release];
+	
+	NSLog(@"return");
+	return theNewROI;
+}
+
+- (void)createLayerROIFromSelectedROI;
+{
+	[self createLayerROIFromROI:[self selectedROI]];
+}
+
+- (IBAction)createLayerROIFromSelectedROI:(id)sender;
+{
+	[self createLayerROIFromSelectedROI];
 }
 
 - (void) deleteSeriesROIwithName: (NSString*) name

@@ -101,6 +101,7 @@ enum
 	
 	NSString		*layerReferenceFilePath;
 	NSImage			*layerImage, *layerImageWhenSelected;
+	float			layerPixelSpacingX, layerPixelSpacingY;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -220,13 +221,13 @@ enum
 - (NSString	*) sopInstanceUID;
 - (NSString	*) referencedSOPInstanceUID;
 - (NSString	*) referencedSOPClassUID;
--(int) frameNumber;
+- (int) frameNumber;
 
 - (void) setRoiSeriesInstanceUID:(NSString *)uid;
 - (void) setSopInstanceUID:(NSString *)uid;
 - (void) setReferencedSOPInstanceUID:(NSString *)uid;
 - (void) setReferencedSOPClassUID:(NSString *)uid;
--(void) setFrameNumber:(int)frame;
+- (void) setFrameNumber:(int)frame;
 
 // Calcium Scoring
 
@@ -243,6 +244,8 @@ enum
 - (void)setLayerReferenceFilePath:(NSString*)path;
 - (void)setLayerImage:(NSImage*)image;
 - (void)setLayerImageWhenSelected:(NSImage*)image;
+- (void)setLayerPixelSpacingX:(float)x;
+- (void)setLayerPixelSpacingY:(float)y;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
 

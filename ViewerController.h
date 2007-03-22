@@ -385,7 +385,10 @@ enum
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
-- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path;
+- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
+- (ROI*)createLayerROIFromROI:(ROI*)roi;
+- (void)createLayerROIFromSelectedROI;
+- (IBAction)createLayerROIFromSelectedROI:(id)sender;
 - (NSLock*) roiLock;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;

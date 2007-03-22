@@ -567,7 +567,14 @@ GLenum glReportError (void)
 			[layerReferenceFilePath retain];
 			layerImage = nil;
 			layerImageWhenSelected = nil;
+			layerPixelSpacingX = 1.0 / 72.0 * 25.4; // 1/72 inches in milimeters
+			layerPixelSpacingY = layerPixelSpacingX;
 			name = [[NSString alloc] initWithString:@"Layer"];
+			textualBoxLine1 = @"";
+			textualBoxLine2 = @"";
+			textualBoxLine3 = @"";
+			textualBoxLine4 = @"";
+			textualBoxLine5 = @"";
 		}
 		else
 		{
@@ -819,7 +826,6 @@ GLenum glReportError (void)
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
-		case tLayerROI:
 		
 			xmin = xmax = [[points objectAtIndex:0] x];
 			ymin = ymax = [[points objectAtIndex:0] y];
@@ -850,6 +856,10 @@ GLenum glReportError (void)
 		case tROI:
 			result.x = rect.origin.x + rect.size.width;
 			result.y = rect.origin.y + rect.size.height;
+		break;
+
+		case tLayerROI:
+			result = [[points objectAtIndex:3] point];
 		break;
 	}
 	
@@ -1002,7 +1012,7 @@ return rect;
 				p2 = [[points objectAtIndex:1] point];
 				p3 = [[points objectAtIndex:2] point];
 				p4 = [[points objectAtIndex:3] point];
-
+								
 				if([self isPoint:pt inRectDefinedByPointA:p1 pointB:p2 pointC:p3 pointD:p4])
 					imode = ROI_selected;
 			}
@@ -2504,8 +2514,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				p3.y = (p3.y-offsety)*scaleValue;
 				p4.x = (p4.x-offsetx)*scaleValue;
 				p4.y = (p4.y-offsety)*scaleValue;
-				
-				glBegin(GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
+							
+				glBegin(GL_QUAD_STRIP); // draw either tri strips of line strips (so this will draw either two tris or 3 lines)
 					glTexCoord2f(0, 0); // draw upper left in world coordinates
 					glVertex3d(p1.x, p1.y, 0.0);
 					
@@ -2518,7 +2528,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glTexCoord2f(imageWidth, imageHeight); // draw lower right in world coordinates
 					glVertex3d(p4.x, p4.y, 0.0);
 				glEnd();
-
+				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				glEnable(GL_POLYGON_SMOOTH);
 							
@@ -3181,11 +3191,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glColor3f (1.0f, 1.0f, 1.0f);
 		break;
 		
-//		case tLayerROI:
-//		{
-//			
-//		}
-//		break;
 	}
 	
 	glPointSize( 1.0);
@@ -3566,11 +3571,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	float imageWidth = imageSize.width;
 	float imageHeight = imageSize.height;
 	
+	float scaleFactorX = layerPixelSpacingX / pixelSpacingX;
+	float scaleFactorY = layerPixelSpacingY / pixelSpacingY;
+	
 	NSPoint p1, p2, p3, p4;
 	p1 = NSMakePoint(0.0, 0.0);
-	p2 = NSMakePoint(imageWidth, 0.0);
-	p3 = NSMakePoint(0.0, imageHeight);
-	p4 = NSMakePoint(imageWidth, imageHeight);
+	p2 = NSMakePoint(imageWidth*scaleFactorX, 0.0);
+	p3 = NSMakePoint(0.0, imageHeight*scaleFactorY);
+	p4 = NSMakePoint(imageWidth*scaleFactorX, imageHeight*scaleFactorY);
 
 	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1], [MyPoint point:p2], [MyPoint point:p3], [MyPoint point:p4], nil];
 	[points setArray:pts];
@@ -3610,6 +3618,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
 
+}
+
+- (void)setLayerPixelSpacingX:(float)x;
+{
+	layerPixelSpacingX = x;
+}
+
+- (void)setLayerPixelSpacingY:(float)y;
+{
+	layerPixelSpacingY = y;
 }
 
 int sortPointArrayAlongX(id point1, id point2, void *context)

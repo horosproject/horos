@@ -217,6 +217,7 @@
                 coView = id; 
                 copySettingsToOthers = id; 
                 createKeyObjectNote = id; 
+                createLayerROIFromSelectedROI = id; 
                 customizeViewerToolBar = id; 
                 dilateSelectedBrushROI = id; 
                 displayDICOMOverlays = id; 
