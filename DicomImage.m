@@ -83,12 +83,12 @@ extern NSString * documentsDirectory();
 		
 		if( [path cString] [ 0] != '/')
 		{
-			if( [cB isCurrentDatabaseBonjour])
-			{
-//				NSLog( @"*** Warning - CompletePath on Shared Database");
-				completePathCache = [[[cB bonjourBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
-			}
-			else
+//			if( [cB isCurrentDatabaseBonjour])
+//			{
+////				NSLog( @"*** Warning - CompletePath on Shared Database");
+//				completePathCache = [[[cB bonjourBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
+//			}
+//			else
 			{
 				NSString	*extension = [path pathExtension];
 				long		val = [[path stringByDeletingPathExtension] intValue];
