@@ -80,6 +80,15 @@ static char *GetPrivateIP()
 	return destPath;
 }
 
++ (NSString*) uniqueLocalPath:(NSManagedObject*) image
+{
+	NSString	*uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[image valueForKey:@"path"] lastPathComponent], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
+	
+	NSString	*dicomFileName = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
+
+	return dicomFileName;
+}
+
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub{
 	self = [super init];
 	if (self != nil)
@@ -1237,8 +1246,8 @@ static char *GetPrivateIP()
 	[BonjourBrowser waitForLock: lock];
 	
 	// Does this file already exist?
-	NSString	*uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [image valueForKeyPath:@"series.study.patientUID"], [image valueForKey:@"sopInstanceUID"], [[image valueForKey:@"path"] lastPathComponent], [[image valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
-	NSString	*dicomFileName = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
+	NSString	*dicomFileName = [BonjourBrowser uniqueLocalPath: image];
+	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName])
 	{
 		[lock unlock];
@@ -1257,15 +1266,11 @@ static char *GetPrivateIP()
 	NSArray				*images = [[[[image valueForKey: @"series"] valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 	int				size = 0, i = [images indexOfObject: image];
 	
-	NSLog( @"Bonjour noOfImages: %d", noOfImages);
-	
 	do
 	{
 		NSManagedObject	*curImage = [images objectAtIndex: i];
 		
-		NSString	*uniqueFileName = [NSString stringWithFormat:@"%@-%@-%@-%d.%@", [curImage valueForKeyPath:@"series.study.patientUID"], [curImage valueForKey:@"sopInstanceUID"], [[curImage valueForKey:@"path"] lastPathComponent], [[curImage valueForKey:@"instanceNumber"] intValue], [image valueForKey:@"extension"]];
-		
-		dicomFileName = [[documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"] stringByAppendingPathComponent: [DicomFile NSreplaceBadCharacter:uniqueFileName]];
+		dicomFileName = [BonjourBrowser uniqueLocalPath: curImage];
 		
 		if( [[NSFileManager defaultManager] fileExistsAtPath: dicomFileName] == NO)
 		{
@@ -1291,8 +1296,6 @@ static char *GetPrivateIP()
 		i++;
 		
 	}while( size < FILESSIZE*noOfImages && i < [images count]);
-	
-	NSLog( @"File packed for transfer: %d", [dicomFileNames count]);
 	
 	[self connectToServer: index message:@"DICOM"];
 	

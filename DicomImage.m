@@ -72,7 +72,7 @@ extern NSString * documentsDirectory();
 	completePathCache = 0L;
 }
 
--(NSString*) completePath
+-(NSString*) completePathWithDownload:(BOOL) download
 {
 	if( completePathCache) return completePathCache;
 	
@@ -81,14 +81,18 @@ extern NSString * documentsDirectory();
 		NSString			*path = [self primitiveValueForKey:@"path"];
 		BrowserController	*cB = [BrowserController currentBrowser];
 		
-		if( [path cString] [ 0] != '/')
+		if( [cB isCurrentDatabaseBonjour])
 		{
-//			if( [cB isCurrentDatabaseBonjour])
-//			{
-////				NSLog( @"*** Warning - CompletePath on Shared Database");
-//				completePathCache = [[[cB bonjourBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
-//			}
-//			else
+			if( download)
+				completePathCache = [[[cB bonjourBrowser] getDICOMFile: [cB currentBonjourService] forObject: self noOfImages: 1] retain];
+			else
+				completePathCache = [[BonjourBrowser uniqueLocalPath: self] retain];
+			
+			return completePathCache;
+		}
+		else
+		{
+			if( [path cString] [ 0] != '/')
 			{
 				NSString	*extension = [path pathExtension];
 				long		val = [[path stringByDeletingPathExtension] intValue];
@@ -99,13 +103,18 @@ extern NSString * documentsDirectory();
 				val *= 10000;
 				
 				completePathCache = [[[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path] retain];
+				
+				return completePathCache;
 			}
-			
-			return completePathCache;
 		}
 	}
 	
 	return [self primitiveValueForKey:@"path"];
+}
+
+-(NSString*) completePath
+{
+	return [self completePathWithDownload: NO];
 }
 
 - (BOOL)validateForDelete:(NSError **)error

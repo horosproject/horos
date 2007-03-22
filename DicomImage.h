@@ -22,12 +22,13 @@
 	NSString	*completePathCache;
 }
 
--(NSString*) uniqueFilename;
--(NSSet*) paths;
--(NSString*) completePath;
--(void) clearCompletePathCache;
--(DCMSequenceAttribute*) graphicAnnotationSequence;
+- (NSString*) uniqueFilename;
+- (NSSet*) paths;
+- (NSString*) completePath;
+- (void) clearCompletePathCache;
+- (DCMSequenceAttribute*) graphicAnnotationSequence;
 - (NSImage *)image;
 - (NSImage *)thumbnail;
 - (NSDictionary *)dictionary;
+- (NSString*) completePathWithDownload:(BOOL) download;
 @end
