@@ -365,7 +365,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[pool release];
 }
 
--(void) processReslice:(long) directionm :(BOOL) newViewer
+-(BOOL) processReslice:(long) directionm :(BOOL) newViewer
 {
 	DCMPix				*firstPix = [pixList[ curMovieIndex] objectAtIndex: 0];
 	DCMPix				*lastPix = 0L;
@@ -375,7 +375,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	long				imageSize, size, x, y, newX, newY;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sign, ratio;
 	BOOL				square = NO;
-	
+	BOOL				succeed = YES;
 	
 	// Get Values
 	if( directionm == 0)		// X - RESLICE
@@ -758,9 +758,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		postprocessed = YES;
 	}
+	else succeed = NO;
 	
 	// Close the waiting window
 	[self endWaitWindow: waitWindow];
+	
+	return succeed;
 }
 
 - (IBAction) vertFlipDataSet:(id) sender
@@ -1085,6 +1088,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 		if( blendingController) [self ActivateBlending: 0L];
 		
+		BOOL succeed = YES;
+		
 		switch( currentOrientationTool)
 		{
 			case 0:
@@ -1099,12 +1104,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case 1:
 						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
+						succeed = [self processReslice: 0 :newViewer];
 					break;
 					
 					case 2:
 						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
+						succeed = [self processReslice: 1 :newViewer];
 					break;
 				}
 			}
@@ -1116,9 +1121,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					case 0:
 						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
+						succeed = [self processReslice: 0 :newViewer];
 						
-						[self vertFlipDataSet: self];
+						if( succeed)
+							[self vertFlipDataSet: self];
 					break;
 					
 					case 1:
@@ -1129,9 +1135,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 					
 					case 2:
 						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
+						succeed = [self processReslice: 1 :newViewer];
 						
-						[self rotateDataSet: kRotate90DegreesClockwise];
+						if( succeed)
+							[self rotateDataSet: kRotate90DegreesClockwise];
 					break;
 				}
 			}
@@ -1143,18 +1150,24 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					case 0:
 						[self checkEverythingLoaded];
-						[self processReslice: 0 :newViewer];
+						succeed = [self processReslice: 0 :newViewer];
 						
-						[self rotateDataSet: kRotate90DegreesClockwise];
-						[self horzFlipDataSet: self];
+						if( succeed)
+						{
+							[self rotateDataSet: kRotate90DegreesClockwise];
+							[self horzFlipDataSet: self];
+						}
 					break;
 					
 					case 1:
 						[self checkEverythingLoaded];
-						[self processReslice: 1 :newViewer];
+						succeed = [self processReslice: 1 :newViewer];
 						
-						[self rotateDataSet: kRotate90DegreesClockwise];
-						[self horzFlipDataSet: self];
+						if( succeed)
+						{
+							[self rotateDataSet: kRotate90DegreesClockwise];
+							[self horzFlipDataSet: self];
+						}
 					break;
 					
 					case 2:
@@ -1167,7 +1180,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 			break;
 		}
 		
-		currentOrientationTool = newOrientationTool;
+		if( succeed == NO)
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Not Enough Memory", nil), NSLocalizedString(@"Not enough memory to execute this reslicing.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		}
+		else
+		{
+			currentOrientationTool = newOrientationTool;
+		}
 		
 		if( newViewer == NO) [orientationMatrix selectCellWithTag: currentOrientationTool];
 
