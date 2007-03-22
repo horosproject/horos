@@ -114,7 +114,6 @@
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
-- (IBAction) resetShading:(id) sender;
 - (void) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
 - (NSMutableArray*) pixList;
@@ -144,7 +143,6 @@
 - (void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
 - (short)curMovieIndex;
 - (BOOL)is4D;
-- (IBAction) endShadingEditing:(id) sender;
 - (IBAction) editShadingValues:(id) sender;
 - (IBAction) setEngine:(id) sender;
 - (void) updateEngine;

@@ -753,6 +753,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 
 - (void)finalize {
 	// Release Undo system
+	int i;
 	for( i = 0; i < maxMovieIndex; i++)
 	{
 		DCMPix  *firstObject = [pixList[ i] objectAtIndex:0];

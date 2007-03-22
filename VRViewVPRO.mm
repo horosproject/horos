@@ -1690,6 +1690,7 @@ public:
 	croppingBox->Delete();
 	textWLWW->Delete();
 	textX->Delete();
+	int i;
 	for( i = 0; i < 4; i++) oText[ i]->Delete();
 	colorTransferFunction->Delete();
 	reader->Delete();
