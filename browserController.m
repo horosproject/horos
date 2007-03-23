@@ -1055,10 +1055,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
 	{
-		NSLog( @"newFilesGUIUpdate");
-		[self newFilesGUIUpdateRun: [newFilesConditionLock condition]];
-		
+		int condition = [newFilesConditionLock condition];
 		[newFilesConditionLock unlockWithCondition: 0];
+		
+		NSLog( @"newFilesGUIUpdate");
+		[self newFilesGUIUpdateRun: condition];
 	}
 }
 
@@ -1654,6 +1655,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[managedObjectContext setStalenessInterval: 1200];
 	
+	// This line is very important, if there is NO database.sql file
+	[self saveDatabase: currentDatabasePath];
+	
     return managedObjectContext;
 }
 
@@ -2139,7 +2143,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 		if( NEEDTOREBUILD)
 		{
 			[self ReBuildDatabase:self];
-			NEEDTOREBUILD = NO;
 		}
 		else
 		{
@@ -2481,7 +2484,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( isCurrentDatabaseBonjour) return;
 	
 	BOOL REBUILDEXTERNALPROCESS = YES;
-	
+
 	if( COMPLETEREBUILD)	// Delete the database file
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath: currentDatabasePath])
@@ -2489,14 +2492,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[[NSFileManager defaultManager] removeFileAtPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: 0L];
 			[[NSFileManager defaultManager] movePath: currentDatabasePath toPath: [currentDatabasePath stringByAppendingString:@" - old"] handler: 0L];
 		}
-
 	}
 	else
 	{
 		[self saveDatabase:currentDatabasePath];
 	}
-
-		
+	
+	[managedObjectContext lock];
+	[managedObjectContext unlock];
 	[managedObjectContext release];
 	managedObjectContext = 0L;
 	
@@ -2701,6 +2704,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[context unlock];
 	[context release];
+	
+	COMPLETEREBUILD = NO;
+	NEEDTOREBUILD = NO;
 }
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
@@ -3130,8 +3136,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[context release];
 			
 			// This will do a outlineViewRefresh
-			[newFilesConditionLock lock];
-			[newFilesConditionLock unlockWithCondition: 1];
+			if( [newFilesConditionLock tryLock])
+				[newFilesConditionLock unlockWithCondition: 1];
 		}
 	}
 }
