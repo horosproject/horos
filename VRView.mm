@@ -3121,6 +3121,10 @@ public:
 		}
 	}
 	
+	if( c == NSTabCharacter)
+	{
+		gDataValuesChanged = YES;
+	}
 	
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];

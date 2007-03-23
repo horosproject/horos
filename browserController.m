@@ -9559,7 +9559,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL) waitForAProcessor
 {
-	int processors =  MPProcessors ();
+	int processors =  MPProcessors();
 	
 	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForJPEG >= processors;
