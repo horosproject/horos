@@ -6299,7 +6299,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				
 					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					long i;
-					for( i = 0; i < [curRoiList count]; i++)
+					//for( i = 0; i < [curRoiList count]; i++)
+					for(i=[curRoiList count]-1; i>=0; i--)
 					{
 						if( resetData) [[curRoiList objectAtIndex:i] recompute];
 						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
@@ -6308,7 +6309,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					
 					if (!suppress_labels)
 					{
-						for( i = 0; i < [curRoiList count]; i++)
+						//for( i = 0; i < [curRoiList count]; i++)
+						for(i=[curRoiList count]-1; i>=0; i--)
 						{
 							[[curRoiList objectAtIndex:i] drawTextualData];
 						}

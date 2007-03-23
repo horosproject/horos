@@ -7819,15 +7819,10 @@ int i,j,l;
 		if(y>maxY) maxY = y;
 	}
 	
-	float imageHeight = maxY - minY;
-	float imageWidth = maxX - minX;
+	float imageHeight = maxY - minY+1;
+	float imageWidth = maxX - minX+1;
 	NSLog(@"imageWidth : %f, imageHeight: %f", imageWidth, imageHeight);
-//	NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(imageWidth, imageHeight)];
-//	[image lockFocus];
-//	[[NSColor clearColor] set];
-//    NSRectFill(NSMakeRect(0, 0, imageWidth, imageHeight));
-//	[image unlockFocus];
-	
+
 	NSBitmapImageRep *bitmap;
 
 	bitmap = [[NSBitmapImageRep alloc] 
@@ -7840,14 +7835,13 @@ int i,j,l;
 						isPlanar:NO
 						colorSpaceName:NSCalibratedRGBColorSpace
 						bytesPerRow:imageWidth*4
-						bitsPerPixel:32
-						];
-	
-//	bitmap = [[NSBitmapImageRep alloc] initWithData:[image TIFFRepresentation]];
-	
+						bitsPerPixel:32];
+		
 	unsigned char *imageBuffer = [bitmap bitmapData];
-
-	// need the window level to do a RGB image
+	
+	float *buffer = malloc(imageWidth*imageHeight*sizeof(float));
+	
+	// need the window level to do a RGB image	
 	float windowLevel, windowWidth;
 	[imageView getWLWW:&windowLevel :&windowWidth];
 	float windowLevelMax = windowLevel + 0.5 * windowWidth;
@@ -7856,24 +7850,33 @@ int i,j,l;
 	float value;
 	char imageValue;
 
-int bytesPerRow = [bitmap bytesPerRow];
+	int bytesPerRow = [bitmap bytesPerRow];
 
 //	NSBitmapFormat format = [bitmap bitmapFormat];
+
+	BOOL isRGB = [[imageView curDCM] isRGB];
+	
+	// transfer curve rgb = a * value + b
+	float a = 255.0 / windowWidth;
+	float b = - a * windowLevelMin;
 	
 	for (i=0; i<dataSize; i++)
 	{
 		x = locations[2*i] - minX;
 		y = locations[2*i+1] - minY;
 		value = data[i];
-		if(value>windowLevelMax) imageValue = 255;
-		else if(value<windowLevelMin) imageValue = 0;
-		else
-		{
-			imageValue = (char)(value - windowLevel + 0.5 * windowWidth);
-		}
 
-//		imageBuffer[(int)x*4+(int)y*(int)imageWidth] = imageValue;
-		
+		if(!isRGB)
+		{
+			if(value>windowLevelMax) imageValue = 255;
+			else if(value<windowLevelMin) imageValue = 0;
+			else
+			{
+				imageValue = (char)(a * value + b);
+			}
+		}
+		else
+			imageValue = value;	
 		imageBuffer[4*(int)x+(int)y*(int)bytesPerRow] = imageValue;
 		imageBuffer[4*(int)x+1+(int)y*(int)bytesPerRow] = imageValue;
 		imageBuffer[4*(int)x+2+(int)y*(int)bytesPerRow] = imageValue;
@@ -7881,13 +7884,39 @@ int bytesPerRow = [bitmap bytesPerRow];
 		//imageBuffer[(int)x+(int)y*bytesPerRow] = imageValue;
 	}
 
+	
+//	if(![[imageView curDCM] isRGB])
+//	{
+//		vImage_Buffer srcf, dst8, dst8888;
+//		
+//		srcf.height = imageHeight;
+//		srcf.width = imageWidth;
+//		srcf.rowBytes = imageWidth*sizeof(float);
+//		srcf.data = buffer;
+//
+//		dst8.height = imageHeight;
+//		dst8.width = imageWidth;
+//		dst8.rowBytes = imageWidth; 
+//		dst8.data = malloc(imageHeight*imageWidth);
+//
+//		long i;
+//
+//		long min = windowLevel - windowWidth / 2;
+//		long max = windowLevel + windowWidth / 2;
+//
+//		// FLOAT to 8 bit
+//		vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
+//
+//		dst8888 = dst8;
+//		dst8888.rowBytes = imageWidth*4;
+//		dst8888.data = imageBuffer;
+//		
+//		vImageConvert_Planar8toARGB8888(&dst8, &dst8, &dst8, &dst8, &dst8888, 0);
+//	}
+
 	NSImage *image = [[NSImage alloc] init] ;
 	[image addRepresentation: bitmap];
-			
-//	[image lockFocus];
-//	[bitmap draw];
-//	[image unlockFocus];
-	
+
 	NSLog(@"image: %f, %f", [image size].width, [image size].height);
 	NSLog(@"pixelSpacing: %f, %f", [[imageView curDCM] pixelSpacingX], [[imageView curDCM] pixelSpacingY]);
 	

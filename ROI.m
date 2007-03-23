@@ -1014,7 +1014,74 @@ return rect;
 				p4 = [[points objectAtIndex:3] point];
 								
 				if([self isPoint:pt inRectDefinedByPointA:p1 pointB:p2 pointC:p3 pointD:p4])
-					imode = ROI_selected;
+				{
+					float width;
+					float height;
+					NSBitmapImageRep *bitmap;
+					if(mode==ROI_selected)
+					{
+						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
+						width = [layerImageWhenSelected size].width;
+						height = [layerImageWhenSelected size].height;
+					}
+					else
+					{
+						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
+						width = [layerImage size].width;
+						height = [layerImage size].height;
+					}
+					
+					// base vectors of the layer image coordinate system
+					NSPoint v, w;
+					v.x = (p2.x - p1.x);
+					v.y = (p2.y - p1.y);
+					float l = sqrt(v.x*v.x + v.y*v.y);
+					v.x /= l;
+					v.y /= l;
+					
+					float scaleRatio = width / l; // scale factor between the ROI (actual display size) and the texture image (stored)
+					
+					w.x = (p3.x - p1.x);
+					w.y = (p3.y - p1.y);
+					l = sqrt(w.x*w.x + w.y*w.y);
+					w.x /= l;
+					w.y /= l;
+					
+					// clicked point
+					NSPoint c;
+					c.x = pt.x - p1.x;
+					c.y = pt.y - p1.y;
+
+					// point in the layer image coordinate system
+					float y = (c.y-c.x*(v.y/v.x))/(w.y-w.x*(v.y/v.x));
+					float x = (c.x-y*w.x)/v.x;
+					
+					x *= scaleRatio;
+					y *= scaleRatio;
+					
+					// test if the clicked pixel is not transparent (otherwise the ROI won't be selected)
+					// define a neighborhood around the point					
+					#define NEIGHBORHOODRADIUS 10.0
+
+					float xi, yj;
+					BOOL found = NO;
+					int i, j;
+					for(i=-NEIGHBORHOODRADIUS; i<=NEIGHBORHOODRADIUS && !found; i++)
+						for(j=-NEIGHBORHOODRADIUS; j<=NEIGHBORHOODRADIUS && !found; j++)
+						{
+							xi = x+i;
+							yj = y+j;
+							if(xi>=0.0 && yj>=0.0 && xi<width && yj<height)
+							{
+								NSColor *pixelColor = [bitmap colorAtX:xi y:yj];
+								if([pixelColor alphaComponent]>0.0)
+									found = YES;
+							}
+						}
+					if(found)	
+						imode = ROI_selected;
+					[bitmap release];
+				}
 			}
 			break;
 			case tPlain:
@@ -1402,8 +1469,18 @@ return rect;
 	}
 }
 
+- (BOOL)canResize;
+{
+	if(type == tLayerROI)
+		return NO;
+	else
+		return YES;
+}
+
 - (void) resize: (float) factor :(NSPoint) center
 {
+	if(![self canResize]) return;
+	
     long i;
     long intUpper;
     float new_x;
@@ -2519,10 +2596,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glTexCoord2f(0, 0); // draw upper left in world coordinates
 					glVertex3d(p1.x, p1.y, 0.0);
 					
-					glTexCoord2f(imageWidth, 0); // draw lower left in world coordinates
+					glTexCoord2f(imageWidth, 0); // draw upper left in world coordinates
 					glVertex3d(p2.x, p2.y, 0.0);
 					
-					glTexCoord2f(0, imageHeight); // draw upper right in world coordinates
+					glTexCoord2f(0, imageHeight); // draw lower right in world coordinates
 					glVertex3d(p3.x, p3.y, 0.0);
 					
 					glTexCoord2f(imageWidth, imageHeight); // draw lower right in world coordinates

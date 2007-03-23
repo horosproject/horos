@@ -203,6 +203,7 @@ enum
 - (void) glStr: (unsigned char *) cstrOut :(float) x :(float) y :(float) line;
 - (void) recompute;
 - (void) rotate: (float) angle :(NSPoint) center;
+- (BOOL)canResize;
 - (void) resize: (float) factor :(NSPoint) center;
 - (void) setPix: (DCMPix*) newPix;
 - (DCMPix*) pix;
