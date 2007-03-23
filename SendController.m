@@ -338,7 +338,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 				calledAET:calledAET 
 				hostname:hostname 
 				port:[destPort intValue] 
-				filesToSend: [samePatientArray valueForKey: @"completePath"]
+				filesToSend: [samePatientArray valueForKey: @"completePathResolved"]
 				transferSyntax:_offisTS
 				compression: 1.0
 				extraParameters:nil];

@@ -10168,7 +10168,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		previousPath = [NSString stringWithString: tempPath];
 		
-		DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePath"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+		DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 		
 		if( dcmPix)
 		{
@@ -10339,7 +10339,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				t++;
 			}
 			
-			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePath"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
 			
 			if( dcmPix)
 			{
@@ -11360,6 +11360,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	BOOL		needsUpdate = NO;
 	NSRange		range;
 	
+	if( isCurrentDatabaseBonjour) return;
+	
 	NSLog(@"volume unmounted");
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
@@ -12356,10 +12358,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSString*)  getLocalDCMPath: (NSManagedObject*) obj :(long) no
 {
-	if( isCurrentDatabaseBonjour)
-	{
-		return [bonjourBrowser getDICOMFile: [bonjourServicesList selectedRow]-1 forObject: obj noOfImages: no];
-	}
+	if( isCurrentDatabaseBonjour) return [bonjourBrowser getDICOMFile: [bonjourServicesList selectedRow]-1 forObject: obj noOfImages: no];
 	else return [obj valueForKey:@"completePath"];
 }
 

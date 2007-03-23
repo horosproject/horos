@@ -112,6 +112,11 @@ extern NSString * documentsDirectory();
 	return [self primitiveValueForKey:@"path"];
 }
 
+-(NSString*) completePathResolved
+{
+	return [self completePathWithDownload: YES];
+}
+
 -(NSString*) completePath
 {
 	return [self completePathWithDownload: NO];
