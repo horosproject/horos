@@ -102,6 +102,8 @@ enum
 	NSString		*layerReferenceFilePath;
 	NSImage			*layerImage, *layerImageWhenSelected;
 	float			layerPixelSpacingX, layerPixelSpacingY;
+	
+	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin

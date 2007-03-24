@@ -41,6 +41,7 @@ static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
 
 static		NSString				*defaultName;
+static		int						gUID = 0;
 
 extern long BresLine(int Ax, int Ay, int Bx, int By,long **xBuffer, long **yBuffer);
 
@@ -159,6 +160,8 @@ GLenum glReportError (void)
 	
     if( self = [super init])
     {
+		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+		
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
 		parentROI = 0L;
@@ -316,6 +319,7 @@ GLenum glReportError (void)
 		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:self userInfo: 0L];
 	
+	[uniqueID release];
 	[points release];
 	[zPositions release];
 	[name release];
@@ -434,6 +438,8 @@ GLenum glReportError (void)
     if (self)
 	{
 		// basic init from other rois ...
+		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+		
 		long i,j;
         type = tPlain;
 		mode = ROI_sleep;
@@ -495,6 +501,7 @@ GLenum glReportError (void)
 	self = [super init];
     if (self)
 	{
+		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
         type = itype;
 		mode = ROI_sleep;
 		parentROI = 0L;
