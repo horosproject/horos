@@ -66,7 +66,7 @@ enum
 	// **** **** **** **** **** **** **** **** **** **** TRACKING
 	
 	long			selectedModifyPoint;
-	NSPoint			clickPoint, previousPoint;
+	NSPoint			clickPoint, previousPoint, originAnchor;
 	long			fontListGL, *fontSize;
 	DCMView			*curView;
 	DCMPix			*pix;

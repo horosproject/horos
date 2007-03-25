@@ -2383,6 +2383,57 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void) drawTextualData
 {
+	BOOL moved;
+	
+	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
+	
+	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
+	
+//	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
+	
+	if( moved && ![curView suppressLabels])	// Draw bezier line
+	{
+		glLoadIdentity();
+		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
+		
+		GLfloat ctrlpoints[4][3];
+		
+		const int OFF = 30;
+		
+		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);							ctrlpoints[0][2] = 0;
+		ctrlpoints[1][0] = originAnchor.x - OFF;			ctrlpoints[1][1] = originAnchor.y;								ctrlpoints[1][2] = 0;
+		ctrlpoints[2][0] = originAnchor.x;					ctrlpoints[2][1] = originAnchor.y;								ctrlpoints[2][2] = 0;
+		
+		glLineWidth( 3.0);
+		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
+		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
+		
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
+		glEnable(GL_MAP1_VERTEX_3);
+		
+	    glBegin(GL_LINE_STRIP);
+		int i;
+        for (i = 0; i <= 30; i++) 
+            glEvalCoord1f((GLfloat) i/30.0);
+		glEnd();
+		glDisable(GL_MAP1_VERTEX_3);
+		
+		glLineWidth( 1.0);
+		
+		glColor4f( 1.0, 1.0, 1.0, 0.5);
+		
+		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
+		glEnable(GL_MAP1_VERTEX_3);
+		
+	    glBegin(GL_LINE_STRIP);
+        for (i = 0; i <= 30; i++) 
+            glEvalCoord1f((GLfloat) i/30.0);
+		glEnd();
+		glDisable(GL_MAP1_VERTEX_3);
+		
+		[curView applyImageTransformation];
+	}
+
 	if( [self isTextualDataDisplayed])
 	{
 		if( type != tText)
@@ -2429,10 +2480,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) prepareTextualData:( char*) l1 :( char*) l2 :( char*) l3 :( char*) l4 :( char*) l5 location:(NSPoint) tPt
 {
 	long		maxWidth = 0, line;
-	NSPoint		origin, ctPt = tPt;
+	NSPoint		ctPt = tPt;
 	
 	tPt = [curView ConvertFromGL2View: ctPt];
-	origin = tPt;
+	originAnchor = tPt;
 	
 	ctPt.x += offsetTextBox_x;
 	ctPt.y += offsetTextBox_y;
@@ -2474,7 +2525,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		ctPt = tPt;
 		
 		tPt = [curView ConvertFromGL2View: ctPt];
-		origin = tPt;
+		originAnchor = tPt;
 		
 		tPt = ctPt;
 		tPt.x += offsetTextBox_x;
@@ -2482,55 +2533,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		
 		tPt = [curView ConvertFromGL2View: tPt];
 		drawRect.origin = tPt;
-	}
-	
-	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
-	
-	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
-	
-//	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
-	
-	if( moved && ![curView suppressLabels])	// Draw bezier line
-	{
-		glLoadIdentity();
-		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
-		
-		GLfloat ctrlpoints[4][3];
-		
-		const int OFF = 30;
-		
-		ctrlpoints[0][0] = NSMinX( drawRect);				ctrlpoints[0][1] = NSMidY( drawRect);							ctrlpoints[0][2] = 0;
-		ctrlpoints[1][0] = origin.x - OFF;					ctrlpoints[1][1] = origin.y;									ctrlpoints[1][2] = 0;
-		ctrlpoints[2][0] = origin.x;						ctrlpoints[2][1] = origin.y;									ctrlpoints[2][2] = 0;
-		
-		glLineWidth( 3.0);
-		if( mode == ROI_sleep) glColor4f(0.0f, 0.0f, 0.0f, 0.4f);
-		else glColor4f(0.3f, 0.0f, 0.0f, 0.8f);
-		
-		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
-		glEnable(GL_MAP1_VERTEX_3);
-		
-	    glBegin(GL_LINE_STRIP);
-		int i;
-        for (i = 0; i <= 30; i++) 
-            glEvalCoord1f((GLfloat) i/30.0);
-		glEnd();
-		glDisable(GL_MAP1_VERTEX_3);
-		
-		glLineWidth( 1.0);
-		
-		glColor4f( 1.0, 1.0, 1.0, 0.5);
-		
-		glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3,&ctrlpoints[0][0]);
-		glEnable(GL_MAP1_VERTEX_3);
-		
-	    glBegin(GL_LINE_STRIP);
-        for (i = 0; i <= 30; i++) 
-            glEvalCoord1f((GLfloat) i/30.0);
-		glEnd();
-		glDisable(GL_MAP1_VERTEX_3);
-		
-		[curView applyImageTransformation];
 	}
 }
 

@@ -5872,7 +5872,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 }
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
-
 {
 	long		clutBars	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];
 	long		annotations	= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"];
@@ -6298,19 +6297,21 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					if(_imageColumns > 1 || _imageRows > 1) resetData = YES;	//For alias ROIs
 					
 					NSSortDescriptor * roiSorting = [[[NSSortDescriptor alloc] initWithKey:@"uniqueID" ascending:NO] autorelease];
-					NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
 					
-					rectArray = [[NSMutableArray alloc] initWithCapacity: [sortedROIs count]];
+					
+					rectArray = [[NSMutableArray alloc] initWithCapacity: [curRoiList count]];
 					int i;
-					for(i=[sortedROIs count]-1; i>=0; i--)
+					for( i = [curRoiList count]-1; i >= 0; i--)
 					{
-						if( resetData) [[sortedROIs objectAtIndex:i] recompute];
-						[[sortedROIs objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
-						[[sortedROIs objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
+						if( resetData) [[curRoiList objectAtIndex:i] recompute];
+						[[curRoiList objectAtIndex:i] setRoiFont: labelFontListGL :labelFontListGLSize :self];
+						[[curRoiList objectAtIndex:i] drawROI: scaleValue :[curDCM pwidth]/2. :[curDCM pheight]/2. :[curDCM pixelSpacingX] :[curDCM pixelSpacingY]];
 					}
+					
 					
 					if (!suppress_labels)
 					{
+						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];
 						for(i=[sortedROIs count]-1; i>=0; i--) [[sortedROIs objectAtIndex:i] drawTextualData];
 					}
 					

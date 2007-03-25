@@ -1905,7 +1905,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 											CaptureToolbarItemIdentifier,
 											CroppingToolbarItemIdentifier,
 											OrientationToolbarItemIdentifier,
-											ShadingToolbarItemIdentifier,
 											OrientationsViewToolbarItemIdentifier,
 											QTExportToolbarItemIdentifier,
 											iPhotoToolbarItemIdentifier,
