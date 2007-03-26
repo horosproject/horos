@@ -2031,6 +2031,17 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	[self setNeedsDisplay:YES];
 }
 
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+{
+	if(groupID==0.0) return;
+	if(mode==ROI_selectedModify) mode=ROI_selected;
+	// select all ROIs in the same group
+	int i;
+	for(i=0; i<[curRoiList count]; i++)
+		if([[curRoiList objectAtIndex:i] groupID]==groupID)
+					[[curRoiList objectAtIndex:i] setROIMode:mode];
+}
+
 - (void) checkMouseModifiers:(id) sender
 {
 	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags])
@@ -2604,9 +2615,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					}
 				}
 			}
-			
-			
-			
+					
 			if (([event modifierFlags] & NSShiftKeyMask) && !([event modifierFlags] & NSCommandKeyMask))
 			{
 				if( selected != -1)
@@ -2614,6 +2623,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					if( [[curRoiList objectAtIndex: selected] ROImode] == ROI_selected) 
 					{
 						[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
+						// unselect all ROIs in the same group
+						[self setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
 						DoNothing = YES;
 					}
 				}
@@ -2626,7 +2637,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					for( i = 0; i < [curRoiList count]; i++) [[curRoiList objectAtIndex: i] setROIMode : ROI_sleep];
 				}
 			}
-			
+					
 			if( DoNothing == NO)
 			{
 				if( selected >= 0 && drawingROI == NO)
@@ -2644,6 +2655,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];
 					
+					[self setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
 					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
 					
 					NSArray *winList = [[NSApplication sharedApplication] windows];

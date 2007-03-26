@@ -237,6 +237,7 @@
                 flyThruButton = id; 
                 flyThruButtonMenu = id; 
                 fullScreenMenu = id; 
+                groupSelectedROIs = id; 
                 loadSerie = id; 
                 morphoSelectedBrushROI = id; 
                 nextPlane = id; 
@@ -285,6 +286,7 @@
                 subSharpen = id; 
                 subSumSlider = id; 
                 syncronize = id; 
+                ungroupSelectedROIs = id; 
                 useVOILUT = id; 
             }; 
             CLASS = FirstResponder; 

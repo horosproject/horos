@@ -652,4 +652,9 @@ enum
 #pragma mark Calcium scoring
 - (IBAction)calciumScoring:(id)sender;
 
+#pragma mark-
+#pragma mark ROI Grouping
+- (IBAction)groupSelectedROIs:(id)sender;
+- (IBAction)ungroupSelectedROIs:(id)sender;
+
 @end

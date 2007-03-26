@@ -8904,6 +8904,51 @@ int i,j,l;
 	[srController beginSheet];
 }
 
+- (void)setSelectedROIsGrouped:(BOOL)grouped;
+{
+	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	ROI *selectedROI;
+	long mode;
+	
+	NSTimeInterval newGroupID;
+	if(grouped)
+		newGroupID = [NSDate timeIntervalSinceReferenceDate];
+	else
+		newGroupID = 0.0;
+		
+	int i;
+	for(i=0; i<[curROIList count]; i++)
+	{
+		mode = [[curROIList objectAtIndex:i] ROImode];
+			
+		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+		{
+			selectedROI = [curROIList objectAtIndex:i];
+			[selectedROI setGroupID:newGroupID];
+		}
+	}
+}
+
+- (void)groupSelectedROIs;
+{
+	[self setSelectedROIsGrouped:YES];
+}
+
+- (void)ungroupSelectedROIs;
+{
+	[self setSelectedROIsGrouped:NO];
+}
+
+- (IBAction)groupSelectedROIs:(id)sender;
+{
+	[self groupSelectedROIs];
+}
+
+- (IBAction)ungroupSelectedROIs:(id)sender;
+{
+	[self ungroupSelectedROIs];
+}
+
 #pragma mark BrushTool and ROI filters
 
 -(void) brushTool:(id) sender

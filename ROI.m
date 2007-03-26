@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		5
+#define ROIVERSION		6
 
 static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
@@ -126,10 +126,16 @@ GLenum glReportError (void)
 - (void) setOpacity:(float)newOpacity
 {
 	opacity = newOpacity;
+	NSLog(@"setOpacity: %f", opacity);
 	
 	if( type == tPlain)
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat:opacity forKey:@"ROIRegionOpacity"];
+	}
+	else if(type==tLayerROI)
+	{
+		needsLoadTexture = YES;
+		needsLoadTexture2 = YES;
 	}
 }
 -(DCMView*) curView
@@ -161,6 +167,7 @@ GLenum glReportError (void)
     if( self = [super init])
     {
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+		groupID = 0.0;
 		
 		fileVersion = [coder versionForClassName: @"ROI"];
 		
@@ -231,7 +238,31 @@ GLenum glReportError (void)
 		if (fileVersion >= 5) {
 			_calciumThreshold = [[coder decodeObject] intValue];
 			_displayCalciumScoring = [[coder decodeObject] boolValue];
-		}	
+		}
+
+		if (fileVersion >= 6)
+		{
+			groupID = [[coder decodeObject] doubleValue];
+			if (type==tLayerROI)
+			{
+				layerImage = [coder decodeObject];
+				[layerImage retain];
+				layerImageWhenSelected = [coder decodeObject];
+				[layerImageWhenSelected retain];
+				needsLoadTexture = YES;
+				needsLoadTexture2 = YES;
+			}
+			textualBoxLine1 = [coder decodeObject];
+			textualBoxLine2 = [coder decodeObject];
+			textualBoxLine3 = [coder decodeObject];
+			textualBoxLine4 = [coder decodeObject];
+			textualBoxLine5 = [coder decodeObject];
+			if(textualBoxLine1) [textualBoxLine1 retain];
+			if(textualBoxLine2) [textualBoxLine2 retain];
+			if(textualBoxLine3) [textualBoxLine3 retain];
+			if(textualBoxLine4) [textualBoxLine4 retain];
+			if(textualBoxLine5) [textualBoxLine5 retain];
+		}
 		
 		[points retain];
 		[name retain];
@@ -306,6 +337,19 @@ GLenum glReportError (void)
 	[coder encodeObject:[NSNumber numberWithFloat:offsetTextBox_y]];
 	[coder encodeObject:[NSNumber numberWithInt:_calciumThreshold]];
 	[coder encodeObject:[NSNumber numberWithBool:_displayCalciumScoring]];
+	
+	// ROIVERSION = 6
+	[coder encodeObject:[NSNumber numberWithDouble:groupID]];
+	if (type==tLayerROI)
+	{
+		[coder encodeObject:layerImage];
+		[coder encodeObject:layerImageWhenSelected];
+	}
+	[coder encodeObject:textualBoxLine1];
+	[coder encodeObject:textualBoxLine2];
+	[coder encodeObject:textualBoxLine3];
+	[coder encodeObject:textualBoxLine4];
+	[coder encodeObject:textualBoxLine5];
 }
 
 - (NSData*) data
@@ -439,6 +483,7 @@ GLenum glReportError (void)
 	{
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+		groupID = 0.0;
 		
 		long i,j;
         type = tPlain;
@@ -502,6 +547,8 @@ GLenum glReportError (void)
     if (self)
 	{
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];
+		groupID = 0.0;
+		
         type = itype;
 		mode = ROI_sleep;
 		parentROI = 0L;
@@ -582,6 +629,8 @@ GLenum glReportError (void)
 			textualBoxLine3 = @"";
 			textualBoxLine4 = @"";
 			textualBoxLine5 = @"";
+			needsLoadTexture = NO;
+			needsLoadTexture2 = NO;
 		}
 		else
 		{
@@ -2574,15 +2623,32 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				NSSize imageSize = [layerImage size];
 				float imageWidth = imageSize.width;
 				float imageHeight = imageSize.height;
-				
+								
 				glDisable(GL_POLYGON_SMOOTH);
 				glEnable(GL_TEXTURE_RECTANGLE_EXT);
 
+//				if(needsLoadTexture)
+//				{
+//					[self loadLayerImageTexture];
+//					if(layerImageWhenSelected)
+//						[self loadLayerImageWhenSelectedTexture];
+//					needsLoadTexture = NO;
+//				}
+				
 				if(layerImageWhenSelected && mode==ROI_selected)
+				{
+					if(needsLoadTexture2) [self loadLayerImageWhenSelectedTexture];
+					needsLoadTexture2 = NO;
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
+				}
 				else
+				{
+					if(needsLoadTexture)[self loadLayerImageTexture];
+					needsLoadTexture = NO;
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-									
+				}
+				
+				
 				glBlendEquation(GL_FUNC_ADD);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			
 				
@@ -2625,11 +2691,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					NSPoint tPt = [self lowerRightPoint];
 				
 					if(![name isEqualToString:@"Unnamed"]) strcpy(line1, [name cString]);
-					if(![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 cString]);
-					if(![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 cString]);
-					if(![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 cString]);
-					if(![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 cString]);
-					if(![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 cString]);
+					if(textualBoxLine1 && ![textualBoxLine1 isEqualToString:@""]) strcpy(line1, [textualBoxLine1 cString]);
+					if(textualBoxLine2 && ![textualBoxLine2 isEqualToString:@""]) strcpy(line2, [textualBoxLine2 cString]);
+					if(textualBoxLine3 && ![textualBoxLine3 isEqualToString:@""]) strcpy(line3, [textualBoxLine3 cString]);
+					if(textualBoxLine4 && ![textualBoxLine4 isEqualToString:@""]) strcpy(line4, [textualBoxLine4 cString]);
+					if(textualBoxLine5 && ![textualBoxLine5 isEqualToString:@""]) strcpy(line5, [textualBoxLine5 cString]);
 
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
@@ -3706,6 +3772,66 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 }
 
+- (void)loadLayerImageTexture;
+{
+	NSImage *newImage = layerImage;
+	if(opacity<1.0)
+	{
+		newImage = [[NSImage alloc] initWithSize:[layerImage size]];
+		[newImage lockFocus];
+		[layerImage compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImage size].width, [layerImage size].height) operation:NSCompositeCopy fraction:opacity];
+		[newImage unlockFocus];
+	}
+	NSBitmapImageRep *bitmap;
+	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
+	unsigned char *imageBuffer = [bitmap bitmapData];
+
+	[[curView openGLContext] makeCurrentContext];
+
+	if(textureName)
+		glDeleteTextures(1, &textureName);
+		
+	glGenTextures(1, &textureName);
+	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+	
+	if(opacity<1.0) [newImage release];
+	[bitmap release];
+}
+
+- (void)loadLayerImageWhenSelectedTexture;
+{
+	NSLog(@"loadLayerImageWhenSelectedTexture");
+	NSImage *newImage = layerImageWhenSelected;
+	if(opacity<1.0)
+	{
+		newImage = [[NSImage alloc] initWithSize:[layerImageWhenSelected size]];
+		[newImage lockFocus];
+		[layerImageWhenSelected compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height) operation:NSCompositeCopy fraction:opacity];
+		[newImage unlockFocus];
+	}
+	
+	NSBitmapImageRep *bitmap;
+	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
+	unsigned char *imageBuffer = [bitmap bitmapData];
+
+	[[curView openGLContext] makeCurrentContext];
+
+	if(textureName2)
+		glDeleteTextures(1, &textureName2);
+		
+	glGenTextures(1, &textureName2);
+	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+	
+	if(opacity<1.0) [newImage release];
+	[bitmap release];
+}
+
 - (void)setLayerPixelSpacingX:(float)x;
 {
 	layerPixelSpacingX = x;
@@ -3827,6 +3953,16 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 	if(textualBoxLine5) [textualBoxLine5 release];
 	textualBoxLine5 = line;
 	[textualBoxLine5 retain];
+}
+
+- (NSTimeInterval)groupID;
+{
+	return groupID;
+}
+
+- (void)setGroupID:(NSTimeInterval)timestamp;
+{
+	groupID = timestamp;
 }
 
 @end

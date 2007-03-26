@@ -102,8 +102,10 @@ enum
 	NSString		*layerReferenceFilePath;
 	NSImage			*layerImage, *layerImageWhenSelected;
 	float			layerPixelSpacingX, layerPixelSpacingY;
+	BOOL			needsLoadTexture, needsLoadTexture2;
 	
 	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
+	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected together.
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -247,6 +249,8 @@ enum
 - (void)setLayerReferenceFilePath:(NSString*)path;
 - (void)setLayerImage:(NSImage*)image;
 - (void)setLayerImageWhenSelected:(NSImage*)image;
+- (void)loadLayerImageTexture;
+- (void)loadLayerImageWhenSelectedTexture;
 - (void)setLayerPixelSpacingX:(float)x;
 - (void)setLayerPixelSpacingY:(float)y;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
@@ -257,5 +261,8 @@ enum
 - (void)setTextualBoxLine3:(NSString*)line;
 - (void)setTextualBoxLine4:(NSString*)line;
 - (void)setTextualBoxLine5:(NSString*)line;
+
+- (NSTimeInterval)groupID;
+- (void)setGroupID:(NSTimeInterval)timestamp;
 
 @end
