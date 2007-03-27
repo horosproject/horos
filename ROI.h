@@ -265,4 +265,6 @@ enum
 - (NSTimeInterval)groupID;
 - (void)setGroupID:(NSTimeInterval)timestamp;
 
+- (NSPoint) lowerRightPoint;
+
 @end

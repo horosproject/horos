@@ -585,12 +585,13 @@ enum
 - (void) rotateDataSet:(int) constant;
 - (void) SetSyncButtonBehavior:(id) sender;
 
+- (ROI*)selectedROI;
+- (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
+
 #pragma mark-
 #pragma mark Brush ROI Filters
 
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification;
-
-- (ROI*) selectedROI;
 
 - (IBAction) setStructuringElementRadius: (id) sender;
 //- (IBAction) closeBrushROIFilterOptionsSheet: (id) sender;

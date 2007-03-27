@@ -56,7 +56,8 @@ enum
 	tBonesRemoval,				//	21
 	tWLBlended,					//  22
 	tPushBack,					//  23
-	tLayerROI					//	24
+	tLayerROI,					//	24
+	tROISelector				//	25
 };
 
 extern NSString *pasteBoardOsiriX;
@@ -218,6 +219,8 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	float			pushBackAlpha, pushBackAlphaSign;
 	BOOL			pushBackROIEdition;
 	long            scrollMode;
+	
+	NSPoint			ROISelectorStartPoint, ROISelectorEndPoint;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
@@ -424,6 +427,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void)mouseDraggedBlending:(NSEvent *)event;
 - (void)mouseDraggedWindowLevel:(NSEvent *)event;
 - (void)mouseDraggedRepulsor:(NSEvent *)event;
-
+- (void)mouseDraggedSelector:(NSEvent *)event;
 
 @end

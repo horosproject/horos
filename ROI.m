@@ -2683,7 +2683,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				glEnable(GL_POLYGON_SMOOTH);
-							
+				
+				// draw the 4 points defining the bounding box
+				if(mode==ROI_selected)
+				{
+					glColor3f (0.5f, 0.5f, 1.0f);
+					glPointSize( 8.0);
+					glBegin(GL_POINTS);
+					glVertex3f(p1.x, p1.y, 0.0);
+					glVertex3f(p2.x, p2.y, 0.0);
+					glVertex3f(p3.x, p3.y, 0.0);
+					glVertex3f(p4.x, p4.y, 0.0);
+					glEnd();
+					glColor3f (1.0f, 1.0f, 1.0f);
+				}
+				
 				if( [self isTextualDataDisplayed])
 				{
 					// TEXT

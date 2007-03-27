@@ -3721,6 +3721,7 @@ static ViewerController *draggedController = 0L;
 		case t2DPoint:
 		case tPlain:
 		case tPushBack:
+		case tROISelector:
 			[self setROIToolTag: tag];
 		break;
 		
@@ -7881,38 +7882,7 @@ int i,j,l;
 		imageBuffer[4*(int)x+1+(int)y*(int)bytesPerRow] = imageValue;
 		imageBuffer[4*(int)x+2+(int)y*(int)bytesPerRow] = imageValue;
 		imageBuffer[4*(int)x+3+(int)y*(int)bytesPerRow] = 255;
-		//imageBuffer[(int)x+(int)y*bytesPerRow] = imageValue;
 	}
-
-	
-//	if(![[imageView curDCM] isRGB])
-//	{
-//		vImage_Buffer srcf, dst8, dst8888;
-//		
-//		srcf.height = imageHeight;
-//		srcf.width = imageWidth;
-//		srcf.rowBytes = imageWidth*sizeof(float);
-//		srcf.data = buffer;
-//
-//		dst8.height = imageHeight;
-//		dst8.width = imageWidth;
-//		dst8.rowBytes = imageWidth; 
-//		dst8.data = malloc(imageHeight*imageWidth);
-//
-//		long i;
-//
-//		long min = windowLevel - windowWidth / 2;
-//		long max = windowLevel + windowWidth / 2;
-//
-//		// FLOAT to 8 bit
-//		vImageConvert_PlanarFtoPlanar8( &srcf, &dst8, max, min, 0);
-//
-//		dst8888 = dst8;
-//		dst8888.rowBytes = imageWidth*4;
-//		dst8888.data = imageBuffer;
-//		
-//		vImageConvert_Planar8toARGB8888(&dst8, &dst8, &dst8, &dst8, &dst8888, 0);
-//	}
 
 	NSImage *image = [[NSImage alloc] init] ;
 	[image addRepresentation: bitmap];
@@ -7924,14 +7894,32 @@ int i,j,l;
 	ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image imageWhenSelected:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
 	
 	NSLog(@"setName");
-	[theNewROI setName:@"new ROI"];
+	[theNewROI setName:[NSString stringWithFormat:@"%@ %@", [roi name], NSLocalizedString(@"Layer", nil)]];
 	
 	free(data);
 	free(locations);
 	[image release];
 	[bitmap release];
 	
-	NSLog(@"return");
+	// move the new ROI to its location
+	NSPoint offset;
+	offset.x = maxX;
+	offset.y = maxY;
+	NSPoint p = [theNewROI lowerRightPoint];
+	offset.x -= p.x;
+	offset.y -= p.y;
+	
+	offset.x += 10;
+	offset.y -= 10;
+	
+	NSArray *newROIPoints = [theNewROI points];
+	for (i=0; i<[newROIPoints count]; i++)
+	{
+		[[newROIPoints objectAtIndex:i] move:offset.x :offset.y];
+	}
+
+	[self selectROI:theNewROI deselectingOther:YES];
+	
 	return theNewROI;
 }
 
@@ -8526,7 +8514,7 @@ int i,j,l;
 	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
+		
 		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 		{
 			ROI		*theROI = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
@@ -8550,6 +8538,7 @@ int i,j,l;
 				ROIWindow* roiWin = [[ROIWindow alloc] initWithROI: theROI :self];
 				[roiWin showWindow:self];
 			}
+			break;
 		}
 	}
 }
@@ -8904,6 +8893,40 @@ int i,j,l;
 	[srController beginSheet];
 }
 
+- (ROI*) selectedROI
+{
+	ROI *selectedRoi = 0L;
+	int i;
+	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+	{
+		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
+			
+		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+		{
+			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
+		}
+	}
+	return selectedRoi;
+}
+
+- (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
+{
+	if(deselectOther)
+	{
+		int i;
+		for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
+			[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
+	}
+	// select
+	[roi setROIMode:ROI_selected];
+	
+	// bring it to front
+	[roi retain];
+	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
+	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
+	[roi release];
+}
+
 - (void)setSelectedROIsGrouped:(BOOL)grouped;
 {
 	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
@@ -9055,22 +9078,6 @@ int i,j,l;
 		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
 	
 	[filter release];
-}
-
-- (ROI*) selectedROI
-{
-	ROI *selectedRoi = 0L;
-	int i;
-	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-	{
-		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-			
-		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-		{
-			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-		}
-	}
-	return selectedRoi;
 }
 
 - (IBAction) setStructuringElementRadius: (id) sender

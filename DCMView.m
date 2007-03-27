@@ -340,7 +340,25 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 		NSLog (@"GetTextureNumFromTextureDim error: Texture to small to draw, should not ever get here, texture size remaining");
 	}
 	return i; // return textures counted
-} 
+}
+
+float min(float a, float b)
+{
+	if(a < b) return a;
+	else return b;
+}
+
+BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
+{
+	if(NSPointInRect(lineStarts, rect) || NSPointInRect(lineEnds, rect)) return YES;
+	NSRect lineBoundingBox = NSMakeRect(min(lineStarts.x, lineEnds.x), min(lineStarts.y, lineEnds.y), fabsf(lineStarts.x - lineEnds.x), fabsf(lineStarts.y - lineEnds.y));
+	if(NSIsEmptyRect(lineBoundingBox)) return NO;
+	if(NSIntersectsRect(lineBoundingBox, rect))
+	{
+		NSPoint midPoint = NSMakePoint(NSMidX(lineBoundingBox), NSMidY(lineBoundingBox));
+		return lineIntersectsRect(lineStarts, midPoint, rect) && lineIntersectsRect(midPoint, lineEnds, rect);
+	}
+}
 
 @implementation DCMView
 
@@ -482,7 +500,6 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	{
 		// M_PI defined in cmath.h
 		float alpha = i * 2 * M_PI /circleRes;
-//		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue*[curDCM pixelRatio], pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue*[curDCM pixelRatio]);
 		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue);//*[curDCM pixelSpacingY]/[curDCM pixelSpacingX]
 	}
 	glEnd();
@@ -497,6 +514,39 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	pushBackAlpha += pushBackAlphaSign*0.02;
 	
 	[self setNeedsDisplay:YES];
+}
+
+
+- (void)drawROISelectorRegion;
+{
+	glEnable(GL_BLEND);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_POINT_SMOOTH);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	#define ROISELECTORREGION_R 0.8
+	#define ROISELECTORREGION_G 0.8
+	#define ROISELECTORREGION_B 1.0
+
+	// inside: fill
+	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
+	glBegin(GL_POLYGON);		
+	glVertex2f(ROISelectorStartPoint.x, ROISelectorStartPoint.y);
+	glVertex2f(ROISelectorStartPoint.x, ROISelectorEndPoint.y);
+	glVertex2f(ROISelectorEndPoint.x, ROISelectorEndPoint.y);
+	glVertex2f(ROISelectorEndPoint.x, ROISelectorStartPoint.y);
+	glEnd();
+
+	// border
+	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
+	glBegin(GL_LINE_LOOP);		
+	glVertex2f(ROISelectorStartPoint.x, ROISelectorStartPoint.y);
+	glVertex2f(ROISelectorStartPoint.x, ROISelectorEndPoint.y);
+	glVertex2f(ROISelectorEndPoint.x, ROISelectorEndPoint.y);
+	glVertex2f(ROISelectorEndPoint.x, ROISelectorStartPoint.y);
+	glEnd();
+	
+	glDisable(GL_BLEND);
 }
 
 - (void) Display3DPoint:(NSNotification*) note
@@ -1903,6 +1953,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)	{
 					[nc postNotificationName: @"roiSelected" object: [curRoiList objectAtIndex:i] userInfo: nil];
+					break;
 				}
 			}
 			
@@ -1936,6 +1987,14 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			}
 			[self setNeedsDisplay:YES];
 		}
+		
+		if(tool == tROISelector)
+		{
+			NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
+			ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
+			ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
+			[self drawRect:rect];
+		}	
     }
 
 	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
@@ -2573,6 +2632,15 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 			}
 		}
 		
+		if(tool == tROISelector)
+		{
+			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+			tempPt.y = size.size.height - tempPt.y ;
+
+			ROISelectorStartPoint = tempPt;
+			ROISelectorEndPoint = tempPt;
+		}
+		
 		// ROI TOOLS
 		if( [self roiTool:tool] == YES && crossMove == -1)
 		{
@@ -2657,7 +2725,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					
 					[self setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
 					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
-					
+										
 					NSArray *winList = [[NSApplication sharedApplication] windows];
 					BOOL	found = NO;
 					
@@ -2683,7 +2751,7 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 				{
 					if( curROI)
 					{
-						drawingROI = [curROI mouseRoiDown: tempPt : scaleValue];
+						drawingROI = [curROI mouseRoiDown:tempPt :scaleValue];
 						
 						if( drawingROI == NO)
 						{
@@ -3225,6 +3293,9 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					break;
 				case tPushBack: [self mouseDraggedRepulsor:event];
 					break;
+				case tROISelector: [self mouseDraggedSelector:event];
+					break;
+
 				default:break;
 			}
 		}
@@ -3741,7 +3812,8 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	*/
 }
 
-- (void)mouseDraggedRepulsor:(NSEvent *)event{
+- (void)mouseDraggedRepulsor:(NSEvent *)event
+{
 	NSRect frame = [self frame];
 	NSPoint     eventLocation = [event locationInWindow];
 	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
@@ -3756,77 +3828,118 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 	NSMutableArray *points;
 	for(i=0; i<[curRoiList count]; i++)
 	{
+		points = [[curRoiList objectAtIndex:i] points];
+		int n = 0;
+		for(j=0; j<[points count]; j++)
 		{
-			points = [[curRoiList objectAtIndex:i] points];
-			int n = 0;
-			for(j=0; j<[points count]; j++)
+			pt = [[points objectAtIndex:j] point];
+			dx = (pt.x-tempPt.x);
+			dx2 = dx * dx;
+			dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+			dy2 = dy * dy;
+			d = sqrt(dx2 + dy2);
+			
+			if(d<pushBackRadius)
 			{
-				pt = [[points objectAtIndex:j] point];
-				dx = (pt.x-tempPt.x);
-				dx2 = dx * dx;
-				dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-				dy2 = dy * dy;
-				d = sqrt(dx2 + dy2);
+				if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
+					[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
+				else
+					[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
 				
-				if(d<pushBackRadius)
+				pt.x += dx/d*pushBackRadius-dx;
+				pt.y += dy/d*pushBackRadius-dy;
+				
+				int delta;
+				for(delta=-1; delta<=1; delta++)
 				{
-				//[[curRoiList objectAtIndex:i] roiMove:NSMakePoint(dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy) :YES];
-					if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
-						[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
-					else
-						[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
-					
-					pt.x += dx/d*pushBackRadius-dx;
-					pt.y += dy/d*pushBackRadius-dy;
-					
-					int delta;
-					for(delta=-1; delta<=1; delta++)
+					k = j+delta;
+					if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
 					{
-						k = j+delta;
-						if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
-						{
-							if(k==-1)
-								k = [points count]-1;
-							else if(k==[points count])
-								k = 0;
-						}
+						if(k==-1)
+							k = [points count]-1;
+						else if(k==[points count])
+							k = 0;
+					}
+					
+					if(k!=j && k>=0 && k<[points count])
+					{
+						pt2 = [[points objectAtIndex:k] point];
+						dx = (pt2.x-pt.x);
+						dx2 = dx * dx;
+						dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+						dy2 = dy * dy;
+						d = sqrt(dx2 + dy2);
 						
-						if(k!=j && k>=0 && k<[points count])
+						if(d<=3 && d<pushBackRadius)
 						{
-							pt2 = [[points objectAtIndex:k] point];
-							dx = (pt2.x-pt.x);
-							dx2 = dx * dx;
-							dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-							dy2 = dy * dy;
-							d = sqrt(dx2 + dy2);
-							
-							if(d<=3 && d<pushBackRadius)
-							{
-								[points removeObjectAtIndex:k];
-								if(delta==-1) j--;
-							}
-							else if((d>=20 || d>=pushBackRadius) && n<50)
-							{
-								NSPoint pt3;
-								pt3.x = (pt2.x+pt.x)/2.0;
-								pt3.y = (pt2.y+pt.y)/2.0;
-								MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
-								int index = (delta==-1)? j : j+1 ;
-								if(delta==-1) j++;
-								[points insertObject:p atIndex:index];
-								n++;
-							}
+							[points removeObjectAtIndex:k];
+							if(delta==-1) j--;
+						}
+						else if((d>=20 || d>=pushBackRadius) && n<50)
+						{
+							NSPoint pt3;
+							pt3.x = (pt2.x+pt.x)/2.0;
+							pt3.y = (pt2.y+pt.y)/2.0;
+							MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
+							int index = (delta==-1)? j : j+1 ;
+							if(delta==-1) j++;
+							[points insertObject:p atIndex:index];
+							n++;
 						}
 					}
-					[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 				}
+				[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 			}
 		}
 	}
 }
 		
-
-
+- (void)mouseDraggedSelector:(NSEvent *)event;
+{
+	NSRect frame = [self frame];
+	NSPoint eventLocation = [event locationInWindow];
+	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	tempPt.y = frame.size.height - tempPt.y ;
+	ROISelectorEndPoint = tempPt;
+	
+	NSPoint tempStartPoint = [self ConvertFromView2GL:ROISelectorStartPoint];
+	NSPoint tempEndPoint = [self ConvertFromView2GL:ROISelectorEndPoint];
+	
+	NSRect rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
+	
+	int i, j, k;
+	NSMutableArray *points;
+	
+	for(i=0; i<[curRoiList count]; i++)
+	{
+		[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
+	}
+	
+	for(i=0; i<[curRoiList count]; i++)
+	{
+		points = [[curRoiList objectAtIndex:i] points];
+		BOOL intersected = NO;
+		NSPoint p1, p2;
+		for(j=0; j<[points count]-1 && !intersected; j++)
+		{
+			p1 = [[points objectAtIndex:j] point];
+			p2 = [[points objectAtIndex:j+1] point];
+			intersected = lineIntersectsRect(p1, p2,  rect);
+		}
+		// last segment: between last point and first one
+		if(!intersected)
+		{
+			p1 = [[points lastObject] point];
+			p2 = [[points objectAtIndex:0] point];
+			intersected = lineIntersectsRect(p1, p2,  rect);
+		}
+		
+		if(intersected)
+		{
+			[[self windowController] selectROI:[curRoiList objectAtIndex:i] deselectingOther:NO];
+		}
+	}
+}
 
 #pragma mark-
 #pragma mark ww/wl
@@ -6540,6 +6653,15 @@ static long GetTextureNumFromTextureDim (long textureDimension, long maxTextureS
 					
 					[self drawPushBackToolArea];
 				}
+				
+				if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
+				{
+					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+					glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
+					glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
+					
+					[self drawROISelectorRegion];
+				}
 			}  
 		
 		else {  //no valid image  ie curImage = -1
@@ -7923,6 +8045,8 @@ BOOL	lowRes = NO;
 	else if (tool == tCross)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tPushBack)
+		c = [NSCursor crosshairCursor];
+	else if (tool == tROISelector)
 		c = [NSCursor crosshairCursor];
 	else	
 		c = [NSCursor arrowCursor];
