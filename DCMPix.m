@@ -1041,6 +1041,11 @@ BOOL gUseVOILUT;
 BOOL gUseJPEGColorSpace;
 BOOL gUSEPAPYRUSDCMPIX;
 
++ (void) resetUserDefaults
+{
+	gUserDefaultsSet = NO;
+}
+
 + (void) checkUserDefaults: (BOOL) update
 {
 	// Why this? NSUserDefaults performances are poor if not in main thread
@@ -2831,12 +2836,14 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
 {	
-// doesn't load pix data, only initializes instance variables
+	// doesn't load pix data, only initializes instance variables
 	if( hello == NO)
 		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return 0L;
-		
+	
     if( self = [super init])
     {
+		[DCMPix checkUserDefaults: NO];
+		
 		//-------------------------received parameters
 		srcFile = s;
 		imID = pos;

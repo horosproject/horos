@@ -55,9 +55,9 @@ NSRect screenFrame();
 	
 	BOOL							xFlipped, yFlipped;  // Dependent on current DCMView settings.
 	
-	//DICOMStoreSCPDispatcher *dicomStoreSCPDispatcher;
-	NSMutableDictionary *currentHangingProtocol;
-	DCMNetServiceDelegate *dicomNetServiceDelegate;
+	NSTimer							*updateTimer;
+	NSMutableDictionary				*currentHangingProtocol;
+	DCMNetServiceDelegate			*dicomNetServiceDelegate;
 }
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
