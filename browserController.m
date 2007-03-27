@@ -11270,10 +11270,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) queryDICOM:(id) sender
 {
-	int i;
-	for(i=0;i<500;i++)
-   [[NSUserDefaults standardUserDefaults] setFloat:0.5 forKey:@"ROIRegionColorR"];
-   
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)	// Query selected patient
 		[self querySelectedStudy: self];
 	else
