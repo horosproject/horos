@@ -915,7 +915,7 @@ GLenum glReportError (void)
 		break;
 
 		case tLayerROI:
-			result = [[points objectAtIndex:3] point];
+			result = [[points objectAtIndex:2] point];
 		break;
 	}
 	
@@ -1099,8 +1099,8 @@ GLenum glReportError (void)
 					
 					float scaleRatio = width / l; // scale factor between the ROI (actual display size) and the texture image (stored)
 					
-					w.x = (p3.x - p1.x);
-					w.y = (p3.y - p1.y);
+					w.x = (p4.x - p1.x);
+					w.y = (p4.y - p1.y);
 					l = sqrt(w.x*w.x + w.y*w.y);
 					w.x /= l;
 					w.y /= l;
@@ -2442,7 +2442,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	
 //	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
 	
-	if( moved && ![curView suppressLabels])	// Draw bezier line
+	if( moved && ![curView suppressLabels] && [self isTextualDataDisplayed])	// Draw bezier line
 	{
 		glLoadIdentity();
 		glScalef( 2.0f /([curView frame].size.width), -2.0f / ([curView frame].size.height), 1.0f);
@@ -2670,17 +2670,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				p4.y = (p4.y-offsety)*scaleValue;
 							
 				glBegin(GL_QUAD_STRIP); // draw either tri strips of line strips (so this will draw either two tris or 3 lines)
-					glTexCoord2f(0, 0); // draw upper left in world coordinates
+					glTexCoord2f(0, 0); // draw upper left corner
 					glVertex3d(p1.x, p1.y, 0.0);
 					
-					glTexCoord2f(imageWidth, 0); // draw upper left in world coordinates
+					glTexCoord2f(imageWidth, 0); // draw upper left corner
 					glVertex3d(p2.x, p2.y, 0.0);
 					
-					glTexCoord2f(0, imageHeight); // draw lower right in world coordinates
+					glTexCoord2f(0, imageHeight); // draw lower left corner
+					glVertex3d(p4.x, p4.y, 0.0);
+																				
+					glTexCoord2f(imageWidth, imageHeight); // draw lower right corner
 					glVertex3d(p3.x, p3.y, 0.0);
 					
-					glTexCoord2f(imageWidth, imageHeight); // draw lower right in world coordinates
-					glVertex3d(p4.x, p4.y, 0.0);
 				glEnd();
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -3745,8 +3746,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	NSPoint p1, p2, p3, p4;
 	p1 = NSMakePoint(0.0, 0.0);
 	p2 = NSMakePoint(imageWidth*scaleFactorX, 0.0);
-	p3 = NSMakePoint(0.0, imageHeight*scaleFactorY);
-	p4 = NSMakePoint(imageWidth*scaleFactorX, imageHeight*scaleFactorY);
+	p3 = NSMakePoint(imageWidth*scaleFactorX, imageHeight*scaleFactorY);
+	p4 = NSMakePoint(0.0, imageHeight*scaleFactorY);
 
 	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1], [MyPoint point:p2], [MyPoint point:p3], [MyPoint point:p4], nil];
 	[points setArray:pts];
@@ -3819,7 +3820,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void)loadLayerImageWhenSelectedTexture;
 {
-	NSLog(@"loadLayerImageWhenSelectedTexture");
 	NSImage *newImage = layerImageWhenSelected;
 	if(opacity<1.0)
 	{
