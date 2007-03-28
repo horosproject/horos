@@ -306,6 +306,8 @@ enum
 	NSMutableArray			*undoQueue, *redoQueue;
 	
 	BOOL					SyncButtonBehaviorIsBetweenStudies;
+	
+	float					resampleRatio;
 }
 
 // Create a new 2D Viewer

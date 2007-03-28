@@ -2021,173 +2021,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[[OpacityPopup menu] itemAtIndex:0] setTitle:curOpacityMenu];
 }
 
-
-- (void) dealloc
-{
-	long	i;
-	
-	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-	
-	[ThreadLoadImageLock release];
-	ThreadLoadImageLock = 0L;
-
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-	
-	[undoQueue release];
-	[redoQueue release];
-	
-	[curOpacityMenu release];
-
-	[imageView release];
-	
-	[seriesView release];
-	
-	[exportDCM release];
-
-	NSLog(@"ViewController dealloc Start");
-	
-	if( USETOOLBARPANEL)
-	{
-		for( i = 0 ; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] toolbarWillClose : toolbar];
-	}
-	
-    [[self window] setDelegate:nil];
-	
-    NSArray *windows = [NSApp windows];
-    
-    if([windows count] < 2)
-    {
-        [browserWindow showDatabase:self];
-    }
-	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
-	
-	numberOf2DViewer--;
-	if( numberOf2DViewer == 0)
-	{
-		USETOOLBARPANEL = NO;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
-	
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		[self saveROI: i];
-	}
-	
-//    [[fileList[0] objectAtIndex:0] setViewer: nil forSerie:[[pixList[ 0] objectAtIndex:0] serieNo]];
-
-	int x, z;
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		for( x = 0; x < [roiList[ i] count] ; x++)
-		{
-			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
-				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
-		}
-		[roiList[ i] release];
-		[pixList[ i] release];
-		[fileList[ i] release];
-		[volumeData[ i] release];
-	}
-	
-
-
-
-//	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
-//	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
-//	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
-	
-//	for( i = 0; i < [[NSScreen screens] count] ; i++)
-
-	[toolbar setDelegate: 0L];
-	[toolbar release];
-	
-	[ROINamesArray release];
-	
-	[thickSlab release];
-	
-	[curvedController release];
-	
-	[roiLock release];
-	
-	[keyObjectPopupController release];
-	
-	[contextualDictionaryPath release];
-	
-	[curCLUTMenu release];
-	[curConvMenu release];
-	[curWLWWMenu release];
-	[processorsLock release];
-	
-    [super dealloc];
-
-//	[appController tileWindows: 0L];	<- We cannot do this, because:
-//	This is very important, or if we have a queue of closing windows, it will crash....
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-	{
-		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
-		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
-	}
-	
-	NSLog(@"ViewController dealloc End");
-	
-#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-//#if !__LP64__
-//	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
-//	[[IMService notificationCenter] removeObserver:self];
-//#endif
-#endif
-}
-
-
-- (void)finalize {
-	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
-	
-	
-			if( USETOOLBARPANEL)
-	{
-		int i;
-		for( i = 0 ; i < [[NSScreen screens] count]; i++)
-			[toolbarPanel[ i] toolbarWillClose : toolbar];
-	}
-	
-	
-	numberOf2DViewer--;
-	if( numberOf2DViewer == 0)
-	{
-		USETOOLBARPANEL = NO;
-		int i;
-		for( i = 0; i < [[NSScreen screens] count]; i++)
-			[[toolbarPanel[ i] window] orderOut:self];
-	}
-	int i;
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		[self saveROI: i];
-	}
-	
-	[super finalize];
-}
-
-
-
 - (DCMView*) imageView { return imageView;}
 
 
@@ -3979,6 +3812,8 @@ static ViewerController *draggedController = 0L;
 {
 	self = [super initWithWindowNibName:@"Viewer"];
 	
+	resampleRatio = 1.0;
+	
 	[imageView setDrawing: NO];
 	
 	processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
@@ -4015,6 +3850,194 @@ static ViewerController *draggedController = 0L;
 	[self SetSyncButtonBehavior: self];
 	
 	return self;
+}
+
+-(void) finalizeSeriesViewing
+{
+	int x,i,z;
+	
+	stopThreadLoadImage = YES;
+	if( [browserWindow isCurrentDatabaseBonjour])
+	{
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+	}
+	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
+
+	NSManagedObject		*series = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"];
+	[series setValue: [NSNumber numberWithFloat: [imageView scaleValue] / resampleRatio] forKey:@"scale"];
+	
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		[self saveROI: i];
+		
+		for( x = 0; x < [roiList[ i] count] ; x++)
+		{
+			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
+		}
+		
+		[roiList[ i] release];
+		[pixList[ i] release];
+		[fileList[ i] release];
+		[volumeData[ i] release];
+	}
+	
+	[undoQueue removeAllObjects];
+	[redoQueue removeAllObjects];
+	
+	if( thickSlab)
+	{
+		[thickSlab release];
+		thickSlab = 0L;
+	}
+}
+
+- (void) dealloc
+{
+	long	i;
+	
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	
+	[self finalizeSeriesViewing];
+	
+	[ThreadLoadImageLock release];
+	ThreadLoadImageLock = 0L;
+	
+	[undoQueue release];
+	[redoQueue release];
+	
+	[curOpacityMenu release];
+
+	[imageView release];
+	
+	[seriesView release];
+	
+	[exportDCM release];
+
+	NSLog(@"ViewController dealloc Start");
+	
+	if( USETOOLBARPANEL)
+	{
+		for( i = 0 ; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] toolbarWillClose : toolbar];
+	}
+	
+    [[self window] setDelegate:nil];
+	
+    NSArray *windows = [NSApp windows];
+    
+    if([windows count] < 2)
+    {
+        [browserWindow showDatabase:self];
+    }
+	
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+	
+	numberOf2DViewer--;
+	if( numberOf2DViewer == 0)
+	{
+		USETOOLBARPANEL = NO;
+		for( i = 0; i < [[NSScreen screens] count]; i++)
+			[[toolbarPanel[ i] window] orderOut:self];
+	}
+	
+//	for( i = 0; i < maxMovieIndex; i++)
+//	{
+//		[self saveROI: i];
+//	}
+//	
+//	int x, z;
+//	for( i = 0; i < maxMovieIndex; i++)
+//	{
+//		for( x = 0; x < [roiList[ i] count] ; x++)
+//		{
+//			for( z = 0; z < [[roiList[ i] objectAtIndex: x] count]; z++)
+//				[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[[roiList[ i] objectAtIndex: x] objectAtIndex: z] userInfo: 0L];
+//		}
+//		[roiList[ i] release];
+//		[pixList[ i] release];
+//		[fileList[ i] release];
+//		[volumeData[ i] release];
+//	}
+	
+	[toolbar setDelegate: 0L];
+	[toolbar release];
+	
+	[ROINamesArray release];
+	
+//	[thickSlab release];
+	
+	[curvedController release];
+	
+	[roiLock release];
+	
+	[keyObjectPopupController release];
+	
+	[contextualDictionaryPath release];
+	
+	[curCLUTMenu release];
+	[curConvMenu release];
+	[curWLWWMenu release];
+	[processorsLock release];
+	
+    [super dealloc];
+
+//	[appController tileWindows: 0L];	<- We cannot do this, because:
+//	This is very important, or if we have a queue of closing windows, it will crash....
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+	{
+		[NSObject cancelPreviousPerformRequestsWithTarget:appController selector:@selector(tileWindows:) object:0L];
+		[appController performSelector: @selector(tileWindows:) withObject:0L afterDelay: 0.1];
+	}
+	
+	NSLog(@"ViewController dealloc End");
+	
+#if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
+//#if !__LP64__
+//	[[IMAVManager sharedAVManager] setVideoDataSource:nil];
+//	[[IMService notificationCenter] removeObserver:self];
+//#endif
+#endif
+}
+
+
+- (void)finalize {
+	stopThreadLoadImage = YES;
+	if( [browserWindow isCurrentDatabaseBonjour])
+	{
+		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
+	}
+	else [ThreadLoadImageLock lock];
+	[ThreadLoadImageLock unlock];
+		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"Close All Viewers" object:self userInfo: 0L];
+	
+	
+			if( USETOOLBARPANEL)
+	{
+		int i;
+		for( i = 0 ; i < [[NSScreen screens] count]; i++)
+			[toolbarPanel[ i] toolbarWillClose : toolbar];
+	}
+	
+	
+	numberOf2DViewer--;
+	if( numberOf2DViewer == 0)
+	{
+		USETOOLBARPANEL = NO;
+		int i;
+		for( i = 0; i < [[NSScreen screens] count]; i++)
+			[[toolbarPanel[ i] window] orderOut:self];
+	}
+	int i;
+	for( i = 0; i < maxMovieIndex; i++)
+	{
+		[self saveROI: i];
+	}
+	
+	[super finalize];
 }
 
 -(void) changeImageData:(NSMutableArray*)f :(NSMutableArray*)d :(NSData*) v :(BOOL) applyTransition
@@ -4072,14 +4095,7 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	// Release previous data
-	
-	stopThreadLoadImage = YES;
-	if( [browserWindow isCurrentDatabaseBonjour])
-	{
-		while( [ThreadLoadImageLock tryLock] == NO) [browserWindow bonjourRunLoop: self];
-	}
-	else [ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
+	[self finalizeSeriesViewing];
 	
 	long index2compare;
 	
@@ -4101,29 +4117,6 @@ static ViewerController *draggedController = 0L;
 	{
 		imageIndex = 0;
 	}
-	
-	for( i = 0; i < maxMovieIndex; i++)
-	{
-		[self saveROI: i];
-		
-		[roiList[ i] release];
-		[pixList[ i] release];
-		[fileList[ i] release];
-		[volumeData[ i] release];
-	}
-	
-	[undoQueue removeAllObjects];
-	[redoQueue removeAllObjects];
-	
-	if( thickSlab)
-	{
-		[thickSlab release];
-		thickSlab = 0L;
-	}
-	
-//	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
-//	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory]) [[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: 0L];
-//	[[NSFileManager defaultManager] createDirectoryAtPath:tempDirectory attributes:nil];
 	
 	[orientationMatrix selectCellWithTag: 0];
 	
@@ -4468,6 +4461,40 @@ static ViewerController *draggedController = 0L;
 	[imageView setIndex: [imageView curImage]];
 }
 
+//- (void) resampleDataIfNeeded:(id) sender
+//{
+//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+//	
+//	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"ResampleData"];
+//	[[NSUserDefaults standardUserDefaults] setInteger:128 forKey: @"ResampleDataIfSmallerOrEqualValue"];
+//	[[NSUserDefaults standardUserDefaults] setInteger:256 forKey: @"ResampleDataValue"];
+//
+//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ResampleData"])
+//	{
+//		int height = [[pixList[ 0] objectAtIndex: 0] pheight];
+//		int width = [[pixList[ 0] objectAtIndex: 0] pwidth];
+//		int minimumValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"ResampleDataIfSmallerOrEqualValue"];
+//		float destinationValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ResampleDataValue"];
+//		
+//		if( width <= minimumValue || height <= minimumValue)
+//		{
+//			float ratio;
+//			
+//			if( width < height) ratio = width / destinationValue ;
+//			else ratio = height / destinationValue ;
+//			
+//			if( ratio > 0)
+//			{
+//				float s = [imageView scaleValue];
+//				if( [self resampleDataWithXFactor:ratio yFactor:ratio zFactor:1.0])
+//					[imageView setScaleValue: s * ratio];
+//			}
+//		}
+//	}
+//	
+//	[pool release];
+//}
+
 -(void) loadImageData:(id) sender
 {
     NSAutoreleasePool   *pool=[[NSAutoreleasePool alloc] init];
@@ -4620,13 +4647,13 @@ static ViewerController *draggedController = 0L;
 	
 	NSLog(@"LOADING: All images loaded");
 	
-	
 	loadingPercentage = 1;
 	
 	if( stopThreadLoadImage == NO)
 	{
 		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
+//		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
 		
 		switch( orientationVector)
 		{
@@ -4809,6 +4836,8 @@ static ViewerController *draggedController = 0L;
 	BOOL isResampled = [ViewerController resampleDataFromViewer:self inPixArray:newPixList fileArray:newDcmList data:&newData withXFactor:xFactor yFactor:yFactor zFactor:zFactor];
 	if(isResampled)
 	{
+		resampleRatio = xFactor;
+		
 		[self changeImageData:newPixList :newDcmList :newData :NO];
 		loadingPercentage = 1;
 		[self computeInterval];
