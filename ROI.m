@@ -926,10 +926,12 @@ GLenum glReportError (void)
 {
 	rect = irect;
 }
+
 - (NSRect) rect
 {
-return rect;
+	return rect;
 }
+
 - (NSMutableArray*) points
 {
 	long i;

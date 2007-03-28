@@ -348,16 +348,39 @@ float min(float a, float b)
 	else return b;
 }
 
+float distanceNSPoint(NSPoint p1, NSPoint p2)
+{
+	float dx = p1.x - p2.x;
+	float dy = p1.y - p2.y;
+	return sqrt(dx*dx+dy*dy);
+}
+
 BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	if(NSPointInRect(lineStarts, rect) || NSPointInRect(lineEnds, rect)) return YES;
-	NSRect lineBoundingBox = NSMakeRect(min(lineStarts.x, lineEnds.x), min(lineStarts.y, lineEnds.y), fabsf(lineStarts.x - lineEnds.x), fabsf(lineStarts.y - lineEnds.y));
-	if(NSIsEmptyRect(lineBoundingBox)) return NO;
-	if(NSIntersectsRect(lineBoundingBox, rect))
+
+	float width = fabsf(lineStarts.x - lineEnds.x);
+	float height = fabsf(lineStarts.y - lineEnds.y);
+	NSRect lineBoundingBox = NSMakeRect(min(lineStarts.x, lineEnds.x), min(lineStarts.y, lineEnds.y), width, height);
+
+	if(NSIsEmptyRect(lineBoundingBox))
+	{
+		if(distanceNSPoint(lineStarts, lineEnds)<=1) // really small rect
+			return NO;
+		else // the line is vertical or horizontal
+		{
+			NSPoint midPoint;
+			midPoint.x = (lineStarts.x+lineEnds.x)/2.0;
+			midPoint.y = (lineStarts.y+lineEnds.y)/2.0;
+			return lineIntersectsRect(lineStarts, midPoint, rect) || lineIntersectsRect(midPoint, lineEnds, rect);
+		}
+	}
+	else if(NSIntersectsRect(lineBoundingBox, rect))
 	{
 		NSPoint midPoint = NSMakePoint(NSMidX(lineBoundingBox), NSMidY(lineBoundingBox));
-		return lineIntersectsRect(lineStarts, midPoint, rect) && lineIntersectsRect(midPoint, lineEnds, rect);
+		return lineIntersectsRect(lineStarts, midPoint, rect) || lineIntersectsRect(midPoint, lineEnds, rect);
 	}
+	else return NO;
 }
 
 @implementation DCMView
@@ -479,7 +502,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 
-- (void)drawPushBackToolArea;
+- (void)drawRepulsorToolArea;
 {
 	glEnable(GL_BLEND);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -488,30 +511,30 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long i;
 	
 	int circleRes = 20;
-	circleRes = (pushBackRadius>5) ? 30 : circleRes;
-	circleRes = (pushBackRadius>10) ? 40 : circleRes;
-	circleRes = (pushBackRadius>50) ? 60 : circleRes;
-	circleRes = (pushBackRadius>70) ? 80 : circleRes;
+	circleRes = (repulsorRadius>5) ? 30 : circleRes;
+	circleRes = (repulsorRadius>10) ? 40 : circleRes;
+	circleRes = (repulsorRadius>50) ? 60 : circleRes;
+	circleRes = (repulsorRadius>70) ? 80 : circleRes;
 	
-	glColor4f(1.0,1.0,0.0,pushBackAlpha);
+	glColor4f(1.0,1.0,0.0,repulsorAlpha);
 
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
 	{
 		// M_PI defined in cmath.h
 		float alpha = i * 2 * M_PI /circleRes;
-		glVertex2f( pushBackPosition.x + pushBackRadius*cos(alpha) * scaleValue, pushBackPosition.y + pushBackRadius*sin(alpha) * scaleValue);//*[curDCM pixelSpacingY]/[curDCM pixelSpacingX]
+		glVertex2f( repulsorPosition.x + repulsorRadius*cos(alpha) * scaleValue, repulsorPosition.y + repulsorRadius*sin(alpha) * scaleValue);//*[curDCM pixelSpacingY]/[curDCM pixelSpacingX]
 	}
 	glEnd();
 	glDisable(GL_BLEND);
 }
 
-- (void)setAlphaPushBack:(NSTimer*)theTimer
+- (void)setAlphaRepulsor:(NSTimer*)theTimer
 {
-	if (pushBackAlpha >= 0.4) pushBackAlphaSign = -1.0;
-	else if (pushBackAlpha <= 0.1) pushBackAlphaSign = 1.0;
+	if (repulsorAlpha >= 0.4) repulsorAlphaSign = -1.0;
+	else if (repulsorAlpha <= 0.1) repulsorAlphaSign = 1.0;
 	
-	pushBackAlpha += pushBackAlphaSign*0.02;
+	repulsorAlpha += repulsorAlphaSign*0.02;
 	
 	[self setNeedsDisplay:YES];
 }
@@ -1402,11 +1425,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	[_hotKeyDictionary release];
 	
-	if(pushBackColorTimer)
+	if(repulsorColorTimer)
 	{
-		[pushBackColorTimer invalidate];
-		[pushBackColorTimer release];
-		pushBackColorTimer = nil;
+		[repulsorColorTimer invalidate];
+		[repulsorColorTimer release];
+		repulsorColorTimer = nil;
 	}
 	
     [super dealloc];
@@ -1436,8 +1459,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	if( blendingColorBuf) free( blendingColorBuf);
 	
 	// not sure about this being needed
-	if(pushBackColorTimer)
-		[pushBackColorTimer invalidate];
+	if(repulsorColorTimer)
+		[repulsorColorTimer invalidate];
 	
 }
 
@@ -1969,27 +1992,36 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[self setNeedsDisplay:YES];
 		}
 		
-		if(pushBackROIEdition)
+		if(repulsorROIEdition)
 		{
-			currentTool = tPushBack;
-			tool = tPushBack;
-			pushBackROIEdition = NO;
+			currentTool = tRepulsor;
+			tool = tRepulsor;
+			repulsorROIEdition = NO;
 		}
 		
-		if(tool == tPushBack)
+		if(tool == tRepulsor)
 		{
-			pushBackRadius = 0;
-			if(pushBackColorTimer)
+			repulsorRadius = 0;
+			if(repulsorColorTimer)
 			{
-				[pushBackColorTimer invalidate];
-				[pushBackColorTimer release];
-				pushBackColorTimer = nil;
+				[repulsorColorTimer invalidate];
+				[repulsorColorTimer release];
+				repulsorColorTimer = nil;
 			}
 			[self setNeedsDisplay:YES];
+		}
+
+		if(selectorROIEdition)
+		{
+			currentTool = tROISelector;
+			tool = tROISelector;
+			selectorROIEdition = NO;
 		}
 		
 		if(tool == tROISelector)
 		{
+			[ROISelectorSelectedROIList release];
+			
 			NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
 			ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
 			ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
@@ -2088,17 +2120,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	[self setNeedsDisplay:YES];
-}
-
-- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
-{
-	if(groupID==0.0) return;
-	if(mode==ROI_selectedModify) mode=ROI_selected;
-	// select all ROIs in the same group
-	int i;
-	for(i=0; i<[curRoiList count]; i++)
-		if([[curRoiList objectAtIndex:i] groupID]==groupID)
-					[[curRoiList objectAtIndex:i] setROIMode:mode];
 }
 
 - (void) checkMouseModifiers:(id) sender
@@ -2365,7 +2386,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( blendingView) tool = tWLBlended;
 		else tool = tWL;
 	}
-	if( [self roiTool:currentTool] != YES)   // Not a ROI TOOL !
+	if( [self roiTool:currentTool] != YES && currentTool!=tROISelector)   // Not a ROI TOOL !
 	{
 		if (([event modifierFlags] & NSCommandKeyMask) && ([event modifierFlags] & NSAlternateKeyMask))  tool = tRotate;
 		if (([event modifierFlags] & NSShiftKeyMask))  tool = tZoom;
@@ -2544,8 +2565,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		else crossMove = -1;
 		
-		// push back!
-		if(tool == tPushBack)
+		if(tool == tRepulsor)
 		{
 			[self deleteMouseDownTimer];
 			
@@ -2554,7 +2574,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 			tempPt = [self ConvertFromView2GL:tempPt];
-			//pushBackPosition = tempPt;
+			//repulsorPosition = tempPt;
 			
 			int i, j;
 			BOOL clickInROI = NO;
@@ -2581,15 +2601,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				currentTool = tPencil;
 				tool = tPencil;
-				pushBackROIEdition = YES;
+				repulsorROIEdition = YES;
 			}
 			else
 			{
 				[self deleteMouseDownTimer];
-				pushBackColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaPushBack:) userInfo:event repeats:YES] retain];
-				pushBackAlpha = 0.1;
-				pushBackAlphaSign = 1.0;
-				pushBackRadius = 0;
+				repulsorColorTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(setAlphaRepulsor:) userInfo:event repeats:YES] retain];
+				repulsorAlpha = 0.1;
+				repulsorAlphaSign = 1.0;
+				repulsorRadius = 0;
 								
 				float dx, dx2, dy, dy2, d;
 				NSPoint pt;
@@ -2621,9 +2641,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						distance = (d < distance) ? d : distance ;
 					}
 				}
-				pushBackRadius = (int) ((distance + 0.5) * 0.8);
-				if(pushBackRadius<2) pushBackRadius = 2;
-				if(pushBackRadius>[curDCM pwidth]/2) pushBackRadius = [curDCM pwidth]/2;
+				repulsorRadius = (int) ((distance + 0.5) * 0.8);
+				if(repulsorRadius<2) repulsorRadius = 2;
+				if(repulsorRadius>[curDCM pwidth]/2) repulsorRadius = [curDCM pwidth]/2;
 				
 				if( [curRoiList count] == 0)
 				{
@@ -2634,11 +2654,56 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if(tool == tROISelector)
 		{
+			int i, j;
+			ROISelectorSelectedROIList = [[NSMutableArray arrayWithCapacity:0] retain];
+			
+			// if shift key is pressed, we need to keep track of the ROIs that were selected before the click 
+			if([event modifierFlags] & NSShiftKeyMask)
+			{
+				for(i=0; i<[curRoiList count]; i++)
+				{
+					if([[curRoiList objectAtIndex:i] ROImode]==ROI_selected)
+						[ROISelectorSelectedROIList addObject:[curRoiList objectAtIndex:i]];
+				}
+			}
+			
 			NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 			tempPt.y = size.size.height - tempPt.y ;
 
 			ROISelectorStartPoint = tempPt;
 			ROISelectorEndPoint = tempPt;
+
+			[self deleteMouseDownTimer];
+			
+			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			
+			tempPt = [self ConvertFromView2GL:tempPt];
+
+			BOOL clickInROI = NO;
+			for( i = 0; i < [curRoiList count]; i++) 
+			{
+				if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES])
+				{
+					clickInROI = YES;
+				}
+			}
+
+			if(!clickInROI)
+			{
+				for( i = 0; i < [curRoiList count]; i++)
+				{
+					if([[curRoiList objectAtIndex: i] clickInROI:tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO])
+					{
+						clickInROI = YES;
+					}
+				}
+			}
+			if(clickInROI)
+			{
+				currentTool = tPencil;
+				tool = tPencil;
+				selectorROIEdition = YES;
+			}
 		}
 		
 		// ROI TOOLS
@@ -2692,7 +2757,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					{
 						[[curRoiList objectAtIndex: selected] setROIMode: ROI_sleep];
 						// unselect all ROIs in the same group
-						[self setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
+						[[self windowController] setMode:ROI_sleep toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]];
 						DoNothing = YES;
 					}
 				}
@@ -2723,7 +2788,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];
 					
-					[self setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
+					[[self windowController] setMode:roiVal toROIGroupWithID:[[curRoiList objectAtIndex:selected] groupID]]; // change the mode to the whole group before the selected ROI!
 					[[curRoiList objectAtIndex: selected] setROIMode: roiVal];
 										
 					NSArray *winList = [[NSApplication sharedApplication] windows];
@@ -2886,7 +2951,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				}
 			}
 		}
-		
 		[self mouseDragged:event];
     }
 }
@@ -3291,9 +3355,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					break;
 				case tWL:[self mouseDraggedWindowLevel:event];
 					break;
-				case tPushBack: [self mouseDraggedRepulsor:event];
+				case tRepulsor: [self mouseDraggedRepulsor:event];
 					break;
-				case tROISelector: [self mouseDraggedSelector:event];
+				case tROISelector: [self mouseDraggedROISelector:event];
 					break;
 
 				default:break;
@@ -3818,7 +3882,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSPoint     eventLocation = [event locationInWindow];
 	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
 	tempPt.y = frame.size.height - tempPt.y ;
-	pushBackPosition = tempPt;
+	repulsorPosition = tempPt;
 	tempPt = [self ConvertFromView2GL:tempPt];
 	
 	float dx, dx2, dy, dy2, d;
@@ -3839,15 +3903,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			dy2 = dy * dy;
 			d = sqrt(dx2 + dy2);
 			
-			if(d<pushBackRadius)
+			if(d<repulsorRadius)
 			{
 				if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
-					[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*pushBackRadius-dx,dy/d*pushBackRadius-dy)];
+					[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
 				else
-					[[points objectAtIndex:j] move:dx/d*pushBackRadius-dx :dy/d*pushBackRadius-dy];
+					[[points objectAtIndex:j] move:dx/d*repulsorRadius-dx :dy/d*repulsorRadius-dy];
 				
-				pt.x += dx/d*pushBackRadius-dx;
-				pt.y += dy/d*pushBackRadius-dy;
+				pt.x += dx/d*repulsorRadius-dx;
+				pt.y += dy/d*repulsorRadius-dy;
 				
 				int delta;
 				for(delta=-1; delta<=1; delta++)
@@ -3870,12 +3934,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						dy2 = dy * dy;
 						d = sqrt(dx2 + dy2);
 						
-						if(d<=3 && d<pushBackRadius)
+						if(d<=3 && d<repulsorRadius)
 						{
 							[points removeObjectAtIndex:k];
 							if(delta==-1) j--;
 						}
-						else if((d>=20 || d>=pushBackRadius) && n<50)
+						else if((d>=20 || d>=repulsorRadius) && n<50)
 						{
 							NSPoint pt3;
 							pt3.x = (pt2.x+pt.x)/2.0;
@@ -3894,7 +3958,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 }
 		
-- (void)mouseDraggedSelector:(NSEvent *)event;
+- (void)mouseDraggedROISelector:(NSEvent *)event;
 {
 	NSRect frame = [self frame];
 	NSPoint eventLocation = [event locationInWindow];
@@ -3907,36 +3971,79 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	NSRect rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
 	
+	if(rect.size.width<1)rect.size.width=1;
+	if(rect.size.height<1)rect.size.height=1;
+		
 	int i, j, k;
 	NSMutableArray *points;
-	
+
+	// deselect all ROIs
 	for(i=0; i<[curRoiList count]; i++)
 	{
-		[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
+		// ROISelectorSelectedROIList contains ROIs that were selected _before_ the click
+		if([ROISelectorSelectedROIList containsObject:[curRoiList objectAtIndex:i]])// this will be possible only if shift key is pressed
+			[[curRoiList objectAtIndex:i] setROIMode:ROI_selected];
+		else
+			[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
 	}
-	
+
+	// select ROIs in the selection rectangle
 	for(i=0; i<[curRoiList count]; i++)
 	{
-		points = [[curRoiList objectAtIndex:i] points];
+		ROI *roi = [curRoiList objectAtIndex:i];
 		BOOL intersected = NO;
-		NSPoint p1, p2;
-		for(j=0; j<[points count]-1 && !intersected; j++)
+		long roiType = [roi type];
+		if(roiType==tText)
 		{
-			p1 = [[points objectAtIndex:j] point];
-			p2 = [[points objectAtIndex:j+1] point];
-			intersected = lineIntersectsRect(p1, p2,  rect);
+			float w = [roi rect].size.width/scaleValue;
+			float h = [roi rect].size.height/scaleValue;
+			NSPoint o = [roi rect].origin;
+			NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
+			intersected = NSIntersectsRect(rect, curROIRect);
 		}
-		// last segment: between last point and first one
-		if(!intersected)
+		else if(roiType==tROI)
 		{
-			p1 = [[points lastObject] point];
-			p2 = [[points objectAtIndex:0] point];
-			intersected = lineIntersectsRect(p1, p2,  rect);
+			intersected = NSIntersectsRect(rect, [roi rect]);
+		}
+		else if(roiType==t2DPoint)
+		{
+			intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
+		}
+		else
+		{
+			points = [[curRoiList objectAtIndex:i] points];
+			NSPoint p1, p2;
+			for(j=0; j<[points count]-1 && !intersected; j++)
+			{
+				p1 = [[points objectAtIndex:j] point];
+				p2 = [[points objectAtIndex:j+1] point];
+				intersected = lineIntersectsRect(p1, p2,  rect);
+			}
+			// last segment: between last point and first one
+			if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+			{
+				p1 = [[points lastObject] point];
+				p2 = [[points objectAtIndex:0] point];
+				intersected = lineIntersectsRect(p1, p2,  rect);
+			}
 		}
 		
 		if(intersected)
 		{
-			[[self windowController] selectROI:[curRoiList objectAtIndex:i] deselectingOther:NO];
+			if([event modifierFlags] & NSShiftKeyMask) // invert the mode: selected->sleep, sleep->selected
+			{
+				long mode = [roi ROImode];
+				if(mode==ROI_sleep) mode=ROI_selected;
+				else if(mode==ROI_selected) mode=ROI_sleep;
+					
+				// set the mode for the ROI and its group (if any)
+				[roi setROIMode:mode];
+				[[self windowController] setMode:mode toROIGroupWithID:[roi groupID]];
+			}
+			else
+			{
+				[[self windowController] selectROI:roi deselectingOther:NO];
+			}
 		}
 	}
 }
@@ -4381,7 +4488,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	_hotKeyDictionary = [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] retain];
 	
-	pushBackRadius = 0;
+	repulsorRadius = 0;
 	
     return self;
 }
@@ -6645,13 +6752,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				} //annotations >= annotBase
 				} //Annotation  != None
 				
-				if(pushBackRadius != 0)
+				if(repulsorRadius != 0)
 				{
 					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 					glScalef (2.0f / size.size.width, -2.0f /  size.size.height, 1.0f); // scale to port per pixel scale
 					glTranslatef (-(size.size.width) / 2.0f, -(size.size.height) / 2.0f, 0.0f); // translate center to upper left
 					
-					[self drawPushBackToolArea];
+					[self drawRepulsorToolArea];
 				}
 				
 				if(ROISelectorStartPoint.x!=ROISelectorEndPoint.x || ROISelectorStartPoint.y!=ROISelectorEndPoint.y)
@@ -8044,7 +8151,7 @@ BOOL	lowRes = NO;
 		c = [NSCursor crosshairCursor];
 	else if (tool == tCross)
 		c = [NSCursor crosshairCursor];
-	else if (tool == tPushBack)
+	else if (tool == tRepulsor)
 		c = [NSCursor crosshairCursor];
 	else if (tool == tROISelector)
 		c = [NSCursor crosshairCursor];

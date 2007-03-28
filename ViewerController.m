@@ -3720,7 +3720,7 @@ static ViewerController *draggedController = 0L;
 		case tPencil:
 		case t2DPoint:
 		case tPlain:
-		case tPushBack:
+		case tRepulsor:
 		case tROISelector:
 			[self setROIToolTag: tag];
 		break;
@@ -7404,7 +7404,8 @@ extern NSString * documentsDirectory();
 		case tPencil:		filename = @"Pencil";			break;
 		case t2DPoint:		filename = @"Point";			break;
 		case tPlain:		filename = @"Brush";			break;
-		case tPushBack:		filename = @"Repulsor";			break;
+		case tRepulsor:		filename = @"Repulsor";			break;
+		case tROISelector:	filename = @"ROISelector";		break;
 	}
 	
 	return [NSImage imageNamed: filename];
@@ -8893,7 +8894,7 @@ int i,j,l;
 	[srController beginSheet];
 }
 
-- (ROI*) selectedROI
+- (ROI*)selectedROI
 {
 	ROI *selectedRoi = 0L;
 	int i;
@@ -8909,6 +8910,18 @@ int i,j,l;
 	return selectedRoi;
 }
 
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+{
+	if(groupID==0.0) return;
+	if(mode==ROI_selectedModify) mode=ROI_selected;
+	// set the mode to all ROIs in the same group
+	NSArray *curROIList = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+	int i;
+	for(i=0; i<[curROIList count]; i++)
+		if([[curROIList objectAtIndex:i] groupID]==groupID)
+					[[curROIList objectAtIndex:i] setROIMode:mode];
+}
+
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 {
 	if(deselectOther)
@@ -8917,8 +8930,10 @@ int i,j,l;
 		for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
 			[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
 	}
-	// select
+	// select the ROI
 	[roi setROIMode:ROI_selected];
+	// select the othher grouped ROIs (if any)
+	[self setMode:ROI_selected toROIGroupWithID:[roi groupID]];
 	
 	// bring it to front
 	[roi retain];

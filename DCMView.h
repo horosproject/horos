@@ -55,7 +55,7 @@ enum
 	tPlain,						//	20
 	tBonesRemoval,				//	21
 	tWLBlended,					//  22
-	tPushBack,					//  23
+	tRepulsor,					//  23
 	tLayerROI,					//	24
 	tROISelector				//	25
 };
@@ -213,14 +213,16 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	
 	BOOL			drawing;
 	
-	int				pushBackRadius;
-	NSPoint			pushBackPosition;
-	NSTimer			*pushBackColorTimer;
-	float			pushBackAlpha, pushBackAlphaSign;
-	BOOL			pushBackROIEdition;
+	int				repulsorRadius;
+	NSPoint			repulsorPosition;
+	NSTimer			*repulsorColorTimer;
+	float			repulsorAlpha, repulsorAlphaSign;
+	BOOL			repulsorROIEdition;
 	long            scrollMode;
 	
 	NSPoint			ROISelectorStartPoint, ROISelectorEndPoint;
+	BOOL			selectorROIEdition;
+	NSMutableArray	*ROISelectorSelectedROIList;
 }
 + (void)setPluginOverridesMouse: (BOOL)override;
 + (void) computePETBlendingCLUT;
@@ -427,6 +429,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void)mouseDraggedBlending:(NSEvent *)event;
 - (void)mouseDraggedWindowLevel:(NSEvent *)event;
 - (void)mouseDraggedRepulsor:(NSEvent *)event;
-- (void)mouseDraggedSelector:(NSEvent *)event;
+- (void)mouseDraggedROISelector:(NSEvent *)event;
 
 @end

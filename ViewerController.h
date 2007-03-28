@@ -586,6 +586,7 @@ enum
 - (void) SetSyncButtonBehavior:(id) sender;
 
 - (ROI*)selectedROI;
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
 
 #pragma mark-
