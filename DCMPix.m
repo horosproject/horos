@@ -2667,6 +2667,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	minValueOfSeries = 0;
 	radiopharmaceuticalStartTime = 0L;
 	acquisitionTime = 0L;
+	independentZoom = 1;
 	radionuclideTotalDose = 0;
 	radionuclideTotalDoseCorrected = 0;
 	
@@ -2705,7 +2706,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 	if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];
-		
+
+		independentZoom = 1;		
 		acquisitionTime = 0L;
 		radiopharmaceuticalStartTime = 0L;
 		radionuclideTotalDose = 0;
@@ -2853,6 +2855,8 @@ BOOL gUSEPAPYRUSDCMPIX;
     if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];
+		
+		independentZoom = 1;
 		
 		//-------------------------received parameters
 		srcFile = s;
@@ -9468,6 +9472,36 @@ BOOL            readable = YES;
 {
 	[self CheckLoad];
     return wl;
+}
+
+-(NSPoint) independentOffset
+{
+	return independentOffset;
+}
+
+-(void) setIndependentOffset:(NSPoint) z
+{
+	independentOffset = z;
+}
+
+-(float) independentRotation
+{
+	return independentRotation;
+}
+
+-(void) setIndependentRotation:(float) z
+{
+	independentRotation = z;
+}
+
+-(float) independentZoom
+{
+	return independentZoom;
+}
+
+-(void) setIndependentZoom:(float) z
+{
+	independentZoom = z;
 }
 
 -(long) pwidth

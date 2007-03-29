@@ -167,7 +167,10 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	int					VOILUT_first;
 	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
 	
-	char					blackIndex;
+	char				blackIndex;
+	
+	NSPoint				independentOffset;
+	float				independentRotation, independentZoom;
 }
 
 + (void) checkUserDefaults: (BOOL) update;
@@ -202,7 +205,12 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 - (void) setMaxValueOfSeries: (float) f;
 - (float) minValueOfSeries;
 - (void) setMinValueOfSeries: (float) f;
-
+-(NSPoint) independentOffset;
+-(void) setIndependentOffset:(NSPoint) z;
+-(float) independentRotation;
+-(void) setIndependentRotation:(float) z;
+-(float) independentZoom;
+-(void) setIndependentZoom:(float) z;
 // Compute ROI data
 - (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;

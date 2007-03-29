@@ -1561,6 +1561,13 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[[self window] setAcceptsMouseMovedEvents: YES];
 		
+		if( curDCM)
+		{
+			[curDCM setIndependentRotation: rotation];
+			[curDCM setIndependentZoom:scaleValue];
+			[curDCM setIndependentOffset:origin];
+		}
+		
         curImage = index;
         if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
         curDCM = [dcmPixList objectAtIndex:curImage];
@@ -1589,6 +1596,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue])
 		{
 			[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
+			
+			rotation = [curDCM independentRotation];
+			scaleValue = [curDCM independentZoom];
+			origin = [curDCM independentOffset];
 		}
 		else
 		{
