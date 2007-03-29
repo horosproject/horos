@@ -986,6 +986,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @implementation DCMPix
 
++ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
+{
+	int i;
+	
+	if( pnpoly( pts, no, x.x, x.y))
+			return YES;
+	
+	return NO;
+}
+
 //- (void) convertToFull16Bits: (unsigned short*) rawdata size:(long) RawSize BitsAllocated:(long) BitsAllocated BitsStored:(long) BitsStored HighBitPosition:(long) HighBitPosition PixelSign:(BOOL) PixelSign
 //{
 //	int l = (int)( RawSize / ( BitsAllocated / 8 ) );

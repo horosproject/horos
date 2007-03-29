@@ -385,6 +385,83 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 @implementation DCMView
 
++ (BOOL) intersectionBetweenTwoLinesA1:(NSPoint) a1 A2:(NSPoint) a2 B1:(NSPoint) b1 B2:(NSPoint) b2 result:(NSPoint*) r
+{
+	float x1 = a1.x,	y1 = a1.y;
+	float x2 = a2.x,	y2 = a2.y;
+	float x3 = b1.x,	y3 = b1.y;
+	float x4 = b2.x,	y4 = b2.y;
+	
+	float d = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
+	
+	if (d == 0) return NO;
+	
+	float xi = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/d;
+	float yi = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/d;
+	
+	float mag1 = [DCMView Magnitude: a1 : a2];
+    float U1 =	(	( ( xi - x1 ) * ( x2 - x1 ) ) +
+					( ( yi - y1 ) * ( y2 - y1 ) ) );
+	U1 /= (mag1*mag1);
+	
+	float mag2 = [DCMView Magnitude: b1 : b2];
+	float U2 =	(	( ( xi - x3 ) * ( x4 - x3 ) ) +
+					( ( yi - y3 ) * ( y4 - y3 ) ) );
+	U2 /= (mag2 * mag2);
+	
+	if( U1 >= 0 && U1 <= 1 && U2 >= 0 && U2 <= 1)
+	{
+		if( r)
+		{
+			r->x = xi;
+			r->y = yi;
+		}
+		
+		return YES;
+	}
+	
+	return NO;
+}
+
++ (float) Magnitude:( NSPoint) Point1 :(NSPoint) Point2 
+{
+    NSPoint Vector;
+
+    Vector.x = Point2.x - Point1.x;
+    Vector.y = Point2.y - Point1.y;
+
+    return (float)sqrt( Vector.x * Vector.x + Vector.y * Vector.y);
+}
+
++ (int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance
+{
+    float   LineMag;
+    float   U;
+    NSPoint Intersection;
+ 
+    LineMag = [DCMView Magnitude: endPoint : startPoint];
+ 
+    U = ( ( ( Point.x - startPoint.x ) * ( endPoint.x - startPoint.x ) ) +
+        ( ( Point.y - startPoint.y ) * ( endPoint.y - startPoint.y ) ) );
+		
+	U /= ( LineMag * LineMag );
+
+//    if( U < 0.0f || U > 1.0f )
+//	{
+//		NSLog(@"Distance Err");
+//		return 0;   // closest point does not fall within the line segment
+//	}
+	
+    Intersection.x = startPoint.x + U * ( endPoint.x - startPoint.x );
+    Intersection.y = startPoint.y + U * ( endPoint.y - startPoint.y );
+
+//    Intersection.Z = LineStart->Z + U * ( endPoint->Z - LineStart->Z );
+ 
+    *Distance = [DCMView Magnitude: Point :Intersection];
+ 
+    return 1;
+}
+
 + (NSString*) findWLWWPreset: (float) wl :(float) ww :(DCMPix*) pix
 {
 	NSDictionary	*list = [[NSUserDefaults standardUserDefaults] dictionaryForKey: @"WLWW3"];
@@ -406,6 +483,25 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	return NSLocalizedString( @"Other", 0L);
+}
+
++ (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray
+{
+	long i = 0, temp = 0;
+	
+	while( cstr[ i] != 0)
+	{
+		temp += fontSizeArray[ cstr[ i]];
+		i++;
+	}
+	return temp;
+}
+
++ (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
+{
+	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
+	return [attrString size];
 }
 
 - (IBAction)print:(id)sender
@@ -562,7 +658,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	// border
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.75);
-	glBegin(GL_LINE_LOOP);		
+	glBegin(GL_LINE_LOOP);
 	glVertex2f(ROISelectorStartPoint.x, ROISelectorStartPoint.y);
 	glVertex2f(ROISelectorStartPoint.x, ROISelectorEndPoint.y);
 	glVertex2f(ROISelectorEndPoint.x, ROISelectorEndPoint.y);
@@ -959,25 +1055,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:curImage]  forKey:@"curImage"]];
 }
 
-- (long) lengthOfString:( char *) cstr forFont:(long *)fontSizeArray
-{
-	long i = 0, temp = 0;
-	
-	while( cstr[ i] != 0)
-	{
-		temp += fontSizeArray[ cstr[ i]];
-		i++;
-	}
-	return temp;
-}
-
-- (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
-{
-	NSDictionary *attr = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
-	NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:string attributes:attr] autorelease];
-	return [attrString size];
-}
-
 - (void) DrawNSStringGL: (NSString*) str :(GLuint) fontL :(long) x :(long) y rightAlignment: (BOOL) right useStringTexture: (BOOL) stringTex
 {
 	if( stringTex)
@@ -1025,8 +1102,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		char	*cstrOut = (char*) [str UTF8String];
 		if( right)
 		{
-			if( fontL == labelFontListGL) x -= [self lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
-			else x -= [self lengthOfString:cstrOut forFont:fontListGLSize] + 2;
+			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
+			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
 		unsigned char	*lstr = (unsigned char*) cstrOut;
 		
@@ -2032,45 +2109,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[nc postNotificationName: @"DCMUpdateCurrentImage" object: self userInfo: userInfo];
 }
 
--(float) Magnitude:( NSPoint) Point1 :(NSPoint) Point2 
-{
-    NSPoint Vector;
-
-    Vector.x = Point2.x - Point1.x;
-    Vector.y = Point2.y - Point1.y;
-
-    return (float)sqrt( Vector.x * Vector.x + Vector.y * Vector.y);
-}
-
--(int) DistancePointLine: (NSPoint) Point :(NSPoint) startPoint :(NSPoint) endPoint :(float*) Distance
-{
-    float   LineMag;
-    float   U;
-    NSPoint Intersection;
- 
-    LineMag = [self Magnitude: endPoint : startPoint];
- 
-    U = ( ( ( Point.x - startPoint.x ) * ( endPoint.x - startPoint.x ) ) +
-        ( ( Point.y - startPoint.y ) * ( endPoint.y - startPoint.y ) ) );
-		
-	U /= ( LineMag * LineMag );
-
-//    if( U < 0.0f || U > 1.0f )
-//	{
-//		NSLog(@"Distance Err");
-//		return 0;   // closest point does not fall within the line segment
-//	}
-	
-    Intersection.x = startPoint.x + U * ( endPoint.x - startPoint.x );
-    Intersection.y = startPoint.y + U * ( endPoint.y - startPoint.y );
-
-//    Intersection.Z = LineStart->Z + U * ( endPoint->Z - LineStart->Z );
- 
-    *Distance = [self Magnitude: Point :Intersection];
- 
-    return 1;
-}
-
 -(void) roiSet:(ROI*) aRoi
 {
 	[aRoi setRoiFont: labelFontListGL :labelFontListGLSize :self];
@@ -2347,7 +2385,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							cross2.x +=  1000*mprVector[ 0];
 							cross2.y +=  1000*mprVector[ 1];
 							
-							[self DistancePointLine:tempPt :cross1 :cross2 :&distance];
+							[DCMView DistancePointLine:tempPt :cross1 :cross2 :&distance];
 							
 							if( distance * scaleValue < 10)
 							{
@@ -2551,7 +2589,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				cross2.x +=  1000*mprVector[ 0];
 				cross2.y +=  1000*mprVector[ 1];
 				
-				[self DistancePointLine:tempPt :cross1 :cross2 :&distance];
+				[DCMView DistancePointLine:tempPt :cross1 :cross2 :&distance];
 				
 			//	NSLog( @"Dist:%0.0f / %0.0f_%0.0f", distance, tempPt.x, tempPt.y);
 				
@@ -2698,6 +2736,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 				}
 			}
+			
 			if(clickInROI)
 			{
 				currentTool = tPencil;
@@ -3960,23 +3999,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 - (void)mouseDraggedROISelector:(NSEvent *)event;
 {
-	NSRect frame = [self frame];
-	NSPoint eventLocation = [event locationInWindow];
-	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
-	tempPt.y = frame.size.height - tempPt.y ;
-	ROISelectorEndPoint = tempPt;
-	
-	NSPoint tempStartPoint = [self ConvertFromView2GL:ROISelectorStartPoint];
-	NSPoint tempEndPoint = [self ConvertFromView2GL:ROISelectorEndPoint];
-	
-	NSRect rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
-	
-	if(rect.size.width<1)rect.size.width=1;
-	if(rect.size.height<1)rect.size.height=1;
-		
 	int i, j, k;
 	NSMutableArray *points;
-
+	
 	// deselect all ROIs
 	for(i=0; i<[curRoiList count]; i++)
 	{
@@ -3987,44 +4012,141 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			[[curRoiList objectAtIndex:i] setROIMode:ROI_sleep];
 	}
 
+	NSRect frame = [self frame];
+	NSPoint eventLocation = [event locationInWindow];
+	NSPoint tempPt = [[[event window] contentView] convertPoint:eventLocation toView:self];
+	tempPt.y = frame.size.height - tempPt.y ;
+	ROISelectorEndPoint = tempPt;
+	
+	NSPoint	polyRect[ 4];
+	
+	NSRect rect;
+	
+	if( rotation == 0)
+	{	
+		NSPoint tempStartPoint = [self ConvertFromView2GL:ROISelectorStartPoint];
+		NSPoint tempEndPoint = [self ConvertFromView2GL:ROISelectorEndPoint];
+		
+		rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
+		
+		if(rect.size.width<1)rect.size.width=1;
+		if(rect.size.height<1)rect.size.height=1;
+	}
+	else
+	{
+		polyRect[ 0] = [self ConvertFromView2GL:ROISelectorStartPoint];
+		polyRect[ 1] = [self ConvertFromView2GL:NSMakePoint(ROISelectorStartPoint.x,ROISelectorStartPoint.y - (ROISelectorStartPoint.y-ROISelectorEndPoint.y))];
+		polyRect[ 2] = [self ConvertFromView2GL:ROISelectorEndPoint];
+		polyRect[ 3] = [self ConvertFromView2GL:NSMakePoint(ROISelectorStartPoint.x - (ROISelectorStartPoint.x-ROISelectorEndPoint.x),ROISelectorStartPoint.y)];
+	}
+	
 	// select ROIs in the selection rectangle
 	for(i=0; i<[curRoiList count]; i++)
 	{
 		ROI *roi = [curRoiList objectAtIndex:i];
 		BOOL intersected = NO;
 		long roiType = [roi type];
-		if(roiType==tText)
+		
+		if( rotation == 0)
 		{
-			float w = [roi rect].size.width/scaleValue;
-			float h = [roi rect].size.height/scaleValue;
-			NSPoint o = [roi rect].origin;
-			NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
-			intersected = NSIntersectsRect(rect, curROIRect);
-		}
-		else if(roiType==tROI)
-		{
-			intersected = NSIntersectsRect(rect, [roi rect]);
-		}
-		else if(roiType==t2DPoint)
-		{
-			intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
+			if(roiType==tText)
+			{
+				float w = [roi rect].size.width/scaleValue;
+				float h = [roi rect].size.height/scaleValue;
+				NSPoint o = [roi rect].origin;
+				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
+				intersected = NSIntersectsRect(rect, curROIRect);
+			}
+			else if(roiType==tROI)
+			{
+				intersected = NSIntersectsRect(rect, [roi rect]);
+			}
+			else if(roiType==t2DPoint)
+			{
+				intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
+			}
+			else
+			{
+				points = [[curRoiList objectAtIndex:i] points];
+				NSPoint p1, p2;
+				for(j=0; j<[points count]-1 && !intersected; j++)
+				{
+					p1 = [[points objectAtIndex:j] point];
+					p2 = [[points objectAtIndex:j+1] point];
+					intersected = lineIntersectsRect(p1, p2,  rect);
+				}
+				// last segment: between last point and first one
+				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+				{
+					p1 = [[points lastObject] point];
+					p2 = [[points objectAtIndex:0] point];
+					intersected = lineIntersectsRect(p1, p2,  rect);
+				}
+			}
 		}
 		else
 		{
-			points = [[curRoiList objectAtIndex:i] points];
-			NSPoint p1, p2;
-			for(j=0; j<[points count]-1 && !intersected; j++)
+			if(roiType==tText)
 			{
-				p1 = [[points objectAtIndex:j] point];
-				p2 = [[points objectAtIndex:j+1] point];
-				intersected = lineIntersectsRect(p1, p2,  rect);
+				float w = [roi rect].size.width/scaleValue;
+				float h = [roi rect].size.height/scaleValue;
+				NSPoint o = [roi rect].origin;
+				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
+				
+				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMinX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
+				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMinX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
+				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
+				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
 			}
-			// last segment: between last point and first one
-			if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+			else if(roiType==t2DPoint)
 			{
-				p1 = [[points lastObject] point];
-				p2 = [[points objectAtIndex:0] point];
-				intersected = lineIntersectsRect(p1, p2,  rect);
+				intersected = [DCMPix IsPoint: [[[roi points] objectAtIndex:0] point] inPolygon:polyRect size:4];
+			}
+			else
+			{
+				points = [[curRoiList objectAtIndex:i] points];
+				NSPoint p1, p2;
+				for(j=0; j<[points count] && !intersected; j++)
+				{
+					intersected = [DCMPix IsPoint: [[points objectAtIndex:j] point] inPolygon:polyRect size:4];
+				}
+				
+				if( !intersected)
+				{
+					NSPoint	*p = malloc( sizeof( NSPoint) * [points count]);
+					for(j=0; j<[points count]; j++) p[ j] = [[points objectAtIndex:j] point];
+					for(j=0; j<4 && !intersected; j++)
+					{
+						intersected = [DCMPix IsPoint: polyRect[j] inPolygon:p size:[points count]];
+					}
+					free(p);
+				}
+				
+				if( !intersected)
+				{
+					points = [[curRoiList objectAtIndex:i] points];
+					NSPoint p1, p2;
+					for(j=0; j<[points count]-1 && !intersected; j++)
+					{
+						p1 = [[points objectAtIndex:j] point];
+						p2 = [[points objectAtIndex:j+1] point];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: 0L];
+					}
+					
+					// last segment: between last point and first one
+					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+					{
+						p1 = [[points lastObject] point];
+						p2 = [[points objectAtIndex:0] point];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: 0L];
+						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: 0L];
+					}
+				}
 			}
 		}
 		
@@ -4046,6 +4168,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			}
 		}
 	}
+	
+	
+	
 }
 
 #pragma mark-
@@ -4324,7 +4449,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
 	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
-	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
 - (id)initWithFrameInt:(NSRect)frameRect
@@ -5992,21 +6117,21 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		{
 			if( [file valueForKeyPath:@"series.study.studyName"])
 			{
-				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+				xRaster = size.size.width;
 				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.studyName"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
 			
 			if( [file valueForKeyPath:@"series.name"])
 			{
-				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);
+				xRaster = size.size.width;
 				[self DrawNSStringGL: [file valueForKeyPath:@"series.name"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
 			
 			if( [file valueForKeyPath:@"series.study.id"])
 			{
-				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
+				xRaster = size.size.width;		
 				[self DrawNSStringGL: [file valueForKeyPath:@"series.study.id"] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
@@ -6039,7 +6164,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			if( [curDCM protocolName] != 0L)
 			{
-				xRaster = size.size.width;// - ([self lengthOfString:string forFont:fontListGLSize] + 2);		
+				xRaster = size.size.width;		
 				[self DrawNSStringGL: [curDCM protocolName] : fontListGL :xRaster :yRaster + stringSize.height rightAlignment: YES useStringTexture: YES];
 				yRaster += (stringSize.height + stringSize.height/10);
 			}
@@ -6053,7 +6178,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( date && [date yearOfCommonEra] != 3000)
 			{
 				tempString = [date descriptionWithCalendarFormat: shortDateString];
-				xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+				xRaster = size.size.width;	
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: YES];
 				yRaster -= (stringSize.height + stringSize.height/10);
 			}
@@ -6063,7 +6188,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			if( date && [date yearOfCommonEra] != 3000)
 			{
 				tempString = [date descriptionWithCalendarFormat: [[NSUserDefaults standardUserDefaults] objectForKey: NSTimeFormatString]];	//	DDP localized from "%I:%M %p" 
-				xRaster = size.size.width;// - ([self lengthOfString:cptr forFont:fontListGLSize] + 2);		
+				xRaster = size.size.width;
 				[self DrawNSStringGL: tempString : fontListGL :xRaster :yRaster rightAlignment: YES useStringTexture: NO];
 				yRaster -= (stringSize.height + stringSize.height/10);
 			}
@@ -7841,7 +7966,7 @@ BOOL	lowRes = NO;
 	if( fontGL == 0L) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
 	
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :NO];
-	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 	
 	[stringTextureCache release];
 	stringTextureCache = 0L;

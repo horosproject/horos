@@ -255,13 +255,13 @@ int sortROIByName(id roi1, id roi2, void *context)
 {
 	[undoQueue addObject: [self prepareObjectForUndo: string]];
 		
-	NSLog( @"add undo");
+//	NSLog( @"add undo");
 	
 	if( [undoQueue count] > UNDOQUEUESIZE)
 	{
 		[undoQueue removeObjectAtIndex: 0];
 		
-		NSLog( @"undo queue size > UNDOQUEUESIZE");
+//		NSLog( @"undo queue size > UNDOQUEUESIZE");
 	}
 }
 

@@ -25,7 +25,7 @@
 	fontListGL = glGenLists (150);
 	fontGL = [NSFont systemFontOfSize: 12];
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :YES];
-	stringSize = [self sizeOfString:@"B" forFont:fontGL];
+	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
 }
 
 - (void) changeGLFontNotification:(NSNotification*) note

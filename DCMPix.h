@@ -172,6 +172,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 + (void) checkUserDefaults: (BOOL) update;
 + (void) resetUserDefaults;
++ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count;
 
 // Is it an RGB image (ARGB) or float image?
 - (BOOL) isRGB;
