@@ -483,6 +483,9 @@ Version 2.3
 					case 54:
 						attrTag = [DCMAttributeTag tagWithName:@"PhysiciansofRecord"];
 						break;
+					case 56:
+						attrTag = [DCMAttributeTag tagWithName:@"StudyID"];
+						break;
 					default:
 						attrTag = nil;				
 						break;
