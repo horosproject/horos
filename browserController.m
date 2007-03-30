@@ -10605,7 +10605,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSLog(@" ADD dicomdir");
 				NSTask              *theTask;
-				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", tempPath,  nil];
+				NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", tempPath,  nil];
 				
 				theTask = [[NSTask alloc] init];
 				[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !

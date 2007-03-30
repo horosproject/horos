@@ -594,7 +594,7 @@ NSString* asciiString (NSString* name);
 	
 	NSTask              *theTask;
 	//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+id", burnFolder,  nil];
+	NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", burnFolder,  nil];
 	//NSLog(@"burn args: %@", [theArguments description]);
 	theTask = [[NSTask alloc] init];
 	[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !

@@ -8177,7 +8177,8 @@ BOOL	lowRes = NO;
 	return blendingFactor;
 }
 
--(void)setImageParamatersFromView:(DCMView *)aView{
+-(void)setImageParamatersFromView:(DCMView *)aView
+{
 	if (aView != self)
 	{
 		int offset = [self tag] - [aView tag];
@@ -8187,18 +8188,26 @@ BOOL	lowRes = NO;
 			curImage = -1;
 		else if (curImage < 0)
 			curImage = -1;
-		//set ww/wl
-			curWW = [aView curWW];
-			curWL = [aView curWL];
-		//scale
-			[self setScaleValue: [aView scaleValue]];
-			//scaleValue = [aView scaleValue];
-		//rotation
-			rotation = [aView rotation];
-			[self setXFlipped: [aView xFlipped]];
-			[self setYFlipped: [aView yFlipped]];
-		//translate
-			origin = [aView origin];
+		
+		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"])
+		{
+			
+		}
+		else
+		{
+			//set ww/wl
+				curWW = [aView curWW];
+				curWL = [aView curWL];
+			//scale
+				[self setScaleValue: [aView scaleValue]];
+				//scaleValue = [aView scaleValue];
+			//rotation
+				rotation = [aView rotation];
+			//translate
+				origin = [aView origin];
+		}
+		[self setXFlipped: [aView xFlipped]];
+		[self setYFlipped: [aView yFlipped]];
 		
 		if( curImage < 0) return;
 		
