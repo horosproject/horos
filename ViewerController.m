@@ -13766,6 +13766,8 @@ long i;
 	[self buildMatrixPreview: NO];
 	
 	[imageView setNeedsDisplay:YES];
+	
+	[[BrowserController currentBrowser] saveDatabase: 0L];
 }
 
 - (IBAction) keyImageDisplayButton:(id) sender

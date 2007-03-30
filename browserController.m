@@ -4540,6 +4540,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[managedObjectContext unlock];
 	[managedObjectContext release];
+	
+	[self saveDatabase: currentDatabasePath];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors
