@@ -1031,10 +1031,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				[self resampleDataWithXFactor:[curPix pixelSpacingY] / [curPix pixelSpacingX] yFactor:1.0 zFactor:1.0];
 			}
+			
+			[self setPostprocessed: YES];
 		}
 	}
-	
-	[self setPostprocessed: YES];
 }
 
 - (IBAction) setOrientationTool:(id) sender

@@ -546,7 +546,10 @@ extern NSString * documentsDirectory();
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
 	
 	if( [viewerController postprocessed] == NO)
+	{
+		NSLog( str);
 		[dict writeToFile:str atomically:YES];
+	}
 }
 
 -(void) load3DState
