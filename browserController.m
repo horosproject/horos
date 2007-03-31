@@ -3016,6 +3016,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 		
+		if( free <= 0) return;
+		
 		free /= 1024;
 		free /= 1024;
 		
