@@ -12209,8 +12209,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 										AnonymizerToolbarItemIdentifier,
 										SendToolbarItemIdentifier,
 										iPodToolbarItemIdentifier,
-										iDiskSendToolbarItemIdentifier,
-										iDiskGetToolbarItemIdentifier,
 										ViewerToolbarItemIdentifier,
 										MovieToolbarItemIdentifier,
 										BurnerToolbarItemIdentifier,
