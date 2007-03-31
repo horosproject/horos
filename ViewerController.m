@@ -4461,39 +4461,36 @@ static ViewerController *draggedController = 0L;
 	[imageView setIndex: [imageView curImage]];
 }
 
-//- (void) resampleDataIfNeeded:(id) sender
-//{
-//	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-//	
-//	[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"ResampleData"];
-//	[[NSUserDefaults standardUserDefaults] setInteger:128 forKey: @"ResampleDataIfSmallerOrEqualValue"];
-//	[[NSUserDefaults standardUserDefaults] setInteger:256 forKey: @"ResampleDataValue"];
-//
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ResampleData"])
-//	{
-//		int height = [[pixList[ 0] objectAtIndex: 0] pheight];
-//		int width = [[pixList[ 0] objectAtIndex: 0] pwidth];
-//		int minimumValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"ResampleDataIfSmallerOrEqualValue"];
-//		float destinationValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ResampleDataValue"];
-//		
-//		if( width <= minimumValue || height <= minimumValue)
-//		{
-//			float ratio;
-//			
-//			if( width < height) ratio = width / destinationValue ;
-//			else ratio = height / destinationValue ;
-//			
-//			if( ratio > 0)
-//			{
-//				float s = [imageView scaleValue];
-//				if( [self resampleDataWithXFactor:ratio yFactor:ratio zFactor:1.0])
-//					[imageView setScaleValue: s * ratio];
-//			}
-//		}
-//	}
-//	
-//	[pool release];
-//}
+- (void) resampleDataIfNeeded:(id) sender
+{
+	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+	
+
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ResampleData"])
+	{
+		int height = [[pixList[ 0] objectAtIndex: 0] pheight];
+		int width = [[pixList[ 0] objectAtIndex: 0] pwidth];
+		int minimumValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"ResampleDataIfSmallerOrEqualValue"];
+		float destinationValue = [[NSUserDefaults standardUserDefaults] floatForKey: @"ResampleDataValue"];
+		
+		if( width <= minimumValue || height <= minimumValue)
+		{
+			float ratio;
+			
+			if( width < height) ratio = width / destinationValue ;
+			else ratio = height / destinationValue ;
+			
+			if( ratio > 0)
+			{
+				float s = [imageView scaleValue];
+				if( [self resampleDataWithXFactor:ratio yFactor:ratio zFactor:1.0])
+					[imageView setScaleValue: s * ratio];
+			}
+		}
+	}
+	
+	[pool release];
+}
 
 -(void) loadImageData:(id) sender
 {
@@ -4653,7 +4650,7 @@ static ViewerController *draggedController = 0L;
 	{
 		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
-//		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
+		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
 		
 		switch( orientationVector)
 		{
