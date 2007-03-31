@@ -62,6 +62,7 @@
 }
 
 -(NSSlider*) slider;
+-(void) setSliderValue:(int) i;
 -(void) load3DState;
 -(MPR2DView*) MPR2Dview;
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) files :(NSData*) volumeData :(ViewerController*) bC :(ViewerController*) vC;

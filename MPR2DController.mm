@@ -66,6 +66,7 @@ extern NSString * documentsDirectory();
 		curMovieIndex = [cur intValue];
 		
 		[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+		[originalView setFlippedData: [[viewerController imageView] flippedData]];
 		[originalView setIndex: [originalView curImage]];
 		
 		[blendingController setMovieIndex: curMovieIndex];
@@ -153,11 +154,20 @@ extern NSString * documentsDirectory();
 {
 	NSLog(@"adjustSlider");
 	
-    [slider setIntValue:[originalView curImage]];
+	if( [[viewerController imageView] flippedData]) [slider setIntValue: [pixList[ curMovieIndex] count] -1 -[originalView curImage]];
+	else [slider setIntValue: [originalView curImage]];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 }
 
+- (void) setSliderValue:(int) i
+{
+	NSLog( @"SetSlider: %d", i);
+	NSLog( [slider description]);
+	
+	if( [[viewerController imageView] flippedData]) [slider setIntValue: [pixList[ curMovieIndex] count] -1 -i];
+	else [slider setIntValue: i];
+}
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
@@ -269,6 +279,7 @@ extern NSString * documentsDirectory();
 	curMovieIndex = [moviePosSlider intValue];
 	
 	[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+	[originalView setFlippedData: [[viewerController imageView] flippedData]];
 	[originalView setIndex:[originalView curImage]];
 	
 	[blendingController setMovieIndex: curMovieIndex];
@@ -294,6 +305,7 @@ extern NSString * documentsDirectory();
 		[moviePosSlider setIntValue: curMovieIndex];
 		
 		[originalView setDCM:pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+		[originalView setFlippedData: [[viewerController imageView] flippedData]];
 		[originalView setIndex:[originalView curImage]];
 		
 		[blendingController setMovieIndex: curMovieIndex];
@@ -437,6 +449,7 @@ extern NSString * documentsDirectory();
 	[slider setIntValue:[pixList[0] count]/2];
 	
 	[originalView setDCM:pixList[0] :files :0L :[pixList[0] count]/2 :'i' :YES];
+	[originalView setFlippedData: [[viewerController imageView] flippedData]];
 	[originalView setStringID:@"Original"];
 	
 	[view setOrientationVector: [vC orientationVector]];
@@ -1191,6 +1204,7 @@ extern NSString * documentsDirectory();
 			curMovieIndex = i;
 			
 			[originalView setDCM: pixList[curMovieIndex] :fileList :0L :0 :'i' :NO];
+			[originalView setFlippedData: [[viewerController imageView] flippedData]];
 			[originalView setIndex: [originalView curImage]];
 			
 			[blendingController setMovieIndex: curMovieIndex];

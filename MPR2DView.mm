@@ -1870,7 +1870,7 @@ if( reader)
 			if( sliceThickness > 0) sliceIndex = [pixList count]-1 - sliceIndex;
 			
 			[oView setIndex: sliceIndex];
-			[[[[self window] windowController] slider] setIntValue:sliceIndex];
+			[[[self window] windowController] setSliderValue: sliceIndex];
 		}
 		
 		{

@@ -7925,9 +7925,13 @@ long	x = curImage;
 BOOL	lowRes = NO;
 
 	if( [[[NSApplication sharedApplication] currentEvent] type] == NSLeftMouseDragged) lowRes = YES;
-
-    curImage = [sender intValue];
-		
+	
+	if( flippedData) curImage = [dcmPixList count] -1 -[sender intValue];
+	else  curImage = [sender intValue];
+	
+	if( curImage < 0) curImage = 0;
+	if( curImage >= [dcmPixList count]) curImage = [dcmPixList count]-1;
+	
 	[self setIndex:curImage];
 	
 //	[self sendSyncMessage:curImage - x];
