@@ -1324,7 +1324,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		origin.x = origin.y = 0;
 		curImage = index; 
 		if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
-		curDCM = [dcmPixList objectAtIndex: curImage];
+		
+		[curDCM release];
+		curDCM = [[dcmPixList objectAtIndex: curImage] retain];
 		
 		[curRoiList release];
 		
@@ -1392,7 +1394,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	long i;
 	
+	[curDCM release];
 	curDCM = 0L;
+	
     [self setXFlipped: NO];
 	[self setYFlipped: NO];
 	
@@ -1447,7 +1451,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[dcmFilesList release];
 	dcmFilesList = 0L;
 	
+	[curDCM release];
 	curDCM = 0L;
+	
 	[dcmPixList release];
 	dcmPixList = 0L;
 
@@ -1570,7 +1576,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
         curImage = index;
         if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] -1;
-        curDCM = [dcmPixList objectAtIndex:curImage];
+		
+		[curDCM release];
+        curDCM = [[dcmPixList objectAtIndex:curImage] retain];
 		
 		[curRoiList release];
 		
