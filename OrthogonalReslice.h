@@ -33,7 +33,7 @@
 	long				minI, maxI, newX, newY, newTotal, currentAxe;
 	DCMPix				*firstPix;
 	
-	NSLock				*processorsLock;
+	NSLock				*processorsLock, *yCacheComputation;
 	volatile int		numberOfThreadsForCompute;
 }
 

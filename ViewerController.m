@@ -4650,7 +4650,7 @@ static ViewerController *draggedController = 0L;
 	{
 		[self performSelectorOnMainThread:@selector( computeIntervalFlipNow:) withObject:[NSNumber numberWithBool: NO] waitUntilDone: NO];
 		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
-		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
+//		[self performSelectorOnMainThread:@selector( resampleDataIfNeeded:) withObject:self waitUntilDone: NO];
 		
 		switch( orientationVector)
 		{

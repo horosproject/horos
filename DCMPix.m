@@ -2702,7 +2702,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
 {
 	//if( pixelSize != 32) NSLog( @"Only floating images are supported...");
-	NSLog(@"initwithdata: xDim: %f yDim: %f", xDim, yDim);
 	if( self = [super init])
     {
 		[DCMPix checkUserDefaults: NO];

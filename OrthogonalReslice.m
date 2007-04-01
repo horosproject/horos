@@ -28,6 +28,8 @@
 		
 		newPixListX = [[NSMutableArray alloc] initWithCapacity: 0];
 		newPixListY = [[NSMutableArray alloc] initWithCapacity: 0];
+		yCacheComputation = [[NSLock alloc] init];
+		
 		thickSlab = 1;
 		Ycache = 0;
 		useYcache = YES;
@@ -63,8 +65,12 @@
 
 -(void) dealloc
 {
+	[yCacheComputation lock];
+	[yCacheComputation unlock];
+	
 	if( Ycache) free( Ycache);
 	
+	[yCacheComputation release];
 	[processorsLock release];
 	[xReslicedDCMPixList release];
 	[yReslicedDCMPixList release];
@@ -74,9 +80,13 @@
 }
 
 
-- (void)finalize {
- if( Ycache) free( Ycache);
- [super finalize];
+- (void)finalize
+{
+	[yCacheComputation lock];
+	[yCacheComputation unlock];
+	
+	if( Ycache) free( Ycache);
+	[super finalize];
 }
 
 
@@ -113,6 +123,14 @@
 	
 	[self yReslice:x];
 	[self xReslice:y];
+}
+
+-(void) schedulerDidFinishSchedule: (Scheduler *)scheduler
+{
+	[yCacheComputation unlock];
+	[scheduler release];
+	
+	NSLog( @"end YCache");
 }
 
 -(void) performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
@@ -163,6 +181,8 @@
 			}
 		}
 	}
+	
+	NSLog( @"x");
 }
 
 - (void) subReslice:(NSNumber*) posNumber
@@ -219,8 +239,10 @@
 			
 			DCMPix *curPix = [newPixListY objectAtIndex: stack];
 			
-			if( Ycache)
+			if( Ycache && [yCacheComputation tryLock])
 			{
+				[yCacheComputation unlock];
+				
 //				BlockMoveData(	Ycache + newY*newX*i,
 //								[curPix fImage],
 //								newX * newY *sizeof(float));
@@ -370,29 +392,15 @@
 		{
 			if(useYcache)
 				Ycache = malloc( newTotal*newY*newX*sizeof(float));
+				
 			if( Ycache)
 			{
 				NSLog( @"start YCache");
-				WaitRendering *splash = [[WaitRendering alloc] init:@"Preparing data..."];
-				[splash showWindow:self];
-				
-//				vImage_Buffer src, dest;
-//				
-//				src.height = [firstPix pwidth] * [originalDCMPixList count];
-//				src.width = [firstPix pheight] ;
-//				src.rowBytes = src.width*4;
-//				
-//				dest.height = [firstPix pheight] ;
-//				dest.width = [firstPix pwidth]  * [originalDCMPixList count];
-//				dest.rowBytes = dest.width*4;
-//				
-//				src.data = [[originalDCMPixList objectAtIndex: 0] fImage];
-//				dest.data = Ycache;
-//				
-//				vImageRotate90_PlanarF( &src, &dest, kRotate90DegreesClockwise, 0, 0);
+				[yCacheComputation lock];
 				
 				// Create a scheduler
 				id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
+				[sched setDelegate: self];
 				
 				// Create the work units.
 				NSMutableSet *unitsSet = [NSMutableSet set];
@@ -403,18 +411,6 @@
 				
 				// Perform work schedule
 				[sched performScheduleForWorkUnits:unitsSet];
-				
-				while( [sched numberOfDetachedThreads] > 0)
-				{
-					[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-				}
-				
-				[sched release];
-				
-				[splash close];
-				[splash release];
-				
-				NSLog( @"end YCache");
 			}
 		}
 	}
@@ -633,6 +629,9 @@
 
 - (void)freeYCache;
 {
+	[yCacheComputation lock];
+	[yCacheComputation unlock];
+	
 	if(Ycache) free(Ycache);
 	Ycache = 0L;
 }
