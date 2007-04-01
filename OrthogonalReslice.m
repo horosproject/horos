@@ -240,7 +240,6 @@
 			if( Ycache && [yCacheComputation tryLock])
 			{
 				[yCacheComputation unlock];
-				
 //				BlockMoveData(	Ycache + newY*newX*i,
 //								[curPix fImage],
 //								newX * newY *sizeof(float));
@@ -469,15 +468,10 @@
 		{
 			if( stack >= [newPixListX count])
 			{
-				emptyData = malloc(size);
-				if(emptyData)
-				{
-					curPix = [[DCMPix alloc] initwithdata: (float*) emptyData :32 :newX :newY :1 :1 :0 :0 :0 :NO];
-					free( emptyData);
-					[curPix copySUVfrom: firstPix];
-					[newPixListX addObject: curPix];
-					[curPix release];
-				}
+				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				[curPix copySUVfrom: firstPix];
+				[newPixListX addObject: curPix];
+				[curPix release];
 			}
 			else curPix = [newPixListX objectAtIndex: stack];
 		}
@@ -485,15 +479,10 @@
 		{
 			if( stack  >= [newPixListY count])
 			{
-				emptyData = malloc(size);
-				if(emptyData)
-				{
-					curPix = [[DCMPix alloc] initwithdata: (float*) emptyData :32 :newX :newY :1 :1 :0 :0 :0 :NO];
-					free( emptyData);
-					[curPix copySUVfrom: firstPix];
-					[newPixListY addObject: curPix];
-					[curPix release];
-				}
+				curPix = [[DCMPix alloc] initwithdata: 0L :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				[curPix copySUVfrom: firstPix];
+				[newPixListY addObject: curPix];
+				[curPix release];
 			}
 			else curPix = [newPixListY objectAtIndex: stack];
 		}

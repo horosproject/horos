@@ -2770,6 +2770,9 @@ BOOL gUSEPAPYRUSDCMPIX;
 		{
 			fVolImage = im;
 			fImage = im;
+			
+			if( im == 0L)
+				NSLog( @"DCMPix initwithdata ERROR im == 0L");
 		}
 		else
 		{
@@ -2781,32 +2784,35 @@ BOOL gUSEPAPYRUSDCMPIX;
 					fImage = malloc(width*height*sizeof(float));
 					long i;
 					
-					if( xDim != width)
+					if( im)
 					{
-					//	NSLog(@"Allocate a new fImage");
-						for( i =0; i < height; i++)
+						if( xDim != width)
 						{
-							memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+						//	NSLog(@"Allocate a new fImage");
+							for( i =0; i < height; i++)
+							{
+								memcpy( fImage + i*width, im + i*xDim, width*sizeof(float));
+							}
 						}
+						else memcpy( fImage, im, width*height*sizeof(float));
 					}
-					else memcpy( fImage, im, width*height*sizeof(float));
 				break;
 				
 				case 8:		// RGBA -> argb
 					rowBytes = width * 4;
 					fImage = malloc(width*height*4);
-				//	fImage = (float*) im;
 					
-					unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
-					
-				//	vec_rl
-					
-					for( i =0; i < height*width*4; i+= 4)
+					if( im)
 					{
-						dst[ i] = src[ i+3];
-						dst[ i+1] = src[ i];
-						dst[ i+2] = src[ i+1];
-						dst[ i+3] = src[ i+2];
+						unsigned char *src = (unsigned char*) im, *dst = (unsigned char*) fImage;
+						
+						for( i =0; i < height*width*4; i+= 4)
+						{
+							dst[ i] = src[ i+3];
+							dst[ i+1] = src[ i];
+							dst[ i+2] = src[ i+1];
+							dst[ i+3] = src[ i+2];
+						}
 					}
 					
 					isRGB = YES;
