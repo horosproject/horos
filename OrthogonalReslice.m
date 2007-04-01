@@ -181,8 +181,6 @@
 			}
 		}
 	}
-	
-	NSLog( @"x");
 }
 
 - (void) subReslice:(NSNumber*) posNumber
