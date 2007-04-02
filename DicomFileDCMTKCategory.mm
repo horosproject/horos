@@ -160,7 +160,7 @@ extern NSLock	*PapyrusLock;
 		
 		//Character Set
 		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL){
-			characterSet = [NSString stringWithCString:string];
+			characterSet = [[[NSString stringWithCString:string] componentsSeparatedByString:@"\\"] objectAtIndex: 0];
 			encoding = [NSString encodingForDICOMCharacterSet:characterSet];
 		}
 		

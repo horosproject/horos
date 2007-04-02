@@ -226,7 +226,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
-	[mutable replaceOccurrencesOfString:@"^" withString:@"," options:nil range:NSMakeRange(0, [mutable length])]; 
+	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:nil range:NSMakeRange(0, [mutable length])]; 
