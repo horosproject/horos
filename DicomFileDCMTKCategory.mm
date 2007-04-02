@@ -159,8 +159,13 @@ extern NSLock	*PapyrusLock;
 		}
 		
 		//Character Set
-		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL){
-			characterSet = [[[NSString stringWithCString:string] componentsSeparatedByString:@"\\"] objectAtIndex: 0];
+		if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
+		{
+			NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+			
+			characterSet = [c objectAtIndex: 0];
+			if( [characterSet isEqualToString:@""]) characterSet = [c lastObject];
+			
 			encoding = [NSString encodingForDICOMCharacterSet:characterSet];
 		}
 		
