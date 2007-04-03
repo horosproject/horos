@@ -1638,20 +1638,21 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	fileManager = [NSFileManager defaultManager];
 	
-    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+	[persistentStoreCoordinator release];
+	
+	persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+	
     managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [managedObjectContext setPersistentStoreCoordinator: coordinator];
+    [managedObjectContext setPersistentStoreCoordinator: persistentStoreCoordinator];
 	
 
     NSURL *url = [NSURL fileURLWithPath: currentDatabasePath];
 
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
+	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:nil error:&error])
 	{	// NSSQLiteStoreType - NSXMLStoreType
       localizedDescription = [error localizedDescription];
 		error = [NSError errorWithDomain:@"OsiriXDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:error, NSUnderlyingErrorKey, [NSString stringWithFormat:@"Store Configuration Failure: %@", ((localizedDescription != nil) ? localizedDescription : @"Unknown Error")], NSLocalizedDescriptionKey, nil]];
     }
-	
-	[coordinator release];
 	
 	[managedObjectContext setStalenessInterval: 1200];
 	
@@ -2498,12 +2499,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[self saveDatabase:currentDatabasePath];
 	}
 	
+	[checkIncomingLock lock];
+	
 	[managedObjectContext lock];
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 	managedObjectContext = 0L;
 	
-	[checkIncomingLock lock];
+	
 	
 	[databaseOutline reloadData];
 	

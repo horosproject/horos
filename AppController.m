@@ -2192,7 +2192,7 @@ static BOOL initialized = NO;
 {
 	long				i, j, k, x;
 	NSArray				*winList = [NSApp windows];
-	NSMutableArray		*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
+	NSMutableArray		*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect				screenRect =  screenFrame();
 	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
@@ -2209,6 +2209,8 @@ static BOOL initialized = NO;
 		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
 			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			
+			if( [[viewersList lastObject] FullScreenON] ) return;
 			
 			if( [[winList objectAtIndex:i] isKeyWindow]) keyWindow = [viewersList count]-1;
 		}
@@ -2420,16 +2422,6 @@ static BOOL initialized = NO;
 		
 		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
 	}
-	
-//	for( i = 0; i < [viewersList count]; i++)
-//	{
-//		[[viewersList objectAtIndex: i] showWindow:self];
-//	}
-	
-//	[[viewersList lastObject] makeKeyAndOrderFront:self];
-//	[[viewersList lastObject] makeMainWindow];
-	
-	[viewersList release];
 }
 
 

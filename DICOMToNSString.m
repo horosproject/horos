@@ -45,6 +45,9 @@
 
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet{
 	NSStringEncoding	encoding = NSISOLatin1StringEncoding;
+	
+	if( characterSet == 0L) return encoding;
+	
 	if	   ( [characterSet isEqualToString:@"ISO_IR 100"]) encoding = NSISOLatin1StringEncoding; 	
 	else if( [characterSet isEqualToString:@"ISO_IR 127"]) encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
 	else if( [characterSet isEqualToString:@"ISO_IR 101"]) encoding = NSISOLatin2StringEncoding;

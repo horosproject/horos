@@ -47,6 +47,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 {
 	NSManagedObjectModel			*managedObjectModel;
     NSManagedObjectContext			*managedObjectContext;
+	NSPersistentStoreCoordinator	*persistentStoreCoordinator;
 	
 	NSString				*currentDatabasePath;
 	BOOL					isCurrentDatabaseBonjour;
