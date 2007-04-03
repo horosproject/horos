@@ -3848,7 +3848,7 @@ static ViewerController *draggedController = 0L;
 	[imageView setDrawing: YES];
 	
 	[self SetSyncButtonBehavior: self];
-	
+		
 	return self;
 }
 
@@ -4400,6 +4400,7 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	[imageView scaleToFit];
+	
 	
 //	[[self window] makeKeyAndOrderFront:self];
 //	[[self window] makeMainWindow];

@@ -1301,6 +1301,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	else
 		[self setScaleValue: [[[self seriesObj] valueForKey:@"scale"] floatValue]];
+	
+	int i;	
+	for( i = 0; i < [dcmPixList count]; i++) [[dcmPixList objectAtIndex: i] setIndependentZoom: scaleValue];
+	
 	[self setNeedsDisplay:YES];
 }
 
@@ -1360,7 +1364,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 //		[self setFrameSize:sizeView];
 		
 		NSRect  sizeView = [self bounds];
-		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO) {
+		if( sizeToFit && [[[self seriesObj] valueForKey:@"displayStyle"] intValue] == 0 || [self is2DViewer] == NO)
+		{
 			[self scaleToFit];
 		}
 		
@@ -1601,7 +1606,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		if( keepIt == NO) curROI = 0L;
 		
-		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue])
+		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue] && [self is2DViewer] == YES)
 		{
 			[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
 			
@@ -8071,7 +8076,8 @@ BOOL	lowRes = NO;
 
 - (id)initWithFrame:(NSRect)frame imageRows:(int)rows  imageColumns:(int)columns{
 	self = [self initWithFrameInt:frame];
-    if (self) {
+    if (self)
+	{
 		drawing = YES;
         _tag = 0;
 		_imageRows = rows;
