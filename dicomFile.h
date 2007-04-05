@@ -55,6 +55,7 @@
 + (void) resetDefaults;
 + (NSString*) NSreplaceBadCharacter: (NSString*) str;
 + (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding;
++ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding;
 
 - (long) NoOfFrames;
 - (long) getWidth;

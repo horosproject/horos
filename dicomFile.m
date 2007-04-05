@@ -242,6 +242,36 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return mutable;
 }
 
++ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
+{
+	char				c;
+	int					i, x, from, len = strlen( str), index;
+	NSMutableString		*result = [NSMutableString string];
+	
+	for( i = 0, from = 0, index = 0; i < len; i++)
+	{
+		c = str[ i];
+		
+		if( c == '=' || i == len-1)
+		{
+			if( i == len-1) i = len;
+			
+			NSString	*s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encoding[ index]];
+			
+			if( s)
+			{
+				[result appendString: s];
+				[s release];
+			}
+			
+			from = i;
+			index++;
+		}
+	}
+	
+	return [DicomFile NSreplaceBadCharacter: result];
+}
+
 + (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding{
 	return replaceBadCharacter (str, encoding);
 }

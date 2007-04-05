@@ -52,9 +52,9 @@ extern NSLock	*PapyrusLock;
 	return NO;
 }
 
--(short) getDicomFileDCMTK{
-//	NSLog(@"get DicomFileDCMTK");
-	int					itemType;
+-(short) getDicomFileDCMTK
+{
+	int					itemType, i;
 	long				cardiacTime = -1;
 	short				x, theErr;
 	PapyShort           fileNb, imageNb;
@@ -62,7 +62,7 @@ extern NSLock	*PapyrusLock;
 	UValue_T            *val;
 	SElement			*theGroupP;
 	NSString			*converted = 0L;
-	NSStringEncoding	encoding;//NSStringEncoding
+	NSStringEncoding	encoding[ 10];
 	NSString *echoTime = nil;
 	const char *string = NULL;
 	
@@ -73,8 +73,8 @@ extern NSLock	*PapyrusLock;
 	if (status.good())
 	{
 		NSString *characterSet = 0L;
+		for( i = 0; i < 10; i++) encoding[ i] = NSISOLatin1StringEncoding;
 		
-		encoding = NSISOLatin1StringEncoding;
 		DcmDataset *dataset = fileformat.getDataset();
 		
 		//TransferSyntax
@@ -163,10 +163,13 @@ extern NSLock	*PapyrusLock;
 		{
 			NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
 			
-			characterSet = [c objectAtIndex: 0];
-			if( [characterSet isEqualToString:@""]) characterSet = [c lastObject];
+			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
 			
-			encoding = [NSString encodingForDICOMCharacterSet:characterSet];
+			if( [c count] < 10)
+			{
+				for( i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+				for( i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+			}
 		}
 		
 		//Image Type
@@ -187,9 +190,9 @@ extern NSLock	*PapyrusLock;
 		if (SOPUID) [dicomElements setObject:SOPUID forKey:@"SOPUID"];
 		
 		//Study Description
-		if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			study  = [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+		if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL)
+		{
+			study = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 		}
 		else
 			study = [[NSString alloc] initWithString:@"unnamed"];
@@ -249,55 +252,50 @@ extern NSLock	*PapyrusLock;
 		if( date) [dicomElements setObject:date forKey:@"studyDate"];
 		
 		//Series Description
-		if (dataset->findAndGetString(DCM_SeriesDescription, string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			serie  = [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+		if (dataset->findAndGetString(DCM_SeriesDescription, string, OFFalse).good() && string != NULL)
+		{
+			serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
 		}
 		else
 			serie = [[NSString alloc] initWithString:@"unnamed"];
 		[dicomElements setObject:serie forKey:@"seriesDescription"];
 		
 		//Institution Name
-		if (dataset->findAndGetString(DCM_InstitutionName,  string, OFFalse).good() && string != NULL){
-			//NSLog(@"Institution: %s" string);
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			NSString *institution =  [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+		if (dataset->findAndGetString(DCM_InstitutionName,  string, OFFalse).good() && string != NULL)
+		{
+			NSString *institution = [DicomFile stringWithBytes: (char*) string encodings:encoding];
 			[dicomElements setObject:institution forKey:@"institutionName"];
-			[institution release];
 		}
 		
 		//Referring Physician
-		if (dataset->findAndGetString(DCM_ReferringPhysiciansName,  string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			NSString *referringPhysiciansName =  [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+		if (dataset->findAndGetString(DCM_ReferringPhysiciansName,  string, OFFalse).good() && string != NULL)
+		{
+			NSString *referringPhysiciansName = [DicomFile stringWithBytes: (char*) string encodings:encoding];
 			[dicomElements setObject:referringPhysiciansName forKey:@"referringPhysiciansName"];
-			[referringPhysiciansName release];
 		}
 		
 		//Performing Physician
 		if (dataset->findAndGetString(DCM_PerformingPhysiciansName,  string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			NSString *performingPhysiciansName =  [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+			NSString *performingPhysiciansName = [DicomFile stringWithBytes: (char*) string encodings:encoding];
 			[dicomElements setObject:performingPhysiciansName forKey:@"performingPhysiciansName"];
-			[performingPhysiciansName release];
 		}
 		
 		//Accession Number
-		if (dataset->findAndGetString(DCM_AccessionNumber,  string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			NSString *accessionNumber =  [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
+		if (dataset->findAndGetString(DCM_AccessionNumber,  string, OFFalse).good() && string != NULL)
+		{
+			NSString *accessionNumber = [DicomFile stringWithBytes: (char*) string encodings:encoding];
 			[dicomElements setObject:accessionNumber forKey:@"accessionNumber"];
-			[accessionNumber release];
 		}
 		
 		//Patients Name
-		if (dataset->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != NULL){
-			char *s = [DicomFile replaceBadCharacter:(char *)string encoding: encoding];
-			name  = [[NSString alloc] initWithBytes: s length: strlen(s) encoding:encoding];
-			if(name == 0L) name = [[NSString alloc] initWithCString: string encoding: encoding];
+		if (dataset->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != NULL)
+		{
+			name = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+			if(name == 0L) name = [[NSString alloc] initWithCString: string encoding: encoding[ 0]];
 		}
 		else
 			name = [[NSString alloc] initWithString:@"No name"];
+		
 		[dicomElements setObject:name forKey:@"patientName"];
 		
 		//Patient ID

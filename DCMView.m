@@ -5561,14 +5561,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
 	
-//	NSLog( @"%f %f", origin.x, origin.y);
-//	NSLog( @"%f %f", offset.x, offset.y);
-//	NSLog( @"%f %f", originOffset.x, originOffset.y);
-	
-	if( [curDCM pixelRatio] != 1.0)
-	{
-		glScalef( 1.f, [curDCM pixelRatio], 1.f);
-	}
+	if( [curDCM pixelRatio] != 1.0) glScalef( 1.f, [curDCM pixelRatio], 1.f);
 	
 	effectiveTextureMod = 0;	//2;	//OVERLAP
 	
@@ -7834,6 +7827,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	textureHeight = [curDCM pheight];
 	
+	char*			baseAddr = [curDCM baseAddr];
+	int				rowBytes = [curDCM rowBytes];
+	
     glPixelStorei (GL_UNPACK_ROW_LENGTH, textureWidth); // set image width in groups (pixels), accounts for border this ensures proper image alignment row to row
     // get number of textures x and y
     // extract the number of horiz. textures needed to tile image
@@ -7845,7 +7841,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 //	NSLog( @"%d %d - No Of Textures: %d", textureWidth, textureHeight, *tX * *tY);
 	if( *tX * *tY > 1) NSLog(@"NoOfTextures: %d", *tX * *tY);
-	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight * 4, [curDCM baseAddr]);
+	glTextureRangeAPPLE(TEXTRECTMODE, textureWidth * textureHeight * 4, baseAddr);
 	glGenTextures (*tX * *tY, texture); // generate textures names need to support tiling
     {
             long x, y, k = 0, offsetY, offsetX = 0, currWidth, currHeight; // texture iterators, texture name iterator, image offsets for tiling, current texture width and height
@@ -7860,17 +7856,17 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES)
 					{
-						pBuffer =   (unsigned char*) [curDCM baseAddr] +			//baseAddr
-									offsetY * [curDCM rowBytes] +      //depth
+						pBuffer =   (unsigned char*) baseAddr +			//baseAddr
+									offsetY * rowBytes +      //depth
 									offsetX * 4;							//depth
 					}
 					else if( (colorTransfer == YES) || (blending == YES))
 						pBuffer =  *colorBufPtr +			//baseAddr
-									offsetY * [curDCM rowBytes] * 4 +      //depth
+									offsetY * rowBytes * 4 +      //depth
 									offsetX * 4;							//depth
 									
-					else pBuffer =  (unsigned char*) [curDCM baseAddr] +			
-									offsetY * [curDCM rowBytes] +      
+					else pBuffer =  (unsigned char*) baseAddr +			
+									offsetY * rowBytes +      
 									offsetX;							
 					
 					currHeight = GetNextTextureSize (textureHeight - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size

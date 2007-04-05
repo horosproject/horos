@@ -3828,6 +3828,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	return aFile;
 }
 
+#define BONJOURPACKETS 50
+
 - (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
 {
 	long				i, x, type;
@@ -3849,7 +3851,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			{
 				for( i = 0; i < [imagesArray count]; i++)
 				{
-					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :50]];
+					[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: i] :BONJOURPACKETS]];
 				}
 			}
 			else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
@@ -3869,7 +3871,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				{
 					for( x = 0; x < [imagesArray count]; x++)
 					{
-						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :50]];
+						[selectedFiles addObject: [self getLocalDCMPath: [imagesArray objectAtIndex: x] :BONJOURPACKETS]];
 					}
 				}
 				else [selectedFiles addObjectsFromArray: [imagesArray valueForKey: @"completePath"]];
