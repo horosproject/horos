@@ -261,6 +261,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if( s)
 			{
 				[result appendString: s];
+				
+				if( encoding[ index] == -2147481280)
+				{
+					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
+				}
+				
 				[s release];
 			}
 			
