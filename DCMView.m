@@ -5560,7 +5560,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	glScalef (2.0f /(xFlipped ? -(size.size.width) : size.size.width), -2.0f / (yFlipped ? -(size.size.height) : size.size.height), 1.0f); // scale to port per pixel scale
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x - offset.x + originOffset.x, -origin.y - offset.y - originOffset.y, 0.0f);
-	
+
 	if( [curDCM pixelRatio] != 1.0) glScalef( 1.f, [curDCM pixelRatio], 1.f);
 	
 	effectiveTextureMod = 0;	//2;	//OVERLAP
@@ -7897,6 +7897,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
+					
+//					glPixelTransferf( GL_ALPHA_SCALE, 0.5);
+//					glPixelTransferf( GL_ALPHA_BIAS, 0.5);
 					
 					#if __BIG_ENDIAN__
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
