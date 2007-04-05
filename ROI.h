@@ -100,7 +100,8 @@ enum
 	int				_calciumCofactor;
 	
 	NSString		*layerReferenceFilePath;
-	NSImage			*layerImage, *layerImageWhenSelected;
+	NSImage			*layerImage;//, *layerImageWhenSelected;
+	NSData			*layerImageJPEG;//, *layerImageWhenSelectedJPEG;
 	float			layerPixelSpacingX, layerPixelSpacingY;
 	BOOL			needsLoadTexture, needsLoadTexture2;
 	
@@ -247,10 +248,12 @@ enum
 - (void) setSliceThickness:(float)sliceThickness;
 
 - (void)setLayerReferenceFilePath:(NSString*)path;
+- (NSString*)layerReferenceFilePath;
 - (void)setLayerImage:(NSImage*)image;
-- (void)setLayerImageWhenSelected:(NSImage*)image;
+//- (void)setLayerImageWhenSelected:(NSImage*)image;
 - (void)loadLayerImageTexture;
-- (void)loadLayerImageWhenSelectedTexture;
+//- (void)loadLayerImageWhenSelectedTexture;
+- (void)generateEncodedLayerImage;
 - (void)setLayerPixelSpacingX:(float)x;
 - (void)setLayerPixelSpacingY:(float)y;
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;

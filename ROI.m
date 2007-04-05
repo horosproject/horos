@@ -135,7 +135,7 @@ GLenum glReportError (void)
 	else if(type==tLayerROI)
 	{
 		needsLoadTexture = YES;
-		needsLoadTexture2 = YES;
+		//needsLoadTexture2 = YES;
 	}
 }
 -(DCMView*) curView
@@ -245,12 +245,16 @@ GLenum glReportError (void)
 			groupID = [[coder decodeObject] doubleValue];
 			if (type==tLayerROI)
 			{
-				layerImage = [coder decodeObject];
-				[layerImage retain];
-				layerImageWhenSelected = [coder decodeObject];
-				[layerImageWhenSelected retain];
+				layerImageJPEG = [coder decodeObject];
+				[layerImageJPEG retain];
+//				layerImageWhenSelectedJPEG = [coder decodeObject];
+//				[layerImageWhenSelectedJPEG retain];
+				
+				layerImage = [[NSImage alloc] initWithData: layerImageJPEG];
+//				layerImageWhenSelected = [[NSImage alloc] initWithData: layerImageWhenSelectedJPEG];
+				
 				needsLoadTexture = YES;
-				needsLoadTexture2 = YES;
+				//needsLoadTexture2 = YES;
 			}
 			textualBoxLine1 = [coder decodeObject];
 			textualBoxLine2 = [coder decodeObject];
@@ -342,8 +346,23 @@ GLenum glReportError (void)
 	[coder encodeObject:[NSNumber numberWithDouble:groupID]];
 	if (type==tLayerROI)
 	{
-		[coder encodeObject:layerImage];
-		[coder encodeObject:layerImageWhenSelected];
+		if( layerImageJPEG == 0L)
+		{
+//			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
+//			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+//	
+//			layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
+			[self generateEncodedLayerImage];
+		}
+//		if( layerImageWhenSelectedJPEG == 0L)
+//		{
+//			NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
+//			NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+//	
+//			layerImageWhenSelectedJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
+//		}
+		[coder encodeObject: layerImageJPEG];
+//		[coder encodeObject: layerImageWhenSelectedJPEG];
 	}
 	[coder encodeObject:textualBoxLine1];
 	[coder encodeObject:textualBoxLine2];
@@ -371,6 +390,9 @@ GLenum glReportError (void)
 	[stringTex release];
 	[stanStringAttrib release];
 	
+	[layerImageJPEG release];
+//	[layerImageWhenSelectedJPEG release];
+	
 	[_roiSeriesInstanceUID release];
 	[_sopInstanceUID release];
 	[_referencedSOPInstanceUID release];
@@ -379,7 +401,7 @@ GLenum glReportError (void)
 
 	if(layerReferenceFilePath) [layerReferenceFilePath release];
 	if(layerImage) [layerImage release];
-	if(layerImageWhenSelected) [layerImageWhenSelected release];
+//	if(layerImageWhenSelected) [layerImageWhenSelected release];
 	
 	if(textualBoxLine1) [textualBoxLine1 release];
 	if(textualBoxLine2) [textualBoxLine2 release];
@@ -620,7 +642,7 @@ GLenum glReportError (void)
 			layerReferenceFilePath = @"";
 			[layerReferenceFilePath retain];
 			layerImage = nil;
-			layerImageWhenSelected = nil;
+//			layerImageWhenSelected = nil;
 			layerPixelSpacingX = 1.0 / 72.0 * 25.4; // 1/72 inches in milimeters
 			layerPixelSpacingY = layerPixelSpacingX;
 			name = [[NSString alloc] initWithString:@"Layer"];
@@ -630,7 +652,7 @@ GLenum glReportError (void)
 			textualBoxLine4 = @"";
 			textualBoxLine5 = @"";
 			needsLoadTexture = NO;
-			needsLoadTexture2 = NO;
+			//needsLoadTexture2 = NO;
 		}
 		else
 		{
@@ -1076,13 +1098,13 @@ GLenum glReportError (void)
 					float width;
 					float height;
 					NSBitmapImageRep *bitmap;
-					if(mode==ROI_selected)
-					{
-						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
-						width = [layerImageWhenSelected size].width;
-						height = [layerImageWhenSelected size].height;
-					}
-					else
+//					if(mode==ROI_selected)
+//					{
+//						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
+//						width = [layerImageWhenSelected size].width;
+//						height = [layerImageWhenSelected size].height;
+//					}
+//					else
 					{
 						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
 						width = [layerImage size].width;
@@ -2622,10 +2644,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		{
 			if(layerImage)
 			{
+				NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 				NSSize imageSize = [layerImage size];
 				float imageWidth = imageSize.width;
 				float imageHeight = imageSize.height;
-								
+																
 				glDisable(GL_POLYGON_SMOOTH);
 				glEnable(GL_TEXTURE_RECTANGLE_EXT);
 
@@ -2637,13 +2660,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 //					needsLoadTexture = NO;
 //				}
 				
-				if(layerImageWhenSelected && mode==ROI_selected)
-				{
-					if(needsLoadTexture2) [self loadLayerImageWhenSelectedTexture];
-					needsLoadTexture2 = NO;
-					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
-				}
-				else
+//				if(layerImageWhenSelected && mode==ROI_selected)
+//				{
+//					if(needsLoadTexture2) [self loadLayerImageWhenSelectedTexture];
+//					needsLoadTexture2 = NO;
+//					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
+//				}
+//				else
 				{
 					if(needsLoadTexture)[self loadLayerImageTexture];
 					needsLoadTexture = NO;
@@ -2683,6 +2706,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					glVertex3d(p3.x, p3.y, 0.0);
 					
 				glEnd();
+				glDisable( GL_BLEND);
 				
 				glDisable(GL_TEXTURE_RECTANGLE_EXT);
 				glEnable(GL_POLYGON_SMOOTH);
@@ -2716,6 +2740,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
 				}
+				[pool release];
 			}
 		}
 		break;
@@ -3730,6 +3755,11 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	[layerReferenceFilePath retain];
 }
 
+- (NSString*)layerReferenceFilePath;
+{
+	return layerReferenceFilePath;
+}
+
 - (void)setLayerImage:(NSImage*)image;
 {
 	if(layerImage) [layerImage release];
@@ -3752,56 +3782,127 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	NSArray *pts = [NSArray arrayWithObjects:[MyPoint point:p1], [MyPoint point:p2], [MyPoint point:p3], [MyPoint point:p4], nil];
 	[points setArray:pts];
 
-	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
-	unsigned char *imageBuffer = [bitmap bitmapData];
-	
+	[self generateEncodedLayerImage];
 	[[curView openGLContext] makeCurrentContext];
+	[self loadLayerImageTexture];
 	
-	glGenTextures(1, &textureName);
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+	//NSBitmapImageRep *bitmap;
+//	//bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
+//	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
+//	unsigned char *imageBuffer = [bitmap bitmapData];
+//	
+//	[[curView openGLContext] makeCurrentContext];
+//	
+//	glGenTextures(1, &textureName);
+//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
+//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+////	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_BGRA , GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+
 }
 
-- (void)setLayerImageWhenSelected:(NSImage*)image;
-{
-	if(layerImageWhenSelected) [layerImageWhenSelected release];
-	layerImageWhenSelected = image;
-	[layerImageWhenSelected retain];
-	
-	NSSize imageSize = [layerImageWhenSelected size];
-	float imageWidth = imageSize.width;
-	float imageHeight = imageSize.height;
-
-	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
-	unsigned char *imageBuffer = [bitmap bitmapData];
-	
-	[[curView openGLContext] makeCurrentContext];
-	
-	glGenTextures(1, &textureName2);
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-
-}
+//- (void)setLayerImageWhenSelected:(NSImage*)image;
+//{
+//	if(layerImageWhenSelected) [layerImageWhenSelected release];
+//	layerImageWhenSelected = image;
+//	[layerImageWhenSelected retain];
+//	
+//	NSSize imageSize = [layerImageWhenSelected size];
+//	float imageWidth = imageSize.width;
+//	float imageHeight = imageSize.height;
+//
+//	NSBitmapImageRep *bitmap;
+//	bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImageWhenSelected TIFFRepresentation]];
+//	unsigned char *imageBuffer = [bitmap bitmapData];
+//	
+//	[[curView openGLContext] makeCurrentContext];
+//	
+//	glGenTextures(1, &textureName2);
+//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
+//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+//
+//}
 
 - (void)loadLayerImageTexture;
 {
-	NSImage *newImage = layerImage;
-	if(opacity<1.0)
-	{
-		newImage = [[NSImage alloc] initWithSize:[layerImage size]];
-		[newImage lockFocus];
-		[layerImage compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImage size].width, [layerImage size].height) operation:NSCompositeCopy fraction:opacity];
-		[newImage unlockFocus];
-	}
+//	NSImage *newImage = layerImage;
+//	if(opacity<1.0)
+//	{
+//		newImage = [[NSImage alloc] initWithSize:[layerImage size]];
+//		[newImage lockFocus];
+//		[layerImage compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImage size].width, [layerImage size].height) operation:NSCompositeCopy fraction:opacity];
+//		[newImage unlockFocus];
+//	}
+//	NSBitmapImageRep *bitmap;
+//	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
+//	unsigned char *imageBuffer = [bitmap bitmapData];
+
+
+
 	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
-	unsigned char *imageBuffer = [bitmap bitmapData];
+	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
+	
+	
+	unsigned char *imageBuffer =  [bitmap bitmapData];
+	
+	//	if(opacity<1.0)
+	{
+		NSLog(@"opacity : %f", opacity);
+		NSLog(@"grey opacity : %f", (1.0+opacity)*0.5);
+//		[bitmap colorizeByMappingGray:0.5 toColor:[[NSColor grayColor] colorWithAlphaComponent:(1.0+opacity)*0.5] blackMapping:[[NSColor blackColor] colorWithAlphaComponent:opacity] whiteMapping:[NSColor whiteColor]];
+		
+//		if( *imageBuffer == 255)
+//		{
+			unsigned char*	argbPtr = (unsigned char*) imageBuffer;
+			long			ss = [bitmap bytesPerRow]/4 * [layerImage size].height;
+			
+			while( ss-->0)
+			{
+//				unsigned m = MAX( *(argbPtr+1), *(argbPtr+2));
+//				m = MAX(m, *(argbPtr+3));
+
+				*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3 * opacity;
+				argbPtr+=4;
+			}
+//		}
+
+		
+		vImage_Buffer src, dest;
+		
+		dest.height = [layerImage size].height;
+		dest.width = [layerImage size].width;
+		dest.rowBytes = [bitmap bytesPerRow];
+		dest.data = imageBuffer;
+		
+		src = dest;
+		
+		src.data = [bitmap bitmapData];
+		
+		unsigned char	redTable[ 256], greenTable[ 256], blueTable[ 256], alphaTable[ 256];
+			
+		int i;
+		for( i = 0; i < 256; i++)
+		{
+			redTable[i] = i;
+			greenTable[i] = i;
+			blueTable[i] = i;
+			alphaTable[i] =i;
+		}
+		
+		//vImageOverwriteChannels_ARGB8888(const vImage_Buffer *newSrc, &src, &dest, 0x4, 0);
+		
+//		#if __BIG_ENDIAN__
+//		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
+//		#else
+//		vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) blueTable, (Pixel_8*) greenTable, (Pixel_8*) redTable, (Pixel_8*) &alphaTable, 0);
+//		#endif
+
+//		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) redTable , (Pixel_8*) greenTable, (Pixel_8*)blueTable, (Pixel_8*) &alphaTable, 0);
+
+	}
 
 	[[curView openGLContext] makeCurrentContext];
 
@@ -3812,40 +3913,49 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-	
-	if(opacity<1.0) [newImage release];
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0,GL_BGRA , GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+
+	//if(opacity<1.0) [newImage release];
 	[bitmap release];
 }
 
-- (void)loadLayerImageWhenSelectedTexture;
+//- (void)loadLayerImageWhenSelectedTexture;
+//{
+//	NSImage *newImage = layerImageWhenSelected;
+//	if(opacity<1.0)
+//	{
+//		newImage = [[NSImage alloc] initWithSize:[layerImageWhenSelected size]];
+//		[newImage lockFocus];
+//		[layerImageWhenSelected compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height) operation:NSCompositeCopy fraction:opacity];
+//		[newImage unlockFocus];
+//	}
+//	
+//	NSBitmapImageRep *bitmap;
+//	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
+//	unsigned char *imageBuffer = [bitmap bitmapData];
+//
+//	[[curView openGLContext] makeCurrentContext];
+//
+//	if(textureName2)
+//		glDeleteTextures(1, &textureName2);
+//		
+//	glGenTextures(1, &textureName2);
+//	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
+//	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
+//	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
+//	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
+//	
+//	if(opacity<1.0) [newImage release];
+//	[bitmap release];
+//}
+
+- (void)generateEncodedLayerImage;
 {
-	NSImage *newImage = layerImageWhenSelected;
-	if(opacity<1.0)
-	{
-		newImage = [[NSImage alloc] initWithSize:[layerImageWhenSelected size]];
-		[newImage lockFocus];
-		[layerImageWhenSelected compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height) operation:NSCompositeCopy fraction:opacity];
-		[newImage unlockFocus];
-	}
+	if(layerImageJPEG) [layerImageJPEG release];
 	
-	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
-	unsigned char *imageBuffer = [bitmap bitmapData];
-
-	[[curView openGLContext] makeCurrentContext];
-
-	if(textureName2)
-		glDeleteTextures(1, &textureName2);
-		
-	glGenTextures(1, &textureName2);
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName2);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImageWhenSelected size].width, [layerImageWhenSelected size].height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, imageBuffer);
-	
-	if(opacity<1.0) [newImage release];
-	[bitmap release];
+	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
+	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+	layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
 }
 
 - (void)setLayerPixelSpacingX:(float)x;
