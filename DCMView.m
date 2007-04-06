@@ -7898,8 +7898,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
 					
-//					glPixelTransferf( GL_ALPHA_SCALE, 0.5);
-//					glPixelTransferf( GL_ALPHA_BIAS, 0.5);
+					#if 0
+					
+					glPixelTransferf( GL_RED_BIAS, 0.8);
+					glPixelTransferf( GL_GREEN_BIAS, 0.8);
+					glPixelTransferf( GL_BLUE_BIAS, 0.8);
+
+					glPixelTransferf( GL_RED_SCALE, 0.8);
+					glPixelTransferf( GL_GREEN_SCALE, 0.8);
+					glPixelTransferf( GL_BLUE_SCALE, 0.8);
 					
 					#if __BIG_ENDIAN__
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
@@ -7909,6 +7916,28 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
+					#endif
+					
+					glPixelTransferf( GL_RED_BIAS, 0);
+					glPixelTransferf( GL_GREEN_BIAS, 0);
+					glPixelTransferf( GL_BLUE_BIAS, 0);
+
+					glPixelTransferf( GL_RED_SCALE, 1);
+					glPixelTransferf( GL_GREEN_SCALE, 1);
+					glPixelTransferf( GL_BLUE_SCALE, 1);
+					
+					#else
+					
+					#if __BIG_ENDIAN__
+					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
+					#else
+					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
+					#endif
+					
 					#endif
 					
 					offsetY += currHeight;// - 2 * 1; // OVERLAP, offset in for the amount of texture used, 
