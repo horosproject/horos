@@ -7900,13 +7900,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					#if 0
 					
-					glPixelTransferf( GL_RED_BIAS, 0.8);
-					glPixelTransferf( GL_GREEN_BIAS, 0.8);
-					glPixelTransferf( GL_BLUE_BIAS, 0.8);
+					pBuffer = [curDCM fImage];
+					
+					float min = curWL - curWW / 2;
+					float max = curWL + curWW / 2;
 
-					glPixelTransferf( GL_RED_SCALE, 0.8);
-					glPixelTransferf( GL_GREEN_SCALE, 0.8);
-					glPixelTransferf( GL_BLUE_SCALE, 0.8);
+					
+					glPixelTransferf( GL_RED_BIAS, -min/(max-min));
+					glPixelTransferf( GL_GREEN_BIAS, -min/(max-min));
+					glPixelTransferf( GL_BLUE_BIAS, -min/(max-min));
+
+					glPixelTransferf( GL_RED_SCALE, 1./(max-min));
+					glPixelTransferf( GL_GREEN_SCALE,  1./(max-min));
+					glPixelTransferf( GL_BLUE_SCALE,  1./(max-min));
 					
 					#if __BIG_ENDIAN__
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
@@ -7915,7 +7921,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					#else
 					if( [curDCM isRGB] == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 					else if( (colorTransfer == YES) | (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-					else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
+					else glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
 					#endif
 					
 					glPixelTransferf( GL_RED_BIAS, 0);
