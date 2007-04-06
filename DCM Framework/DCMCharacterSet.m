@@ -97,10 +97,10 @@ char* DCMreplaceInvalidCharacter (char* str)
 		if( [characterSet isEqualToString:@"ISO_IR 138"])		encoding = -2147483128;	//[characterSet numberFromLocalizedStringEncodingName :@"Hebrew (ISO 8859-8)"];
 		if( [characterSet isEqualToString:@"GB18030"])			encoding = -2147482062;	//[characterSet numberFromLocalizedStringEncodingName :@"Chinese (GB 18030)"];
 		if( [characterSet isEqualToString:@"ISO_IR 192"])		encoding = NSUTF8StringEncoding;
-		if( [characterSet isEqualToString:@"ISO 2022 IR 149"])	encoding = -2147481536;	//-2147481536 [characterSet numberFromLocalizedStringEncodingName :@"Korean (Mac OS)"];
-		if( [characterSet isEqualToString:@"ISO 2022 IR 13"])	encoding = 21;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];	//
+		if( [characterSet isEqualToString:@"ISO 2022 IR 149"])	encoding = -2147481280;	//-2147481536 [characterSet numberFromLocalizedStringEncodingName :@"Korean (Mac OS)"];
+		if( [characterSet isEqualToString:@"ISO 2022 IR 13"])	encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];	//
 		if( [characterSet isEqualToString:@"ISO_IR 13"])		encoding = -2147483647;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (Mac OS)"];
-		if( [characterSet isEqualToString:@"ISO 2022 IR 87"])	encoding = 21;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
+		if( [characterSet isEqualToString:@"ISO 2022 IR 87"])	encoding = NSISO2022JPStringEncoding;	//[characterSet numberFromLocalizedStringEncodingName :@"Japanese (ISO 2022-JP)"];
 		if( [characterSet isEqualToString:@"ISO_IR 166"])		encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
 	}
 	return self;

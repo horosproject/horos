@@ -252,7 +252,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		c = str[ i];
 		
-		if( c == '=' || i == len-1)
+		if( c == 0x1b || i == len-1)
 		{
 			if( i == len-1) i = len;
 			
@@ -262,7 +262,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				[result appendString: s];
 				
-				if( encoding[ index] == -2147481280)
+				if( encoding[ index] == -2147481280)	// Korean support
 				{
 					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
 				}
