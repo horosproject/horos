@@ -1057,7 +1057,7 @@ if( reader)
 	float		temp[ 3];
 	NSArray		*tempArray;
 	DCMView		*oView = [[[self window] windowController] originalView];
-	
+	NSLog(@"set 3D State:\n%d", dict);
 	if( dict)
 	{
 		[self adjustWLWW: [[dict objectForKey:@"WL"] floatValue] :[[dict objectForKey:@"WW"] floatValue] :@"set"];
@@ -1431,7 +1431,7 @@ if( reader)
 		NSPoint			ttO, ttOffset;
 		
 		tempIm->GetWholeExtent( imExtent);
-		NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
+		//NSLog( @"%d %d %d", imExtent[ 1], imExtent[ 3], imExtent[ 5]);
 		
 		float *im = (float*) tempIm->GetScalarPointer();
 		
@@ -1440,13 +1440,13 @@ if( reader)
 		tempIm->GetSpacing( space);
 		tempIm->GetOrigin( origin);
 		
-		NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
-		NSLog(@"Spcaing: %f %f %f", space[ 0], space[ 1], space[ 2]);
+		//NSLog(@"Origin: %f %f %f", origin[ 0], origin[ 1], origin[ 2]);
+		//NSLog(@"Spcaing: %f %f %f", space[ 0], space[ 1], space[ 2]);
 		
 		width = imExtent[ 1]-imExtent[ 0]+1;
 		height = imExtent[ 3]-imExtent[ 2]+1;
 		
-		NSLog(@"width =  %d height = %d", width, height);
+		//NSLog(@"width =  %d height = %d", width, height);
 		
 		// calculations and image creation for Thick Slabs
 		// what is uu ??
@@ -1559,13 +1559,13 @@ if( reader)
 				
 				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
 				ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
-				[finalView setOrigin: ttO];
+				//[finalView setOrigin: ttO];
 			}
 			
 			ttOffset.x = origin[ 0]*[finalView scaleValue]/space[0];
 			ttOffset.y = -origin[ 1]*[finalView scaleValue]/space[1];
 			// Appears to work better without adjusting to offset
-			[finalView setOriginOffset: ttOffset];
+			//[finalView setOriginOffset: ttOffset];
 			[finalView setIndex:0];
 			[oView getWLWW:&swl :&sww];
 			
@@ -2003,12 +2003,24 @@ if( reader)
 //				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
 //					ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
 //					[finalView setOrigin: ttO];
-				NSPoint tt = { -origin[ 0]*[perpendicularView scaleValue]/space[0], origin[ 1]*[perpendicularView scaleValue]/space[1]};
-				[perpendicularView setOrigin: tt];
+				//NSPoint tt = { -origin[ 0]*[perpendicularView scaleValue]/space[0], origin[ 1]*[perpendicularView scaleValue]/space[1]};
+				NSLog(@"fov Axis: %d", fovMaxAxis);
+				if (fovMaxAxis == fovMaxZ) {
+
+					[perpendicularView setOrigin: NSMakePoint (0.0, -[firstObject pheight] * space[1])];
+					
+				}
+				else {
+				// this still isn't woking quite right. The position of the image in the perpendicularView is in various locations
+					[perpendicularView setOrigin: NSMakePoint (0.0, 0.0)];
+				}
+				//[perpendicularView setOrigin: NSMakePoint (0.0, -[firstObject pwidth] / 2)];
+				//[perpendicularView setOrigin: NSMakePoint (0.0, -[pixList count] * fabs(sliceThickness))];
 			}
 		}
 		
 		// COMPUTE NEW COSINES TABLE FOR ORIENTATION INFORMATIONS (H, F, L, R, ...)
+		
 		{
 			float newOrientation[ 9], newOrigin[ 3];
 			float rotangle;
@@ -2036,6 +2048,7 @@ if( reader)
 			
 			newOrigin[0] = origin[0];	newOrigin[1] = origin[1];	newOrigin[2] = origin[2];
 			[(DCMPix*)[perPixList objectAtIndex:0] setOrigin: newOrigin];
+			
 		}
 		
 		
@@ -2046,8 +2059,10 @@ if( reader)
 		if( noPerOffset == NO)
 		{
 			float   swl, sww;
+		
+		// offset  now varies with rotation, not with the crossmove translation
+		//	[perpendicularView setOriginOffset: tt];
 			
-			[perpendicularView setOriginOffset: tt];
 		//	NSLog(@"B");
 			
 			[perpendicularView setIndex:0];
@@ -2062,9 +2077,8 @@ if( reader)
 			NSPoint tt2 = [perpendicularView originOffset];
 			
 			oo.y += tt2.y - tt.y;
-			
-			[perpendicularView setOrigin: oo];
-			[perpendicularView setOriginOffset: tt];
+			//[perpendicularView setOrigin: oo];
+			//[perpendicularView setOriginOffset: tt];
 		}
 	}
 	
@@ -2331,17 +2345,34 @@ if( reader)
 		NSLog(@"Slice interval = slice thickness!");
 		sliceThickness = [firstObject sliceThickness];
 	}
+	// The max FOV should be the SQRT of (x^2 + y^2 + z^2)
+	FOVP = ([pixList count] * fabs(sliceThickness) / [firstObject pixelSpacingX]);
+	double fov = sqrt(powf([firstObject pwidth], 2) + powf([firstObject pheight], 2)  + FOVP);
+	NSLog (@"fov %f", fov);
+	FOV = fov / 4;
+	FOV = FOV * 4;
 	
+	/*
 	FOV = [firstObject pwidth];
-	if( [firstObject pheight] > FOV) FOV = [firstObject pheight];
+	fovMaxAxis = fovMaxX;
+	if( [firstObject pheight] > FOV) {
+		FOV = [firstObject pheight];
+		fovMaxAxis = fovMaxY;
+		NSLog(@"fov Y");
+	}
 	
 	FOVP = (long) ([pixList count] * fabs(sliceThickness) / [firstObject pixelSpacingX]);
-	if( FOVP > FOV) FOV = FOVP;
+	if( FOVP > FOV)  {
+		FOV = FOVP;
+		fovMaxAxis = fovMaxZ;
+		NSLog(@"fov z");
+	}
 	
 	FOV = FOV + FOV/2;
 	FOV = FOV/4;
 	FOV = FOV*4;
 	NSLog(@"FOV:%d", FOV);
+	*/
 	
 //	[slider setMaxValue: FOV];
 //	[slider setMinValue: -FOV];

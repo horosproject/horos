@@ -75,6 +75,7 @@ typedef char* vtkActor;
 typedef char* vtkPolyDataMapper;
 typedef char* vtkOutlineFilter;
 typedef char* vtkLineWidget;
+typedef char* vtkImageChangeInformation;
 #endif
 
 #import "ThickSlabController.h"
@@ -82,6 +83,11 @@ typedef char* vtkLineWidget;
 #import "Schedulable.h"
 #import "Scheduler.h"
 #import "StaticScheduler.h"
+
+enum {
+	fovMaxX = 0,
+	fovMaxY,
+	fovMaxZ};
 
 @interface MPR2DView : NSOpenGLView <Schedulable>
 {
@@ -133,6 +139,8 @@ typedef char* vtkLineWidget;
     vtkPolyDataMapper   *mapOutline;
     vtkOutlineFilter    *outlineData;
 	
+	vtkImageChangeInformation *changeImageInfo;
+	
 	vtkLineWidget		*line;
 	float				slicePt[3];
 	
@@ -156,6 +164,8 @@ typedef char* vtkLineWidget;
 	
 	float					*imResult, *imResultBlending, *fullVolume, *fullVolumeBlending;
 	long					thickSlabCount;
+	
+	int						fovMaxAxis;
 }
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(void) adjustWLWW: (float) iwl :(float) iww :(NSString*) mode;
