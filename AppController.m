@@ -932,6 +932,7 @@ NSRect screenFrame()
 	[[BrowserController currentBrowser] setNetworkLogs];
 	[DicomFile resetDefaults];
 	[DCMPix checkUserDefaults: YES];
+	[DCMView setDefaults];
 	
 	NS_HANDLER
 		NSLog(@"Exception updating prefs: %@", [localException description]);

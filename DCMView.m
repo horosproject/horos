@@ -84,7 +84,7 @@ extern NSMutableDictionary				*plugins;
 
 static		unsigned char				*PETredTable = 0L, *PETgreenTable = 0L, *PETblueTable = 0L;
 
-static		BOOL						pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
+static		BOOL						NOINTERPOLATION = NO, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 static		BOOL						gClickCountSet = NO;
 static		float						margin = 2;
 
@@ -495,6 +495,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		i++;
 	}
 	return temp;
+}
+
++(void) setDefaults
+{
+	NOINTERPOLATION = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 }
 
 + (NSSize)sizeOfString:(NSString *)string forFont:(NSFont *)font
@@ -7885,7 +7890,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						}
 					}
 						
-					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
+					if( NOINTERPOLATION)
 					{
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -8103,6 +8108,8 @@ BOOL	lowRes = NO;
 - (id)initWithFrame:(NSRect)frame {
 
 	[AppController initialize];
+	
+	[DCMView setDefaults];
 	
 	return [self initWithFrame:frame imageRows:1  imageColumns:1];
 
