@@ -5050,17 +5050,23 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSArray					*winList = [NSApp windows];
 	NSMutableArray			*viewersList = [[NSMutableArray alloc] initWithCapacity:0];
 	
-	// If multiple viewer are opened, apply it to the entire list
-	for( i = 0; i < [winList count]; i++)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextPatientToAllViewers"])
 	{
-		if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+		// If multiple viewer are opened, apply it to the entire list
+		for( i = 0; i < [winList count]; i++)
 		{
-			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+			{
+				[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+			}
 		}
+		viewer = [viewersList objectAtIndex: 0];
+		curImage = [[viewer fileList] objectAtIndex: 0];
 	}
-	viewer = [viewersList objectAtIndex: 0];
-	curImage = [[viewer fileList] objectAtIndex: 0];
-
+	else
+	{
+		[viewersList addObject: viewer];
+	}
 	
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	
@@ -5104,7 +5110,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		else
 			[[WindowLayoutManager sharedWindowLayoutManager] previousSeriesSet];
 	}
-	else{
+	else
+	{
 		NSManagedObjectModel	*model = [self managedObjectModel];
 		NSManagedObjectContext	*context = [self managedObjectContext];
 		long					x, i;
@@ -5115,15 +5122,22 @@ static BOOL				DICOMDIRCDMODE = NO;
 		else
 		{
 			// If multiple viewer are opened, apply it to the entire list
-			for( i = 0; i < [winList count]; i++)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"])
 			{
-				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+				for( i = 0; i < [winList count]; i++)
 				{
-					[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+					if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
+					{
+						[viewersList addObject: [[winList objectAtIndex:i] windowController]];
+					}
 				}
+				viewer = [viewersList objectAtIndex: 0];
+				curImage = [[viewer fileList] objectAtIndex: 0];
 			}
-			viewer = [viewersList objectAtIndex: 0];
-			curImage = [[viewer fileList] objectAtIndex: 0];
+			else
+			{
+				[viewersList addObject: viewer];
+			}
 		}
 		
 		// FIND ALL STUDIES of this patient
