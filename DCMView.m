@@ -7956,7 +7956,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							glPixelTransferf( GL_GREEN_SCALE,  1./(max-min));
 							glPixelTransferf( GL_BLUE_SCALE,  1./(max-min));
 							
-							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
+							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
+							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
+							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
 						
 							glPixelTransferf( GL_RED_BIAS, 0);		glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
 							glPixelTransferf( GL_RED_SCALE, 1);		glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
