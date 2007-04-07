@@ -5572,8 +5572,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	effectiveTextureMod = 0;	//2;	//OVERLAP
 	
 	glEnable (TEXTRECTMODE); // enable texturing
-	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); 
-	
+	glColor4f (1f, 1f, 1f, 1.0f); 
+
 	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
 			// use remaining to determine next texture size
@@ -7825,7 +7825,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		else vImageTableLookUp_ARGB8888( &dest8, &dest8, (Pixel_8*) &alphaTable, (Pixel_8*) rT, (Pixel_8*) gT, (Pixel_8*) bT, 0);
 	}
 	
-//	glDisable(GL_TEXTURE_2D);
     glEnable(TEXTRECTMODE);
 
 	char*			baseAddr = 0L;
@@ -7928,8 +7927,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					}
 					else
 					{
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+						glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
 					}
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
@@ -7962,6 +7961,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						
 							glPixelTransferf( GL_RED_BIAS, 0);		glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
 							glPixelTransferf( GL_RED_SCALE, 1);		glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+
 						}
 					}
 					else
