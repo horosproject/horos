@@ -271,7 +271,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 			
 			from = i;
-			index++;
+			index = 1;
+//			if( index < 9) index++;
 		}
 	}
 	
