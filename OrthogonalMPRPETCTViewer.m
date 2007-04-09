@@ -178,8 +178,12 @@ NSString * documentsDirectory();
 	sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
 	sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
 	
+	if( fistCTSlice < 0) fistCTSlice = 0;
+	if( fistPETSlice < 0) fistPETSlice = 0;
+		
 	if( fistCTSlice + sliceRangeCT > [pix count])  sliceRangeCT = [pix count] - fistCTSlice;
 	if( fistPETSlice + sliceRangePET > [[bC pixList] count])  sliceRangePET = [[bC pixList] count] - fistPETSlice;
+	
 	
 	// initialisations
 	[CTController initWithPixList: [NSMutableArray arrayWithArray: [pix subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)]] : [files subarrayWithRange:NSMakeRange(fistCTSlice,sliceRangeCT)] : vData : vC : nil : self];
@@ -707,7 +711,7 @@ NSString * documentsDirectory();
 	[invoc setTarget:PETController];
 	[invoc invoke];
 
-	// PETCT
+	// PETCT	
 	destPixelSpacingX = [[[PETCTController performSelector:view] curDCM] pixelSpacingX];
 	destPixelSpacingY = [[[PETCTController performSelector:view] curDCM] pixelSpacingY];
 	destWidth = (float)[[[PETCTController performSelector:view] curDCM] pwidth];
@@ -800,6 +804,16 @@ NSString * documentsDirectory();
 	[super showWindow:sender];
 	
 	[self resliceFromOriginal: [[[[self keyView] controller] originalView] crossPositionX] : [[[[self keyView] controller] originalView] crossPositionY] : [[self keyView] controller]];
+	
+	[[PETCTController yReslicedView] setXFlipped: [[CTController yReslicedView] xFlipped]];
+	[[PETCTController yReslicedView] setYFlipped: [[CTController yReslicedView] yFlipped]];
+
+	[[PETCTController xReslicedView] setXFlipped: [[CTController xReslicedView] xFlipped]];
+	[[PETCTController xReslicedView] setYFlipped: [[CTController xReslicedView] yFlipped]];
+
+	[[PETCTController originalView] setXFlipped: [[CTController originalView] xFlipped]];
+	[[PETCTController originalView] setYFlipped: [[CTController originalView] yFlipped]];
+
 }
 
 - (void) windowWillClose:(NSNotification *)notification
