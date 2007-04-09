@@ -170,6 +170,7 @@
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
+		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
 	} else
 		NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");

@@ -4533,6 +4533,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32,
 			0
 	};
+	
+	
 	// Get pixel format from OpenGL
     NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     if (!pixFmt)
@@ -4614,7 +4616,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
 	[self FindMinimumOpenGLCapabilities];
-    
+
+//    glEnable (GL_MULTISAMPLE_ARB);
+//    glHint (GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
+	
 //	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
     // This hint is for antialiasing
@@ -5572,7 +5577,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	effectiveTextureMod = 0;	//2;	//OVERLAP
 	
 	glEnable (TEXTRECTMODE); // enable texturing
-	glColor4f (1f, 1f, 1f, 1.0f); 
+	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); 
 
 	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
@@ -7933,6 +7938,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_S, edgeClampParam);
 					glTexParameteri (TEXTRECTMODE, GL_TEXTURE_WRAP_T, edgeClampParam);
 					
+					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+					
 					if( FULL32BITPIPELINE)
 					{					
 						#if __BIG_ENDIAN__
@@ -7948,19 +7955,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							float max = curWL + curWW / 2;
 							
 							glPixelTransferf( GL_RED_BIAS, -min/(max-min));
-							glPixelTransferf( GL_GREEN_BIAS, -min/(max-min));
-							glPixelTransferf( GL_BLUE_BIAS, -min/(max-min));
+//							glPixelTransferf( GL_GREEN_BIAS, -min/(max-min));
+//							glPixelTransferf( GL_BLUE_BIAS, -min/(max-min));
 
 							glPixelTransferf( GL_RED_SCALE, 1./(max-min));
-							glPixelTransferf( GL_GREEN_SCALE,  1./(max-min));
-							glPixelTransferf( GL_BLUE_SCALE,  1./(max-min));
+//							glPixelTransferf( GL_GREEN_SCALE,  1./(max-min));
+//							glPixelTransferf( GL_BLUE_SCALE,  1./(max-min));
 							
 							glTexImage2D (TEXTRECTMODE, 0, GL_LUMINANCE_FLOAT32_APPLE, currWidth, currHeight, 0, GL_LUMINANCE, GL_FLOAT, pBuffer);
 							//GL_RGBA, GL_LUMINANCE, GL_INTENSITY12, GL_INTENSITY16, GL_LUMINANCE12, GL_LUMINANCE16, 
 							// GL_LUMINANCE_FLOAT16_APPLE, GL_LUMINANCE_FLOAT32_APPLE, GL_RGBA_FLOAT32_APPLE, GL_RGBA_FLOAT16_APPLE
 						
-							glPixelTransferf( GL_RED_BIAS, 0);		glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
-							glPixelTransferf( GL_RED_SCALE, 1);		glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
+							glPixelTransferf( GL_RED_BIAS, 0);		//glPixelTransferf( GL_GREEN_BIAS, 0);		glPixelTransferf( GL_BLUE_BIAS, 0);
+							glPixelTransferf( GL_RED_SCALE, 1);		//glPixelTransferf( GL_GREEN_SCALE, 1);		glPixelTransferf( GL_BLUE_SCALE, 1);
 
 						}
 					}
