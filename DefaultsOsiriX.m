@@ -1174,7 +1174,7 @@ static NSString *hostName = @"";
 									NSLocalizedString(@"CALCANEUS", nil), @"region",
 									nil],
 							[NSDictionary dictionaryWithObjectsAndKeys:
-									NSLocalizedString(@"OS CALCSIS", nil), @"region",
+									NSLocalizedString(@"OS CALCIS", nil), @"region",
 									nil],
 							[NSDictionary dictionaryWithObjectsAndKeys:
 									NSLocalizedString(@"TALUS", nil), @"region",

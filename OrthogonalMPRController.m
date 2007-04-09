@@ -31,6 +31,8 @@
 
 - (void) applyOrientation
 {
+	NSLog( @"Orientation: %d", orientationVector);
+	
 	switch( orientationVector)
 	{
 		case 1:
