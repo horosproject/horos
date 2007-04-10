@@ -5633,13 +5633,15 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	{
 		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
 		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = -vector[ 2] < 0 ? 'F' : 'H';
+		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
+		//orientationZ = -vector[ 2] < 0 ? 'F' : 'H';
 	}
 	else
 	{
 		orientationX = vector[ 0] < 0 ? 'R' : 'L';
 		orientationY = vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = vector[ 2] < 0 ? 'F' : 'H';
+		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
+		//orientationZ = vector[ 2] < 0 ? 'F' : 'H';
 	}
 	
 	float absX = fabs( vector[ 0]);
@@ -5647,7 +5649,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	float absZ = fabs( vector[ 2]);
 	
 	int i; 
-	for (i=0; i<1; ++i)
+	// get first 3 AXIS
+	for (i=0; i < 3; ++i)
 	{
 		if (absX>.0001 && absX>absY && absX>absZ)
 		{
@@ -5790,20 +5793,27 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	float   vectors[ 9];
 	
 	[self orientationCorrectedToView: vectors];
-	
+	// Left
 	[self getOrientationText:string :vectors :YES];
-	[self DrawCStringGL: string : labelFontListGL :2 :2+size.size.height/2];
-	
+	[self DrawCStringGL: string : labelFontListGL :6 :2+size.size.height/2];
+	// Right
+	float offset = 28;
 	[self getOrientationText:string :vectors :NO];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width-10 :2+size.size.height/2];
 
+	// Vary Position of Right string depending on length
+	if (strlen(string) == 1)
+		offset = 16;
+	else if (strlen(string) == 2)
+		offset = 22;
+	[self DrawCStringGL: string : labelFontListGL :size.size.width - offset :2+size.size.height/2];
+	//Top 
 	[self getOrientationText:string :vectors+3 :YES];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :12];
+	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :15];
 	
 	if( [curDCM laterality]) [self DrawNSStringGL: [curDCM laterality] : fontListGL :size.size.width/2 :12 + stringSize.height];
-	
+	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
-	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height-2];
+	[self DrawCStringGL: string : labelFontListGL :size.size.width/2 :2+size.size.height - 6];
 }
 
 -(void) getThickSlabThickness:(float*) thickness location:(float*) location
@@ -6485,8 +6495,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					long			yRaster = 1, xRaster, i;
 					NSString		*tempString = 0L;
 					
-					#define BARPOSX1 50.f
-					#define BARPOSX2 20.f
+					//#define BARPOSX1 50.f
+					//#define BARPOSX2 20.f
+					
+					#define BARPOSX1 62.f
+					#define BARPOSX2 32.f
 					
 					heighthalf = 0;
 					
@@ -6617,7 +6630,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 				//FRAME RECT IF MORE THAN 1 WINDOW and IF THIS WINDOW IS THE FRONTMOST
 				if(( numberOf2DViewer > 1 && [self is2DViewer] == YES && stringID == 0L) || [stringID isEqualToString:@"OrthogonalMPRVIEW"])
-				{
+				{	// draw line around key View
 					if( [[self window] isMainWindow] && isKeyView)
 					{
 						float heighthalf = size.size.height/2;
@@ -6855,14 +6868,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				 if( annotations >= annotBase)
 				 {
 					//** PIXELSPACING LINES
+					float yOffset = 24;
+					float xOffset = 32;
+					//float xOffset = 10;
+					//float yOffset = 12;
 					glBegin(GL_LINES);
 					if ([curDCM pixelSpacingX] != 0 && [curDCM pixelSpacingX] * 1000.0 < 1)
-					{
-						glVertex2f(scaleValue  * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
-						glVertex2f(scaleValue  * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - 12);
+					{ 
+						
 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (-0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
+						glVertex2f(scaleValue  * (-0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (0.02/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
+
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (0.02/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
 
 						short i, length;
 						for (i = -20; i<=20; i++)
@@ -6870,20 +6889,20 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							if (i % 10 == 0) length = 10;
 							else  length = 5;
 						
-							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12);
-							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
+							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *0.001/[curDCM pixelSpacingX], size.size.height/2 - yOffset - length);
 							
-							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue *0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + 10,  i* scaleValue * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 0.001/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
 						}
 					}
 					else
 					{
-						glVertex2f(scaleValue  * (-50/[curDCM pixelSpacingX]), size.size.height/2 - 12); 
-						glVertex2f(scaleValue  * (50/[curDCM pixelSpacingX]), size.size.height/2 - 12);
+						glVertex2f(scaleValue  * (-50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset); 
+						glVertex2f(scaleValue  * (50/[curDCM pixelSpacingX]), size.size.height/2 - yOffset);
 						
-						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (-50/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
-						glVertex2f(-size.size.width/2 + 10 , scaleValue  * (50/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (-50/[curDCM pixelSpacingY]*[curDCM pixelRatio])); 
+						glVertex2f(-size.size.width/2 + xOffset , scaleValue  * (50/[curDCM pixelSpacingY]*[curDCM pixelRatio]));
 
 						short i, length;
 						for (i = -5; i<=5; i++)
@@ -6891,11 +6910,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							if (i % 5 == 0) length = 10;
 							else  length = 5;
 						
-							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - 12);
-							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - 12 - length);
+							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - yOffset);
+							glVertex2f(i*scaleValue *10/[curDCM pixelSpacingX], size.size.height/2 - yOffset - length);
 							
-							glVertex2f(-size.size.width/2 + 10 +  length,  i* scaleValue *10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
-							glVertex2f(-size.size.width/2 + 10,  i* scaleValue * 10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset +  length,  i* scaleValue *10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
+							glVertex2f(-size.size.width/2 + xOffset,  i* scaleValue * 10/[curDCM pixelSpacingY]*[curDCM pixelRatio]);
 						}
 					}
 					glEnd();
