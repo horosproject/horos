@@ -1054,6 +1054,7 @@ if( reader)
 
 -(void) set3DStateDictionary:(NSDictionary*) dict
 {
+
 	float		temp[ 3];
 	NSArray		*tempArray;
 	DCMView		*oView = [[[self window] windowController] originalView];
@@ -1088,34 +1089,14 @@ if( reader)
 			[finalView setRotation: [[dict objectForKey:@"rotation3"] floatValue]];
 		}
 		
-//		tempArray = [dict objectForKey:@"CameraPosition"];
-//		aCamera->SetPosition( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
-//
-//		tempArray = [dict objectForKey:@"CameraViewUp"];
-//		aCamera->SetViewUp( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
-//
-//		tempArray = [dict objectForKey:@"CameraFocalPoint"];
-//		aCamera->SetFocalPoint( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue], [[tempArray objectAtIndex:2] floatValue]);
-//		
-//		tempArray = [dict objectForKey:@"CameraClipping"];
-//		aCamera->SetClippingRange( [[tempArray objectAtIndex:0] floatValue], [[tempArray objectAtIndex:1] floatValue]);
-		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"crossMove" object: @"Original" userInfo: [NSDictionary dictionaryWithObject:@"set" forKey:@"action"]];
 	}
-	else
-	{
-//		[oView setOrigin: NSMakePoint(0,0)];
-//		[perpendicularView setOrigin: NSMakePoint(0,0)];
-//		[finalView setOrigin: NSMakePoint(0,0)];
-//		
-//		[oView scaleToFit];
-//		[perpendicularView scaleToFit];
-//		[finalView scaleToFit];
-	}
+
 }
 
 -(NSMutableDictionary*) get3DStateDictionary
 {
+	return nil;
 	float		oX, oY, oZ;
 	float		angle, angle2;
 	double		temp[3];
@@ -1157,17 +1138,11 @@ if( reader)
 	[dict setObject:[NSNumber numberWithFloat:[finalView scaleValue]] forKey:@"scale3"];
 	[dict setObject:[NSNumber numberWithFloat:[finalView rotation]] forKey:@"rotation3"];
 	
-//	aCamera->GetPosition( temp);
-//	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraPosition"];
-//	aCamera->GetViewUp( temp);
-//	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraViewUp"];
-//	aCamera->GetFocalPoint( temp);
-//	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]],  [NSNumber numberWithFloat:temp[2]], 0L] forKey:@"CameraFocalPoint"];
-//	aCamera->GetClippingRange( temp);
-//	[dict setObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat:temp[0]],  [NSNumber numberWithFloat:temp[1]], 0L] forKey:@"CameraClipping"];
+
 	
 	return dict;
 }
+
 
 //- (void) moveSlider:(id) sender
 //{
@@ -1556,16 +1531,24 @@ if( reader)
 			//	[finalView setRotation: 90];
 			
 				[self applyOrientation];
-				
-				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
-				ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
-				//[finalView setOrigin: ttO];
+								
+				float pOffset = [perpendicularView scaleValue] * ([firstObject pheight] - FOV)/2 ;
+				[perpendicularView setOrigin: NSMakePoint(0.0, pOffset)];
+				[finalView setOrigin: NSMakePoint([finalView scaleValue] *(FOV - [firstObject pwidth])/2.0, [finalView scaleValue] * (FOVP - FOV)/2.0)];
 			}
 			
-			ttOffset.x = origin[ 0]*[finalView scaleValue]/space[0];
-			ttOffset.y = -origin[ 1]*[finalView scaleValue]/space[1];
+			float pOffset = [perpendicularView scaleValue] * (FOV - [firstObject pheight])/2.0 ;
+			float fvXOffset = [finalView scaleValue] * ([firstObject pwidth] - FOV)/2.0;
+			float fvYOffset = [finalView scaleValue] * (FOV - [firstObject pheight])/2.0;
+			float angle = [oView angle]   ;
+			float pAngle = [perpendicularView angle];
+			// I'm not quite sure why, but this works
+			float correction = fabs(sinf((angle * 2.0) * deg2rad));
+			float fvCorrection =  fabs(sinf((pAngle * 2.0) * deg2rad));
+	
+			[perpendicularView setOriginOffset: NSMakePoint(0.0, pOffset * correction)];
+			[finalView setOriginOffset: NSMakePoint(fvXOffset * correction, fvYOffset * fvCorrection)];	
 			// Appears to work better without adjusting to offset
-			//[finalView setOriginOffset: ttOffset];
 			[finalView setIndex:0];
 			[oView getWLWW:&swl :&sww];
 			
@@ -1754,13 +1737,18 @@ if( reader)
 					//	[finalView setRotation: 90];
 					
 						[self applyOrientation];
-					
-						NSPoint tt = { -origin[ 0]*[finalViewBlending scaleValue]/space[0], origin[ 1]*[finalViewBlending scaleValue]/space[1]};
-						[finalViewBlending setOrigin: tt];
+						[finalViewBlending setOrigin: NSMakePoint([finalView scaleValue] *(FOV - [firstObject pwidth])/2.0, [finalView scaleValue] * (FOVP - FOV)/2.0)];
+
 					}
 					
-					NSPoint tt = { origin[ 0]*[finalViewBlending scaleValue]/space[0], -origin[ 1]*[finalViewBlending scaleValue]/space[1]};
-					[finalViewBlending setOriginOffset: tt];
+					float fvXOffset = [finalView scaleValue] * ([firstObject pwidth] - FOV)/2.0;
+					float fvYOffset = [finalView scaleValue] * (FOV - [firstObject pheight])/2.0;
+					float angle = [oView angle]   ;
+					float pAngle = [perpendicularView angle];
+					// I'm not quite sure why, but this works
+					float correction = fabs(sinf((angle * 2.0) * deg2rad));
+					float fvCorrection =  fabs(sinf((pAngle * 2.0) * deg2rad));
+					[finalViewBlending setOriginOffset: NSMakePoint(fvXOffset * correction, fvYOffset * fvCorrection)];	
 					[finalViewBlending setIndex:0];
 					//[finalViewBlending setCLUT:red :green: blue];
 					
@@ -2000,22 +1988,6 @@ if( reader)
 				
 				[self applyOrientation];
 				
-//				ttO.x = -origin[ 0]*[finalView scaleValue]/space[0];
-//					ttO.y = origin[ 1]*[finalView scaleValue]/space[1];
-//					[finalView setOrigin: ttO];
-				//NSPoint tt = { -origin[ 0]*[perpendicularView scaleValue]/space[0], origin[ 1]*[perpendicularView scaleValue]/space[1]};
-				NSLog(@"fov Axis: %d", fovMaxAxis);
-				if (fovMaxAxis == fovMaxZ) {
-
-					[perpendicularView setOrigin: NSMakePoint (0.0, -[firstObject pheight] * space[1])];
-					
-				}
-				else {
-				// this still isn't woking quite right. The position of the image in the perpendicularView is in various locations
-					[perpendicularView setOrigin: NSMakePoint (0.0, 0.0)];
-				}
-				//[perpendicularView setOrigin: NSMakePoint (0.0, -[firstObject pwidth] / 2)];
-				//[perpendicularView setOrigin: NSMakePoint (0.0, -[pixList count] * fabs(sliceThickness))];
 			}
 		}
 		
@@ -2077,8 +2049,6 @@ if( reader)
 			NSPoint tt2 = [perpendicularView originOffset];
 			
 			oo.y += tt2.y - tt.y;
-			//[perpendicularView setOrigin: oo];
-			//[perpendicularView setOriginOffset: tt];
 		}
 	}
 	
@@ -2352,28 +2322,6 @@ if( reader)
 	FOV = fov / 4;
 	FOV = FOV * 4;
 	
-	/*
-	FOV = [firstObject pwidth];
-	fovMaxAxis = fovMaxX;
-	if( [firstObject pheight] > FOV) {
-		FOV = [firstObject pheight];
-		fovMaxAxis = fovMaxY;
-		NSLog(@"fov Y");
-	}
-	
-	FOVP = (long) ([pixList count] * fabs(sliceThickness) / [firstObject pixelSpacingX]);
-	if( FOVP > FOV)  {
-		FOV = FOVP;
-		fovMaxAxis = fovMaxZ;
-		NSLog(@"fov z");
-	}
-	
-	FOV = FOV + FOV/2;
-	FOV = FOV/4;
-	FOV = FOV*4;
-	NSLog(@"FOV:%d", FOV);
-	*/
-	
 //	[slider setMaxValue: FOV];
 //	[slider setMinValue: -FOV];
 	
@@ -2474,32 +2422,6 @@ if( reader)
 	rotatePerpendicular->SetOutputExtent( 0, FOVP, 0, FOV, 0, 0);
 	rotatePerpendicular->Update();
 	
-//	line = vtkLineWidget::New();
-//	line->SetInteractor( [self renderWindowInteractor]);
-//	line->PlaceWidget(0, 0, 0, 200, 200, 0);
-//	line->SetResolution( 20);
-//	line->SetClampToBounds( true);
-//	line->SetAlignToNone();
-//	line->SetPoint1(0, 0, 0);
-//	line->SetPoint2(200, 200, 0);
-	
-    // An outline provides context around the data.
-    //
-    
-//    outlineData = vtkOutlineFilter::New();
-//	outlineData->SetInput((vtkDataSet *) rotate->GetOutput());
-//	
-//    mapOutline = vtkPolyDataMapper::New();
-//	mapOutline->SetInput(outlineData->GetOutput());
-//    
-//    outlineRect = vtkActor::New();
-//    outlineRect->SetMapper(mapOutline);
-//    outlineRect->GetProperty()->SetColor(0,1,0);
-//    outlineRect->GetProperty()->SetOpacity(0.5);
-
-
-
-
 	// X - Y - Z planes
 	
     bwLut = vtkLookupTable::New();  
@@ -2514,31 +2436,13 @@ if( reader)
     axialColors = vtkImageMapToColors::New();
 	axialColors->SetInput(rotate->GetOutput());
     axialColors->SetLookupTable(bwLut);
-	
-//    saggitalColors = vtkImageMapToColors::New();
-//    saggitalColors->SetInput(rotatePerpendicular->GetOutput());
-//    saggitalColors->SetLookupTable(bwLut);
-//	
-//    coronalColors = vtkImageMapToColors::New();
-//    coronalColors->SetInput(rotate->GetOutput());
-//    coronalColors->SetLookupTable(bwLut);
-    
-//    saggital = vtkImageActor::New();
-//    saggital->SetInput(saggitalColors->GetOutput());
-//	
-//	coronal = vtkImageActor::New();
-//    coronal->SetInput(coronalColors->GetOutput());
+
 
     axial = vtkImageActor::New();
 //	axial->SetPickable( true);
     axial->SetInput(axialColors->GetOutput());
 
-//    saggital = vtkImageActor::New();
-//	saggital->SetPickable( true);
-//    saggital->SetInput(saggitalColors->GetOutput());
-	
-	//[self movePlanes:50 :50 :50];
-	
+
 	// Links actors to camera & render view
 	
     aCamera = vtkCamera::New();
@@ -2547,56 +2451,6 @@ if( reader)
     aCamera->SetFocalPoint (0, 0, 0);
     aCamera->ComputeViewPlaneNormal();    
     
-//    aRenderer->AddActor(axial);
-//	aRenderer->AddActor(outlineRect);
-//	aRenderer->AddActor(saggital);
-
-
-
-
-//	aRenderer->AddActor2D( Line2D);
-//    aRenderer->AddActor(coronal);
-    
-//	vtkImplicitPlaneWidget  *planeWidgetX = vtkImplicitPlaneWidget::New();
-//    planeWidgetX->SetInteractor( [self renderWindowInteractor]);
-//	planeWidgetX->SetPlaceFactor(1.0);
-//    planeWidgetX->SetInput(saggitalColors->GetOutput());
-//    planeWidgetX->PlaceWidget();
-//	planeWidgetX->PlaneProperty()->SetOpacity(0.5);
-	
-//  vtkImagePlaneWidget* planeWidgetX = vtkImagePlaneWidget::New();
-//    planeWidgetX->SetInteractor( [self renderWindowInteractor]);
-//    planeWidgetX->SetKeyPressActivationValue('x');
-//    planeWidgetX->RestrictPlaneToVolumeOn();
-//    planeWidgetX->GetPlaneProperty()->SetColor(1,0,0);
-//    planeWidgetX->SetResliceInterpolateToNearestNeighbour();
-//    planeWidgetX->SetInput(saggitalColors->GetOutput());
-//    planeWidgetX->SetPlaneOrientationToXAxes();
-//	planeWidgetX->SetSliceIndex(32);
-//    planeWidgetX->DisplayTextOn();
-//    planeWidgetX->On();
-//    planeWidgetX->InteractionOff();
-//    planeWidgetX->InteractionOn();
-
-  // An initial camera view is created.  The Dolly() method moves 
-  // the camera towards the FocalPoint, thereby enlarging the image.
-//  aRenderer->SetActiveCamera(aCamera);
-//  aRenderer->ResetCamera ();
-  aCamera->Dolly(1.5);
-
-    
-/* vtkLight *light = vtkLight::New();
-  light->SetFocalPoint(1.875,0.6125,0);
-  light->SetPosition(0.875,1.6125,1);
-  light->SetColor(1.0, 0, 0);
-  aRenderer->AddLight(light);   */
-//  aCamera->AddLight(light);
-/*  aRenderer->GetActiveCamera()->SetFocalPoint(0,0,0);
-  aRenderer->GetActiveCamera()->SetPosition(0,0,1);
-  aRenderer->GetActiveCamera()->SetViewUp(0,1,0);
-  aRenderer->GetActiveCamera()->ParallelProjectionOn();
-  aRenderer->ResetCamera();
-  aRenderer->GetActiveCamera()->SetParallelScale(1.5);  */
 	
 	[[[[self window] windowController] originalView] setMPRAngle: 0.0];
 	[perpendicularView setMPRAngle: 0.0];
