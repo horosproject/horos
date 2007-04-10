@@ -227,9 +227,9 @@ void errmsg(const char* msg, ...)
 	options.acse_timeout_ = OFstatic_cast(int, opt_timeout);
 	
 	//dimse-timeout
-	// opt_timeout = 0;
-	//options.dimse_timeout_ = OFstatic_cast(int, opt_timeout);
-	//options.blockMode_ = DIMSE_NONBLOCKING;
+	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+	options.dimse_timeout_ = OFstatic_cast(int, opt_timeout);
+	options.blockMode_ = DIMSE_NONBLOCKING;
 	
 	//maxpdu
 	//overrideMaxPDU = 
