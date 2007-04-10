@@ -148,7 +148,6 @@ void errmsg(const char* msg, ...)
 	}
 	[super finalize];
 }
-	
 
 //- (void)cleanup:(NSTimer *)timer{
 //	if (scp != NULL) 
