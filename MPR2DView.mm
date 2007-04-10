@@ -1531,7 +1531,8 @@ if( reader)
 			//	[finalView setRotation: 90];
 			
 				[self applyOrientation];
-								
+				// The FOV is larger than the actual image.  Compensate by subtracting the difference between height and FOV for Perpendicular View. 
+				// And difference between width and Fov for The X Axis for the final view and the difference between FOV and FOVP fo the Y axis				
 				float pOffset = [perpendicularView scaleValue] * ([firstObject pheight] - FOV)/2 ;
 				[perpendicularView setOrigin: NSMakePoint(0.0, pOffset)];
 				[finalView setOrigin: NSMakePoint([finalView scaleValue] *(FOV - [firstObject pwidth])/2.0, [finalView scaleValue] * (FOVP - FOV)/2.0)];
@@ -1545,10 +1546,9 @@ if( reader)
 			// I'm not quite sure why, but this works
 			float correction = fabs(sinf((angle * 2.0) * deg2rad));
 			float fvCorrection =  fabs(sinf((pAngle * 2.0) * deg2rad));
-	
+			// correct for change in image size and position when VTK reslices
 			[perpendicularView setOriginOffset: NSMakePoint(0.0, pOffset * correction)];
 			[finalView setOriginOffset: NSMakePoint(fvXOffset * correction, fvYOffset * fvCorrection)];	
-			// Appears to work better without adjusting to offset
 			[finalView setIndex:0];
 			[oView getWLWW:&swl :&sww];
 			
