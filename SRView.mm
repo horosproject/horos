@@ -2090,8 +2090,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	cube->SetXMinusFaceText( "R" );
 	cube->SetYPlusFaceText ( "P" );
 	cube->SetYMinusFaceText( "A" );
-	cube->SetZPlusFaceText ( "H" );
-	cube->SetZMinusFaceText( "F" );
+	cube->SetZPlusFaceText ( "S" );
+	cube->SetZMinusFaceText( "I" );
 	cube->SetFaceTextScale( 0.67 );
 
 	vtkProperty* property = cube->GetXPlusFaceProperty();
