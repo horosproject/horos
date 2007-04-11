@@ -7809,7 +7809,8 @@ int i,j,l;
 	}
 }
 
-- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
+//- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
+- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
 {
 	DCMPix *curPix = [[self pixList] objectAtIndex:[[self imageView] curImage]];
 
@@ -7818,10 +7819,11 @@ int i,j,l;
 	[theNewROI setLayerPixelSpacingY:layerPixelSpacingY];
 	[theNewROI setLayerReferenceFilePath:path];
 	[theNewROI setLayerImage:image];
-	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
+//	[theNewROI setLayerImageWhenSelected:imageWhenSelected];
 
 	[[[self roiList] objectAtIndex:[[self imageView] curImage]] addObject:theNewROI];		
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:theNewROI userInfo:0L];
+	[self selectROI:theNewROI deselectingOther:YES];
 	return theNewROI;
 }
 
@@ -7919,10 +7921,14 @@ int i,j,l;
 	NSLog(@"pixelSpacing: %f, %f", [[imageView curDCM] pixelSpacingX], [[imageView curDCM] pixelSpacingY]);
 	
 	NSLog(@"addLayerRoiToCurrentSliceWithImage");	
-	ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image imageWhenSelected:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
+	//ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image imageWhenSelected:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
+	ROI* theNewROI = [self addLayerRoiToCurrentSliceWithImage:image referenceFilePath:@"none" layerPixelSpacingX:[[imageView curDCM] pixelSpacingX] layerPixelSpacingY:[[imageView curDCM] pixelSpacingY]];
 	
 	NSLog(@"setName");
 	[theNewROI setName:[NSString stringWithFormat:@"%@ %@", [roi name], NSLocalizedString(@"Layer", nil)]];
+	[theNewROI setIsLayerOpacityConstant:NO];
+	[theNewROI setCanColorizeLayer:YES];
+	[theNewROI loadLayerImageTexture];
 	
 	free(data);
 	free(locations);
@@ -8963,10 +8969,11 @@ int i,j,l;
 	[self setMode:ROI_selected toROIGroupWithID:[roi groupID]];
 	
 	// bring it to front
-	[roi retain];
-	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
-	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
-	[roi release];
+	[self bringToFrontROI:roi];
+//	[roi retain];
+//	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
+//	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
+//	[roi release];
 }
 
 - (void)setSelectedROIsGrouped:(BOOL)grouped;
@@ -9012,6 +9019,37 @@ int i,j,l;
 - (IBAction)ungroupSelectedROIs:(id)sender;
 {
 	[self ungroupSelectedROIs];
+}
+
+- (void)bringToFrontROI:(ROI*)roi;
+{
+	NSLog(@"bringToFrontROI");
+	if([roi groupID]==0.0) // not grouped
+	{
+		[roi retain];
+		[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
+		[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
+		[roi release];
+	}
+	else // bring the whole group to front, without changing order inside the group
+	{
+		NSMutableArray *group = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray *ROIs = [roiList[curMovieIndex] objectAtIndex:[imageView curImage]];
+		int i;
+		for(i=0; i<[ROIs count]; i++)
+		{
+			if([[ROIs objectAtIndex:i] groupID]==[roi groupID])
+			{
+				[group addObject:[ROIs objectAtIndex:i]];
+				[ROIs removeObject:[ROIs objectAtIndex:i]];
+				i--;
+			}
+		}
+		for(i=[group count]-1; i>=0; i--)
+		{
+			[ROIs insertObject:[group objectAtIndex:i] atIndex:0];
+		}
+	}
 }
 
 #pragma mark BrushTool and ROI filters

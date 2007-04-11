@@ -104,6 +104,9 @@ enum
 	NSData			*layerImageJPEG;//, *layerImageWhenSelectedJPEG;
 	float			layerPixelSpacingX, layerPixelSpacingY;
 	BOOL			needsLoadTexture, needsLoadTexture2;
+	BOOL			isLayerOpacityConstant;
+	BOOL			canColorizeLayer;
+	NSColor			*layerColor;
 	
 	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
 	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected together.
@@ -269,5 +272,8 @@ enum
 - (void)setGroupID:(NSTimeInterval)timestamp;
 
 - (NSPoint) lowerRightPoint;
+
+- (void)setIsLayerOpacityConstant:(BOOL)boo;
+- (void)setCanColorizeLayer:(BOOL)boo;
 
 @end

@@ -402,6 +402,7 @@ GLenum glReportError (void)
 	if(layerReferenceFilePath) [layerReferenceFilePath release];
 	if(layerImage) [layerImage release];
 //	if(layerImageWhenSelected) [layerImageWhenSelected release];
+	if(layerColor) [layerColor release];
 	
 	if(textualBoxLine1) [textualBoxLine1 release];
 	if(textualBoxLine2) [textualBoxLine2 release];
@@ -2201,6 +2202,14 @@ GLenum glReportError (void)
 		[[NSUserDefaults standardUserDefaults] setFloat:color.green forKey:@"ROIRegionColorG"];
 		[[NSUserDefaults standardUserDefaults] setFloat:color.blue forKey:@"ROIRegionColorB"];
 	}
+	else if( type == tLayerROI)
+	{
+		if(!canColorizeLayer) return;
+		if(layerColor) [layerColor release];
+		layerColor = [NSColor colorWithCalibratedRed:color.red/65535.0 green:color.green/65535.0 blue:color.blue/65535.0 alpha:1.0];
+		[layerColor retain];
+		needsLoadTexture = YES;
+	}
 	else
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat:color.red forKey:@"ROIColorR"];
@@ -3766,6 +3775,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	layerImage = image;
 	[layerImage retain];
 	
+	isLayerOpacityConstant = YES;
+	canColorizeLayer = NO;
+	
 	NSSize imageSize = [layerImage size];
 	float imageWidth = imageSize.width;
 	float imageHeight = imageSize.height;
@@ -3846,30 +3858,23 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
 	
 	
-	unsigned char *imageBuffer =  [bitmap bitmapData];
+	unsigned char *imageBuffer = [bitmap bitmapData];
 	
-	//	if(opacity<1.0)
+	if(!isLayerOpacityConstant)// && opacity<1.0)
 	{
-		NSLog(@"opacity : %f", opacity);
-		NSLog(@"grey opacity : %f", (1.0+opacity)*0.5);
-//		[bitmap colorizeByMappingGray:0.5 toColor:[[NSColor grayColor] colorWithAlphaComponent:(1.0+opacity)*0.5] blackMapping:[[NSColor blackColor] colorWithAlphaComponent:opacity] whiteMapping:[NSColor whiteColor]];
+		unsigned char*	argbPtr = (unsigned char*) imageBuffer;
+		long			ss = [bitmap bytesPerRow]/4 * [layerImage size].height;
 		
-//		if( *imageBuffer == 255)
-//		{
-			unsigned char*	argbPtr = (unsigned char*) imageBuffer;
-			long			ss = [bitmap bytesPerRow]/4 * [layerImage size].height;
-			
-			while( ss-->0)
-			{
-//				unsigned m = MAX( *(argbPtr+1), *(argbPtr+2));
-//				m = MAX(m, *(argbPtr+3));
+		while( ss-->0)
+		{
+			*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3 * opacity;
+			argbPtr+=4;
+		}
+	}
 
-				*argbPtr = (*(argbPtr+1) + *(argbPtr+2) + *(argbPtr+3)) / 3 * opacity;
-				argbPtr+=4;
-			}
-//		}
 
-		
+	if(canColorizeLayer && layerColor)
+	{
 		vImage_Buffer src, dest;
 		
 		dest.height = [layerImage size].height;
@@ -3886,22 +3891,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		int i;
 		for( i = 0; i < 256; i++)
 		{
-			redTable[i] = i;
-			greenTable[i] = i;
-			blueTable[i] = i;
-			alphaTable[i] =i;
+			redTable[i] = i * [layerColor redComponent];
+			greenTable[i] = i * [layerColor greenComponent];
+			blueTable[i] = i * [layerColor blueComponent];
+			alphaTable[i] = i;
 		}
 		
 		//vImageOverwriteChannels_ARGB8888(const vImage_Buffer *newSrc, &src, &dest, 0x4, 0);
 		
-//		#if __BIG_ENDIAN__
-//		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
-//		#else
-//		vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) blueTable, (Pixel_8*) greenTable, (Pixel_8*) redTable, (Pixel_8*) &alphaTable, 0);
-//		#endif
+		#if __BIG_ENDIAN__
+		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) &alphaTable, (Pixel_8*) redTable, (Pixel_8*) greenTable, (Pixel_8*) blueTable, 0);
+		#else
+		vImageTableLookUp_ARGB8888( &dest, &dest, (Pixel_8*) blueTable, (Pixel_8*) greenTable, (Pixel_8*) redTable, (Pixel_8*) &alphaTable, 0);
+		#endif
 
 //		vImageTableLookUp_ARGB8888( &src, &dest, (Pixel_8*) redTable , (Pixel_8*) greenTable, (Pixel_8*)blueTable, (Pixel_8*) &alphaTable, 0);
-
 	}
 
 	[[curView openGLContext] makeCurrentContext];
@@ -3913,9 +3917,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0,GL_BGRA , GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
 
-	//if(opacity<1.0) [newImage release];
+//	if(!isLayerOpacityConstant)
+//	{
+//		NSLog(@"isLayerOpacityConstant : NO");
+//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+//	}
+//	else
+//	{
+//		NSLog(@"isLayerOpacityConstant : YES");
+//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+//	}
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+
 	[bitmap release];
 }
 
@@ -3954,7 +3968,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if(layerImageJPEG) [layerImageJPEG release];
 	
 	NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData: [layerImage TIFFRepresentation]];
-	NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+	NSSize size = [layerImage size];
+	NSDictionary *imageProps;
+	if(size.height>512 && size.width>512)
+		imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.3] forKey:NSImageCompressionFactor];
+	else
+		imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 	layerImageJPEG = [[imageRep representationUsingType:NSJPEG2000FileType properties:imageProps] retain];	//NSJPEGFileType
 }
 
@@ -4089,6 +4108,16 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 - (void)setGroupID:(NSTimeInterval)timestamp;
 {
 	groupID = timestamp;
+}
+
+- (void)setIsLayerOpacityConstant:(BOOL)boo;
+{
+	isLayerOpacityConstant = boo;
+}
+
+- (void)setCanColorizeLayer:(BOOL)boo;
+{
+	canColorizeLayer = boo;
 }
 
 @end
