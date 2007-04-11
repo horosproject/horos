@@ -1096,7 +1096,6 @@ if( reader)
 
 -(NSMutableDictionary*) get3DStateDictionary
 {
-	return nil;
 	float		oX, oY, oZ;
 	float		angle, angle2;
 	double		temp[3];

@@ -147,13 +147,13 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	{
 		orientationX = -vector[ 0] < 0 ? 'R' : 'L';
 		orientationY = -vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = -vector[ 2] < 0 ? 'F' : 'H';
+		orientationZ = -vector[ 2] < 0 ? 'I' : 'S';
 	}
 	else
 	{
 		orientationX = vector[ 0] < 0 ? 'R' : 'L';
 		orientationY = vector[ 1] < 0 ? 'A' : 'P';
-		orientationZ = vector[ 2] < 0 ? 'F' : 'H';
+		orientationZ = vector[ 2] < 0 ? 'I' : 'S';
 	}
 	
 	float absX = fabs( vector[ 0]);

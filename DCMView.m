@@ -5652,14 +5652,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	// get first 3 AXIS
 	for (i=0; i < 3; ++i)
 	{
-		if (absX>.0001 && absX>absY && absX>absZ)
+		if (absX>.2 && absX>absY && absX>absZ)
 		{
 			*optr++=orientationX; absX=0;
 		}
-		else if (absY>.0001 && absY>absX && absY>absZ)
+		else if (absY>.2 && absY>absX && absY>absZ)
 		{
 			*optr++=orientationY; absY=0;
-		} else if (absZ>.0001 && absZ>absX && absZ>absY)
+		} else if (absZ>.2 && absZ>absX && absZ>absY)
 		{
 			*optr++=orientationZ; absZ=0;
 		} else break; *optr='\0';
