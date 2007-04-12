@@ -156,9 +156,11 @@
        [(NSControl*) aView setEnabled: OnOff];
 	   return;
     }
-    // Recursively check all the subviews in the view
+	
+	// Recursively check all the subviews in the view
     enumerator = [ [aView subviews] objectEnumerator];
-    while (view = [enumerator nextObject]) {
+    while (view = [enumerator nextObject])
+	{
         [self checkView:view :OnOff];
     }
 }
@@ -183,16 +185,16 @@
 
 - (IBAction) setPages:(id) sender
 {
-	if( sender == entireSeriesTo) [entireSeriesToText setIntValue: [entireSeriesTo intValue]];
-	if( sender == entireSeriesFrom) [entireSeriesFromText setIntValue: [entireSeriesFrom intValue]];
+	int no_of_images = 0;
 	
-	if( sender == entireSeriesToText) [entireSeriesTo setIntValue: [entireSeriesToText intValue]];
-	if( sender == entireSeriesFromText) [entireSeriesFrom setIntValue: [entireSeriesFromText intValue]];
-
+	
 	NSDictionary *dict = [[m_PrinterController selectedObjects] objectAtIndex: 0];
-	
 	NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: [dict valueForKey: @"imageDisplayFormat"]];
 	[imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
+
+	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
+	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
+	int ipp = rows * columns;
 
 	// show alert, if displayFormat is invalid
 	if ([imageDisplayFormat length] < 3)
@@ -200,21 +202,39 @@
 		[m_pages setIntValue: 0];
 		return;
 	}
-
-	int rows = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 1, 1)] intValue];
-	int columns = [[imageDisplayFormat substringWithRange: NSMakeRange([imageDisplayFormat length] - 3, 1)] intValue];
-	int ipp = rows * columns;
 	
-	int from = [entireSeriesFrom intValue]-1;
-	int to = [entireSeriesTo intValue];
-	
-	if( from >= to)
+	if( [[m_ImageSelection selectedCell] tag] == eAllImages)
 	{
-		to = [entireSeriesFrom intValue];
-		from = [entireSeriesTo intValue]-1;
+		if( sender == entireSeriesTo) [entireSeriesToText setIntValue: [entireSeriesTo intValue]];
+		if( sender == entireSeriesFrom) [entireSeriesFromText setIntValue: [entireSeriesFrom intValue]];
+		
+		if( sender == entireSeriesToText) [entireSeriesTo setIntValue: [entireSeriesToText intValue]];
+		if( sender == entireSeriesFromText) [entireSeriesFrom setIntValue: [entireSeriesFromText intValue]];
+		
+		int from = [entireSeriesFrom intValue]-1;
+		int to = [entireSeriesTo intValue];
+		
+		if( from >= to)
+		{
+			to = [entireSeriesFrom intValue];
+			from = [entireSeriesTo intValue]-1;
+		}
+		
+		no_of_images = (to - from) / [entireSeriesInterval intValue];
 	}
-	
-	int no_of_images = (to - from) / [entireSeriesInterval intValue];
+	else if( [[m_ImageSelection selectedCell] tag] == eCurrentImage) no_of_images = 1;
+	else if( [[m_ImageSelection selectedCell] tag] == eKeyImages)
+	{
+		int i;
+		
+		NSArray *fileList = [m_CurrentViewer fileList];
+		
+		no_of_images = 0;
+		for (i = 0; i < [fileList count]; i++)
+		{
+			if ([[[fileList objectAtIndex: i] valueForKey: @"isKeyImage"] boolValue]) no_of_images++;
+		}
+	}
 	
 	if( no_of_images == 0) [m_pages setIntValue: 1];
 	else if( no_of_images % ipp == 0)  [m_pages setIntValue: no_of_images / ipp];
@@ -225,6 +245,8 @@
 {
 	if( [[sender selectedCell] tag] == eAllImages) [self checkView: entireSeriesBox :YES];
 	else [self checkView: entireSeriesBox :NO];
+	
+	[self setPages: self];
 }
 
 - (ViewerController *) _currentViewer
