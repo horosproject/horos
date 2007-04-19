@@ -25,11 +25,11 @@ Version 2.3
 #import "WaitRendering.h"
 #import "BurnerWindowController.h"
 #import <OsiriX/DCM.h>
-#import <DiscRecordingUI/DiscRecordingUI.h>
-#import <DiscRecordingUI/DRSetupPanel.h>
 #import "MutableArrayCategory.h"
 #import "AnonymizerWindowController.h"
-
+#import <DiscRecordingUI/DRSetupPanel.h>
+#import <DiscRecordingUI/DRBurnSetupPanel.h>
+#import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import  "BrowserController.h"
 
 extern BrowserController  *browserWindow;

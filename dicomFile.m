@@ -13,7 +13,6 @@
 =========================================================================*/
 
 
-#include "tiffio.h"
 #include "FVTiff.h"
 #import <dicomFile.h>
 #import "Papyrus3/Papyrus3.h"
@@ -29,7 +28,7 @@
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 #import <QTKit/QTKit.h>
-
+#include "tiffio.h"
 #import "DicomFileDCMTKCategory.h"
 
 /************  Modifications *************************************************************************************

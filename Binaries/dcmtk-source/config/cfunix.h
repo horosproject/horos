@@ -773,7 +773,7 @@ typedef unsigned short ushort;
 /* #undef WITH_LIBTIFF */
 
 /* Define if we are compiling with libxml support */
-#define WITH_LIBXML 
+//#define WITH_LIBXML 
 
 /* Define if we are compiling with OpenSSL support */
 #define WITH_OPENSSL 
