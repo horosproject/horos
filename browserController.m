@@ -53,6 +53,7 @@ Version 2.5
 
 */
 
+#import <DiscRecording/DRDevice.h>
 #import "DCMView.h"
 #import "MyOutlineView.h"
 #import "PreviewView.h"
@@ -2301,6 +2302,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[self performSelectorOnMainThread:@selector( checkIncoming:) withObject: self waitUntilDone: NO];
 	
 	[autoroutingInProgress unlock];
+	
+	if( [filesInput count])
+	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"EJECTCDDVD"])
+			[[DRDevice deviceForIORegistryEntryPath: [filesInput objectAtIndex:0]] ejectMedia];
+	}
 	
 	[pool release];
 }
@@ -7698,6 +7705,16 @@ static BOOL needToRezoom;
 	[NSApp stopModalWithCode: 2];
 }
 
+- (IBAction) selectAll3DSeries:(id) sender
+{
+	[NSApp stopModalWithCode: 6];
+}
+
+- (IBAction) selectAll4DSeries:(id) sender
+{
+	[NSApp stopModalWithCode: 7];
+}
+
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer
 {
 	NSManagedObject		*selectedLine = [selectedLines objectAtIndex: 0];
@@ -8071,7 +8088,18 @@ static BOOL needToRezoom;
 							else result = 5;
 						}
 					}
-					else result = [supOpenButtons selectedTag];
+					else if( result == 6)
+					{
+					
+					}
+					else if( result == 7)
+					{
+					
+					}
+					else
+					{
+						result = [supOpenButtons selectedTag];
+					}
 					
 					[NSApp endSheet: subOpenWindow];
 					[subOpenWindow orderOut: self];
@@ -8108,6 +8136,13 @@ static BOOL needToRezoom;
 							}
 						break;
 						
+						case 6:
+							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+						break;
+						
+						case 7:
+							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+						break;
 					}
 				}
 			}

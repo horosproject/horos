@@ -293,7 +293,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
-
+- (IBAction) selectAll3DSeries:(id) sender;
+- (IBAction) selectAll4DSeries:(id) sender;
 - (void) exportDICOMFile:(id) sender;
 - (void) viewerDICOM:(id) sender;
 - (void)newViewerDICOM:(id) sender;

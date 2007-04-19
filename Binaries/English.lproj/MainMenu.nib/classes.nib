@@ -89,6 +89,8 @@
                 rebuildThumbnails = id; 
                 refreshDatabase = id; 
                 search = id; 
+                selectAll3DSeries = id; 
+                selectAll4DSeries = id; 
                 selectFilesAndFoldersToAdd = id; 
                 sendiDisk = id; 
                 sendiPod = id; 
@@ -238,6 +240,7 @@
                 flyThruButtonMenu = id; 
                 fullScreenMenu = id; 
                 groupSelectedROIs = id; 
+                iChatBroadcast = id; 
                 loadSerie = id; 
                 morphoSelectedBrushROI = id; 
                 nextPlane = id; 
@@ -288,6 +291,7 @@
                 syncronize = id; 
                 ungroupSelectedROIs = id; 
                 useVOILUT = id; 
+                viewXML = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 

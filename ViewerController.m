@@ -12137,9 +12137,9 @@ int i,j,l;
         [timeriChat release];
         timeriChat = nil;
         
-        [sender setLabel: NSLocalizedString(@"BroadCast", 0L)];
-		[sender setPaletteLabel: NSLocalizedString(@"BroadCast", 0L)];
-        [sender setToolTip: NSLocalizedString(@"BroadCast", 0L)];
+        [[self findiChatButton] setLabel: NSLocalizedString(@"BroadCast", 0L)];
+		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"BroadCast", 0L)];
+        [[self findiChatButton] setToolTip: NSLocalizedString(@"BroadCast", 0L)];
     }
     else
     {
@@ -12149,9 +12149,9 @@ int i,j,l;
         [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSModalPanelRunLoopMode];
         [[NSRunLoop currentRunLoop] addTimer:timeriChat forMode:NSEventTrackingRunLoopMode];
 		
-        [sender setLabel: NSLocalizedString(@"Stop", nil)];
-		[sender setPaletteLabel: NSLocalizedString(@"Stop", nil)];
-        [sender setToolTip: NSLocalizedString(@"Stop", nil)];
+        [[self findiChatButton] setLabel: NSLocalizedString(@"Stop", nil)];
+		[[self findiChatButton] setPaletteLabel: NSLocalizedString(@"Stop", nil)];
+        [[self findiChatButton] setToolTip: NSLocalizedString(@"Stop", nil)];
     }
 }
 #endif
