@@ -551,6 +551,9 @@ static NSString *hostName = @"";
 	[presets addObject: shading];
 	
 	[defaultValues setObject:presets forKey:@"shadingsPresets"];
+	
+	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
+	
 	// *************
 	// AUTO-CLEANING
 	// *************
