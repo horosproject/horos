@@ -6291,7 +6291,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		[ctx makeCurrentContext];
 		
-		NSRect size = aRect;//[self frame];
+		NSRect size;
+		
+		if( ctx == [self openGLContext]) size = [self frame];
+		else size = aRect;
 		
 		glViewport (0, 0, size.size.width, size.size.height); // set the viewport to cover entire window
 		
@@ -9208,9 +9211,4 @@ BOOL	lowRes = NO;
 	//	return YES;
 	//return NO;
 }
-
-
-
-
-
 @end
