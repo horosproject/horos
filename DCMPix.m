@@ -4700,9 +4700,10 @@ BOOL gUSEPAPYRUSDCMPIX;
 	//window level & width
 	
 	savedWL = 0;
-	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
 	savedWW = 0;
-	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue]; 
+	if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
+	if(  savedWW < 0) savedWW =-savedWW;
 	//NSLog(@"ww: %d wl: %d", savedWW, savedWL);
 	
 	
@@ -5831,6 +5832,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			if (val != NULL)
 			{
 				savedWW = [[NSString stringWithCString:val->a] floatValue];
+				if(  savedWW < 0) savedWW =-savedWW;
 			}
 			
 			// PLANAR CONFIGURATION

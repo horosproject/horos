@@ -2306,7 +2306,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( [filesInput count])
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"EJECTCDDVD"])
-			[[DRDevice deviceForIORegistryEntryPath: [filesInput objectAtIndex:0]] ejectMedia];
+		{
+			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  [filesInput objectAtIndex:0]];
+		}
 	}
 	
 	[pool release];
