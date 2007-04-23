@@ -79,6 +79,7 @@
                 SyncSeries = id; 
                 VRVPROViewer = id; 
                 VRViewer = id; 
+                activateFusion = id; 
                 applyConvolutionOnSource = id; 
                 blendingMode = id; 
                 blendingSlider = id; 
@@ -91,6 +92,7 @@
                 convMatrixAction = id; 
                 copySettingsToOthers = id; 
                 createKeyObjectNote = id; 
+                createLayerROIFromSelectedROI = id; 
                 endBlendingType = id; 
                 endCLUT = id; 
                 endConv = id; 
@@ -115,6 +117,7 @@
                 exportQuicktimeSlider = id; 
                 flipDataSeries = id; 
                 fullScreenMenu = id; 
+                groupSelectedROIs = id; 
                 horzFlipDataSet = id; 
                 keyImageCheckBox = id; 
                 keyImageDisplayButton = id; 
@@ -127,7 +130,6 @@
                 movieRateSliderAction = id; 
                 orthogonalMPRViewer = id; 
                 popFusionAction = id; 
-                previewMorpho = id; 
                 print = id; 
                 printSlider = id; 
                 reSyncOrigin = id; 
@@ -153,6 +155,7 @@
                 setStatus = id; 
                 setStructuringElementRadius = id; 
                 setWindowTitle = id; 
+                showCurrentThumbnail = id; 
                 shutterOnOff = id; 
                 sliderFusionAction = id; 
                 speedSliderAction = id; 
@@ -164,6 +167,7 @@
                 subCtrlSliders = id; 
                 subSharpen = id; 
                 subSumSlider = id; 
+                ungroupSelectedROIs = id; 
                 updateImage = id; 
                 updateSUVValues = id; 
                 updateSetWLWW = id; 
@@ -191,6 +195,7 @@
                 StatusView = NSView; 
                 ThickIntervalWindow = NSWindow; 
                 WLWWView = NSView; 
+                activatedFusion = NSButton; 
                 addCLUTWindow = NSWindow; 
                 addConvWindow = NSWindow; 
                 addOpacityWindow = NSWindow; 

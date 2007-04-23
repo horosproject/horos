@@ -64,16 +64,24 @@
             SUPERCLASS = Window3DController; 
         }, 
         {
-            ACTIONS = {axView = id; setThickSlab = id; setThickSlabGap = id; setThickSlabMode = id; }; 
+            ACTIONS = {
+                axView = id; 
+                setThickSlab = id; 
+                setThickSlabActivated = id; 
+                setThickSlabGap = id; 
+                setThickSlabMode = id; 
+            }; 
             CLASS = MPR2DView; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 OpacityPopup = NSPopUpButton; 
+                activatedThickSlab = NSButton; 
                 finalView = PreviewView; 
                 finalViewBlending = PreviewView; 
                 perpendicularView = PreviewView; 
                 sliderThickSlab = NSSlider; 
                 textThickSlab = NSTextField; 
+                thickSlabPopUp = NSPopUpButton; 
             }; 
             SUPERCLASS = NSOpenGLView; 
         }, 

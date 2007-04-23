@@ -157,6 +157,8 @@ enum {
 	
 	IBOutlet NSSlider       *sliderThickSlab;
 	IBOutlet NSTextField	*textThickSlab;
+	IBOutlet NSButton		*activatedThickSlab;
+	IBOutlet NSPopUpButton	*thickSlabPopUp;
 	
 	IBOutlet NSPopUpButton  *OpacityPopup;
 	
@@ -167,6 +169,8 @@ enum {
 	
 	int						fovMaxAxis;
 }
+
+- (IBAction) setThickSlabActivated: (id) sender;
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(void) adjustWLWW: (float) iwl :(float) iww :(NSString*) mode;
 -(void) setCurrentTool:(short) i;

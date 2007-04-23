@@ -1256,24 +1256,27 @@ if( reader)
 	else return (float) thickSlab * [firstObject pixelSpacingX] * thickSlabGap;
 }
 
--(IBAction) setThickSlabMode:(id) sender
+- (IBAction) setThickSlabActivated: (id) sender
 {
-//	BOOL switchVR;
-//	
-//	if(( [sender tag] == 4 || [sender tag] == 5) && ( thickSlabMode == 4 || thickSlabMode == 5)) switchVR = NO;
-//	else switchVR = YES;
-	
-	thickSlabMode = [sender tag];
-	
-	if( thickSlabMode)
+	if( [activatedThickSlab state] == NSOnState)
 	{
+		[self setThickSlabMode: thickSlabPopUp];
 		[sliderThickSlab setEnabled: YES];
 	}
 	else
 	{
+		[self setThickSlabMode: thickSlabPopUp];
 		[sliderThickSlab setEnabled: NO];
 	}
+}
 
+-(IBAction) setThickSlabMode:(id) sender
+{
+	thickSlabMode = [[thickSlabPopUp selectedItem] tag];
+	
+	if([activatedThickSlab state] == NSOffState)
+		thickSlabMode = 0;
+	
 	[finalView setSlab:[self thickSlab]];
 	[perpendicularView setSlab:[self thickSlab]];
 	[[[[self window] windowController] originalView] setSlab:[self thickSlab]];

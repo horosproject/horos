@@ -4185,11 +4185,11 @@ static ViewerController *draggedController = 0L;
 	}
 	
 	[subCtrlOnOff setState: NSOffState];
-	[popFusion selectItemAtIndex:0];
 	[convPopup selectItemAtIndex:0];
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
+	[activatedFusion setState: NSOffState];
 
 	[movieRateSlider setEnabled: NO];
 	[moviePosSlider setEnabled: NO];
@@ -5578,7 +5578,6 @@ static ViewerController *draggedController = 0L;
 {
 	int previousFusion = [popFusion selectedTag];
 	[self setFusionMode: 0];
-	[popFusion selectItemAtIndex:0];
 	
 	[imageView setFlippedData: ![imageView flippedData]];
 	[imageView setIndex: [pixList[ 0] count] -1 -[imageView curImage]];
@@ -6942,10 +6941,12 @@ NSMutableArray		*array;
 	
 	if( m == 0)
 	{
+		[activatedFusion setState: NSOffState];
 		[sliderFusion setEnabled:NO];
 	}
 	else
 	{
+		[activatedFusion setState: NSOnState];
 		[sliderFusion setEnabled:YES];
 	}
 	
@@ -6956,6 +6957,14 @@ NSMutableArray		*array;
 	[imageView setWLWW:iwl :iww];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"recomputeROI" object:self userInfo: 0L];
+}
+
+- (void) activateFusion:(id) sender
+{
+	if( [sender state] == NSOffState)
+		[self setFusionMode: 0];
+	else
+		[self setFusionMode: [[popFusion selectedItem] tag]];
 }
 
 - (void) popFusionAction:(id) sender
@@ -12464,6 +12473,7 @@ int i,j,l;
 	[stacksFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"stackThickness"]];
 	[sliderFusion setEnabled:NO];
+	[activatedFusion setState: NSOffState];
 
 	[imageView setDCM:pixList[0] :fileList[0] :roiList[0] :0 :'i' :YES];	//[pixList[0] count]/2
 	[imageView setIndexWithReset: 0 :YES];	//[pixList[0] count]/2
@@ -13331,7 +13341,6 @@ long i;
 	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 	int i;
 	[self setFusionMode: 0];
-	[popFusion selectItemAtIndex:0];
 	MPR2DController *		viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];			
 	for( i = 1; i < maxMovieIndex; i++)
 	{
@@ -13370,7 +13379,6 @@ long i;
 			/*
 			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 			[self setFusionMode: 0];
-			[popFusion selectItemAtIndex:0];
 			
 			
 			viewer = [[MPR2DController alloc] initWithPix:pixList[0] :fileList[0] :volumeData[0] :blendingController :self];
@@ -13401,7 +13409,6 @@ long i;
 	[self clear8bitRepresentations];
 	// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 	[self setFusionMode: 0];
-	[popFusion selectItemAtIndex:0];
 	if( blendingController)
 	{
 		viewer = [appController FindViewer :@"PETCT" :pixList[0]];
@@ -13500,7 +13507,6 @@ long i;
 		{
 			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 			[self setFusionMode: 0];
-			[popFusion selectItemAtIndex:0];
 			
 			if( blendingController)
 			{
@@ -13588,7 +13594,6 @@ long i;
 		return viewer;
 		
 	[self setFusionMode: 0];
-	[popFusion selectItemAtIndex:0];
 			
 	viewer = [[EndoscopyViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :blendingController : self];
 	return viewer;
@@ -13625,7 +13630,6 @@ long i;
 		{
 			// TURN OFF Thick Slab of current window... Reason? SPEEEEED !
 			//[self setFusionMode: 0];
-			//[popFusion selectItemAtIndex:0];
 			
 			viewer = [self openEndoscopyViewer];
 			[viewer showWindow:self];

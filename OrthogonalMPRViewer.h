@@ -35,6 +35,8 @@
 
 	IBOutlet NSTextField				*thickSlabTextField;
 	IBOutlet NSSlider					*thickSlabSlider;
+	IBOutlet NSButton					*thickSlabActivated;
+	IBOutlet NSPopUpButton				*thickSlabPopup;
 	
 	IBOutlet NSWindow					*dcmExportWindow;
 	IBOutlet NSMatrix					*dcmSelection, *dcmFormat;
@@ -78,6 +80,7 @@
 // Thick Slab
 -(IBAction) setThickSlabMode : (id) sender;
 -(IBAction) setThickSlab : (id) sender;
+-(IBAction) activateThickSlab : (id) sender;
 
 // NSSplitView Control
 - (void) adjustSplitView;

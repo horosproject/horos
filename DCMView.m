@@ -4613,7 +4613,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
     blendingFactor = 0.5;
 	
-    int swap = 1;  // LIMIT SPEED TO VBL if swap == 1
+    long swap = 1;  // LIMIT SPEED TO VBL if swap == 1
 	[[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     
 	[self FindMinimumOpenGLCapabilities];
@@ -5241,7 +5241,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 -(void) FindMinimumOpenGLCapabilities
 {
-    int deviceMaxTextureSize = 0, NPOTDMaxTextureSize = 0;
+    GLint deviceMaxTextureSize = 0, NPOTDMaxTextureSize = 0;
     
     // init desired caps to max values
     f_ext_texture_rectangle = YES;
@@ -5539,14 +5539,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( QuartzExtreme)		// ACTIVATE
 		{
-			int negativeOne = -1;
+			long negativeOne = -1;
 			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
 			[[self window] setOpaque:NO];
 			[[self window] setAlphaValue:.999f];
 		}
 		else					// DE-ACTIVATE
 		{
-			int negativeOne = 1;
+			long negativeOne = 1;
 			[[self openGLContext] setValues:&negativeOne forParameter:NSOpenGLCPSurfaceOrder];
 			[[self window] setOpaque:YES];
 			[[self window] setAlphaValue:1.0f];
@@ -9144,7 +9144,8 @@ BOOL	lowRes = NO;
 
 
 
-- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect{
+- (void)drawImage:(NSImage *)image inBounds:(NSRect)rect
+{
     // We synchronise to make sure we're not drawing in two threads
     // simultaneously.
    

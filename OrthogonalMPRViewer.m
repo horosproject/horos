@@ -163,6 +163,8 @@ NSString * documentsDirectory();
 {
 	NSLog(@"OrthogonalMPRViewer dealloc");
 	
+	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey:@"stackThicknessOrthoMPR"];
+	
 	[curWLWWMenu release];
 	[curCLUTMenu release];
 	[viewer release];
@@ -422,10 +424,21 @@ NSString * documentsDirectory();
 #pragma mark-
 #pragma mark Thick Slab
 
+- (IBAction) activateThickSlab : (id) sender
+{
+	if( [thickSlabActivated state] == NSOnState)
+	{
+		[self setThickSlabMode: thickSlabPopup];
+	}
+	else
+	{
+		[self setThickSlabMode: thickSlabPopup];
+	}
+}
+
 -(IBAction) setThickSlabMode : (id) sender
 {
-//	NSLog(@"[[sender selectedItem] tag] : %d", [[sender selectedItem] tag]);
-	if( [[sender selectedItem] tag] == 0)
+	if( [thickSlabActivated state] == NSOffState)
 	{
 		[thickSlabSlider setEnabled:NO];
 		[controller setThickSlab: 0];

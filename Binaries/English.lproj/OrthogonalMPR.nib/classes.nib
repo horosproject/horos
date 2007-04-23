@@ -42,6 +42,7 @@
         {
             ACTIONS = {
                 MoviePlayStop = id; 
+                activateThickSlab = id; 
                 blendingPropagateOriginal = id; 
                 blendingPropagateX = id; 
                 blendingPropagateY = id; 
@@ -83,6 +84,8 @@
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
                 splitView = NSSplitView; 
+                thickSlabActivated = NSButton; 
+                thickSlabPopup = NSPopUpButton; 
                 thickSlabSlider = NSSlider; 
                 thickSlabTextField = NSTextField; 
                 toolsMatrix = NSMatrix; 

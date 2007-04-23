@@ -232,6 +232,7 @@ enum
 	
 	IBOutlet NSTextField    *stacksFusion;
 	IBOutlet NSSlider       *sliderFusion;
+	IBOutlet NSButton		*activatedFusion;
 	IBOutlet NSPopUpButton  *popFusion, *popupRoi, *ReconstructionRoi;
 	
 	IBOutlet NSMatrix		*buttonToolMatrix;
@@ -370,6 +371,8 @@ enum
 - (void) addToUndoQueue:(NSString*) string;
 - (id) prepareObjectForUndo:(NSString*) string;
 
+- (void)bringToFrontROI:(ROI*)roi;
+- (void) activateFusion:(id) sender;
 - (void) copySettingsToOthers: (id)sender;
 - (void) setPostprocessed:(BOOL) v;
 - (BOOL) postprocessed;
@@ -387,7 +390,7 @@ enum
 - (void)addRoiFromFullStackBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff withName:(NSString*)name;
 - (void)addPlainRoiToCurrentSliceFromBuffer:(unsigned char*)buff forSpecificValue:(unsigned char)value withColor:(RGBColor)aColor withName:(NSString*)name;
-- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image imageWhenSelected:(NSImage*)imageWhenSelected referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
+- (ROI*)addLayerRoiToCurrentSliceWithImage:(NSImage*)image referenceFilePath:(NSString*)path layerPixelSpacingX:(float)layerPixelSpacingX layerPixelSpacingY:(float)layerPixelSpacingY;
 - (ROI*)createLayerROIFromROI:(ROI*)roi;
 - (void)createLayerROIFromSelectedROI;
 - (IBAction)createLayerROIFromSelectedROI:(id)sender;
