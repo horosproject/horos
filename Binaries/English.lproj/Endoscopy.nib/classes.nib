@@ -18,7 +18,13 @@
             SUPERCLASS = NSOpenGLView; 
         }, 
         {CLASS = EndoscopyMPRView; LANGUAGE = ObjC; SUPERCLASS = OrthogonalMPRView; }, 
-        {CLASS = EndoscopyVRController; LANGUAGE = ObjC; SUPERCLASS = VRController; }, 
+        {
+            ACTIONS = {applyShading = id; }; 
+            CLASS = EndoscopyVRController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {shadingPanel = NSPanel; shadingsPresetsController = NSArrayController; }; 
+            SUPERCLASS = VRController; 
+        }, 
         {CLASS = EndoscopyVRView; LANGUAGE = ObjC; SUPERCLASS = VRView; }, 
         {
             ACTIONS = {
@@ -74,6 +80,11 @@
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = OrthogonalMPRView; LANGUAGE = ObjC; SUPERCLASS = DCMView; }, 
+        {
+            CLASS = ShadingArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
         {
             ACTIONS = {
                 ApplyCLUT = id; 
