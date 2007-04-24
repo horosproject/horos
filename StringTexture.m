@@ -21,7 +21,8 @@
 
 - (void) deleteTexture
 {
-	if (texName && cgl_ctx) {
+	if (texName && cgl_ctx)
+	{
 		(*cgl_ctx->disp.delete_textures)(cgl_ctx->rend, 1, &texName);
 		texName = 0; // ensure it is zeroed for failure cases
 		cgl_ctx = 0;
@@ -170,7 +171,6 @@
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 0);
-		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
 	} else
 		NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
@@ -217,6 +217,7 @@
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
 	}
+	[self genTexture];
 }
 
 - (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
@@ -224,6 +225,7 @@
 	[self deleteTexture];
 	frameSize = size;
 	staticFrame = YES;
+	[self genTexture];
 }
 
 - (void) useDynamicFrame
@@ -233,6 +235,7 @@
 		staticFrame = NO;
 		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
 		frameSize.height = 0.0f;
+		[self genTexture];
 	}
 }
 
@@ -246,6 +249,7 @@
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
 	}
+	[self genTexture];
 }
 
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
@@ -259,6 +263,7 @@
 	[color retain];
 	[textColor release];
 	textColor = color;
+	[self genTexture];
 }
 
 - (void) setBoxColor:(NSColor *)color // set default text color
@@ -267,6 +272,7 @@
 	[color retain];
 	[boxColor release];
 	boxColor = color;
+	[self genTexture];
 }
 
 - (void) setBorderColor:(NSColor *)color // set default text color
@@ -275,6 +281,7 @@
 	[color retain];
 	[borderColor release];
 	borderColor = color;
+	[self genTexture];
 }
 
 @end

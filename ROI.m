@@ -2952,8 +2952,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				glEnd();
 			}
 			
-//			glLineWidth(1.0);
-			
+			glLineWidth(1.0);
 			
 			NSPoint tPt = [self lowerRightPoint];
 			tPt.x = (tPt.x - offsetx)*scaleValue  - rect.size.width/2;		tPt.y = (tPt.y - offsety)*scaleValue - rect.size.height/2;
@@ -2967,11 +2966,12 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
+			if( stringTex == 0L) [self setName: name];
+			
 			glColor4f (0, 0, 0, opacity);
 			[stringTex drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1)];
 			
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			if( stringTex == 0L) [self setName: name];
 			[stringTex drawAtPoint:tPt];
 			
 			glDisable (GL_TEXTURE_RECTANGLE_EXT);

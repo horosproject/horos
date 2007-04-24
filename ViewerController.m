@@ -1199,7 +1199,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			[self checkEverythingLoaded];
 			[self computeInterval];
-			[self setFusionMode: previousFusion];
+			if( [activatedFusion state] == NSOnState)
+				[self setFusionMode: previousFusion];
 			[popFusion selectItemWithTag:previousFusion];
 		}
 		
@@ -5586,7 +5587,9 @@ static ViewerController *draggedController = 0L;
 	
 	[imageView sendSyncMessage:1];
 	
-	[self setFusionMode: previousFusion];
+	if( [activatedFusion state] == NSOnState)
+		[self setFusionMode: previousFusion];
+	
 	[popFusion selectItemWithTag:previousFusion];
 }
 
