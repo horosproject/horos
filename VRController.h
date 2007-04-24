@@ -107,7 +107,7 @@
 	
 	IBOutlet NSPanel			*shadingPanel;
 	IBOutlet NSArrayController	*shadingsPresetsController;
-	NSMutableArray				*shadingsPresets;
+	//NSMutableArray				*shadingsPresets;
 	BOOL						shadingEditable;
 }
 
@@ -170,7 +170,6 @@
 - (float) blendingMaximumValue;
 - (FlyThruController *) flyThruController;
 - (IBAction) flyThruControllerInit:(id) sender;
-- (IBAction) addShading:(id) sender;
 - (IBAction) applyShading:(id) sender;
 - (void) findShadingPreset:(id) sender;
 

@@ -947,8 +947,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	long i;
 	
 	[shadingPanel orderOut: self];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:shadingsPresets forKey:@"shadingsPresets"];
+
 	
     NSLog(@"Dealloc VRController");
 	
@@ -988,7 +987,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[viewer2D release];
 	[roiVolumes release];
 	[_renderingMode release];
-	[shadingsPresets release];
 	[super dealloc];
 }
 
@@ -1123,28 +1121,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	}
 
 }
-- (NSMutableArray*) shadingsPresets
-{
-	if( shadingsPresets == 0L)
-	{
-		NSArray	*saved = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
-		
-		shadingsPresets = [[NSMutableArray array] retain];
-	
-		int i;
-		for( i = 0; i < [saved count] ; i++)
-		{
-			[shadingsPresets addObject: [NSMutableDictionary dictionaryWithDictionary: [saved objectAtIndex: i]]];
-		}
-	}
-	
-	if( [shadingsPresets count] <= 0)
-	{
-		[self addShading: self];
-	}
-	
-	return shadingsPresets;
-}
+
 
 - (IBAction) applyShading:(id) sender
 {
@@ -1167,45 +1144,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 		[view setNeedsDisplay: YES];
 	}
-	
-	[[NSUserDefaults standardUserDefaults] setObject:shadingsPresets forKey:@"shadingsPresets"];
+
 }
 
-- (IBAction) addShading:(id) sender
-{
-	NSMutableDictionary *shading;
-	
-	if( [shadingsPresets count] > 0)
-	{
-		shading = [NSMutableDictionary dictionaryWithDictionary:[[shadingsPresetsController selectedObjects] lastObject]];
-		[shading setValue: [NSString stringWithFormat: @"Preset %d", [shadingsPresets count]+1] forKey: @"name"];
-	}
-	else
-	{
-		shading = [NSMutableDictionary dictionary];
-	
-		if( [shadingsPresets count] == 0) [shading setValue: @"Default" forKey: @"name"];
-		else [shading setValue: [NSString stringWithFormat: @"Preset %d", [shadingsPresets count]+1] forKey: @"name"];
-		[shading setValue: @"0.15" forKey: @"ambient"];
-		[shading setValue: @"0.9" forKey: @"diffuse"];
-		[shading setValue: @"0.3" forKey: @"specular"];
-		[shading setValue: @"15" forKey: @"specularPower"];
-	}
-	[self willChangeValueForKey:@"shadingsPresets"];
-	[shadingsPresets addObject: shading];
-	[self didChangeValueForKey:@"shadingsPresets"];
-	
-	[shadingsPresetsController setSelectedObjects: [NSArray arrayWithObject: shading]];
-	
-	[self applyShading: self];
-	
-	if( shadingEditable == NO)
-	{
-		[self willChangeValueForKey: @"shadingEditable"];
-		shadingEditable = !shadingEditable;
-		[self didChangeValueForKey: @"shadingEditable"];
-	}
-}
+
 
 - (void) findShadingPreset:(id) sender
 {

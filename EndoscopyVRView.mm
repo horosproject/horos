@@ -31,4 +31,8 @@
 -(void) setViewSizeToMatrix3DExport
 {
 }
+
+- (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower{
+	[super setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower];
+}
 @end

@@ -27,6 +27,7 @@ MODIFICATION HISTORY
 #import "DCMView.h"
 #import "ROI.h"
 
+
 extern NSString * documentsDirectory();
 
 @implementation EndoscopyVRController
@@ -255,9 +256,10 @@ extern NSString * documentsDirectory();
 	if( [viewer2D postprocessed] == NO)
 		[dict writeToFile:str atomically:YES];
 }
-
--(void) load3DState:(BOOL) load
+/*
+-(void) load3DState
 {
+	NSLog (@"Load Endoscopy 3d State");
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
 	long			i;
@@ -273,25 +275,35 @@ extern NSString * documentsDirectory();
 	if( [viewer2D postprocessed]) dict = 0L;
 	
 	[view set3DStateDictionary:dict];
-	
+	NSLog(@"3d Dict: %@", dict);
 	if(dict==nil)
 	{
-		[self setWLWW: -500 : 600];
+		[self setWLWW: -300 : 700];
 	}
 	
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
-	else [self ApplyCLUTString:@"VR Muscles-Bones"];
+	else [self ApplyCLUTString:@"Endoscopy"];
 	
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-	else [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];
+	else [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Table", nil)];
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
 	else [shadingCheck setState: NSOffState];
 	
-	float ambient, diffuse, specular, specularpower;
-	
+	float ambient = 0.12;
+	float diffuse = 0.62;
+	float specular = 0.73;
+	float specularpower = 1.0;
+	//[view setShadingValues:0.12 :0.62 :0.73 :50.0];
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
+	NSLog([NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]);
 	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
 }
+*/
+/*
+- (IBAction) editShadingValues:(id) sender{
+	[super  editShadingValues:(id) sender];
+}
+*/
 
 @end

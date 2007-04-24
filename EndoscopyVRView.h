@@ -14,4 +14,6 @@
 
 }
 
+- (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower;
+
 @end

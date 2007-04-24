@@ -451,6 +451,36 @@ static NSString *hostName = @"";
 		[clutValues setObject:aCLUTFilter forKey:@"B/W Inverse"];
 	}
 	
+		{
+		NSMutableDictionary *aCLUTFilter = [NSMutableDictionary dictionary];
+		NSMutableArray		*rArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*gArray = [NSMutableArray arrayWithCapacity:0];
+		NSMutableArray		*bArray = [NSMutableArray arrayWithCapacity:0];
+		for( i = 0; i < 256; i++)  {
+			float ratio = i/255.0;
+			[rArray addObject: [NSNumber numberWithLong:(255 * (0.9 + ratio))]];
+			[gArray addObject: [NSNumber numberWithLong:(255 * (0.7 - (0.2 * ratio)))]];
+			[bArray addObject: [NSNumber numberWithLong:(255 * (0.8 - (0.3 * ratio)))]];
+		}
+		[aCLUTFilter setObject:rArray forKey:@"Red"];
+		[aCLUTFilter setObject:gArray forKey:@"Green"];
+		[aCLUTFilter setObject:bArray forKey:@"Blue"];
+		
+		// Points & Colors
+		NSMutableArray *colors = [NSMutableArray arrayWithCapacity:0], *points = [NSMutableArray arrayWithCapacity:0];
+		[points addObject:[NSNumber numberWithLong: 0]];
+		[points addObject:[NSNumber numberWithLong: 255]];
+		
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 0.9], [NSNumber numberWithFloat: 0.7], [NSNumber numberWithFloat: 0.8], 0L]];
+		[colors addObject:[NSArray arrayWithObjects: [NSNumber numberWithFloat: 1.0], [NSNumber numberWithFloat: 0.5], [NSNumber numberWithFloat: 0.5], 0L]];
+
+		
+		[aCLUTFilter setObject:colors forKey:@"Colors"];
+		[aCLUTFilter setObject:points forKey:@"Points"];
+		
+		[clutValues setObject:aCLUTFilter forKey:@"Endoscopy"];
+	}
+	
 	[self addCLUT: @"VR Muscles-Bones"  dictionary: clutValues];
 	[self addCLUT: @"VR Bones"  dictionary: clutValues];
 	[self addCLUT: @"VR Red Vessels"  dictionary: clutValues];
@@ -548,6 +578,14 @@ static NSString *hostName = @"";
 	[shading setValue: @"0.24" forKey: @"diffuse"];
 	[shading setValue: @"1.17" forKey: @"specular"];
 	[shading setValue: @"6.98" forKey: @"specularPower"];
+	[presets addObject: shading];
+	
+	shading = [NSMutableDictionary dictionary];
+	[shading setValue: @"Endoscopy" forKey: @"name"];
+	[shading setValue: @"0.12" forKey: @"ambient"];
+	[shading setValue: @"0.64" forKey: @"diffuse"];
+	[shading setValue: @"0.73" forKey: @"specular"];
+	[shading setValue: @"50" forKey: @"specularPower"];
 	[presets addObject: shading];
 	
 	[defaultValues setObject:presets forKey:@"shadingsPresets"];
