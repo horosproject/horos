@@ -116,6 +116,8 @@
 
 	[[PluginManager alloc] discoverPlugins];
 	[[PluginManager alloc] setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
+	
+	pluginsNeedToReload = NO;
 }
 
 - (IBAction)loadPlugins:(id)sender;
@@ -125,8 +127,11 @@
 
 - (void)windowWillClose:(NSNotification *)aNotification;
 {
-	[self refreshPluginList];
-	[self loadPlugins];
+	if( pluginsNeedToReload)
+	{
+		[self refreshPluginList];
+		[self loadPlugins];
+	}
 }
 
 - (IBAction)showWindow:(id)sender;
@@ -137,6 +142,8 @@
 
 - (void)refreshPluginList;
 {
+	pluginsNeedToReload = YES;
+	
 	[self willChangeValueForKey:@"plugins"];
 	[plugins removeAllObjects];
 	[plugins addObjectsFromArray:[PluginManager pluginsList]];

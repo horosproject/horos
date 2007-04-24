@@ -30,6 +30,8 @@
 	IBOutlet NSButton *downloadButton;
 	IBOutlet NSTextField *statusTextField;
 	IBOutlet NSProgressIndicator *statusProgressIndicator;
+	
+	BOOL pluginsNeedToReload;
 }
 
 - (NSMutableArray*)plugins;

@@ -3155,6 +3155,22 @@ public:
 		if( [[[self window] windowController] isKindOfClass:[VRController class]]) rotate = !rotate;
 	}
 	
+	if( c == 't')
+	{
+		NSDate	*now = [NSDate date];
+	
+		NSLog( @"360 degree rotation - 100 images - START");
+		int i;
+		
+		for( i = 0 ; i < 100; i++)
+		{
+			[self Azimuth: 360. / 100.];
+			[self display];
+		}
+		NSLog( @"360 degree rotation - 100 images - END");
+		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
+	}
+	
 	if( c == 27)
 	{
 //		[[[self window] windowController] offFullScreen];
