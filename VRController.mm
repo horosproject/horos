@@ -946,9 +946,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	long i;
 	
-	[shadingPanel orderOut: self];
-
-	
     NSLog(@"Dealloc VRController");
 	
 	[style release];
@@ -1160,14 +1157,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	for( i = 0; i < [shadings count]; i++)
 	{
 		NSDictionary	*dict = [shadings objectAtIndex: i];
-	
 		if( ambient == [[dict valueForKey:@"ambient"] floatValue] && diffuse == [[dict valueForKey:@"diffuse"] floatValue] && specular == [[dict valueForKey:@"specular"] floatValue] && specularpower == [[dict valueForKey:@"specularPower"] floatValue])
 		{
 			[shadingsPresetsController setSelectedObjects: [NSArray arrayWithObject: dict]];
+			break;
 		}
 	}
-	
-	[self applyShading: self];
+	// shading already applied
+	//[self applyShading: self];
 }
 
 - (IBAction) editShadingValues:(id) sender
