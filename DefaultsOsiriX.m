@@ -172,6 +172,9 @@ static NSString *hostName = @"";
 	iww = 350;          iwl = 40;
 	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"CT - Abdomen"];
 	
+	iww = 700;          iwl = -300;
+	[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:iwl], [NSNumber numberWithFloat:iww], 0L] forKey:@"VR - Endoscopy"];
+	
 	[defaultValues setObject:wlwwValues forKey:@"WLWW3"];
 	
 	// ** CONVOLUTION PRESETS
