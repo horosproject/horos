@@ -1591,7 +1591,7 @@ static BOOL initialized = NO;
 				NSMutableDictionary *wlwwValues = [[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
 				if (!wwwl) {
-					[wlwwValues addObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], 0L] forKey:@"VR - Endoscopy"];
+					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], 0L] forKey:@"VR - Endoscopy"];
 					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
 				}
 				[wlwwValues release];
