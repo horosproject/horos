@@ -99,6 +99,10 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = NFHUDButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
+        {CLASS = NFHUDPopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
+        {CLASS = NFHUDSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
+        {CLASS = NFHUDWindow; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             CLASS = OSIWindowController; 
