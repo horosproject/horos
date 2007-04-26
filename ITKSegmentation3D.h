@@ -31,6 +31,8 @@
 + (NSArray*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList;
 - (id) initWith :(NSMutableArray*) pix :(float*) srcPtr  :(long) slice;
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
+// extract lumen for Centerline calculation
+- (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints;
 @end

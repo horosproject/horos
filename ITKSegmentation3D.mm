@@ -29,6 +29,7 @@
 //#include "itkBinaryMask3DMeshSource.h"
 #include "itkVTKImageExport.h"
 #include "itkVTKImageExportBase.h"
+#include "itkDanielssonDistanceMapImageFilter.h"
 
 #include "vtkImageImport.h"
 #include "vtkMarchingSquares.h"
@@ -47,6 +48,7 @@
 #import "DCMView.h"
 #import "ROI.h"
 #import "MyPoint.h"
+#import "OSIPoint3D.h"
 
 #import "ITKSegmentation3D.h"
 
@@ -487,7 +489,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
 	NeighborhoodConnectedFilterType::Pointer neighborhoodFilter = 0L;
 	ConfidenceConnectedFilterType::Pointer confidenceFilter = 0L;
-
+	// connected threshold filter
 	if (algorithmNumber==0 || algorithmNumber==1)
 	{
 		thresholdFilter = ConnectedThresholdFilterType::New();
@@ -520,6 +522,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
 		caster->SetInput(thresholdFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
+	// Neighbor Connected filter
 	else if (algorithmNumber==2)
 	{
 		neighborhoodFilter = NeighborhoodConnectedFilterType::New();
@@ -543,6 +546,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		neighborhoodFilter->SetInput([itkImage itkImporter]->GetOutput());
 		caster->SetInput(neighborhoodFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
+	// Confidence Connected filter
 	else if (algorithmNumber==3)
 	{
 		confidenceFilter = ConfidenceConnectedFilterType::New();
@@ -914,5 +918,64 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	[wait close];
 	[wait release];
 }
+
+
+- (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
+		// Input image
+	typedef float InternalPixelType;
+	typedef itk::Image< InternalPixelType, 3 > InternalImageType; 
+	// Char Output image
+	typedef unsigned char OutputPixelType;
+	typedef itk::Image< OutputPixelType, 3 > OutputImageType;
+	// Type distance Filter
+	typedef itk::DanielssonDistanceMapImageFilter< OutputImageType, OutputImageType > DistanceMapType;
+	DistanceMapType::Pointer distanceMapFilter = DistanceMapType::New();
+
+	
+
+	//FILTER
+	typedef itk::ConnectedThresholdImageFilter< InternalImageType, OutputImageType> ConnectedThresholdFilterType;	
+	ConnectedThresholdFilterType::Pointer thresholdFilter = 0L;
+	
+	// create filter
+	thresholdFilter = ConnectedThresholdFilterType::New();
+			
+	thresholdFilter->SetLower(-2000.0);
+	thresholdFilter->SetUpper(-150.0);
+	thresholdFilter->SetReplaceValue(255);
+	NSEnumerator *enumerator = [seeds objectEnumerator];
+	id seed;
+	//Add seed points. Can use more than 1
+	while (seed = [enumerator nextObject]) {
+		InternalImageType::IndexType  index;
+		index[0] = (long) [seed x];
+		index[1] = (long) [seed y];
+		index[2] = (long) [seed z];
+		thresholdFilter->AddSeed(index);
+	}
+	
+	thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
+	distanceMapFilter->SetInput(thresholdFilter->GetOutput());	// <- FLOAT TO CHAR
+	
+		WaitRendering	*wait = 0L;
+	
+	wait = [[WaitRendering alloc] init: NSLocalizedString(@"Propagating Region...", 0L)];
+	[wait showWindow:self];
+	
+	NSLog(@"RegionGrowing starts...");
+	
+	try
+	{
+		distanceMapFilter->Update();
+	}
+	catch( itk::ExceptionObject & excep )
+	{
+		NSLog(@"RegionGrowing failed...");
+	}
+	
+	NSLog(@"Done...");
+	
+}
+
 
 @end
