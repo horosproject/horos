@@ -3,8 +3,22 @@
 //  OsiriX
 //
 //  Created by Lance Pysher on 4/24/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
+/*=========================================================================
+  Program:   OsiriX
+
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - GPL
+  
+  See http://homepage.mac.com/rossetantoine/osirix/copyright.html for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+=========================================================================*/
+
+
+
 
 #import "ShadingArrayController.h"
 
@@ -27,7 +41,6 @@
 - (void)addObject:(id)object
 {
 	NSDictionary *previous = [[self selectedObjects] lastObject];
-	NSLog(@"previous Shading settings:\n%@", previous);
 	int count = [[self content] count];
 	
 	if( count > 0)

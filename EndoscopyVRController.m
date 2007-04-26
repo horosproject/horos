@@ -252,11 +252,13 @@ extern NSString * documentsDirectory();
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
 	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
+	[dict setObject:[[shadingsPresetsController selection] valueForKey:@"name"]  forKey:@"shading"];
 	
 	if( [viewer2D postprocessed] == NO)
 		[dict writeToFile:str atomically:YES];
 }
-/*
+
+
 -(void) load3DState
 {
 	NSLog (@"Load Endoscopy 3d State");
@@ -278,14 +280,27 @@ extern NSString * documentsDirectory();
 	NSLog(@"3d Dict: %@", dict);
 	if(dict==nil)
 	{
-		[self setWLWW: -300 : 700];
+		[self applyWLWWForString:@"VR - Endoscopy"];
 	}
 	
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
 	else [self ApplyCLUTString:@"Endoscopy"];
 	
-	if( [dict objectForKey:@"CLUTName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
+	if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
 	else [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Table", nil)];
+	
+	NSString *shadingName = [dict objectForKey:@"shading"];
+	if (!shadingName)
+		shadingName = @"Endoscopy";
+
+	NSEnumerator *enumerator = [[shadingsPresetsController arrangedObjects] objectEnumerator];
+	NSDictionary *shading;
+	while (shading = [enumerator nextObject]) {
+		if ([[shading valueForKey:@"name"] isEqualToString:shadingName]) {
+			[shadingsPresetsController setSelectedObjects:[NSArray arrayWithObject:shading]];
+			[self applyShading:nil];
+		}
+	}
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
 	else [shadingCheck setState: NSOffState];
@@ -299,11 +314,6 @@ extern NSString * documentsDirectory();
 	NSLog([NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]);
 	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
 }
-*/
-/*
-- (IBAction) editShadingValues:(id) sender{
-	[super  editShadingValues:(id) sender];
-}
-*/
+
 
 @end
