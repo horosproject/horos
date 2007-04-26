@@ -10,10 +10,12 @@
 
 
 @interface ShadingArrayController : NSArrayController {
-	BOOL _enableEditing;
+	BOOL				_enableEditing;
+	NSWindowController	*winController;
 }
 
 - (BOOL)enableEditing;
 - (void)setEnableEditing:(BOOL)enable;
+- (void)setWindowController:(NSWindowController*) ctrl;
 
 @end

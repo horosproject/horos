@@ -427,6 +427,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[[self window] setFrameAutosaveName:@"3D Panel"];
 		[[self window] setFrameUsingName:@"3D Panel"];
 	}
+	
+	[shadingsPresetsController setWindowController: self];
 }
 
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
@@ -1119,7 +1121,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 }
 
-
 - (IBAction) applyShading:(id) sender
 {
 	NSDictionary	*dict = [[shadingsPresetsController selectedObjects] lastObject];
@@ -1141,10 +1142,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 		[view setNeedsDisplay: YES];
 	}
-
 }
-
-
 
 - (void) findShadingPreset:(id) sender
 {

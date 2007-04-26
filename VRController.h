@@ -20,6 +20,7 @@
 #import "ColorTransferView.h"
 #import "ViewerController.h"
 #import "Window3DController.h"
+#import "ShadingArrayController.h"
 
 // Fly Thru
 #import "FlyThruController.h"
@@ -105,10 +106,9 @@
 	IBOutlet NSDrawer		*clutOpacityDrawer;
 	IBOutlet CLUTOpacityView *clutOpacityView;
 	
-	IBOutlet NSPanel			*shadingPanel;
-	IBOutlet NSArrayController	*shadingsPresetsController;
-	//NSMutableArray				*shadingsPresets;
-	BOOL						shadingEditable;
+	IBOutlet NSPanel				*shadingPanel;
+	IBOutlet ShadingArrayController	*shadingsPresetsController;
+	BOOL							shadingEditable;
 }
 
 - (IBAction) applyConvolution:(id) sender;

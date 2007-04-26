@@ -16,6 +16,14 @@
 	[super add:sender];
 }
 
+- (IBAction)remove:(id)sender{
+	[super remove:sender];
+	
+	if( [[self content] count] == 0) [self add: self];
+	
+	[self setSelectionIndex: 0];
+}
+
 - (void)addObject:(id)object
 {
 	NSDictionary *previous = [[self selectedObjects] lastObject];
@@ -32,8 +40,7 @@
 	}
 	else
 	{
-		if( count == 0) [object setValue: NSLocalizedString(@"Default", nil) forKey: @"name"];
-		else [object setValue: [NSString stringWithFormat: @"%@ %d", NSLocalizedString(@"Preset", nil), count + 1] forKey: @"name"];
+		[object setValue: NSLocalizedString(@"Default", nil) forKey: @"name"];
 		[object setValue: @"0.15" forKey: @"ambient"];
 		[object setValue: @"0.9" forKey: @"diffuse"];
 		[object setValue: @"0.3" forKey: @"specular"];
@@ -41,8 +48,13 @@
 	}
 	
 	[super addObject:object];
+	
 	[self setSelectionIndex:[[self arrangedObjects] indexOfObject:object]];
-		
+}
+
+- (void)setWindowController:(NSWindowController*) ctrl;
+{
+	winController = ctrl;
 }
 
 - (BOOL)enableEditing{
@@ -53,9 +65,29 @@
 	_enableEditing = enable;
 }
 
-- (BOOL)setSelectionIndex:(unsigned int)index{
-	NSLog(@"selection index: %d", index);
-	return [super setSelectionIndex:(unsigned int)index];
+- (BOOL)setSelectionIndex:(unsigned int)index
+{	
+	BOOL v = [super setSelectionIndex:(unsigned int)index];
+	[winController applyShading: self];
+	return v;
+}
+
+- (void) prepareContent
+{
+	NSMutableArray	*array = [NSMutableArray array];
+	NSArray			*src = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
+	
+	int i;
+	for( i = 0 ; i < [src count] ; i++) [array addObject: [[[src objectAtIndex:i] mutableCopy] autorelease]];
+
+	[self setContent: array];
+}
+
+- (void) dealloc
+{
+	[[NSUserDefaults standardUserDefaults] setObject: [self content] forKey:@"shadingsPresets"];
+	
+	[super dealloc];
 }
 
 @end
