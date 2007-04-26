@@ -9806,6 +9806,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	numberOfThreadsForJPEG = 0;
 	
+	switch( tow)
+	{
+		case 'C':
+			[appController growlTitle: NSLocalizedString( @"Files Compression", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to compress %d files", 0L), [array count]] name:@"newfiles"];
+		break;
+		
+		case 'D':
+			[appController growlTitle: NSLocalizedString( @"Files Decompression", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Starting to decompress %d files", 0L), [array count]] name:@"newfiles"];
+		break;
+	}
+	
 	for( i = 0; i < [array count]; i++)
 	{
 		[self waitForAProcessor];
@@ -9838,6 +9849,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 		else [processorsLock unlockWithCondition: 0];
 	}
 	while( finished == NO);
+	
+	switch( tow)
+	{
+		case 'C':
+			[appController growlTitle: NSLocalizedString( @"Files Compression", 0L) description: NSLocalizedString(@"Done !", 0L) name:@"newfiles"];
+		break;
+		
+		case 'D':
+			[appController growlTitle: NSLocalizedString( @"Files Decompression", 0L) description: NSLocalizedString(@"Done !", 0L) name:@"newfiles"];
+		break;
+	}
 	
 	[pool release];
 	
