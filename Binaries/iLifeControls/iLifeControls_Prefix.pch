@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'iLifeControls' target in the 'iLifeControls' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
