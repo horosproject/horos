@@ -24,7 +24,6 @@
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import <OsiriX/DCMSequenceAttribute.h>
 #import "DCMObjectDBImport.h"
-#import "AppController.h"
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 #import <QTKit/QTKit.h>

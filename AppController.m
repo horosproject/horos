@@ -42,10 +42,6 @@ MODIFICATION HISTORY
   
 ****************************************************************/
 
-//#if !__LP64__
-//#import <ILCrashReporter/ILCrashReporter.h>
-//#endif
-
 #import "DOClient.h"
 #import "ToolbarPanel.h"
 #import "AppController.h"
@@ -1679,9 +1675,53 @@ static BOOL initialized = NO;
 	
 }
 
+#pragma mark-
+#pragma mark growl
+
+- (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
+{
+#if !__LP64__
+	
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return;
+	
+	[GrowlApplicationBridge notifyWithTitle: title
+							description: description 
+							notificationName: name
+							iconData: nil
+							priority: 0
+							isSticky: NO
+							clickContext: nil];
+#endif
+}
+
+#if !__LP64__
+- (NSDictionary *) registrationDictionaryForGrowl
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return 0L;
+	
+    NSArray *notifications;
+    notifications = [NSArray arrayWithObjects: @"newfiles", @"delete", @"result", 0L];
+
+    NSDictionary *dict;
+
+    dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                             notifications, GROWL_NOTIFICATIONS_ALL,
+                         notifications, GROWL_NOTIFICATIONS_DEFAULT, nil];
+
+    return (dict);
+}
+#endif
+
+#pragma mark-
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
 	long i;
+	
+	#if !__LP64__
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"] == NO)
+		[GrowlApplicationBridge setGrowlDelegate:self];
+	#endif
 	
 //	DOClient	*client = [[DOClient alloc] init];
 //	[client connect];

@@ -31,6 +31,7 @@ Version 2.3
 
 #import "VRView.h"
 #import "DCMCursor.h"
+#import "AppController.h"
 #import "DCMPix.h"
 #import "DCMView.h"
 #import "ROI.h"
@@ -3169,6 +3170,8 @@ public:
 		}
 		NSLog( @"360 degree rotation - 100 images - END");
 		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
+		
+		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", 0L), -[now timeIntervalSinceNow]] name:@"result"];
 	}
 	
 	if( c == 27)

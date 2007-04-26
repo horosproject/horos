@@ -928,6 +928,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		{
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
+			
+			[appController growlTitle: NSLocalizedString( @"New Files received by the DICOM Listener", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"%d files added to the database", 0L), [addedImagesArray count]] name:@"newfiles"];
 		}
 		
 		[curPatientUID release];
@@ -9142,11 +9144,16 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	if( [copyArray count])
 	{
+		[appController growlTitle: NSLocalizedString( @"Files removing from the database", 0L) description: [NSString stringWithFormat: NSLocalizedString( @"%d files to delete", 0L), [copyArray count]]  name:@"delete"];
+	
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		for( i = 0; i < [copyArray count]; i++)
 			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
 		NSLog(@"delete Queue end");
+
+		[appController growlTitle: NSLocalizedString( @"Files removing from the database", 0L) description: NSLocalizedString( @"Finished", 0L) name:@"delete"];
 	}
+	
 	[deleteInProgress unlock];
 	[pool release];
 }

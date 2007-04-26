@@ -13,7 +13,9 @@
 =========================================================================*/
 
 
-
+#if !__LP64__
+#import <Growl/Growl.h>
+#endif
 
 #import <AppKit/AppKit.h>
 
@@ -32,7 +34,7 @@ enum
 
 NSRect screenFrame();
 
-@interface AppController : NSObject		// <Client>
+@interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -98,7 +100,10 @@ NSRect screenFrame();
 - (IBAction) cancelModal: (id) sender;
 - (IBAction) okModal: (id) sender;
 
-
+#pragma mark-
+#pragma mark growl
+- (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
+- (NSDictionary *) registrationDictionaryForGrowl;
 
 #pragma mark Deprecated. Current Hanging Protocols moveds to Window layout Manager
 - (void) setCurrentHangingProtocolForModality: (NSString*) modality description: (NSString*) description;
