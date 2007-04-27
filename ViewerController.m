@@ -1836,7 +1836,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 					NSRect destRect = savedWindowsFrame;
 					savedWindowsFrame = NSMakeRect(0,0,0,0);
 					
-					[window setFrame: destRect display:NO animate:YES];
+					[window setFrame: destRect display: YES];
 					
 					savedWindowsFrame = frame;
 					
