@@ -93,6 +93,7 @@ Version 2.3.2	JF	Started to classify methods, adding pragma marks, but without c
 #import "ViewerControllerDCMTKCategory.h"
 #import "MenuDictionary.h"
 #import "CalciumScoringWindowController.h"
+#import "EndoscopySegmentationController.h"
 
 #if defined (MAC_OS_X_VERSION_10_5) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
 	#import <InstantMessage/IMService.h>
@@ -14359,6 +14360,23 @@ sourceRef);
 	{
 		CalciumScoringWindowController *calciumScoringWindowController = [[CalciumScoringWindowController alloc] initWithViewer:self];
 		[calciumScoringWindowController showWindow:self];
+	}
+}
+
+- (IBAction)centerline: (id)sender{
+		BOOL	found = NO;
+	NSArray *winList = [NSApp windows];
+	long i;
+	
+	for( i = 0; i < [winList count]; i++)
+	{
+		if( [[[[winList objectAtIndex:i] windowController] windowNibName] isEqualToString:@"CenterlineSegmentation"]) found = YES;
+	}
+	
+	if( !found)
+	{
+		EndoscopySegmentationController *endoscopySegmentationController = [[EndoscopySegmentationController alloc] initWithViewer:self];
+		[endoscopySegmentationController showWindow:self];
 	}
 }
 @end

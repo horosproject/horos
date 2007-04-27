@@ -663,6 +663,10 @@ enum
 - (IBAction)calciumScoring:(id)sender;
 
 #pragma mark-
+#pragma mark Centerline
+- (IBAction)centerline: (id)sender;
+
+#pragma mark-
 #pragma mark ROI Grouping
 - (IBAction)groupSelectedROIs:(id)sender;
 - (IBAction)ungroupSelectedROIs:(id)sender;

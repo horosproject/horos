@@ -931,7 +931,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef itk::DanielssonDistanceMapImageFilter< OutputImageType, OutputImageType > DistanceMapType;
 	DistanceMapType::Pointer distanceMapFilter = DistanceMapType::New();
 
-	
+	NSLog(@"start Endoscopy segmentation");
 
 	//FILTER
 	typedef itk::ConnectedThresholdImageFilter< InternalImageType, OutputImageType> ConnectedThresholdFilterType;	
@@ -946,11 +946,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	NSEnumerator *enumerator = [seeds objectEnumerator];
 	id seed;
 	//Add seed points. Can use more than 1
+	NSLog(@"add seeds");
 	while (seed = [enumerator nextObject]) {
 		InternalImageType::IndexType  index;
 		index[0] = (long) [seed x];
 		index[1] = (long) [seed y];
 		index[2] = (long) [seed z];
+		NSLog(@"x = %d  y = %d  z = %d", index[0], index[1], index[2]);
 		thresholdFilter->AddSeed(index);
 	}
 	
@@ -974,6 +976,127 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	}
 	
 	NSLog(@"Done...");
+	
+	/* 
+	Get 6 and 4 neighbor maxima
+	6 neighbor maxima is largest in 3 dimension
+	4 neighbor maxima are largest in 2 dimensions
+	Need to be larger than a minimum distance ? 10 - 20 pixels
+	0.625  * 20 =  12.5 mm.
+	*/
+	
+	NSLog(@"get max values");
+	unsigned char *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
+	DCMPix *curPix = [[srcViewer imageView] curDCM];
+	long minSize = 15;
+	long x,y,z;
+	long width = (int)[curPix pwidth];
+	long height = (int)[curPix pheight];
+	long depth = (int)[[srcViewer pixList] count];
+	long w = width - minSize;
+	long h = height - minSize;
+	long d = depth - minSize;
+	long maxDistance = 0;
+	long sliceSize = width * height; 
+	NSMutableSet *pointSet = [NSMutableSet set];
+	int i;
+	for (z = minSize; z < d; z++) {
+		
+		long sliceAbove = sliceSize * (z - 1);
+		long sliceBelow = sliceSize * (z + 1);
+		long currentSlice = sliceSize * z;
+		for (y = minSize; y < h; y++) {
+			long rowAbove = width * (y - 1);
+			long rowBelow = width * (y + 1);
+			long currentRow = width * y;
+			for (x = minSize; x < w; x++) {
+				long position = currentSlice + currentRow + x;
+				int distance = buff[position];
+				int isDistanceMaximum = 0;
+				if (position % 1000 == 0)
+					NSLog(@"x= %d y = %d z = %d distance: %d", x, y, z, distance);
+				if (distance > minSize) {
+					// get x pixels
+					if (distance > buff[position - 1] && distance > buff[position + 1])
+						isDistanceMaximum++;
+					// get y pixels
+					if (distance > buff[currentSlice + rowAbove + x] && distance > buff[currentSlice + rowBelow + x])
+						isDistanceMaximum++;
+					// get z pixels
+					if (distance > buff[sliceAbove + currentRow + x] && distance > buff[sliceBelow + currentRow + x])
+						isDistanceMaximum++;
+						
+					// if is Distance Maximum in neighborhood
+					if (isDistanceMaximum > 1) {
+						// add to set
+						[pointSet addObject:[NSNumber numberWithLong:position]];
+						//change maxDistance
+						if (distance > maxDistance)
+							maxDistance = distance;
+					}
+				}
+			}
+		}
+	}
+	NSLog(@"max distance: %d", maxDistance);
+	/*
+	 Create subset of points 
+	 iterate through pointSet looking for points with largest distances;
+	 Decrease maxDistance unit we had enough points 
+	*/
+	NSMutableSet *nodeSet = [NSMutableSet set];
+	int maxCount = 1000;
+	int count = 0;
+	int scalingFactor = 0.5;
+	while (count < maxCount && maxDistance > minSize) {
+		NSEnumerator *enumerator = [pointSet objectEnumerator];
+		NSNumber *position;
+		long distance;
+		while (position = [enumerator nextObject]){
+			long i = [position longValue];
+			long positionSlice = i / sliceSize;
+			long positionRow = (i % sliceSize) / width;
+			long positionIndex = (i % sliceSize) % width;
+			//distance = buff[i];
+			if (buff[[position longValue]] >= maxDistance) {
+				// Add node if is not within the range of previous nodes
+				NSEnumerator *nodeEnumerator = [nodeSet objectEnumerator];
+				NSNumber *node;
+				BOOL isNewNode = YES;
+				while (node = [nodeEnumerator nextObject]) {
+					// calculated distance 
+					long nodePosition = [node longValue];
+					long nodeSlice = nodePosition / sliceSize;
+					long nodeRow = (nodePosition % sliceSize) / width;
+					long nodeIndex = (nodePosition % sliceSize) % width;
+					int nodeDistance = buff[nodePosition];
+					float internodeDistance = sqrt(pow(positionSlice - nodeSlice, 2) + pow(positionRow - nodeRow, 2) + pow(positionIndex - nodeIndex, 2));
+					if (internodeDistance < nodeDistance * scalingFactor) {
+						isNewNode = NO;
+						break;
+					}
+				}
+				if (isNewNode)
+					[nodeSet addObject: position];
+			}
+		}
+		count = [nodeSet count];
+		maxDistance -= 2;
+			
+	}
+	
+	NSLog(@"nodes: %@", nodeSet);
+	
+	/* 
+	Connect nodes
+	Criteria:
+		1. Closest node;
+		2. No distance less than minDistance interevening. Keep in lumen
+	*/
+	
+	[wait close];
+	[wait release];
+	
 	
 }
 

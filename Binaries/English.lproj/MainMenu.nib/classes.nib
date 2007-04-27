@@ -214,6 +214,7 @@
                 barMenu = id; 
                 calciumScoring = id; 
                 calibrate = id; 
+                centerline = id; 
                 clearOffset = id; 
                 closeSelectedBrushROI = id; 
                 coView = id; 
@@ -243,6 +244,7 @@
                 iChatBroadcast = id; 
                 loadSerie = id; 
                 morphoSelectedBrushROI = id; 
+                myAction = id; 
                 nextPlane = id; 
                 openSelectedBrushROI = id; 
                 printDICOM = id; 
