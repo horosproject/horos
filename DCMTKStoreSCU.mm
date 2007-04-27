@@ -36,6 +36,7 @@
 ** $Log: DCMTKStoreSCU.mm,v $
 */
 
+#import "AppController.h"
 #import "DCMTKStoreSCU.h"
 #import "browserController.h"
 #undef verify
@@ -931,7 +932,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	NSException* localException = 0L;
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
+	
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rDestination: %@ - %@", 0L), [_filesToSend count], _calledAET, _hostname] name:@"result"];
+	
 	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];
 	NSMutableArray *paths = [[NSMutableArray alloc] init];
@@ -1560,10 +1563,15 @@ NS_ENDHANDLER
 			[userInfo setObject:@"Incomplete" forKey:@"Message"];
 			_numberErrors = _numberOfFiles - _numberSent;
 			[userInfo setObject:[NSNumber numberWithInt:_numberErrors] forKey:@"ErrorCount"];
+			
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"Errors ! %d of %d files generated errors.", 0L), _numberErrors, _numberOfFiles]  name:@"result"];
 		}
 		else
+		{
 			[userInfo setObject:@"Complete" forKey:@"Message"];
-			
+			[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: NSLocalizedString(@"Done !", 0L) name:@"result"];
+		}
+		
 		[self performSelectorOnMainThread:@selector(updateLogEntry:) withObject:userInfo waitUntilDone:NO];
 	}
 
