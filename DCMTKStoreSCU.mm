@@ -933,7 +933,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rDestination: %@ - %@", 0L), [_filesToSend count], _calledAET, _hostname] name:@"result"];
+	[[AppController sharedAppController] growlTitle: NSLocalizedString( @"DICOM Send", 0L) description: [NSString stringWithFormat: NSLocalizedString(@"%d files to send.\rTo: %@ - %@", 0L), [_filesToSend count], _calledAET, _hostname] name:@"result"];
 	
 	NSString *osiriXFolder = [[BrowserController currentBrowser] documentsDirectory];
 //	NSString *tempFolder = [NSString stringWithFormat:@"/tmp/DICOMSend_%@-%@", _callingAET, [[NSDate date] description]];

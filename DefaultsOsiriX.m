@@ -551,7 +551,7 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"0" forKey:@"points3DcolorGreen"];
 	[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
 	[defaultValues setObject:@"1.0" forKey:@"points3DcolorAlpha"];
-	
+	[defaultValues setObject:@"1.0" forKey:@"MagneticWindows"];
 	
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];

@@ -74,14 +74,12 @@ Version 2.5
 #import "Papyrus3/Papyrus3.h"
 #import "DicomDirParser.h"
 #import "MutableArrayCategory.h"
-#import "DCMStoreSCU.h"
 #import "SmartWindowController.h"
 #import "QueryFilter.h"
 #import "ImageAndTextCell.h"
 #import "SearchWindowController.h"
 #import "Wait.h"
 #import "WaitRendering.h"
-#import "DCMCalendarScript.h"
 #import "DotMacKit/DotMacKit.h"
 #import "BurnerWindowController.h"
 #import "DCMObject.h"
@@ -89,8 +87,6 @@ Version 2.5
 #import "DCMAttributeTag.h"
 #import "DCMPixelDataAttribute.h"
 #import "DCMCalendarDate.h"
-
-
 #import <OsiriX/DCMNetworking.h>
 #import <OsiriX/DCMDirectory.h>
 #import <OsiriX/DCMObject.h>
@@ -106,23 +102,18 @@ Version 2.5
 #import <QTKit/QTKit.h>
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
-
 #import "WindowLayoutManager.h"
 #import "StructuredReportController.h"
-
 #import "QTExportHTMLSummary.h"
-
 #import "BrowserControllerDCMTKCategory.h"
 
 #define DATABASEVERSION @"2.1"
-
 #define DATABASEPATH @"/DATABASE/"
 #define DECOMPRESSIONPATH @"/DECOMPRESSION/"
 #define INCOMINGPATH @"/INCOMING/"
 #define ERRPATH @"/NOT READABLE/"
 #define DATABASEFPATH @"/DATABASE"
 #define DATAFILEPATH @"/Database.sql"
-
 
 enum DCM_CompressionQuality {DCMLosslessQuality, DCMHighQuality, DCMMediumQuality, DCMLowQuality};
 

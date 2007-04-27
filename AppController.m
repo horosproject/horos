@@ -2316,12 +2316,41 @@ static BOOL initialized = NO;
 		if(	[[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]])
 		{
 			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
-			
+				
 			if( [[viewersList lastObject] FullScreenON] ) return;
-			
+				
 			if( [[winList objectAtIndex:i] isKeyWindow]) keyWindow = [viewersList count]-1;
 		}
 	}
+	
+	//order windows from left-top to right-bottom
+	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
+	NSMutableArray	*cResult = [NSMutableArray array];
+	for( i = 0; i < [viewersList count]; i++)
+	{
+		int index = 0;
+		float minX = [[[cWindows objectAtIndex: 0] window] frame].origin.x , minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
+		
+		for( x = 0; x < [cWindows count]; x++)
+		{
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.y > minY)
+			{
+				minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
+				index = x;
+			}
+			
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX)
+			{
+				minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
+				index = x;
+			}
+		}
+		
+		[cResult addObject: [cWindows objectAtIndex: index]];
+		
+		[cWindows removeObjectAtIndex: index];
+	}
+	viewersList = cResult;
 	
 	if( keepSameStudyOnSameScreen)
 	{

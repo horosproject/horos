@@ -309,6 +309,8 @@ enum
 	BOOL					SyncButtonBehaviorIsBetweenStudies;
 	
 	float					resampleRatio;
+	
+	NSRect					savedWindowsFrame;
 }
 
 // Create a new 2D Viewer

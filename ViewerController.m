@@ -1730,6 +1730,116 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self refreshToolbar];
 }
 
+- (void)windowWillMove:(NSNotification *)notification
+{
+	NSLog( @"Will Move");
+	
+	savedWindowsFrame = [[self window] frame];
+}
+
+- (void)windowDidMove:(NSNotification *)notification
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
+	{
+		NSEnumerator *e;
+		NSWindow *theWindow, *window;
+		NSRect frame, myFrame;
+		BOOL hDidChange = NO, vDidChange = NO;
+		
+		float gravity = 30;
+		
+		theWindow = [notification object];
+		myFrame = [theWindow frame];
+		e = [[NSApp windows] objectEnumerator];
+		
+		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
+		
+		//NSLog(@"%d", [[NSApp windows] count]);
+		
+		while (window = [e nextObject])
+		{
+			if (window != theWindow && [window isVisible])
+			{
+				frame = [window frame];
+				/* horizontal magnet */
+				//NSLog(@"%f %f", NSMinX(frame) - NSMinX(myFrame), NSMinY(frame) - NSMinY(myFrame));
+				if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMinX(frame) - NSMinX(myFrame)");
+					myFrame.origin.x = frame.origin.x;
+					hDidChange = YES;
+				}
+				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMinX(frame) - NSMaxX(myFrame)");
+					myFrame.origin.x += NSMinX(frame) - NSMaxX(myFrame);
+					hDidChange = YES;
+				}
+				if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMaxX(frame) - NSMinX(myFrame)");
+					myFrame.origin.x = NSMaxX(frame);
+					hDidChange = YES;
+				}
+				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMaxX(frame) - NSMaxX(myFrame)");
+					myFrame.origin.x += NSMaxX(frame) - NSMaxX(myFrame);
+					hDidChange = YES;
+				}
+				/* vertical magnet */
+				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMinY(frame) - NSMinY(myFrame)");
+					myFrame.origin.y = frame.origin.y;
+					vDidChange = YES;
+				}
+				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMinY(frame) - NSMaxY(myFrame)");
+					myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
+					vDidChange = YES;
+				}
+				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravity)
+				{
+					//NSLog(@"NSMaxY(frame) - NSMinY(myFrame)");
+					myFrame.origin.y = NSMaxY(frame);
+					vDidChange = YES;
+				}
+				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravity)
+				{
+					//NSLog(@"(NSMaxY(frame) - NSMaxY(myFrame)");
+					myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
+					vDidChange = YES;
+				}
+			}
+			//if (v_isChanged && h_isChanged) break;
+		}
+		
+		[theWindow setFrame:myFrame display:YES];
+		
+		// Is the Origin identical? If yes, switch both windows
+		e = [[NSApp windows] objectEnumerator];
+		while (window = [e nextObject])
+		{
+			if (window != theWindow && [window isVisible])
+			{
+				frame = [window frame];
+				
+				if( frame.origin.x == myFrame.origin.x && frame.origin.y == myFrame.origin.y)
+				{
+					[window setFrame: savedWindowsFrame display:YES];
+					[theWindow setFrame: frame display: YES];
+					
+					savedWindowsFrame = frame;
+					
+					return;
+				}
+			}
+		}
+	}
+}
+
 /*
 - (BOOL)windowShouldZoom:(NSWindow *)sender toFrame:(NSRect)newFrame
 {
