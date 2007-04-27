@@ -595,6 +595,7 @@ enum
 - (ROI*)selectedROI;
 - (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
 - (void)selectROI:(ROI*)roi deselectingOther:(BOOL)deselectOther;
+- (void)deselectAllROIs;
 
 #pragma mark-
 #pragma mark Brush ROI Filters
@@ -665,5 +666,8 @@ enum
 #pragma mark ROI Grouping
 - (IBAction)groupSelectedROIs:(id)sender;
 - (IBAction)ungroupSelectedROIs:(id)sender;
+
+
+- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 
 @end
