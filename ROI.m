@@ -901,7 +901,10 @@ GLenum glReportError (void)
 		case tAngle:
 			result = [[points objectAtIndex:1] point];
 		break;
-		
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
@@ -1235,7 +1238,10 @@ GLenum glReportError (void)
 				}
 			}
 			break;
-			
+			//JJCP
+			case tDynAngle:
+			//JJCP
+			case tAxis:
 			case tCPolygon:
 			case tPencil:
 			{
@@ -1350,6 +1356,10 @@ GLenum glReportError (void)
 			case tAngle:
 			case tArrow:
 			case tMesure:
+			//JJCP
+			case tDynAngle:
+			//JJCP
+			case tAxis:
 			case tCPolygon:
 			case tOPolygon:
 			case tPencil:
@@ -1666,7 +1676,15 @@ GLenum glReportError (void)
 			
 			if( ABS([[points objectAtIndex:0] x] - [[points objectAtIndex:1] x]) < 1.0 && ABS([[points objectAtIndex:0] y] - [[points objectAtIndex:1] y]) < 1.0) return NO;
 		break;
-			
+		
+		//JJCP
+		case tDynAngle:
+			if( [points count] < 4) return NO;
+		break;
+		//JJCP
+		case tAxis:
+			if( [points count] < 4) return NO;
+		break;
 	}
 	
 	return YES;
@@ -1693,7 +1711,10 @@ GLenum glReportError (void)
 			case tROI:
 				rect = NSOffsetRect( rect, offset.x, offset.y);
 			break;
-			
+			//JJCP
+			case tDynAngle:
+			//JJCP
+			case tAxis:
 			case tCPolygon:
 			case tOPolygon:
 			case tMesure:
@@ -2278,6 +2299,18 @@ GLenum glReportError (void)
 			
 			if( selectedModifyPoint >= [points count]) selectedModifyPoint = [points count]-1;
 		break;
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
+			if(selectedModifyPoint>3)
+			{
+				if( mode == ROI_selectedModify)
+					[points removeObjectAtIndex: selectedModifyPoint];
+				else [points removeLastObject];			
+				if( selectedModifyPoint >= [points count]) selectedModifyPoint = [points count]-1;
+			}
+		break;
 	}
 
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
@@ -2468,8 +2501,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	BOOL moved;
 	
 	drawRect = [self findAnEmptySpaceForMyRect: drawRect : &moved];
-	
-	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
+	//JJCP
+	if(type == tDynAngle || type == tAxis ||type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
+
+//	if( type == tCPolygon || type == tOPolygon || type == tPencil) moved = YES;
 	
 //	if( fabs( offsetTextBox_x) > 0 || fabs( offsetTextBox_y) > 0) moved = NO;
 	
@@ -2584,8 +2619,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	drawRect.size.width = maxWidth + 8;
 	
 	BOOL moved;
-	
-	if( type == tCPolygon || type == tOPolygon || type == tPencil)
+	//JJCP
+	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
 	{
 		float ymin = [[points objectAtIndex:0] y];
 		
@@ -3247,7 +3282,375 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			}
 		}
 		break;
-		
+		//JJCP
+		case tAxis:
+			//NSLog(@"JJCP--	Plot of ROI tAxis");
+			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+			
+			if( mode == ROI_drawing) 
+				glLineWidth(thickness * 2);
+			else 
+				glLineWidth(thickness);
+			
+			glBegin(GL_LINE_LOOP);
+			
+			for( i = 0; i < [points count]; i++)
+			{				
+				//NSLog(@"JJCP--	tAxis- New point: %f x, %f y",[[points objectAtIndex:i] x],[[points objectAtIndex:i] y]);
+				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+				if(i>2)
+				{
+					//glEnd();
+					break;
+				}
+			}
+			glEnd();
+			if([points count]>3)
+			{
+				for(i=4;i<[points count];i++)
+				{
+					[points removeObjectAtIndex: i];
+				}
+			}
+			//TEXTO
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			if( [self isTextualDataDisplayed])
+			{
+				NSPoint tPt = [self lowerRightPoint];
+				long	line = 0;
+				float   length;
+				
+				if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+				
+				if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+					if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+					
+					if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+						if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+							sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+						else
+							sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+					}
+					else
+						sprintf (line2, "Area: %0.3f pix2", [self Area]);
+					sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+					sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+					
+					length = 0;
+					for( i = 0; i < [points count]-1; i++ ) {
+						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+					}
+					length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
+					
+					if (length < .1)
+						sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+					else
+						sprintf (line5, "Length: %0.3f cm", length);
+				}
+				
+				[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+			}
+				if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+				{
+					NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+					tempPt.y = [curView frame].size.height - tempPt.y ;
+					tempPt = [curView ConvertFromView2GL:tempPt];
+					
+					glColor3f (0.5f, 0.5f, 1.0f);
+					glPointSize( thickness * 3);
+					glBegin( GL_POINTS);
+					for( i = 0; i < [points count]; i++)
+					{
+						if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+						else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+						else glColor3f (0.5f, 0.5f, 1.0f);
+						
+						glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+					}
+					glEnd();
+				}
+				if(1)
+				{	
+					BOOL plot=NO;
+					BOOL plot2=NO;
+					NSPoint tPt0, tPt1, tPt01, tPt2, tPt3, tPt23, tPt03, tPt21;
+					if([points count]>3)
+					{
+						//Calculus of middle point between 0 and 1.
+						tPt0.x = ([[points objectAtIndex: 0] x]- offsetx) * scaleValue;
+						tPt0.y = ([[points objectAtIndex: 0] y]- offsety) * scaleValue;
+						tPt1.x = ([[points objectAtIndex: 1] x]- offsetx) * scaleValue;
+						tPt1.y = ([[points objectAtIndex: 1] y]- offsety) * scaleValue;
+						//Calculus of middle point between 2 and 3.
+						tPt2.x = ([[points objectAtIndex: 2] x]- offsetx) * scaleValue;
+						tPt2.y = ([[points objectAtIndex: 2] y]- offsety) * scaleValue;
+						tPt3.x = ([[points objectAtIndex: 3] x]- offsetx) * scaleValue;
+						tPt3.y = ([[points objectAtIndex: 3] y]- offsety) * scaleValue;
+						plot=YES;
+						plot2=YES;
+					}
+					//else
+					/*
+					 {
+						 tPt0.x=0-offsetx*scaleValue;
+						 tPt0.y=0-offsety*scaleValue;
+						 tPt1.x=0-offsetx*scaleValue;
+						 tPt1.y=0-offsety*scaleValue;
+						 tPt2.x=0-offsetx*scaleValue;
+						 tPt2.y=0-offsety*scaleValue;
+						 tPt3.x=0-offsetx*scaleValue;
+						 tPt3.y=0-offsety*scaleValue;
+						 
+					 }*/
+					//Calcular punto medio entre el punto 0 y 1.
+					tPt01.x  = (tPt1.x+tPt0.x)/2;
+					tPt01.y  = (tPt1.y+tPt0.y)/2;
+					//Calcular punto medio entre el punto 2 y 3.
+					tPt23.x  = (tPt3.x+tPt2.x)/2;
+					tPt23.y  = (tPt3.y+tPt2.y)/2;
+					
+					
+					/*****Line equation p1-p2
+						*
+						* 	// line between p1 and p2
+						*	float a, b; // y = ax+b
+					*	a = (p2.y-p1.y) / (p2.x-p1.x);
+					*	b = p1.y - a * p1.x;
+					*	float y1 = a * point.x + b;
+					*   point.x=(y1-b)/a;
+					*
+						******/
+					//Line 1. Equation
+					float a1,b1,a2,b2;
+					a1=(tPt23.y-tPt01.y)/(tPt23.x-tPt01.x);
+					b1=tPt01.y-a1*tPt01.x;
+					float x1,x2,x3,x4,y1,y2,y3,y4;
+					y1=tPt01.y-125;
+					y2=tPt23.y+125;					
+					x1=(y1-b1)/a1;
+					x2=(y2-b1)/a1;
+					//Line 2. Equation
+					tPt03.x  = (tPt3.x+tPt0.x)/2;
+					tPt03.y  = (tPt3.y+tPt0.y)/2;
+					tPt21.x  = (tPt1.x+tPt2.x)/2;
+					tPt21.y  = (tPt1.y+tPt2.y)/2;
+					a2=(tPt21.y-tPt03.y)/(tPt21.x-tPt03.x);
+					b2=tPt03.y-a2*tPt03.x;
+					x3=tPt03.x-125;
+					x4=tPt21.x+125;
+					y3=a2*x3+b2;
+					y4=a2*x4+b2;
+					if(plot)
+					{
+						glBegin(GL_LINE_STRIP);
+						glColor3f (0.0f, 0.0f, 1.0f);
+						glVertex2f(x1,y1);
+						glVertex2f(x2,y2);
+						//glVertex2f(tPt01.x, tPt01.y);
+						//glVertex2f(tPt23.x, tPt23.y);
+						glEnd();
+						glBegin(GL_LINE_STRIP);
+						glColor3f (1.0f, 0.0f, 0.0f);
+						glVertex2f(x3,y3);
+						glVertex2f(x4,y4);
+						//glVertex2f(tPt03.x, tPt03.y);
+						//glVertex2f(tPt21.x, tPt21.y);
+						glEnd();
+					}
+					if(plot2)
+					{
+						NSPoint p1, p2, p3, p4;
+						p1 = [[points objectAtIndex:0] point];
+						p2 = [[points objectAtIndex:1] point];
+						p3 = [[points objectAtIndex:2] point];
+						p4 = [[points objectAtIndex:3] point];
+						
+						p1.x = (p1.x-offsetx)*scaleValue;
+						p1.y = (p1.y-offsety)*scaleValue;
+						p2.x = (p2.x-offsetx)*scaleValue;
+						p2.y = (p2.y-offsety)*scaleValue;
+						p3.x = (p3.x-offsetx)*scaleValue;
+						p3.y = (p3.y-offsety)*scaleValue;
+						p4.x = (p4.x-offsetx)*scaleValue;
+						p4.y = (p4.y-offsety)*scaleValue;
+						//if(1)
+						{	
+							glEnable(GL_BLEND);
+							glDisable(GL_POLYGON_SMOOTH);
+							glDisable(GL_POINT_SMOOTH);
+							glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+							// inside: fill							
+							glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.25);
+							glBegin(GL_POLYGON);		
+							glVertex2f(p1.x, p1.y);
+							glVertex2f(p2.x, p2.y);
+							glVertex2f(p3.x, p3.y);
+							glVertex2f(p4.x, p4.y);
+							glEnd();
+							
+							// no border
+							
+							/*	glColor4f(color.red / 65535., color.green / 65535., color.blue / 65535., 0.2);						
+							glBegin(GL_LINE_LOOP);
+							glVertex2f(p1.x, p1.y);
+							glVertex2f(p2.x, p2.y);
+							glVertex2f(p3.x, p3.y);
+							glVertex2f(p4.x, p4.y);
+							glEnd();
+							*/	
+							glDisable(GL_BLEND);
+						}											
+					}
+			}			
+			glLineWidth(1.0);
+			glColor3f (1.0f, 1.0f, 1.0f);			
+			break;
+			//JJCP
+		case tDynAngle:
+			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+			
+			if( mode == ROI_drawing) 
+				glLineWidth(thickness * 2);
+			else 
+				glLineWidth(thickness);
+			
+			glBegin(GL_LINE_STRIP);
+			
+			for( i = 0; i < [points count]; i++)
+			{				
+				if(i==1||i==2)
+				{
+					glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., 0.1);
+				}
+				else
+				{
+					glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+				}
+				glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue );
+				if(i>2)
+				{
+					//glEnd();
+					break;
+				}
+			}
+			glEnd();
+			if([points count]>3)
+			{
+				for(i=4;i<[points count];i++)
+				{
+					[points removeObjectAtIndex: i];
+				}
+			}			
+			BOOL plot=NO;
+			BOOL plot2=NO;
+			NSPoint a1,a2,b1,b2;
+			NSPoint a,b,c,d;
+			float angle=0;
+			if([points count]>3)
+			{
+				a1 = [[points objectAtIndex: 0] point];
+				a2 = [[points objectAtIndex: 1] point];
+				b1 = [[points objectAtIndex: 2] point];
+				b2 = [[points objectAtIndex: 3] point];				
+				//plot=YES;
+				//plot2=YES;
+				
+				//Code from Cobb's angle plugin.
+				a = NSMakePoint( a1.x + (a2.x - a1.x)/2, a1.y + (a2.y - a1.y)/2);
+				
+				float slope1 = (a2.y - a1.y) / (a2.x - a1.x);
+				slope1 = -1./slope1;
+				float or1 = a.y - slope1*a.x;
+				
+				float slope2 = (b2.y - b1.y) / (b2.x - b1.x);
+				float or2 = b1.y - slope2*b1.x;
+				
+				float xx = (or2 - or1) / (slope1 - slope2);
+				
+				d = NSMakePoint( xx, or1 + xx*slope1);
+				
+				b = [self ProjectionPointLine: a :b1 :b2];
+				
+				b.x = b.x + (d.x - b.x)/2.;
+				b.y = b.y + (d.y - b.y)/2.;
+				
+				slope2 = -1./slope2;
+				or2 = b.y - slope2*b.x;
+				
+				xx = (or2 - or1) / (slope1 - slope2);
+				
+				c = NSMakePoint( xx, or1 + xx*slope1);
+				
+				//Angle given by b,c,d points
+				angle = [self Angle:b :c :d];
+			}
+			//TEXTO
+			line1[ 0] = 0;		line2[ 0] = 0;	line3[ 0] = 0;		line4[ 0] = 0;	line5[ 0] = 0;
+			if( [self isTextualDataDisplayed])
+			{
+					NSPoint tPt = [self lowerRightPoint];
+					long	line = 0;
+					float   length;
+					
+					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name cString]);
+					
+					if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ROITEXTNAMEONLY"] == NO ) {
+						
+						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+						
+						if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+							if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+								sprintf (line2, "A: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+							else
+								sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+						}
+						else
+							sprintf (line2, "Area: %0.3f pix2", [self Area]);
+						
+						sprintf (line3, "Mean: %0.3f SDev: %0.3f Total: %0.0f", rmean, rdev, rtotal);
+						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+						
+						length = 0;
+						for( i = 0; i < [points count]-1; i++ ) {
+							length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:i+1] point]];
+						}
+						
+						if (length < .1)
+							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+						else
+							sprintf (line5, "Length: %0.3f cm", length);
+					}
+					sprintf (line2, "Angle: %0.2f", angle);
+					sprintf (line3, "Angle 2: %0.2f",360 - angle);
+					sprintf (line4,"");
+					//sprintf (line5,"");
+					[self prepareTextualData:line1 :line2 :line3 :line4 :line5 location:tPt];
+			}
+			//ROI MODE
+			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
+			{
+				NSPoint tempPt = [[[[NSApp currentEvent] window] contentView] convertPoint: [NSEvent mouseLocation] toView: curView];
+				tempPt.y = [curView frame].size.height - tempPt.y ;
+				tempPt = [curView ConvertFromView2GL:tempPt];
+				
+				glColor3f (0.5f, 0.5f, 1.0f);
+				glPointSize( thickness * 3);
+				glBegin( GL_POINTS);
+				for( i = 0; i < [points count]; i++)
+				{
+					if( mode == ROI_selectedModify && i == selectedModifyPoint) glColor3f (1.0f, 0.2f, 0.2f);
+					else if( mode == ROI_drawing && [[points objectAtIndex: i] isNearToPoint: tempPt : scaleValue/thickness :[[curView curDCM] pixelRatio]] == YES) glColor3f (1.0f, 0.0f, 1.0f);
+					else glColor3f (0.5f, 0.5f, 1.0f);
+					
+					glVertex2f( ([[points objectAtIndex: i] x]- offsetx) * scaleValue , ([[points objectAtIndex: i] y]- offsety) * scaleValue);
+				}
+				glEnd();
+			}
+			
+			glLineWidth(1.0);
+			glColor3f (1.0f, 1.0f, 1.0f);
+		break;
+			
 		case tCPolygon:
 		case tOPolygon:
 		case tAngle:
@@ -3455,6 +3858,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		case tOval:
 		case tROI:
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
@@ -3543,6 +3950,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 	switch( type)
 	{
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
 		case tOPolygon:
 		case tCPolygon:
 		case tPencil:

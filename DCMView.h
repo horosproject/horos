@@ -57,7 +57,9 @@ enum
 	tWLBlended,					//  22
 	tRepulsor,					//  23
 	tLayerROI,					//	24
-	tROISelector				//	25
+	tROISelector,				//	25
+	tAxis,						//	26 //JJCP
+	tDynAngle					//	27 //JJCP
 };
 
 extern NSString *pasteBoardOsiriX;

@@ -3556,6 +3556,10 @@ static ViewerController *draggedController = 0L;
 		case tPlain:
 		case tRepulsor:
 		case tROISelector:
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
 			[self setROIToolTag: tag];
 		break;
 		
@@ -7445,6 +7449,8 @@ extern NSString * documentsDirectory();
 		case tPlain:		filename = @"Brush";			break;
 		case tRepulsor:		filename = @"Repulsor";			break;
 		case tROISelector:	filename = @"ROISelector";		break;
+		case tAxis:			filename = @"Axis";				break; //JJCP
+		case tDynAngle:		filename = @"DynamicAngle";		break; //JJCP
 	}
 	
 	return [NSImage imageNamed: filename];

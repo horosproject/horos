@@ -2165,6 +2165,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		case tOval:
 		case tOPolygon:
 		case tCPolygon:
+		//JJCP
+		case tDynAngle:
+		//JJCP
+		case tAxis:
 		case tAngle:
 		case tArrow:
 		case tText:
@@ -2919,7 +2923,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 								case  tOval:
 									roiName = [NSString stringWithString:@"Oval "];
 									break;
-									
+								//JJCP
+								case tDynAngle:
+									roiName = [NSString stringWithString:@"Dynamic Angle "];
+									break;
+								//JJCP
+								case tAxis:
+									roiName = [NSString stringWithString:@"Bone Axis "];
+									break;
 								case tOPolygon:
 								case tCPolygon:
 									roiName = [NSString stringWithString:@"Polygon "];
@@ -3960,6 +3971,14 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	int i, j, k;
 	NSMutableArray *points;
+	
+	//JJCP 
+	if([(ROI*)[curRoiList objectAtIndex:i] type] == tAxis)
+		return;
+	//JJCP
+	if([(ROI*)[curRoiList objectAtIndex:i] type] == tDynAngle)
+		return;
+	
 	for(i=0; i<[curRoiList count]; i++)
 	{
 		points = [[curRoiList objectAtIndex:i] points];
