@@ -2748,7 +2748,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 			[self deleteMouseDownTimer];
 			
-			if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
+			//if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
 			
 			tempPt = [self ConvertFromView2GL:tempPt];
 
@@ -2853,11 +2853,12 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					
 					// Bring the selected ROI to the first position in array
 					ROI	*roi = [[curRoiList objectAtIndex: selected] retain];
-					[curRoiList removeObject: roi];
-					[curRoiList insertObject: roi atIndex: 0];
-					[roi release];
+					[[self windowController] bringToFrontROI:roi];
+//					[curRoiList removeObject: roi];
+//					[curRoiList insertObject: roi atIndex: 0];
+//					[roi release];
 					
-					selected = 0;
+					selected = [curRoiList indexOfObject:roi];//0;
 					
 					long roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :YES];
 					if( roiVal == ROI_sleep) roiVal = [[curRoiList objectAtIndex: selected] clickInROI: tempPt :[curDCM pwidth]/2. :[curDCM pheight]/2. :scaleValue :NO];

@@ -110,6 +110,8 @@ enum
 	
 	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
 	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected together.
+	
+	BOOL			displayTextualData;
 }
 
 // Create a new ROI, needs the current pixel resolution and image origin
@@ -275,5 +277,7 @@ enum
 
 - (void)setIsLayerOpacityConstant:(BOOL)boo;
 - (void)setCanColorizeLayer:(BOOL)boo;
+
+- (BOOL)setDisplayTextualData:(BOOL)boo;
 
 @end

@@ -8061,7 +8061,7 @@ int i,j,l;
 	[theNewROI setName:[NSString stringWithFormat:@"%@ %@", [roi name], NSLocalizedString(@"Layer", nil)]];
 	[theNewROI setIsLayerOpacityConstant:NO];
 	[theNewROI setCanColorizeLayer:YES];
-	[theNewROI loadLayerImageTexture];
+	//[theNewROI loadLayerImageTexture];
 	
 	free(data);
 	free(locations);
@@ -9096,17 +9096,28 @@ int i,j,l;
 		for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
 			[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
 	}
-	// select the ROI
-	[roi setROIMode:ROI_selected];
-	// select the othher grouped ROIs (if any)
-	[self setMode:ROI_selected toROIGroupWithID:[roi groupID]];
 	
-	// bring it to front
-	[self bringToFrontROI:roi];
+	if(roi)
+	{
+		// select the ROI
+		[roi setROIMode:ROI_selected];
+		// select the othher grouped ROIs (if any)
+		[self setMode:ROI_selected toROIGroupWithID:[roi groupID]];
+		
+		// bring it to front
+		[self bringToFrontROI:roi];
+	}
 //	[roi retain];
 //	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] removeObject:roi];
 //	[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] insertObject:roi atIndex:0];
 //	[roi release];
+}
+
+- (void)deselectAllROIs;
+{
+	int i;
+	for(i=0; i<[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] count]; i++)
+		[[[roiList[curMovieIndex] objectAtIndex:[imageView curImage]] objectAtIndex:i] setROIMode:ROI_sleep];
 }
 
 - (void)setSelectedROIsGrouped:(BOOL)grouped;
@@ -11270,8 +11281,12 @@ int i,j,l;
 	[NSApp beginSheet: quicktimeWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-
 - (void) exportDICOMFileInt :(BOOL) screenCapture
+{
+	[self exportDICOMFileInt:screenCapture withName:[dcmSeriesName stringValue]];
+}
+
+- (void) exportDICOMFileInt:(BOOL)screenCapture withName:(NSString*)name;
 {
 	DCMPix			*curPix = [imageView curDCM];
 
@@ -11294,7 +11309,8 @@ int i,j,l;
 		
 		if( [[exportDCM seriesDescription] isEqualToString: [dcmSeriesName stringValue]] == NO)
 		{
-			[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+			//[exportDCM setSeriesDescription: [dcmSeriesName stringValue]];
+			[exportDCM setSeriesDescription: name];
 			[exportDCM setSeriesNumber: 8200 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];
 		}
 		

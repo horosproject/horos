@@ -558,7 +558,7 @@ GLenum glReportError (void)
 		color.green = 0.90*65535.;
 		color.blue = 0.58*65535.;
 		name = [[NSString alloc] initWithString:tName];
-		
+		displayTextualData = YES;
 	}
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	return self;
@@ -660,7 +660,7 @@ GLenum glReportError (void)
 			name = [[NSString alloc] initWithString:@"Unnamed"];
 		}
 		
-		
+		displayTextualData = YES;
     }
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
     return self;
@@ -2473,6 +2473,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (BOOL) isTextualDataDisplayed
 {
+	if(!displayTextualData) return NO;
+	
 	// NO text for Calcium Score
 	if (_displayCalciumScoring)
 		return NO;
@@ -2997,7 +2999,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			glEnable (GL_TEXTURE_RECTANGLE_EXT);
 			
 			glEnable(GL_BLEND);
-			if( opacity > 0.5) opacity = 1.0;
+//			if( opacity > 0.5) opacity = 1.0;
 			if( opacity == 1.0) glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 			else glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
@@ -4251,23 +4253,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (void)loadLayerImageTexture;
 {
-//	NSImage *newImage = layerImage;
-//	if(opacity<1.0)
-//	{
-//		newImage = [[NSImage alloc] initWithSize:[layerImage size]];
-//		[newImage lockFocus];
-//		[layerImage compositeToPoint:NSMakePoint(0.0, 0.0) fromRect:NSMakeRect(0.0, 0.0, [layerImage size].width, [layerImage size].height) operation:NSCompositeCopy fraction:opacity];
-//		[newImage unlockFocus];
-//	}
-//	NSBitmapImageRep *bitmap;
-//	bitmap = [[NSBitmapImageRep alloc] initWithData:[newImage TIFFRepresentation]];
-//	unsigned char *imageBuffer = [bitmap bitmapData];
-
-
-
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
-	
 	
 	unsigned char *imageBuffer = [bitmap bitmapData];
 	
@@ -4282,7 +4269,6 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			argbPtr+=4;
 		}
 	}
-
 
 	if(canColorizeLayer && layerColor)
 	{
@@ -4524,11 +4510,18 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 - (void)setIsLayerOpacityConstant:(BOOL)boo;
 {
 	isLayerOpacityConstant = boo;
+	needsLoadTexture = YES;
 }
 
 - (void)setCanColorizeLayer:(BOOL)boo;
 {
 	canColorizeLayer = boo;
+	needsLoadTexture = YES;
+}
+
+- (BOOL)setDisplayTextualData:(BOOL)boo;
+{
+	displayTextualData = boo;
 }
 
 @end
