@@ -1513,6 +1513,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	NSRect	curRect = [[self window] frame];
 	
+	//To avoid the use of WindowDidMove function - Magnetic windows
+	savedWindowsFrame = NSMakeRect(0,0,0,0);
+	
 	[self setStandardRect:rect];
 	
 	if( NSEqualRects( curRect, rect) == NO)
@@ -1732,21 +1735,19 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillMove:(NSNotification *)notification
 {
-	NSLog( @"Will Move");
-	
 	savedWindowsFrame = [[self window] frame];
 }
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
 	{
 		NSEnumerator *e;
 		NSWindow *theWindow, *window;
 		NSRect frame, myFrame;
 		BOOL hDidChange = NO, vDidChange = NO;
 		
-		float gravity = 30;
+		float gravity = 100;
 		
 		theWindow = [notification object];
 		myFrame = [theWindow frame];
@@ -1758,7 +1759,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		while (window = [e nextObject])
 		{
-			if (window != theWindow && [window isVisible])
+			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
 			{
 				frame = [window frame];
 				/* horizontal magnet */
@@ -1826,10 +1827,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				frame = [window frame];
 				
-				if( frame.origin.x == myFrame.origin.x && frame.origin.y == myFrame.origin.y)
+				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
-					[window setFrame: savedWindowsFrame display:YES];
-					[theWindow setFrame: frame display: YES];
+					[theWindow setFrame: frame display: YES animate:YES];
+					
+					NSRect destRect = savedWindowsFrame;
+					savedWindowsFrame = NSMakeRect(0,0,0,0);
+					
+					[window setFrame: destRect display:YES];
 					
 					savedWindowsFrame = frame;
 					

@@ -2318,8 +2318,6 @@ static BOOL initialized = NO;
 			[viewersList addObject: [[winList objectAtIndex:i] windowController]];
 				
 			if( [[viewersList lastObject] FullScreenON] ) return;
-				
-			if( [[winList objectAtIndex:i] isKeyWindow]) keyWindow = [viewersList count]-1;
 		}
 	}
 	
@@ -2347,10 +2345,14 @@ static BOOL initialized = NO;
 		}
 		
 		[cResult addObject: [cWindows objectAtIndex: index]];
-		
 		[cWindows removeObjectAtIndex: index];
 	}
 	viewersList = cResult;
+	
+	for( i = 0; i < [viewersList count]; i++)
+	{
+		if( [[[viewersList objectAtIndex: i] window] isKeyWindow]) keyWindow = i;
+	}
 	
 	if( keepSameStudyOnSameScreen)
 	{
