@@ -2327,7 +2327,7 @@ static BOOL initialized = NO;
 	for( i = 0; i < [viewersList count]; i++)
 	{
 		int index = 0;
-		float minX = [[[cWindows objectAtIndex: 0] window] frame].origin.x , minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
+		float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
 		
 		for( x = 0; x < [cWindows count]; x++)
 		{
@@ -2336,13 +2336,20 @@ static BOOL initialized = NO;
 				minY  = [[[cWindows objectAtIndex: x] window] frame].origin.y;
 				index = x;
 			}
-			
-			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX)
+		}
+		
+		float minX = [[[cWindows objectAtIndex: index] window] frame].origin.x;
+		
+		for( x = 0; x < [cWindows count]; x++)
+		{
+			if( [[[cWindows objectAtIndex: x] window] frame].origin.x < minX && [[[cWindows objectAtIndex: x] window] frame].origin.y >= minY)
 			{
 				minX = [[[cWindows objectAtIndex: x] window] frame].origin.x;
 				index = x;
 			}
 		}
+		
+		NSLog( @"%f %f", minY, minX);
 		
 		[cResult addObject: [cWindows objectAtIndex: index]];
 		[cWindows removeObjectAtIndex: index];
