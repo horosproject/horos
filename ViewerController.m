@@ -1747,11 +1747,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSRect frame, myFrame;
 		BOOL hDidChange = NO, vDidChange = NO;
 		
-		float gravity = 100;
 		
 		theWindow = [notification object];
 		myFrame = [theWindow frame];
 		e = [[NSApp windows] objectEnumerator];
+		
+		float gravityX = myFrame.size.width/3;
+		float gravityY = myFrame.size.height/3;
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
 		
@@ -1764,50 +1766,50 @@ static volatile int numberOfThreadsForRelisce = 0;
 				frame = [window frame];
 				/* horizontal magnet */
 				//NSLog(@"%f %f", NSMinX(frame) - NSMinX(myFrame), NSMinY(frame) - NSMinY(myFrame));
-				if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravity)
+				if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
 					//NSLog(@"NSMinX(frame) - NSMinX(myFrame)");
 					myFrame.origin.x = frame.origin.x;
 					hDidChange = YES;
 				}
-				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravity)
+				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
 				{
 					//NSLog(@"NSMinX(frame) - NSMaxX(myFrame)");
 					myFrame.origin.x += NSMinX(frame) - NSMaxX(myFrame);
 					hDidChange = YES;
 				}
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravity)
+				if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
 				{
 					//NSLog(@"NSMaxX(frame) - NSMinX(myFrame)");
 					myFrame.origin.x = NSMaxX(frame);
 					hDidChange = YES;
 				}
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravity)
+				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
 				{
 					//NSLog(@"NSMaxX(frame) - NSMaxX(myFrame)");
 					myFrame.origin.x += NSMaxX(frame) - NSMaxX(myFrame);
 					hDidChange = YES;
 				}
 				/* vertical magnet */
-				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravity)
+				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
 				{
 					//NSLog(@"NSMinY(frame) - NSMinY(myFrame)");
 					myFrame.origin.y = frame.origin.y;
 					vDidChange = YES;
 				}
-				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravity)
+				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
 				{
 					//NSLog(@"NSMinY(frame) - NSMaxY(myFrame)");
 					myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
 					vDidChange = YES;
 				}
-				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravity)
+				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
 				{
 					//NSLog(@"NSMaxY(frame) - NSMinY(myFrame)");
 					myFrame.origin.y = NSMaxY(frame);
 					vDidChange = YES;
 				}
-				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravity)
+				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
 				{
 					//NSLog(@"(NSMaxY(frame) - NSMaxY(myFrame)");
 					myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
@@ -1829,12 +1831,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
-					[theWindow setFrame: frame display: YES animate:YES];
+					[theWindow setFrame: frame display: YES];
 					
 					NSRect destRect = savedWindowsFrame;
 					savedWindowsFrame = NSMakeRect(0,0,0,0);
 					
-					[window setFrame: destRect display:YES];
+					[window setFrame: destRect display:NO animate:YES];
 					
 					savedWindowsFrame = frame;
 					
