@@ -1659,7 +1659,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		e = [[NSScreen screens] objectEnumerator];
 		while (screen = [e nextObject])
 		{
-			[rects addObject: [NSValue valueWithRect: [screen frame]]];
+			NSRect frame = [screen visibleFrame];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			
+			[rects addObject: [NSValue valueWithRect: frame]];
 		}
 		
 		e = [rects objectEnumerator];
@@ -1854,7 +1857,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		e = [[NSScreen screens] objectEnumerator];
 		while (screen = [e nextObject])
 		{
-			[rects addObject: [NSValue valueWithRect: [screen frame]]];
+			NSRect frame = [screen visibleFrame];
+			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
+			
+			[rects addObject: [NSValue valueWithRect: frame]];
 		}
 		
 		e = [rects objectEnumerator];
@@ -1922,11 +1928,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
 					dontEnterMagneticFunctions = YES;
-					[theWindow setFrame: frame display: YES];
-					dontEnterMagneticFunctions = NO;
-					
-					dontEnterMagneticFunctions = YES;
 					[window setFrame: savedWindowsFrame display: YES animate:YES];
+					[theWindow setFrame: frame display: YES animate:YES];
 					dontEnterMagneticFunctions = NO;
 					
 					savedWindowsFrame = frame;
