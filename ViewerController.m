@@ -1833,8 +1833,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		theWindow = [notification object];
 		myFrame = [theWindow frame];
 		
-		float gravityX = myFrame.size.width/3;
-		float gravityY = myFrame.size.height/3;
+		float gravityX = myFrame.size.width/4;
+		float gravityY = myFrame.size.height/4;
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
 		
@@ -1908,7 +1908,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		dontEnterMagneticFunctions = YES;
-		[theWindow setFrame:myFrame display:YES];
+		[theWindow setFrame:myFrame display:YES animate:YES];
 		dontEnterMagneticFunctions = NO;
 		
 		// Is the Origin identical? If yes, switch both windows
