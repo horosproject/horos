@@ -1822,7 +1822,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillMove:(NSNotification *)notification
 {
-	savedWindowsFrame = [[self window] frame];
+	if( dontEnterMagneticFunctions == NO)
+		savedWindowsFrame = [[self window] frame];
 }
 
 - (void)windowDidMove:(NSNotification *)notification
@@ -1836,7 +1837,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSScreen		*screen;
 		NSValue			*value;
 		
-		theWindow = [notification object];
+		theWindow = [self window];
 		myFrame = [theWindow frame];
 		
 		float gravityX = myFrame.size.width/4;
@@ -1917,25 +1918,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 		
 		dontEnterMagneticFunctions = YES;
-		[theWindow setFrame:myFrame display:YES animate:NO];
+		[theWindow setFrame:myFrame display:YES animate:YES];
 		dontEnterMagneticFunctions = NO;
 		
 		// Is the Origin identical? If yes, switch both windows
 		e = [[NSApp windows] objectEnumerator];
 		while (window = [e nextObject])
 		{
-			if (window != theWindow && [window isVisible])
+			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
 			{
 				frame = [window frame];
 				
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
 					dontEnterMagneticFunctions = YES;
-					[window setFrame: savedWindowsFrame display: YES animate:YES];
-					[theWindow setFrame: frame display: YES animate:NO];
-					dontEnterMagneticFunctions = NO;
+					[window setFrame: savedWindowsFrame display: YES animate:NO];
 					
 					savedWindowsFrame = frame;
+					[theWindow setFrame: frame display: YES animate:YES];
+					dontEnterMagneticFunctions = NO;
 					
 					return;
 				}
