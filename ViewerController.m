@@ -1515,7 +1515,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSRect	curRect = [[self window] frame];
 	
 	//To avoid the use of WindowDidMove function - Magnetic windows
-	savedWindowsFrame = NSMakeRect(0,0,0,0);
+	dontEnterMagneticFunctions = YES;
 	
 	[self setStandardRect:rect];
 	
@@ -1529,6 +1529,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[[self window] orderFront:self];
 	}
+	
+	dontEnterMagneticFunctions = NO;
 }
 
 
@@ -1624,76 +1626,83 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidResize:(NSNotification *)aNotification
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && dontEnterMagneticFunctions == NO)
 	{
-		NSEnumerator *e;
-		NSWindow *theWindow, *window;
-		NSRect frame, myFrame;
-		BOOL hDidChange = NO, vDidChange = NO;
-		
+		NSEnumerator	*e;
+		NSWindow		*theWindow, *window;
+		NSScreen		*screen;
+		NSValue			*value;
+		NSRect			frame, myFrame;
+		BOOL			hDidChange = NO, vDidChange = NO;
 		
 		theWindow = [aNotification object];
 		myFrame = [theWindow frame];
-		e = [[NSApp windows] objectEnumerator];
 		
 		float gravityX = 30;
 		float gravityY = 30;
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
 		
-		//NSLog(@"%d", [[NSApp windows] count]);
+		NSMutableArray	*rects = [NSMutableArray array];
 		
+		// Add the viewers
+		e = [[NSApp windows] objectEnumerator];
 		while (window = [e nextObject])
 		{
 			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
 			{
-				frame = [window frame];
-				/* horizontal magnet */
-				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					myFrame.size.width = frame.origin.x - myFrame.origin.x;
-					hDidChange = YES;
-				}
-				
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					myFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
-					hDidChange = YES;
-				}
-				
-				/* vertical magnet */
-				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
-				{
-					NSRect	previous = myFrame;
-					//NSLog(@"NSMinY(frame) - NSMinY(myFrame)");
-					myFrame.origin.y = frame.origin.y;
-					myFrame.size.height -= myFrame.origin.y - previous.origin.y;
-					vDidChange = YES;
-				}
-//				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
-//				{
-//					//NSLog(@"NSMinY(frame) - NSMaxY(myFrame)");
-//					myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
-//					vDidChange = YES;
-//				}
-
-//				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
-//				{
-//					//NSLog(@"NSMaxY(frame) - NSMinY(myFrame)");
-//					myFrame.origin.y = NSMaxY(frame);
-//					vDidChange = YES;
-//				}
-//				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
-//				{
-//					//NSLog(@"(NSMaxY(frame) - NSMaxY(myFrame)");
-//					myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
-//					vDidChange = YES;
-//				}
+				[rects addObject: [NSValue valueWithRect: [window frame]]];
 			}
-			//if (v_isChanged && h_isChanged) break;
 		}
 		
+		// Add the screens
+		e = [[NSScreen screens] objectEnumerator];
+		while (screen = [e nextObject])
+		{
+			[rects addObject: [NSValue valueWithRect: [screen frame]]];
+		}
+		
+		e = [rects objectEnumerator];
+		while (value = [e nextObject])
+		{
+			frame = [value rectValue];
+			
+			/* horizontal magnet */
+			if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+			{
+				myFrame.size.width = frame.origin.x - myFrame.origin.x;
+				hDidChange = YES;
+			}
+			
+			if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+			{
+				myFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
+				hDidChange = YES;
+			}
+			
+			/* vertical magnet */
+			if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+			{
+				NSRect	previous = myFrame;
+				
+				myFrame.origin.y = frame.origin.y;
+				myFrame.size.height -= myFrame.origin.y - previous.origin.y;
+				vDidChange = YES;
+			}
+			
+			if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+			{
+				NSRect	previous = myFrame;
+				
+				myFrame.origin.y = frame.origin.y + frame.size.height;
+				myFrame.size.height -= myFrame.origin.y - previous.origin.y;
+				vDidChange = YES;
+			}
+		}
+		
+		dontEnterMagneticFunctions = YES;
 		[theWindow setFrame:myFrame display:YES];
+		dontEnterMagneticFunctions = NO;
 	}
 	
 	if( [aNotification object] == [self window])
@@ -1812,86 +1821,95 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO && dontEnterMagneticFunctions == NO)
 	{
-		NSEnumerator *e;
-		NSWindow *theWindow, *window;
-		NSRect frame, myFrame;
-		BOOL hDidChange = NO, vDidChange = NO;
-		
+		NSEnumerator	*e;
+		NSWindow		*theWindow, *window;
+		NSRect			frame, myFrame;
+		BOOL			hDidChange = NO, vDidChange = NO;
+		NSScreen		*screen;
+		NSValue			*value;
 		
 		theWindow = [notification object];
 		myFrame = [theWindow frame];
-		e = [[NSApp windows] objectEnumerator];
 		
 		float gravityX = myFrame.size.width/3;
 		float gravityY = myFrame.size.height/3;
 		
 		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
 		
-		//NSLog(@"%d", [[NSApp windows] count]);
+		NSMutableArray	*rects = [NSMutableArray array];
 		
+		// Add the viewers
+		e = [[NSApp windows] objectEnumerator];
 		while (window = [e nextObject])
 		{
 			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
 			{
-				frame = [window frame];
-				/* horizontal magnet */
-				//NSLog(@"%f %f", NSMinX(frame) - NSMinX(myFrame), NSMinY(frame) - NSMinY(myFrame));
-				if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
-				{
-					//NSLog(@"NSMinX(frame) - NSMinX(myFrame)");
-					myFrame.origin.x = frame.origin.x;
-					hDidChange = YES;
-				}
-				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					//NSLog(@"NSMinX(frame) - NSMaxX(myFrame)");
-					myFrame.origin.x += NSMinX(frame) - NSMaxX(myFrame);
-					hDidChange = YES;
-				}
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
-				{
-					//NSLog(@"NSMaxX(frame) - NSMinX(myFrame)");
-					myFrame.origin.x = NSMaxX(frame);
-					hDidChange = YES;
-				}
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					//NSLog(@"NSMaxX(frame) - NSMaxX(myFrame)");
-					myFrame.origin.x += NSMaxX(frame) - NSMaxX(myFrame);
-					hDidChange = YES;
-				}
-				/* vertical magnet */
-				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
-				{
-					//NSLog(@"NSMinY(frame) - NSMinY(myFrame)");
-					myFrame.origin.y = frame.origin.y;
-					vDidChange = YES;
-				}
-				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
-				{
-					//NSLog(@"NSMinY(frame) - NSMaxY(myFrame)");
-					myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
-					vDidChange = YES;
-				}
-				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
-				{
-					//NSLog(@"NSMaxY(frame) - NSMinY(myFrame)");
-					myFrame.origin.y = NSMaxY(frame);
-					vDidChange = YES;
-				}
-				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
-				{
-					//NSLog(@"(NSMaxY(frame) - NSMaxY(myFrame)");
-					myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
-					vDidChange = YES;
-				}
+				[rects addObject: [NSValue valueWithRect: [window frame]]];
 			}
-			//if (v_isChanged && h_isChanged) break;
 		}
 		
+		// Add the screens
+		e = [[NSScreen screens] objectEnumerator];
+		while (screen = [e nextObject])
+		{
+			[rects addObject: [NSValue valueWithRect: [screen frame]]];
+		}
+		
+		e = [rects objectEnumerator];
+		while (value = [e nextObject])
+		{
+			frame = [value rectValue];
+			
+			/* horizontal magnet */
+			if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
+			{
+				myFrame.origin.x = frame.origin.x;
+				hDidChange = YES;
+			}
+			if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+			{
+				myFrame.origin.x += NSMinX(frame) - NSMaxX(myFrame);
+				hDidChange = YES;
+			}
+			if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
+			{
+				myFrame.origin.x = NSMaxX(frame);
+				hDidChange = YES;
+			}
+			if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+			{
+				myFrame.origin.x += NSMaxX(frame) - NSMaxX(myFrame);
+				hDidChange = YES;
+			}
+			
+			/* vertical magnet */
+			if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+			{
+				myFrame.origin.y = frame.origin.y;
+				vDidChange = YES;
+			}
+			if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
+			{
+				myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
+				vDidChange = YES;
+			}
+			if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+			{
+				myFrame.origin.y = NSMaxY(frame);
+				vDidChange = YES;
+			}
+			if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
+			{
+				myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
+				vDidChange = YES;
+			}
+		}
+		
+		dontEnterMagneticFunctions = YES;
 		[theWindow setFrame:myFrame display:YES];
+		dontEnterMagneticFunctions = NO;
 		
 		// Is the Origin identical? If yes, switch both windows
 		e = [[NSApp windows] objectEnumerator];
@@ -1903,12 +1921,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
+					dontEnterMagneticFunctions = YES;
 					[theWindow setFrame: frame display: YES];
+					dontEnterMagneticFunctions = NO;
 					
-					NSRect destRect = savedWindowsFrame;
-					savedWindowsFrame = NSMakeRect(0,0,0,0);
-					
-					[window setFrame: destRect display: YES];
+					dontEnterMagneticFunctions = YES;
+					[window setFrame: savedWindowsFrame display: YES animate:YES];
+					dontEnterMagneticFunctions = NO;
 					
 					savedWindowsFrame = frame;
 					
