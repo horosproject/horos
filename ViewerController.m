@@ -1622,9 +1622,80 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self release];
 }
 
-
 - (void)windowDidResize:(NSNotification *)aNotification
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
+	{
+		NSEnumerator *e;
+		NSWindow *theWindow, *window;
+		NSRect frame, myFrame;
+		BOOL hDidChange = NO, vDidChange = NO;
+		
+		
+		theWindow = [aNotification object];
+		myFrame = [theWindow frame];
+		e = [[NSApp windows] objectEnumerator];
+		
+		float gravityX = 30;
+		float gravityY = 30;
+		
+		if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) return;
+		
+		//NSLog(@"%d", [[NSApp windows] count]);
+		
+		while (window = [e nextObject])
+		{
+			if (window != theWindow && [window isVisible] && [[window windowController] isKindOfClass: [ViewerController class]])
+			{
+				frame = [window frame];
+				/* horizontal magnet */
+				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+				{
+					myFrame.size.width = frame.origin.x - myFrame.origin.x;
+					hDidChange = YES;
+				}
+				
+				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+				{
+					myFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
+					hDidChange = YES;
+				}
+				
+				/* vertical magnet */
+				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+				{
+					NSRect	previous = myFrame;
+					//NSLog(@"NSMinY(frame) - NSMinY(myFrame)");
+					myFrame.origin.y = frame.origin.y;
+					myFrame.size.height -= myFrame.origin.y - previous.origin.y;
+					vDidChange = YES;
+				}
+//				if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
+//				{
+//					//NSLog(@"NSMinY(frame) - NSMaxY(myFrame)");
+//					myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
+//					vDidChange = YES;
+//				}
+
+//				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+//				{
+//					//NSLog(@"NSMaxY(frame) - NSMinY(myFrame)");
+//					myFrame.origin.y = NSMaxY(frame);
+//					vDidChange = YES;
+//				}
+//				if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
+//				{
+//					//NSLog(@"(NSMaxY(frame) - NSMaxY(myFrame)");
+//					myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
+//					vDidChange = YES;
+//				}
+			}
+			//if (v_isChanged && h_isChanged) break;
+		}
+		
+		[theWindow setFrame:myFrame display:YES];
+	}
+	
 	if( [aNotification object] == [self window])
 	{
 		[self matrixPreviewSelectCurrentSeries];
