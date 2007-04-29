@@ -1829,7 +1829,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidMove:(NSNotification *)notification
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO && dontEnterMagneticFunctions == NO)
+	if( dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrame) == NO)
 	{
 		NSEnumerator	*e;
 		NSWindow		*theWindow, *window;
@@ -2348,6 +2348,33 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return visible;
 }
 
+- (void) setMatrixVisible: (BOOL) visible
+{
+	NSRect	frameLeft, frameRight, previous;
+	
+	frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
+	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
+	
+	if( visible == YES)
+	{
+		frameLeft.size.width = [previewMatrix cellSize].width+13;
+		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+	}
+	else
+	{
+		frameLeft.size.width = 0;
+		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
+	}
+	
+	if( previous.size.width != frameLeft.size.width)
+	{
+		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
+		[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
+		
+		[splitView adjustSubviews];
+	}
+}
+
 - (void) autoHideMatrix
 {
 	BOOL hide = NO;
@@ -2366,29 +2393,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
-	NSRect	frameLeft, frameRight, previous;
-	
-	frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
-	frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
-	
-	if( hide == NO)
-	{
-		frameLeft.size.width = [previewMatrix cellSize].width+13;
-		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-	}
-	else
-	{
-		frameLeft.size.width = 0;
-		frameRight.size.width = [splitView frame].size.width - [splitView dividerThickness] - frameLeft.size.width;
-	}
-	
-	if( previous.size.width != frameLeft.size.width)
-	{
-		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
-		[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
-		
-		[splitView adjustSubviews];
-	}
+	[self setMatrixVisible: !hide];
 }
 
 -(void) ViewFrameDidChange:(NSNotification*) note
@@ -2420,6 +2425,22 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else pos = size.width+13;
 		
 		[splitView saveDefault:@"SPLITVIEWER"];
+		
+		// Apply show / hide matrix to all viewers
+		if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
+		{
+			NSArray				*winList = [NSApp windows];
+			
+			int i;
+			for( i = 0; i < [winList count]; i++)
+			{
+				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] && [[winList objectAtIndex:i] windowController] != self)
+				{
+					if( pos) [[[winList objectAtIndex:i] windowController] setMatrixVisible: YES];
+					else [[[winList objectAtIndex:i] windowController] setMatrixVisible: NO];
+				}
+			}
+		}
 		
         return (float) pos;
     }
