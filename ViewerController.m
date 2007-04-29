@@ -1933,9 +1933,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
 					dontEnterMagneticFunctions = YES;
+					
+					[window orderWindow: NSWindowBelow relativeTo: [theWindow windowNumber]];
 					[window setFrame: savedWindowsFrame display: YES animate: YES];
 					
 					savedWindowsFrame = frame;
+					
 					[theWindow setFrame: frame display: YES animate:YES];
 					dontEnterMagneticFunctions = NO;
 					
