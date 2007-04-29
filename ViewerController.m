@@ -158,7 +158,8 @@ static NSArray*		DefaultROINames;
 static	BOOL EXPORT2IPHOTO								= NO;
 static	ViewerController *blendedwin					= 0L;
 static	float	deg2rad									= 3.14159265358979/180.0; 
-
+static	BOOL dontEnterMagneticFunctions = NO;
+	
 //static ViewerController *gSelf;
 
 long numberOf2DViewer = 0;
@@ -1932,7 +1933,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
 				{
 					dontEnterMagneticFunctions = YES;
-					[window setFrame: savedWindowsFrame display: YES animate:NO];
+					[window setFrame: savedWindowsFrame display: YES animate: YES];
 					
 					savedWindowsFrame = frame;
 					[theWindow setFrame: frame display: YES animate:YES];

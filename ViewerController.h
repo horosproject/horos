@@ -311,7 +311,6 @@ enum
 	float					resampleRatio;
 	
 	NSRect					savedWindowsFrame;
-	BOOL					dontEnterMagneticFunctions;
 }
 
 // Create a new 2D Viewer
