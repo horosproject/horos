@@ -1921,7 +1921,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		dontEnterMagneticFunctions = YES;
 		[theWindow setFrame:myFrame display:YES animate:YES];
 		dontEnterMagneticFunctions = NO;
-		
+	
 		// Is the Origin identical? If yes, switch both windows
 		e = [[NSApp windows] objectEnumerator];
 		while (window = [e nextObject])
@@ -1930,7 +1930,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				frame = [window frame];
 				
-				if( frame.origin.x == myFrame.origin.x && NSMaxY( frame) == NSMaxY( myFrame))
+				if( fabs( frame.origin.x - myFrame.origin.x) < 3 && fabs( NSMaxY( frame) - NSMaxY( myFrame)) < 3)
 				{
 					dontEnterMagneticFunctions = YES;
 					
@@ -2426,18 +2426,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[splitView saveDefault:@"SPLITVIEWER"];
 		
-		// Apply show / hide matrix to all viewers
-		if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
 		{
-			NSArray				*winList = [NSApp windows];
-			
-			int i;
-			for( i = 0; i < [winList count]; i++)
+			// Apply show / hide matrix to all viewers
+			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
 			{
-				if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] && [[winList objectAtIndex:i] windowController] != self)
+				NSArray				*winList = [NSApp windows];
+				
+				int i;
+				for( i = 0; i < [winList count]; i++)
 				{
-					if( pos) [[[winList objectAtIndex:i] windowController] setMatrixVisible: YES];
-					else [[[winList objectAtIndex:i] windowController] setMatrixVisible: NO];
+					if( [[[winList objectAtIndex:i] windowController] isKindOfClass:[ViewerController class]] && [[winList objectAtIndex:i] windowController] != self)
+					{
+						if( pos) [[[winList objectAtIndex:i] windowController] setMatrixVisible: YES];
+						else [[[winList objectAtIndex:i] windowController] setMatrixVisible: NO];
+					}
 				}
 			}
 		}
