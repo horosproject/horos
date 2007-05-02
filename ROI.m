@@ -35,7 +35,7 @@ Version 2.3
 #import "ITKSegmentation3D.h"
 
 #define CIRCLERESOLUTION 40
-#define ROIVERSION		6
+#define ROIVERSION		7
 
 static		float					PI = 3.14159265358979;
 static		float					deg2rad = 3.14159265358979/180.0; 
@@ -267,6 +267,15 @@ GLenum glReportError (void)
 			if(textualBoxLine4) [textualBoxLine4 retain];
 			if(textualBoxLine5) [textualBoxLine5 retain];
 		}
+
+		if (fileVersion >= 7)
+		{
+			isLayerOpacityConstant = [[coder decodeObject] boolValue];
+			canColorizeLayer = [[coder decodeObject] boolValue];
+			layerColor = [coder decodeObject];
+			if(layerColor)[layerColor retain];
+			displayTextualData = [[coder decodeObject] boolValue];
+		}
 		
 		[points retain];
 		[name retain];
@@ -369,6 +378,12 @@ GLenum glReportError (void)
 	[coder encodeObject:textualBoxLine3];
 	[coder encodeObject:textualBoxLine4];
 	[coder encodeObject:textualBoxLine5];
+	
+	// ROIVERSION = 7
+	[coder encodeObject:[NSNumber numberWithBool:isLayerOpacityConstant]];
+	[coder encodeObject:[NSNumber numberWithBool:canColorizeLayer]];
+	[coder encodeObject:layerColor];
+	[coder encodeObject:[NSNumber numberWithBool:displayTextualData]];
 }
 
 - (NSData*) data

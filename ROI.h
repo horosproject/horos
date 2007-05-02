@@ -109,7 +109,7 @@ enum
 	NSColor			*layerColor;
 	
 	NSNumber		*uniqueID;		// <- not saved, only valid during the 'life' of a ROI
-	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected together.
+	NSTimeInterval	groupID;		// timestamp of a ROI group. Grouped ROI will be selected/deleted together.
 	
 	BOOL			displayTextualData;
 }
