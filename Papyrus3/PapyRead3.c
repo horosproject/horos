@@ -148,11 +148,11 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 //  } /* if */
 //    
 //  thePos     = 0L;
-//  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-//  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  theGroup   = Extract2Bytes (theTmpBufP, &thePos);
+//  theElement = Extract2Bytes (theTmpBufP, &thePos);
 //    
 //  /* extract the element length */
-//  theLength = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  theLength = Extract4Bytes (theTmpBufP, &thePos);
 //  
 //  /* if length is 0xFFFFFFFF (undefined) we have to extract it HERE !!! */
 //  
@@ -318,8 +318,8 @@ Papy3GetElement (SElement *inGrOrModP, int inElement, PapyULong *outNbValueP, in
 //  } /* if */
 //    
 //  thePos     = 0L;
-//  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-//  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+//  theGroup   = Extract2Bytes (theTmpBufP, &thePos);
+//  theElement = Extract2Bytes (theTmpBufP, &thePos);
 //    
 //  /* Pixel data fragment not found when expected */
 //  if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
@@ -475,9 +475,9 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		} /* if */
 
 		thePos = 0L;
-		theUShort1 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-		theUShort2 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-		theULong = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
+		theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
+		theULong = Extract4Bytes (theTmpBufP, &thePos);
 		theLength += theULong;
 
 		/* offset table found ? */
@@ -507,9 +507,9 @@ PapyShort ExtractJPEG2000 (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong i
 		} /* if */
 
 		thePos = 0L;
-		theUShort1 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-		theUShort2 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-		theULong = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
+		theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
+		theULong = Extract4Bytes (theTmpBufP, &thePos);
 
 		/* offset table found ? */
 		if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
@@ -721,8 +721,8 @@ ExtractWavelet (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart
   } 
     
   thePos     = 0L;
-  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+  theGroup   = Extract2Bytes (theTmpBufP, &thePos);
+  theElement = Extract2Bytes (theTmpBufP, &thePos);
     
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
@@ -749,8 +749,8 @@ ExtractWavelet (PapyShort inFileNb, PapyUChar *ioImage8P, PapyULong inPixelStart
   } /* if */
     
   thePos 		  = 0L;
-  theCompressedP->length  = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theCompressedP->version = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+  theCompressedP->length  = Extract4Bytes (theTmpBufP, &thePos);
+  theCompressedP->version = Extract4Bytes (theTmpBufP, &thePos);
     
 
   /* Allocate memory for the image data */ 
@@ -1034,9 +1034,9 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
   } /* if */
     
   thePos     = 0L;
-  theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theLength  = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+  theGroup   = Extract2Bytes (theTmpBufP, &thePos);
+  theElement = Extract2Bytes (theTmpBufP, &thePos);
+  theLength  = Extract4Bytes (theTmpBufP, &thePos);
     
   /* Pixel data fragment not found when expected */
   if ((theGroup != 0xFFFE) || (theElement != 0xE000)) RETURN (papBadArgument);
@@ -1050,7 +1050,7 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
     Papy3FClose (&gPapyFile [inFileNb]);
     RETURN (theErr);
   } /* if */
-  theNbOfSegments = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+  theNbOfSegments = Extract4Bytes (theTmpBufP, &thePos);
   if (theNbOfSegments > 3L) RETURN (papWrongValue); /* we allow to read 8, 16 and 32 bit images */
     
   /* read theOffset1, theOffset2, theOffset3 and skip 48 bytes */
@@ -1064,9 +1064,9 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
     Papy3FClose (&gPapyFile [inFileNb]);
     RETURN (theErr);
   } /* if */
-  theOffset1 = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theOffset2 = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-  theOffset3 = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+  theOffset1 = Extract4Bytes (theTmpBufP, &thePos);
+  theOffset2 = Extract4Bytes (theTmpBufP, &thePos);
+  theOffset3 = Extract4Bytes (theTmpBufP, &thePos);
   Papy3FSeek (gPapyFile [inFileNb], SEEK_CUR, (PapyLong) 48L);
     
   if (theNbOfSegments == 1) 
@@ -1140,9 +1140,13 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
 } /* endof ExtractRLE */
 
 
-unsigned short readUint16(const unsigned char *data)
+inline unsigned short readUint16(const unsigned char *data)
 {
+   #if __BIG_ENDIAN__
   return (((unsigned short)(*data) << 8) | ((unsigned short)(*(data+1))));
+  #else
+  return *((unsigned short*) data);
+  #endif
 }
 
 unsigned char scanJpegDataForBitDepth(
@@ -1540,8 +1544,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
       } /* if */
     
       thePos     = 0L;
-      theUShort1 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-      theUShort2 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+      theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
+      theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
     
       /* test if the values are correct */
       if (theUShort1 != 0xFFFE || theUShort2 != 0xE000)
@@ -1549,7 +1553,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
     
       /* offset table size */
       /* extract the element length according to the little-endian syntax */
-      theULong = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+      theULong = Extract4Bytes (theTmpBufP, &thePos);
     
       if (theULong > 0)
       {
@@ -1571,7 +1575,7 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 	    efree3 ((void **) &theOffsetTableP);
 	    return NULL;
           } /* if */
-          theOffsetTableP [theLoop] = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+          theOffsetTableP [theLoop] = Extract4Bytes (theTmpBufP, &thePos);
         } /* for */
      
       } /* if */
@@ -1603,9 +1607,9 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
           } /* if */
         
           thePos = 0L;
-          theUShort1 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-          theUShort2 = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-          theULong   = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+          theUShort1 = Extract2Bytes (theTmpBufP, &thePos);
+          theUShort2 = Extract2Bytes (theTmpBufP, &thePos);
+          theULong   = Extract4Bytes (theTmpBufP, &thePos);
         
           /* offset table found ? */
           if ((theUShort1 == 0xFFFE) && (theUShort2 == 0xE000))
@@ -1659,13 +1663,13 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		PapyUShort			theGroup, theElement;
 		
 		thePos     = 0L;
-		theGroup   = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
-		theElement = Extract2Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		theGroup   = Extract2Bytes (theTmpBufP, &thePos);
+		theElement = Extract2Bytes (theTmpBufP, &thePos);
 
 		/* Pixel data fragment not found when expected */
 		if ((theGroup != 0xFFFE) || (theElement != 0xE000)) printf("error");
 		
-		theULong = Extract4Bytes (theTmpBufP, &thePos, gArrTransfSyntax [inFileNb]);
+		theULong = Extract4Bytes (theTmpBufP, &thePos);
 		
 		unsigned char* data = malloc( theULong);
 		
@@ -1829,8 +1833,8 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 /*										*/
 /********************************************************************************/
 
-PapyUShort
-Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
+inline PapyUShort
+Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
@@ -1845,20 +1849,24 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
   /* updates the current position in the read buffer */
   *ioPosP += 2;
 
-	if( syntax != BIG_ENDIAN_EXPL)
+//	if( syntax != BIG_ENDIAN_EXPL)
 	{
 		/* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
 		theUShort  = (PapyUShort) (*(theCharP + 1));
 		theUShort  = theUShort << 8;
 		theUShort |= (PapyUShort) *theCharP;
+		#else
+		theUShort	= *((PapyUShort*) theCharP);
+		#endif
 	}
-	else
-	{
-		/* extract the element according to the big-endian syntax */
-		theUShort  = (PapyUShort) (*theCharP);
-		theUShort  = theUShort << 8;
-		theUShort |= (PapyUShort) *(theCharP+1);
-	}
+//	else
+//	{
+//		/* extract the element according to the big-endian syntax */
+//		theUShort  = (PapyUShort) (*theCharP);
+//		theUShort  = theUShort << 8;
+//		theUShort |= (PapyUShort) *(theCharP+1);
+//	}
   
   return theUShort;
 
@@ -1874,8 +1882,8 @@ Extract2Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
 /*										*/
 /********************************************************************************/
 
-PapyULong
-Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
+inline PapyULong
+Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP)
 
 /*unsigned char *inBufP;				 the buffer to read from */
 /*PapyULong 	*ioPosP;			      the position in the buffer */
@@ -1890,9 +1898,10 @@ Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
   /* updates the current position in the read buffer */
   *ioPosP += 4;
 
-	if( syntax != BIG_ENDIAN_EXPL)
+//	if( syntax != BIG_ENDIAN_EXPL)
 	{
   /* extract the element according to the little-endian syntax */
+  #if __BIG_ENDIAN__
   theTmpULong  = (PapyULong) (*(theCharP + 3));
   theTmpULong  = theTmpULong << 24;
   theULong    |= theTmpULong;
@@ -1904,22 +1913,25 @@ Extract4Bytes (unsigned char *inBufP, PapyULong *ioPosP, long syntax)
   theULong    |= theTmpULong;
   theTmpULong  = (PapyULong) *theCharP;
   theULong    |= theTmpULong;
+  #else
+  theULong	= *((PapyULong*) theCharP);
+  #endif
     }
-	else
-	{
-  /* extract the element according to the little-endian syntax */
-  theTmpULong  = (PapyULong) (*(theCharP + 0));
-  theTmpULong  = theTmpULong << 24;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) (*(theCharP + 1));
-  theTmpULong  = theTmpULong << 16;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) (*(theCharP + 2));
-  theTmpULong  = theTmpULong << 8;
-  theULong    |= theTmpULong;
-  theTmpULong  = (PapyULong) (*(theCharP + 3));
-  theULong    |= theTmpULong;
-	}
+//	else
+//	{
+//  /* extract the element according to the little-endian syntax */
+//  theTmpULong  = (PapyULong) (*(theCharP + 0));
+//  theTmpULong  = theTmpULong << 24;
+//  theULong    |= theTmpULong;
+//  theTmpULong  = (PapyULong) (*(theCharP + 1));
+//  theTmpULong  = theTmpULong << 16;
+//  theULong    |= theTmpULong;
+//  theTmpULong  = (PapyULong) (*(theCharP + 2));
+//  theTmpULong  = theTmpULong << 8;
+//  theULong    |= theTmpULong;
+//  theTmpULong  = (PapyULong) (*(theCharP + 3));
+//  theULong    |= theTmpULong;
+//	}
   return theULong;
     
 } /* endof Extract4Bytes */
@@ -2088,9 +2100,13 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 2L;  
         /* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theValueTP->ss  = (PapyUShort) (*(theTmp0P + 1));
         theValueTP->ss  = theValueTP->ss << 8;
         theValueTP->ss |= (PapyUShort) *theTmp0P;
+		#else
+		theValueTP->ss  = *((PapyUShort*) theTmp0P);
+		#endif
       } /* for */
 	    
       break; /* SS */
@@ -2110,9 +2126,13 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 2L;  
         /* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theValueTP->us  = (PapyUShort) (*(theTmp0P + 1));
         theValueTP->us  = theValueTP->us << 8;
         theValueTP->us |= (PapyUShort) *theTmp0P;
+		#else
+		 theValueTP->us  = *((PapyUShort*) theTmp0P);
+		#endif
       } /* for */
 
       break; /* USS */
@@ -2131,6 +2151,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theTmpULong      = (PapyULong) (*(theTmp0P + 3));
         theTmpULong      = theTmpULong << 24;
         theULong	 = theTmpULong;
@@ -2143,6 +2164,9 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         theTmpULong      = (PapyULong) *theTmp0P;
         theULong        |= theTmpULong;
         theValueTP->sl   = theULong;
+		#else
+		theValueTP->sl   = *((PapyULong*) theTmp0P);
+		#endif
       } /* for */
 
       break; /* SL */
@@ -2161,6 +2185,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theTmpULong      = (PapyULong) (*(theTmp0P + 3));
         theTmpULong      = theTmpULong << 24;
         theULong	 = theTmpULong;
@@ -2173,6 +2198,9 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         theTmpULong      = (PapyULong) *theTmp0P;
         theULong        |= theTmpULong;
         theValueTP->ul   = theULong;
+		#else
+		theValueTP->ul   = *((PapyULong*) theTmp0P);
+		#endif
       } /* for */
 
       break; /* UL */
@@ -2191,6 +2219,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         /* updates the current position in the read buffer */
         *ioBufPosP += 4L;
         /* extract the element according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theTmpULong      = (PapyULong) (*(theTmp0P + 3));
         theTmpULong      = theTmpULong << 24;
         theULong	 = theTmpULong;
@@ -2202,7 +2231,11 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
         theULong	|= theTmpULong;
         theTmpULong      = (PapyULong) *theTmp0P;
         theULong        |= theTmpULong;
-        theValueTP->fl   = (float)theULong;
+        theValueTP->fl   = (float) theULong;
+		#else
+		theULong		= *((PapyULong*) theTmp0P);
+		theValueTP->fl   = (float) theULong;
+		#endif
       } /* for */
 
       break; /* FL */
@@ -2286,9 +2319,13 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 
         for (i = 0L, theTmpUsP = ioElemP->value->ow, ioBuffP += *ioBufPosP; i < theImLength; i++, theTmpUsP++, ioBuffP += 2)
         {
-          *theTmpUsP  = (PapyUShort) (*(ioBuffP + 1));
+			#if __BIG_ENDIAN__
+			*theTmpUsP  = (PapyUShort) (*(ioBuffP + 1));
     	    *theTmpUsP  = *theTmpUsP << 8;
     	    *theTmpUsP |= (PapyUShort) *ioBuffP;
+			#else
+			*theTmpUsP  = *((PapyUShort*) ioBuffP);
+			#endif
         } /* for */
        
         /*ioElemP->value->ow = imOW;*/
@@ -2321,8 +2358,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	      while (thePosInSeq < inElemLength)
 	      {
 	        /* read the basic info on the item */
-			theSeqGrNb = Extract2Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
-			theElemNb = Extract2Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
+			theSeqGrNb = Extract2Bytes (ioBuffP, ioBufPosP);
+			theElemNb = Extract2Bytes (ioBuffP, ioBufPosP);
 			
 			if( theSeqGrNb == 0xFFFE && theElemNb == 0xE0DD)	// Empty Sequence ! ANTOINE
 			{
@@ -2336,7 +2373,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 				RETURN ( 0);
 			}
 			
-	        theSeqSize = Extract4Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
+	        theSeqSize = Extract4Bytes (ioBuffP, ioBufPosP);
   		      
   	      thePosInSeq += 8L;	/* size of the item delimiter */
   	      thePosInItem = 0L;	/* the position in this item of the sequence */
@@ -2388,8 +2425,8 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 		 //while (theSeqSize > (thePosInSeq - 8L))
 	        {
 	          /* read the basic info on the new group */
-	          theSeqGrNb  = Extract2Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
-	          theElemNb   = Extract2Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
+	          theSeqGrNb  = Extract2Bytes (ioBuffP, ioBufPosP);
+	          theElemNb   = Extract2Bytes (ioBuffP, ioBufPosP);
 	          
                   /* test if it is the group length element */
 	          if (theElemNb == 0x0000)
@@ -2397,7 +2434,7 @@ PutBufferInElement3 (PapyShort inFileNb, unsigned char *ioBuffP, PapyULong inEle
 	            /* jump over : implicit : the length of the element (1 * 4 bytes) */
 	            /*	     explicit : the VR and the length of the element (2 * 2 bytes) */
 	            *ioBufPosP  += 4L;
-	            theSeqGrSize = Extract4Bytes (ioBuffP, ioBufPosP, gArrTransfSyntax [inFileNb]);
+	            theSeqGrSize = Extract4Bytes (ioBuffP, ioBufPosP);
 	            
 	            /* the theFirstTime ioElemP must be taken into account ... */
 	            theSeqGrSize += 12L;
@@ -2663,18 +2700,26 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     theCharP    = ioBuffP;
     theCharP   += *ioBufPosP;
     /* extract the group number according to the little-endian syntax */
-    theGrNb     = (PapyUShort) (*(theCharP + 1));
+    #if __BIG_ENDIAN__
+	theGrNb     = (PapyUShort) (*(theCharP + 1));
     theGrNb     = theGrNb << 8;
     theGrNb    |= (PapyUShort) *theCharP;
+	#else
+	theGrNb     =  *((PapyUShort*)theCharP);
+	#endif
     /* updates the current position in the read buffer */
     *ioBufPosP += 2L;
     /* points to the right place in the buffer */
     theCharP   += 2;
     
     /* extract the element according to the little-endian syntax */
+	#if __BIG_ENDIAN__
     theElemNb   = (PapyUShort) (*(theCharP + 1));
     theElemNb   = theElemNb << 8;
     theElemNb  |= (PapyUShort) *theCharP;
+	#else
+	theElemNb	= *((PapyUShort*)theCharP);
+	#endif
 	
 	#if DEBUG
 	printf("gr:%x elem:%x\n", theGrNb, theElemNb);
@@ -2745,7 +2790,8 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
         theCharP   += 2;
         
         /* extract the element length according to the little-endian explicit VR syntax */
-        theTmpULong      = (PapyULong) (*(theCharP + 3));
+        #if __BIG_ENDIAN__
+		theTmpULong      = (PapyULong) (*(theCharP + 3));
         theTmpULong      = theTmpULong << 24;
         theULong	 = theTmpULong;
         theTmpULong      = (PapyULong) (*(theCharP + 2));
@@ -2756,7 +2802,10 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
         theULong	|= theTmpULong;
         theTmpULong      = (PapyULong) *theCharP;
         theULong        |= theTmpULong;
-        
+        #else
+		theULong	= *((PapyULong*) theCharP);
+		#endif
+		
         theElemLength    = theULong;
         
         /* updates the current position in the read buffer */
@@ -2765,10 +2814,14 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       else
       {
         /* extract the element length according to the little-endian explicit VR syntax */
+		 #if __BIG_ENDIAN__
         theElemLengthGr2  = (PapyUShort) (*(theCharP + 1));
         theElemLengthGr2  = theElemLengthGr2 << 8;
         theElemLengthGr2 |= (PapyUShort) *theCharP;
-      
+        #else
+		theElemLengthGr2  = *((PapyUShort*) theCharP);
+		#endif
+		
         theElemLength     = (PapyULong) theElemLengthGr2;
         
         /* updates the current position in the read buffer */
@@ -2780,7 +2833,8 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     else
     {
       /* extract the element length according to the little-endian implicit VR syntax */
-      theTmpULong      = (PapyULong) (*(theCharP + 3));
+       #if __BIG_ENDIAN__
+	  theTmpULong      = (PapyULong) (*(theCharP + 3));
       theTmpULong      = theTmpULong << 24;
       theULong	       = theTmpULong;
       theTmpULong      = (PapyULong) (*(theCharP + 2));
@@ -2792,7 +2846,10 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       theTmpULong      = (PapyULong) *theCharP;
       theULong 	      |= theTmpULong;
       theElemLength    = theULong;
-    
+		#else
+		theElemLength	= *((PapyULong*) theCharP);
+		#endif
+		
       /* updates the current position in the read buffer */
       *ioBufPosP += 4L;
     } /* else ...little_endian implicit VR */

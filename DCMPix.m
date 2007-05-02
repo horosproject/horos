@@ -6342,10 +6342,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 		{
 			SElement	  *groupOverlay;
 			
+			NSLog(@"Group 5200 available - Start");
+			
 			// read group 0x6001 from the file
 			if ((err = Papy3GroupRead (fileNb, &groupOverlay)) > 0)
 			{
-				NSLog(@"Group 5200 available");
+				NSLog(@"Group 5200 available - Papy3GroupRead done");
 				
 				// ****** ****** ****** ************************************************************************
 				// SHARED FRAME
@@ -6532,6 +6534,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL
 				
+				NSLog( @"Group 5200 available - Shared Group");
+				
 #pragma mark code for each frame				
 				// ****** ****** ****** ************************************************************************
 				// PER FRAME
@@ -6652,6 +6656,8 @@ BOOL gUSEPAPYRUSDCMPIX;
 						} // while ...loop through the sequence
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL
+				
+				NSLog( @"Group 5200 available - Per Frame Group");
 				
 				// free groupOverlay 0x5200
 				err = Papy3GroupFree (&groupOverlay, TRUE);

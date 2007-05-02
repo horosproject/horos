@@ -1921,7 +1921,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		dontEnterMagneticFunctions = YES;
 		[theWindow setFrame:myFrame display:YES animate:YES];
 		dontEnterMagneticFunctions = NO;
-	
+		
 		// Is the Origin identical? If yes, switch both windows
 		e = [[NSApp windows] objectEnumerator];
 		while (window = [e nextObject])

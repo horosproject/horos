@@ -952,24 +952,24 @@ ReadGroup3 (PapyShort inFileNb, PapyUShort *outGroupNbP, unsigned char **outBuff
   } /* if */
   
   i = 0L;	/* position in the read buffer */
-  *outGroupNbP	= Extract2Bytes (*outBuffP, &i, gArrTransfSyntax [inFileNb]);	/* group number */
-  theElemNb   	= Extract2Bytes (*outBuffP, &i, gArrTransfSyntax [inFileNb]);	/* element number */
+  *outGroupNbP	= Extract2Bytes (*outBuffP, &i);	/* group number */
+  theElemNb   	= Extract2Bytes (*outBuffP, &i);	/* element number */
   
   /* check the transfert syntax */
   if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL || *outGroupNbP == 0x0002)
   {
     i += 2;	/* moves 2 bytes forward */
-    theTemplGr2 = Extract2Bytes (*outBuffP, &i, gArrTransfSyntax [inFileNb]);
+    theTemplGr2 = Extract2Bytes (*outBuffP, &i);
     theTempL    = (PapyULong) theTemplGr2;		/* element length */
   } /* if ...EXPLICIT VR */
   /* IMPLICIT VR */
-  else theTempL = Extract4Bytes (*outBuffP, &i, gArrTransfSyntax [inFileNb]);	/* element length */
+  else theTempL = Extract4Bytes (*outBuffP, &i);	/* element length */
         
         
   /* length of the group element is present */
   /* or DICOMDIR, so compute it */
   if (theElemNb == 0) /* && *outGroupNbP != 0x0004)*/
-    theGrLength = Extract4Bytes (*outBuffP, &i, gArrTransfSyntax [inFileNb]);
+    theGrLength = Extract4Bytes (*outBuffP, &i);
   /* group with no length set, so compute it */
   else
   {
@@ -1211,7 +1211,7 @@ Papy3GetNextGroupNb (PapyShort inFileNb)
   } /* if */
    
   i = 0L;
-  theGroupNb = Extract2Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
+  theGroupNb = Extract2Bytes (theBuff, &i);
   
   /* resets the file pointer to its previous position */
   if (Papy3FSeek (theFp, (int) SEEK_CUR, (PapyLong) -2L) != 0) RETURN (papPositioning);
@@ -1253,8 +1253,8 @@ Papy3SkipNextGroup (PapyShort inFileNb)
   } /* if */
     
   i = 0L;
-  theGrNb  = Extract2Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
-  theTempS = Extract2Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
+  theGrNb  = Extract2Bytes (theBuff, &i);
+  theTempS = Extract2Bytes (theBuff, &i);
 
   /* DICOMDIR separator  0xFFFE:0xE000 */
   if ((theGrNb == 0xFFFE) && (theTempS == 0xE000)) 
@@ -1271,14 +1271,14 @@ Papy3SkipNextGroup (PapyShort inFileNb)
   {
     /* test the VR */
     if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002)
-      theTempL = Extract4Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
+      theTempL = Extract4Bytes (theBuff, &i);
     else 
     {
       i += 2L;
-      theTempL = (PapyULong) Extract2Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
+      theTempL = (PapyULong) Extract2Bytes (theBuff, &i);
     } /* else */
     /* if (theTempL != 4L) RETURN (papElemSize); this is to let pass little endian impl gr2 files */
-    theGrLength = Extract4Bytes (theBuff, &i, gArrTransfSyntax [inFileNb]);
+    theGrLength = Extract4Bytes (theBuff, &i);
 	
 //	if( theGrLength <= 0)
 	// ANTOINE 2005
@@ -1430,20 +1430,29 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
     /* updates the current position in the read buffer */
     i = (PapyULong) 2L;  
     /* extract the group number according to the little-endian syntax */
+	#if __BIG_ENDIAN__
     theExtrGrNb  = (PapyUShort) (*(theBuffP + 1));
     theExtrGrNb  = theExtrGrNb << 8;
     theExtrGrNb |= (PapyUShort) *theBuffP;
-    
+    #else
+	theExtrGrNb  = *((PapyUShort*) theBuffP);
+	#endif
+	
     /* points to the right place in the buffer */
     theBuffP  = theBuff;
     theBuffP += i;
     /* updates the current position in the read buffer */
     i += 2L;
     /* extract the element number according to the little-endian syntax */
+	#if __BIG_ENDIAN__
     theExtrElemNb  = (PapyUShort) (*(theBuffP + 1));
     theExtrElemNb  = theExtrElemNb << 8;
     theExtrElemNb |= (PapyUShort) *theBuffP;
-    
+    #else
+	 theExtrElemNb  = *((PapyUShort*) theBuffP);
+	#endif
+	
+	
     /* points to the right place in the buffer */
     theBuffP  = theBuff;
     theBuffP += i;
@@ -1452,6 +1461,7 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
     if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL)
     {
       /* extract the element length according to the little-endian syntax */
+	  #if __BIG_ENDIAN__
       theTmpULong   = (PapyULong) (*(theBuffP + 3));
       theTmpULong   = theTmpULong << 24;
       theULong	    = theTmpULong;
@@ -1464,6 +1474,9 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
       theTmpULong   = (PapyULong) *theBuffP;
       theULong 	   |= theTmpULong;
       theElemLength    = theULong;
+	  #else
+	  theElemLength    = *((PapyULong*) theBuffP);
+	  #endif
       /* updates the current position in the read buffer */
       i += 4L;
     } /* if ...implicit VR */
@@ -1496,6 +1509,7 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
         } /* if */
         
         /* extract the element length according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         theTmpULong	= (PapyULong) (*(theBuffP + 3));
         theTmpULong	= theTmpULong << 24;
         theULong	= theTmpULong;
@@ -1508,16 +1522,23 @@ Papy3FindOwnerRange (PapyShort inFileNb, PapyUShort inGroupNb, char *inOwnerStrP
         theTmpULong 	= (PapyULong) *theBuffP;
         theULong       |= theTmpULong;
         theElemLength	= theULong;
+		#else
+		theElemLength	= *((PapyULong*) theBuffP);
+		#endif
       } /* if ...VR = OB, OW, SQ, UN or UT */
       else	/* other VRs */
       {
         /* updates the current position in the read buffer */
         i += 2L;
         /* extract the element number according to the little-endian syntax */
+		#if __BIG_ENDIAN__
         tmpUShort  = (PapyUShort) (*(theBuffP + 1));
         tmpUShort  = tmpUShort << 8;
         tmpUShort |= (PapyUShort) *theBuffP;
-        
+        #else
+		tmpUShort  = *((PapyUShort*) theBuffP);
+		#endif
+		
         theElemLength = (PapyULong) tmpUShort;
       } /* else ...other VRs */
     } /* else ...explicit VR */
@@ -1646,20 +1667,29 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
     /* updates the current position in the read buffer */
     i = (PapyULong) 2L;  
     /* extract the element according to the little-endian syntax */
+	#if __BIG_ENDIAN__
     theTmpGrNb  = (PapyUShort) (*(theCharP + 1));
     theTmpGrNb  = theTmpGrNb << 8;
     theTmpGrNb |= (PapyUShort) *theCharP;
-    
+    #else
+	theTmpGrNb  = *((PapyUShort*) theCharP);
+	#endif
+	
+	
     /* points to the right place in the buffer */
     theCharP  = theBuff;
     theCharP += i;
     /* updates the current position in the read buffer */
     i += 2L;
     /* extract the element according to the little-endian syntax */
+	#if __BIG_ENDIAN__
     theTmpElemNb  = (PapyUShort) (*(theCharP + 1));
     theTmpElemNb  = theTmpElemNb << 8;
     theTmpElemNb |= (PapyUShort) *theCharP;
-    
+    #else
+	theTmpElemNb  = *((PapyUShort*) theCharP);
+	#endif
+	
     /* points to the right place in the buffer */
     theCharP  = theBuff;
     theCharP += i;
@@ -1695,6 +1725,7 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
         } /* if */
       
         /* extract the element according to the little-endian implicit syntax */
+		#if __BIG_ENDIAN__
         theTmpULong      = (PapyULong) (*(theCharP + 3));
         theTmpULong      = theTmpULong << 24;
         theULong	 = theTmpULong;
@@ -1707,7 +1738,10 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
         theTmpULong      = (PapyULong) *theCharP;
         theULong        |= theTmpULong;
         *outElemLengthP  = theULong;
-        
+        #else
+		*outElemLengthP  = *((PapyULong*) theCharP);
+		#endif
+		
         /* updates the number of bytes read */
         i += 4L;
 
@@ -1715,10 +1749,14 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
       else /* other VRs */
       {
         /* extract the element according to the little-endian explicit vr syntax */
+		#if __BIG_ENDIAN__
         theTmpElemL  = (PapyUShort) (*(theCharP + 1));
         theTmpElemL  = theTmpElemL << 8;
         theTmpElemL |= (PapyUShort) *theCharP;
-      
+        #else
+		theTmpElemL  = *((PapyUShort*) theCharP);
+		#endif
+		
         *outElemLengthP = (PapyULong) theTmpElemL;
         
         /* updates the number of bytes read */
@@ -1730,6 +1768,7 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
     else /* Little-endian IMPLICIT VR */
     {
       /* extract the element according to the little-endian implicit syntax */
+	  #if __BIG_ENDIAN__
       theTmpULong      = (PapyULong) (*(theCharP + 3));
       theTmpULong      = theTmpULong << 24;
       theULong	       = theTmpULong;
@@ -1742,6 +1781,9 @@ Papy3GotoElemNb (PapyShort inFileNb, PapyUShort inGroupNb, PapyUShort inElemNb,
       theTmpULong      = (PapyULong) *theCharP;
       theULong 	      |= theTmpULong;
       *outElemLengthP  = theULong;
+	  #else
+	  *outElemLengthP  = *((PapyULong*) theCharP);
+	  #endif
     
       /* updates the current position in the read buffer */
       i += 4L;
@@ -1808,12 +1850,12 @@ Papy3ExtractItemLength (PapyShort inFileNb)
 
   /* extract the values from the buffer */
   theBufPos = 0L;
-  theUS = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+  theUS = Extract2Bytes (theBuffP, &theBufPos);
   if (theUS != 0xFFFE) return (PapyULong) papGroupNumber;
-  theUS = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+  theUS = Extract2Bytes (theBuffP, &theBufPos);
   if (theUS != 0xE000) return (PapyULong) papElemNumber;
   
-  theItemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+  theItemLength = Extract4Bytes (theBuffP, &theBufPos);
   if (theItemLength <= 0) return (PapyULong) papElemSize;
   else 
     if (theItemLength == 0xFFFFFFFF) ComputeUndefinedItemLength3 (inFileNb, &theItemLength);
@@ -1868,14 +1910,14 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
     /* get the group number, the element number and the element length of the */
     /* group */
     theBufPos = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
     
     /* extract the element length depending on the syntax */
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) || 
     	(theGrNb == 0xFFFE && theElemNb == 0xE000) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE00D))
-      theElemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+      theElemLength = Extract4Bytes (theBuffP, &theBufPos);
     else
     {
       /* extract the VR */
@@ -1902,10 +1944,10 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
         } /* if */
         *ioItemLengthP += 4L;
         theBufPos = 0L;
-        theElemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+        theElemLength = Extract4Bytes (theBuffP, &theBufPos);
       }
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]); 
+        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
     } /* else ...EXPLICIT VR */
     
     /* is it the end of item delimiter ? */
@@ -1998,15 +2040,15 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
     /* get the group number, the element number and the element length of the */
     /* item delimiter element */
     theBufPos 	  = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
     
     /* extract the element length depending on the syntax */
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) || 
     	(theGrNb == 0xFFFE && theElemNb == 0xE000) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE00D) ||
     	(theGrNb == 0xFFFE && theElemNb == 0xE0DD))
-      theElemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+      theElemLength = Extract4Bytes (theBuffP, &theBufPos);
     else
     {
       /* extract the VR */
@@ -2033,10 +2075,10 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
         } /* if */
         *ioSeqLengthP += 4L;
         theBufPos = 0L;
-        theElemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+        theElemLength = Extract4Bytes (theBuffP, &theBufPos);
       }
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]); 
+        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
     } /* else ...EXPLICIT VR */
     
     /* is it the sequence delimiter ? */
@@ -2105,8 +2147,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 
   /* get the group number and the element number */
   theBufPos 	= 0L;
-  theGrNb       = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
-  theElemNb     = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+  theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
+  theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
   
   /* set some comparison variables */
   theCmpGrNb   	= theGrNb;
@@ -2133,8 +2175,8 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
 
     /* get the group number, the element number and the element length */
     theBufPos = 0L;
-    theGrNb       = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
-    theElemNb     = Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+    theGrNb       = Extract2Bytes (theBuffP, &theBufPos);
+    theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
     
     /* reset the VR ... */
     theVR [0] = 'A'; theVR [1] = 'A'; theVR [2] = '\0';
@@ -2143,7 +2185,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) ||
         (theGrNb == 0xFFFE && theElemNb == 0xE000) ||
         (theGrNb == 0xFFFE && theElemNb == 0xE00D))
-       theElemLength = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+       theElemLength = Extract4Bytes (theBuffP, &theBufPos);
     else
     {
       /* extract the VR */
@@ -2186,11 +2228,11 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
           } /* if */
           theGroupLength += 4L;
           theBufPos       = 0L;
-          theElemLength   = Extract4Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]);
+          theElemLength   = Extract4Bytes (theBuffP, &theBufPos);
         } /* else ...elem not 0x0004, 0x1220 */
       } /* if ...VR = OB, OW, SQ, Un or UT */
       else
-        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos, gArrTransfSyntax [inFileNb]); 
+        theElemLength = (PapyULong) Extract2Bytes (theBuffP, &theBufPos); 
     } /* else ...EXPLICIT VR */
     
     /* makes sure the element belongs to the group */
