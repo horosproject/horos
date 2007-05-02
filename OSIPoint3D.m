@@ -46,33 +46,56 @@
 }
 
 // init with x, y, and z
-- (id)initWithX:(float)x  y:(float)y  z:(float)z{
+- (id)initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value{
 	if (self = [super init]) {
 		_x = x;
 		_y = y;
 		_z = z;
+		_value = [value retain];
 	}
 	return self;
 }
 
 
 // init with the point and the slice
-- (id)initWithPoint:(NSPoint)point  slice:(long)slice{
+- (id)initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value{
 	if (self = [super init]) {
 		_x = point.x;
 		_y = point.y;
 		_z = (float)slice;
+		_value = [value retain];
 	}
 	return self;
 }
 
-+ (id)pointWithX:(float)x  y:(float)y  z:(float)z{
-	return [[[OSIPoint3D alloc] initWithX:(float)x  y:(float)y  z:(float)z] autorelease];
++ (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value{
+	return [[[OSIPoint3D alloc] initWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value] autorelease];
 }
 
 
-+ (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice{
-	return [[[OSIPoint3D alloc] initWithPoint:(NSPoint)point  slice:(long)slice] autorelease];
++ (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value{
+	return [[[OSIPoint3D alloc] initWithPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value] autorelease];
 }
+
+- (NSNumber *)value {
+	return _value;
+}
+
+- (void)setValue:(NSNumber *)value{
+	[_value release];
+	_value = [value retain];
+}
+
+- (void)dealloc{
+	[_value release];
+	[super dealloc];
+}
+
+- (void)description {
+	return [NSString stringWithFormat:@"OSIPoint\nx = %2.1f y = %2.1f z = %2.1f value: %@", _x, _y, _z, _value];
+}
+	
+
+
 
 @end
