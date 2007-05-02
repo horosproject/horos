@@ -438,4 +438,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 - (void)mouseDraggedRepulsor:(NSEvent *)event;
 - (void)mouseDraggedROISelector:(NSEvent *)event;
 
+- (void)deleteROIGroupID:(NSTimeInterval)groupID;
+
 @end

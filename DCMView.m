@@ -1009,16 +1009,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	long	i;
 	BOOL	done = NO;
-	
+	NSTimeInterval groupID;
+
 	if( [self is2DViewer]) [[self windowController] addToUndoQueue:@"roi"];
 	
 	for( i = 0; i < [curRoiList count]; i++)
 	{
 		if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 		{
+			groupID = [[curRoiList objectAtIndex:i] groupID];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 			[curRoiList removeObjectAtIndex:i];
 			i--;
+			if(groupID!=0.0)[self deleteROIGroupID:groupID];
 		}
 	}
 	
@@ -1702,6 +1705,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			// NE PAS OUBLIER DE CHANGER EGALEMENT LE CUT !
 			long	i;
 			BOOL	done = NO;
+			NSTimeInterval groupID;
 			
 			for( i = 0; i < [curRoiList count]; i++)
 			{
@@ -1709,9 +1713,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				{
 					if( [[curRoiList objectAtIndex:i] deleteSelectedPoint] == NO)
 					{
+						groupID = [[curRoiList objectAtIndex:i] groupID];
 						[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 						[curRoiList removeObjectAtIndex:i];
 						i--;
+						if(groupID!=0.0)[self deleteROIGroupID:groupID];
 					}
 				}
 			}
@@ -1720,9 +1726,11 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			{
 				if( [[curRoiList objectAtIndex:i] ROImode] == ROI_selected)
 				{
+					groupID = [[curRoiList objectAtIndex:i] groupID];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"removeROI" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 					[curRoiList removeObjectAtIndex:i];
 					i--;
+					if(groupID!=0.0)[self deleteROIGroupID:groupID];
 				}
 			}
 			
@@ -1969,6 +1977,19 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     }
 }
 
+- (void)deleteROIGroupID:(NSTimeInterval)groupID;
+{
+	int i;
+	for(i=0; i<[curRoiList count]; i++)
+	{
+		if([[curRoiList objectAtIndex:i] groupID] == groupID)
+		{
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"removeROI" object:[curRoiList objectAtIndex:i] userInfo:nil];
+			[curRoiList removeObjectAtIndex:i];
+			i--;
+		}
+	}
+}
 
 - (void)flagsChanged:(NSEvent *)event
 {
