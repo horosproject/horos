@@ -706,7 +706,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
            selector: @selector(CloseViewerNotification:)
                name: @"CloseViewerNotification"
              object: nil];
-	
+
 	//should we always zoom the Window?
 	//if( [style isEqualToString:@"standard"])
 	//	[[self window] performZoom:self];
@@ -748,6 +748,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[view setLOD: 1.0];
 		[LODSlider setIntValue: 1];
 	}
+		
     return self;
 }
 
@@ -1124,7 +1125,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (IBAction) applyShading:(id) sender
 {
 	NSDictionary	*dict = [[shadingsPresetsController selectedObjects] lastObject];
-	
+		
 	float ambient, diffuse, specular, specularpower;
 	
 	ambient = [[dict valueForKey:@"ambient"] floatValue];
@@ -2565,6 +2566,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	else
 	{
 		[clutOpacityView loadFromFileWithName:[sender title]];
+		curCLUTMenu = [[sender title] retain];
 		[clutOpacityView setCLUTtoVRView:NO];
 		[clutOpacityView updateView];
 		[[[clutPopup menu] itemAtIndex:0] setTitle:[sender title]];
@@ -2623,6 +2625,181 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (BOOL)drawerDidOpen:(NSDrawer *)sender
 {
 	[[self window] zoom:self];
+}
+
+#pragma mark-
+#pragma mark 3D presets
+
+#define PRESETS_DIRECTORY @"/3DPRESETS/"
+
+- (NSMutableDictionary*)getCurrent3DSettings;
+{
+	//window level & width
+	float iwl, iww;
+	[view getWLWW:&iwl :&iww];
+	//background color
+	NSColor *backgroundColor = [view backgroundColor];
+	//shading
+	NSDictionary *shading = [[shadingsPresetsController selectedObjects] lastObject];
+	NSString *shadingPresetName = [shading valueForKey:@"name"];
+	//CLUT
+	BOOL isAdvancedCLUT = [view advancedCLUT];
+	NSString *clut = curCLUTMenu;
+	//convolution filter
+	NSString *convolution = [viewer2D valueForKey:@"curConvMenu"];
+	//projection
+	int projection = [[view valueForKey:@"projectionMode"] intValue];
+	
+	NSMutableDictionary *presetDictionary = [NSMutableDictionary dictionaryWithCapacity:6];
+	[presetDictionary setObject:[NSNumber numberWithFloat:iwl] forKey:@"wl"];
+	[presetDictionary setObject:[NSNumber numberWithFloat:iww] forKey:@"ww"];
+
+	NSColor *color = [backgroundColor colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+	[presetDictionary setObject:[NSNumber numberWithFloat:[color redComponent]] forKey:@"backgroundColorRedComponent"];
+	[presetDictionary setObject:[NSNumber numberWithFloat:[color greenComponent]] forKey:@"backgroundColorGreenComponent"];
+	[presetDictionary setObject:[NSNumber numberWithFloat:[color blueComponent]] forKey:@"backgroundColorBlueComponent"];
+	
+	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
+	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
+	[presetDictionary setObject:clut forKey:@"CLUT"];
+	[presetDictionary setObject:convolution forKey:@"convolution"];
+	[presetDictionary setObject:[NSNumber numberWithInt:projection] forKey:@"projection"];
+	
+	return presetDictionary;
+}
+
+- (IBAction)save3DSettings:(id)sender;
+{	
+	NSMutableDictionary *presetDictionary = [self getCurrent3DSettings];
+		
+	if([[sender className] isEqualToString:@"NSMenuItem"])
+	{		
+		[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
+		[settingsShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+		[settingsWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
+		[settingsConvolutionFilterTextField setStringValue:[NSString stringWithFormat:@"Filter: %@", [presetDictionary objectForKey:@"convolution"]]];
+		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+		
+		int proj = [[presetDictionary objectForKey:@"projection"] intValue];
+		NSString *projectionName;
+		if(proj==0)
+			projectionName = @"Perspective";
+		else if(proj==1)
+			projectionName = @"Parallel";
+		else if(proj==2)
+			projectionName = @"Endoscopy";
+		[settingsProjectionTextField setStringValue:[NSString stringWithFormat:@"Projection: %@", projectionName]];
+		
+		[settingsGroupPopUpButton removeAllItems];
+		
+		NSArray *groups = [self find3DSettingsGroups];
+		int i;
+		for(i=0; i<[groups count]; i++)
+		{
+			[settingsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
+		}
+		if([groups count]>0)
+			[[settingsGroupPopUpButton menu] addItem:[NSMenuItem separatorItem]];
+		[settingsGroupPopUpButton addItemWithTitle:@"New group"];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
+
+		[self show3DSettingsNewGroupTextField:[settingsGroupPopUpButton selectedItem]];
+		
+		[NSApp beginSheet:save3DSettingsWindow modalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+	}
+	else if([[sender className] isEqualToString:@"NSButton"])
+	{
+		[self close3DSettingsSavePanel:sender];
+		NSString *settingsName = [settingsNameTextField stringValue];
+		NSString *groupName;
+		if(![settingsNewGroupNameTextField isHidden]) groupName = [settingsNewGroupNameTextField stringValue];
+		else groupName = [[settingsGroupPopUpButton selectedItem] title];
+		
+		[self save3DSettings:presetDictionary WithName:settingsName group:groupName];
+	}
+}
+
+- (NSArray*)find3DSettingsGroups;
+{
+	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:PRESETS_DIRECTORY];
+	
+	NSMutableArray *settingsGroups = [NSMutableArray array];
+	
+	BOOL isDir = YES;
+	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	{
+		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
+		int i;
+		for(i=0; i<[settingsFiles count]; i++)
+		{
+			NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+			if(settings)
+			{
+				if([[settings allKeys] containsObject:@"groupName"])
+				{
+					[settingsGroups addObject:[settings objectForKey:@"groupName"]];
+					[settings release];
+				}
+			}
+		}
+	}
+	return settingsGroups;
+}
+
+- (IBAction)enable3DSettingsSaveButton:(id)sender;
+{
+	BOOL condition = [[settingsNameTextField stringValue] length] > 0;
+	if(![settingsNewGroupNameTextField isHidden]) condition &= [[settingsNewGroupNameTextField stringValue] length] > 0;
+	
+	if(condition)
+		[settingsSaveButton setEnabled:YES];
+	else
+		[settingsSaveButton setEnabled:NO];
+}
+
+- (void)controlTextDidChange:(NSNotification*)notification;
+{
+	if([[notification object] isEqualTo:settingsNameTextField] || [[notification object] isEqualTo:settingsNewGroupNameTextField])
+		[self enable3DSettingsSaveButton:self];
+}
+
+- (IBAction)show3DSettingsNewGroupTextField:(id)sender;
+{
+	if([[sender title] isEqualToString:@"New group"])
+	{
+		[settingsNewGroupNameTextField setHidden:NO];
+		[settingsNewGroupNameLabelTextField setHidden:NO];
+	}
+	else
+	{
+		[settingsNewGroupNameTextField setHidden:YES];
+		[settingsNewGroupNameLabelTextField setHidden:YES];
+	}
+	[self enable3DSettingsSaveButton:self];
+}
+
+- (IBAction)close3DSettingsSavePanel:(id)sender;
+{
+	[save3DSettingsWindow orderOut:sender];
+	[NSApp endSheet:save3DSettingsWindow];
+}
+
+- (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
+{
+	[settings setObject:groupName forKey:@"groupName"];
+
+	// Path of the file to create
+	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:PRESETS_DIRECTORY];
+	BOOL isDir = YES;
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	[path appendString:name];
+	[path appendString:@".plist"];
+	
+	[settings writeToFile:path atomically:YES];
 }
 
 @end

@@ -316,6 +316,7 @@ typedef char* vtkMyCallbackVR;
 - (void) setEngine: (long) engineID showWait:(BOOL) showWait;
 - (IBAction)changeColorWith:(NSColor*) color;
 - (IBAction)changeColor:(id)sender;
+- (NSColor*)backgroundColor;
 - (void) exportDICOMFile:(id) sender;
 -(unsigned char*) getRawPixels:(long*) width :(long*) height :(long*) spp :(long*) bpp :(BOOL) screenCapture :(BOOL) force8bits;
 -(void) set3DStateDictionary:(NSDictionary*) dict;
@@ -441,6 +442,7 @@ typedef char* vtkMyCallbackVR;
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 - (void)setAdvancedCLUTWithName:(NSString*)name;
+- (BOOL)advancedCLUT;
 - (VRController*)controller;
 - (BOOL)isRGB;
 

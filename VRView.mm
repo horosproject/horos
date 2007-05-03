@@ -5186,6 +5186,11 @@ public:
 		[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace]];
 }
 
+- (NSColor*)backgroundColor;
+{
+	return [backgroundColor color];
+}
+
 - (void) convert3Dto2Dpoint:(float*) pt3D :(float*) pt2D
 {
 	vtkTransform *Transform = vtkTransform::New();
@@ -6303,6 +6308,11 @@ public:
 
 - (void)setAdvancedCLUTWithName:(NSString*)name;
 {
+}
+
+- (BOOL)advancedCLUT;
+{
+	return advancedCLUT;
 }
 
 -(VRController*)controller;
