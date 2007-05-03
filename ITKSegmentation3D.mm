@@ -931,7 +931,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 - (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
 	// Setup 
 	DCMPix *curPix = [[srcViewer imageView] curDCM];
-	long minSize = 15;
+	long minSize = 1;
 	long x,y,z;
 	long width = (int)[curPix pwidth];
 	long height = (int)[curPix pheight];
@@ -956,7 +956,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef signed short SSPixelType;
 	typedef itk::Image< SSPixelType, 3 > SSImageType;
 	// Type distance Filter
-	typedef itk::SignedDanielssonDistanceMapImageFilter< CharImageType, SignedCharImageType  > DistanceMapType;
+	typedef itk::SignedDanielssonDistanceMapImageFilter< CharImageType, SSImageType  > DistanceMapType;
 	DistanceMapType::Pointer distanceMapFilter = DistanceMapType::New();
 	distanceMapFilter->InsideIsPositiveOn ();
 	//distanceMapFilter->SetInsideValue(255.0);
@@ -1029,11 +1029,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	*/
 	
 	NSLog(@"get max values");
-	signed char *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
+	signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
 	
 
 	NSMutableSet *pointSet = [NSMutableSet set];
-	[[NSData dataWithBytes:buff length:(width * height * depth)] writeToFile:@"/Users/lpysher/Desktop/DistanceMap.data" atomically:YES];
+	//[[NSData dataWithBytes:buff length:(width * height * depth * 2)] writeToFile:@"/Users/lpysher/Desktop/DistanceMap.data" atomically:YES];
 	int i;
 	for (z = minSize; z < d; z++) {
 		
@@ -1046,8 +1046,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			long currentRow = width * y;
 			for (x = minSize; x < w; x++) {
 				long position = currentSlice + currentRow + x;
-				signed char distance = buff[position];
+				signed short distance = buff[position];
 				int isDistanceMaximum = 0;
+				//NSLog(@"distance %d", distance);
 				//if (position % 1000 == 0)
 				//	NSLog(@"x= %d y = %d z = %d distance: %d", x, y, z, distance);
 				if (distance > minSize) {
@@ -1060,11 +1061,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					// get z pixels
 					if (distance > buff[sliceAbove + currentRow + x] && distance > buff[sliceBelow + currentRow + x])
 						isDistanceMaximum++;
-						
+					
 					// if is Distance Maximum in neighborhood
 					if (isDistanceMaximum > 1) {
 						// add to set
-						[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithChar:distance]]];
+						NSLog(@"add point");
+						[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
 						//change maxDistance
 						if (distance > maxDistance)
 							maxDistance = distance;
@@ -1085,16 +1087,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	int scalingFactor = 0.5;
 	NSLog(@"Distance Point Count: %d", [pointSet count]);
 	while (count < maxCount && maxDistance > minSize) {
-		NSLog(@"max distance: %d", maxDistance);
+		//NSLog(@"max distance: %d", maxDistance);
 		NSEnumerator *enumerator = [pointSet objectEnumerator];
 		OSIPoint3D *point;
-		signed char distance;
+		signed short distance;
 		while (point = [enumerator nextObject]){
 			//NSLog(@"current Point: %@", point);
 			long positionSlice = (long)[point z];
 			long positionRow = (long)[point y];
 			long positionIndex = (long)[point x];
-			distance = [[point value] charValue];
+			distance = [[point value] shortValue];
 			if (distance >= maxDistance) {
 				// Add node if is not within the range of previous nodes
 				NSEnumerator *nodeEnumerator = [nodeSet objectEnumerator];
