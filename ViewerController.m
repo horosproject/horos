@@ -2528,6 +2528,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[cell setButtonType:NSPushOnPushOffButton];
 			[cell setEnabled:NO];
 			[cell setImage: 0L];
+			[cell setRepresentedObject: 0L];
 			
 			NSString	*name = [curStudy valueForKey:@"studyName"];
 			if( [name length] > 15) name = [name substringToIndex: 15];
@@ -2540,7 +2541,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( comment == 0L) comment = @"";
 			
 			[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@\r%@\r%@", name, [[curStudy valueForKey:@"date"] descriptionWithCalendarFormat:sdf timeZone:0L locale:locale], [series count], @"series", stateText, comment]];
-//			[cell setBackgroundColor: [NSColor whiteColor]];
+			[cell setBackgroundColor: [NSColor whiteColor]];
 //			[cell setBordered: NO];
 			
 			index++;

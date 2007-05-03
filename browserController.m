@@ -3680,17 +3680,23 @@ static BOOL				DICOMDIRCDMODE = NO;
 {
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
+		[managedObjectContext lock];
+		
 		// Sort images with "instanceNumber"
 		NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES];
 		NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
 		[sort release];
 		NSArray *sortedArray = [[[item valueForKey:@"images"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
 		
+		[managedObjectContext unlock];
+		
 		return sortedArray;
 	}
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
 	{
+		[managedObjectContext lock];
+		
 		// Sort series with "id" & date
 		NSSortDescriptor * sortid = [[NSSortDescriptor alloc] initWithKey:@"seriesInstanceUID" ascending:YES selector:@selector(numericCompare:)];		//id
 		NSSortDescriptor * sortdate = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
@@ -3700,8 +3706,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[sortid release];
 		[sortdate release];
 		
-		if( onlyImages) return [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
-		else return [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+		NSArray *sortedArray;
+		
+		if( onlyImages) sortedArray = [[item valueForKey:@"imageSeries"] sortedArrayUsingDescriptors: sortDescriptors];
+		else sortedArray = [[[item valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: sortDescriptors];
+		
+		[managedObjectContext unlock];
+		
+		return sortedArray;
 	}
 
 	return 0L;
