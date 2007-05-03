@@ -207,15 +207,15 @@ Papy3FSeek (PAPY_FILE inFp, int inPosMode, PapyLong inOffset)
   PapyLong startPos, fileLimit;
   long     err;
 
-  if (inOffset > 100000L) 
-  {
-    startPos = (PapyLong) ftell (inFp);
-    /* get the end of file */
-    err = fseek (inFp, 0L, (int) SEEK_END);
-    fileLimit = (PapyLong) ftell (inFp);
-    if (inOffset > fileLimit) return -1;  
-    err = fseek (inFp, (long) startPos, (int) SEEK_SET);
-  }
+//  if (inOffset > 1000000L)			// THIS IS EXTREMELY SLOW....
+//  {
+//    startPos = (PapyLong) ftell (inFp);
+//    /* get the end of file */
+//    err = fseek (inFp, 0L, (int) SEEK_END);
+//    fileLimit = (PapyLong) ftell (inFp);
+//    if (inOffset > fileLimit) return -1;  
+//    err = fseek (inFp, (long) startPos, (int) SEEK_SET);
+//  }
 
 //	startPos = (PapyLong) ftell (inFp);
 

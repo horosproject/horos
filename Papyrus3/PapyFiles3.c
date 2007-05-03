@@ -2131,7 +2131,6 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
   
   
   /* initializations */
-  strcpy (theVR, " ");
   if (inMaxSize == -1) inMaxSize = 1000000; /* arbitrary value */
   theGroupLength  = 0L;
   Papy3FTell (gPapyFile [inFileNb], (PapyLong *) &theFileStartPos);
@@ -2179,7 +2178,7 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     theElemNb     = Extract2Bytes (theBuffP, &theBufPos);
     
     /* reset the VR ... */
-    theVR [0] = 'A'; theVR [1] = 'A'; theVR [2] = '\0';
+    theVR [0] = 'A'; theVR [1] = 'A';
 
     /* extract the element length depending on the syntax */
     if ((gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_IMPL && theGrNb != 0x0002) ||
@@ -2192,16 +2191,15 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
       theBuffP  += theBufPos;
       theVR [0]  = (char) *theBuffP;
       theVR [1]  = (char) *(theBuffP + 1);
-      theVR [2]  = '\0';
       theBuffP   = (unsigned char *) &theBuff [0];
       theBufPos += 2;
       
       /* get the element length depending on the VR */
-      if (strcmp (theVR, "OB") == 0 ||
-          strcmp (theVR, "OW") == 0 || 
-          strcmp (theVR, "SQ") == 0 || 
-          strcmp (theVR, "UN") == 0 || 
-          strcmp (theVR, "UT") == 0)
+      if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+			(theVR[0] == 'O' && theVR[1] == 'W') || 
+			(theVR[0] == 'S' && theVR[1] == 'Q') || 
+			(theVR[0] == 'U' && theVR[1] == 'N') || 
+			(theVR[0] == 'U' && theVR[1] == 'T'))
       {
         /* DICOMDIR : here is the record sequence*/
         if (theGrNb == 0x0004 && theElemNb == 0x1220)
@@ -2255,9 +2253,15 @@ ComputeUndefinedGroupLength3 (PapyShort inFileNb, PapyLong inMaxSize)
     } /* if ...element in group */
     else
     {
-      OK = TRUE;
-      theGroupLength -= 8L;
-      if (strcmp (theVR, "OB") == 0 || strcmp (theVR, "OW") == 0 || strcmp (theVR, "SQ") == 0 || strcmp (theVR, "UN") == 0 || strcmp (theVR, "UT") == 0) // ANTOINE: UN et UT RAJOUTE!
+		OK = TRUE;
+		theGroupLength -= 8L;
+		
+       if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+			(theVR[0] == 'O' && theVR[1] == 'W') || 
+			(theVR[0] == 'S' && theVR[1] == 'Q') || 
+			(theVR[0] == 'U' && theVR[1] == 'N') || 
+			(theVR[0] == 'U' && theVR[1] == 'T'))
+			 // ANTOINE: UN et UT RAJOUTE!
         theGroupLength -= 4L;
     } /* else ...end of group reached */
     

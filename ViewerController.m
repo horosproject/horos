@@ -10115,7 +10115,7 @@ int i,j,l;
 			{
 			//	if( [[vC modality] isEqualToString:[self modality]])	For PET CT, we have to sync this even if the modalities are not equal!
 				{
-//					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]]) // We should be able to propagate across series -JS
+					if( [[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: [[[vC fileList] objectAtIndex:0] valueForKeyPath:@"series.study.studyInstanceUID"]])
 					{
 						NSPoint pan, delta;
 						
@@ -10127,10 +10127,10 @@ int i,j,l;
 						delta.y *= [imageView scaleValue];
 						
 						[[vC imageView] setOrigin: NSMakePoint( pan.x + delta.x, pan.y - delta.y)];
-						
-						fValue = [imageView rotation];
-						[[vC imageView] setRotation: fValue];
 					}
+					
+					fValue = [imageView rotation];
+					[[vC imageView] setRotation: fValue];
 				}
 			}
 		}
