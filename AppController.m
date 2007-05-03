@@ -923,6 +923,7 @@ NSRect screenFrame()
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"updateServers"];
 		[[QueryController currentQueryController] refreshSources];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
 	}
 	
 	[[BrowserController currentBrowser] setNetworkLogs];

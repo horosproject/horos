@@ -923,6 +923,7 @@ static NSString *hostName = @"";
 
 	// ** ROI Default
 	[defaultValues setObject:[NSNumber numberWithFloat: 2] forKey:@"ROIThickness"];
+	[defaultValues setObject:[NSNumber numberWithFloat: 3] forKey:@"ROITextThickness"];
 	[defaultValues setObject:[NSNumber numberWithFloat: 1.0] forKey:@"ROIOpacity"];
 	[defaultValues setObject:[NSNumber numberWithFloat: 0.3 * 65535.] forKey:@"ROIColorR"];
 	[defaultValues setObject:[NSNumber numberWithFloat: 1.0 * 65535.] forKey:@"ROIColorG"];

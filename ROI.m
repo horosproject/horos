@@ -593,7 +593,9 @@ GLenum glReportError (void)
 		
 		previousPoint.x = previousPoint.y = -1000;
 		
-		thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIThickness"];
+		if( type == tText) thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextThickness"];
+		else thickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIThickness"];
+		
 		opacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
 		color.red = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorR"];
 		color.green = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIColorG"];
@@ -2202,10 +2204,15 @@ GLenum glReportError (void)
 	
 	if( type == tText || type == t2DPoint)
 	{
-		if (stringTex) [stringTex setString:name withAttributes:stanStringAttrib];
+		NSString	*finalString;
+		
+		if( [comments length] > 0)	finalString  = [name stringByAppendingFormat:@"\r%@", comments];
+		else finalString = name;
+		
+		if (stringTex) [stringTex setString:finalString withAttributes:stanStringAttrib];
 		else
 		{
-			stringTex = [[StringTexture alloc] initWithString:name withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:color.red / 65535. green:color.green / 65535. blue:color.blue / 65535. alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
+			stringTex = [[StringTexture alloc] initWithString:finalString withAttributes:stanStringAttrib withTextColor:[NSColor colorWithDeviceRed:color.red / 65535. green:color.green / 65535. blue:color.blue / 65535. alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:0.0f green:0.0f blue:0.0f alpha:0.0f]];
 			[stringTex setAntiAliasing: YES];
 		}
 		
@@ -2263,22 +2270,23 @@ GLenum glReportError (void)
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIRegionThickness"];
 	}
+	else if( type == tText)
+	{
+		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROITextThickness"];
+		
+		[stanStringAttrib release];
+		
+		// init fonts for use with strings
+		NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + thickness*2];
+		stanStringAttrib = [[NSMutableDictionary dictionary] retain];
+		[stanStringAttrib setObject:font forKey:NSFontAttributeName];
+		[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
+		
+		[self setName:name];
+	}
 	else
 	{
 		[[NSUserDefaults standardUserDefaults] setFloat:thickness forKey:@"ROIThickness"];
-		
-		if( type == tText)
-		{
-			[stanStringAttrib release];
-			
-			// init fonts for use with strings
-			NSFont * font =[NSFont fontWithName:@"Helvetica" size: 12.0 + thickness*2];
-			stanStringAttrib = [[NSMutableDictionary dictionary] retain];
-			[stanStringAttrib setObject:font forKey:NSFontAttributeName];
-			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-			
-			[self setName:name];
-		}
 	}
 }
 

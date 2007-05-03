@@ -7107,6 +7107,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	
 	if( screenCapture)	// Pixels displayed in current window
 	{
+		for( i = 0; i < [curRoiList count]; i++)	[[curRoiList objectAtIndex: i] setROIMode: ROI_sleep];
+		
 	//	if( force8bits)
 		{
 			NSRect size = [self bounds];
@@ -7132,6 +7134,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 					[self setStringID: str];
 					[str release];
 				}
+				else if( [curRoiList count]) [self display];
 				
 				[[self openGLContext] makeCurrentContext];
 				glReadPixels(0, 0, *width, *height, GL_RGB, GL_UNSIGNED_BYTE, buf);
@@ -7417,7 +7420,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	long				width, height, i, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*data;
-	
+		
 	if( numberOf2DViewer > 1 && stringID == 0L && originalSize == NO)
 	{
 		stringID = [@"copy" retain];	// to remove the red square around the image

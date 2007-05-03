@@ -8097,11 +8097,11 @@ static BOOL needToRezoom;
 					}
 					else if( result == 6)
 					{
-					
+						NSLog( @"Open all 3D");
 					}
 					else if( result == 7)
 					{
-					
+						NSLog( @"Open all 4D");
 					}
 					else
 					{
@@ -8144,11 +8144,51 @@ static BOOL needToRezoom;
 						break;
 						
 						case 6:
-							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+						
+							wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+							[wait showWindow:self];
+
+							for( i = 0; i < [splittedSeries count]; i++)
+							{
+								toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: i]];
+								[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+							}
+							toOpenArray = 0L;
 						break;
 						
 						case 7:
-							toOpenArray = [NSMutableArray arrayWithObject: [splittedSeries objectAtIndex: [subOpenMatrix3D selectedColumn]]];
+							{
+							BOOL openAllWindows = YES;
+						
+							if( [[splittedSeries objectAtIndex: 0] count] > 25)
+							{
+								openAllWindows = NO;
+								
+								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Series Opening", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to open %d windows? It's a lot of windows for this screen...", nil), [[splittedSeries objectAtIndex: 0] count]], NSLocalizedString(@"Yes", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+									openAllWindows = YES;
+							}
+							
+							if( openAllWindows)
+							{
+								wait = [[WaitRendering alloc] init: NSLocalizedString(@"Opening...", nil)];
+								[wait showWindow:self];
+								
+								for( i = 0; i < [[splittedSeries objectAtIndex: 0] count]; i++)
+								{
+									NSMutableArray	*array4D = [NSMutableArray array];
+									
+									for( x = 0; x < [splittedSeries count]; x++)
+									{
+										[array4D addObject: [[splittedSeries objectAtIndex: x] objectAtIndex: i]];
+									}
+									
+									toOpenArray = [NSMutableArray arrayWithObject: array4D];
+									
+									[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
+								}
+							}
+							toOpenArray = 0L;
+							}
 						break;
 					}
 				}
@@ -8156,7 +8196,7 @@ static BOOL needToRezoom;
 		}
 
 		
-		if( movieError == NO)
+		if( movieError == NO && toOpenArray != 0L)
 			[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO];
     }
 	
@@ -8866,24 +8906,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self bonjourPublisher:bonjourPublisher];
 	[self displayBonjourServices];
 	
-	if ([[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourServiceName"])
-	{
-		[self setServiceName:[[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourServiceName"]];
-	}
-	else
-	{
-		NSString *userName = (NSString*)CSCopyUserName(NO);
-		NSMutableString *myServiceName = [[NSMutableString alloc] initWithString:userName];
-		if([[[myServiceName substringFromIndex:[myServiceName length]-1] uppercaseString] isEqualToString:@"S"])
-		{
-			[myServiceName appendString:@"' OsiriX"];
-		}
-		else
-		{
-			[myServiceName appendString:@"'s OsiriX"];
-		}
-		[self setServiceName:myServiceName];
-	}
+	[self setServiceName:[[NSUserDefaults standardUserDefaults] objectForKey:@"bonjourServiceName"]];
+	
 	[bonjourServiceName setStringValue:[bonjourPublisher serviceName]];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"bonjourSharing"])
@@ -12466,9 +12490,32 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) setBonjourDownloading:(BOOL) v { bonjourDownloading = v;}
 
+
+- (NSString*) defaultSharingName
+{
+	NSString *userName = (NSString*)CSCopyUserName(NO);
+	NSMutableString *myServiceName = [[NSMutableString alloc] initWithString:userName];
+	if([[[myServiceName substringFromIndex:[myServiceName length]-1] uppercaseString] isEqualToString:@"S"])
+	{
+		[myServiceName appendString:@"' OsiriX"];
+	}
+	else
+	{
+		[myServiceName appendString:@"'s OsiriX"];
+	}
+
+	return myServiceName;
+}
+
 - (void)setServiceName:(NSString*) title
 {
-	[bonjourPublisher setServiceName: title];
+	if( title && [title length] > 0)
+		[bonjourPublisher setServiceName: title];
+	else
+	{
+		[bonjourPublisher setServiceName: [self defaultSharingName]];
+		[bonjourServiceName setStringValue: [self defaultSharingName]];
+	}
 }
 
 - (IBAction)toggleBonjourSharing:(id) sender
