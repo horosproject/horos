@@ -274,6 +274,7 @@
                 rotate90 = id; 
                 saView = id; 
                 saViewOpposite = id; 
+                save3DSettings = id; 
                 scissorStateButtons = id; 
                 segmentationTest = id; 
                 sendMail = id; 
