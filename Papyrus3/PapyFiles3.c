@@ -1929,12 +1929,13 @@ ComputeUndefinedItemLength3 (PapyShort inFileNb, PapyULong *ioItemLengthP)
       theBufPos += 2;
       
       /* get the element length depending on the VR */
-      if (strcmp (theVR, "OB") == 0 ||
-      	  strcmp (theVR, "OW") == 0 ||
-      	  strcmp (theVR, "SQ") == 0 || 
-          strcmp (theVR, "UN") == 0 || 
-          strcmp (theVR, "UT") == 0)
+      if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+			(theVR[0] == 'O' && theVR[1] == 'W') || 
+			(theVR[0] == 'S' && theVR[1] == 'Q') || 
+			(theVR[0] == 'U' && theVR[1] == 'N') || 
+			(theVR[0] == 'U' && theVR[1] == 'T'))
       {
+
         /* read 4 more bytes */
         i = 4L;
         if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)
@@ -2060,12 +2061,13 @@ ComputeUndefinedSequenceLength3 (PapyShort inFileNb, PapyULong *ioSeqLengthP)
       theBufPos += 2;
       
       /* get the element length depending on the VR */
-      if (strcmp (theVR, "OB") == 0 ||
-          strcmp (theVR, "OW") == 0 ||
-          strcmp (theVR, "SQ") == 0 || 
-          strcmp (theVR, "UN") == 0 || 
-          strcmp (theVR, "UT") == 0)
+      if (	(theVR[0] == 'O' && theVR[1] == 'B') ||
+			(theVR[0] == 'O' && theVR[1] == 'W') || 
+			(theVR[0] == 'S' && theVR[1] == 'Q') || 
+			(theVR[0] == 'U' && theVR[1] == 'N') || 
+			(theVR[0] == 'U' && theVR[1] == 'T'))
       {
+
         /* read 4 more bytes */
         i = 4L;
         if (Papy3FRead (gPapyFile [inFileNb], &i, 1L, theBuffP) < 0)

@@ -2652,7 +2652,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
   PapyLong		theInitialFilePos, theCurrFilePos;
   PapyUShort	 	theGrNb;
   PapyUShort	 	theElemNb, theElemLengthGr2;
-  char			theFoo [3], *theFooP;
+  char			theFoo [3];//, *theFooP;
   unsigned char		*theCharP; 
   int 			theStructPos, theEnumGrNb, i, theIsOld, theIsUndefSeqLen = FALSE;
   int	 		theShadow, theEnabledShadow [0x00FF], theMaxElem;
@@ -2740,26 +2740,24 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     if (theGrNb == 0x0002)
     {
       /* test to discover which transfert syntax was used to create the file (implicit or explicit VR) */
-      theFooP     = (char *) &theFoo [0];
-      theFooP [0] = (char)   *theCharP;
-      theFooP [1] = (char) (*(theCharP + 1));
-      theFooP [2] = '\0';
+      theFoo [0] = (char)   *theCharP;
+      theFoo [1] = (char) (*(theCharP + 1));
       
       /* if the VR is unknown assume the group 2 is using implicit VR */
-      if (!(strcmp (theFooP, "AE") == 0 || strcmp (theFooP, "AS") == 0 || strcmp (theFooP, "AT") == 0 ||
-            strcmp (theFooP, "CS") == 0 || strcmp (theFooP, "DA") == 0 || strcmp (theFooP, "DS") == 0 ||
-            strcmp (theFooP, "DT") == 0 || strcmp (theFooP, "FL") == 0 || strcmp (theFooP, "FD") == 0 ||
-            strcmp (theFooP, "IS") == 0 || strcmp (theFooP, "LO") == 0 || strcmp (theFooP, "LT") == 0 ||
-            strcmp (theFooP, "OW") == 0 || strcmp (theFooP, "PN") == 0 || strcmp (theFooP, "SH") == 0 ||
-            strcmp (theFooP, "SL") == 0 || strcmp (theFooP, "SQ") == 0 || strcmp (theFooP, "SS") == 0 ||
-            strcmp (theFooP, "ST") == 0 || strcmp (theFooP, "TM") == 0 || strcmp (theFooP, "UI") == 0 || 
-            strcmp (theFooP, "UL") == 0 || strcmp (theFooP, "UN") == 0 || strcmp (theFooP, "US") == 0 ||
-            strcmp (theFooP, "UT") == 0 || strcmp (theFooP, "OB") == 0))
+      if (!(strcmp (theFoo, "AE") == 0 || strcmp (theFoo, "AS") == 0 || strcmp (theFoo, "AT") == 0 ||
+            strcmp (theFoo, "CS") == 0 || strcmp (theFoo, "DA") == 0 || strcmp (theFoo, "DS") == 0 ||
+            strcmp (theFoo, "DT") == 0 || strcmp (theFoo, "FL") == 0 || strcmp (theFoo, "FD") == 0 ||
+            strcmp (theFoo, "IS") == 0 || strcmp (theFoo, "LO") == 0 || strcmp (theFoo, "LT") == 0 ||
+            strcmp (theFoo, "OW") == 0 || strcmp (theFoo, "PN") == 0 || strcmp (theFoo, "SH") == 0 ||
+            strcmp (theFoo, "SL") == 0 || strcmp (theFoo, "SQ") == 0 || strcmp (theFoo, "SS") == 0 ||
+            strcmp (theFoo, "ST") == 0 || strcmp (theFoo, "TM") == 0 || strcmp (theFoo, "UI") == 0 || 
+            strcmp (theFoo, "UL") == 0 || strcmp (theFoo, "UN") == 0 || strcmp (theFoo, "US") == 0 ||
+            strcmp (theFoo, "UT") == 0 || strcmp (theFoo, "OB") == 0))
         gArrTransfSyntax [inFileNb] = LITTLE_ENDIAN_IMPL;
       
       /* if there are OB values in group 2 it is a recent version of the toolkit ( >  3.3) */
       /* the theIsOld variable will be used later in the code of this routine */
-      if (strcmp (theFooP, "OB") == 0) theIsOld = FALSE;
+      if (strcmp (theFoo, "OB") == 0) theIsOld = FALSE;
     } /* if ...group 2 */
     
     
@@ -2768,21 +2766,20 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
     if (gArrTransfSyntax [inFileNb] == LITTLE_ENDIAN_EXPL)
     {
       /* extract the VR */
-      theFooP     = (char *) &theFoo [0];
-      theFooP [0] = (char)   *theCharP;
-      theFooP [1] = (char) (*(theCharP + 1));
-      theFooP [2] = '\0';
+      theFoo [0] = (char)   *theCharP;
+      theFoo [1] = (char) (*(theCharP + 1));
+      theFoo [2] = '\0';
       /* updates the current position in the read buffer */
       *ioBufPosP += 2L;
       /* points to the right place in the buffer */
       theCharP   += 2;
       
       /* extract the element length depending on the extracted VR */
-      if (strcmp (theFooP, "OB") == 0 || 
-      	  strcmp (theFooP, "OW") == 0 ||
-      	  strcmp (theFooP, "SQ") == 0 ||
-      	  strcmp (theFooP, "UN") == 0 ||
-      	  strcmp (theFooP, "UT") == 0)
+      if (	(theFoo[0] == 'O' && theFoo[1] == 'B') ||
+			(theFoo[0] == 'O' && theFoo[1] == 'W') || 
+			(theFoo[0] == 'S' && theFoo[1] == 'Q') || 
+			(theFoo[0] == 'U' && theFoo[1] == 'N') || 
+			(theFoo[0] == 'U' && theFoo[1] == 'T'))
       {
         /* updates the current position in the read buffer by jumping over the 2 bytes set to 0 */
         *ioBufPosP += 2L;
