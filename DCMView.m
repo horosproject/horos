@@ -1562,6 +1562,18 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	[super finalize];
 }
 
+- (void) switchCopySettingsInSeries:(id) sender
+{
+	int i;
+	
+	for( i = 0; i < [dcmPixList count] ; i++)
+	{
+		[[dcmPixList objectAtIndex: i] setIndependentRotation: rotation];
+		[[dcmPixList objectAtIndex: i] setIndependentZoom: scaleValue];
+		[[dcmPixList objectAtIndex: i] setIndependentOffset: origin];
+		[[dcmPixList objectAtIndex: i] changeWLWW :curWL :curWW];
+	}
+}
 
 - (void) setIndex:(short) index
 {
@@ -4542,6 +4554,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	yearOld = 0L;
+	previousCOPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"] retain];
 	shortDateTimeString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];

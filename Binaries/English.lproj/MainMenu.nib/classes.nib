@@ -291,6 +291,7 @@
                 subCtrlSliders = id; 
                 subSharpen = id; 
                 subSumSlider = id; 
+                switchCopySettingsInSeries = id; 
                 syncronize = id; 
                 ungroupSelectedROIs = id; 
                 useVOILUT = id; 
