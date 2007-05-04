@@ -7719,7 +7719,8 @@ static BOOL needToRezoom;
 
 - (IBAction) selectAll4DSeries:(id) sender
 {
-	[NSApp stopModalWithCode: 7];
+	if( [subOpenMatrix4D isEnabled] == YES)
+		[NSApp stopModalWithCode: 7];
 }
 
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer

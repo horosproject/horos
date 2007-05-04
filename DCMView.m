@@ -1616,15 +1616,23 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		}
 		if( keepIt == NO) curROI = 0L;
 		
-		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue] && [self is2DViewer] == YES)
+		BOOL done = NO;
+		
+		if( [self is2DViewer] == YES)
 		{
-			[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
-			
-			rotation = [curDCM independentRotation];
-			scaleValue = [curDCM independentZoom];
-			origin = [curDCM independentOffset];
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] boolValue] == NO)
+			{
+				[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
+				
+				rotation = [curDCM independentRotation];
+				scaleValue = [curDCM independentZoom];
+				origin = [curDCM independentOffset];
+				
+				done = YES;
+			}
 		}
-		else
+		
+		if( done == NO)
 		{
 			if( curWW != [curDCM ww] || curWL != [curDCM wl] || [curDCM updateToApply] == YES)
 			{
@@ -4261,7 +4269,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	DCMPix	*otherPix = [note object];
 	
-	if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) return;
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] boolValue] == NO) return;
 	
 	if( [dcmPixList containsObject: otherPix])
 	{
@@ -8345,7 +8353,7 @@ BOOL	lowRes = NO;
 		else if (curImage < 0)
 			curImage = -1;
 		
-		if( [[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"])
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"]) || [[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] == NO)
 		{
 			
 		}
