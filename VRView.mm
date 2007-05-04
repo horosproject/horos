@@ -5176,6 +5176,8 @@ public:
 		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5) textWLWW->GetTextProperty()->SetColor(1,1,1);
 		else textWLWW->GetTextProperty()->SetColor(0,0,0);
 		
+		[backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
+		
 		[self setNeedsDisplay:YES];
 	}
 }

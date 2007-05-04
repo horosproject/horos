@@ -1189,6 +1189,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 -(void) ApplyCLUTString:(NSString*) str
 {
+	NSString	*previousColorName = [NSString stringWithString: curCLUTMenu];
+	
 	if( str == 0L) return;
 	
 	[OpacityPopup setEnabled:YES];
@@ -1209,7 +1211,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 	{
 		[view setCLUT: 0L :0L :0L];
-		[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+		
+		if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+			[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 		
@@ -1248,8 +1252,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
 				[view changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 			else 
-				[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
-			
+			{
+				if( [previousColorName isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [previousColorName isEqualToString:( @"B/W Inverse")])
+					[view changeColorWith: [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+			}
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"UpdateCLUTMenu" object: curCLUTMenu userInfo: 0L];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle: curCLUTMenu];
