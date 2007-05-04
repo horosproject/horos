@@ -2598,7 +2598,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		{
 			if(![[cluts objectAtIndex:i] isEqualToString:@".DS_Store"])
 			{
-				NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[cluts objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+				NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[[cluts objectAtIndex:i] stringByDeletingPathExtension] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 				if([view isRGB]) [item setEnabled:NO];
 			}
 		}

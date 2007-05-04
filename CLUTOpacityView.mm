@@ -1411,7 +1411,7 @@
 }
 
 #pragma mark -
-#pragma mark Archiving
+#pragma mark Saving (as plist)
 
 #define CLUTDATABASE @"/CLUTs/"
 
@@ -1441,9 +1441,9 @@
 - (void)saveWithName:(NSString*)name;
 {
 	NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
-	[clut setObject:curves forKey:@"curves"];
-	[clut setObject:pointColors forKey:@"colors"];
-
+	[clut setObject:[self convertCurvesForPlist] forKey:@"curves"];
+	[clut setObject:[self convertPointColorsForPlist] forKey:@"colors"];
+	
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString:CLUTDATABASE];
 	
@@ -1454,7 +1454,8 @@
 	}
 	
 	[path appendString:name];
-	[NSArchiver archiveRootObject:clut toFile:path];
+	[path appendString:@".plist"];
+	[clut writeToFile:path atomically:YES];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:0L];
 }
 
@@ -1464,11 +1465,145 @@
 	[path appendString:CLUTDATABASE];
 	[path appendString:name];
 	
-	NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
-	curves = [clut objectForKey:@"curves"];
-	[curves retain];
-	pointColors = [clut objectForKey:@"colors"];
-	[pointColors retain];
+	if([[NSFileManager defaultManager] fileExistsAtPath:path])
+	{
+		if([[path pathExtension] isEqualToString:@""])
+		{
+			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+			curves = [clut objectForKey:@"curves"];
+			[curves retain];
+			pointColors = [clut objectForKey:@"colors"];
+			[pointColors retain];
+		}
+	}
+	else
+	{
+		[path appendString:@".plist"];
+		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
+			NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
+			curves = [self convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+			[curves retain];
+			pointColors = [self convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+			[pointColors retain];
+		}
+	}
+}
+
+#pragma mark conversion to plist-compatible types
+
+- (NSArray*)convertPointColorsForPlist;
+{
+	NSMutableArray *convertedPointColors = [NSMutableArray array];
+	int i, j;
+	for (i=0; i<[pointColors count]; i++)
+	{
+		NSArray *colors = [pointColors objectAtIndex:i];
+		NSMutableArray *newColors = [NSMutableArray array];
+		for (j=0; j<[colors count]; j++)
+		{
+			NSColor *color = [colors objectAtIndex:j];
+			[newColors addObject:[self convertColorToDict:color]];
+		}
+		[convertedPointColors addObject:newColors];
+	}
+	return convertedPointColors;
+}
+
+- (NSArray*)convertCurvesForPlist;
+{
+	NSMutableArray *convertedCurves = [NSMutableArray array];
+	int i, j;
+	for (i=0; i<[curves count]; i++)
+	{
+		NSArray *curve = [curves objectAtIndex:i];
+		NSMutableArray *newCurves = [NSMutableArray array];
+		for (j=0; j<[curve count]; j++)
+		{
+			NSPoint point = [[curve objectAtIndex:j] pointValue];
+			[newCurves addObject:[self convertPointToDict:point]];
+		}
+		[convertedCurves addObject:newCurves];
+	}
+	return convertedCurves;
+}
+
+- (NSDictionary*)convertColorToDict:(NSColor*)color;
+{
+	NSColor *safeColor = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	[dict setObject:[NSNumber numberWithFloat:[safeColor redComponent]] forKey:@"red"];
+	[dict setObject:[NSNumber numberWithFloat:[safeColor greenComponent]] forKey:@"green"];
+	[dict setObject:[NSNumber numberWithFloat:[safeColor blueComponent]] forKey:@"blue"];
+	return dict;
+}
+
+- (NSDictionary*)convertPointToDict:(NSPoint)point;
+{
+	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+	[dict setObject:[NSNumber numberWithFloat:point.x] forKey:@"x"];
+	[dict setObject:[NSNumber numberWithFloat:point.y] forKey:@"y"];
+	return dict;
+}
+
+#pragma mark conversion from plist
+
+- (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
+{
+	NSMutableArray *convertedPointColors = [NSMutableArray array];
+	int i, j;
+	for (i=0; i<[plistPointColor count]; i++)
+	{
+		NSArray *colors = [plistPointColor objectAtIndex:i];
+		NSMutableArray *newColors = [NSMutableArray array];
+		for (j=0; j<[colors count]; j++)
+		{
+			NSDictionary *colorDict = [colors objectAtIndex:j];
+			NSColor *color = [NSColor colorWithCalibratedRed:[[colorDict objectForKey:@"red"] floatValue] green:[[colorDict objectForKey:@"green"] floatValue] blue:[[colorDict objectForKey:@"blue"] floatValue] alpha:1.0];
+			[newColors addObject:color];
+		}
+		[convertedPointColors addObject:newColors];
+	}
+	return convertedPointColors;
+}
+
+- (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
+{
+	NSMutableArray *convertedCurves = [NSMutableArray array];
+	int i, j;
+	for (i=0; i<[plistCurves count]; i++)
+	{
+		NSArray *curve = [plistCurves objectAtIndex:i];
+		NSMutableArray *newCurve = [NSMutableArray array];
+		for (j=0; j<[curve count]; j++)
+		{
+			NSDictionary *pointDict = [curve objectAtIndex:j];
+			NSPoint point = NSMakePoint([[pointDict objectForKey:@"x"] floatValue], [[pointDict objectForKey:@"y"] floatValue]);
+			[newCurve addObject:[NSValue valueWithPoint:point]];
+		}
+		[convertedCurves addObject:newCurve];
+	}
+	return convertedCurves;
+}
+
+- (NSColor*)convertDictToColor:(NSDictionary*)dict;
+{
+	float r, g, b;
+	r = [[dict objectForKey:@"redComponent"] floatValue];
+	g = [[dict objectForKey:@"greenComponent"] floatValue];
+	b = [[dict objectForKey:@"blueComponent"] floatValue];
+	
+	NSColor *color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
+	return color;
+}
+
+- (NSPoint)convertDictToPoint:(NSDictionary*)dict;
+{
+	float x, y;
+	x = [[dict objectForKey:@"x"] floatValue];
+	y = [[dict objectForKey:@"y"] floatValue];
+
+	return NSMakePoint(x, y);
 }
 
 #pragma mark -

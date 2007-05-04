@@ -125,11 +125,21 @@
 - (IBAction)redo:(id)sender;
 
 #pragma mark -
-#pragma mark Archiving
+#pragma mark Saving (as plist)
 - (void)chooseNameAndSave:(id)sender;
 - (IBAction)save:(id)sender;
 - (void)saveWithName:(NSString*)name;
 - (void)loadFromFileWithName:(NSString*)name;
+#pragma mark conversion to plist-compatible types
+- (NSArray*)convertPointColorsForPlist;
+- (NSArray*)convertCurvesForPlist;
+- (NSDictionary*)convertColorToDict:(NSColor*)color;
+- (NSDictionary*)convertPointToDict:(NSPoint)point;
+#pragma mark conversion from plist
+- (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
+- (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
+- (NSColor*)convertDictToColor:(NSDictionary*)dict;
+- (NSPoint)convertDictToPoint:(NSDictionary*)dict;
 
 #pragma mark -
 #pragma mark Connection to VRView
