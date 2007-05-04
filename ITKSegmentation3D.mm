@@ -938,7 +938,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	long w = width - minSize;
 	long h = height - minSize;
 	long d = depth - minSize;
-	float maxDistance = 0;
+	float maxDistance = 3;
 	long sliceSize = width * height; 
 
 		// Fllat Pixel Type
@@ -1014,8 +1014,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	try
 	{
-		//distanceMapFilter->Update();
-		approximateDistanceMapFilter->Update();	
+		distanceMapFilter->Update();
+		//approximateDistanceMapFilter->Update();	
 	}
 	catch( itk::ExceptionObject & excep )
 	{
@@ -1034,8 +1034,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	*/
 	
 	NSLog(@"get max values");
-	//signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
-	float *buff = approximateDistanceMapFilter->GetOutput()->GetBufferPointer();
+	signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
+	//float *buff = approximateDistanceMapFilter->GetOutput()->GetBufferPointer();
 	[wait setString:@"Finding Distances"];
 
 	NSMutableSet *pointSet = [NSMutableSet set];
@@ -1054,9 +1054,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			//NSLog(@"currentRow: %d", currentRow);
 			for (x = minSize; x < w; x++) {
 				long position = currentSlice + currentRow + x;
-				//signed short distance = buff[position];
+				signed short distance = buff[position];
 				// inside is negative
-				float distance = -buff[position];
+				//float distance = -buff[position];
 				int isDistanceMaximum = 0;
 				
 				if (distance > minSize) {
@@ -1074,8 +1074,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					if (isDistanceMaximum > 1) {
 						// add to set
 						//NSLog(@"add point");
-						//[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
-						[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithFloat:distance]]];
+						[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
+						//[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithFloat:distance]]];
 						//change maxDistance
 						if (distance > maxDistance) {
 							maxDistance = distance;
@@ -1103,15 +1103,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		//NSLog(@"max distance: %f", maxDistance);
 		NSEnumerator *enumerator = [pointSet objectEnumerator];
 		OSIPoint3D *point;
-		//signed short distance;
-		float distance;
+		NSMutableSet *deleteSet = [NSMutableSet set];
+		signed short distance;
+		//float distance;
 		while (point = [enumerator nextObject]){
 			//NSLog(@"current Point: %@", point);
 			float positionSlice = [point z];
 			float positionRow = [point y];
 			float positionIndex = [point x];
-			//distance = [[point value] shortValue];
-			distance = [[point value] floatValue];
+			distance = [[point value] shortValue];
+			//distance = [[point value] floatValue];
 			
 			if (distance >= maxDistance) {
 				// Add node if is not within the range of previous nodes
@@ -1125,11 +1126,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					float nodeSlice = [node z];
 					float nodeRow = [node y];
 					float  nodeIndex = [node x];
-					float nodeDistance = [[node value] floatValue];
+					//float nodeDistance = [[node value] floatValue];
+					float nodeDistance = [[node value] shortValue];
 					float internodeDistance = sqrt(pow(positionSlice - nodeSlice, 2) + pow(positionRow - nodeRow, 2) + pow(positionIndex - nodeIndex, 2));
 					//keep node away from other nodes
 					if (internodeDistance < nodeDistance * scalingFactor) {
-						isNewNode = NO;
+						// keep larger node.
+						if (nodeDistance < distance)
+							[nodeSet removeObject:node];
+						else
+							isNewNode = NO;
 						break;
 					}
 					//else 
@@ -1148,10 +1154,15 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					[roiImageList addObject: newROI];	
 					[newROI mouseRoiDown:NSMakePoint((float)positionIndex,(float)positionRow) :positionSlice :1.0];
 				}
+				
+				[deleteSet addObject:point];
+				
 			}
+			// get rid of points we have already evaluated
+			[pointSet minusSet:deleteSet];
 		}
 		count = [nodeSet count];
-		maxDistance -= 4;
+		maxDistance -= 2;
 			
 	}
 		[wait setString:@"Connecting Centerline"];
