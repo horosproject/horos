@@ -130,6 +130,7 @@
                 applyShading = id; 
                 blendingSlider = id; 
                 close3DSettingsSavePanel = id; 
+                displayPresetsForSelectedGroup = id; 
                 editShadingValues = id; 
                 enable3DSettingsSaveButton = id; 
                 export2iPhoto = id; 
@@ -137,6 +138,7 @@
                 exportTIFF = id; 
                 findShadingPreset = id; 
                 flyThruControllerInit = id; 
+                load3DSettings = id; 
                 moviePosSliderAction = id; 
                 movieRateSliderAction = id; 
                 roiGetManager = id; 
@@ -174,7 +176,12 @@
                 movieRateSlider = NSSlider; 
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
+                perspectiveMatrix = NSMatrix; 
                 perspectiveView = NSView; 
+                presetsApplyButton = NSButton; 
+                presetsGroupPopUpButton = NSPopUpButton; 
+                presetsPanel = NSWindow; 
+                presetsPopUpButton = NSPopUpButton; 
                 save3DSettingsWindow = NSWindow; 
                 scissorStateView = NSView; 
                 settingsBackgroundColorTextField = NSTextField; 
@@ -184,6 +191,7 @@
                 settingsNameTextField = NSTextField; 
                 settingsNewGroupNameLabelTextField = NSTextField; 
                 settingsNewGroupNameTextField = NSTextField; 
+                settingsOpacityTextField = NSTextField; 
                 settingsProjectionTextField = NSTextField; 
                 settingsSaveButton = NSButton; 
                 settingsShadingsTextField = NSTextField; 

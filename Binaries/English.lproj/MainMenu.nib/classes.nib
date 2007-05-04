@@ -242,6 +242,7 @@
                 fullScreenMenu = id; 
                 groupSelectedROIs = id; 
                 iChatBroadcast = id; 
+                load3DSettings = id; 
                 loadSerie = id; 
                 morphoSelectedBrushROI = id; 
                 myAction = id; 

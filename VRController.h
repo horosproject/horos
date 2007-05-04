@@ -59,6 +59,8 @@
 	IBOutlet NSButton		*shadingCheck;
 	IBOutlet NSTextField    *shadingValues;
 
+	IBOutlet NSMatrix		*perspectiveMatrix;
+
 	IBOutlet NSView			*convolutionView;
 	IBOutlet NSPopUpButton	*convolutionMenu;
 	
@@ -110,11 +112,17 @@
 	IBOutlet ShadingArrayController	*shadingsPresetsController;
 	BOOL							shadingEditable;
 	
+	NSMutableArray			*appliedConvolutionFilters;
+	
 	IBOutlet NSWindow		*save3DSettingsWindow;
-	IBOutlet NSTextField	*settingsCLUTTextField, *settingsShadingsTextField, *settingsWLWWTextField, *settingsConvolutionFilterTextField, *settingsProjectionTextField, *settingsBackgroundColorTextField;
+	IBOutlet NSTextField	*settingsCLUTTextField, *settingsOpacityTextField, *settingsShadingsTextField, *settingsWLWWTextField, *settingsConvolutionFilterTextField, *settingsProjectionTextField, *settingsBackgroundColorTextField;
 	IBOutlet NSTextField	*settingsNameTextField, *settingsNewGroupNameTextField, *settingsNewGroupNameLabelTextField;
 	IBOutlet NSPopUpButton	*settingsGroupPopUpButton;
 	IBOutlet NSButton		*settingsSaveButton;
+	
+	IBOutlet NSWindow		*presetsPanel;
+	IBOutlet NSPopUpButton	*presetsGroupPopUpButton, *presetsPopUpButton;
+	IBOutlet NSButton		*presetsApplyButton;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -208,5 +216,7 @@
 - (IBAction)show3DSettingsNewGroupTextField:(id)sender;
 - (IBAction)close3DSettingsSavePanel:(id)sender;
 - (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
+- (IBAction)load3DSettings:(id)sender;
+- (IBAction)displayPresetsForSelectedGroup:(id)sender;
 
 @end

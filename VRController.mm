@@ -144,6 +144,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 -(void) revertSeries:(id) sender
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: 0L];
+	[appliedConvolutionFilters removeAllObjects];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
@@ -256,6 +257,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[self prepareUndo];
 	[viewer2D ApplyConvString: [sender title]];
 	[viewer2D applyConvolutionOnSource: self];
+	[appliedConvolutionFilters addObject:[sender title]];
 }
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
@@ -748,7 +750,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[view setLOD: 1.0];
 		[LODSlider setIntValue: 1];
 	}
-		
+	
+	appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
+	
     return self;
 }
 
@@ -987,6 +991,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[viewer2D release];
 	[roiVolumes release];
 	[_renderingMode release];
+	
+	[appliedConvolutionFilters release];
+	
 	[super dealloc];
 }
 
@@ -1262,8 +1269,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		}
 	}
 }
-
-
 
 -(void) ApplyOpacityString:(NSString*) str
 {
@@ -2572,6 +2577,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	else
 	{
 		[clutOpacityView loadFromFileWithName:[sender title]];
+		if(curCLUTMenu) [curCLUTMenu release];
 		curCLUTMenu = [[sender title] retain];
 		[clutOpacityView setCLUTtoVRView:NO];
 		[clutOpacityView updateView];
@@ -2638,6 +2644,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 
+#pragma mark save current
+
 - (NSMutableDictionary*)getCurrent3DSettings;
 {
 	//window level & width
@@ -2651,8 +2659,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	//CLUT
 	BOOL isAdvancedCLUT = [view advancedCLUT];
 	NSString *clut = curCLUTMenu;
-	//convolution filter
-	NSString *convolution = [viewer2D valueForKey:@"curConvMenu"];
+	//convolution filters
+	//NSString *convolution = [viewer2D valueForKey:@"curConvMenu"];
 	//projection
 	int projection = [[view valueForKey:@"projectionMode"] intValue];
 	
@@ -2668,8 +2676,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
 	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
 	[presetDictionary setObject:clut forKey:@"CLUT"];
-	[presetDictionary setObject:convolution forKey:@"convolution"];
+	//[presetDictionary setObject:convolution forKey:@"convolution"];
+	[presetDictionary setObject:appliedConvolutionFilters forKey:@"convolutionFilters"];
 	[presetDictionary setObject:[NSNumber numberWithInt:projection] forKey:@"projection"];
+	[presetDictionary setObject:curOpacityMenu forKey:@"opacity"];
 	
 	return presetDictionary;
 }
@@ -2681,9 +2691,31 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	if([[sender className] isEqualToString:@"NSMenuItem"])
 	{		
 		[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
+		[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
 		[settingsShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
 		[settingsWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
-		[settingsConvolutionFilterTextField setStringValue:[NSString stringWithFormat:@"Filter: %@", [presetDictionary objectForKey:@"convolution"]]];
+		
+		NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@"Filter"];
+		NSArray *filters = [presetDictionary objectForKey:@"convolutionFilters"];
+		if([filters count]>1) [convolutionFiltersString appendString:@"s"];
+		[convolutionFiltersString appendString:@": "];
+		int i;
+		if([filters count]>0)
+		{
+			for(i=0; i<[filters count]-1; i++)
+			{
+				[convolutionFiltersString appendString:[filters objectAtIndex:i]];
+				[convolutionFiltersString appendString:@", "];
+			}
+			[convolutionFiltersString appendString:[filters objectAtIndex:[filters count]-1]];
+			[convolutionFiltersString appendString:@"."];
+		}
+		else
+		{
+			[convolutionFiltersString appendString:@"(none)."];
+		}
+		[settingsConvolutionFilterTextField setStringValue:convolutionFiltersString];
+		
 		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
 		
 		int proj = [[presetDictionary objectForKey:@"projection"] intValue];
@@ -2699,7 +2731,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[settingsGroupPopUpButton removeAllItems];
 		
 		NSArray *groups = [self find3DSettingsGroups];
-		int i;
 		for(i=0; i<[groups count]; i++)
 		{
 			[settingsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
@@ -2724,34 +2755,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 		[self save3DSettings:presetDictionary WithName:settingsName group:groupName];
 	}
-}
-
-- (NSArray*)find3DSettingsGroups;
-{
-	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:PRESETS_DIRECTORY];
-	
-	NSMutableArray *settingsGroups = [NSMutableArray array];
-	
-	BOOL isDir = YES;
-	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
-		int i;
-		for(i=0; i<[settingsFiles count]; i++)
-		{
-			NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
-			if(settings)
-			{
-				if([[settings allKeys] containsObject:@"groupName"])
-				{
-					[settingsGroups addObject:[settings objectForKey:@"groupName"]];
-					[settings release];
-				}
-			}
-		}
-	}
-	return settingsGroups;
 }
 
 - (IBAction)enable3DSettingsSaveButton:(id)sender;
@@ -2794,8 +2797,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
 {
+	[settings setObject:name forKey:@"name"];
 	[settings setObject:groupName forKey:@"groupName"];
-
+	
 	// Path of the file to create
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString:PRESETS_DIRECTORY];
@@ -2806,6 +2810,194 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[path appendString:@".plist"];
 	
 	[settings writeToFile:path atomically:YES];
+}
+
+#pragma mark presets generic methods
+
+- (NSArray*)find3DSettingsGroups;
+{
+	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:PRESETS_DIRECTORY];
+	
+	NSMutableArray *settingsGroups = [NSMutableArray array];
+	
+	BOOL isDir = YES;
+	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	{
+		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
+		int i;
+		for(i=0; i<[settingsFiles count]; i++)
+		{
+			NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
+			if([[filePath pathExtension] isEqualToString:@"plist"])
+			{
+				NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+				if(settings)
+				{
+					if([[settings allKeys] containsObject:@"groupName"])
+					{
+						if(![settingsGroups containsObject:[settings objectForKey:@"groupName"]])
+							[settingsGroups addObject:[settings objectForKey:@"groupName"]];
+						[settings release];
+					}
+				}
+			}
+		}
+	}
+	return settingsGroups;
+}
+
+- (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
+{
+	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+	[path appendString:PRESETS_DIRECTORY];
+	
+	NSMutableArray *settingsList = [NSMutableArray array];
+	
+	BOOL isDir = YES;
+	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	{
+		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
+		int i;
+		for(i=0; i<[settingsFiles count]; i++)
+		{
+			NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+			if(settings)
+			{
+				if([[settings allKeys] containsObject:@"groupName"])
+				{
+					if([[settings objectForKey:@"groupName"] isEqualToString:groupName])
+					{
+						[settingsList addObject:[settings objectForKey:@"name"]];
+					}
+					[settings release];
+				}
+			}
+		}
+	}
+	return settingsList;
+}
+
+#pragma mark load preset
+
+- (IBAction)load3DSettings:(id)sender;
+{
+	if([[sender className] isEqualToString:@"NSMenuItem"])
+	{
+		[presetsGroupPopUpButton setEnabled:YES];
+		[presetsPopUpButton setEnabled:YES];
+		
+		[presetsGroupPopUpButton removeAllItems];
+		NSArray *groups = [self find3DSettingsGroups];
+		int i;
+		for(i=0; i<[groups count]; i++)
+			[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
+
+		if([presetsGroupPopUpButton numberOfItems]<1)
+		{
+			[presetsGroupPopUpButton addItemWithTitle:@"No Groups"];
+			[presetsGroupPopUpButton setEnabled:NO];
+		}
+
+		[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
+
+		[presetsPanel orderFront:self];
+	}
+	else if([sender isEqualTo:presetsApplyButton])
+	{
+		NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+		[path appendString:PRESETS_DIRECTORY];
+		[path appendString:[presetsPopUpButton titleOfSelectedItem]];
+		[path appendString:@".plist"];
+		
+		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
+			NSDictionary *preset = [[NSDictionary alloc] initWithContentsOfFile:path];
+						
+			// CLUT
+			NSString *clut = [preset objectForKey:@"CLUT"];
+			BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
+			if(!advancedCLUT)
+			{
+				[self ApplyCLUTString:clut];
+				
+				// opacity
+				[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
+			}
+			else
+			{
+				[clutOpacityView loadFromFileWithName:clut];
+				if(curCLUTMenu) [curCLUTMenu release];
+				curCLUTMenu = [clut retain];
+				[clutOpacityView setCLUTtoVRView:NO];
+				[clutOpacityView updateView];
+				[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
+				[OpacityPopup setEnabled:NO];
+			}
+			
+			// shadings
+			NSString *shadingName = [preset objectForKey:@"shading"];
+			NSArray	*shadings = [shadingsPresetsController arrangedObjects];
+			int i;
+			for( i = 0; i < [shadings count]; i++)
+			{
+				NSDictionary *dict = [shadings objectAtIndex:i];
+				if([[dict valueForKey:@"name"] isEqualToString:shadingName])
+				{
+					[shadingsPresetsController setSelectedObjects:[NSArray arrayWithObject:dict]];
+					break;
+				}
+			}
+			[self applyShading:self]; 
+			
+			// window level/width
+			float iwl = [[preset objectForKey:@"wl"] floatValue];
+			float iww = [[preset objectForKey:@"ww"] floatValue];
+			[self setWLWW:iwl :iww];
+		
+			// projection
+			int projection = [[preset objectForKey:@"projection"] intValue];
+			[perspectiveMatrix selectCellWithTag:projection];
+			[view switchProjection:perspectiveMatrix];
+						
+			// background color
+			float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
+			float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
+			float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
+			[view changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
+					
+			// convolution filter
+			if([appliedConvolutionFilters count]==0)
+			{
+				NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
+				if([convolutionFilters count]>0)
+				{			
+					for(i=0; i<[convolutionFilters count]; i++)
+					{
+						[self prepareUndo];
+						[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
+						[viewer2D applyConvolutionOnSource:self];
+						[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
+					}
+				}
+			}
+		}
+	}
+}
+
+- (IBAction)displayPresetsForSelectedGroup:(id)sender;
+{
+	if([sender numberOfItems]<1) return;
+	NSArray *settingsList = [self find3DSettingsForGroupName:[sender titleOfSelectedItem]];
+	[presetsPopUpButton removeAllItems];
+	int i;
+	for(i=0; i<[settingsList count]; i++)
+		[presetsPopUpButton addItemWithTitle:[settingsList objectAtIndex:i]];
+	if([presetsPopUpButton numberOfItems]<1)
+	{
+		[presetsPopUpButton addItemWithTitle:@"No Presets"];
+		[presetsPopUpButton setEnabled:NO];
+	}
 }
 
 @end
