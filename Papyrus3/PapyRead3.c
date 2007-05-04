@@ -2742,7 +2742,8 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       /* test to discover which transfert syntax was used to create the file (implicit or explicit VR) */
       theFoo [0] = (char)   *theCharP;
       theFoo [1] = (char) (*(theCharP + 1));
-      
+	  theFoo [2] = 0;
+	   
       /* if the VR is unknown assume the group 2 is using implicit VR */
       if (!(strcmp (theFoo, "AE") == 0 || strcmp (theFoo, "AS") == 0 || strcmp (theFoo, "AT") == 0 ||
             strcmp (theFoo, "CS") == 0 || strcmp (theFoo, "DA") == 0 || strcmp (theFoo, "DS") == 0 ||
@@ -2768,7 +2769,7 @@ PutBufferInGroup3 (PapyShort inFileNb, unsigned char *ioBuffP, SElement *ioGroup
       /* extract the VR */
       theFoo [0] = (char)   *theCharP;
       theFoo [1] = (char) (*(theCharP + 1));
-      theFoo [2] = '\0';
+      theFoo [2] = 0;
       /* updates the current position in the read buffer */
       *ioBufPosP += 2L;
       /* points to the right place in the buffer */
