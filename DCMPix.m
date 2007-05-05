@@ -5063,7 +5063,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 
 //=====================================================================
-	for( ee = 0; ee < maxFrame; ee++)
+//	for( ee = 0; ee < maxFrame; ee++)
 	{
 
 #pragma mark *loading a frame		
@@ -5073,12 +5073,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 		DCMPix	*imPix = 0L;
 		
-		if( maxFrame > 1)
-		{
-			imPix = [pixArray objectAtIndex: ee];
-			[imPix copyFromOther: self]; // duplicates the class fields
-		}
-		else
+//		if( maxFrame > 1)
+//		{
+//			imPix = [pixArray objectAtIndex: ee];
+//			[imPix copyFromOther: self]; // duplicates the class fields
+//		}
+//		else
 		{
 			imPix = self;
 			ee = imageNb;

@@ -6158,6 +6158,13 @@ static ViewerController *draggedController = 0L;
 	[customYSpacing setFloatValue: [[pixList[ curMovieIndex] objectAtIndex:0] pixelSpacingY]];
 	
 	[[pixList[ curMovieIndex] objectAtIndex:0] orientation: v];
+	
+	if( v[ 0] == 0 && v[ 1] == 0 && v[ 2] == 0)
+	{
+		v[ 0] = 1;		v[ 1] = 0;		v[ 2] = 0;
+		v[ 3] = 0;		v[ 4] = 1;		v[ 5] = 0;
+	}
+	
 	for( i = 0; i < 6; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 	
 	o[ 0] = [[pixList[ curMovieIndex] objectAtIndex:0] originX];
