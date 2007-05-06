@@ -205,6 +205,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 }
 
+
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
     NSString    *identifier = [tableColumn identifier];
@@ -226,11 +227,39 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	return nil;
 }
 
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
+		return YES;
+	else
+		return NO;
+}
 
-// Delegate methods
+- (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
+	{
+		NSLog( [item description]);
+	}
+}
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item {
-    return YES;
+- (void)copy:(id)sender
+{
+	NSIndexSet*	selectedRowIndexes = [table selectedRowIndexes];
+	
+	int index;
+	
+	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+	{
+       if ([selectedRowIndexes containsIndex:index])
+	   {
+			NSXMLNode	*item = [table itemAtRow: index];
+			
+//			NSString* line = [NSString stringWithFormat:@"%@ (%@,%@) %@", [item valueForKey: ]];
+			
+			NSLog( [item valueForKey: @"stringValue"]);
+	   }
+	}
 }
 
 // ============================================================
