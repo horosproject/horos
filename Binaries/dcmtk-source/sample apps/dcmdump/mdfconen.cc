@@ -30,17 +30,17 @@
  *
  */
 
-#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+#include "osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfconen.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
+#include "oftypes.h"
+#include "dctk.h"
+#include "cmdlnarg.h"
+#include "ofconapp.h"
+#include "dcuid.h"       /* for dcmtk version name */
+#include "oflist.h"
+#include "ofstring.h"
+#include "ofstd.h"
+#include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define SHORTCOL 6
 #define LONGCOL 21
@@ -170,7 +170,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
 
     //evaluate commandline
-    prepareCmdLineArgs(argc, argv, application_name);
+    //prepareCmdLineArgs(argc, argv, application_name);
     if (app->parseCommandLine(*cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
         //if no argument or --help is given, print usage

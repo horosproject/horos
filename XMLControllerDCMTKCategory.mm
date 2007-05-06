@@ -16,6 +16,22 @@
 
 #undef verify
 
+#include "osconfig.h"
+#include "mdfconen.h"
+
 @implementation XMLController (XMLControllerDCMTKCategory)
+
+-(void) modifyDicom
+{
+	int argc;
+	char *argv[ 99];
+	
+    int error_count=0;
+    MdfConsoleEngine engine( argc, argv,"dcmodify");
+    error_count=engine.startProvidingService();
+    if (error_count > 0)
+	    CERR << "There were " << error_count << " error(s)" << endl;
+    return ;
+}
 
 @end

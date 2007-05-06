@@ -33,13 +33,13 @@
 #ifndef MDFCONEN_H
 #define MDFCONEN_H
 
-#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+#include "osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfdsman.h"
-#include "dcmtk/ofstd/oftypes.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofcond.h"
-#include "dcmtk/dcmdata/dctagkey.h"
+#include "oftypes.h"
+#include "ofconapp.h"
+#include "oflist.h"
+#include "ofcond.h"
+#include "dctagkey.h"
 
 /** class reflecting a modify operation (called Job in this context)
  */

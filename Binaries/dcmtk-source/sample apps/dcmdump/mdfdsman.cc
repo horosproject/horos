@@ -31,16 +31,16 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+#include "osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfdsman.h"
-#include "dcmtk/dcmdata/dcvrsl.h"
-#include "dcmtk/ofstd/ofcast.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcuid.h"
+#include "dcvrsl.h"
+#include "ofcast.h"
+#include "ofstd.h"
+#include "dctk.h"
+#include "dcuid.h"
 
 #define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "ofstdinc.h"
 
 
 MdfDatasetManager::MdfDatasetManager(const OFBool debug)

@@ -33,13 +33,13 @@
 #ifndef MDFDSMAN_H
 #define MDFDSMAN_H
 
-#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
-#include "dcmtk/dcmdata/dctagkey.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/ofstd/ofcond.h"
-#include "dcmtk/ofstd/oflist.h"
-#include "dcmtk/ofstd/ofcmdln.h"
-#include "dcmtk/dcmdata/dcvrat.h"
+#include "osconfig.h"   // make sure OS specific configuration is included first
+#include "dctagkey.h"
+#include "dcfilefo.h"
+#include "ofcond.h"
+#include "oflist.h"
+#include "ofcmdln.h"
+#include "dcvrat.h"
 
 /** This class encapsulates data structures and operations for modifying
  *  Dicom files. Therefore it allows the process of load->modify->save to

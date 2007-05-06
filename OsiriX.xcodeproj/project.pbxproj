@@ -9334,6 +9334,18 @@
 		CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */; };
 		CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */; };
 		CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */; };
+		CE96D0F40BEE71E800C4E397 /* mdfconen.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0F20BEE71E800C4E397 /* mdfconen.cc */; };
+		CE96D0F50BEE71E800C4E397 /* mdfconen.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0F30BEE71E800C4E397 /* mdfconen.h */; };
+		CE96D0F60BEE71E800C4E397 /* mdfconen.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0F20BEE71E800C4E397 /* mdfconen.cc */; };
+		CE96D0F70BEE71E800C4E397 /* mdfconen.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0F30BEE71E800C4E397 /* mdfconen.h */; };
+		CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D0F20BEE71E800C4E397 /* mdfconen.cc */; };
+		CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D0F30BEE71E800C4E397 /* mdfconen.h */; };
+		CE96D1180BEE732A00C4E397 /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
+		CE96D1190BEE732A00C4E397 /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
+		CE96D11A0BEE732A00C4E397 /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
+		CE96D11B0BEE732A00C4E397 /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
+		CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */ = {isa = PBXBuildFile; fileRef = CE96D1160BEE732900C4E397 /* mdfdsman.h */; };
+		CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */ = {isa = PBXBuildFile; fileRef = CE96D1170BEE732900C4E397 /* mdfdsman.cc */; };
 		CE9762C208FABD1100E6F8B0 /* itkMSRGFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */; };
 		CE9762C308FABD1100E6F8B0 /* itkMSRGFilter.txx in Resources */ = {isa = PBXBuildFile; fileRef = CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */; };
 		CE9762C408FABD1100E6F8B0 /* MorphoHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762BC08FABD1100E6F8B0 /* MorphoHelper.h */; };
@@ -14241,6 +14253,10 @@
 		CE90D8C3095F5B48004FC7E2 /* FlipData.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FlipData.tiff; sourceTree = "<group>"; };
 		CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = XMLControllerDCMTKCategory.h; sourceTree = "<group>"; };
 		CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = XMLControllerDCMTKCategory.mm; sourceTree = "<group>"; };
+		CE96D0F20BEE71E800C4E397 /* mdfconen.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mdfconen.cc; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfconen.cc"; sourceTree = "<group>"; };
+		CE96D0F30BEE71E800C4E397 /* mdfconen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mdfconen.h; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfconen.h"; sourceTree = "<group>"; };
+		CE96D1160BEE732900C4E397 /* mdfdsman.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mdfdsman.h; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfdsman.h"; sourceTree = "<group>"; };
+		CE96D1170BEE732900C4E397 /* mdfdsman.cc */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mdfdsman.cc; path = "Binaries/dcmtk-source/sample apps/dcmdump/mdfdsman.cc"; sourceTree = "<group>"; };
 		CE9762BA08FABD1100E6F8B0 /* itkMSRGFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = itkMSRGFilter.h; sourceTree = "<group>"; };
 		CE9762BB08FABD1100E6F8B0 /* itkMSRGFilter.txx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = itkMSRGFilter.txx; sourceTree = "<group>"; };
 		CE9762BC08FABD1100E6F8B0 /* MorphoHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MorphoHelper.h; sourceTree = "<group>"; };
@@ -15672,6 +15688,10 @@
 				AB4A6DF4056EC14E009E6C6E /* XMLController.m */,
 				CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */,
 				CE96D0DC0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm */,
+				CE96D0F20BEE71E800C4E397 /* mdfconen.cc */,
+				CE96D0F30BEE71E800C4E397 /* mdfconen.h */,
+				CE96D1160BEE732900C4E397 /* mdfdsman.h */,
+				CE96D1170BEE732900C4E397 /* mdfdsman.cc */,
 			);
 			name = XML;
 			sourceTree = "<group>";
@@ -21205,6 +21225,8 @@
 				BFE857380BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2120BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
+				CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */,
+				CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23130,6 +23152,8 @@
 				BFE8573C0BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2140BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0DF0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
+				CE96D0F50BEE71E800C4E397 /* mdfconen.h in Headers */,
+				CE96D1180BEE732A00C4E397 /* mdfdsman.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25060,6 +25084,8 @@
 				BFE8573A0BE14704000A4C11 /* OSIPoint3D.h in Headers */,
 				BFBBF2100BE28E320064E449 /* EndoscopySegmentationController.h in Headers */,
 				CE96D0E10BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
+				CE96D0F70BEE71E800C4E397 /* mdfconen.h in Headers */,
+				CE96D11A0BEE732A00C4E397 /* mdfdsman.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27725,6 +27751,8 @@
 				BFE857390BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2130BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
+				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
+				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28497,6 +28525,8 @@
 				BFE8573D0BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2150BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E00BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
+				CE96D0F40BEE71E800C4E397 /* mdfconen.cc in Sources */,
+				CE96D1190BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29834,6 +29864,8 @@
 				BFE8573B0BE14704000A4C11 /* OSIPoint3D.m in Sources */,
 				BFBBF2110BE28E320064E449 /* EndoscopySegmentationController.m in Sources */,
 				CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
+				CE96D0F60BEE71E800C4E397 /* mdfconen.cc in Sources */,
+				CE96D11B0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
