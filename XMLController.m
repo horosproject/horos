@@ -209,21 +209,18 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
     NSString    *identifier = [tableColumn identifier];
-	if ([identifier isEqualToString:@"attributeTag"]){
-		NSXMLNode *attr = nil;
-		if ([item kind] == NSXMLElementKind)
-			attr = [item attributeForName:@"attributeTag"];
-		if (attr)
-			return [attr stringValue];
-		else
-			return nil;
+	if ([identifier isEqualToString:@"attributeTag"])
+	{
+		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
+			return [NSString stringWithFormat:@"%@,%@", [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue]];
 	}
-	else if ([identifier isEqualToString:@"stringValue"] && [item childCount] > 1)
-		return nil;
-//	else if ([identifier isEqualToString:@"stringValue"] && ([[item valueForKey:@"name"] isEqualToString:@"DICOMObject"] || [[item valueForKey:@"name"] isEqualToString:@"FVTiff Meta-Data"]))
-//		return nil;
-	else
-        return [item valueForKey:identifier];
+	else if( [identifier isEqualToString:@"stringValue"])
+	{
+		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
+			return [item valueForKey:identifier];
+	}
+	else return [item valueForKey:identifier];
+		
 	return nil;
 }
 
