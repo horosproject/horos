@@ -254,10 +254,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 			
 			if( [copyString length]) [copyString appendString:@"\r"];
 			
-			if([[item attributeForName:@"attributeTag"] stringValue])
-				[copyString appendFormat:@"%@ (%@) %@", [item valueForKey: @"name"], [[item attributeForName:@"attributeTag"] stringValue], [item valueForKey: @"stringValue"]];
-			else
-				[copyString appendFormat:@"%@ %@", [item valueForKey: @"name"], [item valueForKey: @"stringValue"]];
+			[copyString appendFormat:@"%@ (%@,%@) %@", [item valueForKey: @"name"], [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue], [item valueForKey: @"stringValue"]];
 			
 			NSLog( [item description]);
 			
