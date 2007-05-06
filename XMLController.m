@@ -245,21 +245,43 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (void)copy:(id)sender
 {
-	NSIndexSet*	selectedRowIndexes = [table selectedRowIndexes];
-	
-	int index;
+	NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
+	NSMutableString*	copyString = [NSMutableString string];
+	int					index;
 	
 	for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{
        if ([selectedRowIndexes containsIndex:index])
 	   {
-			NSXMLNode	*item = [table itemAtRow: index];
+			id	item = [table itemAtRow: index];
 			
-//			NSString* line = [NSString stringWithFormat:@"%@ (%@,%@) %@", [item valueForKey: ]];
+			if( [copyString length]) [copyString appendString:@"\r"];
+			
+			if([[item attributeForName:@"attributeTag"] stringValue])
+				[copyString appendFormat:@"%@ (%@) %@", [item valueForKey: @"name"], [[item attributeForName:@"attributeTag"] stringValue], [item valueForKey: @"stringValue"]];
+			else
+				[copyString appendFormat:@"%@ %@", [item valueForKey: @"name"], [item valueForKey: @"stringValue"]];
+			
+			NSLog( [item description]);
+			
+			NSLog( @"---");
+			
+			NSLog( [item valueForKey: @"name"]);
+			
+			NSLog( [[item attributeForName:@"group"] stringValue]);
+			NSLog( [[item attributeForName:@"element"] stringValue]);
+			
+			NSLog( [[item attributeForName:@"attributeTag"] stringValue]);
 			
 			NSLog( [item valueForKey: @"stringValue"]);
+			
+			NSLog( @"---");
 	   }
 	}
+	
+	NSPasteboard	*pb = [NSPasteboard generalPasteboard];
+	[pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+	[pb setString: copyString forType:NSStringPboardType];
 }
 
 // ============================================================

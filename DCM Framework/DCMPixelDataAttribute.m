@@ -3310,8 +3310,8 @@ NS_ENDHANDLER
 /*
 - (NSXMLNode *)xmlNode{
 	NSXMLNode *myNode;
-	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%d",[[self tag] group]]];
-	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%d",[[self tag] element]]];
+	NSXMLNode *groupAttr = [NSXMLNode attributeWithName:@"group" stringValue:[NSString stringWithFormat:@"%04x",[[self tag] group]]];
+	NSXMLNode *elementAttr = [NSXMLNode attributeWithName:@"element" stringValue:[NSString stringWithFormat:@"%04x",[[self tag] element]]];
 	NSXMLNode *vrAttr = [NSXMLNode attributeWithName:@"vr" stringValue:[[self tag] vr]];
 	NSArray *attrs = [NSArray arrayWithObjects:groupAttr,elementAttr, vrAttr, nil];
 	NSEnumerator *enumerator = [[self values] objectEnumerator];
