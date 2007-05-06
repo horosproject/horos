@@ -41,4 +41,7 @@
 - (void) collapseAll: (BOOL) deep;
 - (IBAction) setSearchString:(id) sender;
 
+- (NSString*) stringsSeparatedForNode:(NSXMLNode*) node;
+- (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string;
+
 @end

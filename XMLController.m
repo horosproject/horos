@@ -205,6 +205,31 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 }
 
+- (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string
+{
+	int i;
+	
+	for( i = 0; i < [node childCount]; i++)
+	{
+		if( [[node childAtIndex: i] stringValue] && [[node childAtIndex: i] childCount] == 0)
+		{
+			if( [string length]) [string appendFormat:@"\\%@", [[node childAtIndex: i] stringValue]];
+			else [string appendString: [[node childAtIndex: i] stringValue]];
+		}
+		
+		if( [[node childAtIndex: i] childCount])
+			[self traverse: [node childAtIndex: i] string: string];
+	}
+}
+
+- (NSString*) stringsSeparatedForNode:(NSXMLNode*) node
+{
+	NSMutableString	*string = [NSMutableString string];
+	
+	[self traverse: node string: string];
+	
+	return string;
+}
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
@@ -270,6 +295,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 			NSLog( [item valueForKey: @"stringValue"]);
 			
 			NSLog( @"---");
+			
+			NSLog( [self stringsSeparatedForNode: item]);
 	   }
 	}
 	
