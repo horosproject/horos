@@ -224,6 +224,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (NSString*) stringsSeparatedForNode:(NSXMLNode*) node
 {
+	if( [node childCount] == 0) return [node valueForKey:@"stringValue"];
+	
 	NSMutableString	*string = [NSMutableString string];
 	
 	[self traverse: node string: string];
@@ -241,8 +243,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	}
 	else if( [identifier isEqualToString:@"stringValue"])
 	{
-		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
-			return [item valueForKey:identifier];
+		if( [outlineView rowForItem: item] != 0)
+			return [self stringsSeparatedForNode: item];
 	}
 	else return [item valueForKey:identifier];
 		
@@ -279,7 +281,10 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 			
 			if( [copyString length]) [copyString appendString:@"\r"];
 			
-			[copyString appendFormat:@"%@ (%@,%@) %@", [item valueForKey: @"name"], [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue], [item valueForKey: @"stringValue"]];
+			if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+				[copyString appendFormat:@"%@ (%@,%@) %@", [item valueForKey: @"name"], [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue], [self stringsSeparatedForNode: item]];
+			else
+				[copyString appendFormat:@"%@ %@", [item valueForKey: @"name"], [self stringsSeparatedForNode: item]];
 			
 			NSLog( [item description]);
 			
