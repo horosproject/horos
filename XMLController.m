@@ -296,7 +296,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 		
 		if( [groupsAndElements count])
 		{
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", 0L];
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
 			
 			[params addObjectsFromArray:  groupsAndElements];
 			[params addObject: srcFile];
