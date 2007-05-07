@@ -225,8 +225,6 @@ enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
 	NSPoint			ROISelectorStartPoint, ROISelectorEndPoint;
 	BOOL			selectorROIEdition;
 	NSMutableArray	*ROISelectorSelectedROIList;
-	
-	BOOL			previousCOPYSETTINGSINSERIES;
 }
 +(void) setDefaults;
 + (void)setPluginOverridesMouse: (BOOL)override;

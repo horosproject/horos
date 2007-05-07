@@ -1632,7 +1632,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 		if( [self is2DViewer] == YES)
 		{
-			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] boolValue] == NO)
+			if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO)
 			{
 				[curDCM checkImageAvailble :[curDCM ww] :[curDCM wl]];
 				
@@ -4281,7 +4281,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 {
 	DCMPix	*otherPix = [note object];
 	
-	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] boolValue] == NO) return;
+	if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"] boolValue]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO) return;
 	
 	if( [dcmPixList containsObject: otherPix])
 	{
@@ -4554,7 +4554,6 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	}
 	
 	yearOld = 0L;
-	previousCOPYSETTINGSINSERIES = [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"];
 	shortDateString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat"] retain];
 	shortDateTimeString = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat"] retain];
 	localeDictionnary = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] retain];
@@ -8366,7 +8365,7 @@ BOOL	lowRes = NO;
 		else if (curImage < 0)
 			curImage = -1;
 		
-		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"]) || [[NSUserDefaults standardUserDefaults] valueForKey:@"COPYSETTINGSINSERIES"] == NO)
+		if( ([[[dcmFilesList objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"CR"] && [[NSUserDefaults standardUserDefaults] valueForKey:@"IndependentCRWLWW"]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"COPYSETTINGSINSERIES"] == NO)
 		{
 			
 		}
