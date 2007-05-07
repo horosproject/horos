@@ -17,4 +17,6 @@
 
 @interface XMLController (XMLControllerDCMTKCategory)
 
+-(int) modifyDicom:(NSArray*) params;
+
 @end

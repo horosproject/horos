@@ -15,6 +15,7 @@
 #include "FVTiff.h"
 
 #import "XMLController.h"
+#import "XMLControllerDCMTKCategory.h"
 #import "dicomFile.h"
 #import <OsiriX/DCMObject.h>
 
@@ -264,6 +265,44 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
 		NSLog( [item description]);
+	}
+}
+
+- (void)keyDown:(NSEvent *)event
+{
+	NSLog( @"keyDown");
+	
+	unichar				c = [[event characters] characterAtIndex:0];
+	
+	if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
+	{
+		NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
+		NSMutableString*	copyString = [NSMutableString string];
+		int					index;
+		NSMutableArray		*groupsAndElements = [NSMutableArray array];
+		
+		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		{
+		   if ([selectedRowIndexes containsIndex:index])
+		   {
+				id	item = [table itemAtRow: index];
+				
+				if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+				{
+					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-ea", [NSString stringWithFormat:@"(%@,%@)", [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue]], 0L]];
+				}
+			}
+		}
+		
+		if( [groupsAndElements count])
+		{
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", 0L];
+			
+			[params addObjectsFromArray:  groupsAndElements];
+			[params addObject: srcFile];
+			
+			[self modifyDicom: params];
+		}
 	}
 }
 

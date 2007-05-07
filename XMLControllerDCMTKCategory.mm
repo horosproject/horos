@@ -21,17 +21,28 @@
 
 @implementation XMLController (XMLControllerDCMTKCategory)
 
--(void) modifyDicom
+-(int) modifyDicom:(NSArray*) params
 {
-	int argc;
-	char *argv[ 99];
+	int			i, argc = [params count];
+	char		*argv[ argc];
 	
-    int error_count=0;
-    MdfConsoleEngine engine( argc, argv,"dcmodify");
-    error_count=engine.startProvidingService();
-    if (error_count > 0)
+	NSLog( [params description]);
+	
+	for( i = 0; i < argc; i++)
+	{
+		argv[ i] = (char*) [[params objectAtIndex: i] UTF8String];
+	}
+	
+    int error_count = 0;
+    
+	MdfConsoleEngine engine( argc, argv,"dcmodify");
+    
+	error_count=engine.startProvidingService();
+    
+	if (error_count > 0)
 	    CERR << "There were " << error_count << " error(s)" << endl;
-    return ;
+		
+    return error_count;
 }
 
 @end
