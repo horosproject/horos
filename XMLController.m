@@ -67,8 +67,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	}
 	while( parent = [parent parent]);
 	
-	NSLog( result);
-	
+	// NSLog( result);
 	// Example (0008,1111)[0].(0010,0010)
 	
 	return result;
@@ -128,6 +127,19 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 -(void) reload:(id) sender
 {
+	NSMutableDictionary	*previousOutline = [NSMutableDictionary dictionary];
+	int i;
+	
+	for( i = 1; i < [table numberOfRows]; i++)
+	{
+		id item = [table itemAtRow: i];
+		
+		if( [table isExpandable: item])
+		{
+			[previousOutline setValue: [NSNumber numberWithBool: [table isItemExpanded: item]] forKey: [self getPath: item]];
+		}
+	}
+
 	[xmlDocument release];
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 	xmlDocument = [[dcmObject xmlDocument] retain];
@@ -138,6 +150,18 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	
 	[table reloadData];
 	[table expandItem:[table itemAtRow:0] expandChildren:NO];
+	
+	for( i = 1; i < [table numberOfRows]; i++)
+	{
+		id item = [table itemAtRow: i];
+		
+		if( [table isExpandable: item])
+		{
+			NSNumber *num = [previousOutline valueForKey: [self getPath: item]];
+			
+			if( [num boolValue]) [table expandItem: item];
+		}
+	}
 	
 	[table selectRow: selectedRow byExtendingSelection: NO];
 	[[tableScrollView contentView] scrollToPoint: origin];
@@ -374,6 +398,9 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO) return NO;
+	if( isDICOM == NO) return NO;
+	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
 		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
