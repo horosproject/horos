@@ -16,7 +16,9 @@
 
 #import "XMLController.h"
 #import "XMLControllerDCMTKCategory.h"
+#import "WaitRendering.h"
 #import "dicomFile.h"
+#import "BrowserController.h"
 #import <OsiriX/DCMObject.h>
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
@@ -28,6 +30,77 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 @implementation XMLController
 
+-(NSArray*) arrayOfFiles
+{
+	int i, result;
+	
+	[NSApp beginSheet: levelSelection
+			modalForWindow:	[self window]
+			modalDelegate: nil
+			didEndSelector: nil
+			contextInfo: nil];
+	
+	[NSApp runModalForWindow: levelSelection];
+
+    [NSApp endSheet: levelSelection];
+    [levelSelection orderOut: self];
+
+	result = [levelMatrix selectedTag];
+	
+	switch ( result) 
+	{
+		case 0:
+			NSLog( @"image level");
+			return [NSArray arrayWithObject: srcFile];
+		break;
+		
+		case 1:
+			NSLog( @"series level");
+			
+			NSManagedObject	*series = [imObj valueForKey:@"series"];
+			
+			NSArray	*images = [[BrowserController currentBrowser] childrenArray: series];
+			
+			return [images valueForKey:@"completePath"];
+		break;
+		
+		case 2:
+			NSLog( @"study level");
+			
+			NSArray	*allSeries =  [[BrowserController currentBrowser] childrenArray: [imObj valueForKeyPath:@"series.study"]];
+			NSMutableArray *result = [NSMutableArray array];
+			
+			for(i = 0 ; i < [allSeries count]; i++)
+			{
+				[result addObjectsFromArray: [[BrowserController currentBrowser] childrenArray: [allSeries objectAtIndex: i]]];
+			}
+			
+			return [result valueForKey:@"completePath"];
+		break;
+	}
+	
+	return 0L;
+}
+
+-(void) reload:(id) sender
+{
+	[xmlDocument release];
+	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+	xmlDocument = [[dcmObject xmlDocument] retain];
+	
+	int selectedRow = [table selectedRow];
+	
+	NSPoint origin = [[table superview] bounds].origin;
+	
+	[table reloadData];
+	[table expandItem:[table itemAtRow:0] expandChildren:NO];
+	
+	[table selectRow: selectedRow byExtendingSelection: NO];
+	[[tableScrollView contentView] scrollToPoint: origin];
+	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
+	[table setNeedsDisplay];
+}
+
 -(void) exportXML:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
@@ -37,9 +110,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
     
     if( [panel runModalForDirectory:0L file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
-        //[xmlData writeToFile:[panel filename] atomically:NO];
 		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO];
-		 
     }
 }
 
@@ -63,13 +134,16 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
     [self setupToolbar];
 }
 
--(id) init:(NSString*) sIn :(NSString*) name{
+-(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name
+{
 	if (self = [super initWithWindowNibName:@"XMLViewer"]){
 		[[self window] setTitle:name];
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
 		[[self window] setDelegate:self];
 		
-		srcFile = [sIn retain];
+		imObj = [image retain];
+		srcFile = [[image valueForKey:@"completePath"] retain];
+		
 		if([DicomFile isDICOMFile:srcFile])
 		{
 			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
@@ -98,6 +172,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (void) dealloc
 {
+	[imObj release];
 	[srcFile release];
 	
     [xmlDcmData release];
@@ -268,6 +343,50 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	}
 }
 
+- (NSString*) getPath:(NSXMLElement*) node
+{
+	NSMutableString	*result = [NSMutableString string];
+	
+	id parent = node;
+	id child = 0L;
+	BOOL first = TRUE;
+	
+	do
+	{
+		if( [[[parent parent] className] isEqualToString:@"NSXMLElement"])
+		{
+			if( [[parent attributeForName:@"group"] stringValue] && [[parent attributeForName:@"element"] stringValue])
+			{
+				NSString *subString = [NSString stringWithFormat:@"(%@,%@)", [[parent attributeForName:@"group"] stringValue], [[parent attributeForName:@"element"] stringValue]];
+				
+				if( first == NO && [[child attributeForName:@"group"] stringValue] && [[child attributeForName:@"element"] stringValue])
+					subString = [subString stringByAppendingString:@"."];
+					
+				[result insertString: subString atIndex: 0];
+			}
+			else
+			{
+				NSString *subString =  [NSString stringWithFormat:@"[%d]", [[[parent parent] children] indexOfObject: parent]];
+				
+				if( first == NO)
+					subString = [subString stringByAppendingString:@"."];
+				
+				[result insertString: subString atIndex: 0];
+			}
+		}
+		
+		child = parent;
+		first = NO;
+	}
+	while( parent = [parent parent]);
+	
+	NSLog( result);
+	
+	// Example (0008,1111)[0].(0010,0010)
+	
+	return result;
+}
+
 - (void)keyDown:(NSEvent *)event
 {
 	NSLog( @"keyDown");
@@ -287,9 +406,39 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 		   {
 				id	item = [table itemAtRow: index];
 				
-				if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+				if( index > 0)
 				{
-					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-ea", [NSString stringWithFormat:@"(%@,%@)", [[item attributeForName:@"group"] stringValue], [[item attributeForName:@"element"] stringValue]], 0L]];
+					NSString	*path = [self getPath: item];
+					
+					if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+					{
+						[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+					}
+					else // A multiple value or a sequence, not an element
+					{
+						if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+						{
+							int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+							
+							path = [path substringToIndex: [path length]-3];
+							
+							NSLog( path);
+							NSLog( @"%d", index);
+							
+							NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+							
+							[values removeObjectAtIndex: index];
+							
+							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+						}
+						else
+						{
+							NSLog( @"A sequence");
+							
+							NSString	*path = [self getPath: (NSXMLElement*) [item parent]];
+							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+						}
+					}
 				}
 			}
 		}
@@ -299,11 +448,31 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
 			
 			[params addObjectsFromArray:  groupsAndElements];
-			[params addObject: srcFile];
 			
-			[self modifyDicom: params];
+			NSArray	*files = [self arrayOfFiles];
+			
+			if( files)
+			{
+				[params addObjectsFromArray: files];
+				
+				WaitRendering		*wait = 0L;
+				if( [files count] > 1)
+				{
+					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+					[wait showWindow:self];
+				}
+				
+				[self modifyDicom: params];
+				
+				[wait close];
+				[wait release];
+				wait = 0L;
+				
+				[self reload: self];
+			}
 		}
 	}
+	else [super keyDown: event];
 }
 
 - (void)copy:(id)sender

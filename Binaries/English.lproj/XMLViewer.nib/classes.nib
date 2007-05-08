@@ -11,7 +11,14 @@
             }; 
             CLASS = XMLController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {search = NSSearchField; searchView = NSView; table = NSOutlineView; }; 
+            OUTLETS = {
+                levelMatrix = NSMatrix; 
+                levelSelection = NSWindow; 
+                search = NSSearchField; 
+                searchView = NSView; 
+                table = NSOutlineView; 
+                tableScrollView = NSScrollView; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

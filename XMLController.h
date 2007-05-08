@@ -19,18 +19,22 @@
 @interface XMLController : NSWindowController
 {
     IBOutlet NSOutlineView		*table;
+	IBOutlet NSScrollView		*tableScrollView;
     IBOutlet NSSearchField		*search;
     IBOutlet NSView				*searchView;
+	
+	IBOutlet NSWindow			*levelSelection;
+	IBOutlet NSMatrix			*levelMatrix;
 	
     NSMutableArray          *xmlDcmData;    
     NSData                  *xmlData;    
     NSToolbar               *toolbar;	
 	NSString				*srcFile;
 	NSXMLDocument			*xmlDocument;
-        
+	NSManagedObject			*imObj;
 }
 
--(id) init:(NSString*) srcFile :(NSString*) name;
+- (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name;
 - (void) setupToolbar;
 
 - (void) expandAllItems: (id) sender;
