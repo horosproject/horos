@@ -400,6 +400,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO) return NO;
 	if( isDICOM == NO) return NO;
+	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO) return NO;
 	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
@@ -502,7 +503,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	
 	unichar				c = [[event characters] characterAtIndex:0];
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter ) )
+	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter ) )
 	{
 		NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 		NSMutableString*	copyString = [NSMutableString string];
