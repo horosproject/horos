@@ -230,6 +230,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 + (NSArray*) statesArray;
 + (void) updateActivity;
 + (NSData*) produceJPEGThumbnail:(NSImage*) image;
+- (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;

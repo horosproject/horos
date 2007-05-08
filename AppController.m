@@ -1421,6 +1421,8 @@ NSRect screenFrame()
 	NSArray				*winList = [NSApp windows];
 	long				i;
 	
+	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
+	
 	for( i = 0; i < [winList count]; i++)
 	{
 		[[winList objectAtIndex:i] orderOut:sender];

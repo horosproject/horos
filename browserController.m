@@ -9050,10 +9050,19 @@ static NSArray*	openSubSeriesArray = 0L;
     [self release];
 }
 
-- (BOOL)windowShouldClose:(NSNotification *)aNotification
+- (BOOL) shouldTerminate: (id) sender
 {
-    [[self window] orderOut:self];
-    return NO;
+	if( newFilesInIncoming)
+	{
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Listener - STORE", nil), NSLocalizedString(@"New files are arriving in the DICOM Database. Are you sure you want to quit now? The DICOM Listener will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
+	}
+	
+	if( [SendController sendControllerObjects] > 0)
+	{
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), 0L) == NSAlertDefaultReturn) return NO;
+	}
+	
+	return YES;
 }
 
 - (void) showDatabase:(id)sender

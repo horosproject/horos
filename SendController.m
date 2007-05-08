@@ -53,7 +53,14 @@ Version 2.3
 
 extern NSMutableDictionary	*plugins, *pluginsDict;
 
+static int sendControllerObjects = 0;
+
 @implementation SendController
+
++(int) sendControllerObjects
+{
+	return sendControllerObjects;
+}
 
 + (void)sendFiles:(NSArray *)files
 {
@@ -102,6 +109,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 		_readyForRelease = NO;
 		_lock = [[NSLock alloc] init];
 		[_lock  lock];
+		sendControllerObjects++;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setSendMessage:) name:@"DCMSendStatus" object:nil];
 
@@ -139,6 +147,7 @@ extern NSMutableDictionary	*plugins, *pluginsDict;
 	[_transferSyntaxString release];
 	[_numberFiles release];
 	[_lock lock];
+	sendControllerObjects--;
 	[_lock unlock];
 	[_lock release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

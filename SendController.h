@@ -66,6 +66,7 @@ enum SendServerType { osirixServer, offisServer };
 	IBOutlet NSPopUpButton	*syntaxListOffis;
 }
 + (void)sendFiles:(NSArray *)files;
++ (int) sendControllerObjects;
 - (id)initWithFiles:(NSArray *)files;
 - (id)serverAtIndex:(int)index;
 - (id)server;
