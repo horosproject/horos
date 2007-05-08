@@ -30,6 +30,50 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 @implementation XMLController
 
+- (NSString*) getPath:(NSXMLElement*) node
+{
+	NSMutableString	*result = [NSMutableString string];
+	
+	id parent = node;
+	id child = 0L;
+	BOOL first = TRUE;
+	
+	do
+	{
+		if( [[[parent parent] className] isEqualToString:@"NSXMLElement"])
+		{
+			if( [[parent attributeForName:@"group"] stringValue] && [[parent attributeForName:@"element"] stringValue])
+			{
+				NSString *subString = [NSString stringWithFormat:@"(%@,%@)", [[parent attributeForName:@"group"] stringValue], [[parent attributeForName:@"element"] stringValue]];
+				
+				if( first == NO && [[child attributeForName:@"group"] stringValue] && [[child attributeForName:@"element"] stringValue])
+					subString = [subString stringByAppendingString:@"."];
+					
+				[result insertString: subString atIndex: 0];
+			}
+			else
+			{
+				NSString *subString =  [NSString stringWithFormat:@"[%d]", [[[parent parent] children] indexOfObject: parent]];
+				
+				if( first == NO)
+					subString = [subString stringByAppendingString:@"."];
+				
+				[result insertString: subString atIndex: 0];
+			}
+		}
+		
+		child = parent;
+		first = NO;
+	}
+	while( parent = [parent parent]);
+	
+	NSLog( result);
+	
+	// Example (0008,1111)[0].(0010,0010)
+	
+	return result;
+}
+
 -(NSArray*) arrayOfFiles
 {
 	int i, result;
@@ -330,7 +374,22 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
-		return YES;
+	{
+		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
+		{
+			if( [[[item attributeForName:@"group"] stringValue] intValue] != 0)	//[[[item attributeForName:@"group"] stringValue] intValue] != 2 && 
+			{
+				return YES;
+			}
+		}
+		else if( [[[[item children] objectAtIndex: 0] children] count] == 0)	// A multiple value
+		{
+			return YES;
+		}
+		else NSLog( @"Sequence");
+		
+		return NO;
+	}
 	else
 		return NO;
 }
@@ -339,52 +398,71 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 {
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
-		NSLog( [item description]);
-	}
-}
-
-- (NSString*) getPath:(NSXMLElement*) node
-{
-	NSMutableString	*result = [NSMutableString string];
-	
-	id parent = node;
-	id child = 0L;
-	BOOL first = TRUE;
-	
-	do
-	{
-		if( [[[parent parent] className] isEqualToString:@"NSXMLElement"])
+		NSMutableString*	copyString = [NSMutableString string];
+		int					index;
+		NSMutableArray		*groupsAndElements = [NSMutableArray array];
+		
+		if( [table rowForItem: item] > 0)
 		{
-			if( [[parent attributeForName:@"group"] stringValue] && [[parent attributeForName:@"element"] stringValue])
+			NSString	*path = [self getPath: item];
+			
+			if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 			{
-				NSString *subString = [NSString stringWithFormat:@"(%@,%@)", [[parent attributeForName:@"group"] stringValue], [[parent attributeForName:@"element"] stringValue]];
-				
-				if( first == NO && [[child attributeForName:@"group"] stringValue] && [[child attributeForName:@"element"] stringValue])
-					subString = [subString stringByAppendingString:@"."];
-					
-				[result insertString: subString atIndex: 0];
+				[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
 			}
-			else
+			else // A multiple value or a sequence, not an element
 			{
-				NSString *subString =  [NSString stringWithFormat:@"[%d]", [[[parent parent] children] indexOfObject: parent]];
-				
-				if( first == NO)
-					subString = [subString stringByAppendingString:@"."];
-				
-				[result insertString: subString atIndex: 0];
+				if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+				{
+					int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+					
+					path = [path substringToIndex: [path length]-3];
+					
+					NSLog( path);
+					NSLog( @"%d", index);
+					
+					NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+					
+					[values replaceObjectAtIndex: index withObject: object];
+					
+					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+				}
+				else
+				{
+					NSLog( @"A sequence");
+				}
 			}
 		}
 		
-		child = parent;
-		first = NO;
+		if( [groupsAndElements count])
+		{
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+			
+			[params addObjectsFromArray:  groupsAndElements];
+			
+			NSArray	*files = [self arrayOfFiles];
+			
+			if( files)
+			{
+				[params addObjectsFromArray: files];
+				
+				WaitRendering		*wait = 0L;
+				if( [files count] > 1)
+				{
+					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+					[wait showWindow:self];
+				}
+				
+				[self modifyDicom: params];
+				
+				[wait close];
+				[wait release];
+				wait = 0L;
+				
+				[self reload: self];
+			}
+		}
 	}
-	while( parent = [parent parent]);
-	
-	NSLog( result);
-	
-	// Example (0008,1111)[0].(0010,0010)
-	
-	return result;
 }
 
 - (void)keyDown:(NSEvent *)event
