@@ -32,6 +32,8 @@
 	NSString				*srcFile;
 	NSXMLDocument			*xmlDocument;
 	NSManagedObject			*imObj;
+	
+	BOOL					isDICOM;
 }
 
 - (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name;

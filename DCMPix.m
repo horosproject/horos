@@ -8795,10 +8795,16 @@ BOOL            readable = YES;
 {
 	if (DCMPixShutterOnOff == NSOnState)
 	{
+		if( shutterRect_y < 0) shutterRect_y = 0;
+		if( shutterRect_x < 0) shutterRect_x = 0;
+			
+		if( shutterRect_w + shutterRect_x > width) shutterRect_w = width - shutterRect_x;
+		if( shutterRect_h + shutterRect_y > height) shutterRect_h = height - shutterRect_y;	
+
 		if( isRGB == YES || thickSlabVRActivated == YES)
 		{
 			char*	tempMem = calloc( 1, height * width * 4 * sizeof(char));
-			
+
 			if( tempMem)
 			{
 				int i = shutterRect_h;

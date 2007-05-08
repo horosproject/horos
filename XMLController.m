@@ -192,6 +192,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 		{
 			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 			xmlDocument = [[dcmObject xmlDocument] retain];
+			
+			isDICOM = YES;
 		}
 		else if([DicomFile isFVTiffFile:srcFile])
 		{
@@ -245,7 +247,6 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (IBAction) setSearchString:(id) sender
 {
-	
 	[table reloadData];
 }
 
@@ -396,70 +397,73 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM)
 	{
-		NSMutableString*	copyString = [NSMutableString string];
-		int					index;
-		NSMutableArray		*groupsAndElements = [NSMutableArray array];
-		
-		if( [table rowForItem: item] > 0)
+		if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 		{
-			NSString	*path = [self getPath: item];
+			NSMutableString*	copyString = [NSMutableString string];
+			int					index;
+			NSMutableArray		*groupsAndElements = [NSMutableArray array];
 			
-			if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+			if( [table rowForItem: item] > 0)
 			{
-				[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
+				NSString	*path = [self getPath: item];
+				
+				if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+				{
+					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
+				}
+				else // A multiple value or a sequence, not an element
+				{
+					if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+					{
+						int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+						
+						path = [path substringToIndex: [path length]-3];
+						
+						NSLog( path);
+						NSLog( @"%d", index);
+						
+						NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+						
+						[values replaceObjectAtIndex: index withObject: object];
+						
+						[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+					}
+					else
+					{
+						NSLog( @"A sequence");
+					}
+				}
 			}
-			else // A multiple value or a sequence, not an element
+			
+			if( [groupsAndElements count])
 			{
-				if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+				
+				[params addObjectsFromArray:  groupsAndElements];
+				
+				NSArray	*files = [self arrayOfFiles];
+				
+				if( files)
 				{
-					int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+					[params addObjectsFromArray: files];
 					
-					path = [path substringToIndex: [path length]-3];
+					WaitRendering		*wait = 0L;
+					if( [files count] > 1)
+					{
+						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+						[wait showWindow:self];
+					}
 					
-					NSLog( path);
-					NSLog( @"%d", index);
+					[self modifyDicom: params];
 					
-					NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+					[wait close];
+					[wait release];
+					wait = 0L;
 					
-					[values replaceObjectAtIndex: index withObject: object];
-					
-					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+					[self reload: self];
 				}
-				else
-				{
-					NSLog( @"A sequence");
-				}
-			}
-		}
-		
-		if( [groupsAndElements count])
-		{
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
-			
-			[params addObjectsFromArray:  groupsAndElements];
-			
-			NSArray	*files = [self arrayOfFiles];
-			
-			if( files)
-			{
-				[params addObjectsFromArray: files];
-				
-				WaitRendering		*wait = 0L;
-				if( [files count] > 1)
-				{
-					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
-					[wait showWindow:self];
-				}
-				
-				[self modifyDicom: params];
-				
-				[wait close];
-				[wait release];
-				wait = 0L;
-				
-				[self reload: self];
 			}
 		}
 	}
@@ -471,7 +475,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	
 	unichar				c = [[event characters] characterAtIndex:0];
 	
-	if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter ) )
 	{
 		NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 		NSMutableString*	copyString = [NSMutableString string];
