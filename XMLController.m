@@ -130,7 +130,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 - (IBAction) addDICOMField:(id) sender
 {
-
+	
 }
 
 - (IBAction) switchDICOMEditing:(id) sender
@@ -271,6 +271,8 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		[table expandItem:[table itemAtRow:0] expandChildren:NO];
 		
 		[search setRecentsAutosaveName:@"xml meta data search"];
+		
+		[[self window] setRepresentedFilename: srcFile];
 	}
 	return self;
 }
@@ -541,80 +543,83 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	
 	if( editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter))
 	{
-		NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
-		NSMutableString*	copyString = [NSMutableString string];
-		int					index;
-		NSMutableArray		*groupsAndElements = [NSMutableArray array];
-		
-		for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+		if( NSRunInformationalAlertPanel( NSLocalizedString( @"DICOM Editing", 0L), NSLocalizedString(@"Are you sure you want to delete selected field(s)?", 0L), NSLocalizedString(@"OK", 0L), NSLocalizedString(@"Cancel", 0L), 0L) == NSAlertDefaultReturn)
 		{
-		   if ([selectedRowIndexes containsIndex:index])
-		   {
-				id	item = [table itemAtRow: index];
-				
-				if( index > 0)
-				{
-					NSString	*path = [self getPath: item];
+			NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
+			NSMutableString*	copyString = [NSMutableString string];
+			int					index;
+			NSMutableArray		*groupsAndElements = [NSMutableArray array];
+			
+			for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
+			{
+			   if ([selectedRowIndexes containsIndex:index])
+			   {
+					id	item = [table itemAtRow: index];
 					
-					if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+					if( index > 0)
 					{
-						[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
-					}
-					else // A multiple value or a sequence, not an element
-					{
-						if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+						NSString	*path = [self getPath: item];
+						
+						if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 						{
-							int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
-							
-							path = [path substringToIndex: [path length]-3];
-							
-							NSLog( path);
-							NSLog( @"%d", index);
-							
-							NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
-							
-							[values removeObjectAtIndex: index];
-							
-							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
-						}
-						else
-						{
-							NSLog( @"A sequence");
-							
-							NSString	*path = [self getPath: (NSXMLElement*) [item parent]];
 							[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+						}
+						else // A multiple value or a sequence, not an element
+						{
+							if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+							{
+								int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+								
+								path = [path substringToIndex: [path length]-3];
+								
+								NSLog( path);
+								NSLog( @"%d", index);
+								
+								NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+								
+								[values removeObjectAtIndex: index];
+								
+								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+							}
+							else
+							{
+								NSLog( @"A sequence");
+//								
+//								NSString	*path = [self getPath: (NSXMLElement*) [item parent]];
+//								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, 0L]];
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		if( [groupsAndElements count])
-		{
-			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
 			
-			[params addObjectsFromArray:  groupsAndElements];
-			
-			NSArray	*files = [self arrayOfFiles];
-			
-			if( files)
+			if( [groupsAndElements count])
 			{
-				[params addObjectsFromArray: files];
+				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
 				
-				WaitRendering		*wait = 0L;
-				if( [files count] > 1)
+				[params addObjectsFromArray:  groupsAndElements];
+				
+				NSArray	*files = [self arrayOfFiles];
+				
+				if( files)
 				{
-					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
-					[wait showWindow:self];
+					[params addObjectsFromArray: files];
+					
+					WaitRendering		*wait = 0L;
+					if( [files count] > 1)
+					{
+						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+						[wait showWindow:self];
+					}
+					
+					[self modifyDicom: params];
+					
+					[wait close];
+					[wait release];
+					wait = 0L;
+					
+					[self reload: self];
 				}
-				
-				[self modifyDicom: params];
-				
-				[wait close];
-				[wait release];
-				wait = 0L;
-				
-				[self reload: self];
 			}
 		}
 	}
