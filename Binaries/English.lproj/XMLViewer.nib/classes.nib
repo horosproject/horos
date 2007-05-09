@@ -8,15 +8,18 @@
         }, 
         {
             ACTIONS = {
+                addDICOMField = id; 
                 collapseAllItems = id; 
                 deepCollapseAllItems = id; 
                 deepExpandAllItems = id; 
                 expandAllItems = id; 
                 setSearchString = id; 
+                switchDICOMEditing = id; 
             }; 
             CLASS = XMLController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                dicomEditingView = NSView; 
                 levelMatrix = NSMatrix; 
                 levelSelection = NSWindow; 
                 search = NSSearchField; 

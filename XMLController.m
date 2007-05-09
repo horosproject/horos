@@ -27,6 +27,7 @@ static NSString*	ExportTextToolbarItemIdentifier			= @"ExportText";
 static NSString*	ExpandAllItemsToolbarItemIdentifier		= @"add-large";
 static NSString*	CollapseAllItemsToolbarItemIdentifier	= @"minus-large";
 static NSString*	SearchToolbarItemIdentifier				= @"Search";
+static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 @implementation XMLController
 
@@ -77,18 +78,20 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 {
 	int i, result;
 	
-	[NSApp beginSheet: levelSelection
-			modalForWindow:	[self window]
-			modalDelegate: nil
-			didEndSelector: nil
-			contextInfo: nil];
-	
-	[NSApp runModalForWindow: levelSelection];
+//	[NSApp beginSheet: levelSelection
+//			modalForWindow:	[self window]
+//			modalDelegate: nil
+//			didEndSelector: nil
+//			contextInfo: nil];
+//	
+//	[NSApp runModalForWindow: levelSelection];
+//
+//    [NSApp endSheet: levelSelection];
+//    [levelSelection orderOut: self];
+//
+//	result = [levelMatrix selectedTag];
 
-    [NSApp endSheet: levelSelection];
-    [levelSelection orderOut: self];
-
-	result = [levelMatrix selectedTag];
+	result = editingLevel;
 	
 	switch ( result) 
 	{
@@ -124,6 +127,38 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	
 	return 0L;
 }
+
+- (IBAction) addDICOMField:(id) sender
+{
+
+}
+
+- (IBAction) switchDICOMEditing:(id) sender
+{
+	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"This file is not editable. It is a read-only file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		[self willChangeValueForKey:@"editingActivated"];
+		editingActivated = NO;
+		[self didChangeValueForKey:@"editingActivated"];
+	}
+	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is desactivated. See General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		[self willChangeValueForKey:@"editingActivated"];
+		editingActivated = NO;
+		[self didChangeValueForKey:@"editingActivated"];
+	}
+	else if( isDICOM == NO)
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is allowed only on DICOM files.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		
+		[self willChangeValueForKey:@"editingActivated"];
+		editingActivated = NO;
+		[self didChangeValueForKey:@"editingActivated"];
+	}
+}
+
 
 -(void) reload:(id) sender
 {
@@ -401,6 +436,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO) return NO;
 	if( isDICOM == NO) return NO;
 	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO) return NO;
+	if( editingActivated == NO) return NO;
 	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
@@ -425,7 +461,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated)
 	{
 		if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 		{
@@ -503,7 +539,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 	
 	unichar				c = [[event characters] characterAtIndex:0];
 	
-	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter ) )
+	if( editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter))
 	{
 		NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 		NSMutableString*	copyString = [NSMutableString string];
@@ -665,6 +701,16 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportXML:)];
     }
+	else if ([itemIdent isEqual: EditingToolbarItemIdentifier])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"DICOM Editing", nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"DICOM Editing", nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"DICOM Editing", nil)];
+		
+		[toolbarItem setView: dicomEditingView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([dicomEditingView frame]), NSHeight([dicomEditingView frame]))];
+    }
 	else if ([itemIdent isEqual: SearchToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Search", nil)];
@@ -716,6 +762,8 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
+										EditingToolbarItemIdentifier,
+										NSToolbarFlexibleSpaceItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
 }
@@ -732,6 +780,7 @@ static NSString*	SearchToolbarItemIdentifier				= @"Search";
 										ExportTextToolbarItemIdentifier, 
 										ExpandAllItemsToolbarItemIdentifier,
 										CollapseAllItemsToolbarItemIdentifier,
+										EditingToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										nil];
 }
