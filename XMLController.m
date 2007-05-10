@@ -188,6 +188,10 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		editingActivated = NO;
 		[self didChangeValueForKey:@"editingActivated"];
 	}
+	else
+	{
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+	}
 }
 
 
