@@ -12,16 +12,22 @@
                 collapseAllItems = id; 
                 deepCollapseAllItems = id; 
                 deepExpandAllItems = id; 
+                executeAdd = id; 
                 expandAllItems = id; 
+                setGroupElement = id; 
                 setSearchString = id; 
+                setTagName = id; 
                 switchDICOMEditing = id; 
             }; 
             CLASS = XMLController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                addElement = NSTextField; 
+                addGroup = NSTextField; 
+                addValue = NSTextField; 
+                addWindow = NSWindow; 
                 dicomEditingView = NSView; 
-                levelMatrix = NSMatrix; 
-                levelSelection = NSWindow; 
+                dicomFieldsCombo = NSComboBox; 
                 search = NSSearchField; 
                 searchView = NSView; 
                 table = NSOutlineView; 

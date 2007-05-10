@@ -128,9 +128,39 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	return 0L;
 }
 
+- (IBAction) executeAdd:(id) sender
+{
+	if( [sender tag])
+    {
+		NSScanner	*hexscanner;
+	
+		unsigned group = 0, element = 0;
+	
+		hexscanner = [NSScanner scannerWithString:[addGroup stringValue]];
+		[hexscanner scanHexInt:&group];
+
+		hexscanner = [NSScanner scannerWithString:[addElement stringValue]];
+		[hexscanner scanHexInt:&element];
+		
+		if( group > 0 && element >= 0)
+		{
+			
+		}
+		else
+		{
+			NSRunAlertPanel( @"Add DICOM Field",@"Illegal group / element values", @"OK", 0L, 0L);
+			return;
+		}
+	}
+	
+	[NSApp endSheet: addWindow returnCode:[sender tag]];
+	[addWindow orderOut:sender];
+
+}
+
 - (IBAction) addDICOMField:(id) sender
 {
-	
+	[NSApp beginSheet: addWindow modalForWindow:[self window] modalDelegate:self didEndSelector: 0L contextInfo:0L];
 }
 
 - (IBAction) switchDICOMEditing:(id) sender
@@ -239,7 +269,8 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 -(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name
 {
-	if (self = [super initWithWindowNibName:@"XMLViewer"]){
+	if (self = [super initWithWindowNibName:@"XMLViewer"])
+	{
 		[[self window] setTitle:name];
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
 		[[self window] setDelegate:self];
@@ -273,12 +304,15 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		[search setRecentsAutosaveName:@"xml meta data search"];
 		
 		[[self window] setRepresentedFilename: srcFile];
+		
+		dictionaryArray = [[NSMutableArray array] retain];
 	}
 	return self;
 }
 
 - (void) dealloc
 {
+	[dictionaryArray release];
 	[imObj release];
 	[srcFile release];
 	
@@ -866,4 +900,101 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 }
 
+- (IBAction) setGroupElement: (id) sender
+{
+	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
+	
+	NSScanner	*hexscanner;
+	
+	unsigned group = 0, element = 0;
+	
+	hexscanner = [NSScanner scannerWithString:[addGroup stringValue]];
+	[hexscanner scanHexInt:&group];
+
+	hexscanner = [NSScanner scannerWithString:[addElement stringValue]];
+	[hexscanner scanHexInt:&element];
+
+	[addGroup setStringValue: [NSString stringWithFormat:@"0x%04x", group]];
+	[addElement setStringValue: [NSString stringWithFormat:@"0x%04x", element]];
+	
+	NSString	*string = [NSString stringWithFormat:@"(0x%04x,0x%04x)", group, element];
+	
+	int i;
+	
+	for( i = 0; i < [dictionaryArray count] ; i++)
+	{
+		if( [[[dictionaryArray objectAtIndex: i] substringToIndex: 15] isEqualToString: string])
+		{
+			NSLog( [dictionaryArray objectAtIndex: i]);
+			[dicomFieldsCombo setStringValue: [[dictionaryArray objectAtIndex: i] substringFromIndex: 16]];
+			
+			return;
+		}
+	}
+	
+	[dicomFieldsCombo setStringValue: @""];
+}
+
+- (IBAction) setTagName:(id) sender
+{
+	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
+	
+	NSString	*string = [sender stringValue];
+	
+	if( [string length] > 0)
+	{
+		if( [string characterAtIndex: 0] == '(')
+		{
+			string = [string substringFromIndex: 16];
+		}
+		
+		[sender setStringValue: string];
+		
+		int gp, el;
+		
+		if( [self getGroupAndElementForName: string group: &gp element: &el] == 0)
+		{
+			[addGroup setStringValue: [NSString stringWithFormat:@"0x%04x", gp]];
+			[addElement setStringValue: [NSString stringWithFormat:@"0x%04x", el]];
+		}
+		else
+		{
+			[addGroup setStringValue: @""];
+			[addElement setStringValue: @""];
+		}
+	}
+}
+
+- (NSString *)comboBox:(NSComboBox *)aComboBox completedString:(NSString *)uncompletedString
+{
+	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
+	
+	if( [uncompletedString length] == 0) return;
+	
+	int i;
+	
+	for( i = 0; i < [dictionaryArray count] ; i++)
+	{
+		if( [[[[dictionaryArray objectAtIndex: i] substringFromIndex: 16] uppercaseString] hasPrefix: [uncompletedString uppercaseString]])
+		{
+			return [[dictionaryArray objectAtIndex: i] substringFromIndex: 16];
+		}
+	}
+	
+	return 0L;
+}
+
+- (int) numberOfItemsInComboBox:(NSComboBox *)aComboBox
+{
+	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
+	
+	return [dictionaryArray count];
+}
+
+- (id) comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)index
+{
+	if( [dictionaryArray count] == 0) [self prepareDictionaryArray];
+	
+	return [dictionaryArray objectAtIndex: index];
+}
 @end

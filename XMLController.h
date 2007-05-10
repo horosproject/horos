@@ -23,25 +23,30 @@
     IBOutlet NSSearchField		*search;
     IBOutlet NSView				*searchView, *dicomEditingView;
 	
-	IBOutlet NSWindow			*levelSelection;
-	IBOutlet NSMatrix			*levelMatrix;
-	
     NSMutableArray				*xmlDcmData;    
     NSData						*xmlData;    
     NSToolbar					*toolbar;	
 	NSString					*srcFile;
 	NSXMLDocument				*xmlDocument;
 	NSManagedObject				*imObj;
+	NSMutableArray				*dictionaryArray;
 	
 	BOOL						isDICOM;
 	BOOL						editingActivated;
 	int							editingLevel;
+	
+	IBOutlet NSWindow			*addWindow;
+	IBOutlet NSComboBox			*dicomFieldsCombo;
+	IBOutlet NSTextField		*addGroup, *addElement, *addValue;
 }
 
 - (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name;
 - (void) setupToolbar;
 
 - (IBAction) addDICOMField:(id) sender;
+- (IBAction) setTagName:(id) sender;
+- (IBAction) setGroupElement: (id) sender;
+- (IBAction) executeAdd:(id) sender;
 - (IBAction) switchDICOMEditing:(id) sender;
 
 - (void) expandAllItems: (id) sender;

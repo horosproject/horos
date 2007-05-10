@@ -313,7 +313,10 @@ static int sendControllerObjects = 0;
 			}
 		}		
 	}
-
+	else // Cancel
+	{
+		[_lock unlock];	// Will release the object
+	}
 }
 
 #pragma mark Sending functions	
