@@ -160,6 +160,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 - (IBAction) addDICOMField:(id) sender
 {
+	[self setGroupElement: self];
 	[NSApp beginSheet: addWindow modalForWindow:[self window] modalDelegate:self didEndSelector: 0L contextInfo:0L];
 }
 
@@ -271,6 +272,8 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 {
 	if (self = [super initWithWindowNibName:@"XMLViewer"])
 	{
+		allowSelectionChange = YES;
+		
 		[[self window] setTitle:name];
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
 		[[self window] setDelegate:self];
@@ -495,76 +498,92 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		return NO;
 }
 
+- (void) setObject:(NSArray*) array
+{
+	NSMutableString*	copyString = [NSMutableString string];
+	int					index;
+	NSMutableArray		*groupsAndElements = [NSMutableArray array];
+	
+	id item = [array objectAtIndex: 0];
+	id object = [array objectAtIndex: 1];
+	
+	if( [table rowForItem: item] > 0)
+	{
+		NSString	*path = [self getPath: item];
+		
+		if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
+		{
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
+		}
+		else // A multiple value or a sequence, not an element
+		{
+			if( [[[[item children] objectAtIndex: 0] children] count] == 0)
+			{
+				int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
+				
+				path = [path substringToIndex: [path length]-3];
+				
+				NSLog( path);
+				NSLog( @"%d", index);
+				
+				NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
+				
+				[values replaceObjectAtIndex: index withObject: object];
+				
+				[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
+			}
+			else
+			{
+				NSLog( @"A sequence");
+			}
+		}
+	}
+	
+	if( [groupsAndElements count])
+	{
+		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+		
+		[params addObjectsFromArray:  groupsAndElements];
+		
+		NSArray	*files = [self arrayOfFiles];
+		
+		if( files)
+		{
+			[params addObjectsFromArray: files];
+			
+			WaitRendering		*wait = 0L;
+			if( [files count] > 1)
+			{
+				wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+				[wait showWindow:self];
+			}
+			
+			[self modifyDicom: params];
+			
+			[wait close];
+			[wait release];
+			wait = 0L;
+			
+			[self reload: self];
+		}
+	}
+	
+	allowSelectionChange = YES;
+}
+
+- (BOOL)selectionShouldChangeInOutlineView:(NSOutlineView *)outlineView
+{
+	return allowSelectionChange;
+}
+
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated)
 	{
 		if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 		{
-			NSMutableString*	copyString = [NSMutableString string];
-			int					index;
-			NSMutableArray		*groupsAndElements = [NSMutableArray array];
-			
-			if( [table rowForItem: item] > 0)
-			{
-				NSString	*path = [self getPath: item];
-				
-				if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
-				{
-					[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, object], 0L]];
-				}
-				else // A multiple value or a sequence, not an element
-				{
-					if( [[[[item children] objectAtIndex: 0] children] count] == 0)
-					{
-						int index = [[path substringWithRange: NSMakeRange( [path length]-2, 1)] intValue];
-						
-						path = [path substringToIndex: [path length]-3];
-						
-						NSLog( path);
-						NSLog( @"%d", index);
-						
-						NSMutableArray	*values = [NSMutableArray arrayWithArray: [[self stringsSeparatedForNode: [item parent]] componentsSeparatedByString:@"\\"]];
-						
-						[values replaceObjectAtIndex: index withObject: object];
-						
-						[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [values componentsJoinedByString:@"\\"]], 0L]];
-					}
-					else
-					{
-						NSLog( @"A sequence");
-					}
-				}
-			}
-			
-			if( [groupsAndElements count])
-			{
-				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
-				
-				[params addObjectsFromArray:  groupsAndElements];
-				
-				NSArray	*files = [self arrayOfFiles];
-				
-				if( files)
-				{
-					[params addObjectsFromArray: files];
-					
-					WaitRendering		*wait = 0L;
-					if( [files count] > 1)
-					{
-						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
-						[wait showWindow:self];
-					}
-					
-					[self modifyDicom: params];
-					
-					[wait close];
-					[wait release];
-					wait = 0L;
-					
-					[self reload: self];
-				}
-			}
+			allowSelectionChange = NO;
+			[self performSelector:@selector(setObject:) withObject: [NSArray arrayWithObjects: item, object, 0L] afterDelay: 0];
 		}
 	}
 }

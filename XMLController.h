@@ -33,6 +33,8 @@
 	
 	BOOL						isDICOM;
 	BOOL						editingActivated;
+	BOOL						allowSelectionChange;
+	
 	int							editingLevel;
 	
 	IBOutlet NSWindow			*addWindow;
