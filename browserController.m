@@ -920,7 +920,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:@"OsiriXAddToDBArray"];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsirixAddToDBNotification" object: nil userInfo:userInfo];
 			
-			[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
+			if( [addedImagesArray count])
+				[appController growlTitle: NSLocalizedString( @"Incoming Files", 0L) description:[NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", 0L), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]] name:@"newfiles"];
 		}
 		
 		[curPatientUID release];
@@ -964,20 +965,23 @@ static BOOL				DICOMDIRCDMODE = NO;
 								
 				for( x = 0; x < [viewersList count]; x++)
 				{
-					NSManagedObject	*firstObject = [[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0];
-					
-					// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
-					
-					if( [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
+					if( [[[viewersList objectAtIndex: x] fileList] count])
 					{
-						if( [vlToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
-							[vlToRebuild addObject: [viewersList objectAtIndex: x]];
-					}
-					
-					if( seriesTable == [firstObject valueForKey:@"series"])
-					{
-						if( [vlToReload containsObject:[viewersList objectAtIndex: x]] == NO)
-							[vlToReload addObject: [viewersList objectAtIndex: x]];
+						NSManagedObject	*firstObject = [[[viewersList objectAtIndex: x] fileList] objectAtIndex: 0];
+						
+						// For each new image in a pre-existing study, check if a viewer is already opened -> refresh the preview list
+						
+						if( [curPatientID isEqualToString: [firstObject valueForKeyPath:@"series.study.patientID"]])
+						{
+							if( [vlToRebuild containsObject:[viewersList objectAtIndex: x]] == NO)
+								[vlToRebuild addObject: [viewersList objectAtIndex: x]];
+						}
+						
+						if( seriesTable == [firstObject valueForKey:@"series"])
+						{
+							if( [vlToReload containsObject:[viewersList objectAtIndex: x]] == NO)
+								[vlToReload addObject: [viewersList objectAtIndex: x]];
+						}
 					}
 				}
 			}
