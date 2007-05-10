@@ -30,10 +30,11 @@
 // ROIs Volumes
 #define roi3Dvolume
 
-
 @class CLUTOpacityView;
 @class VRView;
 @class ROIVolume;
+
+@class VRPresetPreview;
 
 @interface VRController : Window3DController
 {
@@ -121,8 +122,14 @@
 	IBOutlet NSButton		*settingsSaveButton;
 	
 	IBOutlet NSWindow		*presetsPanel;
-	IBOutlet NSPopUpButton	*presetsGroupPopUpButton, *presetsPopUpButton;
+	IBOutlet NSPopUpButton	*presetsGroupPopUpButton;
 	IBOutlet NSButton		*presetsApplyButton;
+	
+	IBOutlet VRPresetPreview *presetPreview1, *presetPreview2, *presetPreview3, *presetPreview4, *presetPreview5, *presetPreview6, *presetPreview7, *presetPreview8, *presetPreview9;
+	VRPresetPreview			*selectedPresetPreview;
+	IBOutlet NSTextField	*presetName1, *presetName2, *presetName3, *presetName4, *presetName5, *presetName6, *presetName7, *presetName8, *presetName9;
+	NSMutableArray			*presetPreviewArray;
+	NSMutableArray			*presetNameArray;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -216,7 +223,13 @@
 - (IBAction)show3DSettingsNewGroupTextField:(id)sender;
 - (IBAction)close3DSettingsSavePanel:(id)sender;
 - (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
+- (void)updatePresetsGroupPopUpButton;
+- (void)load3DSettings;
 - (IBAction)load3DSettings:(id)sender;
 - (IBAction)displayPresetsForSelectedGroup:(id)sender;
+
+- (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
+
+- (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
 
 @end

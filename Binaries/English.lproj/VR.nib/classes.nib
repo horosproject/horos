@@ -116,6 +116,7 @@
             OUTLETS = {position = NSTextField; }; 
             SUPERCLASS = NSView; 
         }, 
+        {CLASS = SelectionView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             CLASS = ShadingArrayController; 
             LANGUAGE = ObjC; 
@@ -178,10 +179,27 @@
                 movieView = NSView; 
                 perspectiveMatrix = NSMatrix; 
                 perspectiveView = NSView; 
+                presetName1 = NSTextField; 
+                presetName2 = NSTextField; 
+                presetName3 = NSTextField; 
+                presetName4 = NSTextField; 
+                presetName5 = NSTextField; 
+                presetName6 = NSTextField; 
+                presetName7 = NSTextField; 
+                presetName8 = NSTextField; 
+                presetName9 = NSTextField; 
+                presetPreview1 = VRPresetPreview; 
+                presetPreview2 = VRPresetPreview; 
+                presetPreview3 = VRPresetPreview; 
+                presetPreview4 = VRPresetPreview; 
+                presetPreview5 = VRPresetPreview; 
+                presetPreview6 = VRPresetPreview; 
+                presetPreview7 = VRPresetPreview; 
+                presetPreview8 = VRPresetPreview; 
+                presetPreview9 = VRPresetPreview; 
                 presetsApplyButton = NSButton; 
                 presetsGroupPopUpButton = NSPopUpButton; 
                 presetsPanel = NSWindow; 
-                presetsPopUpButton = NSPopUpButton; 
                 save3DSettingsWindow = NSWindow; 
                 scissorStateView = NSView; 
                 settingsBackgroundColorTextField = NSTextField; 
@@ -208,6 +226,12 @@
                 view = VRView; 
             }; 
             SUPERCLASS = Window3DController; 
+        }, 
+        {
+            CLASS = VRPresetPreview; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {presetController = VRController; selectionView = SelectionView; }; 
+            SUPERCLASS = VRView; 
         }, 
         {
             ACTIONS = {

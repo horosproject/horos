@@ -136,10 +136,8 @@
 - (NSDictionary*)convertColorToDict:(NSColor*)color;
 - (NSDictionary*)convertPointToDict:(NSPoint)point;
 #pragma mark conversion from plist
-- (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
-- (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
-- (NSColor*)convertDictToColor:(NSDictionary*)dict;
-- (NSPoint)convertDictToPoint:(NSDictionary*)dict;
++ (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
++ (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
 
 #pragma mark -
 #pragma mark Connection to VRView

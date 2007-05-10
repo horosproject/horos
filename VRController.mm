@@ -39,6 +39,7 @@ MODIFICATION HISTORY
 #import "ROIVolume.h"
 #import "ROIVolumeManagerController.h"
 #import "CLUTOpacityView.h"
+#import "VRPresetPreview.h"
 
 extern "C"
 {
@@ -753,6 +754,36 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
 	
+	presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
+	[presetPreviewArray addObject:presetPreview1];
+	[presetPreviewArray addObject:presetPreview2];
+	[presetPreviewArray addObject:presetPreview3];
+	[presetPreviewArray addObject:presetPreview4];
+	[presetPreviewArray addObject:presetPreview5];
+	[presetPreviewArray addObject:presetPreview6];
+	[presetPreviewArray addObject:presetPreview7];
+	[presetPreviewArray addObject:presetPreview8];
+	[presetPreviewArray addObject:presetPreview9];
+	
+	int ii;
+	for (ii=0; ii<[presetPreviewArray count]; ii++)
+	{
+		[[presetPreviewArray objectAtIndex:ii] setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
+		[[presetPreviewArray objectAtIndex:ii] setData8:[view data8]];
+		[[presetPreviewArray objectAtIndex:ii] setVolumeMapper:[view volumeMapper]];
+	}
+	
+	presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
+	[presetNameArray addObject:presetName1];
+	[presetNameArray addObject:presetName2];
+	[presetNameArray addObject:presetName3];
+	[presetNameArray addObject:presetName4];
+	[presetNameArray addObject:presetName5];
+	[presetNameArray addObject:presetName6];
+	[presetNameArray addObject:presetName7];
+	[presetNameArray addObject:presetName8];
+	[presetNameArray addObject:presetName9];
+
     return self;
 }
 
@@ -808,6 +839,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	if( [viewer2D postprocessed]) dict = 0L;
 	
 	[view set3DStateDictionary:dict];
+	
+	for (i=0; i<[presetPreviewArray count]; i++)
+	{
+		[[presetPreviewArray objectAtIndex:i] set3DStateDictionary:dict];
+		[[presetPreviewArray objectAtIndex:i] setLOD:1.0];
+		[[presetPreviewArray objectAtIndex:i] setVolumeMapper:[view volumeMapper]];
+	}
+	
 	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
 	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
 	
@@ -993,6 +1032,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[_renderingMode release];
 	
 	[appliedConvolutionFilters release];
+	[presetPreviewArray release];
+	[presetNameArray release];
 	
 	[super dealloc];
 }
@@ -1255,7 +1296,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			}
 			
 			[view setCLUT:red :green: blue];
-			
+						
 			if( [curCLUTMenu isEqualToString: NSLocalizedString( @"B/W Inverse", 0L)] || [curCLUTMenu isEqualToString:( @"B/W Inverse")])
 				[view changeColorWith: [NSColor colorWithDeviceRed:1.0 green:1.0 blue:1.0 alpha:1.0]];
 			else 
@@ -2673,6 +2714,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[presetDictionary setObject:[NSNumber numberWithFloat:[color greenComponent]] forKey:@"backgroundColorGreenComponent"];
 	[presetDictionary setObject:[NSNumber numberWithFloat:[color blueComponent]] forKey:@"backgroundColorBlueComponent"];
 	
+	[presetDictionary setObject:[NSNumber numberWithBool:[shadingCheck state]] forKey:@"useShading"];
 	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
 	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
 	[presetDictionary setObject:clut forKey:@"CLUT"];
@@ -2692,7 +2734,13 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{		
 		[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
 		[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
-		[settingsShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+
+		
+		if(![[presetDictionary objectForKey:@"useShading"] boolValue])
+			[settingsShadingsTextField setStringValue:@"Shadings: Off"];
+		else
+			[settingsShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+
 		[settingsWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
 		
 		NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@"Filter"];
@@ -2754,6 +2802,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		else groupName = [[settingsGroupPopUpButton selectedItem] title];
 		
 		[self save3DSettings:presetDictionary WithName:settingsName group:groupName];
+		[self updatePresetsGroupPopUpButton];
 	}
 }
 
@@ -2868,7 +2917,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 				{
 					if([[settings objectForKey:@"groupName"] isEqualToString:groupName])
 					{
-						[settingsList addObject:[settings objectForKey:@"name"]];
+						[settingsList addObject:settings];
 					}
 					[settings release];
 				}
@@ -2880,62 +2929,65 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 #pragma mark load preset
 
+- (void)updatePresetsGroupPopUpButton;
+{
+	[presetsGroupPopUpButton setEnabled:YES];
+	
+	[presetsGroupPopUpButton removeAllItems];
+	NSArray *groups = [self find3DSettingsGroups];
+	int i;
+	for(i=0; i<[groups count]; i++)
+		[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
+
+	if([presetsGroupPopUpButton numberOfItems]<1)
+	{
+		[presetsGroupPopUpButton addItemWithTitle:@"No Groups"];
+		[presetsGroupPopUpButton setEnabled:NO];
+	}
+
+	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
+}
+
+- (void)load3DSettings;
+{
+	[self load3DSettings:presetsApplyButton];
+}
+
 - (IBAction)load3DSettings:(id)sender;
 {
 	if([[sender className] isEqualToString:@"NSMenuItem"])
 	{
-		[presetsGroupPopUpButton setEnabled:YES];
-		[presetsPopUpButton setEnabled:YES];
-		
-		[presetsGroupPopUpButton removeAllItems];
-		NSArray *groups = [self find3DSettingsGroups];
-		int i;
-		for(i=0; i<[groups count]; i++)
-			[presetsGroupPopUpButton addItemWithTitle:[groups objectAtIndex:i]];
-
-		if([presetsGroupPopUpButton numberOfItems]<1)
-		{
-			[presetsGroupPopUpButton addItemWithTitle:@"No Groups"];
-			[presetsGroupPopUpButton setEnabled:NO];
-		}
-
-		[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
-
+		[self updatePresetsGroupPopUpButton];
 		[presetsPanel orderFront:self];
 	}
 	else if([sender isEqualTo:presetsApplyButton])
-	{
-		NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-		[path appendString:PRESETS_DIRECTORY];
-		[path appendString:[presetsPopUpButton titleOfSelectedItem]];
-		[path appendString:@".plist"];
+	{		
+		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 		
-		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		// CLUT
+		NSString *clut = [preset objectForKey:@"CLUT"];
+		BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
+		if(!advancedCLUT)
 		{
-			NSDictionary *preset = [[NSDictionary alloc] initWithContentsOfFile:path];
-						
-			// CLUT
-			NSString *clut = [preset objectForKey:@"CLUT"];
-			BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
-			if(!advancedCLUT)
-			{
-				[self ApplyCLUTString:clut];
-				
-				// opacity
-				[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
-			}
-			else
-			{
-				[clutOpacityView loadFromFileWithName:clut];
-				if(curCLUTMenu) [curCLUTMenu release];
-				curCLUTMenu = [clut retain];
-				[clutOpacityView setCLUTtoVRView:NO];
-				[clutOpacityView updateView];
-				[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
-				[OpacityPopup setEnabled:NO];
-			}
+			[self ApplyCLUTString:clut];
 			
-			// shadings
+			// opacity
+			[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
+		}
+		else
+		{
+			[clutOpacityView loadFromFileWithName:clut];
+			if(curCLUTMenu) [curCLUTMenu release];
+			curCLUTMenu = [clut retain];
+			[clutOpacityView setCLUTtoVRView:NO];
+			[clutOpacityView updateView];
+			[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
+			[OpacityPopup setEnabled:NO];
+		}
+		
+		// shadings
+		if([[preset objectForKey:@"useShading"] boolValue])
+		{
 			NSString *shadingName = [preset objectForKey:@"shading"];
 			NSArray	*shadings = [shadingsPresetsController arrangedObjects];
 			int i;
@@ -2948,40 +3000,54 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 					break;
 				}
 			}
-			[self applyShading:self]; 
-			
-			// window level/width
-			float iwl = [[preset objectForKey:@"wl"] floatValue];
-			float iww = [[preset objectForKey:@"ww"] floatValue];
-			[self setWLWW:iwl :iww];
-		
-			// projection
-			int projection = [[preset objectForKey:@"projection"] intValue];
-			[perspectiveMatrix selectCellWithTag:projection];
-			[view switchProjection:perspectiveMatrix];
-						
-			// background color
-			float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
-			float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
-			float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
-			[view changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
-					
-			// convolution filter
-			if([appliedConvolutionFilters count]==0)
+			[self applyShading:self];
+			if([shadingCheck state]==NSOffState)
 			{
-				NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
-				if([convolutionFilters count]>0)
-				{			
-					for(i=0; i<[convolutionFilters count]; i++)
-					{
-						[self prepareUndo];
-						[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
-						[viewer2D applyConvolutionOnSource:self];
-						[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
-					}
-				}
+				[shadingCheck setState:NSOnState];
+				[view switchShading:shadingCheck];
 			}
 		}
+		else
+		{
+			if([shadingCheck state]==NSOnState)
+			{
+				[shadingCheck setState:NSOffState];
+				[view switchShading:shadingCheck];
+			}
+		}
+		
+		// window level/width
+		float iwl = [[preset objectForKey:@"wl"] floatValue];
+		float iww = [[preset objectForKey:@"ww"] floatValue];
+		[self setWLWW:iwl :iww];
+	
+		// projection
+		int projection = [[preset objectForKey:@"projection"] intValue];
+		[perspectiveMatrix selectCellWithTag:projection];
+		[view switchProjection:perspectiveMatrix];
+					
+		// background color
+		float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
+		float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
+		float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
+		[view changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
+				
+		// convolution filter
+		if([appliedConvolutionFilters count]==0)
+		{
+			NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
+			if([convolutionFilters count]>0)
+			{
+				int i;
+				for(i=0; i<[convolutionFilters count]; i++)
+				{
+					[self prepareUndo];
+					[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
+					[viewer2D applyConvolutionOnSource:self];
+					[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
+				}
+			}
+		}		
 	}
 }
 
@@ -2989,15 +3055,196 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	if([sender numberOfItems]<1) return;
 	NSArray *settingsList = [self find3DSettingsForGroupName:[sender titleOfSelectedItem]];
-	[presetsPopUpButton removeAllItems];
+
 	int i;
-	for(i=0; i<[settingsList count]; i++)
-		[presetsPopUpButton addItemWithTitle:[settingsList objectAtIndex:i]];
-	if([presetsPopUpButton numberOfItems]<1)
+	for(i=0; i<[presetPreviewArray count]; i++)
 	{
-		[presetsPopUpButton addItemWithTitle:@"No Presets"];
-		[presetsPopUpButton setEnabled:NO];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
+		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
 	}
+	
+	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
+	{
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
+		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:i] objectForKey:@"name"]];
+		[self load3DSettingsDictionary:[settingsList objectAtIndex:i] forPreview:[presetPreviewArray objectAtIndex:i]];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:i];
+	}
+	
+	if([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
+}
+
+- (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
+{
+	long i;
+	
+	// CLUT
+	NSString *aClutName = [preset objectForKey:@"CLUT"];
+	BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
+	if(!advancedCLUT)
+	{
+		NSDictionary *aCLUT;
+		NSArray *array;
+		unsigned char red[256], green[256], blue[256];
+		
+		aCLUT = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"CLUT"] objectForKey:aClutName];
+		if(aCLUT)
+		{
+			array = [aCLUT objectForKey:@"Red"];
+			for( i = 0; i < 256; i++)
+			{
+				red[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Green"];
+			for( i = 0; i < 256; i++)
+			{
+				green[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			array = [aCLUT objectForKey:@"Blue"];
+			for( i = 0; i < 256; i++)
+			{
+				blue[i] = [[array objectAtIndex: i] longValue];
+			}
+			
+			[preview setCLUT:red :green: blue];
+		}
+		
+		// opacity
+		NSDictionary *aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey:[preset objectForKey:@"opacity"]];
+		if(aOpacity)
+		{
+			array = [aOpacity objectForKey:@"Points"];
+			[preview setOpacity:array];
+		}
+		
+		// window level/width
+		float iwl = [[preset objectForKey:@"wl"] floatValue];
+		float iww = [[preset objectForKey:@"ww"] floatValue];
+		[preview setWLWW: iwl :iww];
+		
+	}
+	else
+	{
+		// read the 16-bit CLUT in the file
+		NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+		#define CLUTDATABASE @"/CLUTs/"
+		[path appendString:CLUTDATABASE];
+		[path appendString:aClutName];
+		
+		NSMutableArray *curves, *pointColors;
+		
+		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+		{
+			if([[path pathExtension] isEqualToString:@""])
+			{
+				NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+				curves = [clut objectForKey:@"curves"];
+				pointColors = [clut objectForKey:@"colors"];
+			}
+		}
+		else
+		{
+			[path appendString:@".plist"];
+			if([[NSFileManager defaultManager] fileExistsAtPath:path])
+			{
+				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
+				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+			}
+		}
+
+		NSMutableDictionary *clut2 = [NSMutableDictionary dictionaryWithCapacity:2];
+		[clut2 setObject:curves forKey:@"curves"];
+		[clut2 setObject:pointColors forKey:@"colors"];
+		
+		[preview setAdvancedCLUT:clut2 lowResolution:NO];
+
+		// wl / ww for advanced CLUT
+//		int curveIndex = [self selectedCurveIndex];
+//		if(curveIndex<0) curveIndex = 0;
+//		NSMutableArray *theCurve = [curves objectAtIndex:curveIndex];
+//		NSPoint firstPoint = [[theCurve objectAtIndex:0] pointValue];
+//		NSPoint lastPoint = [[theCurve lastObject] pointValue];
+//		float iww = (lastPoint.x - firstPoint.x);
+//		float iwl = (lastPoint.x + firstPoint.x) / 2.0;
+//		
+//		float savedWl, savedWw;
+//		[view getWLWW: &savedWl :&savedWw];
+//		
+//		if( savedWl != iwl || savedWw != iww)
+//			[view setWLWW: iwl : iww];
+	}
+	
+	// shadings
+	if([[preset objectForKey:@"useShading"] boolValue])
+	{
+		NSString *shadingName = [preset objectForKey:@"shading"];
+		NSArray *shadings = [[NSUserDefaults standardUserDefaults] arrayForKey:@"shadingsPresets"];
+		NSDictionary *selectedShading;
+		for (i=0; i<[shadings count]; i++)
+		{
+			if([[[shadings objectAtIndex:i] objectForKey:@"name"] isEqualToString:shadingName])
+			{
+				selectedShading = [shadings objectAtIndex:i];
+			}
+		}
+		
+		float ambient, diffuse, specular, specularpower;
+		ambient = [[selectedShading valueForKey:@"ambient"] floatValue];
+		diffuse = [[selectedShading valueForKey:@"diffuse"] floatValue];
+		specular = [[selectedShading valueForKey:@"specular"] floatValue];
+		specularpower = [[selectedShading valueForKey:@"specularPower"] floatValue];
+
+		float sambient, sdiffuse, sspecular, sspecularpower;	
+		[preview getShadingValues: &sambient :&sdiffuse :&sspecular :&sspecularpower];
+		
+		if( sambient != ambient || sdiffuse != diffuse || sspecular != specular || sspecularpower != specularpower)
+		{
+			[preview setShadingValues: ambient :diffuse :specular :specularpower];
+			[preview setNeedsDisplay: YES];
+		}
+		
+		if([shadingCheck state]==NSOffState)
+			[view activateShading:YES];
+	}
+	else
+	{
+		if([shadingCheck state]==NSOnState)
+			[view activateShading:NO];
+	}
+
+	// projection
+//	int projection = [[preset objectForKey:@"projection"] intValue];
+//	[view switchProjection:perspectiveMatrix];
+				
+	// background color
+	float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
+	float green = [[preset objectForKey:@"backgroundColorGreenComponent"] floatValue];
+	float blue = [[preset objectForKey:@"backgroundColorBlueComponent"] floatValue];
+	[preview changeColorWith:[NSColor colorWithDeviceRed:red green:green blue:blue alpha:1.0]];
+			
+	// convolution filter
+//	if([appliedConvolutionFilters count]==0)
+//	{
+//		NSArray *convolutionFilters = [preset objectForKey:@"convolutionFilters"];
+//		if([convolutionFilters count]>0)
+//		{			
+//			for(i=0; i<[convolutionFilters count]; i++)
+//			{
+//				[self prepareUndo];
+//				[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
+//				[viewer2D applyConvolutionOnSource:self];
+//				[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
+//			}
+//		}
+//	}
+}
+
+- (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
+{
+	selectedPresetPreview = aPresetPreview;
 }
 
 @end

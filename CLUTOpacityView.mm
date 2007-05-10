@@ -1482,9 +1482,9 @@
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
 			NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
-			curves = [self convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+			curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
 			[curves retain];
-			pointColors = [self convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+			pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
 			[pointColors retain];
 		}
 	}
@@ -1548,7 +1548,7 @@
 
 #pragma mark conversion from plist
 
-- (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
++ (NSMutableArray*)convertPointColorsFromPlist:(NSArray*)plistPointColor;
 {
 	NSMutableArray *convertedPointColors = [NSMutableArray array];
 	int i, j;
@@ -1567,7 +1567,7 @@
 	return convertedPointColors;
 }
 
-- (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
++ (NSMutableArray*)convertCurvesFromPlist:(NSArray*)plistCurves;
 {
 	NSMutableArray *convertedCurves = [NSMutableArray array];
 	int i, j;
@@ -1584,26 +1584,6 @@
 		[convertedCurves addObject:newCurve];
 	}
 	return convertedCurves;
-}
-
-- (NSColor*)convertDictToColor:(NSDictionary*)dict;
-{
-	float r, g, b;
-	r = [[dict objectForKey:@"redComponent"] floatValue];
-	g = [[dict objectForKey:@"greenComponent"] floatValue];
-	b = [[dict objectForKey:@"blueComponent"] floatValue];
-	
-	NSColor *color = [NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0];
-	return color;
-}
-
-- (NSPoint)convertDictToPoint:(NSDictionary*)dict;
-{
-	float x, y;
-	x = [[dict objectForKey:@"x"] floatValue];
-	y = [[dict objectForKey:@"y"] floatValue];
-
-	return NSMakePoint(x, y);
 }
 
 #pragma mark -

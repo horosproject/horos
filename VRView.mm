@@ -576,7 +576,7 @@ public:
 	
 	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 	if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*3);
+	if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
 	
 	[self display];
 	
@@ -1218,6 +1218,14 @@ public:
 	[self setNeedsDisplay:YES];
 }
 
+-(void)activateShading:(BOOL)on;
+{
+	if(on)
+		volumeProperty->ShadeOn();
+	else
+		volumeProperty->ShadeOff();
+}
+
 -(IBAction) switchShading:(id) sender
 {
 	if( [sender state] == NSOnState)
@@ -1521,6 +1529,8 @@ public:
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name: NSWindowWillCloseNotification object: 0L];
 		advancedCLUT = NO;
+		
+		lowResLODFactor = 3.0;
 	}
     
     return self;
@@ -2057,7 +2067,9 @@ public:
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame;
 		NSPoint mouseLoc = [theEvent locationInWindow];
-		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+		//if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD * lowResLODFactor);
+		
 		beforeFrame = [self frame];
 
 		if( [theEvent modifierFlags] & NSShiftKeyMask)
@@ -2573,7 +2585,7 @@ public:
 			_startMax = wl + ww/2;
 			
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == tWLBlended)
 		{
@@ -2583,7 +2595,7 @@ public:
 			_startMax = blendingWl + blendingWw/2;
 			
 			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == tRotate)
 		{
@@ -2593,7 +2605,7 @@ public:
 			if( volumeMapper)
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*3);
+				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			mouseLoc = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2608,7 +2620,7 @@ public:
 			if( volumeMapper)
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*3);
+				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2632,7 +2644,7 @@ public:
 			if( volumeMapper)
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*3);
+				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -2644,7 +2656,7 @@ public:
 			if( volumeMapper)
 			{
 				volumeMapper->SetAutoAdjustSampleDistances( 0);
-				volumeMapper->SetImageSampleDistance( LOD*3);
+				volumeMapper->SetImageSampleDistance( LOD*lowResLODFactor);
 			}
 			
 			if( projectionMode != 2)
@@ -2661,7 +2673,7 @@ public:
 				// vtkCamera
 				mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 				
-				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+				if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 			}
 		}
 		else if( tool == tCamera3D)
@@ -2669,7 +2681,7 @@ public:
 			// vtkCamera
 			mouseLocPre = _mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView:nil];
 			
-			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 		}
 		else if( tool == t3Dpoint)
 		{
@@ -3881,7 +3893,7 @@ public:
 		
 		if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD);
 		if( volumeMapper) volumeMapper->SetSampleDistance( [[NSUserDefaults standardUserDefaults] floatForKey: @"BESTRENDERING"]);
-		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*3);
+		if( volumeMapper) volumeMapper->SetMaximumImageSampleDistance( LOD*lowResLODFactor);
 		
 		[self setNeedsDisplay:YES];
 	}
@@ -5157,7 +5169,7 @@ public:
 
 - (void) setLowResolutionCamera: (Camera*) cam
 {
-	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*3);
+	if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( LOD*lowResLODFactor);
 	
 	[self setCamera: cam];
 	
@@ -6299,8 +6311,8 @@ public:
 		if(volumeMapper)
 		{
 			if(lowRes)
-				volumeMapper->SetMinimumImageSampleDistance(LOD*5);
-			else
+				volumeMapper->SetMinimumImageSampleDistance(LOD*lowResLODFactor*2); // was LOD*5
+ 			else
 				volumeMapper->SetMinimumImageSampleDistance(LOD);
 		}
 		
@@ -6325,6 +6337,41 @@ public:
 - (BOOL)isRGB;
 {
 	return isRGB;
+}
+
+- (vtkFixedPointVolumeRayCastMapper*)volumeMapper;
+{
+	return volumeMapper;
+}
+
+- (void)setVolumeMapper:(vtkFixedPointVolumeRayCastMapper*)aVolumeMapper;
+{
+	if(volumeMapper) volumeMapper->Delete();
+	volumeMapper = aVolumeMapper;
+//	volumeMapper->Register( volumeMapper);
+	volume->SetMapper(volumeMapper);
+}
+
+- (vtkVolume*)volume;
+{
+	return volume;
+}
+
+- (void)setVolume:(vtkVolume*)aVolume;
+{
+	if(volume) volume->Delete();
+	volume = aVolume;
+}
+
+- (char*)data8;
+{
+	return data8;
+}
+
+- (void)setData8:(char*)someData;
+{
+	if(data8) free(data8);
+	data8 = someData;
 }
 
 @end

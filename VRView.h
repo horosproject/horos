@@ -212,7 +212,7 @@ typedef char* vtkMyCallbackVR;
 
     short					currentTool;
 	float					wl, ww;
-	float					LOD;
+	float					LOD, lowResLODFactor;
 	float					cosines[ 9];
 	float					blendingcosines[ 9];
 	double					table[256][3];
@@ -356,6 +356,7 @@ typedef char* vtkMyCallbackVR;
 -(NSImage*) nsimageQuicktime;
 -(NSImage*) nsimage:(BOOL) q;
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b;
+-(void)activateShading:(BOOL)on;
 -(IBAction) switchShading:(id) sender;
 -(long) shading;
 - (void) setEngine: (long) engineID;
@@ -445,5 +446,12 @@ typedef char* vtkMyCallbackVR;
 - (BOOL)advancedCLUT;
 - (VRController*)controller;
 - (BOOL)isRGB;
+
+- (vtkFixedPointVolumeRayCastMapper*)volumeMapper;
+- (void)setVolumeMapper:(vtkFixedPointVolumeRayCastMapper*)aVolumeMapper;
+- (vtkVolume*)volume;
+- (void)setVolume:(vtkVolume*)aVolume;
+- (char*)data8;
+- (void)setData8:(char*)data;
 
 @end

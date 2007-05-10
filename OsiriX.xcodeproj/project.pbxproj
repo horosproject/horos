@@ -451,6 +451,10 @@
 		A9044D380BBAA29200F36689 /* ROISelector.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tiff */; };
 		A9044D390BBAA29200F36689 /* ROISelector.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tiff */; };
 		A9044D3A0BBAA29200F36689 /* ROISelector.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tiff */; };
+		A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = A90A04950BF09BA000D00273 /* VRPresetPreview.h */; };
+		A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
+		A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9154D8A0BF34D4E00BAF408 /* SelectionView.h */; };
+		A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9154D8B0BF34D4E00BAF408 /* SelectionView.m */; };
 		A91CE491098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE492098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE493098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
@@ -11150,6 +11154,10 @@
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A90202C50B980CEB0001A00B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/PluginManager.nib; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tiff; sourceTree = "<group>"; };
+		A90A04950BF09BA000D00273 /* VRPresetPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRPresetPreview.h; sourceTree = "<group>"; };
+		A90A04960BF09BA000D00273 /* VRPresetPreview.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRPresetPreview.mm; sourceTree = "<group>"; };
+		A9154D8A0BF34D4E00BAF408 /* SelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionView.h; sourceTree = "<group>"; };
+		A9154D8B0BF34D4E00BAF408 /* SelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionView.m; sourceTree = "<group>"; };
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
@@ -15676,6 +15684,10 @@
 				A9F8A4170B5F6460002CC763 /* CLUTOpacityView.mm */,
 				BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */,
 				BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */,
+				A90A04950BF09BA000D00273 /* VRPresetPreview.h */,
+				A90A04960BF09BA000D00273 /* VRPresetPreview.mm */,
+				A9154D8A0BF34D4E00BAF408 /* SelectionView.h */,
+				A9154D8B0BF34D4E00BAF408 /* SelectionView.m */,
 			);
 			name = "VR/MIP 3D";
 			sourceTree = "<group>";
@@ -21252,6 +21264,8 @@
 				CE96D0E30BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F90BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */,
+				A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */,
+				A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27793,6 +27807,8 @@
 				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
+				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
+				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
