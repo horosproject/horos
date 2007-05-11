@@ -455,6 +455,18 @@
 		A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
 		A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9154D8A0BF34D4E00BAF408 /* SelectionView.h */; };
 		A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9154D8B0BF34D4E00BAF408 /* SelectionView.m */; };
+		A917CF1D0BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */; };
+		A917CF1E0BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */; };
+		A917CF1F0BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
+		A917CF200BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
+		A917CF210BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */; };
+		A917CF220BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */; };
+		A917CF230BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
+		A917CF240BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
+		A917CF250BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */; };
+		A917CF260BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */; };
+		A917CF270BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
+		A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
 		A91CE491098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE492098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE493098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
@@ -11158,6 +11170,10 @@
 		A90A04960BF09BA000D00273 /* VRPresetPreview.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRPresetPreview.mm; sourceTree = "<group>"; };
 		A9154D8A0BF34D4E00BAF408 /* SelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionView.h; sourceTree = "<group>"; };
 		A9154D8B0BF34D4E00BAF408 /* SelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionView.m; sourceTree = "<group>"; };
+		A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDLeftArrowButtonNeutral.tif; sourceTree = "<group>"; };
+		A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDLeftArrowButtonPressed.tif; sourceTree = "<group>"; };
+		A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonNeutral.tif; sourceTree = "<group>"; };
+		A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonPressed.tif; sourceTree = "<group>"; };
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
@@ -15872,6 +15888,10 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */,
+				A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */,
+				A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */,
+				A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */,
 				ABF7D84B0BE1EB5E00D1A1B4 /* DynamicAngle.tiff */,
 				ABF7D84C0BE1EB5E00D1A1B4 /* Axis.tiff */,
 				A9044D370BBAA29200F36689 /* ROISelector.tiff */,
@@ -25882,6 +25902,10 @@
 				CED80C8D0BF187930058A469 /* AddLink.tif in Resources */,
 				CED80C8F0BF187930058A469 /* AutofillPressed.tif in Resources */,
 				CED80C990BF18BAF0058A469 /* Save.tif in Resources */,
+				A917CF1D0BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */,
+				A917CF1E0BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
+				A917CF1F0BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
+				A917CF200BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26270,6 +26294,10 @@
 				CED80C810BF187930058A469 /* AddLink.tif in Resources */,
 				CED80C830BF187930058A469 /* AutofillPressed.tif in Resources */,
 				CED80C970BF18BAF0058A469 /* Save.tif in Resources */,
+				A917CF210BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */,
+				A917CF220BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
+				A917CF230BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
+				A917CF240BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26658,6 +26686,10 @@
 				CED80C870BF187930058A469 /* AddLink.tif in Resources */,
 				CED80C890BF187930058A469 /* AutofillPressed.tif in Resources */,
 				CED80C980BF18BAF0058A469 /* Save.tif in Resources */,
+				A917CF250BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */,
+				A917CF260BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
+				A917CF270BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
+				A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

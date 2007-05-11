@@ -2684,6 +2684,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 #pragma mark 3D presets
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
+#define CLUTDATABASE @"/CLUTs/"
 
 #pragma mark save current
 
@@ -2734,7 +2735,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{		
 		[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
 		[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
-
 		
 		if(![[presetDictionary objectForKey:@"useShading"] boolValue])
 			[settingsShadingsTextField setStringValue:@"Shadings: Off"];
@@ -2787,6 +2787,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[[settingsGroupPopUpButton menu] addItem:[NSMenuItem separatorItem]];
 		[settingsGroupPopUpButton addItemWithTitle:@"New group"];
 		
+		if([presetsPanel isVisible])
+			[settingsGroupPopUpButton selectItemWithTitle:[[presetsGroupPopUpButton selectedItem] title]];
+		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(controlTextDidChange:) name:@"NSControlTextDidChangeNotification" object:nil];
 
 		[self show3DSettingsNewGroupTextField:[settingsGroupPopUpButton selectedItem]];
@@ -2802,7 +2805,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		else groupName = [[settingsGroupPopUpButton selectedItem] title];
 		
 		[self save3DSettings:presetDictionary WithName:settingsName group:groupName];
-		[self updatePresetsGroupPopUpButton];
+		[self updatePresetsGroupPopUpButtonSelectingGroupWithName:groupName];
 	}
 }
 
@@ -2893,7 +2896,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			}
 		}
 	}
-	return settingsGroups;
+	return [settingsGroups sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];;
 }
 
 - (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
@@ -2924,12 +2927,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			}
 		}
 	}
+	
+	presetPageMax = [settingsList count]/[presetPreviewArray count];
+	[self enablePresetPageButtons];
+	
 	return settingsList;
 }
 
 #pragma mark load preset
 
 - (void)updatePresetsGroupPopUpButton;
+{
+	[self updatePresetsGroupPopUpButtonSelectingGroupWithName:@""];
+}
+
+- (void)updatePresetsGroupPopUpButtonSelectingGroupWithName:(NSString*)groupName;
 {
 	[presetsGroupPopUpButton setEnabled:YES];
 	
@@ -2944,7 +2956,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[presetsGroupPopUpButton addItemWithTitle:@"No Groups"];
 		[presetsGroupPopUpButton setEnabled:NO];
 	}
-
+	
+	if(![groupName isEqualToString:@""])
+		[presetsGroupPopUpButton selectItemWithTitle:groupName];
+	
 	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
 }
 
@@ -2957,6 +2972,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	if([[sender className] isEqualToString:@"NSMenuItem"])
 	{
+		presetPageNumber = 0;
 		[self updatePresetsGroupPopUpButton];
 		[presetsPanel orderFront:self];
 	}
@@ -3053,22 +3069,44 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (IBAction)displayPresetsForSelectedGroup:(id)sender;
 {
-	if([sender numberOfItems]<1) return;
-	NSArray *settingsList = [self find3DSettingsForGroupName:[sender titleOfSelectedItem]];
+	presetPageNumber = 0;
+	[self displayPresetsForSelectedGroup];
+}
 
-	int i;
+- (void)displayPresetsForSelectedGroup;
+{
+	if([presetsGroupPopUpButton numberOfItems]<1) return;
+	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
+
+	int i, n;
 	for(i=0; i<[presetPreviewArray count]; i++)
 	{
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 	}
+	
+//	n = presetPageNumber*[presetPreviewArray count];
+//	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
+//	{
+//		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:i] objectForKey:@"name"]];
+//		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
+//		[self load3DSettingsDictionary:[settingsList objectAtIndex:i] forPreview:[presetPreviewArray objectAtIndex:i]];
+//		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:i];
+//	}
+	
+	Camera* vrViewCamera = [view camera];
 	
 	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
 	{
+		n = presetPageNumber*[presetPreviewArray count] + i;
+		NSLog(@"i: %d, n: %d", i, n);
+		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:n] objectForKey:@"name"]];
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:i] objectForKey:@"name"]];
-		[self load3DSettingsDictionary:[settingsList objectAtIndex:i] forPreview:[presetPreviewArray objectAtIndex:i]];
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:i];
+		
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCamera:[view camera]];
+		[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
+		
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
 	}
 	
 	if([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
@@ -3129,7 +3167,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{
 		// read the 16-bit CLUT in the file
 		NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-		#define CLUTDATABASE @"/CLUTs/"
 		[path appendString:CLUTDATABASE];
 		[path appendString:aClutName];
 		
@@ -3206,13 +3243,13 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[preview setNeedsDisplay: YES];
 		}
 		
-		if([shadingCheck state]==NSOffState)
-			[view activateShading:YES];
+		if(![preview shading])
+			[preview activateShading:YES];
 	}
 	else
 	{
-		if([shadingCheck state]==NSOnState)
-			[view activateShading:NO];
+		if([preview shading])
+			[preview activateShading:NO];
 	}
 
 	// projection
@@ -3245,6 +3282,42 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
 {
 	selectedPresetPreview = aPresetPreview;
+}
+
+- (void)selectGroupWithName:(NSString*)name;
+{
+	presetPageNumber = 0;
+	[settingsGroupPopUpButton selectItemWithTitle:name];
+	[presetsGroupPopUpButton selectItemWithTitle:name];
+	[self displayPresetsForSelectedGroup:presetsGroupPopUpButton];
+}
+
+- (IBAction)nextPresetPage:(id)sender;
+{
+	presetPageNumber++;
+	presetPageNumber %= (presetPageMax+1);
+	[self displayPresetsForSelectedGroup];
+}
+
+- (IBAction)previousPresetPage:(id)sender;
+{
+	presetPageNumber--;
+	if(presetPageNumber<0) presetPageNumber += presetPageMax+1;
+	[self displayPresetsForSelectedGroup];
+}
+
+- (void)enablePresetPageButtons;
+{
+	if(presetPageMax==0)
+	{
+		[nextPresetPageButton setHidden:YES];
+		[previousPresetPageButton setHidden:YES];
+	}
+	else
+	{
+		[nextPresetPageButton setHidden:NO];
+		[previousPresetPageButton setHidden:NO];
+	}
 }
 
 @end

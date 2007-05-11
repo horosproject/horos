@@ -142,6 +142,8 @@
                 load3DSettings = id; 
                 moviePosSliderAction = id; 
                 movieRateSliderAction = id; 
+                nextPresetPage = id; 
+                previousPresetPage = id; 
                 roiGetManager = id; 
                 save3DSettings = id; 
                 sendMail = id; 
@@ -177,6 +179,7 @@
                 movieRateSlider = NSSlider; 
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
+                nextPresetPageButton = NSButton; 
                 perspectiveMatrix = NSMatrix; 
                 perspectiveView = NSView; 
                 presetName1 = NSTextField; 
@@ -200,6 +203,7 @@
                 presetsApplyButton = NSButton; 
                 presetsGroupPopUpButton = NSPopUpButton; 
                 presetsPanel = NSWindow; 
+                previousPresetPageButton = NSButton; 
                 save3DSettingsWindow = NSWindow; 
                 scissorStateView = NSView; 
                 settingsBackgroundColorTextField = NSTextField; 

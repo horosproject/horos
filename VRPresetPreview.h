@@ -19,6 +19,7 @@
 }
 
 - (void)setIsEmpty:(BOOL)empty;
+- (BOOL)isEmpty;
 - (void)setSelected;
 - (void)setIndex:(int)index;
 - (int)index;

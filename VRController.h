@@ -130,6 +130,8 @@
 	IBOutlet NSTextField	*presetName1, *presetName2, *presetName3, *presetName4, *presetName5, *presetName6, *presetName7, *presetName8, *presetName9;
 	NSMutableArray			*presetPreviewArray;
 	NSMutableArray			*presetNameArray;
+	int						presetPageNumber, presetPageMax, presetPageMin;
+	IBOutlet NSButton		*nextPresetPageButton, *previousPresetPageButton;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -224,12 +226,15 @@
 - (IBAction)close3DSettingsSavePanel:(id)sender;
 - (void)save3DSettings:(NSMutableDictionary*)settings WithName:(NSString*)name group:(NSString*)groupName;
 - (void)updatePresetsGroupPopUpButton;
+- (void)updatePresetsGroupPopUpButtonSelectingGroupWithName:(NSString*)groupName;
 - (void)load3DSettings;
 - (IBAction)load3DSettings:(id)sender;
 - (IBAction)displayPresetsForSelectedGroup:(id)sender;
-
+- (void)displayPresetsForSelectedGroup;
 - (void)load3DSettingsDictionary:(NSDictionary*)preset forPreview:(VRPresetPreview*)preview;
-
 - (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
+- (IBAction)nextPresetPage:(id)sender;
+- (IBAction)previousPresetPage:(id)sender;
+- (void)enablePresetPageButtons;
 
 @end

@@ -560,6 +560,11 @@
 	[self setNeedsDisplay:YES];
 }
 
+- (BOOL)isEmpty;
+{
+	return isEmpty;
+}
+
 - (void) drawRect:(NSRect)aRect
 {
 //	[[NSColor whiteColor] set];
@@ -569,6 +574,8 @@
 	if(isEmpty)
 	{
 		// trick to "hide" content of the vr view
+		if(![self shading])
+			[self activateShading:YES];
 		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];
 		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 	}
@@ -670,6 +677,67 @@
 - (int)index;
 {
 	return presetIndex;
+}
+
+- (void) setCamera: (Camera*) cam
+{	
+	double pos[3], focal[3], vUp[3];
+	pos[0] = [[cam position] x];
+	pos[1] = [[cam position] y];
+	pos[2] = [[cam position] z];
+	focal[0] = [[cam focalPoint] x];
+	focal[1] = [[cam focalPoint] y];
+	focal[2] = [[cam focalPoint] z];	
+	vUp[0] = [[cam viewUp] x];
+	vUp[1] = [[cam viewUp] y];
+	vUp[2] = [[cam viewUp] z];
+	double clippingRange[2];
+	clippingRange[0] = [cam clippingRangeNear];
+	clippingRange[1] = [cam clippingRangeFar];
+	double viewAngle, eyeAngle, parallelScale;
+	viewAngle = [cam viewAngle];
+	eyeAngle = [cam eyeAngle];
+	parallelScale = [cam parallelScale];
+
+	// window level
+//	[self setWLWW:[cam wl] :[cam ww]];
+	// cropping box
+//	double min[3], max[3], a[ 6];
+//	a[0] = [[cam minCroppingPlanes] x];
+//	a[2] = [[cam minCroppingPlanes] y];
+//	a[4] = [[cam minCroppingPlanes] z];
+//	a[1] = [[cam maxCroppingPlanes] x];
+//	a[3] = [[cam maxCroppingPlanes] y];
+//	a[5] = [[cam maxCroppingPlanes] z];
+//	
+//	[VRView setCroppingBox: a :volume];
+	
+//	double origin[3];
+//	volume->GetPosition(origin);	//GetOrigin		
+//	a[0] += origin[0];		a[1] += origin[0];
+//	a[2] += origin[1];		a[3] += origin[1];
+//	a[4] += origin[2];		a[5] += origin[2];
+//	croppingBox->PlaceWidget(a[0], a[1], a[2], a[3], a[4], a[5]);
+
+//	[VRView getCroppingBox: a :blendingVolume :croppingBox];
+//	[VRView setCroppingBox: a :blendingVolume];
+
+	// fusion percentage
+//	[self setBlendingFactor:[cam fusionPercentage]];
+
+	// 4D
+//	if([controller is4D])
+//		[controller setMovieFrame:[cam movieIndexIn4D]];
+
+	aCamera->SetPosition(pos);
+	aCamera->SetFocalPoint(focal);
+	aCamera->SetViewUp(vUp);
+	//aCamera->SetClippingRange(clippingRange);
+	aCamera->SetViewAngle(viewAngle);
+	aCamera->SetEyeAngle(eyeAngle);
+	aCamera->SetParallelScale(parallelScale);
+	aRenderer->ResetCameraClippingRange();
+//	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 }
 
 @end
