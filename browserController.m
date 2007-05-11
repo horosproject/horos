@@ -460,6 +460,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
 {
+	return [self addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject: NO];
+}
+
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject
+{
 	if( isCurrentDatabaseBonjour) return 0L;
 	
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
@@ -480,7 +485,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSMutableArray			*modifiedStudiesArray = 0L;
 	long					addFailed = NO;
 	BOOL					COMMENTSAUTOFILL = [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"];
-	BOOL					newStudy = NO;
+	BOOL					newStudy = NO, newObject = NO;
 	NSMutableArray			*vlToRebuild = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*vlToReload = [NSMutableArray arrayWithCapacity: 0];
 	
@@ -632,10 +637,29 @@ static BOOL				DICOMDIRCDMODE = NO;
 							index = [[studiesArray  valueForKey:@"studyInstanceUID"] indexOfObject:[curDict objectForKey: @"studyID"]];
 							if( index == NSNotFound)
 							{
-															// Fields
+								// Fields
 								study = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:context];
+								
+								newObject = YES;
+								newStudy = YES;
+								
 								[study setValue:today forKey:@"dateAdded"];
+								
+								NSArray	*newStudiesArray = [studiesArray arrayByAddingObject: study];
+								[studiesArray release];
+								studiesArray = [newStudiesArray retain];
+								
+								[curSerieID release];	curSerieID = 0L;
+							}
+							else
+							{
+								study = [studiesArray objectAtIndex: index];
+								
+								newObject = NO;
+							}
 							
+							if( newObject || parseExistingObject)
+							{
 								[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 								[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
 								[study setValue:[curDict objectForKey: @"studyDate"] forKey:@"date"];
@@ -660,20 +684,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 								//need to know if is DICOM so only DICOM is queried for Q/R
 								if ([curDict objectForKey: @"hasDICOM"])
 									[study setValue:[curDict objectForKey: @"hasDICOM"] forKey:@"hasDICOM"];
-								
-								NSArray	*newStudiesArray = [studiesArray arrayByAddingObject: study];
-								[studiesArray release];
-								studiesArray = [newStudiesArray retain];
-								
-								[curSerieID release];	curSerieID = 0L;
-								
-								newStudy = YES;
 							}
-							else
-							{
-								study = [studiesArray objectAtIndex: index];
-							}
-														
+							
 							[curStudyID release];			curStudyID = [[curDict objectForKey: @"studyID"] retain];
 							[curPatientUID release];		curPatientUID = [[curDict objectForKey: @"patientUID"] retain];
 							
@@ -709,6 +721,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 									seriesTable = [NSEntityDescription insertNewObjectForEntityForName:@"Series" inManagedObjectContext:context];
 									[seriesTable setValue:today forKey:@"dateAdded"];
 									
+									newObject = YES;
+								}
+								else
+								{
+									seriesTable = [seriesArray objectAtIndex: index];
+									newObject = NO;
+								}
+								
+								if( newObject || parseExistingObject)
+								{
 									if( [curDict objectForKey: @"seriesDICOMUID"]) [seriesTable setValue:[curDict objectForKey: @"seriesDICOMUID"] forKey:@"seriesDICOMUID"];
 									if( [curDict objectForKey: @"SOPClassUID"]) [seriesTable setValue:[curDict objectForKey: @"SOPClassUID"] forKey:@"seriesSOPClassUID"];
 									[seriesTable setValue:[curDict objectForKey: [@"seriesID" stringByAppendingString:SeriesNum]] forKey:@"seriesInstanceUID"];
@@ -727,10 +749,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 									if (([[study valueForKey:@"modality"] isEqualToString:@"OT"]  || [[study valueForKey:@"modality"] isEqualToString:@"SC"])
 										&& !([[curDict objectForKey: @"modality"] isEqualToString:@"OT"] || [[curDict objectForKey: @"modality"] isEqualToString:@"SC"]))
 										[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
-								}
-								else
-								{
-									seriesTable = [seriesArray objectAtIndex: index];
 								}
 								
 								[curSerieID release];
@@ -783,8 +801,15 @@ static BOOL				DICOMDIRCDMODE = NO;
 									index = NSNotFound;
 									[image clearCompletePathCache];
 								}
+								
+								newObject = NO;
 							}
-							else image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+							else
+							{
+								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:context];
+								
+								newObject = YES;
+							}
 							
 							if( index == NSNotFound)
 							{
@@ -825,7 +850,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
-								
+							}
+							
+							if( newObject || parseExistingObject)
+							{
 								if( COMMENTSAUTOFILL)
 								{
 									if([curDict objectForKey: @"commentsAutoFill"])

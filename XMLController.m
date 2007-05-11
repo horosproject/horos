@@ -128,6 +128,11 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	return 0L;
 }
 
+- (void) updateDB:(NSArray*) files
+{
+	[[BrowserController currentBrowser] addFilesToDatabase: files onlyDICOM:YES safeRebuild:NO produceAddedFiles:NO parseExistingObject:YES];
+}
+
 - (IBAction) executeAdd:(id) sender
 {
 	if( [sender tag])
@@ -166,6 +171,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 				}
 				
 				[self modifyDicom: params];
+				[self updateDB: files];
 				
 				[wait close];
 				[wait release];
@@ -217,7 +223,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is desactivated. See General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is desactivated.\r\rSee General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		[self willChangeValueForKey:@"editingActivated"];
 		editingActivated = NO;
 		[self didChangeValueForKey:@"editingActivated"];
@@ -233,7 +239,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	else
 	{
 		if( editingActivated)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 }
 
@@ -280,6 +286,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	[[tableScrollView contentView] scrollToPoint: origin];
 	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
 	[table setNeedsDisplay];
+	[[self window] makeFirstResponder: table];
 }
 
 -(void) exportXML:(id) sender
@@ -606,6 +613,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 			}
 			
 			[self modifyDicom: params];
+			[self updateDB: files];
 			
 			[wait close];
 			[wait release];
@@ -713,6 +721,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 					}
 					
 					[self modifyDicom: params];
+					[self updateDB: files];
 					
 					[wait close];
 					[wait release];

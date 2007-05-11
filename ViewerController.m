@@ -2673,6 +2673,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) viewXML:(id) sender
 {
+	[self checkEverythingLoaded];
+	
 	NSString	*path = [browserWindow getLocalDCMPath:[fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] : 0]; 
 
 	[[self window] setRepresentedFilename: path];
