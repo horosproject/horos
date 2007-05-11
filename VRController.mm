@@ -1062,6 +1062,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
         [movieTimer release];
         movieTimer = nil;
 	}
+
+	[presetsPanel close];	
+	[presetsInfoPanel close];
 	
     [[self window] setDelegate:nil];
 	
