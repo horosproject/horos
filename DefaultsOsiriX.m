@@ -555,7 +555,7 @@ static NSString *hostName = @"";
 	
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
-	[defaultValues setObject:@"1" forKey:@"ALLOWDICOMEDITING"];
+	[defaultValues setObject:@"0" forKey:@"ALLOWDICOMEDITING"];
 	
 	NSMutableArray *presets = [NSMutableArray array];
 	NSDictionary	*shading;

@@ -124,6 +124,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	
 	[aROI reduceTextureIfPossible];
 	
+	
 //	// buffer to ITK image
 //	ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
 //	// erosion filter

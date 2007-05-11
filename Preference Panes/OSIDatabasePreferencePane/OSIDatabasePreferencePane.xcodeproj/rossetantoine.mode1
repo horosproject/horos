@@ -220,8 +220,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -304,6 +302,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -321,12 +321,12 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>ABE5AC340BA9868900B683DA</string>
+										<string>ABD463A00BF3510E00C9C70C</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB580A19CF2500FED357</string>
 											<string>AB8B034E0B4022530019CA7D</string>
-											<string>ABA370780B6E487C00E064FF</string>
+											<string>ABE5AC340BA9868900B683DA</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -390,9 +390,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABE5AA620BA9461600B683DA</string>
+				<string>ABD463A10BF3510E00C9C70C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABE5AA630BA9461600B683DA</string>
+				<string>ABD463A20BF3510E00C9C70C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,7 +526,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>AB4664CF09A335BC005A2766</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>

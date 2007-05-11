@@ -9410,6 +9410,8 @@ int i,j,l;
 
 - (void) applyMorphology: (NSArray*) rois action:(NSString*) action	radius: (long) radius sendNotification: (BOOL) sendNotification
 {
+	NSLog( @"****** applyMorphology - START");
+	
 	// Create a scheduler
 	id sched = [[StaticScheduler alloc] initForSchedulableObject: self];
 	[sched setDelegate: self];
@@ -9438,6 +9440,8 @@ int i,j,l;
 		for ( i = 0; i < [rois count]; i++ ) [[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:[rois objectAtIndex:i] userInfo: 0L];
 	
 	[filter release];
+	
+	NSLog( @"****** applyMorphology - END");
 }
 
 - (IBAction) setStructuringElementRadius: (id) sender

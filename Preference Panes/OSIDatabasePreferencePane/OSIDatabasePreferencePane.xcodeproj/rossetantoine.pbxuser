@@ -55,13 +55,13 @@
 			PBXWorkspaceStateSaveDate = 200493347;
 		};
 		perUserProjectItems = {
-			AB80A1D00A19C50900FED357 = AB80A1D00A19C50900FED357 /* PBXTextBookmark */;
-			AB80A5DE0A19C5B600FED357 = AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */;
-			AB80AB580A19CF2500FED357 = AB80AB580A19CF2500FED357 /* PBXTextBookmark */;
-			AB80AB5F0A19CF2500FED357 = AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */;
-			AB8B034E0B4022530019CA7D = AB8B034E0B4022530019CA7D /* PBXTextBookmark */;
-			ABA370780B6E487C00E064FF = ABA370780B6E487C00E064FF /* PBXTextBookmark */;
-			ABE5AC340BA9868900B683DA = ABE5AC340BA9868900B683DA /* PBXTextBookmark */;
+			AB80A1D00A19C50900FED357 /* PBXTextBookmark */ = AB80A1D00A19C50900FED357 /* PBXTextBookmark */;
+			AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */ = AB80A5DE0A19C5B600FED357 /* PBXTextBookmark */;
+			AB80AB580A19CF2500FED357 /* PBXTextBookmark */ = AB80AB580A19CF2500FED357 /* PBXTextBookmark */;
+			AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */ = AB80AB5F0A19CF2500FED357 /* PBXTextBookmark */;
+			AB8B034E0B4022530019CA7D /* PBXTextBookmark */ = AB8B034E0B4022530019CA7D /* PBXTextBookmark */;
+			ABD463A00BF3510E00C9C70C /* PBXTextBookmark */ = ABD463A00BF3510E00C9C70C /* PBXTextBookmark */;
+			ABE5AC340BA9868900B683DA /* PBXTextBookmark */ = ABE5AC340BA9868900B683DA /* PBXTextBookmark */;
 		};
 		sourceControlManager = AB465F4B09A32E06005A2766 /* Source Control */;
 		userBuildSettings = {
@@ -186,15 +186,15 @@
 		objects = (
 		);
 	};
-	ABA370780B6E487C00E064FF /* PBXTextBookmark */ = {
+	ABD463A00BF3510E00C9C70C /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */;
-		name = "OSIDatabasePreferencePanePref.m: 398";
-		rLen = 0;
-		rLoc = 14204;
+		name = "OSIDatabasePreferencePanePref.m: 289";
+		rLen = 138;
+		rLoc = 9753;
 		rType = 0;
-		vrLen = 1862;
-		vrLoc = 12970;
+		vrLen = 2113;
+		vrLoc = 8588;
 	};
 	ABE5AC340BA9868900B683DA /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -217,8 +217,8 @@
 	F506C03D013D9D7901CA16C8 /* OSIDatabasePreferencePanePref.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1067, 6720}}";
-			sepNavSelRange = "{14204, 0}";
-			sepNavVisRect = "{{0, 5097}, {1067, 756}}";
+			sepNavSelRange = "{9753, 138}";
+			sepNavVisRect = "{{0, 3563}, {1067, 756}}";
 			sepNavWindowFrame = "{{1079, 543}, {1245, 698}}";
 		};
 	};
