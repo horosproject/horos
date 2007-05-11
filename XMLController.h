@@ -50,6 +50,7 @@
 - (IBAction) setGroupElement: (id) sender;
 - (IBAction) executeAdd:(id) sender;
 - (IBAction) switchDICOMEditing:(id) sender;
+- (void) reload:(id) sender;
 
 - (void) expandAllItems: (id) sender;
 - (void) deepExpandAllItems: (id) sender;

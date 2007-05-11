@@ -144,7 +144,49 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		
 		if( group > 0 && element >= 0)
 		{
+			NSMutableArray		*groupsAndElements = [NSMutableArray array];
 			
+			NSString	*path = [NSString stringWithFormat:@"(%@,%@)", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
+			
+			[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", path, [addValue stringValue], 0L]]];
+			
+			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", 0L];
+			[params addObjectsFromArray:  groupsAndElements];
+			
+			NSArray	*files = [self arrayOfFiles];
+			if( files)
+			{
+				[params addObjectsFromArray: files];
+				
+				WaitRendering		*wait = 0L;
+				if( [files count] > 1)
+				{
+					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
+					[wait showWindow:self];
+				}
+				
+				[self modifyDicom: params];
+				
+				[wait close];
+				[wait release];
+				wait = 0L;
+				
+				[self reload: self];
+				
+				int i;
+				
+				NSString	*searchGpEl = [NSString stringWithFormat:@"%@,%@", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
+				
+				for( i = 0 ; i < [table numberOfRows]; i++)
+				{
+					id item = [table itemAtRow: i];
+					
+					if( [[[item attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
+					{
+						[table selectRow: i byExtendingSelection: NO];
+					}
+				}
+			}
 		}
 		else
 		{
@@ -190,7 +232,8 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 	else
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		if( editingActivated)
+			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 }
 
