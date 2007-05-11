@@ -19,6 +19,7 @@
 #import "WaitRendering.h"
 #import "dicomFile.h"
 #import "BrowserController.h"
+#import "ViewerController.h"
 #import <OsiriX/DCMObject.h>
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
@@ -287,6 +288,9 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
 	[table setNeedsDisplay];
 	[[self window] makeFirstResponder: table];
+	
+	[viewer checkEverythingLoaded];
+	[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", [[viewer window] title]]];
 }
 
 -(void) exportXML:(id) sender
@@ -322,11 +326,14 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
     [self setupToolbar];
 }
 
--(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name
+-(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
 {
 	if (self = [super initWithWindowNibName:@"XMLViewer"])
 	{
 		allowSelectionChange = YES;
+		editingLevel = 1;
+		
+		viewer = [v retain];
 		
 		[[self window] setTitle:name];
 		[[self window] setFrameAutosaveName:@"XMLWindow"];
@@ -369,6 +376,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 - (void) dealloc
 {
+	[viewer release];
 	[dictionaryArray release];
 	[imObj release];
 	[srcFile release];

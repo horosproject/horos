@@ -16,6 +16,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class ViewerController;
+
 @interface XMLController : NSWindowController
 {
     IBOutlet NSOutlineView		*table;
@@ -31,6 +33,8 @@
 	NSManagedObject				*imObj;
 	NSMutableArray				*dictionaryArray;
 	
+	ViewerController			*viewer;
+	
 	BOOL						isDICOM;
 	BOOL						editingActivated;
 	BOOL						allowSelectionChange;
@@ -42,7 +46,7 @@
 	IBOutlet NSTextField		*addGroup, *addElement, *addValue;
 }
 
-- (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name;
+- (id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v;
 - (void) setupToolbar;
 
 - (IBAction) addDICOMField:(id) sender;

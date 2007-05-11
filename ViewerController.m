@@ -2679,7 +2679,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	[[self window] setRepresentedFilename: path];
 	
-    XMLController * xmlController = [[XMLController alloc] initWithImage: [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]]];
+    XMLController * xmlController = [[XMLController alloc] initWithImage: [fileList[curMovieIndex] objectAtIndex:[self indexForPix:[imageView curImage]]] windowName:[NSString stringWithFormat:@"Meta-Data: %@", [[self window] title]] viewer: self];
     
     [xmlController showWindow:self];
 }
