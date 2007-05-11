@@ -3077,7 +3077,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	if([presetsGroupPopUpButton numberOfItems]<1) return;
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
-
+	
+	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:@"Number of Presets: %d", [settingsList count]]];
+	
 	int i, n;
 	for(i=0; i<[presetPreviewArray count]; i++)
 	{
@@ -3085,22 +3087,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 	}
 	
-//	n = presetPageNumber*[presetPreviewArray count];
-//	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
-//	{
-//		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:i] objectForKey:@"name"]];
-//		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-//		[self load3DSettingsDictionary:[settingsList objectAtIndex:i] forPreview:[presetPreviewArray objectAtIndex:i]];
-//		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:i];
-//	}
-	
 	Camera* vrViewCamera = [view camera];
 	
 	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
 	{
 		n = presetPageNumber*[presetPreviewArray count] + i;
-		NSLog(@"i: %d, n: %d", i, n);
-		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[[settingsList objectAtIndex:n] objectForKey:@"name"]];
+		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
 		
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCamera:[view camera]];
@@ -3282,6 +3274,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void)setSelectedPresetPreview:(VRPresetPreview*)aPresetPreview;
 {
 	selectedPresetPreview = aPresetPreview;
+	[self updatePresetInfoPanel];
 }
 
 - (void)selectGroupWithName:(NSString*)name;
@@ -3318,6 +3311,63 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[nextPresetPageButton setHidden:NO];
 		[previousPresetPageButton setHidden:NO];
 	}
+}
+
+#pragma mark info preset
+
+- (void)updatePresetInfoPanel;
+{	
+	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
+	
+	[infoNameTextField setStringValue:[NSString stringWithFormat:@"Name: %@", [presetDictionary objectForKey:@"name"]]];
+	[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
+	[infoOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+	
+	if(![[presetDictionary objectForKey:@"useShading"] boolValue])
+		[infoShadingsTextField setStringValue:@"Shadings: Off"];
+	else
+		[infoShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+
+	[infoWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
+	
+	NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@"Filter"];
+	NSArray *filters = [presetDictionary objectForKey:@"convolutionFilters"];
+	if([filters count]>1) [convolutionFiltersString appendString:@"s"];
+	[convolutionFiltersString appendString:@": "];
+	int i;
+	if([filters count]>0)
+	{
+		for(i=0; i<[filters count]-1; i++)
+		{
+			[convolutionFiltersString appendString:[filters objectAtIndex:i]];
+			[convolutionFiltersString appendString:@", "];
+		}
+		[convolutionFiltersString appendString:[filters objectAtIndex:[filters count]-1]];
+		[convolutionFiltersString appendString:@"."];
+	}
+	else
+	{
+		[convolutionFiltersString appendString:@"(none)."];
+	}
+	[infoConvolutionFilterTextField setStringValue:convolutionFiltersString];
+	
+	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+	
+	int proj = [[presetDictionary objectForKey:@"projection"] intValue];
+	NSString *projectionName;
+	if(proj==0)
+		projectionName = @"Perspective";
+	else if(proj==1)
+		projectionName = @"Parallel";
+	else if(proj==2)
+		projectionName = @"Endoscopy";
+	[infoProjectionTextField setStringValue:[NSString stringWithFormat:@"Projection: %@", projectionName]];
+}
+
+- (IBAction)showPresetInfoPanel:(id)sender;
+{
+	[self updatePresetInfoPanel];
+	[presetsInfoPanel orderFront:self];
 }
 
 @end

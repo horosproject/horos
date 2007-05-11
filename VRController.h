@@ -132,6 +132,10 @@
 	NSMutableArray			*presetNameArray;
 	int						presetPageNumber, presetPageMax, presetPageMin;
 	IBOutlet NSButton		*nextPresetPageButton, *previousPresetPageButton;
+	IBOutlet NSTextField	*numberOfPresetInGroupTextField;
+
+	IBOutlet NSWindow		*presetsInfoPanel;
+	IBOutlet NSTextField	*infoNameTextField, *infoCLUTTextField, *infoOpacityTextField, *infoShadingsTextField, *infoWLWWTextField, *infoConvolutionFilterTextField, *infoProjectionTextField, *infoBackgroundColorTextField;
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -236,5 +240,7 @@
 - (IBAction)nextPresetPage:(id)sender;
 - (IBAction)previousPresetPage:(id)sender;
 - (void)enablePresetPageButtons;
+- (void)updatePresetInfoPanel;
+- (IBAction)showPresetInfoPanel:(id)sender;
 
 @end

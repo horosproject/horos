@@ -153,6 +153,7 @@
                 setOrientation = id; 
                 show3DSettingsNewGroupTextField = id; 
                 showCLUTOpacityPanel = id; 
+                showPresetInfoPanel = id; 
                 undo = id; 
             }; 
             CLASS = VRController; 
@@ -172,6 +173,14 @@
                 convolutionView = NSView; 
                 enginePopup = NSPopUpButton; 
                 engineView = NSView; 
+                infoBackgroundColorTextField = NSTextField; 
+                infoCLUTTextField = NSTextField; 
+                infoConvolutionFilterTextField = NSTextField; 
+                infoNameTextField = NSTextField; 
+                infoOpacityTextField = NSTextField; 
+                infoProjectionTextField = NSTextField; 
+                infoShadingsTextField = NSTextField; 
+                infoWLWWTextField = NSTextField; 
                 modeMatrix = NSMatrix; 
                 modeView = NSView; 
                 moviePlayStop = NSButton; 
@@ -180,6 +189,7 @@
                 movieTextSlide = NSTextField; 
                 movieView = NSView; 
                 nextPresetPageButton = NSButton; 
+                numberOfPresetInGroupTextField = NSTextField; 
                 perspectiveMatrix = NSMatrix; 
                 perspectiveView = NSView; 
                 presetName1 = NSTextField; 
@@ -202,6 +212,7 @@
                 presetPreview9 = VRPresetPreview; 
                 presetsApplyButton = NSButton; 
                 presetsGroupPopUpButton = NSPopUpButton; 
+                presetsInfoPanel = NSWindow; 
                 presetsPanel = NSWindow; 
                 previousPresetPageButton = NSButton; 
                 save3DSettingsWindow = NSWindow; 
