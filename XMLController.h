@@ -35,7 +35,7 @@
 	
 	ViewerController			*viewer;
 	
-	BOOL						isDICOM;
+	BOOL						isDICOM, dontClose;
 	BOOL						editingActivated;
 	BOOL						allowSelectionChange;
 	

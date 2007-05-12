@@ -131,7 +131,9 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 
 - (void) updateDB:(NSArray*) files
 {
+	dontClose = YES;
 	[[BrowserController currentBrowser] addFilesToDatabase: files onlyDICOM:YES safeRebuild:NO produceAddedFiles:NO parseExistingObject:YES];
+	dontClose = NO;
 }
 
 - (IBAction) executeAdd:(id) sender
@@ -291,6 +293,8 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	
 	[viewer checkEverythingLoaded];
 	[[self window] setTitle: [NSString stringWithFormat:@"Meta-Data: %@", [[viewer window] title]]];
+	
+	dontClose = NO;
 }
 
 -(void) exportXML:(id) sender
@@ -370,12 +374,26 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 		[[self window] setRepresentedFilename: srcFile];
 		
 		dictionaryArray = [[NSMutableArray array] retain];
+		
+		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(CloseViewerNotification:) name: @"CloseViewerNotification" object: nil];
 	}
 	return self;
 }
 
+-(void) CloseViewerNotification:(NSNotification*) note
+{
+	if( dontClose) return;
+	
+	if( [note object] == viewer)
+	{
+		[self close];
+	}
+}
+
 - (void) dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+
 	[viewer release];
 	[dictionaryArray release];
 	[imObj release];
