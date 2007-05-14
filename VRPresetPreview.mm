@@ -18,6 +18,7 @@
 		lowResLODFactor = 1.0;
 		isEmpty = YES;
 		presetIndex = -1;
+		LOD = 1.0;
 	}
     
     return self;
@@ -33,7 +34,7 @@
     [pix retain];
     pixList = pix;
 	
-	projectionMode = 1;
+//	projectionMode = 1;
 	
 	data = volumeData;
 	
@@ -320,7 +321,7 @@
 //	compositeFunction->SetCompositeMethodToClassifyFirst();
 //	compositeFunction = vtkVolumeRayCastMIPFunction::New();
 	
-	LOD = 2.0;
+	LOD = 1.0;
 	#if __ppc__
 	LOD += 0.5;
 	#endif
@@ -457,7 +458,9 @@
 	aCamera->SetPosition (0, 0, 1);
 	aCamera->SetRoll(180);
 	aCamera->SetParallelProjection( true);
-	
+
+	aCamera->SetViewAngle( 30);
+
 //	aCamera->ComputeViewPlaneNormal();
 //	aCamera->OrthogonalizeViewUp();
     
@@ -567,10 +570,6 @@
 
 - (void) drawRect:(NSRect)aRect
 {
-//	[[NSColor whiteColor] set];
-//	NSRectFill(aRect);
-//	NSRect newRect = NSMakeRect(aRect.origin.x+1, aRect.origin.y+1, aRect.size.width-2, aRect.size.height-2);
-	
 	if(isEmpty)
 	{
 		// trick to "hide" content of the vr view
@@ -581,34 +580,6 @@
 	}
 	
 	[super drawRect:aRect];
-	
-//	if(isEmpty)
-//	{
-//		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];// trick to "hide" the view
-//		[self lockFocus];
-//		[[NSColor blackColor] set];
-//		NSRectFill(aRect);
-//		[self unlockFocus];
-//	}
-	
-//    glEnable(GL_POINT_SMOOTH);
-//    glEnable(GL_LINE_SMOOTH);
-//	glEnable(GL_POLYGON_SMOOTH);
-//	glEnable(GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-//
-//	
-//	glColor3f(1.0, 1.0, 1.0);
-//	glLineWidth(1.0);
-//	glBegin(GL_LINE_LOOP);
-//		glVertex2f(0.0 - aRect.size.width * 0.5, 0.0 - aRect.size.height * 0.5);
-//		glVertex2f(0.0 + aRect.size.width * 0.5, 0.0 - aRect.size.height * 0.5);
-//		glVertex2f(0.0 + aRect.size.width * 0.5, 0.0 + aRect.size.height * 0.5);
-//		glVertex2f(0.0 - aRect.size.width * 0.5, 0.0 + aRect.size.height * 0.5);
-//	glEnd();
-
-	
 }
 
 - (void)setSelected;
@@ -677,67 +648,6 @@
 - (int)index;
 {
 	return presetIndex;
-}
-
-- (void) setCamera: (Camera*) cam
-{	
-	double pos[3], focal[3], vUp[3];
-	pos[0] = [[cam position] x];
-	pos[1] = [[cam position] y];
-	pos[2] = [[cam position] z];
-	focal[0] = [[cam focalPoint] x];
-	focal[1] = [[cam focalPoint] y];
-	focal[2] = [[cam focalPoint] z];	
-	vUp[0] = [[cam viewUp] x];
-	vUp[1] = [[cam viewUp] y];
-	vUp[2] = [[cam viewUp] z];
-	double clippingRange[2];
-	clippingRange[0] = [cam clippingRangeNear];
-	clippingRange[1] = [cam clippingRangeFar];
-	double viewAngle, eyeAngle, parallelScale;
-	viewAngle = [cam viewAngle];
-	eyeAngle = [cam eyeAngle];
-	parallelScale = [cam parallelScale];
-
-	// window level
-//	[self setWLWW:[cam wl] :[cam ww]];
-	// cropping box
-//	double min[3], max[3], a[ 6];
-//	a[0] = [[cam minCroppingPlanes] x];
-//	a[2] = [[cam minCroppingPlanes] y];
-//	a[4] = [[cam minCroppingPlanes] z];
-//	a[1] = [[cam maxCroppingPlanes] x];
-//	a[3] = [[cam maxCroppingPlanes] y];
-//	a[5] = [[cam maxCroppingPlanes] z];
-//	
-//	[VRView setCroppingBox: a :volume];
-	
-//	double origin[3];
-//	volume->GetPosition(origin);	//GetOrigin		
-//	a[0] += origin[0];		a[1] += origin[0];
-//	a[2] += origin[1];		a[3] += origin[1];
-//	a[4] += origin[2];		a[5] += origin[2];
-//	croppingBox->PlaceWidget(a[0], a[1], a[2], a[3], a[4], a[5]);
-
-//	[VRView getCroppingBox: a :blendingVolume :croppingBox];
-//	[VRView setCroppingBox: a :blendingVolume];
-
-	// fusion percentage
-//	[self setBlendingFactor:[cam fusionPercentage]];
-
-	// 4D
-//	if([controller is4D])
-//		[controller setMovieFrame:[cam movieIndexIn4D]];
-
-	aCamera->SetPosition(pos);
-	aCamera->SetFocalPoint(focal);
-	aCamera->SetViewUp(vUp);
-	//aCamera->SetClippingRange(clippingRange);
-	aCamera->SetViewAngle(viewAngle);
-	aCamera->SetEyeAngle(eyeAngle);
-	aCamera->SetParallelScale(parallelScale);
-	aRenderer->ResetCameraClippingRange();
-//	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
 }
 
 @end

@@ -5056,6 +5056,37 @@ public:
 	[self updateScissorStateButtons];
 }
 
+- (vtkCamera*) vtkCamera;
+{
+	return aCamera;
+}
+
+- (void) setVtkCamera:(vtkCamera*)aVtkCamera;
+{
+	double pos[3], focal[3], vUp[3];
+	aVtkCamera->GetPosition(pos);
+	aVtkCamera->GetFocalPoint(focal);
+	aVtkCamera->OrthogonalizeViewUp();
+	aVtkCamera->GetViewUp(vUp);
+	double clippingRange[2];
+	aVtkCamera->GetClippingRange(clippingRange);
+	double viewAngle, eyeAngle, parallelScale;
+	viewAngle = aVtkCamera->GetViewAngle();
+	eyeAngle = aVtkCamera->GetEyeAngle();
+	parallelScale = aVtkCamera->GetParallelScale();
+	
+	aCamera->SetPosition(pos);
+	aCamera->SetFocalPoint(focal);
+	aCamera->SetViewUp(vUp);
+	aCamera->SetClippingRange(clippingRange);
+	aCamera->SetViewAngle(viewAngle);
+	aCamera->SetEyeAngle(eyeAngle);
+	aCamera->SetParallelScale(parallelScale);
+	
+	aCamera->SetParallelProjection(aVtkCamera->GetParallelProjection());
+	[[NSNotificationCenter defaultCenter] postNotificationName: @"VRCameraDidChange" object:self  userInfo: 0L];
+}
+
 - (Camera*) camera
 {
 	// data extraction from the vtkCamera

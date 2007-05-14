@@ -783,7 +783,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[presetNameArray addObject:presetName7];
 	[presetNameArray addObject:presetName8];
 	[presetNameArray addObject:presetName9];
-
+		
     return self;
 }
 
@@ -2983,6 +2983,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	{		
 		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 		
+		// window level/width
+		float iwl = [[preset objectForKey:@"wl"] floatValue];
+		float iww = [[preset objectForKey:@"ww"] floatValue];
+		[self setWLWW:iwl :iww];
+		
 		// CLUT
 		NSString *clut = [preset objectForKey:@"CLUT"];
 		BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
@@ -3034,12 +3039,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 				[view switchShading:shadingCheck];
 			}
 		}
-		
-		// window level/width
-		float iwl = [[preset objectForKey:@"wl"] floatValue];
-		float iww = [[preset objectForKey:@"ww"] floatValue];
-		[self setWLWW:iwl :iww];
-	
+			
 		// projection
 		int projection = [[preset objectForKey:@"projection"] intValue];
 		[perspectiveMatrix selectCellWithTag:projection];
@@ -3090,18 +3090,20 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
 	}
 	
-	Camera* vrViewCamera = [view camera];
-	
+	n = 0;
 	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
 	{
 		n = presetPageNumber*[presetPreviewArray count] + i;
+		if(n<[settingsList count])
+		{
 		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
 		
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setCamera:[view camera]];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera:[view vtkCamera]];
 		[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
 		
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
+		}
 	}
 	
 	if([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];
