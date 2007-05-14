@@ -6381,7 +6381,7 @@ static float oldsetww, oldsetwl;
 			}
 		}
 	
-//		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
+		[self ApplyConvString:NSLocalizedString(@"No Filter", nil)];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: @"updateVolumeData" object: pixList[ curMovieIndex] userInfo: 0L];
 	}
