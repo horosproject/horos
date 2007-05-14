@@ -1658,15 +1658,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 				}
 			}
 			
-			// Add the screens
-			e = [[NSScreen screens] objectEnumerator];
-			while (screen = [e nextObject])
+			// Add the current screen ONLY
+//			e = [[NSScreen screens] objectEnumerator];
+//			while (screen = [e nextObject])
 			{
-				NSRect frame = [screen visibleFrame];
+				NSRect frame = [[[self window] screen] visibleFrame];
 				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 				
 				[rects addObject: [NSValue valueWithRect: frame]];
 			}
+			
+			NSRect	dstFrame = myFrame;
 			
 			e = [rects objectEnumerator];
 			while (value = [e nextObject])
@@ -1674,40 +1676,44 @@ static volatile int numberOfThreadsForRelisce = 0;
 				frame = [value rectValue];
 				
 				/* horizontal magnet */
-				if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+				if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)	// LEFT
 				{
-					myFrame.size.width = frame.origin.x - myFrame.origin.x;
-					hDidChange = YES;
-				}
-				
-				if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
-				{
-					myFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
-					hDidChange = YES;
+					gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
+					dstFrame.size.width = frame.origin.x - myFrame.origin.x;
 				}
 				
 				/* vertical magnet */
-				if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+				if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)	//TOP
 				{
-					NSRect	previous = myFrame;
+					gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
 					
-					myFrame.origin.y = frame.origin.y;
-					myFrame.size.height -= myFrame.origin.y - previous.origin.y;
-					vDidChange = YES;
+					NSRect	previous = dstFrame;
+					dstFrame.origin.y = frame.origin.y;
+					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
 				}
-				
-				if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+			}
+			
+			e = [rects objectEnumerator];
+			while (value = [e nextObject])
+			{
+				if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)	//RIGHT
 				{
-					NSRect	previous = myFrame;
+					gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
+					dstFrame.size.width = frame.origin.x + frame.size.width - myFrame.origin.x;
+				}
+			
+				if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)	// BOTTOM
+				{
+					gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
 					
-					myFrame.origin.y = frame.origin.y + frame.size.height;
-					myFrame.size.height -= myFrame.origin.y - previous.origin.y;
-					vDidChange = YES;
+					NSRect	previous = dstFrame;
+					dstFrame.origin.y = frame.origin.y + frame.size.height;
+					dstFrame.size.height = dstFrame.size.height - (dstFrame.origin.y - previous.origin.y);
 				}
 			}
 			
 			dontEnterMagneticFunctions = YES;
-			[theWindow setFrame:myFrame display:YES];
+			[theWindow setFrame:dstFrame display:YES];
 			dontEnterMagneticFunctions = NO;
 		}
 		
@@ -1833,7 +1839,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		NSEnumerator	*e;
 		NSWindow		*theWindow, *window;
-		NSRect			frame, myFrame;
+		NSRect			frame, myFrame, dstFrame;
 		BOOL			hDidChange = NO, vDidChange = NO;
 		NSScreen		*screen;
 		NSValue			*value;
@@ -1858,15 +1864,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 			}
 		}
 		
-		// Add the screens
-		e = [[NSScreen screens] objectEnumerator];
-		while (screen = [e nextObject])
+		// Add the current screen ONLY
+//		e = [[NSScreen screens] objectEnumerator];
+//		while (screen = [e nextObject])
 		{
-			NSRect frame = [screen visibleFrame];
+			NSRect frame = [[[self window] screen] visibleFrame];
 			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController fixedHeight];
 			
 			[rects addObject: [NSValue valueWithRect: frame]];
 		}
+		
+		dstFrame = myFrame;
 		
 		e = [rects objectEnumerator];
 		while (value = [e nextObject])
@@ -1874,49 +1882,50 @@ static volatile int numberOfThreadsForRelisce = 0;
 			frame = [value rectValue];
 			
 			/* horizontal magnet */
-			if (!hDidChange && fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
+			if (fabs(NSMinX(frame) - NSMinX(myFrame)) <= gravityX)
 			{
-				myFrame.origin.x = frame.origin.x;
-				hDidChange = YES;
+				gravityX = fabs(NSMinX(frame) - NSMinX(myFrame));
+				dstFrame.origin.x = frame.origin.x;
 			}
-			if (!hDidChange && fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
+			if (fabs(NSMinX(frame) - NSMaxX(myFrame)) <= gravityX)
 			{
-				myFrame.origin.x += NSMinX(frame) - NSMaxX(myFrame);
-				hDidChange = YES;
+				gravityX = fabs(NSMinX(frame) - NSMaxX(myFrame));
+				dstFrame.origin.x = myFrame.origin.x + NSMinX(frame) - NSMaxX(myFrame);
 			}
-			if (!hDidChange && fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
+			if (fabs(NSMaxX(frame) - NSMinX(myFrame)) <= gravityX)
 			{
-				myFrame.origin.x = NSMaxX(frame);
-				hDidChange = YES;
+				gravityX = fabs(NSMaxX(frame) - NSMinX(myFrame));
+				dstFrame.origin.x = NSMaxX(frame);
 			}
-			if (!hDidChange && fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
+			if (fabs(NSMaxX(frame) - NSMaxX(myFrame)) <= gravityX)
 			{
-				myFrame.origin.x += NSMaxX(frame) - NSMaxX(myFrame);
-				hDidChange = YES;
+				gravityX = fabs(NSMaxX(frame) - NSMaxX(myFrame));
+				dstFrame.origin.x = myFrame.origin.x + NSMaxX(frame) - NSMaxX(myFrame);
 			}
 			
 			/* vertical magnet */
-			if (!vDidChange && fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
+			if (fabs(NSMinY(frame) - NSMinY(myFrame)) <= gravityY)
 			{
-				myFrame.origin.y = frame.origin.y;
-				vDidChange = YES;
+				gravityY = fabs(NSMinY(frame) - NSMinY(myFrame));
+				dstFrame.origin.y = frame.origin.y;
 			}
-			if (!vDidChange && fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
+			if (fabs(NSMinY(frame) - NSMaxY(myFrame)) <= gravityY)
 			{
-				myFrame.origin.y += NSMinY(frame) - NSMaxY(myFrame);
-				vDidChange = YES;
+				gravityY = fabs(NSMinY(frame) - NSMaxY(myFrame));
+				dstFrame.origin.y = myFrame.origin.y + NSMinY(frame) - NSMaxY(myFrame);
 			}
-			if (!vDidChange && fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
+			if (fabs(NSMaxY(frame) - NSMinY(myFrame)) <= gravityY)
 			{
-				myFrame.origin.y = NSMaxY(frame);
-				vDidChange = YES;
+				gravityY = fabs(NSMaxY(frame) - NSMinY(myFrame));
+				dstFrame.origin.y = NSMaxY(frame);
 			}
-			if (!vDidChange && fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
+			if (fabs(NSMaxY(frame) - NSMaxY(myFrame)) <= gravityY)
 			{
-				myFrame.origin.y += NSMaxY(frame) - NSMaxY(myFrame);
-				vDidChange = YES;
+				gravityY = fabs(NSMaxY(frame) - NSMaxY(myFrame));
+				dstFrame.origin.y = myFrame.origin.y + NSMaxY(frame) - NSMaxY(myFrame);
 			}
 		}
+		myFrame = dstFrame;
 		
 		dontEnterMagneticFunctions = YES;
 		[theWindow setFrame:myFrame display:YES animate:YES];

@@ -37,8 +37,58 @@ NSString * documentsDirectory();
 #if !__LP64__
 - (NSArray *)availableComponents
 {
+	//{
+//		NSMutableArray		*results = nil;
+//	ComponentDescription	cd = {};
+//	Component		 c = NULL;
+//	Handle			 nameHandle = NewHandle(0);
+//	
+//	if ( nameHandle == NULL )
+//		return( nil );
+//	cd.componentType = MovieExportType;
+//	cd.componentSubType = 0;
+//	cd.componentManufacturer = 0;
+//	cd.componentFlags = canMovieExportFiles;
+//	cd.componentFlagsMask = canMovieExportFiles;
+//
+//	while((c = FindNextComponent(c, &cd)))
+//	{
+//		ComponentDescription	exportCD = {};
+//		
+//		if ( GetComponentInfo( c, &exportCD, nameHandle, NULL, NULL ) == noErr )
+//		{
+//			HLock( nameHandle );
+//			NSString	*nameStr = [[[NSString alloc] initWithBytes:(*nameHandle)+1 length:(int)**nameHandle encoding:NSMacOSRomanStringEncoding] autorelease];
+//			HUnlock( nameHandle );
+//			
+//			exportCD.componentType = CFSwapInt32HostToBig(exportCD.componentType);
+//			exportCD.componentSubType = CFSwapInt32HostToBig(exportCD.componentSubType);
+//			exportCD.componentManufacturer = CFSwapInt32HostToBig(exportCD.componentManufacturer);
+//				
+//			NSString *type = [[[NSString alloc] initWithBytes:&exportCD.componentType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+//			NSString *subType = [[[NSString alloc] initWithBytes:&exportCD.componentSubType length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+//			NSString *manufacturer = [[[NSString alloc] initWithBytes:&exportCD.componentManufacturer length:sizeof(OSType) encoding:NSMacOSRomanStringEncoding] autorelease];
+//			
+//			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+//				nameStr, @"name", [NSValue valueWithPointer:c], @"component",
+//				type, @"type", subType, @"subtype", manufacturer, @"manufacturer", nil];
+//			
+//			NSLog( [dictionary description]);
+//			
+//			if ( results == nil ) {
+//				results = [NSMutableArray array];
+//			}
+//			
+//			[results addObject:dictionary];
+//		}
+//	}
+//	
+//	DisposeHandle( nameHandle );
+//
+//	}
 	NSMutableArray *array = [NSMutableArray array];
-	
+
+
 	ComponentDescription cd;
 	Component c;
 	
@@ -73,7 +123,39 @@ NSString * documentsDirectory();
 		
 		DisposeHandle(name);
 	}
+
+	cd.componentType = MovieExportType;
+	cd.componentSubType = 'ASF_';
+	cd.componentManufacturer = 'TELE';
+	cd.componentFlags = hasMovieExportUserInterface;
+	cd.componentFlagsMask = hasMovieExportUserInterface;
+	c = FindNextComponent( 0, &cd );
 	
+	if( c)
+	{
+		Handle name = NewHandle(4);
+		ComponentDescription exportCD;
+		
+		if (GetComponentInfo(c, &exportCD, name, nil, nil) == noErr)
+		{
+			//unsigned char *namePStr = (unsigned char*) *name;
+			//NSString *nameStr = [[NSString alloc] initWithBytes:&namePStr[1] length:namePStr[0] encoding:NSUTF8StringEncoding];
+			NSString *nameStr = [[NSString alloc] initWithString: @"WMV Movie"];
+			
+			NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+				nameStr, @"name",
+				[NSData dataWithBytes:&c length:sizeof(c)], @"component",
+				[NSNumber numberWithLong:exportCD.componentType], @"type",
+				[NSNumber numberWithLong:exportCD.componentSubType], @"subtype",
+				[NSNumber numberWithLong:exportCD.componentManufacturer], @"manufacturer",
+				nil];
+			[array addObject:dictionary];
+			[nameStr release];
+		}
+		
+		DisposeHandle(name);
+	}
+
 	cd.componentType = MovieExportType;
 	cd.componentSubType = kQTFileTypeAVI;
 	cd.componentManufacturer = kAppleManufacturer;
@@ -249,6 +331,7 @@ NSString * documentsDirectory();
 		if( subtype == kQTFileTypeMovie)  [panel setRequiredFileType:@"mov"];
 		if( subtype == kQTFileTypeAVI)	[panel setRequiredFileType:@"avi"];
 		if( subtype == kQTFileTypeMP4)	[panel setRequiredFileType:@"mpg4"];
+		if( subtype == 'ASF_')	[panel setRequiredFileType:@"wmv"];
 		
 		[[NSUserDefaults standardUserDefaults] setInteger:[type indexOfSelectedItem] forKey:@"selectedMenuQuicktimeExport"];
 	}
