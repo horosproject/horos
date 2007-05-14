@@ -838,6 +838,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	if( [viewer2D postprocessed]) dict = 0L;
 	
+	if(dict)
+		NSLog(@"We have a 3D state");
+	else
+		NSLog(@"NO 3D state found");
+	
 	[view set3DStateDictionary:dict];
 	
 	for (i=0; i<[presetPreviewArray count]; i++)
@@ -2980,14 +2985,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[presetsPanel orderFront:self];
 	}
 	else if([sender isEqualTo:presetsApplyButton])
-	{		
+	{
+		WaitRendering *www = [[WaitRendering alloc] init:@"Applying 3D Preset..."];
+		[www start];
+
 		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
-		
-		// window level/width
-		float iwl = [[preset objectForKey:@"wl"] floatValue];
-		float iww = [[preset objectForKey:@"ww"] floatValue];
-		[self setWLWW:iwl :iww];
-		
+
 		// CLUT
 		NSString *clut = [preset objectForKey:@"CLUT"];
 		BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
@@ -3008,6 +3011,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
 			[OpacityPopup setEnabled:NO];
 		}
+		
+		// window level/width
+		float iwl = [[preset objectForKey:@"wl"] floatValue];
+		float iww = [[preset objectForKey:@"ww"] floatValue];
+		[self setWLWW:iwl :iww];
 		
 		// shadings
 		if([[preset objectForKey:@"useShading"] boolValue])
@@ -3042,8 +3050,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			
 		// projection
 		int projection = [[preset objectForKey:@"projection"] intValue];
-		[perspectiveMatrix selectCellWithTag:projection];
-		[view switchProjection:perspectiveMatrix];
+		if([perspectiveMatrix selectedTag]!=projection)
+		{
+			[perspectiveMatrix selectCellWithTag:projection];
+			[view switchProjection:perspectiveMatrix];
+		}
 					
 		// background color
 		float red = [[preset objectForKey:@"backgroundColorRedComponent"] floatValue];
@@ -3066,7 +3077,10 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 					[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
 				}
 			}
-		}		
+		}
+		[www end];
+		[www close];
+		[www release];		
 	}
 }
 
@@ -3078,20 +3092,18 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void)displayPresetsForSelectedGroup;
 {
+	NSLog(@"displayPresetsForSelectedGroup");
+	
 	if([presetsGroupPopUpButton numberOfItems]<1) return;
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
 	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:@"Number of Presets: %d", [settingsList count]]];
 	
 	int i, n;
-	for(i=0; i<[presetPreviewArray count]; i++)
-	{
-		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
-	}
 	
+	// fill the thumbnails
 	n = 0;
-	for(i=0; i<[presetPreviewArray count] && i<[settingsList count]; i++)
+	for(i=0; i<[presetPreviewArray count] && n<[settingsList count]; i++)
 	{
 		n = presetPageNumber*[presetPreviewArray count] + i;
 		if(n<[settingsList count])
@@ -3104,6 +3116,17 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
 		}
+	}
+	
+	// the others will be black
+	
+	if(n>=[settingsList count]) i--;
+	
+	while(i<[presetPreviewArray count])
+	{
+		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:@""];
+		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:YES];
+		i++;
 	}
 	
 	if([presetPreviewArray count]) [(VRPresetPreview*)[presetPreviewArray objectAtIndex:0] setSelected];

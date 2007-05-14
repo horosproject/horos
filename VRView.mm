@@ -5066,7 +5066,7 @@ public:
 	double pos[3], focal[3], vUp[3];
 	aVtkCamera->GetPosition(pos);
 	aVtkCamera->GetFocalPoint(focal);
-	aVtkCamera->OrthogonalizeViewUp();
+//	aVtkCamera->OrthogonalizeViewUp();
 	aVtkCamera->GetViewUp(vUp);
 	double clippingRange[2];
 	aVtkCamera->GetClippingRange(clippingRange);

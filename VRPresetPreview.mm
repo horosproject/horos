@@ -585,25 +585,32 @@
 - (void)setSelected;
 {
 	if(isEmpty) return;
+	
+	// hides the old selection frame location
+	[selectionView setHidden:YES];
+	[selectionView display];
+
+	// set the selection frame around self
 	[selectionView setFrame:NSMakeRect([self frame].origin.x-2,[self frame].origin.y-2,[self frame].size.width+4,[self frame].size.height+4)];
 	[selectionView setHidden:NO];
 	
 	[presetController setSelectedPresetPreview:self];
 	
-	[[self window] display];
+	[selectionView display];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
 	if(isEmpty) return;
-	[self setSelected];
-	
+		
 	if([theEvent clickCount]>=2)
 	{
+		[self setSelected];
 		[presetController load3DSettings];
 	}
 	
 	[super mouseDown:theEvent];
+//	[self setSelected];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent
@@ -615,6 +622,7 @@
 - (void)mouseUp:(NSEvent *)theEvent
 {
 	if(isEmpty) return;
+	[self setSelected];
 	[super mouseUp:theEvent];
 }
 
