@@ -17,27 +17,31 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class DCMPix;
+//@class DCMPix;
 
 typedef float itkPixelType;
 //typedef itk::RGBPixel<unsigned char> itkPixelType;
 typedef itk::Image< itkPixelType, 3 > ImageType;
 typedef itk::ImportImageFilter< itkPixelType, 3 > ImportFilterType;
 
+
+
 @interface ITK : NSObject {
-
-	// OsiriX images
-
-	NSMutableArray				*pixList;
-	float						*data;
-	DCMPix						*firstObject;
 	
-	// ITK objects
-	
+	// ITK objects	
 	ImportFilterType::Pointer importFilter;
 }
 
+
 - (id) initWith :(NSMutableArray*) pix :(float*) srcPtr :(long) slice;
+- (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData;
+
 - (ImportFilterType::Pointer) itkImporter;
+- (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size  
+	origin:(double[3])origin 
+	spacing:(double[3])spacing 
+	data:(float *)data
+	filterWillOwnBuffer:(BOOL)filterWillOwnBuffer;
+
 
 @end

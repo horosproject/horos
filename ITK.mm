@@ -16,12 +16,15 @@
 
 
 #define id Id
-#include "itkImage.h"
-#include "itkImportImageFilter.h"
+	#include "itkImage.h"
+	#include "itkImportImageFilter.h"
+	//#include "itkResampleImageFilter.h"
 #undef id
+
 
 #import "DCMPix.h"
 #import "ITK.h"
+
 
 @implementation ITK
 
@@ -31,7 +34,7 @@
 	
 	importFilter->Delete();
 	
-	[pixList release];
+	//[pixList release];
 	
 	[super dealloc];
 }
@@ -48,58 +51,129 @@
 	return importFilter;
 }
 
-- (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice
+
+- (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice {
+	return [self initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:NO];
+}
+
+- (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData
 {
     if (self = [super init])
 	{
-		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+		// init variables
+		long height = 0;
+		long width = 0;
+		long depth = 0;
 		
-		pixList = pix;
+		float originX = 0.0;
+		float originY = 0.0;
+		float originZ = 0.0;
+		
+		float voxelSpacingX = 0.0;
+		float voxelSpacingY = 0.0;
+		float voxelSpacingZ = 0.0;
+		
+		double origin[ 3 ];
+		double spacing[ 3 ];
+		
+		// init Filiter
+		//itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+		//importFilter = ImportFilterType::New();
+		ImportFilterType::SizeType size;
+		//ImportFilterType::IndexType start;
+		//ImportFilterType::RegionType region;
+		
+		
+		float	*data;
+		NSMutableArray *pixList = pix;
 		[pixList retain];
+		// get values from the first DCMPix object
+		//#ifndef __cplusplus
+		id firstObject = [pixList objectAtIndex:0];
 		
-		firstObject = [pixList objectAtIndex:0];
+		height = [firstObject pheight];
+		width =  [firstObject pwidth];
+				  
+		if( slice == -1) depth = [pixList count]; // size along Z
+		else depth = 1;
 		
-		if( slice == -1) data = volumeData;
+		originX = [firstObject originX];
+		originY = [firstObject originY];
+		originZ = [firstObject originZ];
+		
+		voxelSpacingX  = [firstObject pixelSpacingX]; 
+		voxelSpacingY  = [firstObject pixelSpacingY];  
+		voxelSpacingZ  = [firstObject sliceInterval]; 
+		
+		// get data
+		if( slice == -1) {
+			data = volumeData;
+			// resample data decreases the size by 2 if all dimensions
+			if (resampleData) {
+				int sliceSize = height * width;
+				float *newData = (float *) malloc(height * width * depth * sizeof(float) / 8);
+				int x, y , z;
+				for (z = 1; z < depth; z += 2) {
+					for (y = 1; y < height; y += 2) {
+						for ( x = 1;  x < width; x += 2) {
+							// should we interpolate or just use the value. Try without interpolation first
+							int position = (z * sliceSize) + (y * width) + x;
+							*newData++  = data[position];
+						}
+					}
+				}
+				data = newData;
+				voxelSpacingX *= 2;
+				voxelSpacingY *= 2;
+				voxelSpacingZ *= 2;
+			}
+		}
 		else
 		{
 			data = volumeData;
-			data += slice*[firstObject pwidth]*[firstObject pheight];
+			data += slice*width*height;
 		}
 		
-		importFilter = ImportFilterType::New();
+		size[0] = width; // size along X
+		size[1] = height; // size along Y
+		size[2] = depth;
 		
-		ImportFilterType::SizeType size;
-		size[0] = [firstObject pwidth]; // size along X
-		size[1] = [firstObject pheight]; // size along Y
+		origin[0] = originX; // X coordinate
+		origin[1] = originY; // Y coordinate
+		origin[2] = originZ; // Z coordinate
+	
+		spacing[0] = voxelSpacingX; // along X direction
+		spacing[1] = voxelSpacingY; // along Y direction
+		spacing[2] = voxelSpacingZ; // along Z direction
 		
-		if( slice == -1) size[2] = [pixList count]; // size along Z
-		else size[2] = 1;
+		[pixList release];
 		
-		ImportFilterType::IndexType start;
-		start.Fill( 0 );
+		[self setupImportFilterWithSize:size origin:origin spacing:spacing data:data filterWillOwnBuffer:resampleData];
 		
-		ImportFilterType::RegionType region;
-		region.SetIndex( start );
-		region.SetSize( size );
-		importFilter->SetRegion( region );
+		if (resampleData && slice == -1)
+			free(data);
 		
-		double origin[ 3 ];
-		origin[0] = [firstObject originX]; // X coordinate
-		origin[1] = [firstObject originY]; // Y coordinate
-		origin[2] = [firstObject originZ]; // Z coordinate
-		importFilter->SetOrigin( origin );
 		
-		double spacing[ 3 ];
-		spacing[0] = [firstObject pixelSpacingX]; // along X direction
-		spacing[1] = [firstObject pixelSpacingY]; // along Y direction
-		spacing[2] = [firstObject sliceInterval]; // along Z direction
-		importFilter->SetSpacing( spacing ); 
-		
-		const bool importImageFilterWillOwnTheBuffer = false;
-		importFilter->SetImportPointer( data, size[0] * size[1] * size[2], importImageFilterWillOwnTheBuffer);
-		NSLog(@"ITK Image allocated");
     }
     return self;
+}
+
+
+- (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size origin:(double[3])origin spacing:(double[3])spacing data:(float *)data filterWillOwnBuffer:(BOOL)filterWillOwnBuffer{
+	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+	importFilter = ImportFilterType::New();
+	//ImportFilterType::SizeType size;
+	ImportFilterType::IndexType start;
+	ImportFilterType::RegionType region;
+	start.Fill( 0 );
+	region.SetIndex( start );
+	region.SetSize( size );
+	importFilter->SetRegion( region );
+	importFilter->SetOrigin( origin );
+	importFilter->SetSpacing( spacing ); 
+	const bool importImageFilterWillOwnTheBuffer = filterWillOwnBuffer;
+	importFilter->SetImportPointer( data, size[0] * size[1] * size[2], importImageFilterWillOwnTheBuffer);
+	NSLog(@"ITK Image allocated");
 }
 
 @end
