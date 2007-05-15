@@ -347,7 +347,7 @@ NSString* asciiString (NSString* name);
 	
 	if( sizeInMb >= 610)
 	{
-		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", 0L), NSLocalizedString(@"The data to burn is larger than a CD size (610MB), you need a DVD to burn this amount of data.", 0L), NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
+		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", 0L), [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a CD size (610 MB), you need a DVD to burn this amount of data (%d MB).", 0L), sizeInMb], NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
 		
 		if( result != NSAlertDefaultReturn) continueToBurn = NO;
 	}
