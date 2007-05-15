@@ -513,7 +513,7 @@
 {
 	if( [_authView authorizationState] == SFAuthorizationViewUnlockedState)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected server?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Server", 0L), NSLocalizedString(@"Are you sure you want to delete the selected item?", 0L), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil) == NSAlertDefaultReturn)
 		{
 			if( [sender tag] == 0)
 			{
@@ -531,6 +531,12 @@
 				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
 				
 				[osirixServerTable reloadData];
+			}
+			
+			if( [sender tag] == 2)
+			{
+				NSLog( [[localPaths selectedObjects] description]);
+				[localPaths removeObjects: [localPaths selectedObjects]];
 			}
 		}
 	}
@@ -583,5 +589,15 @@
 	//NSLog (@"sender: %@", [sender description]);
 }
 
+- (IBAction) addPath:(id) sender
+{
+	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 
+	if ([oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton)
+	{
+		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [oPanel filename], @"Path", @"Database", @"Description", 0L];
+		
+		[localPaths addObject: dict];
+	}
+}
 @end

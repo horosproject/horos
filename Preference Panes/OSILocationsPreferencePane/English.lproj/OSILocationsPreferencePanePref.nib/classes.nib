@@ -20,6 +20,7 @@
         }, 
         {
             ACTIONS = {
+                addPath = id; 
                 deleteSelectedRow = id; 
                 loadFrom = id; 
                 newServer = id; 
@@ -36,6 +37,7 @@
                 addServerDICOM = NSButton; 
                 addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 
+                localPaths = NSArrayController; 
                 osirixServerTable = NSTableView; 
                 progress = NSProgressIndicator; 
                 searchDICOMBonjourNodes = NSButton; 

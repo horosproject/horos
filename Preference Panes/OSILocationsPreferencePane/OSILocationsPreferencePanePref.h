@@ -24,6 +24,7 @@
 	NSMutableArray					*serverList, *osirixServerList;
 	NSString						*stringEncoding;
 	IBOutlet NSProgressIndicator	*progress;
+	IBOutlet NSArrayController		*localPaths;
 	
 	IBOutlet SFAuthorizationView *_authView;
 }
@@ -38,4 +39,6 @@
 - (void) resetTest;
 - (IBAction) saveAs:(id) sender;
 - (IBAction) loadFrom:(id) sender;
+- (IBAction) addPath:(id) sender;
+
 @end
