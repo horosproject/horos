@@ -20,7 +20,7 @@
 @class DRTrack;
 
 @interface BurnerWindowController : NSWindowController {
-	volatile BOOL burning;
+	volatile BOOL burning, isIrisAnimation;
 	NSMutableArray *nodeArray;
 	NSMutableArray *files, *anonymizedFiles;
 	NSArray	*dbObjects;
@@ -39,13 +39,14 @@
 	volatile BOOL isSettingUpBurn;
 	volatile BOOL isThrobbing;
 	NSArray *filesToBurn;
-	BOOL _releaseAfterBurn;
 	BOOL _multiplePatients;
 	BOOL writeDMG;
+	
+	BOOL burnSuppFolder, burnOsiriX, burnHtml;
 }
 - (IBAction) setAnonymizedCheck: (id) sender;
 - (id) initWithFiles:(NSArray *)theFiles;
-- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects releaseAfterBurn:(BOOL)releaseAfterBurn;
+- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects;
 - (DRTrack*) createTrack;
 -(IBAction)burn:(id)sender;
 - (void)setCDTitle: (NSString *)title;

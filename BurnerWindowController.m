@@ -81,9 +81,25 @@ NSString* asciiString (NSString* name);
 	[manager removeFileAtPath:[self folderToBurn] handler:nil];
 }
 
+- (void) copyDefaultsSettings
+{
+	burnSuppFolder = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Supplementary Folder"];
+	burnOsiriX = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn Osirix Application"];
+	burnHtml = [[NSUserDefaults standardUserDefaults] boolForKey: @"Burn html"];
+}
+
+- (void) restoreDefaultsSettings
+{
+	[[NSUserDefaults standardUserDefaults] setBool: burnSuppFolder forKey:@"Burn Supplementary Folder"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnOsiriX forKey:@"Burn Osirix Application"];
+	[[NSUserDefaults standardUserDefaults] setBool: burnHtml forKey:@"Burn html"];
+}
+
 -(id) initWithFiles:(NSArray *)theFiles
 {
     if (self = [super initWithWindowNibName:@"BurnViewer"]) {
+		
+		[self copyDefaultsSettings];
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
@@ -91,13 +107,17 @@ NSString* asciiString (NSString* name);
 		burning = NO;
 		
 		[[self window] center];
+		
+		NSLog( @"Burner allocated");
 	}
 	return self;
 }
 
-- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects releaseAfterBurn:(BOOL)releaseAfterBurn{
+- (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects{
 	if (self = [super initWithWindowNibName:@"BurnViewer"])
 	{
+		[self copyDefaultsSettings];
+		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		files = [theFiles retain];
@@ -120,6 +140,8 @@ NSString* asciiString (NSString* name);
 		burning = NO;
 		
 		[[self window] center];
+		
+		NSLog( @"Burner allocated");
 	}
 	return self;
 }
@@ -136,19 +158,15 @@ NSString* asciiString (NSString* name);
 - (void)dealloc
 {
 	runBurnAnimation = NO;
-	
+
+	[browserWindow setBurnerWindowControllerToNIL];
+		
 	[anonymizedFiles release];
 	[filesToBurn release];
 	[dbObjects release];
-	//NSLog(@"Burner dealloc");	
+	NSLog(@"Burner dealloc");	
 	[super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -515,8 +533,18 @@ NSString* asciiString (NSString* name);
 {
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
 	
-	[browserWindow setBurnerWindowControllerToNIL];
 	NSLog(@"Burner windowWillClose");
+	
+	[self restoreDefaultsSettings];
+	
+	[[self window] setDelegate: 0L];
+	
+	isIrisAnimation = NO;
+	isThrobbing = NO;
+	isExtracting = NO;
+	isSettingUpBurn = NO;
+	burning = NO;
+	runBurnAnimation = NO;
 	
 	[self release];
 }
@@ -547,8 +575,6 @@ NSString* asciiString (NSString* name);
 		return YES;
 	}
 }
-
-
 
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -593,8 +619,6 @@ NSString* asciiString (NSString* name);
 	else title = @"no name";
 	[self setCDTitle:[title uppercaseString]];
 	[pool release];
-
-	
 }
 
 
@@ -843,7 +867,6 @@ NSString* asciiString (NSString* name);
 	isThrobbing = NO;
 	while (runBurnAnimation)
 	{
-		
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		NSString *animation = [NSString stringWithFormat:@"burn_anim%02d", burnAnimationIndex++];
 		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
@@ -861,14 +884,19 @@ NSString* asciiString (NSString* name);
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	int index = 0;
-	while (index <= 13) {
+	isIrisAnimation = YES;
+	while (index <= 13 && isIrisAnimation) {
 		NSString *animation = [NSString stringWithFormat:@"burn_iris%02d", index++];
 		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
 		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
 		[burnButton setImage:image];
 		[NSThread  sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.075]];		
 	}
-	[NSThread detachNewThreadSelector:@selector(throbAnimation:) toTarget:self withObject:nil];
+	
+	if( isIrisAnimation)
+		[NSThread detachNewThreadSelector:@selector(throbAnimation:) toTarget:self withObject:nil];
+		
+	isIrisAnimation = NO;
 	[pool release];
 }
 

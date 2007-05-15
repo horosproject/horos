@@ -10865,7 +10865,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) filesToBurn = [self filesForDatabaseMatrixSelection:managedObjects onlyImages:NO];
 		else filesToBurn = [self filesForDatabaseOutlineSelection:managedObjects   onlyImages:NO];
 		
-		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects  releaseAfterBurn:YES];
+		burnerWindowController = [[BurnerWindowController alloc] initWithFiles:filesToBurn managedObjects:managedObjects];
 
 		[burnerWindowController showWindow:self];
 	}
