@@ -243,6 +243,9 @@ NSString* asciiString (NSString* name);
 		[nameField setEnabled: NO];
 		[compressionMode setEnabled: NO];
 		[anonymizedCheckButton setEnabled: NO];
+		[misc1 setEnabled: NO];
+		[misc2 setEnabled: NO];
+		[misc3 setEnabled: NO];
 
 		writeDMG = NO;
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
@@ -300,7 +303,10 @@ NSString* asciiString (NSString* name);
 	[nameField setEnabled: YES];
 	[compressionMode setEnabled: YES];
 	[anonymizedCheckButton setEnabled: YES];
-	
+	[misc1 setEnabled: YES];
+	[misc2 setEnabled: YES];
+	[misc3 setEnabled: YES];
+
 	[pool release];
 }
 
@@ -374,6 +380,9 @@ NSString* asciiString (NSString* name);
 	[nameField setEnabled: YES];
 	[compressionMode setEnabled: YES];
 	[anonymizedCheckButton setEnabled: YES];
+	[misc1 setEnabled: YES];
+	[misc2 setEnabled: YES];
+	[misc3 setEnabled: YES];
 }
 
 

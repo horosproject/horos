@@ -9,6 +9,9 @@
                 burnButton = NSButton; 
                 compressionMode = NSMatrix; 
                 finalSizeField = NSTextField; 
+                misc1 = NSButton; 
+                misc2 = NSButton; 
+                misc3 = NSButton; 
                 nameField = NSTextField; 
                 sizeField = NSTextField; 
             }; 

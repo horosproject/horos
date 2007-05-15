@@ -29,7 +29,7 @@
 	IBOutlet NSTextField *sizeField, *finalSizeField;
 	IBOutlet NSMatrix	 *compressionMode;
 	IBOutlet NSButton *burnButton;
-	IBOutlet NSButton *anonymizedCheckButton;
+	IBOutlet NSButton *anonymizedCheckButton, *misc1, *misc2, *misc3;
 	NSString *cdName;
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
