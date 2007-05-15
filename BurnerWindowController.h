@@ -64,5 +64,6 @@
 //- (void)reloadData:(id)object;
 - (void)irisAnimation:(id)object;
 - (void)throbAnimation:(id)object;
+- (NSNumber*)getSizeOfDirectory:(NSString*)path;
 
 @end

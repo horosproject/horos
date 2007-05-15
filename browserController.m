@@ -2096,6 +2096,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[self setSearchString: @""];
 }
 
+- (void) setDBWindowTitle
+{
+	if( isCurrentDatabaseBonjour) [[self window] setTitle: [NSString stringWithFormat: NSLocalizedString(@"Bonjour Database (%@)", nil), [currentDatabasePath lastPathComponent]]];
+	else [[self window] setTitle: [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), currentDatabasePath]];
+	[[self window] setRepresentedFilename: currentDatabasePath];
+}
+
 -(void) loadDatabase:(NSString*) path
 {
 	long        i;
@@ -2184,9 +2191,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[[NSFileManager defaultManager] removeFileAtPath:pathTemp handler: 0L];
 	}
 	
-	if( isCurrentDatabaseBonjour) [[self window] setTitle: [NSString stringWithFormat: NSLocalizedString(@"Bonjour Database (%@)", nil), [path lastPathComponent]]];
-	else [[self window] setTitle: [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), path]];
-	[[self window] setRepresentedFilename: path];
+	[self setDBWindowTitle];
 }
 
 -(long) saveDatabase:(NSString*) path
@@ -4324,6 +4329,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 		@catch( NSException *ne)
 		{
 			NSLog( @"Exception during delItem");
+			NSLog( [ne description]);
 		}
 		
 		[self outlineViewRefresh];
@@ -9007,6 +9013,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[wait release];
 	
 	[self testAutorouting];
+	
+	[self setDBWindowTitle];
 }
 
 - (IBAction)customize:(id)sender {
@@ -10253,133 +10261,141 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[splash showWindow:self];
 	[[splash progress] setMaxValue:[dicomFiles2Export count]];
 
-	for( i = 0; i < [dicomFiles2Export count]; i++)
+	@try 
 	{
-		NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
-		NSString *extension = 0L;
-		
-		tempPath = [path stringByAppendingPathComponent: asciiString( [curImage valueForKeyPath: @"series.study.name"])];
-		
-		NSMutableArray *htmlExportSeriesArray;
-		if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]])
+		for( i = 0; i < [dicomFiles2Export count]; i++)
 		{
-			htmlExportSeriesArray = [NSMutableArray array];
-			[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
-			[htmlExportDictionary setObject:htmlExportSeriesArray forKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
-		}
-		else
-		{
-			htmlExportSeriesArray = [htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
-			[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
-		}
-		
-		// Find the PATIENT folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-		else
-		{
-			if( i == 0)
-			{
-				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
-				{
-					[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-					[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-				}
-				else break;
-			}
-		}
-		
-		tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]];
-		if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
-		{
-			previousStudy = [curImage valueForKeyPath: @"series.study.id"];
-			previousSeries = -1;
-		}
-		
-		// Find the STUDY folder
-		if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-		
-		NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
-		[BrowserController replaceNotAdmitted:seriesStr];
-		tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
-		tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
-		
-		if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
-		{
-			if( [imagesArray count] > 1)
-			{
-				[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
-			}
-			else if( [imagesArray count] == 1)
-			{
-				NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
-				NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-				[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
-			}
+			NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+			NSString *extension = 0L;
 			
-			//
-			if(createHTML)
+			tempPath = [path stringByAppendingPathComponent: asciiString( [curImage valueForKeyPath: @"series.study.name"])];
+			
+			NSMutableArray *htmlExportSeriesArray;
+			if(![htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]])
 			{
-				NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
-				if(!thumbnail)
-					thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
-
-				if( thumbnail)
-				{
-					NSData *bitmapData = 0L;
-					NSArray *representations = [thumbnail representations];
-					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-					[bitmapData writeToFile:[tempPath stringByAppendingString:@"_thumb.jpg"] atomically:YES];
-				}
+				htmlExportSeriesArray = [NSMutableArray array];
+				[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
+				[htmlExportDictionary setObject:htmlExportSeriesArray forKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
 			}
-			
-			[imagesArray removeAllObjects];
-			previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
-		}
-		
-		previousPath = [NSString stringWithString: tempPath];
-		
-		DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
-		
-		if( dcmPix)
-		{
-			float curWW = 0;
-			float curWL = 0;
-			
-			if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
-			{
-				curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
-				curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
-			}
-			
-			if( curWW != 0 && curWW !=curWL)
-				[dcmPix checkImageAvailble :curWW :curWL];
 			else
-				[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+			{
+				htmlExportSeriesArray = [htmlExportDictionary objectForKey:[curImage valueForKeyPath: @"series.study.patientUID"]];
+				[htmlExportSeriesArray addObject:[curImage valueForKey: @"series"]];
+			}
 			
-			[imagesArray addObject: [dcmPix image]];
-			[dcmPix release];
+			// Find the PATIENT folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			else
+			{
+				if( i == 0)
+				{
+					if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+					{
+						[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+						[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+					}
+					else break;
+				}
+			}
+			
+			tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", asciiString( [curImage valueForKeyPath: @"series.study.studyName"]), [curImage valueForKeyPath: @"series.study.id"]]];
+			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString:previousStudy] == NO)
+			{
+				previousStudy = [curImage valueForKeyPath: @"series.study.id"];
+				previousSeries = -1;
+			}
+			
+			// Find the STUDY folder
+			if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
+			
+			NSMutableString *seriesStr = [NSMutableString stringWithString: asciiString( [curImage valueForKeyPath: @"series.name"])];
+			[BrowserController replaceNotAdmitted:seriesStr];
+			tempPath = [tempPath stringByAppendingPathComponent: seriesStr ];
+			tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
+			
+			if( previousSeries != [[curImage valueForKeyPath: @"series.id"] intValue])
+			{
+				if( [imagesArray count] > 1)
+				{
+					[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+				}
+				else if( [imagesArray count] == 1)
+				{
+					NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
+					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+					[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
+				}
+				
+				//
+				if(createHTML)
+				{
+					NSImage	*thumbnail = [[[NSImage alloc] initWithData: [curImage valueForKeyPath: @"series.thumbnail"]] autorelease];
+					if(!thumbnail)
+						thumbnail = [[NSImage alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Empty.tif"]];
+
+					if( thumbnail)
+					{
+						NSData *bitmapData = 0L;
+						NSArray *representations = [thumbnail representations];
+						bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+						[bitmapData writeToFile:[tempPath stringByAppendingString:@"_thumb.jpg"] atomically:YES];
+					}
+				}
+				
+				[imagesArray removeAllObjects];
+				previousSeries = [[curImage valueForKeyPath: @"series.id"] intValue];
+			}
+			
+			previousPath = [NSString stringWithString: tempPath];
+			
+			DCMPix* dcmPix = [[DCMPix alloc] myinit: [curImage valueForKey:@"completePathResolved"] :0 :1 :0L :0 :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj:curImage];
+			
+			if( dcmPix)
+			{
+				float curWW = 0;
+				float curWL = 0;
+				
+				if( [[curImage valueForKey:@"series"] valueForKey:@"windowWidth"])
+				{
+					curWW = [[[curImage valueForKey:@"series"] valueForKey:@"windowWidth"] floatValue];
+					curWL = [[[curImage valueForKey:@"series"] valueForKey:@"windowLevel"] floatValue];
+				}
+				
+				if( curWW != 0 && curWW !=curWL)
+					[dcmPix checkImageAvailble :curWW :curWL];
+				else
+					[dcmPix checkImageAvailble :[dcmPix savedWW] :[dcmPix savedWL]];
+				
+				[imagesArray addObject: [dcmPix image]];
+				[dcmPix release];
+			}
+			
+			[splash incrementBy:1];
+		}
+	
+		if( [imagesArray count] > 1)
+		{
+			[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
+		}
+		else if( [imagesArray count] == 1)
+		{
+			NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
+			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+			[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
 		}
 		
-		[splash incrementBy:1];
+		if(createHTML)
+		{
+			QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
+			[htmlExport setPatientsDictionary:htmlExportDictionary];
+			[htmlExport setPath:path];
+			[htmlExport createHTMLfiles];
+		}
 	}
 	
-	if( [imagesArray count] > 1)
+	@catch (NSException * e)
 	{
-		[self writeMovie: imagesArray name: [previousPath stringByAppendingString:@".mov"]];
-	}
-	else if( [imagesArray count] == 1)
-	{
-		NSArray *representations = [[imagesArray objectAtIndex: 0] representations];
-		NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-		[bitmapData writeToFile:[previousPath stringByAppendingString:@".jpg"] atomically:YES];
-	}
-	
-	if(createHTML)
-	{
-		QTExportHTMLSummary *htmlExport = [[QTExportHTMLSummary alloc] init];
-		[htmlExport setPatientsDictionary:htmlExportDictionary];
-		[htmlExport setPath:path];
-		[htmlExport createHTMLfiles];
+		NSLog( [e description]);
 	}
 	
 	[splash close];
@@ -11517,7 +11533,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog( @"RemoveAllMounted");
+		NSLog( @"RemoveAllMounted Exception");
+		NSLog( [ne description]);
 	}
 	
 	[context unlock];
@@ -11604,6 +11621,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			@catch( NSException *ne)
 			{
 				NSLog( @"Unmount exception");
+				NSLog( [ne description]);
 			}
 			
 			if( needsUpdate)

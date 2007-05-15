@@ -315,28 +315,42 @@ NSString* asciiString (NSString* name);
 	return [NSString stringWithFormat:@"/tmp/%@",cdName];
 }
 
-- (void)burnCD:(id)object{
-
-	DRTrack*	track = [self createTrack];
-
-	if (track){
-		DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
-
-		// We'll be the delegate for the setup panel. This allows us to show off some 
-		// of the customization you can do.
-		[bsp setDelegate:self];
+- (void)burnCD:(id)object
+{
+	BOOL continueToBurn = YES;
+	
+	int sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
+	
+	if( sizeInMb >= 610)
+	{
+		int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Burning", 0L), NSLocalizedString(@"The data to burn is larger than a CD size (610MB), you need a DVD to burn this amount of data.", 0L), NSLocalizedString(@"Burn",nil), NSLocalizedString(@"Cancel",nil), nil);
 		
-		if ([bsp runSetupPanel] == NSOKButton)
-		{
-			DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
+		if( result != NSAlertDefaultReturn) continueToBurn = NO;
+	}
+	
+	if( continueToBurn)
+	{
+		DRTrack*	track = [self createTrack];
 
-			[bpp setDelegate:self];
+		if (track){
+			DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
+
+			// We'll be the delegate for the setup panel. This allows us to show off some 
+			// of the customization you can do.
+			[bsp setDelegate:self];
 			
-			// If you wanted to run this as a sheet you would have sent
-			[bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
+			if ([bsp runSetupPanel] == NSOKButton)
+			{
+				DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
+
+				[bpp setDelegate:self];
+				
+				// If you wanted to run this as a sheet you would have sent
+				[bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
+			}
+			else
+				runBurnAnimation = NO;
 		}
-		else
-			runBurnAnimation = NO;
 	}
 	
 	[nameField setEnabled: YES];
@@ -641,6 +655,7 @@ NSString* asciiString (NSString* name);
 		size=[NSString stringWithCString:aBuffer];
 		stringComponents=[size pathComponents];
 		
+		
 		size=[stringComponents objectAtIndex:0];
 		size=[size substringToIndex:[size length]-1];
 		
@@ -795,7 +810,7 @@ NSString* asciiString (NSString* name);
 			}
 		}
 		
-		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", [[self getSizeOfDirectory: burnFolder] floatValue] / 1024.] waitUntilDone:YES];
+		[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Data size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	}
 	
 	NS_HANDLER
@@ -816,7 +831,7 @@ NSString* asciiString (NSString* name);
 		size += [fattrs fileSize]/1024;
 		[pool release];
 	}
-	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"Files:", nil), [files count], NSLocalizedString(@"Image Files size:", nil), size/1024.0]];
+	[sizeField setStringValue:[NSString stringWithFormat:@"%@ %d  %@ %3.2fMB", NSLocalizedString(@"No of Files:", nil), [files count], NSLocalizedString(@"Original Image Files size:", nil), size/1024.0]];
 }
 
 

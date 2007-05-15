@@ -221,7 +221,7 @@ extern NSString *documentsDirectory();
 
 	NSArray *components;
 
-	if(imagesCount>1)
+	if(imagesCount>1 && [[[series valueForKeyPath:@"images.width"] allObjects] count] > 0 )
 	{
 		[tempHTML replaceOccurrencesOfString:@"%series_mov%" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
 		[tempHTML replaceOccurrencesOfString:@"%width%" withString:[NSString stringWithFormat:@"%@", [[[series valueForKeyPath:@"images.width"] allObjects] objectAtIndex:0]] options:NSLiteralSearch range:NSMakeRange(0, [tempHTML length])];
@@ -268,9 +268,12 @@ extern NSString *documentsDirectory();
 	NSString *patientName;
 	while (study = [enumerator nextObject])
 	{
-		patientName = asciiString( [NSMutableString stringWithString:[[study objectAtIndex:0] valueForKeyPath: @"study.name"]]);
-		NSString *htmlContent = [self fillStudiesListTemplatesForSeries:study];
-		[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/index.html", patientName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+		if( [study count] > 0)
+		{
+			patientName = asciiString( [NSMutableString stringWithString:[[study objectAtIndex:0] valueForKeyPath: @"study.name"]]);
+			NSString *htmlContent = [self fillStudiesListTemplatesForSeries:study];
+			[fileManager createFileAtPath:[rootPath stringByAppendingFormat:@"/%@/index.html", patientName] contents:[htmlContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+		}
 	}
 }
 
