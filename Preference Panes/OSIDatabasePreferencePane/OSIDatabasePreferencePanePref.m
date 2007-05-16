@@ -175,13 +175,13 @@ Version 2.4
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
-	long locationValue = [defaults integerForKey:@"DATABASELOCATION"];
+	long locationValue = [defaults integerForKey:@"DEFAULT_DATABASELOCATION"];
 //	if (locationValue == 0)
 //		[locationURLField setHidden:YES];
 //	else [locationURLField setHidden:NO];
 	
 	[locationMatrix selectCellWithTag:locationValue];
-	[locationURLField setStringValue:[defaults stringForKey:@"DATABASELOCATIONURL"]];
+	[locationURLField setStringValue:[defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
@@ -364,13 +364,13 @@ Version 2.4
 	
 	if ([[sender selectedCell] tag] == 1)
 	{
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"] isEqualToString:@""]) [self setLocationURL: self];
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""]) [self setLocationURL: self];
 		
-		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"] isEqualToString:@""] == NO)
+		if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isEqualToString:@""] == NO)
 		{
 			BOOL isDir;
 			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSUserDefaults standardUserDefaults] stringForKey:@"DATABASELOCATIONURL"] isDirectory:&isDir])
+			if (![[NSFileManager defaultManager] fileExistsAtPath:[[NSUserDefaults standardUserDefaults] stringForKey:@"DEFAULT_DATABASELOCATIONURL"] isDirectory:&isDir])
 			{
 				NSRunAlertPanel(@"OsiriX Database Location", @"This location is not valid. Select another location.", @"OK", nil, nil);
 				
@@ -383,9 +383,11 @@ Version 2.4
 	//	[locationURLField setHidden:YES];
 	}
 	
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DATABASELOCATION"];
+	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DEFAULT_DATABASELOCATION"];
 	
 	[[[[self mainView] window] windowController] reopenDatabase];
+	
+	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
 - (IBAction) resetDate:(id) sender
@@ -402,11 +404,12 @@ Version 2.4
 	//NSLog(@"setLocation URL");
 		
 	NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
-	long				result;	
+	long				result;
+	
     [oPanel setCanChooseFiles:NO];
     [oPanel setCanChooseDirectories:YES];
 	
-	result = [oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"roi"]];
+	result = [oPanel runModalForDirectory:0L file:nil types: 0L];
     
     if (result == NSOKButton)
 	{
@@ -425,19 +428,21 @@ Version 2.4
 		}
 		
 		[locationURLField setStringValue: location];
-		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
+		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:1];
 	}	
 	else 
 	{
 		[locationURLField setStringValue: 0L];
-		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
+		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
 		[locationMatrix selectCellWithTag:0];
 	}
 	
 	[[[[self mainView] window] windowController] reopenDatabase];
+	
+	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
 - (IBAction) setCopyDatabaseMode:(id)sender{

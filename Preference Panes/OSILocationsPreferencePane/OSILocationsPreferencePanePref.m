@@ -597,9 +597,24 @@
 {
 	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 
+    [oPanel setCanChooseFiles:YES];
+    [oPanel setCanChooseDirectories:YES];
+
 	if ([oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton)
 	{
-		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [oPanel filename], @"Path", @"Database", @"Description", 0L];
+		NSString	*location = [oPanel filename];
+		
+		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
+		{
+			location = [location stringByDeletingLastPathComponent];
+		}
+
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+		{
+			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+		}
+		
+		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", @"Database", @"Description", 0L];
 		
 		[localPaths addObject: dict];
 		

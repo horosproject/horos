@@ -864,7 +864,11 @@ static NSString *hostName = @"";
 	[defaultValues setObject:@"7" forKey:@"LOGCLEANINGDAYS"];
 	
 	// ** DATABASELOCATION
-	[defaultValues setObject:@"0" forKey:@"DATABASELOCATION"];
+	[defaultValues setObject:@"0" forKey:@"DEFAULT_DATABASELOCATION"];
+	[defaultValues setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
+	
+	[defaultValues setObject: @"0" forKey: @"DATABASELOCATION"];
+	[defaultValues setObject: @"" forKey: @"DATABASELOCATIONURL"];
 	
 	// ** FONTNAME
 	[defaultValues setObject: @"Geneva" forKey: @"FONTNAME"];
@@ -874,9 +878,6 @@ static NSString *hostName = @"";
 	
 	// ** FONTSIZE
 	[defaultValues setObject: @"14.0" forKey: @"FONTSIZE"];
-	
-	// ** DATABASELOCATIONURL
-	[defaultValues setObject: @"" forKey: @"DATABASELOCATIONURL"];
 	
 	// ** REPORTSMODE
 	[defaultValues setObject: @"2" forKey: @"REPORTSMODE"];

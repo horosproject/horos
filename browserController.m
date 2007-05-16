@@ -2116,9 +2116,28 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	
-	NSString	*DBVersion;
+	NSString	*DBVersion, *DBFolderLocation;
 	
 	DBVersion = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"]];
+	
+	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"]];
+	
+	if( DBFolderLocation == 0L)
+		DBFolderLocation = [self documentsDirectory];
+	
+	BOOL isDirectory;
+	if( [[NSFileManager defaultManager] fileExistsAtPath: DBFolderLocation isDirectory: &isDirectory])
+	{
+		if( isDirectory == NO)
+			DBFolderLocation = [self documentsDirectory];
+	}
+	else DBFolderLocation = [self documentsDirectory];
+	
+	if( [DBFolderLocation isEqualToString: [self documentsDirectory]] == NO)
+	{
+		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject: DBFolderLocation forKey: @"DATABASELOCATIONURL"];
+	}
 	
 	if( DBVersion == 0L) 
 		DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
@@ -2223,7 +2242,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 			if( path == 0L) path = currentDatabasePath;
 			
 			[[NSString stringWithString:DATABASEVERSION] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"] atomically:YES];
-			
+			[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"] atomically:YES];
+						
 			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
 			[[NSUserDefaults standardUserDefaults] setInteger: DATABASEINDEX forKey: @"DATABASEINDEX"];
 		}
@@ -6921,13 +6941,13 @@ static BOOL needToRezoom;
 		{
 			if (bonjourBrowser!=nil)
 			{
-				if( rowIndex == 0) return @"Local Database";
+				if( rowIndex == 0) return NSLocalizedString(@"Local Default Database", 0L);
 				else if( rowIndex <= [bonjourBrowser BonjourServices]) return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name];
 				else return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Description"];
 			}
 			else
 			{
-				return @"Local Database";
+				return NSLocalizedString(@"Local Default Database", 0L);
 			}
 		}
 	}
@@ -8584,6 +8604,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		browserWindow = self;
 		
 		COLUMN = 4;
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+		
 		isCurrentDatabaseBonjour = NO;
 		currentDatabasePath = 0L;
 		currentDatabasePath = [[documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH] retain];
@@ -12607,7 +12631,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 		{
 			BOOL isDirectory;
-				
+			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [object valueForKey: @"Path"] isDirectory: &isDirectory])
 			{
 				if( isDirectory)
@@ -12652,6 +12676,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	else // LOCAL DEFAULT DATABASE
 	{
+		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+
 		NSString	*path = [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 		
 		[segmentedAlbumButton setEnabled: YES];

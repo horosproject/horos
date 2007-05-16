@@ -127,7 +127,10 @@ extern BrowserController	*browserWindow;
 
 - (void) reopenDatabase
 {
-	[browserWindow openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
+	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+	
+	[[BrowserController currentBrowser] resetToLocalDatabase];
 }
 
 - (void) windowDidLoad
