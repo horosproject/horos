@@ -1529,7 +1529,9 @@ static BOOL initialized = NO;
 				// ** REGISTER DEFAULTS DICTIONARY
 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
-				
+				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy];
