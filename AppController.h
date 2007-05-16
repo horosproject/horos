@@ -32,7 +32,16 @@ enum
 	ask = 3
 };
 
-NSRect screenFrame();
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+	NSRect screenFrame();
+	NSString * documentsDirectoryFor( int mode, NSString *url);
+	NSString * documentsDirectory();
+#ifdef __cplusplus
+}
+#endif
 
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
 {

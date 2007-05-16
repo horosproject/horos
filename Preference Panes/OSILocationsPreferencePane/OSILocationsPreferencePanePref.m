@@ -619,7 +619,7 @@
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
 		
-		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", @"Database", @"Description", 0L];
+		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
 		
 		[localPaths addObject: dict];
 		

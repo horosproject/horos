@@ -485,13 +485,13 @@ void vminNoAltivec( float *a,  float *b,  float *r, long size)
 	}
 }
 
-NSString * documentsDirectory()
+NSString * documentsDirectoryFor( int mode, NSString *url)
 {
 	char	s[1024];
 	FSSpec	spec;
 	FSRef	ref;
 	
-	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"])
+	switch( mode)
 	{
 		case 0:
 			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
@@ -514,24 +514,31 @@ NSString * documentsDirectory()
 			NSString	*path;
 			BOOL		isDir = YES;
 			
-			path = [[[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"] stringByAppendingPathComponent:@"/OsiriX Data"];
+			path = [url stringByAppendingPathComponent:@"/OsiriX Data"];
 			
 			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])	// STILL NOT AVAILABLE??
-			{   // Use the default folder.. and reset this strange URL..
-				
-				[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-				
-				return documentsDirectory();
-			}
-			
+						
 			return path;
 		}
 		break;
 	}
 	
 	return nil;
+}
+
+NSString * documentsDirectory()
+{
+	NSString *path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path])	// STILL NOT AVAILABLE??
+	{   // Use the default folder.. and reset this strange URL..
+		
+		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+		
+		return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+	}
+	
+	return path;
 }
 
 static volatile BOOL converting = NO;
