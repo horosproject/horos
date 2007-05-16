@@ -3192,13 +3192,14 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		n = presetPageNumber*[presetPreviewArray count] + i;
 		if(n<[settingsList count])
 		{
-		[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
-		
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera:[view vtkCamera]];
-		[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
-		
-		[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
+			[(NSTextField*)[presetNameArray objectAtIndex:i] setStringValue:[NSString stringWithFormat:@"%d. %@", n+1,[[settingsList objectAtIndex:n] objectForKey:@"name"]]];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIsEmpty:NO];
+			
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setVtkCamera:[view vtkCamera]];
+			[self load3DSettingsDictionary:[settingsList objectAtIndex:n] forPreview:[presetPreviewArray objectAtIndex:i]];
+			
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setIndex:n];
+			[(VRPresetPreview*)[presetPreviewArray objectAtIndex:i] setLOD:1.0];
 		}
 	}
 	
