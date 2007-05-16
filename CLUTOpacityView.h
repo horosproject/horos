@@ -31,6 +31,7 @@
 	
 	NSUndoManager *undoManager;
 	BOOL nothingChanged;
+	BOOL clutChanged;
 	
 	float zoomFactor;
 	float zoomFixedPoint;
@@ -68,6 +69,9 @@
 - (void)selectCurveAtIndex:(int)i;
 - (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
 - (void)setColors:(NSArray*)colors forCurveAtIndex:(int)curveIndex;
+
+- (void)setCurves:(NSMutableArray*)newCurves;
+- (void)setPointColors:(NSMutableArray*)newPointColors;
 
 #pragma mark -
 #pragma mark Coordinate to NSView Transform

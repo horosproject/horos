@@ -608,8 +608,10 @@
 		[self setSelected];
 		[presetController load3DSettings];
 	}
-	
-	[super mouseDown:theEvent];
+	else
+	{
+		[super mouseDown:theEvent];
+	}
 //	[self setSelected];
 }
 

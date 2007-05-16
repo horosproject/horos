@@ -278,6 +278,7 @@
 	selectedPoint = controlPoint;
 	
 	nothingChanged = NO;
+	clutChanged = YES;
 	vrViewLowResolution = NO;
 	[self updateView];
 }
@@ -445,6 +446,7 @@
 - (void)deleteCurveAtIndex:(int)curveIndex;
 {
 	nothingChanged = NO;
+	clutChanged = YES;
 	[[undoManager prepareWithInvocationTarget:self] addCurveAtindex:curveIndex withPoints:[NSMutableArray arrayWithArray:[curves objectAtIndex:curveIndex]] colors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]]];
 	[curves removeObjectAtIndex:curveIndex];
 	[pointColors removeObjectAtIndex:curveIndex];
@@ -478,6 +480,7 @@
 	if(i != [curves count]-1)
 	{
 		nothingChanged = NO;
+		clutChanged = NO;
 		[self moveCurveAtIndex:i toIndex:[curves count]-1];
 	}
 }
@@ -487,6 +490,7 @@
 	if(i != 0)
 	{
 		nothingChanged = NO;
+		clutChanged = NO;
 		[self moveCurveAtIndex:i toIndex:0];
 	}
 }
@@ -513,6 +517,7 @@
 - (void)setColor:(NSColor*)color forCurveAtIndex:(int)curveIndex;
 {
 	nothingChanged = NO;
+	clutChanged = YES;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
 	int i;
 	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
@@ -524,6 +529,7 @@
 - (void)setColors:(NSArray*)colors forCurveAtIndex:(int)curveIndex;
 {
 	nothingChanged = NO;
+	clutChanged = YES;
 	[[undoManager prepareWithInvocationTarget:self] setColors:[NSMutableArray arrayWithArray:[pointColors objectAtIndex:curveIndex]] forCurveAtIndex:curveIndex];
 	int i;
 	for (i=0; i<[[curves objectAtIndex:curveIndex] count]; i++)
@@ -544,6 +550,18 @@
 		pt.y += aShift;
 		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
 	}
+}
+
+- (void)setCurves:(NSMutableArray*)newCurves;
+{
+	if(curves) [curves release];
+	curves = [newCurves retain];
+}
+
+- (void)setPointColors:(NSMutableArray*)newPointColors;
+{
+	if(pointColors) [pointColors release];
+	pointColors = [newPointColors retain];
 }
 
 #pragma mark -
@@ -575,7 +593,9 @@
 - (void)updateView;
 {
 	[self setNeedsDisplay:YES];
-	if(!nothingChanged)[self setCLUTtoVRView];
+	//if(!nothingChanged)[self setCLUTtoVRView];
+	if(clutChanged)[self setCLUTtoVRView];
+	clutChanged = NO;
 }
 
 #pragma mark -
@@ -597,7 +617,8 @@
 				selectedPoint = [[aCurve objectAtIndex:j] pointValue];
 				[colorPanel setColor:[[pointColors objectAtIndex:i] objectAtIndex:j]];
 				[self sendToFrontCurveAtIndex:i];
-				//[self updateView];
+				clutChanged = NO;
+				[self updateView];
 				return YES;
 			}
 		}
@@ -608,6 +629,7 @@
 - (void)unselectPoints;
 {
 	selectedPoint.y = -1.0;
+	clutChanged = NO;
 	[self updateView];
 }
 
@@ -648,10 +670,17 @@
 
 - (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 {
-	nothingChanged = NO;
-	//vrViewLowResolution = NO;
-	[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
-	[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
+	NSColor *currentColor = [[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"];
+	NSColor *newColor = [color colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"];
+			
+	if([currentColor redComponent]!=[newColor redComponent] || [currentColor greenComponent]!=[newColor greenComponent] || [currentColor blueComponent]!=[newColor blueComponent])
+	{
+		clutChanged = YES;
+		nothingChanged = NO;
+		//vrViewLowResolution = NO;
+		[[undoManager prepareWithInvocationTarget:self] setColor:[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] forPointAtIndex:pointIndex inCurveAtIndex:curveIndex];
+		[[pointColors objectAtIndex:curveIndex] replaceObjectAtIndex:pointIndex withObject:color];
+	}
 }
 
 - (NSPoint)legalizePoint:(NSPoint)point inCurve:(NSArray*)aCurve atIndex:(int)j;
@@ -829,6 +858,7 @@
 	if(addPoint)
 	{
 		nothingChanged = NO;
+		clutChanged = YES;
 		[transform invert];
 		NSPoint newPoint = [transform transformPoint:position];
 		selectedPoint.x = newPoint.x;
@@ -852,9 +882,10 @@
 	NSPoint mousePositionInView = [self convertPoint:mousePositionInWindow fromView:nil];
 	
 	nothingChanged = YES;
+	clutChanged = NO;
 	[undoManager beginUndoGrouping];
 	
-	vrViewLowResolution = YES;
+	vrViewLowResolution = NO;
 	
 	if(![self selectPointAtPosition:mousePositionInView])
 	{
@@ -871,12 +902,14 @@
 		else if([theEvent clickCount] == 2)
 		{
 			nothingChanged = YES;
+			clutChanged = NO;
 			[colorPanel orderFront:self];
 		}
 	}
 	else if([theEvent clickCount] == 2)
 	{
 		nothingChanged = YES;
+		clutChanged = NO;
 		[colorPanel orderFront:self];
 	}
 }
@@ -890,8 +923,10 @@
 		[undoManager undoNestedGroup];
 	}
 	
+	BOOL wasInLowResolution = vrViewLowResolution;
 	vrViewLowResolution = NO;
-	if(!nothingChanged)[self setCLUTtoVRView];
+	//if(!nothingChanged)[self setCLUTtoVRView];
+	if(clutChanged || wasInLowResolution)[self setCLUTtoVRView];
 	[super mouseUp:theEvent];
 }
 
@@ -909,12 +944,13 @@
 {
 	[super mouseDragged:theEvent];
 	
-	vrViewLowResolution = YES;
-	
 	[[NSCursor arrowCursor] set];
 	if([self isAnyPointSelected])
 	{
+		vrViewLowResolution = YES;
+	
 		nothingChanged = NO;
+		clutChanged = YES;
 		NSAffineTransform* transformCoordinate2View = [self transform];
 		NSAffineTransform* transformView2Coordinate = [self transform];
 		[transformView2Coordinate invert];
@@ -1592,6 +1628,7 @@
 - (void)setCLUTtoVRView;
 {
 	[self setCLUTtoVRView:vrViewLowResolution];
+	if(clutChanged)[[vrView controller] setCurCLUTMenu:@"16-bit CLUT"];
 }
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;
@@ -1661,6 +1698,8 @@
 		[theCurve replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:pt]];
 	}
 	nothingChanged = NO;
+	clutChanged = YES;
+		
 	vrViewLowResolution = YES;
 	[self updateView];
 }

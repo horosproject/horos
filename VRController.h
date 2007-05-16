@@ -35,6 +35,7 @@
 @class ROIVolume;
 
 @class VRPresetPreview;
+#import "ColorView.h"
 
 @interface VRController : Window3DController
 {
@@ -136,6 +137,11 @@
 
 	IBOutlet NSWindow		*presetsInfoPanel;
 	IBOutlet NSTextField	*infoNameTextField, *infoCLUTTextField, *infoOpacityTextField, *infoShadingsTextField, *infoWLWWTextField, *infoConvolutionFilterTextField, *infoProjectionTextField, *infoBackgroundColorTextField;
+	IBOutlet ColorView		*infoBackgroundColorView;
+	
+	NSPoint					presetsPanelUserDefinedOrigin;
+	BOOL					needToMovePresetsPanelToUserDefinedPosition;
+	
 }
 
 - (IBAction) applyConvolution:(id) sender;
@@ -217,9 +223,11 @@
 - (NSString *)renderingMode;
 - (void)setRenderingMode:(NSString *)renderingMode;
 - (NSString *)curCLUTMenu;
+- (void)setCurCLUTMenu:(NSString*)clut;
 
 - (NSDrawer*)clutOpacityDrawer;
 - (void)showCLUTOpacityPanel:(id)sender;
+- (void)loadAdvancedCLUTOpacity:(id)sender;
 - (void)delete16BitCLUT:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo;
 
 - (NSMutableDictionary*)getCurrent3DSettings;
@@ -240,7 +248,10 @@
 - (IBAction)nextPresetPage:(id)sender;
 - (IBAction)previousPresetPage:(id)sender;
 - (void)enablePresetPageButtons;
+- (void)showPresetsPanel;
+- (void)centerPresetsPanel;
 - (void)updatePresetInfoPanel;
 - (IBAction)showPresetInfoPanel:(id)sender;
+- (void)windowWillCloseNotification:(NSNotification*)notification;
 
 @end

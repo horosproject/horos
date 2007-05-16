@@ -38,6 +38,7 @@
             OUTLETS = {pick = NSColorWell; position = NSTextField; }; 
             SUPERCLASS = NSView; 
         }, 
+        {CLASS = ColorView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = DCMView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
         {CLASS = DarkWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
@@ -174,6 +175,7 @@
                 enginePopup = NSPopUpButton; 
                 engineView = NSView; 
                 infoBackgroundColorTextField = NSTextField; 
+                infoBackgroundColorView = ColorView; 
                 infoCLUTTextField = NSTextField; 
                 infoConvolutionFilterTextField = NSTextField; 
                 infoNameTextField = NSTextField; 

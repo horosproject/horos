@@ -77,6 +77,7 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	ConvolutionViewToolbarItemIdentifier		= @"ConvolutionView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
+static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 @implementation VRController
 
@@ -146,6 +147,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"revertSeriesNotification" object: pixList[ curMovieIndex] userInfo: 0L];
 	[appliedConvolutionFilters removeAllObjects];
+	if([presetsPanel isVisible])[self displayPresetsForSelectedGroup];
 }
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
@@ -784,9 +786,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[presetNameArray addObject:presetName8];
 	[presetNameArray addObject:presetName9];
 		
+	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:@"NSWindowWillCloseNotification" object:nil];
+	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:@"NSWindowWillMoveNotification" object:nil];
+	
     return self;
 }
-
 
 -(NSString*) getUniqueFilenameScissorState
 {
@@ -815,7 +819,16 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	NSMutableDictionary *dict = [view get3DStateDictionary];
 	[dict setObject:curCLUTMenu forKey:@"CLUTName"];
-	[dict setObject:curOpacityMenu forKey:@"OpacityName"];
+	[dict setObject:[NSNumber numberWithBool:[view advancedCLUT]] forKey:@"isAdvancedCLUT"];
+	if(![view advancedCLUT])[dict setObject:curOpacityMenu forKey:@"OpacityName"];
+	
+	if([curCLUTMenu isEqualToString:@"16-bit CLUT"])
+	{
+		NSArray *curves = [clutOpacityView convertCurvesForPlist];
+		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
+		[dict setObject:curves forKey:@"16bitClutCurves"];
+		[dict setObject:colors forKey:@"16bitClutColors"];
+	}
 	
 	if( [viewer2D postprocessed] == NO)
 		[dict writeToFile:str atomically:YES];
@@ -837,14 +850,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	
 	if( [viewer2D postprocessed]) dict = 0L;
-	
-	if(dict)
-		NSLog(@"We have a 3D state");
-	else
-		NSLog(@"NO 3D state found");
-	
+		
 	[view set3DStateDictionary:dict];
-	
+		
 	for (i=0; i<[presetPreviewArray count]; i++)
 	{
 		[[presetPreviewArray objectAtIndex:i] set3DStateDictionary:dict];
@@ -852,11 +860,48 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		[[presetPreviewArray objectAtIndex:i] setVolumeMapper:[view volumeMapper]];
 	}
 	
-	if( [dict objectForKey:@"CLUTName"]) [self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
+	BOOL has16bitCLUT = NO;
+	
+	if( [dict objectForKey:@"CLUTName"])
+	{
+		if([dict objectForKey:@"isAdvancedCLUT"])
+		{
+			if([[dict objectForKey:@"isAdvancedCLUT"] boolValue])
+			{
+				[[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
+				if([[dict objectForKey:@"CLUTName"] isEqualToString:@"16-bit CLUT"])
+				{
+					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
+					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[dict objectForKey:@"16bitClutColors"]];
+					
+					NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
+					[clut setObject:curves forKey:@"curves"];
+					[clut setObject:colors forKey:@"colors"];
+
+					[clutOpacityView setCurves:curves];
+					[clutOpacityView setPointColors:colors];
+					
+					[view setAdvancedCLUT:clut lowResolution:NO];
+				}
+				else
+				{
+					[self loadAdvancedCLUTOpacity:clutPopup];
+				}
+				has16bitCLUT = YES;
+			}
+			else
+				[self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
+		}
+		else
+			[self ApplyCLUTString:[dict objectForKey:@"CLUTName"]];
+	}
 	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyCLUTString:@"VR Muscles-Bones"];	//For VR mode only
 	
-	if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
-	else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
+	if(!has16bitCLUT)
+	{
+		if( [dict objectForKey:@"OpacityName"]) [self ApplyOpacityString:[dict objectForKey:@"OpacityName"]];
+		else if([view mode] == 0 && [[pixList[ 0] objectAtIndex:0] isRGB] == NO) [self ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];		//For VR mode only
+	}
 	
 	if( [view shading]) [shadingCheck setState: NSOnState];
 	else [shadingCheck setState: NSOffState];
@@ -865,6 +910,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	[shadingValues setStringValue: [NSString stringWithFormat:@"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", ambient, diffuse, specular, specularpower]];
+
+	if(!dict && [_renderingMode isEqualToString:@"VR"])
+	{
+		[self centerPresetsPanel];
+		[self showPresetsPanel];
+	}
 }
 
 - (void) applyScissor : (NSArray*) object
@@ -1011,7 +1062,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			free( undodata[ i]);
 		}
 	}
-	
+
 	[self save3DState];
 	
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -1060,7 +1111,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"Window3DClose" object: self userInfo: 0];
-	
+		
 	if( movieTimer)
 	{
         [movieTimer invalidate];
@@ -1802,6 +1853,15 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(roiGetManager:)];
     }
+	else if ([itemIdent isEqualToString: PresetsPanelToolbarItemIdentifier]) {
+	
+	[toolbarItem setLabel: NSLocalizedString(@"3D Presets",nil)];
+	[toolbarItem setPaletteLabel:NSLocalizedString( @"3D Presets",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Show 3D Presets Panel",nil)];
+	[toolbarItem setImage: [NSImage imageNamed: PresetsPanelToolbarItemIdentifier]];
+	[toolbarItem setTarget: self];
+	[toolbarItem setAction: @selector(load3DSettings:)];
+    }	
 	else {
 	// itemIdent refered to a toolbar item that is not provide or supported by us or cocoa 
 	// Returning nil will inform the toolbar this kind of item is not supported 
@@ -1820,6 +1880,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		return [NSArray arrayWithObjects:       ToolsToolbarItemIdentifier,
 												ModeToolbarItemIdentifier,
 												WLWWToolbarItemIdentifier,
+												PresetsPanelToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
 												CaptureToolbarItemIdentifier,
 												CroppingToolbarItemIdentifier,
@@ -1867,6 +1928,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
 											WLWWToolbarItemIdentifier,
+											PresetsPanelToolbarItemIdentifier,
 											LODToolbarItemIdentifier,
 											CaptureToolbarItemIdentifier,
 											CroppingToolbarItemIdentifier,
@@ -2585,6 +2647,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	return curCLUTMenu;
 }
 
+- (void)setCurCLUTMenu:(NSString*)clut;
+{
+	if(curCLUTMenu) [curCLUTMenu release];
+	curCLUTMenu = clut;
+	[curCLUTMenu retain];
+	[[[clutPopup menu] itemAtIndex:0] setTitle:curCLUTMenu];
+}
+
 - (NSDrawer*)clutOpacityDrawer;
 {
 	return clutOpacityDrawer;
@@ -2611,7 +2681,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[clutOpacityView updateView];
 	[clutOpacityView setCLUTtoVRView:NO];
 //	[clutOpacityView newCurve:self];
-	[[[clutPopup menu] itemAtIndex:0] setTitle:@"16-bit CLUT"];
+	//if(![view advancedCLUT])[[[clutPopup menu] itemAtIndex:0] setTitle:@"16-bit CLUT"];
+	if(![view advancedCLUT])[self setCurCLUTMenu:@"16-bit CLUT"];
 	[OpacityPopup setEnabled:NO];
 }
 
@@ -2630,7 +2701,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		curCLUTMenu = [[sender title] retain];
 		[clutOpacityView setCLUTtoVRView:NO];
 		[clutOpacityView updateView];
-		[[[clutPopup menu] itemAtIndex:0] setTitle:[sender title]];
+//		[[[clutPopup menu] itemAtIndex:0] setTitle:[sender title]];
+		[self setCurCLUTMenu:[sender title]];
 		[OpacityPopup setEnabled:NO];
 	}
 }
@@ -2741,8 +2813,16 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 		
 	if([[sender className] isEqualToString:@"NSMenuItem"])
 	{		
-		[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
-		[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+		if([[presetDictionary objectForKey:@"advancedCLUT"] boolValue])
+		{
+			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (16-bit)", [presetDictionary objectForKey:@"CLUT"]]];
+			[settingsOpacityTextField setStringValue:@"Opacity: (defined in the CLUT)"];
+		}
+		else
+		{
+			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (8-bit)", [presetDictionary objectForKey:@"CLUT"]]];
+			[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+		}
 		
 		if(![[presetDictionary objectForKey:@"useShading"] boolValue])
 			[settingsShadingsTextField setStringValue:@"Shadings: Off"];
@@ -2973,18 +3053,21 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void)load3DSettings;
 {
-	[self load3DSettings:presetsApplyButton];
+	[self load3DSettings:self];
 }
 
 - (IBAction)load3DSettings:(id)sender;
 {
-	if([[sender className] isEqualToString:@"NSMenuItem"])
+	if([[sender className] isEqualToString:@"NSMenuItem"] || [[sender className] isEqualToString:@"NSToolbarItem"])
 	{
-		presetPageNumber = 0;
-		[self updatePresetsGroupPopUpButton];
-		[presetsPanel orderFront:self];
+		[self showPresetsPanel];
 	}
 	else if([sender isEqualTo:presetsApplyButton])
+	{
+		[self load3DSettings];
+		[presetsPanel close];
+	}
+	else if([sender isEqualTo:self])
 	{
 		WaitRendering *www = [[WaitRendering alloc] init:@"Applying 3D Preset..."];
 		[www start];
@@ -2993,6 +3076,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 		// CLUT
 		NSString *clut = [preset objectForKey:@"CLUT"];
+
 		BOOL advancedCLUT = [[preset objectForKey:@"advancedCLUT"] boolValue];
 		if(!advancedCLUT)
 		{
@@ -3000,22 +3084,23 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			
 			// opacity
 			[self ApplyOpacityString:[preset objectForKey:@"opacity"]];
+			
+			// window level/width
+			float iwl = [[preset objectForKey:@"wl"] floatValue];
+			float iww = [[preset objectForKey:@"ww"] floatValue];
+			[self setWLWW:iwl :iww];
+
 		}
 		else
 		{
 			[clutOpacityView loadFromFileWithName:clut];
-			if(curCLUTMenu) [curCLUTMenu release];
-			curCLUTMenu = [clut retain];
 			[clutOpacityView setCLUTtoVRView:NO];
 			[clutOpacityView updateView];
+			if(curCLUTMenu) [curCLUTMenu release];
+			curCLUTMenu = [clut retain];
 			[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
 			[OpacityPopup setEnabled:NO];
 		}
-		
-		// window level/width
-		float iwl = [[preset objectForKey:@"wl"] floatValue];
-		float iww = [[preset objectForKey:@"ww"] floatValue];
-		[self setWLWW:iwl :iww];
 		
 		// shadings
 		if([[preset objectForKey:@"useShading"] boolValue])
@@ -3071,11 +3156,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 				int i;
 				for(i=0; i<[convolutionFilters count]; i++)
 				{
-					[self prepareUndo];
+//					[self prepareUndo];
 					[viewer2D ApplyConvString:[convolutionFilters objectAtIndex:i]];
 					[viewer2D applyConvolutionOnSource:self];
 					[appliedConvolutionFilters addObject:[convolutionFilters objectAtIndex:i]];
 				}
+				[self displayPresetsForSelectedGroup];
 			}
 		}
 		[www end];
@@ -3092,8 +3178,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void)displayPresetsForSelectedGroup;
 {
-	NSLog(@"displayPresetsForSelectedGroup");
-	
 	if([presetsGroupPopUpButton numberOfItems]<1) return;
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
@@ -3341,6 +3425,30 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	}
 }
 
+- (void)showPresetsPanel;
+{
+	presetPageNumber = 0;
+	[self updatePresetsGroupPopUpButton];
+	[presetsPanel orderFront:self];
+}
+
+- (void)centerPresetsPanel;
+{
+	NSRect viewer3DFrame = [[[self window] screen] frame];
+	NSRect presetsPanelFrame = [presetsPanel frame];
+	
+	NSPoint centerPoint;
+	centerPoint.x = viewer3DFrame.origin.x + viewer3DFrame.size.width * 0.5;
+	centerPoint.y = viewer3DFrame.origin.y + viewer3DFrame.size.height * 0.5;
+	NSPoint newPresetsPanelOrigin;
+	newPresetsPanelOrigin.x = centerPoint.x - presetsPanelFrame.size.width * 0.5;
+	newPresetsPanelOrigin.y = centerPoint.y - presetsPanelFrame.size.height * 0.5;
+	[presetsPanel setFrameOrigin:newPresetsPanelOrigin];
+	
+	presetsPanelUserDefinedOrigin = presetsPanelFrame.origin; // needed to restore the user defined position of the window;
+	needToMovePresetsPanelToUserDefinedPosition = YES;
+}
+
 #pragma mark info preset
 
 - (void)updatePresetInfoPanel;
@@ -3348,8 +3456,17 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 	
 	[infoNameTextField setStringValue:[NSString stringWithFormat:@"Name: %@", [presetDictionary objectForKey:@"name"]]];
-	[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@", [presetDictionary objectForKey:@"CLUT"]]];
-	[infoOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+		
+	if([[presetDictionary objectForKey:@"advancedCLUT"] boolValue])
+	{
+		[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (16-bit)", [presetDictionary objectForKey:@"CLUT"]]];
+		[infoOpacityTextField setStringValue:@"Opacity: (defined in the CLUT)"];
+	}
+	else
+	{
+		[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (8-bit)", [presetDictionary objectForKey:@"CLUT"]]];
+		[infoOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+	}
 	
 	if(![[presetDictionary objectForKey:@"useShading"] boolValue])
 		[infoShadingsTextField setStringValue:@"Shadings: Off"];
@@ -3379,7 +3496,14 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	}
 	[infoConvolutionFilterTextField setStringValue:convolutionFiltersString];
 	
-	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"r:%.0f%%, g:%.0f%%, b:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+			
+	[infoBackgroundColorView setColor:[NSColor colorWithDeviceRed:[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue] green:[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue] blue:[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue] alpha:1.0]];
+
+	[infoBackgroundColorView setNeedsDisplay:YES];
+
+//	if([presetsInfoPanel isVisible])
+//		[infoBackgroundColorView display];
 	
 	int proj = [[presetDictionary objectForKey:@"projection"] intValue];
 	NSString *projectionName;
@@ -3396,6 +3520,33 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 {
 	[self updatePresetInfoPanel];
 	[presetsInfoPanel orderFront:self];
+}
+
+#pragma mark NSWindow Notifications action
+
+- (void)windowWillCloseNotification:(NSNotification*)notification;
+{
+	if([[notification object] isEqualTo:presetsPanel])
+	{
+		[presetsInfoPanel close];
+		if(needToMovePresetsPanelToUserDefinedPosition)
+		{
+			NSRect frame = [presetsPanel frame];
+			frame.origin = presetsPanelUserDefinedOrigin;
+			[presetsPanel setFrame:frame display:NO];
+		}
+	}
+}
+
+- (void)windowWillMoveNotification:(NSNotification*)notification;
+{
+	if([[notification object] isEqualTo:presetsPanel])
+	{
+		if(needToMovePresetsPanelToUserDefinedPosition)
+		{
+			needToMovePresetsPanelToUserDefinedPosition = NO;
+		}
+	}
 }
 
 @end
