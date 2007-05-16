@@ -25,11 +25,13 @@
 @interface ITKSegmentation3D : NSObject {
 
 	ITK		*itkImage;
+	BOOL	_resampledData;
 	
 }
 
 + (NSArray*) fastGrowingRegionWithVolume: (float*) volume width:(long) w height:(long) h depth:(long) depth seedPoint:(long*) seed from:(float) from pixList:(NSArray*) pixList;
-- (id) initWith :(NSMutableArray*) pix :(float*) srcPtr  :(long) slice;
+- (id) initWith :(NSMutableArray*) pix :(float*) volumeData  :(long) slice;
+- (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData  slice:(long) slice resampleData:(BOOL)resampleData;
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 // extract lumen for Centerline calculation
 - (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds;

@@ -33,7 +33,8 @@
 
 #include "itkSignedDanielssonDistanceMapImageFilter.h"
 #include "itkApproximateSignedDistanceMapImageFilter.h"
-//#include "itkResampleImageFilter.h"
+//#include "itkSignedMaurerDistanceMapImageFilter.h"
+
 
 
 
@@ -454,17 +455,24 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 }
 */
 
-- (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice
+- (id) initWith :(NSMutableArray*) pix :(float*) volumeData :(long) slice {
+	return [self initWithPix :(NSMutableArray*) pix volume:(float*) volumeData  slice:(long) slice resampleData:NO];
+}
+
+- (id) initWithPix :(NSMutableArray*) pix volume:(float*) volumeData  slice:(long) slice resampleData:(BOOL)resampleData
 {
     if (self = [super init])
 	{
 		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
-		
+		_resampledData = resampleData;
 		NSLog(@"slice ID: %d", slice);
-		itkImage = [[ITK alloc] initWith: pix :volumeData :slice];
+		itkImage = [[ITK alloc] initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData];
+		//itkImage = [[ITK alloc] initWith: pix :volumeData :slice];
     }
     return self;
 }
+
+
 
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(int) roiType :(long) roiResolution :(NSString*) newname;
 {
@@ -928,12 +936,20 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 - (void)endoscopySegmentationForViewer:(ViewerController*) srcViewer seeds:(NSArray *)seeds {
 	// Setup 
+	//#define UseApproximateSignedDistanceMapImageFilter
 	DCMPix *curPix = [[srcViewer imageView] curDCM];
 	long minSize = 2;
 	long x,y,z;
 	long width = (int)[curPix pwidth];
 	long height = (int)[curPix pheight];
 	long depth = (int)[[srcViewer pixList] count];
+	
+	if (_resampledData) {
+		width /=2;
+		height/=2;
+		depth /=2;
+	}
+		
 	NSLog(@"width %d height %d depth: %d", width,height,depth);
 	long w = width - minSize;
 	long h = height - minSize;
@@ -954,23 +970,16 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	typedef signed short SSPixelType;
 	typedef itk::Image< SSPixelType, 3 > SSImageType;
 	// Type distance Filter
+	//typedef itk::SignedMaurerDistanceMapImageFilter< CharImageType, SSImageType  > DistanceMapType;
 	typedef itk::SignedDanielssonDistanceMapImageFilter< CharImageType, SSImageType  > DistanceMapType;
 	DistanceMapType::Pointer distanceMapFilter = DistanceMapType::New();
 	distanceMapFilter->InsideIsPositiveOn ();
 	
 	typedef itk::ApproximateSignedDistanceMapImageFilter< CharImageType, FloatImageType  > ApproximateDistanceMapType;
 	ApproximateDistanceMapType::Pointer approximateDistanceMapFilter = ApproximateDistanceMapType::New();
-	approximateDistanceMapFilter->SetInsideValue(255.0);
-	approximateDistanceMapFilter->SetOutsideValue(0.0);
-	/*
-	typedef itk::ResampleImageFilter< FloatPixelType, FloatPixelType  > ResampleFilterType;
-	ResampleFilterType::Pointer resampleFilter = ResampleFilterType::New();
-	FloatImageType::SizeType resampleSize; 
-	resampleSize[0] = width/2; // number of pixels along X 
-	resampleSize[1] = height/2; // number of pixels along Y 
-	resampleSize[2] = depth/2;
-	//resampleFilter->SetSize( resampleSize ); 
-	*/
+	approximateDistanceMapFilter->SetInsideValue(0.0);
+	approximateDistanceMapFilter->SetOutsideValue(255.0);
+
 
 	NSLog(@"start Endoscopy segmentation");
 
@@ -984,19 +993,25 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	thresholdFilter->SetLower(-2000.0);
 	thresholdFilter->SetUpper(-150.0);
 	thresholdFilter->SetReplaceValue(255.0);
-	//thresholdFilter->SetReplaceValue(0.0);
-	//thresholdFilter->SetDefaultPixelValue( 255.0 ); 
+
 
 	NSEnumerator *enumerator = [seeds objectEnumerator];
 	id seed;
 	//Add seed points. Can use more than 1
-	NSLog(@"add seeds");
+	
 	while (seed = [enumerator nextObject]) {
 		FloatImageType::IndexType  index;
-		index[0] = (long) [seed x];
-		index[1] = (long) [seed y];
-		index[2] = (long) [seed z];
-		NSLog(@"x = %d  y = %d  z = %d", index[0], index[1], index[2]);
+		if (_resampledData){
+			index[0] = (long) [seed x] / 2;
+			index[1] = (long) [seed y] / 2;
+			index[2] = (long) [seed z] / 2;
+		}
+		else{
+			index[0] = (long) [seed x];
+			index[1] = (long) [seed y];
+			index[2] = (long) [seed z];
+		}
+		NSLog(@"Seed x = %d  y = %d  z = %d", index[0], index[1], index[2]);
 		thresholdFilter->AddSeed(index);
 	}
 	
@@ -1014,8 +1029,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	try
 	{
-		distanceMapFilter->Update();
-		//approximateDistanceMapFilter->Update();	
+		//distanceMapFilter->Update();
+		#ifdef  UseApproximateSignedDistanceMapImageFilter
+			approximateDistanceMapFilter->Update();	
+		#else
+			distanceMapFilter->Update();
+		#endif
 	}
 	catch( itk::ExceptionObject & excep )
 	{
@@ -1034,8 +1053,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	*/
 	
 	NSLog(@"get max values");
-	signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
-	//float *buff = approximateDistanceMapFilter->GetOutput()->GetBufferPointer();
+	
+	#ifdef  UseApproximateSignedDistanceMapImageFilter
+		float *buff = approximateDistanceMapFilter->GetOutput()->GetBufferPointer();
+	#else
+		signed short *buff = distanceMapFilter->GetOutput()->GetBufferPointer();
+	#endif
 	[wait setString:@"Finding Distances"];
 
 	NSMutableSet *pointSet = [NSMutableSet set];
@@ -1054,9 +1077,13 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 			//NSLog(@"currentRow: %d", currentRow);
 			for (x = minSize; x < w; x++) {
 				long position = currentSlice + currentRow + x;
-				signed short distance = buff[position];
-				// inside is negative
-				//float distance = -buff[position];
+				
+				#ifdef  UseApproximateSignedDistanceMapImageFilter
+					// inside is negative
+					float distance = buff[position];
+				#else
+					signed short distance = buff[position];
+				#endif
 				int isDistanceMaximum = 0;
 				
 				if (distance > minSize) {
@@ -1074,8 +1101,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					if (isDistanceMaximum > 1) {
 						// add to set
 						//NSLog(@"add point");
-						[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
-						//[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithFloat:distance]]];
+						#ifdef  UseApproximateSignedDistanceMapImageFilter
+							[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithFloat:distance]]];
+						#else
+							[pointSet addObject:[OSIPoint3D pointWithX:(float)x  y:(float)y  z:(float)z value:[NSNumber numberWithShort:distance]]];
+						#endif	
 						//change maxDistance
 						if (distance > maxDistance) {
 							maxDistance = distance;
@@ -1095,7 +1125,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	 Decrease maxDistance unit we had enough points 
 	*/
 	NSMutableSet *nodeSet = [NSMutableSet set];
-	int maxCount = 100;
+	int maxCount = 50;
 	int count = 0;
 	float scalingFactor = 1.0;
 	//NSLog(@"Distance Point Count: %d", [pointSet count]);
@@ -1104,15 +1134,22 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		NSEnumerator *enumerator = [pointSet objectEnumerator];
 		OSIPoint3D *point;
 		NSMutableSet *deleteSet = [NSMutableSet set];
-		signed short distance;
-		//float distance;
+		#ifdef  UseApproximateSignedDistanceMapImageFilter
+			float distance;
+		#else
+			signed short distance;
+		#endif
+		//
 		while (point = [enumerator nextObject]){
 			//NSLog(@"current Point: %@", point);
 			float positionSlice = [point z];
 			float positionRow = [point y];
 			float positionIndex = [point x];
+			#ifdef  UseApproximateSignedDistanceMapImageFilter
+				distance = [[point value] floatValue];
+			#else
 			distance = [[point value] shortValue];
-			//distance = [[point value] floatValue];
+			#endif
 			
 			if (distance >= maxDistance) {
 				// Add node if is not within the range of previous nodes
@@ -1126,8 +1163,11 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					float nodeSlice = [node z];
 					float nodeRow = [node y];
 					float  nodeIndex = [node x];
-					//float nodeDistance = [[node value] floatValue];
-					float nodeDistance = [[node value] shortValue];
+					#ifdef  UseApproximateSignedDistanceMapImageFilter
+						float nodeDistance = [[node value] floatValue];
+					#else
+						float nodeDistance = [[node value] shortValue];
+					#endif
 					float internodeDistance = sqrt(pow(positionSlice - nodeSlice, 2) + pow(positionRow - nodeRow, 2) + pow(positionIndex - nodeIndex, 2));
 					//keep node away from other nodes
 					if (internodeDistance < nodeDistance * scalingFactor) {
@@ -1142,17 +1182,17 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 					
 				}
 				if (isNewNode) {
-					NSLog(@"add Node: %d %d %d", positionIndex, positionRow, positionSlice);
+					NSLog(@"add Node: %f %f %f", positionIndex, positionRow, positionSlice);
 					[nodeSet addObject: point];
 					NSMutableArray  *roiImageList;
 					NSArray *roiSeriesList = [srcViewer roiList];
-					DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: positionSlice];
+					DCMPix	*curPix = [[srcViewer pixList] objectAtIndex: positionSlice * 2];
 					ROI		*newROI;
-					newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( positionIndex, positionRow)] autorelease];
+					newROI = [[[ROI alloc] initWithType: t2DPoint :[curPix pixelSpacingX] :[curPix pixelSpacingY] :NSMakePoint( positionIndex * 2, positionRow * 2)] autorelease];
 					[newROI setName: @"Centerline"];
-					roiImageList = [roiSeriesList objectAtIndex: positionSlice];
+					roiImageList = [roiSeriesList objectAtIndex: positionSlice * 2];
 					[roiImageList addObject: newROI];	
-					[newROI mouseRoiDown:NSMakePoint((float)positionIndex,(float)positionRow) :positionSlice :1.0];
+					[newROI mouseRoiDown:NSMakePoint((float)positionIndex * 2,(float)positionRow * 2) :positionSlice * 2 :1.0];
 				}
 				
 				[deleteSet addObject:point];

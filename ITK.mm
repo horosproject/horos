@@ -109,23 +109,30 @@
 		if( slice == -1) {
 			data = volumeData;
 			// resample data decreases the size by 2 if all dimensions
+			NSLog(@"start data resample");
 			if (resampleData) {
 				int sliceSize = height * width;
 				float *newData = (float *) malloc(height * width * depth * sizeof(float) / 8);
 				int x, y , z;
+				int i = 0;
 				for (z = 1; z < depth; z += 2) {
 					for (y = 1; y < height; y += 2) {
 						for ( x = 1;  x < width; x += 2) {
 							// should we interpolate or just use the value. Try without interpolation first
 							int position = (z * sliceSize) + (y * width) + x;
-							*newData++  = data[position];
+							newData[i++]  = data[position];
 						}
 					}
 				}
+				NSLog(@"end resample data");
+				//free(newData);
 				data = newData;
 				voxelSpacingX *= 2;
 				voxelSpacingY *= 2;
 				voxelSpacingZ *= 2;
+				height /= 2;
+				width /= 2;
+				depth /= 2;
 			}
 		}
 		else
@@ -150,8 +157,8 @@
 		
 		[self setupImportFilterWithSize:size origin:origin spacing:spacing data:data filterWillOwnBuffer:resampleData];
 		
-		if (resampleData && slice == -1)
-			free(data);
+		//if (resampleData && slice == -1)
+		//	free(data);
 		
 		
     }
