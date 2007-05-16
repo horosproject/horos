@@ -453,6 +453,12 @@
 		A9044D3A0BBAA29200F36689 /* ROISelector.tiff in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tiff */; };
 		A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */ = {isa = PBXBuildFile; fileRef = A90A04950BF09BA000D00273 /* VRPresetPreview.h */; };
 		A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */ = {isa = PBXBuildFile; fileRef = A90A04960BF09BA000D00273 /* VRPresetPreview.mm */; };
+		A911155F0BFB354F001000B4 /* ColorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A911155D0BFB354F001000B4 /* ColorView.h */; };
+		A91115600BFB354F001000B4 /* ColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A911155E0BFB354F001000B4 /* ColorView.m */; };
+		A91115610BFB354F001000B4 /* ColorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A911155D0BFB354F001000B4 /* ColorView.h */; };
+		A91115620BFB354F001000B4 /* ColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A911155E0BFB354F001000B4 /* ColorView.m */; };
+		A91115630BFB354F001000B4 /* ColorView.h in Headers */ = {isa = PBXBuildFile; fileRef = A911155D0BFB354F001000B4 /* ColorView.h */; };
+		A91115640BFB354F001000B4 /* ColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = A911155E0BFB354F001000B4 /* ColorView.m */; };
 		A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9154D8A0BF34D4E00BAF408 /* SelectionView.h */; };
 		A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9154D8B0BF34D4E00BAF408 /* SelectionView.m */; };
 		A917CF1D0BF49314002F415E /* HUDLeftArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */; };
@@ -11174,6 +11180,8 @@
 		A9044D370BBAA29200F36689 /* ROISelector.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tiff; sourceTree = "<group>"; };
 		A90A04950BF09BA000D00273 /* VRPresetPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRPresetPreview.h; sourceTree = "<group>"; };
 		A90A04960BF09BA000D00273 /* VRPresetPreview.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VRPresetPreview.mm; sourceTree = "<group>"; };
+		A911155D0BFB354F001000B4 /* ColorView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ColorView.h; sourceTree = "<group>"; };
+		A911155E0BFB354F001000B4 /* ColorView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ColorView.m; sourceTree = "<group>"; };
 		A9154D8A0BF34D4E00BAF408 /* SelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionView.h; sourceTree = "<group>"; };
 		A9154D8B0BF34D4E00BAF408 /* SelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionView.m; sourceTree = "<group>"; };
 		A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDLeftArrowButtonNeutral.tif; sourceTree = "<group>"; };
@@ -15712,6 +15720,8 @@
 				A90A04960BF09BA000D00273 /* VRPresetPreview.mm */,
 				A9154D8A0BF34D4E00BAF408 /* SelectionView.h */,
 				A9154D8B0BF34D4E00BAF408 /* SelectionView.m */,
+				A911155D0BFB354F001000B4 /* ColorView.h */,
+				A911155E0BFB354F001000B4 /* ColorView.m */,
 			);
 			name = "VR/MIP 3D";
 			sourceTree = "<group>";
@@ -21296,6 +21306,7 @@
 				CE96D11C0BEE732A00C4E397 /* mdfdsman.h in Headers */,
 				A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */,
 				A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */,
+				A91115610BFB354F001000B4 /* ColorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23223,6 +23234,7 @@
 				CE96D0DF0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F50BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D1180BEE732A00C4E397 /* mdfdsman.h in Headers */,
+				A91115630BFB354F001000B4 /* ColorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25155,6 +25167,7 @@
 				CE96D0E10BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h in Headers */,
 				CE96D0F70BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D11A0BEE732A00C4E397 /* mdfdsman.h in Headers */,
+				A911155F0BFB354F001000B4 /* ColorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27857,6 +27870,7 @@
 				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
 				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
+				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28631,6 +28645,7 @@
 				CE96D0E00BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F40BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D1190BEE732A00C4E397 /* mdfdsman.cc in Sources */,
+				A91115640BFB354F001000B4 /* ColorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29970,6 +29985,7 @@
 				CE96D0E20BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
 				CE96D0F60BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D11B0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
+				A91115600BFB354F001000B4 /* ColorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
