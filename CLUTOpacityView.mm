@@ -570,8 +570,10 @@
 - (NSAffineTransform*)transform;
 {
 	NSAffineTransform* transform = [NSAffineTransform transform];
-	[transform translateXBy:-HUmin*[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:0.0];
-	[transform scaleXBy:[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:[self bounds].size.height];
+//	[transform translateXBy:-HUmin*[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:0.0];
+//	[transform scaleXBy:[self bounds].size.width/(HUmax-HUmin)*zoomFactor yBy:[self bounds].size.height];
+[transform translateXBy:-HUmin*drawingRect.size.width/(HUmax-HUmin)*zoomFactor+drawingRect.origin.x yBy:0.0];
+[transform scaleXBy:drawingRect.size.width/(HUmax-HUmin)*zoomFactor yBy:drawingRect.size.height];
 	NSAffineTransform* transform2 = [NSAffineTransform transform];
 	[transform2 translateXBy:-zoomFixedPoint*(zoomFactor) yBy:0.0];		// -1.0
 	[transform appendTransform:transform2];
@@ -585,9 +587,23 @@
 {
 	[backgroundColor set];
 	NSRectFill(rect);
+	
+	NSRect buttonsRect;
+	buttonsRect.origin = rect.origin;
+	buttonsRect.size.height = rect.size.height;
+	buttonsRect.size.width = 40.0;
+		
+	rect.origin.x += buttonsRect.size.width;
+	rect.size.width -= buttonsRect.size.width;
+	
+	drawingRect = rect;
+	
 	[self fillCurvesInRect:rect];
 	[self drawHistogramInRect:rect];
 	[self drawCurvesInRect:rect];
+	
+	[[NSColor grayColor] set];
+	NSRectFill(buttonsRect);
 }
 
 - (void)updateView;
@@ -709,7 +725,8 @@
 	NSPoint pt1 = [transform transformPoint:pt];
 	NSPoint labelPosition = NSMakePoint(pt1.x + pointDiameter, pt1.y + pointDiameter);
 				
-	NSRect rect = [self bounds];
+//	NSRect rect = [self bounds];
+NSRect rect = drawingRect;
 	NSRect labelBounds = [label boundingRectWithSize:rect.size options:NSStringDrawingUsesDeviceMetrics];
 	NSRect labelValueBounds = [labelValue boundingRectWithSize:rect.size options:NSStringDrawingUsesDeviceMetrics];
 	NSRect labelAlphaBounds = [labelAlpha boundingRectWithSize:rect.size options:NSStringDrawingUsesDeviceMetrics];
@@ -1259,7 +1276,8 @@
 
 - (IBAction)scroll:(id)sender;
 {
-	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
+//	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
+zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
 	[self updateView];
 }
 
@@ -1715,7 +1733,8 @@
 	NSMutableDictionary *attrsDictionary = [NSMutableDictionary dictionaryWithCapacity:3];
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:text attributes:attrsDictionary] autorelease];
-	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
+//	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
+NSRect labelBounds = [label boundingRectWithSize:drawingRect.size options:NSStringDrawingUsesDeviceMetrics];
 
 	NSSize imageSize = [cursorImage size];
 	float arrowWidth = imageSize.width;

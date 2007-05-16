@@ -44,6 +44,8 @@
 	BOOL didResizeVRVIew;
 	
 	float mousePositionX;
+	
+	NSRect drawingRect;
 }
 
 - (void)cleanup;
