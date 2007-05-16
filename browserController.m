@@ -2116,25 +2116,26 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[albumTable selectRow:0 byExtendingSelection:NO];
 	
-	NSString	*DBVersion, *DBFolderLocation;
+	NSString	*DBVersion, *DBFolderLocation, *curPath = [[self documentsDirectory] stringByDeletingLastPathComponent];
 	
 	DBVersion = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"]];
 	
 	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"]];
 	
 	if( DBFolderLocation == 0L)
-		DBFolderLocation = [self documentsDirectory];
+		DBFolderLocation = curPath;
 	
 	BOOL isDirectory;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: DBFolderLocation isDirectory: &isDirectory])
 	{
 		if( isDirectory == NO)
-			DBFolderLocation = [self documentsDirectory];
+			DBFolderLocation = curPath;
 	}
-	else DBFolderLocation = [self documentsDirectory];
+	else DBFolderLocation = curPath;
 	
-	if( [DBFolderLocation isEqualToString: [self documentsDirectory]] == NO)
+	if( [DBFolderLocation isEqualToString: curPath] == NO)
 	{
+		NSLog( @"**** - Update DATABASELOCATIONURL to :%@ from %@", DBFolderLocation, curPath);
 		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"DATABASELOCATION"];
 		[[NSUserDefaults standardUserDefaults] setObject: DBFolderLocation forKey: @"DATABASELOCATIONURL"];
 	}
