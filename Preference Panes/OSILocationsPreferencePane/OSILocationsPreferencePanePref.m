@@ -185,6 +185,11 @@
 	[self checkUniqueAETitle];
 }
 
+- (void) willUnselect
+{
+	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+}
+
 - (void)dealloc{
 	NSLog(@"dealloc OSILocationsPreferencePanePref");
 	
