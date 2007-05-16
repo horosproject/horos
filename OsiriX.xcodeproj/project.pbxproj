@@ -1708,6 +1708,12 @@
 		AB851A69063E0A02003DE553 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		AB851A6A063E0A02003DE553 /* QuickManual.pdf in Resources */ = {isa = PBXBuildFile; fileRef = AB851A68063E0A02003DE553 /* QuickManual.pdf */; };
 		AB853A510A76135D00B6C909 /* PapyJpeg12.c in Sources */ = {isa = PBXBuildFile; fileRef = CE16A6F80A7552E0001C27C4 /* PapyJpeg12.c */; };
+		AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
+		AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
+		AB85C65F0BFADA9500C4B52E /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
+		AB85C6600BFADA9500C4B52E /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
+		AB85C6610BFADA9500C4B52E /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
+		AB85C6620BFADA9500C4B52E /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
 		AB866039066E40970015E1C4 /* ToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AB866037066E40970015E1C4 /* ToolbarPanel.m */; };
 		AB86603A066E40970015E1C4 /* ToolbarPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = AB866038066E40970015E1C4 /* ToolbarPanel.h */; };
 		AB86603B066E40970015E1C4 /* ToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AB866037066E40970015E1C4 /* ToolbarPanel.m */; };
@@ -11490,6 +11496,8 @@
 		AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AYNSImageToDicom.m; sourceTree = "<group>"; };
 		AB80EBA90AF1F5B600E7E934 /* AYPrintManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AYPrintManager.h; path = AYDicomPrint/AYPrintManager.h; sourceTree = "<group>"; };
 		AB851A68063E0A02003DE553 /* QuickManual.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QuickManual.pdf; sourceTree = "<group>"; };
+		AB85C65B0BFADA9500C4B52E /* FileIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileIcon.tif; sourceTree = "<group>"; };
+		AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FolderIcon.tif; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
 		AB866038066E40970015E1C4 /* ToolbarPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolbarPanel.h; sourceTree = "<group>"; };
 		AB8CC212067E4146008D5ED7 /* PapyGlobalVar3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyGlobalVar3.h; path = Papyrus3/PapyGlobalVar3.h; sourceTree = "<group>"; };
@@ -15888,6 +15896,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				AB85C65B0BFADA9500C4B52E /* FileIcon.tif */,
+				AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */,
 				A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */,
 				A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */,
 				A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */,
@@ -25906,6 +25916,8 @@
 				A917CF1E0BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
 				A917CF1F0BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
 				A917CF200BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
+				AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */,
+				AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26298,6 +26310,8 @@
 				A917CF220BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
 				A917CF230BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
 				A917CF240BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
+				AB85C65F0BFADA9500C4B52E /* FileIcon.tif in Resources */,
+				AB85C6600BFADA9500C4B52E /* FolderIcon.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26690,6 +26704,8 @@
 				A917CF260BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */,
 				A917CF270BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
 				A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
+				AB85C6610BFADA9500C4B52E /* FileIcon.tif in Resources */,
+				AB85C6620BFADA9500C4B52E /* FolderIcon.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -491,7 +491,7 @@ NSString * documentsDirectory()
 	FSSpec	spec;
 	FSRef	ref;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"])
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"])
 	{
 		case 0:
 			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )

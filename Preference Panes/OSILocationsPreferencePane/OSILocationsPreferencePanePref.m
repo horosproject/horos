@@ -188,6 +188,7 @@
 - (void)dealloc{
 	NSLog(@"dealloc OSILocationsPreferencePanePref");
 	
+	
 	[serverList release];
 	[osirixServerList release];
 	[stringEncoding release];
@@ -528,15 +529,18 @@
 			{
 				[osirixServerList removeObjectAtIndex:[osirixServerTable selectedRow]];
 				[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:self];
 				
 				[osirixServerTable reloadData];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 			
 			if( [sender tag] == 2)
 			{
 				NSLog( [[localPaths selectedObjects] description]);
 				[localPaths removeObjects: [localPaths selectedObjects]];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 			}
 		}
 	}
@@ -598,6 +602,8 @@
 		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: [oPanel filename], @"Path", @"Database", @"Description", 0L];
 		
 		[localPaths addObject: dict];
+		
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 	}
 }
 @end

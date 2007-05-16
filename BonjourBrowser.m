@@ -101,6 +101,7 @@ static char *GetPrivateIP()
 		servicesDICOMListener = [[NSMutableArray array] retain];
 		
 		[self buildFixedIPList];
+		[self buildLocalPathsList];
 		
 		interfaceOsiriX = bC;
 		
@@ -686,11 +687,28 @@ static char *GetPrivateIP()
 	
 	for( i = 0; i < [osirixServersArray count]; i++)
 	{
-		[services addObject: [osirixServersArray objectAtIndex: i]];
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [osirixServersArray objectAtIndex: i]];
+		[dict setValue:@"fixedIP" forKey:@"type"];
+	
+		[services addObject: dict];
 		[servicesDICOMListener addObject: [NSDictionary dictionary]];
 	}
 }
 
+- (void) buildLocalPathsList
+{
+	int			i;
+	NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+	
+	for( i = 0; i < [dbArray count]; i++)
+	{
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
+		[dict setValue:@"localPath" forKey:@"type"];
+		
+		[services addObject: dict];
+		[servicesDICOMListener addObject: [NSDictionary dictionary]];
+	}
+}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -702,6 +720,8 @@ static char *GetPrivateIP()
 	[servicesDICOMListener removeObjectsInRange: range];
 	
 	[self buildFixedIPList];
+	[self buildLocalPathsList];
+	
 	[interfaceOsiriX displayBonjourServices];
 }
 

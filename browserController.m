@@ -6935,42 +6935,6 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-//- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-//	if ([aTableView isEqual:albumTable])
-//	{
-//		if( rowIndex > 0) return YES;
-//	}	
-//	else if ([aTableView isEqual:bonjourServicesList])
-//	{
-//		return NO;
-//	}
-//	return NO;
-//}
-
-- (void)tableView:(NSTableView *)aTableView
-    setObjectValue:anObject
-    forTableColumn:(NSTableColumn *)aTableColumn
-    row:(int)rowIndex
-{
-//	if ([aTableView isEqual:albumTable] && rowIndex >= 1)
-//	{
-//		NSArray			*albumsArray = [self albumArray];
-//		NSManagedObject	*object = [albumsArray objectAtIndex:rowIndex];
-//		
-//		if( [anObject isEqualToString: [[albumsArray objectAtIndex:rowIndex] valueForKey: @"name"]] == NO)
-//		{
-//			if( [[albumsArray valueForKey:@"name"] indexOfObject: anObject] == NSNotFound)
-//			{
-//				[[albumsArray objectAtIndex:rowIndex] setValue:anObject forKey:@"name"];
-//				[albumTable reloadData];
-//				[albumTable selectRow: [[self albumArray] indexOfObject:object] byExtendingSelection: NO];
-//				[self saveDatabase: currentDatabasePath];
-//			}
-//			else NSRunAlertPanel(@"Database", @"Albums names have to be unique.", nil, nil, nil);
-//		}
-//	}
-}
-
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
 	if ([aTableView isEqual:albumTable])
@@ -6987,7 +6951,6 @@ static BOOL needToRezoom;
 		{ 
 			if ([[[[self albumArray] objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
 			{
-				//[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"SmartAlbum.tiff"]];
 				if(isCurrentDatabaseBonjour)
 				{
 					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
@@ -6999,7 +6962,6 @@ static BOOL needToRezoom;
 			}
 			else
 			{
-				//[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"Album.tiff"]];
 				if(isCurrentDatabaseBonjour)
 				{
 					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tiff"]];
@@ -7032,7 +6994,26 @@ static BOOL needToRezoom;
 		}
 		else
 		{
-			[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
+			NSString	*type = [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"type"];
+			NSString	*path = [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Path"];
+			
+			if( [type isEqualToString:@"fixedIP"])
+				[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
+				
+			if( [type isEqualToString:@"localPath"])
+			{
+				BOOL isDirectory;
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+				{
+					if( isDirectory)
+						[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
+					else
+						[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FileIcon.tif"]];
+				}
+				else
+					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"away.tif"]];
+			}
 		}
 	}
 }
@@ -7291,6 +7272,7 @@ static BOOL needToRezoom;
 		BOOL accept = NO;
 		
 		if( isCurrentDatabaseBonjour && row == 0) accept = YES;
+		
 		if( row > 0 && [bonjourServicesList selectedRow] != row) accept = YES;
 		
 		if( accept)
@@ -12618,27 +12600,57 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( index >= 0)
 	{
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
-		[wait showWindow:self];
-		NSString	*path = [bonjourBrowser getDatabaseFile: index];
-		[wait close];
-		[wait release];
+		id object = [[bonjourBrowser services] objectAtIndex: index];
 		
-		if( path == 0L)
+		// LOCAL PATH - DATABASE
+		
+		if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 		{
-			NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
-			[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
+			BOOL isDirectory;
+				
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [object valueForKey: @"Path"] isDirectory: &isDirectory])
+			{
+				if( isDirectory)
+				{
+					[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
+					[[NSUserDefaults standardUserDefaults] setObject: [object valueForKey: @"Path"] forKey:@"DATABASELOCATIONURL"];
+					
+					[self openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
+				}
+				else
+				{
+					if( [currentDatabasePath isEqualToString: [object valueForKey: @"Path"]] == NO)
+					{
+						[self openDatabaseIn: [object valueForKey: @"Path"] Bonjour:NO];
+					}
+				}
+			}
+			else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
 		}
-		else
+		else	// NETWORK - DATABASE
 		{
-			NSLog(@"Bonjour DB = %@", path);
+			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
+			[wait showWindow:self];
+			NSString	*path = [bonjourBrowser getDatabaseFile: index];
+			[wait close];
+			[wait release];
 			
-			[segmentedAlbumButton setEnabled: NO];
-						
-			[self openDatabaseIn: path Bonjour: YES];
+			if( path == 0L)
+			{
+				NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot connect to the database.", nil), nil, nil, nil);
+				[bonjourServicesList selectRow: 0 byExtendingSelection:NO];
+			}
+			else
+			{
+				NSLog(@"Bonjour DB = %@", path);
+				
+				[segmentedAlbumButton setEnabled: NO];
+							
+				[self openDatabaseIn: path Bonjour: YES];
+			}
 		}
 	}
-	else
+	else // LOCAL DEFAULT DATABASE
 	{
 		NSString	*path = [documentsDirectory() stringByAppendingPathComponent:DATAFILEPATH];
 		

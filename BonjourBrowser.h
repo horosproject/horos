@@ -77,6 +77,7 @@
 
 - (int) BonjourServices;
 - (void) buildFixedIPList;
+- (void) buildLocalPathsList;
 
 - (NSDictionary*) getDICOMDestinationInfo:(int) index;
 @end

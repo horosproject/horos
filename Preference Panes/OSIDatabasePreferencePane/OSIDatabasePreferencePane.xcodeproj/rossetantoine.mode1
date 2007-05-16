@@ -185,7 +185,48 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>AB85C7750BFB022000C4B52E</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>PreferencePaneController.m</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>AB85C7760BFB022000C4B52E</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>PreferencePaneController.m</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>AB85C7790BFB022000C4B52E</string>
+						<key>history</key>
+						<array>
+							<string>AB85C7770BFB022000C4B52E</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1874, 1174}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>1163 234 1874 1215 0 0 2560 1578 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -266,8 +307,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>10</integer>
-									<integer>6</integer>
+									<integer>4</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -291,7 +332,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>157 759 1322 819 0 0 2560 1578 </string>
+						<string>-1713 291 1322 819 -1920 0 1920 1200 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -321,12 +362,12 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>ABD463A00BF3510E00C9C70C</string>
+										<string>AB85C7720BFB022000C4B52E</string>
 										<key>history</key>
 										<array>
 											<string>AB80AB580A19CF2500FED357</string>
 											<string>AB8B034E0B4022530019CA7D</string>
-											<string>ABE5AC340BA9868900B683DA</string>
+											<string>AB85C6A70BFADB3F00C4B52E</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -346,7 +387,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1114, 773}}</string>
 								<key>RubberWindowFrame</key>
-								<string>157 759 1322 819 0 0 2560 1578 </string>
+								<string>-1713 291 1322 819 -1920 0 1920 1200 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -366,7 +407,7 @@
 								<key>Frame</key>
 								<string>{{0, 778}, {1114, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>157 759 1322 819 0 0 2560 1578 </string>
+								<string>-1713 291 1322 819 -1920 0 1920 1200 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -390,9 +431,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>ABD463A10BF3510E00C9C70C</string>
+				<string>AB85C7730BFB022000C4B52E</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>ABD463A20BF3510E00C9C70C</string>
+				<string>AB85C7740BFB022000C4B52E</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -526,10 +567,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>AB4664CF09A335BC005A2766</string>
+		<string>AB85C7750BFB022000C4B52E</string>
 		<string>/Users/rossetantoine/osirix/osirix/Preference Panes/OSIDatabasePreferencePane/OSIDatabasePreferencePane.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>157 759 1322 819 0 0 2560 1578 </string>
+	<string>-1713 291 1322 819 -1920 0 1920 1200 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -606,7 +649,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>AB4664CF09A335BC005A2766</string>
-				<string>ABE5AC350BA9868900B683DA</string>
+				<string>AB85C77B0BFB022000C4B52E</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
