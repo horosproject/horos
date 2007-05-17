@@ -621,7 +621,7 @@
 		
 		BOOL isDirectory;
 		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: location isDirectory: isDirectory])
+		if( [[NSFileManager defaultManager] fileExistsAtPath: location isDirectory: &isDirectory])
 		{
 			NSDictionary	*dict;
 			
