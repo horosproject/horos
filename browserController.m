@@ -2122,6 +2122,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"]];
 	
+	if( isCurrentDatabaseBonjour)
+	{
+		DBFolderLocation = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+		
+		DBFolderLocation = [DBFolderLocation stringByDeletingLastPathComponent];
+	}
+	
 	if( DBFolderLocation == 0L)
 		DBFolderLocation = curPath;
 	
@@ -2140,13 +2147,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 		[[NSUserDefaults standardUserDefaults] setObject: DBFolderLocation forKey: @"DATABASELOCATIONURL"];
 	}
 	
-	[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"] atomically:YES];
+	if( isCurrentDatabaseBonjour == NO)
+		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"] atomically:YES];
 	
 	// Is this DB location available in the Source table? If not, add it
 	BOOL found = NO;
 	
 	// First, is it the default DB ?
-	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 	
 	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path])
 	{
@@ -12864,6 +12872,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSString *) documentsDirectory
 {
 	NSString	*dir = documentsDirectory();
+	
+	return dir;
+}
+
+- (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url
+{
+	NSString	*dir = documentsDirectoryFor( mode, url);
 	
 	return dir;
 }

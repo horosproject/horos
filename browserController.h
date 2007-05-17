@@ -406,7 +406,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 //DB plugins
 - (void)executeFilterDB:(id)sender;
 
-- (NSString *)documentsDirectory;
+- (NSString *) documentsDirectory;
+- (NSString *) documentsDirectoryFor:(int) mode url:(NSString*) url;
 - (NSString *) fixedDocumentsDirectory;
 - (char *) cfixedDocumentsDirectory;
 - (NSString *) setFixedDocumentsDirectory;

@@ -369,7 +369,7 @@ static char *GetPrivateIP()
 					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
 					pos += 4;
 					
-					NSData	*curData = [NSData dataWithBytesNoCopy:[data bytes] + pos length:size freeWhenDone:NO];		//[data subdataWithRange: NSMakeRange(pos, size)];
+					NSData	*curData = [NSData dataWithBytesNoCopy:(void *) ([data bytes] + pos) length:size freeWhenDone:NO];		//[data subdataWithRange: NSMakeRange(pos, size)];
 					pos += size;
 					
 					size = NSSwapBigIntToHost( *((int*)[[data subdataWithRange: NSMakeRange(pos, 4)] bytes]));
