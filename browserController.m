@@ -2258,7 +2258,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( DBVersion == 0L) 
 		DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
 	
-	NSLog(@"Opening DB: %@ Version: %@ DB Folder:", path, DBVersion, DBFolderLocation);
+	NSLog(@"Opening DB: %@ Version: %@ DB Folder: %@", path, DBVersion, DBFolderLocation);
 	
 	if( [DBVersion isEqualToString: DATABASEVERSION] == NO )
 	{
