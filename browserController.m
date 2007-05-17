@@ -2120,7 +2120,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	DBVersion = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"]];
 	
-	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"]];
+	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
 	
 	if( isCurrentDatabaseBonjour)
 	{
@@ -2148,7 +2148,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	if( isCurrentDatabaseBonjour == NO)
-		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_FOLDER_LOCATION"] atomically:YES];
+		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
 	
 	// Is this DB location available in the Source table? If not, add it
 	BOOL found = NO;
