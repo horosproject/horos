@@ -619,11 +619,19 @@
 			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
 		}
 		
-		NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
+		BOOL isDirectory;
 		
-		[localPaths addObject: dict];
-		
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+		if( [[NSFileManager defaultManager] fileExistsAtPath: location isDirectory: isDirectory])
+		{
+			NSDictionary	*dict;
+			
+			if( isDirectory) dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[location lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L];
+			else dict = [NSDictionary dictionaryWithObjectsAndKeys: location, @"Path", [[[location lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", 0L];
+			
+			[localPaths addObject: dict];
+			
+			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+		}
 	}
 }
 @end

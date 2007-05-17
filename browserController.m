@@ -2103,7 +2103,84 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[[self window] setRepresentedFilename: currentDatabasePath];
 }
 
--(void) loadDatabase:(NSString*) path
+- (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation
+{
+	// Is this DB location available in the Source table? If not, add it
+	BOOL found = NO;
+	int i = 0;
+	
+	// First, is it the default DB ?
+	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+	
+	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path])
+	{
+		found = YES;
+		i = 0;
+		NSLog( @"default DB");
+	}
+	
+	// Second, is it the selected DB ?
+	if( found == NO && [bonjourServicesList selectedRow] > 0)
+	{
+		NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: [bonjourServicesList selectedRow]-1] valueForKey:@"Path"];
+		
+		BOOL isDirectory;
+			
+		if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
+		{
+			if( isDirectory) cPath = [[cPath stringByAppendingPathComponent: @"OsiriX Data"] stringByAppendingPathComponent: @"Database.sql"];
+		}
+		
+		if( [cPath isEqualToString: path])
+		{
+			NSLog( @"selected DB");
+			
+			found = YES;
+			i = [bonjourServicesList selectedRow];
+		}
+	}
+	
+	// Third, is it available in the list ?
+	if( found == NO)
+	{
+		for( i = [bonjourBrowser BonjourServices]; i < [[bonjourBrowser services] count]; i++)
+		{
+			NSString	*type = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"type"];
+			
+			if( [type isEqualToString:@"localPath"])
+			{
+				NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"Path"];
+				BOOL isDirectory;
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
+				{
+					if( isDirectory)
+					{
+						if( [DBFolderLocation isEqualToString: cPath])
+						{
+							found = YES;
+							break;
+						}
+					}
+					else
+					{
+						if( [path isEqualToString: cPath])
+						{
+							found = YES;
+							break;
+						}
+					}
+				}
+			}
+		}
+		i++;
+	}
+
+	if( found)	return i;
+	else return -1;
+}
+
+- (void) loadDatabase:(NSString*) path
 {
 	long        i;
 	
@@ -2150,89 +2227,38 @@ static BOOL				DICOMDIRCDMODE = NO;
 	if( isCurrentDatabaseBonjour == NO)
 		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
 	
-	// Is this DB location available in the Source table? If not, add it
-	BOOL found = NO;
-	
-	// First, is it the default DB ?
-	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
-	
-	if( [[defaultPath stringByAppendingPathComponent:@"Database.sql"] isEqualToString: path])
+	i = [self findDBPath: path dbFolder: DBFolderLocation];
+	if( i == -1)
 	{
-		found = YES;
-		i = 0;
-		NSLog( @"default DB");
-	}
-	
-	// Second, is it the selected DB ?
-	if( found == NO)
-	{
+		NSLog( @"DB Not found -> we add it");
 		
-		NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: [bonjourServicesList selectedRow]-1] valueForKey:@"Path"];
+		NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 		
-		BOOL isDirectory;
-			
-		if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
+		if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
 		{
-			if( isDirectory) cPath = [[cPath stringByAppendingPathComponent: @"OsiriX Data"] stringByAppendingPathComponent: @"Database.sql"];
+			dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [[DBFolderLocation lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L]];			
+		}
+		else
+		{
+			dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: path, @"Path", [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", 0L]];
 		}
 		
-		if( [cPath isEqualToString: path])
-		{
-			NSLog( @"selected DB");
-			
-			found = YES;
-			i = [bonjourServicesList selectedRow];
-		}
+		[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+		
+		// Select it
+		i = [self findDBPath: path dbFolder: DBFolderLocation];
 	}
 	
-	// Third, is it available in the list ?
-	if( found == NO)
+	if( i != [bonjourServicesList selectedRow])
 	{
-	for( i = [bonjourBrowser BonjourServices]; i < [[bonjourBrowser services] count]; i++)
-		{
-			NSString	*type = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"type"];
-			
-			if( [type isEqualToString:@"localPath"])
-			{
-				NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"Path"];
-				BOOL isDirectory;
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
-				{
-					if( isDirectory)
-					{
-						if( [DBFolderLocation isEqualToString: cPath])
-						{
-							found = YES;
-							break;
-						}
-					}
-					else
-					{
-						if( [path isEqualToString: cPath])
-						{
-							found = YES;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	if( found)
-	{
-		NSLog( @"*** found : %d", i);
-	}
-	else
-	{
-		NSLog( @"*** not found");
+		[bonjourServicesList selectRow: i byExtendingSelection: NO];
 	}
 	
 	if( DBVersion == 0L) 
 		DBVersion = [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASEVERSION"];
 	
-	NSLog(@"Opening DB: %@ Version: %@", path, DBVersion);
+	NSLog(@"Opening DB: %@ Version: %@ DB Folder:", path, DBVersion, DBFolderLocation);
 	
 	if( [DBVersion isEqualToString: DATABASEVERSION] == NO )
 	{
