@@ -53,6 +53,7 @@
 
 + (NSString*) bonjour2local: (NSString*) str;
 + (NSString*) uniqueLocalPath:(NSManagedObject*) image;
+- (void) waitTheLock;
 
 - (id) initWithBrowserController: (BrowserController*) bC bonjourPublisher:(BonjourPublisher*) bPub;
 

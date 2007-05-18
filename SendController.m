@@ -53,7 +53,7 @@ Version 2.3
 
 extern NSMutableDictionary	*plugins, *pluginsDict;
 
-static int sendControllerObjects = 0;
+static volatile int sendControllerObjects = 0;
 
 @implementation SendController
 
@@ -89,6 +89,8 @@ static int sendControllerObjects = 0;
 - (id)initWithFiles:(NSArray *)files{
 	if (self = [super initWithWindowNibName:@"Send"])
 	{
+		NSLog( @"SendController initWithFiles");
+		
 		_abort = NO;
 		_files = [files copy];
 		int count = [_files  count];

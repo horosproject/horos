@@ -1823,6 +1823,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour
 {
+	[self waitForRunningProcesses];
+
 	if( isCurrentDatabaseBonjour == NO)
 		[self saveDatabase: currentDatabasePath];
 	
@@ -1870,6 +1872,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		if( [currentDatabasePath isEqualToString: [sPanel filename]] == NO && [sPanel filename] != 0L)
 		{
+			[self waitForRunningProcesses];
+			
 			[self saveDatabase: currentDatabasePath];
 			
 			[currentDatabasePath release];
@@ -7221,7 +7225,9 @@ static BOOL needToRezoom;
 - (void) sendDICOMFilesToOsiriXNode:(NSDictionary*) todo
 {
 	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-
+	
+	NSLog( @"sendDICOMFilesToOsiriXNode started");
+	
 	[autoroutingInProgress lock];
 	
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] 
@@ -7249,6 +7255,8 @@ static BOOL needToRezoom;
 	storeSCU = 0L;
 	
 	[autoroutingInProgress unlock];
+	
+	NSLog( @"sendDICOMFilesToOsiriXNode ended");
 	
 	[pool release];
 }
@@ -7372,19 +7380,16 @@ static BOOL needToRezoom;
 						[pool release];
 					}
 				}
+				else [[splash progress] setDoubleValue: [imagesArray count]];
 				
 				[splash close];
 				[splash release];
 			}
 			else if( [bonjourServicesList selectedRow] != row)	 // Copying From Local to distant
 			{
-				Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
 				long	x;
 				BOOL	OnlyDICOM = YES;
-				
-				[splash showWindow:self];
-				[[splash progress] setMaxValue:[imagesArray count]];
-				
+								
 				NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
 				
 				for( i = 0; i < [imagesArray count]; i++)
@@ -7402,16 +7407,26 @@ static BOOL needToRezoom;
 				
 				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
 				{
+					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
+					[wait showWindow:self];
+					
 					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
 					
 					[todo setObject: packArray forKey:@"Files"];
 					
-					for( i = 0; i < [imagesArray count]; i++) [splash incrementBy:1];
-					
 					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+					
+					Delay( 60, 0L);
+					
+					[wait close];
+					[wait release];
 				}
 				else
 				{
+					Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+					[splash showWindow:self];
+					[[splash progress] setMaxValue:[imagesArray count]];
+					
 					for( i = 0; i < [imagesArray count];)
 					{
 						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
@@ -7440,10 +7455,10 @@ static BOOL needToRezoom;
 						
 						[pool release];
 					}
+					
+					[splash close];
+					[splash release];
 				}
-								
-				[splash close];
-				[splash release];
 			}
 			else return NO;
 		}
@@ -8875,6 +8890,10 @@ static NSArray*	openSubSeriesArray = 0L;
 		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Starting 32-bit version", nil)];
 	}
 	
+	if( autoroutingQueueArray == 0L) autoroutingQueueArray = [[NSMutableArray array] retain];
+	if( autoroutingQueue == 0L) autoroutingQueue = [[NSLock alloc] init];
+	if( autoroutingInProgress == 0L) autoroutingInProgress = [[NSLock alloc] init];
+	
 	[wait showWindow:self];
 	
 	@try
@@ -9217,11 +9236,21 @@ static NSArray*	openSubSeriesArray = 0L;
 	[[self window] makeKeyAndOrderFront:self];
 }
 
-- (void)windowWillClose:(NSNotification *)notification
+- (void) waitForRunningProcesses
 {
-	newFilesInIncoming = NO;
-	[self setDockIcon];
+	[bonjourBrowser waitTheLock];
 
+	[checkIncomingLock lock];
+	[checkIncomingLock unlock];
+	
+	[checkBonjourUpToDateThreadLock lock];
+	[checkBonjourUpToDateThreadLock unlock];
+	
+	while( [SendController sendControllerObjects] > 0)
+	{
+		[NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.04]];
+	}
+	
 	[decompressThreadRunning lock];
 	[decompressThreadRunning unlock];
 	
@@ -9242,6 +9271,19 @@ static NSArray*	openSubSeriesArray = 0L;
 	[autoroutingInProgress unlock];
 
 	[self syncReportsIfNecessary: previousBonjourIndex];
+	
+	[checkIncomingLock lock];
+	[checkIncomingLock unlock];
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	NSLog( @"windowWillClose");
+
+	[self waitForRunningProcesses];
+
+	newFilesInIncoming = NO;
+	[self setDockIcon];
 	
 	[sourcesSplitView saveDefault:@"SPLITSOURCE"];
     [splitViewVert saveDefault:@"SPLITVERT2"];

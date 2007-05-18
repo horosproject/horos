@@ -219,7 +219,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSImage							*notFoundImage;
 	
-	BOOL							newFilesInIncoming;
+	volatile BOOL					newFilesInIncoming;
 	NSImage							*standardOsiriXIcon;
 	NSImage							*downloadingOsiriXIcon;
 	NSImage							*currentIcon;
@@ -361,6 +361,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) albumButtons: (id)sender;
 - (NSArray*) albumArray;
 - (void) refreshSmartAlbums;
+- (void) waitForRunningProcesses;
 
 - (NSArray*) imagesPathArray: (NSManagedObject*) item;
 

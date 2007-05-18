@@ -67,6 +67,12 @@ static char *GetPrivateIP()
 	}
 }
 
+- (void) waitTheLock
+{
+	[BonjourBrowser waitForLock: lock];
+	[lock unlock];
+}
+
 + (NSString*) bonjour2local: (NSString*) str
 {
 	if( str == 0L) return 0L;
