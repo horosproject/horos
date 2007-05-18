@@ -87,6 +87,7 @@
 	[addServerSharing setEnabled: val];
 	[verifyPing setEnabled: val];
 	[searchDICOMBonjourNodes setEnabled: val];
+	[addLocalPath setEnabled: val];
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view

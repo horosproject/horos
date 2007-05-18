@@ -2113,7 +2113,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 	{
-		if( isDirectory)
+		if( isDirectory == NO)
 		{
 			// It is a SQL file
 			
@@ -2154,7 +2154,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		if( isDirectory)
 		{
-			// It is a SQL file
+			// Default SQL file
 			NSString	*index = [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: index])
@@ -7401,63 +7401,82 @@ static BOOL needToRezoom;
 					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
-				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
-				
-				if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
-				
-				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
+				id object = [[bonjourBrowser services] objectAtIndex: row-1];
+		
+				// LOCAL PATH - DATABASE
+				if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 				{
-					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
-					[wait showWindow:self];
+					NSLog( @"-----------------------------");
+					NSLog( @"Destination is a 'local' path");
 					
-					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+					NSLog( @"DB Folder: %@", [self getDatabaseFolderFor: [object valueForKey: @"Path"]]);
+					NSLog( @"SQL File: %@", [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]]);
 					
-					[todo setObject: packArray forKey:@"Files"];
 					
-					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
 					
-					Delay( 60, 0L);
 					
-					[wait close];
-					[wait release];
+					NSLog( @"-----------------------------");
 				}
 				else
 				{
-					Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
-					[splash showWindow:self];
-					[[splash progress] setMaxValue:[imagesArray count]];
+					NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
 					
-					for( i = 0; i < [imagesArray count];)
+					if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
+					
+					if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
 					{
-						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
+						WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
+						[wait showWindow:self];
 						
-						for( x = 0; x < 10; x++)
+						NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+						
+						[todo setObject: packArray forKey:@"Files"];
+						
+						[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+						
+						Delay( 60, 0L);
+						
+						[wait close];
+						[wait release];
+					}
+					else
+					{
+						Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+						[splash showWindow:self];
+						[[splash progress] setMaxValue:[imagesArray count]];
+						
+						for( i = 0; i < [imagesArray count];)
 						{
-							if( i <  [imagesArray count])
-							{
-								NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+							NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+							NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 							
-								[packArray addObject: sendPath];
-								
-								if([[sendPath pathExtension] isEqualToString:@"zip"])
+							for( x = 0; x < 10; x++)
+							{
+								if( i <  [imagesArray count])
 								{
-									// it is a ZIP
-									NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-									[packArray addObject: xmlPath];
+									NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+								
+									[packArray addObject: sendPath];
+									
+									if([[sendPath pathExtension] isEqualToString:@"zip"])
+									{
+										// it is a ZIP
+										NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+										[packArray addObject: xmlPath];
+									}
+									[splash incrementBy:1];
 								}
-								[splash incrementBy:1];
+								i++;
 							}
-							i++;
+							
+							[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
+							
+							[pool release];
 						}
 						
-						[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
-						
-						[pool release];
+						[splash close];
+						[splash release];
 					}
-					
-					[splash close];
-					[splash release];
 				}
 			}
 			else return NO;
@@ -7486,14 +7505,17 @@ static BOOL needToRezoom;
 	{
 		BOOL accept = NO;
 		
-		if( isCurrentDatabaseBonjour && row == 0) accept = YES;
-		
-		if( row > 0 && [bonjourServicesList selectedRow] != row) accept = YES;
-		
-		if( accept)
+		if( row <= [[bonjourBrowser services] count])
 		{
-			[bonjourServicesList setDropRow:row dropOperation:NSTableViewDropOn];
-			return NSTableViewDropAbove;
+			if( isCurrentDatabaseBonjour && row == 0) accept = YES;
+			
+			if( row > 0 && [bonjourServicesList selectedRow] != row) accept = YES;
+			
+			if( accept)
+			{
+				[bonjourServicesList setDropRow:row dropOperation:NSTableViewDropOn];
+				return NSTableViewDropAbove;
+			}
 		}
 	}
 	

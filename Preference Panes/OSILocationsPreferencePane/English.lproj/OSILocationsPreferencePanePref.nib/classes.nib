@@ -34,6 +34,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_authView" = SFAuthorizationView; 
+                addLocalPath = NSButton; 
                 addServerDICOM = NSButton; 
                 addServerSharing = NSButton; 
                 characterSetPopup = NSPopUpButton; 

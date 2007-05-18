@@ -20,7 +20,7 @@
 {
 	IBOutlet NSPopUpButton			*characterSetPopup;
 	IBOutlet NSTableView			*serverTable, *osirixServerTable;
-	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing;
+	IBOutlet NSButton				*addServerDICOM, *addServerSharing, *searchDICOMBonjourNodes, *verifyPing, *addLocalPath;
 	NSMutableArray					*serverList, *osirixServerList;
 	NSString						*stringEncoding;
 	IBOutlet NSProgressIndicator	*progress;
