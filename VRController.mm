@@ -869,6 +869,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			if([[dict objectForKey:@"isAdvancedCLUT"] boolValue])
 			{
 				[[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
+				[self setCurCLUTMenu:[dict objectForKey:@"CLUTName"]];
 				if([[dict objectForKey:@"CLUTName"] isEqualToString:@"16-bit CLUT"])
 				{
 					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
@@ -2815,25 +2816,26 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	{		
 		if([[presetDictionary objectForKey:@"advancedCLUT"] boolValue])
 		{
-			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (16-bit)", [presetDictionary objectForKey:@"CLUT"]]];
-			[settingsOpacityTextField setStringValue:@"Opacity: (defined in the CLUT)"];
+			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"CLUT: %@ (16-bit)", nil), [presetDictionary objectForKey:@"CLUT"]]];
+			[settingsOpacityTextField setStringValue:NSLocalizedString(@"Opacity: (defined in the CLUT)", nil)];
 		}
 		else
 		{
-			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (8-bit)", [presetDictionary objectForKey:@"CLUT"]]];
-			[settingsOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+			[settingsCLUTTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"CLUT: %@ (8-bit)", nil), [presetDictionary objectForKey:@"CLUT"]]];
+			[settingsOpacityTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Opacity: %@", nil), [presetDictionary objectForKey:@"opacity"]]];
 		}
 		
 		if(![[presetDictionary objectForKey:@"useShading"] boolValue])
-			[settingsShadingsTextField setStringValue:@"Shadings: Off"];
+			[settingsShadingsTextField setStringValue:NSLocalizedString(@"Shadings: Off", nil)];
 		else
-			[settingsShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+			[settingsShadingsTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Shadings: %@", nil), [presetDictionary objectForKey:@"shading"]]];
 
-		[settingsWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
+		[settingsWLWWTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"WL: %.0f WW: %.0f", nil), [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
 		
-		NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@"Filter"];
+		NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@""];
 		NSArray *filters = [presetDictionary objectForKey:@"convolutionFilters"];
-		if([filters count]>1) [convolutionFiltersString appendString:@"s"];
+		if([filters count]>1) [convolutionFiltersString appendString:NSLocalizedString(@"Filters", nil)];
+		else [convolutionFiltersString appendString:NSLocalizedString(@"Filter", nil)];
 		[convolutionFiltersString appendString:@": "];
 		int i;
 		if([filters count]>0)
@@ -2848,21 +2850,21 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		}
 		else
 		{
-			[convolutionFiltersString appendString:@"(none)."];
+			[convolutionFiltersString appendString:NSLocalizedString(@"(none).", nil)];
 		}
 		[settingsConvolutionFilterTextField setStringValue:convolutionFiltersString];
 		
-		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+		[settingsBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Background: red:%.0f%%, green:%.0f%%, blue:%.0f%%", nil), 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
 		
 		int proj = [[presetDictionary objectForKey:@"projection"] intValue];
 		NSString *projectionName;
 		if(proj==0)
-			projectionName = @"Perspective";
+			projectionName = NSLocalizedString(@"Perspective", nil);
 		else if(proj==1)
-			projectionName = @"Parallel";
+			projectionName = NSLocalizedString(@"Parallel", nil);
 		else if(proj==2)
-			projectionName = @"Endoscopy";
-		[settingsProjectionTextField setStringValue:[NSString stringWithFormat:@"Projection: %@", projectionName]];
+			projectionName = NSLocalizedString(@"Endoscopy", nil);
+		[settingsProjectionTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Projection: %@", nil), projectionName]];
 		
 		[settingsGroupPopUpButton removeAllItems];
 		
@@ -2873,7 +2875,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		}
 		if([groups count]>0)
 			[[settingsGroupPopUpButton menu] addItem:[NSMenuItem separatorItem]];
-		[settingsGroupPopUpButton addItemWithTitle:@"New group"];
+		[settingsGroupPopUpButton addItemWithTitle:NSLocalizedString(@"New group", nil)];
 		
 		if([presetsPanel isVisible])
 			[settingsGroupPopUpButton selectItemWithTitle:[[presetsGroupPopUpButton selectedItem] title]];
@@ -2916,7 +2918,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (IBAction)show3DSettingsNewGroupTextField:(id)sender;
 {
-	if([[sender title] isEqualToString:@"New group"])
+	if([[sender title] isEqualToString:NSLocalizedString(@"New group", nil)])
 	{
 		[settingsNewGroupNameTextField setHidden:NO];
 		[settingsNewGroupNameLabelTextField setHidden:NO];
@@ -3041,7 +3043,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 	if([presetsGroupPopUpButton numberOfItems]<1)
 	{
-		[presetsGroupPopUpButton addItemWithTitle:@"No Groups"];
+		[presetsGroupPopUpButton addItemWithTitle:NSLocalizedString(@"No Groups", nil)];
 		[presetsGroupPopUpButton setEnabled:NO];
 	}
 	
@@ -3069,7 +3071,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	}
 	else if([sender isEqualTo:self])
 	{
-		WaitRendering *www = [[WaitRendering alloc] init:@"Applying 3D Preset..."];
+		WaitRendering *www = [[WaitRendering alloc] init:NSLocalizedString(@"Applying 3D Preset...", nil)];
 		[www start];
 
 		NSDictionary *preset = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
@@ -3181,7 +3183,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	if([presetsGroupPopUpButton numberOfItems]<1) return;
 	NSArray *settingsList = [self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]];
 	
-	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:@"Number of Presets: %d", [settingsList count]]];
+	[numberOfPresetInGroupTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Number of Presets: %d", nil), [settingsList count]]];
 	
 	int i, n;
 	
@@ -3456,29 +3458,30 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {	
 	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 	
-	[infoNameTextField setStringValue:[NSString stringWithFormat:@"Name: %@", [presetDictionary objectForKey:@"name"]]];
+	[infoNameTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Name: %@", nil), [presetDictionary objectForKey:@"name"]]];
 		
 	if([[presetDictionary objectForKey:@"advancedCLUT"] boolValue])
 	{
-		[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (16-bit)", [presetDictionary objectForKey:@"CLUT"]]];
-		[infoOpacityTextField setStringValue:@"Opacity: (defined in the CLUT)"];
+		[infoCLUTTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"CLUT: %@ (16-bit)", nil), [presetDictionary objectForKey:@"CLUT"]]];
+		[infoOpacityTextField setStringValue:NSLocalizedString(@"Opacity: (defined in the CLUT)", nil)];
 	}
 	else
 	{
-		[infoCLUTTextField setStringValue:[NSString stringWithFormat:@"CLUT: %@ (8-bit)", [presetDictionary objectForKey:@"CLUT"]]];
-		[infoOpacityTextField setStringValue:[NSString stringWithFormat:@"Opacity: %@", [presetDictionary objectForKey:@"opacity"]]];
+		[infoCLUTTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"CLUT: %@ (8-bit)", nil), [presetDictionary objectForKey:@"CLUT"]]];
+		[infoOpacityTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Opacity: %@", nil), [presetDictionary objectForKey:@"opacity"]]];
 	}
 	
 	if(![[presetDictionary objectForKey:@"useShading"] boolValue])
-		[infoShadingsTextField setStringValue:@"Shadings: Off"];
+		[infoShadingsTextField setStringValue:NSLocalizedString(@"Shadings: Off", nil)];
 	else
-		[infoShadingsTextField setStringValue:[NSString stringWithFormat:@"Shadings: %@", [presetDictionary objectForKey:@"shading"]]];
+		[infoShadingsTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Shadings: %@", nil), [presetDictionary objectForKey:@"shading"]]];
 
-	[infoWLWWTextField setStringValue:[NSString stringWithFormat:@"WL: %.0f WW: %.0f", [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
+	[infoWLWWTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"WL: %.0f WW: %.0f", nil), [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
 	
-	NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@"Filter"];
+	NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@""];
 	NSArray *filters = [presetDictionary objectForKey:@"convolutionFilters"];
-	if([filters count]>1) [convolutionFiltersString appendString:@"s"];
+	if([filters count]>1) [convolutionFiltersString appendString:NSLocalizedString(@"Filters", nil)];
+	else [convolutionFiltersString appendString:NSLocalizedString(@"Filter", nil)];
 	[convolutionFiltersString appendString:@": "];
 	int i;
 	if([filters count]>0)
@@ -3493,11 +3496,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	}
 	else
 	{
-		[convolutionFiltersString appendString:@"(none)."];
+		[convolutionFiltersString appendString:NSLocalizedString(@"(none).", nil)];
 	}
 	[infoConvolutionFilterTextField setStringValue:convolutionFiltersString];
 	
-	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:@"r:%.0f%%, g:%.0f%%, b:%.0f%%", 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
+	[infoBackgroundColorTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"r:%.0f%%, g:%.0f%%, b:%.0f%%", nil), 100*[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue], 100*[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue]]];
 			
 	[infoBackgroundColorView setColor:[NSColor colorWithDeviceRed:[[presetDictionary objectForKey:@"backgroundColorRedComponent"] floatValue] green:[[presetDictionary objectForKey:@"backgroundColorGreenComponent"] floatValue] blue:[[presetDictionary objectForKey:@"backgroundColorBlueComponent"] floatValue] alpha:1.0]];
 
@@ -3509,12 +3512,12 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	int proj = [[presetDictionary objectForKey:@"projection"] intValue];
 	NSString *projectionName;
 	if(proj==0)
-		projectionName = @"Perspective";
+		projectionName = NSLocalizedString(@"Perspective", nil);
 	else if(proj==1)
-		projectionName = @"Parallel";
+		projectionName = NSLocalizedString(@"Parallel", nil);
 	else if(proj==2)
-		projectionName = @"Endoscopy";
-	[infoProjectionTextField setStringValue:[NSString stringWithFormat:@"Projection: %@", projectionName]];
+		projectionName = NSLocalizedString(@"Endoscopy", nil);
+	[infoProjectionTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Projection: %@", nil), projectionName]];
 }
 
 - (IBAction)showPresetInfoPanel:(id)sender;
