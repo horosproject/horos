@@ -4013,16 +4013,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 
 	int i, j, k;
 	NSMutableArray *points;
-	
-	//JJCP 
-	if([(ROI*)[curRoiList objectAtIndex:i] type] == tAxis)
-		return;
-	//JJCP
-	if([(ROI*)[curRoiList objectAtIndex:i] type] == tDynAngle)
-		return;
-	
+		
 	for(i=0; i<[curRoiList count]; i++)
-	{
+	{	
+		//JJCP 
+		if([(ROI*)[curRoiList objectAtIndex:i] type] == tAxis)
+			return;
+		//JJCP
+		if([(ROI*)[curRoiList objectAtIndex:i] type] == tDynAngle)
+			return;
+		
 		points = [[curRoiList objectAtIndex:i] points];
 		int n = 0;
 		for(j=0; j<[points count]; j++)
