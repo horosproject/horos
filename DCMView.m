@@ -4016,74 +4016,70 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 		
 	for(i=0; i<[curRoiList count]; i++)
 	{	
-		//JJCP 
-		if([(ROI*)[curRoiList objectAtIndex:i] type] == tAxis)
-			return;
-		//JJCP
-		if([(ROI*)[curRoiList objectAtIndex:i] type] == tDynAngle)
-			return;
-		
-		points = [[curRoiList objectAtIndex:i] points];
-		int n = 0;
-		for(j=0; j<[points count]; j++)
-		{
-			pt = [[points objectAtIndex:j] point];
-			dx = (pt.x-tempPt.x);
-			dx2 = dx * dx;
-			dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-			dy2 = dy * dy;
-			d = sqrt(dx2 + dy2);
-			
-			if(d<repulsorRadius)
+		if([(ROI*)[curRoiList objectAtIndex:i] type] != tAxis && [(ROI*)[curRoiList objectAtIndex:i] type] != tDynAngle) //JJCP
+		{		
+			points = [[curRoiList objectAtIndex:i] points];
+			int n = 0;
+			for(j=0; j<[points count]; j++)
 			{
-				if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
-					[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
-				else
-					[[points objectAtIndex:j] move:dx/d*repulsorRadius-dx :dy/d*repulsorRadius-dy];
+				pt = [[points objectAtIndex:j] point];
+				dx = (pt.x-tempPt.x);
+				dx2 = dx * dx;
+				dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+				dy2 = dy * dy;
+				d = sqrt(dx2 + dy2);
 				
-				pt.x += dx/d*repulsorRadius-dx;
-				pt.y += dy/d*repulsorRadius-dy;
-				
-				int delta;
-				for(delta=-1; delta<=1; delta++)
+				if(d<repulsorRadius)
 				{
-					k = j+delta;
-					if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
-					{
-						if(k==-1)
-							k = [points count]-1;
-						else if(k==[points count])
-							k = 0;
-					}
+					if([(ROI*)[curRoiList objectAtIndex:i] type] == t2DPoint)
+						[[curRoiList objectAtIndex:i] setROIRect:NSOffsetRect([[curRoiList objectAtIndex:i] rect],dx/d*repulsorRadius-dx,dy/d*repulsorRadius-dy)];
+					else
+						[[points objectAtIndex:j] move:dx/d*repulsorRadius-dx :dy/d*repulsorRadius-dy];
 					
-					if(k!=j && k>=0 && k<[points count])
+					pt.x += dx/d*repulsorRadius-dx;
+					pt.y += dy/d*repulsorRadius-dy;
+					
+					int delta;
+					for(delta=-1; delta<=1; delta++)
 					{
-						pt2 = [[points objectAtIndex:k] point];
-						dx = (pt2.x-pt.x);
-						dx2 = dx * dx;
-						dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
-						dy2 = dy * dy;
-						d = sqrt(dx2 + dy2);
-						
-						if(d<=3 && d<repulsorRadius)
+						k = j+delta;
+						if([(ROI*)[curRoiList objectAtIndex:i] type] == tCPolygon || [(ROI*)[curRoiList objectAtIndex:i] type] == tPencil)
 						{
-							[points removeObjectAtIndex:k];
-							if(delta==-1) j--;
+							if(k==-1)
+								k = [points count]-1;
+							else if(k==[points count])
+								k = 0;
 						}
-						else if((d>=20 || d>=repulsorRadius) && n<50)
+						
+						if(k!=j && k>=0 && k<[points count])
 						{
-							NSPoint pt3;
-							pt3.x = (pt2.x+pt.x)/2.0;
-							pt3.y = (pt2.y+pt.y)/2.0;
-							MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
-							int index = (delta==-1)? j : j+1 ;
-							if(delta==-1) j++;
-							[points insertObject:p atIndex:index];
-							n++;
+							pt2 = [[points objectAtIndex:k] point];
+							dx = (pt2.x-pt.x);
+							dx2 = dx * dx;
+							dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+							dy2 = dy * dy;
+							d = sqrt(dx2 + dy2);
+							
+							if(d<=3 && d<repulsorRadius)
+							{
+								[points removeObjectAtIndex:k];
+								if(delta==-1) j--;
+							}
+							else if((d>=20 || d>=repulsorRadius) && n<50)
+							{
+								NSPoint pt3;
+								pt3.x = (pt2.x+pt.x)/2.0;
+								pt3.y = (pt2.y+pt.y)/2.0;
+								MyPoint *p = [[MyPoint alloc] initWithPoint:pt3];
+								int index = (delta==-1)? j : j+1 ;
+								if(delta==-1) j++;
+								[points insertObject:p atIndex:index];
+								n++;
+							}
 						}
 					}
+					[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 				}
-				[[NSNotificationCenter defaultCenter] postNotificationName:@"roiChange" object:[curRoiList objectAtIndex:i] userInfo: 0L];
 			}
 		}
 	}
