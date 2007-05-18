@@ -210,6 +210,7 @@
 	[line fill];
 	c = [histogramColor colorWithAlphaComponent:histogramOpacity*2.0];
 	[c set];
+	[line setLineWidth:1.0];
 	[line stroke];
 }
 
