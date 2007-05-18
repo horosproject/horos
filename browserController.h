@@ -292,6 +292,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (void) setupToolbar;
 
+- (NSString*) getDatabaseFolderFor: (NSString*) path;
+- (NSString*) getDatabaseIndexFileFor: (NSString*) path;
+
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;

@@ -2103,6 +2103,74 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[[self window] setRepresentedFilename: currentDatabasePath];
 }
 
+- (NSString*) getDatabaseFolderFor: (NSString*) path
+{
+	BOOL isDirectory;
+			
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if( isDirectory)
+		{
+			// It is a SQL file
+			
+			if( [[path pathExtension] isEqualToString:@"sql"] == NO) NSLog( @"**** No SQL extension ???");
+			
+			NSString	*db = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
+			
+			if( db == 0L)
+			{
+				NSString	*p = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DATABASE"];
+				
+				if( [[NSFileManager defaultManager] fileExistsAtPath: p])
+				{
+					db = [[path stringByDeletingLastPathComponent] stringByDeletingLastPathComponent]; 
+				}
+				else
+				{
+					db = [[self documentsDirectory] stringByDeletingLastPathComponent];
+				}
+			}
+			
+			return db;
+		}
+		else
+		{
+			return path;
+		}
+	}
+	
+	return 0L;
+}
+
+- (NSString*) getDatabaseIndexFileFor: (NSString*) path
+{
+	BOOL isDirectory;
+			
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if( isDirectory)
+		{
+			// It is a SQL file
+			NSString	*index = [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
+			
+			if( [[NSFileManager defaultManager] fileExistsAtPath: index])
+			{
+				[path writeToFile: [[path stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
+				
+				return index;
+			}
+			
+			return 0L;
+		}
+		else
+		{
+			return path;
+		}
+	}
+	
+	return 0L;
+}
+
 - (int) findDBPath:(NSString*) path dbFolder:(NSString*) DBFolderLocation
 {
 	// Is this DB location available in the Source table? If not, add it
