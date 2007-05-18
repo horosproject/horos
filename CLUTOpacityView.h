@@ -45,7 +45,11 @@
 	
 	float mousePositionX;
 	
-	NSRect drawingRect;
+	NSRect drawingRect, sideBarRect;
+	NSRect addCurveButtonRect, removeSelectedCurveButtonRect, saveButtonRect;
+	BOOL isAddCurveButtonHighlighted, isRemoveSelectedCurveButtonHighlighted, isSaveButtonHighlighted;
+	
+	NSPoint mouseDraggingStartPoint;
 }
 
 - (void)cleanup;

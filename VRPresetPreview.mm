@@ -468,7 +468,7 @@
 
 //	_cocoaRenderWindow->SetLineSmoothing( true);
 //	_cocoaRenderWindow->SetPolygonSmoothing(true);
-    aRenderer->AddVolume( volume);
+    //aRenderer->AddVolume( volume);
 //	aRenderer->AddActor(outlineRect);
 
 	aRenderer->SetActiveCamera(aCamera);
@@ -559,8 +559,14 @@
 
 - (void)setIsEmpty:(BOOL)empty;
 {
+	if( isEmpty != empty)
+	{
 	isEmpty = empty;
+	
+	if( isEmpty)  aRenderer->RemoveVolume( volume);
+	else	 aRenderer->AddVolume( volume);
 	[self setNeedsDisplay:YES];
+	}
 }
 
 - (BOOL)isEmpty;
@@ -572,12 +578,19 @@
 {
 	if(isEmpty)
 	{
-		// trick to "hide" content of the vr view
-		if(![self shading])
-			[self activateShading:YES];
-		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];
+		[[NSColor blackColor] set];
+		NSRectFill(aRect);
 		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
 	}
+
+//	if(isEmpty)
+//	{
+//		// trick to "hide" content of the vr view
+//		if(![self shading])
+//			[self activateShading:YES];
+//		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];
+//		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+//	}
 	
 	[super drawRect:aRect];
 }

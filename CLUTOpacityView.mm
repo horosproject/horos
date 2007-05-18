@@ -588,13 +588,12 @@
 	[backgroundColor set];
 	NSRectFill(rect);
 	
-	NSRect buttonsRect;
-	buttonsRect.origin = rect.origin;
-	buttonsRect.size.height = rect.size.height;
-	buttonsRect.size.width = 40.0;
+	sideBarRect.origin = rect.origin;
+	sideBarRect.size.height = rect.size.height;
+	sideBarRect.size.width = 30.0;
 		
-	rect.origin.x += buttonsRect.size.width;
-	rect.size.width -= buttonsRect.size.width;
+	rect.origin.x += sideBarRect.size.width;
+	rect.size.width -= sideBarRect.size.width;
 	
 	drawingRect = rect;
 	
@@ -602,8 +601,7 @@
 	[self drawHistogramInRect:rect];
 	[self drawCurvesInRect:rect];
 	
-	[[NSColor grayColor] set];
-	NSRectFill(buttonsRect);
+	[self drawSideBar:sideBarRect];
 }
 
 - (void)updateView;
@@ -894,15 +892,30 @@ NSRect rect = drawingRect;
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-	[super mouseDown:theEvent];
 	NSPoint mousePositionInWindow = [theEvent locationInWindow];
 	NSPoint mousePositionInView = [self convertPoint:mousePositionInWindow fromView:nil];
+	
+	mouseDraggingStartPoint = mousePositionInView;
 	
 	nothingChanged = YES;
 	clutChanged = NO;
 	[undoManager beginUndoGrouping];
 	
 	vrViewLowResolution = NO;
+
+	[super mouseDown:theEvent];
+
+//	if([self clickInMenuButtonAtPosition:mousePositionInView])
+//	{	
+//		[NSMenu popUpContextMenu:contextualMenu withEvent:theEvent forView:self];
+//		return;
+//	}
+
+	if([self clickInAddCurveButtonAtPosition:mousePositionInView] || [self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView] || [self clickInSaveButtonAtPosition:mousePositionInView])
+	{
+		[self setNeedsDisplay:YES];
+		return;
+	}
 	
 	if(![self selectPointAtPosition:mousePositionInView])
 	{
@@ -934,6 +947,26 @@ NSRect rect = drawingRect;
 - (void)mouseUp:(NSEvent *)theEvent;
 {
 	[undoManager endUndoGrouping];
+		
+	if(isAddCurveButtonHighlighted)
+	{
+		[self newCurve];
+		isAddCurveButtonHighlighted = NO;
+		[self setNeedsDisplay:YES];
+	}
+
+	if(isRemoveSelectedCurveButtonHighlighted)
+	{
+		if([self selectedCurveIndex]>=0)
+			[self deleteCurveAtIndex:[self selectedCurveIndex]];
+		isRemoveSelectedCurveButtonHighlighted = NO;
+		[self setNeedsDisplay:YES];
+	}
+	
+	if(isSaveButtonHighlighted)
+	{
+		[self chooseNameAndSave:nil];
+	}
 	
 	if([theEvent clickCount] == 2 || nothingChanged)
 	{
@@ -962,6 +995,36 @@ NSRect rect = drawingRect;
 	[super mouseDragged:theEvent];
 	
 	[[NSCursor arrowCursor] set];
+	
+	NSPoint mousePositionInWindow = [theEvent locationInWindow];
+	NSPoint mousePositionInView = [self convertPoint:mousePositionInWindow fromView:nil];
+
+	if([self clickInAddCurveButtonAtPosition:mouseDraggingStartPoint])
+	{
+		[self clickInAddCurveButtonAtPosition:mousePositionInView];
+		[self setNeedsDisplay:YES];
+		return;
+	}
+	
+	if([self clickInRemoveSelectedCurveButtonAtPosition:mouseDraggingStartPoint])
+	{
+		[self clickInRemoveSelectedCurveButtonAtPosition:mousePositionInView];
+		[self setNeedsDisplay:YES];
+		return;
+	}
+
+	if([self clickInSaveButtonAtPosition:mouseDraggingStartPoint])
+	{
+		[self clickInSaveButtonAtPosition:mousePositionInView];
+		[self setNeedsDisplay:YES];
+		return;
+	}
+	
+	if([self clickInSideBarAtPosition:mouseDraggingStartPoint])
+	{
+		return;
+	}	
+	
 	if([self isAnyPointSelected])
 	{
 		vrViewLowResolution = YES;
@@ -1132,13 +1195,15 @@ NSRect rect = drawingRect;
 
 	if( ![[self window] isMainWindow]) return;
 	
-	if( NSPointInRect( [NSEvent mouseLocation], [[self window] frame]) == NO)
+	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+	
+	if( !NSPointInRect([NSEvent mouseLocation], [[self window] frame]) || [self clickInSideBarAtPosition:mousePositionInView])
 	{
 		[[NSCursor arrowCursor] set];
+		mousePositionX = - 9999.0;
+		[self updateView];
 		return;
 	}
-	
-	NSPoint mousePositionInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
 	NSAffineTransform* transformView2Coordinate = [self transform];
 	[transformView2Coordinate invert];
@@ -1292,6 +1357,182 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	if([curves count]==0)
 	{
 		[self newCurve];
+	}
+}
+
+#pragma mark Custom GUI
+
+- (void)drawSideBar:(NSRect)rect;
+{
+	[backgroundColor set];
+	NSRectFill(rect);
+	
+	float leftMargin = 5.0;
+	float topMargin = 5.0;
+	float buttonsMargin = 5.0;
+	float buttonSize = 15.0;
+	
+	addCurveButtonRect = NSMakeRect(rect.origin.x+leftMargin, rect.origin.y+rect.size.height-2.0*topMargin-buttonSize, buttonSize, buttonSize);
+	removeSelectedCurveButtonRect = NSMakeRect(addCurveButtonRect.origin.x, addCurveButtonRect.origin.y-addCurveButtonRect.size.height-buttonsMargin, buttonSize, buttonSize);
+	
+	saveButtonRect = NSMakeRect(addCurveButtonRect.origin.x, 2.0*buttonsMargin, buttonSize, buttonSize);
+	
+	[self drawAddCurveButton:addCurveButtonRect];
+	[self drawRemoveSelectedCurveButton:removeSelectedCurveButtonRect];
+	[self drawSaveButton:saveButtonRect];
+}
+
+//- (void)drawMenuButton:(NSRect)rect;
+//{
+//	NSBezierPath *path = [NSBezierPath bezierPathWithRect:rect];
+//	[path setLineWidth:1.5];
+//	[backgroundColor set];
+//	[path fill];
+//	[[NSColor whiteColor] set];
+//	[path stroke];
+//	
+//	NSBezierPath *line = [NSBezierPath bezierPath];
+//	[line setLineWidth:1.5];
+//	NSPoint p1, p2;
+//	float lineLength = 11;
+//	p1 = NSMakePoint(rect.origin.x+2, rect.origin.y+4);
+//	p2 = NSMakePoint(p1.x+lineLength, p1.y);
+//	[line moveToPoint:p1];
+//	[line lineToPoint:p2];
+//	
+//	p1 = NSMakePoint(p1.x, p1.y+4);
+//	p2 = NSMakePoint(p1.x+lineLength, p1.y);
+//	[line moveToPoint:p1];
+//	[line lineToPoint:p2];
+//	
+//	p1 = NSMakePoint(p1.x, p1.y+4);
+//	p2 = NSMakePoint(p1.x+lineLength, p1.y);
+//	[line moveToPoint:p1];
+//	[line lineToPoint:p2];
+//	
+//	[line stroke];
+//}
+
+- (void)drawAddCurveButton:(NSRect)rect;
+{
+	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
+	[path setLineWidth:1.5];
+	if(isAddCurveButtonHighlighted)
+		[[NSColor darkGrayColor] set];
+	else
+		[backgroundColor set];
+	[path fill];
+	[[NSColor whiteColor] set];
+	[path stroke];
+	
+	NSBezierPath *line = [NSBezierPath bezierPath];
+	[line setLineWidth:2.0];
+	NSPoint p1, p2;
+	float lineLength = 11;
+	p1 = NSMakePoint(rect.origin.x+2, rect.origin.y+rect.size.height *0.5);
+	p2 = NSMakePoint(p1.x+lineLength, p1.y);
+	[line moveToPoint:p1];
+	[line lineToPoint:p2];
+
+	p1 = NSMakePoint(rect.origin.x+rect.size.width *0.5, rect.origin.y+2);
+	p2 = NSMakePoint(p1.x, p1.y+lineLength);
+	[line moveToPoint:p1];
+	[line lineToPoint:p2];
+
+	[line stroke];
+}
+
+- (void)drawRemoveSelectedCurveButton:(NSRect)rect;
+{
+	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
+	[path setLineWidth:1.5];
+	if(isRemoveSelectedCurveButtonHighlighted)
+		[[NSColor darkGrayColor] set];
+	else
+		[backgroundColor set];
+	[path fill];
+	[[NSColor whiteColor] set];
+	[path stroke];
+	
+	NSBezierPath *line = [NSBezierPath bezierPath];
+	[line setLineWidth:2.0];
+	NSPoint p1, p2;
+	float lineLength = 11;
+	p1 = NSMakePoint(rect.origin.x+2, rect.origin.y+rect.size.height *0.5);
+	p2 = NSMakePoint(p1.x+lineLength, p1.y);
+	[line moveToPoint:p1];
+	[line lineToPoint:p2];
+
+	[line stroke];
+}
+
+- (void)drawSaveButton:(NSRect)rect;
+{
+	NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
+	[path setLineWidth:1.5];
+	if(isSaveButtonHighlighted)
+		[[NSColor darkGrayColor] set];
+	else
+		[backgroundColor set];
+	[path fill];
+	[[NSColor whiteColor] set];
+	[path stroke];
+	
+	NSPoint center = NSMakePoint(rect.origin.x+rect.size.width*0.5, rect.origin.y+rect.size.height*0.5);
+	NSRect dotFrame = NSMakeRect(center.x-3, center.y-3, 6, 6);
+	NSBezierPath *dot = [NSBezierPath bezierPathWithOvalInRect:dotFrame];
+	[dot fill];
+}
+
+- (BOOL)clickInSideBarAtPosition:(NSPoint)position;
+{
+	return NSPointInRect(position,sideBarRect);
+}
+
+//- (BOOL)clickInMenuButtonAtPosition:(NSPoint)position;
+//{
+//	return NSPointInRect(position,menuButtonRect);
+//}
+
+- (BOOL)clickInAddCurveButtonAtPosition:(NSPoint)position;
+{
+	if(NSPointInRect(position,addCurveButtonRect))
+	{
+		isAddCurveButtonHighlighted = YES;
+		return YES;
+	}
+	else
+	{
+		isAddCurveButtonHighlighted = NO;
+		return NO;
+	}
+}
+
+- (BOOL)clickInRemoveSelectedCurveButtonAtPosition:(NSPoint)position;
+{
+	if(NSPointInRect(position, removeSelectedCurveButtonRect))
+	{
+		isRemoveSelectedCurveButtonHighlighted = YES;
+		return YES;
+	}
+	else
+	{
+		isRemoveSelectedCurveButtonHighlighted = NO;
+		return NO;
+	}
+}
+
+- (BOOL)clickInSaveButtonAtPosition:(NSPoint)position;
+{
+	if(NSPointInRect(position, saveButtonRect))
+	{
+		isSaveButtonHighlighted = YES;
+		return YES;
+	}
+	else
+	{
+		isSaveButtonHighlighted = NO;
+		return NO;
 	}
 }
 
@@ -1471,7 +1712,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)chooseNameAndSave:(id)sender;
 {
+	if(isSaveButtonHighlighted)
+	{
+		isSaveButtonHighlighted = NO;
+		[self setNeedsDisplay:YES];
+	}
 	[NSApp beginSheet:chooseNameAndSaveWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+	[chooseNameAndSaveWindow orderFront:self];
 }
 
 - (IBAction)save:(id)sender;
@@ -1511,6 +1758,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[path appendString:@".plist"];
 	[clut writeToFile:path atomically:YES];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCLUTMenu" object:name userInfo:0L];
+	[[vrView controller] setCurCLUTMenu:name];
 }
 
 - (void)loadFromFileWithName:(NSString*)name;
@@ -1734,7 +1982,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[attrsDictionary setObject:textLabelColor forKey:NSForegroundColorAttributeName];
 	NSAttributedString *label = [[[NSAttributedString alloc] initWithString:text attributes:attrsDictionary] autorelease];
 //	NSRect labelBounds = [label boundingRectWithSize:[self bounds].size options:NSStringDrawingUsesDeviceMetrics];
-NSRect labelBounds = [label boundingRectWithSize:drawingRect.size options:NSStringDrawingUsesDeviceMetrics];
+	NSRect labelBounds = [label boundingRectWithSize:drawingRect.size options:NSStringDrawingUsesDeviceMetrics];
 
 	NSSize imageSize = [cursorImage size];
 	float arrowWidth = imageSize.width;
