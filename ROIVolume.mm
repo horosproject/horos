@@ -145,7 +145,7 @@
 		points->Delete();
 		
 		//if ([roiList count]==1)
-		if (NO) // desactivated
+		if (NO) // deactivated
 		// SURFACE
 		{		
 			NSLog(@"vtkPolygon");

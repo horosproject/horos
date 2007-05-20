@@ -39,7 +39,7 @@
 	[statusProgressIndicator setHidden:YES];
 	downloadedFilePath = @"";
 	
-	// desactivate the back/forward options in the webView's contextual menu
+	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
 	
 	return self;
@@ -70,7 +70,7 @@
 
 	if(pluginIsActive)
 	{
-		[PluginManager desactivatePluginWithName:pluginName];
+		[PluginManager deactivatePluginWithName:pluginName];
 	}
 	else
 	{

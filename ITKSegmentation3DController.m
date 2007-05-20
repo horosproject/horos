@@ -586,7 +586,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 {
 	if ([[outputROIType selectedCell] tag]==18)
 	{
-		// if the user choose the Brush ROI type, then the number of point slider should be desactivated
+		// if the user choose the Brush ROI type, then the number of point slider should be deactivated
 		[numberOfPointsSlider setEnabled:NO];
 	}
 	else if ([[outputROIType selectedCell] tag]==11)

@@ -510,7 +510,7 @@ PluginManager			*pluginManager = 0L;
 	}
 }
 
-+ (void)desactivatePluginWithName:(NSString*)pluginName;
++ (void)deactivatePluginWithName:(NSString*)pluginName;
 {
 	NSMutableArray *activePaths = [NSMutableArray arrayWithArray:[PluginManager activeDirectories]];
 	NSMutableArray *inactivePaths = [NSMutableArray arrayWithArray:[PluginManager inactiveDirectories]];

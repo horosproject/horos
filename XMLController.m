@@ -226,7 +226,7 @@ static NSString*	EditingToolbarItemIdentifier			= @"Editing";
 	}
 	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is desactivated.\r\rSee General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is deactivated.\r\rSee General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		[self willChangeValueForKey:@"editingActivated"];
 		editingActivated = NO;
 		[self didChangeValueForKey:@"editingActivated"];

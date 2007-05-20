@@ -7707,11 +7707,14 @@ static BOOL needToRezoom;
 
 - (void) openViewerFromImages:(NSArray*) toOpenArray movie:(BOOL) movieViewer viewer:(ViewerController*) viewer keyImagesOnly:(BOOL) keyImages
 {
+	
+	// memBlockSize was previously declared as a dynamic array, but this was causing problems with the call stack
+	// thus, I've declared it on the heap instead.  - RBR 2007-05-20
+	unsigned long		*memBlockSize = malloc( [toOpenArray count] * sizeof *memBlockSize );
+	
 	NS_DURING
 		// masu 2006-07-19
 		// size of array should be size of toOpenArray - was:
-		// unsigned long		memBlockSize[ 200]; 
-		unsigned long		memBlockSize[[toOpenArray count]]; 
 		unsigned long		memBlock, mem;
 		long				x, i;
 	//	long				z;
@@ -7790,6 +7793,8 @@ static BOOL needToRezoom;
 						memBlock += [[curFile valueForKey:@"width"] intValue] * [[curFile valueForKey:@"height"] intValue];
 					}
 				}
+				
+				if ( memBlock == 1 ) memBlock = 256 * 256;  // This is the size of array created when when an image doesn't exist, a 256 square graduated gray scale.
 				
 				NSLog(@"Test memory for: %d Mb", (memBlock * sizeof(float)) / (1024 * 1024));
 				testPtr[ x] = malloc( (memBlock * sizeof(float)) + 4096);
@@ -8063,9 +8068,13 @@ static BOOL needToRezoom;
 			[movieController showWindowTransition];
 			[movieController startLoadImageThread];
 		}
+		
 	NS_HANDLER
 		NSLog(@"Exception opening Viewer: %@", [localException description]);
 	NS_ENDHANDLER
+	
+	free( memBlockSize );
+	
 }
 
 - (IBAction) selectSubSeriesAndOpen:(id) sender

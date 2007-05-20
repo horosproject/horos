@@ -34,7 +34,7 @@
 	}
 	else if (c == NSEnterCharacter || c == NSCarriageReturnCharacter || c == 27) // 27 = Escape
 	{
-		return; // desactivation of full window mode
+		return; // deactivation of full window mode
 	}
 	else
 	{
@@ -47,7 +47,7 @@
 {
 	if ([event clickCount] == 2)
 	{
-		return; // desactivation of full window mode
+		return; // deactivation of full window mode
 	}
 	else
 	{
