@@ -366,10 +366,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 #pragma mark-
 #pragma mark Add DICOM Database functions
 
-
 - (NSString*) getNewFileDatabasePath: (NSString*) extension
 {
-	NSString        *OUTpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEPATH];
+	return [self getNewFileDatabasePath: extension dbFolder: [self documentsDirectory]];
+}
+
+- (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder
+{
+	NSString        *OUTpath = [dbFolder stringByAppendingPathComponent:DATABASEPATH];
 	NSString		*dstPath;
 	NSString		*subFolder;
 	long			subFolderInt;
@@ -465,6 +469,13 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject
 {
+	NSManagedObjectContext	*context = [self managedObjectContext];
+	
+	return [self addFilesToDatabase: newFilesArray onlyDICOM: onlyDICOM safeRebuild: safeProcess produceAddedFiles: produceAddedFiles parseExistingObject: parseExistingObject context: context dbFolder: documentsDirectory()];
+}
+
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
+{
 	if( isCurrentDatabaseBonjour) return 0L;
 	
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
@@ -476,10 +487,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	DicomImage				*image;
 	long					ii, i, x;
 	unsigned long			index;
-	NSString				*INpath = [documentsDirectory() stringByAppendingPathComponent:DATABASEFPATH];
+	NSString				*INpath = [dbFolder stringByAppendingPathComponent:DATABASEFPATH];
 	Wait					*splash = 0L;
 	NSManagedObjectModel	*model = [self managedObjectModel];
-	NSManagedObjectContext	*context = [self managedObjectContext];
 	NSMutableArray			*addedImagesArray = 0L;
 	NSMutableArray			*addedSeries = [NSMutableArray arrayWithCapacity: 0];
 	NSMutableArray			*modifiedStudiesArray = 0L;
@@ -1882,6 +1892,38 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[self loadDatabase: currentDatabasePath];
 			[self saveDatabase: currentDatabasePath];
 		}
+	}
+}
+
+-(IBAction) createDatabaseFolder:(id) sender
+{
+	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
+
+	[oPanel setCanChooseDirectories: YES];
+	[oPanel setCanChooseFiles: NO];
+	
+	if( [sender tag] == 1)
+	{
+		[oPanel setPrompt: @"Create"];
+		[oPanel setTitle: @"Create a Database Folder"];
+	}
+	else
+	{
+		[oPanel setPrompt: @"Open"];
+		[oPanel setTitle: @"Open a Database Folder"];
+	}
+	
+	if ([oPanel runModalForDirectory:documentsDirectory() file:nil types:nil] == NSFileHandlingPanelOKButton)
+	{
+		NSString	*location = [oPanel filename];
+		
+		if( [[location lastPathComponent] isEqualToString:@"OsiriX Data"])
+			location = [location stringByDeletingLastPathComponent];
+
+		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"OsiriX Data"])
+			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+		
+		[self openDatabasePath: location];
 	}
 }
 
@@ -7211,7 +7253,14 @@ static BOOL needToRezoom;
 				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 				{
 					if( isDirectory)
-						[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
+					{
+						if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
+						{
+							[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
+						}
+						else
+							[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"away.tif"]];
+					}
 					else
 						[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FileIcon.tif"]];
 				}
@@ -7406,15 +7455,70 @@ static BOOL needToRezoom;
 				// LOCAL PATH - DATABASE
 				if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 				{
-					NSLog( @"-----------------------------");
-					NSLog( @"Destination is a 'local' path");
+					@try
+					{
+						NSLog( @"-----------------------------");
+						NSLog( @"Destination is a 'local' path");
+						
+						NSString	*dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
+						NSString	*sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];
+						
+						NSLog( @"DB Folder: %@", dbFolder);
+						NSLog( @"SQL File: %@", sqlFile);
+						NSLog( @"Current documentsDirectory: %@", [self documentsDirectory]);
+						
+						NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
+							
+						[sqlContext setPersistentStoreCoordinator: sc];
+
+						NSError	*error = 0L;
+						[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+						
+						if( [dbFolder isEqualToString: [[self documentsDirectory] stringByDeletingLastPathComponent]])	// same database folder - we don't need to copy the files
+						{
+							NSLog( @"Destination DB Folder is identical to Current DB Folder");
+														
+							[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						else
+						{
+							NSMutableArray	*dstFiles = [NSMutableArray array];
+							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+							
+							// First we copy the files to the DATABASE folder
+							Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+							for( i=0; i < [packArray count]; i++)
+							{
+								NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
+								BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
+						
+								if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm"];
+								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
+							
+								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+									[dstFiles addObject: dstPath];
+							}
+							[splash close];
+							[splash release];
+							
+							// Then we add the files to the sql file
+							[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						
+						error = 0L;
+						[sqlContext save: &error];
+							
+						[sc release];
+						[sqlContext release];
+					}
 					
-					NSLog( @"DB Folder: %@", [self getDatabaseFolderFor: [object valueForKey: @"Path"]]);
-					NSLog( @"SQL File: %@", [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]]);
-					
-					
-					
-					
+					@catch (NSException * e)
+					{
+						NSLog( [e description]);
+						NSLog( @"Exception !! *******");
+					}
+
 					NSLog( @"-----------------------------");
 				}
 				else
@@ -12860,6 +12964,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self bonjourServiceClicked: bonjourServicesList];
 }
 
+- (void) openDatabasePath: (NSString*) path
+{
+	BOOL isDirectory;
+			
+	if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
+	{
+		if( isDirectory)
+		{
+			[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
+			[[NSUserDefaults standardUserDefaults] setObject: path forKey:@"DATABASELOCATIONURL"];
+			
+			[self openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
+		}
+		else
+		{
+			if( [currentDatabasePath isEqualToString: path] == NO)
+			{
+				[self openDatabaseIn: path Bonjour:NO];
+			}
+		}
+	}
+	else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
+}
+
 - (IBAction) bonjourServiceClicked:(id)sender
 {
     int index = [bonjourServicesList selectedRow]-1;
@@ -12874,26 +13002,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
 		{
-			BOOL isDirectory;
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [object valueForKey: @"Path"] isDirectory: &isDirectory])
-			{
-				if( isDirectory)
-				{
-					[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey:@"DATABASELOCATION"];
-					[[NSUserDefaults standardUserDefaults] setObject: [object valueForKey: @"Path"] forKey:@"DATABASELOCATIONURL"];
-					
-					[self openDatabaseIn: [documentsDirectory() stringByAppendingPathComponent:@"/Database.sql"] Bonjour: NO];
-				}
-				else
-				{
-					if( [currentDatabasePath isEqualToString: [object valueForKey: @"Path"]] == NO)
-					{
-						[self openDatabaseIn: [object valueForKey: @"Path"] Bonjour:NO];
-					}
-				}
-			}
-			else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
+			[self openDatabasePath: [object valueForKey: @"Path"]];
 		}
 		else	// NETWORK - DATABASE
 		{
@@ -12913,7 +13022,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				NSLog(@"Bonjour DB = %@", path);
 				
 				[segmentedAlbumButton setEnabled: NO];
-							
+				
 				[self openDatabaseIn: path Bonjour: YES];
 			}
 		}

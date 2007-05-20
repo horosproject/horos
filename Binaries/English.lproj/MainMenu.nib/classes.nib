@@ -61,6 +61,7 @@
                 checkMemory = id; 
                 compressSelectedFiles = id; 
                 createDatabase = id; 
+                createDatabaseFolder = id; 
                 customIntervalNow = id; 
                 customize = id; 
                 databaseDoublePressed = id; 
