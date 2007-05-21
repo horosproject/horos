@@ -86,7 +86,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
     long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert;
     
-	BOOL					setDCMDone, mountedVolume, needDBRefresh;
+	BOOL					setDCMDone, mountedVolume, needDBRefresh, dontLoadSelectionSource;
 	
 	NSMutableArray			*albumNoOfStudiesCache;
 	

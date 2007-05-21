@@ -476,8 +476,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder
 {
-	if( isCurrentDatabaseBonjour) return 0L;
-	
 	NSEnumerator			*enumerator = [newFilesArray objectEnumerator];
 	NSString				*newFile;
 	NSDate					*today = [NSDate date];
@@ -1874,8 +1872,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 
 -(IBAction) createDatabase:(id) sender
 {
+	if( isCurrentDatabaseBonjour)
+	{
+		NSRunInformationalAlertPanel(NSLocalizedString(@"Database", 0L), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
+		return;
+	}
+	
 	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
-
+	
 	[sPanel setRequiredFileType:@"sql"];
 	
 	if ([sPanel runModalForDirectory:documentsDirectory() file:NSLocalizedString(@"Database.sql", nil)] == NSFileHandlingPanelOKButton)
@@ -2264,25 +2268,22 @@ static BOOL				DICOMDIRCDMODE = NO;
 			if( [type isEqualToString:@"localPath"])
 			{
 				NSString	*cPath = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"Path"];
-				BOOL isDirectory;
+				BOOL		isDirectory;
 				
-				if( [[NSFileManager defaultManager] fileExistsAtPath:cPath isDirectory: &isDirectory])
+				if( [[[cPath pathExtension] lowercaseString] isEqualToString:@"sql"])
 				{
-					if( isDirectory)
+					if( [path isEqualToString: cPath])
 					{
-						if( [DBFolderLocation isEqualToString: cPath])
-						{
-							found = YES;
-							break;
-						}
+						found = YES;
+						break;
 					}
-					else
+				}
+				else
+				{
+					if( [cPath isEqualToString: DBFolderLocation] && [path isEqualToString:@"Database.sql"])
 					{
-						if( [path isEqualToString: cPath])
-						{
-							found = YES;
-							break;
-						}
+						found = YES;
+						break;
 					}
 				}
 			}
@@ -2339,34 +2340,38 @@ static BOOL				DICOMDIRCDMODE = NO;
 	}
 	
 	if( isCurrentDatabaseBonjour == NO)
+	{
 		[[[self documentsDirectory] stringByDeletingLastPathComponent] writeToFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] atomically:YES];
-	
-	i = [self findDBPath: path dbFolder: DBFolderLocation];
-	if( i == -1)
-	{
-		NSLog( @"DB Not found -> we add it");
 		
-		NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
-		
-		if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
-		{
-			dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [[DBFolderLocation lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L]];			
-		}
-		else
-		{
-			dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: path, @"Path", [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", 0L]];
-		}
-		
-		[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
-		
-		// Select it
 		i = [self findDBPath: path dbFolder: DBFolderLocation];
-	}
-	
-	if( i != [bonjourServicesList selectedRow])
-	{
-		[bonjourServicesList selectRow: i byExtendingSelection: NO];
+		if( i == -1)
+		{
+			NSLog( @"DB Not found -> we add it");
+			
+			NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
+			
+			if( [[path lastPathComponent] isEqualToString: @"Database.sql"])	// We will add the folder, since it is the default sql file for a DB folder
+			{
+				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: DBFolderLocation, @"Path", [[DBFolderLocation lastPathComponent] stringByAppendingString:@" DB"], @"Description", 0L]];			
+			}
+			else
+			{
+				dbArray = [dbArray arrayByAddingObject: [NSDictionary dictionaryWithObjectsAndKeys: path, @"Path", [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@" DB"], @"Description", 0L]];
+			}
+			
+			[[NSUserDefaults standardUserDefaults] setObject: dbArray forKey: @"localDatabasePaths"];
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"OsiriXServerArray has changed" object:0L];
+			
+			// Select it
+			i = [self findDBPath: path dbFolder: DBFolderLocation];
+		}
+		
+		if( i != [bonjourServicesList selectedRow])
+		{
+			dontLoadSelectionSource = YES;
+			[bonjourServicesList selectRow: i byExtendingSelection: NO];
+			dontLoadSelectionSource = NO;
+		}
 	}
 	
 	if( DBVersion == 0L) 
@@ -7407,12 +7412,27 @@ static BOOL needToRezoom;
 					NSLog( @"-----------------------------");
 					NSLog( @"Destination is a 'local' path");
 					
+					
+					Wait *splash = 0L;
+					
+					if( isCurrentDatabaseBonjour)
+						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
+					
+					[splash showWindow:self];
+					[[splash progress] setMaxValue:[imagesArray count]];
+						
 					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
 					for( i = 0; i < [imagesArray count]; i++)
 					{
-						NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+						NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
 						[packArray addObject: sendPath];
+						
+						[splash incrementBy:1];
 					}
+					
+					[splash close];
+					[splash release];
+					
 					
 					NSLog( @"DB Folder: %@", dbFolder);
 					NSLog( @"SQL File: %@", sqlFile);
@@ -7438,7 +7458,7 @@ static BOOL needToRezoom;
 						NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
 						
 						// First we copy the files to the DATABASE folder
-						Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
 						[splash showWindow:self];
 						[[splash progress] setMaxValue:[packArray count]];
 						
@@ -7450,7 +7470,7 @@ static BOOL needToRezoom;
 							BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
 							
 							if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
+							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
 							
 							if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
 								[dstFiles addObject: dstPath];
@@ -7666,15 +7686,18 @@ static BOOL needToRezoom;
 	
 	if( [[aNotification object] isEqual: bonjourServicesList])
 	{
-		[self syncReportsIfNecessary: previousBonjourIndex];
-		
-		[albumNoOfStudiesCache removeAllObjects];
-		
-		[self bonjourServiceClicked: bonjourServicesList];
-		
-		[self setSearchString:nil];
-		
-		previousBonjourIndex = [bonjourServicesList selectedRow]-1;
+		if( dontLoadSelectionSource == NO)
+		{
+			[self syncReportsIfNecessary: previousBonjourIndex];
+			
+			[albumNoOfStudiesCache removeAllObjects];
+			
+			[self bonjourServiceClicked: bonjourServicesList];
+			
+			[self setSearchString:nil];
+			
+			previousBonjourIndex = [bonjourServicesList selectedRow]-1;
+		}
 	}
 }
 
