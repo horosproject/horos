@@ -2280,7 +2280,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 				}
 				else
 				{
-					if( [cPath isEqualToString: DBFolderLocation] && [path isEqualToString:@"Database.sql"])
+					if( [cPath isEqualToString: DBFolderLocation] && [[path lastPathComponent] isEqualToString:@"Database.sql"])
 					{
 						found = YES;
 						break;

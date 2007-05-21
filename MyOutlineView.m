@@ -251,42 +251,56 @@ extern     BrowserController  *browserWindow;
 - (void) terminateDrag:(NSArray*) fileArray
 {
 	long	i;
+	BOOL	directory;
+	BOOL	done = NO;
 	
-	if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file!
+	if( [fileArray count] == 1 && [[NSFileManager defaultManager] fileExistsAtPath: [fileArray objectAtIndex: 0]  isDirectory: &directory])
 	{
-		[browserWindow openDatabaseIn: [fileArray objectAtIndex: 0] Bonjour:NO];
-	}
-	else
-	{
-		NSArray	*newImages = [browserWindow addFilesAndFolderToDatabase: fileArray];
-		
-		// Are we adding new files in a album?
-
-		//can't add to smart Album
-		if( [[browserWindow albumTable] selectedRow] > 0)
+		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: @"OsiriX Data"])	// It's a database folder !
 		{
-			NSManagedObject *album = [[browserWindow albumArray] objectAtIndex: [[browserWindow albumTable] selectedRow]];
-			
-			if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-			{
-				NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
-				
-				for( i = 0; i < [newImages count]; i++)
-				{
-					NSManagedObject		*object = [newImages objectAtIndex: i];
-					[studies addObject: [object valueForKeyPath:@"series.study"]];
-				}
-				
-				[browserWindow outlineViewRefresh];
-			}
+			[browserWindow openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
+			done = YES;
 		}
-		
-		if( [newImages count] > 0)
+	}
+	
+	if( done == NO)
+	{
+		if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file !
 		{
-			NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+			[browserWindow openDatabasePath: [fileArray objectAtIndex: 0]];
+		}
+		else
+		{
+			NSArray	*newImages = [browserWindow addFilesAndFolderToDatabase: fileArray];
+			
+			// Are we adding new files in a album?
+
+			//can't add to smart Album
+			if( [[browserWindow albumTable] selectedRow] > 0)
+			{
+				NSManagedObject *album = [[browserWindow albumArray] objectAtIndex: [[browserWindow albumTable] selectedRow]];
 				
-			[self selectRow: [self rowForItem: object] byExtendingSelection: NO];
-			[self scrollRowToVisible: [self selectedRow]];
+				if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+				{
+					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+					
+					for( i = 0; i < [newImages count]; i++)
+					{
+						NSManagedObject		*object = [newImages objectAtIndex: i];
+						[studies addObject: [object valueForKeyPath:@"series.study"]];
+					}
+					
+					[browserWindow outlineViewRefresh];
+				}
+			}
+			
+			if( [newImages count] > 0)
+			{
+				NSManagedObject		*object = [[newImages objectAtIndex: 0] valueForKeyPath:@"series.study"];
+					
+				[self selectRow: [self rowForItem: object] byExtendingSelection: NO];
+				[self scrollRowToVisible: [self selectedRow]];
+			}
 		}
 	}
 	
