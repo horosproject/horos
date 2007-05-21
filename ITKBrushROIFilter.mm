@@ -115,7 +115,6 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 // filters
 - (void) erode:(ROI*)aROI withStructuringElementRadius:(int)structuringElementRadius
 {
-	if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask == 0)
 	{
 		// input buffer
 		unsigned char *buff = [aROI textureBuffer];
@@ -134,40 +133,42 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		dstBuf.height = srcbuf.height = bufferHeight;
 		dstBuf.width = srcbuf.width = bufferWidth;
 		dstBuf.rowBytes = srcbuf.rowBytes = bufferWidth;
-		err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernelErode, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
+		err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernelErode, structuringElementRadius, structuringElementRadius, kvImageDoNotTile); //	
 		if( err) NSLog(@"%d", err);
 		
 		memcpy(buff, dstBuf.data, bufferWidth*bufferHeight);
 		free( dstBuf.data);
 		
 	}
-	else
-	{
-		unsigned char *buff = [aROI textureBuffer];
-		int bufferWidth = [aROI textureWidth];
-		int bufferHeight = [aROI textureHeight];
-
-		// buffer to ITK image
-		ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
-		// erosion filter
-		ErodeFilterType::Pointer binaryErode = ErodeFilterType::New();
-		// structuring Element
-		StucturingElementType structuringElement;
-		structuringElement.SetRadius(structuringElementRadius);
-		structuringElement.CreateStructuringElement();
-		// parameters
-		binaryErode->SetKernel(structuringElement);
-		binaryErode->SetErodeValue(255);
-		// process
-		binaryErode->SetInput(inputROI);
-		binaryErode->Update();
-		// output
-		inputROI = binaryErode->GetOutput();
-		// update the ROI
-		unsigned char *erodedBuffer = inputROI->GetBufferPointer();
-
-		memcpy(buff, erodedBuffer,bufferWidth*bufferHeight*sizeof(char));
-	}
+//	else
+//	{
+//		NSLog(@"itk");
+//		
+//		unsigned char *buff = [aROI textureBuffer];
+//		int bufferWidth = [aROI textureWidth];
+//		int bufferHeight = [aROI textureHeight];
+//
+//		// buffer to ITK image
+//		ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
+//		// erosion filter
+//		ErodeFilterType::Pointer binaryErode = ErodeFilterType::New();
+//		// structuring Element
+//		StucturingElementType structuringElement;
+//		structuringElement.SetRadius(structuringElementRadius);
+//		structuringElement.CreateStructuringElement();
+//		// parameters
+//		binaryErode->SetKernel(structuringElement);
+//		binaryErode->SetErodeValue(255);
+//		// process
+//		binaryErode->SetInput(inputROI);
+//		binaryErode->Update();
+//		// output
+//		inputROI = binaryErode->GetOutput();
+//		// update the ROI
+//		unsigned char *erodedBuffer = inputROI->GetBufferPointer();
+//
+//		memcpy(buff, erodedBuffer,bufferWidth*bufferHeight*sizeof(char));
+//	}
 	
 	[aROI reduceTextureIfPossible];
 }
@@ -177,7 +178,6 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	// add a margin to avoid border effects
 	[aROI addMarginToBuffer: structuringElementRadius*2];
 	
-	if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask == 0)
 	{
 		// input buffer
 		unsigned char *buff = [aROI textureBuffer];
@@ -196,39 +196,40 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 		dstBuf.height = srcbuf.height = bufferHeight;
 		dstBuf.width = srcbuf.width = bufferWidth;
 		dstBuf.rowBytes = srcbuf.rowBytes = bufferWidth;
-		err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernelDilate, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
+		err = vImageDilate_Planar8( &srcbuf, &dstBuf, 0, 0, kernelDilate, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);	//kvImageDoNotTile
 		if( err) NSLog(@"%d", err);
 		
 		memcpy(buff,dstBuf.data,bufferWidth*bufferHeight);
 		free( dstBuf.data);
 	}
-	else
-	{
-		// input buffer
-		unsigned char *buff = [aROI textureBuffer];
-		int bufferWidth = [aROI textureWidth];
-		int bufferHeight = [aROI textureHeight];
-		
-		// buffer to ITK image : 2 s
-		ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
-		// dilatation filter
-		DilateFilterType::Pointer binaryDilate = DilateFilterType::New();
-		// structuring Element
-		StucturingElementType structuringElement;
-		structuringElement.SetRadius(structuringElementRadius);
-		structuringElement.CreateStructuringElement();
-		// parameters
-		binaryDilate->SetKernel(structuringElement);
-		binaryDilate->SetDilateValue(255);
-		// process
-		binaryDilate->SetInput(inputROI);
-		binaryDilate->Update();
-		// output
-		inputROI = binaryDilate->GetOutput();
-		// update the ROI
-		unsigned char *erodedBuffer = inputROI->GetBufferPointer();
-		BlockMoveData(erodedBuffer,buff,bufferWidth*bufferHeight*sizeof(char));
-	}
+//	else
+//	{
+//		NSLog(@"itk");
+//		// input buffer
+//		unsigned char *buff = [aROI textureBuffer];
+//		int bufferWidth = [aROI textureWidth];
+//		int bufferHeight = [aROI textureHeight];
+//		
+//		// buffer to ITK image : 2 s
+//		ImageType::Pointer inputROI = CreateImagePointerFromBuffer(buff, bufferWidth, bufferHeight);
+//		// dilatation filter
+//		DilateFilterType::Pointer binaryDilate = DilateFilterType::New();
+//		// structuring Element
+//		StucturingElementType structuringElement;
+//		structuringElement.SetRadius(structuringElementRadius);
+//		structuringElement.CreateStructuringElement();
+//		// parameters
+//		binaryDilate->SetKernel(structuringElement);
+//		binaryDilate->SetDilateValue(255);
+//		// process
+//		binaryDilate->SetInput(inputROI);
+//		binaryDilate->Update();
+//		// output
+//		inputROI = binaryDilate->GetOutput();
+//		// update the ROI
+//		unsigned char *erodedBuffer = inputROI->GetBufferPointer();
+//		BlockMoveData(erodedBuffer,buff,bufferWidth*bufferHeight*sizeof(char));
+//	}
 	
 	[aROI reduceTextureIfPossible];
 }
