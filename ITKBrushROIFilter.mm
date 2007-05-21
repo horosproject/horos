@@ -115,7 +115,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 // filters
 - (void) erode:(ROI*)aROI withStructuringElementRadius:(int)structuringElementRadius
 {
-	if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
+	if([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask == 0)
 	{
 		// input buffer
 		unsigned char *buff = [aROI textureBuffer];
@@ -177,7 +177,7 @@ ImageType::Pointer CreateImagePointerFromBuffer(unsigned char *buffer, int buffe
 	// add a margin to avoid border effects
 	[aROI addMarginToBuffer: structuringElementRadius*2];
 	
-	if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask)
+	if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask == 0)
 	{
 		// input buffer
 		unsigned char *buff = [aROI textureBuffer];
