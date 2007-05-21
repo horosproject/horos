@@ -7379,7 +7379,100 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			if( isCurrentDatabaseBonjour == YES) // row == 0 &&  // Copying FROM Distant to local OR distant
+			// DESTINATION IS A LOCAL PATH
+			
+			id object = 0L;
+			
+			if( row > 0) object = [[bonjourBrowser services] objectAtIndex: row-1];
+			
+			if( [[object valueForKey: @"type"] isEqualToString:@"localPath"] || (row == 0 && isCurrentDatabaseBonjour == NO))
+			{
+				NSString	*dbFolder = 0L;
+				NSString	*sqlFile = 0L;
+				
+				if( row == 0)
+				{
+					dbFolder = [[self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]] stringByDeletingLastPathComponent];
+					sqlFile = [[dbFolder stringByAppendingPathComponent:@"OsiriX Data"] stringByAppendingPathComponent:@"Database.sql"];
+				}
+				else
+				{
+					dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
+					sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
+				}
+				
+				// LOCAL PATH - DATABASE
+				@try
+				{
+					NSLog( @"-----------------------------");
+					NSLog( @"Destination is a 'local' path");
+					
+					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
+					for( i = 0; i < [imagesArray count]; i++)
+					{
+						NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+						[packArray addObject: sendPath];
+					}
+					
+					NSLog( @"DB Folder: %@", dbFolder);
+					NSLog( @"SQL File: %@", sqlFile);
+					NSLog( @"Current documentsDirectory: %@", [self documentsDirectory]);
+					
+					NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+					NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
+						
+					[sqlContext setPersistentStoreCoordinator: sc];
+
+					NSError	*error = 0L;
+					[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+					
+					if( [dbFolder isEqualToString: [[self documentsDirectory] stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
+					{
+						NSLog( @"Destination DB Folder is identical to Current DB Folder");
+						
+						[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+					}
+					else
+					{
+						NSMutableArray	*dstFiles = [NSMutableArray array];
+						NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+						
+						// First we copy the files to the DATABASE folder
+						Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+						for( i=0; i < [packArray count]; i++)
+						{
+							NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
+							BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
+							
+							if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
+							
+							if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+								[dstFiles addObject: dstPath];
+						}
+						[splash close];
+						[splash release];
+						
+						// Then we add the files to the sql file
+						[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+					}
+					
+					error = 0L;
+					[sqlContext save: &error];
+						
+					[sc release];
+					[sqlContext release];
+				}
+				
+				@catch (NSException * e)
+				{
+					NSLog( [e description]);
+					NSLog( @"Exception !! *******");
+				}
+
+				NSLog( @"-----------------------------");
+			}
+			else if( isCurrentDatabaseBonjour == YES)  // Copying FROM Distant to local OR distant
 			{
 				Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying from OsiriX database...", nil)];
 				BOOL OnlyDICOM = YES;
@@ -7450,137 +7543,63 @@ static BOOL needToRezoom;
 					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
-				id object = [[bonjourBrowser services] objectAtIndex: row-1];
-		
-				// LOCAL PATH - DATABASE
-				if( [[object valueForKey: @"type"] isEqualToString:@"localPath"])
+				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
+				
+				if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
+				
+				if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
 				{
-					@try
-					{
-						NSLog( @"-----------------------------");
-						NSLog( @"Destination is a 'local' path");
-						
-						NSString	*dbFolder = [self getDatabaseFolderFor: [object valueForKey: @"Path"]];
-						NSString	*sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];
-						
-						NSLog( @"DB Folder: %@", dbFolder);
-						NSLog( @"SQL File: %@", sqlFile);
-						NSLog( @"Current documentsDirectory: %@", [self documentsDirectory]);
-						
-						NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
-						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
-							
-						[sqlContext setPersistentStoreCoordinator: sc];
-
-						NSError	*error = 0L;
-						[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
-						
-						if( [dbFolder isEqualToString: [[self documentsDirectory] stringByDeletingLastPathComponent]])	// same database folder - we don't need to copy the files
-						{
-							NSLog( @"Destination DB Folder is identical to Current DB Folder");
-														
-							[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-						}
-						else
-						{
-							NSMutableArray	*dstFiles = [NSMutableArray array];
-							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
-							
-							// First we copy the files to the DATABASE folder
-							Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
-							for( i=0; i < [packArray count]; i++)
-							{
-								NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
-								BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
-						
-								if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm"];
-								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString]];
-							
-								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
-									[dstFiles addObject: dstPath];
-							}
-							[splash close];
-							[splash release];
-							
-							// Then we add the files to the sql file
-							[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-						}
-						
-						error = 0L;
-						[sqlContext save: &error];
-							
-						[sc release];
-						[sqlContext release];
-					}
+					WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
+					[wait showWindow:self];
 					
-					@catch (NSException * e)
-					{
-						NSLog( [e description]);
-						NSLog( @"Exception !! *******");
-					}
-
-					NSLog( @"-----------------------------");
+					NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
+					
+					[todo setObject: packArray forKey:@"Files"];
+					
+					[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
+					
+					Delay( 60, 0L);
+					
+					[wait close];
+					[wait release];
 				}
 				else
 				{
-					NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
+					Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
+					[splash showWindow:self];
+					[[splash progress] setMaxValue:[imagesArray count]];
 					
-					if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
-					
-					if( [dcmNode valueForKey:@"Address"] && OnlyDICOM)
+					for( i = 0; i < [imagesArray count];)
 					{
-						WaitRendering		*wait = [[WaitRendering alloc] init: NSLocalizedString(@"Transfer started...", nil)];
-						[wait showWindow:self];
+						NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
 						
-						NSMutableDictionary	*todo = [NSMutableDictionary dictionaryWithDictionary: dcmNode];
-						
-						[todo setObject: packArray forKey:@"Files"];
-						
-						[NSThread detachNewThreadSelector:@selector( sendDICOMFilesToOsiriXNode:) toTarget:self withObject: todo];
-						
-						Delay( 60, 0L);
-						
-						[wait close];
-						[wait release];
-					}
-					else
-					{
-						Wait	*splash = [[Wait alloc] initWithString:@"Copying to OsiriX database..."];
-						[splash showWindow:self];
-						[[splash progress] setMaxValue:[imagesArray count]];
-						
-						for( i = 0; i < [imagesArray count];)
+						for( x = 0; x < 10; x++)
 						{
-							NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-							NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: 10];
-							
-							for( x = 0; x < 10; x++)
+							if( i <  [imagesArray count])
 							{
-								if( i <  [imagesArray count])
-								{
-									NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+								NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :1];
+							
+								[packArray addObject: sendPath];
 								
-									[packArray addObject: sendPath];
-									
-									if([[sendPath pathExtension] isEqualToString:@"zip"])
-									{
-										// it is a ZIP
-										NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
-										[packArray addObject: xmlPath];
-									}
-									[splash incrementBy:1];
+								if([[sendPath pathExtension] isEqualToString:@"zip"])
+								{
+									// it is a ZIP
+									NSString *xmlPath = [[sendPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"xml"];
+									[packArray addObject: xmlPath];
 								}
-								i++;
+								[splash incrementBy:1];
 							}
-							
-							[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
-							
-							[pool release];
+							i++;
 						}
 						
-						[splash close];
-						[splash release];
+						[bonjourBrowser sendDICOMFile: row-1 paths: packArray];
+						
+						[pool release];
 					}
+					
+					[splash close];
+					[splash release];
 				}
 			}
 			else return NO;
@@ -7611,9 +7630,9 @@ static BOOL needToRezoom;
 		
 		if( row <= [[bonjourBrowser services] count])
 		{
-			if( isCurrentDatabaseBonjour && row == 0) accept = YES;
+//			if( isCurrentDatabaseBonjour && row == 0) accept = YES;
 			
-			if( row > 0 && [bonjourServicesList selectedRow] != row) accept = YES;
+			if( [bonjourServicesList selectedRow] != row) accept = YES;
 			
 			if( accept)
 			{

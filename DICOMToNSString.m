@@ -65,7 +65,7 @@
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = NSISO2022JPStringEncoding;
 	else if( [characterSet isEqualToString:@"ISO_IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
 	else
-	{	
+	{
 		NSLog(@"** encoding not found: %@", characterSet);
 	}
 	return encoding;
