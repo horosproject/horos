@@ -10,12 +10,12 @@
 #import <Message/NSMailDelivery.h>
 
 // this is the address of the plist containing the list of the available plugins.
-// the alternative link will be use if the first one doesn't reply...
-#define PLUGIN_LIST_URL @"http://129.195.133.18/~joris/osirix_plugins/plugins.plist"
-#define PLUGIN_LIST_ALT_URL @"http://129.195.133.18/~joris/osirix_plugins/plugins1.plist"
+// the alternative link will be used if the first one doesn't reply...
+#define PLUGIN_LIST_URL @"http://129.195.133.51/~admin/osirix_plugins/plugins.plist"
+#define PLUGIN_LIST_ALT_URL @"http://129.195.133.51/~admin/osirix_plugins/plugins1.plist"
 
-#define PLUGIN_SUBMISSION_URL @"http://129.195.133.18/~joris/osirix_plugins/submit_plugin/index.html"
-#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://129.195.133.18/~joris/osirix_plugins/submit_plugin/index_no_mail_app.html"
+#define PLUGIN_SUBMISSION_URL @"http://129.195.133.51/~admin/osirix_plugins/submit_plugin/index.html"
+#define PLUGIN_SUBMISSION_NO_MAIL_APP_URL @"http://129.195.133.51/~admin/osirix_plugins/submit_plugin/index_no_mail_app.html"
 
 @implementation PluginManagerController
 
@@ -26,9 +26,9 @@
 	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
 	
 	// uncomment next line when the 2 addresses PLUGIN_LIST_URL and PLUGIN_LIST_ALT_URL are good.
-//	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
+	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
 	// next line to be deleted
-	pluginsListURLs = [[NSArray array] retain];
+//	pluginsListURLs = [[NSArray array] retain];
 
 	NSRect windowFrame = [[self window] frame];
 	[[self window] setFrame:NSMakeRect(windowFrame.origin.x,windowFrame.origin.y,500,700) display:YES];
