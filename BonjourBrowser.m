@@ -743,6 +743,8 @@ static char *GetPrivateIP()
 	bzero((char *) &service, sizeof(service));
 	service.sin_family = AF_INET;
 	
+	if( host_name == 0L) return NO;
+	
 	if (isalpha(host_name[0]))
 	{
 		struct hostent *hp;

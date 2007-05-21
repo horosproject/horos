@@ -7654,8 +7654,6 @@ static BOOL needToRezoom;
 		
 		if( row <= [[bonjourBrowser services] count])
 		{
-//			if( isCurrentDatabaseBonjour && row == 0) accept = YES;
-			
 			if( [bonjourServicesList selectedRow] != row) accept = YES;
 			
 			if( accept)
@@ -7667,6 +7665,25 @@ static BOOL needToRezoom;
 	}
 	
 	return NSDragOperationNone;
+}
+
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(int)row mouseLocation:(NSPoint)mouseLocation
+{
+	if( [tv isEqual: bonjourServicesList])
+	{
+		if( row > 0)
+		{
+			NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
+			
+			return [dcmNode description];
+		}
+		else
+		{
+			
+		}
+	}
+	
+	return 0L;
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification
@@ -9097,6 +9114,7 @@ static NSArray*	openSubSeriesArray = 0L;
 //	[self splitViewDidResizeSubviews:nil];
 	[[self window] setFrameAutosaveName:@"DBWindow"];
 	
+	[bonjourServicesList setDelegate: self];
 	[albumDrawer setDelegate:self];
 	[oMatrix setDelegate:self];
 	[oMatrix setSelectionByRect: NO];
