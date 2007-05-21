@@ -2311,13 +2311,14 @@ static BOOL				DICOMDIRCDMODE = NO;
 	NSString	*DBVersion, *DBFolderLocation, *curPath = [[self documentsDirectory] stringByDeletingLastPathComponent];
 	
 	DBVersion = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DB_VERSION"]];
-	
 	DBFolderLocation = [NSString stringWithContentsOfFile: [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"DBFOLDER_LOCATION"]];
 	
 	if( isCurrentDatabaseBonjour)
 	{
-		DBFolderLocation = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
+		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 		
+		DBFolderLocation = [self documentsDirectory];
 		DBFolderLocation = [DBFolderLocation stringByDeletingLastPathComponent];
 	}
 	
@@ -7164,8 +7165,6 @@ static BOOL needToRezoom;
 			return [object valueForKey:@"name"];
 		}
 	}
-//	else if ([aTableView isEqual:sendLogTable])
-//		return [[sendLog objectAtIndex:rowIndex] objectForKey:[aTableColumn identifier]];
 	else if ([aTableView isEqual:bonjourServicesList])
 	{
 		if([[aTableColumn identifier] isEqualToString:@"Source"])
