@@ -11,6 +11,8 @@
 @class ROI;
 
 @interface ITKBrushROIFilter : NSObject {
+
+unsigned char *kernelDilate, *kernelErode;
 }
 
 // filters

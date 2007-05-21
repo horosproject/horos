@@ -7439,8 +7439,13 @@ static BOOL needToRezoom;
 						
 						// First we copy the files to the DATABASE folder
 						Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+						[splash showWindow:self];
+						[[splash progress] setMaxValue:[packArray count]];
+						
 						for( i=0; i < [packArray count]; i++)
 						{
+							[splash incrementBy:1];
+							
 							NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
 							BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
 							
@@ -7459,7 +7464,7 @@ static BOOL needToRezoom;
 					
 					error = 0L;
 					[sqlContext save: &error];
-						
+					
 					[sc release];
 					[sqlContext release];
 				}
