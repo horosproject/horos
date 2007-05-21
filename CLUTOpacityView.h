@@ -124,6 +124,15 @@
 - (void)setCursorLabelWithText:(NSString*)text;
 - (IBAction)removeAllCurves:(id)sender;
 - (void)addCurveIfNeeded;
+#pragma mark Custom GUI
+- (void)drawSideBar:(NSRect)rect;
+- (void)drawAddCurveButton:(NSRect)rect;
+- (void)drawRemoveSelectedCurveButton:(NSRect)rect;
+- (void)drawSaveButton:(NSRect)rect;
+- (BOOL)clickInSideBarAtPosition:(NSPoint)position;
+- (BOOL)clickInAddCurveButtonAtPosition:(NSPoint)position;
+- (BOOL)clickInRemoveSelectedCurveButtonAtPosition:(NSPoint)position;
+- (BOOL)clickInSaveButtonAtPosition:(NSPoint)position;
 
 #pragma mark -
 #pragma mark Copy / Paste

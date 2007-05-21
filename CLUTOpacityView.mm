@@ -947,20 +947,22 @@ NSRect rect = drawingRect;
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
+	if(isRemoveSelectedCurveButtonHighlighted)
+	{
+		[self delete:self];
+//		if([self selectedCurveIndex]>=0)
+//			[self deleteCurveAtIndex:[self selectedCurveIndex]];
+		isRemoveSelectedCurveButtonHighlighted = NO;
+		nothingChanged = NO;
+		[self setNeedsDisplay:YES];
+	}
+	
 	[undoManager endUndoGrouping];
 		
 	if(isAddCurveButtonHighlighted)
 	{
 		[self newCurve];
 		isAddCurveButtonHighlighted = NO;
-		[self setNeedsDisplay:YES];
-	}
-
-	if(isRemoveSelectedCurveButtonHighlighted)
-	{
-		if([self selectedCurveIndex]>=0)
-			[self deleteCurveAtIndex:[self selectedCurveIndex]];
-		isRemoveSelectedCurveButtonHighlighted = NO;
 		[self setNeedsDisplay:YES];
 	}
 	
