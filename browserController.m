@@ -13041,7 +13041,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 		}
 	}
-	else NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
+	else
+	{
+		NSRunAlertPanel( NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
+		[self resetToLocalDatabase];
+	}
 }
 
 - (IBAction) bonjourServiceClicked:(id)sender

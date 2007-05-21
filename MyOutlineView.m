@@ -258,8 +258,11 @@ extern     BrowserController  *browserWindow;
 	{
 		if( [[[fileArray objectAtIndex: 0] lastPathComponent] isEqualToString: @"OsiriX Data"])	// It's a database folder !
 		{
-			[browserWindow openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
-			done = YES;
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: @"Database.sql"]])
+			{
+				[browserWindow openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
+				done = YES;
+			}
 		}
 	}
 	
