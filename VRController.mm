@@ -822,7 +822,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[dict setObject:[NSNumber numberWithBool:[view advancedCLUT]] forKey:@"isAdvancedCLUT"];
 	if(![view advancedCLUT])[dict setObject:curOpacityMenu forKey:@"OpacityName"];
 	
-	if([curCLUTMenu isEqualToString:@"16-bit CLUT"])
+	if([curCLUTMenu isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
 	{
 		NSArray *curves = [clutOpacityView convertCurvesForPlist];
 		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
@@ -870,7 +870,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			{
 				[[[clutPopup menu] itemAtIndex:0] setTitle:[dict objectForKey:@"CLUTName"]];
 				[self setCurCLUTMenu:[dict objectForKey:@"CLUTName"]];
-				if([[dict objectForKey:@"CLUTName"] isEqualToString:@"16-bit CLUT"])
+				if([[dict objectForKey:@"CLUTName"] isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
 				{
 					NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[dict objectForKey:@"16bitClutCurves"]];
 					NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[dict objectForKey:@"16bitClutColors"]];
@@ -2682,8 +2682,8 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[clutOpacityView updateView];
 	[clutOpacityView setCLUTtoVRView:NO];
 //	[clutOpacityView newCurve:self];
-	//if(![view advancedCLUT])[[[clutPopup menu] itemAtIndex:0] setTitle:@"16-bit CLUT"];
-	if(![view advancedCLUT])[self setCurCLUTMenu:@"16-bit CLUT"];
+	//if(![view advancedCLUT])[[[clutPopup menu] itemAtIndex:0] setTitle:NSLocalizedString(@"16-bit CLUT", nil)];
+	if(![view advancedCLUT])[self setCurCLUTMenu:NSLocalizedString(@"16-bit CLUT", nil)];
 	[OpacityPopup setEnabled:NO];
 }
 
@@ -2782,8 +2782,6 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	//CLUT
 	BOOL isAdvancedCLUT = [view advancedCLUT];
 	NSString *clut = curCLUTMenu;
-	//convolution filters
-	//NSString *convolution = [viewer2D valueForKey:@"curConvMenu"];
 	//projection
 	int projection = [[view valueForKey:@"projectionMode"] intValue];
 	
@@ -2800,7 +2798,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[presetDictionary setObject:shadingPresetName forKey:@"shading"];
 	[presetDictionary setObject:[NSNumber numberWithBool:isAdvancedCLUT] forKey:@"advancedCLUT"];
 	[presetDictionary setObject:clut forKey:@"CLUT"];
-	//[presetDictionary setObject:convolution forKey:@"convolution"];
+	if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+	{
+		NSArray *curves = [clutOpacityView convertCurvesForPlist];
+		NSArray *colors = [clutOpacityView convertPointColorsForPlist];
+		[presetDictionary setObject:curves forKey:@"16bitClutCurves"];
+		[presetDictionary setObject:colors forKey:@"16bitClutColors"];
+	}
 	[presetDictionary setObject:appliedConvolutionFilters forKey:@"convolutionFilters"];
 	[presetDictionary setObject:[NSNumber numberWithInt:projection] forKey:@"projection"];
 	[presetDictionary setObject:curOpacityMenu forKey:@"opacity"];
@@ -3095,13 +3099,30 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 		}
 		else
 		{
-			[clutOpacityView loadFromFileWithName:clut];
-			[clutOpacityView setCLUTtoVRView:NO];
-			[clutOpacityView updateView];
-			if(curCLUTMenu) [curCLUTMenu release];
-			curCLUTMenu = [clut retain];
-			[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
-			[OpacityPopup setEnabled:NO];
+			if([clut isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+			{
+				NSMutableArray *curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
+				NSMutableArray *colors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
+				
+				NSMutableDictionary *clutDict = [NSMutableDictionary dictionaryWithCapacity:2];
+				[clutDict setObject:curves forKey:@"curves"];
+				[clutDict setObject:colors forKey:@"colors"];
+
+				[clutOpacityView setCurves:curves];
+				[clutOpacityView setPointColors:colors];
+				
+				[view setAdvancedCLUT:clutDict lowResolution:NO];
+			}
+			else
+			{
+				[clutOpacityView loadFromFileWithName:clut];
+				[clutOpacityView setCLUTtoVRView:NO];
+				[clutOpacityView updateView];
+				if(curCLUTMenu) [curCLUTMenu release];
+				curCLUTMenu = [clut retain];
+				[[[clutPopup menu] itemAtIndex:0] setTitle:clut];
+				[OpacityPopup setEnabled:NO];
+			}
 		}
 		
 		// shadings
@@ -3296,6 +3317,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
 				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
 				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+			}
+			else if([aClutName isEqualToString:NSLocalizedString(@"16-bit CLUT", nil)])
+			{
+				curves = [CLUTOpacityView convertCurvesFromPlist:[preset objectForKey:@"16bitClutCurves"]];
+				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[preset objectForKey:@"16bitClutColors"]];
 			}
 		}
 
