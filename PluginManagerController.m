@@ -148,6 +148,21 @@
 
 - (IBAction)showWindow:(id)sender;
 {
+	if([[self availablePlugins] count]<1)
+	{
+		[pluginsListPopUp removeAllItems];
+		[pluginsListPopUp setEnabled:NO];
+		[downloadButton setEnabled:NO];
+		[statusTextField setHidden:NO];
+		[statusTextField setStringValue:NSLocalizedString(@"No plugin server available.", nil)];
+		//return;
+	}
+	else
+	{
+		[self generateAvailablePluginsMenu];
+		[self setURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"url"]];
+		[self setDownloadURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+	}
 	[super showWindow:sender];
 	[self refreshPluginList];
 }
@@ -218,22 +233,10 @@ int sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 #pragma mark web page
 
-- (void)awakeFromNib
-{
-	if(![self availablePlugins])
-	{
-		[pluginsListPopUp removeAllItems];
-		[pluginsListPopUp setEnabled:NO];
-		[downloadButton setEnabled:NO];
-		[statusTextField setHidden:NO];
-		[statusTextField setStringValue:NSLocalizedString(@"No plugin server available.", nil)];
-		return;
-	}
-	
-	[self generateAvailablePluginsMenu];
-	[self setURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"url"]];
-	[self setDownloadURL:[[[self availablePlugins] objectAtIndex:0] valueForKey:@"download_url"]];
-}
+//- (void)awakeFromNib
+//{
+//
+//}
 
 - (void)setURL:(NSString*)url;
 {
