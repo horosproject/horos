@@ -541,6 +541,56 @@ PluginManager			*pluginManager = 0L;
 	}
 }
 
++ (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
+{
+	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
+	[paths addObjectsFromArray:[PluginManager activeDirectories]];
+	[paths addObjectsFromArray:[PluginManager inactiveDirectories]];
+
+	NSEnumerator *pathEnum = [paths objectEnumerator];
+    NSString *path;
+	NSString *completePluginPath;
+	BOOL found = NO;
+	
+	while((path = [pathEnum nextObject]) && !found)
+	{
+		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+		NSString *name;
+		while((name = [e nextObject]) && !found)
+		{
+			if([[name stringByDeletingPathExtension] isEqualToString:pluginName])
+			{
+				completePluginPath = [NSString stringWithFormat:@"%@/%@", path, name];
+				found = YES;
+			}
+		}
+	}
+	
+	NSString *directory = [completePluginPath stringByDeletingLastPathComponent];
+	NSMutableString *newDirectory = [NSMutableString stringWithString:@""];
+	
+	NSArray *availabilities = [PluginManager availabilities];
+	if([availability isEqualTo:[availabilities objectAtIndex:0]])
+	{
+		[newDirectory setString:[PluginManager userActivePluginsDirectoryPath]];
+	}
+	else if([availability isEqualTo:[availabilities objectAtIndex:1]])
+	{
+		[newDirectory setString:[PluginManager systemActivePluginsDirectoryPath]];
+	}
+	else if([availability isEqualTo:[availabilities objectAtIndex:2]])
+	{
+		[newDirectory setString:[PluginManager appActivePluginsDirectoryPath]];
+	}
+	[newDirectory setString:[newDirectory stringByDeletingLastPathComponent]]; // remove /Plugins/
+	[newDirectory setString:[newDirectory stringByAppendingPathComponent:[directory lastPathComponent]]]; // add /Plugins/ or /Plugins (off)/
+	
+	NSMutableString *newPluginPath = [NSMutableString stringWithString:@""];
+	[newPluginPath setString:[newDirectory stringByAppendingPathComponent:[completePluginPath lastPathComponent]]];
+	
+	[PluginManager movePluginFromPath:completePluginPath toPath:newPluginPath];
+}
+
 + (void)createDirectory:(NSString*)directoryPath;
 {
 	BOOL isDir = YES;
@@ -623,6 +673,14 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 		BOOL active = [[PluginManager activeDirectories] containsObject:path];
 		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath] || [path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]]);
 		
+		NSString *availability;
+		if([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath])
+			availability = [[PluginManager availabilities] objectAtIndex:1];
+		else if([path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]])
+			availability = [[PluginManager availabilities] objectAtIndex:2];
+		else if([path isEqualToString:userActivePath] || [path isEqualToString:userInactivePath])
+			availability = [[PluginManager availabilities] objectAtIndex:0];
+		
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
@@ -637,6 +695,9 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 					[pluginDescription setObject:[NSNumber numberWithBool:active] forKey:@"active"];
 					[pluginDescription setObject:[NSNumber numberWithBool:allUsers] forKey:@"allUsers"];
 					
+					
+					[pluginDescription setObject:availability forKey:@"availability"];
+					
 					[plugins addObject:pluginDescription];
 				}
 			}
@@ -644,6 +705,11 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 	}
 	NSArray *sortedPlugins = [plugins sortedArrayUsingFunction:sortPluginArray context:NULL];
 	return sortedPlugins;
+}
+
++ (NSArray*)availabilities;
+{
+	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"Application", nil), nil];
 }
 
 @end

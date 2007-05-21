@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PluginManager; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
                 changeWebView = id; 
@@ -8,6 +9,7 @@
                 download = id; 
                 loadPlugins = id; 
                 modifiyActivation = id; 
+                modifiyAvailability = id; 
             }; 
             CLASS = PluginManagerController; 
             LANGUAGE = ObjC; 

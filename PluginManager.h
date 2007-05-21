@@ -37,8 +37,10 @@
 + (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
 + (void)activatePluginWithName:(NSString*)pluginName;
 + (void)deactivatePluginWithName:(NSString*)pluginName;
++ (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
 + (void)deletePluginWithName:(NSString*)pluginName;
 + (NSArray*)pluginsList;
 + (void)createDirectory:(NSString*)directoryPath;
++ (NSArray*)availabilities;
 
 @end

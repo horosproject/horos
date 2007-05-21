@@ -62,6 +62,11 @@
 	return plugins;
 }
 
+- (NSArray*)availabilities;
+{
+	return [PluginManager availabilities];
+}
+
 - (IBAction)modifiyActivation:(id)sender;
 {
 	NSArray *pluginsList = [PluginManager pluginsList];
@@ -91,6 +96,13 @@
 	[self refreshPluginList];
 }
 
+- (IBAction)modifiyAvailability:(id)sender;
+{
+	NSString *pluginAvailability = [[plugins objectAtIndex:[pluginTable clickedRow]] objectForKey:@"availability"];
+	NSString *pluginName = [[plugins objectAtIndex:[pluginTable clickedRow]] objectForKey:@"name"];
+	
+	[PluginManager changeAvailabilityOfPluginWithName:pluginName to:[[sender selectedCell] title]];
+}
 
 - (void)loadPlugins;
 {

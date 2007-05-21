@@ -35,8 +35,10 @@
 }
 
 - (NSMutableArray*)plugins;
+- (NSArray*)availabilities;
 - (IBAction)modifiyActivation:(id)sender;
 - (IBAction)delete:(id)sender;
+- (IBAction)modifiyAvailability:(id)sender;
 - (void)loadPlugins;
 - (IBAction)loadPlugins:(id)sender;
 - (void)refreshPluginList;
