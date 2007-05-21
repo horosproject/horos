@@ -104,7 +104,6 @@ static char *GetPrivateIP()
 		lock = [[NSLock alloc] init];
 		browser = [[NSNetServiceBrowser alloc] init];
 		services = [[NSMutableArray array] retain];
-		servicesDICOMListener = [[NSMutableArray array] retain];
 		
 		[self buildFixedIPList];
 		[self buildLocalPathsList];
@@ -161,25 +160,9 @@ static char *GetPrivateIP()
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 - (NSMutableArray*) services
 {
 	return services;
-}
-
-- (NSDictionary*) servicesDICOMListenerForIndex: (int) i
-{
-	if( [[servicesDICOMListener objectAtIndex: i] valueForKey:@"Address"] == 0L)
-	{
-		[servicesDICOMListener replaceObjectAtIndex: i withObject: [self getDICOMDestinationInfo: i]];
-	}
-	
-	return [servicesDICOMListener objectAtIndex: i];
 }
 
 //- (BOOL) unzipToPath:(NSString*)_toPath
@@ -240,8 +223,11 @@ static char *GetPrivateIP()
 			{
 				// we asked for a SQL file, let's write it on disc
 				[dbFileName release];
-				if( serviceBeingResolvedIndex < BonjourServices) dbFileName = [[self databaseFilePathForService:[[[self services] objectAtIndex:serviceBeingResolvedIndex] name]] retain];
-				else dbFileName = [[self databaseFilePathForService:[[[self services] objectAtIndex:serviceBeingResolvedIndex] valueForKey:@"Description"]] retain];
+				
+				NSDictionary	*dict = [[self services] objectAtIndex:serviceBeingResolvedIndex];
+				
+				if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) dbFileName = [[self databaseFilePathForService:[[dict valueForKey:@"service"] name]] retain];
+				else dbFileName = [[self databaseFilePathForService:[dict valueForKey:@"Description"]] retain];
 				
 				[[NSFileManager defaultManager] removeFileAtPath: dbFileName handler:0L];
 				
@@ -681,11 +667,6 @@ static char *GetPrivateIP()
 	return succeed;
 }
 
-- (int) BonjourServices
-{
-	return BonjourServices;
-}
-
 - (void) buildFixedIPList
 {
 	int			i;
@@ -697,7 +678,6 @@ static char *GetPrivateIP()
 		[dict setValue:@"fixedIP" forKey:@"type"];
 	
 		[services addObject: dict];
-		[servicesDICOMListener addObject: [NSDictionary dictionary]];
 	}
 }
 
@@ -712,7 +692,6 @@ static char *GetPrivateIP()
 		[dict setValue:@"localPath" forKey:@"type"];
 		
 		[services addObject: dict];
-		[servicesDICOMListener addObject: [NSDictionary dictionary]];
 	}
 }
 
@@ -720,10 +699,13 @@ static char *GetPrivateIP()
 
 - (void) updateFixedIPList: (NSNotification*) note
 {
-	NSRange	range = NSMakeRange( BonjourServices, [services count] - BonjourServices);
+	int i;
 	
-	[services removeObjectsInRange: range];
-	[servicesDICOMListener removeObjectsInRange: range];
+	for( i = 0; i < [services count] ; i++)
+	{
+		if( [[services valueForKey:@"type"] isEqualToString:@"fixedIP"])
+			[services removeObjectAtIndex: i];
+	}
 	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
@@ -808,11 +790,6 @@ static char *GetPrivateIP()
 		}
 	}
 }
-//
-//- (void)netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)myData
-//{
-//	NSLog( [[NSNetService dictionaryFromTXTRecordData: myData] description]);
-//}
 
 // This object is the delegate of its NSNetServiceBrowser object.
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
@@ -824,41 +801,40 @@ static char *GetPrivateIP()
 	}
 	else
 	{
-		[services insertObject:aNetService atIndex:BonjourServices];
-		[servicesDICOMListener insertObject: [NSDictionary dictionary] atIndex: BonjourServices];
+		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
 		
-		BonjourServices ++;
+		[services addObject:dict];
 	}
 	
 	// update interface
     if(!moreComing) [interfaceOsiriX displayBonjourServices];
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing {
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing 
+{
     // This case is slightly more complicated. We need to find the object in the list and remove it.
     NSEnumerator * enumerator = [services objectEnumerator];
     NSNetService * currentNetService;
 	
-    while(currentNetService = [enumerator nextObject]) {
-        if ([currentNetService isEqual:aNetService])
+    while(currentNetService = [enumerator nextObject])
+	{
+        if( [[currentNetService valueForKey: @"service"] isEqual: aNetService])
 		{
 			// deleting the associate SQL temporary file
 			if ([[NSFileManager defaultManager] fileExistsAtPath: [self databaseFilePathForService:[aNetService name]] ])
 			{
 				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[currentNetService name]] handler:self];
 			}
-									
-			if( [interfaceOsiriX currentBonjourService] == [services indexOfObject: aNetService])
+			
+			if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
 			{
 				[interfaceOsiriX resetToLocalDatabase];
 			}
-
+			
 			// deleting service from list
 			int index = [services indexOfObject: currentNetService];
             [services removeObjectAtIndex: index];
-			[servicesDICOMListener removeObjectAtIndex: index];
-
-			BonjourServices --;
+			
             break;
         }
     }
@@ -903,21 +879,25 @@ static char *GetPrivateIP()
         [serviceBeingResolved release];
         serviceBeingResolved = nil;
     }
-
+	
+	NSDictionary	*dict = 0L;
+	
+	if( index >= 0) dict = [services objectAtIndex:index];
 	
     if(-1 == index)
 	{
+	
     }
-	else if( index >= BonjourServices)
+	else if( [[dict valueForKey:@"type"] isEqualToString:@"fixedIP"])
 	{
 		resolved = NO;
 		succeed = [self fixedIP: index];
 	}
-	else
+	else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 	{   
 		@try
 		{
-			serviceBeingResolved = [services objectAtIndex:index];
+			serviceBeingResolved = [dict valueForKey:@"serivce"];
 			[serviceBeingResolved retain];
 			[serviceBeingResolved setDelegate:self];
 			
@@ -935,6 +915,7 @@ static char *GetPrivateIP()
 			NSLog( @"resolveServiceWithIndex FAILED");
 		}
     }
+	else NSLog( @"ERROR !");
 	
 	return succeed;
 }
@@ -1210,16 +1191,20 @@ static char *GetPrivateIP()
 	//Do we have DICOM Node informations about the destination node?
 	if( indexTo >= 0)	// indexTo == -1: this computer
 	{
-		[servicesDICOMListener replaceObjectAtIndex:indexTo withObject:[self getDICOMDestinationInfo: indexTo]];
-		if( [[servicesDICOMListener objectAtIndex: indexTo] valueForKey: @"Address"] == 0L) return NO;
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [services objectAtIndex: indexTo]];
+		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexTo]];
+		[services replaceObjectAtIndex:indexTo withObject: dict];
+		
+		if( [dict valueForKey: @"Address"] == 0L) return NO;
 	}
+	
 	if( indexFrom >= 0)	// indexFrom == -1: this computer
 	{
-		[servicesDICOMListener replaceObjectAtIndex:indexFrom withObject:[self getDICOMDestinationInfo: indexFrom]];
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [services objectAtIndex: indexFrom]];
+		[dict addEntriesFromDictionary: [self getDICOMDestinationInfo: indexFrom]];
+		[services replaceObjectAtIndex:indexFrom withObject: dict];
 		
-		NSLog( [[servicesDICOMListener objectAtIndex: indexFrom] description]);
-		
-		if( [[servicesDICOMListener objectAtIndex: indexFrom] valueForKey: @"Address"] == 0L) return NO;
+		if( [dict valueForKey: @"Address"] == 0L) return NO;
 	}
 	
 	[BonjourBrowser waitForLock: lock];
@@ -1230,7 +1215,7 @@ static char *GetPrivateIP()
 	[dicomDestination release];
 	if( indexTo >= 0)
 	{
-		dicomDestination = [[servicesDICOMListener objectAtIndex: indexTo] retain];
+		dicomDestination = [[services objectAtIndex: indexTo] retain];
 	}
 	else // indexTo == -1: this computer
 	{

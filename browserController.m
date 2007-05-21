@@ -2261,7 +2261,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	// Third, is it available in the list ?
 	if( found == NO)
 	{
-		for( i = [bonjourBrowser BonjourServices]; i < [[bonjourBrowser services] count]; i++)
+		for( i = 0; i < [[bonjourBrowser services] count]; i++)
 		{
 			NSString	*type = [[[bonjourBrowser services] objectAtIndex: i] valueForKey:@"type"];
 			
@@ -3693,7 +3693,9 @@ static BOOL				DICOMDIRCDMODE = NO;
 	{
 		int rowIndex = [bonjourServicesList selectedRow];
 		
-		if( rowIndex <= [bonjourBrowser BonjourServices]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name]];
+		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+		
+		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name]];
 		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Description"]];
 		
 	}
@@ -7171,8 +7173,11 @@ static BOOL needToRezoom;
 		{
 			if (bonjourBrowser!=nil)
 			{
+				NSDictionary *dict = 0L;
+				if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+				
 				if( rowIndex == 0) return NSLocalizedString(@"Local Default Database", 0L);
-				else if( rowIndex <= [bonjourBrowser BonjourServices]) return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name];
+				else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name];
 				else return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Description"];
 			}
 			else
@@ -7234,11 +7239,14 @@ static BOOL needToRezoom;
 		[aCell setFont:txtFont];
 		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
+		NSDictionary *dict = 0L;
+		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+		
 		if (rowIndex == 0)
 		{
 			[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
 		}
-		else if (rowIndex <= [bonjourBrowser BonjourServices])
+		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 		{
 			[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
 		}
@@ -7567,7 +7575,7 @@ static BOOL needToRezoom;
 					if( [[[imagesArray objectAtIndex:i] valueForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) OnlyDICOM = NO;
 				}
 				
-				NSDictionary *dcmNode = [bonjourBrowser servicesDICOMListenerForIndex: row-1];
+				NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 				
 				if( OnlyDICOM == NO) NSLog( @"Not Only DICOM !");
 				
@@ -7673,13 +7681,28 @@ static BOOL needToRezoom;
 	{
 		if( row > 0)
 		{
-			NSDictionary *dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
+			NSString		*result = 0L;
+			NSDictionary	*dcmNode = [[bonjourBrowser services] objectAtIndex: row-1];
 			
-			return [dcmNode description];
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"])
+			{
+				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"dcm"]) return [dcmNode valueForKey:@"Path"];
+				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data"];
+			}
+			
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"])
+			{
+				return [dcmNode valueForKey:@"Address"];
+			}
+			
+			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"bonjour"])
+			{
+				return [dcmNode valueForKey:@"Address"];
+			}
 		}
 		else
 		{
-			
+			return  [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 		}
 	}
 	

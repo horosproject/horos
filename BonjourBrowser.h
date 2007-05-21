@@ -21,9 +21,8 @@
 	NSLock				*lock;
     NSNetServiceBrowser	*browser;
 	NSMutableArray		*services;
-	NSMutableArray		*servicesDICOMListener;
     NSNetService		*serviceBeingResolved;
-	int					serviceBeingResolvedIndex, BonjourServices;
+	int					serviceBeingResolvedIndex;
 	BrowserController	*interfaceOsiriX;
 	char				messageToRemoteService[ 256];
 	
@@ -60,7 +59,6 @@
 - (BOOL) resolveServiceWithIndex:(int)index msg: (char*) msg;
 
 - (NSMutableArray*) services;
-- (NSDictionary*) servicesDICOMListenerForIndex: (int) i;
 - (NSString *) databaseFilePathForService:(NSString*) service;
 
 
@@ -76,7 +74,6 @@
 - (BOOL) retrieveDICOMFilesWithSTORESCU:(int) indexFrom to:(int) indexTo paths:(NSArray*) ip;
 - (NSDate*) getFileModification:(NSString*) pathFile index:(int) index;
 
-- (int) BonjourServices;
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;
 
