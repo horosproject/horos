@@ -2731,6 +2731,36 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 			}
 		}
 	}
+	
+	isDir = YES;
+	// look in the resources bundle path
+	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+	[bundlePath appendString:@"/CLUTs/"];
+	
+	if([[NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:&isDir] && isDir)
+	{
+		NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:bundlePath];
+		int i;
+		for (i=0; i<[content count]; i++)
+		{
+			if(![[content objectAtIndex:i] isEqualToString:@".DS_Store"])
+			{
+				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:[bundlePath stringByAppendingPathComponent:[content objectAtIndex:i]]];
+				if(clut)
+				{
+					if([clut objectForKey:@"curves"] && [clut objectForKey:@"colors"])
+					{
+						if([CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]] &&[CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]])
+						{
+							NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[[content objectAtIndex:i] stringByDeletingPathExtension] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+							if([view isRGB]) [item setEnabled:NO];
+						}
+					}
+				}
+			}
+		}
+	}
+	
     NSMenuItem *item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 	if([[pixList[ 0] objectAtIndex:0] isRGB]) [item setEnabled:NO];
 }
