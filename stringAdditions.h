@@ -10,7 +10,6 @@
 
 @interface NSString (stringAdditions)
 
-- (NSComparisonResult)caseInsensitiveCompare:(NSString *)aString;
 - (NSComparisonResult)numericCompare:(NSString *)aString;
 
 @end

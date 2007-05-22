@@ -2994,29 +2994,41 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 
 - (NSArray*)find3DSettingsGroups;
 {
-	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:PRESETS_DIRECTORY];
-	
+	// path 1 : /OsirirX Data/CLUTs/
+	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+	[path1 appendString:PRESETS_DIRECTORY];
+	// path 2 : /resources_bundle_path/CLUTs/
+	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+	[bundlePath appendString:PRESETS_DIRECTORY];
+
+	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path1, bundlePath, nil];
+
 	NSMutableArray *settingsGroups = [NSMutableArray array];
 	
 	BOOL isDir = YES;
-	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	int j;
+	
+	for (j=0; j<[paths count]; j++)
 	{
-		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
-		int i;
-		for(i=0; i<[settingsFiles count]; i++)
+		NSString *path = [paths objectAtIndex:j];
+		if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		{
-			NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
-			if([[filePath pathExtension] isEqualToString:@"plist"])
+			NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
+			int i;
+			for(i=0; i<[settingsFiles count]; i++)
 			{
-				NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
-				if(settings)
+				NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
+				if([[filePath pathExtension] isEqualToString:@"plist"])
 				{
-					if([[settings allKeys] containsObject:@"groupName"])
+					NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+					if(settings)
 					{
-						if(![settingsGroups containsObject:[settings objectForKey:@"groupName"]])
-							[settingsGroups addObject:[settings objectForKey:@"groupName"]];
-						[settings release];
+						if([[settings allKeys] containsObject:@"groupName"])
+						{
+							if(![settingsGroups containsObject:[settings objectForKey:@"groupName"]])
+								[settingsGroups addObject:[settings objectForKey:@"groupName"]];
+							[settings release];
+						}
 					}
 				}
 			}
@@ -3025,30 +3037,49 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	return [settingsGroups sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];;
 }
 
+int sort3DSettingsDict(id preset1, id preset2, void *context)
+{
+    NSString *name1 = [preset1 objectForKey:@"name"];
+    NSString *name2 = [preset2 objectForKey:@"name"];
+    return [name1 caseInsensitiveCompare:name2];
+}
+
 - (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
 {
-	NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:PRESETS_DIRECTORY];
+	// path 1 : /OsirirX Data/CLUTs/
+	NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
+	[path1 appendString:PRESETS_DIRECTORY];
+	// path 2 : /resources_bundle_path/CLUTs/
+	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
+	[bundlePath appendString:PRESETS_DIRECTORY];
+
+	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path1, bundlePath, nil];
 	
 	NSMutableArray *settingsList = [NSMutableArray array];
 	
 	BOOL isDir = YES;
-	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
+	int j;
+	
+	for (j=0; j<[paths count]; j++)
 	{
-		NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
-		int i;
-		for(i=0; i<[settingsFiles count]; i++)
+		NSString *path = [paths objectAtIndex:j];
+		if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 		{
-			NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
-			if(settings)
+			NSArray *settingsFiles = [[NSFileManager defaultManager] subpathsAtPath:path];
+			int i;
+			for(i=0; i<[settingsFiles count]; i++)
 			{
-				if([[settings allKeys] containsObject:@"groupName"])
+				NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+				if(settings)
 				{
-					if([[settings objectForKey:@"groupName"] isEqualToString:groupName])
+					if([[settings allKeys] containsObject:@"groupName"])
 					{
-						[settingsList addObject:settings];
+						if([[settings objectForKey:@"groupName"] isEqualToString:groupName])
+						{
+							[settingsList addObject:settings];
+						}
+						[settings release];
 					}
-					[settings release];
 				}
 			}
 		}
@@ -3057,7 +3088,7 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	presetPageMax = [settingsList count]/[presetPreviewArray count];
 	[self enablePresetPageButtons];
 	
-	return settingsList;
+	return [settingsList sortedArrayUsingFunction:sort3DSettingsDict context:NULL];
 }
 
 #pragma mark load preset

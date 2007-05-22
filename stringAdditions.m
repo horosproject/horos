@@ -10,11 +10,6 @@
 
 @implementation NSString (stringAdditions)
 
-- (NSComparisonResult)caseInsensitiveCompare:(NSString *)aString;
-{
-	return [self compare:aString options:NSCaseInsensitiveSearch];
-}
-
 - (NSComparisonResult)numericCompare:(NSString *)aString
 {
 	return [self compare:aString options:NSNumericSearch | NSCaseInsensitiveSearch];
