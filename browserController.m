@@ -94,8 +94,7 @@ Version 2.5
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "NetworkSendDataHandler.h"
 #import "LogWindowController.h"
-//#import "stringNumericCompare.h"
-#import "stringAdditions.h"
+#import "stringNumericCompare.h"
 #import "SendController.h"
 #import "Reports.h"
 #import "LogManager.h"
@@ -12719,33 +12718,30 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 
-- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the ordered list of items to be shown in the toolbar by default    
-    // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
-    // user chooses to revert to the default items this set will be used 
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+{
     return [NSArray arrayWithObjects:	ImportToolbarItemIdentifier,
+										ExportToolbarItemIdentifier,
 										CDRomToolbarItemIdentifier,
 										QueryToolbarItemIdentifier,
-										ExportToolbarItemIdentifier,
-										AnonymizerToolbarItemIdentifier,
 										SendToolbarItemIdentifier,
+										AnonymizerToolbarItemIdentifier,
+										BurnerToolbarItemIdentifier,
+										TrashToolbarItemIdentifier,
+										NSToolbarFlexibleSpaceItemIdentifier,
 										ViewerToolbarItemIdentifier,
 										MovieToolbarItemIdentifier,
-										BurnerToolbarItemIdentifier,
+										NSToolbarFlexibleSpaceItemIdentifier,
 										ToggleDrawerToolbarItemIdentifier,
 										NSToolbarFlexibleSpaceItemIdentifier,
 										ReportToolbarItemIdentifier,
-										TrashToolbarItemIdentifier,
 										SearchToolbarItemIdentifier,
 										TimeIntervalToolbarItemIdentifier,
 										nil];
 }
 
-- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar {
-    // Required delegate method:  Returns the list of all allowed items by identifier.  By default, the toolbar 
-    // does not assume any items are allowed, even the separator.  So, every allowed item must be explicitly listed   
-    // The set of allowed items is used to construct the customization palette 
-	
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+{	
 	NSArray	*array;
 	
 	array = [NSArray arrayWithObjects:		SearchToolbarItemIdentifier,
@@ -12993,7 +12989,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		{
 			[self openDatabasePath: [object valueForKey: @"Path"]];
 		}
-		else	// NETWORK - DATABASE
+		else	// NETWORK - DATABASE - bonjour / fixedIP
 		{
 			WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Connecting to OsiriX database...", nil)];
 			[wait showWindow:self];

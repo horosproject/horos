@@ -933,7 +933,7 @@ static char *GetPrivateIP()
 	{   
 		@try
 		{
-			serviceBeingResolved = [dict valueForKey:@"serivce"];
+			serviceBeingResolved = [dict valueForKey:@"service"];
 			[serviceBeingResolved retain];
 			[serviceBeingResolved setDelegate:self];
 			
