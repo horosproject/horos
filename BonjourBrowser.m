@@ -107,6 +107,7 @@ static char *GetPrivateIP()
 		
 		[self buildFixedIPList];
 		[self buildLocalPathsList];
+		[self arrangeServices];
 		
 		interfaceOsiriX = bC;
 		
@@ -703,16 +704,45 @@ static char *GetPrivateIP()
 	
 	for( i = 0; i < [services count] ; i++)
 	{
-		if( [[services valueForKey:@"type"] isEqualToString:@"fixedIP"])
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
 			[services removeObjectAtIndex: i];
 	}
 	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
+	[self arrangeServices];
 	
 	[interfaceOsiriX displayBonjourServices];
 }
 
+- (void) arrangeServices
+{
+	// Order them, first the localPath, fixedIP, and then bonjour
+	
+	NSMutableArray	*result = [NSMutableArray array];
+	int i;
+	
+	for( i = 0 ; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
+			[result addObject: [services objectAtIndex: i]];
+	}
+	
+	for( i = 0 ; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
+			[result addObject: [services objectAtIndex: i]];
+	}
+	
+	for( i = 0 ; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"bonjour"])
+			[result addObject: [services objectAtIndex: i]];
+	}
+
+	[services removeAllObjects];
+	[services addObjectsFromArray: result];
+}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -804,10 +834,15 @@ static char *GetPrivateIP()
 		NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: aNetService, @"service", @"bonjour", @"type", 0L];
 		
 		[services addObject:dict];
+		
 	}
 	
 	// update interface
-    if(!moreComing) [interfaceOsiriX displayBonjourServices];
+    if(!moreComing)
+	{
+		[self arrangeServices];
+		[interfaceOsiriX displayBonjourServices];
+	}
 }
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing 
@@ -847,6 +882,7 @@ static char *GetPrivateIP()
 
     if(!moreComing)
 	{
+		[self arrangeServices];
 		[interfaceOsiriX displayBonjourServices];
 	}
 }

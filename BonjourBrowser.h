@@ -76,6 +76,7 @@
 
 - (void) buildFixedIPList;
 - (void) buildLocalPathsList;
+- (void) arrangeServices;
 
 - (NSDictionary*) getDICOMDestinationInfo:(int) index;
 @end

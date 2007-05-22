@@ -32,4 +32,6 @@
 - (NSImage *)thumbnail;
 - (NSDictionary *)dictionary;
 - (NSString*) completePathWithDownload:(BOOL) download;
++ (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
+
 @end

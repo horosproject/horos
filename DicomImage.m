@@ -72,6 +72,23 @@ extern NSString * documentsDirectory();
 	completePathCache = 0L;
 }
 
++ (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory
+{
+	if( [path characterAtIndex: 0] != '/')
+	{
+		NSString	*extension = [path pathExtension];
+		long		val = [[path stringByDeletingPathExtension] intValue];
+		NSString	*dbLocation = [directory stringByAppendingPathComponent: @"DATABASE"];
+		
+		val /= 10000;
+		val++;
+		val *= 10000;
+		
+		return [[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path];
+	}
+	else return path;
+}
+
 -(NSString*) completePathWithDownload:(BOOL) download
 {
 	if( completePathCache) return completePathCache;
@@ -92,18 +109,9 @@ extern NSString * documentsDirectory();
 		}
 		else
 		{
-			if( [path cString] [ 0] != '/')
+			if( [path characterAtIndex: 0] != '/')
 			{
-				NSString	*extension = [path pathExtension];
-				long		val = [[path stringByDeletingPathExtension] intValue];
-				NSString	*dbLocation = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: @"DATABASE"];
-				
-				val /= 10000;
-				val++;
-				val *= 10000;
-				
-				completePathCache = [[[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path] retain];
-				
+				completePathCache = [[DicomImage completePathForLocalPath: path directory: [cB fixedDocumentsDirectory]] retain];
 				return completePathCache;
 			}
 		}

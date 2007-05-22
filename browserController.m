@@ -462,6 +462,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[pool release];
 }
 
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
+{
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles :YES];
+}
+
+-(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
+{
+	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles :YES];
+}
+
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles
 {
 	return [self addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM safeRebuild:(BOOL) safeProcess produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject: NO];
@@ -788,12 +798,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 							index = [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString:SeriesNum]]];
 							if( index != NSNotFound)
 							{
-								BOOL	isDirectory;
-								
 								image = [imagesArray objectAtIndex: index];
 								
 								// Does this image contain a valid image path? If not replace it, with the new one
-								if( [[NSFileManager defaultManager] fileExistsAtPath:[image valueForKey:@"completePath"] isDirectory:&isDirectory])
+								if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]] == YES && parseExistingObject == NO)
 								{
 									if( produceAddedFiles)
 										[addedImagesArray addObject: image];
@@ -803,14 +811,20 @@ static BOOL				DICOMDIRCDMODE = NO;
 										if( [[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
 											[[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
 									}
+									
+									newObject = NO;
 								}
 								else
 								{
-									index = NSNotFound;
+									newObject = YES;
 									[image clearCompletePathCache];
+									
+									if( [[image valueForKey:@"inDatabaseFolder"] boolValue])
+									{
+										if( [[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder]])
+											[[NSFileManager defaultManager] removeFileAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory: dbFolder] handler:nil];
+									}
 								}
-								
-								newObject = NO;
 							}
 							else
 							{
@@ -819,7 +833,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 								newObject = YES;
 							}
 							
-							if( index == NSNotFound)
+							if( newObject || parseExistingObject)
 							{
 								needDBRefresh = YES;
 								
@@ -858,10 +872,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 								
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
-							}
-							
-							if( newObject || parseExistingObject)
-							{
+								
 								if( COMMENTSAUTOFILL)
 								{
 									if([curDict objectForKey: @"commentsAutoFill"])
@@ -1095,16 +1106,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 		NSLog( @"newFilesGUIUpdate");
 		[self newFilesGUIUpdateRun: condition];
 	}
-}
-
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray :(BOOL) onlyDICOM
-{
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:onlyDICOM safeRebuild:NO produceAddedFiles :YES];
-}
-
--(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray
-{
-	return [self addFilesToDatabase: newFilesArray onlyDICOM:NO safeRebuild:NO produceAddedFiles :YES];
 }
 
 - (NSArray*) addFilesAndFolderToDatabase:(NSArray*) filenames copied:(BOOL*) copied
@@ -7686,8 +7687,8 @@ static BOOL needToRezoom;
 			
 			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"localPath"])
 			{
-				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"dcm"]) return [dcmNode valueForKey:@"Path"];
-				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data"];
+				if( [[[dcmNode valueForKey:@"Path"] pathExtension] isEqualToString:@"sql"]) return [dcmNode valueForKey:@"Path"];
+				else return [[dcmNode valueForKey:@"Path"] stringByAppendingPathComponent:@"OsiriX Data/"];
 			}
 			
 			if( [[dcmNode valueForKey:@"type"] isEqualToString: @"fixedIP"])
