@@ -1969,6 +1969,12 @@
 		ABC3E55D0B330A69006704E3 /* sourcesTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3E5590B330A69006704E3 /* sourcesTableView.h */; };
 		ABC3E55E0B330A69006704E3 /* sourcesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3E5580B330A68006704E3 /* sourcesTableView.m */; };
 		ABC3E55F0B330A69006704E3 /* sourcesTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3E5590B330A69006704E3 /* sourcesTableView.h */; };
+		ABC47B590C031397001CEA21 /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
+		ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
+		ABC47B5B0C031397001CEA21 /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
+		ABC47B5C0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
+		ABC47B5D0C031397001CEA21 /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
+		ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
 		ABCA5BA60625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
@@ -5423,8 +5429,6 @@
 		CE07B72A09641CFA00189FEC /* Endoscopy.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE07B72709641CFA00189FEC /* Endoscopy.nib */; };
 		CE07B72B09641CFA00189FEC /* Endoscopy.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE07B72709641CFA00189FEC /* Endoscopy.nib */; };
 		CE085E40071AC11E00C82D70 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		CE0936BA0963D63800C6A2CA /* MatrixContextual.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0936B80963D63800C6A2CA /* MatrixContextual.h */; };
-		CE0936BB0963D63800C6A2CA /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
 		CE0B46C9087D2B910052E309 /* VRPROFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */; };
 		CE0B46CA087D2B910052E309 /* VRPROFlyThruAdapter.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */; };
 		CE0CB171084A623C00C6385F /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
@@ -10258,10 +10262,6 @@
 		CECBFF1207539E3900576814 /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
 		CECBFF2207539E3900576814 /* MutableArrayCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = AB94E72406343D91003E4C48 /* MutableArrayCategory.h */; };
 		CECBFF2307539E3900576814 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
-		CECD6B8A09643A8800F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
-		CECD6B8B09643A8900F200AC /* MatrixContextual.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0936B80963D63800C6A2CA /* MatrixContextual.h */; };
-		CECD6B8E09643A9300F200AC /* MatrixContextual.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0936B90963D63800C6A2CA /* MatrixContextual.m */; };
-		CECD6B8F09643A9400F200AC /* MatrixContextual.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0936B80963D63800C6A2CA /* MatrixContextual.h */; };
 		CECEF72E081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
 		CECEF72F081BB265002ECC99 /* DICOMExport.m in Sources */ = {isa = PBXBuildFile; fileRef = CECEF72D081BB265002ECC99 /* DICOMExport.m */; };
 		CECEF730081BB265002ECC99 /* DICOMExport.h in Headers */ = {isa = PBXBuildFile; fileRef = CECEF72C081BB265002ECC99 /* DICOMExport.h */; };
@@ -11635,6 +11635,8 @@
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
 		ABC3E5580B330A68006704E3 /* sourcesTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = sourcesTableView.m; sourceTree = "<group>"; };
 		ABC3E5590B330A69006704E3 /* sourcesTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sourcesTableView.h; sourceTree = "<group>"; };
+		ABC47B570C031397001CEA21 /* BrowserMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserMatrix.h; sourceTree = "<group>"; };
+		ABC47B580C031397001CEA21 /* BrowserMatrix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserMatrix.m; sourceTree = "<group>"; };
 		ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OpacityTransferView.h; sourceTree = "<group>"; };
 		ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OpacityTransferView.m; sourceTree = "<group>"; };
 		ABCB1B2C0A21FB72008EB2E8 /* SafeDBRebuild */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = SafeDBRebuild; path = build/Development/SafeDBRebuild; sourceTree = "<group>"; };
@@ -13012,8 +13014,6 @@
 		BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcmqrdbq.h; sourceTree = "<group>"; };
 		BFF9D57909CDCA5600B3B940 /* dcmqrdbq.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = dcmqrdbq.mm; sourceTree = "<group>"; };
 		CE07B72809641CFA00189FEC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/Endoscopy.nib; sourceTree = "<group>"; };
-		CE0936B80963D63800C6A2CA /* MatrixContextual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixContextual.h; sourceTree = "<group>"; };
-		CE0936B90963D63800C6A2CA /* MatrixContextual.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatrixContextual.m; sourceTree = "<group>"; };
 		CE0B46C7087D2B900052E309 /* VRPROFlyThruAdapter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRPROFlyThruAdapter.m; sourceTree = "<group>"; };
 		CE0B46C8087D2B910052E309 /* VRPROFlyThruAdapter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRPROFlyThruAdapter.h; sourceTree = "<group>"; };
 		CE0CB16F084A623C00C6385F /* DCMPix.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMPix.m; sourceTree = "<group>"; };
@@ -15848,8 +15848,6 @@
 				7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */,
 				7E172F620933D5FF0057BCE8 /* DCMObjectPixelDataImport.h */,
 				7E172F630933D5FF0057BCE8 /* DCMObjectPixelDataImport.m */,
-				CE0936B80963D63800C6A2CA /* MatrixContextual.h */,
-				CE0936B90963D63800C6A2CA /* MatrixContextual.m */,
 				BF7A835D09B8B8E70051F091 /* DICOMToNSString.h */,
 				BF7A835E09B8B8E70051F091 /* DICOMToNSString.m */,
 				AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */,
@@ -16145,6 +16143,8 @@
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				ABBCCDA605643A4C00A4E47A /* browserController.h */,
 				ABBCCDA505643A4C00A4E47A /* browserController.m */,
+				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
+				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
@@ -20742,7 +20742,6 @@
 				A932BAEB094D87C90085B58A /* EndoscopyVRController.h in Headers */,
 				A932BBBC094DB1110085B58A /* EndoscopyMPRView.h in Headers */,
 				BF34857A0951270C00B05AD2 /* SendController.h in Headers */,
-				CE0936BA0963D63800C6A2CA /* MatrixContextual.h in Headers */,
 				A9E80EB009877429005121AA /* ROIVolume.h in Headers */,
 				A91CE491098F5437008665E3 /* ROIVolumeManagerController.h in Headers */,
 				A94D784C09A0D58E0039F5A2 /* EndoscopyVRView.h in Headers */,
@@ -21318,6 +21317,7 @@
 				A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */,
 				A91115610BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
+				ABC47B590C031397001CEA21 /* BrowserMatrix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22671,7 +22671,6 @@
 				A932BAF1094D87CA0085B58A /* EndoscopyVRController.h in Headers */,
 				A932BBC2094DB1110085B58A /* EndoscopyMPRView.h in Headers */,
 				BF34857C0951270C00B05AD2 /* SendController.h in Headers */,
-				CECD6B8F09643A9400F200AC /* MatrixContextual.h in Headers */,
 				CEB36D57098A69500089D2D3 /* ROIVolume.h in Headers */,
 				A91CE493098F5437008665E3 /* ROIVolumeManagerController.h in Headers */,
 				A94D785009A0D58E0039F5A2 /* EndoscopyVRView.h in Headers */,
@@ -23247,6 +23246,7 @@
 				CE96D1180BEE732A00C4E397 /* mdfdsman.h in Headers */,
 				A91115630BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7B0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
+				ABC47B5B0C031397001CEA21 /* BrowserMatrix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24607,7 +24607,6 @@
 				BF34857E0951270C00B05AD2 /* SendController.h in Headers */,
 				CE233A4C0961659E00679828 /* vli3.h in Headers */,
 				CE233A4D0961659E00679828 /* vli.h in Headers */,
-				CECD6B8B09643A8900F200AC /* MatrixContextual.h in Headers */,
 				CEB36D56098A694D0089D2D3 /* ROIVolume.h in Headers */,
 				A91CE492098F5437008665E3 /* ROIVolumeManagerController.h in Headers */,
 				A94D784E09A0D58E0039F5A2 /* EndoscopyVRView.h in Headers */,
@@ -25181,6 +25180,7 @@
 				CE96D11A0BEE732A00C4E397 /* mdfdsman.h in Headers */,
 				A911155F0BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7F0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
+				ABC47B5D0C031397001CEA21 /* BrowserMatrix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27256,7 +27256,6 @@
 				A932BAEC094D87C90085B58A /* EndoscopyVRController.m in Sources */,
 				A932BBBD094DB1110085B58A /* EndoscopyMPRView.m in Sources */,
 				BF34857B0951270C00B05AD2 /* SendController.m in Sources */,
-				CE0936BB0963D63800C6A2CA /* MatrixContextual.m in Sources */,
 				A9E80EB10987742A005121AA /* ROIVolume.mm in Sources */,
 				A91CE495098F5441008665E3 /* ROIVolumeManagerController.mm in Sources */,
 				A94D784D09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
@@ -27885,6 +27884,7 @@
 				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
 				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
+				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28037,7 +28037,6 @@
 				A932BAF2094D87CA0085B58A /* EndoscopyVRController.m in Sources */,
 				A932BBC3094DB1110085B58A /* EndoscopyMPRView.m in Sources */,
 				BF34857D0951270C00B05AD2 /* SendController.m in Sources */,
-				CECD6B8E09643A9300F200AC /* MatrixContextual.m in Sources */,
 				CEB36D58098A69500089D2D3 /* ROIVolume.mm in Sources */,
 				A91CE497098F5441008665E3 /* ROIVolumeManagerController.mm in Sources */,
 				A94D785109A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
@@ -28661,6 +28660,7 @@
 				CE96D1190BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A91115640BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC7C0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
+				ABC47B5C0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29380,7 +29380,6 @@
 				A932BBBF094DB1110085B58A /* EndoscopyMPRView.m in Sources */,
 				CEA6566F094EF62400D4E5E5 /* vtkVolumeProVP1000Mapper.cxx in Sources */,
 				BF34857F0951270C00B05AD2 /* SendController.m in Sources */,
-				CECD6B8A09643A8800F200AC /* MatrixContextual.m in Sources */,
 				CEB36D55098A694C0089D2D3 /* ROIVolume.mm in Sources */,
 				A91CE496098F5441008665E3 /* ROIVolumeManagerController.mm in Sources */,
 				A94D784F09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
@@ -30002,6 +30001,7 @@
 				CE96D11B0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A91115600BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC800C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
+				ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

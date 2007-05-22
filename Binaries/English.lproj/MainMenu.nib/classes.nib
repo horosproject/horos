@@ -142,14 +142,13 @@
                 folderTree = NSMatrix; 
                 imageTileMenu = NSMenu; 
                 imageView = PreviewView; 
-                incomingProgress = NSProgressIndicator; 
                 mainWindow = NSWindow; 
                 memoryMessage = NSTextField; 
                 newAlbum = NSWindow; 
                 newAlbumName = NSTextField; 
                 noOfFilesToRebuild = NSTextField; 
                 notEnoughMem = NSBox; 
-                oMatrix = NSMatrix; 
+                oMatrix = BrowserMatrix; 
                 password = NSTextField; 
                 rdAccessory = NSView; 
                 rdOffsetForm = NSForm; 
@@ -183,6 +182,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = BrowserMatrix; LANGUAGE = ObjC; SUPERCLASS = NSMatrix; }, 
         {
             ACTIONS = {
                 alwaysSyncMenu = id; 
@@ -309,7 +309,6 @@
             SUPERCLASS = NSArrayController; 
         }, 
         {CLASS = LogTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
-        {CLASS = MatrixContextual; LANGUAGE = ObjC; SUPERCLASS = NSMatrix; }, 
         {CLASS = MyOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 

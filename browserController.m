@@ -106,6 +106,7 @@ Version 2.5
 #import "StructuredReportController.h"
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
+#import "BrowserMatrix.h"
 
 #define DATABASEVERSION @"2.1"
 #define DATABASEPATH @"/DATABASE/"
@@ -4980,14 +4981,18 @@ static BOOL				DICOMDIRCDMODE = NO;
 	[pboard setPropertyList:0L forType:albumDragType];
 	
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
-	//xml Export
 	
-
 	[pboard setData:[NSArchiver archivedDataWithRootObject:xmlArray]  forType:@"OsiriXPboardType"];
 
 	[draggedItems release];
 	draggedItems = [pbItems retain];
 	return YES;
+}
+
+- (void) setDraggedItems:(NSArray*) pbItems
+{
+	[draggedItems release];
+	draggedItems = [pbItems retain];
 }
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
@@ -6571,6 +6576,11 @@ static BOOL withReset = NO;
 - (NSMutableArray *) filesForDatabaseMatrixSelection :(NSMutableArray*) correspondingManagedObjects
 {
 	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
+}
+
+- (NSArray*) matrixViewArray
+{
+	return matrixViewArray;
 }
 
 - (void) createContextualMenu

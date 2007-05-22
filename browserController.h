@@ -36,7 +36,7 @@
 @class DCMView;
 @class DCMPix;
 @class StructuredReportController;
-
+@class BrowserMatrix;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -100,7 +100,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	IBOutlet NSTextField			*databaseDescription;
 	IBOutlet MyOutlineView          *databaseOutline;
-	IBOutlet NSMatrix               *oMatrix;
+	IBOutlet BrowserMatrix			*oMatrix;
 	IBOutlet NSTableView			*albumTable;
 	IBOutlet NSSegmentedControl		*segmentedAlbumButton;
 	
@@ -208,8 +208,6 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSMutableString					*pressedKeys;
 	
-	IBOutlet NSProgressIndicator	*incomingProgress;
-	
 	IBOutlet NSView					*reportTemplatesView;
 	IBOutlet NSImageView			*reportTemplatesImageView;
 	IBOutlet NSPopUpButton			*reportTemplatesListPopUpButton;
@@ -284,7 +282,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void) showDatabase:(id)sender;
 -(IBAction) matrixPressed:(id)sender;
 -(void) loadDatabase:(NSString*) path;
-
+- (NSArray*) matrixViewArray;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer;
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar;
@@ -314,6 +312,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction)setSearchType: (id)sender;
 - (IBAction)setImageTiling: (id)sender;
 
+- (void) setDraggedItems:(NSArray*) pbItems;
 - (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) endCustomInterval:(id) sender;
 - (IBAction) customIntervalNow:(id) sender;
