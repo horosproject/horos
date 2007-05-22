@@ -198,7 +198,4 @@
 	[[[[self windowController] blendingController] imageView] setWLWW :[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
 	[[[self windowController] MPR2Dview] adjustWLWW: curWL :curWW :@"dragged"];
 }
-
-
-
 @end

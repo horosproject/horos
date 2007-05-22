@@ -1008,10 +1008,11 @@ static NSString *hostName = @"";
 						NSLocalizedString(@"p", nil), 
 						NSLocalizedString(@"b", nil), 
 						NSLocalizedString(@"x", nil), 
-						//Rotate3DHotKeyAction, Camera3DotKeyAction, scissors3DHotKeyAction
+						//Rotate3DHotKeyAction, Camera3DotKeyAction, scissors3DHotKeyAction, repulsorHotKey
 						NSLocalizedString(@"[", nil),
 						NSLocalizedString(@"]", nil),
-						NSLocalizedString(@"\\", nil),												
+						NSLocalizedString(@"\\", nil),
+						NSLocalizedString(@"n", nil),
 						nil];
 	NSEnumerator *hotKeyEnumerator = [array objectEnumerator];
 	int x = DefaultWWWLHotKeyAction;

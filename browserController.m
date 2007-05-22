@@ -3696,8 +3696,8 @@ static BOOL				DICOMDIRCDMODE = NO;
 		
 		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
-		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name]];
-		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Description"]];
+		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[dict valueForKey:@"service"] name]];
+		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [dict valueForKey:@"Description"]];
 		
 	}
 	else description = [description stringByAppendingFormat:NSLocalizedString(@"Local Database / ", nil)];
@@ -7178,8 +7178,8 @@ static BOOL needToRezoom;
 				if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 				
 				if( rowIndex == 0) return NSLocalizedString(@"Local Default Database", 0L);
-				else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] name];
-				else return [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Description"];
+				else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) return [[dict valueForKey:@"service"] name];
+				else return [dict valueForKey:@"Description"];
 			}
 			else
 			{
@@ -7253,8 +7253,8 @@ static BOOL needToRezoom;
 		}
 		else
 		{
-			NSString	*type = [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"type"];
-			NSString	*path = [[[bonjourBrowser services] objectAtIndex: rowIndex-1] valueForKey:@"Path"];
+			NSString	*type = [dict valueForKey:@"type"];
+			NSString	*path = [dict valueForKey:@"Path"];
 			
 			if( [type isEqualToString:@"fixedIP"])
 				[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
@@ -7394,7 +7394,7 @@ static BOOL needToRezoom;
 			
 			// DESTINATION IS A LOCAL PATH
 			
-			id object = 0L;
+			NSDictionary *object = 0L;
 			
 			if( row > 0) object = [[bonjourBrowser services] objectAtIndex: row-1];
 			
@@ -13097,7 +13097,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( index >= 0)
 	{
-		id object = [[bonjourBrowser services] objectAtIndex: index];
+		NSDictionary *object = [[bonjourBrowser services] objectAtIndex: index];
 		
 		// LOCAL PATH - DATABASE
 		

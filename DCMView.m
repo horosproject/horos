@@ -9085,8 +9085,8 @@ BOOL	lowRes = NO;
 					userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tPlain], @"toolIndex", nil];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 					break;
-				case BoneRemovalHotKeyAction:		
-					userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tBonesRemoval], @"toolIndex", nil];
+				case RepulsorHotKeyAction:		
+					userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:tRepulsor], @"toolIndex", nil];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"defaultToolModified" object:nil userInfo: userInfo];
 					break;
 				

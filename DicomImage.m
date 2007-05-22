@@ -55,12 +55,6 @@ extern NSString * documentsDirectory();
 	[super dealloc];
 }
 
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
-
 -(NSString*) uniqueFilename	// Return a 'unique' filename that identify this image...
 {
 	return [NSString stringWithFormat:@"%@ %@",[self valueForKey:@"sopInstanceUID"], [self valueForKey:@"instanceNumber"]];

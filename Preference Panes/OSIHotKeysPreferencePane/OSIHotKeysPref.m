@@ -64,6 +64,7 @@
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select 3D Rotate Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Camera Tool", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Scissors Tool", nil), @"action", nil],
+											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Select Repulsor Tool", nil), @"action", nil],
 											nil];
 	
 	NSDictionary *keys = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"];

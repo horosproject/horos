@@ -858,7 +858,7 @@ static char *GetPrivateIP()
 			// deleting the associate SQL temporary file
 			if ([[NSFileManager defaultManager] fileExistsAtPath: [self databaseFilePathForService:[aNetService name]] ])
 			{
-				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[currentNetService name]] handler:self];
+				[[NSFileManager defaultManager] removeFileAtPath: [self databaseFilePathForService:[[currentNetService valueForKey: @"service"] name]] handler:self];
 			}
 			
 			if( [[services objectAtIndex: [interfaceOsiriX currentBonjourService]] valueForKey: @"service"] == aNetService)
