@@ -148,6 +148,7 @@
 - (void)chooseNameAndSave:(id)sender;
 - (IBAction)save:(id)sender;
 - (void)saveWithName:(NSString*)name;
++ (NSDictionary*)presetFromFileWithName:(NSString*)name;
 - (void)loadFromFileWithName:(NSString*)name;
 #pragma mark conversion to plist-compatible types
 - (NSArray*)convertPointColorsForPlist;

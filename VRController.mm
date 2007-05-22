@@ -2712,53 +2712,47 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 {
 	[super UpdateCLUTMenu:note];
 	
+	// path 1 : /OsiriX Data/CLUTs/
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:@"/CLUTs"];
-
-	BOOL isDir;
-	[[clutPopup menu] setAutoenablesItems:NO];
-	if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		NSArray *cluts = [[NSFileManager defaultManager] directoryContentsAtPath:path];
-		int i;
-		[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
-		for (i=0; i<[cluts count]; i++)
-		{
-			if(![[cluts objectAtIndex:i] isEqualToString:@".DS_Store"])
-			{
-				NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[[cluts objectAtIndex:i] stringByDeletingPathExtension] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
-				if([view isRGB]) [item setEnabled:NO];
-			}
-		}
-	}
-	
-	isDir = YES;
-	// look in the resources bundle path
+	[path appendString:@"/CLUTs/"];
+	// path 2 : /resources_bundle_path/CLUTs/
 	NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
 	[bundlePath appendString:@"/CLUTs/"];
+
+	NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
 	
-	if([[NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:&isDir] && isDir)
+	int i, j;
+	NSMutableArray *clutArray = [NSMutableArray array];
+	BOOL isDir;
+		
+	for (j=0; j<[paths count]; j++)
 	{
-		NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:bundlePath];
-		int i;
-		for (i=0; i<[content count]; i++)
+		if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
 		{
-			if(![[content objectAtIndex:i] isEqualToString:@".DS_Store"])
+			NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
+			for (i=0; i<[content count]; i++)
 			{
-				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:[bundlePath stringByAppendingPathComponent:[content objectAtIndex:i]]];
-				if(clut)
+				if(![[content objectAtIndex:i] isEqualToString:@".DS_Store"])
 				{
-					if([clut objectForKey:@"curves"] && [clut objectForKey:@"colors"])
+					NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:[[content objectAtIndex:i] stringByDeletingPathExtension]];
+					if(clut)
 					{
-						if([CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]] &&[CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]])
-						{
-							NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[[content objectAtIndex:i] stringByDeletingPathExtension] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
-							if([view isRGB]) [item setEnabled:NO];
-						}
+						[clutArray addObject:[[content objectAtIndex:i] stringByDeletingPathExtension]];
 					}
 				}
 			}
 		}
+	}
+	
+	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
+	
+	[[clutPopup menu] setAutoenablesItems:NO];
+	[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
+	
+	for (i=0; i<[clutArray count]; i++)
+	{
+		NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+		if([view isRGB]) [item setEnabled:NO];
 	}
 	
     NSMenuItem *item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];

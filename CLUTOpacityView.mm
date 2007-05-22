@@ -1764,7 +1764,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[[vrView controller] setCurCLUTMenu:name];
 }
 
-- (void)loadFromFileWithName:(NSString*)name;
++ (NSDictionary*)presetFromFileWithName:(NSString*)name;
 {
 	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
 	[path appendString:CLUTDATABASE];
@@ -1775,22 +1775,27 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		if([[path pathExtension] isEqualToString:@""])
 		{
 			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
-			curves = [clut objectForKey:@"curves"];
-			[curves retain];
-			pointColors = [clut objectForKey:@"colors"];
-			[pointColors retain];
+			return clut;
 		}
+		else
+			return nil;
 	}
 	else
 	{
 		[path appendString:@".plist"];
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
-			NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
-			curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
-			[curves retain];
-			pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
-			[pointColors retain];
+			NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+			NSArray *curveArray = [CLUTOpacityView convertCurvesFromPlist:[clutFromFile objectForKey:@"curves"]];
+			NSArray *colorArray = [CLUTOpacityView convertPointColorsFromPlist:[clutFromFile objectForKey:@"colors"]];
+			NSMutableDictionary *clut = [NSMutableDictionary dictionary];
+			if([curveArray count]>0 && [colorArray count]>0)
+			{
+				[clut setObject:curveArray forKey:@"curves"];
+				[clut setObject:colorArray forKey:@"colors"];
+				return clut;
+			}
+			else return nil;
 		}
 		else
 		{
@@ -1801,13 +1806,77 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 			[path appendString:@".plist"];
 			if([[NSFileManager defaultManager] fileExistsAtPath:path])
 			{
-				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
-				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
-				[curves retain];
-				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
-				[pointColors retain];
+				NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
+				NSArray *curveArray = [CLUTOpacityView convertCurvesFromPlist:[clutFromFile objectForKey:@"curves"]];
+				NSArray *colorArray = [CLUTOpacityView convertPointColorsFromPlist:[clutFromFile objectForKey:@"colors"]];
+				NSMutableDictionary *clut = [NSMutableDictionary dictionary];
+				if([curveArray count]>0 && [colorArray count]>0)
+				{
+					[clut setObject:curveArray forKey:@"curves"];
+					[clut setObject:colorArray forKey:@"colors"];
+					return clut;
+				}
+				else return nil;
 			}
+			else
+				return nil;
 		}
+	}
+}
+
+- (void)loadFromFileWithName:(NSString*)name;
+{
+//	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
+//	[path appendString:CLUTDATABASE];
+//	[path appendString:name];
+//	
+//	if([[NSFileManager defaultManager] fileExistsAtPath:path])
+//	{
+//		if([[path pathExtension] isEqualToString:@""])
+//		{
+//			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
+//			curves = [clut objectForKey:@"curves"];
+//			[curves retain];
+//			pointColors = [clut objectForKey:@"colors"];
+//			[pointColors retain];
+//		}
+//	}
+//	else
+//	{
+//		[path appendString:@".plist"];
+//		if([[NSFileManager defaultManager] fileExistsAtPath:path])
+//		{
+//			NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
+//			curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+//			[curves retain];
+//			pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+//			[pointColors retain];
+//		}
+//		else
+//		{
+//			// look in the resources bundle path
+//			[path setString:[[NSBundle mainBundle] resourcePath]];
+//			[path appendString:CLUTDATABASE];
+//			[path appendString:name];
+//			[path appendString:@".plist"];
+//			if([[NSFileManager defaultManager] fileExistsAtPath:path])
+//			{
+//				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
+//				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
+//				[curves retain];
+//				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
+//				[pointColors retain];
+//			}
+//		}
+//	}
+
+	NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:name];
+	if(clut)
+	{
+		curves = [clut objectForKey:@"curves"];
+		[curves retain];
+		pointColors = [clut objectForKey:@"colors"];
+		[pointColors retain];
 	}
 }
 

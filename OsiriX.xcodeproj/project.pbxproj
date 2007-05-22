@@ -473,6 +473,12 @@
 		A917CF260BF49314002F415E /* HUDLeftArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */; };
 		A917CF270BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
 		A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
+		A918CC7B0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
+		A918CC7C0C02E51B00CAC7A3 /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
+		A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
+		A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
+		A918CC7F0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
+		A918CC800C02E51B00CAC7A3 /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
 		A91CE491098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE492098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE493098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
@@ -11188,6 +11194,8 @@
 		A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDLeftArrowButtonPressed.tif; sourceTree = "<group>"; };
 		A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonNeutral.tif; sourceTree = "<group>"; };
 		A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDRightArrowButtonPressed.tif; sourceTree = "<group>"; };
+		A918CC790C02E51B00CAC7A3 /* stringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringAdditions.h; sourceTree = "<group>"; };
+		A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = stringAdditions.m; sourceTree = "<group>"; };
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91CE49D098F5464008665E3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ROIVolumeManager.nib; sourceTree = "<group>"; };
@@ -15832,6 +15840,8 @@
 				CECEF72C081BB265002ECC99 /* DICOMExport.h */,
 				CEE73FD108F44749002A395F /* stringNumericCompare.m */,
 				CEE73FD208F44749002A395F /* stringNumericCompare.h */,
+				A918CC790C02E51B00CAC7A3 /* stringAdditions.h */,
+				A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */,
 				A9EDB2CD091A473E00EE86AF /* KFSplitView.h */,
 				A9EDB2CE091A473E00EE86AF /* KFSplitView.m */,
 				7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */,
@@ -21307,6 +21317,7 @@
 				A90A04970BF09BA000D00273 /* VRPresetPreview.h in Headers */,
 				A9154D8C0BF34D4E00BAF408 /* SelectionView.h in Headers */,
 				A91115610BFB354F001000B4 /* ColorView.h in Headers */,
+				A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23235,6 +23246,7 @@
 				CE96D0F50BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D1180BEE732A00C4E397 /* mdfdsman.h in Headers */,
 				A91115630BFB354F001000B4 /* ColorView.h in Headers */,
+				A918CC7B0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25168,6 +25180,7 @@
 				CE96D0F70BEE71E800C4E397 /* mdfconen.h in Headers */,
 				CE96D11A0BEE732A00C4E397 /* mdfdsman.h in Headers */,
 				A911155F0BFB354F001000B4 /* ColorView.h in Headers */,
+				A918CC7F0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27871,6 +27884,7 @@
 				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
 				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
 				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
+				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28646,6 +28660,7 @@
 				CE96D0F40BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D1190BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A91115640BFB354F001000B4 /* ColorView.m in Sources */,
+				A918CC7C0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29986,6 +30001,7 @@
 				CE96D0F60BEE71E800C4E397 /* mdfconen.cc in Sources */,
 				CE96D11B0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
 				A91115600BFB354F001000B4 /* ColorView.m in Sources */,
+				A918CC800C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
