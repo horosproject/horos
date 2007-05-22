@@ -94,7 +94,8 @@ Version 2.5
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "NetworkSendDataHandler.h"
 #import "LogWindowController.h"
-#import "stringNumericCompare.h"
+//#import "stringNumericCompare.h"
+#import "stringAdditions.h"
 #import "SendController.h"
 #import "Reports.h"
 #import "LogManager.h"
