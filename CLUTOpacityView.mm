@@ -1826,50 +1826,6 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)loadFromFileWithName:(NSString*)name;
 {
-//	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-//	[path appendString:CLUTDATABASE];
-//	[path appendString:name];
-//	
-//	if([[NSFileManager defaultManager] fileExistsAtPath:path])
-//	{
-//		if([[path pathExtension] isEqualToString:@""])
-//		{
-//			NSMutableDictionary *clut = [NSUnarchiver unarchiveObjectWithFile:path];
-//			curves = [clut objectForKey:@"curves"];
-//			[curves retain];
-//			pointColors = [clut objectForKey:@"colors"];
-//			[pointColors retain];
-//		}
-//	}
-//	else
-//	{
-//		[path appendString:@".plist"];
-//		if([[NSFileManager defaultManager] fileExistsAtPath:path])
-//		{
-//			NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
-//			curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
-//			[curves retain];
-//			pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
-//			[pointColors retain];
-//		}
-//		else
-//		{
-//			// look in the resources bundle path
-//			[path setString:[[NSBundle mainBundle] resourcePath]];
-//			[path appendString:CLUTDATABASE];
-//			[path appendString:name];
-//			[path appendString:@".plist"];
-//			if([[NSFileManager defaultManager] fileExistsAtPath:path])
-//			{
-//				NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
-//				curves = [CLUTOpacityView convertCurvesFromPlist:[clut objectForKey:@"curves"]];
-//				[curves retain];
-//				pointColors = [CLUTOpacityView convertPointColorsFromPlist:[clut objectForKey:@"colors"]];
-//				[pointColors retain];
-//			}
-//		}
-//	}
-
 	NSDictionary* clut = [CLUTOpacityView presetFromFileWithName:name];
 	if(clut)
 	{
