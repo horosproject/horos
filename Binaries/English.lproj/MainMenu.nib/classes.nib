@@ -94,7 +94,6 @@
                 selectAll4DSeries = id; 
                 selectFilesAndFoldersToAdd = id; 
                 sendiDisk = id; 
-                sendiPod = id; 
                 setImageTiling = id; 
                 setSearchType = id; 
                 setTimeIntervalType = id; 
