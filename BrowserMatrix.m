@@ -63,26 +63,41 @@ static NSString *albumDragType = @"Osirix Album drag";
 	
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
     
-	
 	NSPoint event_location = [event locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
+	
+	local_point.x -= 35;
+	local_point.y -= 35;
 	
 	NSArray				*cells = [self selectedCells];
 	
 	if( [cells count])
-	{	
+	{
+		int		i, width = 0;
 		NSImage	*firstCell = [[cells objectAtIndex: 0] image];
 		
-		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize([firstCell size].width*[cells count], [firstCell size].height)] autorelease];
+		#define MARGIN 3
 		
-		[thumbnail lockFocus];
-		int i;
 		for( i = 0; i < [cells count]; i++)
 		{
-			NSRectFill( NSMakeRect( i*[firstCell size].width, 0, [firstCell size].width, [firstCell size].height));
+			width += [[[cells objectAtIndex: i] image] size].width;
+			width += MARGIN;
+		}
+		
+		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70)] autorelease];
+		
+		[thumbnail lockFocus];
+		
+		width = 0;
+		for( i = 0; i < [cells count]; i++)
+		{
+			NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
 			
 			NSImage	*im = [[cells objectAtIndex: i] image];
-			[im drawAtPoint: NSMakePoint(i*[firstCell size].width, 0) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
+			[im drawAtPoint: NSMakePoint(width, 0) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
+		
+			width += [im size].width;
+		    width += MARGIN;
 		}
 		[thumbnail unlockFocus];
 		
