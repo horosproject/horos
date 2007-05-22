@@ -67,7 +67,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
 	
 	local_point.x -= 35;
-	local_point.y -= 35;
+	local_point.y += 35;
 	
 	NSArray				*cells = [self selectedCells];
 	
