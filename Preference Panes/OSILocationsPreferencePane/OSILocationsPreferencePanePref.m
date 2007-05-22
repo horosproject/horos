@@ -246,6 +246,8 @@
 	[[NSUserDefaults standardUserDefaults] setObject:osirixServerList forKey:@"OSIRIXSERVERS"];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
+	
+	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
 //****** TABLEVIEW
@@ -550,6 +552,7 @@
 			}
 		}
 	}
+	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
 - (IBAction) setStringEncoding:(id)sender{
@@ -634,5 +637,7 @@
 			[[NSUserDefaults standardUserDefaults] setBool: YES forKey:@"updateServers"];
 		}
 	}
+	
+	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 @end

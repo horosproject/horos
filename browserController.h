@@ -297,6 +297,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSString*) getDatabaseFolderFor: (NSString*) path;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path;
 
+- (void) setCurrentBonjourService:(int) index;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;

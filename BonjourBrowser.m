@@ -140,7 +140,7 @@ static char *GetPrivateIP()
 		[browser scheduleInRunLoop: [NSRunLoop currentRunLoop] forMode: @"OsiriXLoopMode"];
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self
-															  selector: @selector(updateFixedIPList:)
+															  selector: @selector(updateFixedList:)
 																  name: @"OsiriXServerArray has changed"
 																object: nil];
 	}
@@ -673,6 +673,15 @@ static char *GetPrivateIP()
 	int			i;
 	NSArray			*osirixServersArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"OSIRIXSERVERS"];
 	
+	for( i = 0; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
+		{
+			[services removeObjectAtIndex: i];
+			i--;
+		}
+	}
+	
 	for( i = 0; i < [osirixServersArray count]; i++)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [osirixServersArray objectAtIndex: i]];
@@ -687,6 +696,15 @@ static char *GetPrivateIP()
 	int			i;
 	NSArray			*dbArray		= [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
 	
+	for( i = 0; i < [services count]; i++)
+	{
+		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"localPath"])
+		{
+			[services removeObjectAtIndex: i];
+			i--;
+		}
+	}
+	
 	for( i = 0; i < [dbArray count]; i++)
 	{
 		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithDictionary: [dbArray objectAtIndex: i]];
@@ -698,19 +716,31 @@ static char *GetPrivateIP()
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-- (void) updateFixedIPList: (NSNotification*) note
+- (void) updateFixedList: (NSNotification*) note
 {
-	int i;
+	int i = [[BrowserController currentBrowser] currentBonjourService];
 	
-	for( i = 0; i < [services count] ; i++)
-	{
-		if( [[[services objectAtIndex: i] valueForKey:@"type"] isEqualToString:@"fixedIP"])
-			[services removeObjectAtIndex: i];
-	}
+	NSDictionary	*selectedDict = 0L;
+	
+	if( i >= 0) selectedDict = [[services objectAtIndex: i] retain];
 	
 	[self buildFixedIPList];
 	[self buildLocalPathsList];
 	[self arrangeServices];
+	
+	[interfaceOsiriX displayBonjourServices];
+	
+	if( selectedDict)
+	{
+		int index = [services indexOfObject: selectedDict];
+		
+		if( index == NSNotFound)
+			[[BrowserController currentBrowser] resetToLocalDatabase];
+		else
+			[[BrowserController currentBrowser] setCurrentBonjourService: index];
+		
+		[selectedDict release];
+	}
 	
 	[interfaceOsiriX displayBonjourServices];
 }

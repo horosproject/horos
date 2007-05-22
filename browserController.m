@@ -94,7 +94,7 @@ Version 2.5
 #import <OsiriX/DCMNetServiceDelegate.h>
 #import "NetworkSendDataHandler.h"
 #import "LogWindowController.h"
-#import "stringNumericCompare.h"
+#import "stringAdditions.h"
 #import "SendController.h"
 #import "Reports.h"
 #import "LogManager.h"
@@ -9062,8 +9062,6 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
 		
-
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCurrentImage:) name:@"DCMNewImageViewResponder" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
@@ -9438,12 +9436,6 @@ static NSArray*	openSubSeriesArray = 0L;
 
 - (IBAction)showhide:(id)sender {
     [toolbar setVisible:![toolbar isVisible]];
-}
-
-
-- (void)closeAllWindows:(NSNotification *)note{
-	NSLog(@"database Window make key");
-	[[self window] makeKeyAndOrderFront:self];
 }
 
 - (void) waitForRunningProcesses
@@ -11427,8 +11419,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) loadDICOMFromiPod
 {
-	if( isCurrentDatabaseBonjour) return;
-	
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
 	int i, x, index;
 
@@ -11461,6 +11451,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( found == NO)
 			{
+				int z = [self currentBonjourService];
+				NSDictionary	*selectedDict = 0L;
+				if( z >= 0) selectedDict = [[[bonjourBrowser services] objectAtIndex: z] retain];
+				
 				NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
 				
 				[dict setValue:path forKey:@"Path"];
@@ -11469,6 +11463,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[[bonjourBrowser services] addObject: dict];
 				[bonjourBrowser arrangeServices];
+				[self displayBonjourServices];
+				
+				if( selectedDict)
+				{
+					int index = [[bonjourBrowser services] indexOfObject: selectedDict];
+					
+					if( index == NSNotFound)
+						[self resetToLocalDatabase];
+					else
+						[self setCurrentBonjourService: index];
+						
+					[selectedDict release];
+				}
 				[self displayBonjourServices];
 			}
 		}
@@ -11779,6 +11786,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSLog(@"volume mounted");
 	
+	[self loadDICOMFromiPod];
+
 	if( isCurrentDatabaseBonjour) return;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"] == NO) return;
@@ -11790,8 +11799,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	{
 		[self ReadDicomCDRom:self];
 	}
-	
-	[self loadDICOMFromiPod];
 	
 	[self displayBonjourServices];
 }
@@ -11873,6 +11880,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		// Remove it from the Source list
+		
+		int z = [self currentBonjourService];
+		NSDictionary	*selectedDict = 0L;
+		if( z >= 0) selectedDict = [[[bonjourBrowser services] objectAtIndex: z] retain];
+		
 		int x;
 		for( x = 0; x < [[bonjourBrowser services] count]; x++)
 		{
@@ -11887,6 +11899,19 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 		}
+		
+		if( selectedDict)
+		{
+			int index = [[bonjourBrowser services] indexOfObject: selectedDict];
+			
+			if( index == NSNotFound)
+				[self resetToLocalDatabase];
+			else
+				[self setCurrentBonjourService: index];
+			
+			[selectedDict release];
+		}
+		[self displayBonjourServices];
 	}
 }
 
@@ -12876,6 +12901,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 
 - (long) currentBonjourService {return [bonjourServicesList selectedRow]-1;}
+
+- (void) setCurrentBonjourService:(int) index
+{
+	dontLoadSelectionSource = YES;
+	[bonjourServicesList selectRow: index+1 byExtendingSelection: NO];
+	dontLoadSelectionSource = NO;
+}
 
 - (NSString*)  getLocalDCMPath: (NSManagedObject*) obj :(long) no
 {
