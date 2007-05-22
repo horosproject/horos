@@ -144,4 +144,7 @@
 - (void) movieRateSliderAction:(id) sender;
 - (void) moviePosSliderAction:(id) sender;
 
+- (void)bringToFrontROI:(ROI*)roi;
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+
 @end

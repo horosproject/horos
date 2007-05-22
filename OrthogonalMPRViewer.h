@@ -128,4 +128,7 @@
 - (ViewerController *)viewerController;
 - (void)setCurrentTool:(int)currentTool;
 
+- (void)bringToFrontROI:(ROI*)roi;
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+
 @end

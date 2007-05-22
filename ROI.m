@@ -1433,6 +1433,7 @@ GLenum glReportError (void)
 	//		tempTextureBuffer = malloc(textureWidth*textureHeight*sizeof(unsigned char));
 	//		memset (tempTextureBuffer, 0, textureHeight*textureWidth);
 			
+
 			mode = ROI_drawing;
 		}
 		else
@@ -1774,7 +1775,7 @@ GLenum glReportError (void)
 		{
 			rtotal = -1;
 			Brtotal = -1;
-			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: [NSDictionary dictionaryWithObjectsAndKeys:@"mouseUp", @"action", 0L]];
 			
 			mode = ROI_selected;
 			return NO;
@@ -1883,8 +1884,6 @@ GLenum glReportError (void)
 	long		i,j, x;
 	BOOL		textureGrowDownX=YES,textureGrowDownY=YES;
 	float		oldTextureUpLeftCornerX,oldTextureUpLeftCornerY,offsetTextureX,offsetTextureY;
-
-	[[NSNotificationCenter defaultCenter] postNotificationName: @"roiChange" object:self userInfo: 0L];
 	
 	if( type == tText || type == t2DPoint)
 	{

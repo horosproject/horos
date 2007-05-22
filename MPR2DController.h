@@ -85,4 +85,7 @@
 -(IBAction) export2iPhoto:(id) sender;
 - (ViewerController *)viewerController;
 - (void)applyWLWWForString:(NSString *)menuString;
+- (void)bringToFrontROI:(ROI*)roi;
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;
+
 @end

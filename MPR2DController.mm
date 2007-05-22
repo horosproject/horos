@@ -1402,4 +1402,7 @@ extern NSString * documentsDirectory();
 	return curCLUTMenu;
 }
 
+- (void)bringToFrontROI:(ROI*)roi;{}
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;{}
+
 @end

@@ -1658,4 +1658,7 @@ NSString * documentsDirectory();
 	}
 }
 
+- (void)bringToFrontROI:(ROI*)roi;{}
+- (void)setMode:(long)mode toROIGroupWithID:(NSTimeInterval)groupID;{}
+
 @end

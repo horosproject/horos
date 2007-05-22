@@ -3456,7 +3456,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 			
 			// if we have action the ROI is being drawn. Don't move and rotate ROI
 			if( action == NO) // Is there a selected ROI -> rotate or move it
-				[self mouseDraggedForROIs:(NSEvent *)event];
+				[self mouseDraggedForROIs: event];
 		}
 		
 		/********** Actions for Various Tools *********************/
