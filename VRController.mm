@@ -2747,15 +2747,23 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 	[clutArray sortUsingSelector:@selector(caseInsensitiveCompare:)];
 	
 	[[clutPopup menu] setAutoenablesItems:NO];
+
+	NSMenuItem *item;
+	item = [[clutPopup menu] insertItemWithTitle:@"8-bit CLUTs" action:nil keyEquivalent:@"" atIndex:3];
+	[item setEnabled:NO];
+
 	[[clutPopup menu] insertItem:[NSMenuItem separatorItem] atIndex:[[clutPopup menu] numberOfItems]-2];
-	
+
+	item = [[clutPopup menu] insertItemWithTitle:@"16-bit CLUTs" action:nil keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+	[item setEnabled:NO];
+
 	for (i=0; i<[clutArray count]; i++)
 	{
-		NSMenuItem *item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
+		item = [[clutPopup menu] insertItemWithTitle:[clutArray objectAtIndex:i] action:@selector(loadAdvancedCLUTOpacity:) keyEquivalent:@"" atIndex:[[clutPopup menu] numberOfItems]-2];
 		if([view isRGB]) [item setEnabled:NO];
 	}
 	
-    NSMenuItem *item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
+    item = [[clutPopup menu] addItemWithTitle:NSLocalizedString(@"16-bit CLUT Editor", nil) action:@selector(showCLUTOpacityPanel:) keyEquivalent:@""];
 	if([[pixList[ 0] objectAtIndex:0] isRGB]) [item setEnabled:NO];
 }
 
