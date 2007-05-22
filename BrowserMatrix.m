@@ -19,6 +19,42 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 @implementation BrowserMatrix
 
+- (void) selectCell:(NSEvent*) theEvent
+{
+	#if !__LP64__
+	int row, column;
+	#else
+	long row, column;
+	#endif
+ 
+	if( [self getRow: &row column: &column forPoint: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
+	{
+		if( [theEvent modifierFlags] & NSShiftKeyMask )
+		{
+			int start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
+			int end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
+			
+			[self setSelectionFrom:start to:end anchor:start highlight: YES];
+			
+		}
+		else if( [theEvent modifierFlags] & NSCommandKeyMask )
+		{
+			int start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
+			int end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
+			
+			if( [[self selectedCells] containsObject:[self cellAtRow:row column:column]])
+				[self setSelectionFrom:end to:end anchor:end highlight: NO];
+			else
+				[self setSelectionFrom:end to:end anchor:end highlight: YES];
+
+		}
+		else
+		{
+			if( [[self cellAtRow:row column:column] isHighlighted] == NO) [self selectCellAtRow: row column:column];
+		}
+	}
+}
+
 - (void) startDrag:(NSEvent *) event
 {
 	NSLog( @"startDrag");
@@ -36,9 +72,9 @@ static NSString *albumDragType = @"Osirix Album drag";
 	if( [cells count])
 	{	
 		NSImage	*firstCell = [[cells objectAtIndex: 0] image];
-	
+		
 		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize([firstCell size].width*[cells count], [firstCell size].height)] autorelease];
-
+		
 		[thumbnail lockFocus];
 		int i;
 		for( i = 0; i < [cells count]; i++)
@@ -93,46 +129,51 @@ static NSString *albumDragType = @"Osirix Album drag";
 - (void) mouseDown:(NSEvent *)event
 {
 	if ([event modifierFlags]  & NSAlternateKeyMask)
+	{
 		[self startDrag: event];
+	}
 	else
-		[super mouseDown: event];
+	{		
+		BOOL keepOn = YES;
+		NSPoint mouseLoc = [self convertPoint:[event locationInWindow] fromView:nil];
+		
+		[NSEvent stopPeriodicEvents];
+		[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod:0.001];
+		
+		NSDate	*start = [NSDate date];
+		NSEvent *ev = 0L;
+		
+		do
+		{
+			ev = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
+			
+			switch ([ev type])
+			{
+			case NSLeftMouseDragged:
+				keepOn = NO;
+				break;
+			case NSLeftMouseUp:
+				keepOn = NO;
+				break;
+			}
+		}while (keepOn && [start timeIntervalSinceNow] >= -1);
+		
+		if( keepOn)
+		{
+			[self selectCell: event];
+			[self startDrag: event];
+		}
+		else
+		{
+			[super mouseDown: ev];
+		}
+	}
 }
 
 - (void) rightMouseDown:(NSEvent *)theEvent
 {
-	#if !__LP64__
-	int row, column;
-	#else
-	long row, column;
-	#endif
- 
-	if( [self getRow: &row column: &column forPoint: [self convertPoint:[theEvent locationInWindow] fromView:nil]])
-	{
-		if( [theEvent modifierFlags] & NSShiftKeyMask )
-		{
-			int start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
-			int end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
-			
-			[self setSelectionFrom:start to:end anchor:start highlight: YES];
-			
-		}
-		else if( [theEvent modifierFlags] & NSCommandKeyMask )
-		{
-			int start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
-			int end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
-			
-			if( [[self selectedCells] containsObject:[self cellAtRow:row column:column]])
-				[self setSelectionFrom:end to:end anchor:end highlight: NO];
-			else
-				[self setSelectionFrom:end to:end anchor:end highlight: YES];
-
-		}
-		else
-		{
-			if( [[self cellAtRow:row column:column] isHighlighted] == NO) [self selectCellAtRow: row column:column];
-		}
-	}
- 
+	[self selectCell: theEvent];
+	
 	[super rightMouseDown: theEvent];
  }
 

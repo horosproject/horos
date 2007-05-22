@@ -7350,6 +7350,13 @@ static BOOL needToRezoom;
 					
 					[studies addObject: object];
 				}
+				
+				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
+				{
+					NSMutableSet	*studies = [album mutableSetValueForKey: @"studies"];
+					
+					[studies addObject: [object valueForKey:@"study"]];
+				}
 			}
 			
 			[self saveDatabase: currentDatabasePath];
