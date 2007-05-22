@@ -142,8 +142,6 @@ extern BOOL						NEEDTOREBUILD, COMPLETEREBUILD;
 extern NSMutableDictionary		*DATABASECOLUMNS;
 extern NSLock					*PapyrusLock;
 
-
-NSString	*iPodDirectory = 0L;
 long		DATABASEINDEX;
 
 //NSArray *syntaxArray;
@@ -328,7 +326,6 @@ NSString* asciiString (NSString* name)
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
 static NSString*	ImportToolbarItemIdentifier			= @"Import.icns";
-static NSString*	iPodToolbarItemIdentifier			= @"iPod.icns";
 static NSString*	iDiskSendToolbarItemIdentifier		= @"iDiskSend.icns";
 static NSString*	iDiskGetToolbarItemIdentifier		= @"iDiskGet.icns";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
@@ -776,21 +773,10 @@ static BOOL				DICOMDIRCDMODE = NO;
 							/*******************************************/
 							/*********** Find image object *************/
 							
-							BOOL			iPod = NO, local = NO;
+							BOOL			local = NO;
 							if( [newFile length] >= [INpath length] && [newFile compare:INpath options:NSLiteralSearch range:NSMakeRange(0, [INpath length])] == NSOrderedSame)
 							{
 								local = YES;
-							}
-							else
-							{
-								if( iPodDirectory)
-								{
-									if( [iPodDirectory length] < [newFile length])
-									{
-										if( [iPodDirectory isEqualToString:[newFile substringToIndex:[iPodDirectory length]]] == YES)
-											iPod = YES;
-									}
-								}
 							}
 							
 							NSArray		*imagesArray = [[seriesTable valueForKey:@"images"] allObjects] ;
@@ -847,7 +833,6 @@ static BOOL				DICOMDIRCDMODE = NO;
 								if( local) [image setValue: [newFile lastPathComponent] forKey:@"path"];
 								else [image setValue:newFile forKey:@"path"];
 								
-								[image setValue:[NSNumber numberWithBool:iPod] forKey:@"iPod"];
 								[image setValue:[NSNumber numberWithBool:local] forKey:@"inDatabaseFolder"];
 								
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
@@ -6660,10 +6645,6 @@ static BOOL withReset = NO;
 	[contextual addItem:item];
 	[item release];
 	
-	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to iPod", nil)  action:@selector(sendiPod:) keyEquivalent:@""];
-	[contextual addItem:item];
-	[item release];
-	
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to iDisk", nil)  action:@selector(sendiDisk:) keyEquivalent:@""];
 	[contextual addItem:item];
 	[item release];
@@ -7267,7 +7248,15 @@ static BOOL needToRezoom;
 				{
 					if( isDirectory)
 					{
-						if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
+						// iPod?
+						NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
+						if ([[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath])
+						{
+							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
+							[im setSize: NSMakeSize( 16, 16)];
+							[(ImageAndTextCell *)aCell setImage: im];
+						}
+						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
 						{
 							[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
 						}
@@ -9071,6 +9060,8 @@ static NSArray*	openSubSeriesArray = 0L;
 		/* notifications from workspace */
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
+		
 
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeAllWindows:) name:@"Close All Viewers" object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
@@ -9249,10 +9240,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	[menu addItem:sendItem];
 	[sendItem release];
 	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Send to DICOM node", nil) action: @selector(export2PACS:) keyEquivalent:@""];
-	[sendItem setTarget:self];
-	[menu addItem:sendItem];
-	[sendItem release];
-	sendItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Copy to iPod", nil) action: @selector(sendiPod:) keyEquivalent:@""];
 	[sendItem setTarget:self];
 	[menu addItem:sendItem];
 	[sendItem release];
@@ -11445,7 +11432,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
 	int i, x, index;
 
-	for (i=0;i<[allVolumes count];i++)
+	for ( i=0 ; i < [allVolumes count]; i++)
 	{
 		NSString *iPodControlPath = [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"iPod_Control"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath])
@@ -11454,161 +11441,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			NSLog(@"Got an iPod volume named %@", volumeName);
 			
-			NSString	*path = [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"DICOM"];
+			NSString	*path = [allVolumes objectAtIndex:i];
 			
-			[iPodDirectory release];
-			iPodDirectory = [path retain];
+			// Find the OsiriX Data folder at root
+			if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];
 			
-			// Find the DICOM folder
-			if (![[NSFileManager defaultManager] fileExistsAtPath:path]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-			
-			NSArray*	filenames = [NSArray arrayWithObject: path];
-			
-			BOOL		copied;
-			
-			mountedVolume = YES;
-			NSArray*	newImage = [self addFilesAndFolderToDatabase: filenames copied: &copied];
-			mountedVolume = NO;
-			
-			if( copied == YES && [newImage count] == 0 && [filenames count] > 0)
+			// Is this iPod already in the list?
+			int x;
+			BOOL found = NO;
+			for( x = 0; x < [[bonjourBrowser services] count]; x++)
 			{
-				[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			}
-			else if( [newImage count] > 0 && [filenames count] > 0)
-			{
-				if( copied == YES)
+				NSDictionary	*c = [[bonjourBrowser services] objectAtIndex: x];
+				
+				if( [[c valueForKey:@"type"] isEqualToString:@"localPath"])
 				{
-					if( NSRunInformationalAlertPanel( NSLocalizedString( @"iPod transfer", 0L), NSLocalizedString( @"The images have been succesfully transferred to your local database. Should I delete them in your iPod?", 0L),NSLocalizedString( @"Delete", 0L), NSLocalizedString( @"Don't Delete", 0L), 0L) == NSAlertDefaultReturn)
-					{
-						NSLog( @"iPod Delete");
-						[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-					}
+					if( [[c valueForKey:@"Path"] isEqualToString: path]) found = YES;
 				}
 			}
-		}
-	}
-}
-
-- (IBAction) sendiPod:(id) sender
-{
-	NSArray		*allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
-	int			i, x, t, index;
-	BOOL		found = NO;
-
-	for (i=0;i<[allVolumes count];i++)
-	{
-		NSString *iPodControlPath = [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"iPod_Control"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath])
-		{
-			found = YES;
 			
-			NSString *volumeName = [[allVolumes objectAtIndex:i] lastPathComponent];
-			
-			NSLog(@"Got an iPod volume named %@", volumeName);
-			
-			NSMutableArray *dicomFiles2Copy = [NSMutableArray array];
-			
-			NSMutableArray *files2Copy;
-			
-			if( [sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) files2Copy = [self filesForDatabaseMatrixSelection: dicomFiles2Copy];
-			else files2Copy = [self filesForDatabaseOutlineSelection: dicomFiles2Copy];
-			
-			if( files2Copy)
+			if( found == NO)
 			{
-				NSString	*path = [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"DICOM"];
-				BOOL		error = NO;
+				NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
 				
-				// Find the DICOM folder
-				if (![[NSFileManager defaultManager] fileExistsAtPath:path]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+				[dict setValue:path forKey:@"Path"];
+				[dict setValue:volumeName forKey:@"Description"];
+				[dict setValue:@"localPath" forKey:@"type"];
 				
-				
-				Wait                *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Copying to your iPod",@"Copying to your iPod")];
-				
-				[splash showWindow:self];
-				[[splash progress] setMaxValue:[files2Copy count]];
-				
-				for( x = 0 ; x < [files2Copy count]; x++)
-				{
-					NSString			*dstPath, *srcPath = [files2Copy objectAtIndex:x];
-					NSString			*extension = [srcPath pathExtension];
-					NSManagedObject		*curImage = [dicomFiles2Copy objectAtIndex:x];
-					NSString			*tempPath;
-					
-					if( [[srcPath stringByDeletingLastPathComponent] isEqualToString:path] == NO && [[curImage valueForKey: @"iPod"] boolValue] == NO) // Is this file already on the iPod?
-					{
-						if( [curImage valueForKey: @"fileType"])
-						{
-							if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"]) extension = [NSString stringWithString:@"dcm"];
-						}
-						
-						if([extension isEqualToString:@""]) extension = [NSString stringWithString:@"dcm"];
-						
-						tempPath = [path stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.name"] ];
-						// Find the DICOM-PATIENT folder
-						if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-						else
-						{
-							if( x == 0)
-							{
-								if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), [NSString stringWithFormat: NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), [tempPath lastPathComponent]], NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
-								{
-									[[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-									[[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-								}
-								else break;
-							}
-						}
-						
-						tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.study.studyName"] ];
-						// Find the DICOM-STUDY folder
-						if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-						
-						
-						tempPath = [tempPath stringByAppendingPathComponent:[curImage valueForKeyPath: @"series.name"] ];
-						
-						tempPath = [tempPath stringByAppendingFormat:@"_%@", [curImage valueForKeyPath: @"series.id"]];
-						// Find the DICOM-SERIE folder
-						if (![[NSFileManager defaultManager] fileExistsAtPath:tempPath]) [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
-						
-						
-						dstPath = [NSString stringWithFormat:@"%@/%d.%@", tempPath, [[curImage valueForKey:@"instanceNumber"] intValue], extension];
-						
-						t = 2;
-						while( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
-						{
-							dstPath = [NSString stringWithFormat:@"%@/%d #%d.%@", tempPath, [[curImage valueForKey:@"instanceNumber"] intValue], t, extension];
-							t++;
-						}
-						
-						BOOL success = [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil];
-						
-						if( success == NO)
-						{
-							NSRunAlertPanel( NSLocalizedString(@"iPod Error", nil), NSLocalizedString(@"OsiriX cannot copy these files to the iPod. Not enough room?", nil), nil, nil, nil);
-							x = [files2Copy count];
-						}
-						
-						if( [extension isEqualToString:@"hdr"])		// ANALYZE -> COPY IMG
-						{
-							[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
-						}
-					}
-					else NSLog( @"Already on the iPod!");
-					
-					[splash incrementBy:1];
-				}
-				
-				[splash close];
-				[splash release];
+				[[bonjourBrowser services] addObject: dict];
+				[bonjourBrowser arrangeServices];
+				[self displayBonjourServices];
 			}
-			
-			i = [allVolumes count]; // exit the loop...
 		}
-	}
-	
-	if( found == NO)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"iPod?",@"iPod?"), NSLocalizedString(@"No iPod is currently connected to your computer",@"No iPod is currently connected to your computer"), NSLocalizedString(@"OK",nil),nil, nil);
 	}
 }
 
@@ -11929,6 +11792,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[self loadDICOMFromiPod];
+	
+	[self displayBonjourServices];
 }
 
 -(void) removeAllMounted
@@ -11992,6 +11857,39 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[context release];
 }
 
+-(void) willVolumeUnmount:(NSNotification *)notification
+{
+	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
+	
+	// Is it an iPod?
+	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]])
+	{
+		// Is it currently selected? -> switch back to default DB path
+		int row = [bonjourServicesList selectedRow];
+		if( row > 0)
+		{
+			if( [[[[bonjourBrowser services] objectAtIndex: row-1] valueForKey:@"Path"] isEqualToString: sNewDrive])
+				[self resetToLocalDatabase];
+		}
+		
+		// Remove it from the Source list
+		int x;
+		for( x = 0; x < [[bonjourBrowser services] count]; x++)
+		{
+			NSDictionary	*c = [[bonjourBrowser services] objectAtIndex: x];
+			
+			if( [[c valueForKey:@"type"] isEqualToString:@"localPath"])
+			{
+				if( [[c valueForKey:@"Path"] isEqualToString: sNewDrive])
+				{
+					[[bonjourBrowser services] removeObjectAtIndex: x];
+					x--;
+				}
+			}
+		}
+	}
+}
+
 -(void)volumeUnmount:(NSNotification *)notification
 {
 	long		i, x;
@@ -12005,7 +11903,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
 	
 	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];	//uppercaseString];
-	NSLog(sNewDrive);
+	NSLog( sNewDrive);
 	
 	range.location = 0;
 	range.length = [sNewDrive length];
@@ -12088,10 +11986,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[context unlock];
 		[context release];
 	}
-	
+		
 	[checkIncomingLock unlock];
 	
 	DatabaseIsEdited = NO;
+	
+	[self displayBonjourServices];
 }
 
 - (void)storeSCPComplete:(id)sender{
@@ -12685,15 +12585,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(export2PACS:)];
     }
-	else if ([itemIdent isEqualToString: iPodToolbarItemIdentifier]) {
-        
-		[toolbarItem setLabel: NSLocalizedString(@"iPod",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"iPod",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to your iPod",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: iPodToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(sendiPod:)];
-    }
 	else if ([itemIdent isEqualToString: iDiskGetToolbarItemIdentifier]) {
         
 		[toolbarItem setLabel: NSLocalizedString(@"iDisk Get",nil)];
@@ -12837,7 +12728,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 										ExportToolbarItemIdentifier,
 										AnonymizerToolbarItemIdentifier,
 										SendToolbarItemIdentifier,
-										iPodToolbarItemIdentifier,
 										ViewerToolbarItemIdentifier,
 										MovieToolbarItemIdentifier,
 										BurnerToolbarItemIdentifier,
@@ -12869,7 +12759,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 											ExportToolbarItemIdentifier,
 											AnonymizerToolbarItemIdentifier,
 											SendToolbarItemIdentifier,
-											iPodToolbarItemIdentifier,
 											iDiskSendToolbarItemIdentifier,
 											iDiskGetToolbarItemIdentifier,
 											ViewerToolbarItemIdentifier,
@@ -12935,8 +12824,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( isCurrentDatabaseBonjour)
 	{
 		if ([[toolbarItem itemIdentifier] isEqualToString: ImportToolbarItemIdentifier]) return NO;
-		if ([[toolbarItem itemIdentifier] isEqualToString: iPodToolbarItemIdentifier]) return NO;
-		
 		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskSendToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskGetToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
