@@ -4452,6 +4452,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 		[pool release];
 		return NO;
 	}
+	
+	if( [[dcmObject transferSyntax] isLittleEndian] == NO)
+	{
+		NSLog(@"loadDICOMDCMFramework - we cannot decode BigEndian images");
+		[pool release];
+		return NO;
+	}
 
 	
 	NSString            *SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
@@ -4476,8 +4483,6 @@ BOOL gUSEPAPYRUSDCMPIX;
 	unsigned short		*shortRed, *shortGreen, *shortBlue;
 
 	int					pixmin, pixmax;
-		
-	
 	
 #pragma mark *pdf
 	if ([ SOPClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]]) {
