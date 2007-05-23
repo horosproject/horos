@@ -709,7 +709,7 @@ int sortPluginArray(id plugin1, id plugin2, void *context)
 
 + (NSArray*)availabilities;
 {
-	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"Application", nil), nil];
+	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"OsiriX bundle", nil), nil];
 }
 
 @end
