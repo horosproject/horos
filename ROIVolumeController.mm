@@ -41,7 +41,10 @@
     
 	[view setPixSource:pts];
 	
-	[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
+	if( volume < 0.01)
+		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3.", nil), volume*1000.]];
+	else
+		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
 	
 	NSNotificationCenter *nc;
 		nc = [NSNotificationCenter defaultCenter];
@@ -68,7 +71,10 @@
 	
 	[view setROIActorVolume:[roiVolume roiVolumeActor]];
 	
-	[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
+	if( volume < 0.01)
+		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f mm3.", nil), volume*1000.]];
+	else
+		[volumeField setStringValue: [NSString stringWithFormat:NSLocalizedString(@"Volume : %2.4f cm3.", nil), volume]];
 	
 	NSNotificationCenter *nc;
 		nc = [NSNotificationCenter defaultCenter];
