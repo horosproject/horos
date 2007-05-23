@@ -2310,11 +2310,15 @@ static BOOL initialized = NO;
 - (void) tileWindows:(id)sender
 {
 	long				i, j, k, x;
+	// Array of open Windows
 	NSArray				*winList = [NSApp windows];
+	// array of viewers
 	NSMutableArray		*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect				screenRect =  screenFrame();
+	// User default to keep studies segregated to separate screens
 	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	// Array of arrays of viewers with same StudyUID
 	NSMutableArray		*studyList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
 	int					keyWindow = 0, numberOfMonitors;	
 
@@ -2381,6 +2385,7 @@ static BOOL initialized = NO;
 			NSString	*studyUID = [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
 			
 			BOOL found = NO;
+			// loop through and add to correct array if present
 			for( x = 0; x < [studyList count]; x++)
 			{
 				if( [[[[[[studyList objectAtIndex: x] objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID])
@@ -2389,7 +2394,7 @@ static BOOL initialized = NO;
 					found = YES;
 				}
 			}
-			
+			// create new array for current UID
 			if( found == NO)
 			{
 				[studyList addObject: [NSMutableArray array]];
@@ -2408,10 +2413,10 @@ static BOOL initialized = NO;
 	screenRect = [[screens objectAtIndex:0] visibleFrame];
 	BOOL landscape = (screenRect.size.width/screenRect.size.height > 1) ? YES : NO;
 	
-	int rows = [[currentHangingProtocol objectForKey:@"Rows"] intValue];
-	int columns = [[currentHangingProtocol objectForKey:@"Columns"] intValue];
-	
-	if (!currentHangingProtocol)
+	int rows = [[[self currentHangingProtocol] objectForKey:@"Rows"] intValue];
+	int columns = [[[self currentHangingProtocol] objectForKey:@"Columns"] intValue];
+
+	if (![self currentHangingProtocol])
 	{
 		if (landscape) {
 			columns = 2 * numberOfMonitors;
@@ -2441,7 +2446,7 @@ static BOOL initialized = NO;
 	if (![[NSUserDefaults standardUserDefaults] integerForKey: @"IMAGECOLUMNS"])
 		[[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"IMAGECOLUMNS"];
 	
-	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && currentHangingProtocol == 0L)
+	if( keepSameStudyOnSameScreen && numberOfMonitors > 1 && [self currentHangingProtocol] == 0L)
 	{
 		for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 		{
