@@ -78,23 +78,28 @@ static NSString *albumDragType = @"Osirix Album drag";
 		
 		#define MARGIN 3
 		
+		width += MARGIN;
 		for( i = 0; i < [cells count]; i++)
 		{
 			width += [[[cells objectAtIndex: i] image] size].width;
 			width += MARGIN;
 		}
 		
-		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70)] autorelease];
+		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( width, 70+6)] autorelease];
 		
 		[thumbnail lockFocus];
 		
+		[[NSColor grayColor] set];
+		NSRectFill(NSMakeRect(0,0,width, 70+6));
+		
 		width = 0;
+		width += MARGIN;
 		for( i = 0; i < [cells count]; i++)
 		{
 			NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
 			
 			NSImage	*im = [[cells objectAtIndex: i] image];
-			[im drawAtPoint: NSMakePoint(width, 0) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
+			[im drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
 		
 			width += [im size].width;
 		    width += MARGIN;
