@@ -8446,7 +8446,7 @@ static BOOL needToRezoom;
 							}
 						}
 						
-						if( fixedRepetition)
+						if( fixedRepetition && repetition != 0)
 						{
 							NSLog( @"repetition = %d", repetition);
 							
