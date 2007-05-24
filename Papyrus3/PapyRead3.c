@@ -1142,11 +1142,7 @@ ExtractRLE (PapyShort inFileNb, PapyUShort *ioImage16P, PapyULong inPixelStart,
 
 inline unsigned short readUint16(const unsigned char *data)
 {
-   #if __BIG_ENDIAN__
   return (((unsigned short)(*data) << 8) | ((unsigned short)(*(data+1))));
-  #else
-  return *((unsigned short*) data);
-  #endif
 }
 
 unsigned char scanJpegDataForBitDepth(
@@ -1156,7 +1152,8 @@ unsigned char scanJpegDataForBitDepth(
   long offset = 0;
   while(offset+4 < fragmentLength)
   {
-    switch(readUint16(data+offset))
+	unsigned short val = readUint16(data+offset);
+    switch( val)
     {
       case 0xffc0: // SOF_0: JPEG baseline
         return data[offset+4];
@@ -1676,7 +1673,11 @@ Papy3GetPixelData (PapyShort inFileNb, int inImageNb, SElement *inGrOrModP, int 
 		Papy3FRead (gPapyFile [inFileNb], &theULong, 1L, data);
 		
 		short depth = scanJpegDataForBitDepth( data, theULong);
-		if( depth == 0) depth = gx0028BitsStored [inFileNb];
+		if( depth == 0)
+		{
+			depth = gx0028BitsStored [inFileNb];
+			fprintf(stdout, "depth not found (scanJpegDataForBitDepth), will use: %d\r", depth);
+		}
 		
 		free( data);
 		

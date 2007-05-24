@@ -3090,7 +3090,12 @@ NS_ENDHANDLER
 				[singleThread lock];	// These JPEG decompressors are NOT thread-safe....
 				
 				short depth = scanJpegDataForBitDepth( [subData bytes], [subData length]);
-				if( depth == 0) depth = _pixelDepth;
+				if( depth == 0)
+				{
+					NSLog( @"depth not found (scanJpegDataForBitDepth), will use : %d", _pixelDepth);
+					depth = _pixelDepth;
+				}
+				else NSLog( @"scanJpegDataForBitDepth : %d", depth);
 				
 				//NSLog(@"Encapsulated: %@", [DCMTransferSyntax description]);
 				if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGBaselineTransferSyntax]]) {

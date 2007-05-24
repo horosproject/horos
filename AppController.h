@@ -43,7 +43,11 @@ extern "C"
 }
 #endif
 
+#if !__LP64__
 @interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
+#else
+@interface AppController : NSObject
+#endif
 {
 	IBOutlet BrowserController		*browserController;
 
