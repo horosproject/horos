@@ -31,6 +31,7 @@ Version 2.5
 #import <OsiriX/DCM.h>
 #import "DCMView.h"
 #import "DCMPix.h"
+#import "VRController.h"
 
 extern NSString * documentsDirectory();
 
@@ -145,6 +146,11 @@ extern NSString * documentsDirectory();
 			}
 			
 			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
+		}
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath: [VRController getUniqueFilenameScissorStateFor: self]])
+		{
+			[[NSFileManager defaultManager] removeFileAtPath: [VRController getUniqueFilenameScissorStateFor: self] handler: 0L];
 		}
 	}
 	return delete;

@@ -792,17 +792,15 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
     return self;
 }
 
--(NSString*) getUniqueFilenameScissorState
++ (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
 {
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
 	BOOL			isDir = YES;
-	long			i;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
 		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-	}
-	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+
+	return [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [obj valueForKey:@"uniqueFilename"]]];
 }
 
 -(void) save3DState

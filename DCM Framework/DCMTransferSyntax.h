@@ -47,7 +47,6 @@ NSMutableDictionary *transferSyntaxDict;
 +(id)RLETransferSyntax;
 +(id)OsiriXTransferSyntax;
 
-
 - (id)initWithTS:(NSString *)ts;
 - (id)initWithTS:(NSString *)ts isEncapsulated:(BOOL)encapsulated  isLittleEndian:(BOOL)endian  isExplicit:(BOOL)explicitValue name:(NSString *)aName;
 - (id)initWithTransferSyntax:(DCMTransferSyntax *)ts;

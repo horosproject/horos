@@ -50,7 +50,14 @@ static NSString *DCM_JPEGLSLossy = @"1.2.840.10008.1.2.4.81";
 static NSString *DCM_RLELossless = @"1.2.840.10008.1.2.5";
 static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 
+//Native Osirix Transfer Syntax. Used internally
+static NSString *DCM_BigEndianOsiriX = @"1.2.840.10008.1.2.2.1";
+   
 @implementation DCMTransferSyntax
+
++(id)OsiriXTransferSyntax{
+	return [[[DCMTransferSyntax alloc] initWithTS:DCM_BigEndianOsiriX] autorelease];
+}
 
 +(id)ExplicitVRLittleEndianTransferSyntax{
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_ExplicitVRLittleEndian] autorelease];
@@ -133,6 +140,7 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 					DCM_JPEGLossless15Retired,
 					DCM_JPEGLSLossless,
 					DCM_JPEGLSLossy,
+					DCM_BigEndianOsiriX,
 					DCM_RLELossless,
 					nil];
 
@@ -162,6 +170,7 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 					@"JPEGLossless15Retired",
 					@"JPEGLSLossless",
 					@"JPEGLSLossy",
+					@"DCM_BigEndianOsiriX",
 					@"RLELossless",
 					nil];
 	if (self = [super init]) {
@@ -181,7 +190,8 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 				//unencasualted TSs
 				if ([key isEqualToString:DCM_ExplicitVRBigEndian] ||					
 					[key isEqualToString:DCM_ExplicitVRLittleEndian] ||
-					[key isEqualToString:DCM_ImplicitVRLittleEndian]) 
+					[key isEqualToString:DCM_ImplicitVRLittleEndian] ||
+					[key isEqualToString:DCM_BigEndianOsiriX])
 					encapsulated = NO;
 				//implicit TSs
 				if ([key isEqualToString:DCM_ImplicitVRLittleEndian]) 

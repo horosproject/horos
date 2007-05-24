@@ -182,7 +182,7 @@
 - (void) prepareUndo;
 - (VRView*) view;
 - (void) applyScissor : (NSArray*) object;
-- (NSString*) getUniqueFilenameScissorState;
++ (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj;
 - (NSArray*) fileList;
 - (void)createContextualMenu;
 - (float) factor;

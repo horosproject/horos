@@ -4990,8 +4990,7 @@ public:
 
 - (void) updateScissorStateButtons
 {
-	//NSString		*str = [[[self window] windowController] getUniqueFilenameScissorState];
-	NSString		*str = [controller getUniqueFilenameScissorState];
+	NSString		*str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: str] == NO)
 	{
@@ -5007,9 +5006,7 @@ public:
 
 -(IBAction) scissorStateButtons:(id) sender
 {
-//	NSString		*str = [[[self window] windowController] getUniqueFilenameScissorState];
-	NSString		*str = [controller getUniqueFilenameScissorState];
-	
+	NSString		*str = [VRController getUniqueFilenameScissorStateFor: [firstObject imageObj]];	
 	NSData			*volumeData;
 	long			volumeSize = [firstObject pheight] * [pixList count] * [firstObject pwidth] * sizeof(float);
 	WaitRendering	*waiting = 0L;
