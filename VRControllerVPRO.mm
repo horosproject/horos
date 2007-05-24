@@ -498,20 +498,6 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
     return self;
 }
 
-
--(NSString*) getUniqueFilenameScissorState
-{
-	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];
-	BOOL			isDir = YES;
-	long			i;
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-	}
-	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VR3DScissor-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
-}
-
 -(void) save3DState
 {
 	NSString		*path = [documentsDirectory() stringByAppendingPathComponent:STATEDATABASE];

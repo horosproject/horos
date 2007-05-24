@@ -107,7 +107,6 @@
 - (void) updateEngine;
 - (void) prepareUndo;
 - (void) applyScissor : (NSArray*) object;
-- (NSString*) getUniqueFilenameScissorState;
 - (IBAction) setMode:(id) sender;
 - (NSArray*) fileList;
 - (void)createContextualMenu;

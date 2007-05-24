@@ -9672,7 +9672,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 		NSLog(@"delete Queue start: %d objects", [copyArray count]);
 		for( i = 0; i < [copyArray count]; i++)
-			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
+			unlink( [[copyArray objectAtIndex: i] UTF8String]);		// <- this is faster
+//			[[NSFileManager defaultManager] removeFileAtPath:[copyArray objectAtIndex: i] handler:nil];
 		NSLog(@"delete Queue end");
 
 		[appController growlTitle: NSLocalizedString( @"Files removing", 0L) description: NSLocalizedString( @"Finished", 0L) name:@"delete"];
