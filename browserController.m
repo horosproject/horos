@@ -8407,7 +8407,7 @@ static BOOL needToRezoom;
 				{
 					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 					
-					interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+					interval = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue];
 					
 					if( interval == 0)	// 4D - 3D
 					{
@@ -8427,33 +8427,70 @@ static BOOL needToRezoom;
 					}
 					else	// 3D - 4D
 					{
+						BOOL	fixedRepetition = YES;
+						int		repetition = 0, previousPos = 0;
+						float	previousLocation;
+						
+						previousLocation = [[[singleSeries objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+						
 						for( x = 1; x < [singleSeries count]; x++)
 						{
-							interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
-							
-							if( [[splittedSeries lastObject] count] > 2)
+							if( [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue] - previousLocation == 0)
 							{
-								if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
+								if( repetition)
+									if( repetition != x - previousPos)
+										fixedRepetition = NO;
+										
+								repetition = x - previousPos;
+								previousPos = x;
+							}
+						}
+						
+						if( fixedRepetition)
+						{
+							NSLog( @"repetition = %d", repetition);
+							
+							for( x = 1; x < [singleSeries count]; x++)
+							{
+								if( x % repetition == 0)
 								{
 									[splittedSeries addObject: [NSMutableArray array]];
 									NSLog(@"split at: %d", x);
-									previousinterval = 0;
 								}
-								else if( previousinterval)
+																
+								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
+							}
+						}
+						else
+						{
+							for( x = 1; x < [singleSeries count]; x++)
+							{
+								interval = [[[singleSeries objectAtIndex: x -1] valueForKey:@"sliceLocation"] floatValue] - [[[singleSeries objectAtIndex: x] valueForKey:@"sliceLocation"] floatValue];
+								
+								if( [[splittedSeries lastObject] count] > 2)
 								{
-									if( fabs(interval/previousinterval) > 2.0 || fabs(interval/previousinterval) < 0.5)
+									if( (interval < 0 && previousinterval > 0) || (interval > 0 && previousinterval < 0))
 									{
 										[splittedSeries addObject: [NSMutableArray array]];
 										NSLog(@"split at: %d", x);
 										previousinterval = 0;
 									}
+									else if( previousinterval)
+									{
+										if( fabs(interval/previousinterval) > 1.2 || fabs(interval/previousinterval) < 0.8)
+										{
+											[splittedSeries addObject: [NSMutableArray array]];
+											NSLog(@"split at: %d", x);
+											previousinterval = 0;
+										}
+										else previousinterval = interval;
+									}
 									else previousinterval = interval;
 								}
 								else previousinterval = interval;
+								
+								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 							}
-							else previousinterval = interval;
-							
-							[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: x]];
 						}
 					}
 				}
@@ -8472,7 +8509,7 @@ static BOOL needToRezoom;
 					[subOpenMatrix4D renewRows: 1 columns: [[splittedSeries objectAtIndex: 0] count]];
 					[subOpenMatrix4D sizeToCells];
 					[subOpenMatrix4D setTarget:self];
-					[subOpenMatrix4D setAction: @selector( selectSubSeriesAndOpen:)];
+					[subOpenMatrix4D setAction: @selector( selectAll4DSeries:)];
 					
 					[[supOpenButtons cellWithTag: 3] setEnabled: YES];
 					
