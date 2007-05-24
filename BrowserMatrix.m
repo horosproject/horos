@@ -187,6 +187,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 		{
 			[super mouseDown: ev];
 		}
+		
+		[NSEvent stopPeriodicEvents];
 	}
 }
 
