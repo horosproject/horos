@@ -155,7 +155,8 @@
 }
 
 - (void)compute{
-	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[_viewer pixList] :[_viewer volumePtr] :-1];
+	//ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWith:[_viewer pixList] :[_viewer volumePtr] :-1];
+	ITKSegmentation3D	*itk = [[ITKSegmentation3D alloc] initWithPix :[_viewer pixList]  volume:[_viewer volumePtr]  slice:-1  resampleData:YES];
 	[itk endoscopySegmentationForViewer:_viewer seeds:_seeds];
 	[itk release];
 }
