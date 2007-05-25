@@ -382,7 +382,6 @@
 		7EC3590A06FE212600188171 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		7EC3590B06FE212600188171 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		7EC3593206FE21EF00188171 /* libtiff.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
-		7EC9D1C1071AF3F500B41740 /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */; };
 		7EC9D1C4071AF41300B41740 /* ITKSegmentation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */; };
 		7EC9D75C071B3F1800B41740 /* ITK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE74456706DBA4CB0034D05E /* ITK.h */; };
 		7EC9D75D071B3F1B00B41740 /* ITK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE74456806DBA4CB0034D05E /* ITK.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
@@ -2653,6 +2652,12 @@
 		BF2EEC860B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC870B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
 		BF2EEC880B1F8741007E9088 /* OSIHotKeys.prefPane in Resources */ = {isa = PBXBuildFile; fileRef = BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */; };
+		BF30B3A80C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
+		BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
+		BF30B3AA0C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
+		BF30B3AC0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
+		BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
+		BF30B3AE0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
 		BF34857A0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
 		BF34857B0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
 		BF34857C0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
@@ -5706,7 +5711,6 @@
 		CE233A4C0961659E00679828 /* vli3.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA65731094EF6FD00D4E5E5 /* vli3.h */; };
 		CE233A4D0961659E00679828 /* vli.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA65654094EF57000D4E5E5 /* vli.h */; };
 		CE26442306DCF096007F5B71 /* ITKSegmentation3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */; };
-		CE26442406DCF096007F5B71 /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */; };
 		CE26443206DCF0D1007F5B71 /* ITKSegmentation.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE26443006DCF0D1007F5B71 /* ITKSegmentation.nib */; };
 		CE26443306DCF0D3007F5B71 /* ITKSegmentation.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE26443006DCF0D1007F5B71 /* ITKSegmentation.nib */; };
 		CE279EEF06AEFB87008315C8 /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
@@ -10004,7 +10008,6 @@
 		CECB035307539E3900576814 /* PlotWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6E2CAF06CAE45A00BC7907 /* PlotWindow.h */; };
 		CECB035407539E3900576814 /* ITK.h in Headers */ = {isa = PBXBuildFile; fileRef = CE74456706DBA4CB0034D05E /* ITK.h */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CECB035507539E3900576814 /* ITKSegmentation3D.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */; };
-		CECB035607539E3900576814 /* ITKSegmentation3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */; };
 		CECB035A07539E3900576814 /* DCMCursor.h in Headers */ = {isa = PBXBuildFile; fileRef = BF00C95806F3F43900715191 /* DCMCursor.h */; };
 		CECB035B07539E3900576814 /* PreferencePaneController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2BE37B0715D2820017898A /* PreferencePaneController.h */; };
 		CECB035C07539E3900576814 /* DCMCalendarScript.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECB4B3F072EF9F800C2CFC4 /* DCMCalendarScript.h */; };
@@ -11781,6 +11784,8 @@
 		BF28B92A0783A7F000C71DA8 /* DCMNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMNetworking.h; sourceTree = "<group>"; };
 		BF2EEC300B1F82F4007E9088 /* OSIHotKeysPreferencePane.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OSIHotKeysPreferencePane.xcodeproj; path = "Preference Panes/OSIHotKeysPreferencePane/OSIHotKeysPreferencePane.xcodeproj"; sourceTree = "<group>"; };
 		BF2EEC750B1F8741007E9088 /* OSIHotKeys.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIHotKeys.prefPane; path = "Preference Panes/OSIHotKeysPreferencePane/build/Release/OSIHotKeys.prefPane"; sourceTree = SOURCE_ROOT; };
+		BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = vtkPowerCrustSurfaceReconstruction.cxx; sourceTree = "<group>"; };
+		BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkPowerCrustSurfaceReconstruction.h; sourceTree = "<group>"; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
 		BF3485770951270C00B05AD2 /* SendController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendController.m; sourceTree = "<group>"; };
 		BF3930990B1407380059EEE5 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
@@ -13102,7 +13107,6 @@
 		CE1F6C4907D715EB00165CBE /* Reset.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Reset.tiff; sourceTree = "<group>"; };
 		CE2028F8094EFFC300C00310 /* Endoscopy.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Endoscopy.tif; sourceTree = "<group>"; };
 		CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ITKSegmentation3DController.m; sourceTree = "<group>"; };
-		CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ITKSegmentation3DController.h; sourceTree = "<group>"; };
 		CE26443106DCF0D1007F5B71 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ITKSegmentation.nib; sourceTree = "<group>"; };
 		CE279EEE06AEFB87008315C8 /* Mail.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Mail.icns; sourceTree = "<group>"; };
 		CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CalciumScoringWindowController.h; sourceTree = "<group>"; };
@@ -17856,13 +17860,14 @@
 		CE3E19E80875710E007FFD6F /* ITK */ = {
 			isa = PBXGroup;
 			children = (
+				BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */,
+				BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */,
 				BFE857360BE14704000A4C11 /* OSIPoint3D.h */,
 				BFE857370BE14704000A4C11 /* OSIPoint3D.m */,
 				CE74456706DBA4CB0034D05E /* ITK.h */,
 				CE74456806DBA4CB0034D05E /* ITK.mm */,
 				CE4A922C06DBF255006DAAF7 /* ITKSegmentation3D.h */,
 				CE4A922B06DBF255006DAAF7 /* ITKSegmentation3D.mm */,
-				CE26442006DCF096007F5B71 /* ITKSegmentation3DController.h */,
 				CE26441F06DCF096007F5B71 /* ITKSegmentation3DController.m */,
 				CE9762B908FABD1100E6F8B0 /* MSRG */,
 				CE1F010707321F9800DE5DE9 /* ITKRegistration.h */,
@@ -19527,7 +19532,6 @@
 				CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */,
 				CE74456906DBA4CB0034D05E /* ITK.h in Headers */,
 				CE4A922E06DBF255006DAAF7 /* ITKSegmentation3D.h in Headers */,
-				CE26442406DCF096007F5B71 /* ITKSegmentation3DController.h in Headers */,
 				BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */,
 				7E2BE37D0715D2820017898A /* PreferencePaneController.h in Headers */,
 				7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */,
@@ -21356,6 +21360,7 @@
 				AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */,
 				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
+				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21460,7 +21465,6 @@
 				CE6E2CB306CAE45A00BC7907 /* PlotWindow.h in Headers */,
 				BF00C95A06F3F43900715191 /* DCMCursor.h in Headers */,
 				7E2BE37F0715D2820017898A /* PreferencePaneController.h in Headers */,
-				7EC9D1C1071AF3F500B41740 /* ITKSegmentation3DController.h in Headers */,
 				7EC9D1C4071AF41300B41740 /* ITKSegmentation3D.h in Headers */,
 				7EC9D75C071B3F1800B41740 /* ITK.h in Headers */,
 				7ECB4B43072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */,
@@ -23288,6 +23292,7 @@
 				AB87FA7F0C06BEB200CD2976 /* nifti1.h in Headers */,
 				AB87FA810C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA830C06BEB200CD2976 /* znzlib.h in Headers */,
+				BF30B3AE0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23393,7 +23398,6 @@
 				CECB035307539E3900576814 /* PlotWindow.h in Headers */,
 				CECB035407539E3900576814 /* ITK.h in Headers */,
 				CECB035507539E3900576814 /* ITKSegmentation3D.h in Headers */,
-				CECB035607539E3900576814 /* ITKSegmentation3DController.h in Headers */,
 				CECB035A07539E3900576814 /* DCMCursor.h in Headers */,
 				CECB035B07539E3900576814 /* PreferencePaneController.h in Headers */,
 				CECB035C07539E3900576814 /* DCMCalendarScript.h in Headers */,
@@ -25225,6 +25229,7 @@
 				AB87FA840C06BEB200CD2976 /* nifti1.h in Headers */,
 				AB87FA860C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA880C06BEB200CD2976 /* znzlib.h in Headers */,
+				BF30B3AC0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27931,6 +27936,7 @@
 				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
+				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28709,6 +28715,7 @@
 				ABC47B5C0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 				AB87FA800C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA820C06BEB200CD2976 /* znzlib.c in Sources */,
+				BF30B3AA0C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30054,6 +30061,7 @@
 				ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 				AB87FA850C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA870C06BEB200CD2976 /* znzlib.c in Sources */,
+				BF30B3A80C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
