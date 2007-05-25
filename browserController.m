@@ -7420,95 +7420,99 @@ static BOOL needToRezoom;
 					sqlFile = [self getDatabaseIndexFileFor: [object valueForKey: @"Path"]];				
 				}
 				
-				// LOCAL PATH - DATABASE
-				@try
+				if( sqlFile && dbFolder)
 				{
-					NSLog( @"-----------------------------");
-					NSLog( @"Destination is a 'local' path");
-					
-					
-					Wait *splash = 0L;
-					
-					if( isCurrentDatabaseBonjour)
-						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
-					
-					[splash showWindow:self];
-					[[splash progress] setMaxValue:[imagesArray count]];
-						
-					NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
-					for( i = 0; i < [imagesArray count]; i++)
+					// LOCAL PATH - DATABASE
+					@try
 					{
-						NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
-						[packArray addObject: sendPath];
+						NSLog( @"-----------------------------");
+						NSLog( @"Destination is a 'local' path");
 						
-						[splash incrementBy:1];
-					}
-					
-					[splash close];
-					[splash release];
-					
-					
-					NSLog( @"DB Folder: %@", dbFolder);
-					NSLog( @"SQL File: %@", sqlFile);
-					NSLog( @"Current documentsDirectory: %@", [self documentsDirectory]);
-					
-					NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
-					NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
 						
-					[sqlContext setPersistentStoreCoordinator: sc];
-
-					NSError	*error = 0L;
-					[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
-					
-					if( [dbFolder isEqualToString: [[self documentsDirectory] stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
-					{
-						NSLog( @"Destination DB Folder is identical to Current DB Folder");
+						Wait *splash = 0L;
 						
-						[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
-					}
-					else
-					{
-						NSMutableArray	*dstFiles = [NSMutableArray array];
-						NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+						if( isCurrentDatabaseBonjour)
+							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Downloading files...", nil)];
 						
-						// First we copy the files to the DATABASE folder
-						splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
 						[splash showWindow:self];
-						[[splash progress] setMaxValue:[packArray count]];
-						
-						for( i=0; i < [packArray count]; i++)
+						[[splash progress] setMaxValue:[imagesArray count]];
+							
+						NSMutableArray		*packArray = [NSMutableArray arrayWithCapacity: [imagesArray count]];
+						for( i = 0; i < [imagesArray count]; i++)
 						{
+							NSString	*sendPath = [self getLocalDCMPath:[imagesArray objectAtIndex: i] :10];
+							[packArray addObject: sendPath];
+							
 							[splash incrementBy:1];
-							
-							NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
-							BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
-							
-							if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-							else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
-							
-							if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
-								[dstFiles addObject: dstPath];
 						}
+						
 						[splash close];
 						[splash release];
 						
-						// Then we add the files to the sql file
-						[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						
+						NSLog( @"DB Folder: %@", dbFolder);
+						NSLog( @"SQL File: %@", sqlFile);
+						NSLog( @"Current documentsDirectory: %@", [self documentsDirectory]);
+						
+						NSPersistentStoreCoordinator *sc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+						NSManagedObjectContext *sqlContext = [[NSManagedObjectContext alloc] init];
+							
+						[sqlContext setPersistentStoreCoordinator: sc];
+
+						NSError	*error = 0L;
+						[sc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:[NSURL fileURLWithPath: sqlFile] options:nil error:&error];
+						
+						if( [dbFolder isEqualToString: [[self documentsDirectory] stringByDeletingLastPathComponent]] && isCurrentDatabaseBonjour == NO)	// same database folder - we don't need to copy the files
+						{
+							NSLog( @"Destination DB Folder is identical to Current DB Folder");
+							
+							[self addFilesToDatabase: packArray onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						else
+						{
+							NSMutableArray	*dstFiles = [NSMutableArray array];
+							NSLog( @"Destination DB Folder is NOT identical to Current DB Folder");
+							
+							// First we copy the files to the DATABASE folder
+							splash = [[Wait alloc] initWithString:NSLocalizedString(@"Copying to OsiriX database...", nil)];
+							[splash showWindow:self];
+							[[splash progress] setMaxValue:[packArray count]];
+							
+							for( i=0; i < [packArray count]; i++)
+							{
+								[splash incrementBy:1];
+								
+								NSString *dstPath, *srcPath = [packArray objectAtIndex: i];
+								BOOL isDicomFile = [DicomFile isDICOMFile:srcPath];
+								
+								if( isDicomFile) dstPath = [self getNewFileDatabasePath:@"dcm" dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+								else dstPath = [self getNewFileDatabasePath: [[srcPath pathExtension] lowercaseString] dbFolder: [dbFolder stringByAppendingPathComponent: @"OsiriX Data"]];
+								
+								if( [[NSFileManager defaultManager] copyPath:srcPath toPath:dstPath handler:nil])
+									[dstFiles addObject: dstPath];
+							}
+							[splash close];
+							[splash release];
+							
+							// Then we add the files to the sql file
+							[self addFilesToDatabase: dstFiles onlyDICOM:NO safeRebuild:NO produceAddedFiles:NO parseExistingObject:NO context: sqlContext dbFolder: [dbFolder stringByAppendingPathComponent:@"OsiriX Data"]];
+						}
+						
+						error = 0L;
+						[sqlContext save: &error];
+						
+						[sc release];
+						[sqlContext release];
 					}
 					
-					error = 0L;
-					[sqlContext save: &error];
-					
-					[sc release];
-					[sqlContext release];
+					@catch (NSException * e)
+					{
+						NSLog( [e description]);
+						NSLog( @"Exception !! *******");
+					}
 				}
+				else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",0L),  NSLocalizedString(@"Destination Database / Index file is not available.", 0L), NSLocalizedString(@"OK",nil), nil, nil);
 				
-				@catch (NSException * e)
-				{
-					NSLog( [e description]);
-					NSLog( @"Exception !! *******");
-				}
-
 				NSLog( @"-----------------------------");
 			}
 			else if( isCurrentDatabaseBonjour == YES)  // Copying FROM Distant to local OR distant

@@ -88,6 +88,7 @@ char* DCMreplaceInvalidCharacter (char* str)
 	encoding = NSISOLatin1StringEncoding;
 	if (self = [super init]) {
 	
+		if( [characterSet isEqualToString:@"ISO_2022_IR_6"])	encoding = NSISOLatin1StringEncoding;
 		if( [characterSet isEqualToString:@"ISO_IR 127"])		encoding = -2147483130;	//[characterSet numberFromLocalizedStringEncodingName :@"Arabic (ISO 8859-6)"];
 		if( [characterSet isEqualToString:@"ISO_IR 101"])		encoding = NSISOLatin2StringEncoding;
 		if( [characterSet isEqualToString:@"ISO_IR 109"])		encoding = -2147483133;	//[characterSet numberFromLocalizedStringEncodingName :@"Western (ISO Latin 3)"];
