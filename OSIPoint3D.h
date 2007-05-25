@@ -27,6 +27,8 @@
 	float _y;
 	float _z;
 	NSNumber *_value;
+	
+	NSMutableSet *_connections;
 }
 
 - (float)x;
@@ -47,5 +49,10 @@
 
 + (id)pointWithX:(float)x  y:(float)y  z:(float)z value:(NSNumber *)value;
 + (id)pointWithNSPoint:(NSPoint)point  slice:(long)slice value:(NSNumber *)value;
+
+- (NSMutableSet *)connections;
+- (void)setConnections:(NSMutableSet *)connections;
+- (void)addConnection:(OSIPoint3D *)connection;
+- (void)removeConnection:(OSIPoint3D *)connection;
 
 @end

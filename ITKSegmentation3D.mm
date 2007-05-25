@@ -979,6 +979,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	ApproximateDistanceMapType::Pointer approximateDistanceMapFilter = ApproximateDistanceMapType::New();
 	approximateDistanceMapFilter->SetInsideValue(0.0);
 	approximateDistanceMapFilter->SetOutsideValue(255.0);
+	
+
 
 
 	NSLog(@"start Endoscopy segmentation");

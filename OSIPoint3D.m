@@ -52,6 +52,7 @@
 		_y = y;
 		_z = z;
 		_value = [value retain];
+		_connections = [[NSMutableSet set] retain];
 	}
 	return self;
 }
@@ -64,6 +65,7 @@
 		_y = point.y;
 		_z = (float)slice;
 		_value = [value retain];
+		_connections = [[NSMutableSet set] retain];
 	}
 	return self;
 }
@@ -88,11 +90,28 @@
 
 - (void)dealloc{
 	[_value release];
+	[_connections release];
 	[super dealloc];
 }
 
-- (void)description {
+- (NSString *)description {
 	return [NSString stringWithFormat:@"OSIPoint\nx = %2.1f y = %2.1f z = %2.1f value: %@", _x, _y, _z, _value];
+}
+
+
+- (NSMutableSet *)connections{
+	return _connections;
+}
+
+- (void)setConnections:(NSMutableSet *)connections{
+	[_connections release];
+	_connections = [connections retain];
+}
+- (void)addConnection:(OSIPoint3D *)connection{
+	[_connections addObject:connection];
+}
+- (void)removeConnection:(OSIPoint3D *)connection{
+	[_connections removeObject:connection];
 }
 	
 
