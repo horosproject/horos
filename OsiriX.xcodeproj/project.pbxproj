@@ -2534,6 +2534,8 @@
 		ABF68A43061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
+		ABF72C150C06D071005A8ED0 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
+		ABF72C160C06D072005A8ED0 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
 		ABF7D84D0BE1EB5E00D1A1B4 /* DynamicAngle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D84B0BE1EB5E00D1A1B4 /* DynamicAngle.tiff */; };
 		ABF7D84E0BE1EB5E00D1A1B4 /* Axis.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D84C0BE1EB5E00D1A1B4 /* Axis.tiff */; };
 		ABF7D84F0BE1EB5E00D1A1B4 /* DynamicAngle.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABF7D84B0BE1EB5E00D1A1B4 /* DynamicAngle.tiff */; };
@@ -29259,6 +29261,8 @@
 				CEAF1FD00A757EC800A0D729 /* jquant1.c in Sources */,
 				CEAF1FD10A757EC800A0D729 /* jquant2.c in Sources */,
 				CEAF1FD20A757EC800A0D729 /* jutils.c in Sources */,
+				ABF72C150C06D071005A8ED0 /* nifti1_io.c in Sources */,
+				ABF72C160C06D072005A8ED0 /* znzlib.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

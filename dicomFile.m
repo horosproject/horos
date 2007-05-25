@@ -396,7 +396,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"nii"] == YES)
 	{
 		NIfTI = (nifti_1_header *) nifti_read_header([file cString], nil, 0);
-
+		
 		if( (NIfTI->magic[0] != 'n')                           ||
 					(NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+')   ||
 					(NIfTI->magic[2] != '1')                           ||
