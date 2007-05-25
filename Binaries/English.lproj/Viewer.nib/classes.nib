@@ -276,6 +276,7 @@
                 popFusion = NSPopUpButton; 
                 popupRoi = NSPopUpButton; 
                 previewMatrix = NSMatrix; 
+                previewMatrixScrollView = NSScrollView; 
                 printBox = NSBox; 
                 printColor = NSColorWell; 
                 printFormat = NSMatrix; 

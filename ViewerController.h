@@ -78,6 +78,7 @@ enum
 
 	IBOutlet NSSplitView	*splitView;
 	IBOutlet NSMatrix		*previewMatrix;
+	IBOutlet NSScrollView	*previewMatrixScrollView;
 	BOOL					matrixPreviewBuilt;
 	
     IBOutlet NSWindow       *quicktimeWindow;

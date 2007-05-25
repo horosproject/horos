@@ -2470,6 +2470,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	long					i, x, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
 	BOOL					StoreThumbnailsInDB = YES;	//[[NSUserDefaults standardUserDefaults] boolForKey: @"StoreThumbnailsInDB"];
+	NSPoint					origin = [[previewMatrix superview] bounds].origin;
 	
 	BOOL visible = [self checkFrameSize];
 	
@@ -2659,6 +2660,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( index != NSNotFound)
 			[previewMatrix scrollCellToVisibleAtRow: index column:0];
+	}
+	else
+	{
+		[[previewMatrixScrollView contentView] scrollToPoint: origin];
+		[previewMatrixScrollView reflectScrolledClipView: [previewMatrixScrollView contentView]];
 	}
 	
 	[previewMatrix setNeedsDisplay:YES];
