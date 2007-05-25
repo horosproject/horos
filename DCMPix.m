@@ -33,6 +33,8 @@
 #include "tiffio.h"
 #include "FVTiff.h"
 #include "Analyze.h"
+#include "nifti1.h"
+#include "nifti1_io.h"
 #include <Accelerate/Accelerate.h>
 #import <QTKit/QTKit.h>
 
@@ -7756,6 +7758,239 @@ BOOL            readable = YES;
 			else if( [DicomFile isFVTiffFile:srcFile])
 			{
 				[self LoadFVTiff];
+			}
+			else if( (( [extension isEqualToString:@"hdr"] == YES) && 
+				([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
+				( [extension isEqualToString:@"nii"] == YES))
+			{
+				// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
+				// For more information: http://cni.bwh.harvard.edu/
+				// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
+				long			totSize;
+				struct nifti_1_header  *NIfTI;
+				NSData			*fileData;
+				BOOL			swapByteOrder = NO;
+				
+				NIfTI = (nifti_1_header *) nifti_read_header([srcFile cString], nil, 0);
+				
+				if( (NIfTI->magic[0] == 'n')                           &&
+					(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
+					(NIfTI->magic[2] == '1')                           &&
+					(NIfTI->magic[3] == '\0') )
+				{
+					width = NIfTI->dim[ 1];
+					realwidth = width;
+					width /= 2;
+					width *= 2;
+					
+					height = NIfTI->dim[ 2];
+					realheight = height;
+					height /= 2;
+					height *= 2;
+					
+					pixelSpacingX = NIfTI->pixdim[ 1];
+					pixelSpacingY = NIfTI->pixdim[ 2];
+					sliceThickness = sliceInterval = NIfTI->pixdim[ 3];
+					
+					totSize = realheight * realwidth * 2;
+					NSLog(@"totSize:  %d", totSize);
+					oImage = malloc( totSize);
+					
+					// Transformation matrix
+					short qform_code = NIfTI->qform_code;
+					short sform_code = NIfTI->sform_code;
+					
+					// Read img file or read nii file after vox_offset
+					if( (NIfTI->magic[0] == 'n')    &&
+						(NIfTI->magic[1] == 'i')	&&
+						(NIfTI->magic[2] == '1')    &&
+						(NIfTI->magic[3] == '\0') )
+					{
+						fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+					}
+					else
+					{
+						nifti_image * nifti_imagedata = nifti_image_read([srcFile cString], 1);
+						fileData = [[NSData alloc] initWithBytesNoCopy:nifti_imagedata->data length:(nifti_imagedata->nvox * nifti_imagedata->nbyper)];
+					}
+					
+					short datatype = NIfTI->datatype;
+					if( swapByteOrder) datatype = Endian16_Swap( datatype);
+					
+					switch( datatype)
+					{
+						case 2:
+						{
+							unsigned char   *bufPtr;
+							short			*ptr, *tmpImage;
+							long			loop;
+							
+							bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
+							ptr    = oImage;
+							
+							loop = totSize/2;
+							while( loop-- > 0)
+							{
+								*ptr++ = *bufPtr++;
+							}
+							NSLog(@"Loop is done for frame number %i \n", (int) frameNo);
+						}
+						break;
+						
+						case 4:
+							memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
+							if( swapByteOrder)
+							{
+								long			loop;
+								short			*ptr = oImage;
+								
+								loop = realheight * realwidth;
+								while( loop-- > 0)
+								{
+									*ptr = Endian16_Swap( *ptr);
+									ptr++;
+								}
+							}
+						break;
+						
+						case 8:
+						{
+							unsigned int   *bufPtr;
+							short			*ptr, *tmpImage;
+							long			loop;
+							
+							bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
+							ptr    = oImage;
+							
+							loop = totSize/2;
+							while( loop-- > 0)
+							{
+								if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
+								else *ptr++ = *bufPtr++;
+							}
+						}
+						break; 
+						
+						case 16:
+							if( fVolImage)
+							{
+								fImage = fVolImage;
+							}
+							else
+							{
+								fImage = malloc(width*height*sizeof(float) + 100);
+							}
+							
+							for( i = 0; i < height;i++)
+							{
+								memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
+							}
+							
+							free(oImage);
+							oImage = 0L;
+						break; 
+						
+						case 128:
+//								fi.fileType = FileInfo.RGB_PLANAR; 		// DT_RGB
+//								bitsallocated = 24;
+							NSLog(@"unsupported... please send me this file");
+						break; 
+					}
+					
+					[fileData release];
+												
+					// CONVERSION TO FLOAT
+					
+					
+					if( datatype != 16)
+					{
+						if( width != realwidth)
+						{
+							for( i = 0; i < height;i++)
+							{
+								memmove( oImage + i*width, oImage + i*realwidth, width*2);
+							}
+						}
+
+						vImage_Buffer src16, dstf;
+						
+						dstf.height = src16.height = height;
+						dstf.width = src16.width = width;
+						src16.rowBytes = width*2;
+						dstf.rowBytes = width*sizeof(float);
+						
+						src16.data = oImage;
+						
+						if( fVolImage)
+						{
+							fImage = fVolImage;
+						}
+						else
+						{
+							fImage = malloc(width*height*sizeof(float) + 100);
+						}
+						
+						dstf.data = fImage;
+						
+						vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
+						
+						free(oImage);
+						oImage = 0L;
+						
+						// Perform necessary transformations on image
+						// NOTE:  This section may be thrown out, since it is not very versatile.  
+						// I suggest using an external converter (such as mri_convert) to handle the NIfTI transformations
+						/*
+						bool flipVertical = NO;
+						bool flipHorizontal = NO;
+						
+						if(qform_code == 0 && sform_code > 0)
+						{
+							// Method 3... Using srow vectors
+							//
+							//	x = srow_x[0] * i + srow_x[1] * j + srow_x[2] * k + srow_x[3]
+							//	y = srow_y[0] * i + srow_y[1] * j + srow_y[2] * k + srow_y[3]
+							//	z = srow_z[0] * i + srow_z[1] * j + srow_z[2] * k + srow_z[3]
+							
+							
+							// First make sure endians are set correctly for srow array
+							float srowx3 = NIfTI->srow_x[3];
+							float srowy3 = NIfTI->srow_y[3];
+							
+							if( swapByteOrder) 
+							{
+								SwitchFloat( &srowx3);
+								SwitchFloat( &srowy3);
+							}
+							
+							if(srowx3 < 0)
+							{
+								flipHorizontal = YES;
+							}
+							if(srowy3 < 0)
+							{
+								flipVertical = YES;
+							}
+						}
+						else if(qform_code == 0 && sform_code == 0)
+						{
+							// Method 1... ANALYZE 7.5 way
+							// This is already being handled in the code, so no need to do anything here.
+						}						
+						
+						if(flipVertical)
+						{
+							// Flip image vertically
+							[[self seriesObj]  setValue:[NSNumber numberWithBool:YES] forKey:@"yFlipped"];
+						}
+						if(flipHorizontal)
+						{
+							// Flip image horizontally
+							[[self seriesObj]  setValue:[NSNumber numberWithBool:YES] forKey:@"xFlipped"];	
+						}
+						*/
+					}
+				}
 			}
 			else if( [extension isEqualToString:@"hdr"] == YES) // ANALYZE
 			{

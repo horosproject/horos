@@ -1734,6 +1734,21 @@
 		AB87ABD30BC27F6F00FF6005 /* MenuDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = B78490F90B4BE86400BA93EF /* MenuDictionary.h */; };
 		AB87ABD40BC27F7700FF6005 /* MenuDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = B78490FA0B4BE86400BA93EF /* MenuDictionary.m */; };
 		AB87ABD50BC27F7800FF6005 /* MenuDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = B78490F90B4BE86400BA93EF /* MenuDictionary.h */; };
+		AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
+		AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
+		AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
+		AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
+		AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
+		AB87FA7F0C06BEB200CD2976 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
+		AB87FA800C06BEB200CD2976 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
+		AB87FA810C06BEB200CD2976 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
+		AB87FA820C06BEB200CD2976 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
+		AB87FA830C06BEB200CD2976 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
+		AB87FA840C06BEB200CD2976 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
+		AB87FA850C06BEB200CD2976 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
+		AB87FA860C06BEB200CD2976 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
+		AB87FA870C06BEB200CD2976 /* znzlib.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA780C06BEB200CD2976 /* znzlib.c */; };
+		AB87FA880C06BEB200CD2976 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
 		AB8CC225067E4147008D5ED7 /* PapyGlobalVar3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC212067E4146008D5ED7 /* PapyGlobalVar3.h */; };
 		AB8CC226067E4147008D5ED7 /* PapyFileSystem3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC213067E4147008D5ED7 /* PapyFileSystem3.h */; };
 		AB8CC227067E4147008D5ED7 /* PapyErrorMacros3.h in Headers */ = {isa = PBXBuildFile; fileRef = AB8CC214067E4147008D5ED7 /* PapyErrorMacros3.h */; };
@@ -11516,6 +11531,11 @@
 		AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FolderIcon.tif; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
 		AB866038066E40970015E1C4 /* ToolbarPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolbarPanel.h; sourceTree = "<group>"; };
+		AB87FA750C06BEB200CD2976 /* nifti1.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = nifti1.h; sourceTree = "<group>"; };
+		AB87FA760C06BEB200CD2976 /* nifti1_io.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = nifti1_io.c; sourceTree = "<group>"; };
+		AB87FA770C06BEB200CD2976 /* nifti1_io.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = nifti1_io.h; sourceTree = "<group>"; };
+		AB87FA780C06BEB200CD2976 /* znzlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = znzlib.c; sourceTree = "<group>"; };
+		AB87FA790C06BEB200CD2976 /* znzlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = znzlib.h; sourceTree = "<group>"; };
 		AB8CC212067E4146008D5ED7 /* PapyGlobalVar3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyGlobalVar3.h; path = Papyrus3/PapyGlobalVar3.h; sourceTree = "<group>"; };
 		AB8CC213067E4147008D5ED7 /* PapyFileSystem3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyFileSystem3.h; path = Papyrus3/PapyFileSystem3.h; sourceTree = "<group>"; };
 		AB8CC214067E4147008D5ED7 /* PapyErrorMacros3.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PapyErrorMacros3.h; path = Papyrus3/PapyErrorMacros3.h; sourceTree = "<group>"; };
@@ -15753,6 +15773,18 @@
 			path = AYDicomPrint;
 			sourceTree = "<group>";
 		};
+		AB87FA740C06BEB200CD2976 /* NIfTI_Library */ = {
+			isa = PBXGroup;
+			children = (
+				AB87FA750C06BEB200CD2976 /* nifti1.h */,
+				AB87FA760C06BEB200CD2976 /* nifti1_io.c */,
+				AB87FA770C06BEB200CD2976 /* nifti1_io.h */,
+				AB87FA780C06BEB200CD2976 /* znzlib.c */,
+				AB87FA790C06BEB200CD2976 /* znzlib.h */,
+			);
+			path = NIfTI_Library;
+			sourceTree = "<group>";
+		};
 		AB8B8BDC05603E3A00CA4134 /* XML */ = {
 			isa = PBXGroup;
 			children = (
@@ -16149,6 +16181,7 @@
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
 				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
+				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
 				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
 				CEE73FC708F44724002A395F /* FVTiff.h */,
@@ -21318,6 +21351,9 @@
 				A91115610BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 				ABC47B590C031397001CEA21 /* BrowserMatrix.h in Headers */,
+				AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */,
+				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
+				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23247,6 +23283,9 @@
 				A91115630BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7B0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 				ABC47B5B0C031397001CEA21 /* BrowserMatrix.h in Headers */,
+				AB87FA7F0C06BEB200CD2976 /* nifti1.h in Headers */,
+				AB87FA810C06BEB200CD2976 /* nifti1_io.h in Headers */,
+				AB87FA830C06BEB200CD2976 /* znzlib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25181,6 +25220,9 @@
 				A911155F0BFB354F001000B4 /* ColorView.h in Headers */,
 				A918CC7F0C02E51B00CAC7A3 /* stringAdditions.h in Headers */,
 				ABC47B5D0C031397001CEA21 /* BrowserMatrix.h in Headers */,
+				AB87FA840C06BEB200CD2976 /* nifti1.h in Headers */,
+				AB87FA860C06BEB200CD2976 /* nifti1_io.h in Headers */,
+				AB87FA880C06BEB200CD2976 /* znzlib.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27885,6 +27927,8 @@
 				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
+				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
+				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28661,6 +28705,8 @@
 				A91115640BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC7C0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 				ABC47B5C0C031397001CEA21 /* BrowserMatrix.m in Sources */,
+				AB87FA800C06BEB200CD2976 /* nifti1_io.c in Sources */,
+				AB87FA820C06BEB200CD2976 /* znzlib.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30002,6 +30048,8 @@
 				A91115600BFB354F001000B4 /* ColorView.m in Sources */,
 				A918CC800C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
 				ABC47B5E0C031397001CEA21 /* BrowserMatrix.m in Sources */,
+				AB87FA850C06BEB200CD2976 /* nifti1_io.c in Sources */,
+				AB87FA870C06BEB200CD2976 /* znzlib.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

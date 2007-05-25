@@ -46,6 +46,7 @@
 // file functions
 + (BOOL) isTiffFile:(NSString *) file;
 + (BOOL) isFVTiffFile:(NSString *) file;
++ (BOOL) isNIfTIFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file;
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed;
 + (BOOL) isXMLDescriptedFile:(NSString *) file;
@@ -73,6 +74,8 @@
 
 - (id) initWithXMLDescriptor: (NSString*)pathToXMLDescriptor path:(NSString*) f;
 -(short) getDicomFile;
+-(short) getNIfTI;
++(NSXMLDocument *) getNIfTIXML : (NSString *) file;
 - (BOOL)autoFillComments;
 - (BOOL)splitMultiEchoMR;
 - (BOOL)useSeriesDescription;

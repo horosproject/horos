@@ -29,6 +29,8 @@
 #import <QTKit/QTKit.h>
 #include "tiffio.h"
 #import "DicomFileDCMTKCategory.h"
+#include "nifti1.h"
+#include "nifti1_io.h"
 
 /************  Modifications *************************************************************************************
 *	Version 2.3
@@ -376,6 +378,38 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			success = TIFFGetField(tif, TIFFTAG_FV_MMHEADER, &head_size, &head_data);
 			TIFFClose(tif);
 		}
+	}
+	return success;
+}
+
++ (BOOL) isNIfTIFile:(NSString *) file
+{
+	// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
+	// For more information: http://cni.bwh.harvard.edu/
+	// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
+	
+	int success = NO, i;
+	NSString	*extension = [[file pathExtension] lowercaseString];
+	struct nifti_1_header  *NIfTI;
+	
+	if( [extension isEqualToString:@"hdr"] == YES ||
+		[extension isEqualToString:@"nii"] == YES)
+	{
+		NIfTI = (nifti_1_header *) nifti_read_header([file cString], nil, 0);
+
+		if( (NIfTI->magic[0] != 'n')                           ||
+					(NIfTI->magic[1] != 'i' && NIfTI->magic[1] != '+')   ||
+					(NIfTI->magic[2] != '1')                           ||
+					(NIfTI->magic[3] != '\0') )
+		{
+			success = NO;
+		}
+		else
+		{
+			success = YES;
+		}
+		
+		NIfTI = 0L;
 	}
 	return success;
 }
@@ -1527,6 +1561,174 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	return -1;
 }
+
+-(short) getNIfTI
+{
+	// NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
+	// For more information: http://cni.bwh.harvard.edu/
+	// For questions or suggestions regarding NIfTI integration in OsiriX, please contact zmahdavi@bwh.harvard.edu
+
+	struct nifti_1_header  *NIfTI;
+	NSData		*file;
+	NSString	*extension = [[filePath pathExtension] lowercaseString];
+
+	if( (( [extension isEqualToString:@"hdr"] == YES) && 
+		([[NSFileManager defaultManager] fileExistsAtPath:[[filePath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
+		( [extension isEqualToString:@"nii"] == YES))
+	{
+		fileType = [[NSString stringWithString:@"NIfTI"] retain];
+		
+		NIfTI = (nifti_1_header *) nifti_read_header([filePath cString], nil, 0);
+		
+		if( (NIfTI->magic[0] == 'n')                           &&
+			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
+			(NIfTI->magic[2] == '1')                           &&
+			(NIfTI->magic[3] == '\0') )
+		{
+			name = [DicomFile NSreplaceBadCharacter: [filePath lastPathComponent]]; 
+			patientID = [[NSString alloc] initWithString:name];
+			studyID = [[NSString alloc] initWithString:name];
+			serieID = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
+			imageID = [[NSString alloc] initWithString:name];
+			study = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
+			serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
+			Modality = [[NSString alloc] initWithString:@"NIfTI"];
+			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			
+			width = NIfTI->dim[ 1];
+			width /= 2;
+			width *= 2;
+
+			height = NIfTI->dim[ 2];
+			height /= 2;
+			height *= 2;
+			
+			NoOfFrames = NIfTI->dim[ 3];
+			NoOfSeries = 1;
+			
+			[dicomElements setObject:studyID forKey:@"studyID"];
+			[dicomElements setObject:study forKey:@"studyDescription"];
+			[dicomElements setObject:date forKey:@"studyDate"];
+			[dicomElements setObject:Modality forKey:@"modality"];
+			[dicomElements setObject:patientID forKey:@"patientID"];
+			[dicomElements setObject:name forKey:@"patientName"];
+			[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+			[dicomElements setObject:serieID forKey:@"seriesID"];
+			[dicomElements setObject:name forKey:@"seriesDescription"];
+			[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+			[dicomElements setObject:imageID forKey:@"SOPUID"];
+			[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+			[dicomElements setObject:fileType forKey:@"fileType"];
+			
+			
+			if( name != 0L & studyID != 0L & serieID != 0L & imageID != 0L)
+			{
+				return 0;   // success
+			}
+		}
+	}
+	
+	return -1;
+}
+	
++(NSXMLDocument *) getNIfTIXML : (NSString *) file 
+{
+	NSString	*returnString;
+	nifti_image *NIfTI;
+	NSString	*extension = [[file pathExtension] lowercaseString];
+	NSXMLDocument *xmlDoc;
+	
+	NSXMLElement *rootElement = [[NSXMLElement alloc] initWithName:@"NIfTIObject"];
+	xmlDoc = [[NSXMLDocument alloc] initWithRootElement: rootElement];
+	
+	// Process NIfTI header
+	
+	if([self isNIfTIFile: file])
+	{
+		NIfTI = nifti_image_read( [file UTF8String], 0);
+		
+		/*
+		// Some quick stuff to just write in a simple extension
+		// THIS IS DEBUG CODE!!! DELETE IT LATER!!!
+		nifti_add_extension(NIfTI, "Test", 16, 0);
+		NIfTI->fname = "/Users/zack/Desktop/extension_test.nii";
+		NIfTI->iname = "/Users/zack/Desktop/extension_test.nii";
+		nifti_image_write(NIfTI);
+		*/
+		 
+		returnString = [[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI)];
+		NSLog(@"NIFTI INFO:  %@", returnString);
+		
+		// Now build the XML document
+
+		// Cycle through string, and parse out key and value from each line.  Then store in XML document.
+		NSArray *allLines = [returnString componentsSeparatedByString:@"\n"];
+		
+		if([allLines count] > 0)
+		{
+			NSLog(@"allLines Count:  %d", [allLines count]);
+			int k = 0;
+			for(k = 0; k < [allLines count]; k++)
+			{
+				NSString* aLine = (NSString *) [allLines objectAtIndex: k];
+				
+				// Now split string based on location of equals (=) sign
+				NSArray *splitLine = [aLine componentsSeparatedByString:@" = '"];
+				NSLog(@"splitLine %@", splitLine);
+				
+				if([splitLine count] == 2)
+				{
+					// Expected value
+					NSString * key = (NSString *) [splitLine objectAtIndex:0]; 
+					key = [key substringFromIndex: 2];
+					NSString * value = (NSString *) [splitLine objectAtIndex:1];
+					value = [value substringToIndex:[value length] - 1];
+					
+					NSLog(@"key value %@,%@", key, value);
+					
+					// Create node, then add to xml
+					NSXMLElement *node = [[NSXMLElement alloc] initWithName: key];
+					[node addAttribute:[NSXMLNode attributeWithName:@"group" stringValue:@""]];
+					[node addAttribute:[NSXMLNode attributeWithName:@"element" stringValue:@""]];
+					[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
+					[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
+					
+					NSXMLElement *childNode = [[NSXMLElement alloc] initWithName:@"value" stringValue:value];
+					[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
+					[node addChild:childNode];
+					
+					[rootElement addChild:node];
+				}
+			}
+		}
+		
+		// Review the NIfTI extension list and add any elements to list.
+		if( NIfTI->num_ext > 0 && NIfTI->ext_list != NULL )
+		{
+			int c = 0;
+			nifti1_extension * ext;
+			ext = NIfTI->ext_list;
+			for ( c = 0; c < NIfTI->num_ext; c++ )
+			{
+				NSXMLElement *node = [[NSXMLElement alloc] initWithName:
+					[@"extension: ecode " stringByAppendingString:[NSString stringWithFormat:@"%i", ext->ecode]]];
+				[node addAttribute:[NSXMLNode attributeWithName:@"group" stringValue:@""]];
+				[node addAttribute:[NSXMLNode attributeWithName:@"element" stringValue:@""]];
+				[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
+				[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
+				
+				NSXMLElement *childNode = [[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata]];
+				[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
+				[node addChild:childNode];
+				
+				[rootElement addChild:node];
+
+				ext++;
+			}
+		}
+	}
+	return xmlDoc;
+} 
 		
 -(short) getDicomFilePapyrus :(BOOL) forceConverted
 {
@@ -2780,6 +2982,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				returnVal = self;
 			}
 			else if( [self getAnalyze] == 0)
+			{
+				returnVal = self;
+			}
+			else if( [self getNIfTI] == 0)
 			{
 				returnVal = self;
 			}
