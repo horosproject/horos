@@ -4439,13 +4439,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	//if (DEBUG) NSLog(@"loadDICOMDCMFramework with file: %@", srcFile);	
 
-	if( pixArray != 0L && frameNo > 0)
-	{
-		NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
-		while( fImage == 0L) {};
-		[pool release];
-		return YES;
-	}
+//	if( pixArray != 0L && frameNo > 0)
+//	{
+//		NSLog(@"loadDICOMDCMFramework - pixArray already exists, nothing to do");
+//		while( fImage == 0L) {};
+//		[pool release];
+//		return YES;
+//	}
 	
 				
 	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
