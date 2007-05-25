@@ -85,6 +85,7 @@
                 blendingSlider = id; 
                 brushTool = id; 
                 calciumScoring = id; 
+                centerline = id; 
                 changeMatrixSize = id; 
                 clutAction = id; 
                 computeSum = id; 
@@ -143,6 +144,7 @@
                 roiRename = id; 
                 roiSetPixels = id; 
                 roiSetPixelsSetup = id; 
+                setAxialOrientation = id; 
                 setButtonTool = id; 
                 setComments = id; 
                 setCurrentPosition = id; 

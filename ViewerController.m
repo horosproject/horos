@@ -4976,14 +4976,11 @@ static ViewerController *draggedController = 0L;
 }
 
 - (void)updateImageView:(NSNotification *)note{
-	if ([[self window] isEqual:[[note object] window]]) {
+	if ([[self window] isEqual:[[note object] window]])
+	{
 		[imageView release];
 		imageView = [[note object] retain];
-	//	NSLog(@"updateImageView");
 	}
-
-	//else
-	//	NSLog(@"not my view");
 }
 
 -(IBAction) calibrate:(id) sender
@@ -6096,7 +6093,7 @@ static ViewerController *draggedController = 0L;
 
 -(IBAction) endThicknessInterval:(id) sender
 {
-	if( [customInterval floatValue] == 0 || [customXSpacing floatValue] == 0 ||  [customYSpacing floatValue] == 0)
+	if( ([customInterval floatValue] == 0 && [pixList[ curMovieIndex] count] > 1) || [customXSpacing floatValue] == 0 ||  [customYSpacing floatValue] == 0)
 	{
 		if( [sender tag])
 		{
@@ -6157,6 +6154,17 @@ static ViewerController *draggedController = 0L;
     }
 	
     [NSApp endSheet:ThickIntervalWindow returnCode:[sender tag]];
+}
+
+- (IBAction) setAxialOrientation:(id) sender
+{
+	float v[ 9], o[ 3];
+	long i;
+
+	v[ 0] = 1;		v[ 1] = 0;		v[ 2] = 0;
+	v[ 3] = 0;		v[ 4] = 1;		v[ 5] = 0;
+	
+	for( i = 0; i < 6; i++) [[customVectors cellWithTag: i] setFloatValue: v[ i]];
 }
 
 - (void) SetThicknessInterval:(id) sender
@@ -13097,7 +13105,11 @@ int i,j,l;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-	if( [self computeInterval] == 0 ||
+	int computeInterval = [self computeInterval];
+	
+	if( [pixList[ curMovieIndex] count] <= 1) computeInterval = 1;
+	
+	if( computeInterval == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
 		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
 		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
