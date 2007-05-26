@@ -7991,109 +7991,157 @@ BOOL            readable = YES;
 						*/
 					}
 				}
-			}
-			else if( [extension isEqualToString:@"hdr"] == YES) // ANALYZE
-			{
-				if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)
+				else if( [extension isEqualToString:@"hdr"] == YES) // 'old' ANALYZE
 				{
-					NSData		*file = [NSData dataWithContentsOfFile: srcFile];
-					
-					if( [file length] == 348)
+					if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)
 					{
-						long			totSize;
-						struct dsr*		Analyze;
-						NSData			*fileData;
-						BOOL			swapByteOrder = NO;
+						NSData		*file = [NSData dataWithContentsOfFile: srcFile];
 						
-						Analyze = (struct dsr*) [file bytes];
-						
-						short endian = Analyze->dime.dim[ 0];		// dim[0] 
-						if ((endian < 0) || (endian > 15)) 
+						if( [file length] == 348)
 						{
-							swapByteOrder = YES;
-						}
-						
-						height = Analyze->dime.dim[ 2];
-						if( swapByteOrder) height = Endian16_Swap( height);
-						realheight = height;
-						height /= 2;
-						height *= 2;
-						width = Analyze->dime.dim[ 1];
-						if( swapByteOrder) width = Endian16_Swap( width);
-						realwidth = width;
-						width /= 2;
-						width *= 2;
-						
-						pixelSpacingX = Analyze->dime.pixdim[ 1];
-						if( swapByteOrder) SwitchFloat( &pixelSpacingX);
-						pixelSpacingY = Analyze->dime.pixdim[ 2];
-						if( swapByteOrder) SwitchFloat( &pixelSpacingY);
-						sliceThickness = sliceInterval = Analyze->dime.pixdim[ 3];
-						if( swapByteOrder) SwitchFloat( &sliceThickness);
-						if( swapByteOrder) SwitchFloat( &sliceInterval);
-						
-						totSize = realheight * realwidth * 2;
-						oImage = malloc( totSize);
-						
-						fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
-						
-						short datatype = Analyze->dime.datatype;
-						if( swapByteOrder) datatype = Endian16_Swap( datatype);
-						
-						switch( datatype)
-						{
-							case 2:
-							{
-								unsigned char   *bufPtr;
-								short			*ptr, *tmpImage;
-								long			loop;
-								
-								bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
-								ptr    = oImage;
-								
-								loop = totSize/2;
-								while( loop-- > 0)
-								{
-									*ptr++ = *bufPtr++;
-								}
-							}
-							break;
+							long			totSize;
+							struct dsr*		Analyze;
+							NSData			*fileData;
+							BOOL			swapByteOrder = NO;
 							
-							case 4:
-								memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
-								if( swapByteOrder)
+							Analyze = (struct dsr*) [file bytes];
+							
+							short endian = Analyze->dime.dim[ 0];		// dim[0] 
+							if ((endian < 0) || (endian > 15)) 
+							{
+								swapByteOrder = YES;
+							}
+							
+							height = Analyze->dime.dim[ 2];
+							if( swapByteOrder) height = Endian16_Swap( height);
+							realheight = height;
+							height /= 2;
+							height *= 2;
+							width = Analyze->dime.dim[ 1];
+							if( swapByteOrder) width = Endian16_Swap( width);
+							realwidth = width;
+							width /= 2;
+							width *= 2;
+							
+							pixelSpacingX = Analyze->dime.pixdim[ 1];
+							if( swapByteOrder) SwitchFloat( &pixelSpacingX);
+							pixelSpacingY = Analyze->dime.pixdim[ 2];
+							if( swapByteOrder) SwitchFloat( &pixelSpacingY);
+							sliceThickness = sliceInterval = Analyze->dime.pixdim[ 3];
+							if( swapByteOrder) SwitchFloat( &sliceThickness);
+							if( swapByteOrder) SwitchFloat( &sliceInterval);
+							
+							totSize = realheight * realwidth * 2;
+							oImage = malloc( totSize);
+							
+							fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+							
+							short datatype = Analyze->dime.datatype;
+							if( swapByteOrder) datatype = Endian16_Swap( datatype);
+							
+							switch( datatype)
+							{
+								case 2:
 								{
+									unsigned char   *bufPtr;
+									short			*ptr, *tmpImage;
 									long			loop;
-									short			*ptr = oImage;
 									
-									loop = realheight * realwidth;
+									bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
+									ptr    = oImage;
+									
+									loop = totSize/2;
 									while( loop-- > 0)
 									{
-										*ptr = Endian16_Swap( *ptr);
-										ptr++;
+										*ptr++ = *bufPtr++;
 									}
 								}
-							break;
-							
-							case 8:
-							{
-								unsigned int   *bufPtr;
-								short			*ptr, *tmpImage;
-								long			loop;
+								break;
 								
-								bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
-								ptr    = oImage;
+								case 4:
+									memcpy( oImage, [fileData bytes] + frameNo*(realheight * realwidth * 2), realheight * realwidth * 2);
+									if( swapByteOrder)
+									{
+										long			loop;
+										short			*ptr = oImage;
+										
+										loop = realheight * realwidth;
+										while( loop-- > 0)
+										{
+											*ptr = Endian16_Swap( *ptr);
+											ptr++;
+										}
+									}
+								break;
 								
-								loop = totSize/2;
-								while( loop-- > 0)
+								case 8:
 								{
-									if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
-									else *ptr++ = *bufPtr++;
+									unsigned int   *bufPtr;
+									short			*ptr, *tmpImage;
+									long			loop;
+									
+									bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
+									ptr    = oImage;
+									
+									loop = totSize/2;
+									while( loop-- > 0)
+									{
+										if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
+										else *ptr++ = *bufPtr++;
+									}
 								}
+								break; 
+								
+								case 16:
+									if( fVolImage)
+									{
+										fImage = fVolImage;
+									}
+									else
+									{
+										fImage = malloc(width*height*sizeof(float) + 100);
+									}
+									
+									for( i = 0; i < height;i++)
+									{
+										memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
+									}
+									
+									free(oImage);
+									oImage = 0L;
+								break; 
+								
+								case 128:
+	//								fi.fileType = FileInfo.RGB_PLANAR; 		// DT_RGB
+	//								bitsallocated = 24;
+									NSLog(@"unsupported... please send me this file");
+								break; 
 							}
-							break; 
 							
-							case 16:
+							[fileData release];
+							
+														
+							// CONVERSION TO FLOAT
+							
+							if( datatype != 16)
+							{
+								if( width != realwidth)
+								{
+									for( i = 0; i < height;i++)
+									{
+										memmove( oImage + i*width, oImage + i*realwidth, width*2);
+									}
+								}
+
+								vImage_Buffer src16, dstf;
+								
+								dstf.height = src16.height = height;
+								dstf.width = src16.width = width;
+								src16.rowBytes = width*2;
+								dstf.rowBytes = width*sizeof(float);
+								
+								src16.data = oImage;
+								
 								if( fVolImage)
 								{
 									fImage = fVolImage;
@@ -8103,64 +8151,19 @@ BOOL            readable = YES;
 									fImage = malloc(width*height*sizeof(float) + 100);
 								}
 								
-								for( i = 0; i < height;i++)
-								{
-									memcpy( fImage + i * width, [fileData bytes]+ frameNo * (realheight * realwidth)*sizeof(float) + i*realwidth*sizeof(float), width*sizeof(float));
-								}
+								dstf.data = fImage;
+								
+								vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
 								
 								free(oImage);
 								oImage = 0L;
-							break; 
-							
-							case 128:
-//								fi.fileType = FileInfo.RGB_PLANAR; 		// DT_RGB
-//								bitsallocated = 24;
-								NSLog(@"unsupported... please send me this file");
-							break; 
-						}
-						
-						[fileData release];
-						
-													
-						// CONVERSION TO FLOAT
-						
-						if( datatype != 16)
-						{
-							if( width != realwidth)
-							{
-								for( i = 0; i < height;i++)
-								{
-									memmove( oImage + i*width, oImage + i*realwidth, width*2);
-								}
 							}
-
-							vImage_Buffer src16, dstf;
-							
-							dstf.height = src16.height = height;
-							dstf.width = src16.width = width;
-							src16.rowBytes = width*2;
-							dstf.rowBytes = width*sizeof(float);
-							
-							src16.data = oImage;
-							
-							if( fVolImage)
-							{
-								fImage = fVolImage;
-							}
-							else
-							{
-								fImage = malloc(width*height*sizeof(float) + 100);
-							}
-							
-							dstf.data = fImage;
-							
-							vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
-							
-							free(oImage);
-							oImage = 0L;
 						}
 					}
 				}
+				
+				free( NIfTI);
+				NIfTI = 0L;
 			}
 			else if( [extension isEqualToString:@"jpg"] == YES ||
 				[extension isEqualToString:@"jpeg"] == YES ||
