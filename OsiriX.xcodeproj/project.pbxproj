@@ -5555,6 +5555,12 @@
 		CE0F425A0A56A9A800D54F38 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CE0F4E310AF38775005959D2 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
 		CE0F53E60AF38815005959D2 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABD908460AF20B7C00E47345 /* libdcmprintscu.dylib */; };
+		CE1029980C08246000D6E912 /* VolumeReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1029960C08246000D6E912 /* VolumeReslice.h */; };
+		CE1029990C08246100D6E912 /* VolumeReslice.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1029970C08246000D6E912 /* VolumeReslice.mm */; };
+		CE10299A0C08246100D6E912 /* VolumeReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1029960C08246000D6E912 /* VolumeReslice.h */; };
+		CE10299B0C08246100D6E912 /* VolumeReslice.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1029970C08246000D6E912 /* VolumeReslice.mm */; };
+		CE10299C0C08246100D6E912 /* VolumeReslice.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1029960C08246000D6E912 /* VolumeReslice.h */; };
+		CE10299D0C08246100D6E912 /* VolumeReslice.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE1029970C08246000D6E912 /* VolumeReslice.mm */; };
 		CE1113A108EDD5FD005B15E1 /* libvtkGraphics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */; };
 		CE1113A208EDD5FD005B15E1 /* libvtkHybrid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139008EDD5FD005B15E1 /* libvtkHybrid.a */; };
 		CE1113A308EDD5FD005B15E1 /* libvtkVolumeRendering.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE11139108EDD5FD005B15E1 /* libvtkVolumeRendering.a */; };
@@ -13048,6 +13054,8 @@
 		CE0E08E606A106D700F2C01C /* ThickSlabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThickSlabController.h; sourceTree = "<group>"; };
 		CE0E08E706A106D700F2C01C /* ThickSlabController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThickSlabController.mm; sourceTree = "<group>"; };
 		CE0E08FE06A1075000F2C01C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Binaries/English.lproj/ThickSlab.nib; sourceTree = "<group>"; };
+		CE1029960C08246000D6E912 /* VolumeReslice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VolumeReslice.h; sourceTree = "<group>"; };
+		CE1029970C08246000D6E912 /* VolumeReslice.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VolumeReslice.mm; sourceTree = "<group>"; };
 		CE11138D08EDD5FD005B15E1 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = Binaries/VTKLibs/libvtkpng.a; sourceTree = "<group>"; };
 		CE11138E08EDD5FD005B15E1 /* libvtkCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommon.a; path = Binaries/VTKLibs/libvtkCommon.a; sourceTree = "<group>"; };
 		CE11138F08EDD5FD005B15E1 /* libvtkGraphics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkGraphics.a; path = Binaries/VTKLibs/libvtkGraphics.a; sourceTree = "<group>"; };
@@ -14407,7 +14415,7 @@
 		CEC172030874839C0021C3FC /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
 		CEC3B292086C87D900DFD83E /* 3DRotateCamera.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3DRotateCamera.tiff; sourceTree = "<group>"; };
 		CEC57C260875C9A300389622 /* OSIDatabasePreferencePane.prefPane */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OSIDatabasePreferencePane.prefPane; path = "Preference Panes/OSIDatabasePreferencePane/build/Development/OSIDatabasePreferencePane.prefPane"; sourceTree = "<group>"; };
-		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB058B07539E3A00576814 /* OsiriXVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OsiriXVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECEF72C081BB265002ECC99 /* DICOMExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMExport.h; sourceTree = "<group>"; };
 		CECEF72D081BB265002ECC99 /* DICOMExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMExport.m; sourceTree = "<group>"; };
 		CED80C790BF187930058A469 /* AutofillDisabled.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillDisabled.tif; sourceTree = "<group>"; };
@@ -16506,6 +16514,8 @@
 				BFDDDD4F0AE6E3FE00888882 /* ViewerControllerDCMTKCategory.mm */,
 				CE2808630B6B76730093E9D3 /* CalciumScoringWindowController.h */,
 				CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */,
+				CE1029960C08246000D6E912 /* VolumeReslice.h */,
+				CE1029970C08246000D6E912 /* VolumeReslice.mm */,
 			);
 			name = "Single Window";
 			sourceTree = "<group>";
@@ -21361,6 +21371,7 @@
 				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
+				CE10299A0C08246100D6E912 /* VolumeReslice.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23293,6 +23304,7 @@
 				AB87FA810C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA830C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AE0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
+				CE1029980C08246000D6E912 /* VolumeReslice.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25230,6 +25242,7 @@
 				AB87FA860C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA880C06BEB200CD2976 /* znzlib.h in Headers */,
 				BF30B3AC0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
+				CE10299C0C08246100D6E912 /* VolumeReslice.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27937,6 +27950,7 @@
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
+				CE10299B0C08246100D6E912 /* VolumeReslice.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28716,6 +28730,7 @@
 				AB87FA800C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA820C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3AA0C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
+				CE1029990C08246100D6E912 /* VolumeReslice.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30062,6 +30077,7 @@
 				AB87FA850C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA870C06BEB200CD2976 /* znzlib.c in Sources */,
 				BF30B3A80C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
+				CE10299D0C08246100D6E912 /* VolumeReslice.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
