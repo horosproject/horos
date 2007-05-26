@@ -13,10 +13,15 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "ViewerController.h"
 
-
-@interface VolumeReslice : NSObject {
-
+@interface VolumeReslice : NSObject
+{
+	ViewerController	*viewer;
+	
+	float				orientationReslice[ 9];
 }
+
+- (void) initWithViewer:(ViewerController*) v;
 
 @end

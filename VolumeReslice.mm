@@ -16,6 +16,32 @@
 
 @implementation VolumeReslice
 
+- (void) initWithViewer:(ViewerController*) v
+{
+	viewer = [v retain];
+}
+
+- (void) setOrientationReslice: (float*) o
+{
+	int i;
+	
+	for( i = 0; i < 9; i++)
+		orientationReslice[ i] = o[ i];
+}
+
+- (void) compute
+{
+
+}
+
+- (void) dealloc
+{
+	[viewer release];
+	
+	[super dealloc];
+}
+
+
 @end
 ///*=========================================================================
 //
