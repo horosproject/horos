@@ -7828,7 +7828,7 @@ BOOL            readable = YES;
 							bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
 							ptr    = oImage;
 							
-							loop = totSize/2;
+							loop = realheight * realwidth;
 							while( loop-- > 0)
 							{
 								*ptr++ = *bufPtr++;
@@ -7859,12 +7859,14 @@ BOOL            readable = YES;
 							short			*ptr, *tmpImage;
 							long			loop;
 							
-							bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
+							bufPtr = (unsigned int*) [fileData bytes];
+							bufPtr += frameNo * (realheight * realwidth);
 							ptr    = oImage;
 							
-							loop = totSize/2;
+							loop = realheight * realwidth;
 							while( loop-- > 0)
 							{
+								
 								if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
 								else *ptr++ = *bufPtr++;
 							}
@@ -8050,7 +8052,7 @@ BOOL            readable = YES;
 									bufPtr = (unsigned char*) [fileData bytes]+ frameNo*(realheight * realwidth);
 									ptr    = oImage;
 									
-									loop = totSize/2;
+									loop = realheight * realwidth;
 									while( loop-- > 0)
 									{
 										*ptr++ = *bufPtr++;
@@ -8080,12 +8082,14 @@ BOOL            readable = YES;
 									short			*ptr, *tmpImage;
 									long			loop;
 									
-									bufPtr = (unsigned int*) [fileData bytes]+ frameNo * (realheight * realwidth)*4;
+									bufPtr = (unsigned int*) [fileData bytes];
+									bufPtr += frameNo * (realheight * realwidth);
 									ptr    = oImage;
 									
-									loop = totSize/2;
+									loop = realheight * realwidth;
 									while( loop-- > 0)
 									{
+										
 										if( swapByteOrder)  *ptr++ = Endian32_Swap( *bufPtr++);
 										else *ptr++ = *bufPtr++;
 									}
