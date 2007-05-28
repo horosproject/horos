@@ -478,7 +478,9 @@ PixelRepresentation
 	
 
 	BOOL pixelRepresentationIsSigned = NO;
-	NS_DURING
+	
+	@try
+	{
 	while ((undefinedLength || *byteOffset < endByteOffset)) {
 		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 		if (DEBUG) {
@@ -677,11 +679,14 @@ PixelRepresentation
 	}
 	[transferSyntax release];
 	transferSyntax = [[dicomData transferSyntaxForDataset] retain];
-	NS_HANDLER
+	}
+	
+	@catch (NSException *ne)
+	{
 		NSLog(@"Error reading data for dicom object");
-		//exception = [NSException exceptionWithName:@"DCMReadingError" reason:@"Cannot read Dicom Object" userInfo:nil];
+		NSLog( [ne description]);
 		*byteOffset = 0xffffffffl;
-	NS_ENDHANDLER
+	}
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);
 	[pool release];
 	//[exception raise];

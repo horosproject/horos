@@ -420,7 +420,8 @@
 			enumerator = [dateArray objectEnumerator];
 			while (dateString = [enumerator nextObject]) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDate:dateString];
-				[dates addObject:dcmDate];
+				if( dcmDate)
+					[dates addObject:dcmDate];
 				
 			}
 		}
@@ -474,7 +475,8 @@
 			enumerator = [dateArray objectEnumerator];
 			while (dateString = [enumerator nextObject]) {
 				DCMCalendarDate *dcmDate = [DCMCalendarDate dicomTime:dateString];
-				[times addObject:dcmDate];			
+				if(dcmDate)
+					[times addObject:dcmDate];			
 			}
 		}
 		position += length;
@@ -533,8 +535,8 @@
 		while (dateString = [enumerator nextObject]) {
 			//NSCalendarDate *date = [[[NSCalendarDate alloc] initWithString:dateString  calendarFormat:format] autorelease];
 			DCMCalendarDate *dcmDate = [DCMCalendarDate dicomDateTime:dateString];
-
-			[times addObject:dcmDate];
+			if(dcmDate)
+				[times addObject:dcmDate];
 			
 		}
 		position += length;
