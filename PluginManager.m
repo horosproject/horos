@@ -318,6 +318,8 @@ PluginManager			*pluginManager = 0L;
 				 
 				if (filterClass = [plugin principalClass])	
 				{
+					if ( filterClass == NSClassFromString( @"ARGS" ) ) continue;
+					
 					if ([[[plugin infoDictionary] objectForKey:@"pluginType"] isEqualToString:@"Pre-Process"]) 
 					{
 						PluginFilter*	filter = [filterClass filter];
