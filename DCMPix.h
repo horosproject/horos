@@ -143,6 +143,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //slice
     float               sliceInterval, sliceLocation, sliceThickness;
+	float				spacingBetweenSlices;								//SpacingBetweenSlices (0018,0088)
+	
 //stack
 	short				stack;
 	short				stackMode, pixPos, stackDirection;
@@ -262,6 +264,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 -(void) setSliceThickness:(float) l;
 -(float) sliceInterval;
 -(void) setSliceInterval :(float) s;
+-(float) spacingBetweenSlices;
 
 // ID / FrameNo
 -(long) ID;

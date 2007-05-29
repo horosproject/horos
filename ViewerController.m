@@ -5985,9 +5985,14 @@ static ViewerController *draggedController = 0L;
 				currentOrientationTool = 0;
 			}
 			
+			if( interval == 0)
+			{
+				interval = [[pixList[ curMovieIndex] objectAtIndex:0] spacingBetweenSlices];
+			}
+
 			NSLog( @"Orientation Vector: %d", orientationVector);
 			NSLog( @"Interval: %2.2f", interval);
-			
+						
 			// FLIP DATA !!!!!! FOR 3D TEXTURE MAPPING !!!!!
 			if( interval < 0 && flipNow == YES)
 			{
@@ -6164,6 +6169,8 @@ static ViewerController *draggedController = 0L;
 
 - (IBAction) setAxialOrientation:(id) sender
 {
+	[customInterval selectText: self];
+	
 	float v[ 9], o[ 3];
 	long i;
 

@@ -2626,6 +2626,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 -(float) sliceLocation { [self CheckLoad]; return sliceLocation;}
 -(void) setSliceLocation:(float) l { [self CheckLoad]; sliceLocation = l;}
 -(float) sliceThickness { [self CheckLoad]; return sliceThickness;}
+-(float) spacingBetweenSlices { [self CheckLoad]; return spacingBetweenSlices;}
 -(void) setSliceThickness:(float) l { [self CheckLoad]; sliceThickness = l;}
 -(float) slope {[self CheckLoad]; return slope;}
 -(float) offset{[self CheckLoad]; return offset;}
@@ -2963,6 +2964,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	self->pixelSpacingX = fromDcm->pixelSpacingX;
 	self->pixelSpacingY = fromDcm->pixelSpacingY;
 	self->sliceLocation = fromDcm->sliceLocation;
+	self->spacingBetweenSlices = fromDcm->spacingBetweenSlices;
 	self->sliceThickness = fromDcm->sliceThickness;
 	self->pixelRatio = fromDcm->pixelRatio;
 	self->originX  = fromDcm->originX;
@@ -3015,6 +3017,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	copy->wl = self->wl;
 	copy->ww = self->ww;
 	copy->sliceInterval = self->sliceInterval;
+	copy->spacingBetweenSlices = self->spacingBetweenSlices;
 	copy->pixelSpacingX = self->pixelSpacingX;
 	copy->pixelSpacingY = self->pixelSpacingY;
 	copy->sliceLocation = self->sliceLocation;
@@ -4786,6 +4789,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	// Image object dicom tags
 	if( [dcmObject attributeValueWithName:@"PatientsWeight"])	patientsWeight = [[dcmObject attributeValueWithName:@"PatientsWeight"] floatValue];
 	if( [dcmObject attributeValueWithName:@"SliceThickness"])	sliceThickness = [[dcmObject attributeValueWithName:@"SliceThickness"] floatValue];
+	if( [dcmObject attributeValueWithName:@"SpacingBetweenSlices"]) spacingBetweenSlices = [[dcmObject attributeValueWithName:@"SpacingBetweenSlices"] floatValue];
 	if( [dcmObject attributeValueWithName:@"RepetitionTime"])	repetitiontime = [[dcmObject attributeValueWithName:@"RepetitionTime"] retain];
 	if( [dcmObject attributeValueWithName:@"EchoTime"])			echotime = [[dcmObject attributeValueWithName:@"EchoTime"] retain];	
 	if( [dcmObject attributeValueWithName:@"FlipAngle"])		flipAngle = [[dcmObject attributeValueWithName:@"FlipAngle"] retain];
@@ -5561,11 +5565,12 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		{
 			val = Papy3GetElement (theGroupP, papSliceThicknessGr, &nbVal, &elemType);
-			if (val != NULL)
-			{
-				sliceThickness = [[NSString stringWithCString:val->a] floatValue];
-			}
+			if (val != NULL) sliceThickness = [[NSString stringWithCString:val->a] floatValue];
 			else sliceThickness = 0;
+			
+			val = Papy3GetElement (theGroupP, papSpacingBetweenSlicesGr, &nbVal, &elemType);
+			if (val != NULL) spacingBetweenSlices = [[NSString stringWithCString:val->a] floatValue];
+			else spacingBetweenSlices = 0;
 			
 			val = Papy3GetElement (theGroupP, papRepetitionTimeGr, &nbVal, &elemType);
 			if (val != NULL) repetitiontime = [[NSString stringWithFormat:@"%0.1f", [[NSString stringWithCString:val->a] floatValue]] retain];

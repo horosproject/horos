@@ -2339,9 +2339,17 @@ static BOOL initialized = NO;
 	
 	//order windows from left-top to right-bottom
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
-	NSMutableArray	*cResult = [NSMutableArray array];
-	for( i = 0; i < [viewersList count]; i++)
+	
+	// Only the visible windows
+	for( i = [cWindows count]-1; i >= 0; i--)
 	{
+		if( [[[cWindows objectAtIndex: i] window] isVisible] == NO) [cWindows removeObjectAtIndex: i];
+	}
+	
+	NSMutableArray	*cResult = [NSMutableArray array];
+	int count = [cWindows count];
+	for( i = 0; i < count; i++)
+	{		
 		int index = 0;
 		float minY = [[[cWindows objectAtIndex: 0] window] frame].origin.y;
 		
@@ -2369,6 +2377,12 @@ static BOOL initialized = NO;
 		
 		[cResult addObject: [cWindows objectAtIndex: index]];
 		[cWindows removeObjectAtIndex: index];
+	}
+	
+	// Add the hidden windows
+	for( i = 0; i < [viewersList count]; i++)
+	{
+		if( [[[viewersList objectAtIndex: i] window] isVisible] == NO) [cResult addObject: [viewersList objectAtIndex: i]];
 	}
 	viewersList = cResult;
 	
