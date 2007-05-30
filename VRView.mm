@@ -5313,6 +5313,8 @@ public:
 	[point3DColorsArray addObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
 	
 	[self add3DPointActor: sphereActor];
+	
+	sphereSource->Delete();
 }
 
 - (void) add3DPoint: (double) x : (double) y : (double) z
@@ -5642,6 +5644,7 @@ public:
 ////	NSLog(@"picked x: %f, y: %f, z: %f", wXYZ[0], wXYZ[1], wXYZ[2]);
 //	[self add3DPoint: (float)wXYZ[0]/factor : (float)wXYZ[1]/factor : (float)wXYZ[2]/factor];
 //	[controller add2DPoint: (float)wXYZ[0] : (float)wXYZ[1] : (float)wXYZ[2]];
+//  picker->Delete();
 //}
 
 - (void) throw3DPointOnSurface: (double) x : (double) y
@@ -5860,6 +5863,8 @@ public:
 	actor->SetMapper(mapper);
 	[point3DRadiusArray removeObjectAtIndex:index];
 	[point3DRadiusArray insertObject:[NSNumber numberWithFloat:radius] atIndex:index];
+	
+	sphereSource->Delete();
 }
 
 - (IBAction) save3DPointsDefaultProperties: (id) sender

@@ -1152,6 +1152,35 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	}
 	else
 	{
+		if( [theEvent clickCount] > 1 && (tool != t3Dpoint))
+		{
+			long	pix[ 3];
+			float	pos[ 3], value;
+			
+			vtkWorldPointPicker *picker = vtkWorldPointPicker::New();
+			
+			picker->Pick(mouseLocStart.x, mouseLocStart.y, 0.0, aRenderer);
+			
+			double wXYZ[3];
+			picker->GetPickPosition(wXYZ);
+			picker->Delete();
+			
+			float dc[3], sc[3];
+			dc[0] = wXYZ[0];
+			dc[1] = wXYZ[1];
+			dc[2] = wXYZ[2];
+			
+			[self convert3Dto2Dpoint:dc :sc];
+			
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: sc[0]*[firstObject pixelSpacingX]], @"x", [NSNumber numberWithInt: sc[1]*[firstObject pixelSpacingY]], @"y", [NSNumber numberWithInt: sc[2]*[firstObject sliceInterval]], @"z",
+																				[NSNumber numberWithFloat: sc[0]], @"xmm", [NSNumber numberWithFloat: sc[1]], @"ymm", [NSNumber numberWithFloat: sc[2]], @"zmm",
+																				0L];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
+			
+			return;
+		}
+	
 		_resizeFrame = NO;
 		tool = [self getTool: theEvent];
 		_tool = tool;
@@ -2630,6 +2659,8 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 	picker->GetPickPosition(wXYZ);
 	[self add3DPoint: wXYZ[0] : wXYZ[1] : wXYZ[2]];
 	[controller add2DPoint: wXYZ[0] : wXYZ[1] : wXYZ[2]];
+	
+	picker->Delete();
 }
 
 #pragma mark display
