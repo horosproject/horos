@@ -265,6 +265,13 @@ Version 2.3
 		
 		dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
 		
+		int t = 2;
+		while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
+		{
+			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d #%d.%@", tempPath, serieCount, imageNo, t, extension];
+			t++;
+		}
+		
 		//DCMObject *dcm = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
 		//NSXMLDocument *xmlDoc = [dcm xmlDocument];
 		//NSString *dst = [NSString stringWithFormat:@"%@/Desktop/%@", NSHomeDirectory(), @"test.xml"];
