@@ -2163,6 +2163,8 @@ GLenum glReportError (void)
 	}
 	else
 	{
+		if(type==tLayerROI) clickPoint = pt;
+		
 		switch( mode)
 		{
 			case ROI_drawing:
@@ -2935,7 +2937,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			float angle;
 			
 			glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-			
+
 			glBegin(GL_LINE_LOOP);
 			for(i = 0; i < CIRCLERESOLUTION ; i++)
 			{
@@ -4544,6 +4546,11 @@ int sortPointArrayAlongX(id point1, id point2, void *context)
 - (BOOL)setDisplayTextualData:(BOOL)boo;
 {
 	displayTextualData = boo;
+}
+
+- (NSPoint)clickPoint;
+{
+	return clickPoint;
 }
 
 @end

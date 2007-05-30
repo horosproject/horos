@@ -13160,12 +13160,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 	long			result;
     id				filter = [plugins objectForKey:name];
 	
+		if(filter==nil)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+		return;
+	}
+	
 	result = [filter prepareFilter: nil];
 	[filter filterImage:name];
 	NSLog(@"executeFilter %@", [filter description]);
 	if( result)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin", nil), nil, nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
 }

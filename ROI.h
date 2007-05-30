@@ -280,4 +280,6 @@ enum
 
 - (BOOL)setDisplayTextualData:(BOOL)boo;
 
+- (NSPoint)clickPoint;
+
 @end

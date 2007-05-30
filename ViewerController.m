@@ -5023,6 +5023,12 @@ static ViewerController *draggedController = 0L;
 {
 	long			result;
     id				filter = [plugins objectForKey:name];
+
+	if(filter==nil)
+	{
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+		return;
+	}
 	
 	[self computeInterval];
 	[self checkEverythingLoaded];
@@ -5033,14 +5039,14 @@ static ViewerController *draggedController = 0L;
 	result = [filter prepareFilter: self];
 	if( result)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"I cannot launch the selected plugin", nil), nil, nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}   
 	
 	result = [filter filterImage: name];
 	if( result)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"I cannot apply the selected plugin", nil), nil, nil, nil);
+		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
 	
@@ -9335,7 +9341,6 @@ int i,j,l;
 
 - (void)bringToFrontROI:(ROI*)roi;
 {
-	NSLog(@"bringToFrontROI");
 	if([roi groupID]==0.0) // not grouped
 	{
 		[roi retain];
