@@ -4805,7 +4805,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		if( [dcmObject attributeValueWithName:@"FrameTimeVector"])
 			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue];
 	}	
-
+	
 	if( gUseShutter)
 	{
 		shutterRect_w = width;
