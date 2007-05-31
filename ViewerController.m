@@ -8751,11 +8751,12 @@ int i,j,l;
 - (IBAction) roiDeleteAll:(id) sender
 {
 
-	int choice = NSRunAlertPanel( NSLocalizedString(@"Delete ALL ROIs in Series?", nil),
-								  NSLocalizedString(@"Are you sure you wish to delete all ROIs in this series?  This action is not recoverable.", nil),
-								  NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete ALL ROIs", nil), nil );
-	
-	if ( choice == NSAlertDefaultReturn ) return;
+//  you can simply undo (cmd-z) if you want to revert the "Delete all ROIs" actions
+//	int choice = NSRunAlertPanel( NSLocalizedString(@"Delete ALL ROIs in Series?", nil),
+//								  NSLocalizedString(@"Are you sure you wish to delete all ROIs in this series?  This action is not recoverable.", nil),
+//								  NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Delete ALL ROIs", nil), nil );
+//	
+//	if ( choice == NSAlertDefaultReturn ) return;
 
 	long i, x, y;
 	

@@ -425,15 +425,10 @@ GLenum glReportError (void)
 	if(textualBoxLine4) [textualBoxLine4 release];
 	if(textualBoxLine5) [textualBoxLine5 release];
 	
+	if( textureName) glDeleteTextures (1, &textureName);
+	
 	[super dealloc];
 }
-
-
-- (void)finalize {
-	if(textureBuffer) free(textureBuffer);
-	[super finalize];
-}
-
 
 - (void) setOriginAndSpacing :(float) ipixelSpacing :(NSPoint) iimageOrigin
 {
@@ -4280,11 +4275,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	NSBitmapImageRep *bitmap;
 	bitmap = [[NSBitmapImageRep alloc] initWithData:layerImageJPEG];
 	
-	unsigned char *imageBuffer = [bitmap bitmapData];
+	
+	if(textureBuffer) free(textureBuffer);
+	textureBuffer = malloc(  [bitmap bytesPerRow] * [layerImage size].height);
+	memcpy( textureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * [layerImage size].height);
 	
 	if(!isLayerOpacityConstant)// && opacity<1.0)
 	{
-		unsigned char*	argbPtr = (unsigned char*) imageBuffer;
+		unsigned char*	argbPtr = (unsigned char*) textureBuffer;
 		long			ss = [bitmap bytesPerRow]/4 * [layerImage size].height;
 		
 		while( ss-->0)
@@ -4301,7 +4299,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		dest.height = [layerImage size].height;
 		dest.width = [layerImage size].width;
 		dest.rowBytes = [bitmap bytesPerRow];
-		dest.data = imageBuffer;
+		dest.data = textureBuffer;
 		
 		src = dest;
 		
@@ -4334,6 +4332,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	if(textureName)
 		glDeleteTextures(1, &textureName);
 		
+	textureName = 0L;
 	glGenTextures(1, &textureName);
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureName);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, [bitmap bytesPerRow]/4);
@@ -4342,14 +4341,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 //	if(!isLayerOpacityConstant)
 //	{
 //		NSLog(@"isLayerOpacityConstant : NO");
-//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
 //	}
 //	else
 //	{
 //		NSLog(@"isLayerOpacityConstant : YES");
-//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+//		glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
 //	}
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, imageBuffer);
+
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
 
 	[bitmap release];
 }
