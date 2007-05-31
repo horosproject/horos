@@ -19,10 +19,11 @@
 
 @interface ImageAndTextCell : NSTextFieldCell {
 @private
-    NSImage	*image;
+    NSImage	*image, *lastImage;
 }
 
 - (void)setImage:(NSImage *)anImage;
+- (void)setLastImage:(NSImage *)anImage;
 - (NSImage *)image;
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;

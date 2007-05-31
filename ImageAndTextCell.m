@@ -72,6 +72,13 @@
     }
 }
 
+- (void)setLastImage:(NSImage *)anImage {
+    if (anImage != image) {
+        [lastImage release];
+        lastImage = [anImage retain];
+    }
+}
+
 - (NSImage *)image {
     return image;
 }
@@ -102,8 +109,12 @@
     [super selectWithFrame: textFrame inView: controlView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    if (image != nil) {
+- (void)drawWithFrame:(NSRect)cellFrameIn inView:(NSView *)controlView {
+	
+	NSRect cellFrame = cellFrameIn;
+	
+    if (image != nil)
+	{
         NSSize	imageSize;
         NSRect	imageFrame;
 		
@@ -123,7 +134,31 @@
 
         [image compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
     }
-    [super drawWithFrame:cellFrame inView:controlView];
+	
+	if (lastImage != nil)
+	{
+        NSSize	imageSize;
+        NSRect	imageFrame;
+		
+        imageSize = [lastImage size];
+        NSDivideRect(cellFrame, &imageFrame, &cellFrame, 3 + imageSize.width, NSMaxXEdge);
+        if ([self drawsBackground]) {
+            [[self backgroundColor] set];
+            NSRectFill(imageFrame);
+        }
+        imageFrame.origin.x += 3;
+        imageFrame.size = imageSize;
+
+        if ([controlView isFlipped])
+            imageFrame.origin.y += ceil((cellFrame.size.height + imageFrame.size.height) / 2);
+        else
+            imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
+
+        [lastImage compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
+	}
+	
+	[super drawWithFrame:cellFrame inView:controlView];
+
 }
 
 - (NSSize)cellSize {

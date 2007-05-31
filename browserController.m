@@ -7231,8 +7231,12 @@ static BOOL needToRezoom;
 		[aCell setFont:txtFont];
 		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
+		
 		NSDictionary *dict = 0L;
 		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+		
+		if( [[aCell className] isEqualToString: @"ImageAndTextCell"])
+			[(ImageAndTextCell *)aCell setLastImage: 0L];
 		
 		if (rowIndex == 0)
 		{
@@ -7265,6 +7269,9 @@ static BOOL needToRezoom;
 							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
 							[im setSize: NSMakeSize( 16, 16)];
 							[(ImageAndTextCell *)aCell setImage: im];
+							
+							im = [NSImage imageNamed:@"iPodEjectOn.tif"];
+							[(ImageAndTextCell *)aCell setLastImage: im];
 						}
 						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
 						{
