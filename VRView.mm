@@ -2455,7 +2455,6 @@ public:
 		if( [self get3DPixelUnder2DPositionX:_mouseLocStart.x Y:_mouseLocStart.y pixel:pix position:pos value:&value])
 		{
 			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																				[NSNumber numberWithFloat: pos[0]], @"xmm", [NSNumber numberWithFloat: pos[1]], @"ymm", [NSNumber numberWithFloat: pos[2]], @"zmm",
 																				0L];
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 		}
@@ -2730,7 +2729,6 @@ public:
 					pix[2] = [[[controller sliceNumber2DPointsArray] objectAtIndex:[self selected3DPointIndex]] intValue];
 					
 					NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: pix[0]], @"x", [NSNumber numberWithInt: pix[1]], @"y", [NSNumber numberWithInt: pix[2]], @"z",
-																						[NSNumber numberWithFloat: pos[0]], @"xmm", [NSNumber numberWithFloat: pos[1]], @"ymm", [NSNumber numberWithFloat: pos[2]], @"zmm",
 																						0L];
 					[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
 					

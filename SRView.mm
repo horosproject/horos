@@ -1172,8 +1172,7 @@ static void startRendering(vtkObject*,unsigned long c, void* ptr, void*)
 			
 			[self convert3Dto2Dpoint:dc :sc];
 			
-			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: sc[0]*[firstObject pixelSpacingX]], @"x", [NSNumber numberWithInt: sc[1]*[firstObject pixelSpacingY]], @"y", [NSNumber numberWithInt: sc[2]*[firstObject sliceInterval]], @"z",
-																				[NSNumber numberWithFloat: sc[0]], @"xmm", [NSNumber numberWithFloat: sc[1]], @"ymm", [NSNumber numberWithFloat: sc[2]], @"zmm",
+			NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInt: sc[0]*[firstObject pixelSpacingX]], @"x", [NSNumber numberWithInt: sc[1]*[firstObject pixelSpacingY]], @"y", [NSNumber numberWithInt: sc[2]], @"z",
 																				0L];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: @"Display3DPoint" object:pixList  userInfo: dict];
