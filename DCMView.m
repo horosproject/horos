@@ -2729,12 +2729,16 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				NSPoint pt;
 				float distance;
 				
+				float pixSpacingRatio = 1.0;
+				if([self pixelSpacingY]!=0 && [self pixelSpacingX]!=0)
+					pixSpacingRatio = [self pixelSpacingY]/[self pixelSpacingX];
+					
 				if([curRoiList count]>0)
 				{
 					pt = [[[[curRoiList objectAtIndex:0] points] objectAtIndex:0] point];
 					dx = (pt.x-tempPt.x);
 					dx2 = dx * dx;
-					dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+					dy = (pt.y-tempPt.y)*pixSpacingRatio;
 					dy2 = dy * dy;
 					distance = sqrt(dx2 + dy2);
 				}
@@ -2749,7 +2753,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 						pt = [[points objectAtIndex:j] point];
 						dx = (pt.x-tempPt.x);
 						dx2 = dx * dx;
-						dy = (pt.y-tempPt.y) *[self pixelSpacingY]/[self pixelSpacingX];
+						dy = (pt.y-tempPt.y) *pixSpacingRatio;
 						dy2 = dy * dy;
 						d = sqrt(dx2 + dy2);
 						distance = (d < distance) ? d : distance ;
@@ -4008,6 +4012,10 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	repulsorPosition = tempPt;
 	tempPt = [self ConvertFromView2GL:tempPt];
 	
+	float pixSpacingRatio = 1.0;
+	if([self pixelSpacingY]!=0 && [self pixelSpacingX]!=0)
+		pixSpacingRatio = [self pixelSpacingY]/[self pixelSpacingX];
+	
 	float dx, dx2, dy, dy2, d;
 	NSPoint pt, pt2;
 
@@ -4025,7 +4033,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 				pt = [[points objectAtIndex:j] point];
 				dx = (pt.x-tempPt.x);
 				dx2 = dx * dx;
-				dy = (pt.y-tempPt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+				dy = (pt.y-tempPt.y)*pixSpacingRatio;
 				dy2 = dy * dy;
 				d = sqrt(dx2 + dy2);
 				
@@ -4056,7 +4064,7 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 							pt2 = [[points objectAtIndex:k] point];
 							dx = (pt2.x-pt.x);
 							dx2 = dx * dx;
-							dy = (pt2.y-pt.y)*[self pixelSpacingY]/[self pixelSpacingX];
+							dy = (pt2.y-pt.y)*pixSpacingRatio;
 							dy2 = dy * dy;
 							d = sqrt(dx2 + dy2);
 							
