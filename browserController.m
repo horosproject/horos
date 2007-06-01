@@ -4865,7 +4865,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	[cell setHighlighted: NO];
-	[(ImageAndTextCell *)cell setImage: 0L];
+	[(ImageAndTextCell*) cell setImage: 0L];
 	
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	
@@ -4892,16 +4892,16 @@ static BOOL				DICOMDIRCDMODE = NO;
 				NSDate			*today = [NSDate dateWithTimeIntervalSinceNow: [start timeIntervalSinceDate: now]];
 				
 				icon = YES;
-				if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*10) [(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised1.tif"]];													// 10 min
-				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*60) [(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised2.tif"]];												// 1 hour
-				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -4*60*60) [(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised3.tif"]];											// 4 hours
-				else if( [[item valueForKey:@"date"] timeIntervalSinceReferenceDate] > [today timeIntervalSinceReferenceDate]) [(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Realised4.tif"]];	// today
+				if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*10) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised1.tif"]];													// 10 min
+				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised2.tif"]];												// 1 hour
+				else if( [[item valueForKey:@"date"] timeIntervalSinceNow] > -4*60*60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised3.tif"]];											// 4 hours
+				else if( [[item valueForKey:@"date"] timeIntervalSinceReferenceDate] > [today timeIntervalSinceReferenceDate]) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Realised4.tif"]];	// today
 				else icon = NO;
 			}
 			
 			if( icon == NO)
 			{
-				if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell *)cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
+				if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
 			}
 		}
 		
@@ -4918,7 +4918,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 						//NSImage	*reportIcon = [self reportIcon];
 						[reportIcon setSize: NSMakeSize(16, 16)];
 						
-						[(ImageAndTextCell *)cell setImage: reportIcon];
+						[(ImageAndTextCell*) cell setImage: reportIcon];
 					}
 					else [item setValue: 0L forKey:@"reportURL"];
 				}
@@ -7200,22 +7200,22 @@ static BOOL needToRezoom;
 			{
 				if(isCurrentDatabaseBonjour)
 				{
-					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tiff"]];
 				}
 				else
 				{
-					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tiff"]];
 				}
 			}
 			else
 			{
 				if(isCurrentDatabaseBonjour)
 				{
-					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tiff"]];
 				}
 				else
 				{
-					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"small_album.tiff"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tiff"]];
 				}
 			}
 		}
@@ -7236,15 +7236,18 @@ static BOOL needToRezoom;
 		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
 		if( [[aCell className] isEqualToString: @"ImageAndTextCell"])
-			[(ImageAndTextCell *)aCell setLastImage: 0L];
+		{
+			[(ImageAndTextCell*) aCell setLastImage: 0L];
+			[(ImageAndTextCell*) aCell setLastImageAlternate: 0L];
+		}
 		
 		if (rowIndex == 0)
 		{
-			[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
+			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"osirix16x16.tiff"]];
 		}
 		else if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"])
 		{
-			[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
+			[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"bonjour.tiff"]];
 		}
 		else
 		{
@@ -7252,13 +7255,12 @@ static BOOL needToRezoom;
 			NSString	*path = [dict valueForKey:@"Path"];
 			
 			if( [type isEqualToString:@"fixedIP"])
-				[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
+				[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FixedIP.tif"]];
 				
 			if( [type isEqualToString:@"localPath"])
 			{
 				BOOL isDirectory;
-											
-											
+				
 				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 				{
 					if( isDirectory)
@@ -7269,21 +7271,22 @@ static BOOL needToRezoom;
 						{
 							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
 							[im setSize: NSMakeSize( 16, 16)];
-							[(ImageAndTextCell *)aCell setImage: im];
-							[(ImageAndTextCell *)aCell setLastImage: [NSImage imageNamed:@"iPodEjectOn.tif"]];
+							[(ImageAndTextCell*) aCell setImage: im];
+							[(ImageAndTextCell*) aCell setLastImage: [NSImage imageNamed:@"iPodEjectOff.tif"]];
+							[(ImageAndTextCell*) aCell setLastImageAlternate: [NSImage imageNamed:@"iPodEjectOn.tif"]]; 
 						}
 						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
 						{
-							[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
+							[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FolderIcon.tif"]];
 						}
 						else
-							[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"away.tif"]];
+							[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"away.tif"]];
 					}
 					else
-						[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"FileIcon.tif"]];
+						[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"FileIcon.tif"]];
 				}
 				else
-					[(ImageAndTextCell *)aCell setImage:[NSImage imageNamed:@"away.tif"]];
+					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"away.tif"]];
 			}
 		}
 	}
@@ -9135,6 +9138,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:@"AlternateButtonPressed" object:nil];
 	}
 	return self;
 }
@@ -11481,6 +11485,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSArray *keys = [NSArray arrayWithObjects:@"Columns", @"Rows", nil];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMImageTilingHasChanged"  object:self userInfo: userInfo];
+}
+
+-(void) AlternateButtonPressed:(NSNotification*) n
+{
+	int i = [bonjourServicesList selectedRow];
+	if( i > 0)
+	{
+		[bonjourServicesList display];
+		NSString	*path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
+		[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+	}
 }
 
 - (void) loadDICOMFromiPod
