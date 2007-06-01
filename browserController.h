@@ -94,12 +94,12 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
-	NSArray							*allColumns;
 	
 	NSString						*_searchString;
 	
 	IBOutlet NSTextField			*databaseDescription;
 	IBOutlet MyOutlineView          *databaseOutline;
+	NSMenu							*columnsMenu;
 	IBOutlet BrowserMatrix			*oMatrix;
 	IBOutlet NSTableView			*albumTable;
 	IBOutlet NSSegmentedControl		*segmentedAlbumButton;

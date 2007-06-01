@@ -4590,6 +4590,53 @@ static BOOL				DICOMDIRCDMODE = NO;
 	databaseLastModification = [NSDate timeIntervalSinceReferenceDate];
 }
 
+- (void) buildColumnsMenu
+{
+	[columnsMenu release];
+	columnsMenu = [[NSMenu alloc] initWithTitle:@"columns"];
+	
+	
+	NSArray	*columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
+	int i;
+	
+	for( i = 0; i < [[databaseOutline allColumns] count]; i++)
+	{
+		NSTableColumn *col = [[databaseOutline allColumns] objectAtIndex:i];		
+		NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
+		[item setRepresentedObject: [col identifier]];
+		
+		long index = [columnIdentifiers indexOfObject: [col identifier]];
+		
+		if( index != NSNotFound) [item setState: NSOnState];
+		else [item setState: NSOffState];
+	}
+	
+	[[databaseOutline headerView] setMenu: columnsMenu];
+}
+
+- (void) columnsMenuAction:(id) sender
+{
+	[sender setState: ![sender state]];
+
+	if( [[sender representedObject] isEqualToString:@"name"]) [[NSUserDefaults standardUserDefaults] setBool:![sender state] forKey:@"HIDEPATIENTNAME"];
+	else
+	{
+		NSArray				*titleArray = [[columnsMenu itemArray] valueForKey:@"title"];
+		int				i;
+		NSMutableDictionary	*dict = [NSMutableDictionary dictionaryWithCapacity: 0];
+		
+		for( i = 0; i < [titleArray count]; i++)
+		{
+			NSString*	key = [titleArray objectAtIndex: i];
+			
+			if( [key length] > 0)
+				[dict setValue:[NSNumber numberWithInt:[[[columnsMenu itemArray] objectAtIndex: i] state]] forKey: key];
+		}
+		
+		[[NSUserDefaults standardUserDefaults] setObject:dict forKey:@"COLUMNSDATABASE"];
+	}
+}
+
 - (void) refreshColumns
 {
 	NSDictionary	*columnsDatabase	= [[NSUserDefaults standardUserDefaults] objectForKey: @"COLUMNSDATABASE"];
@@ -4619,45 +4666,11 @@ static BOOL				DICOMDIRCDMODE = NO;
 		}
 	}
 	
+	[self buildColumnsMenu];
+	
 	[managedObjectContext unlock];
 	[managedObjectContext release];
 }
-
-//- (void) columnsMenuAction:(id) sender
-//{
-//	[databaseOutline setColumnWithIdentifier:[sender representedObject] visible: ![sender state]];
-//	
-//	long index = [[[databaseOutline allColumns] valueForKey:@"identifier"] indexOfObject: [sender representedObject]];
-//		
-//	if( index != NSNotFound)
-//	{
-//		[COLUMNSDATABASE setValue: [NSNumber numberWithInt: ![sender state]] forKey: [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] objectAtIndex: index]];
-//	}
-//	
-//	if( [sender state] == NSOffState)
-//	{
-//		[databaseOutline scrollColumnToVisible: [databaseOutline columnWithIdentifier:[sender representedObject]]];
-//	}
-//}
-//
-//- (void) outlineView:(NSOutlineView *)outlineView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn
-//{
-//	if ( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSControlKeyMask)
-//	{
-//		NSArray	*columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
-//		long	i;
-//		
-//		for( i = 0; i < [columnsMenu numberOfItems]; i++)
-//		{
-//			long index = [columnIdentifiers indexOfObject: [[columnsMenu itemAtIndex: i] representedObject]];
-//			
-//			if( index != NSNotFound) [[columnsMenu itemAtIndex:i] setState: NSOnState];
-//			else [[columnsMenu itemAtIndex:i] setState: NSOffState];
-//		}
-//		
-//		[NSMenu popUpContextMenu: columnsMenu withEvent: [[NSApplication sharedApplication] currentEvent] forView: databaseOutline];
-//	}
-//}
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item
 {
@@ -9222,7 +9235,8 @@ static NSArray*	openSubSeriesArray = 0L;
 	[databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 	[databaseOutline setAllowsMultipleSelection:YES];
 	[databaseOutline setAutosaveName: 0L];
-	[databaseOutline setAutosaveTableColumns: NO];		
+	[databaseOutline setAutosaveTableColumns: NO];
+				
 	[self setupToolbar];
 	
 	
@@ -9365,18 +9379,6 @@ static NSArray*	openSubSeriesArray = 0L;
 	// Set International dates for columns
 	[self setDBDate];
 
-//	columnsMenu = [[NSMenu alloc] initWithTitle:@"Displayed Columns"];
-//	for( i = 0; i < [[databaseOutline tableColumns] count]; i++)
-//	{
-//		NSTableColumn *col = [[databaseOutline tableColumns] objectAtIndex:i];
-//		
-//		if( [[col identifier] isEqualToString:@"name"] == NO)	// Patient name column HAS to be displayed
-//		{
-//			NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
-//			[item setRepresentedObject: [col identifier]];
-//		}
-//	}
-
 	tableColumn = [databaseOutline tableColumnWithIdentifier: @"stateText"];
 	buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
 	[buttonCell setEditable: YES];
@@ -9385,6 +9387,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	[tableColumn setDataCell:buttonCell];
 	
 	[databaseOutline setInitialState];
+
 
 	if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"])
 		[databaseOutline restoreColumnState: [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"]];
@@ -9416,6 +9419,7 @@ static NSArray*	openSubSeriesArray = 0L;
 	
 	[databaseOutline selectRow: 0 byExtendingSelection:NO];
 	[databaseOutline scrollRowToVisible: 0];
+	[self buildColumnsMenu];
 	
 	[animationCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"AutoPlayAnimation"]];
 	

@@ -13114,6 +13114,8 @@ int i,j,l;
 {
 	BOOL volumicData = YES;
 	
+	[self checkEverythingLoaded];
+	
 	long j;
 	for( j = 0 ; j < [pixList[ curMovieIndex] count]; j++)
 	{
@@ -13128,10 +13130,9 @@ int i,j,l;
 		return;
 	}
 
-	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-	int computeInterval = [self computeInterval];
+	float computeInterval = [self computeInterval];
 	
 	if( [pixList[ curMovieIndex] count] <= 1) computeInterval = 1;
 	
