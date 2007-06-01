@@ -221,6 +221,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSImage							*standardOsiriXIcon;
 	NSImage							*downloadingOsiriXIcon;
 	NSImage							*currentIcon;
+	
+	BOOL							rtstructProgressBar;  // make visible
+	float							rtstructProgressPercent;
 }
 
 + (BrowserController*) currentBrowser;
@@ -454,6 +457,13 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
 - (BonjourBrowser *) bonjourBrowser;
+
+//RTSTRUCT
+
+- (BOOL)rtstructProgressBar;
+- (void)setRtstructProgressBar: (BOOL)s;
+- (float)rtstructProgressPercent;
+- (void)setRtstructProgressPercent: (float)p;
 
 /******Notifactions posted by browserController***********
 @"NewStudySelectedNotification" with userinfo key @"Selected Study" posted when a newStudy is selected in the browser

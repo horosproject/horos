@@ -1290,12 +1290,6 @@
 		AB6B75EA0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		AB6B75EB0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
-		AB6E0C3E0C0F18EF009D387F /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3C0C0F18EF009D387F /* iPodEjectOn.tif */; };
-		AB6E0C3F0C0F18EF009D387F /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3D0C0F18EF009D387F /* iPodEjectOff.tif */; };
-		AB6E0C400C0F18EF009D387F /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3C0C0F18EF009D387F /* iPodEjectOn.tif */; };
-		AB6E0C410C0F18EF009D387F /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3D0C0F18EF009D387F /* iPodEjectOff.tif */; };
-		AB6E0C420C0F18EF009D387F /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3C0C0F18EF009D387F /* iPodEjectOn.tif */; };
-		AB6E0C430C0F18EF009D387F /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB6E0C3D0C0F18EF009D387F /* iPodEjectOff.tif */; };
 		AB6FEFDA0A47CD9B00C501F0 /* libtiff.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EC3590806FE212600188171 /* libtiff.dylib */; };
 		AB6FEFDB0A47CD9C00C501F0 /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E5692F8064FCF08001A9762 /* libtiff.a */; };
 		AB6FF09E0A47CE3A00C501F0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -11517,8 +11511,6 @@
 		AB6AC6450624AC5200AFC7AF /* VRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRController.mm; sourceTree = "<group>"; };
 		AB6B75DE0A53F60600F0CA8F /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		AB6E0C3C0C0F18EF009D387F /* iPodEjectOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOn.tif; sourceTree = "<group>"; };
-		AB6E0C3D0C0F18EF009D387F /* iPodEjectOff.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = iPodEjectOff.tif; sourceTree = "<group>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Wait.m; sourceTree = "<group>"; };
 		AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsOsiriX.h; sourceTree = "<group>"; };
@@ -16004,8 +15996,6 @@
 				BF06806C0A9E602E000F3152 /* viewHTMLSelected.tiff */,
 				BF06806D0A9E602E000F3152 /* viewXMLSelected.tiff */,
 				BFED84AA0A717E2500119174 /* smallKeyPlus.tif */,
-				AB6E0C3C0C0F18EF009D387F /* iPodEjectOn.tif */,
-				AB6E0C3D0C0F18EF009D387F /* iPodEjectOff.tif */,
 				AB7CB7B30A6E3922008DFCC9 /* smile.png */,
 				AB7CB7AF0A6E3886008DFCC9 /* error.png */,
 				BF8449020A65F407000E9830 /* smallKey.tif */,
@@ -26016,8 +26006,6 @@
 				A917CF200BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 				AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */,
 				AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */,
-				AB6E0C3E0C0F18EF009D387F /* iPodEjectOn.tif in Resources */,
-				AB6E0C3F0C0F18EF009D387F /* iPodEjectOff.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26412,8 +26400,6 @@
 				A917CF240BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 				AB85C65F0BFADA9500C4B52E /* FileIcon.tif in Resources */,
 				AB85C6600BFADA9500C4B52E /* FolderIcon.tif in Resources */,
-				AB6E0C400C0F18EF009D387F /* iPodEjectOn.tif in Resources */,
-				AB6E0C410C0F18EF009D387F /* iPodEjectOff.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26808,8 +26794,6 @@
 				A917CF280BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 				AB85C6610BFADA9500C4B52E /* FileIcon.tif in Resources */,
 				AB85C6620BFADA9500C4B52E /* FolderIcon.tif in Resources */,
-				AB6E0C420C0F18EF009D387F /* iPodEjectOn.tif in Resources */,
-				AB6E0C430C0F18EF009D387F /* iPodEjectOff.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

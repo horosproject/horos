@@ -4132,9 +4132,33 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 	if ( choice == NSAlertDefaultReturn ) return;
 	
+	NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+		dcmObject, @"dcmObject",
+		rtstructUIDs, @"rtstructUIDs",
+		nil];
+		
+	
+	[NSThread detachNewThreadSelector: @selector(createROIsFromRTSTRUCTThread:) toTarget: self withObject: dict];
+	
+}
+	
+- (void)createROIsFromRTSTRUCTThread: (NSDictionary*)dict {
+	
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];  // Cuz this is run as a detached thread.
+	
+	DCMObject *dcmObject = [dict objectForKey: @"dcmObject"];
+	NSMutableSet *rtstructUIDs = [dict objectForKey: @"rtstructUIDs"];
+	
+	NSDictionary *noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+		[NSNumber numberWithFloat: 0.0f], @"RTSTRUCTProgressPercent",
+		nil];
+
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+
 	NSString *dirPath = [documentsDirectory() stringByAppendingPathComponent:@"/ROIs/"];
 
-	
 	// Get all referenced images up front.
 	// This is better than running a Fetch Request for EVERY ROI since
 	// executeFetchRequest is expensive.
@@ -4143,7 +4167,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 
 	if ( refFrameSequence == nil ) {
 		NSLog( @"ReferencedFrameofReferenceSequence not found" );
-		return;
+		goto END_CREATE_ROIS;
 	}
 
 	NSMutableArray *refImgUIDPredicates = [NSMutableArray arrayWithCapacity: 0];
@@ -4152,6 +4176,13 @@ BOOL gUSEPAPYRUSDCMPIX;
 	NSEnumerator *refFrameEnum = [[refFrameSequence sequence] objectEnumerator];
 	DCMObject *refFrameSeqItem;
 
+	noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+		[NSNumber numberWithFloat: 1.0f], @"RTSTRUCTProgressPercent",
+		nil];
+	
+	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+	
 	while ( refFrameSeqItem = [refFrameEnum nextObject] ) {
 		DCMSequenceAttribute *refStudySeq = (DCMSequenceAttribute *)[refFrameSeqItem attributeWithName: @"RTReferencedStudySequence"];
 		NSEnumerator *refStudyEnum = [[refStudySeq sequence] objectEnumerator];
@@ -4176,20 +4207,23 @@ BOOL gUSEPAPYRUSDCMPIX;
 		}
 	}
 	
+	noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+		[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+		[NSNumber numberWithFloat: 10.0f], @"RTSTRUCTProgressPercent",
+		nil];
+	
+	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+		
 	if ( [refImgUIDPredicates count] == 0 ) {
 		NSLog( @"No reference images found." );
-		return;
+		goto END_CREATE_ROIS;
 	}
-	
-	//NSString *refStudyUID = [dcmObject attributeValueWithName: @"StudyInstanceUID"];
-	
+		
 	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContext];
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	[request setEntity: [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc]];
 	
-	//[request setPredicate: [NSPredicate predicateWithFormat: @"series.study.studyInstanceUID like%@", refStudyUID]];
-
 	[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: refImgUIDPredicates]];
 
 	[moc lock];
@@ -4198,7 +4232,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if ( [imgObjects count] == 0 ) {
 		NSLog( @"No images in Series" );
-		return;
+		goto END_CREATE_ROIS;
 	}
 	
 	// Put all images in a dictionary for quick lookup based on SOP Instance UID
@@ -4217,7 +4251,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if ( roiSequence == nil ) {
 		NSLog( @"StructureSetROISequence not found" );
-		return;
+		goto END_CREATE_ROIS;
 	}
 	
 	NSEnumerator *enumerator = [[roiSequence sequence] objectEnumerator];
@@ -4233,8 +4267,11 @@ BOOL gUSEPAPYRUSDCMPIX;
 	
 	if ( roiContourSequence == nil ) {
 		NSLog( @"ROIContourSequence not found" );
-		return;
+		goto END_CREATE_ROIS;
 	}
+	
+	int numStructs = [[roiContourSequence sequence] count];
+	unsigned int iStruct = 0;
 	
 	enumerator = [[roiContourSequence sequence] objectEnumerator];
 	
@@ -4252,7 +4289,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 		DCMSequenceAttribute *contourSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"ContourSequence"];
 		if ( roiContourSequence == nil ) {
 			NSLog( @"contourSequence not found" );
-			return;
+			goto END_CREATE_ROIS;
 		}
 		
 		DCMObject *contourItem;
@@ -4263,7 +4300,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			DCMSequenceAttribute *contourImageSequence = (DCMSequenceAttribute*)[contourItem attributeWithName: @"ContourImageSequence"];
 			if ( contourImageSequence == nil ) {
 				NSLog( @"contourImageSequence not found" );
-				return;
+				goto END_CREATE_ROIS;
 			}
 		
 			
@@ -4271,7 +4308,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 			if ( ! [contourType isEqualToString: @"CLOSED_PLANAR"] ) {
 				NSLog( @"Contour type %@ is not support at this time.", contourType );
-				return;
+				goto END_CREATE_ROIS;
 			}
 			
 			int type = tCPolygon;
@@ -4302,7 +4339,7 @@ BOOL gUSEPAPYRUSDCMPIX;
 					
 					if ( imgObject == nil ) {
 						NSLog( @"Error opening referenced image file" );
-						return;
+						goto END_CREATE_ROIS;
 					}
 					
 					NSArray *pixelSpacings = [imgObject attributeArrayWithName: @"PixelSpacing"];
@@ -4394,7 +4431,23 @@ BOOL gUSEPAPYRUSDCMPIX;
 			
 		} // Loop over ContourSequence
 
+		iStruct++;
+		
+		float percentComplete = ( iStruct / (float)numStructs ) * 90.0f + 10.0f;
+
+		noteDict = [NSDictionary dictionaryWithObjectsAndKeys: 
+			[NSNumber numberWithBool: YES], @"RTSTRUCTProgressBar",
+			[NSNumber numberWithFloat: percentComplete], @"RTSTRUCTProgressPercent",
+			nil];
+		
+		[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
+		
 	}  // Loop over ROIContourSequence
+
+END_CREATE_ROIS:
+		
+	noteDict = [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"];
+	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
 } // end createROIsFromRTSTRUCT
 

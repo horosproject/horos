@@ -9135,6 +9135,7 @@ static NSArray*	openSubSeriesArray = 0L;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:@"RTSTRUCTNotification" object:nil];
 	}
 	return self;
 }
@@ -12265,7 +12266,36 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-#pragma mark-
+#pragma mark -
+#pragma mark RTSTRUCT
+
+-(void) rtstructNotification: (NSNotification *)note
+{
+	BOOL visible = [[[note userInfo] objectForKey: @"RTSTRUCTProgressBar"] boolValue];
+	if ( visible ) [self setRtstructProgressPercent: [[[note userInfo] objectForKey: @"RTSTRUCTProgressPercent"] floatValue]];
+	[self setRtstructProgressBar: visible];
+	
+}
+	
+- (BOOL)rtstructProgressBar {
+	return rtstructProgressBar;
+}
+
+- (void)setRtstructProgressBar: (BOOL)s {
+	rtstructProgressBar = s;
+}
+
+- (float)rtstructProgressPercent {
+	return rtstructProgressPercent;
+}
+		
+- (void)setRtstructProgressPercent: (float)p {
+	rtstructProgressPercent = p;
+}
+
+//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+#pragma mark -
 #pragma mark Report functions
 
 - (IBAction)srReports: (id)sender{
