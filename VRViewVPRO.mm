@@ -353,6 +353,7 @@ public:
 	point1[0] = cameraPosition[0];
 	point1[1] = cameraPosition[1];
 	point1[2] = cameraPosition[2];
+	
 		// Go beyond the object...
 	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
 	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
@@ -365,39 +366,26 @@ public:
 	volumePosition[1] /= factor;
 	volumePosition[2] /= factor;
 
-	float point1ToVolume[3];
-	point1ToVolume[0] = fabs(volumePosition[0]-point1[0]);
-	point1ToVolume[1] = fabs(volumePosition[1]-point1[1]);
-	point1ToVolume[2] = fabs(volumePosition[2]-point1[2]);
+	BOOL direction;
 	
-	float point1ToNextPosition[3];
 	switch(stackOrientation)
 	{
 		case 0:
-			point1ToNextPosition[0] = fabs(volumePosition[0] + [firstObject pixelSpacingX] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+			if( point1[0] - point2[0] > 0) direction = YES;
+			else direction = NO;
 		break;
+		
 		case 1:
-			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] + [firstObject pixelSpacingY] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+			if( point1[1] - point2[1] > 0) direction = YES;
+			else direction = NO;
 		break;
+		
 		case 2:
-			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] + [firstObject sliceInterval] - point1[2]);	
+			if( point1[2] - point2[2] < 0) direction = YES;
+			else direction = NO;
 		break;
 	}
-		
-	float distancePoint1ToVolume, distancePoint1ToNextPosition;
-	distancePoint1ToVolume = sqrt(point1ToVolume[0]*point1ToVolume[0]+point1ToVolume[1]*point1ToVolume[1]+point1ToVolume[2]*point1ToVolume[2]);
-	distancePoint1ToNextPosition = sqrt(point1ToNextPosition[0]*point1ToNextPosition[0]
-										+point1ToNextPosition[1]*point1ToNextPosition[1]
-										+point1ToNextPosition[2]*point1ToNextPosition[2]);
-	
-	BOOL direction = distancePoint1ToVolume < distancePoint1ToNextPosition;
-	
+
 	long p, n;
 	BOOL pointFound = NO;
 	float opacitySum = 0.0;

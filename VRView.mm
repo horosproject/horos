@@ -1999,28 +1999,19 @@ public:
 	
 	NSPoint mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: 0L];
 	
-	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
-	{
-		long sliceNo;
-		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
-		else sliceNo = [pixList count] -1 -pix[ 2];
-	
-		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
-		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
-		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
-		
-//		if( [firstObject SUVConverted]) val = [val stringByAppendingString: @" SUV"];
-		
-//		NSString	*mode;
-//		switch( renderingMode)
-//		{
-//			case 0:		mode = @"VR - ";		break;
-//			case 1:		mode = @"MIP - ";		break;
-//		}
-		
-		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
-	}
-	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
+//	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
+//	{
+//		long sliceNo;
+//		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
+//		else sliceNo = [pixList count] -1 -pix[ 2];
+//	
+//		NSString	*pixLoc = [[NSString stringWithFormat: @"X:%d Y:%d Z:%d (px)", pix[ 0], pix[ 1], sliceNo] stringByPaddingToLength: 23 withString: @" " startingAtIndex: 0];
+//		NSString	*mmLoc = [[NSString stringWithFormat: @"X:%.2f Y:%.2f Z:%.2f (mm)", pos[ 0], pos[ 1], pos[ 2]] stringByPaddingToLength: 38 withString: @" " startingAtIndex: 0];
+//		NSString	*val = [[NSString stringWithFormat: @"%.2f", value] stringByPaddingToLength: 9 withString: @" " startingAtIndex:  0];
+//		
+//		[pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d   Pixel: %@    %@ %@", (int) [self frame].size.width, (int)[self frame].size.height, val, pixLoc, mmLoc]];
+//	}
+//	else [pixelInformation setStringValue: [NSString stringWithFormat: @"View Size: %d x %d", (int) [self frame].size.width, (int) [self frame].size.height]];
 }
 
 -(void) squareView:(id) sender
@@ -5375,6 +5366,7 @@ public:
 	// camera view plane normal
 	double cameraViewPlaneNormal[3];
 	aCamera->GetViewPlaneNormal(cameraViewPlaneNormal);
+	
 	// camera position
 	double cameraPosition[3];
 	aCamera->GetPosition(cameraPosition);
@@ -5412,7 +5404,7 @@ public:
 		stackOrientation = 2; //NSLog(@"Z Stack");
 		stackMax = [curPixList count];
 	}
-			
+	
 	if(aCamera->GetParallelProjection())
 	{				
 		cameraPosition[0] = worldPointClicked[0] + cameraViewPlaneNormal[0];
@@ -5425,6 +5417,7 @@ public:
 	point1[0] = cameraPosition[0];
 	point1[1] = cameraPosition[1];
 	point1[2] = cameraPosition[2];
+	
 		// Go beyond the object...
 	point2[0] = cameraPosition[0] + (worldPointClicked[0] - cameraPosition[0])*5000.;
 	point2[1] = cameraPosition[1] + (worldPointClicked[1] - cameraPosition[1])*5000.;
@@ -5437,38 +5430,25 @@ public:
 	volumePosition[1] /= factor;
 	volumePosition[2] /= factor;
 
-	float point1ToVolume[3];
-	point1ToVolume[0] = fabs(volumePosition[0]-point1[0]);
-	point1ToVolume[1] = fabs(volumePosition[1]-point1[1]);
-	point1ToVolume[2] = fabs(volumePosition[2]-point1[2]);
+	BOOL direction;
 	
-	float point1ToNextPosition[3];
 	switch(stackOrientation)
 	{
 		case 0:
-			point1ToNextPosition[0] = fabs(volumePosition[0] + [firstObject pixelSpacingX] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+			if( point1[0] - point2[0] > 0) direction = YES;
+			else direction = NO;
 		break;
+		
 		case 1:
-			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] + [firstObject pixelSpacingY] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] - point1[2]);
+			if( point1[1] - point2[1] > 0) direction = YES;
+			else direction = NO;
 		break;
+		
 		case 2:
-			point1ToNextPosition[0] = fabs(volumePosition[0] - point1[0]);
-			point1ToNextPosition[1] = fabs(volumePosition[1] - point1[1]);
-			point1ToNextPosition[2] = fabs(volumePosition[2] + [firstObject sliceInterval] - point1[2]);	
+			if( point1[2] - point2[2] < 0) direction = YES;
+			else direction = NO;
 		break;
 	}
-		
-	float distancePoint1ToVolume, distancePoint1ToNextPosition;
-	distancePoint1ToVolume = sqrt(point1ToVolume[0]*point1ToVolume[0]+point1ToVolume[1]*point1ToVolume[1]+point1ToVolume[2]*point1ToVolume[2]);
-	distancePoint1ToNextPosition = sqrt(point1ToNextPosition[0]*point1ToNextPosition[0]
-										+point1ToNextPosition[1]*point1ToNextPosition[1]
-										+point1ToNextPosition[2]*point1ToNextPosition[2]);
-	
-	BOOL direction = distancePoint1ToVolume < distancePoint1ToNextPosition;
 	
 	long p, n;
 	BOOL pointFound = NO;
