@@ -4865,7 +4865,12 @@ static BOOL				DICOMDIRCDMODE = NO;
 - (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	[cell setHighlighted: NO];
-	[(ImageAndTextCell*) cell setImage: 0L];
+	
+	if( [cell isKindOfClass: [ImageAndTextCell class]])
+	{
+		[(ImageAndTextCell*) cell setImage: 0L];
+		[(ImageAndTextCell*) cell setLastImage: 0L];
+	}
 	
 	NSManagedObjectContext	*context = [self managedObjectContext];
 	
@@ -7184,6 +7189,12 @@ static BOOL needToRezoom;
 
 - (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
 {
+	if( [aCell isKindOfClass: [ImageAndTextCell class]])
+	{
+		[(ImageAndTextCell*) aCell setLastImage: 0L];
+		[(ImageAndTextCell*) aCell setLastImageAlternate: 0L];
+	}
+	
 	if ([aTableView isEqual:albumTable])
 	{
 		NSFont *txtFont;
@@ -7235,11 +7246,6 @@ static BOOL needToRezoom;
 		NSDictionary *dict = 0L;
 		if( rowIndex > 0) dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
 		
-		if( [[aCell className] isEqualToString: @"ImageAndTextCell"])
-		{
-			[(ImageAndTextCell*) aCell setLastImage: 0L];
-			[(ImageAndTextCell*) aCell setLastImageAlternate: 0L];
-		}
 		
 		if (rowIndex == 0)
 		{
@@ -11492,9 +11498,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	int i = [bonjourServicesList selectedRow];
 	if( i > 0)
 	{
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"iPod unmounting...", nil)];
+		[wait showWindow:self];
 		[bonjourServicesList display];
 		NSString	*path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
 		[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+		[bonjourServicesList display];
+		[bonjourServicesList setNeedsDisplay];
+		[wait close];
+		[wait release];
 	}
 }
 
