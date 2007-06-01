@@ -4020,9 +4020,9 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
 	NSPoint pt, pt2;
 
 	float minD, maxD, maxN;
-	minD = 3.0 / scaleValue;
-	maxD = 20.0 / scaleValue;
-	maxN = 50.0 * scaleValue;
+	minD = 10.0 / scaleValue;
+	maxD = 50.0 / scaleValue;
+	maxN = 10.0 * scaleValue;
 	
 	int i, j, k;
 	NSMutableArray *points;
