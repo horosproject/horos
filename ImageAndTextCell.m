@@ -46,17 +46,34 @@
 
 @implementation ImageAndTextCell
 
+- (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp
+{
+	NSLog(@"trackMouse");
+	
+	if (lastImage != nil)
+	{
+		if( NSMouseInRect( [theEvent locationInWindow], cellFrame, NO))
+		{
+			NSSize	imageSize;
+			NSRect	imageFrame;
+			
+			imageSize = [lastImage size];
+			NSDivideRect(cellFrame, &imageFrame, &cellFrame, 3 + imageSize.width, NSMaxXEdge);
+			
+			lastImage = 0L;
+			
+			[self drawWithFrame: cellFrame inView:controlView];
+		}
+	}
+	
+	return [super trackMouse: theEvent inRect: cellFrame ofView: controlView untilMouseUp: untilMouseUp];
+}
+
 - (void)dealloc {
     [image release];
     image = nil;
     [super dealloc];
 }
-
-/*
-- (void)finalize {
-	//nothing to do does not need to be called
-}
-*/
 
 - copyWithZone:(NSZone *)zone {
     ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];

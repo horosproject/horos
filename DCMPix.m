@@ -4449,6 +4449,8 @@ END_CREATE_ROIS:
 	noteDict = [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"];
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
+	[poo release];
+	
 } // end createROIsFromRTSTRUCT
 
 - (void) setVOILUT:(int) first number :(unsigned int) number depth :(unsigned int) depth table :(unsigned int *)table image:(unsigned short*) src isSigned:(BOOL) isSigned
