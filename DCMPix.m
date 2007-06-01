@@ -4449,7 +4449,7 @@ END_CREATE_ROIS:
 	noteDict = [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: NO] forKey: @"RTSTRUCTProgressBar"];
 	[nc postNotificationName:@"RTSTRUCTNotification" object:nil userInfo: noteDict];
 	
-	[poo release];
+	[pool release];
 	
 } // end createROIsFromRTSTRUCT
 
