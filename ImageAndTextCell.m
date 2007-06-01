@@ -47,19 +47,19 @@
 @implementation ImageAndTextCell
 
 - (BOOL)trackMouse:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp
-{
-	NSLog(@"trackMouse");
-	
+{	
 	if (lastImage != nil)
 	{
-		if( NSMouseInRect( [theEvent locationInWindow], cellFrame, NO))
+		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:0L];
+		NSSize	imageSize;
+		NSRect	imageFrame, cellFrameOut;
+			
+		imageSize = [lastImage size];
+			
+		NSDivideRect(cellFrame, &imageFrame, &cellFrameOut, 3 + imageSize.width, NSMaxXEdge);
+		
+		if( NSMouseInRect( pt, cellFrameOut, NO) == NO)
 		{
-			NSSize	imageSize;
-			NSRect	imageFrame;
-			
-			imageSize = [lastImage size];
-			NSDivideRect(cellFrame, &imageFrame, &cellFrame, 3 + imageSize.width, NSMaxXEdge);
-			
 			lastImage = 0L;
 			
 			[self drawWithFrame: cellFrame inView:controlView];

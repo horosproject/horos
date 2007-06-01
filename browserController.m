@@ -7257,7 +7257,8 @@ static BOOL needToRezoom;
 			if( [type isEqualToString:@"localPath"])
 			{
 				BOOL isDirectory;
-				
+											
+											
 				if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory])
 				{
 					if( isDirectory)
@@ -7269,9 +7270,7 @@ static BOOL needToRezoom;
 							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
 							[im setSize: NSMakeSize( 16, 16)];
 							[(ImageAndTextCell *)aCell setImage: im];
-							
-							im = [NSImage imageNamed:@"iPodEjectOn.tif"];
-							[(ImageAndTextCell *)aCell setLastImage: im];
+							[(ImageAndTextCell *)aCell setLastImage: [NSImage imageNamed:@"iPodEjectOn.tif"]];
 						}
 						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
 						{
