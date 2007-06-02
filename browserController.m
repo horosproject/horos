@@ -11522,11 +11522,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 	for ( i=0 ; i < [allVolumes count]; i++)
 	{
 		NSString *iPodControlPath = [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"iPod_Control"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath])
+		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
+		BOOL isThereAnOsiriXDataAtTheRoot = [[NSFileManager defaultManager] fileExistsAtPath: [[allVolumes objectAtIndex:i] stringByAppendingPathComponent:@"OsiriX Data"]];
+		
+		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot)
 		{
 			NSString *volumeName = [[allVolumes objectAtIndex:i] lastPathComponent];
 			
-			NSLog(@"Got an iPod volume named %@", volumeName);
+			NSLog(@"Got a volume named %@", volumeName);
 			
 			NSString	*path = [allVolumes objectAtIndex:i];
 			
