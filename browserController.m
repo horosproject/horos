@@ -4203,6 +4203,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			studySelected = item;
 		else
 			studySelected = [item valueForKey:@"study"];
+		
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:studySelected forKey:@"Selected Study"];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"NewStudySelectedNotification" object:self userInfo:(NSDictionary *)userInfo];
 		
@@ -4226,7 +4227,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 			[animationSlider setEnabled:NO];
 			[animationSlider setMaxValue:0];
 			[animationSlider setNumberOfTickMarks:1];
-			[animationSlider setIntValue:0];			
+			[animationSlider setIntValue:0];
 			
 			NSArray			*children = [self childrenArray: item];
 			NSMutableArray	*imagePaths = [NSMutableArray arrayWithCapacity: 0];
