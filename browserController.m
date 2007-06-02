@@ -6123,13 +6123,12 @@ static BOOL withReset = NO;
 					}
 				}
 				
-				 if( [oMatrix selectedCell] == 0)
-				 {
+				if( [oMatrix selectedCell] == 0)
+				{
 					if( [matrixViewArray count] > 0)
 						[oMatrix selectCellWithTag: 0];
-				 }
+				}
 
-				
 				if( loadPreviewIndex == 0)
 					[self initAnimationSlider];
 				
