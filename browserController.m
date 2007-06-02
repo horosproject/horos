@@ -5585,15 +5585,6 @@ static BOOL withReset = NO;
 
 	 NSButtonCell    *cell = [oMatrix selectedCell];
 	 
-	 if( cell == 0)
-	 {
-		if( [matrixViewArray count] > 0)
-		{
-			[oMatrix selectCellWithTag: 0];
-			cell = [oMatrix selectedCell];
-		}
-	 }
-	 
 	 if( cell)
 	 {
 		if( [cell tag] >= [matrixViewArray count])
@@ -6131,6 +6122,13 @@ static BOOL withReset = NO;
 						}
 					}
 				}
+				
+				 if( [oMatrix selectedCell] == 0)
+				 {
+					if( [matrixViewArray count] > 0)
+						[oMatrix selectCellWithTag: 0];
+				 }
+
 				
 				if( loadPreviewIndex == 0)
 					[self initAnimationSlider];

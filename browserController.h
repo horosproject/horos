@@ -458,6 +458,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 - (BonjourBrowser *) bonjourBrowser;
 
+- (void) initAnimationSlider;
+
 //RTSTRUCT
 
 - (BOOL)rtstructProgressBar;
