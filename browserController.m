@@ -5584,6 +5584,16 @@ static BOOL withReset = NO;
 	long	noOfImages = 0;
 
 	 NSButtonCell    *cell = [oMatrix selectedCell];
+	 
+	 if( cell == 0)
+	 {
+		if( [matrixViewArray count] > 0)
+		{
+			[oMatrix selectCellWithTag: 0];
+			cell = [oMatrix selectedCell];
+		}
+	 }
+	 
 	 if( cell)
 	 {
 		if( [cell tag] >= [matrixViewArray count])
@@ -5635,6 +5645,13 @@ static BOOL withReset = NO;
 			[animationSlider setNumberOfTickMarks: noOfImages];
 			[animationSlider setIntValue:0];	//noOfImages/2
 		}
+	}
+	else
+	{
+		[animationSlider setEnabled:NO];
+		[animationSlider setMaxValue:0];
+		[animationSlider setNumberOfTickMarks:1];
+		[animationSlider setIntValue:0];
 	}
 	
 	withReset = YES;
@@ -6115,11 +6132,13 @@ static BOOL withReset = NO;
 					}
 				}
 				
-				if( loadPreviewIndex == 0) [self initAnimationSlider];
+				if( loadPreviewIndex == 0)
+					[self initAnimationSlider];
 				
 				loadPreviewIndex = i;
 			}
 		}
+		else [self initAnimationSlider];
 	}
 			
 	@catch( NSException *ne)
@@ -7284,15 +7303,38 @@ static BOOL needToRezoom;
 				{
 					if( isDirectory)
 					{
-						// iPod?
 						NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
-						if ([[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath])
+						BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
+						
+						// Root?
+						BOOL isThereAnOsiriXDataAtTheRoot = NO;
+						int i;
+						
+						NSArray* mountedVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
+						for( i = 0; i < [mountedVolumes count] ; i++)
+						{
+							if( [[mountedVolumes objectAtIndex: i] isEqualToString: path]) isThereAnOsiriXDataAtTheRoot = YES;
+						}
+
+						BOOL removableMedia = NO;
+						NSArray* removableVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
+						for( i = 0; i < [removableVolumes count] ; i++)
+						{
+							if( [[removableVolumes objectAtIndex: i] isEqualToString: path]) removableMedia = YES;
+						}
+						
+						// iPod? or root?
+						
+						if (isItAnIpod || isThereAnOsiriXDataAtTheRoot)
 						{
 							NSImage	*im = [[NSWorkspace sharedWorkspace] iconForFile: path];
 							[im setSize: NSMakeSize( 16, 16)];
 							[(ImageAndTextCell*) aCell setImage: im];
-							[(ImageAndTextCell*) aCell setLastImage: [NSImage imageNamed:@"iPodEjectOff.tif"]];
-							[(ImageAndTextCell*) aCell setLastImageAlternate: [NSImage imageNamed:@"iPodEjectOn.tif"]]; 
+							if( isItAnIpod || removableMedia)
+							{
+								[(ImageAndTextCell*) aCell setLastImage: [NSImage imageNamed:@"iPodEjectOff.tif"]];
+								[(ImageAndTextCell*) aCell setLastImageAlternate: [NSImage imageNamed:@"iPodEjectOn.tif"]]; 
+							}
 						}
 						else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"] isDirectory: &isDirectory])
 						{
@@ -11502,21 +11544,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 	int i = [bonjourServicesList selectedRow];
 	if( i > 0)
 	{
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"iPod unmounting...", nil)];
+		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Volume unmounting...", nil)];
 		[wait showWindow:self];
 		[bonjourServicesList display];
 		NSString	*path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
-		[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+		BOOL success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
 		[bonjourServicesList display];
 		[bonjourServicesList setNeedsDisplay];
 		[wait close];
 		[wait release];
+		
+		if( success == NO)
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"Failed", 0L), NSLocalizedString(@"Unable to unmount this disk. This disk is probably in used by another application.", 0L), NSLocalizedString(@"OK",nil),nil, nil);
+		}
 	}
 }
 
 - (void) loadDICOMFromiPod
 {
-	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
+	NSArray *allVolumes = [[NSWorkspace sharedWorkspace] mountedLocalVolumePaths];
 	int i, x, index;
 
 	for ( i=0 ; i < [allVolumes count]; i++)
