@@ -2378,6 +2378,7 @@ static BOOL				DICOMDIRCDMODE = NO;
 	
 	[managedObjectContext lock];
 	[managedObjectContext unlock];
+//	NSLog( @"retainCount %d", [managedObjectContext retainCount]);
 	[managedObjectContext release];
 	managedObjectContext = 0L;
 	[self setFixedDocumentsDirectory];
@@ -6294,6 +6295,7 @@ static BOOL withReset = NO;
 	[context unlock];
 	[context release];
 	
+	[previousItem release];
 	previousItem = 0L;
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: 0L];
 }
