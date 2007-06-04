@@ -57,6 +57,11 @@ extern NSString * documentsDirectory();
 
 @implementation MPR2DController
 
+- (IBAction) roiDeleteAll:(id) sender
+{
+	[viewerController roiDeleteAll: sender];
+}
+
 -(NSImage*) image4DForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
 {
 	long oldValue = curMovieIndex;

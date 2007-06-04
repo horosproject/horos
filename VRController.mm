@@ -121,6 +121,11 @@ static NSString*	PresetsPanelToolbarItemIdentifier		= @"3DPresetsPanel.tiff";
 //	 [view setSpecularPower: v];
 //}
 
+- (IBAction) roiDeleteAll:(id) sender
+{
+	[viewer2D roiDeleteAll: sender];
+}
+
 - (IBAction) setOrientation:(id) sender
 {
 	switch( [[sender selectedCell] tag])

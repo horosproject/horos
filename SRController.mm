@@ -53,6 +53,11 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 @implementation SRController
 
+- (IBAction) roiDeleteAll:(id) sender
+{
+	[viewer2D roiDeleteAll: sender];
+}
+
 - (IBAction) setOrientation:(id) sender
 {
 	switch( [[sender selectedCell] tag])
